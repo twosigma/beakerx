@@ -99,7 +99,7 @@ var __t, __p = '', __e = _.escape;
 with (obj) {
 __p += '\n<div class="modal-header fixed bkr">\n  <h1 class="bkr">Save <span ng-show="getStrategy().treeViewfs.showSpinner" class="bkr">\n  <i class="fa fa-refresh fa-spin bkr"></i></span></h1>\n  <div class="filters-and-sorts bkr">\n    <div class="dropdown bkr">\n      <button class="btn btn-default btn-xs dropdown-toggle bkr" type="button" data-toggle="dropdown">\n        Sort by: {{getStrategy().treeViewfs.getOrderBy()}}\n      </button>\n      <ul class="dropdown-menu bkr" role="menu">\n        <li class="bkr"><a href="javascript:;" ng-click="getStrategy().treeViewfs.setOrderBy({ orderBy: \'uri\', reverse: false })" class="bkr">Name</a></li>\n        <li class="bkr"><a href="javascript:;" ng-click="getStrategy().treeViewfs.setOrderBy({ orderBy: \'modified\', reverse: true })" class="bkr">Date Modified</a></li>\n      </ul>\n    </div>\n  </div>\n</div>\n<div class="modal-body fixed bkr" style="padding-bottom: 106px"> \n  <tree-view rooturi="/" fs="getStrategy().treeViewfs" class="bkr"></tree-view>\n  <tree-view rooturi="' +
 __e( homedir ) +
-'" fs="getStrategy().treeViewfs" class="bkr"></tree-view>\n</div>\n<div class="modal-footer fixed bkr" style="height: 106px"> \n  <p class="bkr">\n    <input id="saveAsFileInput" class="left bkr" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start="">\n    <i class="new-folder bk-icon bkr" data-toggle="tooltip" title="Make new directory ({{getStrategy().input}})" ng-click="getStrategy().newFolder(getStrategy().input)"></i>\n  </p>\n  <span style="float:left" class="bkr">{{getStrategy().getResult()}}</span>\n  <button ng-click="close()" class="btn btn-default bkr">Cancel</button>\n  <button ng-click="close(getStrategy().getResult())" class="btn btn-primary bkr" ng-disabled="getStrategy().getSaveBtnDisabled()">Save</button>\n</div>';
+'" fs="getStrategy().treeViewfs" class="bkr"></tree-view>\n</div>\n<div class="modal-footer fixed bkr" style="height: 106px"> \n  <p class="bkr">\n    <input id="saveAsFileInput" class="left bkr" ng-model="getStrategy().input" ng-keyup="getStrategy().manualEntry()" ng-keypress="getStrategy().close($event, close)" focus-start="">\n    <i class="new-folder bk-icon bkr" data-toggle="tooltip" title="Make new directory ({{getStrategy().input}})" ng-click="getStrategy().newFolder(getStrategy().input)"></i>\n  </p>\n  <span style="float:left" class="bkr">{{getStrategy().getResult()}}</span>\n  <button ng-click="close()" class="btn btn-default bkr">Cancel</button>\n  <button ng-click="close(getStrategy().getResult())" class="btn btn-primary bkr" ng-disabled="getStrategy().getSaveBtnDisabled()">Save</button>\n</div>';
 
 }
 return __p
@@ -145,24 +145,6 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
 __p += '\n<header class="navbar-fixed-top bkr" ng-class="{\'electron-hide\': getElectronMode()}">\n  <div class="navbar navbar-inverse bkr">\n    <a class="navbar-brand bkr" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click="">\n      <img src="app/images/beaker_icon@2x.png" class="bkr">\n    </a>\n    <a class="navbar-left bkr" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click="">\n      Beaker\n    </a>\n    <p class="navbar-text bkr">{{pathname()}}</p>\n    <span class="navbar-text bkr" ng-if="loading || !!loadingmsg">\n      <i class="fa fa-refresh fa-spin text-white bkr"></i>\n    </span>\n    <div class="navbar-text text-white loadingmsg bkr" ng-if="loading || !!loadingmsg">\n      {{loadingmsg}}\n    </div>\n  </div>\n  <div class="navbar navbar-default bkr">\n    <ul class="nav navbar-nav bkr">\n      <li class="dropdown bkr" ng-repeat="m in getMenus()">\n        <a href="#" role="button" class="dropdown-toggle bkr" ng-class="m.classNames" data-toggle="dropdown">{{m.name}}</a>\n        <bk-dropdown-menu menu-items="m.items" class="bkr"></bk-dropdown-menu>\n      </li>\n    </ul>\n    <p ng-if="isEdited()" class="navbar-text text-success pull-right bkr">edited</p>\n    <p ng-if="isDisconnected()" class="navbar-text pull-right bkr">\n      <a href="javascript:;" class="navbar-link text-danger bkr" ng-click="promptToSave()" eat-click="">{{getOffineMessage()}}</a>\n    </p>\n  </div>\n</header>\n\n<div ng-class="{\'electron-mode\': getElectronMode()}" class="container-fluid notebook-container bkr">\n  <div class="row bkr">\n    <div class="col-md-12 bkr">\n      <bk-notebook set-bk-notebook="setBkNotebook(bkNotebook)" is-loading="loading" class="bkr"></bk-notebook>\n    </div>\n  </div>\n\n  \n  <div style="height: 300px" class="bkr"></div>\n\n</div>\n\n\n<script type="text/ng-template" id="section-cell.html" class="bkr">\n  <bk-section-cell></bk-section-cell>\n</script>\n<script type="text/ng-template" id="text-cell.html" class="bkr">\n  <div class="text-cell">\n    <bk-text-cell></bk-text-cell>\n  </div>\n</script>\n<script type="text/ng-template" id="markdown-cell.html" class="bkr">\n  <bk-markdown-cell></bk-markdown-cell>\n</script>\n<script type="text/ng-template" id="code-cell.html" class="bkr">\n  <bk-code-cell cellmodel="cellmodel" cellmenu="cellview.menu" index="$index"></bk-code-cell>\n</script>';
-
-}
-return __p
-}})();
-(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager"] = function(obj) {
-obj || (obj = {});
-var __t, __p = '', __e = _.escape;
-with (obj) {
-__p += '\n<div class="bkr">\n  <div class="modal-header fixed bkr" style="height: 69px">\n    <h1 class="bkr">Language Manager</h1>\n  </div>\n  <div class="modal-body fixed modal-large plugin-manager bkr" style="padding-top: 69px; padding-bottom: 68px">\n    <div class="languages clearfix bkr">\n      <button class="btn btn-default language-icon-button bkr" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getEvaluatorStatuses()" ng-class="pluginName">\n        <span ng-class="\'plugin-\' + pluginStatus" class="plugin-status bkr">●</span>\n        <bk-language-logo bg-color="{{getEvaluatorDetails(pluginName).bgColor}}" name="{{getEvaluatorDetails(pluginName).shortName}}" fg-color="{{getEvaluatorDetails(pluginName).fgColor}}" border-color="{{getEvaluatorDetails(pluginName).borderColor}}" class="bkr">\n        </bk-language-logo>\n\n        {{pluginName}}\n      </button>\n      <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="btn btn-default bkr" ng-if="allowFromUrl()">\n        From URL...\n      </button>\n    </div>\n    <div ng-show="evalTabOp.showURL" class="input-group addeval bkr">\n      <input type="text" bk-enter="evalTabOp.togglePlugin()" ng-model="evalTabOp.newPluginNameOrUrl" class="bkr">\n      <button class="btn btn-default bkr" ng-click="evalTabOp.togglePlugin()">Add Plugin from URL</button>\n    </div>\n    <div ng-show="evalTabOp.showSecurityWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Are you sure you want to load this plugin from an external URL?</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.showURL=false; evalTabOp.newPluginNameOrUrl=&quot;&quot;">Cancel</button>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.forceLoad = true; evalTabOp.togglePlugin()">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <div ng-show="evalTabOp.showWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Cannot remove plugin currently used by a code cell in the notebook.<br class="bkr">\n        Delete those cells and try again.</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showWarning = false">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <tabset class="bkr">\n      <tab ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}" class="bkr">\n        <bk-plugin-manager-evaluator-settings class="bkr"></bk-plugin-manager-evaluator-settings>\n      </tab>\n    </tabset>\n  </div>\n  <div class="modal-footer fixed bkr" style="height: 68px"> \n    <button class="btn btn-primary language-manager-close-button bkr" ng-click="doClose()">Close</button>\n  </div>\n</div>';
-
-}
-return __p
-}})();
-(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"] = function(obj) {
-obj || (obj = {});
-var __t, __p = '', __e = _.escape;
-with (obj) {
-__p += '\n\n<div ng-repeat="property in properties" class="form-group language-option property clearfix bkr">\n  <label class="bkr">{{ property.name }}</label>\n  <textarea class="form-control bkr" ng-model="evaluator.settings[property.key]"></textarea>\n  <button class="btn btn-default pull-right set bkr" ng-click="set(property.key)">Set</button>\n</div>\n<div ng-repeat="action in actions" class="action language-option clearfix bkr">\n  <button class="btn btn-default bkr" ng-click="evaluator.perform(action.key)">{{ action.name }}</button>\n</div>';
 
 }
 return __p
@@ -234,7 +216,7 @@ return __p
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
-__p += '\n<div class="btn-group new-cell bkr">\n  <button ng-click="newCodeCell(defaultEvaluator())" class="btn btn-primary insert-cell bkr" ng-class="!isLarge &amp;&amp; \'btn-xs\'">\n    <span ng-class="!isLarge &amp;&amp; \'advanced-hide\'" class="bkr">\n      Insert {{defaultEvaluator()}} Cell\n    </span>\n    <span ng-if="!isLarge" class="plus advanced-only bkr">+</span>\n  </button>\n  <button class="btn btn-primary dropdown-toggle bkr" ng-class="!isLarge &amp;&amp; \'btn-xs\'" data-toggle="dropdown">\n    <i class="fa fa-sort-down bkr"></i>\n  </button>\n  <ul class="dropdown-menu bkr" role="menu">\n    <li class="dropdown-submenu bkr">\n      <a tabindex="-1" class="bkr">Code cell</a>\n      <ul class="dropdown-menu bkr">\n        <li ng-repeat="(key, value) in getEvaluators()" class="bkr">\n          <a ng-click="newCodeCell(key)" class="bkr">{{key}}</a>\n        </li>\n        <li class="bkr">\n           <a ng-click="showPluginManager()" class="bkr">Other languages...</a>\n        </li>\n      </ul>\n    </li>\n    <li class="dropdown-submenu bkr">\n      <a tabindex="-1" class="bkr">Section cell</a>\n      <ul class="dropdown-menu bkr">\n        <li ng-repeat="level in getLevels()" class="bkr">\n          <a ng-click="newSectionCell(level)" class="bkr">H{{level}}</a>\n        </li>\n      </ul>\n    </li>\n    <li class="bkr">\n      <a tabindex="-1" ng-click="newMarkdownCell()" class="bkr">Markdown cell</a>\n    </li>\n  </ul>\n</div>';
+__p += '\n<div class="btn-group new-cell bkr" ng-mouseleave="hideOpenMenus()">\n  <button ng-click="newDefaultCodeCell()" class="btn btn-primary insert-cell bkr" ng-class="!isLarge &amp;&amp; \'btn-xs\'">\n    <span ng-class="!isLarge &amp;&amp; \'advanced-hide\'" class="bkr">\n      Insert {{defaultEvaluator()}} Cell\n    </span>\n    <span ng-if="!isLarge" class="plus advanced-only bkr">+<i class="fa fa-sort-down fa-hidden bkr"></i></span>\n  </button>\n  <button class="btn btn-primary dropdown-toggle bkr" ng-class="!isLarge &amp;&amp; \'btn-xs\'" data-toggle="dropdown" data-target=".code-dropdown">code <i class="fa fa-sort-down bkr"></i></button>\n  <ul class="dropdown-menu code-dropdown bkr" role="menu">\n    <li ng-repeat="(key, value) in getEvaluators()" class="bkr">\n      <a ng-click="newCodeCell(key)" class="bkr">{{key}}</a>\n    </li>\n    <li class="bkr">\n       <a ng-click="showPluginManager()" class="bkr">Other languages...</a>\n    </li>\n  </ul>\n  <ul class="dropdown-menu section-menu bkr" role="menu">\n    <li ng-repeat="level in getLevels()" class="bkr">\n      <a ng-click="newSectionCell(level)" class="bkr">Level {{level}}</a>\n    </li>\n  </ul>\n  <button class="btn btn-primary insert-text bkr" ng-class="!isLarge &amp;&amp; \'btn-xs\'" ng-click="newMarkdownCell()">text<i class="fa fa-sort-down fa-hidden bkr"></i></button>\n  <button class="btn btn-primary insert-text bkr" ng-class="!isLarge &amp;&amp; \'btn-xs\'" data-toggle="dropdown" data-target=".section-menu">section <i class="fa fa-sort-down bkr"></i></button>\n</div>';
 
 }
 return __p
@@ -270,7 +252,7 @@ return __p
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
-__p += '\n<div ng-hide="cellmodel.hideTitle" class="bkr">\n  <span class="bksectiontoggleplus section-toggle bkr" ng-click="toggleShowChildren()" ng-hide="isShowChildren()">\n    <i class="fa fa-plus bkr"></i>\n  </span>\n  <span class="bksectiontoggleminus section-toggle bkr" ng-click="toggleShowChildren()" ng-show="isShowChildren()">\n    <i class="fa fa-minus bkr"></i>\n  </span>\n  <p class="depth-indicator bkr">{{getFullIndex()}}</p>\n  <bk-markdown-editable class="section{{cellmodel.level}} bk-section-title bkr" cellmodel="cellmodel"></bk-markdown-editable>\n</div>\n<bk-new-cell-menu size="xs" config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()" class="bkr"></bk-new-cell-menu>\n<div ng-show="isShowChildren()" class="section-children bkr">\n  <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index" cellid="{{cell.id}}" class="bkr"></bk-cell>\n</div>';
+__p += '\n<div ng-class="{branch: isBranch(), leaf: isLeaf()}" class="bkr">\n  <div ng-hide="cellmodel.hideTitle" class="bkr">\n    <div class="section-connector bkr" ng-hide="!isAntecedentSectionSiblingPrimogeniture()"></div>\n    <span class="bksectiontoggleplus section-toggle bkr" ng-click="toggleShowChildren()" ng-hide="isShowChildren()">\n      <i class="fa fa-plus bkr"></i>\n    </span>\n    <span class="bksectiontoggleminus section-toggle bkr" ng-click="toggleShowChildren()" ng-show="isShowChildren()">\n      <i class="fa fa-minus bkr"></i>\n    </span>\n    <p class="depth-indicator bkr">{{getFullIndex()}}</p>\n    <bk-markdown-editable class="section{{cellmodel.level}} bk-section-title bkr" cellmodel="cellmodel"></bk-markdown-editable>\n  </div>\n  <bk-new-cell-menu size="xs" config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()" class="bkr"></bk-new-cell-menu>\n  <div ng-show="isShowChildren()" class="section-children bkr">\n    <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index" cellid="{{cell.id}}" class="bkr"></bk-cell>\n  </div>\n</div>';
 
 }
 return __p
@@ -280,6 +262,33 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
 __p += '\n<div class="textcell-wrapper bkr" ng-click="edit()">\n  <div class="editable-text bkr" contenteditable="{{ isEditable() ? true : false }}" style="min-height: 14px; min-width: 14px"></div>\n</div>';
+
+}
+return __p
+}})();
+(function() {(window["JST"] = window["JST"] || {})["mainapp/components/publication/publish"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '\n<div class="bkr">\n  <div class="modal-header bkr">\n    <div class="sign-in bkr" ng-if="!isSignedIn()">\n      <h1 class="error bkr" ng-if="error">{{error}}</h1>\n      <h1 ng-if="!error" class="bkr">Sign in to Beaker Publications</h1>\n      <form ng-submit="signIn()" class="bkr">\n        <input ng-model="user.email" type="email" name="email" placeholder="Email" class="field bkr">\n        <input ng-model="user.password" type="password" required="" name="password" placeholder="Password" class="field bkr">\n        <input type="submit" value="Sign in" class="btn btn-primary bkr">\n      </form>\n      <div class="sign-up bkr">\n        No account?\n        <a target="_blank" href="https://pub.beakernotebook.com/#/sign_up" class="bkr">Create New Account</a>\n      </div>\n    </div>\n    <div class="publish bkr" ng-if="isSignedIn()">\n      <h1 class="bkr">{{title}}</h1>\n      <form ng-submit="publishAction()" class="bkr">\n        <label for="category" class="full bkr">Notebook name others will see when you publish:</label>\n        <input ng-model="model.name" required="" type="text" class="field bkr">\n        <label for="category" class="full bkr">Notebook description:</label>\n        <textarea ng-model="model.description" required="" rows="3" class="field bkr"></textarea>\n        <label for="category" class="full bkr">Category that describes your notebook:</label>\n        <select ng-model="model[\'category-id\']" required="" ng-options="category[\'public-id\'] as category.name for category in categories" name="category" ng-class="{error: error}" ng-change="refresh()" class="field bkr">\n          <option value="" class="bkr">Select a category</option>\n        </select>\n        <ul ng-if="published" class="publication-details bkr">\n          <li class="bkr">\n            <div class="time-label bkr">Published</div>\n            <div class="value publish-time bkr">{{model[\'created-at\'] | date:\'short\'}}</div>\n          </li>\n          <li class="bkr">\n            <div class="time-label bkr">Last updated</div>\n            <div class="value update-time bkr">{{model[\'updated-at\'] | date:\'short\'}}</div>\n          </li>\n        </ul>\n        <div class="actions bkr">\n          <div class="warning bkr" ng-if="edited">Warning, your notebook has unsaved changes.</div>\n          <input ng-if="!saving" type="submit" ng-value="saveButton" class="btn btn-primary bkr">\n          <input ng-if="!saving &amp;&amp; published" type="button" class="btn bkr" value="Delete" ng-click="delete()" formnovalidate="">\n          <input ng-if="!saving" type="button" class="btn bkr" value="Cancel" ng-click="close()" formnovalidate="">\n        </div>\n      </form>\n    </div>\n  </div>\n</div>';
+
+}
+return __p
+}})();
+(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '\n<div class="bkr">\n  <div class="modal-header fixed bkr" style="height: 69px">\n    <h1 class="bkr">Language Manager</h1>\n  </div>\n  <div class="modal-body fixed modal-large plugin-manager bkr" style="padding-top: 69px; padding-bottom: 68px">\n    <div class="languages clearfix bkr">\n      <button class="btn btn-default language-icon-button bkr" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getEvaluatorStatuses()" ng-class="pluginName">\n        <span ng-class="\'plugin-\' + pluginStatus" class="plugin-status bkr">●</span>\n        <bk-language-logo bg-color="{{getEvaluatorDetails(pluginName).bgColor}}" name="{{getEvaluatorDetails(pluginName).shortName}}" fg-color="{{getEvaluatorDetails(pluginName).fgColor}}" border-color="{{getEvaluatorDetails(pluginName).borderColor}}" class="bkr">\n        </bk-language-logo>\n\n        {{pluginName}}\n      </button>\n      <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="btn btn-default bkr" ng-if="allowFromUrl()">\n        From URL...\n      </button>\n    </div>\n    <div ng-show="evalTabOp.showURL" class="input-group addeval bkr">\n      <input type="text" bk-enter="evalTabOp.togglePlugin()" ng-model="evalTabOp.newPluginNameOrUrl" class="bkr">\n      <button class="btn btn-default bkr" ng-click="evalTabOp.togglePlugin()">Add Plugin from URL</button>\n    </div>\n    <div ng-show="evalTabOp.showSecurityWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Are you sure you want to load this plugin from an external URL?</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.showURL=false; evalTabOp.newPluginNameOrUrl=&quot;&quot;">Cancel</button>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.forceLoad = true; evalTabOp.togglePlugin()">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <div ng-show="evalTabOp.showWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Cannot remove plugin currently used by a code cell in the notebook.<br class="bkr">\n        Delete those cells and try again.</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showWarning = false">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <tabset class="bkr">\n      <tab ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}" class="bkr">\n        <bk-plugin-manager-evaluator-settings class="bkr"></bk-plugin-manager-evaluator-settings>\n      </tab>\n    </tabset>\n  </div>\n  <div class="modal-footer fixed bkr" style="height: 68px"> \n    <button class="btn btn-primary language-manager-close-button bkr" ng-click="doClose()">Close</button>\n  </div>\n</div>';
+
+}
+return __p
+}})();
+(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '\n\n<div ng-repeat="property in properties" class="form-group language-option property clearfix bkr">\n  <label class="bkr">{{ property.name }}</label>\n  <textarea class="form-control bkr" ng-model="evaluator.settings[property.key]"></textarea>\n  <button class="btn btn-default pull-right set bkr" ng-click="set(property.key)">Set</button>\n</div>\n<div ng-repeat="action in actions" class="action language-option clearfix bkr">\n  <button class="btn btn-default bkr" ng-click="evaluator.perform(action.key)">{{ action.name }}</button>\n</div>';
 
 }
 return __p
@@ -488,7 +497,9 @@ return __p
             });
             return false;
           } else if ((e.which === 123) && bkUtils.isElectron) { // F12
-            bkElectron.toggleDevTools();
+            if (bkUtils.isElectron) {
+              bkElectron.toggleDevTools();
+            }
           }
         }
         $(document).bind('keydown', keydownHandler);
@@ -552,6 +563,33 @@ return __p
 
   module.directive('bkControlPanelSessionItem', function(
       bkUtils, bkSession, bkCoreManager, bkRecentMenu, bkEvaluatePluginManager) {
+
+    function saveMostRecentNotebookContents(sessionId, pathInfo, format) {
+      var deferred = bkUtils.newDeferred();
+
+      $.cometd.subscribe('/latest-notebook-model', function(resp) {
+
+        var fileSaver = bkCoreManager.getFileSaver(pathInfo.uriType);
+        fileSaver.save(pathInfo.uri, resp.data.notebookJson)
+        .then(function() {
+          bkRecentMenu.recordRecentDocument(JSON.stringify({
+            uri: pathInfo.uri,
+            type: pathInfo.uriType,
+            readOnly: false,
+            format: _.isEmpty(format) ? '' : format
+          }));
+        })
+        .then(deferred.resolve)
+        .catch(deferred.reject);
+
+        $.cometd.unsubscribe('/latest-notebook-model');
+      });
+
+      $.cometd.publish('/request-latest-notebook-model', {sessionId: sessionId});
+
+      return deferred.promise;
+    }
+
     return {
       restrict: 'E',
       template: JST['controlpanel/table'],
@@ -574,9 +612,8 @@ return __p
             });
 
           };
-          bkUtils.httpGet("rest/session-backup/getEdited", {
-            sessionid: session.id
-          }).then(function(response) {
+          bkSession.getSessionEditedState(session.id)
+          .then(function(response) {
             var edited = response.data.edited;
             if (!edited) {
               // close session
@@ -584,8 +621,8 @@ return __p
             } else {
               // ask if user want to save first
               bkHelper.show3ButtonModal(
-                  "Do you want to save [" + $scope.getCaption(session) + "]?",
-                  "Confirm close",
+                  'Do you want to save [' + $scope.getCaption(session) + ']?',
+                  'Confirm close',
                   function() { // yes
                     // save session
                     var saveSession = function() {
@@ -593,37 +630,29 @@ return __p
                       if (!_.isEmpty(session.notebookUri) && !session.readOnly) {
                         var fileSaver = bkCoreManager.getFileSaver(session.uriType);
                         return fileSaver.save(session.notebookUri, notebookModelAsString, true);
-                      } else {
-                        var deferred = bkUtils.newDeferred();
-                        bkCoreManager.showDefaultSavingFileChooser().then(function(pathInfo) {
-                          if (!pathInfo.uri) {
-                            deferred.reject({
-                              cause: "Save cancelled"
-                            });
-                          } else {
-                            var fileSaver = bkCoreManager.getFileSaver(pathInfo.uriType);
-                            fileSaver.save(pathInfo.uri, notebookModelAsString).then(function () {
-                              bkRecentMenu.recordRecentDocument(angular.toJson({
-                                uri: pathInfo.uri,
-                                type: pathInfo.uriType,
-                                readOnly: false,
-                                format: _.isEmpty(format) ? "" : format
-                              }));
-                              deferred.resolve();
-                            }, function (error) {
-                              deferred.reject({
-                                cause: "error saving to file",
-                                error: error
-                              });
-                            });
-                          }
-                        });
-                        return deferred.promise;
                       }
+
+                      return bkCoreManager.showDefaultSavingFileChooser()
+                      .then(function(pathInfo) {
+                        if (!pathInfo.uri) {
+                          return bkUtils.newDeferred().reject({
+                            cause: 'Save cancelled'
+                          });
+                        }
+
+                        return saveMostRecentNotebookContents(session.id, pathInfo, format)
+                        .catch(function(error) {
+                          return bkUtils.newDeferred().reject({
+                            cause: 'error saving to file',
+                            error: error
+                          });
+                        });
+                      });
                     };
+
                     var savingFailedHandler = function(info) {
-                      if (info.cause === "Save cancelled") {
-                        console.log("File saving cancelled");
+                      if (info.cause === 'Save cancelled') {
+                        console.log('File saving cancelled');
                       } else {
                         bkHelper.show1ButtonModal(info.error, info.cause);
                       }
@@ -636,8 +665,8 @@ return __p
                   function() { // cancel
                     // no-op
                   },
-                  "Save",
-                  "Don't Save"
+                  'Save',
+                  'Don\'t Save'
               );
             }
           });
@@ -646,9 +675,9 @@ return __p
         $scope.getCaption = function(session) {
           var url = session.notebookUri;
           if (!url) {
-            return "New Notebook";
+            return 'New Notebook';
           }
-          if (url[url.length - 1] === "/") {
+          if (url[url.length - 1] === '/') {
             url = url.substring(0, url.length - 1);
           }
           return url.replace(/^.*[\\\/]/, '');
@@ -807,8 +836,13 @@ return __p
       bkElectron,
       modalDialogOp) {
 
+    function isFilePath(path) {
+      return path.split('/').pop() !== '';
+    }
+
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
+      newStrategy.manualName = '';
       newStrategy.input = "";
       newStrategy.getResult = function() {
         return newStrategy.input;
@@ -818,15 +852,18 @@ return __p
           closeFunc(this.getResult());
         }
       };
+      newStrategy.manualEntry = function() {
+        newStrategy.manualName = this.input.split('/').pop();
+      };
       newStrategy.treeViewfs = { // file service
         getChildren: function(basePath, openFolders) {
-          var self = this
-              paths = [basePath];
+          var self = this;
+          var paths = [basePath];
 
           this.showSpinner = true;
 
           if (openFolders) {
-            var paths = [paths].concat(openFolders);
+            paths = [paths].concat(openFolders);
           }
 
           return bkUtils.httpPost("../beaker/rest/file-io/getDecoratedChildren", {
@@ -839,6 +876,12 @@ return __p
           });
         },
         fillInput: function(path) {
+          if (isFilePath(path)) {
+            newStrategy.manualName = "";
+          } else {
+            path += newStrategy.manualName;
+          }
+
           newStrategy.input = path;
         },
         open: function(path) {
@@ -859,7 +902,7 @@ return __p
           var prettyNames = {
             uri: 'Name',
             modified: 'Date Modified'
-          }
+          };
 
           return prettyNames[$rootScope.fsPrefs.orderBy || 'uri'];
         },
@@ -1590,6 +1633,20 @@ return __p
 
         var dd = $modal.open(options);
         return dd.result;
+      },
+      showPublishForm: function() {
+        var options = {
+          windowClass: 'beaker-sandbox',
+          backdropClass: 'beaker-sandbox',
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          controller: 'publicationCtrl',
+          template: JST['mainapp/components/publication/publish']()
+        };
+
+        var dd = $modal.open(options);
+        return dd.result;
       }
     };
     return bkCoreManager;
@@ -2062,7 +2119,19 @@ return __p
             }
             bkUtils.httpPost('rest/file-io/setWorkingDirectory', {dir: path});
             // Format this accordingly!
-            bkHelper.openWindow(bkUtils.getBaseUrl() + '/open?uri=' + path, 'notebook');
+            var routeParams = {
+              uri: path
+            }
+            if (uriType) {
+              routeParams.type = uriType;
+            }
+            if (readOnly) {
+              routeParams.readOnly = true;
+            }
+            if (format) {
+              routeParams.format = format;
+            }
+            bkHelper.openWindow(bkUtils.getBaseUrl() + '/open?' + jQuery.param(routeParams), 'notebook');
           });
         } else {
           var strategy = bkHelper.getFileSystemFileChooserStrategy();
@@ -2433,7 +2502,9 @@ return __p
       showLanguageManager: function() {
         return bkCoreManager.showLanguageManager();
       },
-
+      showPublishForm: function() {
+        return bkCoreManager.showPublishForm();
+      },
       // other JS utils
       updateDocumentModelFromDOM: function(id) {
         function convertCanvasToImage(elem) {
@@ -3294,6 +3365,10 @@ return __p
                 target.format = bkCoreManager.guessFormat(target.uri);
               }
 
+              if (bkUtils.isElectron && (target.type == 'file')){
+                bkElectron.app.addRecentDocument(target.uri);
+              }
+
               var importer = bkCoreManager.getNotebookImporter(target.format);
               if (!importer) {
                 if (retry) {
@@ -3559,9 +3634,8 @@ return __p
           var evalCodeId = 0;
 
           if (bkUtils.isElectron) {
-            bkElectron.IPC.on('close-window', function() {
-              closeNotebook();
-            });
+            bkElectron.IPC.removeAllListeners('close-window');
+            bkElectron.IPC.on('close-window', closeNotebook);
           }
 
           return {
@@ -4050,10 +4124,20 @@ return __p
                 bkSessionManager.redo();
               });
               return false;
-            } else if (e.which === 123){ // F12
-              bkElectron.toggleDevTools();
-            }
             // TODO implement global redo
+            } else if (bkUtils.isElectron) {
+              var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
+              if (e.which === 123) { // F12
+                bkElectron.toggleDevTools();
+              } else if (ctrlXORCmd && ((e.which === 187) || (e.which === 107))) { // Ctrl + '+'
+                bkElectron.increaseZoom();
+              } else if (ctrlXORCmd && ((e.which === 189) || (e.which === 109))) { // Ctrl + '-'
+                bkElectron.decreaseZoom();
+              } else if (ctrlXORCmd && ((e.which === 48) || (e.which === 13))) {
+                bkElectron.resetZoom();
+              }
+              return false;
+            }
           }
         };
         $(document).bind('keydown', keydownHandler);
@@ -4337,14 +4421,14 @@ return __p
           bkUtils.log("evaluate", {
             plugin: job.evaluator.pluginName,
             length: job.code.length });
-          return job.evaluator.evaluate(job.code, job.output, outputMap[job.cellId]);
+          return job.evaluator.evaluate(job.code, job.output, outputMap[job.cellId], job.cellId);
         }
         job.output.result = MESSAGE_WAITING_FOR_EVALUTOR_INIT;
         return bkEvaluatorManager.waitEvaluator(job.evaluatorId)
           .then(function(ev) {
             job.evaluator = ev;
             if (ev !== undefined)
-              return job.evaluator.evaluate(job.code, job.output, outputMap[job.cellId]);
+              return job.evaluator.evaluate(job.code, job.output, outputMap[job.cellId], job.cellId);
             return "cannot find evaluator for "+job.evaluatorId;
           } );
       };
@@ -4633,7 +4717,7 @@ return __p
       },
       getOutputCell: function(id) {
         return outputMap[id];
-      }
+      },
 
     };
   });
@@ -5281,6 +5365,15 @@ return __p
         replaceWholeArray(cells, _.flatten([slice1, slice2, slice3]));
         recreateCellMap();
       },
+      getPrevSection: function(id) {
+        var prev = this.getPrev(id);
+
+        while (prev !== null && prev.type !== "section") {
+          prev = this.getPrev(prev.id);
+        }
+
+        return prev;
+      },
       getPrevSibling: function(id) {
         var parentId = this._getDecoratedCell(id).parent;
         if (!parentId) {
@@ -5461,9 +5554,8 @@ return __p
   module.factory("bkNotebookNamespaceModelManager", function() {
     var _subscriptions = {};
     return {
-      init: function(sessionId, notebookModel) {
-        _subscriptions[sessionId] =
-          $.cometd.subscribe("/namespace/" + sessionId, function(reply) {
+      init: function(sessionId, notebookModel, generateSaveData) {
+        _subscriptions[sessionId] = $.cometd.subscribe("/namespace/" + sessionId, function(reply) {
             var name = reply.data.name;
             var value = reply.data.value;
             var sync = reply.data.sync;
@@ -5506,6 +5598,52 @@ return __p
 })();
 
 /*
+ *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
+ * Module bk.notebookNamespaceModelManager
+ */
+(function() {
+  'use strict';
+  var module = angular.module('bk.notebookManager', []);
+
+  module.factory('bkNotebookManager', function() {
+    var registrations = [];
+
+    return {
+      init: function(notebookModel) {
+        registrations.push(
+          $.cometd.subscribe('/request-latest-notebook-model', function(resp) {
+            if (resp.data.sessionId !== notebookModel.getSessionId()) { return; }
+
+            $.cometd.publish('/latest-notebook-model', {
+              notebookJson: notebookModel.getSaveData().notebookModelAsString
+            });
+          })
+        );
+      },
+      reset: function() {
+        _.each(registrations, function(v) {
+          $.cometd.unsubscribe(v);
+        });
+      }
+    };
+  });
+})();
+
+/*
  *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -5528,6 +5666,7 @@ return __p
   var module = angular.module('bk.sessionManager',[
     'bk.utils',
     'bk.session',
+    'bk.notebookManager',
     'bk.notebookCellModelManager',
     'bk.notebookNamespaceModelManager',
     'bk.recentMenu',
@@ -5538,6 +5677,7 @@ return __p
   module.factory('bkSessionManager', function(
       bkUtils,
       bkSession,
+      bkNotebookManager,
       bkNotebookCellModelManager,
       bkNotebookNamespaceModelManager,
       bkEvaluatorManager,
@@ -5925,7 +6065,7 @@ return __p
     var _sessionId = null;
     var _edited = false;
     var _needsBackup = false;
-    var _saveDir = bkUtils.getHomeDirectory(); 
+    var _saveDir = bkUtils.getHomeDirectory();
 
     var BeakerObject = function(nbmodel) {
       this.knownBeakerVars = { };
@@ -6328,7 +6468,7 @@ return __p
 
         if (_sessionId)
           disconnectcontrol(_sessionId);
-
+        bkNotebookManager.reset();
         bkEvaluatorManager.reset();
 
         // check inputs
@@ -6344,10 +6484,10 @@ return __p
         _notebookModel.set(notebookModel);
         this.setNotebookModelEdited(!!edited);
         _sessionId = sessionId;
-
-        bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
+        bkNotebookNamespaceModelManager.init(sessionId, notebookModel, generateSaveData);
         connectcontrol(sessionId);
         bkSession.backup(_sessionId, generateBackupData());
+        bkNotebookManager.init(this);
       },
       setSessionId: function(sessionId) {
         if (!sessionId) {
@@ -6381,6 +6521,7 @@ return __p
 
         _needsBackup = _edited;
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
+        bkNotebookManager.init(this);
         connectcontrol(sessionId);
         bkSession.backup(_sessionId, generateBackupData());
       },
@@ -6388,6 +6529,7 @@ return __p
         disconnectcontrol(_sessionId);
         bkEvaluatorManager.reset();
         bkNotebookNamespaceModelManager.clear(_sessionId);
+        bkNotebookManager.reset();
         _notebookUri.reset();
         _uriType = null;
         _readOnly = null;
@@ -6484,7 +6626,7 @@ return __p
       setNotebookModelEdited: function(edited) {
         _needsBackup = edited;
         _edited = edited;
-        bkUtils.httpPost("rest/session-backup/setEdited", {
+        bkUtils.httpPost(bkUtils.serverUrl('beaker/rest/session-backup/setEdited'), {
           sessionid: _sessionId,
           edited: edited
         });
@@ -6745,6 +6887,10 @@ return __p
           }
 
           return $scope.index + $scope.getNestedLevel();
+        };
+
+        $scope.isRoot = function() {
+          return $scope.$parent.getNestedLevel === undefined;
         };
 
         $scope.toggleShowDebugInfo = function() {
@@ -7930,6 +8076,11 @@ return __p
         isLarge: '=',
         position: '@'
       },
+      link: function($scope, element) {
+        $scope.hideOpenMenus = function() {
+          $(document).trigger('click.bs.dropdown.data-api');
+        };
+      },
       controller: function($scope) {
         var newCellFactory = bkSessionManager.getNotebookNewCellFactory();
         var recentlyAddedLanguage;
@@ -7945,6 +8096,9 @@ return __p
         $scope.newCodeCell = function(evaluatorName) {
           var newCell = newCellFactory.newCodeCell(evaluatorName);
           attachCell(newCell);
+        };
+        $scope.newDefaultCodeCell = function() {
+          $scope.newCodeCell($scope.defaultEvaluator());
         };
         $scope.showPluginManager = function() {
           bkHelper.showLanguageManager($scope);
@@ -8092,6 +8246,12 @@ return __p
             },
             isDebugging: function () {
               return this._debugging;
+            },
+            getLodThreshold: function () {
+              return this._lodThreshold;
+            },
+            setLodThreshold: function (lodThreshold) {
+               this._lodThreshold = lodThreshold;
             }
           },
           getViewModel: function () {
@@ -8314,6 +8474,12 @@ return __p
           if (editMode !== '')
             _impl._viewModel.setEditMode(editMode);
         });
+
+        bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
+          preference: 'lod-threshold'
+        }).success(function (lodThreshold) {
+          _impl._viewModel.setLodThreshold(lodThreshold);
+        });
       },
       link: function (scope, element, attrs) {
         var div = element.find('.bkcell').first();
@@ -8377,20 +8543,20 @@ return __p
   var module = angular.module('bk.notebook');
 
   module.directive('bkSectionCell', function(
-      bkUtils,
-      bkEvaluatorManager,
-      bkSessionManager,
-      bkCoreManager,
-      bkCellMenuPluginManager,
-      $timeout) {
-    var CELL_TYPE = "section";
+        bkUtils,
+        bkEvaluatorManager,
+        bkSessionManager,
+        bkCoreManager,
+        bkCellMenuPluginManager,
+        $timeout) {
+    var CELL_TYPE = 'section';
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {
       return bkCoreManager.getBkApp().getBkNotebookWidget();
     };
     return {
       restrict: 'E',
-      template: JST["mainapp/components/notebook/sectioncell"](),
+      template: JST['mainapp/components/notebook/sectioncell'](),
       controller: function($scope) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
 
@@ -8400,6 +8566,26 @@ return __p
           $scope.cellmodel.collapsed = !$scope.cellmodel.collapsed;
           $scope.$broadcast('beaker.section.toggled', $scope.cellmodel.collapsed);
         };
+
+        $scope.isLeaf = function() {
+          return notebookCellOp.getNextSibling($scope.cellmodel.id) === null;
+        };
+
+        $scope.isAntecedentSectionSiblingPrimogeniture = function() {
+          var prev = notebookCellOp.getPrevSection($scope.cellmodel.id) || {level: $scope.cellmodel.level};
+
+          return prev.level < $scope.cellmodel.level;
+        };
+
+        $scope.isBranch = function() {
+          var hasSiblingSection = notebookCellOp.getNextSibling($scope.cellmodel.id) !== null;
+          var hasChildSections = _.any(notebookCellOp.getAllDescendants($scope.cellmodel.id), function(child) {
+            return child.type === 'section';
+          })
+
+          return hasSiblingSection || hasChildSections;
+        };
+
         $scope.isShowChildren = function() {
           return !$scope.cellmodel.collapsed;
         };
@@ -8422,66 +8608,66 @@ return __p
         });
 
         $scope.cellview.menu.renameItem({
-          name: "Delete cell",
-          newName: "Delete heading and keep contents"
+          name: 'Delete cell',
+          newName: 'Delete heading and keep contents'
         });
 
         $scope.cellview.menu.addItemToHead({
-          name: "Delete section and all sub-sections",
+          name: 'Delete section and all sub-sections',
           action: function() {
             notebookCellOp.deleteSection($scope.cellmodel.id, true);
           }
         });
         $scope.cellview.menu.addItem({
-          name: "Change Header Level",
+          name: 'Change Header Level',
           items: [
-            {
-              name: "H1",
-              action: function() {
-                $scope.cellmodel.level = 1;
-                notebookCellOp.reset();
-              }
-            },
-            {
-              name: "H2",
-              action: function() {
-                $scope.cellmodel.level = 2;
-                notebookCellOp.reset();
-              }
-            },
-            {
-              name: "H3",
-              action: function() {
-                $scope.cellmodel.level = 3;
-                notebookCellOp.reset();
-              }
-            },
-            {
-              name: "H4",
-              action: function() {
-                $scope.cellmodel.level = 4;
-                notebookCellOp.reset();
-              }
+          {
+            name: 'H1',
+            action: function() {
+              $scope.cellmodel.level = 1;
+              notebookCellOp.reset();
             }
+          },
+          {
+            name: 'H2',
+            action: function() {
+              $scope.cellmodel.level = 2;
+              notebookCellOp.reset();
+            }
+          },
+          {
+            name: 'H3',
+            action: function() {
+              $scope.cellmodel.level = 3;
+              notebookCellOp.reset();
+            }
+          },
+          {
+            name: 'H4',
+            action: function() {
+              $scope.cellmodel.level = 4;
+              notebookCellOp.reset();
+            }
+          }
           ]
         });
         $scope.getShareData = function() {
           var cells = [$scope.cellmodel]
-              .concat(notebookCellOp.getAllDescendants($scope.cellmodel.id));
+          .concat(notebookCellOp.getAllDescendants($scope.cellmodel.id));
           var usedEvaluatorsNames = _(cells).chain()
-              .filter(function(cell) {
-                return cell.type === "code";
-              })
-              .map(function (cell) {
-                return cell.evaluator;
-              })
-              .unique().value();
+            .filter(function(cell) {
+              return cell.type === 'code';
+            })
+          .map(function(cell) {
+            return cell.evaluator;
+          })
+          .unique().value();
           var evaluators = bkSessionManager.getRawNotebookModel().evaluators
-              .filter(function (evaluator) {
-                return _.any(usedEvaluatorsNames, function (ev) {
-                  return evaluator.name === ev;
-                });
+            .filter(function(evaluator) {
+              return _.any(usedEvaluatorsNames, function(ev) {
+                return evaluator.name === ev;
               });
+            });
           return bkUtils.generateNotebook(evaluators, cells);
         };
 
@@ -8489,27 +8675,27 @@ return __p
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
         };
         $scope.cellview.menu.addItem({
-          name: "Run all",
+          name: 'Run all',
           action: function() {
             bkCoreManager.getBkApp().evaluateRoot($scope.cellmodel.id).
-                catch(function(data) {
-                  console.error(data);
-                });
+              catch(function(data) {
+                console.error(data);
+              });
           }
         });
         var shareMenu = {
-          name: "Share",
+          name: 'Share',
           items: []
         };
         $scope.cellview.menu.addItem(shareMenu);
-        $scope.$watch("getShareMenuPlugin()", function() {
+        $scope.$watch('getShareMenuPlugin()', function() {
           shareMenu.items = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
         });
         $scope.isInitializationCell = function() {
           return $scope.cellmodel.initialization;
         };
         $scope.cellview.menu.addItem({
-          name: "Initialization Cell",
+          name: 'Initialization Cell',
           isChecked: function() {
             return $scope.isInitializationCell();
           },
@@ -8803,7 +8989,7 @@ return __p
         },
         link: function(scope, element, attrs) {
           var tagstofilter = ['applet', 'base', 'basefont', 'body', 'frame', 'frameset', 'head', 'html',
-                              'isindex', 'link', 'meta', 'noframes', 'noscript', 'object', 'param', /*'script',*/ 'iframe'];
+                              'isindex', 'link', 'meta', 'noframes', 'noscript', 'object', 'param'];
 
           scope.clean = function() {
             for (var t in tagstofilter) {
@@ -8882,6 +9068,7 @@ return __p
       "BeakerDisplay": ["BeakerDisplay", "Text"],
       "Plot": ["Plot", "Chart", "Text"],
       "TimePlot": ["Plot", "Chart", "Text"],
+      "EasyForm": ["EasyForm", "Text"],
       "NanoPlot": ["Plot", "Text"],
       "CombinedPlot": ["CombinedPlot", "Text"],
       "HiddenOutputCell": ["Hidden"],
@@ -9162,9 +9349,9 @@ return __p
         var result = {};
         for (var p in knownPlugins) {
           var status = false;
-          if (activePlugins[p])
+          if (activePlugins[p]) {
             status = "active";
-          else {
+          } else {
             for (var l in loadingPlugins) {
               if (loadingPlugins[l].plugin == p) {
                 status = "loading";
@@ -9288,6 +9475,129 @@ return __p
     };
   });
 
+})();
+
+/*
+ *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+(function() {
+  'use strict';
+
+  var module = angular.module('bk.core');
+
+  module.controller('publicationCtrl',
+    ['$scope', 'bkUtils', 'bkPublicationApi', 'bkPublicationAuth', 'bkSessionManager', '$modalInstance',
+    function($scope, bkUtils, bkPublicationApi, bkPublicationAuth, bkSessionManager, $modalInstance) {
+
+      var notebook = bkSessionManager.getRawNotebookModel();
+
+      $scope.user = {role: 'beaker'};
+      $scope.model = {};
+
+      $scope.signIn = function() {
+        return bkPublicationAuth.signIn($scope.user)
+        .then(function() {
+          initPublication();
+        })
+        .catch(function(err) {
+          $scope.error = 'Error: Invalid email or password';
+        });
+      };
+
+      $scope.isSignedIn = function() {
+        return bkPublicationAuth.isSignedIn();
+      };
+
+      function initPublication() {
+        $scope.edited = bkSessionManager.isNotebookModelEdited();
+
+        bkPublicationApi.getCategories()
+        .then(function(resp) {
+          $scope.categories = resp.data;
+        });
+
+        $scope.published = false;
+        $scope.title = 'Publish Notebook';
+        $scope.saveButton = 'Publish';
+
+        if (wasPublished()) {
+          bkPublicationApi.getPublication(notebook.metadata['publication-id'])
+          .then(function(resp) {
+            $scope.model = resp.data;
+            $scope.model['category-id'] = resp.data.category['public-id'];
+            $scope.published = true;
+            $scope.title = 'Update Notebook';
+            $scope.saveButton = 'Update';
+          });
+        }
+
+        if (bkSessionManager.isNotebookModelEdited()) {
+          $scope.saveButton = 'Save and ' + $scope.saveButton;
+        }
+      }
+
+      function wasPublished() {
+        return notebook.metadata && notebook.metadata['publication-id'];
+      }
+
+      function createPublication() {
+        $scope.model.contents = bkSessionManager.getSaveData().notebookModelAsString;
+        return bkPublicationApi.createPublication($scope.model)
+        .then(function(resp) {
+          // save publication id as notebook metadata
+          bkSessionManager.getRawNotebookModel().metadata = {'publication-id': resp.data['public-id']};
+          return bkHelper.saveNotebook();
+        });
+      }
+
+      function updatePublication() {
+        $scope.model.contents = bkSessionManager.getSaveData().notebookModelAsString;
+        return bkPublicationApi.updatePublication(notebook.metadata['publication-id'], $scope.model);
+      }
+
+      $scope.publishAction = function() {
+        $scope.saving = true;
+        var action = $scope.published ? updatePublication : createPublication;
+        return bkHelper.saveNotebook()
+        .then(action)
+        .then(function() {
+          $scope.saving = false;
+          $scope.close();
+        });
+      };
+
+      $scope.delete = function() {
+        $scope.saving = true;
+        return bkPublicationApi.deletePublication(notebook.metadata['publication-id'])
+        .then(function() {
+          delete bkSessionManager.getRawNotebookModel().metadata['publication-id'];
+          delete $scope.model;
+          $scope.saving = false;
+          $scope.close();
+        });
+      }
+
+      if ($scope.isSignedIn()) {
+        initPublication();
+      }
+
+      $scope.close = function() {
+        $modalInstance.close('ok');
+      };
+  }]);
 })();
 
 /*
@@ -9707,7 +10017,7 @@ return __p
 
             dropdown.show().css({
               top: togglePosition.top - notebookPosition.top + 'px',
-              left: togglePosition.left - notebookPosition.left - dropdown.outerWidth() + 'px'
+              left: togglePosition.left - notebookPosition.left - dropdown.outerWidth() + 'px',
             });
           });
         };
@@ -9979,22 +10289,51 @@ return __p
           this.removeStringArrays(ret);
           return ret;
       },
-      httpGet: function(url, data) {
-        return $http({method: "GET", url: url, params: data});
+      httpGet: function(url, data, headers) {
+        return $http({method: "GET", url: url, params: data, headers: headers});
       },
-      httpPost: function(url, data) {
+      httpGetJson: function(url, data, headers) {
+        return $http({
+          method: "GET",
+          url: url,
+          params: data,
+          withCredentials: true,
+          headers: _.extend({'Content-Type': 'application/json'}, headers)
+        });
+      },
+      httpDeleteJson: function(url, data, headers) {
+        return $http({
+          method: "DELETE",
+          url: url,
+          params: data,
+          withCredentials: true,
+          headers: _.extend({'Content-Type': 'application/json'}, headers)
+        });
+      },
+      httpPost: function(url, data, headers) {
         return $http({
           method: "POST",
           url: url,
           data: $.param(data),
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+          headers: _.extend({'Content-Type': 'application/x-www-form-urlencoded'})
         });
       },
-      httpPutJson: function(url, data) {
+      httpPostJson: function(url, data, headers) {
+        return $http({
+          method: "POST",
+          url: url,
+          data: data,
+          withCredentials: true,
+          headers: _.extend({'Content-Type': 'application/json'}, headers)
+        });
+      },
+      httpPutJson: function(url, data, headers) {
         return $http({
           method: "PUT",
           url: url,
-          data: data
+          data: data,
+          withCredentials: true,
+          headers: _.extend({'Content-Type': 'application/json'}, headers)
         });
       },
       newDeferred: function() {
@@ -10074,14 +10413,16 @@ return __p
     };
   });
 
-  treeView.directive("treeView", function($templateCache, $rootScope) {
+  treeView.directive('treeView', function($templateCache, $rootScope) {
     return {
       restrict: 'E',
-      template: "<tree-node data='root' fs='fs' displayname='{{ rooturi }}'></tree-node>",
-      scope: {rooturi: "@", fs: "="},
+      template: '<tree-node data="root" fs="fs" displayname="{{ rooturi }}"></tree-node>',
+      scope: {rooturi: '@', fs: '='},
       controller: function($scope) {
         if (!$templateCache.get('treeNodeChildren.html')) {
-          $templateCache.put('treeNodeChildren.html', "<tree-node class='bk-treeview' ng-repeat='d in data.children | fileFilter:fs.filter | orderBy:fs.getOrderBy():fs.getOrderReverse()' data='d' fs='fs'></tree-node>");
+          //jscs:disable
+          $templateCache.put('treeNodeChildren.html', '<tree-node class="bk-treeview" ng-repeat="d in data.children | fileFilter:fs.filter | orderBy:fs.getOrderBy():fs.getOrderReverse()" data="d" fs="fs"></tree-node>');
+          //jscs:enable
         }
 
         if (!_.string.endsWith($scope.rooturi, '/')) {
@@ -10093,10 +10434,10 @@ return __p
         };
 
         $scope.root = {
-          type: "directory",
+          type: 'directory',
           uri: $scope.rooturi,
           children: []
-        }
+        };
 
         if (_.contains($rootScope.fsPrefs.openFolders, $scope.rooturi)) {
           $scope.fs.getChildren($scope.rooturi, $rootScope.fsPrefs.openFolders).then(function(response) {
@@ -10109,20 +10450,22 @@ return __p
     };
   });
 
-  treeView.filter("fileFilter", function() {
+  treeView.filter('fileFilter', function() {
     return function(children, filter) {
       return _.isFunction(filter) ? _(children).filter(filter) : children;
     };
-  })
+  });
 
-  treeView.directive("treeNode", function() {
+  treeView.directive('treeNode', function() {
     return {
       restrict: 'E',
-      template: "<span ng-dblclick='dblClick()' ng-click='click()'><i class='{{ getIcon() }}'></i> <span>{{ getDisplayName() }}</span></span>" +
-          "<div class='pushright'>" +
-          "<div ng-include='\"treeNodeChildren.html\"'></div>" +
-          "</div>",
-      scope: {data: "=", fs: "=", displayname: "@"},
+      //jscs:disable
+      template: '<span ng-dblclick="dblClick()" ng-click="click()"><i class="{{ getIcon() }}"></i> <span>{{ getDisplayName() }}</span></span>' +
+          '<div class="pushright">' +
+          '<div ng-include="\'treeNodeChildren.html\'"></div>' +
+          '</div>',
+      //jscs:enable
+      scope: {data: '=', fs: '=', displayname: '@'},
       controller: function($scope, $rootScope) {
         var transform = function(c) {
           return {
@@ -10131,7 +10474,7 @@ return __p
             modified: c.modified,
             displayName: c.displayName,
             children: _.map(c.children, transform)
-          }
+          };
         };
         $scope.click = function() {
           if ($scope.data.type === 'directory') {
@@ -10150,8 +10493,8 @@ return __p
               $rootScope.fsPrefs.openFolders.push(uri);
               $scope.fs.getChildren($scope.data.uri).success(function(children) {
                 children = _.sortBy(children, function(c) {
-                  if (c.type === "directory") {
-                    return "!!!!!" + c.uri.toLowerCase();
+                  if (c.type === 'directory') {
+                    return '!!!!!' + c.uri.toLowerCase();
                   } else {
                     return c.uri.toLowerCase();
                   }
@@ -10164,15 +10507,17 @@ return __p
           }
         };
         $scope.dblClick = function() {
-          if ($scope.data.type === 'directory') return;
+          if ($scope.data.type === 'directory') {
+            return;
+          }
 
           $scope.fs.open($scope.data.uri);
         };
         $scope.getIcon = function() {
-          if ($scope.data.type === "directory") {
+          if ($scope.data.type === 'directory') {
             return 'folder-icon';
           }
-          if ($scope.data.type === "application/prs.twosigma.beaker.notebook+json") {
+          if ($scope.data.type === 'application/prs.twosigma.beaker.notebook+json') {
             return 'glyphicon glyphicon-book';
           } else if ($scope.fs.getIcon && $scope.fs.getIcon($scope.data.type)) {
             return $scope.fs.getIcon($scope.data.type);
@@ -10254,6 +10599,90 @@ return __p
         this.removeConnectedStatusListener();
         this.removeOutputlogUpdateListener();
         return $.cometd.disconnect();
+      }
+    };
+  });
+})();
+
+/*
+ *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
+ * Module bk.publication
+ * Publication API wrapper
+ */
+(function() {
+  'use strict';
+  var module = angular.module('bk.publication', ['bk.utils']);
+
+  module.factory('bkPublicationApi', function (bkUtils, $localStorage) {
+    var baseUrl = 'https://pub.beakernotebook.com';
+
+    function headers() {
+      if ($localStorage.token) {
+        return {'X-Authorization': 'Token ' + $localStorage.token};
+      }
+    }
+
+    return {
+      createSession: function(params) {
+        return bkUtils.httpPostJson(baseUrl + '/user/v1/sessions', params)
+      },
+      getCurrentUser: function() {
+        return bkUtils.httpGetJson(baseUrl + '/user/v1/user', {}, headers())
+      },
+      createPublication: function(params) {
+        return bkUtils.httpPostJson(baseUrl + '/notebook/v1/publications', params, headers());
+      },
+      updatePublication: function(id, params) {
+        return bkUtils.httpPutJson(baseUrl + '/notebook/v1/publications/' + id, params, headers());
+      },
+      getPublication: function(id) {
+        return bkUtils.httpGetJson(baseUrl + '/notebook/v1/publications/' + id, {}, headers());
+      },
+      deletePublication: function(id) {
+        return bkUtils.httpDeleteJson(baseUrl + '/notebook/v1/publications/' + id, {}, headers());
+      },
+      getCategories: function() {
+        return bkUtils.httpGetJson(baseUrl + '/notebook/v1/categories', {}, headers());
+      }
+    };
+  });
+
+  module.factory('bkPublicationAuth', function (bkPublicationApi, $localStorage) {
+    var currentUser;
+
+    return {
+      signIn: function(user) {
+        var self = this;
+        return bkPublicationApi.createSession(user)
+        .then(function(response) {
+          if (response.data && response.data.token) {
+            $localStorage.token = response.data.token
+          }
+          return self.initSession();
+        });
+      },
+      initSession: function() {
+        return bkPublicationApi.getCurrentUser()
+        .then(function(resp) {
+          return currentUser = resp.data;
+        });
+      },
+      isSignedIn: function() {
+        return !!currentUser;
       }
     };
   });
@@ -10664,6 +11093,10 @@ return __p
           });
       return deferred.promise;
     };
+    var getSessionEditedState = function(sessionId) {
+      return bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/session-backup/getEdited'), {sessionid: sessionId});
+    };
+
     var loadSession = function(sessionId) {
       var deferred = bkUtils.newDeferred();
       bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/session-backup/load'), {sessionid: sessionId})
@@ -10711,6 +11144,7 @@ return __p
     return {
       getSessions: getSessions,
       load: loadSession,
+      getSessionEditedState: getSessionEditedState,
       backup: backupSession,
       close: closeSession,
       recordLoadedPlugin: recordLoadedPlugin,
@@ -10884,7 +11318,7 @@ return __p
     'bk.commonUtils',
     'bk.angularUtils',
     'bk.cometdUtils',
-    'bk.track',
+    'bk.track'
   ]);
   /**
    * bkUtils
@@ -10892,7 +11326,7 @@ return __p
    * - it also serves the purpose of hiding underneath utils: commonUtils/angularUtils/...
    *    from other parts of beaker
    */
-  module.factory('bkUtils', function(commonUtils, angularUtils, bkTrack, cometdUtils) {
+  module.factory('bkUtils', function(commonUtils, angularUtils, bkTrack, cometdUtils, $localStorage) {
 
     function endsWith(str, suffix) {
       return str.indexOf(suffix, str.length - suffix.length) !== -1;
@@ -10970,6 +11404,10 @@ return __p
       getBaseUrl: function() {
         return location.protocol + '//' + location.host + location.pathname + '#';
       },
+      removeSpecialChars: function(str) {
+        return commonUtils.removeSpecialChars(str);
+      },
+
       // wrap angularUtils
       refreshRootScope: function() {
         angularUtils.refreshRootScope();
@@ -10980,11 +11418,23 @@ return __p
       fromPrettyJson: function(jString) {
         return angularUtils.fromPrettyJson(jString);
       },
-      httpGet: function(url, data) {
-        return angularUtils.httpGet(url, data);
+      httpGet: function(url, data, headers) {
+        return angularUtils.httpGet(url, data, headers);
       },
-      httpPost: function(url, data) {
-        return angularUtils.httpPost(url, data);
+      httpGetJson: function(url, data, headers) {
+        return angularUtils.httpGetJson(url, data, headers);
+      },
+      httpDeleteJson: function(url, data, headers) {
+        return angularUtils.httpDeleteJson(url, data, headers);
+      },
+      httpPost: function(url, data, headers) {
+        return angularUtils.httpPost(url, data, headers);
+      },
+      httpPostJson: function(url, data,headers) {
+        return angularUtils.httpPostJson(url, data, headers);
+      },
+      httpPutJson: function(url, data, headers) {
+        return angularUtils.httpPutJson(url, data, headers);
       },
       spinUntilReady: function(url) {
         var deferred = angularUtils.newDeferred();
@@ -11117,7 +11567,7 @@ return __p
       },
       loadAjax: function(ajaxLocator) {
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpGet(parseAjaxLocator(ajaxLocator).source)
+        angularUtils.httpGet(parseAjaxLocator(ajaxLocator).source, {}, {"X-Authorization": "Token " + $localStorage.token})
             .success(function(content) {
               if (!_.isString(content)) {
                 // angular $http auto-detects JSON response and deserialize it using a JSON parser
@@ -11154,7 +11604,7 @@ return __p
       saveAjax: function(ajaxLocator, contentAsJson) {
         var deferred = angularUtils.newDeferred();
         var destination = parseAjaxLocator(ajaxLocator).destination;
-        angularUtils.httpPutJson(destination, {data: contentAsJson})
+        angularUtils.httpPutJson(destination, {data: contentAsJson}, {"X-Authorization": "Token " + $localStorage.token})
           .success(deferred.resolve)
           .error(deferred.reject);
         return deferred.promise;
@@ -11204,10 +11654,36 @@ return __p
         var url = this.moduleMap.hasOwnProperty(nameOrUrl) ? this.moduleMap[nameOrUrl] : nameOrUrl;
         return window.require(url);
       },
-
-      // Electron: require('remote')
-      isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
-      osName: osName
+      setEasyFormValue: function (name, value, session, onSuccess, onError) {
+        var data = {
+            session: session,
+            name: name,
+            value: value,
+            publish: false
+        };
+        this.httpPost(
+                this.serverUrl("beaker/rest/easyform/set"),
+                data)
+                .success(function(ret) {
+                    if (onSuccess) {
+                        onSuccess(ret);
+                    }
+                })
+                .error(function(data, status, headers, config) {
+                    console.error("Failed to set easyform value. " + status);
+                    if (onError) {
+                        onError(data);
+                    }
+                });
+    },
+    getValidNgModelString: function(str) {
+      if (str) {
+        return str.replace(/[\s\d`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+      }
+    },
+    // Electron: require('remote')
+    isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
+    osName: osName
     };
     return bkUtils;
   });
@@ -11235,7 +11711,7 @@ return __p
 (function() {
   'use strict';
   var module = angular.module('bk.electron', [
-    'bk.utils',
+    'bk.utils'
   ]);
   /**
    * bkElectron
@@ -11249,11 +11725,15 @@ return __p
       var Dialog = remote.require('dialog');
       var Shell = remote.require('shell');
       var IPC = require('ipc');
+      var WebFrame = require('web-frame');
       var thisWindow = remote.getCurrentWindow();
-      
+      var app = remote.require('app');
+      var clipboard = remote.require('clipboard');
+
       var _status = '';
 
       var _ctrlKey = (bkUtils.osName == 'MacOS') ? 'Command' : 'Control';
+      var _zoomFactor = 1.0;
 
       var _assignShortcut = function(name) {
         switch (name) {
@@ -11273,13 +11753,6 @@ return __p
         label: 'Beaker',
         submenu: [
           {
-            label: 'Quit',
-            click: function() {
-              IPC.send('quit');
-            },
-            accelerator: _ctrlKey + '+Q'
-          },
-          {
             label: 'Change server',
             click: function() {
               IPC.send('try-change-server');
@@ -11290,6 +11763,19 @@ return __p
             click: function() {
               IPC.send('new-backend');
             }
+          },
+          {
+            label: 'Open in browser',
+            click: function() {
+              IPC.send('open-in-browser');
+            }
+          },
+          {
+            label: 'Quit',
+            click: function() {
+              IPC.send('quit');
+            },
+            accelerator: _ctrlKey + '+Q'
           }
         ]
       };
@@ -11321,6 +11807,24 @@ return __p
         Dialog: Dialog,
         Shell: Shell,
         IPC: IPC,
+        WebFrame: WebFrame,
+        app: app,
+        clipboard: clipboard,
+
+        increaseZoom: function() {
+          _zoomFactor += 0.1;
+          WebFrame.setZoomFactor(_zoomFactor);
+        },
+        decreaseZoom: function() {
+          if (_zoomFactor > 0.1) {
+            _zoomFactor -= 0.1;
+          }
+          WebFrame.setZoomFactor(_zoomFactor);
+        },
+        resetZoom: function() {
+          _zoomFactor = 1.0;
+          WebFrame.setZoomFactor(_zoomFactor);
+        },
 
         toggleDevTools: function() {
           BrowserWindow.getFocusedWindow().toggleDevTools();

@@ -17,6 +17,118 @@
   'use strict';
   var module = angular.module('bk.outputDisplay');
 
+  (function ($) {
+    $.widget("custom.combobox", {
+      _create: function () {
+        this.editable = this.element.attr('easyform-editable') === 'true';
+        this.wrapper = $("<span>")
+            .addClass("custom-combobox")
+            .insertAfter(this.element);
+
+        this.element.hide();
+        this._createAutocomplete();
+        this._createShowAllButton();
+      },
+
+      _createAutocomplete: function () {
+        var selected = this.element.children(":selected"),
+            value = selected.val() ? selected.text() : "";
+
+        this.input = $("<input>")
+            .appendTo(this.wrapper)
+            .val(value)
+            .attr("title", "")
+            .attr("ng-model", this.element.attr('ng-model'))
+            .addClass("custom-combobox-input ui-widget ui-widget-content ui-corner-left")
+            .autocomplete({
+              delay: 0,
+              minLength: 0,
+              source: $.proxy(this, "_source")
+            })
+            .tooltip({
+              tooltipClass: "ui-state-highlight"
+            });
+
+        if (!this.editable) {
+          this.input.attr('disabled', 'true');
+        }
+
+
+        this._on(this.input, {
+          autocompleteselect: function (event, ui) {
+            ui.item.option.selected = true;
+            this._trigger("select", event, {
+              item: ui.item.option
+            });
+          }
+        });
+      },
+
+      _createShowAllButton: function () {
+        var input = this.input,
+            wasOpen = false;
+
+        //use jquery button fn instead of bootstrap
+        //reverts to jquery button fn
+        var bootstrapButtonFn = $.fn.button.noConflict();
+
+        var showAllButton = $("<a>")
+            .attr("tabIndex", -1)
+            .attr("title", "Show All Items")
+            .appendTo(this.wrapper)
+            .button({
+              icons: {
+                primary: "ui-icon-triangle-1-s"
+              },
+              text: false
+            })
+            .removeClass("ui-corner-all")
+            .addClass("custom-combobox-toggle ui-corner-right")
+            .mousedown(function () {
+              wasOpen = input.autocomplete("widget").is(":visible");
+            })
+            .click(function () {
+              input.focus();
+
+              // Close if already visible
+              if (wasOpen) {
+                return;
+              }
+
+              // Pass empty string as value to search for, displaying all results
+              input.autocomplete("search", "");
+            });
+
+        if (!this.editable) {
+          showAllButton.blur(function () {
+            input.autocomplete("close");
+          });
+        }
+
+        //return to bootstrap button fn
+        $.fn.button = bootstrapButtonFn;
+      },
+
+      _source: function (request, response) {
+        var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+        response(this.element.children("option").map(function () {
+          var text = $(this).text();
+          if (this.value && ( !request.term || matcher.test(text) ))
+            return {
+              label: text,
+              value: text,
+              option: this
+            };
+        }));
+      },
+
+      _destroy: function () {
+        this.wrapper.remove();
+        this.element.show();
+      }
+    });
+  })(jQuery);
+
   function EasyFormComponent(scope, element, constants, service, utils) {
 
     this.scope = scope;
@@ -319,7 +431,6 @@
                   "<label class='easyform-label'/>" +
                   "<div class='easyform-component-container position-absolute'>" +
                     "<div class='combo-box-input-outer'>" +
-                      "<input type='text' class='combo-box-input' />" +
                       "<div class='combo-box-outer'>" +
                         "<select class='combo-box' ng-disabled='!component.enabled'/>" +
                       "</div>" +
@@ -337,20 +448,11 @@
                 comboBox.attr('ng-model', scope.ngModelAttr);
 
                 scope.component.enabled = true;
-                var editable = efc.getComponent().editable && efc.getComponent().editable === 'true';
-                var textField = element.find('.combo-box-input');
-                if (editable) {
-                  textField.attr('ng-model', scope.ngModelAttr);
-                  //todo replace this hack
-                  var tmp = document.createElement("span");
-                  tmp.innerHTML = efc.getComponent().value;
-                  document.body.appendChild(tmp);
-                  var theWidth = tmp.getBoundingClientRect().width + 10;
-                  document.body.removeChild(tmp);
-                  textField.width(theWidth);
-                } else {
-                  textField.hide();
-                }
+
+                var editable = efc.getComponent().editable
+                    && efc.getComponent().editable === 'true';
+                comboBox.attr('easyform-editable', editable);
+                element.find( ".combo-box[ng-model=\"" + scope.ngModelAttr + "\"]" ).combobox();
 
                 if (efc.getComponent().values) {
                   comboBox.attr('ng-options', 'v for v in component.values');

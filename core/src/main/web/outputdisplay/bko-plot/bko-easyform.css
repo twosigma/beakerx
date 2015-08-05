@@ -159,3 +159,23 @@ div.easy-form-container fieldset legend {
   margin: 0;
   padding: 0 5px;
 }
+
+.custom-combobox {
+  position: relative;
+  display: inline-block;
+}
+
+.custom-combobox-toggle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin-left: -1px;
+  padding: 0;
+}
+
+.custom-combobox-input {
+  margin: 0;
+  padding: 1px 2px;
+  height: 25px;
+  border-color: #ccc;
+}

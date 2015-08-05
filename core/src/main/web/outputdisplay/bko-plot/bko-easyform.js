@@ -49,6 +49,8 @@
               tooltipClass: "ui-state-highlight"
             });
 
+        this.element.removeAttr('ng-model');
+
         if (!this.editable) {
           this.input.attr('disabled', 'true');
         }
@@ -432,7 +434,11 @@
                   "<div class='easyform-component-container position-absolute'>" +
                     "<div class='combo-box-input-outer'>" +
                       "<div class='combo-box-outer'>" +
-                        "<select class='combo-box' ng-disabled='!component.enabled'/>" +
+                        "<select class='combo-box' ng-disabled='!component.enabled'>" +
+                          "<option ng-repeat='value in values' value='{{value}}'>" +
+                            "{{value}}" +
+                          "</option>" +
+                        "</select>" +
                       "</div>" +
                     "</div>" +
                   "</div>" +
@@ -454,9 +460,11 @@
                 comboBox.attr('easyform-editable', editable);
                 element.find( ".combo-box[ng-model=\"" + scope.ngModelAttr + "\"]" ).combobox();
 
-                if (efc.getComponent().values) {
-                  comboBox.attr('ng-options', 'v for v in component.values');
+                if (!efc.getComponent().values) {
+                  //comboBox.attr('ng-options', 'v for v in component.values');
+                  efc.getComponent().values = [];
                 }
+                scope.values = efc.getComponent().values;
               };
 
               efc.addUpdatedListener = function() {

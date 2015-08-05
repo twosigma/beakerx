@@ -39,7 +39,6 @@ launcher/electron/Beaker.app
 launcher/electron/app/main-menu-template.js
 tags
 launcher/electron/BeakerOSX
-launcher/electron/create-dmg
 launcher/electron/_MACOSX
 launcher/windows/python
 

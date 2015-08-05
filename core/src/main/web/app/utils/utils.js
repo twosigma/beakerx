@@ -123,23 +123,23 @@
       fromPrettyJson: function(jString) {
         return angularUtils.fromPrettyJson(jString);
       },
-      httpGet: function(url, data) {
-        return angularUtils.httpGet(url, data);
+      httpGet: function(url, data, headers) {
+        return angularUtils.httpGet(url, data, headers);
       },
-      httpGetJson: function(url, data) {
-        return angularUtils.httpGetJson(url, data);
+      httpGetJson: function(url, data, headers) {
+        return angularUtils.httpGetJson(url, data, headers);
       },
-      httpDeleteJson: function(url, data) {
-        return angularUtils.httpDeleteJson(url, data);
+      httpDeleteJson: function(url, data, headers) {
+        return angularUtils.httpDeleteJson(url, data, headers);
       },
-      httpPost: function(url, data) {
-        return angularUtils.httpPost(url, data);
+      httpPost: function(url, data, headers) {
+        return angularUtils.httpPost(url, data, headers);
       },
-      httpPostJson: function(url, data) {
-        return angularUtils.httpPostJson(url, data);
+      httpPostJson: function(url, data,headers) {
+        return angularUtils.httpPostJson(url, data, headers);
       },
-      httpPutJson: function(url, data) {
-        return angularUtils.httpPutJson(url, data);
+      httpPutJson: function(url, data, headers) {
+        return angularUtils.httpPutJson(url, data, headers);
       },
       spinUntilReady: function(url) {
         var deferred = angularUtils.newDeferred();

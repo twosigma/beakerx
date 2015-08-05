@@ -21,9 +21,7 @@
   border-collapse: initial;
 }
 
-.plot-label,
 .plot-test,
-.plot-xylabel,
 .plot-cursorlabel,
 .plot-constlabel,
 .plot-tooltip,
@@ -41,14 +39,19 @@
   fill: none;
 }
 
+.plot-label,
+.plot-xylabel {
+  font-family: "pt-sans", Helvetica, sans-serif;
+  line-height: 1.38462;
+}
 .plot-label {
-  font-size: 0.75em;
+  font-size: 13px;
 }
 .plot-text {
   font-size: 1.0em;
 }
 .plot-xylabel {
-  font-size: 0.9em;
+  font-size: 15px;
   text-anchor: middle;
 }
 

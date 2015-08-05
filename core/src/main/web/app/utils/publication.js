@@ -21,30 +21,36 @@
   'use strict';
   var module = angular.module('bk.publication', ['bk.utils']);
 
-  module.factory('bkPublicationApi', function (bkUtils) {
+  module.factory('bkPublicationApi', function (bkUtils, $localStorage) {
     var baseUrl = 'https://pub.beakernotebook.com';
+
+    function headers() {
+      if ($localStorage.token) {
+        return {'X-Authorization': 'Token ' + $localStorage.token};
+      }
+    }
 
     return {
       createSession: function(params) {
         return bkUtils.httpPostJson(baseUrl + '/user/v1/sessions', params)
       },
       getCurrentUser: function() {
-        return bkUtils.httpGetJson(baseUrl + '/user/v1/user')
+        return bkUtils.httpGetJson(baseUrl + '/user/v1/user', {}, headers())
       },
       createPublication: function(params) {
-        return bkUtils.httpPostJson(baseUrl + '/notebook/v1/publications', params);
+        return bkUtils.httpPostJson(baseUrl + '/notebook/v1/publications', params, headers());
       },
       updatePublication: function(id, params) {
-        return bkUtils.httpPutJson(baseUrl + '/notebook/v1/publications/' + id, params);
+        return bkUtils.httpPutJson(baseUrl + '/notebook/v1/publications/' + id, params, headers());
       },
       getPublication: function(id) {
-        return bkUtils.httpGetJson(baseUrl + '/notebook/v1/publications/' + id);
+        return bkUtils.httpGetJson(baseUrl + '/notebook/v1/publications/' + id, {}, headers());
       },
       deletePublication: function(id) {
-        return bkUtils.httpDeleteJson(baseUrl + '/notebook/v1/publications/' + id);
+        return bkUtils.httpDeleteJson(baseUrl + '/notebook/v1/publications/' + id, {}, headers());
       },
       getCategories: function() {
-        return bkUtils.httpGetJson(baseUrl + '/notebook/v1/categories');
+        return bkUtils.httpGetJson(baseUrl + '/notebook/v1/categories', {}, headers());
       }
     };
   });
@@ -57,7 +63,9 @@
         var self = this;
         return bkPublicationApi.createSession(user)
         .then(function(response) {
-          $localStorage.token = response.token
+          if (response.data && response.data.token) {
+            $localStorage.token = response.data.token
+          }
           return self.initSession();
         });
       },

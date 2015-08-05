@@ -31,7 +31,7 @@
    * - it also serves the purpose of hiding underneath utils: commonUtils/angularUtils/...
    *    from other parts of beaker
    */
-  module.factory('bkUtils', function(commonUtils, angularUtils, bkTrack, cometdUtils) {
+  module.factory('bkUtils', function(commonUtils, angularUtils, bkTrack, cometdUtils, $localStorage) {
 
     function endsWith(str, suffix) {
       return str.indexOf(suffix, str.length - suffix.length) !== -1;
@@ -272,7 +272,7 @@
       },
       loadAjax: function(ajaxLocator) {
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpGet(parseAjaxLocator(ajaxLocator).source)
+        angularUtils.httpGet(parseAjaxLocator(ajaxLocator).source, {}, {"X-Authorization": "Token " + $localStorage.token})
             .success(function(content) {
               if (!_.isString(content)) {
                 // angular $http auto-detects JSON response and deserialize it using a JSON parser
@@ -309,7 +309,7 @@
       saveAjax: function(ajaxLocator, contentAsJson) {
         var deferred = angularUtils.newDeferred();
         var destination = parseAjaxLocator(ajaxLocator).destination;
-        angularUtils.httpPutJson(destination, {data: contentAsJson})
+        angularUtils.httpPutJson(destination, {data: contentAsJson}, {"X-Authorization": "Token " + $localStorage.token})
           .success(deferred.resolve)
           .error(deferred.reject);
         return deferred.promise;

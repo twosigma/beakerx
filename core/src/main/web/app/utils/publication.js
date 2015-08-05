@@ -49,14 +49,15 @@
     };
   });
 
-  module.factory('bkPublicationAuth', function (bkPublicationApi) {
+  module.factory('bkPublicationAuth', function (bkPublicationApi, $localStorage) {
     var currentUser;
 
     return {
       signIn: function(user) {
         var self = this;
         return bkPublicationApi.createSession(user)
-        .then(function() {
+        .then(function(response) {
+          $localStorage.token = response.token
           return self.initSession();
         });
       },

@@ -16,7 +16,8 @@
 
 bk-new-cell-menu {
   display: block;
-  margin: 15px 0;
+  margin: 15px 0 0 0;
+  padding-bottom: 15px;
 
   .new-cell {
     visibility: hidden;
@@ -30,6 +31,7 @@ bk-new-cell-menu {
 
   .advanced-mode &:not(.large) {
     margin: 0;
+    padding: 0;
   }
 }
 

@@ -232,7 +232,7 @@ public class RServerEvaluator {
     return xml;
   }
 
-  protected boolean addSvgResults(String name, SimpleEvaluationObject obj) {
+  protected Object getSvgResults(String name) {
     File file = new File(name);
     if (file.length() > 0) {
       if (file.length() < 100*1024) {
@@ -243,9 +243,9 @@ public class RServerEvaluator {
           fis.close();
           String contents = new String(data, "UTF-8");
           logger.fine("returning svg content");
-          obj.finished(fixSvgResults(contents));
+          Object r = fixSvgResults(contents);
           file.delete();
-          return true;
+          return r;
         } catch (Exception e) {
           logger.log(Level.SEVERE,"ERROR reading SVG results",e);
         }
@@ -255,16 +255,15 @@ public class RServerEvaluator {
           MyTranscoder transcoder = new MyTranscoder();
           transcoder.transcode(new TranscoderInput(file.toURI().toURL().toString()), null);
           BufferedImage image = transcoder.getImage();
-          obj.finished(image);
           file.delete();
-          return true;
+          return image;
         } catch(Exception e) {
           logger.log(Level.SEVERE,"ERROR converting SVG results",e);
         }
       }
       file.delete();
     }
-    return false;
+    return null;
   }
 
   protected boolean isError(REXP result, SimpleEvaluationObject obj) {
@@ -492,7 +491,7 @@ public class RServerEvaluator {
           mutex.acquire();
 
           String resultjson = null;
-
+          Object oresult = null; 
           try {
             // direct graphical output
             String tryCode;
@@ -510,25 +509,24 @@ public class RServerEvaluator {
             
             if (null == result) {
               logger.fine("null result");;
-              j.outputObject.finished("");
-              isfinished = true;
+              oresult = "";
+              resultjson = null;
             } else if (isError(result, j.outputObject)) {
               isfinished = true;
             } else if (resultjson!=null && !resultjson.isEmpty() && resultjson.startsWith("{ \"type\":" )) {
-              logger.fine("is a beaker object");              
-              j.outputObject.finished(null, resultjson);
-              isfinished = true;
+              logger.fine("is a beaker object");
+              oresult = null;
             } else if (!isVisible(result, j.outputObject)) {
               logger.fine("is not visible");
+              oresult = "";
             } else {
-              outputHandler.setResultsJson(resultjson);
               logger.fine("capturing from output handler");
               String finish = "print(\"" + BEGIN_MAGIC + "\")\n" +
                   "print(beaker_eval_$value)\n" +
                   "print(\"" + END_MAGIC + "\")\n";
               connection.eval(finish);
               outputHandler.waitForCapture();
-              isfinished = (j.outputObject.getStatus() == EvaluationStatus.FINISHED);
+              oresult = outputHandler.getCaptured();
             }
           } catch (RserveException e) {
             isfinished = true;
@@ -547,11 +545,14 @@ public class RServerEvaluator {
               j.outputObject.error("from dev.off(): " + e.getMessage());
           }
 
-          if (!isfinished)
-            isfinished = addSvgResults(file, j.outputObject);
-          if (!isfinished)
-            j.outputObject.finished("", resultjson);
-
+          if (!isfinished) {
+            Object svg = getSvgResults(file);
+            if (svg != null) {
+              j.outputObject.finished(svg);
+            } else         
+              j.outputObject.finished(oresult, resultjson);
+          }
+          
           outputHandler.reset(null);
           errorGobbler.reset(null);
           mutex.release();

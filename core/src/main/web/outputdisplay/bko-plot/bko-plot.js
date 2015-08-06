@@ -666,22 +666,22 @@
           var position;
           if(legendPosition.position){
             switch(legendPosition.position){
-              case "top_left":
+              case "TOP_LEFT":
                 position = {
                   "left": 0,
                   "top": 0
                 };
                 break;
-              case "top_right":
+              case "TOP_RIGHT":
                 position = defaultPosition;
                 break;
-              case "bottom_left":
+              case "BOTTOM_LEFT":
                 position = {
                   "left": 0,
                   "bottom": 0
                 };
                 break;
-              case "bottom_right":
+              case "BOTTOM_RIGHT":
                 position = {
                   "left": scope.jqcontainer.width() + scope.layout.legendMargin,
                   "bottom": 0
@@ -862,7 +862,7 @@
             }
           }
 
-          if(scope.stdmodel.legendPosition.position === "top_left" || scope.stdmodel.legendPosition.position === "bottom_left") {
+          if(scope.stdmodel.legendPosition.position === "TOP_LEFT" || scope.stdmodel.legendPosition.position === "BOTTOM_LEFT") {
             var legendWidth = legendScrollableContainer.width() + margin;
             legendScrollableContainer.css("left", -legendWidth);
             scope.jqcontainer.css("margin-left", legendWidth);

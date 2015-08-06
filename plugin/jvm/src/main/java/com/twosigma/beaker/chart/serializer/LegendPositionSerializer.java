@@ -36,7 +36,7 @@ public class LegendPositionSerializer extends JsonSerializer<LegendPosition> {
     jgen.writeStartObject();
     jgen.writeObjectField("type", legendPosition.getClass().getSimpleName());
     if (legendPosition.getPosition() != null) {
-      jgen.writeObjectField("position", legendPosition.getPosition().name().toLowerCase());
+      jgen.writeObjectField("position", legendPosition.getPosition().name());
     }else{
       jgen.writeObjectField("top", legendPosition.getTop());
       jgen.writeObjectField("left", legendPosition.getLeft());

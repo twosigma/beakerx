@@ -19,14 +19,10 @@ import org.apache.commons.lang3.ArrayUtils;
 
 public class LegendPosition implements java.io.Serializable {
 
-  public final static LegendPosition top_left = new LegendPosition(Position.TOP_LEFT);
-  public final static LegendPosition TOP_LEFT = top_left;
-  public final static LegendPosition top_right = new LegendPosition(Position.TOP_RIGHT);
-  public final static LegendPosition TOP_RIGHT = top_right;
-  public final static LegendPosition bottom_left = new LegendPosition(Position.BOTTOM_LEFT);
-  public final static LegendPosition BOTTOM_LEFT = bottom_left;
-  public final static LegendPosition bottom_right = new LegendPosition(Position.BOTTOM_RIGHT);
-  public final static LegendPosition BOTTOM_RIGHT = bottom_right;
+  public final static LegendPosition TOP_LEFT = new LegendPosition(Position.TOP_LEFT);
+  public final static LegendPosition TOP_RIGHT = new LegendPosition(Position.TOP_RIGHT);
+  public final static LegendPosition BOTTOM_LEFT = new LegendPosition(Position.BOTTOM_LEFT);
+  public final static LegendPosition BOTTOM_RIGHT = new LegendPosition(Position.BOTTOM_RIGHT);
 
   public static enum Position {
     TOP_LEFT,

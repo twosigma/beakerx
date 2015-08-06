@@ -76,14 +76,26 @@ public class EasyForm extends ObservableMap<String, Object> {
   }
 
   public void addTextArea(final String label) throws Exception {
-    TextArea textArea = new TextArea();
-    textArea.setLabel(label);
-    addComponentOrThrow(label, textArea);
+    addTextArea(label, null, TextArea.AUTO_WIDTH, TextArea.AUTO_HEIGHT);
+  }
+
+  public void addTextArea(final String label, final Integer width, final Integer height)
+      throws Exception {
+    addTextArea(label, null, width, height);
   }
 
   public void addTextArea(final String label, final String initialValue) throws Exception {
+    addTextArea(label, initialValue, TextArea.AUTO_WIDTH, TextArea.AUTO_HEIGHT);
+  }
+
+  public void addTextArea(final String label,
+                          final String initialValue,
+                          final Integer width,
+                          final Integer height) throws Exception {
     TextArea textArea = new TextArea();
     textArea.setLabel(label);
+    textArea.setWidth(width);
+    textArea.setHeight(height);
     textArea.setValue(initialValue);
     addComponentOrThrow(label, textArea);
   }

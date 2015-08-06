@@ -161,6 +161,7 @@ define(function(require, exports, module) {
   };
   var defaultImports = [
     "com.twosigma.beaker.chart.Color",
+    "com.twosigma.beaker.chart.LegendPosition",
     "com.twosigma.beaker.BeakerProgressUpdate",
     "com.twosigma.beaker.chart.xychart.*",
     "com.twosigma.beaker.chart.xychart.plotitem.*",

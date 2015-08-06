@@ -23,11 +23,13 @@ import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.BeakerProgressUpdate;
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.LegendPosition;
 import com.twosigma.beaker.chart.serializer.AreaSerializer;
 import com.twosigma.beaker.chart.serializer.BarsSerializer;
 import com.twosigma.beaker.chart.serializer.ColorSerializer;
 import com.twosigma.beaker.chart.serializer.CombinedPlotSerializer;
 import com.twosigma.beaker.chart.serializer.CrosshairSerializer;
+import com.twosigma.beaker.chart.serializer.LegendPositionSerializer;
 import com.twosigma.beaker.chart.serializer.LineSerializer;
 import com.twosigma.beaker.chart.serializer.PointsSerializer;
 import com.twosigma.beaker.chart.serializer.StemsSerializer;
@@ -188,6 +190,7 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(Area.class, injector.getInstance(AreaSerializer.class));
       module.addSerializer(YAxis.class, injector.getInstance(YAxisSerializer.class));
       module.addSerializer(Crosshair.class, injector.getInstance(CrosshairSerializer.class));
+      module.addSerializer(LegendPosition.class, injector.getInstance(LegendPositionSerializer.class));
 
       module.addSerializer(EasyForm.class, injector.getInstance(EasyFormSerializer.class));
       module.addSerializer(TextField.class, injector.getInstance(TextFieldSerializer.class));

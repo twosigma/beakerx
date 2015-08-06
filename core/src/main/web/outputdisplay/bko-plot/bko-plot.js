@@ -657,6 +657,46 @@
           return mergedLines;
         };
 
+        scope.getLegendPosition = function(legendPosition) {
+          var defaultPosition = {
+            "left": scope.jqcontainer.width() + scope.layout.legendMargin,
+            "top": 0
+          };
+          if (!legendPosition) { return defaultPosition; }
+          var position;
+          if(legendPosition.position){
+            switch(legendPosition.position){
+              case "top_left":
+                position = {
+                  "left": 0,
+                  "top": 0
+                };
+                break;
+              case "top_right":
+                position = defaultPosition;
+                break;
+              case "bottom_left":
+                position = {
+                  "left": 0,
+                  "bottom": 0
+                };
+                break;
+              case "bottom_right":
+                position = {
+                  "left": scope.jqcontainer.width() + scope.layout.legendMargin,
+                  "bottom": 0
+                };
+                break;
+            }
+          }else{
+            position = {
+              "left": legendPosition.left,
+              "top": legendPosition.top
+            };
+          }
+          return position;
+        };
+
         scope.renderLegends = function() {
           // legend redraw is controlled by legendDone
           if (scope.legendableItem === 0 ||
@@ -679,7 +719,7 @@
               },
               handle : "#legendDraggableContainer"
             })
-            .css("max-height", scope.jqsvg.height() - scope.layout.bottomLayoutMargin);
+            .css("max-height", scope.jqsvg.height());
 
           var legendDraggableContainer = $("<div></div>").appendTo(legendScrollableContainer)
             .attr("id", "legendDraggableContainer")
@@ -689,10 +729,7 @@
             .attr("id", "legends");
 
           if (scope.legendResetPosition === true) {
-            scope.legendPosition = {
-              "left" : scope.jqcontainer.width() + 10,
-              "top" : 0
-            };
+            scope.legendPosition = scope.getLegendPosition(scope.stdmodel.legendPosition);
             scope.legendResetPosition = false;
           }
           legendScrollableContainer.css(scope.legendPosition);
@@ -823,6 +860,18 @@
             } else {
               $("<td></td>").appendTo(unit);
             }
+          }
+
+          if(scope.stdmodel.legendPosition.position === "top_left" || scope.stdmodel.legendPosition.position === "bottom_left") {
+            var legendWidth = legendScrollableContainer.width() + margin;
+            legendScrollableContainer.css("left", -legendWidth);
+            scope.jqcontainer.css("margin-left", legendWidth);
+          }
+        };
+
+        scope.updateMargin = function(){
+          if (scope.model.updateMargin != null) {
+            scope.model.updateMargin();
           }
         };
 
@@ -1438,6 +1487,7 @@
           scope.renderTips();
           scope.renderLocateBox(); // redraw
           scope.renderLegends(); // redraw
+          scope.updateMargin(); //update plot margins
 
           scope.prepareInteraction();
 

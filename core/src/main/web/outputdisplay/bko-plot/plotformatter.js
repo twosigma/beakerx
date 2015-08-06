@@ -351,6 +351,7 @@
             yAxis : { label : model.y_label },
             yAxisR : model.rangeAxes.length > 1 ? { label : model.rangeAxes[1].label } : null,
             showLegend : model.show_legend != null ? model.show_legend : false,
+            legendPosition : model.legend_position != null ? model.legend_position : {position: "top_right"},
             useToolTip : model.use_tool_tip != null ? model.use_tool_tip : false,
             plotSize : {
               "width" : model.init_width != null ? model.init_width : 1200,
@@ -362,6 +363,7 @@
         } else {
           newmodel = {
             showLegend : model.showLegend != null ? model.showLegend : false,
+            legendPosition : model.legendPosition != null ? model.legendPosition : {position: "top_right"},
             useToolTip : model.useToolTip != null ? model.useToolTip : false,
             xAxis : model.xAxis != null ? model.xAxis : {},
             yAxis : model.yAxis != null ? model.yAxis : {},

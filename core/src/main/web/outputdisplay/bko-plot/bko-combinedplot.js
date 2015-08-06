@@ -99,6 +99,18 @@
                 element.find("#combplotTitle").css("width", width);
                 scope.$apply();
               },
+              updateMargin : function() {
+                // if any of plots has left-positioned legend we should update left margin (with max value)
+                // for all plots (to adjust vertical position)
+                var plots = element.find("#plotContainer");
+                var maxMargin = 0;
+
+                plots.each(function() {
+                  var value = parseFloat($(this).css('margin-left'));
+                  maxMargin = _.max([value, maxMargin]);
+                });
+                plots.css("margin-left", maxMargin);
+              },
               getWidth : function() {
                 return scope.width;
               }

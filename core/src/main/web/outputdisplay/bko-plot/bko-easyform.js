@@ -52,9 +52,20 @@
         this.element.removeAttr('ng-model');
 
         if (!this.editable) {
-          this.input.attr('disabled', 'true');
+          this.input.attr('readonly', 'true');
+          var input = this.input, wasOpen = false;
+          this.input
+              .mousedown(function () {
+                wasOpen = input.autocomplete("widget").is(":visible");
+              })
+              .click(function () {
+                input.focus();
+                if (wasOpen) {
+                  return;
+                }
+                input.autocomplete("search", "");
+              });
         }
-
 
         this._on(this.input, {
           autocompleteselect: function (event, ui) {
@@ -91,21 +102,11 @@
             })
             .click(function () {
               input.focus();
-
-              // Close if already visible
               if (wasOpen) {
                 return;
               }
-
-              // Pass empty string as value to search for, displaying all results
               input.autocomplete("search", "");
             });
-
-        if (!this.editable) {
-          showAllButton.blur(function () {
-            input.autocomplete("close");
-          });
-        }
 
         //return to bootstrap button fn
         $.fn.button = bootstrapButtonFn;

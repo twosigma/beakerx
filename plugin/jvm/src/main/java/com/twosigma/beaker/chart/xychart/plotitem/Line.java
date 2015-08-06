@@ -17,16 +17,24 @@
 package com.twosigma.beaker.chart.xychart.plotitem;
 
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.Filter;
+
+import java.util.EnumSet;
 import java.util.List;
 
 
 public class Line extends XYGraphics {
 
-  private Color color;
+  private final static EnumSet<Filter> POSSIBLE_LOD_FILTERS = EnumSet.of(Filter.LINE,
+                                                                         Filter.BOX,
+                                                                         Filter.RIVER);
+
+
+  private Color       color;
   private List<Color> colors;
   private Float width = 1.5f;
   private StrokeType style;
-  private Integer interpolation;
+  private Integer    interpolation;
 
   public Line() {
 
@@ -50,7 +58,7 @@ public class Line extends XYGraphics {
       setColors(temp);
     } else {
       throw new IllegalArgumentException(
-          "setColor takes Color or List of Color");
+        "setColor takes Color or List of Color");
     }
   }
 
@@ -102,4 +110,8 @@ public class Line extends XYGraphics {
     return this.interpolation;
   }
 
+  @Override
+  protected EnumSet<Filter> getPossibleFilters() {
+    return POSSIBLE_LOD_FILTERS;
+  }
 }

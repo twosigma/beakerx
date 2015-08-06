@@ -17,15 +17,19 @@
 package com.twosigma.beaker.chart.xychart.plotitem;
 
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.Filter;
+
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 abstract public class XYGraphics {
   private List<Number> xs;
   private List<Number> ys;
-  private boolean visible = true;
-  private String displayName = "";
-  private String yAxisName = null;
+  private boolean visible     = true;
+  private String  displayName = "";
+  private String  yAxisName   = null;
+  private Filter lodFilter;
 
   public void setX(List<Number> xs) {
     this.xs = xs;
@@ -81,6 +85,22 @@ abstract public class XYGraphics {
     }
   }
 
+  public Filter getLodFilter() {
+    return lodFilter;
+  }
+
+  public void setLodFilter(Filter lodFilter){
+    if (getPossibleFilters().contains(lodFilter)){
+      this.lodFilter = lodFilter;
+    }else{
+      throw new RuntimeException(String.format("%s doesn't not support '%s' filter.",
+                                               getClass().getSimpleName(),
+                                               lodFilter.getText()));
+    }
+
+  }
+
   abstract public void setColori(Color color);
   abstract public Color getColor();
+  abstract protected EnumSet<Filter> getPossibleFilters();
 }

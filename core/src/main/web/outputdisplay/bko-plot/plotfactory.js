@@ -21,9 +21,11 @@
     PlotConstline, PlotConstband, PlotText,
     PlotLineLodLoader, PlotBarLodLoader, PlotStemLodLoader, PlotAreaLodLoader,
     PlotPointLodLoader) {
-    var lodthresh = 1500;
     return {
-      createPlotItem : function(item) {
+      createPlotItem : function(item, lodthresh) {
+        if (!lodthresh){
+          lodthresh = 4500;
+        }
         var size = item.elements.length;
         var plotitem;
         switch (item.type) {

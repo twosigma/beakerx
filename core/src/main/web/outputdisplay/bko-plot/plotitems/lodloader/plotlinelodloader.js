@@ -30,7 +30,7 @@
 
     PlotLineLodLoader.prototype.format = function() {
       // create plot type index
-      this.lodTypeIndex = 2;
+      this.lodTypeIndex =  (this.datacopy.lod_filter) ? this.lodTypes.indexOf(this.datacopy.lod_filter) : 2;
       this.lodType = this.lodTypes[this.lodTypeIndex];
 
       // create the plotters
@@ -81,10 +81,14 @@
     };
 
     PlotLineLodLoader.prototype.applyLodType = function(type) {
-      this.lodType = type;
-      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
-      if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
-      this.createLodPlotter();
+      if (!this.datacopy.lod_filter) {
+        this.lodType = type;
+        this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+        if (this.lodTypeIndex === -1) {
+          this.lodTypeIndex = 0;
+        }
+        this.createLodPlotter();
+      }
     };
 
     PlotLineLodLoader.prototype.createLodPlotter = function() {

@@ -287,17 +287,7 @@
               scope.hasUnorderedItem = true;
             }
           }
-          if (scope.hasLodItem === true && scope.showLodHint === true) {
-            scope.showLodHint = false;
-            scope.renderMessage("Level-of-Detail (LOD) is enabled",
-              [ "Some data items contain too many elements to be directly plotted.",
-              "Level-of-Detail (LOD) rendering is automatically enabled. " +
-              "LOD hint is displayed at the right of the item legend.",
-              "LOD by default runs in auto mode. In auto mode, " +
-              "LOD will be automatically turned off when you reach detailed enough zoom level.",
-              "To switch LOD type, left click the LOD hint. " +
-              "To turn off LOD, right click the LOD hint." ]);
-          }
+
           if (scope.hasUnorderedItem === true && scope.showUnorderedHint === true) {
             scope.showUnorderedHint = false;
             scope.renderMessage("Unordered line / area detected",

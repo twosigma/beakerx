@@ -17,10 +17,16 @@
 package com.twosigma.beaker.chart.xychart.plotitem;
 
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.Filter;
+
+import java.util.EnumSet;
 import java.util.List;
 
 
 public class Points extends XYGraphics {
+
+  private final static EnumSet<Filter> POSSIBLE_LOD_FILTERS = EnumSet.of(Filter.POINT,
+                                                                         Filter.BOX);
 
   private float baseSize = 6.0f;
   private List<Number> sizes;
@@ -164,5 +170,9 @@ public class Points extends XYGraphics {
     return this.outlineColors;
   }
 
+  @Override
+  protected EnumSet<Filter> getPossibleFilters() {
+    return POSSIBLE_LOD_FILTERS;
+  }
 
 }

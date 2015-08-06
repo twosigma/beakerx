@@ -26,19 +26,23 @@ module.exports = (function() {
     label: 'Beaker',
     submenu: [
     {
-      label: 'Quit',
-      click: function() {
-        eventEmitter.emit('quit');
-      },
-      accelerator: 'Command+Q'
-    },
-    {
       label: 'Change server',
       click: eventEmitter.emit.bind(eventEmitter, 'try-change-server')
     },
     {
       label: 'Start new local backend',
       click: eventEmitter.emit.bind(eventEmitter, 'new-backend')
+    },
+    {
+      label: 'Open in browser',
+      click: eventEmitter.emit.bind(eventEmitter, 'open-in-browser')
+    },
+    {
+      label: 'Quit',
+      click: function() {
+        eventEmitter.emit('quit');
+      },
+      accelerator: 'Command+Q'
     }
     ]
   },

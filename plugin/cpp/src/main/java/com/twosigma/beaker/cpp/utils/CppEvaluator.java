@@ -241,9 +241,9 @@ public class CppEvaluator {
         StringBuilder builder = new StringBuilder();
         if (type != "void") {
           builder.append("\nextern \"C\" jobject call_beaker_main() {\n");
-          builder.append(type + " ret;\n");
-          builder.append("beaker_main(ret);\n");
-          builder.append("return convert(ret);\n");
+          builder.append("\t" + type + " ret;\n");
+          builder.append("\t" + "beaker_main(ret);\n");
+          builder.append("\t" + "return Beaker::convert(ret);\n");
         } else {
           builder.append("\nextern \"C\" void call_beaker_main() {\n");
           builder.append("beaker_main();\n");
@@ -277,11 +277,12 @@ public class CppEvaluator {
             int beakerMainEnd = tokens.get(beakerMainLastToken).getStopIndex();
             StringBuilder builder = new StringBuilder(theCode);
             builder.insert(beakerMainEnd + 1, createMainCaller(cellType));
+            // builder.insert(0, "extern Beaker beaker;\n");
             builder.insert(0, "#include <beaker.hpp>\n");
             processedCode = builder.toString();
           }
 
-          // System.out.println("Processed code is: " + processedCode);
+          // System.out.println("Processed code is:\n" + processedCode);
 
           // Create .cpp file
           String tmpDir = System.getenv("beaker_tmp_dir");

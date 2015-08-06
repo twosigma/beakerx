@@ -118,8 +118,6 @@ public class CppEvaluator {
     compileCommand.add("-I");
     compileCommand.add(System.getenv("JAVA_HOME") + "/include/darwin");
 
-    System.out.println(compileCommand);
-
     exit = false;
     currentClassPath = "";
     currentImports = "";
@@ -303,6 +301,13 @@ public class CppEvaluator {
           clangCommand.addAll(userFlags);
 
           ProcessBuilder pb;
+
+          // System.out.println("Compiling with:");
+          // StringBuilder builder = new StringBuilder();
+          // for (String s : clangCommand){
+          //   builder.append(s + " ");
+          // }
+          // System.out.println(builder.toString());
 
           // Compile
           pb = new ProcessBuilder(clangCommand);

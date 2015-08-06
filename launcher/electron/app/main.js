@@ -123,12 +123,14 @@ ipc.on('change-server', function(e, address, hash) {
 });
 
 ipc.on('new-backend', function() {
-  killBackend();
+  windowManager.closeAll();
+  backendRunner.kill();
   backendRunner.startNew().on('ready', connectToBackend);
 });
 
 mainMenu.emitter.on('new-backend', function() {
-  killBackend();
+  windowManager.closeAll();
+  backendRunner.kill();
   backendRunner.startNew().on('ready', connectToBackend);
 });
 
@@ -166,7 +168,8 @@ function startServer() {
 
 function switchToBackend(address, hash) {
   if (address != backendRunner.getUrl()) {
-    killBackend();
+    windowManager.closeAll();
+    backendRunner.kill();
   }
   // Open new control panel there
   console.log('Switching to ' + address);

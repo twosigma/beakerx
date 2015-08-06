@@ -657,18 +657,53 @@
           return mergedLines;
         };
 
-        scope.getLegendPosition = function(legendPosition) {
+        scope.getLegendPosition = function(legendPosition, legend) {
+          var margin = scope.layout.legendMargin,
+              legendWidth = legend.width(),
+              legendWidthWithMargin = legendWidth + margin,
+              containerWidth = scope.jqcontainer.width(),
+              containerWidthWithMargin = containerWidth + margin,
+              legendHeight = legend.height(),
+              legendHeightWithMargin = legendHeight + margin,
+              containerHeight = scope.jqcontainer.height(),
+              containerHeightWithMargin = containerHeight + margin,
+              verticalCenter = containerHeight / 2 - legendHeight / 2,
+              horizontalCenter = containerWidth / 2 - legendWidth / 2;
           var defaultPosition = {
-            "left": scope.jqcontainer.width() + scope.layout.legendMargin,
+            "left": containerWidthWithMargin,
             "top": 0
           };
           if (!legendPosition) { return defaultPosition; }
           var position;
           if(legendPosition.position){
             switch(legendPosition.position){
+              case "TOP":
+                position = {
+                  "left": horizontalCenter,
+                  "top": -(legendHeightWithMargin)
+                };
+                break;
+              case "LEFT":
+                position = {
+                  "left": -(legendWidthWithMargin),
+                  "top": verticalCenter
+                };
+                break;
+              case "BOTTOM":
+                position = {
+                  "left": horizontalCenter,
+                  "bottom": -(legendHeightWithMargin)
+                };
+                break;
+              case "RIGHT":
+                position = {
+                  "left": containerWidthWithMargin,
+                  "bottom": verticalCenter
+                };
+                break;
               case "TOP_LEFT":
                 position = {
-                  "left": 0,
+                  "left": -(legendWidthWithMargin),
                   "top": 0
                 };
                 break;
@@ -677,13 +712,13 @@
                 break;
               case "BOTTOM_LEFT":
                 position = {
-                  "left": 0,
+                  "left": -(legendWidthWithMargin),
                   "bottom": 0
                 };
                 break;
               case "BOTTOM_RIGHT":
                 position = {
-                  "left": scope.jqcontainer.width() + scope.layout.legendMargin,
+                  "left": containerWidthWithMargin,
                   "bottom": 0
                 };
                 break;
@@ -727,12 +762,6 @@
 
           var legend = $("<table></table>").appendTo(legendDraggableContainer)
             .attr("id", "legends");
-
-          if (scope.legendResetPosition === true) {
-            scope.legendPosition = scope.getLegendPosition(scope.stdmodel.legendPosition);
-            scope.legendResetPosition = false;
-          }
-          legendScrollableContainer.css(scope.legendPosition);
 
           scope.legendMergedLines = scope.prepareMergedLegendData();
 
@@ -862,10 +891,20 @@
             }
           }
 
-          if(scope.stdmodel.legendPosition.position === "TOP_LEFT" || scope.stdmodel.legendPosition.position === "BOTTOM_LEFT") {
-            var legendWidth = legendScrollableContainer.width() + margin;
-            legendScrollableContainer.css("left", -legendWidth);
-            scope.jqcontainer.css("margin-left", legendWidth);
+          if (scope.legendResetPosition === true) {
+            scope.legendPosition = scope.getLegendPosition(scope.stdmodel.legendPosition, legendScrollableContainer);
+            scope.legendResetPosition = false;
+          }
+          legendScrollableContainer.css(scope.legendPosition);
+
+          if(["LEFT", "TOP_LEFT", "BOTTOM_LEFT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
+            scope.jqcontainer.css("margin-left", legendScrollableContainer.width() + margin);
+          }
+          if(scope.stdmodel.legendPosition.position === "TOP") {
+            scope.jqcontainer.css("margin-top", legendScrollableContainer.height() + margin);
+          }
+          if(scope.stdmodel.legendPosition.position === "BOTTOM") {
+            scope.jqcontainer.css("margin-bottom", legendScrollableContainer.height() + margin);
           }
         };
 

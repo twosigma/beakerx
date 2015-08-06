@@ -112,8 +112,13 @@ public class CppEvaluator {
     compileCommand.add("-I");
     compileCommand.add("./include");
     compileCommand.add("-I");
-    // Should add something appropriate for Linux
-    compileCommand.add("/System/Library/Frameworks/JavaVM.framework/Headers");
+    compileCommand.add(System.getenv("JAVA_HOME") + "/include");
+    compileCommand.add("-I");
+    compileCommand.add(System.getenv("JAVA_HOME") + "/include/linux");
+    compileCommand.add("-I");
+    compileCommand.add(System.getenv("JAVA_HOME") + "/include/darwin");
+
+    System.out.println(compileCommand);
 
     exit = false;
     currentClassPath = "";

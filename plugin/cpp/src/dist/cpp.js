@@ -71,8 +71,6 @@ define(function(require, exports, module) {
             datatype: 'json',
             url: bkHelper.serverUrl(serviceBase + '/rest/cpp/cancelExecution'),
             data: {shellId: self.settings.shellID}
-          }).done(function(ret) {
-            console.log('done cancelExecution', ret);
           });
           bkHelper.setupCancellingOutput(modelOutput);
         }
@@ -113,8 +111,6 @@ define(function(require, exports, module) {
         datatype: 'json',
         url: bkHelper.serverUrl(serviceBase + '/rest/cpp/resetEnvironment'),
         data: {shellId: this.settings.shellID}
-      }).done(function(ret) {
-        console.log('done resetEnvironment', ret);
       });
     },
     killAllThreads: function() {
@@ -123,8 +119,6 @@ define(function(require, exports, module) {
         datatype: 'json',
         url: bkHelper.serverUrl(serviceBase + '/rest/cpp/killAllThreads'),
         data: {shellId: this.settings.shellID}
-      }).done(function(ret) {
-        console.log('done killAllThreads', ret);
       });
     },
     autocomplete: function(code, cpos, cb) {
@@ -159,9 +153,6 @@ define(function(require, exports, module) {
       }
     },
     spec: {
-      // outdir:      {type: 'settableString', action: 'updateShell', name: 'Dynamic classes directory'},
-      // classPath:   {type: 'settableString', action: 'updateShell', name: 'Class path (jar files, one per line)'},
-      // imports:     {type: 'settableString', action: 'updateShell', name: 'Imports (classes, one per line)'},
       flags:       {type: 'settableString', action: 'updateShell', name: 'Compiler flags'},
       resetEnv:    {type: 'action', action: 'resetEnvironment', name: 'Reset Environment'},
       killAllThr:  {type: 'action', action: 'killAllThreads', name: 'Kill All Threads'}

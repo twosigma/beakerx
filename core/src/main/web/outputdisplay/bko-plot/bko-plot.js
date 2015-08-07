@@ -725,8 +725,8 @@
             }
           }else{
             position = {
-              "left": legendPosition.left,
-              "top": legendPosition.top
+              "left": legendPosition.x,
+              "top": legendPosition.y
             };
           }
           return position;

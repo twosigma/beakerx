@@ -412,7 +412,8 @@ abstract public class XYChart {
     return legendPosition;
   }
 
-  public void setLegendPosition(LegendPosition legendPosition) {
+  public XYChart setLegendPosition(LegendPosition legendPosition) {
     this.legendPosition = legendPosition;
+    return this;
   }
 }

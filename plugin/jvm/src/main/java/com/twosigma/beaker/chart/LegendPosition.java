@@ -40,8 +40,8 @@ public class LegendPosition implements java.io.Serializable {
   }
 
   private Position position;
-  private int top;
-  private int left;
+  private int x;
+  private int y;
 
   public LegendPosition() {
     this.position = Position.TOP_RIGHT;
@@ -53,9 +53,9 @@ public class LegendPosition implements java.io.Serializable {
 
   public LegendPosition(int[] coordinates) {
     if (!ArrayUtils.isEmpty(coordinates)) {
-      this.top = coordinates[0];
+      this.x = coordinates[0];
       if (coordinates.length > 1) {
-        this.left = coordinates[1];
+        this.y= coordinates[1];
       }
     }
   }
@@ -68,19 +68,19 @@ public class LegendPosition implements java.io.Serializable {
     this.position = position;
   }
 
-  public int getTop() {
-    return top;
+  public int getX() {
+    return x;
   }
 
-  public void setTop(int top) {
-    this.top = top;
+  public void setX(int x) {
+    this.x = x;
   }
 
-  public int getLeft() {
-    return left;
+  public int getY() {
+    return y;
   }
 
-  public void setLeft(int left) {
-    this.left = left;
+  public void setY(int y) {
+    this.y = y;
   }
 }

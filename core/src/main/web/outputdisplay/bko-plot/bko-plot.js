@@ -746,6 +746,11 @@
           var legendScrollableContainer = $("<div></div>").appendTo(scope.jqcontainer)
             .attr("class", "plot-legendscrollablecontainer")
             .draggable({
+              start: function( event, ui ) {
+                $(this).css({//avoid resizing for bottom-stacked legend
+                  "bottom": "auto"
+                });
+              },
               stop : function(event, ui) {
                 scope.legendPosition = {
                   "left" : ui.position.left,

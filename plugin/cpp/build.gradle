@@ -28,15 +28,39 @@ configurations {
   compile.extendsFrom provided
 }
 
-def java_comp = "readlink -f /usr/bin/javac".execute().text.trim();
-def java_home = java_comp.substring(0, java_comp.length() - 10);
+def osName = System.properties['os.name']
+def mac = false
+def win = false
+def linux = false
+def platform = ''
+if (osName.startsWith('Mac')) {
+  mac = true
+  platform = 'darwin'
+} else if (osName.startsWith('Windows')) {
+  win = true
+  platform = 'win32'
+} else if (osName.startsWith('Linux')) {
+  linux = true
+  platform = 'linux'
+}
+
+def java_home = "";
+if (mac){
+  java_home =  "readlink /usr/bin/javac".execute().text.trim()[0..-16];
+} else if (linux){
+  java_home = "readlink -f /usr/bin/javac".execute().text.trim()[0..-11];
+}
 
 task makeCRunLib(type: Exec, dependsOn: ['compileCppKernel', 'makeCppKernelHeader']) {
   inputs.file('./src/main/cpp/CRun.cpp')
   outputs.file('./src/main/cpp/libCRun.jnilib')
   workingDir './src/main/cpp'
   def jvmDir = project(':plugin:jvm').projectDir
-  commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/include", '-I', "${java_home}/include/linux", '-o', 'libCRun.jnilib', 'CRun.cpp'
+  if (mac){
+    commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/Headers", '-o', 'libCRun.jnilib', 'CRun.cpp'
+  } else if (linux) {
+    commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/include", '-I', "${java_home}/include/linux", '-o', 'libCRun.jnilib', 'CRun.cpp'
+  }
 }
 
 task copyBeakerHeader(type: Copy) {
@@ -89,7 +113,9 @@ compileJava {
 
 if (hasProperty('evalPluginDir')) {
   installApp.into new File(evalPluginDir, 'cpp')
-  installApp.finalizedBy copyCRun
+  if (mac || linux) {
+    installApp.finalizedBy copyCRun
+  }
 }
 
 if (hasProperty('includeDepsInJar')) {

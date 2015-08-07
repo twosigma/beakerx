@@ -157,6 +157,7 @@ define(function(require, exports, module) {
                         "com.twosigma.beaker.NamespaceClient",
                         "com.twosigma.beaker.BeakerProgressUpdate",
                         "com.twosigma.beaker.chart.Color",
+                        "com.twosigma.beaker.chart.LegendPosition",
                         "com.twosigma.beaker.chart.Filter",
                         "com.twosigma.beaker.chart.xychart.*",
                         "com.twosigma.beaker.chart.xychart.plotitem.*",

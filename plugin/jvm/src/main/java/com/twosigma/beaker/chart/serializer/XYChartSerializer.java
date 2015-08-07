@@ -90,8 +90,10 @@ public class XYChartSerializer extends JsonSerializer<XYChart> {
     jgen.writeObjectField("log_y", xychart.getLogY());
     jgen.writeObjectField("time_zone", xychart.getTimeZone());
     jgen.writeObjectField("crosshair", xychart.getCrosshair());
-    if (xychart.getLodThreshold() != null)
+    jgen.writeObjectField("legend_position", xychart.getLegendPosition());
+    if (xychart.getLodThreshold() != null) {
       jgen.writeObjectField("lodThreshold", xychart.getLodThreshold());
+    }
     jgen.writeEndObject();
   }
 

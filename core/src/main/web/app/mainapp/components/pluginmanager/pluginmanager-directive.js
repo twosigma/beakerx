@@ -74,9 +74,9 @@
         var result = {};
         for (var p in knownPlugins) {
           var status = false;
-          if (activePlugins[p])
+          if (activePlugins[p]) {
             status = "active";
-          else {
+          } else {
             for (var l in loadingPlugins) {
               if (loadingPlugins[l].plugin == p) {
                 status = "loading";

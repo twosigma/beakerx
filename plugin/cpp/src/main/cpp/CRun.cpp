@@ -15,6 +15,7 @@
  */
 #include "CppKernel.h"
 #include "beaker.hpp"
+#include <string.h>
 #include <jni.h>
 #include <dlfcn.h>
 

@@ -62,13 +62,6 @@
         label: 'Beaker',
         submenu: [
           {
-            label: 'Quit',
-            click: function() {
-              IPC.send('quit');
-            },
-            accelerator: _ctrlKey + '+Q'
-          },
-          {
             label: 'Change server',
             click: function() {
               IPC.send('try-change-server');
@@ -79,6 +72,19 @@
             click: function() {
               IPC.send('new-backend');
             }
+          },
+          {
+            label: 'Open in browser',
+            click: function() {
+              IPC.send('open-in-browser');
+            }
+          },
+          {
+            label: 'Quit',
+            click: function() {
+              IPC.send('quit');
+            },
+            accelerator: _ctrlKey + '+Q'
           }
         ]
       };

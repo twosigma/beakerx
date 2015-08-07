@@ -29,6 +29,11 @@
         isLarge: '=',
         position: '@'
       },
+      link: function($scope, element) {
+        $scope.hideOpenMenus = function() {
+          $(document).trigger('click.bs.dropdown.data-api');
+        };
+      },
       controller: function($scope) {
         var newCellFactory = bkSessionManager.getNotebookNewCellFactory();
         var recentlyAddedLanguage;

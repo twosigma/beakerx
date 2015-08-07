@@ -102,3 +102,9 @@ tbody tr {
 bk-output-display .progress-bar {
   line-height: 21px;
 }
+
+// https://github.com/FortAwesome/Font-Awesome/issues/1606
+.fa-hidden {
+  visibility: hidden;
+  width: 0;
+}

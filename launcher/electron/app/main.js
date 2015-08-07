@@ -18,6 +18,7 @@ var app = require('app');  // Module to control application life.
 var ipc = require('ipc');
 var http = require('http');
 var request = require('request');
+var shell = require('shell');
 var os = require('os');
 var crashReporter = require('crash-reporter');
 
@@ -122,12 +123,14 @@ ipc.on('change-server', function(e, address, hash) {
 });
 
 ipc.on('new-backend', function() {
-  killBackend();
+  windowManager.closeAll();
+  backendRunner.kill();
   backendRunner.startNew().on('ready', connectToBackend);
 });
 
 mainMenu.emitter.on('new-backend', function() {
-  killBackend();
+  windowManager.closeAll();
+  backendRunner.kill();
   backendRunner.startNew().on('ready', connectToBackend);
 });
 
@@ -137,6 +140,14 @@ mainMenu.emitter.on('new-empty-notebook', function() {
 
 mainMenu.emitter.on('new-default-notebook', function() {
   windowManager.newWindow(backendRunner.getUrl() + 'beaker/#/session/new', 'notebook');
+});
+
+mainMenu.emitter.on('open-in-browser', function() {
+  shell.openExternal(backendRunner.getUrl());
+});
+
+ipc.on('open-in-browser', function() {
+  shell.openExternal(backendRunner.getUrl());
 });
 
 ipc.on('new-window', function(e, url, type) {
@@ -157,7 +168,8 @@ function startServer() {
 
 function switchToBackend(address, hash) {
   if (address != backendRunner.getUrl()) {
-    killBackend();
+    windowManager.closeAll();
+    backendRunner.kill();
   }
   // Open new control panel there
   console.log('Switching to ' + address);

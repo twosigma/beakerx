@@ -30,7 +30,7 @@
 
     PlotLineLodLoader.prototype.format = function() {
       // create plot type index
-      this.lodTypeIndex = 0;
+      this.lodTypeIndex = 2;
       this.lodType = this.lodTypes[this.lodTypeIndex];
 
       // create the plotters

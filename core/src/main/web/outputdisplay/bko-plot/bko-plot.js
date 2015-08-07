@@ -21,7 +21,7 @@
 
 ( function() {
   'use strict';
-  var retfunc = function(plotUtils, plotFormatter, plotFactory, bkCellMenuPluginManager) {
+  var retfunc = function(plotUtils, plotFormatter, plotFactory, bkCellMenuPluginManager, bkSessionManager, bkUtils) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -75,7 +75,8 @@
             scope.update();
           }
         });
-        
+
+
         scope.resizeFunction = function() {
           // update resize maxWidth when the browser window resizes
           var width = element.width();
@@ -87,8 +88,6 @@
         scope.initLayout = function() {
           var model = scope.stdmodel;
 
-          element.find(".ui-icon-gripsmall-diagonal-se")
-            .removeClass("ui-icon ui-icon-gripsmall-diagonal-se"); // remove the ugly handle :D
           // hook container to use jquery interaction
           scope.container = d3.select(element[0]).select("#plotContainer");
           scope.jqcontainer = element.find("#plotContainer");
@@ -1053,7 +1052,7 @@
               bMargin = scope.layout.bottomLayoutMargin;
           message.css({
             "left" : (scope.jqcontainer.width() - lMargin) / 2 - w / 2 + lMargin,
-            "top" : (scope.jqcontainer.height() - bMargin) / 2 - h / 2,
+            "top" : (scope.jqcontainer.height() - bMargin) / 2 - h / 2
           });
         };
 
@@ -1476,8 +1475,14 @@
           scope.focus = {};
           scope.tips = {};
           scope.plotSize = {};
-          
+
           _(scope.plotSize).extend(scope.stdmodel.plotSize);
+          var savedstate = scope.model.getDumpState();
+          if (savedstate !== undefined && savedstate.plotSize !== undefined) {
+            scope.loadState(savedstate);
+          } else {
+            scope.setDumpState(scope.dumpState());
+          }
 
           // create layout elements
           scope.initLayout();
@@ -1505,14 +1510,6 @@
           // init remove pipe
           scope.removePipe = [];
 
-          if (scope.model.getDumpState !== undefined) {
-            var savedstate = scope.model.getDumpState();
-            if (savedstate !== undefined && savedstate.plotSize !== undefined) {
-              scope.loadState(savedstate);
-            } else {
-              scope.model.setDumpState(scope.dumpState());
-            }
-          }
           scope.calcMapping();
           scope.update();
         };
@@ -1537,23 +1534,53 @@
 
           scope.clearRemovePipe();
         };
-        
-        if (scope.model.getDumpState !== undefined) {
-          scope.getDumpState = function() {
+
+
+        scope.getDumpState = function () {
+          if (scope.model.getDumpState !== undefined) {
             return scope.model.getDumpState();
-          };
-        }
+          }
+        };
+
+
+        scope.setDumpState = function (state) {
+          if (scope.model.setDumpState !== undefined) {
+              scope.model.setDumpState(state);
+
+              bkSessionManager.setNotebookModelEdited(true);
+              bkUtils.refreshRootScope();
+          }
+        };
 
         scope.init(); // initialize
+        scope.$watch('getDumpState()', function (result) {
+          if (result !== undefined && result.plotSize === undefined) {
+            scope.setDumpState(scope.dumpState());
+          }
+        });
 
-        if (scope.model.getDumpState !== undefined) {
-          scope.$watch('getDumpState()', function(result) {
-            if (result !== undefined && result.plotSize === undefined) {
-              scope.model.setDumpState(scope.dumpState());
-            }
-          });
-        }
-        
+        scope.getCellWidth = function () {
+          return scope.container.node().getBoundingClientRect().width;
+        };
+
+        scope.getCellHeight= function () {
+          return scope.container.node().getBoundingClientRect().height;
+        };
+
+        var watchCellSize = function () {
+          scope.plotSize.width = scope.getCellWidth();
+          scope.plotSize.height = scope.getCellHeight();
+          scope.setDumpState(scope.dumpState());
+        };
+
+        scope.$watch('getCellWidth()', function () {
+          watchCellSize();
+        });
+
+        scope.$watch('getCellHeight()', function () {
+          watchCellSize();
+        });
+
         scope.getCellModel = function() {
           return scope.model.getCellModel();
         };
@@ -1561,13 +1588,13 @@
           scope.init();
         });
         
-        scope.$on('$destroy', function() {     
+        scope.$on('$destroy', function() {
+          scope.setDumpState(scope.dumpState());
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
         });
-        
       }
     };
   };
-  beaker.bkoDirective("Plot", ["plotUtils", "plotFormatter", "plotFactory", "bkCellMenuPluginManager", retfunc]);
+  beaker.bkoDirective("Plot", ["plotUtils", "plotFormatter", "plotFactory", "bkCellMenuPluginManager", "bkSessionManager", "bkUtils", retfunc]);
 })();

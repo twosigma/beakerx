@@ -39,7 +39,6 @@ public class ROutputHandler extends Thread {
   private final String endMagic;
   private final static Logger logger = Logger.getLogger(ROutputHandler.class.getName());
   private final Semaphore capsem = new Semaphore(0);
-  private String resultsjson;
   
   public ROutputHandler(InputStream stream, String beginMagic, String endMagic) {
     this.stream = stream;
@@ -50,11 +49,12 @@ public class ROutputHandler extends Thread {
   }
 
   public void reset(SimpleEvaluationObject dest) {
-    this.dest = dest;
+    this.dest     = dest;
+    this.captured = null;
   }
 
-  public void setResultsJson(String r) {
-    this.resultsjson = r;
+  public String getCaptured() {
+    return this.captured;
   }
   
   public void waitForCapture() {
@@ -74,11 +74,7 @@ public class ROutputHandler extends Thread {
           logger.fine("begin capturing");
           this.recording = true;
         } else if ((line.indexOf(this.endMagic) >= 0) && this.dest!=null) {        
-          if (this.captured != null)
-            this.dest.finished(this.captured, this.resultsjson);
           logger.fine("end capturing: '"+this.captured+"'");
-          this.dest = null;
-          this.captured = null;
           this.recording = false;
           capsem.release();
         } else if (this.recording) {

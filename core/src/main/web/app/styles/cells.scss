@@ -134,10 +134,10 @@ bk-section-cell {
     position: relative;
     border-top: solid 1px #CCC;
     box-sizing: content-box;
-    min-height: 20px;
+    min-height: 14px;
 
     .advanced-mode & {
-      min-height: 18px;
+      min-height: 17px;
       padding: 8px $grid-gutter-width;
     }
 
@@ -169,13 +169,25 @@ bk-code-cell .locked .code-cell-output {
   margin-top: 0;
 }
 
-bk-output-display pre {
-  border:     none;
-  margin:     0;
-  padding:    0;
-  overflow:   visible;
-  line-height: 1;
-  background: transparent;
+bk-output-display {
+  pre {
+    border:     none;
+    margin:     0;
+    padding:    0;
+    overflow:   visible;
+    line-height: 1;
+    background: transparent;
+  }
+
+  &[type="Results"] .list-unstyled {
+    margin-bottom: 0;
+    padding-top: 2px;
+  }
+
+  &[type="Text"] pre{
+    padding-top: 3px;
+  }
+
 }
 
 .code-cell-hidden {

@@ -460,9 +460,14 @@
                     && efc.getComponent().editable === 'true';
                 comboBox.attr('easyform-editable', editable);
                 element.find( ".combo-box[ng-model=\"" + scope.ngModelAttr + "\"]" ).combobox();
+                if (editable && efc.getComponent().width
+                    && parseInt(efc.getComponent().width)
+                        > efc.constants.Components.ComboBox.MIN_WIDTH) {
+                  element.find('.custom-combobox-input')
+                      .css('width', parseInt(efc.getComponent().width) + 1 + 'ch');
+                }
 
                 if (!efc.getComponent().values) {
-                  //comboBox.attr('ng-options', 'v for v in component.values');
                   efc.getComponent().values = [];
                 }
                 scope.values = efc.getComponent().values;
@@ -956,7 +961,8 @@
       },
       ComboBox: {
         type: "ComboBox",
-        htmlTag: "<easy-form-combo-box/>"
+        htmlTag: "<easy-form-combo-box/>",
+        MIN_WIDTH: 1
       },
       ListComponent: {
         type: "ListComponent",

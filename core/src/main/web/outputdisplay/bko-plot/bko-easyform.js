@@ -236,7 +236,8 @@
               efc.buildUI = function() {
                 var fixedSize = false;
                 if (!efc.getComponent().width
-                    || efc.getComponent().width < efc.constants.Components.TextField.MIN_WIDTH) {
+                    || parseInt(efc.getComponent().width)
+                      < efc.constants.Components.TextField.MIN_WIDTH) {
                   efc.getComponent().width = efc.constants.Components.TextField.MIN_WIDTH;
                 } else {
                   fixedSize = true;
@@ -265,8 +266,7 @@
                 "<div class='easyform-container'>" +
                   "<label class='easyform-label'/>" +
                   "<div class='easyform-component-container'>" +
-                    "<textarea rows='4' cols='35' class='text-area' " +
-                    "ng-disabled='!component.enabled'/>" +
+                    "<textarea class='text-area' ng-disabled='!component.enabled'/>" +
                   "</div>" +
                 "</div>",
             link: function (scope, element, attrs) {
@@ -275,9 +275,28 @@
                   scope, element, EasyFormConstants, EasyFormService, bkUtils);
 
               efc.buildUI = function() {
+                var fixedSize = false;
+                if (!efc.getComponent().height
+                    || parseInt(efc.getComponent().height)
+                      < efc.constants.Components.TextArea.MIN_HEIGHT) {
+                  efc.getComponent().height = efc.constants.Components.TextArea.MIN_HEIGHT;
+                }
+                if (!efc.getComponent().width
+                    || parseInt(efc.getComponent().width)
+                      < efc.constants.Components.TextArea.MIN_WIDTH) {
+                  efc.getComponent().width = efc.constants.Components.TextArea.MIN_WIDTH;
+                } else {
+                  fixedSize = true;
+                }
                 element.find('.easyform-label').text(efc.getComponent().label);
                 var textArea = element.find('.text-area');
-                textArea.attr('ng-model', scope.ngModelAttr);
+                textArea
+                    .attr('ng-model', scope.ngModelAttr)
+                    .attr('rows', efc.getComponent().height);
+                if (fixedSize) {
+                  element.find('.easyform-component-container').addClass('fixed-size');
+                  textArea.css('width', parseInt(efc.getComponent().width) + 1.5 + 'ch');
+                }
               };
 
               efc.init();
@@ -949,7 +968,9 @@
       },
       TextArea: {
         type: "TextArea",
-        htmlTag: "<easy-form-text-area/>"
+        htmlTag: "<easy-form-text-area/>",
+        MIN_WIDTH: 1,
+        MIN_HEIGHT: 3
       },
       CheckBox: {
         type: "CheckBox",

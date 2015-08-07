@@ -26,5 +26,11 @@ public class TextAreaSerializer extends AbstractEasyFormComponentSerializer<Text
   @Override
   protected void writeSubclassFields(final JsonGenerator jgen,
                                      final TextArea component) throws IOException {
+    if (component.getWidth() != null) {
+      jgen.writeObjectField("width", component.getWidth().toString());
+    }
+    if (component.getHeight() != null) {
+      jgen.writeObjectField("height", component.getHeight().toString());
+    }
   }
 }

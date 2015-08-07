@@ -112,11 +112,11 @@ public class CppEvaluator {
     compileCommand.add("-I");
     compileCommand.add("./include");
     compileCommand.add("-I");
-    compileCommand.add(System.getenv("JAVA_HOME") + "/include");
+    compileCommand.add(System.getenv().get("JAVA_HOME") + "/include");
     compileCommand.add("-I");
-    compileCommand.add(System.getenv("JAVA_HOME") + "/include/linux");
+    compileCommand.add(System.getenv().get("JAVA_HOME") + "/include/linux");
     compileCommand.add("-I");
-    compileCommand.add(System.getenv("JAVA_HOME") + "/include/darwin");
+    compileCommand.add(System.getenv().get("JAVA_HOME") + "/include/darwin");
 
     exit = false;
     currentClassPath = "";

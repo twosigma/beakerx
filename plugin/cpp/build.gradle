@@ -35,7 +35,8 @@ task makeCRunLib(type: Exec, dependsOn: ['compileCppKernel', 'makeCppKernelHeade
   outputs.file('./src/main/cpp/libCRun.jnilib')
   workingDir './src/main/cpp'
   def jvmDir = project(':plugin:jvm').projectDir
-  commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/include", '-I', "${java_home}/include/linux", '-o', 'libCRun.jnilib', 'CRun.cpp'
+  //commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/include", '-I', "${java_home}/include/linux", '-o', 'libCRun.jnilib', 'CRun.cpp'
+  commandLine 'ls', "${java_home}"
 }
 
 task copyBeakerHeader(type: Copy) {

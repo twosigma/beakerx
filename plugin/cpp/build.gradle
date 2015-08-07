@@ -28,20 +28,14 @@ configurations {
   compile.extendsFrom provided
 }
 
-def java_home_baos = new ByteArrayOutputStream()
-exec{
-    commandLine 'readlink', '-f', '/usr/bin/javac'
-    standardOutput = java_home_baos;
-}
-// Remove /bin/javac from tail
-def java_home = java_home_baos.toString()[0..-11]
+def java_home = "readlink -f /usr/bin/javac".execute().text.trim()
 
 task makeCRunLib(type: Exec, dependsOn: ['compileCppKernel', 'makeCppKernelHeader']) {
   inputs.file('./src/main/cpp/CRun.cpp')
   outputs.file('./src/main/cpp/libCRun.jnilib')
   workingDir './src/main/cpp'
   def jvmDir = project(':plugin:jvm').projectDir
-  commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/include", '-o', 'libCRun.jnilib', 'CRun.cpp'
+  commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/include", '-I', "${java_home}/include/linux", '-o', 'libCRun.jnilib', 'CRun.cpp'
 }
 
 task copyBeakerHeader(type: Copy) {

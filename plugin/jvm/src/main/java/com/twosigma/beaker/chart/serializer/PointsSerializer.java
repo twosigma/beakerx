@@ -39,6 +39,8 @@ public class PointsSerializer extends JsonSerializer<Points> {
     jgen.writeObjectField("y", points.getY());
     jgen.writeObjectField("visible", points.getVisible());
     jgen.writeObjectField("display_name", points.getDisplayName());
+    if (points.getLodFilter() != null)
+      jgen.writeObjectField("lod_filter", points.getLodFilter().getText());
     if (points.getSizes() != null) {
       jgen.writeObjectField("sizes", points.getSizes());
     } else {

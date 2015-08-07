@@ -26,11 +26,11 @@
     };
     // class constants
     PlotPointLodLoader.prototype.lodTypes = ["point", "box"];
-    PlotPointLodLoader.prototype.lodSteps = [5, 10];
+    PlotPointLodLoader.prototype.lodSteps = [3, 10];
 
     PlotPointLodLoader.prototype.format = function() {
       // create plot type index
-      this.lodTypeIndex = 0;
+      this.lodTypeIndex =  (this.datacopy.lod_filter) ? this.lodTypes.indexOf(this.datacopy.lod_filter) : 0;
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
       // create the plotters
@@ -168,10 +168,14 @@
     };
 
     PlotPointLodLoader.prototype.applyLodType = function(type) {
-      this.lodType = type;
-      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
-      if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
-      this.createLodPlotter();
+      if (!this.datacopy.lod_filter) {
+        this.lodType = type;
+        this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+        if (this.lodTypeIndex === -1) {
+          this.lodTypeIndex = 0;
+        }
+        this.createLodPlotter();
+      }
     };
 
     PlotPointLodLoader.prototype.createSampler = function() {

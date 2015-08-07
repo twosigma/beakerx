@@ -40,6 +40,8 @@ public class AreaSerializer extends JsonSerializer<Area> {
     jgen.writeObjectField("y", area.getY());
     jgen.writeObjectField("visible", area.getVisible());
     jgen.writeObjectField("display_name", area.getDisplayName());
+    if (area.getLodFilter() != null)
+      jgen.writeObjectField("lod_filter", area.getLodFilter().getText());
     if (area.getColor() instanceof Color) {
       jgen.writeObjectField("color", area.getColor());
     }

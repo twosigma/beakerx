@@ -37,6 +37,7 @@ public class EasyForm extends ObservableMap<String, Object> {
 
   public static final Integer HORIZONTAL = 1;
   public static final Integer VERTICAL = 2;
+  private static final Integer AUTO_WIDTH = -1;
 
   private final String caption;
   private String id;
@@ -107,10 +108,18 @@ public class EasyForm extends ObservableMap<String, Object> {
   public void addComboBox(final String label,
                           final Collection<String> values,
                           final Boolean editable) throws Exception {
+    addComboBox(label, values, editable, EasyForm.AUTO_WIDTH);
+  }
+
+  public void addComboBox(final String label,
+                          final Collection<String> values,
+                          final Boolean editable,
+                          final Integer width) throws Exception {
     ComboBox comboBox = new ComboBox();
     comboBox.setLabel(label);
     comboBox.setEditable(editable);
     comboBox.setValues(values);
+    comboBox.setWidth(width);
     if (values != null && values.size() > 0) {
       comboBox.setValue(values.iterator().next());
     }

@@ -37,6 +37,7 @@ public class EasyForm extends ObservableMap<String, Object> {
 
   public static final Integer HORIZONTAL = 1;
   public static final Integer VERTICAL = 2;
+  private static final Integer AUTO_WIDTH = -1;
 
   private final String caption;
   private String id;
@@ -76,14 +77,26 @@ public class EasyForm extends ObservableMap<String, Object> {
   }
 
   public void addTextArea(final String label) throws Exception {
-    TextArea textArea = new TextArea();
-    textArea.setLabel(label);
-    addComponentOrThrow(label, textArea);
+    addTextArea(label, null, TextArea.AUTO_WIDTH, TextArea.AUTO_HEIGHT);
+  }
+
+  public void addTextArea(final String label, final Integer width, final Integer height)
+      throws Exception {
+    addTextArea(label, null, width, height);
   }
 
   public void addTextArea(final String label, final String initialValue) throws Exception {
+    addTextArea(label, initialValue, TextArea.AUTO_WIDTH, TextArea.AUTO_HEIGHT);
+  }
+
+  public void addTextArea(final String label,
+                          final String initialValue,
+                          final Integer width,
+                          final Integer height) throws Exception {
     TextArea textArea = new TextArea();
     textArea.setLabel(label);
+    textArea.setWidth(width);
+    textArea.setHeight(height);
     textArea.setValue(initialValue);
     addComponentOrThrow(label, textArea);
   }
@@ -107,10 +120,18 @@ public class EasyForm extends ObservableMap<String, Object> {
   public void addComboBox(final String label,
                           final Collection<String> values,
                           final Boolean editable) throws Exception {
+    addComboBox(label, values, editable, EasyForm.AUTO_WIDTH);
+  }
+
+  public void addComboBox(final String label,
+                          final Collection<String> values,
+                          final Boolean editable,
+                          final Integer width) throws Exception {
     ComboBox comboBox = new ComboBox();
     comboBox.setLabel(label);
     comboBox.setEditable(editable);
     comboBox.setValues(values);
+    comboBox.setWidth(width);
     if (values != null && values.size() > 0) {
       comboBox.setValue(values.iterator().next());
     }

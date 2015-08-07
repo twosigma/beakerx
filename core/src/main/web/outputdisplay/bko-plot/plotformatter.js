@@ -16,7 +16,8 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils, plotConverter, PlotAxis, plotFactory, plotUtils) {
+  var retfunc = function(bkUtils, plotConverter, PlotAxis, plotFactory, plotUtils, bkHelper) {
+
     return {
       lineDasharrayMap : {
         "solid" : "",
@@ -276,7 +277,8 @@
           // recreate rendering objects
           item.index = i;
           item.id = "i" + i;
-          data[i] = plotFactory.createPlotItem(item);
+
+          data[i] = plotFactory.createPlotItem(item, newmodel.lodThreshold);
         }
 
         // apply log to focus
@@ -381,6 +383,10 @@
           };
         }
 
+        newmodel.lodThreshold = (model.lodThreshold) ?
+          model.lodThreshold :
+          bkHelper.getBkNotebookViewModel().getLodThreshold();
+
         newmodel.data = [];
 
         if (model.version === "groovy") {
@@ -467,5 +473,5 @@
     };
   };
   beaker.bkoFactory('plotFormatter',
-    ["bkUtils", 'plotConverter', 'PlotAxis', 'plotFactory', 'plotUtils', retfunc]);
+    ["bkUtils", 'plotConverter', 'PlotAxis', 'plotFactory', 'plotUtils', 'bkHelper', retfunc]);
 })();

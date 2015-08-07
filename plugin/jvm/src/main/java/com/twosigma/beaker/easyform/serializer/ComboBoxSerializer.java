@@ -29,6 +29,9 @@ public class ComboBoxSerializer extends AbstractEasyFormComponentSerializer<Comb
     if (component.getEditable() != null) {
       jgen.writeObjectField("editable", component.getEditable().toString());
     }
+    if (component.getWidth() != null) {
+      jgen.writeObjectField("width", component.getWidth().toString());
+    }
     if (component.getValues() != null && component.getValues().size() > 0) {
       jgen.writeArrayFieldStart("values");
       for (String value : component.getValues()) {

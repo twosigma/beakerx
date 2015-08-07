@@ -36,6 +36,8 @@ public class LineSerializer extends JsonSerializer<Line> {
     jgen.writeObjectField("y", line.getY());
     jgen.writeObjectField("visible", line.getVisible());
     jgen.writeObjectField("display_name", line.getDisplayName());
+    if (line.getLodFilter() != null)
+      jgen.writeObjectField("lod_filter", line.getLodFilter().getText());
     if (line.getColor() instanceof Color) {
       jgen.writeObjectField("color", line.getColor());
     }

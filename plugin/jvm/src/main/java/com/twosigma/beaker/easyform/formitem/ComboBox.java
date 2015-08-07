@@ -24,6 +24,7 @@ public class ComboBox extends EasyFormComponent {
 
   private Boolean editable;
   private Collection<String> values;
+  private Integer width;
 
   public void setEditable(final Boolean editable) {
     this.editable = editable;
@@ -39,5 +40,13 @@ public class ComboBox extends EasyFormComponent {
 
   public Collection<String> getValues() {
     return values;
+  }
+
+  public void setWidth(final Integer width) {
+    this.width = width;
+  }
+
+  public Integer getWidth() {
+    return width;
   }
 }

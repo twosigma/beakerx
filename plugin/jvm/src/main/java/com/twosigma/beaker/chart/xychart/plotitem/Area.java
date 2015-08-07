@@ -17,10 +17,15 @@
 package com.twosigma.beaker.chart.xychart.plotitem;
 
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.Filter;
+
+import java.util.EnumSet;
 import java.util.List;
 
 
 public class Area extends XYGraphics {
+
+  private final static EnumSet<Filter> POSSIBLE_LOD_FILTERS = EnumSet.of(Filter.AREA, Filter.RIVER);
 
   private Color color;
   private Number baseBase = 0.0d;
@@ -73,5 +78,10 @@ public class Area extends XYGraphics {
 
   public Integer getInterpolation() {
     return this.interpolation;
+  }
+
+  @Override
+  protected EnumSet<Filter> getPossibleFilters() {
+    return POSSIBLE_LOD_FILTERS;
   }
 }

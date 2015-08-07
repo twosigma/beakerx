@@ -42,6 +42,26 @@
           $scope.cellmodel.collapsed = !$scope.cellmodel.collapsed;
           $scope.$broadcast('beaker.section.toggled', $scope.cellmodel.collapsed);
         };
+
+        $scope.isLeaf = function() {
+          return notebookCellOp.getNextSibling($scope.cellmodel.id) === null;
+        };
+
+        $scope.isAntecedentSectionSiblingPrimogeniture = function() {
+          var prev = notebookCellOp.getPrevSection($scope.cellmodel.id) || {level: $scope.cellmodel.level};
+
+          return prev.level < $scope.cellmodel.level;
+        };
+
+        $scope.isBranch = function() {
+          var hasSiblingSection = notebookCellOp.getNextSibling($scope.cellmodel.id) !== null;
+          var hasChildSections = _.any(notebookCellOp.getAllDescendants($scope.cellmodel.id), function(child) {
+            return child.type === 'section';
+          })
+
+          return hasSiblingSection || hasChildSections;
+        };
+
         $scope.isShowChildren = function() {
           return !$scope.cellmodel.collapsed;
         };

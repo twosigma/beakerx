@@ -26,6 +26,7 @@ include 'shared',
         'plugin:scala',
         'plugin:clojure',
         'plugin:kdb'
+        'plugin:cpp'
 
 project(':shared').projectDir = file("../shared")
 project(':plugin:jvm').projectDir = file("./jvm")
@@ -40,3 +41,4 @@ project(':plugin:r').projectDir = file("./r")
 project(':plugin:scala').projectDir = file("./scala")
 project(':plugin:clojure').projectDir = file("./clojure")
 project(':plugin:kdb').projectDir = file("./kdb")
+project(':plugin:cpp').projectDir = file("./cpp")

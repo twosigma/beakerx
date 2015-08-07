@@ -90,3 +90,7 @@ core/src/main/web/vendor/bower_components/datatables/media/images/Sorting icons.
 core/src/main/web/vendor/bower_components/datatables/media/images/favicon.ico
 
 core/src/main/web/vendor/bower_components/katex-build/katex.html
+
+plugin/cpp/src/main/cpp/CppKernel.h
+plugin/cpp/src/main/cpp/libCRun.jnilib
+plugin/cpp/src/main/java/com/twosigma/beaker/cpp/autocomplete

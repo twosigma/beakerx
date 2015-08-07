@@ -27,11 +27,11 @@
     };
     // class constants
     PlotAreaLodLoader.prototype.lodTypes = ["area", "river"];
-    PlotAreaLodLoader.prototype.lodSteps = [5, 5];
+    PlotAreaLodLoader.prototype.lodSteps = [1, 3];
 
     PlotAreaLodLoader.prototype.format = function() {
       // create plot type index
-      this.lodTypeIndex = 0;
+      this.lodTypeIndex =  (this.datacopy.lod_filter) ? this.lodTypes.indexOf(this.datacopy.lod_filter) : 0;
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
       // create the plotters
@@ -94,10 +94,14 @@
     };
 
     PlotAreaLodLoader.prototype.applyLodType = function(type) {
-      this.lodType = type;
-      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
-      if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
-      this.createLodPlotter();
+      if (!this.datacopy.lod_filter) {
+        this.lodType = type;
+        this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+        if (this.lodTypeIndex === -1) {
+          this.lodTypeIndex = 0;
+        }
+        this.createLodPlotter();
+      }
     };
 
     PlotAreaLodLoader.prototype.createLodPlotter = function() {

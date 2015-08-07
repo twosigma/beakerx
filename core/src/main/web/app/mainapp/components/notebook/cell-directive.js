@@ -99,6 +99,10 @@
           return $scope.index + $scope.getNestedLevel();
         };
 
+        $scope.isRoot = function() {
+          return $scope.$parent.getNestedLevel === undefined;
+        };
+
         $scope.toggleShowDebugInfo = function() {
           $scope.cellview.showDebugInfo = !$scope.cellview.showDebugInfo;
         };

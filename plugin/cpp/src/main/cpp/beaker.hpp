@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 #include <jni.h>
+#include <string.h>
 #include <string>
 #include <iostream>
 #include <vector>

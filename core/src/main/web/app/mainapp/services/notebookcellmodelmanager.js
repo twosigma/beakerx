@@ -477,6 +477,15 @@
         replaceWholeArray(cells, _.flatten([slice1, slice2, slice3]));
         recreateCellMap();
       },
+      getPrevSection: function(id) {
+        var prev = this.getPrev(id);
+
+        while (prev !== null && prev.type !== "section") {
+          prev = this.getPrev(prev.id);
+        }
+
+        return prev;
+      },
       getPrevSibling: function(id) {
         var parentId = this._getDecoratedCell(id).parent;
         if (!parentId) {

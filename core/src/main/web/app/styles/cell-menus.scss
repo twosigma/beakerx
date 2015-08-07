@@ -16,7 +16,8 @@
 
 bk-new-cell-menu {
   display: block;
-  margin: 15px 0;
+  margin: 15px 0 0 0;
+  padding-bottom: 15px;
 
   .btn {
     margin-right: 3px;
@@ -40,6 +41,7 @@ bk-new-cell-menu {
 
   .advanced-mode &:not(.large) {
     margin: 0;
+    padding: 0;
   }
 
   .section-menu.dropdown-menu {

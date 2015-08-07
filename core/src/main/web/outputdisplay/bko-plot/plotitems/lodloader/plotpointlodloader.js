@@ -26,7 +26,7 @@
     };
     // class constants
     PlotPointLodLoader.prototype.lodTypes = ["point", "box"];
-    PlotPointLodLoader.prototype.lodSteps = [5, 10];
+    PlotPointLodLoader.prototype.lodSteps = [3, 10];
 
     PlotPointLodLoader.prototype.format = function() {
       // create plot type index

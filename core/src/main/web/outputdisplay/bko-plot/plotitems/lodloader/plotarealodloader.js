@@ -27,7 +27,7 @@
     };
     // class constants
     PlotAreaLodLoader.prototype.lodTypes = ["area", "river"];
-    PlotAreaLodLoader.prototype.lodSteps = [5, 5];
+    PlotAreaLodLoader.prototype.lodSteps = [1, 3];
 
     PlotAreaLodLoader.prototype.format = function() {
       // create plot type index

@@ -26,7 +26,7 @@
     };
     // class constants
     PlotBarLodLoader.prototype.lodTypes = ["bar", "box"];
-    PlotBarLodLoader.prototype.lodSteps = [5, 10];
+    PlotBarLodLoader.prototype.lodSteps = [3, 10];
 
     PlotBarLodLoader.prototype.format = function() {
       // create plot type index

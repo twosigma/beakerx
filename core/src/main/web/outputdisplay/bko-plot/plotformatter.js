@@ -277,7 +277,8 @@
           // recreate rendering objects
           item.index = i;
           item.id = "i" + i;
-          data[i] = plotFactory.createPlotItem(item, bkHelper.getBkNotebookViewModel().getLodThreshold());
+
+          data[i] = plotFactory.createPlotItem(item, newmodel.lodThreshold);
         }
 
         // apply log to focus
@@ -379,6 +380,10 @@
             timezone : model.timezone
           };
         }
+
+        newmodel.lodThreshold = (model.lodThreshold) ?
+          model.lodThreshold :
+          bkHelper.getBkNotebookViewModel().getLodThreshold();
 
         newmodel.data = [];
 

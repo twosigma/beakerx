@@ -26,7 +26,7 @@
     };
     // class constants
     PlotLineLodLoader.prototype.lodTypes = ["line", "box", "river"];
-    PlotLineLodLoader.prototype.lodSteps = [5, 10, 5];
+    PlotLineLodLoader.prototype.lodSteps = [1, 10, 3];
 
     PlotLineLodLoader.prototype.format = function() {
       // create plot type index

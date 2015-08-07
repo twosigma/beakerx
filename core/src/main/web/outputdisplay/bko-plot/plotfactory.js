@@ -24,7 +24,7 @@
     return {
       createPlotItem : function(item, lodthresh) {
         if (!lodthresh){
-          lodthresh = 4500;
+          lodthresh = 1500;
         }
         var size = item.elements.length;
         var plotitem;

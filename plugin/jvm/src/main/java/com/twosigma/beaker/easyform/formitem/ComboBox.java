@@ -26,6 +26,11 @@ public class ComboBox extends EasyFormComponent {
   private Collection<String> values;
   private Integer width;
 
+  @Override
+  protected boolean checkValue(final Object value) {
+    return editable || (values != null && values.contains(value));
+  }
+
   public void setEditable(final Boolean editable) {
     this.editable = editable;
   }

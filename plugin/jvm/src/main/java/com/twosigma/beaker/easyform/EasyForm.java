@@ -264,31 +264,34 @@ public class EasyForm extends ObservableMap<String, Object> {
   }
 
   public Object get(final Object key) {
-    if (!getComponentMap().containsKey(key)) {
-      throw new IllegalArgumentException(
-          String.format("The requested component \"%s\" does not exist.", key));
-    }
+    checkComponentExists((String) key);
     return getComponentMap().get(key).getValue();
   }
 
   public Object put(final String key, final Object value) {
-    checkValueForComponent(getComponentMap().get(key), value);
-    Object previousValue = get(key);
-    getComponentMap().get(key).setValue(value);
+    checkComponentExists(key);
+    EasyFormComponent component = getComponentMap().get(key);
+    if (!component.checkValue(value)) {
+      throw new IllegalArgumentException(
+          String.format("\"%s\" is not a valid option for %s \"%s\".",
+              value, component.getClass().getSimpleName(), key));
+    }
+    Object previousValue = component.getValue();
+    component.setValue(value);
     setChanged();
     notifyObservers();
     return previousValue;
   }
 
-  private void checkValueForComponent(final EasyFormComponent component, final Object value) {
-    if (component instanceof CheckBox
-        && !((value instanceof Boolean)
-        || "true".equalsIgnoreCase(String.valueOf(value))
-        || "false".equalsIgnoreCase(String.valueOf(value)))) {
+  private void checkComponentExists(final String key) {
+    if (!componentExists(key)) {
       throw new IllegalArgumentException(
-          String.format("Only boolean values allowed for CheckBox. Component: %s, value: %s",
-              component.getLabel(), value));
+          String.format("The requested component \"%s\" does not exist.", key));
     }
+  }
+
+  private boolean componentExists(final String key) {
+    return getComponentMap().containsKey(key);
   }
 
   public void setEnabled(final String label, final Boolean enabled) {

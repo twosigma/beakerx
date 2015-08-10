@@ -764,7 +764,8 @@
 
           scope.legendMergedLines = scope.prepareMergedLegendData();
 
-          if (Object.keys(scope.legendMergedLines).length > 1) {  // skip "All" check when there is only one line
+          if (!scope.stdmodel.omitCheckboxes &&
+              Object.keys(scope.legendMergedLines).length > 1) {  // skip "All" check when there is only one line
             var unit = $("<tr></tr>").appendTo(legend)
               .attr("id", "legend_all");
             $("<input type='checkbox'></input>")
@@ -794,15 +795,17 @@
             if (line.legend == null || line.legend === "") { continue; }
             var unit = $("<tr></tr>").appendTo(legend)
               .attr("id", "legend_" + id);
-            // checkbox
-            $("<input type='checkbox'></input>")
-              .attr("id", "legendcheck_" + id)
-              .attr("class", "plot-legendcheckbox")
-              .prop("checked", line.showItem)
-              .click(function(e) {
-                return scope.toggleVisibility(e);
-              })
-              .appendTo($("<td></td>").appendTo(unit));
+            if(!scope.stdmodel.omitCheckboxes){
+              // checkbox
+              $("<input type='checkbox'></input>")
+                .attr("id", "legendcheck_" + id)
+                .attr("class", "plot-legendcheckbox")
+                .prop("checked", line.showItem)
+                .click(function(e) {
+                  return scope.toggleVisibility(e);
+                })
+                .appendTo($("<td></td>").appendTo(unit));
+            }
 
             var clr = plotUtils.createColor(line.color, line.color_opacity),
                 st_clr = plotUtils.createColor(line.stroke, line.stroke_opacity);

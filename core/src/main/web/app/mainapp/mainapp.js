@@ -565,7 +565,6 @@
           };
 
           function _closeNotebook() {
-            var self = this;
             var closeSession = function() {
               bkSessionManager.close().then(function() {
                 bkCoreManager.gotoControlPanel();
@@ -579,7 +578,7 @@
                   "Do you want to save " + notebookTitle + "?",
                   "Confirm close",
                   function() {
-                    self.saveNotebook().then(closeSession);
+                    _impl.saveNotebook().then(closeSession);
                   },
                   function() {
                     closeSession();
@@ -596,7 +595,7 @@
                   "Warning!",
                   function() {
                     bkEvaluateJobManager.cancelAll().then(function() {
-                      self._closeNotebook();
+                      _impl._closeNotebook();
                     }
                   ); });
             } else

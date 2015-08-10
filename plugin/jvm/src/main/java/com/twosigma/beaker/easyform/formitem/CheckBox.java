@@ -19,4 +19,11 @@ package com.twosigma.beaker.easyform.formitem;
 import com.twosigma.beaker.easyform.EasyFormComponent;
 
 public class CheckBox extends EasyFormComponent<Boolean> {
+
+  @Override
+  protected boolean checkValue(final Object value) {
+    return Boolean.TRUE.toString().equalsIgnoreCase(String.valueOf(value))
+        || Boolean.FALSE.toString().equalsIgnoreCase(String.valueOf(value));
+  }
+
 }

@@ -46,4 +46,11 @@ public class EasyFormComponent<T> {
   public void setValue(final T value) {
     this.value = value;
   }
+
+  /**
+   * Throw IllegalArgumentException if such value can't be set to this component
+   */
+  protected boolean checkValue(Object value) {
+    return true;
+  }
 }

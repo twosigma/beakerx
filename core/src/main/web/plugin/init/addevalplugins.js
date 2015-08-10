@@ -27,7 +27,8 @@
       "Scala": { url : "./plugins/eval/scala/scala.js", bgColor: "#B41703", fgColor: "#FFFFFF", borderColor: "", shortName: "Sc" },
       "Clojure": { url : "./plugins/eval/clojure/clojure.js", bgColor: "#5881d8", fgColor: "#FFFFFF", borderColor: "", shortName: "Cj" },
       "Node": { url : "./plugins/eval/node/node.js", bgColor: "#8EC453", fgColor: "#FFFFFF", borderColor: "", shortName: "N" },
-      "Kdb": { url : "./plugins/eval/kdb/kdb.js", bgColor: "#005e99", fgColor: "#FFFFFF", borderColor: "", shortName: "K" }
+      "Kdb": { url : "./plugins/eval/kdb/kdb.js", bgColor: "#005e99", fgColor: "#FFFFFF", borderColor: "", shortName: "K" },
+      "C++": {url: "./plugins/eval/cpp/cpp.js", bgColor: "#4757B8", fgColor: "#FFFFFF", borderColor: "", shortName: "C"}
     };
   };
 })();

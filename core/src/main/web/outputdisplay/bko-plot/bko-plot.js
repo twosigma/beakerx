@@ -287,17 +287,7 @@
               scope.hasUnorderedItem = true;
             }
           }
-          if (scope.hasLodItem === true && scope.showLodHint === true) {
-            scope.showLodHint = false;
-            scope.renderMessage("Level-of-Detail (LOD) is enabled",
-              [ "Some data items contain too many elements to be directly plotted.",
-              "Level-of-Detail (LOD) rendering is automatically enabled. " +
-              "LOD hint is displayed at the right of the item legend.",
-              "LOD by default runs in auto mode. In auto mode, " +
-              "LOD will be automatically turned off when you reach detailed enough zoom level.",
-              "To switch LOD type, left click the LOD hint. " +
-              "To turn off LOD, right click the LOD hint." ]);
-          }
+
           if (scope.hasUnorderedItem === true && scope.showUnorderedHint === true) {
             scope.showUnorderedHint = false;
             scope.renderMessage("Unordered line / area detected",
@@ -656,6 +646,81 @@
           return mergedLines;
         };
 
+        scope.getLegendPosition = function(legendPosition, legend) {
+          var margin = scope.layout.legendMargin,
+              legendWidth = legend.width(),
+              legendWidthWithMargin = legendWidth + margin,
+              containerWidth = scope.jqcontainer.width(),
+              containerWidthWithMargin = containerWidth + margin,
+              legendHeight = legend.height(),
+              legendHeightWithMargin = legendHeight + margin,
+              containerHeight = scope.jqcontainer.height(),
+              containerHeightWithMargin = containerHeight + margin,
+              verticalCenter = containerHeight / 2 - legendHeight / 2,
+              horizontalCenter = containerWidth / 2 - legendWidth / 2;
+          var defaultPosition = {
+            "left": containerWidthWithMargin,
+            "top": 0
+          };
+          if (!legendPosition) { return defaultPosition; }
+          var position;
+          if(legendPosition.position){
+            switch(legendPosition.position){
+              case "TOP":
+                position = {
+                  "left": horizontalCenter,
+                  "top": -(legendHeightWithMargin)
+                };
+                break;
+              case "LEFT":
+                position = {
+                  "left": -(legendWidthWithMargin),
+                  "top": verticalCenter
+                };
+                break;
+              case "BOTTOM":
+                position = {
+                  "left": horizontalCenter,
+                  "bottom": -(legendHeightWithMargin)
+                };
+                break;
+              case "RIGHT":
+                position = {
+                  "left": containerWidthWithMargin,
+                  "bottom": verticalCenter
+                };
+                break;
+              case "TOP_LEFT":
+                position = {
+                  "left": -(legendWidthWithMargin),
+                  "top": 0
+                };
+                break;
+              case "TOP_RIGHT":
+                position = defaultPosition;
+                break;
+              case "BOTTOM_LEFT":
+                position = {
+                  "left": -(legendWidthWithMargin),
+                  "bottom": 0
+                };
+                break;
+              case "BOTTOM_RIGHT":
+                position = {
+                  "left": containerWidthWithMargin,
+                  "bottom": 0
+                };
+                break;
+            }
+          }else{
+            position = {
+              "left": legendPosition.x,
+              "top": legendPosition.y
+            };
+          }
+          return position;
+        };
+
         scope.renderLegends = function() {
           // legend redraw is controlled by legendDone
           if (scope.legendableItem === 0 ||
@@ -670,6 +735,11 @@
           var legendScrollableContainer = $("<div></div>").appendTo(scope.jqcontainer)
             .attr("class", "plot-legendscrollablecontainer")
             .draggable({
+              start: function( event, ui ) {
+                $(this).css({//avoid resizing for bottom-stacked legend
+                  "bottom": "auto"
+                });
+              },
               stop : function(event, ui) {
                 scope.legendPosition = {
                   "left" : ui.position.left,
@@ -678,7 +748,7 @@
               },
               handle : "#legendDraggableContainer"
             })
-            .css("max-height", scope.jqsvg.height() - scope.layout.bottomLayoutMargin);
+            .css("max-height", scope.jqsvg.height());
 
           var legendDraggableContainer = $("<div></div>").appendTo(legendScrollableContainer)
             .attr("id", "legendDraggableContainer")
@@ -686,15 +756,6 @@
 
           var legend = $("<table></table>").appendTo(legendDraggableContainer)
             .attr("id", "legends");
-
-          if (scope.legendResetPosition === true) {
-            scope.legendPosition = {
-              "left" : scope.jqcontainer.width() + 10,
-              "top" : 0
-            };
-            scope.legendResetPosition = false;
-          }
-          legendScrollableContainer.css(scope.legendPosition);
 
           scope.legendMergedLines = scope.prepareMergedLegendData();
 
@@ -822,6 +883,28 @@
             } else {
               $("<td></td>").appendTo(unit);
             }
+          }
+
+          if (scope.legendResetPosition === true) {
+            scope.legendPosition = scope.getLegendPosition(scope.stdmodel.legendPosition, legendScrollableContainer);
+            scope.legendResetPosition = false;
+          }
+          legendScrollableContainer.css(scope.legendPosition);
+
+          if(["LEFT", "TOP_LEFT", "BOTTOM_LEFT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
+            scope.jqcontainer.css("margin-left", legendScrollableContainer.width() + margin);
+          }
+          if(scope.stdmodel.legendPosition.position === "TOP") {
+            scope.jqcontainer.css("margin-top", legendScrollableContainer.height() + margin);
+          }
+          if(scope.stdmodel.legendPosition.position === "BOTTOM") {
+            scope.jqcontainer.css("margin-bottom", legendScrollableContainer.height() + margin);
+          }
+        };
+
+        scope.updateMargin = function(){
+          if (scope.model.updateMargin != null) {
+            scope.model.updateMargin();
           }
         };
 
@@ -1435,6 +1518,7 @@
           scope.renderTips();
           scope.renderLocateBox(); // redraw
           scope.renderLegends(); // redraw
+          scope.updateMargin(); //update plot margins
 
           scope.prepareInteraction();
 

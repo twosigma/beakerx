@@ -1,0 +1,138 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+apply plugin: 'java'
+
+repositories {
+  mavenCentral()
+}
+
+apply plugin:'application'
+mainClassName = 'com.twosigma.beaker.cpp.Main'
+
+configurations {
+  provided
+  antlr
+  compile.extendsFrom provided
+}
+
+def osName = System.properties['os.name']
+def mac = false
+def win = false
+def linux = false
+def platform = ''
+if (osName.startsWith('Mac')) {
+  mac = true
+  platform = 'darwin'
+} else if (osName.startsWith('Windows')) {
+  win = true
+  platform = 'win32'
+} else if (osName.startsWith('Linux')) {
+  linux = true
+  platform = 'linux'
+}
+
+def java_home = "";
+if (mac){
+  java_home =  "readlink /usr/bin/javac".execute().text.trim()[0..-16];
+} else if (linux){
+  java_home = "readlink -f /usr/bin/javac".execute().text.trim()[0..-11];
+}
+
+task makeCRunLib(type: Exec, dependsOn: ['compileCppKernel', 'makeCppKernelHeader']) {
+  inputs.file('./src/main/cpp/CRun.cpp')
+  outputs.file('./src/main/cpp/libCRun.jnilib')
+  workingDir './src/main/cpp'
+  def jvmDir = project(':plugin:jvm').projectDir
+  if (mac){
+    commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/Headers", '-o', 'libCRun.jnilib', 'CRun.cpp'
+  } else if (linux) {
+    commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/include", '-I', "${java_home}/include/linux", '-o', 'libCRun.jnilib', 'CRun.cpp'
+  }
+}
+
+task copyBeakerHeader(type: Copy) {
+  from './src/main/cpp/beaker.hpp'
+  into evalPluginDir.getAbsolutePath() + '/cpp/include'
+}
+
+task copyCRun(type: Copy, dependsOn: ['installApp', 'makeCRunLib', 'copyBeakerHeader']) {
+  from './src/main/cpp/libCRun.jnilib'
+  into evalPluginDir.getAbsolutePath() + '/cpp/lib'
+}
+
+task compileCppKernel(type: JavaCompile) {
+  classpath = files(project(':plugin:jvm').projectDir)
+  source 'com.twosigma.beaker.cpp.utils.CppKernel'
+}
+
+task makeCppKernelHeader(type: Exec, dependsOn: compileCppKernel) {
+  workingDir './build/classes/main'
+  def jvmDir = project(':plugin:jvm').projectDir
+  commandLine 'javah', '-cp', "./:${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/cpp/CppKernel.h', 'com.twosigma.beaker.cpp.utils.CppKernel'
+}
+
+dependencies {
+  provided project(':plugin:jvm')
+  compile group: 'org.abstractmeta', name: 'compilation-toolbox', version: '0.3.2'
+}
+
+dependencies {
+  compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
+  antlr group : 'org.antlr', name :'antlr4', version: '4.5'
+  provided project(':plugin:jvm')
+  compile group: 'org.abstractmeta', name: 'compilation-toolbox', version: '0.3.2'
+}
+
+task antlr4_java(type: JavaExec) {
+    main = "org.antlr.v4.Tool"
+    workingDir = "src/main/antlr4/"
+    args = ["CPP14.g4", "-o", "../java/com/twosigma/beaker/cpp/autocomplete","-listener", "-no-visitor", "-package", "com.twosigma.beaker.cpp.autocomplete", "-encoding", "UTF-8" ]
+    classpath =  configurations.antlr
+}
+
+compileJava.dependsOn antlr4_java
+compileJava.dependsOn compileCppKernel
+
+compileJava {
+  options.compilerArgs << '-Xlint:deprecation'
+  options.compilerArgs << '-Xlint:unchecked'
+}
+
+if (hasProperty('evalPluginDir')) {
+  installApp.into new File(evalPluginDir, 'cpp')
+  if (mac || linux) {
+    installApp.finalizedBy copyCRun
+  }
+}
+
+if (hasProperty('includeDepsInJar')) {
+  build.dependsOn jar
+  jar {
+    // need to remove META-INF/*.SF to use this.
+    from {
+       (configurations.compile - configurations.provided).collect { it.isDirectory() ? it : zipTree(it).matching{exclude{it.path.contains('META-INF') || it.path.contains('google')} } }
+    } {
+      exclude "META-INF/*.SF"
+      exclude "META-INF/*.DSA"
+      exclude "META-INF/*.RSA"
+    }
+  }
+}
+
+task realclean
+realclean.dependsOn(clean)
+// should also remove 
+// Java.tokens JavaBaseListener.java JavaLexer.java JavaLexer.tokens JavaListener.java JavaParser.java       

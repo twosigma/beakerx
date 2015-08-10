@@ -86,6 +86,12 @@
             },
             isDebugging: function () {
               return this._debugging;
+            },
+            getLodThreshold: function () {
+              return this._lodThreshold;
+            },
+            setLodThreshold: function (lodThreshold) {
+               this._lodThreshold = lodThreshold;
             }
           },
           getViewModel: function () {
@@ -307,6 +313,12 @@
         }).success(function(editMode) {
           if (editMode !== '')
             _impl._viewModel.setEditMode(editMode);
+        });
+
+        bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
+          preference: 'lod-threshold'
+        }).success(function (lodThreshold) {
+          _impl._viewModel.setLodThreshold(lodThreshold);
         });
       },
       link: function (scope, element, attrs) {

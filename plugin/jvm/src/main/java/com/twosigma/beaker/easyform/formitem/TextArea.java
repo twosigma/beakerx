@@ -19,4 +19,24 @@ package com.twosigma.beaker.easyform.formitem;
 import com.twosigma.beaker.easyform.EasyFormComponent;
 
 public class TextArea extends EasyFormComponent {
+  public static final Integer AUTO_HEIGHT = -1;
+  public static final Integer AUTO_WIDTH = -1;
+  private Integer width;
+  private Integer height;
+
+  public void setWidth(final Integer width) {
+    this.width = width;
+  }
+
+  public Integer getWidth() {
+    return width;
+  }
+
+  public void setHeight(final Integer height) {
+    this.height = height;
+  }
+
+  public Integer getHeight() {
+    return height;
+  }
 }

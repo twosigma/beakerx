@@ -132,7 +132,7 @@
     }
   });
   //jscs:disable
-  beaker.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', '$interval', function(bkCellMenuPluginManager, bkUtils, $interval) {
+  beaker.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval) {
   //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
     return {
@@ -889,24 +889,29 @@
         };
 
         scope.menuToggle = function() {
-          if (scope.clipclient === undefined) {
+          var getTableData = function() {
+            var data = scope.table.rows(function(index, data, node) {
+              return scope.selected[index];
+            }).data();
+            if (data === undefined || data.length === 0) {
+              data = scope.table.rows().data();
+            }
+            var out = scope.exportTo(data, 'tabs');
+            return out;
+          }
+          if ((!bkUtils.isElectron) && (scope.clipclient === undefined)) {
             scope.clipclient = new ZeroClipboard();
             var d = document.getElementById(scope.id + '_dt_copy');
-
             scope.clipclient.clip(d);
 
             scope.clipclient.on('copy', function(event) {
               var clipboard = event.clipboardData;
-
-              var data = scope.table.rows(function(index, data, node) {
-                return scope.selected[index]; }).data();
-              if (data === undefined || data.length === 0) {
-                data = scope.table.rows().data();
-              }
-              var out = scope.exportTo(data, 'tabs');
-
-              clipboard.setData('text/plain', out);
+              clipboard.setData('text/plain', getTableData());
             });
+          } else if (bkUtils.isElectron) {
+            document.getElementById(scope.id + '_dt_copy').onclick = function() {
+              bkElectron.clipboard.writeText(getTableData(), 'text/plain');
+            }
           }
         };
 
@@ -1274,7 +1279,6 @@
   });
 })();
 
-
 (function() {
     'use strict';
     var retfunc = function(bkUtils) {
@@ -1318,6 +1322,16 @@
           datarange.yl = 0;
           datarange.yr = 1;
         }
+
+        if(datarange.xl === datarange.xr){
+          datarange.xl = datarange.xl - datarange.xl / 10;
+          datarange.xr = datarange.xr + datarange.xr / 10;
+        }
+        if(datarange.yl === datarange.yr) {
+          datarange.yl = datarange.yl - datarange.yl / 10;
+          datarange.yr = datarange.yr + datarange.yr / 10;
+        }
+
         datarange.xspan = datarange.xr - datarange.xl;
         datarange.yspan = datarange.yr - datarange.yl;
         return {
@@ -1651,6 +1665,11 @@
           }
         });
         return false;
+      },
+
+      useYAxisR : function(model, data){
+        var yAxisR = model.yAxisR;
+        return yAxisR && (yAxisR.axisLabel === data.yAxis || yAxisR.label === data.yAxis);
       }
     };
   };
@@ -5174,11 +5193,11 @@
     };
     // class constants
     PlotLineLodLoader.prototype.lodTypes = ["line", "box", "river"];
-    PlotLineLodLoader.prototype.lodSteps = [5, 10, 5];
+    PlotLineLodLoader.prototype.lodSteps = [1, 10, 3];
 
     PlotLineLodLoader.prototype.format = function() {
       // create plot type index
-      this.lodTypeIndex = 0;
+      this.lodTypeIndex =  (this.datacopy.lod_filter) ? this.lodTypes.indexOf(this.datacopy.lod_filter) : 2;
       this.lodType = this.lodTypes[this.lodTypeIndex];
 
       // create the plotters
@@ -5229,10 +5248,14 @@
     };
 
     PlotLineLodLoader.prototype.applyLodType = function(type) {
-      this.lodType = type;
-      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
-      if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
-      this.createLodPlotter();
+      if (!this.datacopy.lod_filter) {
+        this.lodType = type;
+        this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+        if (this.lodTypeIndex === -1) {
+          this.lodTypeIndex = 0;
+        }
+        this.createLodPlotter();
+      }
     };
 
     PlotLineLodLoader.prototype.createLodPlotter = function() {
@@ -5423,11 +5446,11 @@
     };
     // class constants
     PlotAreaLodLoader.prototype.lodTypes = ["area", "river"];
-    PlotAreaLodLoader.prototype.lodSteps = [5, 5];
+    PlotAreaLodLoader.prototype.lodSteps = [1, 3];
 
     PlotAreaLodLoader.prototype.format = function() {
       // create plot type index
-      this.lodTypeIndex = 0;
+      this.lodTypeIndex =  (this.datacopy.lod_filter) ? this.lodTypes.indexOf(this.datacopy.lod_filter) : 0;
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
       // create the plotters
@@ -5490,10 +5513,14 @@
     };
 
     PlotAreaLodLoader.prototype.applyLodType = function(type) {
-      this.lodType = type;
-      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
-      if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
-      this.createLodPlotter();
+      if (!this.datacopy.lod_filter) {
+        this.lodType = type;
+        this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+        if (this.lodTypeIndex === -1) {
+          this.lodTypeIndex = 0;
+        }
+        this.createLodPlotter();
+      }
     };
 
     PlotAreaLodLoader.prototype.createLodPlotter = function() {
@@ -5728,11 +5755,11 @@
     };
     // class constants
     PlotBarLodLoader.prototype.lodTypes = ["bar", "box"];
-    PlotBarLodLoader.prototype.lodSteps = [5, 10];
+    PlotBarLodLoader.prototype.lodSteps = [3, 10];
 
     PlotBarLodLoader.prototype.format = function() {
       // create plot type index
-      this.lodTypeIndex = 0;
+      this.lodTypeIndex =  (this.datacopy.lod_filter) ? this.lodTypes.indexOf(this.datacopy.lod_filter) : 0;
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
       // create the plotters
@@ -5795,10 +5822,14 @@
     };
 
     PlotBarLodLoader.prototype.applyLodType = function(type) {
-      this.lodType = type;
-      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
-      if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
-      this.createLodPlotter();
+      if (!this.datacopy.lod_filter) {
+        this.lodType = type;
+        this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+        if (this.lodTypeIndex === -1) {
+          this.lodTypeIndex = 0;
+        }
+        this.createLodPlotter();
+      }
     };
 
     PlotBarLodLoader.prototype.createLodPlotter = function() {
@@ -6041,7 +6072,7 @@
 
     PlotStemLodLoader.prototype.format = function() {
       // create plot type index
-      this.lodTypeIndex = 0;
+      this.lodTypeIndex =  (this.datacopy.lod_filter) ? this.lodTypes.indexOf(this.datacopy.lod_filter) : 0;
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
       // create the plotters
@@ -6104,10 +6135,14 @@
     };
 
     PlotStemLodLoader.prototype.applyLodType = function(type) {
-      this.lodType = type;
-      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
-      if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
-      this.createLodPlotter();
+      if (!this.datacopy.lod_filter) {
+        this.lodType = type;
+        this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+        if (this.lodTypeIndex === -1) {
+          this.lodTypeIndex = 0;
+        }
+        this.createLodPlotter();
+      }
     };
 
     PlotStemLodLoader.prototype.createLodPlotter = function() {
@@ -6364,11 +6399,11 @@
     };
     // class constants
     PlotPointLodLoader.prototype.lodTypes = ["point", "box"];
-    PlotPointLodLoader.prototype.lodSteps = [5, 10];
+    PlotPointLodLoader.prototype.lodSteps = [3, 10];
 
     PlotPointLodLoader.prototype.format = function() {
       // create plot type index
-      this.lodTypeIndex = 0;
+      this.lodTypeIndex =  (this.datacopy.lod_filter) ? this.lodTypes.indexOf(this.datacopy.lod_filter) : 0;
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
       // create the plotters
@@ -6506,10 +6541,14 @@
     };
 
     PlotPointLodLoader.prototype.applyLodType = function(type) {
-      this.lodType = type;
-      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
-      if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
-      this.createLodPlotter();
+      if (!this.datacopy.lod_filter) {
+        this.lodType = type;
+        this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+        if (this.lodTypeIndex === -1) {
+          this.lodTypeIndex = 0;
+        }
+        this.createLodPlotter();
+      }
     };
 
     PlotPointLodLoader.prototype.createSampler = function() {
@@ -6626,6 +6665,9 @@
       this.axisGridlineLabels = [];
       this.axisStep = 1;
       this.axisFixed = 0;
+
+      this.axisMarginValL = 0;
+      this.axisMarginValR = 0;
     };
     var dateIntws = [
       // milliseconds
@@ -6674,7 +6716,7 @@
       }
       this.axisValSpan = this.axisValR - this.axisValL;
     };
-    PlotAxis.prototype.setGridlines = function(pl, pr, count) {
+    PlotAxis.prototype.setGridlines = function(pl, pr, count, ml, mr) {
       if (pr < pl) {
         console.error("cannot set right coord < left coord");
         return;
@@ -6686,6 +6728,12 @@
       this.axisPctL = pl;
       this.axisPctR = pr;
       this.axisPctSpan = pr - pl;
+
+      if (this.axisType === "time") {
+        this.axisMarginValL = ml * this.axisValSpan;
+        this.axisMarginValR = mr * this.axisValSpan;
+      }
+
       var span = this.axisPctSpan * this.axisValSpan;
       var intws, fixs;
       if (this.axisType === "time") {
@@ -6696,15 +6744,43 @@
         fixs = this.numFixs;
       }
       var w, f, mindiff = 1E100;
-      for (var i = intws.length - 1; i >= 0; i--) {
-        var nowcount = span / intws[i];
-        var diff = Math.abs(nowcount - count);
-        if (diff < mindiff) {
-          mindiff = diff;
-          w = intws[i];
-          f = fixs[i];
+
+      var diff = mindiff;
+      var i = 0;
+
+      var calcW = function (i) {
+        if (i >= intws.length) {
+          if (PlotAxis.prototype.axisType === "time") {
+            intws = intws.push(intws[intws.length - 1] * 2);
+          } else {
+            var bs = (intws[intws.length - 1] / 0.5) * 10;
+            intws = intws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs])
+          }
         }
+        return intws[i];
+      };
+
+      var calcF = function (i) {
+        if (i >= fixs.length) {
+          if (PlotAxis.prototype.axisType !== "time") {
+            var f = Math.max(6 - i, 0);
+            fixs = fixs.concat([f, i <= 6 ? f + 1 : f, f]);
+          }
+        }
+        return fixs[i];
+      };
+
+      while (diff === mindiff) {
+        var nowcount = span / calcW(i);
+        diff = Math.abs(nowcount - count);
+        if (diff < mindiff) {
+          w = calcW(i);
+          f = calcF(i);
+          mindiff = diff;
+        }
+        i++;
       }
+
       this.axisStep = w;
       this.axisFixed = f;
       var val = Math.ceil(this.getValue(pl) / w) * w,
@@ -6741,7 +6817,7 @@
         }
       }
       var val = this.getValue(pct);
-      var span = this.axisValSpan * this.axisPctSpan;
+      var span = (this.axisValSpan - (this.axisMarginValL + this.axisMarginValR)) * this.axisPctSpan;
 
       var d, ret = "";
       if (this.axisType === "time") {
@@ -6764,12 +6840,14 @@
         ret = moment(d).tz(this.axisTimezone).format("mm:ss.SSS");
       } else if (span <= 1000 * 60 * 60) {
         ret = moment(d).tz(this.axisTimezone).format("HH:mm:ss");
-      } else if (span <= 1000) {
-        ret = moment(d).tz(this.axisTimeozne).format("MMM DD ddd, HH:mm");
+      } else if (span <= 1000 * 60 * 60 * 24) {
+        ret = moment(d).tz(this.axisTimezone).format("MMM DD ddd, HH:mm");
       } else if (span <= 1000 * 60 * 60 * 24 * 30) {
         ret = moment(d).tz(this.axisTimezone).format("MMM DD ddd");
-      } else {
+      } else if (span <= 1000 * 60 * 60 * 24 * 365) {
         ret = moment(d).tz(this.axisTimezone).format("YYYY MMM");
+      } else {
+        ret = moment(d).tz(this.axisTimezone).format("YYYY");
       }
 
       /*
@@ -6815,9 +6893,11 @@
     PlotConstline, PlotConstband, PlotText,
     PlotLineLodLoader, PlotBarLodLoader, PlotStemLodLoader, PlotAreaLodLoader,
     PlotPointLodLoader) {
-    var lodthresh = 1500;
     return {
-      createPlotItem : function(item) {
+      createPlotItem : function(item, lodthresh) {
+        if (!lodthresh){
+          lodthresh = 1500;
+        }
         var size = item.elements.length;
         var plotitem;
         switch (item.type) {
@@ -6937,7 +7017,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils) {
+  var retfunc = function(bkUtils, plotUtils) {
     return {
       dataTypeMap : {
         "Line" : "line",
@@ -6971,16 +7051,23 @@
       },
 
       convertGroovyData : function(newmodel, model) {
-        var yIncludeZero = false;
-        var logx = false, logy = false, logxb, logyb;
+        var logx = false, logxb;
+        var yAxisSettings = {yIncludeZero: false, logy: false, logyb: null};
+        var yAxisRSettings = _.clone(yAxisSettings);
         if (model.rangeAxes != null) {
-          var axis = model.rangeAxes[0];
-          if (axis.auto_range_includes_zero === true) {
-            yIncludeZero = true;
-          }
-          if (axis.use_log === true) {
-            logy = true;
-            logyb = axis.log_base == null ? 10 : axis.log_base;
+          var updateAxisSettings = function(axis, settings){
+            if (axis.auto_range_includes_zero === true) {
+              settings.yIncludeZero = true;
+            }
+            if (axis.use_log === true) {
+              settings.logy = true;
+              settings.logyb = axis.log_base == null ? 10 : axis.log_base;
+            }
+          };
+
+          updateAxisSettings(model.rangeAxes[0], yAxisRSettings);
+          if(model.rangeAxes.length > 1){
+            updateAxisSettings(model.rangeAxes[1], yAxisRSettings);
           }
         }
         if (model.log_x === true) {
@@ -7053,12 +7140,17 @@
           newmodel.xAxis.type = "linear";
         }
 
-        if (logy) {
-          newmodel.yAxis.type = "log";
-          newmodel.yAxis.base = logyb;
-        } else {
-          newmodel.yAxis.type = "linear";
-        }
+        var setYAxisType = function(axis, settings){
+          if(axis == null){ return; };
+          if (settings.logy) {
+            axis.type = "log";
+            axis.base = settings.logyb;
+          } else {
+            axis.type = "linear";
+          }
+        };
+        setYAxisType(newmodel.yAxis, yAxisSettings);
+        setYAxisType(newmodel.yAxisR, yAxisRSettings);
 
         var list = model.graphics_list;
         var numLines = list.length;
@@ -7118,7 +7210,8 @@
             item.shape = this.pointShapeMap[item.shape];
           }
 
-          if (item.base != null && logy) {
+          var axisSettings = plotUtils.useYAxisR(newmodel, item) ? yAxisRSettings : yAxisSettings;
+          if (item.base != null && axisSettings.logy) {
             if (item.base === 0) {
               item.base = 1;
             }
@@ -7254,7 +7347,8 @@
             newmodel.data.push(item);
           }
         }
-        newmodel.yIncludeZero = yIncludeZero;
+        newmodel.yIncludeZero = yAxisSettings.yIncludeZero;
+        newmodel.yRIncludeZero = yAxisRSettings.yIncludeZero;
       },
 
       cleanupModel : function(model) {
@@ -7270,7 +7364,7 @@
       }
     };
   };
-  beaker.bkoFactory('plotConverter', ["bkUtils", retfunc]);
+  beaker.bkoFactory('plotConverter', ["bkUtils", "plotUtils", retfunc]);
 })();
 
 /*
@@ -7291,7 +7385,8 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils, plotConverter, PlotAxis, plotFactory, plotUtils) {
+  var retfunc = function(bkUtils, plotConverter, PlotAxis, plotFactory, plotUtils, bkHelper) {
+
     return {
       lineDasharrayMap : {
         "solid" : "",
@@ -7305,31 +7400,41 @@
       remapModel : function(model) {
         // map data entrie to [0, 1] of axis range
         var vrange = model.vrange;
-        var xAxisLabel = model.xAxis.label,
-            yAxisLabel = model.yAxis.label;
+        var xAxisLabel = model.xAxis.label;
 
-        var xAxis = new PlotAxis(model.xAxis.type),
-            yAxis = new PlotAxis(model.yAxis.type);
+        var xAxis = new PlotAxis(model.xAxis.type);
 
         if (xAxis.axisType !== "time") {
           xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
         } else {
           xAxis.setRange(vrange.xl, vrange.xr, model.timezone);
         }
-        if (yAxis.axisType !== "time") {
-          yAxis.setRange(vrange.yl, vrange.yr, model.yAxis.base);
-        } else {
-          yAxis.setRange(vrange.yl, vrange.yr, model.timezone);
-        }
 
         if (xAxisLabel != null) {
           xAxis.setLabel(xAxisLabel);
         }
-        if (yAxisLabel != null) {
-          yAxis.setLabel(yAxisLabel);
-        }
         model.xAxis = xAxis;
-        model.yAxis = yAxis;
+
+        var updateYAxisRange = function(modelAxis, axisVRange){
+          if(modelAxis == null || axisVRange == null) { return null; }
+
+          var axisLabel = modelAxis.label;
+
+          var axis = new PlotAxis(modelAxis.type);
+
+          if (axis.axisType !== "time") {
+            axis.setRange(axisVRange.yl, axisVRange.yr, modelAxis.base);
+          } else {
+            axis.setRange(axisVRange.yl, axisVRange.yr, modelAxis.timezone);
+          }
+
+          if (axisLabel != null) {
+            axis.setLabel(axisLabel);
+          }
+          return axis;
+        };
+        model.yAxis = updateYAxisRange(model.yAxis, model.vrange);
+        model.yAxisR = updateYAxisRange(model.yAxisR, model.vrangeR);
 
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
@@ -7337,7 +7442,11 @@
 
           // map coordinates using percentage
           // tooltips are possibly generated at the same time
-          item.applyAxis(xAxis, yAxis);
+          if(plotUtils.useYAxisR(model, item)){
+            item.applyAxis(xAxis, model.yAxisR);
+          }else{
+            item.applyAxis(xAxis, model.yAxis);
+          }
         }
         // map focus region
         var focus = model.userFocus;
@@ -7363,12 +7472,18 @@
         var logx = newmodel.xAxis.type === "log",
             logxb = newmodel.xAxis.base,
             logy = newmodel.yAxis.type === "log",
-            logyb = newmodel.yAxis.base;
+            logyb = newmodel.yAxis.base,
+            logyR = newmodel.yAxisR && newmodel.yAxisR.type === "log",
+            logybR = newmodel.yAxisR && newmodel.yAxisR.base;
 
         if (newmodel.data == null) { newmodel.data = []; }
         var data = newmodel.data;
         for (var i = 0; i < data.length; i++) {
           var item = data[i], eles = item.elements;
+
+          var useYAxisR = plotUtils.useYAxisR(newmodel, item);
+          var itemlogy = useYAxisR ? logyR : logy;
+          var itemlogyb = useYAxisR ? logybR : logyb;
 
           if (eles == null) eles = [];
 
@@ -7479,7 +7594,7 @@
               } else if (item.base != null) {
                 ele.y2 = item.base;
               } else {
-                ele.y2 = logy ? 1 : 0;
+                ele.y2 = itemlogy ? 1 : 0;
               }
             }
 
@@ -7517,21 +7632,22 @@
             }
             if (ele.y != null) {
               ele._y = ele.y;
-              if (logy) {
-                ele.y = Math.log(ele.y) / Math.log(logyb);
+              if (itemlogy) {
+                ele.y = Math.log(ele.y) / Math.log(itemlogyb);
               }
             }
             if (ele.y2 != null) {
               ele._y2 = ele.y2;
-              if (logy) {
-                ele.y2 = Math.log(ele.y2) / Math.log(logyb);
+              if (itemlogy) {
+                ele.y2 = Math.log(ele.y2) / Math.log(itemlogyb);
               }
             }
           }
           // recreate rendering objects
           item.index = i;
           item.id = "i" + i;
-          data[i] = plotFactory.createPlotItem(item);
+
+          data[i] = plotFactory.createPlotItem(item, newmodel.lodThreshold);
         }
 
         // apply log to focus
@@ -7596,6 +7712,7 @@
         }
         var newmodel;
         if (model.version === "groovy") {  // model returned from serializer
+
           newmodel = {
             type : "plot",
             title : model.chart_title != null ? model.chart_title : model.title,
@@ -7603,7 +7720,9 @@
             userFocus : {},
             xAxis : { label : model.domain_axis_label },
             yAxis : { label : model.y_label },
+            yAxisR : model.rangeAxes.length > 1 ? { label : model.rangeAxes[1].label } : null,
             showLegend : model.show_legend != null ? model.show_legend : false,
+            legendPosition : model.legend_position != null ? model.legend_position : {position: "TOP_RIGHT"},
             useToolTip : model.use_tool_tip != null ? model.use_tool_tip : false,
             plotSize : {
               "width" : model.init_width != null ? model.init_width : 1200,
@@ -7615,9 +7734,11 @@
         } else {
           newmodel = {
             showLegend : model.showLegend != null ? model.showLegend : false,
+            legendPosition : model.legendPosition != null ? model.legendPosition : {position: "TOP_RIGHT"},
             useToolTip : model.useToolTip != null ? model.useToolTip : false,
             xAxis : model.xAxis != null ? model.xAxis : {},
             yAxis : model.yAxis != null ? model.yAxis : {},
+            yAxisR : model.yAxisR,
             margin : model.margin != null ? model.margin : {},
             range : model.range != null ? model.range : null,
             userFocus : model.focus != null ? model.focus : {},
@@ -7631,6 +7752,10 @@
           };
         }
 
+        newmodel.lodThreshold = (model.lodThreshold) ?
+          model.lodThreshold :
+          bkHelper.getBkNotebookViewModel().getLodThreshold();
+
         newmodel.data = [];
 
         if (model.version === "groovy") {
@@ -7643,7 +7768,18 @@
 
         // at this point, data is in standard format (log is applied as well)
 
-        var range = plotUtils.getDataRange(newmodel.data).datarange;
+        var yAxisData = [], yAxisRData = [];
+        for (var i = 0; i < newmodel.data.length; i++) {
+          var item = newmodel.data[i];
+          if(plotUtils.useYAxisR(newmodel, item)){
+            yAxisRData.push(item);
+          }else{
+            yAxisData.push(item);
+          }
+        }
+
+        var range = plotUtils.getDataRange(yAxisData).datarange;
+        var rangeR = _.isEmpty(yAxisRData) ? null : plotUtils.getDataRange(yAxisRData).datarange;
 
         var margin = newmodel.margin;
         if (margin.bottom == null) { margin.bottom = .05; }
@@ -7653,13 +7789,19 @@
 
         if (newmodel.vrange == null) {
           // visible range initially is 10x larger than data range by default
-          newmodel.vrange = {
-            xl : range.xl - range.xspan * 10.0,
-            xr : range.xr + range.xspan * 10.0,
-            yl : range.yl - range.yspan * 10.0,
-            yr : range.yr + range.yspan * 10.0
+          var getModelRange = function(r){
+            return r ? {
+              xl : r.xl - r.xspan * 10.0,
+              xr : r.xr + r.xspan * 10.0,
+              yl : r.yl - r.yspan * 10.0,
+              yr : r.yr + r.yspan * 10.0
+            } : null;
           };
+          newmodel.vrange = getModelRange(range);
+          newmodel.vrangeR = getModelRange(rangeR);
+
           var vrange = newmodel.vrange;
+          var vrangeR = newmodel.vrangeR;
 
           if (newmodel.yPreventNegative === true) {
             vrange.yl = Math.min(0, range.yl);
@@ -7669,14 +7811,27 @@
               vrange.yl = 0;
             }
           }
+
+          if(vrangeR && newmodel.yRIncludeZero === true){
+            if (vrangeR.yl > 0) {
+              vrangeR.yl = 0;
+            }
+          }
+
           var focus = newmodel.userFocus; // allow user to overide vrange
           if (focus.xl != null) { vrange.xl = Math.min(focus.xl, vrange.xl); }
           if (focus.xr != null) { vrange.xr = Math.max(focus.xr, vrange.xr); }
           if (focus.yl != null) { vrange.yl = Math.min(focus.yl, vrange.yl); }
           if (focus.yr != null) { vrange.yr = Math.max(focus.yr, vrange.yr); }
 
-          vrange.xspan = vrange.xr - vrange.xl;
-          vrange.yspan = vrange.yr - vrange.yl;
+          var updateRangeSpan = function(r){
+            if(r){
+              r.xspan = r.xr - r.xl;
+              r.yspan = r.yr - r.yl;
+            }
+          };
+          updateRangeSpan(vrange);
+          updateRangeSpan(vrangeR);
         }
 
         this.remapModel(newmodel);
@@ -7687,7 +7842,7 @@
     };
   };
   beaker.bkoFactory('plotFormatter',
-    ["bkUtils", 'plotConverter', 'PlotAxis', 'plotFactory', 'plotUtils', retfunc]);
+    ["bkUtils", 'plotConverter', 'PlotAxis', 'plotFactory', 'plotUtils', 'bkHelper', retfunc]);
 })();
 
 /*
@@ -7811,7 +7966,7 @@
 
 ( function() {
   'use strict';
-  var retfunc = function(plotUtils, plotFormatter, plotFactory, bkCellMenuPluginManager) {
+  var retfunc = function(plotUtils, plotFormatter, plotFactory, bkCellMenuPluginManager, bkSessionManager, bkUtils) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -7865,7 +8020,8 @@
             scope.update();
           }
         });
-        
+
+
         scope.resizeFunction = function() {
           // update resize maxWidth when the browser window resizes
           var width = element.width();
@@ -7877,8 +8033,6 @@
         scope.initLayout = function() {
           var model = scope.stdmodel;
 
-          element.find(".ui-icon-gripsmall-diagonal-se")
-            .removeClass("ui-icon ui-icon-gripsmall-diagonal-se"); // remove the ugly handle :D
           // hook container to use jquery interaction
           scope.container = d3.select(element[0]).select("#plotContainer");
           scope.jqcontainer = element.find("#plotContainer");
@@ -7906,7 +8060,7 @@
             bottomLayoutMargin : 30,
             topLayoutMargin : 0,
             leftLayoutMargin : 80,
-            rightLayoutMargin : 0,
+            rightLayoutMargin : scope.stdmodel.yAxisR ? 80 : 0,
             legendMargin : 10,
             legendBoxSize : 10
           };
@@ -7946,6 +8100,9 @@
 
           if (model.yAxis.axisLabel != null) {
             scope.layout.leftLayoutMargin += scope.fonts.labelHeight;
+          }
+          if(model.yAxisR != null) {
+            scope.layout.rightLayoutMargin += scope.fonts.labelHeight;
           }
           scope.legendResetPosition = true;
 
@@ -7993,8 +8150,23 @@
         scope.calcGridlines = function() {
           // prepare the gridlines
           var focus = scope.focus, model = scope.stdmodel;
-          model.xAxis.setGridlines(focus.xl, focus.xr, scope.numIntervals.x);
-          model.yAxis.setGridlines(focus.yl, focus.yr, scope.numIntervals.y);
+          model.xAxis.setGridlines(focus.xl,
+            focus.xr,
+            scope.numIntervals.x,
+            model.margin.left,
+            model.margin.right);
+          model.yAxis.setGridlines(focus.yl,
+            focus.yr,
+            scope.numIntervals.y,
+            model.margin.bottom,
+            model.margin.top);
+          if(model.yAxisR){
+            model.yAxisR.setGridlines(focus.yl,
+              focus.yr,
+              scope.numIntervals.y,
+              model.margin.bottom,
+              model.margin.top)
+          }
         };
         scope.renderGridlines = function() {
           var focus = scope.focus, model = scope.stdmodel;
@@ -8040,6 +8212,14 @@
             "x2" : mapX(focus.xl),
             "y2" : mapY(focus.yr)
           });
+          scope.rpipeGridlines.push({
+            "id" : "gridline_yr_base",
+            "class" : "plot-gridline-base",
+            "x1" : mapX(focus.xr),
+            "y1" : mapY(focus.yl),
+            "x2" : mapX(focus.xr),
+            "y2" : mapY(focus.yr)
+          });
         };
         scope.renderData = function() {
           var data = scope.stdmodel.data;
@@ -8052,17 +8232,7 @@
               scope.hasUnorderedItem = true;
             }
           }
-          if (scope.hasLodItem === true && scope.showLodHint === true) {
-            scope.showLodHint = false;
-            scope.renderMessage("Level-of-Detail (LOD) is enabled",
-              [ "Some data items contain too many elements to be directly plotted.",
-              "Level-of-Detail (LOD) rendering is automatically enabled. " +
-              "LOD hint is displayed at the right of the item legend.",
-              "LOD by default runs in auto mode. In auto mode, " +
-              "LOD will be automatically turned off when you reach detailed enough zoom level.",
-              "To switch LOD type, left click the LOD hint. " +
-              "To turn off LOD, right click the LOD hint." ]);
-          }
+
           if (scope.hasUnorderedItem === true && scope.showUnorderedHint === true) {
             scope.showUnorderedHint = false;
             scope.renderMessage("Unordered line / area detected",
@@ -8197,7 +8367,7 @@
 
         scope.renderGridlineLabels = function() {
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
-          var model = scope.stdmodel, ys = model.yScale;
+          var model = scope.stdmodel;
           if (model.xAxis.showGridlineLabels !== false) {
             var lines = model.xAxis.getGridlines(),
                 labels = model.xAxis.getGridlineLabels();
@@ -8230,6 +8400,21 @@
               });
             }
           }
+          if (model.yAxisR && model.yAxisR.showGridlineLabels !== false) {
+            lines = model.yAxisR.getGridlines();
+            labels = model.yAxisR.getGridlineLabels();
+            for (var i = 0; i < labels.length; i++) {
+              var y = lines[i];
+              scope.rpipeTexts.push({
+                "id" : "label_yr_" + i,
+                "class" : "plot-label",
+                "text" : labels[i],
+                "x" : mapX(scope.focus.xr) + scope.labelPadding.x,
+                "y" : mapY(y),
+                "dominant-baseline" : "central"
+              });
+            }
+          }
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
           if (model.xAxis.axisLabel != null) {
             scope.rpipeTexts.push({
@@ -8251,18 +8436,30 @@
               "transform" : "rotate(-90 " + x + " " + y + ")"
             });
           }
+          if (model.yAxisR && model.yAxisR.axisLabel != null) {
+            var x = scope.jqsvg.width() - scope.fonts.labelHeight, y = (scope.jqsvg.height() - bMargin) / 2;
+            scope.rpipeTexts.push({
+              "id" : "yrlabel",
+              "class" : "plot-xylabel",
+              "text" : model.yAxisR.axisLabel,
+              "x" : x,
+              "y" : y,
+              "transform" : "rotate(-90 " + x + " " + y + ")"
+            });
+          }
         };
 
         scope.renderCursor = function(e) {
           var x = e.offsetX, y = e.offsetY;
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
-          var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
-          if (x < lMargin || y > H - bMargin) {
+          var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin,
+              rMargin = scope.layout.rightLayoutMargin;
+          var model = scope.stdmodel;
+          if (x < lMargin || model.yAxisR != null && x > W - rMargin || y > H - bMargin) {
             scope.svg.selectAll(".plot-cursor").remove();
             scope.jqcontainer.find(".plot-cursorlabel").remove();
             return;
           }
-          var model = scope.stdmodel;
           var mapX = scope.scr2dataX, mapY = scope.scr2dataY;
           if (model.xCursor != null) {
             var opt = model.xCursor;
@@ -8303,24 +8500,170 @@
             scope.svg.select("#cursor_y")
               .attr("x1", lMargin)
               .attr("y1", y)
-              .attr("x2", W)
+              .attr("x2", W - rMargin)
               .attr("y2", y);
 
-            scope.jqcontainer.find("#cursor_ylabel").remove();
-            var label = $("<div id='cursor_ylabel' class='plot-cursorlabel'></div>")
-              .appendTo(scope.jqcontainer)
-              .text(plotUtils.getTipStringPercent(mapY(y), model.yAxis));
-            var w = label.outerWidth(), h = label.outerHeight();
-            var p = {
-              "x" : lMargin + scope.labelPadding.x,
-              "y" : y - h / 2
+            var renderCursorLabel = function(axis, id, alignRight){
+              if(axis == null) { return };
+              scope.jqcontainer.find("#" + id).remove();
+              var label = $("<div id='" + id + "' class='plot-cursorlabel'></div>")
+                .appendTo(scope.jqcontainer)
+                .text(plotUtils.getTipStringPercent(mapY(y), axis));
+              var w = label.outerWidth(), h = label.outerHeight();
+              var p = {
+                "x" : (alignRight ? rMargin : lMargin) + scope.labelPadding.x,
+                "y" : y - h / 2
+              };
+              var css = {
+                "top" : p.y ,
+                "background-color" : opt.color != null ? opt.color : "black"
+              };
+              css[alignRight ? "right" : "left"] = p.x;
+              label.css(css);
             };
-            label.css({
-              "left" : p.x ,
-              "top" : p.y ,
-              "background-color" : opt.color != null ? opt.color : "black"
-            });
+
+            renderCursorLabel(model.yAxis, "cursor_ylabel", false);
+            renderCursorLabel(model.yAxisR, "cursor_yrlabel", true);
           }
+        };
+
+        scope.prepareMergedLegendData = function() {
+          var data = scope.stdmodel.data;
+
+          var mergedLines = {};
+          var lineUniqueAttributesSet = {};
+
+          function getColorInfoUid(dat) {
+            var color = plotUtils.createColor(dat.color, dat.color_opacity),
+                border = plotUtils.createColor(dat.stroke, dat.stroke_opacity);
+            return color + border;
+          }
+
+          function addNewLegendLineData(dat, lineUniqueIndex) {
+            var line = {
+              dataIds: [i],
+              legend: dat.legend,
+              showItem: dat.showItem,
+              isLodItem: dat.isLodItem === true,
+              color: dat.color,
+              color_opacity: dat.color_opacity,
+              stroke: dat.stroke,
+              stroke_opacity: dat.stroke_opacity
+            };
+            if (dat.isLodItem === true) {
+              line.lodDataIds = [i];
+            }
+            var lineId = plotUtils.randomString(32);
+            mergedLines[lineId] = line;
+            lineUniqueAttributesSet[lineUniqueIndex] = lineId;
+            return lineId;
+          }
+
+          function addDataForExistingLegendLine(dat, line) {
+            line.dataIds.push(i);
+            if (dat.isLodItem === true) {
+              line.isLodItem = true;
+              if (line.lodDataIds) {
+                line.lodDataIds.push(i);
+              } else {
+                line.lodDataIds = [i];
+              }
+            }
+            if (line.showItem !== true) {
+              line.showItem = dat.showItem
+            }
+          }
+
+          for (var i = 0; i < data.length; i++) {
+            var dat = data[i];
+            if (dat.legend == null || dat.legend === "") {
+              continue;
+            }
+
+            var lineUniqueIndex = dat.legend + getColorInfoUid(dat);
+
+            if (lineUniqueAttributesSet[lineUniqueIndex] == null) {
+              addNewLegendLineData(dat, lineUniqueIndex);
+            } else {
+              addDataForExistingLegendLine(dat, mergedLines[lineUniqueAttributesSet[lineUniqueIndex]])
+            }
+          }
+          return mergedLines;
+        };
+
+        scope.getLegendPosition = function(legendPosition, legend) {
+          var margin = scope.layout.legendMargin,
+              legendWidth = legend.width(),
+              legendWidthWithMargin = legendWidth + margin,
+              containerWidth = scope.jqcontainer.width(),
+              containerWidthWithMargin = containerWidth + margin,
+              legendHeight = legend.height(),
+              legendHeightWithMargin = legendHeight + margin,
+              containerHeight = scope.jqcontainer.height(),
+              containerHeightWithMargin = containerHeight + margin,
+              verticalCenter = containerHeight / 2 - legendHeight / 2,
+              horizontalCenter = containerWidth / 2 - legendWidth / 2;
+          var defaultPosition = {
+            "left": containerWidthWithMargin,
+            "top": 0
+          };
+          if (!legendPosition) { return defaultPosition; }
+          var position;
+          if(legendPosition.position){
+            switch(legendPosition.position){
+              case "TOP":
+                position = {
+                  "left": horizontalCenter,
+                  "top": -(legendHeightWithMargin)
+                };
+                break;
+              case "LEFT":
+                position = {
+                  "left": -(legendWidthWithMargin),
+                  "top": verticalCenter
+                };
+                break;
+              case "BOTTOM":
+                position = {
+                  "left": horizontalCenter,
+                  "bottom": -(legendHeightWithMargin)
+                };
+                break;
+              case "RIGHT":
+                position = {
+                  "left": containerWidthWithMargin,
+                  "bottom": verticalCenter
+                };
+                break;
+              case "TOP_LEFT":
+                position = {
+                  "left": -(legendWidthWithMargin),
+                  "top": 0
+                };
+                break;
+              case "TOP_RIGHT":
+                position = defaultPosition;
+                break;
+              case "BOTTOM_LEFT":
+                position = {
+                  "left": -(legendWidthWithMargin),
+                  "bottom": 0
+                };
+                break;
+              case "BOTTOM_RIGHT":
+                position = {
+                  "left": containerWidthWithMargin,
+                  "bottom": 0
+                };
+                break;
+            }
+          }else{
+            position = {
+              "left": legendPosition.x,
+              "top": legendPosition.y
+            };
+          }
+          return position;
         };
 
         scope.renderLegends = function() {
@@ -8331,31 +8674,37 @@
           var data = scope.stdmodel.data;
           var margin = scope.layout.legendMargin;
 
-          scope.jqcontainer.find("#legends").remove();
+          scope.jqcontainer.find(".plot-legendscrollablecontainer").remove();
 
           scope.legendDone = true;
-          var legend = $("<table></table>").appendTo(scope.jqcontainer)
-            .attr("id", "legends")
-            .attr("class", "plot-legendcontainer")
+          var legendScrollableContainer = $("<div></div>").appendTo(scope.jqcontainer)
+            .attr("class", "plot-legendscrollablecontainer")
             .draggable({
+              start: function( event, ui ) {
+                $(this).css({//avoid resizing for bottom-stacked legend
+                  "bottom": "auto"
+                });
+              },
               stop : function(event, ui) {
                 scope.legendPosition = {
                   "left" : ui.position.left,
                   "top" : ui.position.top
                 };
-              }
-            });
+              },
+              handle : "#legendDraggableContainer"
+            })
+            .css("max-height", scope.jqsvg.height());
 
-          if (scope.legendResetPosition === true) {
-            scope.legendPosition = {
-              "left" : scope.jqcontainer.width() + 10,
-              "top" : 0
-            };
-            scope.legendResetPosition = false;
-          }
-          legend.css(scope.legendPosition);
+          var legendDraggableContainer = $("<div></div>").appendTo(legendScrollableContainer)
+            .attr("id", "legendDraggableContainer")
+            .attr("class", "plot-legenddraggablecontainer");
 
-          if (scope.legendableItem > 1) {  // skip "All" check when there is only one line
+          var legend = $("<table></table>").appendTo(legendDraggableContainer)
+            .attr("id", "legends");
+
+          scope.legendMergedLines = scope.prepareMergedLegendData();
+
+          if (Object.keys(scope.legendMergedLines).length > 1) {  // skip "All" check when there is only one line
             var unit = $("<tr></tr>").appendTo(legend)
               .attr("id", "legend_all");
             $("<input type='checkbox'></input>")
@@ -8379,45 +8728,45 @@
             $("<td></td>").appendTo(unit);
           }
 
-          var content = "";
-          for (var i = 0; i < data.length; i++) {
-            var dat = data[i];
-            if (dat.legend == null || dat.legend === "") { continue; }
+          for (var id in scope.legendMergedLines) {
+            if (!scope.legendMergedLines.hasOwnProperty(id)) { continue; }
+            var line = scope.legendMergedLines[id];
+            if (line.legend == null || line.legend === "") { continue; }
             var unit = $("<tr></tr>").appendTo(legend)
-              .attr("id", "legend_" + i);
+              .attr("id", "legend_" + id);
             // checkbox
             $("<input type='checkbox'></input>")
-              .attr("id", "legendcheck_" + i)
+              .attr("id", "legendcheck_" + id)
               .attr("class", "plot-legendcheckbox")
-              .prop("checked", dat.showItem)
+              .prop("checked", line.showItem)
               .click(function(e) {
                 return scope.toggleVisibility(e);
               })
               .appendTo($("<td></td>").appendTo(unit));
 
-            var clr = plotUtils.createColor(dat.color, dat.color_opacity),
-                st_clr = plotUtils.createColor(dat.stroke, dat.stroke_opacity);
-            var sty = dat.color == null ? "dotted " : "solid ";
+            var clr = plotUtils.createColor(line.color, line.color_opacity),
+                st_clr = plotUtils.createColor(line.stroke, line.stroke_opacity);
+            var sty = line.color == null ? "dotted " : "solid ";
             // color box
             $("<span></span>")
-              .attr("id", "legendbox_" + i)
+              .attr("id", "legendbox_" + id)
               .attr("class", "plot-legendbox")
-              .attr("title", dat.color == null ? "Element-based colored item" : "")
+              .attr("title", line.color == null ? "Element-based colored item" : "")
               .css("background-color",
-                dat.color == null ? "none" : clr)
+                line.color == null ? "none" : clr)
               .css("border",
-                dat.stroke != null ? "1px " + sty + st_clr :
-                (dat.color != null ? "1px " + sty + clr : "1px dotted gray"))
+                line.stroke != null ? "1px " + sty + st_clr :
+                (line.color != null ? "1px " + sty + clr : "1px dotted gray"))
               .appendTo($("<td></td>").appendTo(unit));
             // legend text
             $("<td></td>").appendTo(unit)
-              .attr("id", "legendtext_" + i)
+              .attr("id", "legendtext_" + id)
               .attr("class", "plot-label")
-              .text(dat.legend);
+              .text(line.legend);
             var lodhint = $("<td></td>").appendTo(unit)
-                .attr("id", "hint_" + i);
+                .attr("id", "hint_" + id);
 
-            if (dat.isLodItem === true) {
+            if (line.isLodItem === true) {
               var light = $("<span></span>").appendTo(lodhint)
                 .attr("id", "light")
                 .attr("class", "plot-legendlod");
@@ -8429,12 +8778,12 @@
                 .attr("id", "auto")
                 .attr("class", "plot-legendlodauto")
                 .css("min-width", "2em");
-              scope.setLodHint(dat);
-              lodhint.on('mousedown', {"dat" : dat}, function(e) {
-                var dat = e.data.dat;
+              scope.setMergedLodHint(line.lodDataIds, id);
+              lodhint.on('mousedown', {"dataIds": line.lodDataIds, "id": id}, function(e) {
+                var dataIds = e.data.dataIds;
                 e.stopPropagation();
                 if (e.which === 3) {
-                  if (dat.lodType === "off") { return; }
+                  if (scope.getMergedLodInfo(dataIds).lodType === "off") { return; }
                   scope.removePipe.push("msg_lodoff");
                   scope.renderMessage("LOD is being turned off. Are you sure?",
                     [ "You are trying to turning off LOD. Loading full resolution data is " +
@@ -8442,87 +8791,160 @@
                     "PROCEED (left click) / CANCEL (right click)"],
                     "msg_lodoff",
                     function() {
-                      dat.toggleLod(scope);
+                      for (var j = 0; j < dataIds.length; j++) {
+                        scope.stdmodel.data[dataIds[j]].toggleLod(scope);
+                      }
                       scope.update();
-                      scope.setLodHint(dat);
+                      scope.setMergedLodHint(dataIds, e.data.id);
                     }, null);
                 }
               });
-              type.on('mousedown', {"dat" : dat}, function(e) {
+              type.on('mousedown', {"dataIds": line.lodDataIds, "id": id}, function(e) {
                 if (e.which === 3) { return; }
-                var dat = e.data.dat;
+                var dataIds = e.data.dataIds;
+                for (var j = 0; j < dataIds.length; j++) {
+                  var dat = scope.stdmodel.data[dataIds[j]];
                 if (dat.lodType === "off") {
                   dat.toggleLod(scope);
                 } else {
                   dat.switchLodType(scope);
                 }
                 dat.zoomLevelChanged(scope);
+                }
                 scope.update();
-                scope.setLodHint(dat);
+                scope.setMergedLodHint(dataIds, e.data.id);
               });
-              auto.on('mousedown', {"dat" : dat}, function(e) {
+              auto.on('mousedown', {"dataIds": line.lodDataIds, "id": id}, function(e) {
                 if (e.which === 3) { return; }
-                var dat = e.data.dat;
+                var dataIds = e.data.dataIds;
+                for (var j = 0; j < dataIds.length; j++) {
+                  var dat = scope.stdmodel.data[dataIds[j]];
                 if (dat.lodType === "off") return;
                 dat.toggleLodAuto(scope);
+                }
                 scope.update();
-                scope.setLodHint(dat);
+                scope.setMergedLodHint(dataIds, e.data.id);
               });
             } else {
               $("<td></td>").appendTo(unit);
             }
           }
+
+          if (scope.legendResetPosition === true) {
+            scope.legendPosition = scope.getLegendPosition(scope.stdmodel.legendPosition, legendScrollableContainer);
+            scope.legendResetPosition = false;
+          }
+          legendScrollableContainer.css(scope.legendPosition);
+
+          if(["LEFT", "TOP_LEFT", "BOTTOM_LEFT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
+            scope.jqcontainer.css("margin-left", legendScrollableContainer.width() + margin);
+          }
+          if(scope.stdmodel.legendPosition.position === "TOP") {
+            scope.jqcontainer.css("margin-top", legendScrollableContainer.height() + margin);
+          }
+          if(scope.stdmodel.legendPosition.position === "BOTTOM") {
+            scope.jqcontainer.css("margin-bottom", legendScrollableContainer.height() + margin);
+          }
         };
-        scope.setLodHint = function(dat) {
+
+        scope.updateMargin = function(){
+          if (scope.model.updateMargin != null) {
+            scope.model.updateMargin();
+          }
+        };
+
+        scope.getMergedLodInfo = function(lodDataIds) {
+          var firstLine = scope.stdmodel.data[lodDataIds[0]];
+          var lodInfo = {
+            lodType: firstLine.lodType,
+            lodOn: firstLine.lodOn,
+            lodAuto: firstLine.lodAuto //consider all lines have the same lodAuto
+          };
+
+          for (var j = 0; j < lodDataIds.length; j++) {
+            var dat = scope.stdmodel.data[lodDataIds[j]];
+            if (lodInfo.lodType !== dat.lodType) {
+              lodInfo.lodType = "mixed";//if merged lines have different lod types
+            }
+            if (lodInfo.lodOn !== true) {//switch off lod only if all lines has lod off
+              lodInfo.lodOn = dat.lodOn;
+            }
+          }
+          return lodInfo;
+        };
+        scope.setMergedLodHint = function(lodDataIds, legendLineId) {
+          var lodInfo = scope.getMergedLodInfo(lodDataIds);
           var legend = scope.jqcontainer.find("#legends");
-          var hint = legend.find("#hint_" + dat.index);
+          var hint = legend.find("#hint_" + legendLineId);
           var light = hint.find("#light"),
               type = hint.find("#type"),
               auto = hint.find("#auto");
           // lod hint light
           light.attr("title",
-            dat.lodOn === true ? "LOD is on" : "")
+            lodInfo.lodOn === true ? "LOD is on" : "")
           .css("background-color",
-            dat.lodOn === true ? "red" : "gray")
+            lodInfo.lodOn === true ? "red" : "gray")
           .css("border",
-            dat.lodOn === true ? "1px solid red" : "1px solid gray");
+            lodInfo.lodOn === true ? "1px solid red" : "1px solid gray");
           // lod hint text
-          type.css("color", dat.lodOn === true ? "red" : "gray")
-            .text(dat.lodType);
+          type.css("color", lodInfo.lodOn === true ? "red" : "gray")
+            .text(lodInfo.lodType);
           // lod auto hint
-          auto.css("color", dat.lodOn === true ? "red" : "gray")
-            .text(dat.lodType === "off" ? "" : (dat.lodAuto === true ? "auto" : "on"));
+          auto.css("color", lodInfo.lodOn === true ? "red" : "gray")
+            .text(lodInfo.lodType === "off" ? "" : (lodInfo.lodAuto === true ? "auto" : "on"));
         };
         scope.toggleVisibility = function(e) {
-          var id = e.target.id.split("_")[1], data = scope.stdmodel.data;
-          // id in the format "legendcheck_i"
+          var id = e.target.id.split("_")[1], data = scope.stdmodel.data, line;
+          // id in the format "legendcheck_id"
           if (id == "all") {
             scope.showAllItems = !scope.showAllItems;
-            
-            for (var i = 0; i < data.length; i++) {
-              data[i].showItem = scope.showAllItems;
-              if (data[i].showItem === false) {
-                data[i].clearTips(scope);
-                if (data[i].isLodItem === true) {
-                  data[i].lodOn = false;
-                  scope.setLodHint(data[i]);
+
+            for (var lineId in scope.legendMergedLines) {
+              if (scope.legendMergedLines.hasOwnProperty(lineId)) {
+                line = scope.legendMergedLines[lineId];
+                line.showItem = scope.showAllItems;
+                for (var i = 0; i < line.dataIds.length; i++) {
+                  var dat = data[line.dataIds[i]];
+                  dat.showItem = scope.showAllItems;
+                  if (dat.showItem === false) {
+                    dat.clearTips(scope);
+                    if (dat.isLodItem === true) {
+                      dat.lodOn = false;
                 }
               }
-              scope.jqcontainer.find("#legendcheck_" + i).prop("checked", data[i].showItem);
             }
+                if (line.showItem === false) {
+                  if (line.isLodItem === true) {
+                    scope.setMergedLodHint(line.lodDataIds, lineId);
+                  }
+                }
+                scope.jqcontainer.find("#legendcheck_" + lineId).prop("checked", line.showItem);
+              }
+            }
+
             scope.calcRange();
             scope.update();
             return;
           }
-          data[id].showItem = !data[id].showItem;
 
-          if (data[id].showItem === false) {
-            data[id].clearTips(scope);
-            if (data[id].isLodItem === true) {
-              data[id].lodOn = false;
-              scope.setLodHint(data[id]);
+          line = scope.legendMergedLines[id];
+          line.showItem = !line.showItem;
+          for (var j = 0; j < line.dataIds.length; j++) {
+            var dat = data[line.dataIds[j]];
+            dat.showItem = !dat.showItem;
+            if (dat.showItem === false) {
+              dat.clearTips(scope);
+              if (dat.isLodItem === true) {
+                dat.lodOn = false;
             }
           }
+          }
+          if (line.showItem === false) {
+            if (line.isLodItem === true) {
+              scope.setMergedLodHint(line.lodDataIds, id);
+            }
+          }
+
           scope.calcRange();
           scope.update();
         };
@@ -8565,7 +8987,7 @@
               bMargin = scope.layout.bottomLayoutMargin;
           message.css({
             "left" : (scope.jqcontainer.width() - lMargin) / 2 - w / 2 + lMargin,
-            "top" : (scope.jqcontainer.height() - bMargin) / 2 - h / 2,
+            "top" : (scope.jqcontainer.height() - bMargin) / 2 - h / 2
           });
         };
 
@@ -8600,7 +9022,7 @@
             "class" : "plot-coverbox",
             "x" : W - scope.layout.rightLayoutMargin,
             "y" : 0,
-            "width" : scope.layout.rightLayoutMargin,
+            "width" : scope.stdmodel.yAxisR ? scope.layout.rightLayoutMargin : 0,
             "height" : H
           });
 
@@ -8988,8 +9410,14 @@
           scope.focus = {};
           scope.tips = {};
           scope.plotSize = {};
-          
+
           _(scope.plotSize).extend(scope.stdmodel.plotSize);
+          var savedstate = scope.model.getDumpState();
+          if (savedstate !== undefined && savedstate.plotSize !== undefined) {
+            scope.loadState(savedstate);
+          } else {
+            scope.setDumpState(scope.dumpState());
+          }
 
           // create layout elements
           scope.initLayout();
@@ -9017,14 +9445,6 @@
           // init remove pipe
           scope.removePipe = [];
 
-          if (scope.model.getDumpState !== undefined) {
-            var savedstate = scope.model.getDumpState();
-            if (savedstate !== undefined && savedstate.plotSize !== undefined) {
-              scope.loadState(savedstate);
-            } else {
-              scope.model.setDumpState(scope.dumpState());
-            }
-          }
           scope.calcMapping();
           scope.update();
         };
@@ -9043,28 +9463,59 @@
           scope.renderTips();
           scope.renderLocateBox(); // redraw
           scope.renderLegends(); // redraw
+          scope.updateMargin(); //update plot margins
 
           scope.prepareInteraction();
 
           scope.clearRemovePipe();
         };
-        
-        if (scope.model.getDumpState !== undefined) {
-          scope.getDumpState = function() {
+
+
+        scope.getDumpState = function () {
+          if (scope.model.getDumpState !== undefined) {
             return scope.model.getDumpState();
-          };
-        }
+          }
+        };
+
+
+        scope.setDumpState = function (state) {
+          if (scope.model.setDumpState !== undefined) {
+              scope.model.setDumpState(state);
+
+              bkSessionManager.setNotebookModelEdited(true);
+              bkUtils.refreshRootScope();
+          }
+        };
 
         scope.init(); // initialize
+        scope.$watch('getDumpState()', function (result) {
+          if (result !== undefined && result.plotSize === undefined) {
+            scope.setDumpState(scope.dumpState());
+          }
+        });
 
-        if (scope.model.getDumpState !== undefined) {
-          scope.$watch('getDumpState()', function(result) {
-            if (result !== undefined && result.plotSize === undefined) {
-              scope.model.setDumpState(scope.dumpState());
-            }
-          });
-        }
-        
+        scope.getCellWidth = function () {
+          return scope.container.node().getBoundingClientRect().width;
+        };
+
+        scope.getCellHeight= function () {
+          return scope.container.node().getBoundingClientRect().height;
+        };
+
+        var watchCellSize = function () {
+          scope.plotSize.width = scope.getCellWidth();
+          scope.plotSize.height = scope.getCellHeight();
+          scope.setDumpState(scope.dumpState());
+        };
+
+        scope.$watch('getCellWidth()', function () {
+          watchCellSize();
+        });
+
+        scope.$watch('getCellHeight()', function () {
+          watchCellSize();
+        });
+
         scope.getCellModel = function() {
           return scope.model.getCellModel();
         };
@@ -9072,17 +9523,1031 @@
           scope.init();
         });
         
-        scope.$on('$destroy', function() {     
+        scope.$on('$destroy', function() {
+          scope.setDumpState(scope.dumpState());
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
         });
-        
       }
     };
   };
-  beaker.bkoDirective("Plot", ["plotUtils", "plotFormatter", "plotFactory", "bkCellMenuPluginManager", retfunc]);
+  beaker.bkoDirective("Plot", ["plotUtils", "plotFormatter", "plotFactory", "bkCellMenuPluginManager", "bkSessionManager", "bkUtils", retfunc]);
 })();
 
+/*
+ *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+(function () {
+  'use strict';
+  var module = angular.module('bk.outputDisplay');
+
+  (function ($) {
+    $.widget("custom.combobox", {
+      _create: function () {
+        this.editable = this.element.attr('easyform-editable') === 'true';
+        this.wrapper = $("<span>")
+            .addClass("custom-combobox")
+            .insertAfter(this.element);
+
+        this.element.hide();
+        this._createAutocomplete();
+        this._createShowAllButton();
+      },
+
+      _createAutocomplete: function () {
+        var selected = this.element.children(":selected"),
+            value = selected.val() ? selected.text() : "";
+
+        this.input = $("<input>")
+            .appendTo(this.wrapper)
+            .val(value)
+            .attr("title", "")
+            .attr("ng-model", this.element.attr('ng-model'))
+            .addClass("custom-combobox-input ui-widget ui-widget-content ui-corner-left")
+            .autocomplete({
+              delay: 0,
+              minLength: 0,
+              source: $.proxy(this, "_source")
+            })
+            .tooltip({
+              tooltipClass: "ui-state-highlight"
+            });
+
+        this.element.removeAttr('ng-model');
+
+        if (!this.editable) {
+          this.input.attr('readonly', 'true');
+          var input = this.input, wasOpen = false;
+          this.input
+              .mousedown(function () {
+                wasOpen = input.autocomplete("widget").is(":visible");
+              })
+              .click(function () {
+                input.focus();
+                if (wasOpen) {
+                  return;
+                }
+                input.autocomplete("search", "");
+              });
+        }
+
+        this._on(this.input, {
+          autocompleteselect: function (event, ui) {
+            ui.item.option.selected = true;
+            this._trigger("select", event, {
+              item: ui.item.option
+            });
+          }
+        });
+      },
+
+      _createShowAllButton: function () {
+        var input = this.input,
+            wasOpen = false;
+
+        //use jquery button fn instead of bootstrap
+        //reverts to jquery button fn
+        var bootstrapButtonFn = $.fn.button.noConflict();
+
+        var showAllButton = $("<a>")
+            .attr("tabIndex", -1)
+            .attr("title", "Show All Items")
+            .appendTo(this.wrapper)
+            .button({
+              icons: {
+                primary: "ui-icon-triangle-1-s"
+              },
+              text: false
+            })
+            .removeClass("ui-corner-all")
+            .addClass("custom-combobox-toggle ui-corner-right")
+            .mousedown(function () {
+              wasOpen = input.autocomplete("widget").is(":visible");
+            })
+            .click(function () {
+              input.focus();
+              if (wasOpen) {
+                return;
+              }
+              input.autocomplete("search", "");
+            });
+
+        //return to bootstrap button fn
+        $.fn.button = bootstrapButtonFn;
+      },
+
+      _source: function (request, response) {
+        var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+        response(this.element.children("option").map(function () {
+          var text = $(this).text();
+          if (this.value && ( !request.term || matcher.test(text) ))
+            return {
+              label: text,
+              value: text,
+              option: this
+            };
+        }));
+      },
+
+      _destroy: function () {
+        this.wrapper.remove();
+        this.element.show();
+      }
+    });
+  })(jQuery);
+
+  function EasyFormComponent(scope, element, constants, service, utils) {
+
+    this.scope = scope;
+    this.element = element;
+    this.constants = constants;
+    this.service = service;
+    this.utils = utils;
+    this.watchByObjectEquality = false;
+
+    var component = null;
+
+    this.getComponent = function() {
+      return component;
+    };
+
+    this.setWatchByObjectEquality = function(value) {
+      this.watchByObjectEquality = value;
+    };
+
+    this.isWatchByObjectEquality = function() {
+      return this.watchByObjectEquality;
+    };
+
+    this.watchedExpression = function (scope) {
+      return scope[scope.ngModelAttr];
+    };
+
+    var that = this;
+
+    this.valueChangeHandler = function (newValue, oldValue) {
+      if (newValue != undefined && newValue != null) {
+        newValue = that.prepareValueForSave(newValue);
+        service.setComponentValue(scope.formId, scope.evaluatorId, component, newValue);
+      }
+    };
+
+    this.prepareValueForSave = function(value) {
+      return value;
+    };
+
+    this.buildUI = function () {};
+
+    this.init = function() {
+      component = scope.component;
+      scope.componentId = component.label;
+      scope.ngModelAttr = utils.getValidNgModelString(component.label);
+
+      this.buildUI();
+
+      if (component.value) {
+        scope[scope.ngModelAttr] = component.value;
+      }
+
+      scope.$watch(this.watchedExpression, this.valueChangeHandler, this.isWatchByObjectEquality());
+      this.addUpdatedListener();
+      this.addValueLoadedListener();
+    };
+
+    this.addListener = function(event, handler) {
+      scope.$on(event, handler);
+    };
+
+    this.addUpdatedListener = function() {
+      this.addListener(constants.Events.UPDATED, function(event, args) {
+        args.components.forEach(function(component) {
+          if (component.label === scope.componentId) {
+            scope.$apply(function() {
+              scope[scope.ngModelAttr] = component.value;
+              scope.component.enabled = component.enabled;
+            });
+          }
+        });
+      });
+    };
+
+    this.addValueLoadedListener = function() {
+      this.addListener(constants.Events.VALUE_LOADED, function(event, args) {
+        scope.$apply(function() {
+          scope[scope.ngModelAttr] = service.getComponentValue(component);
+        });
+      });
+    };
+  };
+
+  module.directive("easyFormTextField",
+      ['$compile', 'bkUtils', 'EasyFormConstants', 'EasyFormService',
+        function ($compile, bkUtils, EasyFormConstants, EasyFormService) {
+          return {
+            restrict: "E",
+            template:
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
+                  "<div class='easyform-component-container'>" +
+                    "<input type='text' class='text-field' ng-disabled='!component.enabled'/>" +
+                  "</div>" +
+                "</div>",
+            link: function (scope, element, attrs) {
+
+              var efc = new EasyFormComponent(
+                  scope, element, EasyFormConstants, EasyFormService, bkUtils);
+
+              efc.buildUI = function() {
+                var fixedSize = false;
+                if (!efc.getComponent().width
+                    || parseInt(efc.getComponent().width)
+                      < efc.constants.Components.TextField.MIN_WIDTH) {
+                  efc.getComponent().width = efc.constants.Components.TextField.MIN_WIDTH;
+                } else {
+                  fixedSize = true;
+                }
+                element.find('.easyform-label').text(efc.getComponent().label);
+                var textField = element.find('.text-field');
+                textField.attr('ng-model', scope.ngModelAttr)
+                    .attr('size', efc.getComponent().width);
+                if (fixedSize) {
+                  element.find('.easyform-component-container').addClass('fixed-size');
+                }
+              };
+
+              efc.init();
+              $compile(element.contents())(scope);
+            }
+          };
+        }]);
+
+  module.directive("easyFormTextArea",
+      ['$compile', 'bkUtils', 'EasyFormConstants', 'EasyFormService',
+        function ($compile, bkUtils, EasyFormConstants, EasyFormService) {
+          return {
+            restrict: "E",
+            template:
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
+                  "<div class='easyform-component-container'>" +
+                    "<textarea class='text-area' ng-disabled='!component.enabled'/>" +
+                  "</div>" +
+                "</div>",
+            link: function (scope, element, attrs) {
+
+              var efc = new EasyFormComponent(
+                  scope, element, EasyFormConstants, EasyFormService, bkUtils);
+
+              efc.buildUI = function() {
+                var fixedSize = false;
+                if (!efc.getComponent().height
+                    || parseInt(efc.getComponent().height)
+                      < efc.constants.Components.TextArea.MIN_HEIGHT) {
+                  efc.getComponent().height = efc.constants.Components.TextArea.MIN_HEIGHT;
+                }
+                if (!efc.getComponent().width
+                    || parseInt(efc.getComponent().width)
+                      < efc.constants.Components.TextArea.MIN_WIDTH) {
+                  efc.getComponent().width = efc.constants.Components.TextArea.MIN_WIDTH;
+                } else {
+                  fixedSize = true;
+                }
+                element.find('.easyform-label').text(efc.getComponent().label);
+                var textArea = element.find('.text-area');
+                textArea
+                    .attr('ng-model', scope.ngModelAttr)
+                    .attr('rows', efc.getComponent().height);
+                if (fixedSize) {
+                  element.find('.easyform-component-container').addClass('fixed-size');
+                  textArea.css('width', parseInt(efc.getComponent().width) + 1.5 + 'ch');
+                }
+              };
+
+              efc.init();
+              $compile(element.contents())(scope);
+            }
+          };
+        }]);
+
+  module.directive("easyFormCheckBox",
+      ['$compile', 'bkUtils', 'EasyFormConstants', 'EasyFormService',
+        function ($compile, bkUtils, EasyFormConstants, EasyFormService) {
+          return {
+            restrict: "E",
+            template:
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
+                  "<div class='easyform-component-container'>" +
+                    "<input type='checkbox' ng-disabled='!component.enabled' class='check-box'/>" +
+                  "</div>" +
+                "</div>",
+            link: function (scope, element, attrs) {
+
+              var efc = new EasyFormComponent(
+                  scope, element, EasyFormConstants, EasyFormService, bkUtils);
+
+              efc.buildUI = function() {
+                element.find('.easyform-label').text(efc.getComponent().label);
+                var checkBox = element.find('.check-box');
+                checkBox.attr('ng-model', scope.ngModelAttr);
+                if ('true' === efc.getComponent().value) {
+                  efc.getComponent().value = true;
+                  checkBox.attr('checked', 'true');
+                } else {
+                  efc.getComponent().value = false;
+                }
+              };
+
+              efc.addUpdatedListener = function() {
+                efc.addListener(efc.constants.Events.UPDATED, function(event, args) {
+                  args.components.forEach(function(component) {
+                    if (component.label === scope.componentId) {
+                      scope.$apply(function() {
+                        scope[scope.ngModelAttr] = component.value === 'true' ? true : false;
+                        scope.component.enabled = component.enabled;
+                      });
+                    }
+                  });
+                });
+              };
+
+              efc.init();
+              $compile(element.contents())(scope);
+            }
+          };
+        }]);
+
+  module.directive('easyFormCheckBoxGroup',
+      ['$compile', 'bkUtils', 'EasyFormConstants', 'EasyFormService',
+        function ($compile, bkUtils, EasyFormConstants, EasyFormService) {
+          return {
+            restrict: "E",
+            template:
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
+                  "<div class='easyform-component-container'>" +
+                    "<label class='check-box-group-item-label'" +
+                    " ng-repeat='value in values track by $index' " +
+                    " ng-class='{vertical : !horizontal}'>" +
+                    " <input type='checkbox' ng-model='value.selected' name='selectedValues[]' " +
+                    " ng-disabled='!component.enabled'/> {{value.name}}" +
+                    "</label>" +
+                  "</div>" +
+                "</div>",
+            link: function (scope, element, attrs) {
+
+              var efc = new EasyFormComponent(
+                  scope, element, EasyFormConstants, EasyFormService, bkUtils);
+
+              efc.buildUI = function() {
+                scope.values = [];
+                if (efc.getComponent().values && efc.getComponent().values.length > 0) {
+                  efc.getComponent().values.forEach(function (value) {
+                    var obj = {
+                      name: value,
+                      selected: false
+                    };
+                    scope.values.push(obj);
+                  });
+                }
+
+                element.find('.easyform-label').text(efc.getComponent().label);
+                scope.horizontal = 'true' === efc.getComponent().isHorizontal.toString();
+              };
+
+              efc.watchedExpression = function (scope) {
+                return scope.values;
+              };
+
+              efc.prepareValueForSave = function (value) {
+                value = value
+                    .filter(function(x) { return x.selected; })
+                    .map(function(x) { return x.name; })
+                    .join(', ');
+                if (value) {
+                  value = '[' + value + ']';
+                }
+                return value;
+              };
+
+              efc.setWatchByObjectEquality(true);
+
+              efc.addUpdatedListener = function() {
+                efc.addListener(efc.constants.Events.UPDATED, function(event, args) {
+                  args.components.forEach(function(component) {
+                    if (component.label === scope.componentId && component.value) {
+                      var selectedValues = component.value.substring(1, component.value.length - 1)
+                          .split(', ');
+                      scope.values.forEach(function(value) {
+                        value.selected = selectedValues.indexOf(value.name) != -1
+                      });
+                      scope.$apply(function() {
+                        scope[scope.ngModelAttr] = component.value;
+                        scope.component.enabled = component.enabled;
+                      });
+                    }
+                  });
+                });
+              };
+
+              efc.addValueLoadedListener = function() {
+                efc.addListener(efc.constants.Events.VALUE_LOADED, function(event, args) {
+                  var loadedValue = efc.service.getComponentValue(efc.getComponent());
+                  if (loadedValue) {
+                    scope.$apply(function() {
+                      scope.values = JSON.parse(loadedValue);
+                    });
+                  }
+                });
+              };
+
+              efc.init();
+              $compile(element.contents())(scope);
+            }
+          };
+        }]);
+
+  module.directive("easyFormComboBox",
+      ['$compile', 'bkUtils', 'EasyFormConstants', 'EasyFormService',
+        function ($compile, bkUtils, EasyFormConstants, EasyFormService) {
+          return {
+            restrict: "E",
+            template:
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
+                  "<div class='easyform-component-container position-absolute'>" +
+                    "<div class='combo-box-input-outer'>" +
+                      "<div class='combo-box-outer'>" +
+                        "<select class='combo-box' ng-disabled='!component.enabled'>" +
+                          "<option ng-repeat='value in values' value='{{value}}'>" +
+                            "{{value}}" +
+                          "</option>" +
+                        "</select>" +
+                      "</div>" +
+                    "</div>" +
+                  "</div>" +
+                "</div>",
+            link: function (scope, element, attrs) {
+
+              var efc = new EasyFormComponent(
+                  scope, element, EasyFormConstants, EasyFormService, bkUtils);
+
+              efc.buildUI = function() {
+                element.find('.easyform-label').text(efc.getComponent().label);
+                var comboBox = element.find('.combo-box');
+                comboBox.attr('ng-model', scope.ngModelAttr);
+
+                scope.component.enabled = true;
+
+                var editable = efc.getComponent().editable
+                    && efc.getComponent().editable === 'true';
+                comboBox.attr('easyform-editable', editable);
+                element.find( ".combo-box[ng-model=\"" + scope.ngModelAttr + "\"]" ).combobox();
+                if (editable && efc.getComponent().width
+                    && parseInt(efc.getComponent().width)
+                        > efc.constants.Components.ComboBox.MIN_WIDTH) {
+                  element.find('.custom-combobox-input')
+                      .css('width', parseInt(efc.getComponent().width) + 1 + 'ch');
+                }
+
+                if (!efc.getComponent().values) {
+                  efc.getComponent().values = [];
+                }
+                scope.values = efc.getComponent().values;
+              };
+
+              efc.addUpdatedListener = function() {
+                efc.addListener(efc.constants.Events.UPDATED, function(event, args) {
+                  args.components.forEach(function(component) {
+                    if (component.label === scope.componentId) {
+                      scope.$apply(function() {
+                        scope[scope.ngModelAttr] = component.value;
+                        scope.component.enabled = component.enabled;
+                      });
+                    }
+                  });
+                });
+              };
+
+              efc.addValueLoadedListener = function() {
+                efc.addListener(efc.constants.Events.VALUE_LOADED, function(event, args) {
+                  var loadedValue = efc.service.getComponentValue(efc.getComponent());
+                  if (loadedValue) {
+                    scope.$apply(function() {
+                      scope[scope.ngModelAttr] = JSON.parse(loadedValue);
+                    });
+                  }
+                });
+              };
+
+              efc.init();
+              $compile(element.contents())(scope);
+            }
+          };
+        }]);
+
+  module.directive("easyFormListComponent",
+      ['$compile', 'bkUtils', 'EasyFormConstants', 'EasyFormService',
+        function ($compile, bkUtils, EasyFormConstants, EasyFormService) {
+          return {
+            restrict: "E",
+            template:
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
+                  "<div class='easyform-component-container'>" +
+                    "<div class='list-component-outer'>" +
+                      "<select class='list-component' ng-disabled='!component.enabled'/>" +
+                    "</div>" +
+                  "</div>" +
+                "</div>",
+            link: function (scope, element, attrs) {
+
+              var efc = new EasyFormComponent(
+                  scope, element, EasyFormConstants, EasyFormService, bkUtils);
+
+              efc.buildUI = function() {
+                element.find('.easyform-label').text(efc.getComponent().label);
+                var listComponent = element.find('.list-component');
+                listComponent.attr('ng-model', scope.ngModelAttr);
+
+                if ('true' === efc.getComponent().multipleSelection) {
+                  listComponent.attr('multiple', 'true');
+                }
+
+                var size;
+                if (efc.getComponent().size && efc.getComponent().size > 0) {
+                  size = efc.getComponent().size;
+                  listComponent.attr('size', size);
+                } else if (efc.getComponent().values && efc.getComponent().values.length > 0) {
+                  size = efc.getComponent().values.length;
+                  listComponent.attr('size', size);
+                }
+
+                if (size >= efc.getComponent().values.length) {
+                  //hide scrollbar
+                  var outerDiv = element.find('.list-component-outer');
+                  outerDiv.addClass('hide-scrollbar');
+                }
+
+                if (efc.getComponent().values) {
+                  listComponent.attr('ng-options', 'v for v in component.values');
+                }
+              };
+
+              efc.prepareValueForSave = function(value) {
+                if ('true' === efc.getComponent().multipleSelection) {
+                  if (value.join) {
+                    value = '[' + value.join(', ') + ']';
+                  } else {
+                    value = '[' + value + ']';
+                  }
+                }
+                return value;
+              };
+
+              efc.addUpdatedListener = function() {
+                efc.addListener(efc.constants.Events.UPDATED, function(event, args) {
+                  args.components.forEach(function(component) {
+                    if (component.label === scope.componentId) {
+                      scope.$apply(function() {
+                        if (component.value) {
+                          scope[scope.ngModelAttr] =
+                                  'true' === efc.getComponent().multipleSelection
+                              ? component.value.substring(1, component.value.length - 1).split(', ')
+                              : component.value;
+                        }
+                        scope.component.enabled = component.enabled;
+                      });
+                    }
+                  });
+                });
+              };
+
+              efc.addValueLoadedListener = function() {
+                efc.addListener(efc.constants.Events.VALUE_LOADED, function(event, args) {
+                  var loadedValue = efc.service.getComponentValue(efc.getComponent());
+                  if (loadedValue) {
+                    scope.$apply(function() {
+                      scope.values = JSON.parse(loadedValue);
+                    });
+                  }
+                });
+              };
+
+              efc.init();
+              $compile(element.contents())(scope);
+            }
+          };
+        }]);
+
+  module.directive("easyFormRadioButtonComponent",
+      ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService',
+        function ($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService) {
+          return {
+            restrict: "E",
+            template:
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
+                  "<div class='easyform-component-container'>" +
+                  "</div>" +
+                "</div>",
+            link: function (scope, element, attrs) {
+
+              var efc = new EasyFormComponent(
+                  scope, element, EasyFormConstants, EasyFormService, bkUtils);
+
+              efc.buildUI = function() {
+                element.find('.easyform-label').text(efc.getComponent().label);
+
+                if (efc.getComponent().values && efc.getComponent().values.length > 0) {
+                  var container = element.find('.easyform-component-container');
+                  var horizontal = 'true' === efc.getComponent().isHorizontal.toString();
+                  var radioButtonItemsContainer
+                      = angular.element('<div class="radio-button-items-container"></div>');
+
+                  efc.getComponent().values.forEach(function (value) {
+                    var outerRadioButtonLabel
+                        = angular.element('<label class="radio-button-item-label"></label>');
+                    outerRadioButtonLabel.addClass(horizontal ? 'horizontal' : 'vertical');
+                    var radioButton
+                        = angular.element('<input type="radio" class="radio-button-component-item"'
+                        + ' ng-disabled="!component.enabled"/>')
+                        .attr('ng-model', scope.ngModelAttr)
+                        .attr('value', value);
+                    var textSpanElement =
+                        angular.element('<span class="radio-button-item-text"></span>');
+                    textSpanElement.text(value);
+                    var divSpacer = angular.element('<div class="radio-button-item-spacer"/>');
+                    outerRadioButtonLabel.append(radioButton).append(textSpanElement)
+                        .append(divSpacer);
+                    radioButtonItemsContainer.append(outerRadioButtonLabel);
+                  });
+
+                  container.append(radioButtonItemsContainer);
+                }
+              };
+
+              efc.init();
+              $compile(element.contents())(scope);
+            }
+          };
+        }]);
+
+  module.directive("easyFormDatePickerComponent",
+      ['$compile', 'bkUtils', 'EasyFormConstants', 'EasyFormService',
+        function ($compile, bkUtils, EasyFormConstants, EasyFormService) {
+          return {
+            restrict: "E",
+            template:
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
+                  "<div class='easyform-component-container'>" +
+                    "<input type='date' class='date-picker' ng-disabled='!component.enabled'/>" +
+                  "</div>" +
+                "</div>",
+            link: function (scope, element, attrs) {
+
+              var efc = new EasyFormComponent(
+                  scope, element, EasyFormConstants, EasyFormService, bkUtils);
+
+              efc.buildUI = function() {
+                element.find('.easyform-label').text(efc.getComponent().label);
+                var datePicker = element.find('.date-picker');
+                datePicker.attr('ng-model', scope.ngModelAttr);
+
+                if ('true' === efc.getComponent().showTime) {
+                  datePicker.attr('type', 'datetime');
+                }
+              };
+
+              efc.init();
+              $compile(element.contents())(scope);
+            }
+          };
+        }]);
+
+  module.directive("easyFormButtonComponent",
+      ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService',
+        'bkCoreManager',
+        function ($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService,
+                  bkCoreManager) {
+          return {
+            restrict: "E",
+            template:
+                "<div class='button-component-container'>" +
+                  "<button type='button' class='button-component' " +
+                  "ng-disabled='!component.enabled'/>" +
+                "</div>",
+            link: function (scope, element, attrs) {
+              var component = scope.component;
+
+              var executeCellWithTag = function () {
+                var cellOp = bkSessionManager.getNotebookCellOp();
+                var result;
+                if (cellOp.hasUserTag(component.tag)) {
+                  result = cellOp.getCellsWithUserTag(component.tag);
+                }
+                bkCoreManager.getBkApp().evaluateRoot(result)
+                    .catch(function (data) {
+                      console.log('Evaluation failed');
+                    });
+              };
+
+              var saveValues = function () {
+                var contentAsJson = JSON.stringify(EasyFormService.easyForm);
+                bkUtils.saveFile(component.path, contentAsJson, true);
+              };
+
+              var loadValues = function () {
+                bkUtils.loadFile(component.path).then(function (contentAsJson) {
+                  EasyFormService.easyForm = JSON.parse(contentAsJson);
+                  scope.$root.$broadcast(EasyFormConstants.Events.VALUE_LOADED);
+                });
+              };
+
+              var buttonComponent = element.find('.button-component');
+
+              if (EasyFormConstants.Components.ButtonComponent.type == component.type) {
+                buttonComponent.text(component.label);
+
+                if (component.tag) {
+                  buttonComponent.attr('title', component.tag).on('click', executeCellWithTag);
+                }
+              } else if (EasyFormConstants.Components.SaveValuesButton.type == component.type) {
+                buttonComponent.text("Save");
+                buttonComponent.on('click', saveValues);
+              } else if (EasyFormConstants.Components.LoadValuesButton.type == component.type) {
+                buttonComponent.text("Load");
+                buttonComponent.on('click', loadValues);
+              }
+
+              scope.$on(EasyFormConstants.Events.UPDATED, function (event, args) {
+                args.components.forEach(function(component) {
+                  if (component.label === scope.componentId) {
+                    scope.$apply(function() {
+                      scope.component.enabled = component.enabled;
+                    });
+                  }
+                });
+              });
+            }
+          };
+        }]);
+
+  beaker.bkoDirective("EasyForm",
+      ['$compile', 'bkUtils', 'bkEvaluatorManager', 'bkSessionManager', 'EasyFormConstants',
+        'EasyFormService',
+        function ($compile, bkUtils, bkEvaluatorManager, bkSessionManager, EasyFormConstants,
+                  EasyFormService) {
+          return {
+            template: "<div class='easy-form-container'></div>",
+
+            controller: function ($scope) {
+              $scope.getUpdateService = function () {
+                if (window !== undefined && window.languageUpdateService !== undefined
+                    && bkEvaluatorManager.getEvaluator($scope.model.getEvaluatorId()) !== undefined)
+                  return window.languageUpdateService[$scope.model.getEvaluatorId()];
+                return undefined;
+              };
+
+              $scope.ingestUpdate = function (model) {
+                $scope.update_id = model.update_id;
+                var srv = $scope.getUpdateService();
+
+                if ($scope.subscribedId && $scope.subscribedId !== $scope.update_id) {
+                  if (srv !== undefined)
+                    srv.unsubscribe($scope.subscribedId);
+                  $scope.subscribedId = null;
+                }
+
+                if (!$scope.subscribedId && $scope.update_id && srv !== undefined) {
+                  var onUpdate = function (update) {
+                    $scope.ingestUpdate(update);
+                    $scope.$broadcast(EasyFormConstants.Events.UPDATED, update);
+                  };
+                  srv.subscribe($scope.update_id, onUpdate);
+                  $scope.subscribedId = $scope.update_id;
+                }
+
+              };
+
+              $scope.fetchFromCellModel = function (model, element) {
+                $scope.ingestUpdate(model);
+                var easyFormContainer = element.find('.easy-form-container');
+
+                if (model.caption) {
+                  var fieldsetElement = angular.element('<fieldset></fieldset>');
+                  var legendElement = angular.element('<legend></legend>').text(model.caption);
+                  easyFormContainer.append(fieldsetElement.append(legendElement));
+                  easyFormContainer = fieldsetElement;
+                }
+
+                if (model.components) {
+                  model.components.forEach(function (component) {
+
+                    var childScope = $scope.$new();
+                    childScope.component = component;
+                    childScope.formId = $scope.update_id;
+                    childScope.evaluatorId = $scope.model.getEvaluatorId();
+                    var newElement
+                        = angular.element(EasyFormConstants.Components[component.type].htmlTag);
+                    childScope.component.enabled = childScope.component.enabled ? true : false;
+                    easyFormContainer.append($compile(newElement)(childScope));
+
+                    if ((component.type.indexOf(
+                        EasyFormConstants.Components.SaveValuesButton.type) == -1
+                        || component.type.indexOf(
+                        EasyFormConstants.Components.LoadValuesButton.type) == -1)) {
+                      EasyFormService.addComponent(component);
+                    }
+
+                  });
+                }
+
+                $scope.alignComponents();
+              };
+
+              $scope.alignComponents = function() {
+                var labels = $('.easyform-label');
+                var components = $('.easyform-component-container');
+                var maxLabelWidth = findMaxLabelWidth();
+                if (maxLabelWidth <= 0) {
+                  return;
+                }
+                var safeIndent = 5;
+                var maxComponentWidth = countMaxComponentWidth(maxLabelWidth + safeIndent);
+                setComponentsWidthInPercents(maxComponentWidth);
+                setEqualLabelsWidth(maxLabelWidth);
+
+                function findMaxLabelWidth() {
+                  var maxWidth = -1;
+                  for (var i = 0; i < labels.size(); i++) {
+                    var elementWidth = labels.eq(i).width();
+                    maxWidth = maxWidth < elementWidth ? elementWidth : maxWidth;
+                  }
+                  return maxWidth;
+                }
+
+                function countMaxComponentWidth(labelWidth) {
+                  var maxComponentWidth = 0;
+                  if (components) {
+                    var parentWidth = components.eq(0).parent().width();
+                    var defaultBorder = 2, defaultPadding = 1, textFieldMargin = 5,
+                        delta = (defaultBorder + defaultPadding + textFieldMargin) * 2;
+                    maxComponentWidth = (parentWidth - labelWidth - delta) / parentWidth * 100;
+                  }
+                  return maxComponentWidth;
+                }
+
+                function setComponentsWidthInPercents(width) {
+                  for (var i = 0; i < components.size(); i++) {
+                    var component = components.eq(i);
+                    if (!component.hasClass('fixed-size')) {
+                      component.css('width', width + '%');
+                    }
+                  }
+                }
+
+                function setEqualLabelsWidth(width) {
+                  for (var i = 0; i < labels.size(); i++) {
+                    labels.eq(i).width(width);
+                  }
+                }
+              };
+
+              $(window).resize($scope.alignComponents);
+
+              $scope.$on('$destroy', function () {
+                $(window).off('resize', $scope.alignComponents);
+                if ($scope.subscribedId) {
+                  var srv = $scope.getUpdateService();
+                  if (srv !== undefined) {
+                    srv.unsubscribe($scope.subscribedId);
+                  }
+                }
+              });
+            },
+
+            link: function (scope, element, attrs) {
+
+              scope.getState = function () {
+                return scope.model.getCellModel();
+              };
+
+              scope.$watch(function () {
+                return element.is(':visible')
+              }, scope.alignComponents);
+
+              scope.fetchFromCellModel(scope.getState(), element);
+            }
+          };
+        }
+      ]);
+
+  module.service('EasyFormService', function () {
+    var service = {
+      easyForm: {},
+      addComponent: function (component) {
+        this.easyForm[component.label] = component;
+      },
+      setComponentValue: function (formId, evaluatorId, component, value) {
+        if (this.easyForm[component.label]) {
+          this.easyForm[component.label].currentValue = value;
+        }
+        var req = $.ajax({
+          type: "POST",
+          datatype: "json",
+          url: window.languageServiceBase[evaluatorId] + '/easyform/set',
+          data: {
+            id: formId,
+            key: component.label,
+            value: value
+          }
+        });
+        req.done(function (ret) {
+        });
+        req.error(function (jqXHR, textStatus) {
+          console.error("Unable to set easyform value");
+        });
+      },
+      getComponentValue: function (component) {
+        if (this.easyForm[component.label]) {
+          return this.easyForm[component.label].currentValue;
+        }
+      }
+    };
+    return service;
+  });
+
+  module.constant("EasyFormConstants", {
+    Events: {
+      UPDATED: "easyformupdated",
+      VALUE_LOADED: "easyformvalueloaded"
+    },
+    Components: {
+      TextField: {
+        type: "TextField",
+        htmlTag: "<easy-form-text-field/>",
+        MIN_WIDTH: 1
+      },
+      TextArea: {
+        type: "TextArea",
+        htmlTag: "<easy-form-text-area/>",
+        MIN_WIDTH: 1,
+        MIN_HEIGHT: 3
+      },
+      CheckBox: {
+        type: "CheckBox",
+        htmlTag: "<easy-form-check-box/>"
+      },
+      CheckBoxGroup: {
+        type: "CheckBoxGroup",
+        htmlTag: "<easy-form-check-box-group/>"
+      },
+      ComboBox: {
+        type: "ComboBox",
+        htmlTag: "<easy-form-combo-box/>",
+        MIN_WIDTH: 1
+      },
+      ListComponent: {
+        type: "ListComponent",
+        htmlTag: "<easy-form-list-component/>"
+      },
+      RadioButtonComponent: {
+        type: "RadioButtonComponent",
+        htmlTag: "<easy-form-radio-button-component/>"
+      },
+      DatePickerComponent: {
+        type: "DatePickerComponent",
+        htmlTag: "<easy-form-date-picker-component/>"
+      },
+      ButtonComponent: {
+        type: "ButtonComponent",
+        htmlTag: "<easy-form-button-component/>"
+      },
+      SaveValuesButton: {
+        type: "SaveValuesButton",
+        htmlTag: "<easy-form-button-component/>"
+      },
+      LoadValuesButton: {
+        type: "LoadValuesButton",
+        htmlTag: "<easy-form-button-component/>"
+      }
+    }
+  });
+})();
 /*
  *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
@@ -9183,6 +10648,18 @@
                 scope.width = width;
                 element.find("#combplotTitle").css("width", width);
                 scope.$apply();
+              },
+              updateMargin : function() {
+                // if any of plots has left-positioned legend we should update left margin (with max value)
+                // for all plots (to adjust vertical position)
+                var plots = element.find("#plotContainer");
+                var maxMargin = 0;
+
+                plots.each(function() {
+                  var value = parseFloat($(this).css('margin-left'));
+                  maxMargin = _.max([value, maxMargin]);
+                });
+                plots.css("margin-left", maxMargin);
               },
               getWidth : function() {
                 return scope.width;

@@ -39,6 +39,8 @@ public class BarsSerializer extends JsonSerializer<Bars> {
     jgen.writeObjectField("y", bars.getY());
     jgen.writeObjectField("visible", bars.getVisible());
     jgen.writeObjectField("display_name", bars.getDisplayName());
+    if (bars.getLodFilter() != null)
+      jgen.writeObjectField("lod_filter", bars.getLodFilter().getText());
     if (bars.getBases() != null) {
       jgen.writeObjectField("bases", bars.getBases());
     } else {

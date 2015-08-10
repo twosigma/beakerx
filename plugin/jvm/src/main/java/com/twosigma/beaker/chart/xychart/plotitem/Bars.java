@@ -17,12 +17,17 @@
 package com.twosigma.beaker.chart.xychart.plotitem;
 
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.Filter;
+
+import java.util.EnumSet;
 import java.util.List;
 
 
 public class Bars extends XYGraphics {
 
-  private Number baseWidth;
+  private final static EnumSet<Filter> POSSIBLE_LOD_FILTERS = EnumSet.of(Filter.BAR, Filter.BOX);
+
+  private Number       baseWidth;
   private List<Number> widths;
   private Number baseBase = 0.0d;
   private List<Number> bases;
@@ -40,7 +45,7 @@ public class Bars extends XYGraphics {
       setBases(ss);
     } else {
       throw new IllegalArgumentException(
-          "setBase takes Number or List of Number");
+        "setBase takes Number or List of Number");
     }
   }
 
@@ -138,4 +143,9 @@ public class Bars extends XYGraphics {
     return this.outlineColors;
   }
 
+
+  @Override
+  protected EnumSet<Filter> getPossibleFilters() {
+    return POSSIBLE_LOD_FILTERS;
+  }
 }

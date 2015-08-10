@@ -16,7 +16,8 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils, plotConverter, PlotAxis, plotFactory, plotUtils) {
+  var retfunc = function(bkUtils, plotConverter, PlotAxis, plotFactory, plotUtils, bkHelper) {
+
     return {
       lineDasharrayMap : {
         "solid" : "",
@@ -276,7 +277,8 @@
           // recreate rendering objects
           item.index = i;
           item.id = "i" + i;
-          data[i] = plotFactory.createPlotItem(item);
+
+          data[i] = plotFactory.createPlotItem(item, newmodel.lodThreshold);
         }
 
         // apply log to focus
@@ -351,6 +353,7 @@
             yAxis : { label : model.y_label },
             yAxisR : model.rangeAxes.length > 1 ? { label : model.rangeAxes[1].label } : null,
             showLegend : model.show_legend != null ? model.show_legend : false,
+            legendPosition : model.legend_position != null ? model.legend_position : {position: "TOP_RIGHT"},
             useToolTip : model.use_tool_tip != null ? model.use_tool_tip : false,
             plotSize : {
               "width" : model.init_width != null ? model.init_width : 1200,
@@ -362,6 +365,7 @@
         } else {
           newmodel = {
             showLegend : model.showLegend != null ? model.showLegend : false,
+            legendPosition : model.legendPosition != null ? model.legendPosition : {position: "TOP_RIGHT"},
             useToolTip : model.useToolTip != null ? model.useToolTip : false,
             xAxis : model.xAxis != null ? model.xAxis : {},
             yAxis : model.yAxis != null ? model.yAxis : {},
@@ -378,6 +382,10 @@
             timezone : model.timezone
           };
         }
+
+        newmodel.lodThreshold = (model.lodThreshold) ?
+          model.lodThreshold :
+          bkHelper.getBkNotebookViewModel().getLodThreshold();
 
         newmodel.data = [];
 
@@ -465,5 +473,5 @@
     };
   };
   beaker.bkoFactory('plotFormatter',
-    ["bkUtils", 'plotConverter', 'PlotAxis', 'plotFactory', 'plotUtils', retfunc]);
+    ["bkUtils", 'plotConverter', 'PlotAxis', 'plotFactory', 'plotUtils', 'bkHelper', retfunc]);
 })();

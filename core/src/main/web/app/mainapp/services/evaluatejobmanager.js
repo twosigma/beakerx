@@ -56,14 +56,14 @@
           bkUtils.log("evaluate", {
             plugin: job.evaluator.pluginName,
             length: job.code.length });
-          return job.evaluator.evaluate(job.code, job.output, outputMap[job.cellId]);
+          return job.evaluator.evaluate(job.code, job.output, outputMap[job.cellId], job.cellId);
         }
         job.output.result = MESSAGE_WAITING_FOR_EVALUTOR_INIT;
         return bkEvaluatorManager.waitEvaluator(job.evaluatorId)
           .then(function(ev) {
             job.evaluator = ev;
             if (ev !== undefined)
-              return job.evaluator.evaluate(job.code, job.output, outputMap[job.cellId]);
+              return job.evaluator.evaluate(job.code, job.output, outputMap[job.cellId], job.cellId);
             return "cannot find evaluator for "+job.evaluatorId;
           } );
       };

@@ -14,7 +14,54 @@
  *  limitations under the License.
  */
 
+@mixin indented-section() {
+  margin-left: 4.5px;
+  border-left: solid 3px $highlight-blue;
+}
+
 .hierarchy-mode {
+  bk-section-cell {
+    margin: 0;
+  }
+
+  .branch .section-connector {
+    width: 46px;
+    position: absolute;
+    left: -54px;
+    top: 10px;
+    border-top: solid 3px $highlight-blue;
+  }
+
+  bk-section-cell > .leaf > {
+    bk-new-cell-menu, bk-new-cell-menu:not(.large), .section-children {
+      border-left-color: transparent;
+      padding-left: 54px;
+    }
+  }
+
+  bk-section-cell > .branch > {
+    bk-new-cell-menu, bk-new-cell-menu:not(.large) {
+      margin: 0;
+      padding: 15px 0;
+      padding-left: 13px;
+
+      @include indented-section();
+    }
+
+    .section-children {
+      padding-left: 54px;
+      @include indented-section();
+    }
+  }
+
+  &.advanced-mode {
+    bk-section-cell > .branch > {
+      bk-new-cell-menu, bk-new-cell-menu:not(.large) {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+    }
+  }
 
   .section-toggle {
     top: 3px;
@@ -22,10 +69,6 @@
     + .depth-indicator {
       margin-left: 20px;
     }
-  }
-
-  .mini-cell-stats {
-    left: 104px;
   }
 
   .evaluator .depth-indicator, .text-cell .depth-indicator, bk-markdown-cell .depth-indicator {
@@ -37,10 +80,6 @@
     top: 0;
   }
 
-  .bkcell.code-cell-area, .text-cell, .bk-markdown-cell, bk-markdown-editable {
-    margin-left: 84px;
-  }
-
   .insert-cell {
     margin-left: 4px;
   }
@@ -48,16 +87,12 @@
   .depth-indicator {
     vertical-align: top;
     display: inline-block;
-  }
-
-  .section-children {
-    border-left:  solid 1px #e6e6e6;
-    margin-left:  10px;
-    padding-left: 54px;
+    margin-right: 0;
   }
 
   .bk-section-title {
-    top: 5px;
+    top: 3px;
+    margin: -2px 0 0 0;
     position: relative;
     vertical-align: top;
     display: inline-block;

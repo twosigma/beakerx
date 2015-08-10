@@ -13,17 +13,20 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div ng-hide='cellmodel.hideTitle'>
-  <span class='bksectiontoggleplus section-toggle' ng-click='toggleShowChildren()' ng-hide='isShowChildren()'>
-    <i class='fa fa-plus'></i>
-  </span>
-  <span class='bksectiontoggleminus section-toggle' ng-click='toggleShowChildren()' ng-show='isShowChildren()'>
-    <i class='fa fa-minus'></i>
-  </span>
-  <p class='depth-indicator'>{{getFullIndex()}}</p>
-  <bk-markdown-editable class='section{{cellmodel.level}} bk-section-title' cellmodel="cellmodel"></bk-markdown-editable>
-</div>
-<bk-new-cell-menu size="xs" config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>
-<div ng-show="isShowChildren()" class="section-children">
-  <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index" cellid="{{cell.id}}"></bk-cell>
+<div ng-class="{branch: isBranch(), leaf: isLeaf()}">
+  <div ng-hide='cellmodel.hideTitle'>
+    <div class='section-connector' ng-hide="!isAntecedentSectionSiblingPrimogeniture()"></div>
+    <span class='bksectiontoggleplus section-toggle' ng-click='toggleShowChildren()' ng-hide='isShowChildren()'>
+      <i class='fa fa-plus'></i>
+    </span>
+    <span class='bksectiontoggleminus section-toggle' ng-click='toggleShowChildren()' ng-show='isShowChildren()'>
+      <i class='fa fa-minus'></i>
+    </span>
+    <p class='depth-indicator'>{{getFullIndex()}}</p>
+    <bk-markdown-editable class='section{{cellmodel.level}} bk-section-title' cellmodel="cellmodel"></bk-markdown-editable>
+  </div>
+  <bk-new-cell-menu size="xs" config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>
+  <div ng-show="isShowChildren()" class="section-children">
+    <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index" cellid="{{cell.id}}"></bk-cell>
+  </div>
 </div>

@@ -51,6 +51,7 @@ abstract public class XYChart {
   private Crosshair crosshair;
   private LegendPosition legendPosition = new LegendPosition(LegendPosition.Position.TOP_RIGHT);
   private Integer lodThreshold = null;
+  private boolean omitCheckboxes = false;
 
   protected XYChart() {
     yAxes.add(yAxis);
@@ -416,6 +417,15 @@ abstract public class XYChart {
 
   public XYChart setLegendPosition(LegendPosition legendPosition) {
     this.legendPosition = legendPosition;
+    return this;
+  }
+
+  public Boolean getOmitCheckboxes() {
+    return omitCheckboxes;
+  }
+
+  public XYChart setOmitCheckboxes(boolean omitCheckboxes) {
+    this.omitCheckboxes = omitCheckboxes;
     return this;
   }
 

@@ -94,6 +94,7 @@ public class XYChartSerializer extends JsonSerializer<XYChart> {
     if (xychart.getLodThreshold() != null) {
       jgen.writeObjectField("lodThreshold", xychart.getLodThreshold());
     }
+    jgen.writeObjectField("omit_checkboxes", xychart.getOmitCheckboxes());
     jgen.writeEndObject();
   }
 

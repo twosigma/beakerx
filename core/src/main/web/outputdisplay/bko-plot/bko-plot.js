@@ -94,7 +94,7 @@
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
 
-          var plotSize = scope.plotSize;
+          var plotSize = model.plotSize;
           scope.jqcontainer.css(plotSize);
           scope.jqsvg.css(plotSize);
 
@@ -178,6 +178,11 @@
             scope.legendDone = false;
             scope.legendResetPosition = true;
             scope.update();
+          });
+          scope.$watch('model.isShowOutput()', function(prev, next) {
+            if (prev !== next) {
+              scope.update();
+            }
           });
         };
 
@@ -1505,6 +1510,10 @@
         };
 
         scope.update = function(first) {
+          if (scope.model.isShowOutput() === false) {
+            return;
+          }
+
           scope.resetSvg();
           scope.calcGridlines();
           scope.renderGridlines();

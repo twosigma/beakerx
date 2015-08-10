@@ -1,18 +1,18 @@
 /*
-*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
-*
-*  Licensed under the Apache License, Version 2.0 (the "License");
-*  you may not use this file except in compliance with the License.
-*  You may obtain a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*  Unless required by applicable law or agreed to in writing, software
-*  distributed under the License is distributed on an "AS IS" BASIS,
-*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*  See the License for the specific language governing permissions and
-*  limitations under the License.
-*/
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 
 (function() {
   'use strict';
@@ -38,6 +38,20 @@
       this.axisMarginValL = 0;
       this.axisMarginValR = 0;
     };
+    var dateIntws = [
+      // milliseconds
+      1, 5, 10, 50, 100, 250,  500, 750,
+      // 1, 5, 10, 15, 30, 45, 60 seconds
+      1000, 5000, 10000, 15000, 30000, 45000, 60000,
+      // 5, 10, 15, 30, 45, 60 minutes
+      300000, 600000, 900000, 1800000, 2700000, 3600000,
+      //2, 3, 6, 8, 10, 12, 16, 20, 24 hours
+      3600000 * 2, 3600000 * 3, 3600000 * 6,  3600000 * 8,  3600000 * 10, 3600000 * 12, 3600000 * 16, 3600000 * 20, 3600000 * 24,
+      //3, 7, 10, 14, 20, 25, 30, 35, 45, 90, 180, 360 days
+      86400000 * 3, 86400000 * 7, 86400000 * 10, 86400000 * 14, 86400000 * 20, 86400000 * 25, 86400000 * 30, 86400000 * 35, 86400000 * 45, 86400000 * 90, 86400000 * 180, 86400000 * 360,
+      //2, 5, 10, 25, 50, 100 years
+      31104000000 * 2,  31104000000 * 5, 31104000000 * 10, 31104000000 * 25, 31104000000 * 50, 31104000000 * 100
+    ];
     var numIntws = [], numFixs = [];
     var bs = 1E-6;
     for (var i = 0; i < 18; i++) {
@@ -47,24 +61,7 @@
       bs *= 10;
     }
 
-    var calcTimeIncrement = function (valL, valR, count) {
-      var span = (valR - valL) / count;
-      var t = new Date(valL + span);
-      if (span <= 1000 * 60) {
-        return t - valL;
-      } else if (span <= 1000 * 60 * 60) {
-        return new Date(t.getFullYear(), t.getMonth(), t.getDate(), t.getHours(), t.getMinutes(), t.getSeconds()).getTime() - valL;
-      } else if (span <= 1000 * 60 * 60 * 24) {
-        return new Date(t.getFullYear(), t.getMonth(), t.getDate(), t.getHours(), t.getMinutes()).getTime() - valL;
-      } else if (span <= 1000 * 60 * 60 * 24 * 30) {
-        return new Date(t.getFullYear(), t.getMonth(), t.getDate()).getTime() - valL;
-      } else if (span <= 1000 * 60 * 60 * 24 * 365) {
-        return new Date(t.getFullYear(), t.getMonth() + 1, 1).getTime() - valL;
-      } else {
-        return new Date(t.getFullYear() + 1, 0, 1).getTime() - valL;
-      }
-    };
-
+    PlotAxis.prototype.dateIntws = dateIntws;
     PlotAxis.prototype.numIntws = numIntws;
     PlotAxis.prototype.numFixs = numFixs;
 
@@ -88,9 +85,6 @@
       }
       this.axisValSpan = this.axisValR - this.axisValL;
     };
-
-
-
     PlotAxis.prototype.setGridlines = function(pl, pr, count, ml, mr) {
       if (pr < pl) {
         console.error("cannot set right coord < left coord");
@@ -111,7 +105,10 @@
 
       var span = this.axisPctSpan * this.axisValSpan;
       var intws, fixs;
-      if (this.axisType !== "time") {
+      if (this.axisType === "time") {
+        intws = this.dateIntws;
+        fixs = {};
+      } else {
         intws = this.numIntws;
         fixs = this.numFixs;
       }
@@ -122,41 +119,43 @@
 
       var calcW = function (i) {
         if (i >= intws.length) {
-          var bs = (intws[intws.length - 1] / 0.5) * 10;
-          intws = intws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs])
+          if (PlotAxis.prototype.axisType === "time") {
+            intws = intws.push(intws[intws.length - 1] * 2);
+          } else {
+            var bs = (intws[intws.length - 1] / 0.5) * 10;
+            intws = intws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs])
+          }
         }
         return intws[i];
       };
 
       var calcF = function (i) {
         if (i >= fixs.length) {
-          var f = Math.max(6 - i, 0);
-          fixs = fixs.concat([f, i <= 6 ? f + 1 : f, f]);
+          if (PlotAxis.prototype.axisType !== "time") {
+            var f = Math.max(6 - i, 0);
+            fixs = fixs.concat([f, i <= 6 ? f + 1 : f, f]);
+          }
         }
         return fixs[i];
       };
 
-      if (this.axisType === "time") {
-        w = calcTimeIncrement(this.getValue(pl), this.getValue(pr), count);
-      } else {
-        while (diff === mindiff) {
-          var nowcount = span / calcW(i);
-          diff = Math.abs(nowcount - count);
-          if (diff < mindiff) {
-            w = calcW(i);
-            f = calcF(i);
-            mindiff = diff;
-          }
-          i++;
+      while (diff === mindiff) {
+        var nowcount = span / calcW(i);
+        diff = Math.abs(nowcount - count);
+        if (diff < mindiff) {
+          w = calcW(i);
+          f = calcF(i);
+          mindiff = diff;
         }
+        i++;
       }
 
       this.axisStep = w;
       this.axisFixed = f;
       var val = Math.ceil(this.getValue(pl) / w) * w,
-          valr = this.getValue(pr);
+        valr = this.getValue(pr);
       var lines = [],
-          labels = [];
+        labels = [];
       while(val < valr) {
         var pct = this.getPercent(val);
         labels.push(this.getString(pct));
@@ -221,18 +220,18 @@
       }
 
       /*
-      // Nanoplot TODO
-      if (this.axisType === "nanotime"  && span < 1000000) {
-        var digits = bval.mod(1000000000).toFixed(0);
-        if (span < 1000) {
-          ret += "." + padStr(Math.floor(digits / 1), 9);
-        } else if (span < 1000000) {
-          ret += "." + padStr(Math.floor(digits / 1000), 6);
-        } else {
-          ret += "." + padStr(Math.floor(digits / 1000000), 3);
-        }
-      }
-      */
+       // Nanoplot TODO
+       if (this.axisType === "nanotime"  && span < 1000000) {
+       var digits = bval.mod(1000000000).toFixed(0);
+       if (span < 1000) {
+       ret += "." + padStr(Math.floor(digits / 1), 9);
+       } else if (span < 1000000) {
+       ret += "." + padStr(Math.floor(digits / 1000), 6);
+       } else {
+       ret += "." + padStr(Math.floor(digits / 1000000), 3);
+       }
+       }
+       */
       return ret;
     };
     return PlotAxis;

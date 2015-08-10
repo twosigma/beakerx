@@ -84,7 +84,7 @@
             maxWidth : width
           });
         };
-        
+
         scope.initLayout = function() {
           var model = scope.stdmodel;
 
@@ -1398,7 +1398,7 @@
           state.plotSize = scope.plotSize;
           state.zoomed = scope.zoomed;
           state.focus = scope.focus;
-          
+
           state.lodOn = [];
           state.lodType = [];
           state.lodAuto = [];
@@ -1460,7 +1460,7 @@
           scope.standardizeData();
           // init flags
           scope.initFlags();
-          
+
           // see if previous state can be applied
           scope.focus = {};
           scope.tips = {};
@@ -1493,7 +1493,7 @@
           });
           scope.enableZoom();
           scope.calcRange();
-          
+
           // init copies focus to defaultFocus, called only once
           _(scope.focus).extend(scope.defaultFocus);
 
@@ -1577,7 +1577,7 @@
         scope.$watch('getCellModel()', function() {
           scope.init();
         });
-        
+
         scope.$on('$destroy', function() {
           scope.setDumpState(scope.dumpState());
           $(window).off('resize',scope.resizeFunction);

@@ -84,7 +84,7 @@
             maxWidth : width
           });
         };
-        
+
         scope.initLayout = function() {
           var model = scope.stdmodel;
 
@@ -94,7 +94,7 @@
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
 
-          var plotSize = scope.plotSize;
+          var plotSize = model.plotSize;
           scope.jqcontainer.css(plotSize);
           scope.jqsvg.css(plotSize);
 
@@ -178,6 +178,11 @@
             scope.legendDone = false;
             scope.legendResetPosition = true;
             scope.update();
+          });
+          scope.$watch('model.isShowOutput()', function(prev, next) {
+            if (prev !== next) {
+              scope.update();
+            }
           });
         };
 
@@ -1398,7 +1403,7 @@
           state.plotSize = scope.plotSize;
           state.zoomed = scope.zoomed;
           state.focus = scope.focus;
-          
+
           state.lodOn = [];
           state.lodType = [];
           state.lodAuto = [];
@@ -1460,7 +1465,7 @@
           scope.standardizeData();
           // init flags
           scope.initFlags();
-          
+
           // see if previous state can be applied
           scope.focus = {};
           scope.tips = {};
@@ -1493,7 +1498,7 @@
           });
           scope.enableZoom();
           scope.calcRange();
-          
+
           // init copies focus to defaultFocus, called only once
           _(scope.focus).extend(scope.defaultFocus);
 
@@ -1505,6 +1510,10 @@
         };
 
         scope.update = function(first) {
+          if (scope.model.isShowOutput() === false) {
+            return;
+          }
+
           scope.resetSvg();
           scope.calcGridlines();
           scope.renderGridlines();
@@ -1577,7 +1586,7 @@
         scope.$watch('getCellModel()', function() {
           scope.init();
         });
-        
+
         scope.$on('$destroy', function() {
           scope.setDumpState(scope.dumpState());
           $(window).off('resize',scope.resizeFunction);

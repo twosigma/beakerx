@@ -39,6 +39,12 @@ RUN apt-get update && apt-get install -y nginx gradle-2.4 python g++ make git
 RUN useradd beaker --create-home
 
 ##########
+#  C++   #
+##########
+
+RUN apt-get install -y clang
+
+##########
 #  Java  #
 ##########
 

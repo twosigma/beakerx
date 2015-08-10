@@ -171,6 +171,7 @@
 
 .plot-legenddraggablecontainer{
   padding: .25em 23px 0 .25em;
+  cursor: pointer;
 }
 
 .plot-coverbox {

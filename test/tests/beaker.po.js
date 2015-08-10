@@ -24,6 +24,18 @@ var BeakerPageObject = function() {
   //jscs:enable
     .filter(function(e, i) { return e.isDisplayed(); });
 
+  this.waitUntilGraphOutputPresent = function() {
+    return browser.wait(function() {
+      return element(by.css('bk-output-display[type="Plot"]')).isDisplayed()
+      .then(function() {
+        return true;
+      })
+      .thenCatch(function() {
+        return false;
+      });
+    }, 10000);
+  };
+
   this.openMenuAtIndex = function(index) {
     return this.mainmenu.get(index).element(by.css('.dropdown-toggle')).click();
   };
@@ -153,6 +165,10 @@ var BeakerPageObject = function() {
   this.cellEvaluatorDisplay = element(by.css('.code-cell-area .cell-evaluator-menu b'));
   this.setCellInput = function(code) {
     browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
+  };
+
+  this.toggleOutputCellExpansion = function() {
+    return element(by.css('.toggle-menu .expand-contract')).click();
   };
 
   this.evaluateCell = function() {

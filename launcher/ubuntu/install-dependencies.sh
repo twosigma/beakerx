@@ -37,6 +37,9 @@ sudo apt-get install -y nginx # nginx -v = 1.6.0
 curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
 sudo apt-get install -y nodejs
 
+# for cpp
+sudo apt-get install -y clang
+
 # for R
 sudo add-apt-repository --yes ppa:marutter/rrutter
 sudo apt-get update

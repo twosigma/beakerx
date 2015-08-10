@@ -66,51 +66,51 @@
           this.removeStringArrays(ret);
           return ret;
       },
-      httpGet: function(url, data) {
-        return $http({method: "GET", url: url, params: data});
+      httpGet: function(url, data, headers) {
+        return $http({method: "GET", url: url, params: data, headers: headers});
       },
-      httpGetJson: function(url, data) {
+      httpGetJson: function(url, data, headers) {
         return $http({
           method: "GET",
           url: url,
           params: data,
           withCredentials: true,
-          headers: {'Content-Type': 'application/json'}
+          headers: _.extend({'Content-Type': 'application/json'}, headers)
         });
       },
-      httpDeleteJson: function(url, data) {
+      httpDeleteJson: function(url, data, headers) {
         return $http({
           method: "DELETE",
           url: url,
           params: data,
           withCredentials: true,
-          headers: {'Content-Type': 'application/json'}
+          headers: _.extend({'Content-Type': 'application/json'}, headers)
         });
       },
-      httpPost: function(url, data) {
+      httpPost: function(url, data, headers) {
         return $http({
           method: "POST",
           url: url,
           data: $.param(data),
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+          headers: _.extend({'Content-Type': 'application/x-www-form-urlencoded'})
         });
       },
-      httpPostJson: function(url, data) {
+      httpPostJson: function(url, data, headers) {
         return $http({
           method: "POST",
           url: url,
           data: data,
           withCredentials: true,
-          headers: {'Content-Type': 'application/json'}
+          headers: _.extend({'Content-Type': 'application/json'}, headers)
         });
       },
-      httpPutJson: function(url, data) {
+      httpPutJson: function(url, data, headers) {
         return $http({
           method: "PUT",
           url: url,
           data: data,
           withCredentials: true,
-          headers: {'Content-Type': 'application/json'}
+          headers: _.extend({'Content-Type': 'application/json'}, headers)
         });
       },
       newDeferred: function() {

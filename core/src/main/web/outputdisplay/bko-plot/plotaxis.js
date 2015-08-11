@@ -38,27 +38,18 @@
       this.axisMarginValL = 0;
       this.axisMarginValR = 0;
     };
-    var dateIntws = [
-      // milliseconds
-      1, 5, 10, 50, 100, 250,  500, 750,
-      // 1, 5, 10, 15, 30, 45, 60 seconds
-      1000, 5000, 10000, 15000, 30000, 45000, 60000,
-      // 5, 10, 15, 30, 45, 60 minutes
-      300000, 600000, 900000, 1800000, 2700000, 3600000,
-      //2, 3, 6, 8, 10, 12, 16, 20, 24 hours
-      3600000 * 2, 3600000 * 3, 3600000 * 6,  3600000 * 8,  3600000 * 10, 3600000 * 12, 3600000 * 16, 3600000 * 20, 3600000 * 24,
-      //3, 7, 10, 14, 20, 25, 30, 35, 45, 90, 180, 360 days
-      86400000 * 3, 86400000 * 7, 86400000 * 10, 86400000 * 14, 86400000 * 20, 86400000 * 25, 86400000 * 30, 86400000 * 35, 86400000 * 45, 86400000 * 90, 86400000 * 180, 86400000 * 360,
-      //2, 5, 10, 25, 50, 100 years
-      31104000000 * 2,  31104000000 * 5, 31104000000 * 10, 31104000000 * 25, 31104000000 * 50, 31104000000 * 100
-    ];
-    var numIntws = [], numFixs = [];
-    var bs = 1E-6;
+
+    var SECOND = 1000;
+    var MINUTE = 1000 * 60;
+    var HOUR = 1000 * 60 * 60;
+    var DAY = 1000 * 60 * 60 * 24;
+    var MONTH = 1000 * 60 * 60 * 24 * 30;
+    var YEAR = 1000 * 60 * 60 * 24 * 365;
+
+    var dateIntws = [], numIntws = [], numFixs = [];
     for (var i = 0; i < 18; i++) {
       var f = Math.max(6 - i, 0);
-      numIntws = numIntws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs]);  // generate 1s, 5s
       numFixs = numFixs.concat([f, i <= 6 ? f + 1 : f, f]);
-      bs *= 10;
     }
 
     PlotAxis.prototype.dateIntws = dateIntws;
@@ -117,21 +108,50 @@
       var diff = mindiff;
       var i = 0;
 
-      var calcW = function (i) {
+      var calcW = function (i,axisType) {
         if (i >= intws.length) {
-          if (PlotAxis.prototype.axisType === "time") {
-            intws = intws.push(intws[intws.length - 1] * 2);
+          var prev = intws[intws.length - 1];
+
+          if (axisType === "time") {
+            if (i === 0) {
+              intws.push(1);
+              intws.push(5);
+            } else {
+              if (prev < SECOND) {
+                intws.push(prev + 5);
+              } else if (prev === SECOND) {
+                intws.push(prev + 4000);
+              } else if (prev < MINUTE) {
+                intws.push(prev + 5000);
+              } else if (prev === MINUTE) {
+                intws.push(prev + MINUTE * 4);
+              } else if (prev < HOUR) {
+                intws.push(prev + MINUTE * 5);
+              }else if (prev < DAY) {
+                intws.push(prev + HOUR);
+              } else if (prev < MONTH) {
+                intws.push(prev + DAY);
+              } else if (prev < YEAR) {
+                intws.push(prev + DAY * 5);
+              } else {
+                intws.push(prev + YEAR);
+              }
+            }
           } else {
-            var bs = (intws[intws.length - 1] / 0.5) * 10;
-            intws = intws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs])
+            var bs = (i === 0) ? 1E-6 : (prev / 5.0) * 10;
+            intws = intws.concat([
+              1.0 * bs,
+              2.5 * bs,
+              5.0 * bs
+            ]);
           }
         }
         return intws[i];
       };
 
-      var calcF = function (i) {
+      var calcF = function (i, axisType) {
         if (i >= fixs.length) {
-          if (PlotAxis.prototype.axisType !== "time") {
+          if (axisType !== "time") {
             var f = Math.max(6 - i, 0);
             fixs = fixs.concat([f, i <= 6 ? f + 1 : f, f]);
           }
@@ -140,15 +160,16 @@
       };
 
       while (diff === mindiff) {
-        var nowcount = span / calcW(i);
+        w = calcW(i, this.axisType);
+        var nowcount = span / w;
         diff = Math.abs(nowcount - count);
         if (diff < mindiff) {
-          w = calcW(i);
-          f = calcF(i);
           mindiff = diff;
+          f = calcF(i, this.axisType);
         }
         i++;
       }
+
 
       this.axisStep = w;
       this.axisFixed = f;
@@ -202,18 +223,18 @@
         while (str.length < len) str = "0" + str;
         return str;
       };
-      if (span <= 1000) {
+      if (span <= SECOND) {
         ret = val + "  ";
         ret = moment(d).tz(this.axisTimezone).format(".SSS") + ( (d - Math.floor(d)).toFixed(this.axisFixed));
-      } else if (span <= 1000 * 60) {
+      } else if (span <= MINUTE) {
         ret = moment(d).tz(this.axisTimezone).format("mm:ss.SSS");
-      } else if (span <= 1000 * 60 * 60) {
+      } else if (span <= HOUR) {
         ret = moment(d).tz(this.axisTimezone).format("HH:mm:ss");
-      } else if (span <= 1000 * 60 * 60 * 24) {
+      } else if (span <= DAY) {
         ret = moment(d).tz(this.axisTimezone).format("MMM DD ddd, HH:mm");
-      } else if (span <= 1000 * 60 * 60 * 24 * 30) {
+      } else if (span <= MONTH) {
         ret = moment(d).tz(this.axisTimezone).format("MMM DD ddd");
-      } else if (span <= 1000 * 60 * 60 * 24 * 365) {
+      } else if (span <= YEAR) {
         ret = moment(d).tz(this.axisTimezone).format("YYYY MMM");
       } else {
         ret = moment(d).tz(this.axisTimezone).format("YYYY");

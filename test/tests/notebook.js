@@ -17,7 +17,6 @@
 var BeakerPageObject = require('./beaker.po.js');
 
 describe('notebook', function() {
-  var originalTimeout = 0;
 
   beakerPO = new BeakerPageObject();
 

@@ -17,17 +17,21 @@
 var BeakerPageObject = require('./beaker.po.js');
 describe('language manager', function () {
 
-  beakerPO = new BeakerPageObject();
-
-  beforeAll(function() {
+  beforeEach(function() {
+    beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
     beakerPO.newEmptyNotebook.click();
+    beakerPO.notebookMenu.click();
+    beakerPO.languageManagerMenuItem.click();
+  });
+
+  afterEach(function(done) {
+    beakerPO.closeNotebook()
+    .then(done);
   });
 
   it('can be opened', function () {
-    beakerPO.notebookMenu.click();
-    beakerPO.languageManagerMenuItem.click();
     expect(beakerPO.languageManager.isDisplayed()).toBe(true);
   });
 
@@ -40,8 +44,8 @@ describe('language manager', function () {
   });
 
   it('can be closed', function () {
+    beakerPO.languageManagerButton('Groovy').click();
     beakerPO.languageManagerCloseButton.click();
     expect(element.all(by.className('plugin-manager')).count()).toEqual(0);
   });
-
 });

@@ -151,21 +151,19 @@
 
       var calcF = function (i, axisType) {
         if (i >= fixs.length) {
-          if (axisType !== "time") {
-            var f = Math.max(6 - i, 0);
-            fixs = fixs.concat([f, i <= 6 ? f + 1 : f, f]);
-          }
+         return 0;
         }
         return fixs[i];
       };
 
       while (diff === mindiff) {
         w = calcW(i, this.axisType);
+        f = calcF(i, this.axisType);
+
         var nowcount = span / w;
         diff = Math.abs(nowcount - count);
         if (diff < mindiff) {
           mindiff = diff;
-          f = calcF(i, this.axisType);
         }
         i++;
       }

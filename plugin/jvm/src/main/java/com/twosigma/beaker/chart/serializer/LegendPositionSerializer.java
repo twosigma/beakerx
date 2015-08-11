@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.chart.serializer;
 
-import com.twosigma.beaker.chart.LegendPosition;
+import com.twosigma.beaker.chart.legend.LegendPosition;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;

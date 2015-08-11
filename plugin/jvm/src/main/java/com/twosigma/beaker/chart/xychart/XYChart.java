@@ -16,8 +16,9 @@
 
 package com.twosigma.beaker.chart.xychart;
 
-import com.twosigma.beaker.chart.LegendPosition;
 import com.twosigma.beaker.chart.Filter;
+import com.twosigma.beaker.chart.legend.LegendLayout;
+import com.twosigma.beaker.chart.legend.LegendPosition;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantBand;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
 import com.twosigma.beaker.chart.xychart.plotitem.Crosshair;
@@ -52,6 +53,7 @@ abstract public class XYChart {
   private LegendPosition legendPosition = new LegendPosition(LegendPosition.Position.TOP_RIGHT);
   private Integer lodThreshold = null;
   private boolean omitCheckboxes = false;
+  private LegendLayout legendLayout = LegendLayout.VERTICAL;
 
   protected XYChart() {
     yAxes.add(yAxis);
@@ -417,6 +419,15 @@ abstract public class XYChart {
 
   public XYChart setLegendPosition(LegendPosition legendPosition) {
     this.legendPosition = legendPosition;
+    return this;
+  }
+
+  public LegendLayout getLegendLayout() {
+    return legendLayout;
+  }
+
+  public XYChart setLegendLayout(LegendLayout legendLayout) {
+    this.legendLayout = legendLayout;
     return this;
   }
 

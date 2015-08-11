@@ -28,7 +28,7 @@ repositories {
 dependencies {
   provided project(':plugin:jvm')
   provided group: 'net.rforge', name: 'Rserve', version: '0.6-8.1'
-  compile 'org.apache.xmlgraphics:batik-rasterizer:1.7'
+  compile 'org.apache.xmlgraphics:batik-rasterizer:1.8'
   compile 'org.apache.xmlgraphics:batik-codec:1.7'
   compile 'org.apache.xmlgraphics:xmlgraphics-commons:2.0.1'
 }

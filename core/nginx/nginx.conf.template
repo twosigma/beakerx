@@ -74,10 +74,10 @@ http {
 
     # redirect to the starting page
     location = / {
-      return 301 %(start_page)s;
+      return 301 $scheme://$http_host%(start_page)s;
     }
     location = /beaker {
-      return 301 %(start_page)s;
+      return 301 $scheme://$http_host%(start_page)s;
     }
 
     # version get request
@@ -110,7 +110,7 @@ http {
       proxy_set_header Authorization "Basic %(auth)s";
     }
     location = /%(urlhash)s/beaker/ {
-      return 301 %(start_page)s;
+      return 301 $scheme://$http_host%(start_page)s;
     }
 
     # this serves the actual (static) content

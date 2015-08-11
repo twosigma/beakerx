@@ -15,16 +15,26 @@
  */
 
 var BeakerPageObject = require('./beaker.po.js');
-describe('beaker landing page', function() {
-  var beakerPO = new BeakerPageObject();
 
+describe('beaker landing load', function() {
   it('can load', function() {
+    beakerPO = new BeakerPageObject();
     var start = new Date().getTime();
     browser.get(beakerPO.baseURL);
     browser.waitForAngular().then(function() {
       var stop = new Date().getTime();
       var len = stop - start;
       console.log('Loading time: ' + len + ' milliSeconds');
+    });
+  });
+});
+
+describe('beaker landing page', function() {
+  beforeEach(function(done) {
+    beakerPO = new BeakerPageObject();
+    browser.get(beakerPO.baseURL);
+    browser.waitForAngular().then(function() {
+      done();
     });
   });
 
@@ -52,5 +62,4 @@ describe('beaker landing page', function() {
     beakerPO.openMenuAtIndex(2);
     expect(beakerPO.submenu.count()).toEqual(4);
   });
-
 });

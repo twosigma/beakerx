@@ -17,9 +17,29 @@
 var BeakerPageObject = require('./beaker.po.js');
 
 describe('notebook', function() {
-  var originalTimeout = 0;
+  function activateLanguage(language) {
+    beakerPO.activateLanguageInManager(language);
+    beakerPO.waitForPlugin(language);
+    beakerPO.languageManagerCloseButton.click();
+  };
 
-  beakerPO = new BeakerPageObject();
+  function insertCellOfType(language) {
+    beakerPO.cellEvaluatorMenu.click();
+    beakerPO.cellEvaluatorMenuItem(language).click();
+  }
+
+  function evalInLanguage(language, code, expected, done) {
+    activateLanguage(language);
+    insertCellOfType(language);
+    beakerPO.setCellInput(code);
+    beakerPO.evaluateCell();
+    beakerPO.waitForCellOutput();
+    return beakerPO.getCellOutput().getText()
+    .then(function(output) {
+      expect(output).toEqual(expected);
+      done();
+    });
+  }
 
   function activateLanguage(language) {
     beakerPO.activateLanguageInManager(language);
@@ -46,6 +66,7 @@ describe('notebook', function() {
   }
 
   beforeEach(function() {
+    beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
   });
@@ -188,13 +209,6 @@ describe('notebook', function() {
       expect(cell.miniCellStatus().isDisplayed()).toBe(true);
       done();
     });
-  });
-
-  it('can close the notebook', function(done) {
-    beakerPO.newEmptyNotebook.click();
-
-    beakerPO.closeNotebook()
-    .then(done);
   });
 
   it('can handle escaping $ in markdown', function(done) {

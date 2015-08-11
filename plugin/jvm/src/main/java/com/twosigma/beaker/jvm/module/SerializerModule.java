@@ -23,7 +23,7 @@ import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.BeakerProgressUpdate;
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.chart.Color;
-import com.twosigma.beaker.chart.LegendPosition;
+import com.twosigma.beaker.chart.legend.LegendPosition;
 import com.twosigma.beaker.chart.serializer.AreaSerializer;
 import com.twosigma.beaker.chart.serializer.BarsSerializer;
 import com.twosigma.beaker.chart.serializer.ColorSerializer;

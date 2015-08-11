@@ -135,8 +135,8 @@
             y : 10
           };
           scope.intervalStepHint = {
-            x : 150,
-            y : 75
+            x : 105,
+            y : 50
           };
           scope.numIntervals = {
             x: parseInt(plotSize.width) / scope.intervalStepHint.x,

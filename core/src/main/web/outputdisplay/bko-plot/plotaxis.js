@@ -151,7 +151,7 @@
 
       var calcF = function (i, axisType) {
         if (i >= fixs.length) {
-         return 0;
+          return 0;
         }
         return fixs[i];
       };
@@ -173,17 +173,65 @@
       this.axisFixed = f;
       var val = Math.ceil(this.getValue(pl) / w) * w,
         valr = this.getValue(pr);
-      var lines = [],
-        labels = [];
-      while(val < valr) {
+
+      var lines, labels;
+
+      lines = this.calcLines(val, valr, w);
+      labels = this.calcLabels(
+        lines,
+        (this.axisValSpan - (this.axisMarginValL + this.axisMarginValR)) * this.axisPctSpan,
+        this.axisType
+      );
+
+      this.axisGridlines = lines;
+      this.axisGridlineLabels = labels;
+
+
+    };
+
+    PlotAxis.prototype.calcLines = function (val, valr, w) {
+      var lines = [];
+
+      while (val < valr) {
         var pct = this.getPercent(val);
-        labels.push(this.getString(pct));
         lines.push(pct);
         val += w;
       }
-      this.axisGridlines = lines;
-      this.axisGridlineLabels = labels;
+
+      return lines;
     };
+
+    PlotAxis.prototype.calcLabels = function (lines, span, axisType) {
+
+      var labels = [];
+
+      for (var i = 0; i < lines.length; i++) {
+        var pct = lines[i];
+        labels.push(this.getString(pct, span));
+      }
+
+      if (span > SECOND && axisType === "time" && labels.length != _.uniq(labels).length) {
+        if (span <= MINUTE) {
+          span = SECOND - 1;
+        } else if (span <= HOUR) {
+          span = MINUTE - 1;
+        } else if (span <= DAY) {
+          span = HOUR - 1;
+        } else if (span <= MONTH) {
+          span = DAY - 1;
+        } else if (span <= YEAR) {
+          span = MONTH - 1;
+        } else {
+          span = YEAR - 1;
+        }
+
+        labels = this.calcLabels(lines, span, axisType);
+      }
+
+      return labels;
+
+    };
+
     PlotAxis.prototype.getGridlines = function() { return _.without(this.axisGridlines); };
     PlotAxis.prototype.getGridlineLabels = function() { return _.without(this.axisGridlineLabels); };
     PlotAxis.prototype.getPercent = function(val) {
@@ -196,7 +244,9 @@
       if (pct > 1) { pct = 1; }
       return this.axisValSpan * pct + this.axisValL;
     };
-    PlotAxis.prototype.getString = function(pct) {
+
+
+    PlotAxis.prototype.getString = function(pct, span) {
       if (this.axisType != "time" && this.axisType != "nanotime") {
         if (this.axisType === "log") {
           return "" + this.axisBase + "^" + this.getValue(pct).toFixed(this.axisFixed);
@@ -205,7 +255,7 @@
         }
       }
       var val = this.getValue(pct);
-      var span = (this.axisValSpan - (this.axisMarginValL + this.axisMarginValR)) * this.axisPctSpan;
+
 
       var d, ret = "";
       if (this.axisType === "time") {

@@ -15,14 +15,76 @@
  */
 
 var BeakerPageObject = require('./beaker.po.js');
+
 describe('notebook', function() {
   var originalTimeout = 0;
 
   beakerPO = new BeakerPageObject();
 
+  function activateLanguage(language) {
+    beakerPO.activateLanguageInManager(language);
+    beakerPO.waitForPlugin(language);
+    beakerPO.languageManagerCloseButton.click();
+  };
+
+  function insertCellOfType(language) {
+    beakerPO.cellEvaluatorMenu.click();
+    beakerPO.cellEvaluatorMenuItem(language).click();
+  }
+
+  function evalInLanguage(language, code, expected, done) {
+    activateLanguage(language);
+    insertCellOfType(language);
+    beakerPO.setCellInput(code);
+    beakerPO.evaluateCell();
+    beakerPO.waitForCellOutput();
+    return beakerPO.getCellOutput().getText()
+    .then(function(output) {
+      expect(output).toEqual(expected);
+      done();
+    });
+  }
+
   beforeEach(function() {
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
+  });
+
+  describe('graphs', function() {
+    beforeEach(function() {
+      beakerPO.newEmptyNotebook.click();
+      beakerPO.insertCellButton.click();
+      beakerPO.notebookMenu.click();
+      beakerPO.languageManagerMenuItem.click();
+      activateLanguage('Groovy');
+      insertCellOfType('Groovy');
+      beakerPO.setCellInput('new Plot()')
+      beakerPO.evaluateCell();
+    });
+
+    afterEach(function(done) {
+      beakerPO.closeNotebook()
+      .then(done);
+    });
+
+    it('can output graphs', function(done) {
+      beakerPO.waitUntilGraphOutputPresent()
+      .then(function(present) {
+        expect(present).toEqual(true);
+        done();
+      });
+    });
+
+    it('can output graphs when minimized', function(done) {
+      beakerPO.toggleOutputCellExpansion()
+      beakerPO.evaluateCell();
+      beakerPO.toggleOutputCellExpansion()
+      beakerPO.waitUntilGraphOutputPresent()
+      .then(function(present) {
+        expect(present).toEqual(true);
+        done();
+      });
+    });
   });
 
   it('can load', function() {
@@ -62,23 +124,6 @@ describe('notebook', function() {
   });
 
   describe('evaluating languages', function() {
-    function evalInLanguage(language, code, expected, done) {
-      beakerPO.activateLanguageInManager(language);
-      beakerPO.waitForPlugin(language);
-      beakerPO.languageManagerCloseButton.click();
-
-      beakerPO.cellEvaluatorMenu.click();
-      beakerPO.cellEvaluatorMenuItem(language).click();
-      beakerPO.setCellInput(code);
-      beakerPO.evaluateCell();
-      beakerPO.waitForCellOutput();
-      return beakerPO.getCellOutput().getText()
-      .then(function(output) {
-        expect(output).toEqual(expected);
-        done();
-      });
-    }
-
     beforeEach(function() {
       beakerPO.newEmptyNotebook.click();
       beakerPO.insertCellButton.click();
@@ -94,9 +139,11 @@ describe('notebook', function() {
       evalInLanguage('Html', '1+1', '1+1', done);
     });
 
+    /*
     it('R', function(done) {
       evalInLanguage('R', '1+1', '[1] 2', done);
     });
+    */
 
     it('JavaScript', function(done) {
       evalInLanguage('JavaScript', '1+1', '2', done);

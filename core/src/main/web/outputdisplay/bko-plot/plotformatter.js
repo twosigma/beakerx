@@ -328,7 +328,7 @@
         }
       },
 
-      standardizeModel : function(_model) {
+      standardizeModel : function(_model, prefs) {
         var model = {};
         $.extend(true, model, _model); // deep copy model to prevent changing the original JSON
 
@@ -388,8 +388,7 @@
         }
 
         newmodel.lodThreshold = (model.lodThreshold) ?
-          model.lodThreshold :
-          bkHelper.getBkNotebookViewModel().getLodThreshold();
+          model.lodThreshold : (prefs !== undefined && prefs.lodThreshold !== undefined ? prefs.lodThreshold : 1500) ;
 
         newmodel.data = [];
 

@@ -115,6 +115,15 @@
       }
     };
 
+    PlotLodLine.prototype.setHighlighted = function(scope, highlighted) {
+      var svg = scope.maing;
+      var itemsvg = svg.select("#" + this.id);
+      itemsvg.selectAll("path")
+        .style("stroke-width", function(d) {
+          return plotUtils.getHighlightedSize(d.st_w, highlighted);
+        })
+    };
+
     PlotLodLine.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,

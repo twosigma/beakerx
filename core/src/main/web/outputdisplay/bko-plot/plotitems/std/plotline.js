@@ -27,6 +27,15 @@
     PlotLine.prototype.plotClass = "plot-line";
     PlotLine.prototype.respClass = "plot-resp plot-respdot";
 
+    PlotLine.prototype.setHighlighted = function(scope, highlighted) {
+      var svg = scope.maing;
+      var itemsvg = svg.select("#" + this.id);
+      itemsvg.selectAll("path")
+        .style("stroke-width", function(d) {
+          return plotUtils.getHighlightedSize(d.st_w, highlighted);
+        })
+    };
+
     PlotLine.prototype.format = function() {
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);

@@ -160,6 +160,14 @@
       }
     };
 
+    PlotLineLodLoader.prototype.setHighlighted = function(scope, highlighted) {
+      if (this.lodOn === true) {
+        this.lodplotter.setHighlighted(scope, highlighted);
+      } else {
+        this.plotter.setHighlighted(scope, highlighted);
+      }
+    };
+
     PlotLineLodLoader.prototype.getRange = function() {
       return this.plotter.getRange();
     };

@@ -80,6 +80,17 @@
       }
     };
 
+    PlotAuxBox.prototype.setHighlighted = function(scope, highlighted, gid) {
+      if(gid == null) {gid = "";}
+      var svg = scope.maing;
+      var groupid = this.id + "_" + gid;
+      var itemsvg = svg.select("#" + this.id);
+      var groupsvg = itemsvg.select("#" + groupid);
+      groupsvg.selectAll("rect")
+        .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
+        .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
+    };
+
     PlotAuxBox.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,

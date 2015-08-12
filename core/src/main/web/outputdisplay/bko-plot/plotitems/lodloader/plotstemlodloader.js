@@ -191,6 +191,20 @@
       }
     };
 
+    PlotStemLodLoader.prototype.setHighlighted = function(scope, highlighted) {
+      if (this.lodOn === true) {
+        if (this.lodType === "stem") {
+          this.lodplotter.setHighlighted(scope, highlighted);
+        } else if (this.lodType === "stem+" || this.lodType === "box") {
+          this.auxplotter.setHighlighted(scope, highlighted, "a");
+          this.lodplotter.setHighlighted(scope, highlighted, "yBtm");
+          this.lodplotter2.setHighlighted(scope, highlighted, "yTop");
+        }
+      } else {
+        this.lodplotter.setHighlighted(scope, highlighted);
+      }
+    };
+
     PlotStemLodLoader.prototype.getRange = function(){
       return this.plotter.getRange();
     };

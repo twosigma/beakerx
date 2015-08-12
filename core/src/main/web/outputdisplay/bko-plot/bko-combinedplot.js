@@ -47,7 +47,7 @@
 
         scope.standardizeData = function() {
           var model = scope.model.getCellModel();
-          scope.stdmodel = combinedplotFormatter.standardizeModel(model);
+          scope.stdmodel = combinedplotFormatter.standardizeModel(model, scope.prefs);
         };
 
         scope.prepareSavedState = function(state) {

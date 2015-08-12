@@ -34,7 +34,7 @@ var BeakerPageObject = function() {
       .thenCatch(function() {
         return false;
       });
-    }, 10000);
+    }, 100000);
 
     // wait for the modal to close
     return browser.wait(function() {
@@ -241,8 +241,14 @@ var BeakerPageObject = function() {
     var self = this;
 
     browser.wait(function() {
-      return self.getCellOutput().isPresent();
-    });
+      return self.getCellOutput().isPresent()
+      .then(function() {
+        return true;
+      })
+      .thenCatch(function() {
+        return false;
+      });
+    }, 10000);
 
     return browser.wait(function() {
       return self.getCellOutput().getText()

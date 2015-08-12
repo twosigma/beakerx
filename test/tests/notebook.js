@@ -15,6 +15,7 @@
  */
 
 var BeakerPageObject = require('./beaker.po.js');
+var path = require('path');
 
 describe('notebook', function() {
   function activateLanguage(language) {
@@ -69,6 +70,19 @@ describe('notebook', function() {
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
+  });
+
+  describe('autotranslation', function() {
+    it('handles JVM notebook', function(done) {
+      beakerPO.openFile(path.join(__dirname, '../', 'notebooks/jvm-autotranslation-test.bkr'));
+      beakerPO.waitForInstantiationCells();
+
+      return beakerPO.getCellOutput().getText()
+      .then(function(output) {
+        expect(output).toEqual('OK');
+        done();
+      });
+    });
   });
 
   describe('graphs', function() {

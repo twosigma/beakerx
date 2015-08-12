@@ -24,6 +24,49 @@ var BeakerPageObject = function() {
   //jscs:enable
     .filter(function(e, i) { return e.isDisplayed(); });
 
+  this.waitForInstantiationCells = function() {
+    // First wait for the modal to show up when opening a URL
+    browser.wait(function() {
+      return element(by.css('.modal-dialog')).isDisplayed()
+      .then(function(v) {
+        return v;
+      })
+      .thenCatch(function() {
+        return false;
+      });
+    }, 10000);
+
+    // wait for the modal to close
+    return browser.wait(function() {
+      return element(by.css('.modal-dialog')).isDisplayed()
+      .then(function(v) {
+        return false;
+      })
+      .thenCatch(function() {
+        return true;
+      });
+    }, 100000);
+  }
+
+  this.openFile = function(path) {
+    this.openMenuAtIndex(0);
+
+    browser.actions().mouseMove(element(by.css('#open-menuitem'))).perform();
+
+    element(by.css('a[title="Open a bkr notebook file"]')).click();
+    browser.wait(function() {
+      return element(by.css('input.form-control')).sendKeys(path)
+        .then(function() {
+          return true;
+        })
+        .thenCatch(function() {
+          return false;
+        });
+    }, 5000)
+
+    return element(by.css('.modal-submit')).click();
+  };
+
   this.waitUntilGraphOutputPresent = function() {
     return browser.wait(function() {
       return element(by.css('bk-output-display[type="Plot"]')).isDisplayed()

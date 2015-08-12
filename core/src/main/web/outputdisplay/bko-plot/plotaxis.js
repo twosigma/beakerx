@@ -1,18 +1,18 @@
 /*
-*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
-*
-*  Licensed under the Apache License, Version 2.0 (the "License");
-*  you may not use this file except in compliance with the License.
-*  You may obtain a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*  Unless required by applicable law or agreed to in writing, software
-*  distributed under the License is distributed on an "AS IS" BASIS,
-*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*  See the License for the specific language governing permissions and
-*  limitations under the License.
-*/
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 
 (function() {
   'use strict';
@@ -38,27 +38,18 @@
       this.axisMarginValL = 0;
       this.axisMarginValR = 0;
     };
-    var dateIntws = [
-      // milliseconds
-      1, 5, 10, 50, 100, 500,
-      // 1, 5, 10, 30, 60 seconds
-      1000, 5000, 10000, 30000, 60000,
-      // 5, 10, 30, 60 minutes
-      300000, 600000, 1800000, 3600000,
-      // 3, 6, 12, 24 hours
-      3600000 * 3, 3600000 * 6, 3600000 * 12, 3600000 * 24,
-      // 7, 30, 90, 180, 360 days
-      86400000 * 7, 86400000 * 30, 86400000 * 90, 86400000 * 180, 86400000 * 360,
-      // 5, 10, 25, 50, 100 years
-      31104000000 * 5, 31104000000 * 10, 31104000000 * 25, 31104000000 * 50, 31104000000 * 100
-    ];
-    var numIntws = [], numFixs = [];
-    var bs = 1E-6;
+
+    var SECOND = 1000;
+    var MINUTE = 1000 * 60;
+    var HOUR = 1000 * 60 * 60;
+    var DAY = 1000 * 60 * 60 * 24;
+    var MONTH = 1000 * 60 * 60 * 24 * 30;
+    var YEAR = 1000 * 60 * 60 * 24 * 365;
+
+    var dateIntws = [], numIntws = [], numFixs = [];
     for (var i = 0; i < 18; i++) {
       var f = Math.max(6 - i, 0);
-      numIntws = numIntws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs]);  // generate 1s, 5s
       numFixs = numFixs.concat([f, i <= 6 ? f + 1 : f, f]);
-      bs *= 10;
     }
 
     PlotAxis.prototype.dateIntws = dateIntws;
@@ -117,54 +108,130 @@
       var diff = mindiff;
       var i = 0;
 
-      var calcW = function (i) {
+      var calcW = function (i,axisType) {
         if (i >= intws.length) {
-          if (PlotAxis.prototype.axisType === "time") {
-            intws = intws.push(intws[intws.length - 1] * 2);
+          var prev = intws[intws.length - 1];
+
+          if (axisType === "time") {
+            if (i === 0) {
+              intws.push(1);
+              intws.push(5);
+            } else {
+              if (prev < SECOND) {
+                intws.push(prev + 5);
+              } else if (prev === SECOND) {
+                intws.push(prev + 4000);
+              } else if (prev < MINUTE) {
+                intws.push(prev + 5000);
+              } else if (prev === MINUTE) {
+                intws.push(prev + MINUTE * 4);
+              } else if (prev < HOUR) {
+                intws.push(prev + MINUTE * 5);
+              }else if (prev < DAY) {
+                intws.push(prev + HOUR);
+              } else if (prev < MONTH) {
+                intws.push(prev + DAY);
+              } else if (prev < YEAR) {
+                intws.push(prev + DAY * 5);
+              } else {
+                intws.push(prev + YEAR);
+              }
+            }
           } else {
-            var bs = (intws[intws.length - 1] / 0.5) * 10;
-            intws = intws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs])
+            var bs = (i === 0) ? 1E-6 : (prev / 5.0) * 10;
+            intws = intws.concat([
+              1.0 * bs,
+              2.5 * bs,
+              5.0 * bs
+            ]);
           }
         }
         return intws[i];
       };
 
-      var calcF = function (i) {
+      var calcF = function (i, axisType) {
         if (i >= fixs.length) {
-          if (PlotAxis.prototype.axisType !== "time") {
-            var f = Math.max(6 - i, 0);
-            fixs = fixs.concat([f, i <= 6 ? f + 1 : f, f]);
-          }
+          return 0;
         }
         return fixs[i];
       };
 
       while (diff === mindiff) {
-        var nowcount = span / calcW(i);
+        w = calcW(i, this.axisType);
+        f = calcF(i, this.axisType);
+
+        var nowcount = span / w;
         diff = Math.abs(nowcount - count);
         if (diff < mindiff) {
-          w = calcW(i);
-          f = calcF(i);
           mindiff = diff;
         }
         i++;
       }
 
+
       this.axisStep = w;
       this.axisFixed = f;
       var val = Math.ceil(this.getValue(pl) / w) * w,
-          valr = this.getValue(pr);
-      var lines = [],
-          labels = [];
-      while(val < valr) {
+        valr = this.getValue(pr);
+
+      var lines, labels;
+
+      lines = this.calcLines(val, valr, w);
+      labels = this.calcLabels(
+        lines,
+        (this.axisValSpan - (this.axisMarginValL + this.axisMarginValR)) * this.axisPctSpan,
+        this.axisType
+      );
+
+      this.axisGridlines = lines;
+      this.axisGridlineLabels = labels;
+
+
+    };
+
+    PlotAxis.prototype.calcLines = function (val, valr, w) {
+      var lines = [];
+
+      while (val < valr) {
         var pct = this.getPercent(val);
-        labels.push(this.getString(pct));
         lines.push(pct);
         val += w;
       }
-      this.axisGridlines = lines;
-      this.axisGridlineLabels = labels;
+
+      return lines;
     };
+
+    PlotAxis.prototype.calcLabels = function (lines, span, axisType) {
+
+      var labels = [];
+
+      for (var i = 0; i < lines.length; i++) {
+        var pct = lines[i];
+        labels.push(this.getString(pct, span));
+      }
+
+      if (span > SECOND && axisType === "time" && labels.length != _.uniq(labels).length) {
+        if (span <= MINUTE) {
+          span = SECOND - 1;
+        } else if (span <= HOUR) {
+          span = MINUTE - 1;
+        } else if (span <= DAY) {
+          span = HOUR - 1;
+        } else if (span <= MONTH) {
+          span = DAY - 1;
+        } else if (span <= YEAR) {
+          span = MONTH - 1;
+        } else {
+          span = YEAR - 1;
+        }
+
+        labels = this.calcLabels(lines, span, axisType);
+      }
+
+      return labels;
+
+    };
+
     PlotAxis.prototype.getGridlines = function() { return _.without(this.axisGridlines); };
     PlotAxis.prototype.getGridlineLabels = function() { return _.without(this.axisGridlineLabels); };
     PlotAxis.prototype.getPercent = function(val) {
@@ -177,7 +244,9 @@
       if (pct > 1) { pct = 1; }
       return this.axisValSpan * pct + this.axisValL;
     };
-    PlotAxis.prototype.getString = function(pct) {
+
+
+    PlotAxis.prototype.getString = function(pct, span) {
       if (this.axisType != "time" && this.axisType != "nanotime") {
         if (this.axisType === "log") {
           return "" + this.axisBase + "^" + this.getValue(pct).toFixed(this.axisFixed);
@@ -186,7 +255,7 @@
         }
       }
       var val = this.getValue(pct);
-      var span = (this.axisValSpan - (this.axisMarginValL + this.axisMarginValR)) * this.axisPctSpan;
+
 
       var d, ret = "";
       if (this.axisType === "time") {
@@ -202,36 +271,36 @@
         while (str.length < len) str = "0" + str;
         return str;
       };
-      if (span <= 1000) {
+      if (span <= SECOND) {
         ret = val + "  ";
         ret = moment(d).tz(this.axisTimezone).format(".SSS") + ( (d - Math.floor(d)).toFixed(this.axisFixed));
-      } else if (span <= 1000 * 60) {
+      } else if (span <= MINUTE) {
         ret = moment(d).tz(this.axisTimezone).format("mm:ss.SSS");
-      } else if (span <= 1000 * 60 * 60) {
+      } else if (span <= HOUR) {
         ret = moment(d).tz(this.axisTimezone).format("HH:mm:ss");
-      } else if (span <= 1000 * 60 * 60 * 24) {
+      } else if (span <= DAY) {
         ret = moment(d).tz(this.axisTimezone).format("MMM DD ddd, HH:mm");
-      } else if (span <= 1000 * 60 * 60 * 24 * 30) {
+      } else if (span <= MONTH) {
         ret = moment(d).tz(this.axisTimezone).format("MMM DD ddd");
-      } else if (span <= 1000 * 60 * 60 * 24 * 365) {
+      } else if (span <= YEAR) {
         ret = moment(d).tz(this.axisTimezone).format("YYYY MMM");
       } else {
         ret = moment(d).tz(this.axisTimezone).format("YYYY");
       }
 
       /*
-      // Nanoplot TODO
-      if (this.axisType === "nanotime"  && span < 1000000) {
-        var digits = bval.mod(1000000000).toFixed(0);
-        if (span < 1000) {
-          ret += "." + padStr(Math.floor(digits / 1), 9);
-        } else if (span < 1000000) {
-          ret += "." + padStr(Math.floor(digits / 1000), 6);
-        } else {
-          ret += "." + padStr(Math.floor(digits / 1000000), 3);
-        }
-      }
-      */
+       // Nanoplot TODO
+       if (this.axisType === "nanotime"  && span < 1000000) {
+       var digits = bval.mod(1000000000).toFixed(0);
+       if (span < 1000) {
+       ret += "." + padStr(Math.floor(digits / 1), 9);
+       } else if (span < 1000000) {
+       ret += "." + padStr(Math.floor(digits / 1000), 6);
+       } else {
+       ret += "." + padStr(Math.floor(digits / 1000000), 3);
+       }
+       }
+       */
       return ret;
     };
     return PlotAxis;

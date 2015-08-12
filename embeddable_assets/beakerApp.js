@@ -149,6 +149,24 @@ __p += '\n<header class="navbar-fixed-top bkr" ng-class="{\'electron-hide\': get
 }
 return __p
 }})();
+(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '\n<div class="bkr">\n  <div class="modal-header fixed bkr" style="height: 69px">\n    <h1 class="bkr">Language Manager</h1>\n  </div>\n  <div class="modal-body fixed modal-large plugin-manager bkr" style="padding-top: 69px; padding-bottom: 68px">\n    <div class="languages clearfix bkr">\n      <button class="btn btn-default language-icon-button bkr" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getEvaluatorStatuses()" ng-class="pluginName">\n        <span ng-class="\'plugin-\' + pluginStatus" class="plugin-status bkr">●</span>\n        <bk-language-logo bg-color="{{getEvaluatorDetails(pluginName).bgColor}}" name="{{getEvaluatorDetails(pluginName).shortName}}" fg-color="{{getEvaluatorDetails(pluginName).fgColor}}" border-color="{{getEvaluatorDetails(pluginName).borderColor}}" class="bkr">\n        </bk-language-logo>\n\n        {{pluginName}}\n      </button>\n      <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="btn btn-default bkr" ng-if="allowFromUrl()">\n        From URL...\n      </button>\n    </div>\n    <div ng-show="evalTabOp.showURL" class="input-group addeval bkr">\n      <input type="text" bk-enter="evalTabOp.togglePlugin()" ng-model="evalTabOp.newPluginNameOrUrl" class="bkr">\n      <button class="btn btn-default bkr" ng-click="evalTabOp.togglePlugin()">Add Plugin from URL</button>\n    </div>\n    <div ng-show="evalTabOp.showSecurityWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Are you sure you want to load this plugin from an external URL?</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.showURL=false; evalTabOp.newPluginNameOrUrl=&quot;&quot;">Cancel</button>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.forceLoad = true; evalTabOp.togglePlugin()">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <div ng-show="evalTabOp.showWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Cannot remove plugin currently used by a code cell in the notebook.<br class="bkr">\n        Delete those cells and try again.</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showWarning = false">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <tabset class="bkr">\n      <tab ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}" class="bkr">\n        <bk-plugin-manager-evaluator-settings class="bkr"></bk-plugin-manager-evaluator-settings>\n      </tab>\n    </tabset>\n  </div>\n  <div class="modal-footer fixed bkr" style="height: 68px"> \n    <button class="btn btn-primary language-manager-close-button bkr" ng-click="doClose()">Close</button>\n  </div>\n</div>';
+
+}
+return __p
+}})();
+(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '\n\n<div ng-repeat="property in properties" class="form-group language-option property clearfix bkr">\n  <label class="bkr">{{ property.name }}</label>\n  <textarea class="form-control bkr" ng-model="evaluator.settings[property.key]"></textarea>\n  <button class="btn btn-default pull-right set bkr" ng-click="set(property.key)">Set</button>\n</div>\n<div ng-repeat="action in actions" class="action language-option clearfix bkr">\n  <button class="btn btn-default bkr" ng-click="evaluator.perform(action.key)">{{ action.name }}</button>\n</div>';
+
+}
+return __p
+}})();
 (function() {(window["JST"] = window["JST"] || {})["mainapp/components/notebook/cell"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
@@ -271,24 +289,6 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
 __p += '\n<div class="bkr">\n  <div class="modal-header bkr">\n    <div class="sign-in bkr" ng-if="!isSignedIn()">\n      <h1 class="error bkr" ng-if="error">{{error}}</h1>\n      <h1 ng-if="!error" class="bkr">Sign in to Beaker Publications</h1>\n      <form ng-submit="signIn()" class="bkr">\n        <input ng-model="user.email" type="email" name="email" placeholder="Email" class="field bkr">\n        <input ng-model="user.password" type="password" required="" name="password" placeholder="Password" class="field bkr">\n        <input type="submit" value="Sign in" class="btn btn-primary bkr">\n      </form>\n      <div class="sign-up bkr">\n        No account?\n        <a target="_blank" href="https://pub.beakernotebook.com/#/sign_up" class="bkr">Create New Account</a>\n      </div>\n    </div>\n    <div class="publish bkr" ng-if="isSignedIn()">\n      <h1 class="bkr">{{title}}</h1>\n      <form ng-submit="publishAction()" class="bkr">\n        <label for="category" class="full bkr">Notebook name others will see when you publish:</label>\n        <input ng-model="model.name" required="" type="text" class="field bkr">\n        <label for="category" class="full bkr">Notebook description:</label>\n        <textarea ng-model="model.description" required="" rows="3" class="field bkr"></textarea>\n        <label for="category" class="full bkr">Category that describes your notebook:</label>\n        <select ng-model="model[\'category-id\']" required="" ng-options="category[\'public-id\'] as category.name for category in categories" name="category" ng-class="{error: error}" ng-change="refresh()" class="field bkr">\n          <option value="" class="bkr">Select a category</option>\n        </select>\n        <ul ng-if="published" class="publication-details bkr">\n          <li class="bkr">\n            <div class="time-label bkr">Published</div>\n            <div class="value publish-time bkr">{{model[\'created-at\'] | date:\'short\'}}</div>\n          </li>\n          <li class="bkr">\n            <div class="time-label bkr">Last updated</div>\n            <div class="value update-time bkr">{{model[\'updated-at\'] | date:\'short\'}}</div>\n          </li>\n        </ul>\n        <div class="actions bkr">\n          <div class="warning bkr" ng-if="edited">Warning, your notebook has unsaved changes.</div>\n          <input ng-if="!saving" type="submit" ng-value="saveButton" class="btn btn-primary bkr">\n          <input ng-if="!saving &amp;&amp; published" type="button" class="btn bkr" value="Delete" ng-click="delete()" formnovalidate="">\n          <input ng-if="!saving" type="button" class="btn bkr" value="Cancel" ng-click="close()" formnovalidate="">\n        </div>\n      </form>\n    </div>\n  </div>\n</div>';
-
-}
-return __p
-}})();
-(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager"] = function(obj) {
-obj || (obj = {});
-var __t, __p = '', __e = _.escape;
-with (obj) {
-__p += '\n<div class="bkr">\n  <div class="modal-header fixed bkr" style="height: 69px">\n    <h1 class="bkr">Language Manager</h1>\n  </div>\n  <div class="modal-body fixed modal-large plugin-manager bkr" style="padding-top: 69px; padding-bottom: 68px">\n    <div class="languages clearfix bkr">\n      <button class="btn btn-default language-icon-button bkr" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getEvaluatorStatuses()" ng-class="pluginName">\n        <span ng-class="\'plugin-\' + pluginStatus" class="plugin-status bkr">●</span>\n        <bk-language-logo bg-color="{{getEvaluatorDetails(pluginName).bgColor}}" name="{{getEvaluatorDetails(pluginName).shortName}}" fg-color="{{getEvaluatorDetails(pluginName).fgColor}}" border-color="{{getEvaluatorDetails(pluginName).borderColor}}" class="bkr">\n        </bk-language-logo>\n\n        {{pluginName}}\n      </button>\n      <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="btn btn-default bkr" ng-if="allowFromUrl()">\n        From URL...\n      </button>\n    </div>\n    <div ng-show="evalTabOp.showURL" class="input-group addeval bkr">\n      <input type="text" bk-enter="evalTabOp.togglePlugin()" ng-model="evalTabOp.newPluginNameOrUrl" class="bkr">\n      <button class="btn btn-default bkr" ng-click="evalTabOp.togglePlugin()">Add Plugin from URL</button>\n    </div>\n    <div ng-show="evalTabOp.showSecurityWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Are you sure you want to load this plugin from an external URL?</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.showURL=false; evalTabOp.newPluginNameOrUrl=&quot;&quot;">Cancel</button>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.forceLoad = true; evalTabOp.togglePlugin()">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <div ng-show="evalTabOp.showWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Cannot remove plugin currently used by a code cell in the notebook.<br class="bkr">\n        Delete those cells and try again.</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showWarning = false">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <tabset class="bkr">\n      <tab ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}" class="bkr">\n        <bk-plugin-manager-evaluator-settings class="bkr"></bk-plugin-manager-evaluator-settings>\n      </tab>\n    </tabset>\n  </div>\n  <div class="modal-footer fixed bkr" style="height: 68px"> \n    <button class="btn btn-primary language-manager-close-button bkr" ng-click="doClose()">Close</button>\n  </div>\n</div>';
-
-}
-return __p
-}})();
-(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"] = function(obj) {
-obj || (obj = {});
-var __t, __p = '', __e = _.escape;
-with (obj) {
-__p += '\n\n<div ng-repeat="property in properties" class="form-group language-option property clearfix bkr">\n  <label class="bkr">{{ property.name }}</label>\n  <textarea class="form-control bkr" ng-model="evaluator.settings[property.key]"></textarea>\n  <button class="btn btn-default pull-right set bkr" ng-click="set(property.key)">Set</button>\n</div>\n<div ng-repeat="action in actions" class="action language-option clearfix bkr">\n  <button class="btn btn-default bkr" ng-click="evaluator.perform(action.key)">{{ action.name }}</button>\n</div>';
 
 }
 return __p
@@ -3593,7 +3593,6 @@ return __p
           };
 
           function _closeNotebook() {
-            var self = this;
             var closeSession = function() {
               bkSessionManager.close().then(function() {
                 bkCoreManager.gotoControlPanel();
@@ -3607,7 +3606,7 @@ return __p
                   "Do you want to save " + notebookTitle + "?",
                   "Confirm close",
                   function() {
-                    self.saveNotebook().then(closeSession);
+                    _impl.saveNotebook().then(closeSession);
                   },
                   function() {
                     closeSession();
@@ -3624,7 +3623,7 @@ return __p
                   "Warning!",
                   function() {
                     bkEvaluateJobManager.cancelAll().then(function() {
-                      self._closeNotebook();
+                      _impl._closeNotebook();
                     }
                   ); });
             } else
@@ -8849,6 +8848,10 @@ return __p
           }
           childScope = scope.$new();
           childScope.model = scope.model;
+          var lodT = (bkHelper.getBkNotebookViewModel() === undefined || bkHelper.getBkNotebookViewModel().getLodThreshold() === "") ? 1500 : bkHelper.getBkNotebookViewModel().getLodThreshold();
+          childScope.prefs = {
+              lodThreshold : lodT
+          };
           var resultType = getResultType(scope.model);
           if (resultType) {
             bkUtils.log("outputDisplay", {
@@ -10641,7 +10644,7 @@ return __p
         return bkUtils.httpPostJson(baseUrl + '/user/v1/sessions', params)
       },
       getCurrentUser: function() {
-        return bkUtils.httpGetJson(baseUrl + '/user/v1/user', {}, headers())
+        return bkUtils.httpGetJson(baseUrl + '/user/v1/current_user', {}, headers())
       },
       createPublication: function(params) {
         return bkUtils.httpPostJson(baseUrl + '/notebook/v1/publications', params, headers());

@@ -208,6 +208,19 @@
             showLoadingStatusMessage("Loading notebook");
             $scope.loading = true;
 
+            //Clear previous evaluation in progress state.
+            //Set state to Error with message "Interrupted."
+            if (notebookModel && notebookModel.cells) {
+              for (var i = 0; i < notebookModel.cells.length; i++) {
+                var currentCell = notebookModel.cells[i];
+                if (currentCell && currentCell.output && currentCell.output.result
+                    && currentCell.output.result.innertype === 'Progress') {
+                  currentCell.output.result.innertype = 'Error';
+                  currentCell.output.result.object = 'Interrupted.'
+                }
+              }
+            }
+
             isExistingSession = !!isExistingSession;
             evaluatorMenuItems.splice(0, evaluatorMenuItems.length);
 

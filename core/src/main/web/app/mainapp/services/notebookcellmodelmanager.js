@@ -453,6 +453,18 @@
           });
         }
       },
+      clearEvaluatingCells: function () {
+        if (cells) {
+          for (var i = 0; i < cells.length; i++) {
+            var currentCell = cells[i];
+            if (currentCell && currentCell.output && currentCell.output.result
+                && currentCell.output.result.innertype === 'Progress') {
+              currentCell.output.result.innertype = 'Error';
+              currentCell.output.result.object = 'Interrupted.'
+            }
+          }
+        }
+      },
       shiftSegment: function(segBegin, segLength, offset) {
         if (offset === 0) {
           return;

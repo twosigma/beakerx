@@ -952,6 +952,9 @@
         this.getNotebookCellOp().dumpDisplayStatus();
         return true;
       },
+      clearEvaluatingCells: function() {
+        this.getNotebookCellOp().clearEvaluatingCells();
+      },
       getSaveData: function() {
         return generateSaveData();
       },

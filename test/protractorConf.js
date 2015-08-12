@@ -18,6 +18,9 @@ var config = {
   seleniumAddress: 'http://localhost:4444/wd/hub',
   framework: 'jasmine2',
   restartBrowserBetweenTests: true,
+  jasmineNodeOpts: {
+    defaultTimeoutInterval: 100000
+  },
   capabilities: {
     browserName: 'firefox'
   },

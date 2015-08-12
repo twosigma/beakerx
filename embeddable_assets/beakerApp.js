@@ -8848,6 +8848,10 @@ return __p
           }
           childScope = scope.$new();
           childScope.model = scope.model;
+          var lodT = (bkHelper.getBkNotebookViewModel() === undefined || bkHelper.getBkNotebookViewModel().getLodThreshold() === "") ? 1500 : bkHelper.getBkNotebookViewModel().getLodThreshold();
+          childScope.prefs = {
+              lodThreshold : lodT
+          };
           var resultType = getResultType(scope.model);
           if (resultType) {
             bkUtils.log("outputDisplay", {

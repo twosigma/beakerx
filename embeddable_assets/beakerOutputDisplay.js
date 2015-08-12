@@ -7766,7 +7766,7 @@
         }
       },
 
-      standardizeModel : function(_model) {
+      standardizeModel : function(_model, prefs) {
         var model = {};
         $.extend(true, model, _model); // deep copy model to prevent changing the original JSON
 
@@ -7826,8 +7826,7 @@
         }
 
         newmodel.lodThreshold = (model.lodThreshold) ?
-          model.lodThreshold :
-          bkHelper.getBkNotebookViewModel().getLodThreshold();
+          model.lodThreshold : (prefs !== undefined && prefs.lodThreshold !== undefined ? prefs.lodThreshold : 1500) ;
 
         newmodel.data = [];
 
@@ -7939,7 +7938,7 @@
   'use strict';
   var retfunc = function(bkUtils, plotFormatter) {
     return {
-      standardizeModel : function(model) {
+      standardizeModel : function(model, prefs) {
         var newmodel = {
           title : model.title,
           plots : []
@@ -7995,7 +7994,7 @@
           if (plotmodel.useToolTip == null) { plotmodel.useToolTip = useToolTip; }
 
           plotmodel.type = plotType;
-          var newplotmodel = plotFormatter.standardizeModel(plotmodel);
+          var newplotmodel = plotFormatter.standardizeModel(plotmodel, prefs);
 
           if (i < plots.length - 1) {  // turn off x coordinate labels
             newplotmodel.xAxis.axisLabel = null;
@@ -9479,7 +9478,7 @@
 
         scope.standardizeData = function() {
           var model = scope.model.getCellModel();
-          scope.stdmodel = plotFormatter.standardizeModel(model);
+          scope.stdmodel = plotFormatter.standardizeModel(model, scope.prefs);
         };
 
         scope.dumpState = function() {
@@ -9546,7 +9545,7 @@
         };
 
         scope.init = function() {
-
+          
           // first standardize data
           scope.standardizeData();
           // init flags
@@ -10747,7 +10746,7 @@
 
         scope.standardizeData = function() {
           var model = scope.model.getCellModel();
-          scope.stdmodel = combinedplotFormatter.standardizeModel(model);
+          scope.stdmodel = combinedplotFormatter.standardizeModel(model, scope.prefs);
         };
 
         scope.prepareSavedState = function(state) {

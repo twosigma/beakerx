@@ -26,6 +26,7 @@
     return {
       template :
           "<div id='plotTitle' class='plot-title'></div>" +
+          "<div id='plotLegendContainer' class='plot-plotlegendcontainer' oncontextmenu='return false;'>" +
           "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
           "<svg>"  +
           "<defs>" +
@@ -38,6 +39,7 @@
           "<g id='maing'></g>" +
           "<g id='labelg'></g> " +
           "</svg>" +
+          "</div>" +
           "</div>",
       controller : function($scope) {
         $scope.getShareMenuPlugin = function() {
@@ -91,6 +93,7 @@
           // hook container to use jquery interaction
           scope.container = d3.select(element[0]).select("#plotContainer");
           scope.jqcontainer = element.find("#plotContainer");
+          scope.jqlegendcontainer = element.find("#plotLegendContainer");
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
 
@@ -651,42 +654,35 @@
           return mergedLines;
         };
 
-        scope.getLegendPosition = function(legendPosition, legend) {
+        scope.getLegendPosition = function(legendPosition, isHorizontal) {
           var margin = scope.layout.legendMargin,
-              legendWidth = legend.width(),
-              legendWidthWithMargin = legendWidth + margin,
               containerWidth = scope.jqcontainer.width(),
               containerWidthWithMargin = containerWidth + margin,
+              legend = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer"),
               legendHeight = legend.height(),
               legendHeightWithMargin = legendHeight + margin,
-              containerHeight = scope.jqcontainer.height(),
-              containerHeightWithMargin = containerHeight + margin,
-              verticalCenter = containerHeight / 2 - legendHeight / 2,
-              horizontalCenter = containerWidth / 2 - legendWidth / 2;
-          var defaultPosition = {
-            "left": containerWidthWithMargin,
-            "top": 0
-          };
-          if (!legendPosition) { return defaultPosition; }
+              verticalCenter = scope.jqcontainer.height() / 2 - legendHeight / 2,
+              horizontalCenter = containerWidth / 2 - legend.width() / 2;
+          if (!legendPosition) { return scope.getLegendPosition("TOP_RIGHT", isHorizontal); }
           var position;
           if(legendPosition.position){
             switch(legendPosition.position){
               case "TOP":
                 position = {
                   "left": horizontalCenter,
-                  "top": -(legendHeightWithMargin)
+                  "top": -legendHeightWithMargin
                 };
                 break;
               case "LEFT":
                 position = {
-                  "left": -(legendWidthWithMargin),
+                  "left": 0,
                   "top": verticalCenter
                 };
                 break;
               case "BOTTOM":
                 position = {
                   "left": horizontalCenter,
-                  "bottom": -(legendHeightWithMargin)
+                  "bottom": -legendHeightWithMargin
                 };
                 break;
               case "RIGHT":
@@ -695,18 +691,70 @@
                   "bottom": verticalCenter
                 };
                 break;
+              default:
+                position = scope.getLegendPositionByLayout(legendPosition, isHorizontal);
+            }
+          }else{
+            position = {
+              "left": legendPosition.x,
+              "top": legendPosition.y
+            };
+          }
+          return position;
+        };
+
+        scope.getLegendPositionByLayout = function(legendPosition, isHorizontal){
+          var legend = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer"),
+              margin = scope.layout.legendMargin,
+              legendWidth = legend.width(),
+              containerWidth = scope.jqcontainer.width(),
+              containerWidthWithMargin = containerWidth + margin,
+              legendHeight = legend.height(),
+              legendHeightWithMargin = legendHeight + margin, position;
+          if(isHorizontal){
+            switch(legendPosition.position){
               case "TOP_LEFT":
                 position = {
-                  "left": -(legendWidthWithMargin),
+                  "left": 0,
+                  "top": -legendHeightWithMargin
+                };
+                break;
+              case "TOP_RIGHT":
+                position = {
+                  "left": containerWidth - legendWidth,
+                  "top": -legendHeightWithMargin
+                };
+                break;
+              case "BOTTOM_LEFT":
+                position = {
+                  "left": 0,
+                  "bottom": -legendHeightWithMargin
+                };
+                break;
+              case "BOTTOM_RIGHT":
+                position = {
+                  "left": containerWidth - legendWidth,
+                  "bottom": -legendHeightWithMargin
+                };
+                break;
+            }
+          }else{
+            switch(legendPosition.position){
+              case "TOP_LEFT":
+                position = {
+                  "left": 0,
                   "top": 0
                 };
                 break;
               case "TOP_RIGHT":
-                position = defaultPosition;
+                position = {
+                  "left": containerWidthWithMargin,
+                  "top": 0
+                };
                 break;
               case "BOTTOM_LEFT":
                 position = {
-                  "left": -(legendWidthWithMargin),
+                  "left": 0,
                   "bottom": 0
                 };
                 break;
@@ -717,11 +765,6 @@
                 };
                 break;
             }
-          }else{
-            position = {
-              "left": legendPosition.x,
-              "top": legendPosition.y
-            };
           }
           return position;
         };
@@ -733,11 +776,12 @@
 
           var data = scope.stdmodel.data;
           var margin = scope.layout.legendMargin;
+          var isHorizontal = scope.stdmodel.legendLayout === "HORIZONTAL";
 
-          scope.jqcontainer.find(".plot-legendscrollablecontainer").remove();
+          scope.jqlegendcontainer.find(".plot-legendscrollablecontainer").remove();
 
           scope.legendDone = true;
-          var legendScrollableContainer = $("<div></div>").appendTo(scope.jqcontainer)
+          var legendScrollableContainer = $("<div></div>").appendTo(scope.jqlegendcontainer)
             .attr("class", "plot-legendscrollablecontainer")
             .draggable({
               start: function( event, ui ) {
@@ -754,19 +798,27 @@
               handle : "#legendDraggableContainer"
             })
             .css("max-height", scope.jqsvg.height());
+          if(isHorizontal){
+            legendScrollableContainer.css("max-width", scope.jqcontainer.width());
+          }
 
           var legendDraggableContainer = $("<div></div>").appendTo(legendScrollableContainer)
             .attr("id", "legendDraggableContainer")
             .attr("class", "plot-legenddraggablecontainer");
 
-          var legend = $("<table></table>").appendTo(legendDraggableContainer)
+          var legendUnit = isHorizontal ? "<div></div>" : "<table></table>",
+              legendLineUnit = isHorizontal ? "<div class='plot-legenditeminline'></div>" : "<tr></tr>",
+              legendLineItemUnit = isHorizontal ? "<span></span>" : "<td></td>";
+          var legend = $(legendUnit).appendTo(legendDraggableContainer)
             .attr("id", "legends");
 
           scope.legendMergedLines = scope.prepareMergedLegendData();
 
-          if (Object.keys(scope.legendMergedLines).length > 1) {  // skip "All" check when there is only one line
-            var unit = $("<tr></tr>").appendTo(legend)
-              .attr("id", "legend_all");
+          if (!scope.stdmodel.omitCheckboxes &&
+            Object.keys(scope.legendMergedLines).length > 1) {  // skip "All" check when there is only one line
+            var unit = $(legendLineUnit).appendTo(legend)
+              .attr("id", "legend_all")
+              .addClass("plot-legendline");
             $("<input type='checkbox'></input>")
               .attr("id", "legendcheck_all")
               .attr("class", "plot-legendcheckbox")
@@ -774,35 +826,38 @@
               .click(function(e) {
                 return scope.toggleVisibility(e);
               })
-              .appendTo($("<td></td>").appendTo(unit));
+              .appendTo($(legendLineItemUnit).appendTo(unit));
             $("<span></span>")
               .attr("id", "legendbox_all")
               .attr("class", "plot-legendbox")
               .css("background-color", "none")
-              .appendTo($("<td></td>").appendTo(unit));
+              .appendTo($(legendLineItemUnit).appendTo(unit));
             $("<span></span>")
               .attr("id", "legendtext_all")
               .attr("class", "plot-label")
               .text("All")
-              .appendTo($("<td></td>").appendTo(unit));
-            $("<td></td>").appendTo(unit);
+              .appendTo($(legendLineItemUnit).appendTo(unit));
+            $(legendLineItemUnit).appendTo(unit);
           }
 
           for (var id in scope.legendMergedLines) {
             if (!scope.legendMergedLines.hasOwnProperty(id)) { continue; }
             var line = scope.legendMergedLines[id];
             if (line.legend == null || line.legend === "") { continue; }
-            var unit = $("<tr></tr>").appendTo(legend)
-              .attr("id", "legend_" + id);
-            // checkbox
-            $("<input type='checkbox'></input>")
-              .attr("id", "legendcheck_" + id)
-              .attr("class", "plot-legendcheckbox")
-              .prop("checked", line.showItem)
-              .click(function(e) {
-                return scope.toggleVisibility(e);
-              })
-              .appendTo($("<td></td>").appendTo(unit));
+            var unit = $(legendLineUnit).appendTo(legend)
+              .attr("id", "legend_" + id)
+              .addClass("plot-legendline");
+            if(!scope.stdmodel.omitCheckboxes){
+              // checkbox
+              $("<input type='checkbox'></input>")
+                .attr("id", "legendcheck_" + id)
+                .attr("class", "plot-legendcheckbox")
+                .prop("checked", line.showItem)
+                .click(function(e) {
+                  return scope.toggleVisibility(e);
+                })
+                .appendTo($(legendLineItemUnit).appendTo(unit));
+            }
 
             var clr = plotUtils.createColor(line.color, line.color_opacity),
                 st_clr = plotUtils.createColor(line.stroke, line.stroke_opacity);
@@ -817,13 +872,13 @@
               .css("border",
                 line.stroke != null ? "1px " + sty + st_clr :
                 (line.color != null ? "1px " + sty + clr : "1px dotted gray"))
-              .appendTo($("<td></td>").appendTo(unit));
+              .appendTo($(legendLineItemUnit).appendTo(unit));
             // legend text
-            $("<td></td>").appendTo(unit)
+            $(legendLineItemUnit).appendTo(unit)
               .attr("id", "legendtext_" + id)
               .attr("class", "plot-label")
               .text(line.legend);
-            var lodhint = $("<td></td>").appendTo(unit)
+            var lodhint = $(legendLineItemUnit).appendTo(unit)
                 .attr("id", "hint_" + id);
 
             if (line.isLodItem === true) {
@@ -864,12 +919,12 @@
                 var dataIds = e.data.dataIds;
                 for (var j = 0; j < dataIds.length; j++) {
                   var dat = scope.stdmodel.data[dataIds[j]];
-                if (dat.lodType === "off") {
-                  dat.toggleLod(scope);
-                } else {
-                  dat.switchLodType(scope);
-                }
-                dat.zoomLevelChanged(scope);
+                  if (dat.lodType === "off") {
+                    dat.toggleLod(scope);
+                  } else {
+                    dat.switchLodType(scope);
+                  }
+                  dat.zoomLevelChanged(scope);
                 }
                 scope.update();
                 scope.setMergedLodHint(dataIds, e.data.id);
@@ -879,24 +934,25 @@
                 var dataIds = e.data.dataIds;
                 for (var j = 0; j < dataIds.length; j++) {
                   var dat = scope.stdmodel.data[dataIds[j]];
-                if (dat.lodType === "off") return;
-                dat.toggleLodAuto(scope);
+                  if (dat.lodType === "off") return;
+                  dat.toggleLodAuto(scope);
                 }
                 scope.update();
                 scope.setMergedLodHint(dataIds, e.data.id);
               });
             } else {
-              $("<td></td>").appendTo(unit);
+              $(legendLineItemUnit).appendTo(unit);
             }
           }
 
           if (scope.legendResetPosition === true) {
-            scope.legendPosition = scope.getLegendPosition(scope.stdmodel.legendPosition, legendScrollableContainer);
+            scope.legendPosition = scope.getLegendPosition(scope.stdmodel.legendPosition, isHorizontal);
             scope.legendResetPosition = false;
           }
           legendScrollableContainer.css(scope.legendPosition);
 
-          if(["LEFT", "TOP_LEFT", "BOTTOM_LEFT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
+          //increase plot margins if legend has predefined values
+          if(scope.stdmodel.legendPosition.position === "LEFT") {
             scope.jqcontainer.css("margin-left", legendScrollableContainer.width() + margin);
           }
           if(scope.stdmodel.legendPosition.position === "TOP") {
@@ -904,6 +960,18 @@
           }
           if(scope.stdmodel.legendPosition.position === "BOTTOM") {
             scope.jqcontainer.css("margin-bottom", legendScrollableContainer.height() + margin);
+          }
+          if(isHorizontal){
+            if(["TOP_LEFT", "TOP_RIGHT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
+              scope.jqcontainer.css("margin-top", legendScrollableContainer.height() + margin);
+            }
+            if(["BOTTOM_LEFT", "BOTTOM_RIGHT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
+              scope.jqcontainer.css("margin-bottom", legendScrollableContainer.height() + margin);
+            }
+          }else{
+            if(["TOP_LEFT", "BOTTOM_LEFT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
+              scope.jqcontainer.css("margin-left", legendScrollableContainer.width() + margin);
+            }
           }
         };
 
@@ -934,7 +1002,7 @@
         };
         scope.setMergedLodHint = function(lodDataIds, legendLineId) {
           var lodInfo = scope.getMergedLodInfo(lodDataIds);
-          var legend = scope.jqcontainer.find("#legends");
+          var legend = scope.jqlegendcontainer.find("#legends");
           var hint = legend.find("#hint_" + legendLineId);
           var light = hint.find("#light"),
               type = hint.find("#type"),
@@ -970,15 +1038,15 @@
                     dat.clearTips(scope);
                     if (dat.isLodItem === true) {
                       dat.lodOn = false;
+                    }
+                  }
                 }
-              }
-            }
                 if (line.showItem === false) {
                   if (line.isLodItem === true) {
                     scope.setMergedLodHint(line.lodDataIds, lineId);
                   }
                 }
-                scope.jqcontainer.find("#legendcheck_" + lineId).prop("checked", line.showItem);
+                scope.jqlegendcontainer.find("#legendcheck_" + lineId).prop("checked", line.showItem);
               }
             }
 

@@ -110,6 +110,17 @@
                   maxMargin = _.max([value, maxMargin]);
                 });
                 plots.css("margin-left", maxMargin);
+
+                //increase margin if two next plots have bottom and top legends
+                var plotsCount = plots.size();
+                plots.each(function(index) {
+                  if(index + 1 < plotsCount){
+                    var bottomMargin = parseFloat($(this).css('margin-bottom'));
+                    var nextPlotTopMargin = parseFloat($(plots[index + 1]).css('margin-top'));
+                    $(this).css("margin-bottom", bottomMargin + nextPlotTopMargin);
+                    $(plots[index + 1]).css('margin-top', 0);
+                  }
+                });
               },
               getWidth : function() {
                 return scope.width;

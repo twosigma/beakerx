@@ -34,7 +34,7 @@ var BeakerPageObject = function() {
       .thenCatch(function() {
         return false;
       });
-    }, 10000);
+    }, 100000);
 
     // wait for the modal to close
     return browser.wait(function() {

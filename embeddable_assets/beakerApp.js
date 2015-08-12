@@ -149,24 +149,6 @@ __p += '\n<header class="navbar-fixed-top bkr" ng-class="{\'electron-hide\': get
 }
 return __p
 }})();
-(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager"] = function(obj) {
-obj || (obj = {});
-var __t, __p = '', __e = _.escape;
-with (obj) {
-__p += '\n<div class="bkr">\n  <div class="modal-header fixed bkr" style="height: 69px">\n    <h1 class="bkr">Language Manager</h1>\n  </div>\n  <div class="modal-body fixed modal-large plugin-manager bkr" style="padding-top: 69px; padding-bottom: 68px">\n    <div class="languages clearfix bkr">\n      <button class="btn btn-default language-icon-button bkr" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getEvaluatorStatuses()" ng-class="pluginName">\n        <span ng-class="\'plugin-\' + pluginStatus" class="plugin-status bkr">●</span>\n        <bk-language-logo bg-color="{{getEvaluatorDetails(pluginName).bgColor}}" name="{{getEvaluatorDetails(pluginName).shortName}}" fg-color="{{getEvaluatorDetails(pluginName).fgColor}}" border-color="{{getEvaluatorDetails(pluginName).borderColor}}" class="bkr">\n        </bk-language-logo>\n\n        {{pluginName}}\n      </button>\n      <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="btn btn-default bkr" ng-if="allowFromUrl()">\n        From URL...\n      </button>\n    </div>\n    <div ng-show="evalTabOp.showURL" class="input-group addeval bkr">\n      <input type="text" bk-enter="evalTabOp.togglePlugin()" ng-model="evalTabOp.newPluginNameOrUrl" class="bkr">\n      <button class="btn btn-default bkr" ng-click="evalTabOp.togglePlugin()">Add Plugin from URL</button>\n    </div>\n    <div ng-show="evalTabOp.showSecurityWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Are you sure you want to load this plugin from an external URL?</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.showURL=false; evalTabOp.newPluginNameOrUrl=&quot;&quot;">Cancel</button>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.forceLoad = true; evalTabOp.togglePlugin()">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <div ng-show="evalTabOp.showWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Cannot remove plugin currently used by a code cell in the notebook.<br class="bkr">\n        Delete those cells and try again.</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showWarning = false">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <tabset class="bkr">\n      <tab ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}" class="bkr">\n        <bk-plugin-manager-evaluator-settings class="bkr"></bk-plugin-manager-evaluator-settings>\n      </tab>\n    </tabset>\n  </div>\n  <div class="modal-footer fixed bkr" style="height: 68px"> \n    <button class="btn btn-primary language-manager-close-button bkr" ng-click="doClose()">Close</button>\n  </div>\n</div>';
-
-}
-return __p
-}})();
-(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"] = function(obj) {
-obj || (obj = {});
-var __t, __p = '', __e = _.escape;
-with (obj) {
-__p += '\n\n<div ng-repeat="property in properties" class="form-group language-option property clearfix bkr">\n  <label class="bkr">{{ property.name }}</label>\n  <textarea class="form-control bkr" ng-model="evaluator.settings[property.key]"></textarea>\n  <button class="btn btn-default pull-right set bkr" ng-click="set(property.key)">Set</button>\n</div>\n<div ng-repeat="action in actions" class="action language-option clearfix bkr">\n  <button class="btn btn-default bkr" ng-click="evaluator.perform(action.key)">{{ action.name }}</button>\n</div>';
-
-}
-return __p
-}})();
 (function() {(window["JST"] = window["JST"] || {})["mainapp/components/notebook/cell"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
@@ -280,6 +262,24 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
 __p += '\n<div class="textcell-wrapper bkr" ng-click="edit()">\n  <div class="editable-text bkr" contenteditable="{{ isEditable() ? true : false }}" style="min-height: 14px; min-width: 14px"></div>\n</div>';
+
+}
+return __p
+}})();
+(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '\n<div class="bkr">\n  <div class="modal-header fixed bkr" style="height: 69px">\n    <h1 class="bkr">Language Manager</h1>\n  </div>\n  <div class="modal-body fixed modal-large plugin-manager bkr" style="padding-top: 69px; padding-bottom: 68px">\n    <div class="languages clearfix bkr">\n      <button class="btn btn-default language-icon-button bkr" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getEvaluatorStatuses()" ng-class="pluginName">\n        <span ng-class="\'plugin-\' + pluginStatus" class="plugin-status bkr">●</span>\n        <bk-language-logo bg-color="{{getEvaluatorDetails(pluginName).bgColor}}" name="{{getEvaluatorDetails(pluginName).shortName}}" fg-color="{{getEvaluatorDetails(pluginName).fgColor}}" border-color="{{getEvaluatorDetails(pluginName).borderColor}}" class="bkr">\n        </bk-language-logo>\n\n        {{pluginName}}\n      </button>\n      <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="btn btn-default bkr" ng-if="allowFromUrl()">\n        From URL...\n      </button>\n    </div>\n    <div ng-show="evalTabOp.showURL" class="input-group addeval bkr">\n      <input type="text" bk-enter="evalTabOp.togglePlugin()" ng-model="evalTabOp.newPluginNameOrUrl" class="bkr">\n      <button class="btn btn-default bkr" ng-click="evalTabOp.togglePlugin()">Add Plugin from URL</button>\n    </div>\n    <div ng-show="evalTabOp.showSecurityWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Are you sure you want to load this plugin from an external URL?</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.showURL=false; evalTabOp.newPluginNameOrUrl=&quot;&quot;">Cancel</button>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.forceLoad = true; evalTabOp.togglePlugin()">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <div ng-show="evalTabOp.showWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Cannot remove plugin currently used by a code cell in the notebook.<br class="bkr">\n        Delete those cells and try again.</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showWarning = false">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <tabset class="bkr">\n      <tab ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}" class="bkr">\n        <bk-plugin-manager-evaluator-settings class="bkr"></bk-plugin-manager-evaluator-settings>\n      </tab>\n    </tabset>\n  </div>\n  <div class="modal-footer fixed bkr" style="height: 68px"> \n    <button class="btn btn-primary language-manager-close-button bkr" ng-click="doClose()">Close</button>\n  </div>\n</div>';
+
+}
+return __p
+}})();
+(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '\n\n<div ng-repeat="property in properties" class="form-group language-option property clearfix bkr">\n  <label class="bkr">{{ property.name }}</label>\n  <textarea class="form-control bkr" ng-model="evaluator.settings[property.key]"></textarea>\n  <button class="btn btn-default pull-right set bkr" ng-click="set(property.key)">Set</button>\n</div>\n<div ng-repeat="action in actions" class="action language-option clearfix bkr">\n  <button class="btn btn-default bkr" ng-click="evaluator.perform(action.key)">{{ action.name }}</button>\n</div>';
 
 }
 return __p
@@ -2163,181 +2163,181 @@ return __p
         return false;
       },
       getSessionId: function() {
-        if (getCurrentApp().getSessionId) {
+        if (getCurrentApp() && getCurrentApp().getSessionId) {
           return getCurrentApp().getSessionId();
         } else {
-          console.error("Current app doesn't support getSessionId");
+          return "unknown";
         }
       },
       getNotebookModel: function() {
-        if (getCurrentApp().getNotebookModel) {
+        if (getCurrentApp() && getCurrentApp() && getCurrentApp().getNotebookModel) {
           return getCurrentApp().getNotebookModel();
         } else {
-          console.error("Current app doesn't support getNotebookModel");
+          return { };
         }
       },
       getBeakerObject: function() {
-        if (getCurrentApp().getBeakerObject) {
+        if (getCurrentApp() && getCurrentApp().getBeakerObject) {
           return getCurrentApp().getBeakerObject();
         } else {
-          console.error("Current app doesn't support getBeakerObject");
+          return { };
         }
       },
       getNotebookElement: function(currentScope) {
         return bkCoreManager.getNotebookElement(currentScope);
       },
       collapseAllSections: function() {
-        if (getCurrentApp().collapseAllSections) {
+        if (getCurrentApp() && getCurrentApp().collapseAllSections) {
           return getCurrentApp().collapseAllSections();
         } else {
-          console.error("Current app doesn't support collapseAllSections");
+          return false;
         }
       },
       closeNotebook: function() {
-        if (getCurrentApp().closeNotebook) {
+        if (getCurrentApp() && getCurrentApp().closeNotebook) {
           return getCurrentApp().closeNotebook();
         } else {
-          console.error("Current app doesn't support closeNotebook");
+          return false;
         }
       },
       saveNotebook: function() {
-        if (getCurrentApp().saveNotebook) {
+        if (getCurrentApp() && getCurrentApp().saveNotebook) {
           return getCurrentApp().saveNotebook();
         } else {
-          console.error("Current app doesn't support saveNotebook");
+          return false;
         }
       },
       saveNotebookAs: function(notebookUri, uriType) {
-        if (getCurrentApp().saveNotebookAs) {
+        if (getCurrentApp() && getCurrentApp().saveNotebookAs) {
           return getCurrentApp().saveNotebookAs(notebookUri, uriType);
         } else {
-          console.error("Current app doesn't support saveNotebookAs");
+          return false;
         }
       },
       hasCodeCell: function(toEval) {
-        if (getCurrentApp().evaluate) {
+        if (getCurrentApp() && getCurrentApp().evaluate) {
           return getCurrentApp().hasCodeCell(toEval);
         } else {
           return false;
         }
       },
       evaluate: function(toEval) {
-        if (getCurrentApp().evaluate) {
+        if (getCurrentApp() && getCurrentApp().evaluate) {
           return getCurrentApp().evaluate(toEval);
         } else {
-          console.error("Current app doesn't support evaluate");
+          return false;
         }
       },
       evaluateRoot: function(toEval) {
-        if (getCurrentApp().evaluateRoot) {
+        if (getCurrentApp() && getCurrentApp().evaluateRoot) {
           return getCurrentApp().evaluateRoot(toEval);
         } else {
-          console.error("Current app doesn't support evaluateRoot");
+          return false;
         }
       },
       evaluateCode: function(evaluator, code) {
-        if (getCurrentApp().evaluateCode) {
+        if (getCurrentApp() && getCurrentApp().evaluateCode) {
           return getCurrentApp().evaluateCode(evaluator, code);
         } else {
-          console.error("Current app doesn't support evaluateCode");
+          return false;
         }
       },
       getEvaluatorMenuItems: function() {
-        if (getCurrentApp().getEvaluatorMenuItems) {
+        if (getCurrentApp() && getCurrentApp().getEvaluatorMenuItems) {
           return getCurrentApp().getEvaluatorMenuItems();
         } else {
-          console.error("Current app doesn't support getEvaluatorMenuItems");
+          return [];
         }
       },
       toggleNotebookLocked: function() {
-        if (getCurrentApp().toggleNotebookLocked) {
+        if (getCurrentApp() && getCurrentApp().toggleNotebookLocked) {
           return getCurrentApp().toggleNotebookLocked();
         } else {
-          console.error("Current app doesn't support toggleNotebookLocked");
+          return false;
         }
       },
       isNotebookLocked: function() {
-        if (getCurrentApp().isNotebookLocked) {
+        if (getCurrentApp() && getCurrentApp().isNotebookLocked) {
           return getCurrentApp().isNotebookLocked();
         } else {
-          console.error("Current app doesn't support isNotebookLocked");
+          return true;
         }
       },
       showAnonymousTrackingDialog: function() {
-        if (getCurrentApp().showAnonymousTrackingDialog) {
+        if (getCurrentApp() && getCurrentApp().showAnonymousTrackingDialog) {
           return getCurrentApp().showAnonymousTrackingDialog();
         } else {
-          console.error("Current app doesn't support showAnonymousTrackingDialog");
+          return false;
         }
       },
       showStatus: function(message, nodigest) {
-        if (getCurrentApp().showStatus) {
+        if (getCurrentApp() && getCurrentApp().showStatus) {
           return getCurrentApp().showStatus(message, nodigest);
         } else {
-          console.error("Current app doesn't support showStatus");
+          return false;
         }
       },
       updateStatus: function() {
-        if (getCurrentApp().updateStatus) {
+        if (getCurrentApp() && getCurrentApp().updateStatus) {
           return getCurrentApp().updateStatus();
         } else {
-          console.error("Current app doesn't support updateStatus");
+          return false;
         }
       },
       getStatus: function() {
-        if (getCurrentApp().getStatus) {
+        if (getCurrentApp() && getCurrentApp().getStatus) {
           return getCurrentApp().getStatus();
         } else {
-          console.error("Current app doesn't support getStatus");
+          return false;
         }
       },
       clearStatus: function(message, nodigest) {
-        if (getCurrentApp().clearStatus) {
+        if (getCurrentApp() && getCurrentApp().clearStatus) {
           return getCurrentApp().clearStatus(message, nodigest);
         } else {
-          console.error("Current app doesn't support clearStatus");
+          return false;
         }
       },
       showTransientStatus: function(message, nodigest) {
-        if (getCurrentApp().showTransientStatus) {
+        if (getCurrentApp() && getCurrentApp().showTransientStatus) {
           return getCurrentApp().showTransientStatus(message, nodigest);
         } else {
-          console.error("Current app doesn't support showTransientStatus");
+          return false;
         }
       },
       getEvaluators: function() {
-        if (getCurrentApp().getEvaluators) {
+        if (getCurrentApp() && getCurrentApp().getEvaluators) {
           return getCurrentApp().getEvaluators();
         } else {
-          console.error("Current app doesn't support getEvaluators");
+          return [];
         }
       },
       getCodeCells: function(filter) {
-        if (getCurrentApp().getCodeCells) {
+        if (getCurrentApp() && getCurrentApp().getCodeCells) {
           return getCurrentApp().getCodeCells(filter);
         } else {
-          console.error("Current app doesn't support getCodeCells");
+          return [];
         }
       },
       setCodeCellBody: function(name, code) {
-        if (getCurrentApp().setCodeCellBody) {
+        if (getCurrentApp() && getCurrentApp().setCodeCellBody) {
           return getCurrentApp().setCodeCellBody(name,code);
         } else {
-          console.error("Current app doesn't support setCodeCellBody");
+          return false;
         }
       },
       setCodeCellEvaluator: function(name, evaluator) {
-        if (getCurrentApp().setCodeCellEvaluator) {
+        if (getCurrentApp() && getCurrentApp().setCodeCellEvaluator) {
           return getCurrentApp().setCodeCellEvaluator(name, evaluator);
         } else {
-          console.error("Current app doesn't support setCodeCellEvaluator");
+          return false;
         }
       },
       setCodeCellTags: function(name, tags) {
-        if (getCurrentApp().setCodeCellTags) {
+        if (getCurrentApp() && getCurrentApp().setCodeCellTags) {
           return getCurrentApp().setCodeCellTags(name, tags);
         } else {
-          console.error("Current app doesn't support setCodeCellTags");
+          return false;
         }
       },
       // bk-notebook

@@ -207,181 +207,181 @@
         return false;
       },
       getSessionId: function() {
-        if (getCurrentApp().getSessionId) {
+        if (getCurrentApp() && getCurrentApp().getSessionId) {
           return getCurrentApp().getSessionId();
         } else {
-          console.error("Current app doesn't support getSessionId");
+          return "unknown";
         }
       },
       getNotebookModel: function() {
-        if (getCurrentApp().getNotebookModel) {
+        if (getCurrentApp() && getCurrentApp() && getCurrentApp().getNotebookModel) {
           return getCurrentApp().getNotebookModel();
         } else {
-          console.error("Current app doesn't support getNotebookModel");
+          return { };
         }
       },
       getBeakerObject: function() {
-        if (getCurrentApp().getBeakerObject) {
+        if (getCurrentApp() && getCurrentApp().getBeakerObject) {
           return getCurrentApp().getBeakerObject();
         } else {
-          console.error("Current app doesn't support getBeakerObject");
+          return { };
         }
       },
       getNotebookElement: function(currentScope) {
         return bkCoreManager.getNotebookElement(currentScope);
       },
       collapseAllSections: function() {
-        if (getCurrentApp().collapseAllSections) {
+        if (getCurrentApp() && getCurrentApp().collapseAllSections) {
           return getCurrentApp().collapseAllSections();
         } else {
-          console.error("Current app doesn't support collapseAllSections");
+          return false;
         }
       },
       closeNotebook: function() {
-        if (getCurrentApp().closeNotebook) {
+        if (getCurrentApp() && getCurrentApp().closeNotebook) {
           return getCurrentApp().closeNotebook();
         } else {
-          console.error("Current app doesn't support closeNotebook");
+          return false;
         }
       },
       saveNotebook: function() {
-        if (getCurrentApp().saveNotebook) {
+        if (getCurrentApp() && getCurrentApp().saveNotebook) {
           return getCurrentApp().saveNotebook();
         } else {
-          console.error("Current app doesn't support saveNotebook");
+          return false;
         }
       },
       saveNotebookAs: function(notebookUri, uriType) {
-        if (getCurrentApp().saveNotebookAs) {
+        if (getCurrentApp() && getCurrentApp().saveNotebookAs) {
           return getCurrentApp().saveNotebookAs(notebookUri, uriType);
         } else {
-          console.error("Current app doesn't support saveNotebookAs");
+          return false;
         }
       },
       hasCodeCell: function(toEval) {
-        if (getCurrentApp().evaluate) {
+        if (getCurrentApp() && getCurrentApp().evaluate) {
           return getCurrentApp().hasCodeCell(toEval);
         } else {
           return false;
         }
       },
       evaluate: function(toEval) {
-        if (getCurrentApp().evaluate) {
+        if (getCurrentApp() && getCurrentApp().evaluate) {
           return getCurrentApp().evaluate(toEval);
         } else {
-          console.error("Current app doesn't support evaluate");
+          return false;
         }
       },
       evaluateRoot: function(toEval) {
-        if (getCurrentApp().evaluateRoot) {
+        if (getCurrentApp() && getCurrentApp().evaluateRoot) {
           return getCurrentApp().evaluateRoot(toEval);
         } else {
-          console.error("Current app doesn't support evaluateRoot");
+          return false;
         }
       },
       evaluateCode: function(evaluator, code) {
-        if (getCurrentApp().evaluateCode) {
+        if (getCurrentApp() && getCurrentApp().evaluateCode) {
           return getCurrentApp().evaluateCode(evaluator, code);
         } else {
-          console.error("Current app doesn't support evaluateCode");
+          return false;
         }
       },
       getEvaluatorMenuItems: function() {
-        if (getCurrentApp().getEvaluatorMenuItems) {
+        if (getCurrentApp() && getCurrentApp().getEvaluatorMenuItems) {
           return getCurrentApp().getEvaluatorMenuItems();
         } else {
-          console.error("Current app doesn't support getEvaluatorMenuItems");
+          return [];
         }
       },
       toggleNotebookLocked: function() {
-        if (getCurrentApp().toggleNotebookLocked) {
+        if (getCurrentApp() && getCurrentApp().toggleNotebookLocked) {
           return getCurrentApp().toggleNotebookLocked();
         } else {
-          console.error("Current app doesn't support toggleNotebookLocked");
+          return false;
         }
       },
       isNotebookLocked: function() {
-        if (getCurrentApp().isNotebookLocked) {
+        if (getCurrentApp() && getCurrentApp().isNotebookLocked) {
           return getCurrentApp().isNotebookLocked();
         } else {
-          console.error("Current app doesn't support isNotebookLocked");
+          return true;
         }
       },
       showAnonymousTrackingDialog: function() {
-        if (getCurrentApp().showAnonymousTrackingDialog) {
+        if (getCurrentApp() && getCurrentApp().showAnonymousTrackingDialog) {
           return getCurrentApp().showAnonymousTrackingDialog();
         } else {
-          console.error("Current app doesn't support showAnonymousTrackingDialog");
+          return false;
         }
       },
       showStatus: function(message, nodigest) {
-        if (getCurrentApp().showStatus) {
+        if (getCurrentApp() && getCurrentApp().showStatus) {
           return getCurrentApp().showStatus(message, nodigest);
         } else {
-          console.error("Current app doesn't support showStatus");
+          return false;
         }
       },
       updateStatus: function() {
-        if (getCurrentApp().updateStatus) {
+        if (getCurrentApp() && getCurrentApp().updateStatus) {
           return getCurrentApp().updateStatus();
         } else {
-          console.error("Current app doesn't support updateStatus");
+          return false;
         }
       },
       getStatus: function() {
-        if (getCurrentApp().getStatus) {
+        if (getCurrentApp() && getCurrentApp().getStatus) {
           return getCurrentApp().getStatus();
         } else {
-          console.error("Current app doesn't support getStatus");
+          return false;
         }
       },
       clearStatus: function(message, nodigest) {
-        if (getCurrentApp().clearStatus) {
+        if (getCurrentApp() && getCurrentApp().clearStatus) {
           return getCurrentApp().clearStatus(message, nodigest);
         } else {
-          console.error("Current app doesn't support clearStatus");
+          return false;
         }
       },
       showTransientStatus: function(message, nodigest) {
-        if (getCurrentApp().showTransientStatus) {
+        if (getCurrentApp() && getCurrentApp().showTransientStatus) {
           return getCurrentApp().showTransientStatus(message, nodigest);
         } else {
-          console.error("Current app doesn't support showTransientStatus");
+          return false;
         }
       },
       getEvaluators: function() {
-        if (getCurrentApp().getEvaluators) {
+        if (getCurrentApp() && getCurrentApp().getEvaluators) {
           return getCurrentApp().getEvaluators();
         } else {
-          console.error("Current app doesn't support getEvaluators");
+          return [];
         }
       },
       getCodeCells: function(filter) {
-        if (getCurrentApp().getCodeCells) {
+        if (getCurrentApp() && getCurrentApp().getCodeCells) {
           return getCurrentApp().getCodeCells(filter);
         } else {
-          console.error("Current app doesn't support getCodeCells");
+          return [];
         }
       },
       setCodeCellBody: function(name, code) {
-        if (getCurrentApp().setCodeCellBody) {
+        if (getCurrentApp() && getCurrentApp().setCodeCellBody) {
           return getCurrentApp().setCodeCellBody(name,code);
         } else {
-          console.error("Current app doesn't support setCodeCellBody");
+          return false;
         }
       },
       setCodeCellEvaluator: function(name, evaluator) {
-        if (getCurrentApp().setCodeCellEvaluator) {
+        if (getCurrentApp() && getCurrentApp().setCodeCellEvaluator) {
           return getCurrentApp().setCodeCellEvaluator(name, evaluator);
         } else {
-          console.error("Current app doesn't support setCodeCellEvaluator");
+          return false;
         }
       },
       setCodeCellTags: function(name, tags) {
-        if (getCurrentApp().setCodeCellTags) {
+        if (getCurrentApp() && getCurrentApp().setCodeCellTags) {
           return getCurrentApp().setCodeCellTags(name, tags);
         } else {
-          console.error("Current app doesn't support setCodeCellTags");
+          return false;
         }
       },
       // bk-notebook

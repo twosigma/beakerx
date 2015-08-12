@@ -6630,20 +6630,20 @@
 })();
 
 /*
-*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
-*
-*  Licensed under the Apache License, Version 2.0 (the "License");
-*  you may not use this file except in compliance with the License.
-*  You may obtain a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*  Unless required by applicable law or agreed to in writing, software
-*  distributed under the License is distributed on an "AS IS" BASIS,
-*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*  See the License for the specific language governing permissions and
-*  limitations under the License.
-*/
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 
 (function() {
   'use strict';
@@ -6669,27 +6669,18 @@
       this.axisMarginValL = 0;
       this.axisMarginValR = 0;
     };
-    var dateIntws = [
-      // milliseconds
-      1, 5, 10, 50, 100, 500,
-      // 1, 5, 10, 30, 60 seconds
-      1000, 5000, 10000, 30000, 60000,
-      // 5, 10, 30, 60 minutes
-      300000, 600000, 1800000, 3600000,
-      // 3, 6, 12, 24 hours
-      3600000 * 3, 3600000 * 6, 3600000 * 12, 3600000 * 24,
-      // 7, 30, 90, 180, 360 days
-      86400000 * 7, 86400000 * 30, 86400000 * 90, 86400000 * 180, 86400000 * 360,
-      // 5, 10, 25, 50, 100 years
-      31104000000 * 5, 31104000000 * 10, 31104000000 * 25, 31104000000 * 50, 31104000000 * 100
-    ];
-    var numIntws = [], numFixs = [];
-    var bs = 1E-6;
+
+    var SECOND = 1000;
+    var MINUTE = 1000 * 60;
+    var HOUR = 1000 * 60 * 60;
+    var DAY = 1000 * 60 * 60 * 24;
+    var MONTH = 1000 * 60 * 60 * 24 * 30;
+    var YEAR = 1000 * 60 * 60 * 24 * 365;
+
+    var dateIntws = [], numIntws = [], numFixs = [];
     for (var i = 0; i < 18; i++) {
       var f = Math.max(6 - i, 0);
-      numIntws = numIntws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs]);  // generate 1s, 5s
       numFixs = numFixs.concat([f, i <= 6 ? f + 1 : f, f]);
-      bs *= 10;
     }
 
     PlotAxis.prototype.dateIntws = dateIntws;
@@ -6748,54 +6739,130 @@
       var diff = mindiff;
       var i = 0;
 
-      var calcW = function (i) {
+      var calcW = function (i,axisType) {
         if (i >= intws.length) {
-          if (PlotAxis.prototype.axisType === "time") {
-            intws = intws.push(intws[intws.length - 1] * 2);
+          var prev = intws[intws.length - 1];
+
+          if (axisType === "time") {
+            if (i === 0) {
+              intws.push(1);
+              intws.push(5);
+            } else {
+              if (prev < SECOND) {
+                intws.push(prev + 5);
+              } else if (prev === SECOND) {
+                intws.push(prev + 4000);
+              } else if (prev < MINUTE) {
+                intws.push(prev + 5000);
+              } else if (prev === MINUTE) {
+                intws.push(prev + MINUTE * 4);
+              } else if (prev < HOUR) {
+                intws.push(prev + MINUTE * 5);
+              }else if (prev < DAY) {
+                intws.push(prev + HOUR);
+              } else if (prev < MONTH) {
+                intws.push(prev + DAY);
+              } else if (prev < YEAR) {
+                intws.push(prev + DAY * 5);
+              } else {
+                intws.push(prev + YEAR);
+              }
+            }
           } else {
-            var bs = (intws[intws.length - 1] / 0.5) * 10;
-            intws = intws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs])
+            var bs = (i === 0) ? 1E-6 : (prev / 5.0) * 10;
+            intws = intws.concat([
+              1.0 * bs,
+              2.5 * bs,
+              5.0 * bs
+            ]);
           }
         }
         return intws[i];
       };
 
-      var calcF = function (i) {
+      var calcF = function (i, axisType) {
         if (i >= fixs.length) {
-          if (PlotAxis.prototype.axisType !== "time") {
-            var f = Math.max(6 - i, 0);
-            fixs = fixs.concat([f, i <= 6 ? f + 1 : f, f]);
-          }
+          return 0;
         }
         return fixs[i];
       };
 
       while (diff === mindiff) {
-        var nowcount = span / calcW(i);
+        w = calcW(i, this.axisType);
+        f = calcF(i, this.axisType);
+
+        var nowcount = span / w;
         diff = Math.abs(nowcount - count);
         if (diff < mindiff) {
-          w = calcW(i);
-          f = calcF(i);
           mindiff = diff;
         }
         i++;
       }
 
+
       this.axisStep = w;
       this.axisFixed = f;
       var val = Math.ceil(this.getValue(pl) / w) * w,
-          valr = this.getValue(pr);
-      var lines = [],
-          labels = [];
-      while(val < valr) {
+        valr = this.getValue(pr);
+
+      var lines, labels;
+
+      lines = this.calcLines(val, valr, w);
+      labels = this.calcLabels(
+        lines,
+        (this.axisValSpan - (this.axisMarginValL + this.axisMarginValR)) * this.axisPctSpan,
+        this.axisType
+      );
+
+      this.axisGridlines = lines;
+      this.axisGridlineLabels = labels;
+
+
+    };
+
+    PlotAxis.prototype.calcLines = function (val, valr, w) {
+      var lines = [];
+
+      while (val < valr) {
         var pct = this.getPercent(val);
-        labels.push(this.getString(pct));
         lines.push(pct);
         val += w;
       }
-      this.axisGridlines = lines;
-      this.axisGridlineLabels = labels;
+
+      return lines;
     };
+
+    PlotAxis.prototype.calcLabels = function (lines, span, axisType) {
+
+      var labels = [];
+
+      for (var i = 0; i < lines.length; i++) {
+        var pct = lines[i];
+        labels.push(this.getString(pct, span));
+      }
+
+      if (span > SECOND && axisType === "time" && labels.length != _.uniq(labels).length) {
+        if (span <= MINUTE) {
+          span = SECOND - 1;
+        } else if (span <= HOUR) {
+          span = MINUTE - 1;
+        } else if (span <= DAY) {
+          span = HOUR - 1;
+        } else if (span <= MONTH) {
+          span = DAY - 1;
+        } else if (span <= YEAR) {
+          span = MONTH - 1;
+        } else {
+          span = YEAR - 1;
+        }
+
+        labels = this.calcLabels(lines, span, axisType);
+      }
+
+      return labels;
+
+    };
+
     PlotAxis.prototype.getGridlines = function() { return _.without(this.axisGridlines); };
     PlotAxis.prototype.getGridlineLabels = function() { return _.without(this.axisGridlineLabels); };
     PlotAxis.prototype.getPercent = function(val) {
@@ -6808,7 +6875,9 @@
       if (pct > 1) { pct = 1; }
       return this.axisValSpan * pct + this.axisValL;
     };
-    PlotAxis.prototype.getString = function(pct) {
+
+
+    PlotAxis.prototype.getString = function(pct, span) {
       if (this.axisType != "time" && this.axisType != "nanotime") {
         if (this.axisType === "log") {
           return "" + this.axisBase + "^" + this.getValue(pct).toFixed(this.axisFixed);
@@ -6817,7 +6886,7 @@
         }
       }
       var val = this.getValue(pct);
-      var span = (this.axisValSpan - (this.axisMarginValL + this.axisMarginValR)) * this.axisPctSpan;
+
 
       var d, ret = "";
       if (this.axisType === "time") {
@@ -6833,36 +6902,36 @@
         while (str.length < len) str = "0" + str;
         return str;
       };
-      if (span <= 1000) {
+      if (span <= SECOND) {
         ret = val + "  ";
         ret = moment(d).tz(this.axisTimezone).format(".SSS") + ( (d - Math.floor(d)).toFixed(this.axisFixed));
-      } else if (span <= 1000 * 60) {
+      } else if (span <= MINUTE) {
         ret = moment(d).tz(this.axisTimezone).format("mm:ss.SSS");
-      } else if (span <= 1000 * 60 * 60) {
+      } else if (span <= HOUR) {
         ret = moment(d).tz(this.axisTimezone).format("HH:mm:ss");
-      } else if (span <= 1000 * 60 * 60 * 24) {
+      } else if (span <= DAY) {
         ret = moment(d).tz(this.axisTimezone).format("MMM DD ddd, HH:mm");
-      } else if (span <= 1000 * 60 * 60 * 24 * 30) {
+      } else if (span <= MONTH) {
         ret = moment(d).tz(this.axisTimezone).format("MMM DD ddd");
-      } else if (span <= 1000 * 60 * 60 * 24 * 365) {
+      } else if (span <= YEAR) {
         ret = moment(d).tz(this.axisTimezone).format("YYYY MMM");
       } else {
         ret = moment(d).tz(this.axisTimezone).format("YYYY");
       }
 
       /*
-      // Nanoplot TODO
-      if (this.axisType === "nanotime"  && span < 1000000) {
-        var digits = bval.mod(1000000000).toFixed(0);
-        if (span < 1000) {
-          ret += "." + padStr(Math.floor(digits / 1), 9);
-        } else if (span < 1000000) {
-          ret += "." + padStr(Math.floor(digits / 1000), 6);
-        } else {
-          ret += "." + padStr(Math.floor(digits / 1000000), 3);
-        }
-      }
-      */
+       // Nanoplot TODO
+       if (this.axisType === "nanotime"  && span < 1000000) {
+       var digits = bval.mod(1000000000).toFixed(0);
+       if (span < 1000) {
+       ret += "." + padStr(Math.floor(digits / 1), 9);
+       } else if (span < 1000000) {
+       ret += "." + padStr(Math.floor(digits / 1000), 6);
+       } else {
+       ret += "." + padStr(Math.floor(digits / 1000000), 3);
+       }
+       }
+       */
       return ret;
     };
     return PlotAxis;
@@ -7723,6 +7792,8 @@
             yAxisR : model.rangeAxes.length > 1 ? { label : model.rangeAxes[1].label } : null,
             showLegend : model.show_legend != null ? model.show_legend : false,
             legendPosition : model.legend_position != null ? model.legend_position : {position: "TOP_RIGHT"},
+            legendLayout : model.legend_layout != null ? model.legend_layout : "VERTICAL",
+            omitCheckboxes : model.omit_checkboxes,
             useToolTip : model.use_tool_tip != null ? model.use_tool_tip : false,
             plotSize : {
               "width" : model.init_width != null ? model.init_width : 1200,
@@ -7735,6 +7806,8 @@
           newmodel = {
             showLegend : model.showLegend != null ? model.showLegend : false,
             legendPosition : model.legendPosition != null ? model.legendPosition : {position: "TOP_RIGHT"},
+            legendLayout : model.legendLayout != null ? model.legendLayout : "VERTICAL",
+            omitCheckboxes : model.omitCheckboxes,
             useToolTip : model.useToolTip != null ? model.useToolTip : false,
             xAxis : model.xAxis != null ? model.xAxis : {},
             yAxis : model.yAxis != null ? model.yAxis : {},
@@ -7971,6 +8044,7 @@
     return {
       template :
           "<div id='plotTitle' class='plot-title'></div>" +
+          "<div id='plotLegendContainer' class='plot-plotlegendcontainer' oncontextmenu='return false;'>" +
           "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
           "<svg>"  +
           "<defs>" +
@@ -7983,6 +8057,7 @@
           "<g id='maing'></g>" +
           "<g id='labelg'></g> " +
           "</svg>" +
+          "</div>" +
           "</div>",
       controller : function($scope) {
         $scope.getShareMenuPlugin = function() {
@@ -8029,17 +8104,18 @@
             maxWidth : width
           });
         };
-        
+
         scope.initLayout = function() {
           var model = scope.stdmodel;
 
           // hook container to use jquery interaction
           scope.container = d3.select(element[0]).select("#plotContainer");
           scope.jqcontainer = element.find("#plotContainer");
+          scope.jqlegendcontainer = element.find("#plotLegendContainer");
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
 
-          var plotSize = scope.plotSize;
+          var plotSize = model.plotSize;
           scope.jqcontainer.css(plotSize);
           scope.jqsvg.css(plotSize);
 
@@ -8080,8 +8156,8 @@
             y : 10
           };
           scope.intervalStepHint = {
-            x : 150,
-            y : 75
+            x : 105,
+            y : 50
           };
           scope.numIntervals = {
             x: parseInt(plotSize.width) / scope.intervalStepHint.x,
@@ -8123,6 +8199,11 @@
             scope.legendDone = false;
             scope.legendResetPosition = true;
             scope.update();
+          });
+          scope.$watch('model.isShowOutput()', function(prev, next) {
+            if (prev !== next) {
+              scope.update();
+            }
           });
         };
 
@@ -8591,42 +8672,35 @@
           return mergedLines;
         };
 
-        scope.getLegendPosition = function(legendPosition, legend) {
+        scope.getLegendPosition = function(legendPosition, isHorizontal) {
           var margin = scope.layout.legendMargin,
-              legendWidth = legend.width(),
-              legendWidthWithMargin = legendWidth + margin,
               containerWidth = scope.jqcontainer.width(),
               containerWidthWithMargin = containerWidth + margin,
+              legend = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer"),
               legendHeight = legend.height(),
               legendHeightWithMargin = legendHeight + margin,
-              containerHeight = scope.jqcontainer.height(),
-              containerHeightWithMargin = containerHeight + margin,
-              verticalCenter = containerHeight / 2 - legendHeight / 2,
-              horizontalCenter = containerWidth / 2 - legendWidth / 2;
-          var defaultPosition = {
-            "left": containerWidthWithMargin,
-            "top": 0
-          };
-          if (!legendPosition) { return defaultPosition; }
+              verticalCenter = scope.jqcontainer.height() / 2 - legendHeight / 2,
+              horizontalCenter = containerWidth / 2 - legend.width() / 2;
+          if (!legendPosition) { return scope.getLegendPosition("TOP_RIGHT", isHorizontal); }
           var position;
           if(legendPosition.position){
             switch(legendPosition.position){
               case "TOP":
                 position = {
                   "left": horizontalCenter,
-                  "top": -(legendHeightWithMargin)
+                  "top": -legendHeightWithMargin
                 };
                 break;
               case "LEFT":
                 position = {
-                  "left": -(legendWidthWithMargin),
+                  "left": 0,
                   "top": verticalCenter
                 };
                 break;
               case "BOTTOM":
                 position = {
                   "left": horizontalCenter,
-                  "bottom": -(legendHeightWithMargin)
+                  "bottom": -legendHeightWithMargin
                 };
                 break;
               case "RIGHT":
@@ -8635,18 +8709,70 @@
                   "bottom": verticalCenter
                 };
                 break;
+              default:
+                position = scope.getLegendPositionByLayout(legendPosition, isHorizontal);
+            }
+          }else{
+            position = {
+              "left": legendPosition.x,
+              "top": legendPosition.y
+            };
+          }
+          return position;
+        };
+
+        scope.getLegendPositionByLayout = function(legendPosition, isHorizontal){
+          var legend = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer"),
+              margin = scope.layout.legendMargin,
+              legendWidth = legend.width(),
+              containerWidth = scope.jqcontainer.width(),
+              containerWidthWithMargin = containerWidth + margin,
+              legendHeight = legend.height(),
+              legendHeightWithMargin = legendHeight + margin, position;
+          if(isHorizontal){
+            switch(legendPosition.position){
               case "TOP_LEFT":
                 position = {
-                  "left": -(legendWidthWithMargin),
+                  "left": 0,
+                  "top": -legendHeightWithMargin
+                };
+                break;
+              case "TOP_RIGHT":
+                position = {
+                  "left": containerWidth - legendWidth,
+                  "top": -legendHeightWithMargin
+                };
+                break;
+              case "BOTTOM_LEFT":
+                position = {
+                  "left": 0,
+                  "bottom": -legendHeightWithMargin
+                };
+                break;
+              case "BOTTOM_RIGHT":
+                position = {
+                  "left": containerWidth - legendWidth,
+                  "bottom": -legendHeightWithMargin
+                };
+                break;
+            }
+          }else{
+            switch(legendPosition.position){
+              case "TOP_LEFT":
+                position = {
+                  "left": 0,
                   "top": 0
                 };
                 break;
               case "TOP_RIGHT":
-                position = defaultPosition;
+                position = {
+                  "left": containerWidthWithMargin,
+                  "top": 0
+                };
                 break;
               case "BOTTOM_LEFT":
                 position = {
-                  "left": -(legendWidthWithMargin),
+                  "left": 0,
                   "bottom": 0
                 };
                 break;
@@ -8657,11 +8783,6 @@
                 };
                 break;
             }
-          }else{
-            position = {
-              "left": legendPosition.x,
-              "top": legendPosition.y
-            };
           }
           return position;
         };
@@ -8673,11 +8794,12 @@
 
           var data = scope.stdmodel.data;
           var margin = scope.layout.legendMargin;
+          var isHorizontal = scope.stdmodel.legendLayout === "HORIZONTAL";
 
-          scope.jqcontainer.find(".plot-legendscrollablecontainer").remove();
+          scope.jqlegendcontainer.find(".plot-legendscrollablecontainer").remove();
 
           scope.legendDone = true;
-          var legendScrollableContainer = $("<div></div>").appendTo(scope.jqcontainer)
+          var legendScrollableContainer = $("<div></div>").appendTo(scope.jqlegendcontainer)
             .attr("class", "plot-legendscrollablecontainer")
             .draggable({
               start: function( event, ui ) {
@@ -8694,19 +8816,27 @@
               handle : "#legendDraggableContainer"
             })
             .css("max-height", scope.jqsvg.height());
+          if(isHorizontal){
+            legendScrollableContainer.css("max-width", scope.jqcontainer.width());
+          }
 
           var legendDraggableContainer = $("<div></div>").appendTo(legendScrollableContainer)
             .attr("id", "legendDraggableContainer")
             .attr("class", "plot-legenddraggablecontainer");
 
-          var legend = $("<table></table>").appendTo(legendDraggableContainer)
+          var legendUnit = isHorizontal ? "<div></div>" : "<table></table>",
+              legendLineUnit = isHorizontal ? "<div class='plot-legenditeminline'></div>" : "<tr></tr>",
+              legendLineItemUnit = isHorizontal ? "<span></span>" : "<td></td>";
+          var legend = $(legendUnit).appendTo(legendDraggableContainer)
             .attr("id", "legends");
 
           scope.legendMergedLines = scope.prepareMergedLegendData();
 
-          if (Object.keys(scope.legendMergedLines).length > 1) {  // skip "All" check when there is only one line
-            var unit = $("<tr></tr>").appendTo(legend)
-              .attr("id", "legend_all");
+          if (!scope.stdmodel.omitCheckboxes &&
+            Object.keys(scope.legendMergedLines).length > 1) {  // skip "All" check when there is only one line
+            var unit = $(legendLineUnit).appendTo(legend)
+              .attr("id", "legend_all")
+              .addClass("plot-legendline");
             $("<input type='checkbox'></input>")
               .attr("id", "legendcheck_all")
               .attr("class", "plot-legendcheckbox")
@@ -8714,35 +8844,38 @@
               .click(function(e) {
                 return scope.toggleVisibility(e);
               })
-              .appendTo($("<td></td>").appendTo(unit));
+              .appendTo($(legendLineItemUnit).appendTo(unit));
             $("<span></span>")
               .attr("id", "legendbox_all")
               .attr("class", "plot-legendbox")
               .css("background-color", "none")
-              .appendTo($("<td></td>").appendTo(unit));
+              .appendTo($(legendLineItemUnit).appendTo(unit));
             $("<span></span>")
               .attr("id", "legendtext_all")
               .attr("class", "plot-label")
               .text("All")
-              .appendTo($("<td></td>").appendTo(unit));
-            $("<td></td>").appendTo(unit);
+              .appendTo($(legendLineItemUnit).appendTo(unit));
+            $(legendLineItemUnit).appendTo(unit);
           }
 
           for (var id in scope.legendMergedLines) {
             if (!scope.legendMergedLines.hasOwnProperty(id)) { continue; }
             var line = scope.legendMergedLines[id];
             if (line.legend == null || line.legend === "") { continue; }
-            var unit = $("<tr></tr>").appendTo(legend)
-              .attr("id", "legend_" + id);
-            // checkbox
-            $("<input type='checkbox'></input>")
-              .attr("id", "legendcheck_" + id)
-              .attr("class", "plot-legendcheckbox")
-              .prop("checked", line.showItem)
-              .click(function(e) {
-                return scope.toggleVisibility(e);
-              })
-              .appendTo($("<td></td>").appendTo(unit));
+            var unit = $(legendLineUnit).appendTo(legend)
+              .attr("id", "legend_" + id)
+              .addClass("plot-legendline");
+            if(!scope.stdmodel.omitCheckboxes){
+              // checkbox
+              $("<input type='checkbox'></input>")
+                .attr("id", "legendcheck_" + id)
+                .attr("class", "plot-legendcheckbox")
+                .prop("checked", line.showItem)
+                .click(function(e) {
+                  return scope.toggleVisibility(e);
+                })
+                .appendTo($(legendLineItemUnit).appendTo(unit));
+            }
 
             var clr = plotUtils.createColor(line.color, line.color_opacity),
                 st_clr = plotUtils.createColor(line.stroke, line.stroke_opacity);
@@ -8757,13 +8890,13 @@
               .css("border",
                 line.stroke != null ? "1px " + sty + st_clr :
                 (line.color != null ? "1px " + sty + clr : "1px dotted gray"))
-              .appendTo($("<td></td>").appendTo(unit));
+              .appendTo($(legendLineItemUnit).appendTo(unit));
             // legend text
-            $("<td></td>").appendTo(unit)
+            $(legendLineItemUnit).appendTo(unit)
               .attr("id", "legendtext_" + id)
               .attr("class", "plot-label")
               .text(line.legend);
-            var lodhint = $("<td></td>").appendTo(unit)
+            var lodhint = $(legendLineItemUnit).appendTo(unit)
                 .attr("id", "hint_" + id);
 
             if (line.isLodItem === true) {
@@ -8804,12 +8937,12 @@
                 var dataIds = e.data.dataIds;
                 for (var j = 0; j < dataIds.length; j++) {
                   var dat = scope.stdmodel.data[dataIds[j]];
-                if (dat.lodType === "off") {
-                  dat.toggleLod(scope);
-                } else {
-                  dat.switchLodType(scope);
-                }
-                dat.zoomLevelChanged(scope);
+                  if (dat.lodType === "off") {
+                    dat.toggleLod(scope);
+                  } else {
+                    dat.switchLodType(scope);
+                  }
+                  dat.zoomLevelChanged(scope);
                 }
                 scope.update();
                 scope.setMergedLodHint(dataIds, e.data.id);
@@ -8819,24 +8952,25 @@
                 var dataIds = e.data.dataIds;
                 for (var j = 0; j < dataIds.length; j++) {
                   var dat = scope.stdmodel.data[dataIds[j]];
-                if (dat.lodType === "off") return;
-                dat.toggleLodAuto(scope);
+                  if (dat.lodType === "off") return;
+                  dat.toggleLodAuto(scope);
                 }
                 scope.update();
                 scope.setMergedLodHint(dataIds, e.data.id);
               });
             } else {
-              $("<td></td>").appendTo(unit);
+              $(legendLineItemUnit).appendTo(unit);
             }
           }
 
           if (scope.legendResetPosition === true) {
-            scope.legendPosition = scope.getLegendPosition(scope.stdmodel.legendPosition, legendScrollableContainer);
+            scope.legendPosition = scope.getLegendPosition(scope.stdmodel.legendPosition, isHorizontal);
             scope.legendResetPosition = false;
           }
           legendScrollableContainer.css(scope.legendPosition);
 
-          if(["LEFT", "TOP_LEFT", "BOTTOM_LEFT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
+          //increase plot margins if legend has predefined values
+          if(scope.stdmodel.legendPosition.position === "LEFT") {
             scope.jqcontainer.css("margin-left", legendScrollableContainer.width() + margin);
           }
           if(scope.stdmodel.legendPosition.position === "TOP") {
@@ -8844,6 +8978,18 @@
           }
           if(scope.stdmodel.legendPosition.position === "BOTTOM") {
             scope.jqcontainer.css("margin-bottom", legendScrollableContainer.height() + margin);
+          }
+          if(isHorizontal){
+            if(["TOP_LEFT", "TOP_RIGHT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
+              scope.jqcontainer.css("margin-top", legendScrollableContainer.height() + margin);
+            }
+            if(["BOTTOM_LEFT", "BOTTOM_RIGHT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
+              scope.jqcontainer.css("margin-bottom", legendScrollableContainer.height() + margin);
+            }
+          }else{
+            if(["TOP_LEFT", "BOTTOM_LEFT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
+              scope.jqcontainer.css("margin-left", legendScrollableContainer.width() + margin);
+            }
           }
         };
 
@@ -8874,7 +9020,7 @@
         };
         scope.setMergedLodHint = function(lodDataIds, legendLineId) {
           var lodInfo = scope.getMergedLodInfo(lodDataIds);
-          var legend = scope.jqcontainer.find("#legends");
+          var legend = scope.jqlegendcontainer.find("#legends");
           var hint = legend.find("#hint_" + legendLineId);
           var light = hint.find("#light"),
               type = hint.find("#type"),
@@ -8910,15 +9056,15 @@
                     dat.clearTips(scope);
                     if (dat.isLodItem === true) {
                       dat.lodOn = false;
+                    }
+                  }
                 }
-              }
-            }
                 if (line.showItem === false) {
                   if (line.isLodItem === true) {
                     scope.setMergedLodHint(line.lodDataIds, lineId);
                   }
                 }
-                scope.jqcontainer.find("#legendcheck_" + lineId).prop("checked", line.showItem);
+                scope.jqlegendcontainer.find("#legendcheck_" + lineId).prop("checked", line.showItem);
               }
             }
 
@@ -9343,7 +9489,7 @@
           state.plotSize = scope.plotSize;
           state.zoomed = scope.zoomed;
           state.focus = scope.focus;
-          
+
           state.lodOn = [];
           state.lodType = [];
           state.lodAuto = [];
@@ -9405,7 +9551,7 @@
           scope.standardizeData();
           // init flags
           scope.initFlags();
-          
+
           // see if previous state can be applied
           scope.focus = {};
           scope.tips = {};
@@ -9438,7 +9584,7 @@
           });
           scope.enableZoom();
           scope.calcRange();
-          
+
           // init copies focus to defaultFocus, called only once
           _(scope.focus).extend(scope.defaultFocus);
 
@@ -9450,6 +9596,10 @@
         };
 
         scope.update = function(first) {
+          if (scope.model.isShowOutput() === false) {
+            return;
+          }
+
           scope.resetSvg();
           scope.calcGridlines();
           scope.renderGridlines();
@@ -9522,7 +9672,7 @@
         scope.$watch('getCellModel()', function() {
           scope.init();
         });
-        
+
         scope.$on('$destroy', function() {
           scope.setDumpState(scope.dumpState());
           $(window).off('resize',scope.resizeFunction);
@@ -10660,6 +10810,17 @@
                   maxMargin = _.max([value, maxMargin]);
                 });
                 plots.css("margin-left", maxMargin);
+
+                //increase margin if two next plots have bottom and top legends
+                var plotsCount = plots.size();
+                plots.each(function(index) {
+                  if(index + 1 < plotsCount){
+                    var bottomMargin = parseFloat($(this).css('margin-bottom'));
+                    var nextPlotTopMargin = parseFloat($(plots[index + 1]).css('margin-top'));
+                    $(this).css("margin-bottom", bottomMargin + nextPlotTopMargin);
+                    $(plots[index + 1]).css('margin-top', 0);
+                  }
+                });
               },
               getWidth : function() {
                 return scope.width;

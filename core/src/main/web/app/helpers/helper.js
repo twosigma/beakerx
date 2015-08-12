@@ -35,10 +35,10 @@
       return bkCoreManager.getBkApp();
     };
     var getBkNotebookWidget = function() {
-      if (getCurrentApp().getBkNotebookWidget) {
+      if (getCurrentApp() && getCurrentApp().getBkNotebookWidget) {
         return getCurrentApp().getBkNotebookWidget();
       } else {
-        console.error('Current app doesn\'t support getBkNotebookWidget');
+        return undefined;
       }
     };
 

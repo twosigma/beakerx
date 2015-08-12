@@ -1461,7 +1461,7 @@
 
         scope.standardizeData = function() {
           var model = scope.model.getCellModel();
-          scope.stdmodel = plotFormatter.standardizeModel(model);
+          scope.stdmodel = plotFormatter.standardizeModel(model, scope.prefs);
         };
 
         scope.dumpState = function() {
@@ -1528,7 +1528,7 @@
         };
 
         scope.init = function() {
-
+          
           // first standardize data
           scope.standardizeData();
           // init flags

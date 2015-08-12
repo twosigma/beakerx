@@ -19,7 +19,7 @@
   'use strict';
   var retfunc = function(bkUtils, plotFormatter) {
     return {
-      standardizeModel : function(model) {
+      standardizeModel : function(model, prefs) {
         var newmodel = {
           title : model.title,
           plots : []
@@ -75,7 +75,7 @@
           if (plotmodel.useToolTip == null) { plotmodel.useToolTip = useToolTip; }
 
           plotmodel.type = plotType;
-          var newplotmodel = plotFormatter.standardizeModel(plotmodel);
+          var newplotmodel = plotFormatter.standardizeModel(plotmodel, prefs);
 
           if (i < plots.length - 1) {  // turn off x coordinate labels
             newplotmodel.xAxis.axisLabel = null;

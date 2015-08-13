@@ -1651,7 +1651,7 @@
         };
 
         scope.update = function(first) {
-          if (scope.model.isShowOutput() === false) {
+          if (scope.model.isShowOutput !== undefined && scope.model.isShowOutput() === false) {
             return;
           }
 
@@ -1710,7 +1710,7 @@
         };
 
         var watchCellSize = function () {
-          if (scope.model.isShowOutput() === true) {
+          if (scope.model.isShowOutput !== undefined && scope.model.isShowOutput() === true) {
             scope.plotSize.width = scope.getCellWidth();
             scope.plotSize.height = scope.getCellHeight();
           }

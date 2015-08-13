@@ -184,7 +184,12 @@
       );
 
       this.axisGridlines = lines;
-      this.axisGridlineLabels = labels;
+      this.axisGridlineLabels = labels.labels;
+      if (labels.common !== ''){
+        this.axisLabelWithCommon = this.axisLabel ? this.axisLabel + ' ' + labels.common : labels.common;
+      }else{
+        this.axisLabelWithCommon = this.axisLabel;
+      }
 
 
     };
@@ -225,11 +230,47 @@
           span = YEAR - 1;
         }
 
-        labels = this.calcLabels(lines, span, axisType);
+        return this.calcLabels(lines, span, axisType);
       }
 
-      return labels;
+      var calcCommonPart = function () {
+        var common = '';
 
+        if (axisType === "time" && span >= HOUR) {
+          if (span <= DAY) {
+            common = labels[0].substring(0, 16);
+          } else if (span <= MONTH) {
+            common = labels[0].substring(0, 8);
+          } else if (span <= YEAR) {
+            common = labels[0].substring(0, 4);
+          }
+
+          if (common.length > 1) {
+
+            for (i = 1; i < labels.length; i++) {
+              var label = labels[i];
+              if (common != label.substring(0, common.length)) {
+                common = '';
+                break;
+              }
+            }
+          }
+
+          if (common.length > 1) {
+            for (i = 0; i < labels.length; i++) {
+              labels[i] = labels[i].replace(common, '').trim();
+            }
+          }
+          common = common.replace(',', '').trim();
+        }
+
+        return common;
+      };
+
+      return {
+          common : calcCommonPart(),
+          labels : labels
+        };
     };
 
     PlotAxis.prototype.getGridlines = function() { return _.without(this.axisGridlines); };
@@ -275,17 +316,17 @@
         ret = val + "  ";
         ret = moment(d).tz(this.axisTimezone).format(".SSS") + ( (d - Math.floor(d)).toFixed(this.axisFixed));
       } else if (span <= MINUTE) {
-        ret = moment(d).tz(this.axisTimezone).format("mm:ss.SSS");
+        ret = moment(d).tz(this.axisTimezone).format("mm:ss.SSS"); //9
       } else if (span <= HOUR) {
-        ret = moment(d).tz(this.axisTimezone).format("HH:mm:ss");
+        ret = moment(d).tz(this.axisTimezone).format("HH:mm:ss"); //8
       } else if (span <= DAY) {
-        ret = moment(d).tz(this.axisTimezone).format("MMM DD ddd, HH:mm");
+        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD ddd, HH:mm"); //22
       } else if (span <= MONTH) {
-        ret = moment(d).tz(this.axisTimezone).format("MMM DD ddd");
+        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD ddd"); //15
       } else if (span <= YEAR) {
-        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM");
+        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM"); //8
       } else {
-        ret = moment(d).tz(this.axisTimezone).format("YYYY");
+        ret = moment(d).tz(this.axisTimezone).format("YYYY"); //4
       }
 
       /*

@@ -77,6 +77,8 @@ describe('notebook', function() {
       beakerPO.openFile(path.join(__dirname, '../', 'notebooks/jvm-autotranslation-test.bkr'));
       beakerPO.waitForInstantiationCells();
 
+      beakerPO.waitForCellOutput();
+
       return beakerPO.getCellOutput().getText()
       .then(function(output) {
         expect(output).toEqual('OK');

@@ -98,28 +98,28 @@
           name: 'Change Header Level',
           items: [
           {
-            name: 'H1',
+            name: 'Level 1',
             action: function() {
               $scope.cellmodel.level = 1;
               notebookCellOp.reset();
             }
           },
           {
-            name: 'H2',
+            name: 'Level 2',
             action: function() {
               $scope.cellmodel.level = 2;
               notebookCellOp.reset();
             }
           },
           {
-            name: 'H3',
+            name: 'Level 3',
             action: function() {
               $scope.cellmodel.level = 3;
               notebookCellOp.reset();
             }
           },
           {
-            name: 'H4',
+            name: 'Level 4',
             action: function() {
               $scope.cellmodel.level = 4;
               notebookCellOp.reset();

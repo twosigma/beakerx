@@ -900,7 +900,13 @@
             if (line.legend == null || line.legend === "") { continue; }
             var unit = $(legendLineUnit).appendTo(legend)
               .attr("id", "legend_" + id)
-              .addClass("plot-legendline");
+              .addClass("plot-legendline")
+              .mouseenter(function(e){
+                scope.highlightElements($(this)[0].id.split("_")[1], true);
+              })
+              .mouseleave(function(e){
+                scope.highlightElements($(this)[0].id.split("_")[1], false);
+              });
             if(!scope.stdmodel.omitCheckboxes){
               // checkbox
               $("<input type='checkbox'></input>")
@@ -1026,6 +1032,18 @@
             if(["TOP_LEFT", "BOTTOM_LEFT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
               scope.jqcontainer.css("margin-left", legendScrollableContainer.width() + margin);
             }
+          }
+        };
+
+        scope.highlightElements = function(legendId, highlight){
+
+          if(!legendId) { return; }
+
+          var elementsIds = scope.legendMergedLines[legendId].dataIds;
+          for(var i=0; i<elementsIds.length; i++){
+            var id = elementsIds[i];
+            var data = scope.stdmodel.data[id];
+            data.setHighlighted(scope, highlight);
           }
         };
 
@@ -1719,6 +1737,7 @@
           scope.setDumpState(scope.dumpState());
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
+          scope.jqlegendcontainer.find(".plot-legendscrollablecontainer").remove();
         });
       }
     };

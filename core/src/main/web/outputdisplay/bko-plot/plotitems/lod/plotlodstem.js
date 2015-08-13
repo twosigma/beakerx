@@ -105,6 +105,18 @@
       }
     };
 
+    PlotLodStem.prototype.setHighlighted = function(scope, highlighted, gid) {
+      if(gid == null) { gid = ""; }
+      var svg = scope.maing;
+      var props = this.itemProps;
+
+      var groupid = this.id + "_" + gid;
+      var itemsvg = svg.select("#" + this.id);
+
+      itemsvg.select("#" + groupid)
+        .style("stroke-width", plotUtils.getHighlightedSize(props.st_w, highlighted));
+    };
+
     PlotLodStem.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,

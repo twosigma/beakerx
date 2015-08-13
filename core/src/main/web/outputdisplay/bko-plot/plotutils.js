@@ -400,6 +400,10 @@
       useYAxisR : function(model, data){
         var yAxisR = model.yAxisR;
         return yAxisR && (yAxisR.axisLabel === data.yAxis || yAxisR.label === data.yAxis);
+      },
+
+      getHighlightedSize : function(size, highlighted) {
+        return highlighted ? size + 2 : size;
       }
     };
   };

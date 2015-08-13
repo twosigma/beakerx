@@ -25,6 +25,14 @@
     PlotBar.prototype.plotClass = "plot-bar";
     PlotBar.prototype.respClass = "plot-resp";
 
+    PlotBar.prototype.setHighlighted = function(scope, highlighted) {
+      var itemsvg = scope.maing.select("#" + this.id);
+      itemsvg.selectAll("rect")
+        .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
+        .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
+
+    };
+
     PlotBar.prototype.format = function() {
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);

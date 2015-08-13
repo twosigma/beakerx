@@ -123,6 +123,43 @@
       }
     };
 
+    PlotLodPoint.prototype.setHighlighted = function(scope, highlighted, gid) {
+      if(gid == null) {gid = "";}
+      var svg = scope.maing;
+      var shape = this.shape;
+      var tag = this.svgtags[this.shapes.indexOf(shape)];
+
+      var groupid = this.id + "_" + gid;
+      var itemsvg = svg.select("#" + this.id);
+
+      var groupsvg = itemsvg.select("#" + groupid);
+
+      switch (shape) {
+        case "circle":
+          groupsvg.selectAll(tag)
+            .attr("r", function(d) { return plotUtils.getHighlightedSize(d.r, highlighted); });
+          break;
+        case "diamond":
+          groupsvg.selectAll(tag)
+            .attr("points", function(d) {
+              var mapX = scope.data2scrXi, mapY = scope.data2scrYi;
+              var ele = d.ele, x = mapX(ele.x), y = mapY(ele.y),
+                s = plotUtils.getHighlightedSize(ele.size, highlighted);
+              var pstr = "";
+              pstr += (x - s) + "," + (y    ) + " ";
+              pstr += (x    ) + "," + (y - s) + " ";
+              pstr += (x + s) + "," + (y    ) + " ";
+              pstr += (x    ) + "," + (y + s) + " ";
+              return pstr;
+            });
+          break;
+        default:  // rect
+          groupsvg.selectAll(tag)
+            .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
+            .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
+      }
+    };
+
     PlotLodPoint.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,

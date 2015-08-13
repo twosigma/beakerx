@@ -27,6 +27,45 @@
     PlotPoint.prototype.shapes = ["rect", "diamond", "circle"];
     PlotPoint.prototype.svgtags = ["rect", "polygon", "circle"];
 
+    PlotPoint.prototype.setHighlighted = function(scope, highlighted) {
+
+      var svg = scope.maing;
+
+      var itemsvg = svg.select("#" + this.id);
+
+      for (var i = 0; i < this.shapes.length; i++) {
+        var shape = this.shapes[i],
+          tag = this.svgtags[i];
+
+        var shapesvg = itemsvg.select("#" + shape);
+
+        switch (shape) {
+          case "circle":
+            shapesvg.selectAll(tag)
+              .attr("r", function(d) { return plotUtils.getHighlightedSize(d.r, highlighted); });
+            break;
+          case "diamond":
+            shapesvg.selectAll(tag)
+              .attr("points", function(d) {
+                var mapX = scope.data2scrXi, mapY = scope.data2scrYi;
+                var ele = d.ele, x = mapX(ele.x), y = mapY(ele.y),
+                    s = plotUtils.getHighlightedSize(ele.size, highlighted);
+                var pstr = "";
+                pstr += (x - s) + "," + (y    ) + " ";
+                pstr += (x    ) + "," + (y - s) + " ";
+                pstr += (x + s) + "," + (y    ) + " ";
+                pstr += (x    ) + "," + (y + s) + " ";
+                return pstr;
+              });
+            break;
+          default:  // rect
+            shapesvg.selectAll(tag)
+              .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
+              .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
+        }
+      }
+    };
+
     PlotPoint.prototype.format = function() {
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);

@@ -316,17 +316,17 @@
         ret = val + "  ";
         ret = moment(d).tz(this.axisTimezone).format(".SSS") + ( (d - Math.floor(d)).toFixed(this.axisFixed));
       } else if (span <= MINUTE) {
-        ret = moment(d).tz(this.axisTimezone).format("mm:ss.SSS"); //9
+        ret = moment(d).tz(this.axisTimezone).format("mm:ss.SSS");
       } else if (span <= HOUR) {
-        ret = moment(d).tz(this.axisTimezone).format("HH:mm:ss"); //8
+        ret = moment(d).tz(this.axisTimezone).format("HH:mm:ss");
       } else if (span <= DAY) {
-        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD ddd, HH:mm"); //22
+        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD ddd, HH:mm");
       } else if (span <= MONTH) {
-        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD ddd"); //15
+        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD ddd");
       } else if (span <= YEAR) {
-        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM"); //8
+        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM");
       } else {
-        ret = moment(d).tz(this.axisTimezone).format("YYYY"); //4
+        ret = moment(d).tz(this.axisTimezone).format("YYYY");
       }
 
       /*

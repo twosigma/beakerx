@@ -474,7 +474,6 @@
             var deferred = bkUtils.newDeferred();
             var fileSaver = bkCoreManager.getFileSaver(uriType);
             bkSessionManager.dumpDisplayStatus();
-            bkSessionManager.clearEvaluatingCells();
             $timeout(function() {
               var content = bkSessionManager.getSaveData().notebookModelAsString;
               return fileSaver.save(uri, content, true);}, 1).then(function() {
@@ -488,7 +487,6 @@
           var _savePromptIfOverwrite = function(deferred, uri, uriType) {
             var fileSaver = bkCoreManager.getFileSaver(uriType);
             bkSessionManager.dumpDisplayStatus();
-            bkSessionManager.clearEvaluatingCells();
             $timeout(function() {
               var content = bkSessionManager.getSaveData().notebookModelAsString;
               return fileSaver.save(uri, content);
@@ -643,7 +641,6 @@
               var thenable;
               if (bkSessionManager.isSavable()) {
                 bkSessionManager.dumpDisplayStatus();
-                bkSessionManager.clearEvaluatingCells();
                 thenable = $timeout(function() {
                   var saveData = bkSessionManager.getSaveData();
                   var deferred = bkUtils.newDeferred();
@@ -681,7 +678,6 @@
                       uriType: 'file'
                     };
                     bkSessionManager.dumpDisplayStatus();
-                    bkSessionManager.clearEvaluatingCells();
                     var saveData = bkSessionManager.getSaveData();
                     var fileSaver = bkCoreManager.getFileSaver(ret.uriType);
                     var content = saveData.notebookModelAsString;
@@ -1202,7 +1198,6 @@
                 function() {
                   // "Save", save the notebook as a file on the client side
                   bkSessionManager.dumpDisplayStatus();
-                  bkSessionManager.clearEvaluatingCells();
                   $timeout(function() {
                     bkUtils.saveAsClientFile(
                         bkSessionManager.getSaveData().notebookModelAsString,

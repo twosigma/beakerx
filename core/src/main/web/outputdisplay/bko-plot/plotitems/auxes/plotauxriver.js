@@ -75,6 +75,18 @@
       }
     };
 
+    PlotAuxRiver.prototype.setHighlighted = function(scope, highlighted, gid) {
+      if(gid == null) { gid = ""; }
+      var svg = scope.maing;
+      var groupid = this.id + "_" + gid;
+      var itemsvg = svg.select("#" + this.id);
+
+      var groupsvg = itemsvg.select("#" + groupid);
+      groupsvg.selectAll("polygon")
+        .style("stroke-width", function(d) { return plotUtils.getHighlightedSize(d.st_w, highlighted); });
+    };
+
+
     PlotAuxRiver.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,

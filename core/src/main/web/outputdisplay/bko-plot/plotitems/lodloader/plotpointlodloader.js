@@ -148,6 +148,14 @@
       }
     };
 
+    PlotPointLodLoader.prototype.setHighlighted = function(scope, highlighted) {
+      if (this.lodOn === true) {
+        this.lodplotter.setHighlighted(scope, highlighted);
+      } else {
+        this.plotter.setHighlighted(scope, highlighted);
+      }
+    };
+
     PlotPointLodLoader.prototype.getRange = function(){
       return this.plotter.getRange();
     };

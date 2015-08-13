@@ -84,7 +84,9 @@
   stroke-width: 3;
   opacity: .75;
 }
-
+.plot-tick {
+  stroke: #333333;
+}
 
 
 .plot-constline,

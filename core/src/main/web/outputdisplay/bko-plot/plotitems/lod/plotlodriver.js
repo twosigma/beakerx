@@ -125,6 +125,20 @@
       }
     };
 
+    PlotLodRiver.prototype.setHighlighted = function(scope, highlighted, gid) {
+      if(gid == null) {gid = "";}
+      var svg = scope.maing;
+      var props = this.itemProps;
+
+      var groupid = this.id + "_" + gid;
+      var itemsvg = svg.select("#" + this.id);
+
+      var groupsvg = itemsvg.select("#" + groupid);
+
+      groupsvg.select("polygon")
+        .style("stroke-width", plotUtils.getHighlightedSize(props.st_w || 1, highlighted));
+    };
+
     PlotLodRiver.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,

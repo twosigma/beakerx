@@ -25,6 +25,14 @@
     PlotStem.prototype.plotClass = "plot-stem";
     PlotStem.prototype.respClass = "plot-resp";
 
+    PlotStem.prototype.setHighlighted = function(scope, highlighted) {
+      var svg = scope.maing;
+      var props = this.itemProps
+
+      svg.select("#" + this.id)
+          .style("stroke-width", plotUtils.getHighlightedSize(props.st_w, highlighted));
+    };
+
     PlotStem.prototype.format = function() {
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);

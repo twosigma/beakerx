@@ -97,7 +97,7 @@
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
 
-          var plotSize = model.plotSize;
+          var plotSize = scope.plotSize;
           scope.jqcontainer.css(plotSize);
           scope.jqsvg.css(plotSize);
 
@@ -150,6 +150,8 @@
             x : -1,
             y : -1
           };
+
+          scope.gridlineTickLength = 3;
 
           var factor = 2.0;
           if (model.xAxis.axisLabel == null) { factor -= 1.0; }
@@ -483,7 +485,7 @@
             scope.rpipeTexts.push({
               "id" : "xlabel",
               "class" : "plot-xylabel",
-              "text" : model.xAxis.axisLabel,
+              "text" : model.xAxis.axisLabelWithCommon,
               "x" : lMargin + (scope.jqsvg.width() - lMargin) / 2,
               "y" : scope.jqsvg.height() - scope.fonts.labelHeight
             });
@@ -509,6 +511,58 @@
               "y" : y,
               "transform" : "rotate(-90 " + x + " " + y + ")"
             });
+          }
+        };
+
+        scope.renderGridlineTicks = function() {
+          var tickLength = scope.gridlineTickLength;
+          var mapX = scope.data2scrX, mapY = scope.data2scrY;
+          var focus = scope.focus;
+          var model = scope.stdmodel;
+          if (model.xAxis.showGridlineLabels !== false) {
+            var lines = model.xAxis.getGridlines(),
+              labels = model.xAxis.getGridlineLabels();
+            for (var i = 0; i < labels.length; i++) {
+              var x = lines[i];
+              scope.rpipeTicks.push({
+                "id" : "tick_x_" + i,
+                "class" : "plot-tick",
+                "x1" : mapX(x),
+                "y1" : mapY(focus.yl),
+                "x2" : mapX(x),
+                "y2" : mapY(focus.yl) + tickLength
+              });
+            }
+          }
+          if (model.yAxis.showGridlineLabels !== false) {
+            lines = model.yAxis.getGridlines();
+            labels = model.yAxis.getGridlineLabels();
+            for (var i = 0; i < labels.length; i++) {
+              var y = lines[i];
+              scope.rpipeTicks.push({
+                "id" : "tick_y_" + i,
+                "class" : "plot-tick",
+                "x1" : mapX(focus.xl) - tickLength,
+                "y1" : mapY(y),
+                "x2" : mapX(focus.xl),
+                "y2" : mapY(y)
+              });
+            }
+          }
+          if (model.yAxisR && model.yAxisR.showGridlineLabels !== false) {
+            lines = model.yAxisR.getGridlines();
+            labels = model.yAxisR.getGridlineLabels();
+            for (var i = 0; i < labels.length; i++) {
+              var y = lines[i];
+              scope.rpipeTicks.push({
+                "id" : "tick_yr_" + i,
+                "class" : "plot-tick",
+                "x1" : mapX(focus.xr),
+                "y1" : mapY(y),
+                "x2" : mapX(focus.xr) + tickLength,
+                "y2" : mapY(y)
+              });
+            }
           }
         };
 
@@ -846,7 +900,13 @@
             if (line.legend == null || line.legend === "") { continue; }
             var unit = $(legendLineUnit).appendTo(legend)
               .attr("id", "legend_" + id)
-              .addClass("plot-legendline");
+              .addClass("plot-legendline")
+              .mouseenter(function(e){
+                scope.highlightElements($(this)[0].id.split("_")[1], true);
+              })
+              .mouseleave(function(e){
+                scope.highlightElements($(this)[0].id.split("_")[1], false);
+              });
             if(!scope.stdmodel.omitCheckboxes){
               // checkbox
               $("<input type='checkbox'></input>")
@@ -972,6 +1032,18 @@
             if(["TOP_LEFT", "BOTTOM_LEFT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
               scope.jqcontainer.css("margin-left", legendScrollableContainer.width() + margin);
             }
+          }
+        };
+
+        scope.highlightElements = function(legendId, highlight){
+
+          if(!legendId) { return; }
+
+          var elementsIds = scope.legendMergedLines[legendId].dataIds;
+          for(var i=0; i<elementsIds.length; i++){
+            var id = elementsIds[i];
+            var data = scope.stdmodel.data[id];
+            data.setHighlighted(scope, highlight);
           }
         };
 
@@ -1397,6 +1469,7 @@
 
           scope.rpipeGridlines = [];
           scope.rpipeTexts = [];
+          scope.rpipeTicks = [];
         };
         scope.enableZoom = function() {
           scope.svg.call(scope.zoomObj.on("zoomstart", function(d) {
@@ -1589,8 +1662,10 @@
 
           scope.renderData();
           scope.renderGridlineLabels();
+          scope.renderGridlineTicks();
           scope.renderCoverBox(); // redraw
           plotUtils.plotLabels(scope); // redraw
+          plotUtils.plotTicks(scope); // redraw
 
           scope.renderTips();
           scope.renderLocateBox(); // redraw
@@ -1635,8 +1710,11 @@
         };
 
         var watchCellSize = function () {
-          scope.plotSize.width = scope.getCellWidth();
-          scope.plotSize.height = scope.getCellHeight();
+          if (scope.model.isShowOutput() === true) {
+            scope.plotSize.width = scope.getCellWidth();
+            scope.plotSize.height = scope.getCellHeight();
+          }
+
           scope.setDumpState(scope.dumpState());
         };
 
@@ -1659,6 +1737,7 @@
           scope.setDumpState(scope.dumpState());
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
+          scope.jqlegendcontainer.find(".plot-legendscrollablecontainer").remove();
         });
       }
     };

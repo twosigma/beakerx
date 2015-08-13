@@ -42,6 +42,13 @@
         return bkPublicationAuth.isSignedIn();
       };
 
+      function defaultName() {
+        var section = _(notebook.cells).find(function(cell) {
+          return cell.type === 'section';
+        });
+        return section && section.title;
+      }
+
       function initPublication() {
         $scope.edited = bkSessionManager.isNotebookModelEdited();
 
@@ -50,6 +57,7 @@
           $scope.categories = resp.data;
         });
 
+        $scope.model.name = defaultName();
         $scope.published = false;
         $scope.title = 'Publish Notebook';
         $scope.saveButton = 'Publish';

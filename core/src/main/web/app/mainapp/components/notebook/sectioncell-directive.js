@@ -99,6 +99,9 @@
           items: [
           {
             name: 'Level 1',
+            isChecked: function() {
+              return $scope.cellmodel.level === 1;
+            },
             action: function() {
               $scope.cellmodel.level = 1;
               notebookCellOp.reset();
@@ -106,6 +109,9 @@
           },
           {
             name: 'Level 2',
+            isChecked: function() {
+              return $scope.cellmodel.level === 2;
+            },
             action: function() {
               $scope.cellmodel.level = 2;
               notebookCellOp.reset();
@@ -113,6 +119,9 @@
           },
           {
             name: 'Level 3',
+            isChecked: function() {
+              return $scope.cellmodel.level === 3;
+            },
             action: function() {
               $scope.cellmodel.level = 3;
               notebookCellOp.reset();
@@ -120,6 +129,9 @@
           },
           {
             name: 'Level 4',
+            isChecked: function() {
+              return $scope.cellmodel.level === 4;
+            },
             action: function() {
               $scope.cellmodel.level = 4;
               notebookCellOp.reset();

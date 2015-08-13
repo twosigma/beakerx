@@ -34,7 +34,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate",
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -58,6 +58,7 @@
                 "Although the interactivity and high resolution you get from Beaker's charting library are great, creating DOM elements for every single data point is memory and CPU intensive. ",
                 "If implemented naively, your web browser would become sluggish or freeze if you tried to chart too much data.  Fortunately, Beaker recognizes this situation and has a solution: Levels of Detail. ",
                 "If there are more than 1500 points, then instead of drawing them all, Beaker combines points into groups, and represents each group with its average, a box, or a river (min, max, and average).  ",
+                "You can set preferable  Levels of Detail  threshold ( using 'lodThreshold' or parameter \"lod-threshold\" in the beaker.pref.json)  and representation method (using 'lodFilter' property).",
                 "But then, as you zoom into the data, it is resampled as appropriate for the current view, so the closer you look, the more there is to see, but you can still pull out and get the big picture while keeping the frame rate high.",
                 "",
                 "When Levels are Detail are enabled, a banner appears to inform you the data has been sampled, and the legend for the chart gets some extra controls for you to control the display sampling (line, box, or river).",
@@ -20136,8 +20137,8 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "p = new TimePlot(title: \"Drunken Sailor Walks\", showLegend: true)",
-                    "p << new Line(x:beer.x, y:beer.y, displayName:\"beer walk\")",
+                    "p = new TimePlot(title: \"Drunken Sailor Walks\", showLegend: true, lodThreshold: 2000)",
+                    "p << new Line(x:beer.x, y:beer.y, displayName:\"beer walk\", lodFilter: Filter.BOX)",
                     "p << new Line(x:whiskey.x, y:whiskey.y, displayName:\"whiskey walk\")"
                 ]
             },
@@ -20157,11 +20158,11 @@
                         "yspan": 0.05238095238095236
                     },
                     "lodOn": [
-                        "line",
+                        "box",
                         "line"
                     ],
                     "lodType": [
-                        "line",
+                        "box",
                         "line"
                     ],
                     "lodAuto": [

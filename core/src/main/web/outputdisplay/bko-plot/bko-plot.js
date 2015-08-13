@@ -97,7 +97,7 @@
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
 
-          var plotSize = model.plotSize;
+          var plotSize = scope.plotSize;
           scope.jqcontainer.css(plotSize);
           scope.jqsvg.css(plotSize);
 
@@ -1635,8 +1635,11 @@
         };
 
         var watchCellSize = function () {
-          scope.plotSize.width = scope.getCellWidth();
-          scope.plotSize.height = scope.getCellHeight();
+          if (scope.model.isShowOutput() === true) {
+            scope.plotSize.width = scope.getCellWidth();
+            scope.plotSize.height = scope.getCellHeight();
+          }
+
           scope.setDumpState(scope.dumpState());
         };
 

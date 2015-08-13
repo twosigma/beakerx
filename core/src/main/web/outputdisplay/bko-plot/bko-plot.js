@@ -1663,11 +1663,12 @@
         scope.$watch('getCellModel()', function() {
           scope.init();
         });
-        
+
         scope.$on('$destroy', function() {
           scope.setDumpState(scope.dumpState());
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
+          scope.jqlegendcontainer.find(".plot-legendscrollablecontainer").remove();
         });
       }
     };

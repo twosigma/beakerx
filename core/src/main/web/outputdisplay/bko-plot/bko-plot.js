@@ -485,7 +485,7 @@
             scope.rpipeTexts.push({
               "id" : "xlabel",
               "class" : "plot-xylabel",
-              "text" : model.xAxis.axisLabel,
+              "text" : model.xAxis.axisLabelWithCommon,
               "x" : lMargin + (scope.jqsvg.width() - lMargin) / 2,
               "y" : scope.jqsvg.height() - scope.fonts.labelHeight
             });

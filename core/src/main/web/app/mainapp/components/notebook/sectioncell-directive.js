@@ -96,36 +96,17 @@
         });
         $scope.cellview.menu.addItem({
           name: 'Change Header Level',
-          items: [
-          {
-            name: 'H1',
-            action: function() {
-              $scope.cellmodel.level = 1;
-              notebookCellOp.reset();
-            }
-          },
-          {
-            name: 'H2',
-            action: function() {
-              $scope.cellmodel.level = 2;
-              notebookCellOp.reset();
-            }
-          },
-          {
-            name: 'H3',
-            action: function() {
-              $scope.cellmodel.level = 3;
-              notebookCellOp.reset();
-            }
-          },
-          {
-            name: 'H4',
-            action: function() {
-              $scope.cellmodel.level = 4;
-              notebookCellOp.reset();
-            }
-          }
-          ]
+          items: [1,2,3,4].map(function(level) {
+            return {
+              name: 'Level ' + level,
+              isChecked: function() {
+                return $scope.cellmodel.level === level;
+              },
+              action: function() {
+                $scope.cellmodel.level = level;
+                notebookCellOp.reset();
+              }};
+          })
         });
         $scope.getShareData = function() {
           var cells = [$scope.cellmodel]

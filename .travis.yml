@@ -1,8 +1,8 @@
 language: java
 jdk:
+  - oraclejdk8
 env:
   - chromeBinaryPath=/home/travis/build/twosigma/beaker-notebook/chrome-linux/chrome
-  - oraclejdk8
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"

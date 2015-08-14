@@ -51,6 +51,10 @@
   z-index: 150;
 }
 
+.CodeMirror-hint {
+  max-width: unset;
+}
+
 .CodeMirror-lines {
   padding: 0;
 }

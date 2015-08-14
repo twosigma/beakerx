@@ -20,15 +20,14 @@
     </span>
     <span ng-if="!isLarge" class="plus advanced-only">+<i class="fa fa-sort-down fa-hidden"></i></span>
   </button>
-  <button class="btn btn-primary dropdown-toggle" ng-class="!isLarge && 'btn-xs'" data-toggle="dropdown" data-target=".code-dropdown">code <i class="fa fa-sort-down"></i></button>
-  <ul class="dropdown-menu code-dropdown" role="menu">
+  <button class="btn btn-primary dropdown-toggle" ng-class="!isLarge && 'btn-xs'" data-toggle="dropdown" data-target=".code-dropdown">code <i class="fa fa-sort-down"></i><ul class="dropdown-menu code-dropdown" role="menu">
     <li ng-repeat="(key, value) in getEvaluators()">
       <a ng-click="newCodeCell(key)">{{key}}</a>
     </li>
     <li>
        <a ng-click="showPluginManager()">Other languages...</a>
     </li>
-  </ul>
+  </ul></button>
   <ul class="dropdown-menu section-menu" role="menu">
     <li ng-repeat='level in getLevels()'>
       <a ng-click="newSectionCell(level)">Level {{level}}</a>

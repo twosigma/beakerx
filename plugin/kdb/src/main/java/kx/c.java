@@ -7,7 +7,7 @@ public class c{
 /*public static void main(String[]args){try{c c=new c("",5001);
 // O(c.k("0N!",c.k("0N!1999.01.01D-1")));
 //c.k("0N!",NULL('z'));
-//c.setEncoding("UTF-8");O("Unicode "+c.k("{`$x}","Ranby BjÃ¶rklund AB".toCharArray()));O("Unicode "+c.k("{x}",(String)c.k("{`$x}",(char[])c.k("\"c\"$0x52616e627920426ac3b6726b6c756e64204142"))));   
+//c.setEncoding("UTF-8");O("Unicode "+c.k("{`$x}","Ranby Bjrklund AB".toCharArray()));O("Unicode "+c.k("{x}",(String)c.k("{`$x}",(char[])c.k("\"c\"$0x52616e627920426ac3b6726b6c756e64204142"))));   
  c.close();}catch(Exception e){e.printStackTrace();}}
 */
 private static String e="ISO-8859-1";private static PrintStream out=System.out;private int sync=0;

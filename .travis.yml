@@ -1,6 +1,8 @@
 language: java
 jdk:
   - oraclejdk8
+addons:
+  firefox: "35.0"
 env:
   - chromeBinaryPath=/home/travis/build/twosigma/beaker-notebook/chrome-linux/chrome
 before_install:

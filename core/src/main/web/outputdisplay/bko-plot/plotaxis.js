@@ -156,7 +156,7 @@
         return fixs[i];
       };
 
-      while (diff === mindiff) {
+      while (diff === mindiff && w !== Infinity) {
         w = calcW(i, this.axisType);
         f = calcF(i, this.axisType);
 

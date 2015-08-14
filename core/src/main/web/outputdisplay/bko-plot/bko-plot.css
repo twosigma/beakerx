@@ -74,8 +74,7 @@
   pointer-events: none;
 }
 .plot-gridline {
-  stroke: #111111;
-  stroke-dasharray: 1, 1;
+  stroke: grey;
   stroke-width: 1;
   opacity: .5;
 }

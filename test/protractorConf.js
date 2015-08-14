@@ -19,7 +19,8 @@ var config = {
   framework: 'jasmine2',
   restartBrowserBetweenTests: true,
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 100000
+    //give up after 15 minutes
+    defaultTimeoutInterval: 1000 * 60 * 15
   },
   capabilities: {
     browserName: 'firefox'

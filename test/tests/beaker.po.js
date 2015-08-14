@@ -34,7 +34,7 @@ var BeakerPageObject = function() {
       .thenCatch(function() {
         return false;
       });
-    }, 100000);
+    }, 1000 * 60 * 5);
 
     // wait for the modal to close
     return browser.wait(function() {
@@ -45,7 +45,7 @@ var BeakerPageObject = function() {
       .thenCatch(function() {
         return true;
       });
-    }, 100000);
+    }, 1000 * 60 * 5);
   }
 
   this.openFile = function(path) {
@@ -76,7 +76,7 @@ var BeakerPageObject = function() {
       .thenCatch(function() {
         return false;
       });
-    }, 10000);
+    }, 100000);
   };
 
   this.openMenuAtIndex = function(index) {
@@ -248,7 +248,7 @@ var BeakerPageObject = function() {
       .thenCatch(function() {
         return false;
       });
-    }, 10000);
+    }, 1000 * 60 * 5);
 
     return browser.wait(function() {
       return self.getCellOutput().getText()
@@ -258,7 +258,7 @@ var BeakerPageObject = function() {
       .thenCatch(function() {
         return false;
       });
-    }, 10000);
+    }, 1000 * 60 * 5);
   };
 
 };

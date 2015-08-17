@@ -11723,6 +11723,264 @@
             },
             "evaluatorReader": true,
             "lineCount": 7
+        },
+        {
+            "id": "sectionwk1oGt",
+            "type": "section",
+            "title": "Logarithmic scale",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownH9yX05",
+            "type": "markdown",
+            "body": [
+                "The Beaker plots supports log scale for axes. To add log scale you need to specify logX (for x-axis) or logY (for y-axis) property. By default a base-10 log scale is used. To change this use properties logXBase and logYBase."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codew7ZL7u",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def points = 4;",
+                    "def logBase = 10;",
+                    "def logYs = [];",
+                    "for(int i = 0; i < points; i++){",
+                    "  logYs[i] = Math.pow(logBase, i);",
+                    "}",
+                    "",
+                    "def cplot = new CombinedPlot(xLabel: \"Linear\");",
+                    "def logYPlot = new Plot(title: \"Liner x, Log y\", yLabel: \"Log\", showLegend: true, logY: true, logYBase: logBase);",
+                    "//to create log x-axis ",
+                    "//new Plot(title: \"Liner x, Log y\", yLabel: \"Linear\", showLegend: true,logX: true, logXBase: logBase);",
+                    "",
+                    "logYPlot << new Line(x: (1..points), y: logYs, displayName: \"f(x) = log(x)\");",
+                    "logYPlot << new Line(x: (1..points), y: (1..points), displayName: \"f(x) = x\");",
+                    "cplot.add(logYPlot, 3);",
+                    "",
+                    "//to create right y-axis use the following sintax",
+                    "//logYPlot << new YAxis(label: \"Right Log Y-Axis\", log: true, logBase: logBase);",
+                    "",
+                    "def linearYPlot = new Plot(title: \"Liner x, Liner y\", yLabel: \"Linear\", showLegend: true);",
+                    "linearYPlot << new Line(x: (1..points), y: logYs, displayName: \"f(x) = log(x)\");",
+                    "linearYPlot << new Line(x: (1..points), y: (1..points), displayName: \"f(x) = x\");",
+                    "cplot.add(linearYPlot, 3);",
+                    "",
+                    "cplot"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "CombinedPlot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "title": "",
+                    "x_label": "Linear",
+                    "plot_type": "Plot",
+                    "plots": [
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": "Liner x, Log y",
+                            "domain_axis_label": null,
+                            "y_label": "Log",
+                            "show_legend": true,
+                            "use_tool_tip": true,
+                            "graphics_list": [
+                                {
+                                    "type": "Line",
+                                    "x": [
+                                        1,
+                                        2,
+                                        3,
+                                        4
+                                    ],
+                                    "y": [
+                                        1,
+                                        10,
+                                        100,
+                                        1000
+                                    ],
+                                    "visible": true,
+                                    "display_name": "f(x) = log(x)",
+                                    "color": "#FFC0504D",
+                                    "width": 1.5,
+                                    "yAxis": null
+                                },
+                                {
+                                    "type": "Line",
+                                    "x": [
+                                        1,
+                                        2,
+                                        3,
+                                        4
+                                    ],
+                                    "y": [
+                                        1,
+                                        2,
+                                        3,
+                                        4
+                                    ],
+                                    "visible": true,
+                                    "display_name": "f(x) = x",
+                                    "color": "#FF4F81BD",
+                                    "width": 1.5,
+                                    "yAxis": null
+                                }
+                            ],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "label": "Log",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": true,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "log": true,
+                                    "log_base": 10
+                                }
+                            ],
+                            "x_auto_range": true,
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": true,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_x": false,
+                            "x_log_base": 10,
+                            "log_y": true,
+                            "time_zone": null,
+                            "crosshair": null,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "omit_checkboxes": false,
+                            "legend_layout": "VERTICAL",
+                            "version": "groovy"
+                        },
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": "Liner x, Liner y",
+                            "domain_axis_label": null,
+                            "y_label": "Linear",
+                            "show_legend": true,
+                            "use_tool_tip": true,
+                            "graphics_list": [
+                                {
+                                    "type": "Line",
+                                    "x": [
+                                        1,
+                                        2,
+                                        3,
+                                        4
+                                    ],
+                                    "y": [
+                                        1,
+                                        10,
+                                        100,
+                                        1000
+                                    ],
+                                    "visible": true,
+                                    "display_name": "f(x) = log(x)",
+                                    "color": "#FFC0504D",
+                                    "width": 1.5,
+                                    "yAxis": null
+                                },
+                                {
+                                    "type": "Line",
+                                    "x": [
+                                        1,
+                                        2,
+                                        3,
+                                        4
+                                    ],
+                                    "y": [
+                                        1,
+                                        2,
+                                        3,
+                                        4
+                                    ],
+                                    "visible": true,
+                                    "display_name": "f(x) = x",
+                                    "color": "#FF4F81BD",
+                                    "width": 1.5,
+                                    "yAxis": null
+                                }
+                            ],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "label": "Linear",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": true,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "log": false,
+                                    "log_base": 10
+                                }
+                            ],
+                            "x_auto_range": true,
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": true,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_x": false,
+                            "x_log_base": 10,
+                            "log_y": false,
+                            "time_zone": null,
+                            "crosshair": null,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "omit_checkboxes": false,
+                            "legend_layout": "VERTICAL",
+                            "version": "groovy"
+                        }
+                    ],
+                    "weights": [
+                        3,
+                        3
+                    ],
+                    "version": "groovy"
+                },
+                "selectedType": "CombinedPlot",
+                "pluginName": "Groovy",
+                "shellId": "4dfd8377-7cdb-4803-8072-f586104ad46f",
+                "elapsedTime": 361
+            },
+            "evaluatorReader": true,
+            "lineCount": 25
         }
     ]
 }

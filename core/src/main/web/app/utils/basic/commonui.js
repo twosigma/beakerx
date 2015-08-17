@@ -126,7 +126,7 @@
       }
     };
   });
-  module.directive('bkDropdownMenuItem', function($compile) {
+  module.directive('bkDropdownMenuItem', function($compile, $sce) {
     return {
       restrict: 'E',
       template: JST['template/dropdown_item'](),
@@ -191,6 +191,10 @@
             }
           }
         };
+
+        $scope.getCustomMarkup = function(item) {
+          return $sce.trustAsHtml(_.result(item, 'markup') || '');
+        }
 
         $scope.getName = function(item) {
           var name = '';

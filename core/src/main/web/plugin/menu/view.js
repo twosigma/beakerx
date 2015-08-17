@@ -24,6 +24,8 @@ define(function(require, exports, module) {
     {
       name: 'Start Page',
       sortorder: 100,
+      id: 'start-page-menu-item',
+      markup: '<i class="glyphicon glyphicon-home"></i>',
       action: function() {
         bkHelper.gotoControlPanel();
       }

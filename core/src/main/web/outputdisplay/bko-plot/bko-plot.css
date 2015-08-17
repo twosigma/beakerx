@@ -73,9 +73,8 @@
   pointer-events: none;
 }
 .plot-gridline {
-  stroke: grey;
+  stroke: lightgrey;
   stroke-width: 1;
-  opacity: .5;
 }
 .plot-gridline-base {
   stroke: #333333;

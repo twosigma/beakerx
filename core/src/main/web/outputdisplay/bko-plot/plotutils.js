@@ -42,13 +42,20 @@
           datarange.yr = 1;
         }
 
+        var increaseRange = function(value){
+          return value + (value || 1) / 10;
+        };
+        var decreaseRange = function(value){
+          return value - (value || 1) / 10;
+        };
+
         if(datarange.xl === datarange.xr){
-          datarange.xl = datarange.xl - datarange.xl / 10;
-          datarange.xr = datarange.xr + datarange.xr / 10;
+          datarange.xl = decreaseRange(datarange.xl);
+          datarange.xr = increaseRange(datarange.xr);
         }
         if(datarange.yl === datarange.yr) {
-          datarange.yl = datarange.yl - datarange.yl / 10;
-          datarange.yr = datarange.yr + datarange.yr / 10;
+          datarange.yl = decreaseRange(datarange.yl);
+          datarange.yr = increaseRange(datarange.yr);
         }
 
         datarange.xspan = datarange.xr - datarange.xl;

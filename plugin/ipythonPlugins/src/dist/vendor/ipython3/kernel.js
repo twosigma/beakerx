@@ -5,8 +5,9 @@ define('ipython3_kernel', [
     'ipython3_namespace',
     'ipython3_utils',
     'ipython3_comm',
-    'ipython3_serialize'
-], function(IPython, utils, comm, serialize) {
+    'ipython3_serialize',
+    'ipython3_initwidgets'
+], function(IPython, utils, comm, serialize, widgetmanager) {
     "use strict";
 
     /**
@@ -52,8 +53,8 @@ define('ipython3_kernel', [
         this.bind_events();
         this.init_iopub_handlers();
         this.comm_manager = new comm.CommManager(this);
-        this.widget_manager = undefined;  // XXX temporary
-        // this.widget_manager = new widgetmanager.WidgetManager(this.comm_manager, notebook);
+//        this.widget_manager = undefined;  // XXX temporary
+        this.widget_manager = new widgetmanager.WidgetManager(this.comm_manager, notebook);
         
         this.last_msg_id = null;
         this.last_msg_callbacks = {};
@@ -337,7 +338,7 @@ define('ipython3_kernel', [
         this._reconnect_attempt = this._reconnect_attempt + 1;
         this.events.trigger('kernel_reconnecting.Kernel', {
             kernel: this,
-            attempt: this._reconnect_attempt,
+            attempt: this._reconnect_attempt
         });
         this.start_channels();
     };
@@ -535,7 +536,7 @@ define('ipython3_kernel', [
         } else {
             this.events.trigger('kernel_connection_dead.Kernel', {
                 kernel: this,
-                reconnect_attempt: this._reconnect_attempt,
+                reconnect_attempt: this._reconnect_attempt
             });
             console.log("Failed to reconnect, giving up.");
         }

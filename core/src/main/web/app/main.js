@@ -16,12 +16,19 @@
 
 requirejs.config({
   paths: {
-    'ipython3_comm':       "../plugins/eval/ipythonPlugins/vendor/ipython3/comm",
-    'ipython3_namespace':  "../plugins/eval/ipythonPlugins/vendor/ipython3/namespace",
-    'ipython3_kernel':     "../plugins/eval/ipythonPlugins/vendor/ipython3/kernel",
-    'ipython3_outputarea': "../plugins/eval/ipythonPlugins/vendor/ipython3/outputarea",
-    'ipython3_session':    "../plugins/eval/ipythonPlugins/vendor/ipython3/session",
-    'ipython3_serialize':  "../plugins/eval/ipythonPlugins/vendor/ipython3/serialize",
-    'ipython3_utils':      "../plugins/eval/ipythonPlugins/vendor/ipython3/utils"
+    'ipython3_comm':          "../plugins/eval/ipythonPlugins/vendor/ipython3/comm",
+    'ipython3_namespace':     "../plugins/eval/ipythonPlugins/vendor/ipython3/namespace",
+    'ipython3_kernel':        "../plugins/eval/ipythonPlugins/vendor/ipython3/kernel",
+    'ipython3_outputarea':    "../plugins/eval/ipythonPlugins/vendor/ipython3/outputarea",
+    'ipython3_session':       "../plugins/eval/ipythonPlugins/vendor/ipython3/session",
+    'ipython3_serialize':     "../plugins/eval/ipythonPlugins/vendor/ipython3/serialize",
+    'ipython3_utils':         "../plugins/eval/ipythonPlugins/vendor/ipython3/utils",
+    'ipython3_initwidgets':   "../plugins/eval/ipythonPlugins/vendor/ipython3/init",
+    'ipython3_keyboard':      "../plugins/eval/ipythonPlugins/vendor/ipython3/keyboard",
+    'ipython3_widgetmanager': "../plugins/eval/ipythonPlugins/vendor/ipython3/manager",
+    'backbone':               "../plugins/eval/ipythonPlugins/vendor/ipython3/backbone-min",
+    'ipython3_widget':        "../plugins/eval/ipythonPlugins/vendor/ipython3/widget",
+    'ipython3_widget_link':   "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_link",
+    'ipython3_widget_int':    "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_int"
   }
 });

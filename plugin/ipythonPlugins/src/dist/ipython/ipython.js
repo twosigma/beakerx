@@ -90,9 +90,65 @@ define(function(require, exports, module) {
                  notebook: {path: "/fake/path" + shellID}
                 };
                 var fakeNotebook = {
-                  events: {on: function (){},
-                           trigger: function (){}}
+                  events: {
+                    on: function () {},
+                    trigger: function () {}
+                  },
+                  get_msg_cell: function () {
+                    return null;
+                  },
+                  find_cell_index: function () {
+                    return 0;
+                  },
+                  cells: angular.copy(bkHelper.getNotebookModel().cells)
                 };
+                fakeNotebook.cells.forEach(function(e) {
+
+                  e.widget_views = [];
+
+                  e._widget_live = function(view) {
+                    if (!this._widgets_live) {
+                      // Check that the other widgets are live too.  O(N) operation.
+                      // Abort the function at the first dead widget found.
+                      for (var i = 0; i < this.widget_views.length; i++) {
+                        if (!this.widget_views[i].model.comm_live) return;
+                      }
+                      this._widgets_live = true;
+                    }
+                  };
+
+                  e._widget_dead = function(view) {
+                    if (this._widgets_live) {
+                      this._widgets_live = false;
+                    }
+                  };
+
+                  e.display_widget_view = function(view_promise) {
+                    // Display a dummy element
+                    var dummy = $('<div/>');
+//                    this.widget_subarea.append(dummy);
+
+                    // Display the view.
+                    var that = this;
+                    return view_promise.then(function(view) {
+//                      that.widget_area.show();
+                      dummy.replaceWith(view.$el);
+                      that.widget_views.push(view);
+
+                      // Check the live state of the view's model.
+                      if (view.model.comm_live) {
+                        that._widget_live(view);
+                      } else {
+                        that._widget_dead(view);
+                      }
+
+                      // Listen to comm live events for the view.
+                      view.on('comm:live', that._widget_live, that);
+                      view.on('comm:dead', that._widget_dead, that);
+                      return view;
+                    });
+                  };
+                });
                 var ajaxsettings = {
                   processData : false,
                   cache: false,

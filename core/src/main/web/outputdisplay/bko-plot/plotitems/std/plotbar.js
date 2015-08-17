@@ -219,7 +219,7 @@
       if (this.legend != null) {
         tip.title = this.legend;
       }
-      tip.x = plotUtils.getTipString(ele._x, xAxis, true);
+      tip.x = plotUtils.getTipString((ele._x + ele._x2) / 2, xAxis, true);
       tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
       tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
       return plotUtils.createTipString(tip);

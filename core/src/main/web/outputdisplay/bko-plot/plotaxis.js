@@ -22,7 +22,7 @@
       this.axisType = type == null ? "linear" : type; // linear, log, time, [nanotime, category]
       this.axisBase = 10;
       this.axisTime = 0;
-      this.axisTimezone = "America/New_York";
+      this.axisTimezone = "UTC";
       this.axisValL = 0;
       this.axisValR = 1;
       this.axisValSpan = 1;
@@ -236,13 +236,26 @@
       var calcCommonPart = function () {
         var common = '';
 
-        if (axisType === "time" && span >= HOUR) {
-          if (span <= DAY) {
-            common = labels[0].substring(0, 16);
-          } else if (span <= MONTH) {
-            common = labels[0].substring(0, 8);
-          } else if (span <= YEAR) {
-            common = labels[0].substring(0, 4);
+        if (axisType === "time" && span >= HOUR && labels.length > 1) {
+
+          var tokens = labels[0].split(' ');
+
+          var index = 0;
+
+          var checkCommon = function (index) {
+
+            var substring =  (common != '') ? common + ' ' + tokens[index] : tokens[index];
+            for (i = 1; i < labels.length; i++) {
+              if (substring !== labels[i].substring(0, substring.length)) {
+                return false;
+              }
+            }
+            return true;
+          };
+
+          while(checkCommon(index)){
+            common = (common != '') ? common + ' ' + tokens[index] : tokens[index];
+            index = index+1;
           }
 
           if (common.length > 1) {

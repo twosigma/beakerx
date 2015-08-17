@@ -58,13 +58,13 @@
             if (axis.auto_range_includes_zero === true) {
               settings.yIncludeZero = true;
             }
-            if (axis.use_log === true) {
+            if (axis.log === true) {
               settings.logy = true;
               settings.logyb = axis.log_base == null ? 10 : axis.log_base;
             }
           };
 
-          updateAxisSettings(model.rangeAxes[0], yAxisRSettings);
+          updateAxisSettings(model.rangeAxes[0], yAxisSettings);
           if(model.rangeAxes.length > 1){
             updateAxisSettings(model.rangeAxes[1], yAxisRSettings);
           }

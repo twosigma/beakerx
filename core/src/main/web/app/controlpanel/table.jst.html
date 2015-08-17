@@ -17,7 +17,7 @@
 <ul class="notebook-dashboard-list">
   <li class='session clearfix' ng-repeat='session in sessions | orderBy:"openedDate":true'>
     <div class="pull-left">
-      <a class='caption' href="{{getOpenSessionLink(session)}}">{{getCaption(session)}}</a>
+      <a class='caption notebookLink' href="{{getOpenSessionLink(session)}}">{{getCaption(session)}}</a>
       <div class='light path' ng-if="getDescription(session)">
         {{getDescription(session)}}
       </div>

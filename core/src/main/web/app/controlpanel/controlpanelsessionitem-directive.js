@@ -56,8 +56,14 @@
       restrict: 'E',
       template: JST['controlpanel/table'],
       controller: function($scope) {
-        $scope.open = function(session) {
-          bkCoreManager.openSession(session.id);
+        $scope.open = function(session, event) {
+            //need to open notebook in new tab by holding ctrl or command key
+         	if (event.ctrlKey || event.metaKey) {     
+        		bkCoreManager.openSessionNewWindow(session.id);
+        	} else {
+        		bkCoreManager.openSession(session.id);
+        	}
+          
         };
         $scope.close = function(session) {
           var format = session.format;

@@ -328,6 +328,13 @@
           } else {
             return $location.path("session/" + sessionId).search({});
           }
+        },
+        openSessionNewWindow: function(sessionId) {
+            if (bkUtils.isElectron) {
+               bkHelper.openWindow('/session/' + sessionId);
+            } else {
+               bkHelper.openBrowserWindow(bkHelper.getBaseUrl() + '/session/' + sessionId);
+            } 
         }
       };
       bkUtils.initializeCometd(document.baseURI+'cometd/');

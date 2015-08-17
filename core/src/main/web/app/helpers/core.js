@@ -303,9 +303,6 @@
       openNotebook: function(notebookUri, uriType, readOnly, format) {
         this._beakerRootOp.openNotebook(notebookUri, uriType, readOnly, format);
       },
-      openSessionNewWindow: function(sessionId) {
-        this._beakerRootOp.openSessionNewWindow(sessionId);
-      },
       addImportInput: function() {
         importInput();
       },

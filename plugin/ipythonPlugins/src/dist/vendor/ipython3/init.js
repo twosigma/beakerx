@@ -4,16 +4,16 @@
 define('ipython3_initwidgets', [
   'ipython3_widgetmanager',
   'ipython3_widget_link',
-//    "widgets/js/widget_bool",
-//    "widgets/js/widget_button",
-//    "widgets/js/widget_box",
-//    "widgets/js/widget_float",
-//    "widgets/js/widget_image",
-  'ipython3_widget_int'
-//    "widgets/js/widget_output",
-//    "widgets/js/widget_selection",
-//    "widgets/js/widget_selectioncontainer",
-//    "widgets/js/widget_string",
+  'ipython3_widget_bool',
+  'ipython3_widget_button',
+  'ipython3_widget_box',
+  'ipython3_widget_float',
+  'ipython3_widget_image',
+  'ipython3_widget_int',
+  'ipython3_widget_output',
+  'ipython3_widget_selection',
+  'ipython3_widget_selectioncontainer',
+  'ipython3_widget_string'
 ], function(widgetmanager, linkModels) {
     for (var target_name in linkModels) {
         if (linkModels.hasOwnProperty(target_name)) {

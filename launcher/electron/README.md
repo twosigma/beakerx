@@ -54,6 +54,10 @@ gradle installElectron
 If you are on Windows you will have to add the prebuilt binaries to your path (they should
 be in your global node_modules folder if you called `gradle installElectron`)
 
+### Viewing dev tools
+
+While running the app you can press `F12` to open the chromium devtools.
+
 ### Bulding an executable
 
 To produce an executable you can run (an app bundle on OSX, a folder with an executable on Windows and Linux), do:

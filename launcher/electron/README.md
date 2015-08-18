@@ -54,10 +54,14 @@ gradle installElectron
 If you are on Windows you will have to add the prebuilt binaries to your path (they should
 be in your global node_modules folder if you called `gradle installElectron`)
 
+### Bulding an executable
+
 To produce an executable you can run (an app bundle on OSX, a folder with an executable on Windows and Linux), do:
 ```sh
 gradle makeBundle -P version=0.29.2 -P arch=x64
 ```
+
+### Building an installer
 
 To produce an installer for your platform (DMG on OSX, .exe on Windows), do:
 ```sh

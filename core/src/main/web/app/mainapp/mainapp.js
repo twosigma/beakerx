@@ -1198,20 +1198,22 @@
                 function() {
                   // "Save", save the notebook as a file on the client side
                   bkSessionManager.dumpDisplayStatus();
-                  $timeout(function() {
+                  var timeoutPromise = $timeout(function() {
                     bkUtils.saveAsClientFile(
                         bkSessionManager.getSaveData().notebookModelAsString,
                     "notebook.bkr");
                   }, 1);
+                  timeoutPromise.then(function() {
+                      prompted = false;
+                  })
                 },
                 function() {
                   // "Not now", hijack all keypress events to prompt again
                   window.addEventListener('keypress', $scope.promptToSave, true);
+                  prompted = false;
                 },
                 "Save", "Not now", "btn-primary", ""
-            ).then(function() {
-              prompted = false;
-            });
+            );
           };
         })();
 

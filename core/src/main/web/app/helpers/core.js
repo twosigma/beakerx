@@ -678,12 +678,20 @@
 
         attachSubmitListener();
 
-        dd.result.then(function(result) {
+        var callbackAction = function(result) {
           removeSubmitListener();
 
           if (callback) {
             callback(result, uriType, readOnly, format);
           }
+        };
+
+        dd.result.then(function(result) {
+          //Trigger when modal is closed
+          callbackAction(result);
+        }, function(result) {
+          //Trigger when modal is dismissed
+          callbackAction(result);
         }).catch(function() {
           removeSubmitListener();
         });

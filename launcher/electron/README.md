@@ -42,7 +42,7 @@ To build and/or run:
 If you want to simply run Beaker using your own installed version of electron, do:
 
 ```sh
-gradle run
+gradle runElectron
 ```
 
 If you do not have Electron's prebuilt binaries installed, simply do

@@ -1552,7 +1552,7 @@
           state.showItem = [];
           var data = scope.stdmodel.data;
           for (var i = 0; i < data.length; i++) {
-            state.lodOn[i] = data[i].lodType;
+            state.lodOn[i] = data[i].lodOn;
             state.lodType[i] = data[i].lodType;
             state.lodAuto[i] = data[i].lodAuto;
             state.zoomHash[i] = data[i].zoomHash;
@@ -1571,11 +1571,13 @@
           scope.focus = state.focus;
           var data = scope.stdmodel.data;
           for (var i = 0; i < data.length; i++) {
-            data[i].lodOn = state.lodOn[i];
-            if (state.lodOn[i]) {
-              data[i].applyLodType(state.lodType[i]);
-              data[i].applyLodAuto(state.lodAuto[i]);
-              data[i].applyZoomHash(state.zoomHash[i]);
+            if(data[i].isLodItem === true){
+              data[i].lodOn = state.lodOn[i];
+              if (state.lodOn[i]) {
+                data[i].applyLodType(state.lodType[i]);
+                data[i].applyLodAuto(state.lodAuto[i]);
+                data[i].applyZoomHash(state.zoomHash[i]);
+              }
             }
             data[i].showItem = state.showItem[i];
           }

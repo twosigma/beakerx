@@ -56,8 +56,8 @@
       restrict: 'E',
       template: JST['controlpanel/table'],
       controller: function($scope) {
-        $scope.open = function(session) {
-          bkCoreManager.openSession(session.id);
+        $scope.getOpenSessionLink = function(session) {
+          return bkUtils.getBaseUrl() + '/session/' + session.id;
         };
         $scope.close = function(session) {
           var format = session.format;

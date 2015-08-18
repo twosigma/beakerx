@@ -1204,7 +1204,7 @@
                     "notebook.bkr");
                   }, 1);
                   timeoutPromise.then(function() {
-                      prompted = false;
+                    prompted = false;
                   })
                 },
                 function() {

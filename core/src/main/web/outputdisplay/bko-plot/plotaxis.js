@@ -290,7 +290,7 @@
     PlotAxis.prototype.getString = function(pct, span) {
       if (this.axisType != "time" && this.axisType != "nanotime") {
         if (this.axisType === "log") {
-          return "" + this.axisBase + "^" + this.getValue(pct).toFixed(this.axisFixed);
+          return "" + Math.pow(this.axisBase, this.getValue(pct)).toFixed(this.axisFixed);
         } else {
           return "" + this.getValue(pct).toFixed(this.axisFixed);
         }

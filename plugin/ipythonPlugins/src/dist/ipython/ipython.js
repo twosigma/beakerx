@@ -133,6 +133,8 @@ define(function(require, exports, module) {
                     return view_promise.then(function(view) {
 //                      that.widget_area.show();
                       dummy.replaceWith(view.$el);
+//TODO: remove                      self.kernel._handle_output_message({});
+                      $(document.body).append(view.$el.html());
                       that.widget_views.push(view);
 
                       // Check the live state of the view's model.

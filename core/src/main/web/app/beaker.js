@@ -411,10 +411,6 @@
         };
       });
     });
-
-    beaker.run(function(bkPublicationAuth) {
-      return bkPublicationAuth.initSession();
-    });
   };
   var bootstrapBkApp = function() {
     // make sure requirejs reports error

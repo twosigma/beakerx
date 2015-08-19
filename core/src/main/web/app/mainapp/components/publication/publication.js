@@ -23,6 +23,8 @@
     ['$scope', 'bkUtils', 'bkPublicationApi', 'bkPublicationAuth', 'bkSessionManager', '$modalInstance',
     function($scope, bkUtils, bkPublicationApi, bkPublicationAuth, bkSessionManager, $modalInstance) {
 
+      bkPublicationAuth.initSession();
+
       var notebook = bkSessionManager.getRawNotebookModel();
 
       $scope.user = {role: 'beaker'};

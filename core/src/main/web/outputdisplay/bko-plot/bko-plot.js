@@ -158,6 +158,10 @@
           if (model.xAxis.showGridlineLabels === false) { factor -= 1.0; }
           scope.layout.bottomLayoutMargin += scope.fonts.labelHeight * factor;
 
+          if (model.yAxis.showGridlineLabels !== false) {
+            scope.layout.topLayoutMargin += scope.fonts.labelHeight / 2;
+          }
+
           if (model.yAxis.axisLabel != null) {
             scope.layout.leftLayoutMargin += scope.fonts.labelHeight;
           }
@@ -570,9 +574,9 @@
           var x = e.offsetX, y = e.offsetY;
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin,
-              rMargin = scope.layout.rightLayoutMargin;
+              rMargin = scope.layout.rightLayoutMargin, tMargin = scope.layout.topLayoutMargin;
           var model = scope.stdmodel;
-          if (x < lMargin || model.yAxisR != null && x > W - rMargin || y > H - bMargin) {
+          if (x < lMargin || model.yAxisR != null && x > W - rMargin || y > H - bMargin || y < tMargin) {
             scope.svg.selectAll(".plot-cursor").remove();
             scope.jqcontainer.find(".plot-cursorlabel").remove();
             return;
@@ -588,7 +592,7 @@
               .style("stroke-width", opt.width)
               .style("stroke-dasharray", opt.stroke_dasharray);
             scope.svg.select("#cursor_x")
-              .attr("x1", x).attr("y1", 0).attr("x2", x).attr("y2", H - bMargin);
+              .attr("x1", x).attr("y1", tMargin).attr("x2", x).attr("y2", H - bMargin);
 
             scope.jqcontainer.find("#cursor_xlabel").remove();
             var label = $("<div id='cursor_xlabel' class='plot-cursorlabel'></div>")

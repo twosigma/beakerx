@@ -33,6 +33,7 @@ import com.twosigma.beaker.chart.serializer.LegendPositionSerializer;
 import com.twosigma.beaker.chart.serializer.LineSerializer;
 import com.twosigma.beaker.chart.serializer.PointsSerializer;
 import com.twosigma.beaker.chart.serializer.StemsSerializer;
+import com.twosigma.beaker.chart.serializer.TextSerializer;
 import com.twosigma.beaker.chart.serializer.XYChartSerializer;
 import com.twosigma.beaker.chart.serializer.YAxisSerializer;
 import com.twosigma.beaker.chart.xychart.CombinedPlot;
@@ -43,6 +44,7 @@ import com.twosigma.beaker.chart.xychart.plotitem.Crosshair;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.Points;
 import com.twosigma.beaker.chart.xychart.plotitem.Stems;
+import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import com.twosigma.beaker.easyform.EasyForm;
 import com.twosigma.beaker.easyform.EasyFormObjectManager;
@@ -191,6 +193,7 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(YAxis.class, injector.getInstance(YAxisSerializer.class));
       module.addSerializer(Crosshair.class, injector.getInstance(CrosshairSerializer.class));
       module.addSerializer(LegendPosition.class, injector.getInstance(LegendPositionSerializer.class));
+      module.addSerializer(Text.class, injector.getInstance(TextSerializer.class));
 
       module.addSerializer(EasyForm.class, injector.getInstance(EasyFormSerializer.class));
       module.addSerializer(TextField.class, injector.getInstance(TextFieldSerializer.class));

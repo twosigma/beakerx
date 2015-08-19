@@ -22,4 +22,40 @@ package com.twosigma.beaker.chart.xychart.plotitem;
  */
 public class Text {
 
+  private Number x = 0.0d;
+  private Number y = 0.0d;
+  private boolean showPointer;
+  private String text = "";
+
+  public Number getX() {
+    return x;
+  }
+
+  public void setX(Number x) {
+    this.x = x;
+  }
+
+  public Number getY() {
+    return y;
+  }
+
+  public void setY(Number y) {
+    this.y = y;
+  }
+
+  public Boolean getShowPointer() {
+    return showPointer;
+  }
+
+  public void setShowPointer(boolean showPointer) {
+    this.showPointer = showPointer;
+  }
+
+  public String getText() {
+    return text;
+  }
+
+  public void setText(String text) {
+    this.text = text;
+  }
 }

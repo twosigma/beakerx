@@ -142,6 +142,9 @@
         minimize: function() {
           BrowserWindow.getFocusedWindow().minimize();
         },
+        closeWindow: function() {
+          BrowserWindow.getFocusedWindow().close();
+        },
         thisWindow: thisWindow,
 
         updateMenus: function(menus) {

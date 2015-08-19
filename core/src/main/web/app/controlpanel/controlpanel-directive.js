@@ -134,6 +134,11 @@
             bkElectron.minimize();
           }
 
+          // Command W
+          if (e.metaKey && e.which === 87 && bkUtils.isElectron) {
+            bkElectron.closeWindow();
+          }
+
           if (e.ctrlKey && e.shiftKey && (e.which === 78)) { // Ctrl + Shift + n
             bkUtils.fcall(function() {
               $scope.newNotebook();

@@ -35,7 +35,7 @@
         return bkUtils.httpPostJson(baseUrl + '/user/v1/sessions', params)
       },
       getCurrentUser: function() {
-        return bkUtils.httpGetJson(baseUrl + '/user/v1/current_user', {}, headers())
+        return bkUtils.httpGetJson(baseUrl + '/user/v1/current_user', {silent: true}, headers())
       },
       createPublication: function(params) {
         return bkUtils.httpPostJson(baseUrl + '/notebook/v1/publications', params, headers());

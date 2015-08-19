@@ -191,6 +191,9 @@
             }
           }
         };
+        $scope.hasCustomMarkup = function(item) {
+          return typeof _.result(item, 'markup') !== 'undefined';
+        }
 
         $scope.getCustomMarkup = function(item) {
           return $sce.trustAsHtml(_.result(item, 'markup') || '');

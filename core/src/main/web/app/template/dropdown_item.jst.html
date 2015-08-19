@@ -22,7 +22,7 @@
      title="{{item.tooltip}}"
      eat-click>
     <i class="glyphicon glyphicon-ok" ng-show="isMenuItemChecked(item)"></i>
-    <span ng-bind-html="getCustomMarkup(item)"></span>
+    <span ng-if="hasCustomMarkup(item)" ng-bind-html="getCustomMarkup(item)"></span>
     {{getName(item)}}
   </a>
 </li>

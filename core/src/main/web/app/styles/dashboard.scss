@@ -21,6 +21,13 @@
   .new-notebook {
     margin-top: 40px;
     margin-bottom: 60px;
+
+    @media screen and (max-width: 746px) {
+      [class*="col-"] {
+        margin: 10px 0;
+        width: 100%
+      }
+    }
   }
   padding-top: 60px;
 }

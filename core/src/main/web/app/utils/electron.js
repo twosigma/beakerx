@@ -53,7 +53,7 @@
           case 'New Notebook':
             return _ctrlKey + '+N';
           case 'Tutorial':
-            return _ctrlKey + '+H';
+            return _ctrlKey + '+Shift+H';
           default:
             return undefined;
         }
@@ -139,6 +139,12 @@
           BrowserWindow.getFocusedWindow().toggleDevTools();
         },
 
+        minimize: function() {
+          BrowserWindow.getFocusedWindow().minimize();
+        },
+        closeWindow: function() {
+          BrowserWindow.getFocusedWindow().close();
+        },
         thisWindow: thisWindow,
 
         updateMenus: function(menus) {

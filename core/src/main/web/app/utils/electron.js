@@ -139,6 +139,9 @@
           BrowserWindow.getFocusedWindow().toggleDevTools();
         },
 
+        minimize: function() {
+          BrowserWindow.getFocusedWindow().minimize();
+        },
         thisWindow: thisWindow,
 
         updateMenus: function(menus) {

@@ -1098,6 +1098,11 @@
             // TODO implement global redo
             } else if (bkUtils.isElectron) {
               var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
+              // Command H
+              if (ctrlXORCmd && e.which === 72) {
+                bkElectron.minimize();
+              }
+
               if (e.which === 123) { // F12
                 bkElectron.toggleDevTools();
               } else if (ctrlXORCmd && ((e.which === 187) || (e.which === 107))) { // Ctrl + '+'

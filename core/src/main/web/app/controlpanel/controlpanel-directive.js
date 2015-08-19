@@ -129,6 +129,11 @@
         };
 
         var keydownHandler = function(e) {
+          // Command H
+          if (e.metaKey && e.which === 72 && bkUtils.isElectron) {
+            bkElectron.minimize();
+          }
+
           if (e.ctrlKey && e.shiftKey && (e.which === 78)) { // Ctrl + Shift + n
             bkUtils.fcall(function() {
               $scope.newNotebook();

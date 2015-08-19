@@ -58,13 +58,13 @@
             if (axis.auto_range_includes_zero === true) {
               settings.yIncludeZero = true;
             }
-            if (axis.use_log === true) {
+            if (axis.log === true) {
               settings.logy = true;
               settings.logyb = axis.log_base == null ? 10 : axis.log_base;
             }
           };
 
-          updateAxisSettings(model.rangeAxes[0], yAxisRSettings);
+          updateAxisSettings(model.rangeAxes[0], yAxisSettings);
           if(model.rangeAxes.length > 1){
             updateAxisSettings(model.rangeAxes[1], yAxisRSettings);
           }
@@ -209,8 +209,8 @@
             item.shape = this.pointShapeMap[item.shape];
           }
 
-          var axisSettings = plotUtils.useYAxisR(newmodel, item) ? yAxisRSettings : yAxisSettings;
-          if (item.base != null && axisSettings.logy) {
+          var yAxisSettings = plotUtils.useYAxisR(newmodel, item) ? yAxisRSettings : yAxisSettings;
+          if (item.base != null && yAxisSettings.logy) {
             if (item.base === 0) {
               item.base = 1;
             }
@@ -223,7 +223,8 @@
             ele.y = item.y[j];
 
             // discard NaN entries
-            if (ele.x === "NaN" || ele.y === "NaN")
+            if (ele.x === "NaN" || ele.y === "NaN" ||
+              logx && ele.x <= 0 || yAxisSettings.logy && ele.y <= 0 )
               continue;
 
             if (item.colors != null) {

@@ -48,6 +48,7 @@ abstract public class XYChart {
   private double xLowerBound;
   private double xUpperBound;
   private boolean logX = false;
+  private double logXBase = 10;
   protected TimeZone timeZone;
   private Crosshair crosshair;
   private LegendPosition legendPosition = new LegendPosition(LegendPosition.Position.TOP_RIGHT);
@@ -386,6 +387,15 @@ abstract public class XYChart {
     return this.logX;
   }
 
+  public Double getLogXBase() {
+    return logXBase;
+  }
+
+  public XYChart setLogXBase(double logXBase) {
+    this.logXBase = logXBase;
+    return this;
+  }
+
   public XYChart setLogY(boolean logY) {
     this.yAxis.setLog(logY);
     return this;
@@ -393,6 +403,15 @@ abstract public class XYChart {
 
   public Boolean getLogY() {
     return this.yAxis.getLog();
+  }
+
+  public XYChart setLogYBase(double logYBase) {
+    this.yAxis.setLogBase(logYBase);
+    return this;
+  }
+
+  public Double getLogYBase() {
+    return this.yAxis.getLogBase();
   }
 
   protected XYChart setTimeZone(TimeZone timeZone) {

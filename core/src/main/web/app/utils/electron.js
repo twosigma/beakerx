@@ -53,7 +53,7 @@
           case 'New Notebook':
             return _ctrlKey + '+N';
           case 'Tutorial':
-            return _ctrlKey + '+H';
+            return _ctrlKey + '+Shift+H';
           default:
             return undefined;
         }

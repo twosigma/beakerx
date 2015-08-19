@@ -122,35 +122,37 @@ define('ipython3_widgetmanager', [
     // Instance level
     //--------------------------------------------------------------------
     WidgetManager.prototype.display_view = function(msg, model) {
-        /**
-         * Displays a view for a particular model.
-         */
-        var cell = this.get_msg_cell(msg.parent_header.msg_id);
-        if (cell === null) {
-            return Promise.reject(new Error("Could not determine where the display" + 
-                " message was from.  Widget will not be displayed"));
-        } else {
-            return this.display_view_in_cell(cell, model)
-                .catch(utils.reject('Could not display view', true)); 
-        }
+      /**
+       * Displays a view for a particular model.
+       */
+      return this.display_view_in_cell(msg, model)
+          .catch(utils.reject('Could not display view', true));
     };
 
-    WidgetManager.prototype.display_view_in_cell = function(cell, model) {
-        // Displays a view in a cell.
-        if (cell.display_widget_view) {
-            var that = this;
-            return cell.display_widget_view(this.create_view(model, {
-                cell: cell,
-                // Only set cell_index when view is displayed as directly.
-                cell_index: that.notebook.find_cell_index(cell)
-            })).then(function(view) {
-                that._handle_display_view(view);
-                view.trigger('displayed');
-                return view;
-            }).catch(utils.reject('Could not create or display view', true)); 
-        } else {
-            return Promise.reject(new Error('Cell does not have a `display_widget_view` method'));
+    WidgetManager.prototype.display_view_in_cell = function(msg, model) {
+      // Displays a view in a cell.
+      var that = this;
+      return this.display_widget_view(msg, this.create_view(model, {}))
+          .then(function (view) {
+            that._handle_display_view(view);
+            view.trigger('displayed');
+            return view;
+          }).catch(utils.reject('Could not create or display view', true));
+    };
+
+    WidgetManager.prototype.display_widget_view = function(msg, view_promise) {
+      // Display the view.
+      var kernel = this.comm_manager.kernel;
+      return view_promise.then(function(view) {
+        if (kernel) {
+          var callbacks = kernel.get_callbacks_for_msg(msg.parent_header.msg_id);
+          if (callbacks && callbacks.iopub) {
+            msg.content.data['text/html'] = view.$el.html();
+            callbacks.iopub.output(msg);
+          }
         }
+        return view;
+      });
     };
 
     WidgetManager.prototype._handle_display_view = function (view) {
@@ -203,34 +205,6 @@ define('ipython3_widgetmanager', [
             }, this);
         });
         return model.state_change;
-    };
-
-    WidgetManager.prototype.get_msg_cell = function (msg_id) {
-        var cell = null;
-        // First, check to see if the msg was triggered by cell execution.
-        if (this.notebook) {
-//TODO!!!            cell = this.notebook.get_msg_cell(msg_id);
-          cell = this.notebook.cells[0];
-        }
-        if (cell !== null) {
-            return cell;
-        }
-        // Second, check to see if a get_cell callback was defined
-        // for the message.  get_cell callbacks are registered for
-        // widget messages, so this block is actually checking to see if the
-        // message was triggered by a widget.
-        var kernel = this.comm_manager.kernel;
-        if (kernel) {
-            var callbacks = kernel.get_callbacks_for_msg(msg_id);
-            if (callbacks && callbacks.iopub &&
-                callbacks.iopub.get_cell !== undefined) {
-                return callbacks.iopub.get_cell();
-            }
-        }
-        
-        // Not triggered by a cell or widget (no get_cell callback 
-        // exists).
-        return null;
     };
 
     WidgetManager.prototype.callbacks = function (view) {

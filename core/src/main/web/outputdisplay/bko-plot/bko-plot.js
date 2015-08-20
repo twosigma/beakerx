@@ -25,6 +25,7 @@
     var CELL_TYPE = "bko-plot";
     return {
       template :
+          "<button href='#' class='btn btn-default' ng-click='savePlotAsSvg()'>Save as SVG</button>" +
           "<div id='plotTitle' class='plot-title'></div>" +
           "<div id='plotLegendContainer' class='plot-plotlegendcontainer' oncontextmenu='return false;'>" +
           "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
@@ -1741,6 +1742,37 @@
           scope.svg.selectAll("*").remove();
           scope.jqlegendcontainer.find(".plot-legendscrollablecontainer").remove();
         });
+
+        function addInlineStyles(element){
+          var styleEl = document.createElement('style');
+          styleEl.setAttribute('type', 'text/css');
+          styleEl.innerHTML = '<![CDATA[\n' + plotUtils.getElementStyles(element) + '\n]]>';
+
+          var defsEl = document.createElement('defs');
+          defsEl.appendChild(styleEl);
+          element.insertBefore(defsEl, element.firstChild);
+        }
+
+        function download(url, fileName){
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          a.click();
+          a.remove();
+        }
+
+        scope.savePlotAsSvg = function() {
+          var svg = scope.svg
+            .attr('xmlns', 'http://www.w3.org/2000/svg')
+            .node()
+            .cloneNode(true);
+
+          addInlineStyles(svg);
+
+          var html = svg.outerHTML;
+          download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), 'plot.svg');
+        };
+
       }
     };
   };

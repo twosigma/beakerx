@@ -411,6 +411,28 @@
 
       getHighlightedSize : function(size, highlighted) {
         return highlighted ? size + 2 : size;
+      },
+
+      getElementStyles : function(element){
+        var elementStyles = "";
+        var styleSheets = document.styleSheets;
+        for (var i = 0; i < styleSheets.length; i++) {
+          var cssRules = styleSheets[i].cssRules;
+          for (var j = 0; j < cssRules.length; j++) {
+            var cssRule = cssRules[j];
+            if (cssRule.style) {
+              try{
+                var childElements = element.querySelectorAll(cssRule.selectorText);
+                if (childElements.length > 0) {
+                  elementStyles += cssRule.selectorText + " { " + cssRule.style.cssText + " }\n";
+                }
+              } catch(err) {
+                //just ignore errors
+              }
+            }
+          }
+        }
+        return elementStyles;
       }
     };
   };

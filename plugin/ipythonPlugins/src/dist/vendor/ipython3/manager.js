@@ -143,15 +143,10 @@ define('ipython3_widgetmanager', [
 
     WidgetManager.prototype.display_widget_view = function(msg, view_promise) {
       // Display the view.
-      var kernel = this.comm_manager.kernel;
       return view_promise.then(function(view) {
-        if (kernel) {
-          var callbacks = kernel.get_callbacks_for_msg(msg.parent_header.msg_id);
-          if (callbacks && callbacks.iopub) {
-            msg.content.data['text/html'] = view.$el.html();
-            callbacks.iopub.output(msg);
-          }
-        }
+        bkHelper.timeout(function() {
+          view.$el.appendTo($('.ipy-output'))
+        }, 250);
         return view;
       });
     };

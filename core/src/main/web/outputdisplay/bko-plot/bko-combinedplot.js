@@ -24,7 +24,9 @@
   var retfunc = function(plotUtils, combinedplotFormatter, bkCellMenuPluginManager) {
     var CELL_TYPE = "bko-combinedplot";
     return {
-      template :  "<div id='combplotTitle' class='plot-title'></div>" +
+      template :
+          "<button href='#' class='btn btn-default' ng-click='saveCombinedPlotAsSvg()'>Save as SVG</button>" +
+          "<div id='combplotTitle' class='plot-title'></div>" +
           "<div id='combplotContainer' class='combplot-plotcontainer'>" +
           "<bk-output-display type='Plot' ng-repeat='m in models' model='m'></bk-output-display>" +
           "</div>",
@@ -206,6 +208,32 @@
         scope.$watch('getCellModel()', function() {
           scope.init();
         });
+
+        scope.saveCombinedPlotAsSvg = function() {
+
+          var plots = scope.stdmodel.plots;
+
+          var combinedSvg = $("<svg></svg>").attr('xmlns', 'http://www.w3.org/2000/svg');
+          //TODO add title
+          var combinedSvgHeight = 0;
+          for(var i = 0; i < plots.length; i++){
+            var svg = plots[i].getSvgToSave();
+            if(i !== 0){
+              for(var j=0; j<svg.childElementCount; j++){
+                var child = svg.children[j];
+                if(child.nodeName.toLowerCase() !== 'defs'){
+                  child.style['transform'] = 'translate(0px,' + combinedSvgHeight + 'px)';
+                }
+              }
+            }
+
+            combinedSvgHeight += $(svg).outerHeight();
+            combinedSvg.append(svg.children);
+          }
+
+          var html = combinedSvg[0].outerHTML;
+          plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), 'combinedplot.svg');
+        };
 
       }
     };

@@ -433,6 +433,24 @@
           }
         }
         return elementStyles;
+      },
+
+      addInlineStyles: function (element){
+        var styleEl = document.createElement('style');
+        styleEl.setAttribute('type', 'text/css');
+        styleEl.innerHTML = '<![CDATA[\n' + this.getElementStyles(element) + '\n]]>';
+
+        var defsEl = document.createElement('defs');
+        defsEl.appendChild(styleEl);
+        element.insertBefore(defsEl, element.firstChild);
+      },
+
+      download: function(url, fileName){
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        a.remove();
       }
     };
   };

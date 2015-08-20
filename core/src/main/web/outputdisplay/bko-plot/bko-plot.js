@@ -1536,6 +1536,9 @@
         scope.standardizeData = function() {
           var model = scope.model.getCellModel();
           scope.stdmodel = plotFormatter.standardizeModel(model, scope.prefs);
+          model.getSvgToSave = function(){
+            return scope.getSvgToSave();
+          }
         };
 
         scope.dumpState = function() {
@@ -1743,34 +1746,21 @@
           scope.jqlegendcontainer.find(".plot-legendscrollablecontainer").remove();
         });
 
-        function addInlineStyles(element){
-          var styleEl = document.createElement('style');
-          styleEl.setAttribute('type', 'text/css');
-          styleEl.innerHTML = '<![CDATA[\n' + plotUtils.getElementStyles(element) + '\n]]>';
-
-          var defsEl = document.createElement('defs');
-          defsEl.appendChild(styleEl);
-          element.insertBefore(defsEl, element.firstChild);
-        }
-
-        function download(url, fileName){
-          var a = document.createElement('a');
-          a.href = url;
-          a.download = fileName;
-          a.click();
-          a.remove();
-        }
-
-        scope.savePlotAsSvg = function() {
+        scope.getSvgToSave = function(){
           var svg = scope.svg
             .attr('xmlns', 'http://www.w3.org/2000/svg')
             .node()
             .cloneNode(true);
 
-          addInlineStyles(svg);
+          //TODO add title, legend
+          plotUtils.addInlineStyles(svg);
 
-          var html = svg.outerHTML;
-          download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), 'plot.svg');
+          return svg;
+        };
+
+        scope.savePlotAsSvg = function() {
+          var html = scope.getSvgToSave().outerHTML;
+          plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), 'plot.svg');
         };
 
       }

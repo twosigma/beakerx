@@ -154,10 +154,20 @@ define('ipython3_widget', [
                     this.trigger('msg:custom', msg.content.data.content);
                     break;
                 case 'display':
-                    this.state_change = this.state_change.then(function() {
-                        that.widget_manager.display_view(msg, that);
-                    }).catch(utils.reject('Could not process display view msg', true));
-                    break;
+                  var elem = $(document.createElement("div"));
+                  elem.addClass('ipy-output');
+                  var kernel = this.widget_manager.comm_manager.kernel;
+                  if (kernel) {
+                    var callbacks = kernel.get_callbacks_for_msg(msg.parent_header.msg_id);
+                    if (callbacks && callbacks.iopub) {
+                      msg.content.data['text/html'] = elem[0].outerHTML;
+                      callbacks.iopub.output(msg);
+                    }
+                  }
+                  this.state_change = this.state_change.then(function() {
+                      that.widget_manager.display_view(msg, that);
+                  }).catch(utils.reject('Could not process display view msg', true));
+                  break;
             }
         },
 

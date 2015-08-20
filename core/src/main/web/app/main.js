@@ -14,6 +14,9 @@
  *  limitations under the License.
  */
 
+define('jquery',[], function() {return $;});
+define('underscore',[], function() {return _;});
+
 requirejs.config({
   paths: {
     'ipython3_comm':             "../plugins/eval/ipythonPlugins/vendor/ipython3/comm",

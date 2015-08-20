@@ -202,7 +202,7 @@ define(function(require, exports, module) {
           });
 
           if (exitFlag) {
-            bkHelper.show1ButtonModal('Kernel restart completed','Success');
+            bkHelper.show1ButtonModal('Kernel exited, restart completed','Success');
           }
 
           var result = _(msg.payload).map(function(payload) {

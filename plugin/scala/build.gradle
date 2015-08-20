@@ -16,6 +16,9 @@
 apply plugin: 'java'
 apply plugin: 'scala'
 
+sourceCompatibility = javaSourceVersion
+targetCompatibility = javaTargetVersion
+
 repositories {
   mavenCentral()
 }

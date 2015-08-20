@@ -16,6 +16,9 @@
 apply plugin: 'java'
 apply plugin: 'groovy'
 
+sourceCompatibility = javaSourceVersion
+targetCompatibility = javaTargetVersion
+
 repositories {
   mavenCentral()
 }

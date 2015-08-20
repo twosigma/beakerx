@@ -60,12 +60,24 @@
         this.columnNames = data.columnNames.slice(0);
         this.types = data.types.slice(0);
         this.values = [];
-        for (var j in data.values) {
-          var vals = [];
-          for (var i in data.values[j]) {
-            vals.push( transformBack(data.values[j][i]));
+        if (data.hasIndex === "true" ) {
+          this.columnNames.shift();
+          this.types.shift();
+          for (var j in data.values) {
+            var vals = [];
+            for (var i=1; i<data.values[j].length; i++) {
+              vals.push( transformBack(data.values[j][i]));
+            }
+            this.values.push(vals);
           }
-          this.values.push(vals);
+        } else {
+          for (var j in data.values) {
+            var vals = [];
+            for (var i in data.values[j]) {
+              vals.push( transformBack(data.values[j][i]));
+            }
+            this.values.push(vals);
+          }
         }
       }
     };
@@ -219,16 +231,19 @@
         var o = {}
         o.type = "TableDisplay";
         o.subtype = "TableDisplay";
+        o.hasIndex = "true";
         o.values = [];
         for (var i in v.values) {
-          var row = [];
+          var row = [ i ];
           for (var j in v.values[i]) {
             row.push(transform(v.values[i][j], true));
           }
           o.values.push(row);
         }
-        o.types = _.isArray(v.types) ? v.types.slice(0) : undefined;
-        o.columnNames = _.isArray(v.columnNames) ? v.columnNames.slice(0) : undefined;
+        o.types = ["integer"];
+        if (_.isArray(v.types)) o.types = o.types.concat(v.types.slice(0));
+        o.columnNames = [ "Index" ];
+        if (_.isArray(v.columnNames)) o.columnNames = o.columnNames.concat(v.columnNames.slice(0));
         return o
       }
 

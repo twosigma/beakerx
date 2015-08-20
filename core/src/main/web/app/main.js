@@ -25,6 +25,7 @@ requirejs.config({
     'ipython3_utils':            "../plugins/eval/ipythonPlugins/vendor/ipython3/utils",
     'ipython3_initwidgets':      "../plugins/eval/ipythonPlugins/vendor/ipython3/init",
     'ipython3_keyboard':         "../plugins/eval/ipythonPlugins/vendor/ipython3/keyboard",
+    'ipython3_keyboardmanager':         "../plugins/eval/ipythonPlugins/vendor/ipython3/keyboardmanager",
     'ipython3_widgetmanager':    "../plugins/eval/ipythonPlugins/vendor/ipython3/manager",
     'backbone':                  "../plugins/eval/ipythonPlugins/vendor/ipython3/backbone-min",
     'ipython3_widget':           "../plugins/eval/ipythonPlugins/vendor/ipython3/widget",
@@ -39,6 +40,8 @@ requirejs.config({
     'ipython3_widget_selection': "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_selection",
     'ipython3_widget_selectioncontainer':
                                  "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_selectioncontainer",
-    'ipython3_widget_string':    "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_string"
+    'ipython3_widget_string':    "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_string",
+    'ipython3_actions':    "../plugins/eval/ipythonPlugins/vendor/ipython3/actions",
+    'ipython3_events':    "../plugins/eval/ipythonPlugins/vendor/ipython3/events"
   }
 });

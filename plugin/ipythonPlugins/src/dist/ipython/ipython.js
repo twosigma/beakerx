@@ -32,6 +32,7 @@ define(function(require, exports, module) {
   var now = function() {
     return new Date().getTime();
   };
+  var keyboard_manager = null;
   var IPythonProto = {
       pluginName: PLUGIN_NAME,
       cmMode: "python",
@@ -94,7 +95,7 @@ define(function(require, exports, module) {
                     on: function () {},
                     trigger: function () {}
                   },
-                  cells: angular.copy(bkHelper.getNotebookModel().cells)
+                  keyboard_manager: keyboard_manager
                 };
                 var ajaxsettings = {
                   processData : false,
@@ -317,7 +318,7 @@ define(function(require, exports, module) {
               var elem = $(document.createElement("div"));
               var oa = (ipyVersion == '3') ?
                   (new myPython.OutputArea({events: {trigger: function(){}},
-                    keyboard_manager: {register_events: function(){}}})) :
+                    keyboard_manager: keyboard_manager})) :
                       (new myPython.OutputArea(elem));
                   // twiddle the mime types? XXX
                   if (ipyVersion == '1') {
@@ -455,8 +456,12 @@ define(function(require, exports, module) {
         require('ipython3_kernel');
         require('ipython3_utils');
         require('ipython3_outputarea');
+        require('ipython3_keyboardmanager');
+        var events = require('ipython3_events');
+        keyboard_manager = new IPython.KeyboardManager({events: events});
       }
       myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : IPython);
+
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
         nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2"

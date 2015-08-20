@@ -53,7 +53,6 @@ define('ipython3_kernel', [
         this.bind_events();
         this.init_iopub_handlers();
         this.comm_manager = new comm.CommManager(this);
-//        this.widget_manager = undefined;  // XXX temporary
         this.widget_manager = new widgetmanager.WidgetManager(this.comm_manager, notebook);
         
         this.last_msg_id = null;

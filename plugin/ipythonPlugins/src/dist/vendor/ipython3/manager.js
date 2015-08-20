@@ -4,8 +4,9 @@
 define('ipython3_widgetmanager', [
   'ipython3_utils',
   'ipython3_namespace',
-  'ipython3_comm'
-], function (utils, IPython, comm) {
+  'ipython3_comm',
+  'backbone'
+], function (utils, IPython, comm, Backbone) {
     "use strict";
     //--------------------------------------------------------------------
     // WidgetManager class

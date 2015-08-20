@@ -250,16 +250,26 @@ def transformBack(obj):
                             out2.append(out3)
                         return out2
                 # transform to dataframe
-                # first column becomes the index
-                vals = out['values']
-                cnames = out['columnNames'][1:]
-                index = []
-                for x in range(0,len(vals)):
-                    index.append(transformBack(vals[x][0]))
-                    v = vals[x][1:]
-                    fixNaNsBack(v)
-                    vals[x] = v
-                return pandas.DataFrame(data=vals, columns=cnames, index=index)
+                if ('hasIndex' in out) and (out['hasIndex'] == "true"):
+                    print('pluto')
+                    # first column becomes the index
+                    vals = out['values']
+                    cnames = out['columnNames'][1:]
+                    index = []
+                    for x in range(0,len(vals)):
+                        index.append(transformBack(vals[x][0]))
+                        v = vals[x][1:]
+                        fixNaNsBack(v)
+                        vals[x] = v
+                    return pandas.DataFrame(data=vals, columns=cnames, index=index)
+                else:
+                    vals = out['values']
+                    cnames = out['columnNames']
+                    for x in range(0,len(vals)):
+                        v = vals[x]
+                        fixNaNsBack(v)
+                        vals[x] = v
+                    return pandas.DataFrame(data=vals, columns=cnames)
         return out
     if type(obj) == list:
         out = []
@@ -306,6 +316,7 @@ class DataFrameEncoder(json.JSONEncoder):
             out = {}
             out['type'] = "TableDisplay"
             out['subtype'] = "TableDisplay"
+            out['hasIndex'] = "true"
             out['columnNames'] = ['Index'] + obj.columns.tolist()
             vals = obj.values.tolist()
             idx = obj.index.tolist()

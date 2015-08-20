@@ -290,8 +290,9 @@ convertToJSON <- function(val, collapse) {
   }
   
   else if (class(val) == "data.frame") {  
-    p = "{ \"type\":\"TableDisplay\",\"subtype\":\"TableDisplay\",\"columnNames\":"
-    colNames = names(val)
+    p = "{ \"type\":\"TableDisplay\",\"subtype\":\"TableDisplay\",\"hasIndex\":\"true\",\"columnNames\":"
+    colNames = c('Index')
+    colNames = c(colNames,names(val))
     types = lapply(val,class)
     p = paste(p, toJSON(colNames), sep='')
     p = paste(p, ", \"values\": [", sep='')
@@ -303,24 +304,17 @@ convertToJSON <- function(val, collapse) {
 	    p = paste(p, ", ", sep='')
 	  }
       p = paste(p, "[", sep='')
-	  firstc <- TRUE
+	  p = paste(p, (r-1), sep='')
 	  for( c in 1:ncol(val)) {
-		if (firstc) {
-		  firstc <- FALSE
-		} else {
-		  p = paste(p, ", ", sep='')
-		}
+	    p = paste(p, ", ", sep='')
 		theval = val[r,c]
 		p = paste(p, convertToJSONNoRecurse(theval), sep='')
 	  }
       p = paste(p, "]", sep='')
     }    
-    p = paste(p, "], \"types\": [", sep='')
-    comma = FALSE
+    p = paste(p, "], \"types\": [ \"integer\"", sep='')
     for(i in 1:length(types)) {
-      if (comma)
-        p = paste(p, ",", sep='')
-      comma = TRUE
+      p = paste(p, ",", sep='')
       p = paste(p, getTypeName(c), sep='')
     }
     p = paste(p, "] }", sep='')
@@ -479,9 +473,11 @@ transformJSON <- function(tres) {
 		      if (exists("subtype", where=tres) && tres$subtype == "Matrix") {
                 tres <- df[ tres$columnNames ]
                 tres = matrix(as.numeric(unlist(tres)),nrow=nrow(tres))
+              } else if (exists("hasIndex", where=tres) && tres$hasIndex == "true") {
+              	tres <- subset(df[ tres$columnNames ], select = -c(Index) )
 		      } else {
                 tres <- df[ tres$columnNames ]
-              }
+           	  }
 		    }
 		  }
 		  else if (tres[["type"]] == "OutputContainer") {

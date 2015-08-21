@@ -485,6 +485,18 @@
           .attr("y", jqtitle.height())
           .style("text-anchor", "middle")
           .text(jqtitle.text());
+      },
+
+      drawPng: function(canvas, imgsrc){
+        var download = this.download;
+        var context = canvas.getContext("2d");
+        var image = new Image;
+        image.src = imgsrc;
+        image.onload = function () {
+          context.drawImage(image, 0, 0);
+          download(canvas.toDataURL("image/png"), 'plot.png');
+          context.clearRect(0, 0, canvas.width, canvas.height);
+        };
       }
     };
   };

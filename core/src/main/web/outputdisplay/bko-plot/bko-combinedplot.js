@@ -25,6 +25,7 @@
     var CELL_TYPE = "bko-combinedplot";
     return {
       template :
+          "<canvas></canvas>" +
           "<div id='combplotTitle' class='plot-title'></div>" +
           "<div id='combplotContainer' class='combplot-plotcontainer'>" +
           "<bk-output-display type='Plot' ng-repeat='m in models' model='m'></bk-output-display>" +
@@ -40,8 +41,14 @@
         $scope.model.saveAsSvg = function(){
           return $scope.saveAsSvg();
         };
+        $scope.model.saveAsPng = function(){
+          return $scope.saveAsPng();
+        };
       },
       link : function(scope, element, attrs) {
+        scope.canvas = element.find("canvas")[0];
+        scope.canvas.style.display="none";
+
         scope.initLayout = function() {
           var model = scope.stdmodel;
           if (model.title != null) {
@@ -211,8 +218,7 @@
           scope.init();
         });
 
-        scope.saveAsSvg = function() {
-
+        scope.getSvgToSave = function(){
           var plots = scope.stdmodel.plots;
 
           var combinedSvg = $("<svg></svg>").attr('xmlns', 'http://www.w3.org/2000/svg').attr('class', 'svg-export');
@@ -227,9 +233,38 @@
             combinedSvgHeight += $(svg).outerHeight(true);
             combinedSvg.append(svg.children);
           }
+          return combinedSvg[0];
+        };
 
-          var html = combinedSvg[0].outerHTML;
+        scope.saveAsSvg = function() {
+          var html = scope.getSvgToSave().outerHTML;
           plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), 'combinedplot.svg');
+        };
+
+        scope.saveAsPng = function() {
+          var svg = scope.getSvgToSave(),
+              W = scope.width || scope.stdmodel.plotSize.width,
+              title = element.find("#combplotTitle"),
+              container = element.find("#combplotContainer"),
+              H;
+
+          if (container.height() === 0) {
+            var hiddenParent = container.parents(".ng-hide:first");
+            hiddenParent.removeClass("ng-hide");
+            H = container.outerHeight(true) + title.outerHeight(true);
+            hiddenParent.addClass("ng-hide");
+          } else {
+            H = container.outerHeight(true) + title.outerHeight(true);
+          }
+
+          svg.setAttribute("width", W);
+          svg.setAttribute("height", H);
+
+          scope.canvas.width = W;
+          scope.canvas.height = H;
+
+          var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.outerHTML)));
+          plotUtils.drawPng(scope.canvas, imgsrc);
         };
 
       }

@@ -25,6 +25,7 @@
     var CELL_TYPE = "bko-plot";
     return {
       template :
+          "<canvas></canvas>" +
           "<div id='plotTitle' class='plot-title'></div>" +
           "<div id='plotLegendContainer' class='plot-plotlegendcontainer' oncontextmenu='return false;'>" +
           "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
@@ -51,6 +52,9 @@
         });
         $scope.model.saveAsSvg = function(){
           return $scope.saveAsSvg();
+        };
+        $scope.model.saveAsPng = function(){
+          return $scope.saveAsPng();
         };
       },
       link : function(scope, element, attrs) {
@@ -99,6 +103,9 @@
           scope.jqlegendcontainer = element.find("#plotLegendContainer");
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
+          scope.canvas = element.find("canvas")[0];
+
+          scope.canvas.style.display="none";
 
           var plotSize = scope.plotSize;
           scope.jqcontainer.css(plotSize);
@@ -1766,6 +1773,20 @@
         scope.saveAsSvg = function() {
           var html = scope.getSvgToSave().outerHTML;
           plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), 'plot.svg');
+        };
+
+        scope.saveAsPng = function() {
+          var svg = scope.getSvgToSave(),
+            W = scope.jqcontainer.outerWidth(true),
+            H = scope.jqcontainer.outerHeight(true) + scope.jqplottitle.outerHeight(true);
+          svg.setAttribute("width", W);
+          svg.setAttribute("height", H);
+
+          scope.canvas.width = W;
+          scope.canvas.height = H;
+
+          var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.outerHTML)));
+          plotUtils.drawPng(scope.canvas, imgsrc);
         };
 
       }

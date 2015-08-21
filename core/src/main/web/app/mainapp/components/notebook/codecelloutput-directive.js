@@ -175,12 +175,19 @@
         $scope.getAdditionalMenuItems = function() {
           var displayType = $scope.getOutputDisplayType() != null ? $scope.getOutputDisplayType() : $scope.applicableDisplays[0];
           if(displayType === "Plot" || displayType === "CombinedPlot"){
-            _saveAsItems = [{
-              name: "SVG",
-              action: function() {
-                $scope.outputDisplayModel.saveAsSvg();
-              }
-            }];
+            _saveAsItems = [
+              {
+                name: "SVG",
+                action: function () {
+                  $scope.outputDisplayModel.saveAsSvg();
+                }
+              },
+              {
+                name: "PNG",
+                action: function () {
+                  $scope.outputDisplayModel.saveAsPng();
+                }
+              }];
           }else{
             _saveAsItems = [];
           }

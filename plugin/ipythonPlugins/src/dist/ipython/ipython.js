@@ -194,9 +194,25 @@ define(function(require, exports, module) {
           if (ipyVersion != '1') {
             msg = msg.content;
           }
+
+          var exitFlag = _(msg.payload).find(function(payload) {
+            if (payload.source !== undefined && payload.source == 'ask_exit') {
+              return true;
+            }
+          });
+
+          if (exitFlag) {
+            bkHelper.show1ButtonModal('Kernel exited, restart completed','Success');
+          }
+
           var result = _(msg.payload).map(function(payload) {
             // XXX can other mime types appear here?
-            var text = (ipyVersion == '3') ? payload.data["text/plain"] : payload.text;
+            var text = "";
+            if (ipyVersion == '3') {
+              text = payload.data ? payload.data["text/plain"] : "";
+            } else {
+              text = payload.text;
+            }
             return myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(text));
           }).join("");
           if (finalStuff !== undefined) {

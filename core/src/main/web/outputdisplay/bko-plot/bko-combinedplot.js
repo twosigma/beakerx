@@ -25,7 +25,6 @@
     var CELL_TYPE = "bko-combinedplot";
     return {
       template :
-          "<button href='#' class='btn btn-default' ng-click='saveCombinedPlotAsSvg()'>Save as SVG</button>" +
           "<div id='combplotTitle' class='plot-title'></div>" +
           "<div id='combplotContainer' class='combplot-plotcontainer'>" +
           "<bk-output-display type='Plot' ng-repeat='m in models' model='m'></bk-output-display>" +
@@ -38,6 +37,9 @@
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
           $scope.model.resetShareMenuItems(newItems);
         });
+        $scope.model.saveAsSvg = function(){
+          return $scope.saveAsSvg();
+        };
       },
       link : function(scope, element, attrs) {
         scope.initLayout = function() {
@@ -209,7 +211,7 @@
           scope.init();
         });
 
-        scope.saveCombinedPlotAsSvg = function() {
+        scope.saveAsSvg = function() {
 
           var plots = scope.stdmodel.plots;
 

@@ -34,7 +34,7 @@
         cellId: "@"
       },
       controller: function($scope) {
-        var _shareMenuItems = [];
+        var _shareMenuItems = [], _saveAsItems = [];
 
         $scope.getOutputResult = function() {
           return $scope.model.result;
@@ -131,6 +131,10 @@
           return type;
         };
 
+        $scope.$watch('getOutputDisplayType()', function() {
+            $scope.outputCellMenuModel.refreshMenu();
+        });
+
         var getElapsedTimeString = function() {
           if ($scope.model.elapsedTime || $scope.model.elapsedTime === 0) {
             var elapsedTime = $scope.model.elapsedTime;
@@ -168,9 +172,19 @@
           return true;
         };
 
-        // to be used in output cell menu
-        $scope.outputCellMenuModel = (function() {
-          var _additionalMenuItems = [
+        $scope.getAdditionalMenuItems = function() {
+          var displayType = $scope.getOutputDisplayType() != null ? $scope.getOutputDisplayType() : $scope.applicableDisplays[0];
+          if(displayType === "Plot" || displayType === "CombinedPlot"){
+            _saveAsItems = [{
+              name: "SVG",
+              action: function() {
+                $scope.outputDisplayModel.saveAsSvg();
+              }
+            }];
+          }else{
+            _saveAsItems = [];
+          }
+          return [
             {
               name: "Share",
               items: function() {
@@ -193,10 +207,19 @@
               }
             },
             {
+              name: "Save Plot As",
+              items: _saveAsItems
+            },
+            {
               name: getElapsedTimeString,
               action: null
             }
           ];
+        };
+
+        // to be used in output cell menu
+        $scope.outputCellMenuModel = (function() {
+          var _additionalMenuItems = $scope.getAdditionalMenuItems();
           return {
             getApplicableDisplays: function() {
               return $scope.applicableDisplays;
@@ -209,6 +232,9 @@
             },
             getAdditionalMenuItems: function() {
               return _additionalMenuItems;
+            },
+            refreshMenu: function() {
+              _additionalMenuItems = $scope.getAdditionalMenuItems();
             }
           };
         })();

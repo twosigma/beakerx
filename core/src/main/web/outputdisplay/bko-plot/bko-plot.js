@@ -25,7 +25,6 @@
     var CELL_TYPE = "bko-plot";
     return {
       template :
-          "<button href='#' class='btn btn-default' ng-click='savePlotAsSvg()'>Save as SVG</button>" +
           "<div id='plotTitle' class='plot-title'></div>" +
           "<div id='plotLegendContainer' class='plot-plotlegendcontainer' oncontextmenu='return false;'>" +
           "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
@@ -50,6 +49,9 @@
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
           $scope.model.resetShareMenuItems(newItems);
         });
+        $scope.model.saveAsSvg = function(){
+          return $scope.saveAsSvg();
+        };
       },
       link : function(scope, element, attrs) {
         // rendering code
@@ -1758,7 +1760,7 @@
           return svg;
         };
 
-        scope.savePlotAsSvg = function() {
+        scope.saveAsSvg = function() {
           var html = scope.getSvgToSave().outerHTML;
           plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), 'plot.svg');
         };

@@ -1750,11 +1750,14 @@
 
         scope.getSvgToSave = function(){
           var svg = scope.svg
-            .attr('xmlns', 'http://www.w3.org/2000/svg')
             .node()
             .cloneNode(true);
+          svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+          svg.setAttribute('class', 'svg-export');
 
-          //TODO add title, legend
+          var plotTitle = scope.jqplottitle;
+          plotUtils.translateChildren(svg, 0, plotTitle.outerHeight(true));
+          plotUtils.addTitleToSvg(svg, plotTitle);
           plotUtils.addInlineStyles(svg);
 
           return svg;

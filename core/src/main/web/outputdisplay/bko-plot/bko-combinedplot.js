@@ -215,21 +215,16 @@
 
           var plots = scope.stdmodel.plots;
 
-          var combinedSvg = $("<svg></svg>").attr('xmlns', 'http://www.w3.org/2000/svg');
-          //TODO add title
-          var combinedSvgHeight = 0;
-          for(var i = 0; i < plots.length; i++){
-            var svg = plots[i].getSvgToSave();
-            if(i !== 0){
-              for(var j=0; j<svg.childElementCount; j++){
-                var child = svg.children[j];
-                if(child.nodeName.toLowerCase() !== 'defs'){
-                  child.style['transform'] = 'translate(0px,' + combinedSvgHeight + 'px)';
-                }
-              }
-            }
+          var combinedSvg = $("<svg></svg>").attr('xmlns', 'http://www.w3.org/2000/svg').attr('class', 'svg-export');
 
-            combinedSvgHeight += $(svg).outerHeight();
+          var plotTitle = element.find("#combplotTitle");
+          plotUtils.addTitleToSvg(combinedSvg[0], plotTitle);
+
+          var combinedSvgHeight = plotTitle.outerHeight(true);
+          for (var i = 0; i < plots.length; i++) {
+            var svg = plots[i].getSvgToSave();
+            plotUtils.translateChildren(svg, 0, combinedSvgHeight);
+            combinedSvgHeight += $(svg).outerHeight(true);
             combinedSvg.append(svg.children);
           }
 

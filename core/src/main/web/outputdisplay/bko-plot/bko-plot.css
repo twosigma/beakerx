@@ -236,3 +236,6 @@
   stroke: black;
   stroke-width: 1.5;
 }
+.svg-export {
+  font-size: 13px;
+}

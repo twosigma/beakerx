@@ -423,7 +423,7 @@
             if (cssRule.style) {
               try{
                 var childElements = element.querySelectorAll(cssRule.selectorText);
-                if (childElements.length > 0) {
+                if (childElements.length > 0 || element.matches(cssRule.selectorText)) {
                   elementStyles += cssRule.selectorText + " { " + cssRule.style.cssText + " }\n";
                 }
               } catch(err) {
@@ -451,6 +451,40 @@
         a.download = fileName;
         a.click();
         a.remove();
+      },
+
+      translate: function(jqelement, x, y){
+        var getNumber = function(str){
+          return parseFloat(str.substring(0, str.length - 2));
+        };
+        var transform = jqelement.css('transform');
+        var elementTranslate = { x: 0, y: 0 };
+        if(transform && transform.indexOf("translate") != -1){
+          var translate = transform.match(/translate(.*)/)[1].substring(1);
+          var translateValues = translate.substring(0, translate.indexOf(')')).split(", ");
+          elementTranslate.x = getNumber(translateValues[0]);
+          elementTranslate.y = getNumber(translateValues[1]);
+        }
+        jqelement.css("transform", "translate(" + (elementTranslate.x + x) + "px, " + (elementTranslate.y + y) + "px)")
+      },
+
+      translateChildren: function(element, x, y){
+        for (var j = 0; j < element.childElementCount; j++) {
+          var child = element.children[j];
+          if (child.nodeName.toLowerCase() !== 'defs') {
+            this.translate($(child), x, y);
+          }
+        }
+      },
+
+      addTitleToSvg: function(svg, jqtitle){
+        d3.select(svg).insert("text", "g")
+          .attr("id", jqtitle.attr("id"))
+          .attr("class", jqtitle.attr("class"))
+          .attr("x", jqtitle.width() / 2)
+          .attr("y", jqtitle.height())
+          .style("text-anchor", "middle")
+          .text(jqtitle.text());
       }
     };
   };

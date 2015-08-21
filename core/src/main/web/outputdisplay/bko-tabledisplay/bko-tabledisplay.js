@@ -246,7 +246,29 @@
           //jscs:enable
         };
         $scope.doCopyToClipboard = function(idx) {
-          // this is handled by the invisible flash movie
+          if (!bkUtils.isElectron) {
+            var getTableData = function() {
+              var data = $scope.table.rows(function(index, data, node) {
+                return $scope.selected[index];
+              }).data();
+              if (data === undefined || data.length === 0) {
+                data = $scope.table.rows().data();
+              }
+              var out = $scope.exportTo(data, 'tabs');
+              return out;
+            }
+            var executeCopy = function (text) {
+              var input = document.createElement('textarea');
+              document.body.appendChild(input);
+              input.value = text;
+              input.focus();
+              input.select();
+              document.execCommand('Copy');
+              input.remove();
+            }
+            var data = getTableData();
+            executeCopy(data);
+          }
         };
 
         $scope.getCellIdx      =  [];
@@ -874,26 +896,17 @@
         };
 
         scope.menuToggle = function() {
-          var getTableData = function() {
-            var data = scope.table.rows(function(index, data, node) {
-              return scope.selected[index];
-            }).data();
-            if (data === undefined || data.length === 0) {
-              data = scope.table.rows().data();
+          if (bkUtils.isElectron) {
+            var getTableData = function() {
+              var data = scope.table.rows(function(index, data, node) {
+                return scope.selected[index];
+              }).data();
+              if (data === undefined || data.length === 0) {
+                data = scope.table.rows().data();
+              }
+              var out = scope.exportTo(data, 'tabs');
+              return out;
             }
-            var out = scope.exportTo(data, 'tabs');
-            return out;
-          }
-          if ((!bkUtils.isElectron) && (scope.clipclient === undefined)) {
-            scope.clipclient = new ZeroClipboard();
-            var d = document.getElementById(scope.id + '_dt_copy');
-            scope.clipclient.clip(d);
-
-            scope.clipclient.on('copy', function(event) {
-              var clipboard = event.clipboardData;
-              clipboard.setData('text/plain', getTableData());
-            });
-          } else if (bkUtils.isElectron) {
             document.getElementById(scope.id + '_dt_copy').onclick = function() {
               bkElectron.clipboard.writeText(getTableData(), 'text/plain');
             }

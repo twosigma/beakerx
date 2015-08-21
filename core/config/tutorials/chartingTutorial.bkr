@@ -7056,6 +7056,230 @@
             "lineCount": 3
         },
         {
+            "id": "sectionRsx3xB",
+            "type": "section",
+            "title": "Adding text",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "code3AqAel",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def plot = new Plot()",
+                    "def xs = (1..10)",
+                    "def ys = [8.6, 6.1, 7.4, 2.5, 0.4, 3.0, 0.5, 1.7, 8.4, 1]",
+                    "for(int i = 0; i < xs.size(); i++){",
+                    "  plot << new Text(x: xs[i] + 0.1, y: ys[i] - 0.2, text: ys[i])",
+                    "}",
+                    "plot << new Line(displayName: \"Line\", x: xs, y: ys, width: 2)",
+                    "plot << new Points(displayName: \"\", x: xs, y: ys, size: 6)",
+                    ""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Plot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": null,
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "show_legend": false,
+                    "use_tool_tip": true,
+                    "graphics_list": [
+                        {
+                            "type": "Line",
+                            "x": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10
+                            ],
+                            "y": [
+                                8.6,
+                                6.1,
+                                7.4,
+                                2.5,
+                                0.4,
+                                3,
+                                0.5,
+                                1.7,
+                                8.4,
+                                1
+                            ],
+                            "visible": true,
+                            "display_name": "Line",
+                            "color": "#FFC0504D",
+                            "width": 2,
+                            "yAxis": null
+                        },
+                        {
+                            "type": "Points",
+                            "x": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10
+                            ],
+                            "y": [
+                                8.6,
+                                6.1,
+                                7.4,
+                                2.5,
+                                0.4,
+                                3,
+                                0.5,
+                                1.7,
+                                8.4,
+                                1
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "size": 6,
+                            "shape": "DEFAULT",
+                            "fill": null,
+                            "color": "#FF4F81BD",
+                            "outline_color": null,
+                            "yAxis": null
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [
+                        {
+                            "type": "Text",
+                            "x": 1.1,
+                            "y": 8.4,
+                            "show_pointer": false,
+                            "text": "8.6"
+                        },
+                        {
+                            "type": "Text",
+                            "x": 2.1,
+                            "y": 5.9,
+                            "show_pointer": false,
+                            "text": "6.1"
+                        },
+                        {
+                            "type": "Text",
+                            "x": 3.1,
+                            "y": 7.2,
+                            "show_pointer": false,
+                            "text": "7.4"
+                        },
+                        {
+                            "type": "Text",
+                            "x": 4.1,
+                            "y": 2.3,
+                            "show_pointer": false,
+                            "text": "2.5"
+                        },
+                        {
+                            "type": "Text",
+                            "x": 5.1,
+                            "y": 0.2,
+                            "show_pointer": false,
+                            "text": "0.4"
+                        },
+                        {
+                            "type": "Text",
+                            "x": 6.1,
+                            "y": 2.8,
+                            "show_pointer": false,
+                            "text": "3.0"
+                        },
+                        {
+                            "type": "Text",
+                            "x": 7.1,
+                            "y": 0.3,
+                            "show_pointer": false,
+                            "text": "0.5"
+                        },
+                        {
+                            "type": "Text",
+                            "x": 8.1,
+                            "y": 1.5,
+                            "show_pointer": false,
+                            "text": "1.7"
+                        },
+                        {
+                            "type": "Text",
+                            "x": 9.1,
+                            "y": 8.2,
+                            "show_pointer": false,
+                            "text": "8.4"
+                        },
+                        {
+                            "type": "Text",
+                            "x": 10.1,
+                            "y": 0.8,
+                            "show_pointer": false,
+                            "text": "1"
+                        }
+                    ],
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": "",
+                            "auto_range": true,
+                            "auto_range_includes_zero": true,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "log": false,
+                            "log_base": 10
+                        }
+                    ],
+                    "x_auto_range": true,
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": true,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10,
+                    "log_y": false,
+                    "timezone": null,
+                    "crosshair": null,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "omit_checkboxes": false,
+                    "legend_layout": "VERTICAL"
+                },
+                "selectedType": "Plot",
+                "pluginName": "Groovy",
+                "shellId": "7dd1ae42-e05f-4684-a333-b9840e3169e2",
+                "elapsedTime": 658
+            },
+            "evaluatorReader": true,
+            "lineCount": 9
+        },
+        {
             "id": "section3cKrLr",
             "type": "section",
             "title": "Adding tooltips, legend box, cursor hint",

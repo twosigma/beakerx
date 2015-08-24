@@ -145,7 +145,7 @@ define('ipython3_widgetmanager', [
       // Display the view.
       return view_promise.then(function(view) {
         bkHelper.timeout(function() {
-          view.$el.appendTo($('.ipy-output'))
+          view.$el.appendTo($('.ipy-output .widget-area .widget-subarea'))
         }, 250);
         return view;
       });

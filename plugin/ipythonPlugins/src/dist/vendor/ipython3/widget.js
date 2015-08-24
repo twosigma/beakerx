@@ -156,6 +156,12 @@ define('ipython3_widget', [
                 case 'display':
                   var elem = $(document.createElement("div"));
                   elem.addClass('ipy-output');
+                  var widget_area = $(document.createElement("div"));
+                  widget_area.addClass('widget-area');
+                  var widget_subarea = $(document.createElement("div"));
+                  widget_subarea.addClass('widget-subarea');
+                  widget_subarea.appendTo(widget_area);
+                  widget_area.appendTo(elem);
                   var kernel = this.widget_manager.comm_manager.kernel;
                   if (kernel) {
                     var callbacks = kernel.get_callbacks_for_msg(msg.parent_header.msg_id);

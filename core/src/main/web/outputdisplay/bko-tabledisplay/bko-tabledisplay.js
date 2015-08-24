@@ -246,7 +246,34 @@
           //jscs:enable
         };
         $scope.doCopyToClipboard = function(idx) {
-          // this is handled by the invisible flash movie
+          var queryCommandEnabled = true;
+          try {
+            document.execCommand('Copy');
+          } catch (e) {
+            queryCommandEnabled = false;
+          }
+          if (!bkUtils.isElectron && queryCommandEnabled) {
+            var getTableData = function() {
+              var data = $scope.table.rows(function(index, data, node) {
+                return $scope.selected[index];
+              }).data();
+              if (data === undefined || data.length === 0) {
+                data = $scope.table.rows().data();
+              }
+              var out = $scope.exportTo(data, 'tabs');
+              return out;
+            }
+            var executeCopy = function (text) {
+              var input = document.createElement('textarea');
+              document.body.appendChild(input);
+              input.value = text;
+              input.select();
+              document.execCommand('Copy');
+              input.remove();
+            }
+            var data = getTableData();
+            executeCopy(data);
+          }
         };
 
         $scope.getCellIdx      =  [];
@@ -910,13 +937,20 @@
             var out = scope.exportTo(data, 'tabs');
             return out;
           }
-          if ((!bkUtils.isElectron) && (scope.clipclient === undefined)) {
+
+          var queryCommandEnabled = true;
+          try {
+            document.execCommand('Copy');
+          } catch (e) {
+            queryCommandEnabled = false;
+          }
+
+          if ((!bkUtils.isElectron) && (scope.clipclient === undefined) && !queryCommandEnabled) {
             scope.clipclient = new ZeroClipboard();
             var d = document.getElementById(scope.id + '_dt_copy');
             scope.clipclient.clip(d);
-
             scope.clipclient.on('copy', function(event) {
-              var clipboard = event.clipboardData;
+              var clipboard = event.clipboardData;	
               clipboard.setData('text/plain', getTableData());
             });
           } else if (bkUtils.isElectron) {

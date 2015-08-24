@@ -29,3 +29,19 @@
   font-weight: bold;
   font-style: normal;
 }
+
+@font-face {
+  font-family: 'Roboto mono';
+  src: url("../fonts/roboto/RobotoMono-Regular.ttf");
+  src: url("../fonts/roboto/RobotoMono-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Roboto mono';
+  src: url("../fonts/roboto/RobotoMono-Bold.ttf");
+  src: url("../fonts/roboto/RobotoMono-Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}

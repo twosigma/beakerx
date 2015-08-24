@@ -67,16 +67,17 @@ convertToJSONArray <- function(val) {
 convertToJSONObjectNoRecurse <- function(val) {
   p = "{ "
   first <- TRUE
-  for (obj in names(val)) {
+  n <- names(val)
+  for (i in 1:length(n)) {
     if (first) {
   	  first <- FALSE
     } else {
   	  p = paste(p, ", ", sep='')
     }
     p = paste(p, '"', sep='')
-    p = paste(p, obj, sep='')
+    p = paste(p, n[i], sep='')
     p = paste(p, '": ', sep='')
-    p = paste(p, convertToJSONNoRecurse(val[[obj]]), sep='')
+    p = paste(p, convertToJSONNoRecurse(val[[i]]), sep='')
   }
   p = paste(p, " }", sep='')
   return (p)
@@ -134,16 +135,16 @@ isListOfDictionaries <- function(l) {
 
 convertToDataTableDictionary <- function(l) {
   p = "{ \"type\":\"TableDisplay\",\"subtype\":\"Dictionary\",\"columnNames\": [\"Key\",\"Value\"], \"values\": ["
-  n = names(l)
   comma = FALSE
+  n = names(l)
   for (i in 1:length(n)) {
     if (comma)
       p = paste(p, ",", sep='')
 	comma = TRUE
     p = paste(p, "[\"", sep='')
-    p = paste(p, gsub("\"","\\\"",as.character(n[[i]])), sep='')
+    p = paste(p, gsub("\"","\\\"",as.character(n[i])), sep='')
     p = paste(p, "\",\"", sep='')
-    p = paste(p, gsub("\"","\\\"",as.character(l[[n[[i]]]])), sep='')
+    p = paste(p, gsub("\"","\\\"",as.character(l[i])), sep='')
     p = paste(p, "\"]", sep='')
   }
   
@@ -206,7 +207,7 @@ convertToJSONNoRecurse <- function(val) {
       }
     } else {
       # convert to dictionary     
-	  o = convertToJSONObject(val)
+	  o = convertToJSONObjectNoRecurse(val)
     }
   } else if (class(val) == "table") {
     o = toJSON(val)
@@ -236,8 +237,7 @@ convertToJSONNoRecurse <- function(val) {
   return (o)
 }
   
-convertToJSON <- function(val, collapse) {
- 
+convertToJSON <- function(val, collapse) { 
   if (class(val) == "numeric" || class(val) == "integer" || class(val) == "character" || class(val) == "logical" || class(val) == "factor") {
     if (is.null(names(val))) {
   	  if (collapse && length(val) == 1) {
@@ -272,7 +272,7 @@ convertToJSON <- function(val, collapse) {
       o = convertToDataTableDictionary(val)
     } else {
       # convert to dictionary     
-	  o = convertToJSONObject(val) 
+	  o = convertToJSONObjectNoRecurse(val) 
 	}
 	
   } else if (class(val) == "complex") {
@@ -290,8 +290,9 @@ convertToJSON <- function(val, collapse) {
   }
   
   else if (class(val) == "data.frame") {  
-    p = "{ \"type\":\"TableDisplay\",\"subtype\":\"TableDisplay\",\"columnNames\":"
-    colNames = names(val)
+    p = "{ \"type\":\"TableDisplay\",\"subtype\":\"TableDisplay\",\"hasIndex\":\"true\",\"columnNames\":"
+    colNames = c('Index')
+    colNames = c(colNames,names(val))
     types = lapply(val,class)
     p = paste(p, toJSON(colNames), sep='')
     p = paste(p, ", \"values\": [", sep='')
@@ -303,24 +304,17 @@ convertToJSON <- function(val, collapse) {
 	    p = paste(p, ", ", sep='')
 	  }
       p = paste(p, "[", sep='')
-	  firstc <- TRUE
+	  p = paste(p, (r-1), sep='')
 	  for( c in 1:ncol(val)) {
-		if (firstc) {
-		  firstc <- FALSE
-		} else {
-		  p = paste(p, ", ", sep='')
-		}
+	    p = paste(p, ", ", sep='')
 		theval = val[r,c]
 		p = paste(p, convertToJSONNoRecurse(theval), sep='')
 	  }
       p = paste(p, "]", sep='')
     }    
-    p = paste(p, "], \"types\": [", sep='')
-    comma = FALSE
+    p = paste(p, "], \"types\": [ \"integer\"", sep='')
     for(i in 1:length(types)) {
-      if (comma)
-        p = paste(p, ",", sep='')
-      comma = TRUE
+      p = paste(p, ",", sep='')
       p = paste(p, getTypeName(c), sep='')
     }
     p = paste(p, "] }", sep='')
@@ -479,9 +473,11 @@ transformJSON <- function(tres) {
 		      if (exists("subtype", where=tres) && tres$subtype == "Matrix") {
                 tres <- df[ tres$columnNames ]
                 tres = matrix(as.numeric(unlist(tres)),nrow=nrow(tres))
+              } else if (exists("hasIndex", where=tres) && tres$hasIndex == "true") {
+              	tres <- subset(df[ tres$columnNames ], select = -c(Index) )
 		      } else {
                 tres <- df[ tres$columnNames ]
-              }
+           	  }
 		    }
 		  }
 		  else if (tres[["type"]] == "OutputContainer") {

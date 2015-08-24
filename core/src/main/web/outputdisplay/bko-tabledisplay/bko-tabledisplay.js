@@ -658,10 +658,23 @@
           }
 
           // copy basic data
-          scope.columnNames = model.columnNames;
+          if (model.columnNames !== undefined)
+            scope.columnNames = model.columnNames.slice(0);
+          else
+            scope.columnNames = undefined;
           scope.timeStrings = model.timeStrings;
           scope.tz          = model.timeZone;
-          scope.types       = model.types;
+          if (model.types !== undefined)
+            scope.types = model.types.slice(0);
+          else
+            scope.types = undefined;
+          
+          if (model.hasIndex === "true") {
+            if (scope.columnNames !== undefined)
+              scope.columnNames.shift();
+            if (scope.types !== undefined)
+              scope.types.shift();
+          }
 
           // compute how to display columns (remind: dummy column to keep server ordering)
           if (scope.savedstate !== undefined) {
@@ -703,18 +716,31 @@
         };
 
         scope.doCreateData = function(model) {
-          // create a dummy column to keep server ordering
-          var data = [];
-          var r;
-          var selected = [];
-          for (r = 0; r < model.values.length; r++) {
-            var row = [];
-            row.push(r);
-            data.push(row.concat(model.values[r]));
-            selected.push(false);
+          // create a dummy column to keep server ordering if not already present
+          if (model.hasIndex === undefined || model.hasIndex !== "true") {
+            var data = [];
+            var r;
+            var selected = [];
+            for (r = 0; r < model.values.length; r++) {
+              var row = [];
+              row.push(r);
+              data.push(row.concat(model.values[r]));
+              selected.push(false);
+            }
+            scope.data = data;
+            scope.selected = selected;
+          } else {
+            var data = [];
+            var r;
+            var selected = [];
+            for (r = 0; r < model.values.length; r++) {
+              var row = [];
+              data.push(row.concat(model.values[r]));
+              selected.push(false);
+            }
+            scope.data = data;
+            scope.selected = selected;
           }
-          scope.data = data;
-          scope.selected = selected;
         };
         //jscs:disable
         scope.update_size = function() {

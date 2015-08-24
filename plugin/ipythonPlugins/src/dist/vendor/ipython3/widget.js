@@ -156,6 +156,7 @@ define('ipython3_widget', [
                 case 'display':
                   var elem = $(document.createElement("div"));
                   elem.addClass('ipy-output');
+                  elem.attr('data-msg-id', msg.parent_header.msg_id)
                   var widget_area = $(document.createElement("div"));
                   widget_area.addClass('widget-area');
                   var widget_subarea = $(document.createElement("div"));

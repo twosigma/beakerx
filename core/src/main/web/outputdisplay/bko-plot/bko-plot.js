@@ -1708,11 +1708,11 @@
         });
 
         scope.getCellWidth = function () {
-          return scope.container.node().getBoundingClientRect().width;
+          return scope.jqcontainer.width();
         };
 
         scope.getCellHeight= function () {
-          return scope.container.node().getBoundingClientRect().height;
+          return scope.jqcontainer.height();
         };
 
         var watchCellSize = function () {

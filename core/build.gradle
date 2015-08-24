@@ -18,6 +18,9 @@ apply plugin:'java'
 apply plugin:'application'
 mainClassName = 'com.twosigma.beaker.core.Main'
 
+sourceCompatibility = javaSourceVersion
+targetCompatibility = javaTargetVersion
+
 def windows() {
   return System.getProperty('os.name').contains('Windows')
 }

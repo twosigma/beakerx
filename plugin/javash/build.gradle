@@ -15,6 +15,9 @@
  */
 apply plugin: 'java'
 
+sourceCompatibility = javaSourceVersion
+targetCompatibility = javaTargetVersion
+
 repositories {
   mavenCentral()
 }

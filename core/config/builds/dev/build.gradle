@@ -17,6 +17,8 @@ def coreDir = file("../../../") // TODO, this can come from a property
 
 ext {
   evalPluginDir = new File(coreDir, "config/plugins/eval")
+  javaSourceVersion = JavaVersion.VERSION_1_7
+  javaTargetVersion = JavaVersion.VERSION_1_7
 }
 
 task build

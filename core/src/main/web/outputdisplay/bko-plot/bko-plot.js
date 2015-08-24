@@ -1763,30 +1763,36 @@
           svg.setAttribute('class', 'svg-export');
 
           var plotTitle = scope.jqplottitle;
-          plotUtils.translateChildren(svg, 0, plotTitle.outerHeight(true));
-          plotUtils.addTitleToSvg(svg, plotTitle);
+          var titleOuterHeight = plotUtils.getElementActualHeight(plotTitle, true);
+
+          plotUtils.translateChildren(svg, 0, titleOuterHeight);
+          plotUtils.addTitleToSvg(svg, plotTitle, {
+            width: plotTitle.width(),
+            height: plotUtils.getElementActualHeight(plotTitle)
+          });
           plotUtils.addInlineStyles(svg);
+
+          svg.setAttribute("width",  scope.jqcontainer.outerWidth(true));
+          svg.setAttribute("height", scope.jqcontainer.outerHeight(true) + titleOuterHeight);
 
           return svg;
         };
 
         scope.saveAsSvg = function() {
           var html = scope.getSvgToSave().outerHTML;
-          plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), 'plot.svg');
+          var fileName = _.isEmpty(scope.stdmodel.title) ? 'plot' : scope.stdmodel.title;
+          plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), fileName + ".svg");
         };
 
         scope.saveAsPng = function() {
-          var svg = scope.getSvgToSave(),
-            W = scope.jqcontainer.outerWidth(true),
-            H = scope.jqcontainer.outerHeight(true) + scope.jqplottitle.outerHeight(true);
-          svg.setAttribute("width", W);
-          svg.setAttribute("height", H);
+          var svg = scope.getSvgToSave();
 
-          scope.canvas.width = W;
-          scope.canvas.height = H;
+          scope.canvas.width = svg.getAttribute("width");
+          scope.canvas.height = svg.getAttribute("height");
 
           var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.outerHTML)));
-          plotUtils.drawPng(scope.canvas, imgsrc);
+          var fileName = _.isEmpty(scope.stdmodel.title) ? 'plot' : scope.stdmodel.title;
+          plotUtils.drawPng(scope.canvas, imgsrc, fileName + ".png");
         };
 
       }

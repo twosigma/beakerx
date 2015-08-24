@@ -428,6 +428,7 @@
                 }
               } catch(err) {
                 //just ignore errors
+                //http://bugs.jquery.com/ticket/13881#comment:1
               }
             }
           }
@@ -477,26 +478,39 @@
         }
       },
 
-      addTitleToSvg: function(svg, jqtitle){
+      addTitleToSvg: function(svg, jqtitle, titleSize){
         d3.select(svg).insert("text", "g")
           .attr("id", jqtitle.attr("id"))
           .attr("class", jqtitle.attr("class"))
-          .attr("x", jqtitle.width() / 2)
-          .attr("y", jqtitle.height())
+          .attr("x", titleSize.width / 2)
+          .attr("y", titleSize.height)
           .style("text-anchor", "middle")
           .text(jqtitle.text());
       },
 
-      drawPng: function(canvas, imgsrc){
+      drawPng: function(canvas, imgsrc, fileName){
         var download = this.download;
         var context = canvas.getContext("2d");
         var image = new Image;
         image.src = imgsrc;
         image.onload = function () {
           context.drawImage(image, 0, 0);
-          download(canvas.toDataURL("image/png"), 'plot.png');
+          download(canvas.toDataURL("image/png"), fileName);
           context.clearRect(0, 0, canvas.width, canvas.height);
         };
+      },
+
+      getElementActualHeight: function(jqelement, withMargins){
+        var height;
+        if (jqelement.is(":visible")) {
+          height = jqelement.outerHeight(!!withMargins);
+        } else {
+          var hiddenParent = jqelement.parents(".ng-hide:first");
+          hiddenParent.removeClass("ng-hide");
+          height = jqelement.outerHeight(!!withMargins);
+          hiddenParent.addClass("ng-hide");
+        }
+        return height;
       }
     };
   };

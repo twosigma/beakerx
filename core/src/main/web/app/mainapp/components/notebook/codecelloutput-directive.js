@@ -34,7 +34,8 @@
         cellId: "@"
       },
       controller: function($scope) {
-        var _shareMenuItems = [], _saveAsItems = [];
+        var _shareMenuItems = [];
+        var _saveAsItems = [];
 
         $scope.getOutputResult = function() {
           return $scope.model.result;

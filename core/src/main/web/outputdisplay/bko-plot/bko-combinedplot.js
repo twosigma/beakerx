@@ -224,47 +224,39 @@
           var combinedSvg = $("<svg></svg>").attr('xmlns', 'http://www.w3.org/2000/svg').attr('class', 'svg-export');
 
           var plotTitle = element.find("#combplotTitle");
-          plotUtils.addTitleToSvg(combinedSvg[0], plotTitle);
 
-          var combinedSvgHeight = plotTitle.outerHeight(true);
+          plotUtils.addTitleToSvg(combinedSvg[0], plotTitle, {
+            width: plotTitle.width(),
+            height: plotUtils.getElementActualHeight(plotTitle)
+          });
+
+          var combinedSvgHeight = plotUtils.getElementActualHeight(plotTitle, true);
           for (var i = 0; i < plots.length; i++) {
             var svg = plots[i].getSvgToSave();
             plotUtils.translateChildren(svg, 0, combinedSvgHeight);
             combinedSvgHeight += $(svg).outerHeight(true);
             combinedSvg.append(svg.children);
           }
+          combinedSvg.attr("width", scope.width || scope.stdmodel.plotSize.width);
+          combinedSvg.attr("height", combinedSvgHeight);
           return combinedSvg[0];
         };
 
         scope.saveAsSvg = function() {
           var html = scope.getSvgToSave().outerHTML;
-          plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), 'combinedplot.svg');
+          var fileName = _.isEmpty(scope.stdmodel.title) ? 'combinedplot' : scope.stdmodel.title;
+          plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), fileName + '.svg');
         };
 
         scope.saveAsPng = function() {
-          var svg = scope.getSvgToSave(),
-              W = scope.width || scope.stdmodel.plotSize.width,
-              title = element.find("#combplotTitle"),
-              container = element.find("#combplotContainer"),
-              H;
+          var svg = scope.getSvgToSave();
 
-          if (container.height() === 0) {
-            var hiddenParent = container.parents(".ng-hide:first");
-            hiddenParent.removeClass("ng-hide");
-            H = container.outerHeight(true) + title.outerHeight(true);
-            hiddenParent.addClass("ng-hide");
-          } else {
-            H = container.outerHeight(true) + title.outerHeight(true);
-          }
-
-          svg.setAttribute("width", W);
-          svg.setAttribute("height", H);
-
-          scope.canvas.width = W;
-          scope.canvas.height = H;
+          scope.canvas.width = svg.getAttribute("width");
+          scope.canvas.height = svg.getAttribute("height");
 
           var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.outerHTML)));
-          plotUtils.drawPng(scope.canvas, imgsrc);
+          var fileName = _.isEmpty(scope.stdmodel.title) ? 'combinedplot' : scope.stdmodel.title;
+          plotUtils.drawPng(scope.canvas, imgsrc, fileName + '.png');
         };
 
       }

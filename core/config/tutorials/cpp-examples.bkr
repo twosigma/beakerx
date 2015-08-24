@@ -1,0 +1,233 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "C++",
+            "plugin": "C++",
+            "imports": "",
+            "view": {
+                "cm": {
+                    "mode": "text/x-c++src"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "code5XX0in",
+            "type": "code",
+            "evaluator": "C++",
+            "input": {
+                "body": [
+                    "#include <iostream>",
+                    "void beaker_main(){",
+                    "  std::cout << \"Hello world!\" << std::endl;",
+                    "  return;",
+                    "}"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "Hello world!\n"
+                        }
+                    ]
+                },
+                "selectedType": "Results",
+                "pluginName": "C++",
+                "shellId": "f94c5771-7a8b-4887-8a2b-bd0f5c6db602",
+                "elapsedTime": 1462
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "codey0EVnd",
+            "type": "code",
+            "evaluator": "C++",
+            "input": {
+                "body": [
+                    "#include <string>",
+                    "std::string distant;",
+                    "void setDistant(){",
+                    "  distant = std::string(\"This is far away\");",
+                    "}"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Hidden",
+                "pluginName": "C++",
+                "shellId": "f94c5771-7a8b-4887-8a2b-bd0f5c6db602",
+                "elapsedTime": 743
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "codevYfhgq",
+            "type": "code",
+            "evaluator": "C++",
+            "input": {
+                "body": [
+                    "#include <string>",
+                    "#include <iostream>",
+                    "extern std::string distant;",
+                    "extern void setDistant();",
+                    "",
+                    "void beaker_main(std::string &ret){",
+                    "  setDistant();",
+                    "  ret = distant;",
+                    "} "
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "This is far away",
+                "selectedType": "Text",
+                "pluginName": "C++",
+                "shellId": "f94c5771-7a8b-4887-8a2b-bd0f5c6db602",
+                "elapsedTime": 1214
+            },
+            "evaluatorReader": true,
+            "lineCount": 9
+        },
+        {
+            "id": "code2wlBSW",
+            "type": "code",
+            "evaluator": "C++",
+            "input": {
+                "body": [
+                    "#include <string>",
+                    "#include <vector>",
+                    "void beaker_main(int &ret){",
+                    "  std::map<std::string, std::vector<int>> test;",
+                    "  test[\"a\"] = std::vector<int>(1,1);",
+                    "  test[\"b\"] = std::vector<int>(2,2);",
+                    "  test[\"c\"] = std::vector<int>(3,3);",
+                    "  ",
+                    "  ret = beakerSet(\"x\", test);",
+                    "}"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": 1,
+                "selectedType": "Text",
+                "pluginName": "C++",
+                "elapsedTime": 1714,
+                "shellId": "f94c5771-7a8b-4887-8a2b-bd0f5c6db602"
+            },
+            "evaluatorReader": true,
+            "lineCount": 10
+        },
+        {
+            "id": "codeB3Dqi0",
+            "type": "code",
+            "evaluator": "C++",
+            "input": {
+                "body": [
+                    "#include <vector>",
+                    "#include <string>",
+                    "void beaker_main(std::map<std::string, std::vector<int>> &ret){",
+                    "  beakerGet(\"x\", ret);",
+                    "}"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "a": [
+                        1
+                    ],
+                    "b": [
+                        2,
+                        2
+                    ],
+                    "c": [
+                        3,
+                        3,
+                        3
+                    ]
+                },
+                "selectedType": "Text",
+                "pluginName": "C++",
+                "shellId": "f94c5771-7a8b-4887-8a2b-bd0f5c6db602",
+                "elapsedTime": 1691
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        }
+    ],
+    "namespace": {
+        "hello": "world!",
+        "x": {
+            "a": [
+                1
+            ],
+            "b": [
+                2,
+                2
+            ],
+            "c": [
+                3,
+                3,
+                3
+            ]
+        },
+        "y": {
+            "a": [
+                1,
+                1,
+                1
+            ],
+            "b": [
+                2,
+                2,
+                2
+            ],
+            "c": [
+                3,
+                3,
+                3
+            ]
+        }
+    },
+    "metadata": {
+        "publication-id": "55c266fc-504c-4f96-a281-62c81548dff9"
+    }
+}

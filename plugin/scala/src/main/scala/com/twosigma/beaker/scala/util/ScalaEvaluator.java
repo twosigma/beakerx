@@ -770,9 +770,8 @@ public class ScalaEvaluator {
             for(List<?> v : vals) {
               v.remove(0);
             }
-          } else {
-            o = new TableDisplay(vals, cols, clas);
           }
+          o = new TableDisplay(vals, cols, clas);
         }
       } catch (Exception e) {
         if (logger.isLoggable(Level.SEVERE))

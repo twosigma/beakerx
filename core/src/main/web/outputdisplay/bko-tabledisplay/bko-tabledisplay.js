@@ -246,7 +246,13 @@
           //jscs:enable
         };
         $scope.doCopyToClipboard = function(idx) {
-          if (!bkUtils.isElectron) {
+          var queryCommandEnabled = true;
+          try {
+            document.execCommand('Copy');
+          } catch (e) {
+            queryCommandEnabled = false;
+          }
+          if (!bkUtils.isElectron && queryCommandEnabled) {
             var getTableData = function() {
               var data = $scope.table.rows(function(index, data, node) {
                 return $scope.selected[index];
@@ -261,7 +267,6 @@
               var input = document.createElement('textarea');
               document.body.appendChild(input);
               input.value = text;
-              input.focus();
               input.select();
               document.execCommand('Copy');
               input.remove();
@@ -896,17 +901,33 @@
         };
 
         scope.menuToggle = function() {
-          if (bkUtils.isElectron) {
-            var getTableData = function() {
-              var data = scope.table.rows(function(index, data, node) {
-                return scope.selected[index];
-              }).data();
-              if (data === undefined || data.length === 0) {
-                data = scope.table.rows().data();
-              }
-              var out = scope.exportTo(data, 'tabs');
-              return out;
+          var getTableData = function() {
+            var data = scope.table.rows(function(index, data, node) {
+              return scope.selected[index];
+            }).data();
+            if (data === undefined || data.length === 0) {
+              data = scope.table.rows().data();
             }
+            var out = scope.exportTo(data, 'tabs');
+            return out;
+          }
+
+          var queryCommandEnabled = true;
+          try {
+            document.execCommand('Copy');
+          } catch (e) {
+            queryCommandEnabled = false;
+          }
+
+          if ((!bkUtils.isElectron) && (scope.clipclient === undefined) && !queryCommandEnabled) {
+            scope.clipclient = new ZeroClipboard();
+            var d = document.getElementById(scope.id + '_dt_copy');
+            scope.clipclient.clip(d);
+            scope.clipclient.on('copy', function(event) {
+              var clipboard = event.clipboardData;	
+              clipboard.setData('text/plain', getTableData());
+            });
+          } else if (bkUtils.isElectron) {
             document.getElementById(scope.id + '_dt_copy').onclick = function() {
               bkElectron.clipboard.writeText(getTableData(), 'text/plain');
             }

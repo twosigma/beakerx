@@ -24,7 +24,9 @@
   var retfunc = function(plotUtils, combinedplotFormatter, bkCellMenuPluginManager) {
     var CELL_TYPE = "bko-combinedplot";
     return {
-      template :  "<div id='combplotTitle' class='plot-title'></div>" +
+      template :
+          "<canvas></canvas>" +
+          "<div id='combplotTitle' class='plot-title'></div>" +
           "<div id='combplotContainer' class='combplot-plotcontainer'>" +
           "<bk-output-display type='Plot' ng-repeat='m in models' model='m'></bk-output-display>" +
           "</div>",
@@ -36,8 +38,17 @@
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
           $scope.model.resetShareMenuItems(newItems);
         });
+        $scope.model.saveAsSvg = function(){
+          return $scope.saveAsSvg();
+        };
+        $scope.model.saveAsPng = function(){
+          return $scope.saveAsPng();
+        };
       },
       link : function(scope, element, attrs) {
+        scope.canvas = element.find("canvas")[0];
+        scope.canvas.style.display="none";
+
         scope.initLayout = function() {
           var model = scope.stdmodel;
           if (model.title != null) {
@@ -206,6 +217,47 @@
         scope.$watch('getCellModel()', function() {
           scope.init();
         });
+
+        scope.getSvgToSave = function(){
+          var plots = scope.stdmodel.plots;
+
+          var combinedSvg = $("<svg></svg>").attr('xmlns', 'http://www.w3.org/2000/svg').attr('class', 'svg-export');
+
+          var plotTitle = element.find("#combplotTitle");
+
+          plotUtils.addTitleToSvg(combinedSvg[0], plotTitle, {
+            width: plotTitle.width(),
+            height: plotUtils.getElementActualHeight(plotTitle)
+          });
+
+          var combinedSvgHeight = plotUtils.getElementActualHeight(plotTitle, true);
+          for (var i = 0; i < plots.length; i++) {
+            var svg = plots[i].getSvgToSave();
+            plotUtils.translateChildren(svg, 0, combinedSvgHeight);
+            combinedSvgHeight += $(svg).outerHeight(true);
+            combinedSvg.append(svg.children);
+          }
+          combinedSvg.attr("width", scope.width || scope.stdmodel.plotSize.width);
+          combinedSvg.attr("height", combinedSvgHeight);
+          return combinedSvg[0];
+        };
+
+        scope.saveAsSvg = function() {
+          var html = scope.getSvgToSave().outerHTML;
+          var fileName = _.isEmpty(scope.stdmodel.title) ? 'combinedplot' : scope.stdmodel.title;
+          plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), fileName + '.svg');
+        };
+
+        scope.saveAsPng = function() {
+          var svg = scope.getSvgToSave();
+
+          scope.canvas.width = svg.getAttribute("width");
+          scope.canvas.height = svg.getAttribute("height");
+
+          var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.outerHTML)));
+          var fileName = _.isEmpty(scope.stdmodel.title) ? 'combinedplot' : scope.stdmodel.title;
+          plotUtils.drawPng(scope.canvas, imgsrc, fileName + '.png');
+        };
 
       }
     };

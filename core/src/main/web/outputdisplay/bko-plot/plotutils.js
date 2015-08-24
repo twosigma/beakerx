@@ -411,6 +411,106 @@
 
       getHighlightedSize : function(size, highlighted) {
         return highlighted ? size + 2 : size;
+      },
+
+      getElementStyles : function(element){
+        var elementStyles = "";
+        var styleSheets = document.styleSheets;
+        for (var i = 0; i < styleSheets.length; i++) {
+          var cssRules = styleSheets[i].cssRules;
+          for (var j = 0; j < cssRules.length; j++) {
+            var cssRule = cssRules[j];
+            if (cssRule.style) {
+              try{
+                var childElements = element.querySelectorAll(cssRule.selectorText);
+                if (childElements.length > 0 || element.matches(cssRule.selectorText)) {
+                  elementStyles += cssRule.selectorText + " { " + cssRule.style.cssText + " }\n";
+                }
+              } catch(err) {
+                //just ignore errors
+                //http://bugs.jquery.com/ticket/13881#comment:1
+              }
+            }
+          }
+        }
+        return elementStyles;
+      },
+
+      addInlineStyles: function (element){
+        var styleEl = document.createElement('style');
+        styleEl.setAttribute('type', 'text/css');
+        styleEl.innerHTML = '<![CDATA[\n' + this.getElementStyles(element) + '\n]]>';
+
+        var defsEl = document.createElement('defs');
+        defsEl.appendChild(styleEl);
+        element.insertBefore(defsEl, element.firstChild);
+      },
+
+      download: function(url, fileName){
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        a.remove();
+      },
+
+      translate: function(jqelement, x, y){
+        var getNumber = function(str){
+          return parseFloat(str.substring(0, str.length - 2));
+        };
+        var transform = jqelement.css('transform');
+        var elementTranslate = { x: 0, y: 0 };
+        if(transform && transform.indexOf("translate") != -1){
+          var translate = transform.match(/translate(.*)/)[1].substring(1);
+          var translateValues = translate.substring(0, translate.indexOf(')')).split(", ");
+          elementTranslate.x = getNumber(translateValues[0]);
+          elementTranslate.y = getNumber(translateValues[1]);
+        }
+        jqelement.css("transform", "translate(" + (elementTranslate.x + x) + "px, " + (elementTranslate.y + y) + "px)")
+      },
+
+      translateChildren: function(element, x, y){
+        for (var j = 0; j < element.childElementCount; j++) {
+          var child = element.children[j];
+          if (child.nodeName.toLowerCase() !== 'defs') {
+            this.translate($(child), x, y);
+          }
+        }
+      },
+
+      addTitleToSvg: function(svg, jqtitle, titleSize){
+        d3.select(svg).insert("text", "g")
+          .attr("id", jqtitle.attr("id"))
+          .attr("class", jqtitle.attr("class"))
+          .attr("x", titleSize.width / 2)
+          .attr("y", titleSize.height)
+          .style("text-anchor", "middle")
+          .text(jqtitle.text());
+      },
+
+      drawPng: function(canvas, imgsrc, fileName){
+        var download = this.download;
+        var context = canvas.getContext("2d");
+        var image = new Image;
+        image.src = imgsrc;
+        image.onload = function () {
+          context.drawImage(image, 0, 0);
+          download(canvas.toDataURL("image/png"), fileName);
+          context.clearRect(0, 0, canvas.width, canvas.height);
+        };
+      },
+
+      getElementActualHeight: function(jqelement, withMargins){
+        var height;
+        if (jqelement.is(":visible")) {
+          height = jqelement.outerHeight(!!withMargins);
+        } else {
+          var hiddenParent = jqelement.parents(".ng-hide:first");
+          hiddenParent.removeClass("ng-hide");
+          height = jqelement.outerHeight(!!withMargins);
+          hiddenParent.addClass("ng-hide");
+        }
+        return height;
       }
     };
   };

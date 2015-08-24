@@ -25,6 +25,7 @@
     var CELL_TYPE = "bko-plot";
     return {
       template :
+          "<canvas></canvas>" +
           "<div id='plotTitle' class='plot-title'></div>" +
           "<div id='plotLegendContainer' class='plot-plotlegendcontainer' oncontextmenu='return false;'>" +
           "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
@@ -49,6 +50,12 @@
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
           $scope.model.resetShareMenuItems(newItems);
         });
+        $scope.model.saveAsSvg = function(){
+          return $scope.saveAsSvg();
+        };
+        $scope.model.saveAsPng = function(){
+          return $scope.saveAsPng();
+        };
       },
       link : function(scope, element, attrs) {
         // rendering code
@@ -96,6 +103,9 @@
           scope.jqlegendcontainer = element.find("#plotLegendContainer");
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
+          scope.canvas = element.find("canvas")[0];
+
+          scope.canvas.style.display="none";
 
           var plotSize = scope.plotSize;
           scope.jqcontainer.css(plotSize);
@@ -1539,6 +1549,9 @@
         scope.standardizeData = function() {
           var model = scope.model.getCellModel();
           scope.stdmodel = plotFormatter.standardizeModel(model, scope.prefs);
+          model.getSvgToSave = function(){
+            return scope.getSvgToSave();
+          }
         };
 
         scope.dumpState = function() {
@@ -1745,6 +1758,47 @@
           scope.svg.selectAll("*").remove();
           scope.jqlegendcontainer.find(".plot-legendscrollablecontainer").remove();
         });
+
+        scope.getSvgToSave = function(){
+          var svg = scope.svg
+            .node()
+            .cloneNode(true);
+          svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+          svg.setAttribute('class', 'svg-export');
+
+          var plotTitle = scope.jqplottitle;
+          var titleOuterHeight = plotUtils.getElementActualHeight(plotTitle, true);
+
+          plotUtils.translateChildren(svg, 0, titleOuterHeight);
+          plotUtils.addTitleToSvg(svg, plotTitle, {
+            width: plotTitle.width(),
+            height: plotUtils.getElementActualHeight(plotTitle)
+          });
+          plotUtils.addInlineStyles(svg);
+
+          svg.setAttribute("width",  scope.jqcontainer.outerWidth(true));
+          svg.setAttribute("height", scope.jqcontainer.outerHeight(true) + titleOuterHeight);
+
+          return svg;
+        };
+
+        scope.saveAsSvg = function() {
+          var html = scope.getSvgToSave().outerHTML;
+          var fileName = _.isEmpty(scope.stdmodel.title) ? 'plot' : scope.stdmodel.title;
+          plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), fileName + ".svg");
+        };
+
+        scope.saveAsPng = function() {
+          var svg = scope.getSvgToSave();
+
+          scope.canvas.width = svg.getAttribute("width");
+          scope.canvas.height = svg.getAttribute("height");
+
+          var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.outerHTML)));
+          var fileName = _.isEmpty(scope.stdmodel.title) ? 'plot' : scope.stdmodel.title;
+          plotUtils.drawPng(scope.canvas, imgsrc, fileName + ".png");
+        };
+
       }
     };
   };

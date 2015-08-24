@@ -236,3 +236,10 @@
   stroke: black;
   stroke-width: 1.5;
 }
+.svg-export {
+  font-size: 13px;
+  font-family: sans-serif;
+  line-height: 1.38462;
+  color: #333333;
+  background-color: white;
+}

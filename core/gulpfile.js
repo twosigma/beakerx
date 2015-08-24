@@ -16,6 +16,7 @@
 var argv      = require('yargs').argv;
 var gulp      = require('gulp');
 var sass      = require('gulp-sass');
+var cssWrap  = require('gulp-css-wrap');
 var template  = require('gulp-template-compile');
 var concat    = require('gulp-concat');
 var minifyCSS = require('gulp-minify-css');
@@ -41,6 +42,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var srcPath  = Path.join(__dirname, "/src/main/web/");
 var pluginPath  = Path.join(__dirname, "/src/main/web/plugin/");
 var rootPath  = Path.join(__dirname, "/src/main/web/app/");
+var IPythonCssPath  = Path.join(__dirname, "/src/main/web/app/styles/ipython/style");
 var root2Path  = Path.join(__dirname, "/src/main/web/outputdisplay/");
 var buildPath = Path.join(__dirname, "/src/main/web/app/dist/");
 var tempPath = Path.join(__dirname, "/src/main/web/app/temp/");
@@ -126,6 +128,13 @@ gulp.task("buildSingleOutDispJs", function() {
   .pipe(concat('beakerOutDisp.js'))
   .pipe(header(banner ))
   .pipe(gulp.dest(buildPath));
+});
+
+gulp.task("namespaceIPythonCss", function() {
+  return gulp.src(Path.join(IPythonCssPath, "**.css"))
+      .pipe(cssWrap({selector:'.ipy-output'}))
+      .pipe(concat('ipython.min.css'))
+      .pipe(gulp.dest(tempPath));
 });
 
 gulp.task("compileBeakerScss", function() {
@@ -352,7 +361,7 @@ gulp.task("namespaceCss", function(cb) {
 });
 
 gulp.task("compile", function(cb) {
-  var seq = ["compileBeakerScss", "compileBeakerTemplates"];
+  var seq = ["namespaceIPythonCss", "compileBeakerScss", "compileBeakerTemplates"];
   if (argv.embed) {
     seq.push("namespaceCss");
   }

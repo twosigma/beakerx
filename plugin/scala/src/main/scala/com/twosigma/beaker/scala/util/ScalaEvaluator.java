@@ -764,7 +764,15 @@ public class ScalaEvaluator {
           o = scala.collection.JavaConversions.asScalaBuffer(ll).toList();
         }
         if (o==null) {
-          o = new TableDisplay(vals, cols, clas);
+          if (n.has("hasIndex") && mapper.readValue(n.get("hasIndex"), String.class).equals("true")) {
+            cols.remove(0);
+            clas.remove(0);
+            for(List<?> v : vals) {
+              v.remove(0);
+            }
+          } else {
+            o = new TableDisplay(vals, cols, clas);
+          }
         }
       } catch (Exception e) {
         if (logger.isLoggable(Level.SEVERE))

@@ -658,13 +658,22 @@
           }
 
           // copy basic data
-          scope.columnNames = model.columnNames.slice(0);
+          if (model.columnNames !== undefined)
+            scope.columnNames = model.columnNames.slice(0);
+          else
+            scope.columnNames = undefined;
           scope.timeStrings = model.timeStrings;
           scope.tz          = model.timeZone;
-          scope.types       = model.types.slice(0);
+          if (model.types !== undefined)
+            scope.types = model.types.slice(0);
+          else
+            scope.types = undefined;
+          
           if (model.hasIndex === "true") {
-            scope.columnNames.shift();
-            scope.types.shift();
+            if (scope.columnNames !== undefined)
+              scope.columnNames.shift();
+            if (scope.types !== undefined)
+              scope.types.shift();
           }
 
           // compute how to display columns (remind: dummy column to keep server ordering)

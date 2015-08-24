@@ -251,7 +251,6 @@ def transformBack(obj):
                         return out2
                 # transform to dataframe
                 if ('hasIndex' in out) and (out['hasIndex'] == "true"):
-                    print('pluto')
                     # first column becomes the index
                     vals = out['values']
                     cnames = out['columnNames'][1:]

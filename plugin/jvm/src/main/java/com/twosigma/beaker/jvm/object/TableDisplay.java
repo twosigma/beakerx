@@ -181,7 +181,16 @@ public class TableDisplay {
           o = vals;
         }
         if (o==null) {
-          o = new TableDisplay(vals, cols, clas);
+          if (n.has("hasIndex") && mapper.readValue(n.get("hasIndex"), String.class).equals("true")) {
+            cols.remove(0);
+            clas.remove(0);
+            for(List<?> v : vals) {
+              v.remove(0);
+            }
+            o = new TableDisplay(vals, cols, clas);
+          } else {
+            o = new TableDisplay(vals, cols, clas);
+          }
         }
       } catch (Exception e) {
         logger.log(Level.SEVERE, "exception deserializing TableDisplay ", e);

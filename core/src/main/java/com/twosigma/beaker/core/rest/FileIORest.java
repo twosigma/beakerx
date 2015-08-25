@@ -317,14 +317,12 @@ public class FileIORest {
     if (f.exists() && f.isDirectory()) {
       File[] filesList = f.listFiles();
       for (File file : filesList) {
-        if (file.isFile()) {
-          if (path.endsWith(File.separator))
-            s.add(path + file.getName());
-          else
-            s.add(path + File.separator + file.getName());
-        }
+        if (path.endsWith(File.separator))
+          s.add(path + file.getName());
+        else
+          s.add(path + File.separator + file.getName());
       }
-    } else if (lp == -1) {    
+    } else if (lp == -1) {
       final String p = path;
       FilenameFilter fileNameFilter = new FilenameFilter() {          
         @Override
@@ -337,12 +335,10 @@ public class FileIORest {
       File dir = new File(".");
       File[] filesList = dir.listFiles(fileNameFilter);
       for (File file : filesList) {
-        if (file.isFile()) {
-          s.add(file.getName());
-        }
+        s.add(file.getName());
       }
     } else {
-      String p = path.substring(0,lp);
+      String p = path.substring(0,lp+1);
       f = new File(p);
       if (f.exists() && f.isDirectory()) {
         final String n = path.substring(lp+1);
@@ -356,9 +352,7 @@ public class FileIORest {
         };
         File[] filesList = f.listFiles(fileNameFilter);
         for (File file : filesList) {
-          if (file.isFile()) {
-            s.add(p + File.separator + file.getName());
-          }
+          s.add(p + file.getName());
         }
       }
     }

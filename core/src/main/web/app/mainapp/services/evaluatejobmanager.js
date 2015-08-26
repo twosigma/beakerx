@@ -257,6 +257,10 @@
       },
       // evaluate a cell in top level context
       evaluateRoot: function(cell, notick) {
+        return this.evaluateCellCode(cell, cell.input.body, notick);
+      },
+      // evaluate a code of a cell
+      evaluateCellCode: function(cell, code, notick){
         var deferred = bkUtils.newDeferred();
         if (jobQueue.isRunning(cell.id)) {
           bkHelper.showTransientStatus("ERROR: restart blocked for cell "+cell.id);
@@ -273,7 +277,7 @@
           parent: parent,
           cellId: cell.id,
           evaluatorId: cell.evaluator,
-          code: cell.input.body,
+          code: code,
           output: cell.output,
           retry: 0,
           finished: false,

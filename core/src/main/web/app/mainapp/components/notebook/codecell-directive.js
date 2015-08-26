@@ -335,6 +335,12 @@
           'Cmd-Alt-H': function(cm) { // cell hide
             scope.cellmodel.input.hidden = true;
             bkUtils.refreshRootScope();
+          },
+          'Shift-Ctrl': function(cm) {
+            scope.evaluateSelection(cm);
+          },
+          'Cmd-Enter':  function(cm) {
+            scope.evaluateSelection(cm);
           }
         });
 
@@ -419,6 +425,28 @@
             scope._shouldFocusCodeMirror = true;
           }
         });
+
+        scope.evaluateSelection = function(cm) {
+          var evalCode;
+          var currentLine;
+          if(cm.somethingSelected()){
+            evalCode = cm.getSelection();
+          }else{
+            currentLine = cm.getCursor().line;
+            evalCode = cm.getLine(currentLine);
+          }
+
+          scope.cellmodel.output.state = {};
+          bkCoreManager.getBkApp().evaluateCellCode(scope.cellmodel, evalCode)
+            .then(function(data) {
+              if(currentLine != null && currentLine !== cm.lastLine()){
+                cm.setCursor(currentLine + 1, 0);
+              }
+            })
+            .catch(function(data) {
+              console.log('Evaluation failed');
+            });
+        };
 
         scope.$on('beaker.section.toggled', function(e, isCollapsed) {
           if (!isCollapsed) {

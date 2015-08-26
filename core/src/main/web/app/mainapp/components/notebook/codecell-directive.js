@@ -336,10 +336,10 @@
             scope.cellmodel.input.hidden = true;
             bkUtils.refreshRootScope();
           },
-          'Shift-Ctrl': function(cm) {
+          'Shift-Ctrl-Enter': function(cm) {
             scope.evaluateSelection(cm);
           },
-          'Cmd-Enter':  function(cm) {
+          'Shift-Cmd-Enter':  function(cm) {
             scope.evaluateSelection(cm);
           }
         });

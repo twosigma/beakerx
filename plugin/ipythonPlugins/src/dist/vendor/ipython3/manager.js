@@ -137,17 +137,34 @@ define('ipython3_widgetmanager', [
           .then(function (view) {
             that._handle_display_view(view);
             view.trigger('displayed');
+            if (that.comm_manager.kernel) {
+              that.comm_manager.kernel.view = view;
+            }
             return view;
           }).catch(utils.reject('Could not create or display view', true));
     };
 
     WidgetManager.prototype.display_widget_view = function(msg, view_promise) {
       // Display the view.
+      var that = this;
       return view_promise.then(function(view) {
         bkHelper.timeout(function() {
-          view.$el.appendTo($('.ipy-output[data-msg-id=' + msg.parent_header.msg_id
-              + '] .widget-area .widget-subarea'))
-        }, 250);
+          var ipy_output = $('.ipy-output[data-msg-id=' + msg.parent_header.msg_id
+              + '] .widget-area .widget-subarea');
+          view.$el.appendTo(ipy_output);
+          view.oa = new IPython.OutputArea({
+                selector: '.ipy-output[data-msg-id=' + msg.parent_header.msg_id + ']',
+                keyboard_manager: that.keyboard_manager,
+                prompt_area: false}
+          );
+          if (view.outputBuffer) {
+            var callbacks = that.callbacks(view);
+            if (callbacks && callbacks.iopub && callbacks.iopub.output) {
+              callbacks.iopub.output(view.outputBuffer);
+              view.outputBuffer = null;
+            }
+          }
+        }, 150);
         return view;
       });
     };
@@ -205,38 +222,22 @@ define('ipython3_widgetmanager', [
     };
 
     WidgetManager.prototype.callbacks = function (view) {
-        /**
-         * callback handlers specific a view
-         */
-        var callbacks = {};
-        if (view && view.options.cell) {
-
-            // Try to get output handlers
-            var cell = view.options.cell;
-            var handle_output = null;
-            var handle_clear_output = null;
-            if (cell.output_area) {
-                handle_output = $.proxy(cell.output_area.handle_output, cell.output_area);
-                handle_clear_output = $.proxy(cell.output_area.handle_clear_output, cell.output_area);
-            }
-
-            // Create callback dictionary using what is known
-            var that = this;
-            callbacks = {
-                iopub : {
-                    output : handle_output,
-                    clear_output : handle_clear_output,
-
-                    // Special function only registered by widget messages.
-                    // Allows us to get the cell for a message so we know
-                    // where to add widgets if the code requires it.
-                    get_cell : function () {
-                        return cell;
-                    }
-                }
-            };
-        }
-        return callbacks;
+      /**
+       * callback handlers specific a view
+       */
+      var callbacks = {};
+      if (view && (view.oa || view.options.parent.oa)) {
+        view.oa = view.oa || view.options.parent.oa;
+        var handle_output = $.proxy(view.oa.handle_output, view.oa);
+        var handle_clear_output = $.proxy(view.oa.handle_clear_output, view.oa);
+        callbacks = {
+          iopub: {
+            output: handle_output,
+            clear_output: handle_clear_output
+          }
+        };
+      }
+      return callbacks;
     };
 
     WidgetManager.prototype.get_model = function (model_id) {

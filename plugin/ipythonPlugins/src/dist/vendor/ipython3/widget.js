@@ -165,6 +165,7 @@ define('ipython3_widget', [
                   widget_area.appendTo(elem);
                   var kernel = this.widget_manager.comm_manager.kernel;
                   if (kernel) {
+                    kernel.appendToWidgetOutput = true;
                     var callbacks = kernel.get_callbacks_for_msg(msg.parent_header.msg_id);
                     if (callbacks && callbacks.iopub) {
                       msg.content.data['text/html'] = elem[0].outerHTML;

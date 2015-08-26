@@ -164,11 +164,11 @@ define(function(require, exports, module) {
         }
 
         var self = this;
-        var startTime = new Date().getTime();
         var kernel = kernels[self.settings.shellID];
         var finalStuff = undefined;
         bkHelper.setupProgressOutput(modelOutput);
         gotError = false;
+        kernel.appendToWidgetOutput = false;
 
         _theCancelFunction = function() {
           var kernel = kernels[self.settings.shellID];
@@ -254,12 +254,19 @@ define(function(require, exports, module) {
               finalStuff.payload = evaluation.payload
             }
           } else if (type === "stream") {
-            evaluation.outputdata = [];
-            if (finalStuff !== undefined && finalStuff.outputdata !== undefined)
-              evaluation.outputdata = finalStuff.outputdata;
-            var text = (ipyVersion == '3') ? content.text : content.data;
-            evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
+            if (kernel.appendToWidgetOutput && kernel.view) {
+              kernel.view.outputBuffer = a0;
+            } else {
+              evaluation.outputdata = [];
+              if (finalStuff !== undefined && finalStuff.outputdata !== undefined)
+                evaluation.outputdata = finalStuff.outputdata;
+              var text = (ipyVersion == '3') ? content.text : content.data;
+              evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
                 value: text});
+              if (finalStuff !== undefined) {
+                finalStuff.outputdata = evaluation.outputdata;
+              }
+            }
           } else {
             var jsonres;
             if(content.data['application/json'] !== undefined) {

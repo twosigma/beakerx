@@ -439,8 +439,12 @@
           scope.cellmodel.output.state = {};
           bkCoreManager.getBkApp().evaluateCellCode(scope.cellmodel, evalCode)
             .then(function(data) {
-              if(currentLine != null && currentLine !== cm.lastLine()){
-                cm.setCursor(currentLine + 1, 0);
+              if(currentLine != null){
+                if(currentLine !== cm.lastLine()){
+                  cm.setCursor(currentLine + 1, 0);
+                }else{
+                  codeMirrorOptions.goToNextCell(cm);
+                }
               }
             })
             .catch(function(data) {

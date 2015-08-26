@@ -616,7 +616,8 @@
         return {
           lineNumbers: true,
           matchBrackets: true,
-          extraKeys: keys
+          extraKeys: keys,
+          goToNextCell: goDownOrMoveFocusDown
         };
       },
 

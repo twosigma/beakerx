@@ -617,7 +617,7 @@
           lineNumbers: true,
           matchBrackets: true,
           extraKeys: keys,
-          goToNextCell: goDownOrMoveFocusDown
+          goToNextCell: moveFocusDown
         };
       },
 

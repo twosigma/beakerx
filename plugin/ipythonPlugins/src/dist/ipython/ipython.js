@@ -253,20 +253,20 @@ define(function(require, exports, module) {
             if (finalStuff !== undefined) {
               finalStuff.payload = evaluation.payload
             }
+          } else if (kernel.appendToWidgetOutput && kernel.view) {
+            kernel.view.outputBuffer = kernel.view.outputBuffer || [];
+            kernel.view.outputBuffer.push(a0);
           } else if (type === "stream") {
-            if (kernel.appendToWidgetOutput && kernel.view) {
-              kernel.view.outputBuffer = a0;
-            } else {
-              evaluation.outputdata = [];
-              if (finalStuff !== undefined && finalStuff.outputdata !== undefined)
-                evaluation.outputdata = finalStuff.outputdata;
-              var text = (ipyVersion == '3') ? content.text : content.data;
-              evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
-                value: text});
-              if (finalStuff !== undefined) {
-                finalStuff.outputdata = evaluation.outputdata;
-              }
+            evaluation.outputdata = [];
+            if (finalStuff !== undefined && finalStuff.outputdata !== undefined)
+              evaluation.outputdata = finalStuff.outputdata;
+            var text = (ipyVersion == '3') ? content.text : content.data;
+            evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
+              value: text});
+            if (finalStuff !== undefined) {
+              finalStuff.outputdata = evaluation.outputdata;
             }
+
           } else {
             var jsonres;
             if(content.data['application/json'] !== undefined) {

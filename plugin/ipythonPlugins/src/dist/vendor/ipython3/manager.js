@@ -155,14 +155,17 @@ define('ipython3_widgetmanager', [
           view.oa = new IPython.OutputArea({
                 selector: '.ipy-output[data-msg-id=' + msg.parent_header.msg_id + ']',
                 keyboard_manager: that.keyboard_manager,
-                prompt_area: false}
+                prompt_area: false,
+                events: that.notebook.events}
           );
           if (view.outputBuffer) {
             var callbacks = that.callbacks(view);
             if (callbacks && callbacks.iopub && callbacks.iopub.output) {
-              callbacks.iopub.output(view.outputBuffer);
-              view.outputBuffer = null;
+              for (var i = 0; i < view.outputBuffer.length; i++) {
+                callbacks.iopub.output(view.outputBuffer[i]);
+              }
             }
+            view.outputBuffer = null;
           }
         }, 150);
         return view;

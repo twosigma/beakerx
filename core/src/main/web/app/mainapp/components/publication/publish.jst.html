@@ -58,8 +58,10 @@
         <div class="identity">
           <img gravatar-src="currentUser().email" gravatar-size="30" gravatar-default="retro">
           <span class="text">
-            Publishing as <span class="name">{{currentUser().name}}</span>.
-            <a ng-click="signOut()">Log out</a>
+            Publishing
+            as <span class="name">{{currentUser().name}}</span>.
+            <a ng-if="!saving" ng-click="signOut()">Log out</a>
+            <span ng-if="saving" class="loading-spinner rotating bkr"></span>
           </span>
         </div>
       </form>

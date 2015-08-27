@@ -143,8 +143,12 @@ html {
     }
     .text {
       position: absolute;
-      top: 10px;
+      top: 8px;
       left: 35px;
     }
+  }
+  .loading-spinner {
+    left: -8px;
+    top: 3px;
   }
 }

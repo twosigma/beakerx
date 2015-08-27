@@ -131,8 +131,20 @@ html {
   }
   .actions {
     margin-top: 20px;
+    margin-bottom: 20px;
     .warning {
       font-style: italic;
+    }
+  }
+  .identity {
+    position: relative;
+    .name {
+      font-weight: bold;
+    }
+    .text {
+      position: absolute;
+      top: 10px;
+      left: 35px;
     }
   }
 }

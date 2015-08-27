@@ -55,6 +55,13 @@
           <input ng-if="!saving && published" type="button" class="btn" value="Delete" ng-click="delete()" formnovalidate>
           <input ng-if="!saving" type="button" class="btn" value="Cancel" ng-click="close()" formnovalidate>
         </div>
+        <div class="identity">
+          <img gravatar-src="currentUser().email" gravatar-size="30" gravatar-default="retro">
+          <span class="text">
+            Publishing as <span class="name">{{currentUser().name}}</span>.
+            <a ng-click="signOut()">Log out</a>
+          </span>
+        </div>
       </form>
     </div>
   </div>

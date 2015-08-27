@@ -340,7 +340,7 @@
               if (bkUtils.isElectron && (target.type == 'file')){
                 bkElectron.app.addRecentDocument(target.uri);
               }
-
+              bkSessionManager.updateNotebookUri(target.uri, target.type, target.readOnly, target.format);
               var importer = bkCoreManager.getNotebookImporter(target.format);
               if (!importer) {
                 if (retry) {
@@ -380,6 +380,8 @@
               }
             },
             fromSession: function(sessionId) {
+              $scope.loading = true;
+              showLoadingStatusMessage("Loading notebook");
               bkSession.load(sessionId).then(function(session) {
                 var notebookUri = session.notebookUri;
                 var uriType = session.uriType;
@@ -387,8 +389,11 @@
                 var format = session.format;
                 var notebookModel = angular.fromJson(session.notebookModelJson);
                 var edited = session.edited;
-                loadNotebookModelAndResetSession(
+                bkSessionManager.updateNotebookUri(notebookUri, uriType, readOnly, format);
+                $timeout(function() {
+                  loadNotebookModelAndResetSession(
                     notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, true);
+                }, 0);
               });
             },
             fromImport: function(sessionId) {

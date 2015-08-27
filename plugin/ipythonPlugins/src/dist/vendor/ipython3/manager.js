@@ -137,7 +137,7 @@ define('ipython3_widgetmanager', [
           .then(function (view) {
             that._handle_display_view(view);
             view.trigger('displayed');
-            if (that.comm_manager.kernel) {
+            if (that.comm_manager.kernel && !that.comm_manager.kernel.view) {
               that.comm_manager.kernel.view = view;
             }
             return view;

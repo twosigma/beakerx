@@ -835,6 +835,15 @@
                 return bkEvaluateJobManager.evaluateRootAll(toEval);
               }
             },
+            evaluateCellCode: function(cell, code) {
+              // cell: cellModel
+              // code: code to evaluate
+              if (cell == null || typeof cell !== 'object' || _.isArray(cell)) {
+                showTransientStatusMessage("ERROR: cannot evaluate cell");
+                return "cannot evaluate cell";
+              }
+              return bkEvaluateJobManager.evaluateCellCode(cell, code);
+            },
             evaluateCode: function(evaluator, code) {
               var outcontainer = { };
               var deferred = bkHelper.newDeferred();

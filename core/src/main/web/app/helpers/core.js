@@ -228,7 +228,7 @@
 
     var codeMirrorFileName = {
         type : 'string',
-        hint: function(token) {
+        hint: function(token, cm) {
           var deferred = bkHelper.newDeferred();
           $.ajax({
             type: "GET",
@@ -465,7 +465,7 @@
             for(var i in codeMirrorExtension.autocomplete) {
               var t = codeMirrorExtension.autocomplete[i];
               if (t.type === token.type || t.type === '*') {
-                waitfor.push(t.hint(token));
+                waitfor.push(t.hint(token, editor));
               }
             }
 
@@ -616,7 +616,8 @@
         return {
           lineNumbers: true,
           matchBrackets: true,
-          extraKeys: keys
+          extraKeys: keys,
+          goToNextCell: moveFocusDown
         };
       },
 

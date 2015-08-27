@@ -169,6 +169,7 @@ define(function(require, exports, module) {
         bkHelper.setupProgressOutput(modelOutput);
         gotError = false;
         kernel.appendToWidgetOutput = false;
+        kernel.view = null;
 
         _theCancelFunction = function() {
           var kernel = kernels[self.settings.shellID];

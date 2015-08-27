@@ -1,4 +1,4 @@
-build
+core/build
 beaker/*
 node_modules
 nginx/bin

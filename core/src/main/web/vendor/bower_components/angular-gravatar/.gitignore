@@ -1,0 +1,5 @@
+.DS_Store
+/components
+/node_modules
+/coverage
+/build/spec

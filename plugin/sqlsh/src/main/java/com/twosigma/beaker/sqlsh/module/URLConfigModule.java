@@ -13,13 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.sql.module;
+package com.twosigma.beaker.sqlsh.module;
 
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-import com.twosigma.beaker.jvm.rest.ReadyRest;
 import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;
-import com.twosigma.beaker.sql.rest.SQLRest;
+import com.twosigma.beaker.sqlsh.rest.SQLShellRest;
 
 import java.util.HashMap;
 import org.cometd.server.JacksonJSONContextServer;
@@ -48,7 +47,7 @@ public class URLConfigModule extends ServletModule {
     });
 
     // REST binding
-    bind(SQLRest.class);
+    bind(SQLShellRest.class);
 
   }
 }

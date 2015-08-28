@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.sql.utils;
+package com.twosigma.beaker.sqlsh.utils;
 
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.autocomplete.ClasspathScanner;

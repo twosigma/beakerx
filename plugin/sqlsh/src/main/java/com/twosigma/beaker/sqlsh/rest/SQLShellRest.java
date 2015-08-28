@@ -13,11 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.sql.rest;
+package com.twosigma.beaker.sqlsh.rest;
 
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.sql.utils.SQLEvaluator;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -36,12 +35,12 @@ import javax.ws.rs.core.MediaType;
 @Path("sql")
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
-public class SQLRest
+public class SQLShellRest
 {
 
-  private final Map<String, SQLEvaluator> shells = new HashMap<>();
+  private final Map<String, com.twosigma.beaker.sqlsh.utils.SQLEvaluator> shells = new HashMap<>();
 
-  public SQLRest() throws IOException {}
+  public SQLShellRest() throws IOException {}
 
   @GET
   @Path("ready")
@@ -60,7 +59,7 @@ public class SQLRest
     // if the shell does not already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
       shellId = UUID.randomUUID().toString();
-      SQLEvaluator js = new SQLEvaluator(shellId,sessionId);
+      com.twosigma.beaker.sqlsh.utils.SQLEvaluator js = new com.twosigma.beaker.sqlsh.utils.SQLEvaluator(shellId,sessionId);
       this.shells.put(shellId, js);
       return shellId;
     }

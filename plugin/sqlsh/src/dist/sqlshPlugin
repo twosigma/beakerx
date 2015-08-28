@@ -25,8 +25,8 @@ os.chdir(os.path.dirname(self_path))
 os.environ["JAVASH_OPTS"] = " ".join(sys.argv)
 
 if os.name == 'nt':
-    bin = "bin\\sql"
+    bin = "bin\\sqlsh"
 else:
-    bin = "bin/sql"
+    bin = "bin/sqlsh"
 
 os.execlp(bin, bin, port)

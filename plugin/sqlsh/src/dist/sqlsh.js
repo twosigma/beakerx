@@ -19,11 +19,11 @@
  */
 define(function(require, exports, module) {
   'use strict';
-  var PLUGIN_NAME = "SQL";
-  var COMMAND = "sql/sqlPlugin";
+  var PLUGIN_NAME = "SQLSH";
+  var COMMAND = "sqlsh/sqlshPlugin";
   var serviceBase = null;
   var cometdUtil = bkHelper.getUpdateService();
-  var SQLCancelFunction = null;
+  var SQLSHCancelFunction = null;
   
   var sql = {
     pluginName: PLUGIN_NAME,
@@ -36,7 +36,7 @@ define(function(require, exports, module) {
     newShell: function(shellId, cb) {
       if (!shellId)
         shellId = "";
-      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sql/getShell"), { shellId: shellId, sessionId: bkHelper.getSessionId() })
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/getShell"), { shellId: shellId, sessionId: bkHelper.getSessionId() })
           .success(cb)
           .error(function() {
             console.log("failed to create shell", arguments);
@@ -45,7 +45,7 @@ define(function(require, exports, module) {
     evaluate: function(code, modelOutput,refreshObj) {
       var deferred = Q.defer();
       
-      if (SQLCancelFunction) {
+      if (SQLSHCancelFunction) {
         deferred.reject("An evaluation is already in progress");
         return deferred.promise;
       }
@@ -55,14 +55,14 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: bkHelper.serverUrl(serviceBase + "/rest/sql/evaluate"),
+        url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/evaluate"),
         data: {shellId: self.settings.shellID, code: code}
       }).done(function(ret) {
-        SQLCancelFunction = function () {
+        SQLSHCancelFunction = function () {
           $.ajax({
             type: "POST",
             datatype: "json",
-            url: bkHelper.serverUrl(serviceBase + "/rest/sql/cancelExecution"),
+            url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/cancelExecution"),
             data: {shellId: self.settings.shellID}
           }).done(function (ret) {
             console.log("done cancelExecution",ret);
@@ -72,7 +72,7 @@ define(function(require, exports, module) {
         var onEvalStatusUpdate = function(evaluation) {
           if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
             cometdUtil.unsubscribe(evaluation.update_id);
-            SQLCancelFunction = null;
+            SQLSHCancelFunction = null;
             if (evaluation.status === "ERROR")
               deferred.reject(evaluation.payload);
             else
@@ -94,15 +94,15 @@ define(function(require, exports, module) {
       this.cancelExecution();
     },
     cancelExecution: function () {
-      if (SQLCancelFunction) {
-        SQLCancelFunction();
+      if (SQLSHCancelFunction) {
+        SQLSHCancelFunction();
       }
     },
     resetEnvironment: function () {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: bkHelper.serverUrl(serviceBase + "/rest/sql/resetEnvironment"),
+        url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/resetEnvironment"),
         data: {shellId: this.settings.shellID}
       }).done(function (ret) {
         console.log("done resetEnvironment",ret);
@@ -112,7 +112,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: bkHelper.serverUrl(serviceBase + "/rest/sql/killAllThreads"),
+        url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/killAllThreads"),
         data: {shellId: this.settings.shellID}
       }).done(function (ret) {
         console.log("done killAllThreads",ret);
@@ -123,7 +123,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: bkHelper.serverUrl(serviceBase + "/rest/sql/autocomplete"),
+        url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/autocomplete"),
         data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
         cb(x, undefined, true);
@@ -132,16 +132,16 @@ define(function(require, exports, module) {
     exit: function(cb) {
       var self = this;
       this.cancelExecution();
-      SQLCancelFunction = null;
+      SQLSHCancelFunction = null;
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: bkHelper.serverUrl(serviceBase + "/rest/sql/exit"),
+        url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/exit"),
         data: { shellId: self.settings.shellID }
       }).done(cb);
     },
     updateShell: function (cb) {
-      var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sql/setShellOptions"), {
+      var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/setShellOptions"), {
         shellId: this.settings.shellID,
         classPath: this.settings.classPath,
         imports: this.settings.imports,
@@ -178,11 +178,11 @@ define(function(require, exports, module) {
       recordOutput: "true"
     }).success(function(ret) {
       serviceBase = ret;
-      bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/rest/sql/ready")).then(function () {
+      bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/ready")).then(function () {
         if (window.languageServiceBase == undefined) {
           window.languageServiceBase = {};
         }
-        window.languageServiceBase[PLUGIN_NAME] = bkHelper.serverUrl(serviceBase + '/rest/sql');
+        window.languageServiceBase[PLUGIN_NAME] = bkHelper.serverUrl(serviceBase + '/rest/sqlsh');
         if (window.languageUpdateService == undefined) {
           window.languageUpdateService = {};
         }

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.sql;
+package com.twosigma.beaker.sqlsh;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -24,7 +24,6 @@ import com.twosigma.beaker.shared.module.GuiceCometdModule;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
-import com.twosigma.beaker.sql.module.URLConfigModule;
 
 import java.util.logging.Logger;
 
@@ -56,7 +55,7 @@ public class Main {
     Injector injector = Guice.createInjector(
         new DefaultWebServerConfigModule(webAppPref),
         new WebServerModule(),
-        new URLConfigModule(),
+        new com.twosigma.beaker.sqlsh.module.URLConfigModule(),
         new SerializerModule(),
         new GuiceCometdModule());
 

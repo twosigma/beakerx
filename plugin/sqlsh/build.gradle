@@ -20,7 +20,7 @@ repositories {
 }
 
 apply plugin:'application'
-mainClassName = 'com.twosigma.beaker.sql.Main'
+mainClassName = 'Main'
 
 configurations {
   provided
@@ -42,7 +42,7 @@ compileJava {
 }
 
 if (hasProperty('evalPluginDir')) {
-  installApp.into new File(evalPluginDir, 'sql')
+  installApp.into new File(evalPluginDir, 'sqlsh')
 }
 
 if (hasProperty('includeDepsInJar')) {

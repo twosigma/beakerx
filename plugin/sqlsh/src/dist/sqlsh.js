@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 /**
- * Java eval plugin
- * For creating and config evaluators that compile and/or evaluate Java code and update code cell results.
+ * SQL eval plugin
+ * For creating and config evaluators that compile and/or evaluate SQL code and update code cell results.
  */
 define(function(require, exports, module) {
   'use strict';
-  var PLUGIN_NAME = "SQLSH";
+  var PLUGIN_NAME = "SQL";
   var COMMAND = "sqlsh/sqlshPlugin";
   var serviceBase = null;
   var cometdUtil = bkHelper.getUpdateService();

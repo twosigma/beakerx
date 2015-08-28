@@ -255,6 +255,20 @@ bk-language-logo {
   }
 }
 
+bk-language-menu-item {
+  span {
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 10px;
+    padding-top: 1px;
+  }
+}
+
 .cell-run-time {
   color: #BDBDBD;
 }

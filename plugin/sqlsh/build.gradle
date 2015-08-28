@@ -20,7 +20,7 @@ repositories {
 }
 
 apply plugin:'application'
-mainClassName = 'Main'
+mainClassName = 'com.twosigma.beaker.sqlsh.Main'
 
 configurations {
   provided

@@ -22,7 +22,7 @@ self_path = sys.argv.pop(0)
 
 os.chdir(os.path.dirname(self_path))
 
-os.environ["JAVASH_OPTS"] = " ".join(sys.argv)
+os.environ["SQLSH_OPTS"] = " ".join(sys.argv)
 
 if os.name == 'nt':
     bin = "bin\\sqlsh"

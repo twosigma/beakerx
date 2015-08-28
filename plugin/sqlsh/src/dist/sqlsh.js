@@ -14,25 +14,25 @@
  *  limitations under the License.
  */
 /**
- * Java eval plugin
- * For creating and config evaluators that compile and/or evaluate Java code and update code cell results.
+ * Sql eval plugin
+ * For creating and config evaluators that compile and/or evaluate Sql code and update code cell results.
  */
 define(function(require, exports, module) {
   'use strict';
-  var PLUGIN_NAME = "SQLSH";
+  var PLUGIN_NAME = "Sql";
   var COMMAND = "sqlsh/sqlshPlugin";
   var serviceBase = null;
   var cometdUtil = bkHelper.getUpdateService();
-  var SQLSHCancelFunction = null;
+  var SqlShCancelFunction = null;
   
-  var sql = {
+  var SqlSh = {
     pluginName: PLUGIN_NAME,
-    cmMode: "text/x-java",
+    cmMode: "text/x-sql",
     background: "#E0FFE0",
-    bgColor: "#EB0000",
+    bgColor: "##F8981C",
     fgColor: "#FFFFFF",
     borderColor: "",
-    shortName: "Jv",
+    shortName: "Sq",
     newShell: function(shellId, cb) {
       if (!shellId)
         shellId = "";
@@ -45,7 +45,7 @@ define(function(require, exports, module) {
     evaluate: function(code, modelOutput,refreshObj) {
       var deferred = Q.defer();
       
-      if (SQLSHCancelFunction) {
+      if (SqlShCancelFunction) {
         deferred.reject("An evaluation is already in progress");
         return deferred.promise;
       }
@@ -58,7 +58,7 @@ define(function(require, exports, module) {
         url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/evaluate"),
         data: {shellId: self.settings.shellID, code: code}
       }).done(function(ret) {
-        SQLSHCancelFunction = function () {
+        SqlShCancelFunction = function () {
           $.ajax({
             type: "POST",
             datatype: "json",
@@ -72,7 +72,7 @@ define(function(require, exports, module) {
         var onEvalStatusUpdate = function(evaluation) {
           if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
             cometdUtil.unsubscribe(evaluation.update_id);
-            SQLSHCancelFunction = null;
+            SqlShCancelFunction = null;
             if (evaluation.status === "ERROR")
               deferred.reject(evaluation.payload);
             else
@@ -94,8 +94,8 @@ define(function(require, exports, module) {
       this.cancelExecution();
     },
     cancelExecution: function () {
-      if (SQLSHCancelFunction) {
-        SQLSHCancelFunction();
+      if (SqlShCancelFunction) {
+        SqlShCancelFunction();
       }
     },
     resetEnvironment: function () {
@@ -132,7 +132,7 @@ define(function(require, exports, module) {
     exit: function(cb) {
       var self = this;
       this.cancelExecution();
-      SQLSHCancelFunction = null;
+      SqlShCancelFunction = null;
       $.ajax({
         type: "POST",
         datatype: "json",
@@ -142,33 +142,19 @@ define(function(require, exports, module) {
     },
     updateShell: function (cb) {
       var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/setShellOptions"), {
-        shellId: this.settings.shellID,
-        classPath: this.settings.classPath,
-        imports: this.settings.imports,
-        outdir: this.settings.outdir});
+    	datasorces: this.settings.datasorces});
       if (cb) {
         p.success(cb);
       }
     },
     spec: {
-      outdir:      {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
-      classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
-      imports:     {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"},
+      datasorces:      {type: "settableString", action: "updateShell", name: "Datasources"},
       resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
       killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
     },
     cometdUtil: cometdUtil
   };
-  var defaultImports = [
-    "com.twosigma.beaker.chart.Color",
-    "com.twosigma.beaker.chart.legend.*",
-    "com.twosigma.beaker.chart.Filter",
-    "com.twosigma.beaker.BeakerProgressUpdate",
-    "com.twosigma.beaker.chart.xychart.*",
-    "com.twosigma.beaker.chart.xychart.plotitem.*",
-    "com.twosigma.beaker.NamespaceClient",
-    "com.twosigma.beaker.easyform.*",
-    "com.twosigma.beaker.easyform.formitem.*"];
+  var defaultImports = [];
   var shellReadyDeferred = bkHelper.newDeferred();
 
   var init = function() {
@@ -189,7 +175,7 @@ define(function(require, exports, module) {
         window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
         cometdUtil.init(PLUGIN_NAME, serviceBase);
 
-        var sqlShell = function(settings, doneCB) {
+        var SqlShell = function(settings, doneCB) {
           var self = this;
           var setShellIdCB = function(id) {
             settings.shellID = id;
@@ -215,8 +201,8 @@ define(function(require, exports, module) {
             this[action]();
           };
         };
-        sqlShell.prototype = sql;
-        shellReadyDeferred.resolve(sqlShell);
+        SqlShell.prototype = SqlSh;
+        shellReadyDeferred.resolve(SqlShell);
       }, function () {
         console.log("plugin service failed to become ready", PLUGIN_NAME, arguments);
         shellReadyDeferred.reject("plugin service failed to become ready");

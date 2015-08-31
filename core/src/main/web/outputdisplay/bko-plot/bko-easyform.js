@@ -726,6 +726,7 @@
                 "</div>",
             link: function (scope, element, attrs) {
               var component = scope.component;
+              scope.component.enabled = component.enabled && scope.evaluatorExist;
 
               var executeCellWithTag = function () {
                 var cellOp = bkSessionManager.getNotebookCellOp();
@@ -752,11 +753,9 @@
               };
 
               var buttonComponent = element.find('.button-component');
-
               if (EasyFormConstants.Components.ButtonComponent.type == component.type) {
                 buttonComponent.text(component.label);
-
-                if (component.tag) {
+                if (component.tag && scope.evaluatorExist) {
                   buttonComponent.attr('title', component.tag).on('click', executeCellWithTag);
                 }
               } else if (EasyFormConstants.Components.SaveValuesButton.type == component.type) {

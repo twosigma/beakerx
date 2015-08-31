@@ -750,7 +750,7 @@
               if (EasyFormConstants.Components.ButtonComponent.type == component.type) {
                 buttonComponent.text(component.label);
 
-                if (component.tag) {
+                if (component.tag && scope.evaluatorExist) {
                   buttonComponent.attr('title', component.tag).on('click', executeCellWithTag);
                 }
               } else if (EasyFormConstants.Components.SaveValuesButton.type == component.type) {

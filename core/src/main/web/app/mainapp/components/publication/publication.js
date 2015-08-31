@@ -29,7 +29,9 @@
 
       $scope.user = {role: 'beaker'};
       $scope.model = {};
-
+      $scope.baseUrl = bkPublicationApi.getBaseUrl();
+      $scope.signupUrl = $scope.baseUrl + '/#/sign_up';
+      
       $scope.signIn = function() {
         return bkPublicationAuth.signIn($scope.user)
         .then(function() {

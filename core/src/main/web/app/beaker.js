@@ -412,8 +412,9 @@
         };
       });
     });
-    beaker.run(function(bkPublicationAuth) {
-      return bkPublicationAuth.initSession();
+    beaker.run(function(bkPublicationAuth, $location, $localStorage) {
+      var params = $location.search();
+      return bkPublicationAuth.initSession(params["token"]);
     });
   };
   var bootstrapBkApp = function() {

@@ -167,6 +167,21 @@
           }
         };
 
+        $scope.showDocs = function(cpos) {
+
+          var cb = function(doc) {
+            $scope.$broadcast('showTooltip', doc);
+          };
+
+          var evaluator = bkEvaluatorManager.getEvaluator($scope.cellmodel.evaluator);
+          if (!evaluator) {
+            return;
+          }
+          if (evaluator.showDocs) {
+            evaluator.showDocs($scope.cellmodel.input.body, cpos, cb);
+          }
+        };
+
         $scope.getEvaluators = function() {
           return bkEvaluatorManager.getAllEvaluators();
         };
@@ -429,9 +444,9 @@
         scope.evaluateSelection = function(cm) {
           var evalCode;
           var currentLine;
-          if(cm.somethingSelected()){
+          if (cm.somethingSelected()) {
             evalCode = cm.getSelection();
-          }else{
+          } else {
             currentLine = cm.getCursor().line;
             evalCode = cm.getLine(currentLine);
           }
@@ -439,10 +454,10 @@
           scope.cellmodel.output.state = {};
           bkCoreManager.getBkApp().evaluateCellCode(scope.cellmodel, evalCode)
             .then(function(data) {
-              if(currentLine != null){
-                if(currentLine !== cm.lastLine()){
+              if (currentLine != null) {
+                if (currentLine !== cm.lastLine()) {
                   cm.setCursor(currentLine + 1, 0);
-                }else{
+                } else {
                   codeMirrorOptions.goToNextCell(cm);
                 }
               }

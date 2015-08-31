@@ -603,6 +603,8 @@
             "Ctrl-Space": maybeShowAutoComplete,
             "Cmd-Space": showAutoComplete,
             "Shift-Tab": shiftTab,
+            "Shift-Ctrl-Space": showDocs,
+            "Shift-Cmd-Space": showDocs,
             "Ctrl-Alt-Up": moveCellUp,
             "Cmd-Alt-Up": moveCellUp,
             "Ctrl-Alt-Down": moveCellDown,

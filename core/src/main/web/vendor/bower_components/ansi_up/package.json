@@ -1,0 +1,33 @@
+{
+	"name": "ansi_up",
+	"version": "1.3.0",
+	"description": "Convert ansi sequences in strings to colorful HTML",
+	"keywords": ["ansi", "html"],
+	"author": "drudru <drudru@gmail.com>",
+	"main": "./ansi_up.js",
+	"repository" :
+		{ 
+		  "type" : "git",
+		  "url" : "git://github.com/drudru/ansi_up.git"
+		},
+    "bugs" : 
+    	{ 
+	    	"url" : "http://github.com/drudru/ansi_up/issues" 
+    	},
+	"engines": 
+		{ 
+			"node": "*"
+		},
+	"scripts": 
+		{ 
+			"test": "make test",
+			"build": "make build"
+		},
+	"devDependencies":
+		{
+			"mocha": "*",
+			"should": "*",
+			"jshint": "*",
+			"jslint": "*"
+		}
+}

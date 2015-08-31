@@ -167,6 +167,21 @@
           }
         };
 
+        $scope.showDocs = function(cpos){
+
+          var cb = function(doc){
+            $scope.$broadcast('showTooltip', doc);
+          };
+
+          var evaluator = bkEvaluatorManager.getEvaluator($scope.cellmodel.evaluator);
+          if (!evaluator) {
+            return;
+          }
+          if(evaluator.showDocs){
+            evaluator.showDocs($scope.cellmodel.input.body, cpos, cb);
+          }
+        };
+
         $scope.getEvaluators = function() {
           return bkEvaluatorManager.getAllEvaluators();
         };

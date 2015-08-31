@@ -520,6 +520,22 @@
           }
         };
 
+        var shiftTab = function(cm) {
+          var cursor = cm.getCursor();
+          var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
+          if (leftLine.match(/^\s*$/)) {
+            cm.execCommand("indentAuto");
+          } else {
+            showDocs(cm);
+          }
+        };
+
+        var showDocs = function(cm) {
+          var cur = cm.getCursor();
+          var cursorPos = cm.indexFromPos(cur);
+          scope.showDocs(cursorPos);
+        };
+
         var moveCellUp = function(cm) {
           notebookCellOp.moveUp(scope.cellmodel.id);
           bkUtils.refreshRootScope();
@@ -586,6 +602,7 @@
             "Shift-Enter": evaluateAndGoDown,
             "Ctrl-Space": maybeShowAutoComplete,
             "Cmd-Space": showAutoComplete,
+            "Shift-Tab": shiftTab,
             "Ctrl-Alt-Up": moveCellUp,
             "Cmd-Alt-Up": moveCellUp,
             "Ctrl-Alt-Down": moveCellDown,

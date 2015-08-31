@@ -297,3 +297,46 @@ background-color: rgb(205, 223, 214);
   height: 20px;
   padding: 0 10px;
 }
+
+.bkcelltooltip{
+  display: none;
+  border: 1px solid silver;
+  border-radius: 3px;
+  color: #444;
+  padding: 2px 5px;
+  font-size: 90%;
+  font-family: monospace;
+  background-color: white;
+  white-space: pre-wrap;
+  max-height: 20em;
+  overflow-y: auto;
+  max-width: 40em;
+  position: absolute;
+  z-index: 10;
+  -webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+  -moz-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+  box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+}
+
+.bkcelltooltip.bkcelltooltip-open {
+  display: block;
+}
+
+.ansi-black-fg, .ansi-black-bg {color: black}
+.ansi-red-fg, .ansi-red-bg {color: red}
+.ansi-green-fg, .ansi-green-bg {color: green}
+.ansi-yellow-fg, .ansi-yellow-bg {color: yellow}
+.ansi-magenta-fg, .ansi-magenta-bg {color: magenta}
+.ansi-cyan-fg, .ansi-cyan-bg {color: cyan}
+.ansi-white-fg, .ansi-white-bg {color: white}
+
+.ansi-bright-black-fg, .ansi-bright-black-bg {color: black}
+.ansi-bright-red-fg, .ansi-bright-red-bg {color: darkred}
+.ansi-bright-green-fg, .ansi-bright-green-bg {color: #006400}
+.ansi-bright-yellow-fg, .ansi-bright-yellow-bg {color: orange}
+.ansi-bright-blue-fg, .ansi-bright-blue-bg {color: darkblue}
+.ansi-bright-magenta-fg, .ansi-bright-magenta-bg {color: darkmagenta}
+.ansi-bright-cyan-fg, .ansi-bright-cyan-fg-bg {color: darkcyan}
+.ansi-bright-white-fg, .ansi-bright-white-bg {color: white}
+
+

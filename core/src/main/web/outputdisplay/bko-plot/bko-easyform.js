@@ -19,6 +19,9 @@
 
   (function ($) {
     $.widget("custom.combobox", {
+      options: {
+        change: null
+      },
       _create: function () {
         this.editable = this.element.attr('easyform-editable') === 'true';
         this.wrapper = $("<span>")
@@ -73,6 +76,9 @@
             this._trigger("select", event, {
               item: ui.item.option
             });
+            if ($.isFunction(this.options.change)) {
+              this.options.change(ui.item.option.value);
+            }
           }
         });
       },
@@ -482,7 +488,7 @@
                 var editable = efc.getComponent().editable
                     && efc.getComponent().editable === 'true';
                 comboBox.attr('easyform-editable', editable);
-                element.find( ".combo-box[ng-model=\"" + scope.ngModelAttr + "\"]" ).combobox();
+                comboBox.combobox({change : efc.valueChangeHandler});
                 if (editable && efc.getComponent().width
                     && parseInt(efc.getComponent().width)
                         > efc.constants.Components.ComboBox.MIN_WIDTH) {

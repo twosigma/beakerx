@@ -1,4 +1,4 @@
-build
+core/build
 beaker/*
 node_modules
 core/nginx/bin
@@ -101,3 +101,4 @@ core/src/main/web/vendor/bower_components/ansi_up/sample.png
 plugin/cpp/src/main/cpp/CppKernel.h
 plugin/cpp/src/main/cpp/libCRun.jnilib
 plugin/cpp/src/main/java/com/twosigma/beaker/cpp/autocomplete
+

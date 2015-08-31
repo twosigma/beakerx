@@ -22,7 +22,13 @@
   </button>
   <button class="btn btn-primary dropdown-toggle" ng-class="!isLarge && 'btn-xs'" data-toggle="dropdown" data-target=".code-dropdown">code <i class="fa fa-sort-down"></i><ul class="dropdown-menu code-dropdown" role="menu">
     <li ng-repeat="(key, value) in getEvaluators()">
-      <a ng-click="newCodeCell(key)">{{key}}</a>
+      <a ng-click="newCodeCell(key)"><bk-language-menu-item
+                            key="{{key}}"
+                            bg-color="{{getEvaluatorDetails(key).bgColor}}"
+                            name="{{getEvaluatorDetails(key).shortName}}"
+                            fg-color="{{getEvaluatorDetails(key).fgColor}}"
+                            border-color="{{getEvaluatorDetails(key).borderColor}}"></bk-language-menu-item>
+      </a>
     </li>
     <li>
        <a ng-click="showPluginManager()">Other languages...</a>

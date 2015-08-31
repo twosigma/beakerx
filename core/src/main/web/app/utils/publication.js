@@ -69,11 +69,18 @@
           return self.initSession();
         });
       },
+      signOut: function() {
+        delete $localStorage.token;
+        currentUser = null;
+      },
       initSession: function() {
         return bkPublicationApi.getCurrentUser()
         .then(function(resp) {
           return currentUser = resp.data;
         });
+      },
+      currentUser: function() {
+        return currentUser;
       },
       isSignedIn: function() {
         return !!currentUser;

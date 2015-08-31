@@ -31,5 +31,6 @@
     "datatables": "1.10.7",
     "rAF": "https://gist.githubusercontent.com/paulirish/1579671/raw/3d42a3a76ed09890434a07be2212f376959e616f/rAF.js",
     "ansi_up": "1.3.0"
+    "angular-gravatar": "0.3.1"
   }
 }

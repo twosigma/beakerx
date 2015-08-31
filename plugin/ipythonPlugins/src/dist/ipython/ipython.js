@@ -32,6 +32,7 @@ define(function(require, exports, module) {
   var now = function() {
     return new Date().getTime();
   };
+  var keyboard_manager = null;
   var IPythonProto = {
       pluginName: PLUGIN_NAME,
       cmMode: "python",
@@ -90,8 +91,11 @@ define(function(require, exports, module) {
                  notebook: {path: "/fake/path" + shellID}
                 };
                 var fakeNotebook = {
-                  events: {on: function (){},
-                           trigger: function (){}}
+                  events: {
+                    on: function () {},
+                    trigger: function () {}
+                  },
+                  keyboard_manager: keyboard_manager
                 };
                 var ajaxsettings = {
                   processData : false,
@@ -160,11 +164,12 @@ define(function(require, exports, module) {
         }
 
         var self = this;
-        var startTime = new Date().getTime();
         var kernel = kernels[self.settings.shellID];
         var finalStuff = undefined;
         bkHelper.setupProgressOutput(modelOutput);
         gotError = false;
+        kernel.appendToWidgetOutput = false;
+        kernel.view = null;
 
         _theCancelFunction = function() {
           var kernel = kernels[self.settings.shellID];
@@ -265,13 +270,20 @@ define(function(require, exports, module) {
             if (finalStuff !== undefined) {
               finalStuff.payload = evaluation.payload
             }
+          } else if (kernel.appendToWidgetOutput && kernel.view) {
+            kernel.view.outputBuffer = kernel.view.outputBuffer || [];
+            kernel.view.outputBuffer.push(a0);
           } else if (type === "stream") {
             evaluation.outputdata = [];
             if (finalStuff !== undefined && finalStuff.outputdata !== undefined)
               evaluation.outputdata = finalStuff.outputdata;
             var text = (ipyVersion == '3') ? content.text : content.data;
             evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
-                value: text});
+              value: text});
+            if (finalStuff !== undefined) {
+              finalStuff.outputdata = evaluation.outputdata;
+            }
+
           } else {
             var jsonres;
             if(content.data['application/json'] !== undefined) {
@@ -314,7 +326,7 @@ define(function(require, exports, module) {
               var elem = $(document.createElement("div"));
               var oa = (ipyVersion == '3') ?
                   (new myPython.OutputArea({events: {trigger: function(){}},
-                    keyboard_manager: {register_events: function(){}}})) :
+                    keyboard_manager: keyboard_manager})) :
                       (new myPython.OutputArea(elem));
                   // twiddle the mime types? XXX
                   if (ipyVersion == '1') {
@@ -466,8 +478,12 @@ define(function(require, exports, module) {
         require('ipython3_kernel');
         require('ipython3_utils');
         require('ipython3_outputarea');
+        require('ipython3_keyboardmanager');
+        var events = require('ipython3_events');
+        keyboard_manager = new IPython.KeyboardManager({events: events});
       }
       myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : IPython);
+
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
         nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2"

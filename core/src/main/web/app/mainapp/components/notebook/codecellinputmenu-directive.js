@@ -22,7 +22,7 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('bkCodeCellInputMenu', function(bkCoreManager) {
+  module.directive('bkCodeCellInputMenu', function(bkCoreManager, bkEvaluatorManager) {
     var getBkNotebookWidget = function() {
       return bkCoreManager.getBkApp().getBkNotebookWidget();
     } ;
@@ -51,6 +51,9 @@
           var cellId = $scope.cellmodel.id;
           $scope.cellmodel.evaluator = evaluatorName;
           getBkNotebookWidget().getFocusable(cellId).focus();
+        };
+        $scope.getEvaluatorDetails = function(name) {
+          return bkEvaluatorManager.getVisualParams(name);
         };
       }
     };

@@ -39,10 +39,33 @@
                 "cm": {
                     "mode": "text/x-c++src"
                 }
-            }
+            },
+            "flags": "-I/System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers/"
         }
     ],
     "cells": [
+        {
+            "id": "sectionUFrCJG",
+            "type": "section",
+            "title": "C++ Examples",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdowngo27FF",
+            "type": "markdown",
+            "body": [
+                "Beaker's [C++](https://en.wikipedia.org/wiki/C%2B%2B) support is brand new",
+                "but it works on at least Mac platform.",
+                "You may have to change the compiler options in the language",
+                "manager to get it to work on other platforms (watch for an",
+                "error about `jni.h` not found).",
+                "",
+                "You can link with and call into libraries like [OpenCV](http://opencv.org/)."
+            ],
+            "evaluatorReader": false
+        },
         {
             "id": "code5XX0in",
             "type": "code",
@@ -69,8 +92,8 @@
                 },
                 "selectedType": "Results",
                 "pluginName": "C++",
-                "shellId": "f94c5771-7a8b-4887-8a2b-bd0f5c6db602",
-                "elapsedTime": 1462
+                "shellId": "36bd9693-3c3e-477c-89d0-bfdbc24c8e05",
+                "elapsedTime": 3581
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -92,8 +115,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "C++",
-                "shellId": "f94c5771-7a8b-4887-8a2b-bd0f5c6db602",
-                "elapsedTime": 743
+                "shellId": "36bd9693-3c3e-477c-89d0-bfdbc24c8e05",
+                "elapsedTime": 1273
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -120,8 +143,8 @@
                 "result": "This is far away",
                 "selectedType": "Text",
                 "pluginName": "C++",
-                "shellId": "f94c5771-7a8b-4887-8a2b-bd0f5c6db602",
-                "elapsedTime": 1214
+                "shellId": "36bd9693-3c3e-477c-89d0-bfdbc24c8e05",
+                "elapsedTime": 2092
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -140,7 +163,7 @@
                     "  test[\"b\"] = std::vector<int>(2,2);",
                     "  test[\"c\"] = std::vector<int>(3,3);",
                     "  ",
-                    "  ret = beakerSet(\"x\", test);",
+                    "  ret = Beaker::set(\"x\", test);",
                     "}"
                 ]
             },
@@ -149,8 +172,8 @@
                 "result": 1,
                 "selectedType": "Text",
                 "pluginName": "C++",
-                "elapsedTime": 1714,
-                "shellId": "f94c5771-7a8b-4887-8a2b-bd0f5c6db602"
+                "elapsedTime": 3032,
+                "shellId": "36bd9693-3c3e-477c-89d0-bfdbc24c8e05"
             },
             "evaluatorReader": true,
             "lineCount": 10
@@ -164,16 +187,13 @@
                     "#include <vector>",
                     "#include <string>",
                     "void beaker_main(std::map<std::string, std::vector<int>> &ret){",
-                    "  beakerGet(\"x\", ret);",
+                    "  Beaker::get(\"x\", ret);",
                     "}"
                 ]
             },
             "output": {
                 "state": {},
                 "result": {
-                    "a": [
-                        1
-                    ],
                     "b": [
                         2,
                         2
@@ -182,12 +202,15 @@
                         3,
                         3,
                         3
+                    ],
+                    "a": [
+                        1
                     ]
                 },
                 "selectedType": "Text",
                 "pluginName": "C++",
-                "shellId": "f94c5771-7a8b-4887-8a2b-bd0f5c6db602",
-                "elapsedTime": 1691
+                "shellId": "36bd9693-3c3e-477c-89d0-bfdbc24c8e05",
+                "elapsedTime": 3083
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -196,9 +219,6 @@
     "namespace": {
         "hello": "world!",
         "x": {
-            "a": [
-                1
-            ],
             "b": [
                 2,
                 2
@@ -207,6 +227,9 @@
                 3,
                 3,
                 3
+            ],
+            "a": [
+                1
             ]
         },
         "y": {

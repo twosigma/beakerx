@@ -148,6 +148,7 @@
     var beaker = angular.module('beaker', [
       'ngRoute',
       'ngStorage',
+      'ui.gravatar',
       'bk.core',
       'bk.evaluatePluginManager',
       'bk.controlPanel',
@@ -410,6 +411,9 @@
           return window.beaker.buildTime;
         };
       });
+    });
+    beaker.run(function(bkPublicationAuth) {
+      return bkPublicationAuth.initSession();
     });
   };
   var bootstrapBkApp = function() {

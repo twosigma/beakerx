@@ -185,7 +185,11 @@
         scope[scope.ngModelAttr] = component.value;
       }
 
-      scope.$watch(this.watchedExpression, this.valueChangeHandler, this.isWatchByObjectEquality());
+      if (scope.evaluatorExist) {
+        scope.$watch(this.watchedExpression,
+            this.valueChangeHandler,
+            this.isWatchByObjectEquality());
+      }
       this.addUpdatedListener();
       this.addValueLoadedListener();
     };
@@ -779,6 +783,8 @@
             template: "<div class='easy-form-container'></div>",
 
             controller: function ($scope) {
+              $scope.evaluatorExist = $scope.model.getEvaluatorId && $scope.model.getEvaluatorId();
+
               $scope.getUpdateService = function () {
                 if (window !== undefined && window.languageUpdateService !== undefined
                     && bkEvaluatorManager.getEvaluator($scope.model.getEvaluatorId()) !== undefined)
@@ -808,7 +814,9 @@
               };
 
               $scope.fetchFromCellModel = function (model, element) {
-                $scope.ingestUpdate(model);
+                if ($scope.evaluatorExist) {
+                  $scope.ingestUpdate(model);
+                }
                 var easyFormContainer = element.find('.easy-form-container');
 
                 if (model.caption) {
@@ -824,7 +832,10 @@
                     var childScope = $scope.$new();
                     childScope.component = component;
                     childScope.formId = $scope.update_id;
-                    childScope.evaluatorId = $scope.model.getEvaluatorId();
+                    childScope.evaluatorExist = $scope.evaluatorExist;
+                    if ($scope.evaluatorExist) {
+                      childScope.evaluatorId = $scope.model.getEvaluatorId();
+                    }
                     var newElement
                         = angular.element(EasyFormConstants.Components[component.type].htmlTag);
                     childScope.component.enabled = childScope.component.enabled ? true : false;
@@ -895,7 +906,7 @@
 
               $scope.$on('$destroy', function () {
                 $(window).off('resize', $scope.alignComponents);
-                if ($scope.subscribedId) {
+                if ($scope.evaluatorExist && $scope.subscribedId) {
                   var srv = $scope.getUpdateService();
                   if (srv !== undefined) {
                     srv.unsubscribe($scope.subscribedId);

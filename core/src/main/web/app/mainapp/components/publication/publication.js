@@ -34,14 +34,23 @@
         return bkPublicationAuth.signIn($scope.user)
         .then(function() {
           initPublication();
+          delete $scope.user.password;
         })
         .catch(function(err) {
           $scope.error = 'Error: Invalid email or password';
         });
       };
 
+      $scope.signOut = function() {
+        bkPublicationAuth.signOut();
+      };
+
       $scope.isSignedIn = function() {
         return bkPublicationAuth.isSignedIn();
+      };
+
+      $scope.currentUser = function() {
+        return bkPublicationAuth.currentUser();
       };
 
       function defaultName() {

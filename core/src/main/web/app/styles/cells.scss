@@ -108,9 +108,6 @@ bk-section-cell {
   white-space: pre;
 }
 
-.bkcell bk-code-cell-input-menu .dropdown .dropdown-menu {
-  margin-top: -$grid-row-height;
-}
 
 .code-cell-area {
   .code-cell-input {
@@ -242,6 +239,20 @@ bk-language-logo {
   left: 0;
   top: 0;
 
+  span {
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 10px;
+    padding-top: 1px;
+  }
+}
+
+bk-language-menu-item {
   span {
     width: 20px;
     height: 20px;

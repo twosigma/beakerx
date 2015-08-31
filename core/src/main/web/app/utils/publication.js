@@ -22,7 +22,7 @@
   var module = angular.module('bk.publication', ['bk.utils']);
 
   module.factory('bkPublicationApi', function (bkUtils, $localStorage) {
-    var baseUrl = 'https://pub.beakernotebook.com';
+    var baseUrl = window.beaker !== undefined && window.beaker.pubblicationApiURL !== undefined ? window.beaker.pubblicationApiURL : 'https://pub.beakernotebook.com';
 
     function headers() {
       if ($localStorage.token) {
@@ -51,6 +51,9 @@
       },
       getCategories: function() {
         return bkUtils.httpGetJson(baseUrl + '/notebook/v1/categories', {}, headers());
+      },
+      getBaseUrl: function () {
+        return baseUrl;
       }
     };
   });

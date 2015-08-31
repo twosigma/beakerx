@@ -29,17 +29,14 @@
       },
       link: function(scope, element, attrs){
         var tooltip = element.find('.bkcelltooltip');
-        var initialized = false;
 
         ///handle showTooltip event//////////////////////
         scope.$on('showTooltip', function(event, doc){
-          if(!initialized){
-            initialized = true;
-            init();
-          }
           showTooltip(doc);
         });
+
         function showTooltip(doc){
+          bindEvents();
           tooltip.empty();
           var html;
           if(doc.ansiHtml){
@@ -55,6 +52,7 @@
         }
 
         function hideTooltip(){
+          unbindEvents();
           tooltip.removeClass('bkcelltooltip-open');
         }
 
@@ -101,19 +99,33 @@
           }
         };
 
-        var init = function(){
+        var escapeKeyBind = function (evt) {
+          if (evt.which === 27 && tooltipIsOpen()) {
+            hideTooltip();
+          }
+        };
+
+        function bindEvents(){
           //handle document mousedown to close tooltip
           $(window).on('mousedown', mouseDownHandler);
           //adjust tooltip position on window resize
           $(window).resize(resizeHandler);
+          //close tooltip on esc
+          $(window).on('keydown', escapeKeyBind);
           //hide tooltip on typing in editor
           scope.editor.on('change', editorChangeHandler);
-          scope.$on('$destroy', function() {
-            $(window).off('resize', resizeHandler);
-            $(window).off('mousedown', mouseDownHandler);
-            CodeMirror.off('change', editorChangeHandler);
-          });
-        };
+        }
+
+        function unbindEvents(){
+          $(window).off('resize', resizeHandler);
+          $(window).off('mousedown', mouseDownHandler);
+          $(window).off('keydown', escapeKeyBind);
+          scope.editor.off('change', editorChangeHandler);
+        }
+
+        scope.$on('$destroy', function() {
+          unbindEvents();
+        });
       }
     };
   });

@@ -44,7 +44,7 @@ public class EasyFormRest {
 
   @GET
   @Path("get")
-  public Object get(@QueryParam("id") String id,
+  public String get(@QueryParam("id") String id,
                     @QueryParam("key") String key)
       throws Exception {
     EasyForm easyForm = _easyFormObjectManager.getForm(id);

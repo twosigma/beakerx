@@ -131,8 +131,24 @@ html {
   }
   .actions {
     margin-top: 20px;
+    margin-bottom: 20px;
     .warning {
       font-style: italic;
     }
+  }
+  .identity {
+    position: relative;
+    .name {
+      font-weight: bold;
+    }
+    .text {
+      position: absolute;
+      top: 8px;
+      left: 35px;
+    }
+  }
+  .loading-spinner {
+    left: -8px;
+    top: 3px;
   }
 }

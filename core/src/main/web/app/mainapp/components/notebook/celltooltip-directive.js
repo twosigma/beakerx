@@ -95,14 +95,23 @@
           }
         };
 
+        var editorChangeHandler = function () {
+          if(tooltipIsOpen()){
+            hideTooltip();
+          }
+        };
+
         var init = function(){
           //handle document mousedown to close tooltip
           $(window).on('mousedown', mouseDownHandler);
           //adjust tooltip position on window resize
           $(window).resize(resizeHandler);
+          //hide tooltip on typing in editor
+          scope.editor.on('change', editorChangeHandler);
           scope.$on('$destroy', function() {
             $(window).off('resize', resizeHandler);
             $(window).off('mousedown', mouseDownHandler);
+            CodeMirror.off('change', editorChangeHandler);
           });
         };
       }

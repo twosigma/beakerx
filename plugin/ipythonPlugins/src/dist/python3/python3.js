@@ -377,6 +377,20 @@ define(function(require, exports, module) {
           });
         }
       },
+      showDocs: function(code, cpos, cb){
+        var kernel = kernels[this.settings.shellID];
+        if (ipyVersion == '1') {
+          //no method to show docs
+        } else if (ipyVersion == '2')  {
+          //no method to show docs
+        } else {
+          kernel.inspect(code, cpos, function(reply) {
+            cb({
+              ansiHtml: reply.content.data['text/plain']
+            });
+          });
+        }
+      },
       exit: function(cb) {
         this.cancelExecution();
         _theCancelFunction = null;

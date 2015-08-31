@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@SuppressWarnings("unchecked")
 public class EasyForm extends ObservableMap<String, Object> {
 
   public static final Integer HORIZONTAL = 1;

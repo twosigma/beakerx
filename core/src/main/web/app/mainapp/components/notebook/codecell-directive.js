@@ -167,9 +167,9 @@
           }
         };
 
-        $scope.showDocs = function(cpos){
+        $scope.showDocs = function(cpos) {
 
-          var cb = function(doc){
+          var cb = function(doc) {
             $scope.$broadcast('showTooltip', doc);
           };
 
@@ -177,7 +177,7 @@
           if (!evaluator) {
             return;
           }
-          if(evaluator.showDocs){
+          if (evaluator.showDocs) {
             evaluator.showDocs($scope.cellmodel.input.body, cpos, cb);
           }
         };
@@ -444,9 +444,9 @@
         scope.evaluateSelection = function(cm) {
           var evalCode;
           var currentLine;
-          if(cm.somethingSelected()){
+          if (cm.somethingSelected()) {
             evalCode = cm.getSelection();
-          }else{
+          } else {
             currentLine = cm.getCursor().line;
             evalCode = cm.getLine(currentLine);
           }
@@ -454,10 +454,10 @@
           scope.cellmodel.output.state = {};
           bkCoreManager.getBkApp().evaluateCellCode(scope.cellmodel, evalCode)
             .then(function(data) {
-              if(currentLine != null){
-                if(currentLine !== cm.lastLine()){
+              if (currentLine != null) {
+                if (currentLine !== cm.lastLine()) {
                   cm.setCursor(currentLine + 1, 0);
-                }else{
+                } else {
                   codeMirrorOptions.goToNextCell(cm);
                 }
               }

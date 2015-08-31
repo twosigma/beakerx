@@ -377,11 +377,11 @@ define(function(require, exports, module) {
           });
         }
       },
-      showDocs: function(code, cpos, cb){
+      showDocs: function(code, cpos, cb) {
         var kernel = kernels[this.settings.shellID];
         if (ipyVersion == '1') {
           //no method to show docs
-        } else if (ipyVersion == '2')  {
+        } else if (ipyVersion == '2') {
           //no method to show docs
         } else {
           kernel.inspect(code, cpos, function(reply) {

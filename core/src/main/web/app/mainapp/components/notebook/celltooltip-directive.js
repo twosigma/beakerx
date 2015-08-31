@@ -27,36 +27,36 @@
       },
       controller: function($scope) {
       },
-      link: function(scope, element, attrs){
+      link: function(scope, element, attrs) {
         var tooltip = element.find('.bkcelltooltip');
 
         ///handle showTooltip event//////////////////////
-        scope.$on('showTooltip', function(event, doc){
+        scope.$on('showTooltip', function(event, doc) {
           showTooltip(doc);
         });
 
-        function showTooltip(doc){
+        function showTooltip(doc) {
           bindEvents();
           tooltip.empty();
           var html;
-          if(doc.ansiHtml){
+          if (doc.ansiHtml) {
             html = ansi_up.ansi_to_html(doc.ansiHtml, {use_classes: true});
-          }else if(doc.text){
+          } else if (doc.text) {
             html = doc.text;
           }
-          if(html){
+          if (html) {
             tooltip.html(html);
             tooltip.addClass('bkcelltooltip-open');
             adjustTooltipPosition();
           }
         }
 
-        function hideTooltip(){
+        function hideTooltip() {
           unbindEvents();
           tooltip.removeClass('bkcelltooltip-open');
         }
 
-        function adjustTooltipPosition(){
+        function adjustTooltipPosition() {
           var jqEditor = $(scope.editor.getWrapperElement());
           var cmPosition = jqEditor.position();
           var position = scope.editor.cursorCoords(true, 'local');
@@ -67,45 +67,44 @@
           var top = (cmPosition.top + position.bottom + vMargins);
 
           tooltip.css('position', 'absolute');
-          tooltip.css('top', top );
+          tooltip.css('top', top);
           tooltip.css('left', left);
         }
 
         function shouldHideTooltip(clickEventElement) {
-          return tooltipIsOpen() &&
-              !tooltip.is(clickEventElement) &&
-              tooltip.has(clickEventElement).length === 0;
+          return tooltipIsOpen() && !tooltip.is(clickEventElement) &&
+            tooltip.has(clickEventElement).length === 0;
         }
 
-        function tooltipIsOpen(){
+        function tooltipIsOpen() {
           return tooltip.hasClass('bkcelltooltip-open');
         }
 
-        var mouseDownHandler = function (e) {
-          if (shouldHideTooltip(e.target)){
+        var mouseDownHandler = function(e) {
+          if (shouldHideTooltip(e.target)) {
             hideTooltip();
           }
         };
 
         var resizeHandler = function() {
-          if(tooltipIsOpen()){
+          if (tooltipIsOpen()) {
             adjustTooltipPosition();
           }
         };
 
-        var editorChangeHandler = function () {
-          if(tooltipIsOpen()){
+        var editorChangeHandler = function() {
+          if (tooltipIsOpen()) {
             hideTooltip();
           }
         };
 
-        var escapeKeyBind = function (evt) {
+        var escapeKeyBind = function(evt) {
           if (evt.which === 27 && tooltipIsOpen()) {
             hideTooltip();
           }
         };
 
-        function bindEvents(){
+        function bindEvents() {
           //handle document mousedown to close tooltip
           $(window).on('mousedown', mouseDownHandler);
           //adjust tooltip position on window resize
@@ -116,7 +115,7 @@
           scope.editor.on('change', editorChangeHandler);
         }
 
-        function unbindEvents(){
+        function unbindEvents() {
           $(window).off('resize', resizeHandler);
           $(window).off('mousedown', mouseDownHandler);
           $(window).off('keydown', escapeKeyBind);

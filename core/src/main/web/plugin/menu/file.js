@@ -83,18 +83,6 @@ define(function(require, exports, module) {
       tooltip: "Publish the notebook to Beaker Publications"
     },
     {
-      name: "Log out",
-      sortorder: 147,
-      id: "logout-menuitem",
-      action: function () {
-        bkHelper.signOutFromPublications();
-      },
-      disabled: function() {
-        return !bkHelper.isSignedIn();
-      },
-      tooltip: "Log out from Publications"
-    },
-    {
       name: "Share to Web",
       sortorder: 150,
       id: "share-to-web-menuitem",

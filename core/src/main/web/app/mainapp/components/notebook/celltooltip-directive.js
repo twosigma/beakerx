@@ -119,7 +119,9 @@
           $(window).off('resize', resizeHandler);
           $(window).off('mousedown', mouseDownHandler);
           $(window).off('keydown', escapeKeyBind);
-          scope.editor.off('change', editorChangeHandler);
+          if(scope.editor){
+            scope.editor.off('change', editorChangeHandler);
+          }
         }
 
         scope.$on('$destroy', function() {

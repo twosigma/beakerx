@@ -556,7 +556,7 @@
         return bkPublicationAuth.signOut();
       },
       // other JS utils
-      updateDocumentModelFromDOM: function(id) {
+      updateCellsFromDOM: function(cells) {
         function convertCanvasToImage(elem) {
           if (elem.nodeName == 'CANVAS') {
             var img = document.createElement('img');
@@ -572,6 +572,29 @@
           }
           return elem;
         }
+
+        for(var i = 0; i < cells.length; i++){
+          var cell = cells[i];
+          if (cell.type === 'section') { continue; }
+          var elem = $("bk-cell[cellid='" + cell.id +"']");
+          var body = elem.find( "bk-output-display[type='Html'] div div" );
+          if(body.length > 0){
+
+            // 2.5) search for any canvas elements in body and replace each with an image.
+            body = convertCanvasToImage(body[0]);
+
+            // 2) convert that part of the DOM to a string
+            var newOutput = body.innerHTML;
+
+            // 3) set the result.object to that string.
+            var res = cell.output.result;
+            if (res.innertype === "Html") {
+              res.object = newOutput;
+            }
+          }
+        }
+      },
+      updateDocumentModelFromDOM: function(id) {
         // 1) find the cell that contains elem
         var elem = $("#" + id).closest("bk-cell");
         if (elem === undefined || elem[0] === undefined) {
@@ -583,32 +606,13 @@
           console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
           return;
         }
-        var body = elem.find( "bk-output-display[type='Html'] div div" );
-        if (body === undefined || body[0] === undefined) {
-          console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
-          return;
-        }
-        // 2.5) search for any canvas elements in body and replace each with an image.
-        body = convertCanvasToImage(body[0]);
-
-        // 2) convert that part of the DOM to a string
-        var newOutput = body.innerHTML;
-
-        // 3) set the result.object to that string.
         var cell = bkCoreManager.getNotebookCellManager().getCell(cellid);
         if (cell === undefined) {
           console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
           return;
         }
-
-        var res = cell.output.result;
-        if (res.innertype === "Html") {
-          res.object = newOutput;
-        } else {
-          console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
-        }
+        this.updateCellsFromDOM([cell]);
       },
-
       // bkShare
       share: bkShare,
 

@@ -21,9 +21,11 @@ define(function(require, exports, module) {
   "use strict";
   var publishToWeb = function(scope) {
     bkHelper.showStatus('Sharing to Web');
+    var shareData = scope.getShareData();
+    bkHelper.updateCellsFromDOM(shareData.cells);
     bkHelper.httpPost("../beaker/rest/publish/github", {
       type: "notebook",
-      json: angular.toJson(scope.getShareData())
+      json: angular.toJson(shareData)
     })
     .success(function(reply) {
       bkHelper.clearStatus('Sharing to Web');

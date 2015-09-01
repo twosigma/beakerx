@@ -977,6 +977,7 @@
         return true;
       },
       getSaveData: function() {
+        bkHelper.updateCellsFromDOM(this.getRawNotebookModel().cells);
         return generateSaveData();
       },
       getNotebookModelAsString: function() {

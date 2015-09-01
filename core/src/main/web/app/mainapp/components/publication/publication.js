@@ -62,12 +62,64 @@
         return section && section.title;
       }
 
+      function initNodes(categories) {
+        var nodes = {};
+        _.each(categories, function(category) {
+          nodes[category['public-id']] = _.extend(category, {
+            count: +category.count,
+            children: []
+          });
+        });
+
+        return nodes;
+      }
+
+      function generateTree(categories) {
+        var nodes = initNodes(categories);
+        var rootNodes = [];
+
+        _.each(_.sortBy(categories, 'name').reverse(), function(category) {
+          var parentNode;
+          if (category.parent) {
+            parentNode = nodes[category.parent['public-id']];
+          }
+          var node = nodes[category['public-id']];
+          if (parentNode) {
+            node.parent = parentNode;
+            parentNode.children.unshift(node);
+          } else {
+            rootNodes.unshift(node);
+          }
+        });
+
+        return rootNodes;
+      }
+
+      function flattenCategories(categories, prefix) {
+        if (!prefix) { prefix = ' '; }
+
+        return _.reduce(categories, function(newCategories, category) {
+          var toBeAdded = [];
+
+          if (category.children.length) {
+            Array.prototype.push.apply(toBeAdded, flattenCategories(category.children, '-' + prefix));
+          }
+
+          category.name = prefix + category.name;
+
+          toBeAdded.unshift(category);
+
+          return Array.prototype.concat.apply(newCategories, toBeAdded);
+        }, []);
+      }
+
       function initPublication() {
         $scope.edited = bkSessionManager.isNotebookModelEdited();
 
         bkPublicationApi.getCategories()
         .then(function(resp) {
-          $scope.categories = resp.data;
+          var tree = generateTree(resp.data)
+          $scope.categories = flattenCategories(tree);
         });
 
         $scope.model.name = defaultName();

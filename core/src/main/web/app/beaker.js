@@ -412,10 +412,6 @@
         };
       });
     });
-    beaker.run(function(bkPublicationAuth, $location, $localStorage) {
-      var params = $location.search();
-      return bkPublicationAuth.initSession(params["token"]);
-    });
   };
   var bootstrapBkApp = function() {
     // make sure requirejs reports error

@@ -23,8 +23,6 @@
     ['$scope', 'bkUtils', 'bkPublicationApi', 'bkPublicationAuth', 'bkSessionManager', '$modalInstance', '$location',
     function($scope, bkUtils, bkPublicationApi, bkPublicationAuth, bkSessionManager, $modalInstance, $location) {
 
-      bkPublicationAuth.initSession();
-
       var notebook = bkSessionManager.getRawNotebookModel();
 
       $scope.user = {role: 'beaker'};
@@ -190,9 +188,12 @@
         });
       }
 
-      if ($scope.isSignedIn()) {
-        initPublication();
-      }
+      bkPublicationAuth.initSession()
+      .then(function() {
+        if ($scope.isSignedIn()) {
+          initPublication();
+        }
+      })
 
       $scope.close = function() {
         $modalInstance.close('ok');

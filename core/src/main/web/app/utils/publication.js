@@ -76,10 +76,7 @@
         delete $localStorage.token;
         currentUser = null;
       },
-      initSession: function(token) {
-        if (token) {
-          $localStorage.token = token;
-        }
+      initSession: function() {
         return bkPublicationApi.getCurrentUser()
         .then(function(resp) {
           return currentUser = resp.data;

@@ -20,8 +20,8 @@
   var module = angular.module('bk.core');
 
   module.controller('publicationCtrl',
-    ['$scope', 'bkUtils', 'bkPublicationApi', 'bkPublicationAuth', 'bkSessionManager', '$modalInstance',
-    function($scope, bkUtils, bkPublicationApi, bkPublicationAuth, bkSessionManager, $modalInstance) {
+    ['$scope', 'bkUtils', 'bkPublicationApi', 'bkPublicationAuth', 'bkSessionManager', '$modalInstance', '$location',
+    function($scope, bkUtils, bkPublicationApi, bkPublicationAuth, bkSessionManager, $modalInstance, $location) {
 
       bkPublicationAuth.initSession();
 
@@ -30,8 +30,7 @@
       $scope.user = {role: 'beaker'};
       $scope.model = {};
       $scope.baseUrl = bkPublicationApi.getBaseUrl();
-      $scope.signupUrl = $scope.baseUrl + '/#/sign_up';
-      
+
       $scope.signIn = function() {
         return bkPublicationAuth.signIn($scope.user)
         .then(function() {
@@ -138,6 +137,10 @@
 
       $scope.close = function() {
         $modalInstance.close('ok');
+      };
+
+      $scope.signupUrl = function() {
+        return $scope.baseUrl + '#/sign_up?redirect=' + encodeURIComponent($location.absUrl());
       };
   }]);
 })();

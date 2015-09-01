@@ -16,12 +16,18 @@
 
 package com.twosigma.beaker.easyform;
 
-public class EasyFormComponent<T> {
+import org.apache.commons.lang3.StringUtils;
 
-  private T value;
+public class EasyFormComponent {
+
+  private String value;
   private boolean enabled = true;
   //Acts like ID
   private String label;
+
+  public EasyFormComponent() {
+    setValue(StringUtils.EMPTY);
+  }
 
   public boolean isEnabled() {
     return enabled;
@@ -39,11 +45,11 @@ public class EasyFormComponent<T> {
     this.label = label;
   }
 
-  public T getValue() {
+  public String getValue() {
     return value;
   }
 
-  public void setValue(final T value) {
+  public void setValue(final String value) {
     this.value = value;
   }
 

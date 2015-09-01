@@ -84,6 +84,10 @@
           return evaluatorName;
         };
 
+        $scope.getEvaluatorDetails = function(name) {
+          return bkEvaluatorManager.getVisualParams(name);
+        };
+
         function attachCell(cell) {
           bkSessionManager.setNotebookModelEdited(true);
           if ($scope.config && $scope.config.attachCell) {

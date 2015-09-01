@@ -33,7 +33,8 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class EasyForm extends ObservableMap<String, Object> {
+@SuppressWarnings("unchecked")
+public class EasyForm extends ObservableMap<String, String> {
 
   public static final Integer HORIZONTAL = 1;
   public static final Integer VERTICAL = 2;
@@ -108,7 +109,7 @@ public class EasyForm extends ObservableMap<String, Object> {
   public void addCheckBox(final String label, final Boolean value) throws Exception {
     CheckBox checkBox = new CheckBox();
     checkBox.setLabel(label);
-    checkBox.setValue(value);
+    checkBox.setValue(String.valueOf(value));
     addComponentOrThrow(label, checkBox);
   }
 
@@ -263,12 +264,12 @@ public class EasyForm extends ObservableMap<String, Object> {
     return caption;
   }
 
-  public Object get(final Object key) {
+  public String get(final Object key) {
     checkComponentExists((String) key);
     return getComponentMap().get(key).getValue();
   }
 
-  public Object put(final String key, final Object value) {
+  public String put(final String key, final String value) {
     checkComponentExists(key);
     EasyFormComponent component = getComponentMap().get(key);
     if (!component.checkValue(value)) {
@@ -276,7 +277,7 @@ public class EasyForm extends ObservableMap<String, Object> {
           String.format("\"%s\" is not a valid option for %s \"%s\".",
               value, component.getClass().getSimpleName(), key));
     }
-    Object previousValue = component.getValue();
+    String previousValue = component.getValue();
     component.setValue(value);
     setChanged();
     notifyObservers();

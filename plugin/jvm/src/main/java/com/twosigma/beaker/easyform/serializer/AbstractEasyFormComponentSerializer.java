@@ -37,7 +37,7 @@ public abstract class AbstractEasyFormComponentSerializer<T extends EasyFormComp
     }
     jgen.writeBooleanField("enabled", component.isEnabled());
     if (component.getValue() != null) {
-      jgen.writeObjectField("value", component.getValue().toString());
+      jgen.writeObjectField("value", component.getValue());
     }
     writeSubclassFields(jgen, component);
     jgen.writeEndObject();

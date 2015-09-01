@@ -29,19 +29,30 @@
 
       $scope.user = {role: 'beaker'};
       $scope.model = {};
-
+      $scope.baseUrl = bkPublicationApi.getBaseUrl();
+      $scope.signupUrl = $scope.baseUrl + '/#/sign_up';
+      
       $scope.signIn = function() {
         return bkPublicationAuth.signIn($scope.user)
         .then(function() {
           initPublication();
+          delete $scope.user.password;
         })
         .catch(function(err) {
           $scope.error = 'Error: Invalid email or password';
         });
       };
 
+      $scope.signOut = function() {
+        bkPublicationAuth.signOut();
+      };
+
       $scope.isSignedIn = function() {
         return bkPublicationAuth.isSignedIn();
+      };
+
+      $scope.currentUser = function() {
+        return bkPublicationAuth.currentUser();
       };
 
       function defaultName() {

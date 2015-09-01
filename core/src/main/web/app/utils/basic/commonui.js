@@ -298,4 +298,43 @@
       }
     };
   });
+
+  module.directive('bkLanguageMenuItem', function() {
+    return {
+      restrict: 'E',
+      template: '<span ng-style="style">{{name}}</span>&nbsp;{{key}}',
+      scope: {
+        key: '@',
+        name: '@',
+        bgColor: '@',
+        fgColor: '@',
+        borderColor: '@'
+      },
+      link: function(scope, element, attrs) {
+        scope.style = {
+          'background-color': scope.bgColor,
+          'color': scope.fgColor
+        };
+        var updateStyle = function() {
+          scope.style = {
+            'background-color': scope.bgColor,
+            'color': scope.fgColor
+          };
+          if (scope.borderColor) {
+            scope.style['border-width'] = '1px';
+            scope.style['border-color'] = scope.borderColor;
+            scope.style['border-style'] = 'solid';
+          } else {
+            delete scope.style['border-width'];
+            delete scope.style['border-color'];
+            delete scope.style['border-style'];
+          }
+        };
+        scope.$watch('bgColor', updateStyle);
+        scope.$watch('fgColor', updateStyle);
+        scope.$watch('borderColor', updateStyle);
+      }
+    };
+  });
+
 })();

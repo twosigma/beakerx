@@ -25,12 +25,13 @@ bk-new-cell-menu {
   }
 
   .new-cell {
-    visibility: hidden;
+    transition:0.3s linear all;
+    opacity: 0;
   }
 
   &:hover, &.only-child {
     .new-cell {
-      visibility: visible;
+      opacity: 1;
     }
   }
 

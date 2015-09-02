@@ -130,7 +130,7 @@
             var pub = resp.data;
             if (bkPublicationAuth.currentUser()['public-id'] == pub['author-id']) {
               $scope.model = pub;
-              $scope.model['category-id'] = pub.category['public-id'];
+              $scope.model['category-id'] = pub.category && pub.category['public-id'];
               $scope.published = true;
               $scope.title = 'Update Notebook';
               $scope.saveButton = 'Update';

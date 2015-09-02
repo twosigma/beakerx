@@ -721,7 +721,7 @@
             restrict: "E",
             template:
                 "<div class='button-component-container'>" +
-                  "<button type='button' class='button-component' " +
+                  "<button type='button' class='btn btn-default' " +
                   "ng-disabled='!component.enabled'/>" +
                 "</div>",
             link: function (scope, element, attrs) {
@@ -752,7 +752,8 @@
                 });
               };
 
-              var buttonComponent = element.find('.button-component');
+              var buttonComponent = element.find('div.button-component-container button');
+
               if (EasyFormConstants.Components.ButtonComponent.type == component.type) {
                 buttonComponent.text(component.label);
                 if (component.tag && scope.evaluatorExist) {

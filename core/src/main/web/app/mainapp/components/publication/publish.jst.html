@@ -34,9 +34,9 @@
         <label for="category" class="full">Notebook name others will see when you publish:</label>
         <input ng-model="model.name" required type="text" class="field">
         <label for="category" class="full">Notebook description:</label>
-        <textarea ng-model="model.description" required rows="3" class="field"></textarea>
+        <textarea ng-model="model.description" rows="3" class="field"></textarea>
         <label for="category" class="full">Category that describes your notebook:</label>
-        <select ng-model="model['category-id']" required ng-options="category['public-id'] as category.name for category in categories" name="category" class="field">
+        <select ng-model="model['category-id']" ng-options="category['public-id'] as category.name for category in categories" name="category" class="field">
           <option value="">Select a category</option>
         </select>
         <ul ng-if="published" class="publication-details">

@@ -30,6 +30,7 @@ import com.twosigma.beaker.easyform.formitem.TextField;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -264,6 +265,10 @@ public class EasyForm extends ObservableMap<String, String> {
     return caption;
   }
 
+  private HashMap<String, String> getValuesMap() {
+    return this.mapInstance;
+  }
+
   public String get(final Object key) {
     checkComponentExists((String) key);
     return getComponentMap().get(key).getValue();
@@ -279,6 +284,7 @@ public class EasyForm extends ObservableMap<String, String> {
     }
     String previousValue = component.getValue();
     component.setValue(value);
+    getValuesMap().put(key, value);
     setChanged();
     notifyObservers();
     return previousValue;

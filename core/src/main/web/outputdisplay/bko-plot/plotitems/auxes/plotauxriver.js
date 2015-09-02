@@ -83,6 +83,8 @@
 
       var groupsvg = itemsvg.select("#" + groupid);
       groupsvg.selectAll("polygon")
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
         .style("stroke-width", function(d) { return plotUtils.getHighlightedSize(d.st_w, highlighted); });
     };
 

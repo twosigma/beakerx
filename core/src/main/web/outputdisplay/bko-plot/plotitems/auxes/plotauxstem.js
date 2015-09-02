@@ -82,6 +82,8 @@
       var itemsvg = svg.select("#" + this.id);
 
       itemsvg.select("#" + groupid)
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
         .style("stroke-width", plotUtils.getHighlightedSize(props.st_w, highlighted));
     };
 

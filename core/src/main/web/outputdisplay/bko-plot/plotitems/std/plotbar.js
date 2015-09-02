@@ -28,6 +28,8 @@
     PlotBar.prototype.setHighlighted = function(scope, highlighted) {
       var itemsvg = scope.maing.select("#" + this.id);
       itemsvg.selectAll("rect")
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
         .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
         .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
 

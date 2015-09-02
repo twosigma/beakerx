@@ -31,6 +31,8 @@
       var svg = scope.maing;
       var itemsvg = svg.select("#" + this.id);
       itemsvg.selectAll("path")
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
         .style("stroke-width", function(d) {
           return plotUtils.getHighlightedSize(d.st_w, highlighted);
         })

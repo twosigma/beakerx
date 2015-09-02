@@ -87,6 +87,8 @@
       var itemsvg = svg.select("#" + this.id);
       var groupsvg = itemsvg.select("#" + groupid);
       groupsvg.selectAll("rect")
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
         .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
         .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
     };

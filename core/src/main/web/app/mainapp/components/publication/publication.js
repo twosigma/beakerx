@@ -23,8 +23,6 @@
     ['$scope', 'bkUtils', 'bkPublicationApi', 'bkPublicationAuth', 'bkSessionManager', '$modalInstance', '$location',
     function($scope, bkUtils, bkPublicationApi, bkPublicationAuth, bkSessionManager, $modalInstance, $location) {
 
-      bkPublicationAuth.initSession();
-
       var notebook = bkSessionManager.getRawNotebookModel();
 
       $scope.user = {role: 'beaker'};
@@ -129,11 +127,14 @@
         if (wasPublished()) {
           bkPublicationApi.getPublication(notebook.metadata['publication-id'])
           .then(function(resp) {
-            $scope.model = resp.data;
-            $scope.model['category-id'] = resp.data.category['public-id'];
-            $scope.published = true;
-            $scope.title = 'Update Notebook';
-            $scope.saveButton = 'Update';
+            var pub = resp.data;
+            if (bkPublicationAuth.currentUser()['public-id'] == pub['author-id']) {
+              $scope.model = pub;
+              $scope.model['category-id'] = pub.category['public-id'];
+              $scope.published = true;
+              $scope.title = 'Update Notebook';
+              $scope.saveButton = 'Update';
+            }
           });
         }
 
@@ -162,10 +163,14 @@
       }
 
       $scope.publishAction = function() {
+        var action = $scope.published ? "update" : "create";
+        return $scope.publish(action);
+      };
+
+      $scope.publish = function(action) {
         $scope.saving = true;
-        var action = $scope.published ? updatePublication : createPublication;
         return bkHelper.saveNotebook()
-        .then(action)
+        .then(action == "update" ? updatePublication : createPublication)
         .then(function() {
           $scope.saving = false;
           $scope.close();
@@ -183,9 +188,12 @@
         });
       }
 
-      if ($scope.isSignedIn()) {
-        initPublication();
-      }
+      bkPublicationAuth.initSession()
+      .then(function() {
+        if ($scope.isSignedIn()) {
+          initPublication();
+        }
+      })
 
       $scope.close = function() {
         $modalInstance.close('ok');

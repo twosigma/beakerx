@@ -412,6 +412,12 @@
         };
       });
     });
+    beaker.run(function(bkPublicationAuth, $location, $localStorage) {
+      var params = $location.search();
+      if (params["token"]) {
+        $localStorage.token = params["token"];
+      }
+    });
   };
   var bootstrapBkApp = function() {
     // make sure requirejs reports error

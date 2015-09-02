@@ -83,6 +83,8 @@
       var svg = scope.maing;
       var itemsvg = svg.select("#" + this.id);
       itemsvg.select("polygon")
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
         .attr("points", pstr);
 
     };
@@ -126,7 +128,7 @@
         xl : Infinity,
         xr : -Infinity,
         yl : Infinity,
-        yr : -Infinity,
+        yr : -Infinity
       };
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];

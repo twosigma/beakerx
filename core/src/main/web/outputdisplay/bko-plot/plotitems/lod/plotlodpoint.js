@@ -137,10 +137,14 @@
       switch (shape) {
         case "circle":
           groupsvg.selectAll(tag)
+            .transition()
+            .duration(plotUtils.getHighlightDuration())
             .attr("r", function(d) { return plotUtils.getHighlightedSize(d.r, highlighted); });
           break;
         case "diamond":
           groupsvg.selectAll(tag)
+            .transition()
+            .duration(plotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var mapX = scope.data2scrXi, mapY = scope.data2scrYi;
               var ele = d.ele, x = mapX(ele.x), y = mapY(ele.y),
@@ -155,6 +159,8 @@
           break;
         default:  // rect
           groupsvg.selectAll(tag)
+            .transition()
+            .duration(plotUtils.getHighlightDuration())
             .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
             .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
       }

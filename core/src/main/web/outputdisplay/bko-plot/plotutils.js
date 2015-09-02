@@ -413,6 +413,10 @@
         return highlighted ? size + 2 : size;
       },
 
+      getHighlightDuration : function() {
+        return 100;
+      },
+
       getElementStyles : function(element){
         var elementStyles = "";
         var styleSheets = document.styleSheets;

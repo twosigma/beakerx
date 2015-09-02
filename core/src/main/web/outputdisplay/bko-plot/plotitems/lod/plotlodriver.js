@@ -136,6 +136,8 @@
       var groupsvg = itemsvg.select("#" + groupid);
 
       groupsvg.select("polygon")
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
         .style("stroke-width", plotUtils.getHighlightedSize(props.st_w || 1, highlighted));
     };
 

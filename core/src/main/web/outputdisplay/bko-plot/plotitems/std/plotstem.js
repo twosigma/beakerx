@@ -30,7 +30,9 @@
       var props = this.itemProps
 
       svg.select("#" + this.id)
-          .style("stroke-width", plotUtils.getHighlightedSize(props.st_w, highlighted));
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
+        .style("stroke-width", plotUtils.getHighlightedSize(props.st_w, highlighted));
     };
 
     PlotStem.prototype.format = function() {

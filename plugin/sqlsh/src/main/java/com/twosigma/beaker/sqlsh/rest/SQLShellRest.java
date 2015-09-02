@@ -38,118 +38,144 @@ import javax.ws.rs.core.MediaType;
 public class SQLShellRest
 {
 
-  private final Map<String, com.twosigma.beaker.sqlsh.utils.SQLEvaluator> shells = new HashMap<>();
+    private final Map<String, com.twosigma.beaker.sqlsh.utils.SQLEvaluator> shells = new HashMap<>();
 
-  public SQLShellRest() throws IOException {}
-
-  @GET
-  @Path("ready")
-  @Produces(MediaType.TEXT_PLAIN)
-  public String ready() {
-    return "ok";
-  }
-
-  @POST
-  @Path("getShell")
-  @Produces(MediaType.TEXT_PLAIN)
-  public String getShell(@FormParam("shellId") String shellId,
-      @FormParam("sessionId") String sessionId) 
-    throws InterruptedException, MalformedURLException
-  {
-    // if the shell does not already exist, create a new shell
-    if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
-      shellId = UUID.randomUUID().toString();
-      com.twosigma.beaker.sqlsh.utils.SQLEvaluator js = new com.twosigma.beaker.sqlsh.utils.SQLEvaluator(shellId,sessionId);
-      this.shells.put(shellId, js);
-      return shellId;
+    public SQLShellRest() throws IOException
+    {
     }
-    return shellId;
-  }
 
-  @POST
-  @Path("evaluate")
-  public SimpleEvaluationObject evaluate(
-      @FormParam("shellId") String shellId,
-      @FormParam("code") String code) throws InterruptedException {
+    @GET
+    @Path("ready")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String ready()
+    {
+        return "ok";
+    }
 
-    SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
-    obj.started();
-    if(!this.shells.containsKey(shellId)) {
-      obj.error("Cannot find shell");
-      return obj;
+    @POST
+    @Path("getShell")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getShell(@FormParam("shellId") String shellId,
+            @FormParam("sessionId") String sessionId)
+            throws InterruptedException, MalformedURLException
+    {
+        // if the shell does not already exist, create a new shell
+        if (shellId.isEmpty() || !this.shells.containsKey(shellId))
+        {
+            shellId = UUID.randomUUID().toString();
+            com.twosigma.beaker.sqlsh.utils.SQLEvaluator js = new com.twosigma.beaker.sqlsh.utils.SQLEvaluator(shellId, sessionId);
+            this.shells.put(shellId, js);
+            return shellId;
+        }
+        return shellId;
     }
-    try {
-      //this.shells.get(shellId).evaluate(obj, code);
-    } catch (Exception e) {
-      obj.error(e.toString());
-      return obj;
-    }
-    return obj;
-  }
 
-  @POST
-  @Path("autocomplete")
-  public List<String> autocomplete(
-      @FormParam("shellId") String shellId,
-      @FormParam("code") String code,
-      @FormParam("caretPosition") int caretPosition) throws InterruptedException {
-    if(!this.shells.containsKey(shellId)) {
-      return null;
-    }
-    //return this.shells.get(shellId).autocomplete(code, caretPosition);
-    return null;
-  }
+    @POST
+    @Path("evaluate")
+    public SimpleEvaluationObject evaluate(
+            @FormParam("shellId") String shellId,
+            @FormParam("code") String code) throws InterruptedException
+    {
 
-  @POST
-  @Path("exit")
-  public void exit(@FormParam("shellId") String shellId) {
-    if(!this.shells.containsKey(shellId)) {
-      return;
-    }
-    //this.shells.get(shellId).exit();
-    this.shells.remove(shellId);
-  }
+        SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
 
-  @POST
-  @Path("cancelExecution")
-  public void cancelExecution(@FormParam("shellId") String shellId) {
-    if(!this.shells.containsKey(shellId)) {
-      return;
+        if (!this.shells.containsKey(shellId))
+        {
+            obj.error("Cannot find shell");
+            return obj;
+        }
+        try
+        {
+            this.shells.get(shellId).evaluate(obj, code);
+        }
+        catch (Exception e)
+        {
+            obj.error(e.toString());
+            return obj;
+        }
+        return obj;
     }
-    //this.shells.get(shellId).cancelExecution();
-  }
 
-  @POST
-  @Path("killAllThreads")
-  public void killAllThreads(@FormParam("shellId") String shellId) {
-    if(!this.shells.containsKey(shellId)) {
-      return;
+    @POST
+    @Path("autocomplete")
+    public List<String> autocomplete(
+            @FormParam("shellId") String shellId,
+            @FormParam("code") String code,
+            @FormParam("caretPosition") int caretPosition) throws InterruptedException
+    {
+        if (!this.shells.containsKey(shellId))
+        {
+            return null;
+        }
+        //return this.shells.get(shellId).autocomplete(code, caretPosition);
+        System.out.println("AUTOCOMPLETE");
+        return null;
     }
-    //this.shells.get(shellId).killAllThreads();
-  }
 
-  @POST
-  @Path("resetEnvironment")
-  public void resetEnvironment(@FormParam("shellId") String shellId) {
-    if(!this.shells.containsKey(shellId)) {
-      return;
+    @POST
+    @Path("exit")
+    public void exit(@FormParam("shellId") String shellId)
+    {
+        if (!this.shells.containsKey(shellId))
+        {
+            return;
+        }
+        //this.shells.get(shellId).exit();
+        System.out.println("AUTOCOMPLETE");
+        this.shells.remove(shellId);
     }
-    //this.shells.get(shellId).resetEnvironment();
-  }
 
-  @POST
-  @Path("setShellOptions")
-  public void setShellOptions(
-      @FormParam("shellId") String shellId,
-      @FormParam("classPath") String classPath,
-      @FormParam("imports") String imports,
-      @FormParam("outdir") String outDir)
-    throws MalformedURLException, IOException
-  {
-    if(!this.shells.containsKey(shellId)) {
-      return;
+    @POST
+    @Path("cancelExecution")
+    public void cancelExecution(@FormParam("shellId") String shellId)
+    {
+        if (!this.shells.containsKey(shellId))
+        {
+            return;
+        }
+
+        this.shells.get(shellId).cancelExecution();
     }
-    //this.shells.get(shellId).setShellOptions(classPath, imports, outDir);
-  }
+
+    @POST
+    @Path("killAllThreads")
+    public void killAllThreads(@FormParam("shellId") String shellId)
+    {
+        if (!this.shells.containsKey(shellId))
+        {
+            return;
+        }
+        System.out.println("KILL ALL");
+        //this.shells.get(shellId).killAllThreads();
+    }
+
+    @POST
+    @Path("resetEnvironment")
+    public void resetEnvironment(@FormParam("shellId") String shellId)
+    {
+        if (!this.shells.containsKey(shellId))
+        {
+            return;
+        }
+        System.out.println("RESET ENV");
+        //this.shells.get(shellId).resetEnvironment();
+    }
+
+    @POST
+    @Path("setShellOptions")
+    public void setShellOptions(
+            @FormParam("shellId") String shellId,
+            @FormParam("classPath") String classPath,
+            @FormParam("imports") String imports,
+            @FormParam("outdir") String outDir)
+            throws MalformedURLException, IOException
+    {
+        if (!this.shells.containsKey(shellId))
+        {
+            return;
+        }
+        System.out.println("OPTIONS");
+        //this.shells.get(shellId).setShellOptions(classPath, imports, outDir);
+    }
 
 }

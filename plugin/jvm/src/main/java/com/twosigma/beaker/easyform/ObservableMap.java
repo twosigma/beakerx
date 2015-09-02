@@ -1,69 +1,72 @@
 package com.twosigma.beaker.easyform;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
 
 public abstract class ObservableMap<K, V> extends Observable implements Map<K, V> {
 
+  protected HashMap<K, V> mapInstance = new HashMap<>();
+
   @Override
   public int size() {
-    return 0;
+    return mapInstance.size();
   }
 
   @Override
   public boolean isEmpty() {
-    return false;
+    return mapInstance.isEmpty();
   }
 
   @Override
   public boolean containsKey(Object key) {
-    return false;
+    return mapInstance.containsKey(key);
   }
 
   @Override
   public boolean containsValue(Object value) {
-    return false;
+    return mapInstance.containsValue(value);
   }
 
   @Override
   public V get(Object key) {
-    return null;
+    return mapInstance.get(key);
   }
 
   @Override
   public V put(K key, V value) {
-    return null;
+    return mapInstance.put(key, value);
   }
 
   @Override
   public V remove(Object key) {
-    return null;
+    return mapInstance.remove(key);
   }
 
   @Override
   public void putAll(Map<? extends K, ? extends V> m) {
-
+    mapInstance.putAll(m);
   }
 
   @Override
   public void clear() {
-
+    mapInstance.clear();
   }
 
   @Override
   public Set<K> keySet() {
-    return null;
+    return mapInstance.keySet();
   }
 
   @Override
   public Collection<V> values() {
-    return null;
+    return mapInstance.values();
   }
 
   @Override
   public Set<Entry<K, V>> entrySet() {
-    return null;
+    return mapInstance.entrySet();
   }
 }

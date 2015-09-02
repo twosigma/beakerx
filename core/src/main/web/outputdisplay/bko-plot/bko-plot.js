@@ -912,13 +912,18 @@
             if (!scope.legendMergedLines.hasOwnProperty(id)) { continue; }
             var line = scope.legendMergedLines[id];
             if (line.legend == null || line.legend === "") { continue; }
+            var highlightTimeoutId;
             var unit = $(legendLineUnit).appendTo(legend)
               .attr("id", "legend_" + id)
               .addClass("plot-legendline")
               .mouseenter(function(e){
-                scope.highlightElements($(this)[0].id.split("_")[1], true);
+                var legendLine = $(this)[0];
+                highlightTimeoutId = setTimeout(function(){
+                  scope.highlightElements(legendLine.id.split("_")[1], true);
+                }, 300);
               })
               .mouseleave(function(e){
+                clearTimeout(highlightTimeoutId);
                 scope.highlightElements($(this)[0].id.split("_")[1], false);
               });
             if(!scope.stdmodel.omitCheckboxes){

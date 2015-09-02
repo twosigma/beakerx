@@ -778,6 +778,8 @@
           if (pp.width() > me.width() + 16) {
             pp.width(me.width() + 16);
           }
+          if (scope.fixcols)
+            scope.fixcols.fnRedrawLayout();
         };
         //jscs:disable
         scope.update_selected = function() {

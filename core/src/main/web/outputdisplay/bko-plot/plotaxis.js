@@ -29,7 +29,7 @@
       this.axisPctL = 0;
       this.axisPctR = 1;
       this.axisPctSpan = 1;
-      this.axisLabel = "";
+      this.label = "";
       this.axisGridlines = [];
       this.axisGridlineLabels = [];
       this.axisStep = 1;
@@ -60,7 +60,7 @@
       return Math.pow(this.axisBase, pct * this.axisValSpan + this.axisValL);
     };
     PlotAxis.prototype.setLabel = function(label) {
-      this.axisLabel = label;
+      this.label = label;
     };
     PlotAxis.prototype.setRange = function(vl, vr, para) {
       if (vl != null) { this.axisValL = vl; }
@@ -186,9 +186,9 @@
       this.axisGridlines = lines;
       this.axisGridlineLabels = labels.labels;
       if (labels.common !== ''){
-        this.axisLabelWithCommon = this.axisLabel ? this.axisLabel + ' ' + labels.common : labels.common;
+        this.axisLabelWithCommon = this.label ? this.label + ' ' + labels.common : labels.common;
       }else{
-        this.axisLabelWithCommon = this.axisLabel;
+        this.axisLabelWithCommon = this.label;
       }
 
 

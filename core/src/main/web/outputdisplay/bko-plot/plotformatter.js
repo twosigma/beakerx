@@ -49,7 +49,7 @@
         var updateYAxisRange = function(modelAxis, axisVRange){
           if(modelAxis == null || axisVRange == null) { return null; }
 
-          var axisLabel = modelAxis.label;
+          var label = modelAxis.label;
 
           var axis = new PlotAxis(modelAxis.type);
 
@@ -59,8 +59,8 @@
             axis.setRange(axisVRange.yl, axisVRange.yr, modelAxis.timezone);
           }
 
-          if (axisLabel != null) {
-            axis.setLabel(axisLabel);
+          if (label != null) {
+            axis.setLabel(label);
           }
           return axis;
         };

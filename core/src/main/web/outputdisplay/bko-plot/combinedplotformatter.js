@@ -78,10 +78,10 @@
           var newplotmodel = plotFormatter.standardizeModel(plotmodel, prefs);
 
           if (i < plots.length - 1) {  // turn off x coordinate labels
-            newplotmodel.xAxis.axisLabel = null;
+            newplotmodel.xAxis.label = null;
             newplotmodel.xAxis.showGridlineLabels = false;
           } else {
-            newplotmodel.xAxis.axisLabel = newmodel.xAxisLabel;
+            newplotmodel.xAxis.label = newmodel.xAxisLabel;
           }
 
           newplotmodel.plotSize.width = width;

@@ -164,7 +164,7 @@
           scope.gridlineTickLength = 3;
 
           var factor = 2.0;
-          if (model.xAxis.axisLabel == null) { factor -= 1.0; }
+          if (model.xAxis.label == null) { factor -= 1.0; }
           if (model.xAxis.showGridlineLabels === false) { factor -= 1.0; }
           scope.layout.bottomLayoutMargin += scope.fonts.labelHeight * factor;
 
@@ -172,7 +172,7 @@
             scope.layout.topLayoutMargin += scope.fonts.labelHeight / 2;
           }
 
-          if (model.yAxis.axisLabel != null) {
+          if (model.yAxis.label != null) {
             scope.layout.leftLayoutMargin += scope.fonts.labelHeight;
           }
           if(model.yAxisR != null) {
@@ -495,7 +495,7 @@
             }
           }
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
-          if (model.xAxis.axisLabel != null) {
+          if (model.xAxis.label != null) {
             scope.rpipeTexts.push({
               "id" : "xlabel",
               "class" : "plot-xylabel",
@@ -504,23 +504,23 @@
               "y" : scope.jqsvg.height() - scope.fonts.labelHeight
             });
           }
-          if (model.yAxis.axisLabel != null) {
+          if (model.yAxis.label != null) {
             var x = scope.fonts.labelHeight * 2, y = (scope.jqsvg.height() - bMargin) / 2;
             scope.rpipeTexts.push({
               "id" : "ylabel",
               "class" : "plot-xylabel",
-              "text" : model.yAxis.axisLabel,
+              "text" : model.yAxis.label,
               "x" : x,
               "y" : y,
               "transform" : "rotate(-90 " + x + " " + y + ")"
             });
           }
-          if (model.yAxisR && model.yAxisR.axisLabel != null) {
+          if (model.yAxisR && model.yAxisR.label != null) {
             var x = scope.jqsvg.width() - scope.fonts.labelHeight, y = (scope.jqsvg.height() - bMargin) / 2;
             scope.rpipeTexts.push({
               "id" : "yrlabel",
               "class" : "plot-xylabel",
-              "text" : model.yAxisR.axisLabel,
+              "text" : model.yAxisR.label,
               "x" : x,
               "y" : y,
               "transform" : "rotate(-90 " + x + " " + y + ")"

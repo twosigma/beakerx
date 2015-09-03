@@ -611,7 +611,11 @@ public class PluginServiceLocatorRest {
     // make the files ourselves but this is a safe way to get started.
     List<String> cmd = pythonBaseCommand(pluginId, command);
     cmd.add("--profile");
-    cmd.add(this.nginxServDir);
+    if(windows()){
+      cmd.add("\\\"" + this.nginxServDir + "\\\"");
+    }else{
+      cmd.add(this.nginxServDir);
+    }
     cmd.add(pluginId);
     Runtime.getRuntime().exec(listToArray(cmd), buildEnv(pluginId, null)).waitFor();
     String hash = hashIPythonPassword(password, pluginId, command);

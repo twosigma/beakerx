@@ -78,8 +78,9 @@
               || (prevCell && cellOps.findCodeCell(prevCell.id))
               || (prevCell && cellOps.findCodeCell(prevCell.id, true))
               || getLastCodeCell();
-          var evaluatorName = codeCell ?
-              codeCell.evaluator : _.keys(bkEvaluatorManager.getAllEvaluators())[0];
+          var defaultEvaluator = 'JavaScript';
+          var evaluatorName = codeCell ? codeCell.evaluator : bkEvaluatorManager.getEvaluator(defaultEvaluator) ?
+              defaultEvaluator : bkEvaluatorManager.getAllEvaluators().keys()[0];
 
           return evaluatorName;
         };

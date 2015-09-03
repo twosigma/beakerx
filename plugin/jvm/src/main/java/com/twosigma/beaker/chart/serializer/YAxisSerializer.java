@@ -38,7 +38,7 @@ public class YAxisSerializer extends JsonSerializer<YAxis> {
     jgen.writeObjectField("upper_margin", yAxis.getUpperMargin());
     jgen.writeObjectField("lower_bound", yAxis.getLowerBound());
     jgen.writeObjectField("upper_bound", yAxis.getUpperBound());
-    jgen.writeObjectField("log", yAxis.getLog());
+    jgen.writeObjectField("use_log", yAxis.getLog());
     jgen.writeObjectField("log_base", yAxis.getLogBase());
     jgen.writeEndObject();
   }

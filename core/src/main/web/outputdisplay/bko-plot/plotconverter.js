@@ -58,7 +58,7 @@
             if (axis.auto_range_includes_zero === true) {
               settings.yIncludeZero = true;
             }
-            if (axis.log === true) {
+            if (axis.use_log === true) {
               settings.logy = true;
               settings.logyb = axis.log_base == null ? 10 : axis.log_base;
             }

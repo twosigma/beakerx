@@ -636,7 +636,8 @@
           lineNumbers: true,
           matchBrackets: true,
           extraKeys: keys,
-          goToNextCell: moveFocusDown
+          goToNextCell: moveFocusDown,
+          scrollbarStyle: "simple"
         };
       },
 

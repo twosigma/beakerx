@@ -10973,7 +10973,7 @@
             "body": [
                 "The plots support log scale for both axes.",
                 "To add log scale you need to specify set the logX (for x-axis) or logY (for y-axis) property to true.",
-                "By default a base 10 is used. To change this, use properties logXBase and logYBase."
+                "By default a base 10 is used. To change this, use properties xLogBase and yLogBase."
             ],
             "evaluatorReader": false
         },
@@ -10993,7 +10993,7 @@
                     "}",
                     "",
                     "def cplot = new CombinedPlot(xLabel: \"Linear\");",
-                    "def logYPlot = new Plot(title: \"Linear x, Log y\", yLabel: \"Log\", showLegend: true, logY: true, logYBase: logBase);",
+                    "def logYPlot = new Plot(title: \"Linear x, Log y\", yLabel: \"Log\", showLegend: true, logY: true, yLogBase: logBase);",
                     "logYPlot << new Line(x: xs, y: expys, displayName: \"f(x) = exp(x)\");",
                     "logYPlot << new Line(x: xs, y: xs, displayName: \"g(x) = x\");",
                     "cplot.add(logYPlot, 3);",
@@ -12001,7 +12001,7 @@
                     "  expys[i] = Math.exp(xs[i]);",
                     "}",
                     "",
-                    "def plot = new Plot(title: \"Log x, Log y\", xLabel: \"Log\", yLabel: \"Log\", showLegend: true, logX: true, logXBase: logBase, logY: true, logYBase: logBase);",
+                    "def plot = new Plot(title: \"Log x, Log y\", xLabel: \"Log\", yLabel: \"Log\", showLegend: true, logX: true, xLogBase: logBase, logY: true, yLogBase: logBase);",
                     "",
                     "plot << new Line(x: xs, y: expys, displayName: \"f(x) = exp(x)\");",
                     "plot << new Line(x: xs, y: xs, displayName: \"f(x) = x\");",

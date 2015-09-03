@@ -406,7 +406,8 @@
 
       useYAxisR : function(model, data){
         var yAxisR = model.yAxisR;
-        return yAxisR && (yAxisR.axisLabel === data.yAxis || yAxisR.label === data.yAxis);
+        return yAxisR && (yAxisR.hasOwnProperty("axisLabel") && yAxisR.axisLabel === data.yAxis ||
+                          yAxisR.hasOwnProperty("label") && yAxisR.label === data.yAxis);
       },
 
       getHighlightedSize : function(size, highlighted) {

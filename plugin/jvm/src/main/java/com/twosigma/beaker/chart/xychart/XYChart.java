@@ -16,7 +16,6 @@
 
 package com.twosigma.beaker.chart.xychart;
 
-import com.twosigma.beaker.chart.Filter;
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantBand;
@@ -48,7 +47,7 @@ abstract public class XYChart {
   private double xLowerBound;
   private double xUpperBound;
   private boolean logX = false;
-  private double logXBase = 10;
+  private double xLogBase = 10;
   protected TimeZone timeZone;
   private Crosshair crosshair;
   private LegendPosition legendPosition = new LegendPosition(LegendPosition.Position.TOP_RIGHT);
@@ -387,13 +386,17 @@ abstract public class XYChart {
     return this.logX;
   }
 
-  public Double getLogXBase() {
-    return logXBase;
+  public Double getXLogBase() {
+    return xLogBase;
   }
 
-  public XYChart setLogXBase(double logXBase) {
-    this.logXBase = logXBase;
+  public XYChart setXLogBase(double xLogBase) {
+    this.xLogBase = xLogBase;
     return this;
+  }
+
+  public XYChart setxLogBase(double xLogBase) {
+    return this.setXLogBase(xLogBase);
   }
 
   public XYChart setLogY(boolean logY) {
@@ -405,12 +408,16 @@ abstract public class XYChart {
     return this.yAxis.getLog();
   }
 
-  public XYChart setLogYBase(double logYBase) {
-    this.yAxis.setLogBase(logYBase);
+  public XYChart setYLogBase(double yLogBase) {
+    this.yAxis.setLogBase(yLogBase);
     return this;
   }
 
-  public Double getLogYBase() {
+  public XYChart setyLogBase(double yLogBase) {
+    return this.setYLogBase(yLogBase);
+  }
+
+  public Double getYLogBase() {
     return this.yAxis.getLogBase();
   }
 

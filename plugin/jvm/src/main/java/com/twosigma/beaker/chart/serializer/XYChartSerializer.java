@@ -87,7 +87,7 @@ public class XYChartSerializer extends JsonSerializer<XYChart> {
     jgen.writeObjectField("y_lower_bound", xychart.getYLowerBound());
     jgen.writeObjectField("y_upper_bound", xychart.getYUpperBound());
     jgen.writeObjectField("log_x", xychart.getLogX());
-    jgen.writeObjectField("x_log_base", xychart.getLogXBase());
+    jgen.writeObjectField("x_log_base", xychart.getXLogBase());
     jgen.writeObjectField("log_y", xychart.getLogY());
     jgen.writeObjectField("timezone", xychart.getTimeZone());
     jgen.writeObjectField("crosshair", xychart.getCrosshair());

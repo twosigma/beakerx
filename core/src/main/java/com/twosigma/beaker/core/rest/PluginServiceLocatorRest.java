@@ -342,6 +342,8 @@ public class PluginServiceLocatorRest {
     envList.add("beaker_core_password=" + this.corePassword);
     envList.add("beaker_core_port=" + corePort);
     envList.add("beaker_tmp_dir=" + this.nginxServDir);
+    envList.add("beaker_ipython_notebook_config=" + this.nginxServDir
+        + "/profile_beaker_backend_" + pluginId + "/ipython_notebook_config.py");
     String plugPath = this.config.getPluginPath(pluginId);
     if (null != plugPath) {
       for (int i = 0; i < envList.size(); i++) {

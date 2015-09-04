@@ -20,49 +20,46 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class QueryParser
-{
+public class QueryParser {
 
-    public static List<String> split(String script)
-    {
+    public static List<String> split(String script) {
         script = deleteInterval("/*", "*/", script);
 
         Scanner scanner = new Scanner(script);
         StringBuffer sb = new StringBuffer();
 
-        while (scanner.hasNextLine())
-        {
+        while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             line.trim();
             //ignore comments #
             int commentIndex = line.indexOf('#');
-            if (commentIndex != -1)
-            {
-                if (line.startsWith("#"))
-                {
+            if (commentIndex != -1) {
+                if (line.startsWith("#")) {
                     line = new String("");
-                }
-                else
-                {
+                } else {
                     line = line.substring(0, commentIndex - 1);
                 }
             }
             //ignore comments --
             commentIndex = line.indexOf("--");
-            if (commentIndex != -1)
-            {
-                if (line.startsWith("--"))
-                {
+            if (commentIndex != -1) {
+                if (line.startsWith("--")) {
                     line = new String("");
+                } else {
+                    line = line.substring(0, commentIndex - 1);
                 }
-                else
-                {
+            }
+            //ignore comments %%
+            commentIndex = line.indexOf("%%");
+            if (commentIndex != -1) {
+                if (line.startsWith("%%")) {
+                    line = new String("");
+                } else {
                     line = line.substring(0, commentIndex - 1);
                 }
             }
 
-            if (line != null)
-            {
+            if (line != null) {
                 sb.append(line).append(" ");
             }
         }
@@ -72,32 +69,24 @@ public class QueryParser
         String[] splittedQueries = sb.toString().split(";");
         List<String> listOfQueries = new ArrayList<>();
 
-        for (int i = 0; i < splittedQueries.length; i++)
-        {
-            if (!splittedQueries[i].trim().equals("") && !splittedQueries[i].trim().equals("\t"))
-            {
+        for (int i = 0; i < splittedQueries.length; i++) {
+            if (!splittedQueries[i].trim().equals("") && !splittedQueries[i].trim().equals("\t")) {
                 listOfQueries.add(splittedQueries[i].trim());
             }
         }
         return listOfQueries;
     }
 
-    private static String deleteInterval(String start, String end, String source)
-    {
+    private static String deleteInterval(String start, String end, String source) {
         int startIndex = source.indexOf(start);
-        while (startIndex >= 0)
-        {
+        while (startIndex >= 0) {
             int endIndex = source.indexOf(end);
-            if (endIndex != -1)
-            {
-                if (endIndex < startIndex)
-                {
+            if (endIndex != -1) {
+                if (endIndex < startIndex) {
                     break;
                 }
                 source = source.substring(0, startIndex) + source.substring(endIndex + 2);
-            }
-            else
-            {
+            } else {
                 break;
             }
 

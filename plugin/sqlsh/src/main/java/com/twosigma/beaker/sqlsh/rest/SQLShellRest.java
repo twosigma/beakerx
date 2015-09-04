@@ -35,20 +35,17 @@ import javax.ws.rs.core.MediaType;
 @Path("sqlsh")
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
-public class SQLShellRest
-{
+public class SQLShellRest {
 
     private final Map<String, com.twosigma.beaker.sqlsh.utils.SQLEvaluator> shells = new HashMap<>();
 
-    public SQLShellRest() throws IOException
-    {
+    public SQLShellRest() throws IOException {
     }
 
     @GET
     @Path("ready")
     @Produces(MediaType.TEXT_PLAIN)
-    public String ready()
-    {
+    public String ready() {
         return "ok";
     }
 
@@ -56,12 +53,10 @@ public class SQLShellRest
     @Path("getShell")
     @Produces(MediaType.TEXT_PLAIN)
     public String getShell(@FormParam("shellId") String shellId,
-            @FormParam("sessionId") String sessionId)
-            throws InterruptedException, MalformedURLException
-    {
+                           @FormParam("sessionId") String sessionId)
+            throws InterruptedException, MalformedURLException {
         // if the shell does not already exist, create a new shell
-        if (shellId.isEmpty() || !this.shells.containsKey(shellId))
-        {
+        if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
             shellId = UUID.randomUUID().toString();
             com.twosigma.beaker.sqlsh.utils.SQLEvaluator js = new com.twosigma.beaker.sqlsh.utils.SQLEvaluator(shellId, sessionId);
             this.shells.put(shellId, js);
@@ -74,22 +69,17 @@ public class SQLShellRest
     @Path("evaluate")
     public SimpleEvaluationObject evaluate(
             @FormParam("shellId") String shellId,
-            @FormParam("code") String code) throws InterruptedException
-    {
+            @FormParam("code") String code) throws InterruptedException {
 
         SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
 
-        if (!this.shells.containsKey(shellId))
-        {
+        if (!this.shells.containsKey(shellId)) {
             obj.error("Cannot find shell");
             return obj;
         }
-        try
-        {
+        try {
             this.shells.get(shellId).evaluate(obj, code);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             obj.error(e.toString());
             return obj;
         }
@@ -101,10 +91,8 @@ public class SQLShellRest
     public List<String> autocomplete(
             @FormParam("shellId") String shellId,
             @FormParam("code") String code,
-            @FormParam("caretPosition") int caretPosition) throws InterruptedException
-    {
-        if (!this.shells.containsKey(shellId))
-        {
+            @FormParam("caretPosition") int caretPosition) throws InterruptedException {
+        if (!this.shells.containsKey(shellId)) {
             return null;
         }
         //return this.shells.get(shellId).autocomplete(code, caretPosition);
@@ -114,23 +102,17 @@ public class SQLShellRest
 
     @POST
     @Path("exit")
-    public void exit(@FormParam("shellId") String shellId)
-    {
-        if (!this.shells.containsKey(shellId))
-        {
+    public void exit(@FormParam("shellId") String shellId) {
+        if (!this.shells.containsKey(shellId)) {
             return;
         }
-        //this.shells.get(shellId).exit();
-        System.out.println("AUTOCOMPLETE");
         this.shells.remove(shellId);
     }
 
     @POST
     @Path("cancelExecution")
-    public void cancelExecution(@FormParam("shellId") String shellId)
-    {
-        if (!this.shells.containsKey(shellId))
-        {
+    public void cancelExecution(@FormParam("shellId") String shellId) {
+        if (!this.shells.containsKey(shellId)) {
             return;
         }
 
@@ -139,10 +121,8 @@ public class SQLShellRest
 
     @POST
     @Path("killAllThreads")
-    public void killAllThreads(@FormParam("shellId") String shellId)
-    {
-        if (!this.shells.containsKey(shellId))
-        {
+    public void killAllThreads(@FormParam("shellId") String shellId) {
+        if (!this.shells.containsKey(shellId)) {
             return;
         }
         System.out.println("KILL ALL");
@@ -151,10 +131,8 @@ public class SQLShellRest
 
     @POST
     @Path("resetEnvironment")
-    public void resetEnvironment(@FormParam("shellId") String shellId)
-    {
-        if (!this.shells.containsKey(shellId))
-        {
+    public void resetEnvironment(@FormParam("shellId") String shellId) {
+        if (!this.shells.containsKey(shellId)) {
             return;
         }
         System.out.println("RESET ENV");
@@ -168,10 +146,8 @@ public class SQLShellRest
             @FormParam("classPath") String classPath,
             @FormParam("imports") String imports,
             @FormParam("outdir") String outDir)
-            throws MalformedURLException, IOException
-    {
-        if (!this.shells.containsKey(shellId))
-        {
+            throws MalformedURLException, IOException {
+        if (!this.shells.containsKey(shellId)) {
             return;
         }
         System.out.println("OPTIONS");

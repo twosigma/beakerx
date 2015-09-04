@@ -1,9 +1,14 @@
 package com.twosigma.beaker.sqlsh.utils;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 /*
  *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
@@ -20,32 +25,23 @@ import java.util.Properties;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-public class JDBCClient
-{
-    Connection conn = null;
-    public Connection getConnection() throws SQLException
-    {
-        if(conn == null || conn.isClosed())
-        {
-            Properties connectionProps = new Properties();
-            connectionProps.put("user", "root");
-            connectionProps.put("password", "root");
 
-            conn = DriverManager.getConnection(
-                    "jdbc:" + "mysql" + "://"
-                            + "localhost"
-                            + ":" + "3306" + "/" + "test",
-                    connectionProps);
-            System.out.println("Connected to database");
-        }
-        return conn;
+public class JDBCClient extends AbstractModule{
+
+    public static DataSource getDataSource() throws SQLException {
+        String uri = "jdbc:mysql://localhost:3306/test";
+
+        BasicDataSource ds = new BasicDataSource();
+        ds.setDriver(DriverManager.getDriver(uri));
+        ds.setUsername("root");
+        ds.setPassword("root");
+        ds.setUrl(uri);
+
+        return ds;
     }
 
-    public void closeConnection() throws SQLException
-    {
-        if(conn != null && !conn.isClosed())
-        {
-            conn.close();
-        }
+    @Override
+    protected void configure() {
+        System.out.println("CONFIGURE JDBC ");
     }
 }

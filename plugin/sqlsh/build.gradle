@@ -33,6 +33,7 @@ dependencies {
   antlr group : 'org.antlr', name :'antlr4', version: '4.5'
   provided project(':plugin:jvm')
   compile group: 'org.abstractmeta', name: 'compilation-toolbox', version: '0.3.2'
+  runtime group: 'mysql', name: 'mysql-connector-java',  version: '5.1.29'
 }
 
 

@@ -55,3 +55,4 @@ New Beaker JavaScript files should be added to the 'core/src/main/web/app/templa
 New Beaker CSS should be added using the 'core/src/main/web/app/app.scss'
 
 New files related to Beaker outputdisplay should be added to 'core/src/main/web/plugin/template/addoutputdisplays_css.list' and 'core/src/main/web/plugin/template/addoutputdisplays_javascript.list'
+

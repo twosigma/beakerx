@@ -96,7 +96,7 @@ public class SQLShellRest
     if(!this.shells.containsKey(shellId)) {
       return null;
     }
-    //return this.shells.get(shellId).autocomplete(code, caretPosition);
+    // return this.shells.get(shellId).autocomplete(code, caretPosition);
     return null;
   }
 

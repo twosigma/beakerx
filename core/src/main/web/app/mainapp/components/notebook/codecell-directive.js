@@ -359,21 +359,40 @@
           }
         });
 
+        var initCodeMirror = function(){
+
+          var template = '<textarea class="bkcelltextarea" ng-model="cellmodel.input.body">' + scope.cellmodel.input.body + '</textarea>';
+          $(element.find('.bkcelltextarea')[0]).replaceWith($(template));
+
+          scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
+          scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
+          scope.cm.on('change', changeHandler);
+          scope.cm.on('blur', function () {
+            scope.$apply(function () {
+              scope.cm.doc.sel.ranges[0].anchor.ch = -1;
+              CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
+            });
+          });
+          scope.cm.on('focus', function () {
+            scope.$apply(function () {
+              CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
+            });
+          });
+
+          scope.updateUI(scope.getEvaluator());
+          // Since the instantiation of codemirror instances is now lazy,
+          // we need to track and handle focusing on an async cell add
+          if (scope._shouldFocusCodeMirror) {
+            delete scope._shouldFocusCodeMirror;
+            return scope.cm.focus();
+          }
+
+        };
+
+
         Scrollin.track(element[0], function() {
           if (scope.cm === undefined) {
-            var template = '<textarea class="bkcelltextarea" ng-model="cellmodel.input.body">' + scope.cellmodel.input.body + '</textarea>';
-            $(element.find('.bkcelltextarea')[0]).replaceWith($(template));
-
-            scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
-            scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
-            scope.cm.on('change', changeHandler);
-            scope.updateUI(scope.getEvaluator());
-            // Since the instantiation of codemirror instances is now lazy,
-            // we need to track and handle focusing on an async cell add
-            if (scope._shouldFocusCodeMirror) {
-              delete scope._shouldFocusCodeMirror;
-              return scope.cm.focus();
-            }
+            initCodeMirror();
           }
         });
 
@@ -471,10 +490,7 @@
           if (!isCollapsed) {
             $timeout(function() {
               if (scope.cm === undefined) {
-                scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
-                scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
-                scope.cm.on('change', changeHandler);
-                scope.updateUI(scope.getEvaluator());
+                initCodeMirror();
               } else {
                 scope.cm.refresh();
               }

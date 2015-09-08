@@ -213,7 +213,7 @@ define(function(require, exports, module) {
           var result = _(msg.payload).map(function(payload) {
             // XXX can other mime types appear here?
             var text = "";
-            if (ipyVersion == '3') {
+            if (ipyVersion == '3' || ipyVersion == '4') {
               text = payload.data ? payload.data["text/plain"] : "";
             } else {
               text = payload.text;
@@ -259,7 +259,7 @@ define(function(require, exports, module) {
           var evaluation = { };
           evaluation.status = "RUNNING";
 
-          if ((ipyVersion == '3') ? (type === "error") : (type === "pyerr")) {
+          if ((ipyVersion == '3' || ipyVersion == '4') ? (type === "error") : (type === "pyerr")) {
             gotError = true;
             var trace = _.reduce(content.traceback, function(memo, line) {
               return  memo + "<br>" + myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(line));
@@ -277,7 +277,7 @@ define(function(require, exports, module) {
             evaluation.outputdata = [];
             if (finalStuff !== undefined && finalStuff.outputdata !== undefined)
               evaluation.outputdata = finalStuff.outputdata;
-            var text = (ipyVersion == '3') ? content.text : content.data;
+            var text = (ipyVersion == '3' || ipyVersion == '4') ? content.text : content.data;
             evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
               value: text});
             if (finalStuff !== undefined) {
@@ -286,7 +286,7 @@ define(function(require, exports, module) {
 
           } else {
             var jsonres;
-            if(content.data['application/json'] !== undefined) {
+            if(content.data && content.data['application/json'] !== undefined) {
               jsonres = JSON.parse(content.data['application/json']);
             }
             if (jsonres !== undefined && _.isObject(jsonres) && jsonres.type !== undefined) {
@@ -324,7 +324,7 @@ define(function(require, exports, module) {
               }
               evaluation.jsonres = jsonres;
               var elem = $(document.createElement("div"));
-              var oa = (ipyVersion == '3') ?
+              var oa = (ipyVersion == '3' || ipyVersion == '4') ?
                   (new myPython.OutputArea({events: {trigger: function(){}},
                     keyboard_manager: keyboard_manager})) :
                       (new myPython.OutputArea(elem));
@@ -433,7 +433,7 @@ define(function(require, exports, module) {
         var self = this;
         kernel.restart(function () {
           var waitForKernel = function() {
-            if ((ipyVersion == '3') ?
+            if ((ipyVersion == '3' || ipyVersion == '4') ?
                 (kernel.ws.readyState == 1) :
                   (kernel.shell_channel.readyState == 1 &&
                       kernel.stdin_channel.readyState == 1 &&
@@ -473,7 +473,7 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     var onSuccess = function() {
-      if (ipyVersion == '3') {
+      if (ipyVersion == '3' || ipyVersion == '4') {
         require('ipython3_namespace');
         require('ipython3_kernel');
         require('ipython3_utils');
@@ -515,7 +515,7 @@ define(function(require, exports, module) {
             };
             var kernel = kernels[shellID];
             var waitForKernel = function () {
-              if ((ipyVersion == '3') ?
+              if ((ipyVersion == '3' || ipyVersion == '4') ?
                   (kernel.ws.readyState == 1) :
                     (kernel.shell_channel.readyState == 1 &&
                         kernel.stdin_channel.readyState == 1 &&

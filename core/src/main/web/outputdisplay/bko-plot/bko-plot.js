@@ -97,6 +97,10 @@
         scope.initLayout = function() {
           var model = scope.stdmodel;
 
+          element.find(".ui-icon-gripsmall-diagonal-se")
+            .removeClass("ui-icon-gripsmall-diagonal-se")
+            .addClass("ui-icon-grip-diagonal-se");
+
           // hook container to use jquery interaction
           scope.container = d3.select(element[0]).select("#plotContainer");
           scope.jqcontainer = element.find("#plotContainer");

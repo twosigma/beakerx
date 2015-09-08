@@ -52,7 +52,7 @@
         scope.initLayout = function() {
           var model = scope.stdmodel;
           if (model.title != null) {
-            element.find("#combplotTitle").text(model.title).css("width", scope.width);
+            element.find("#combplotTitle").text(model.title).css("width", scope.width || scope.stdmodel.plotSize.width);
           }
         };
 

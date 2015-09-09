@@ -1738,12 +1738,11 @@
         };
 
         var watchCellSize = function () {
-          if (scope.model.isShowOutput !== undefined && scope.model.isShowOutput() === true) {
+          if (!scope.model.isShowOutput || (scope.model.isShowOutput && scope.model.isShowOutput() === true)) {
             scope.plotSize.width = scope.getCellWidth();
             scope.plotSize.height = scope.getCellHeight();
+            scope.setDumpState(scope.dumpState());
           }
-
-          scope.setDumpState(scope.dumpState());
         };
 
         scope.$watch('getCellWidth()', function () {

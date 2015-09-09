@@ -15,40 +15,40 @@
  */
 package com.twosigma.beaker.sqlsh.utils;
 
-import com.google.inject.Inject;
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class QueryExecutor {
 
+    public Object executeQuery(String script, NamespaceClient namespaceClient) throws SQLException, IOException {
 
-    public Object executeQuery(String script) throws SQLException {
-
-        DataSource ds = JDBCClient.getDataSource();
+        BeakerParser beakerParser = new BeakerParser(script, namespaceClient);
+        DataSource ds = JDBCClient.getDataSource(beakerParser.getDbURI());
 
         try (Connection conn = ds.getConnection();) {
 
             conn.setAutoCommit(false);
+            List<Object> resultsForOutputCell = new ArrayList<>();
+            Map<String, List<Object>> resultsForNamspace = new HashMap<>();
 
-            List<String> queries = QueryParser.split(script);
-            if (queries == null || queries.isEmpty()) return null;
-
-            List<Object> results = new ArrayList<>();
-
-            for (String query : queries) {
+            for (BeakerParser.BeakerParseResult queryLine : beakerParser.getResults()) {
 
                 List<List<?>> values = new ArrayList<>();
                 List<String> columns = new ArrayList<>();
                 List<String> types = new ArrayList<>();
 
-                try (PreparedStatement statement = conn.prepareStatement(query)) {
+                try (PreparedStatement statement = conn.prepareStatement(queryLine.getResultQuery())) {
 
                     boolean hasResultSet = statement.execute();
                     if (hasResultSet) {
@@ -87,29 +87,56 @@ public class QueryExecutor {
                     throw e;
                 }
 
-
+                if (queryLine.isSelectInto() && resultsForNamspace.get(queryLine.selectIntoVar) == null) {
+                    resultsForNamspace.put(queryLine.selectIntoVar, new ArrayList<>());
+                }
                 if (values.size() > 1) {
                     TableDisplay tableDisplay = new TableDisplay(values, columns, types);
-                    results.add(tableDisplay);
+                    if (!queryLine.isSelectInto()) {
+                        resultsForOutputCell.add(tableDisplay);
+                    } else {
+                        resultsForNamspace.get(queryLine.selectIntoVar).add(tableDisplay);
+                    }
                 } else if (values.size() == 1) {
                     List<Object> row = ((List<Object>) values.get(0));
                     if (row.size() == 1) {
-                        results.add(row.get(0));
+                        if (!queryLine.isSelectInto()) {
+                            resultsForOutputCell.add(row.get(0));
+                        } else {
+                            resultsForNamspace.get(queryLine.selectIntoVar).add(row.get(0));
+                        }
                     } else if (row.size() > 1) {
                         Map<String, Object> map = new LinkedHashMap<>();
                         for (int i = 0; i < row.size(); i++) {
                             map.put(columns.get(i), row.get(i));
                         }
-                        results.add(map);
+                        if (!queryLine.isSelectInto()) {
+                            resultsForOutputCell.add(map);
+                        } else {
+                            resultsForNamspace.get(queryLine.selectIntoVar).add(map);
+                        }
                     }
                 }
             }
 
-            if (results.size() > 1) {
-                OutputContainer outputContainer = new OutputContainer(results);
+            for (String output : resultsForNamspace.keySet()) {
+                if (beakerParser.getOutputs() != null && beakerParser.getOutputs().contains(output)) {
+                    if (resultsForNamspace.get(output).size() > 1) {
+                        OutputContainer outputContainer = new OutputContainer(resultsForNamspace.get(output));
+                        namespaceClient.set(output, outputContainer);
+                    } else if (!resultsForNamspace.get(output).isEmpty()) {
+                        namespaceClient.set(output, resultsForNamspace.get(output).get(0));
+                    } else {
+                        namespaceClient.set(output, null);
+                    }
+                }
+            }
+
+            if (resultsForOutputCell.size() > 1) {
+                OutputContainer outputContainer = new OutputContainer(resultsForOutputCell);
                 return outputContainer;
-            } else if (!results.isEmpty()) {
-                return results.get(0);
+            } else if (!resultsForOutputCell.isEmpty()) {
+                return resultsForOutputCell.get(0);
             } else {
                 return null;
             }

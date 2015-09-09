@@ -21,7 +21,7 @@
   'use strict';
   var module = angular.module('bk.publication', ['bk.utils']);
 
-  module.factory('bkPublicationApi', function (bkUtils, $localStorage) {
+  module.factory('bkPublicationApi', function (bkUtils, $localStorage, Upload) {
     var baseUrl = window.beaker !== undefined && window.beaker.pubblicationApiURL !== undefined ? window.beaker.pubblicationApiURL : 'https://pub.beakernotebook.com';
 
     function headers() {
@@ -51,6 +51,20 @@
       },
       getCategories: function() {
         return bkUtils.httpGetJson(baseUrl + '/notebook/v1/categories', {}, headers());
+      },
+      uploadAttachment: function(file) {
+        return Upload.upload({
+          url: baseUrl + '/user/v1/attachments',
+          method: 'POST',
+          headers: {'X-Authorization': 'Token ' + $localStorage.token},
+          file: file
+        });
+      },
+      deleteAttachment: function(id) {
+        return bkUtils.httpDeleteJson(baseUrl + '/user/v1/attachments/' + id, {}, headers());
+      },
+      getAttachmentUrl: function(id) {
+        return baseUrl + '/user/v1/attachments/' + id;
       },
       getBaseUrl: function () {
         return baseUrl;

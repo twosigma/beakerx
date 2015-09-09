@@ -39,6 +39,13 @@
         <select ng-model="model['category-id']" ng-options="category['public-id'] as category.name for category in categories" name="category" class="field">
           <option value="">Select a category</option>
         </select>
+        <div class="preview-image" ng-if="attachmentUrl">
+          <label class="full">Preview image:</label>
+          <img ng-src="{{attachmentUrl}}" width="50">
+          <a class="remove" ng-click="removeAttachment()">×</a>
+        </div>
+        <div class="error attachment" ng-if="attachmentErrors">{{attachmentErrors}}</div>
+        <a class="file-upload" ngf-select="uploadAttachment($file)">{{attachmentUrl ? "Update image" : "Add preview image"}}</a>
         <ul ng-if="published" class="publication-details">
           <li>
             <div class="time-label">Published</div>

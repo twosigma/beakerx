@@ -111,8 +111,6 @@
       }
 
       function initPublication() {
-        $scope.edited = bkSessionManager.isNotebookModelEdited();
-
         bkPublicationApi.getCategories()
         .then(function(resp) {
           var tree = generateTree(resp.data)
@@ -138,10 +136,6 @@
               $scope.saveButton = 'Update';
             }
           });
-        }
-
-        if (bkSessionManager.isNotebookModelEdited()) {
-          $scope.saveButton = 'Save and ' + $scope.saveButton;
         }
       }
 

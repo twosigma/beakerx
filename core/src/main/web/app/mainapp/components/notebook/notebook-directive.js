@@ -121,6 +121,9 @@
             cm.setOption('keyMap', this._cmKeyMapMode);
             cm.setOption('vimMode', this._cmKeyMapMode == 'vim');
           },
+          getCM: function (cellId) {
+            return this._codeMirrors[cellId];
+          },
           unregisterCM: function (cellId) {
             delete this._codeMirrors[cellId];
             this._codeMirrors[cellId] = null;

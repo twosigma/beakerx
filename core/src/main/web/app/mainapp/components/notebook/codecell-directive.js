@@ -310,6 +310,9 @@
           showing.CodeMirror.getWrapperElement().style.height = winHeight() + 'px';
         };
         scope.focus = function() {
+          if (scope.cm === undefined) {
+            initCodeMirror();
+          }
           scope.cm.focus();
         };
         CodeMirror.on(window, 'resize', resizeHandler);

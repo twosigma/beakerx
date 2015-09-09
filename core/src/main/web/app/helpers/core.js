@@ -371,6 +371,45 @@
       },
 
       codeMirrorOptions: function(scope, notebookCellOp) {
+
+        var goCharRightOrMoveFocusDown = function(cm) {
+          if ($('.CodeMirror-hint').length > 0) {
+            //codecomplete is up, skip
+            return;
+          }
+          if (cm.getCursor().line === scope.cm.doc.lastLine()
+            && cm.getCursor().ch === scope.cm.doc.getLine(scope.cm.doc.lastLine()).length) {
+            var nextCell = moveFocusDown();
+            if (nextCell){
+              var nextCm = scope.bkNotebook.getCM(nextCell.id);
+              if (nextCm){
+                nextCm.execCommand("goDocStart");
+              }
+            }
+          } else {
+            cm.execCommand("goCharRight");
+          }
+        };
+
+        var goCharLeftOrMoveFocusDown = function(cm) {
+          if ($('.CodeMirror-hint').length > 0) {
+            //codecomplete is up, skip
+            return;
+          }
+          if (cm.getCursor().line === 0
+            && cm.getCursor().ch === 0) {
+            var prevCell = moveFocusUp();
+            if (prevCell){
+              var prevCm = scope.bkNotebook.getCM(prevCell.id);
+              if (prevCm){
+                prevCm.execCommand("goDocEnd");
+              }
+            }
+          } else {
+            cm.execCommand("goCharLeft");
+          }
+        };
+
         var goUpOrMoveFocusUp = function(cm) {
           if ($('.CodeMirror-hint').length > 0) {
             //codecomplete is up, skip
@@ -410,6 +449,7 @@
               nextCell = notebookCellOp.getNext(nextCell.id);
             }
           }
+          return nextCell;
         };
 
         var moveFocusUp = function() {
@@ -428,6 +468,7 @@
               prevCell = notebookCellOp.getPrev(prevCell.id);
             }
           }
+          return prevCell;
         };
 
         var evaluate = function() {
@@ -614,7 +655,10 @@
             "Tab": tab,
             "Backspace": backspace,
             "Ctrl-/": "toggleComment",
-            "Cmd-/": "toggleComment"
+            "Cmd-/": "toggleComment",
+            'Right': goCharRightOrMoveFocusDown,
+            'Left': goCharLeftOrMoveFocusDown
+
           };
 
 

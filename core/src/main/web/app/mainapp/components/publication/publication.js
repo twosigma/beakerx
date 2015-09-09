@@ -20,8 +20,8 @@
   var module = angular.module('bk.core');
 
   module.controller('publicationCtrl',
-    ['$scope', 'bkUtils', 'bkPublicationApi', 'bkPublicationAuth', 'bkSessionManager', '$modalInstance', '$location',
-    function($scope, bkUtils, bkPublicationApi, bkPublicationAuth, bkSessionManager, $modalInstance, $location) {
+    ['$scope', 'bkUtils', 'bkPublicationApi', 'bkPublicationAuth', 'bkSessionManager', '$modalInstance', '$location', '$window',
+    function($scope, bkUtils, bkPublicationApi, bkPublicationAuth, bkSessionManager, $modalInstance, $location, $window) {
 
       var notebook = bkSessionManager.getRawNotebookModel();
 
@@ -153,13 +153,16 @@
         .then(function(resp) {
           // save publication id as notebook metadata
           bkSessionManager.getRawNotebookModel().metadata = {'publication-id': resp.data['public-id']};
-          return bkHelper.saveNotebook();
+          return resp.data['public-id'];
         });
       }
 
       function updatePublication() {
         $scope.model.contents = bkSessionManager.getSaveData().notebookModelAsString;
-        return bkPublicationApi.updatePublication(notebook.metadata['publication-id'], $scope.model);
+        return bkPublicationApi.updatePublication(notebook.metadata['publication-id'], $scope.model)
+        .then(function() {
+          return notebook.metadata['publication-id'];
+        });
       }
 
       $scope.publishAction = function() {
@@ -168,11 +171,12 @@
       };
 
       $scope.publish = function(action) {
+        var tab = $window.open(bkPublicationApi.getBaseUrl());
         $scope.saving = true;
-        return bkHelper.saveNotebook()
-        .then(action == "update" ? updatePublication : createPublication)
-        .then(function() {
+        (action == "update" ? updatePublication : createPublication)()
+        .then(function(publicationId) {
           $scope.saving = false;
+          tab.location = bkPublicationApi.getBaseUrl() + '/#/publications/' + publicationId;
           $scope.close();
         });
       };

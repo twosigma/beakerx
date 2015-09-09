@@ -412,10 +412,11 @@
         };
       });
     });
-    beaker.run(function(bkPublicationAuth, $location, $localStorage) {
+    beaker.run(function(bkPublicationAuth, $location, $localStorage, $window) {
       var params = $location.search();
       if (params["token"]) {
         $localStorage.token = params["token"];
+        $window.close();
       }
     });
   };

@@ -1,0 +1,7 @@
+.new-cell-menu-item {
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    cursor: pointer;
+  }
+}

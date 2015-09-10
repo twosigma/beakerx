@@ -129,6 +129,28 @@ html {
       }
     }
   }
+  .preview-image {
+    position: relative;
+    margin-bottom: 10px;
+    .remove {
+      position: absolute;
+      top: 16px;
+      left: 42px;
+      padding: 0 10px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 120%;
+      display: inline-block;
+      font-family: 'arial', 'sans-serif';
+      font-weight: bold;
+      color: #333;
+    }
+  }
+  .file-upload {
+    margin-bottom: 10px;
+    display: block;
+    cursor: pointer;
+  }
   .actions {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -138,6 +160,9 @@ html {
   }
   .identity {
     position: relative;
+    a {
+      cursor: pointer;
+    }
     .name {
       font-weight: bold;
     }

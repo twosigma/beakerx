@@ -148,6 +148,7 @@
     var beaker = angular.module('beaker', [
       'ngRoute',
       'ngStorage',
+      'ngFileUpload',
       'ui.gravatar',
       'bk.core',
       'bk.evaluatePluginManager',

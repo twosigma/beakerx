@@ -111,8 +111,6 @@
       }
 
       function initPublication() {
-        $scope.edited = bkSessionManager.isNotebookModelEdited();
-
         bkPublicationApi.getCategories()
         .then(function(resp) {
           var tree = generateTree(resp.data)
@@ -131,15 +129,13 @@
             if (bkPublicationAuth.currentUser()['public-id'] == pub['author-id']) {
               $scope.model = pub;
               $scope.model['category-id'] = pub.category && pub.category['public-id'];
+              $scope.attachmentUrl = $scope.model['attachment-id'] &&
+                bkPublicationApi.getAttachmentUrl($scope.model['attachment-id']);
               $scope.published = true;
               $scope.title = 'Update Notebook';
               $scope.saveButton = 'Update';
             }
           });
-        }
-
-        if (bkSessionManager.isNotebookModelEdited()) {
-          $scope.saveButton = 'Save and ' + $scope.saveButton;
         }
       }
 
@@ -187,6 +183,7 @@
         .then(function() {
           delete bkSessionManager.getRawNotebookModel().metadata['publication-id'];
           delete $scope.model;
+          delete $scope.attachmentUrl;
           $scope.saving = false;
           $scope.close();
         });
@@ -205,6 +202,32 @@
 
       $scope.signupUrl = function() {
         return $scope.baseUrl + '#/sign_up?redirect=' + encodeURIComponent($location.absUrl());
+      };
+
+      $scope.removeAttachment = function() {
+        return bkPublicationApi.deleteAttachment($scope.model['attachment-id'])
+        .then(function() {
+          $scope.model['attachment-id'] = -1;
+          delete $scope.attachmentUrl;
+        });
+      };
+
+      $scope.uploadAttachment = function(file) {
+        if (file && !file.$error) {
+          file.upload = bkPublicationApi.uploadAttachment(file);
+          file.upload.then(function(resp) {
+            if ($scope.attachmentUrl) {
+              bkPublicationApi.deleteAttachment($scope.model['attachment-id']);
+            }
+            var attachment = resp.data;
+            delete $scope.attachmentErrors;
+            $scope.model['attachment-id'] = attachment['public-id'];
+            $scope.attachmentUrl = bkPublicationApi.getAttachmentUrl(attachment['public-id']);
+          }, function(resp) {
+            var err = resp.data;
+            $scope.attachmentErrors = _.chain(err).values().flatten().value().join(', ');
+          });
+        }
       };
   }]);
 })();

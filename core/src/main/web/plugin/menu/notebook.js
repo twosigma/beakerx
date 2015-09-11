@@ -57,10 +57,16 @@ define(function(require, exports, module) {
       id: 'run-all-cells-menuitem'
     },
     {
-      name: 'Collapse All Sections',
+      name: 'Collapse all sections',
       sortorder: 135,
       action: bkHelper.collapseAllSections,
       id: 'collapse-all-menuitem'
+    },
+    {
+      name: 'Open all sections',
+      sortorder: 137,
+      action: bkHelper.openAllSections,
+      id: 'open-all-menuitem'
     },
     {
       name: 'Edit mode',

@@ -716,6 +716,13 @@
                 }
               });
             },
+            openAllSections: function() {
+              _.each(this.getNotebookModel().cells, function(cell) {
+                if (cell.type == "section") {
+                  cell.collapsed = false;
+                }
+              });
+            },
             hasCodeCell: function(toEval) {
               var cellOp = bkSessionManager.getNotebookCellOp();
               // toEval can be a tagName (string), either "initialization", name of an evaluator or user defined tag

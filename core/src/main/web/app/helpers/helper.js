@@ -245,6 +245,13 @@
           return false;
         }
       },
+      openAllSections: function() {
+        if (getCurrentApp() && getCurrentApp().openAllSections()) {
+          return getCurrentApp().openAllSections();
+        } else {
+          return false;
+        }
+      },
       closeNotebook: function() {
         if (getCurrentApp() && getCurrentApp().closeNotebook) {
           return getCurrentApp().closeNotebook();

@@ -40,6 +40,7 @@ public class JDBCClient {
                 ds = new BasicDataSource();
                 ds.setDriver(DriverManager.getDriver(uri));
                 ds.setUrl(uri);
+                dsMap.put(uri, ds);
             }
             return ds;
 
@@ -47,6 +48,5 @@ public class JDBCClient {
             Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
             throw new DBConnectionException(uri, e);
         }
-
     }
 }

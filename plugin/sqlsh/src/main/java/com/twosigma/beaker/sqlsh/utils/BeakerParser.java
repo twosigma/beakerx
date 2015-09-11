@@ -31,7 +31,7 @@ public class BeakerParser {
 
     private NamespaceClient client;
     private String dbURI;
-    private String inputs;
+    private Map<String, String> inputs = new HashMap<>();
     private Set<String> outputs = new HashSet<>();
 
     private List<BeakerParseResult> results = new ArrayList<>();
@@ -44,9 +44,36 @@ public class BeakerParser {
             for (String query : queries) {
                 BeakerParseResult result = new BeakerParseResult(query);
                 parseSelectInto(result);
+                parseInputParam(result);
                 results.add(result);
             }
         }
+    }
+
+    private void parseInputParam(BeakerParseResult result) {
+        String sql = result.getResultQuery();
+        String upper = sql.toUpperCase();
+        int start = -1;
+        int end = -1;
+        do {
+            start = upper.indexOf("${", end);
+            if (start >= 0) {
+                end = upper.indexOf('}', start);
+                if (end < 0) break;
+                String var = sql.substring(start + 2, end).trim();
+                if (var != null && !var.isEmpty() && inputs.keySet().contains(var)) {
+                    sql = sql.substring(0, start) + "?" + sql.substring(end + 1);
+                    upper = sql.toUpperCase();
+                    end = start + 1;
+                    BeakerInputVar inputVar = new BeakerInputVar(var);
+                    inputVar.setType(inputs.get(var));
+                    result.getInputVars().add(inputVar);
+                }
+            }
+
+        } while (start >= 0);
+
+        result.setResultQuery(sql);
     }
 
     private void parseSelectInto(BeakerParseResult result) {
@@ -66,10 +93,12 @@ public class BeakerParser {
                 if (into > select && into < from) {
                     int start = upper.indexOf("${", into);
                     if (start > into && start < from) {
-                        int end = upper.indexOf("}", into);
+                        int end = upper.indexOf('}', into);
                         if (end > into && end < from) {
                             String var = sql.substring(start + 2, end);
                             sql = sql.substring(0, into) + sql.substring(end + 1);
+                            upper = sql.toUpperCase();
+                            from = select;
                             if (var != null && !var.isEmpty()) {
                                 result.setSelectInto(true);
                                 result.setSelectIntoVar(var);
@@ -103,45 +132,21 @@ public class BeakerParser {
                     } else dbURI = client.get(s).toString();
                 } else if (line.indexOf(OUTPUTS_VAR) > 0) {
                     String outLine = line.substring(line.indexOf(':') + 1).trim();
-                    for (String out : outLine.split(",")) {
+                    for (String out : outLine.split(";")) {
                         outputs.add(out.trim());
+                    }
+                } else if (line.indexOf(INPUTS_VAR) > 0) {
+                    String inLine = line.substring(line.indexOf(':') + 1).trim();
+                    for (String in : inLine.split(";")) {
+                        int d = in.indexOf('/');
+                        if (d > 0) {
+                            String var = in.substring(0, d).trim();
+                            String type = in.substring(d + 1, in.length()).trim();
+                            inputs.put(var, type);
+                        } else inputs.put(in.trim(), null);
                     }
                 }
             }
-        }
-    }
-
-    public class BeakerParseResult {
-        boolean selectInto;
-        String resultQuery;
-        String selectIntoVar;
-
-        public BeakerParseResult(String resultQuery) {
-            this.resultQuery = resultQuery;
-        }
-
-        public String getResultQuery() {
-            return resultQuery;
-        }
-
-        public void setResultQuery(String resultQuery) {
-            this.resultQuery = resultQuery;
-        }
-
-        public String getSelectIntoVar() {
-            return selectIntoVar;
-        }
-
-        public void setSelectIntoVar(String selectIntoVar) {
-            this.selectIntoVar = selectIntoVar;
-        }
-
-        public boolean isSelectInto() {
-            return selectInto;
-        }
-
-        public void setSelectInto(boolean selectInto) {
-            this.selectInto = selectInto;
         }
     }
 
@@ -161,11 +166,11 @@ public class BeakerParser {
         this.results = results;
     }
 
-    public String getInputs() {
+    public Map<String, String> getInputs() {
         return inputs;
     }
 
-    public void setInputs(String inputs) {
+    public void setInputs(Map<String, String> inputs) {
         this.inputs = inputs;
     }
 

@@ -1,11 +1,3 @@
-package com.twosigma.beaker.sqlsh.utils;
-
-import com.twosigma.beaker.NamespaceClient;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
 /*
  *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
@@ -21,25 +13,111 @@ import java.util.Scanner;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-public class BeakerParser
-{
-    public static final String DB_URI_VAR = "beakerDB";
+package com.twosigma.beaker.sqlsh.utils;
 
-    private List<String> vars = new ArrayList<>();
+import com.twosigma.beaker.NamespaceClient;
+
+import java.io.IOException;
+import java.util.*;
+
+public class BeakerParser {
+    public static final String DB_URI_VAR = "beakerDB";
+    public static final String INPUTS_VAR = "inputs";
+    public static final String OUTPUTS_VAR = "outputs";
+
+    public static final String SQL_SELECT = "SELECT";
+    public static final String SQL_FROM = "FROM";
+    public static final String SQL_INTO = "INTO";
+
     private NamespaceClient client;
     private String dbURI;
+    private Map<String, String> inputs = new HashMap<>();
+    private Set<String> outputs = new HashSet<>();
 
-    public BeakerParser(String script, NamespaceClient client) {
+    private List<BeakerParseResult> results = new ArrayList<>();
+
+    public BeakerParser(String script, NamespaceClient client) throws IOException {
         this.client = client;
         parseVar(script);
+        List<String> queries = QueryParser.split(script);
+        if (queries != null && !queries.isEmpty()) {
+            for (String query : queries) {
+                BeakerParseResult result = new BeakerParseResult(query);
+                parseSelectInto(result);
+                parseInputParam(result);
+                results.add(result);
+            }
+        }
     }
 
-    private void parseVar(String script)
-    {
+    private void parseInputParam(BeakerParseResult result) {
+        String sql = result.getResultQuery();
+        String upper = sql.toUpperCase();
+        int start = -1;
+        int end = -1;
+        do {
+            start = upper.indexOf("${", end);
+            if (start >= 0) {
+                end = upper.indexOf('}', start);
+                if (end < 0) break;
+                String var = sql.substring(start + 2, end).trim();
+                if (var != null && !var.isEmpty() && inputs.keySet().contains(var)) {
+                    sql = sql.substring(0, start) + "?" + sql.substring(end + 1);
+                    upper = sql.toUpperCase();
+                    end = start + 1;
+                    BeakerInputVar inputVar = new BeakerInputVar(var);
+                    inputVar.setType(inputs.get(var));
+                    result.getInputVars().add(inputVar);
+                }
+            }
+
+        } while (start >= 0);
+
+        result.setResultQuery(sql);
+    }
+
+    private void parseSelectInto(BeakerParseResult result) {
+        String sql = result.getResultQuery();
+        String upper = sql.toUpperCase();
+        int select;
+        int from = -1;
+        int into = -1;
+
+        do {
+            select = from;
+            select = upper.indexOf(SQL_SELECT, select);
+            if (select >= 0) {
+                from = upper.indexOf(SQL_FROM, select);
+                into = upper.indexOf(SQL_INTO, select);
+
+                if (into > select && into < from) {
+                    int start = upper.indexOf("${", into);
+                    if (start > into && start < from) {
+                        int end = upper.indexOf('}', into);
+                        if (end > into && end < from) {
+                            String var = sql.substring(start + 2, end);
+                            sql = sql.substring(0, into) + sql.substring(end + 1);
+                            upper = sql.toUpperCase();
+                            from = select;
+                            if (var != null && !var.isEmpty()) {
+                                result.setSelectInto(true);
+                                result.setSelectIntoVar(var);
+                            }
+                        }
+                    }
+                }
+            }
+        } while (select >= 0);
+
+        result.setResultQuery(sql);
+    }
+
+    private void parseVar(String script) throws IOException {
         List<String> vars = new ArrayList<>();
         Scanner scanner = new Scanner(script);
         StringBuffer sb = new StringBuffer();
 
+<<<<<<< HEAD
         while (scanner.hasNextLine())
         {
             String line = scanner.nextLine();
@@ -52,8 +130,70 @@ public class BeakerParser
                 if(line.indexOf(DB_URI_VAR) > 0);
                 {
 
+=======
+        while (scanner.hasNextLine()) {
+
+            String line = scanner.nextLine();
+            line.trim();
+            int commentIndex = line.indexOf("%%");
+            if (commentIndex != -1 && line.startsWith("%%")) {
+                vars.add(line);
+
+                if (line.indexOf(DB_URI_VAR) > 0) {
+                    String s = line.substring(line.indexOf('=') + 1).trim();
+                    if (s.startsWith("\"") && s.endsWith("\"")) {
+                        dbURI = s.substring(1, s.length() - 1);
+                    } else dbURI = client.get(s).toString();
+                } else if (line.indexOf(OUTPUTS_VAR) > 0) {
+                    String outLine = line.substring(line.indexOf(':') + 1).trim();
+                    for (String out : outLine.split(";")) {
+                        outputs.add(out.trim());
+                    }
+                } else if (line.indexOf(INPUTS_VAR) > 0) {
+                    String inLine = line.substring(line.indexOf(':') + 1).trim();
+                    for (String in : inLine.split(";")) {
+                        int d = in.indexOf('/');
+                        if (d > 0) {
+                            String var = in.substring(0, d).trim();
+                            String type = in.substring(d + 1, in.length()).trim();
+                            inputs.put(var, type);
+                        } else inputs.put(in.trim(), null);
+                    }
+>>>>>>> origin/sql-plugin
                 }
             }
         }
+    }
+
+    public String getDbURI() {
+        return dbURI;
+    }
+
+    public void setDbURI(String dbURI) {
+        this.dbURI = dbURI;
+    }
+
+    public List<BeakerParseResult> getResults() {
+        return results;
+    }
+
+    public void setResults(List<BeakerParseResult> results) {
+        this.results = results;
+    }
+
+    public Map<String, String> getInputs() {
+        return inputs;
+    }
+
+    public void setInputs(Map<String, String> inputs) {
+        this.inputs = inputs;
+    }
+
+    public Set<String> getOutputs() {
+        return outputs;
+    }
+
+    public void setOutputs(Set<String> outputs) {
+        this.outputs = outputs;
     }
 }

@@ -1,15 +1,3 @@
-package com.twosigma.beaker.sqlsh.utils;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Properties;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
-import org.apache.commons.dbcp2.BasicDataSource;
-
 /*
  *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
@@ -26,22 +14,39 @@ import org.apache.commons.dbcp2.BasicDataSource;
  *  limitations under the License.
  */
 
-public class JDBCClient extends AbstractModule{
+package com.twosigma.beaker.sqlsh.utils;
 
-    public static DataSource getDataSource() throws SQLException {
-        String uri = "jdbc:mysql://localhost:3306/test";
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-        BasicDataSource ds = new BasicDataSource();
-        ds.setDriver(DriverManager.getDriver(uri));
-        ds.setUsername("root");
-        ds.setPassword("root");
-        ds.setUrl(uri);
+import org.apache.commons.dbcp2.BasicDataSource;
 
-        return ds;
-    }
+public class JDBCClient {
 
-    @Override
-    protected void configure() {
-        System.out.println("CONFIGURE JDBC ");
+    private static Map<String, BasicDataSource> dsMap = new HashMap<>();
+
+    public static synchronized DataSource getDataSource(String uri) throws DBConnectionException {
+
+        try {
+            BasicDataSource ds = dsMap.get(uri);
+            if (ds == null) {
+                ds = new BasicDataSource();
+                ds.setDriver(DriverManager.getDriver(uri));
+                ds.setUrl(uri);
+                dsMap.put(uri, ds);
+            }
+            return ds;
+
+        } catch (SQLException e) {
+            Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
+            throw new DBConnectionException(uri, e);
+        }
     }
 }

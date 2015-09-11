@@ -27,11 +27,11 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
 public class SQLEvaluator {
+
     protected final String shellId;
 
     protected final String sessionId;
@@ -64,6 +64,7 @@ public class SQLEvaluator {
     }
 
     public void evaluate(SimpleEvaluationObject seo, String code) {
+
         jobQueue.add(new JobDescriptor(code, seo));
         syncObject.release();
     }
@@ -104,6 +105,8 @@ public class SQLEvaluator {
             this.simpleEvaluationObject = simpleEvaluationObject;
         }
     }
+
+    private class WorkerThread extends Thread {
     
     protected SqlAutocomplete createSqlAutocomplete(ClasspathScanner c)
     {
@@ -115,8 +118,6 @@ public class SQLEvaluator {
         return sac.doAutocomplete(code, caretPosition);
       }
     
-
-    private class WorkerThread extends Thread {
 
         public WorkerThread() {
             super("sqlsh worker");
@@ -148,7 +149,7 @@ public class SQLEvaluator {
                 namespaceClient = NamespaceClient.getBeaker(sessionId);
                 namespaceClient.setOutputObj(job.getSimpleEvaluationObject());
 
-                executor.executeTask(new MyRunnable(job.getSimpleEvaluationObject()));
+                executor.executeTask(new MyRunnable(job.getSimpleEvaluationObject(), namespaceClient));
 
                 namespaceClient.setOutputObj(null);
                 namespaceClient = null;
@@ -160,15 +161,17 @@ public class SQLEvaluator {
     protected class MyRunnable implements Runnable {
 
         protected final SimpleEvaluationObject simpleEvaluationObject;
+        protected final NamespaceClient namespaceClient;
 
-        public MyRunnable(SimpleEvaluationObject seo) {
+        public MyRunnable(SimpleEvaluationObject seo, NamespaceClient namespaceClient) {
             this.simpleEvaluationObject = seo;
+            this.namespaceClient = namespaceClient;
         }
 
         @Override
         public void run() {
             try {
-                simpleEvaluationObject.finished(queryExecutor.executeQuery(simpleEvaluationObject.getExpression()));
+                simpleEvaluationObject.finished(queryExecutor.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient));
             } catch (SQLException e) {
                 simpleEvaluationObject.error(e.getMessage());
             } catch (Exception e) {

@@ -65,13 +65,16 @@
             "id": "markdowngV91Gh",
             "type": "markdown",
             "body": [
-                "[Markdown](http://daringfireball.net/projects/markdown/syntax) is a text-to-HTML conversion tool that allows you to write using an easy-to-read, easy-to-write plain text format.  Here's a quick demo:",
+                "[Markdown](http://daringfireball.net/projects/markdown/syntax) is a text-to-HTML conversion tool that allows",
+                "you to write using an easy-to-read, easy-to-write plain text format.  Here's a quick demo:",
                 "",
                 "* Markdown is good for making *lists*,",
                 "* writing `code documentation`,",
                 "* and making **bold** statements.",
                 "",
-                "Click on this cell to see how this formatting was specified or to edit its contents.  Click away on the background of the notebook to reformat and display.  You can also use the control-enter (command-enter) keyboard shortcut to format a markdown cell.",
+                "Click on this cell to see how this formatting was specified or to edit its contents.",
+                "Click away on the background of the notebook to reformat and display.",
+                "You can also use the control-enter (command-enter) keyboard shortcut to format a markdown cell.",
                 "",
                 "You can embed LaTeX into a markdown cell by enclosing it with dollar characters: $e^{i\\pi}+1=0$.",
                 "",
@@ -80,6 +83,60 @@
             ],
             "evaluatorReader": false,
             "mode": "preview"
+        },
+        {
+            "id": "sectione6ub6q",
+            "type": "section",
+            "title": "Template Expansion in Markdown",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownnClGUn",
+            "type": "markdown",
+            "body": [
+                "In the prose part of a notebook that you can write it is sometimes useful to refer to values computed previously in the notebook.",
+                "Beaker makes it easy to do this by supporting a form a template expansion.  Start out by defining some values on the `beaker` object:"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codedBOCfX",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// some values to be inserted below",
+                    "beaker.name = 'Berzelius';",
+                    "beaker.logTen = Math.log(10);"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": 2.302585092994046,
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 27
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "markdownqlcer3",
+            "type": "markdown",
+            "body": [
+                "Markdown cells can include values computed by JavaScript, or from any language via autotranslation and the `beaker` object.",
+                "Just enclose a JavaScript expression in double braces, and that code will be replaced with the result of evaluating that code.",
+                "For example, given the definitions of `beaker.name` above, writing `{&#8203;{beaker.name}}` appears as {{beaker.name}} (click",
+                "on this cell to see the markdown source).  Since you have full access to JavaScript you can call functions to do things like",
+                "format numbers and call out results computed elsewhere in your notebook.  For example, the natural logarithm of ten is about",
+                "{{beaker.logTen.toFixed(3)}}.",
+                "",
+                "In order to get double braces without triggering JavaScript evaluation, use a zero-width unicode space",
+                "(see the markdown source for this cell)."
+            ],
+            "evaluatorReader": false
         },
         {
             "id": "sectionIpgyB6",
@@ -125,7 +182,7 @@
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<p>\n  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.\n</p>\n<p>\n  But you can also create interactive elements:<br/>\n  <button class=\"btn btn-default\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">\n  \tWhat is a beaker?\n  </button>\n</p>\n<p>\n  You can combine HTML and JavaScript cells to program interactive applications within Beaker.\n</p>\n<p>\n  Click the contracting arrows in the menu of buttons at the top-right of this cell to hide\n  the HTML source text and only see the formatted results.\n</p>"
+                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<p>\n  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.\n</p>\n<p>\n  But you can also create interactive elements:<br>\n  <button class=\"btn btn-default\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">\n  \tWhat is a beaker?\n  </button>\n</p>\n<p>\n  You can combine HTML and JavaScript cells to program interactive applications within Beaker.\n</p>\n<p>\n  Click the contracting arrows in the menu of buttons at the top-right of this cell to hide\n  the HTML source text and only see the formatted results.\n</p>"
                 },
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 0,
@@ -167,5 +224,27 @@
             "lineCount": 3
         }
     ],
-    "namespace": {}
+    "namespace": {
+        "options": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    "useOutputPanel",
+                    false
+                ],
+                [
+                    "outputLineLimit",
+                    1000
+                ]
+            ],
+            "subtype": "Dictionary",
+            "columnNames": [
+                "Key",
+                "Value"
+            ]
+        },
+        "x": 2.302585092994046,
+        "logTen": 2.302585092994046,
+        "name": "Berzelius"
+    }
 }

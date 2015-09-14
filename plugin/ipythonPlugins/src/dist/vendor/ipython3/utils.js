@@ -796,7 +796,14 @@ define('ipython3_utils', [
         }
         return $el.map(function(){
             // Katex takes a DOM node: $.map makes `this` the context
-            return window.renderMathInElement(this);
+            return window.renderMathInElement(this, {
+              delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right:  "$", display: false},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false}
+              ]
+            });
         });
     };
 

@@ -328,33 +328,51 @@ define(function(require, exports, module) {
                   (new myPython.OutputArea({events: {trigger: function(){}},
                     keyboard_manager: keyboard_manager})) :
                       (new myPython.OutputArea(elem));
-                  // twiddle the mime types? XXX
-                  if (ipyVersion == '1') {
-                    oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
-                  } else if (ipyVersion == '2') {
-                    oa.append_mime_type(content.data, elem);
-                  } else {
-                    oa.append_mime_type(content, elem);
-                  }
-                  var payload = elem.html();
-                  if (finalStuff !== undefined && finalStuff.payload !== undefined) {
-                    // if we already received an output we should append this output to it
-                    var temp = finalStuff.payload;
-                    if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
-                      temp.items.push(payload);
-                      payload = temp;
-                    } else {
-                      var temp2 = { 'type' : 'OutputContainer', 'psubtype': 'OutputContainer', 'items' : []};
-                      temp2.items.push(temp);
-                      temp2.items.push(payload);
-                      payload = temp2;
+              // twiddle the mime types? XXX
+              if (ipyVersion == '1') {
+                oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
+              } else if (ipyVersion == '2') {
+                oa.append_mime_type(content.data, elem);
+              } else {
+                oa.append_mime_type(content, elem);
+              }
+              if ((content.data['text/latex'] !== undefined) ||
+                  (content.data['text/html'] !== undefined) ||
+                  (content.data['text/markdown'] !== undefined)) {
+                //mark html content to find it later using selector
+                var syntheticClass = myPython.utils.uuid() + "-latex-class";
+                if (elem.children().length > 0) {
+                  elem.children().eq(0).addClass(syntheticClass);
+                }
+                deferred.promise.then(function() {
+                  bkHelper.timeout(function() {
+                    var latexElement = $('.' + syntheticClass);
+                    if (latexElement) {
+                      myPython.utils.typeset(latexElement[0]);
+                      latexElement.removeClass(syntheticClass);
                     }
-                  }
-                  evaluation.payload =payload;
-                  if (finalStuff !== undefined) {
-                    finalStuff.payload = evaluation.payload;
-                    finalStuff.jsonres = evaluation.jsonres;
-                  }
+                  }, 0);
+                });
+              }
+              var payload = elem.html();
+              if (finalStuff !== undefined && finalStuff.payload !== undefined) {
+                // if we already received an output we should append this output to it
+                var temp = finalStuff.payload;
+                if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
+                  temp.items.push(payload);
+                  payload = temp;
+                } else {
+                  var temp2 = { 'type' : 'OutputContainer', 'psubtype': 'OutputContainer', 'items' : []};
+                  temp2.items.push(temp);
+                  temp2.items.push(payload);
+                  payload = temp2;
+                }
+              }
+              evaluation.payload =payload;
+              if (finalStuff !== undefined) {
+                finalStuff.payload = evaluation.payload;
+                finalStuff.jsonres = evaluation.jsonres;
+              }
             }
           }
           if (finalStuff === undefined) {            

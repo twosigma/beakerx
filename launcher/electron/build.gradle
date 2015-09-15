@@ -40,7 +40,7 @@ task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG']) {
   }
 }
 
-task createBundle(dependsOn: ['nodeInstall', 'copyBeakerApp', 'copyDist', 'copyJRE', 'copyTools', 'macCopyElectron', 'copyPList', 'copyIcons', 'winCopyPython', 'winRename', 'winChangeIcon', 'linuxDepScript']) {
+task createBundle(dependsOn: ['nodeInstall', 'copyBeakerApp', 'copyDist', 'copyJRE', 'copyTools', 'macCopyElectron', 'copyPList', 'copyIcons', 'winCopyPython', 'winChangeDetails', 'linuxRename', 'linuxDepScript']) {
 }
 
 task makeBundle(dependsOn: ['createBundle', 'checkIdentity', 'signBundle']) {
@@ -233,15 +233,61 @@ task winCopyPython(type: Copy, dependsOn: ['unzipPython', 'copyDist']) {
 }
 winCopyPython.onlyIf { win }
 
-task winRename(type: Exec, dependsOn: ['unzipElectron']){
-  commandLine 'mv', 'beaker/electron.exe', 'beaker/beaker.exe'
+task winRename(dependsOn: ['unzipElectron']) {
+    doFirst {
+        file("beaker/electron.exe").renameTo(file("beaker/beaker.exe"))
+    }
+    doLast {
+        delete("beaker/electron.exe")
+    }
 }
 winRename.onlyIf{ win }
 
-task winChangeIcon(type: Exec, dependsOn: ['winRename', 'unzipElectron']) {
-  commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-icon', 'beaker.ico'
+task linuxRename(dependsOn: ['unzipElectron']) {
+     doFirst {
+        file("beaker/electron").renameTo(file("beaker/beaker"))
+    }
+    doLast {
+        delete("beaker/electron")
+    }
 }
+linuxRename.onlyIf{ linux }
+
+task winChangeDetails(dependsOn: ['winRename'
+        , 'winChangeIcon'
+        , 'winChangeProductName'
+        , 'winChangeFileDescription'
+        , 'winChangeOriginalFilename'
+        , 'winChangeLegalCopyright'
+        , 'winChangeProductVersion'
+    ]) {
+}
+winChangeDetails.onlyIf{ win }
+
+task winChangeIcon(type: Exec, dependsOn: ['winRename']) {
+        commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-icon', 'beaker.ico'
+     }
 winChangeIcon.onlyIf{ win }
+task winChangeProductName(type: Exec, dependsOn: ['winRename']) {
+        commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-version-string', "ProductName", "Beaker"
+}
+winChangeProductName.onlyIf{ win }
+task winChangeFileDescription(type: Exec, dependsOn: ['winRename']) {
+        commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-version-string', "FileDescription", "Beaker"
+}
+winChangeFileDescription.onlyIf{ win }
+task winChangeOriginalFilename(type: Exec, dependsOn: ['winRename']) {
+        commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-version-string', "OriginalFilename", "beaker.exe"
+}
+winChangeOriginalFilename.onlyIf{ win }
+task winChangeLegalCopyright(type: Exec, dependsOn: ['winRename']) {
+        commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-version-string', "LegalCopyright", "Copyright 2015 TWO SIGMA OPEN SOURCE, LLC"
+}
+winChangeLegalCopyright.onlyIf{ win }
+task winChangeProductVersion(type: Exec, dependsOn: ['winRename']) {
+        commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-version-string', "ProductVersion", "1.4"
+}
+winChangeProductVersion.onlyIf{ win }
 
 // Linux build
 task linuxDepScript(type: Copy, dependsOn: 'copyDist') {

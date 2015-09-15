@@ -18,6 +18,7 @@ module.exports = (function() {
   var path = require('path');
   var ReadLine = require('readline');
   var spawn = require('child_process').spawn;
+  var spawnSync = require('child_process').spawnSync;
   var events = require('events');
   var os = require('os');
 
@@ -66,7 +67,7 @@ module.exports = (function() {
     },
     kill: function() {
       if (_local && (_osName.startsWith('Windows'))) {
-        spawn("taskkill", ["/pid", _backend.pid, '/f', '/t']);
+        spawnSync("taskkill", ["/pid", _backend.pid, '/f', '/t']);
       } else if (_local) {
         _backend.kill('SIGTERM');
       }

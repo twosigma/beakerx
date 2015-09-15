@@ -371,15 +371,11 @@
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
           scope.cm.on('change', changeHandler);
           scope.cm.on('blur', function () {
-            scope.$apply(function () {
-              scope.cm.doc.sel.ranges[0].anchor.ch = -1;
-              CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
-            });
+            scope.cm.doc.sel.ranges[0].anchor.ch = -1;
+            CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
           });
           scope.cm.on('focus', function () {
-            scope.$apply(function () {
-              CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
-            });
+            CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
           });
 
           scope.updateUI(scope.getEvaluator());

@@ -41,13 +41,13 @@ Linux:
 To build and/or run:
 If you want to simply run Beaker using your own installed version of electron, do:
 
-```sh
+```
 gradle runElectron
 ```
 
 If you do not have Electron's prebuilt binaries installed, simply do
 
-```sh
+```
 gradle installElectron
 ```
 
@@ -61,23 +61,33 @@ While running the app you can press `F12` to open the chromium devtools.
 ### Bulding an executable
 
 To produce an executable you can run (an app bundle on OSX, a folder with an executable on Windows and Linux), do:
-```sh
-gradle makeBundle -P version=0.29.2 -P arch=x64
 ```
+gradle makeBundle -P version=0.32.1 -P arch=x64
+```
+(for 32-bit OS
+```
+gradle makeBundle -P version=0.32.1 -P arch=ia32
+```
+)
 
 ### Building an installer
 
 To produce an installer for your platform (DMG on OSX, .exe on Windows), do:
-```sh
-gradle makeInstaller -P version=0.29.2 -P arch=x64
 ```
+gradle makeInstaller -P version=0.32.1 -P arch=x64
+```
+(for 32-bit OS
+```
+gradle makeInstaller -P version=0.32.1 -P arch=ia32
+```
+)
 
 The 'version' parameter determines the version of electron that will be used
 to build your application. You can use any version available at
 https://github.com/atom/electron/releases. The 'arch' parameter determines the
 architecture of the Electron build. Acceptable 'arch' parameters are 'x64',
 'ia32' and 'arm'. You can also omit the 'version' and 'arch' parameters. Their
-default values are '0.29.2' and 'x64', respectively.
+default values are '0.32.1' and 'x64', respectively.
 
 Currently there are no Linux installers.
 

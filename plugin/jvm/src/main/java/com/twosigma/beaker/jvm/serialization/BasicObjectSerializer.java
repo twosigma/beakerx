@@ -171,7 +171,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
 
     try {
       if (obj == null) {
-        jgen.writeObject("null");
+        jgen.writeNull();
       } else if ( (obj instanceof TableDisplay)  ||
                   (obj instanceof EvaluationResult)||
                   (obj instanceof UpdatableEvaluationResult) ||

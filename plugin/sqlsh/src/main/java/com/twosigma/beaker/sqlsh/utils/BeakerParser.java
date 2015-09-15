@@ -117,20 +117,6 @@ public class BeakerParser {
         Scanner scanner = new Scanner(script);
         StringBuffer sb = new StringBuffer();
 
-<<<<<<< HEAD
-        while (scanner.hasNextLine())
-        {
-            String line = scanner.nextLine();
-            line.trim();
-            //ignore comments #
-            int commentIndex = line.indexOf("%%");
-            if (commentIndex != -1 && line.startsWith("%%"))
-            {
-                vars.add(line);
-                if(line.indexOf(DB_URI_VAR) > 0);
-                {
-
-=======
         while (scanner.hasNextLine()) {
 
             String line = scanner.nextLine();
@@ -159,7 +145,6 @@ public class BeakerParser {
                             inputs.put(var, type);
                         } else inputs.put(in.trim(), null);
                     }
->>>>>>> origin/sql-plugin
                 }
             }
         }

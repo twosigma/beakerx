@@ -142,13 +142,17 @@ define(function(require, exports, module) {
     },
     updateShell: function (cb) {
       var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/setShellOptions"), {
+        outdir: this.settings.outdir,
+        classPath: this.settings.classPath,
     	datasorces: this.settings.datasorces});
       if (cb) {
         p.success(cb);
       }
     },
     spec: {
-      datasorces:      {type: "settableString", action: "updateShell", name: "Datasources"},
+      datasorces:  {type: "settableString", action: "updateShell", name: "Datasources"},
+      outdir:      {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
+      classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
       resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
       killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
     },

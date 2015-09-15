@@ -27,6 +27,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
@@ -79,6 +80,14 @@ public class SQLEvaluator {
         executor.cancelExecution();
     }
 
+	protected SqlAutocomplete createSqlAutocomplete(ClasspathScanner c) {
+		return new SqlAutocomplete(c);
+	}
+
+	public List<String> autocomplete(String code, int caretPosition) {
+		return sac.doAutocomplete(code, caretPosition);
+	}    
+    
     private class JobDescriptor {
         private String code;
 
@@ -107,17 +116,6 @@ public class SQLEvaluator {
     }
 
     private class WorkerThread extends Thread {
-    
-    protected SqlAutocomplete createSqlAutocomplete(ClasspathScanner c)
-    {
-  	return new SqlAutocomplete(c);
-    }
-    
-    
-    public List<String> autocomplete(String code, int caretPosition) {
-        return sac.doAutocomplete(code, caretPosition);
-      }
-    
 
         public WorkerThread() {
             super("sqlsh worker");

@@ -75,7 +75,7 @@
         var nodes = initNodes(categories);
         var rootNodes = [];
 
-        _.each(_.sortBy(categories, 'name').reverse(), function(category) {
+        _.each(categories, function(category) {
           var parentNode;
           if (category.parent) {
             parentNode = nodes[category.parent['public-id']];
@@ -95,7 +95,7 @@
       function flattenCategories(categories, prefix) {
         if (!prefix) { prefix = ' '; }
 
-        return _.reduce(categories, function(newCategories, category) {
+        return _.reduce(_.sortBy(categories, 'order'), function(newCategories, category) {
           var toBeAdded = [];
 
           if (category.children.length) {

@@ -20,17 +20,15 @@ import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beaker.sqlsh.autocomplete.SqlAutocomplete;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.file.FileSystems;
-import java.sql.Driver;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
@@ -47,6 +45,10 @@ public class SQLEvaluator {
     protected final BeakerCellExecutor executor;
     volatile protected boolean exit;
     volatile protected boolean updateLoader;
+
+    protected ClasspathScanner cps;
+    protected SqlAutocomplete sac;
+
     protected final Semaphore syncObject = new Semaphore(0, true);
     protected final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<>();
     protected final QueryExecutor queryExecutor;
@@ -55,6 +57,8 @@ public class SQLEvaluator {
     public SQLEvaluator(String id, String sId) {
         shellId = id;
         sessionId = sId;
+        cps = new ClasspathScanner();
+        sac = createSqlAutocomplete(cps);
         packageId = "com.twosigma.beaker.sqlsh.bkr" + shellId.split("-")[0];
         outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
         try {
@@ -88,12 +92,17 @@ public class SQLEvaluator {
     }
 
     public void resetEnvironment() {
-
         jdbcClient.loadDrivers(classPath);
         executor.killAllThreads();
-        // signal thread to create loader
         updateLoader = true;
-        //syncObject.release();
+    }
+
+    protected SqlAutocomplete createSqlAutocomplete(ClasspathScanner c) {
+        return new SqlAutocomplete(c);
+    }
+
+    public List<String> autocomplete(String code, int caretPosition) {
+        return sac.doAutocomplete(code, caretPosition);
     }
 
     private class JobDescriptor {
@@ -149,14 +158,6 @@ public class SQLEvaluator {
                 if (exit) {
                     break;
                 }
-
-                // check if we must create or update class loader
-//                if (loader == null || updateLoader) {
-//                    loader = new DynamicClassLoader(outDir);
-//                    for (String pt : classPath) {
-//                        loader.add(pt);
-//                    }
-//                }
 
                 job = jobQueue.poll();
                 job.getSimpleEvaluationObject().started();

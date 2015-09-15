@@ -93,6 +93,9 @@
       initSession: function() {
         return bkPublicationApi.getCurrentUser()
         .then(function(resp) {
+          if (resp.data && resp.data.token) {
+            $localStorage.token = resp.data.token
+          }
           return currentUser = resp.data;
         });
       },

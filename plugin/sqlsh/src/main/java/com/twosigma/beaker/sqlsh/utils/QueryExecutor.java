@@ -33,10 +33,17 @@ import java.util.logging.Logger;
 
 public class QueryExecutor {
 
+    protected final JDBCClient jdbcClient;
+
+    public QueryExecutor(JDBCClient jdbcClient) {
+        this.jdbcClient = jdbcClient;
+    }
+
     public Object executeQuery(String script, NamespaceClient namespaceClient) throws SQLException, IOException, NoSuchFieldException, IllegalAccessException {
 
         BeakerParser beakerParser = new BeakerParser(script, namespaceClient);
-        DataSource ds = JDBCClient.getDataSource(beakerParser.getDbURI());
+
+        DataSource ds = jdbcClient.getDataSource(beakerParser.getDbURI());
 
         try (Connection conn = ds.getConnection();) {
 

@@ -17,12 +17,15 @@
 package com.twosigma.beaker.sqlsh.utils;
 
 import javax.sql.DataSource;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Paths;
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,23 +33,74 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 public class JDBCClient {
 
-    private static Map<String, BasicDataSource> dsMap = new HashMap<>();
+    private  Map<String, BasicDataSource> dsMap = new HashMap<>();
+    private  List<Driver> drivers = new ArrayList<>();
 
-    public static synchronized DataSource getDataSource(String uri) throws DBConnectionException {
+    public DataSource getDataSource(String uri) throws DBConnectionException {
+        synchronized (this) {
+            try {
 
-        try {
-            BasicDataSource ds = dsMap.get(uri);
-            if (ds == null) {
-                ds = new BasicDataSource();
-                ds.setDriver(DriverManager.getDriver(uri));
-                ds.setUrl(uri);
-                dsMap.put(uri, ds);
+                BasicDataSource ds = dsMap.get(uri);
+                if (ds == null) {
+                    Driver driver = null;
+                    for (Driver test : drivers) {
+                        if (test.acceptsURL(uri)) {
+                            driver = test;
+                            break;
+                        }
+                    }
+                    if (driver == null) {
+                        DriverManager.getDriver(uri);
+                    }
+                    ds = new BasicDataSource();
+                    ds.setDriver(driver);
+                    ds.setUrl(uri);
+                    dsMap.put(uri, ds);
+                }
+                return ds;
+
+            } catch (SQLException e) {
+                Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
+                throw new DBConnectionException(uri, e);
             }
-            return ds;
+        }
+    }
 
-        } catch (SQLException e) {
-            Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
-            throw new DBConnectionException(uri, e);
+    public void loadDrivers(List<String> pathList) {
+        synchronized (this) {
+            if (pathList == null) return;
+            dsMap = new HashMap<>();
+            drivers = new ArrayList<>();
+
+            List<URL> urlList = new ArrayList<>();
+            for (String url : pathList) {
+                url = url.trim();
+                if(url.startsWith("--") || url.startsWith("#")) {
+                    continue;
+                }
+                try {
+                    if(!url.startsWith("jar:")) {
+                        urlList.add(Paths.get(url).toUri().toURL());
+                    } else {
+                        urlList.add(new URL(url));
+                    }
+                } catch (MalformedURLException e) {
+                    Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
+                }
+            }
+
+            URLClassLoader loader = new URLClassLoader(urlList.toArray(new URL[urlList.size()]));
+
+            ServiceLoader<Driver> loadedDrivers = ServiceLoader.load(Driver.class, loader);
+            Iterator<Driver> driversIterator = loadedDrivers.iterator();
+            try {
+                while (driversIterator.hasNext()) {
+                    Driver d = driversIterator.next();
+                    drivers.add(d);
+                }
+            } catch (Throwable t) {
+                Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, t);
+            }
         }
     }
 }

@@ -16,42 +16,54 @@
 package com.twosigma.beaker.sqlsh.utils;
 
 import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.autocomplete.ClasspathScanner;
+import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.FileSystems;
+import java.sql.Driver;
 import java.sql.SQLException;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
 public class SQLEvaluator {
 
     protected final String shellId;
-
     protected final String sessionId;
-
     protected final String packageId;
 
+    protected List<String> classPath = new ArrayList<>();
+    protected String currentClassPath = "";
+    protected String outDir = "";
+
     protected final BeakerCellExecutor executor;
-
     volatile protected boolean exit;
-
+    volatile protected boolean updateLoader;
     protected final Semaphore syncObject = new Semaphore(0, true);
-
     protected final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<>();
-
-    protected QueryExecutor queryExecutor;
+    protected final QueryExecutor queryExecutor;
+    protected final JDBCClient jdbcClient;
 
     public SQLEvaluator(String id, String sId) {
         shellId = id;
         sessionId = sId;
         packageId = "com.twosigma.beaker.sqlsh.bkr" + shellId.split("-")[0];
+        outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
+        try {
+            (new File(outDir)).mkdirs();
+        } catch (Exception e) {
+        }
+        jdbcClient = new JDBCClient();
         executor = new BeakerCellExecutor("sqlsh");
-        queryExecutor = new QueryExecutor();
+        queryExecutor = new QueryExecutor(jdbcClient);
         new WorkerThread().start();
     }
 
@@ -69,6 +81,19 @@ public class SQLEvaluator {
 
     public void cancelExecution() {
         executor.cancelExecution();
+    }
+
+    public void killAllThreads() {
+        executor.killAllThreads();
+    }
+
+    public void resetEnvironment() {
+
+        jdbcClient.loadDrivers(classPath);
+        executor.killAllThreads();
+        // signal thread to create loader
+        updateLoader = true;
+        //syncObject.release();
     }
 
     private class JobDescriptor {
@@ -112,6 +137,7 @@ public class SQLEvaluator {
         public void run() {
             JobDescriptor job;
             NamespaceClient namespaceClient;
+            DynamicClassLoader loader = null;
 
             while (!exit) {
                 try {
@@ -123,6 +149,14 @@ public class SQLEvaluator {
                 if (exit) {
                     break;
                 }
+
+                // check if we must create or update class loader
+//                if (loader == null || updateLoader) {
+//                    loader = new DynamicClassLoader(outDir);
+//                    for (String pt : classPath) {
+//                        loader.add(pt);
+//                    }
+//                }
 
                 job = jobQueue.poll();
                 job.getSimpleEvaluationObject().started();
@@ -160,6 +194,29 @@ public class SQLEvaluator {
                 simpleEvaluationObject.error(e.getMessage());
             }
         }
+    }
+
+    public void setShellOptions(String cp, String od) throws IOException {
+
+        if (od == null || od.isEmpty()) {
+            od = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
+        } else {
+            od = od.replace("$BEAKERDIR", System.getenv("beaker_tmp_dir"));
+        }
+
+        // check if we are not changing anything
+        if (currentClassPath.equals(cp) && outDir.equals(od))
+            return;
+
+        currentClassPath = cp;
+        outDir = od;
+
+        if (cp.isEmpty())
+            classPath = new ArrayList<String>();
+        else
+            classPath = Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"));
+
+        resetEnvironment();
     }
 
 }

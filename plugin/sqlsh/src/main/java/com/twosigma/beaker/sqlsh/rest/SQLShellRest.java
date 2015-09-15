@@ -125,8 +125,7 @@ public class SQLShellRest {
         if (!this.shells.containsKey(shellId)) {
             return;
         }
-        System.out.println("KILL ALL");
-        //this.shells.get(shellId).killAllThreads();
+        this.shells.get(shellId).killAllThreads();
     }
 
     @POST
@@ -135,8 +134,7 @@ public class SQLShellRest {
         if (!this.shells.containsKey(shellId)) {
             return;
         }
-        System.out.println("RESET ENV");
-        //this.shells.get(shellId).resetEnvironment();
+        this.shells.get(shellId).resetEnvironment();
     }
 
     @POST
@@ -144,14 +142,13 @@ public class SQLShellRest {
     public void setShellOptions(
             @FormParam("shellId") String shellId,
             @FormParam("classPath") String classPath,
-            @FormParam("imports") String imports,
+            @FormParam("datasorces") String datasorces,
             @FormParam("outdir") String outDir)
             throws MalformedURLException, IOException {
         if (!this.shells.containsKey(shellId)) {
             return;
         }
-        System.out.println("OPTIONS");
-        //this.shells.get(shellId).setShellOptions(classPath, imports, outDir);
+        this.shells.get(shellId).setShellOptions(classPath, outDir);
     }
 
 }

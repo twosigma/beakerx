@@ -40,11 +40,9 @@ public class SQLEvaluator {
 
     protected List<String> classPath = new ArrayList<>();
     protected String currentClassPath = "";
-    protected String outDir = "";
 
     protected final BeakerCellExecutor executor;
     volatile protected boolean exit;
-    volatile protected boolean updateLoader;
 
     protected ClasspathScanner cps;
     protected SqlAutocomplete sac;
@@ -60,11 +58,6 @@ public class SQLEvaluator {
         cps = new ClasspathScanner();
         sac = createSqlAutocomplete(cps);
         packageId = "com.twosigma.beaker.sqlsh.bkr" + shellId.split("-")[0];
-        outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
-        try {
-            (new File(outDir)).mkdirs();
-        } catch (Exception e) {
-        }
         jdbcClient = new JDBCClient();
         executor = new BeakerCellExecutor("sqlsh");
         queryExecutor = new QueryExecutor(jdbcClient);
@@ -94,7 +87,6 @@ public class SQLEvaluator {
     public void resetEnvironment() {
         jdbcClient.loadDrivers(classPath);
         executor.killAllThreads();
-        updateLoader = true;
     }
 
     protected SqlAutocomplete createSqlAutocomplete(ClasspathScanner c) {
@@ -146,7 +138,6 @@ public class SQLEvaluator {
         public void run() {
             JobDescriptor job;
             NamespaceClient namespaceClient;
-            DynamicClassLoader loader = null;
 
             while (!exit) {
                 try {
@@ -199,18 +190,11 @@ public class SQLEvaluator {
 
     public void setShellOptions(String cp, String od) throws IOException {
 
-        if (od == null || od.isEmpty()) {
-            od = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
-        } else {
-            od = od.replace("$BEAKERDIR", System.getenv("beaker_tmp_dir"));
-        }
-
         // check if we are not changing anything
-        if (currentClassPath.equals(cp) && outDir.equals(od))
+        if (currentClassPath.equals(cp))
             return;
 
         currentClassPath = cp;
-        outDir = od;
 
         if (cp.isEmpty())
             classPath = new ArrayList<String>();

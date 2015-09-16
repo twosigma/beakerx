@@ -717,7 +717,7 @@
           //if (_v.namespace === undefined)
           //  _v.namespace = { };
           _bo = new BeakerObject(_v);
-          bkHelper.initBeakerOptions();
+          bkHelper.initBeakerPrefs();
           if (this.isEmpty()) {
             bkNotebookCellModelManager.reset([]);
           } else {
@@ -735,7 +735,7 @@
         },
         toCleanPrettyJson: function() {
           var notebookModelCopy = angular.copy(_v);
-
+          bkHelper.stripOutBeakerPrefs(notebookModelCopy);
           //Save running cells as interrupted
           if (notebookModelCopy.cells) {
             for (var i = 0; i < notebookModelCopy.cells.length; i++) {

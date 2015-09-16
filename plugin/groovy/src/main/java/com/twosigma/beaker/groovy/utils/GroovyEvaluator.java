@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.groovy.utils;
 
-import com.twosigma.beaker.jvm.utils.BeakerOptionsUtils;
+import com.twosigma.beaker.jvm.utils.BeakerPrefsUtils;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
@@ -216,7 +216,7 @@ public class GroovyEvaluator {
           nc = NamespaceClient.getBeaker(sessionId);
           nc.setOutputObj(j.outputObject);
 
-          Boolean useOutputPanel = BeakerOptionsUtils.isUseOutputPanel(nc);
+          Boolean useOutputPanel = BeakerPrefsUtils.isUseOutputPanel(nc);
           if (useOutputPanel) {
             j.outputObject.clrOutputHandler();
             BeakerStdOutErrHandler.fini();

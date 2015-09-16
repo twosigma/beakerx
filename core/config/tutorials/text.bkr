@@ -224,5 +224,9 @@
             "lineCount": 3
         }
     ],
-    "namespace": {}
+    "namespace": {
+        "x": 2.302585092994046,
+        "logTen": 2.302585092994046,
+        "name": "Berzelius"
+    }
 }

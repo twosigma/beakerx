@@ -37,10 +37,12 @@
   <!-- endbuild -->
 
   <!-- htmlbuild:css -->
-  <link rel="stylesheet" href="app/temp/ipython.min.css" />
   <link rel="stylesheet" href="app/temp/vendor.css" />
   <link rel="stylesheet" href="app/temp/app.css" />
   <!-- endbuild -->
+
+  <!--  we include ipython styles here since it has been namespaced already -->
+  <link rel="stylesheet" href="app/dist/ipython.min.css" />
 
   <!--  we include katex styles here so it can require its font files relatively -->
   <link rel="stylesheet" href="app/vendor/katex-build/katex.min.css" />

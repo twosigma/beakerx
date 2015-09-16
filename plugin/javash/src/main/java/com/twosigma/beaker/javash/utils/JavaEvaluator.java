@@ -29,7 +29,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
-import com.twosigma.beaker.jvm.utils.BeakerOptionsUtils;
+import com.twosigma.beaker.jvm.utils.BeakerPrefsUtils;
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
 import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
 
@@ -246,7 +246,7 @@ public class JavaEvaluator {
           nc = NamespaceClient.getBeaker(sessionId);
           nc.setOutputObj(j.outputObject);
 
-          Boolean useOutputPanel = BeakerOptionsUtils.isUseOutputPanel(nc);
+          Boolean useOutputPanel = BeakerPrefsUtils.isUseOutputPanel(nc);
           if (useOutputPanel) {
             j.outputObject.clrOutputHandler();
             BeakerStdOutErrHandler.fini();

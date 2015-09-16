@@ -227,13 +227,17 @@
           return { };
         }
       },
-      initBeakerOptions: function () {
+      initBeakerPrefs: function () {
         var beakerObj = this.getBeakerObject();
         beakerObj.setupBeakerObject({});
         beakerObj.notebookToBeakerObject();
         var beaker = beakerObj.beakerObj;
-        beaker.options = {useOutputPanel: false, outputLineLimit: 1000};
+        beaker.prefs = {useOutputPanel: false, outputLineLimit: 1000};
         beakerObj.beakerObjectToNotebook();
+      },
+      stripOutBeakerPrefs: function(model) {
+        if (model && model.namespace && model.namespace.prefs)
+          delete model.namespace.prefs;
       },
       getNotebookElement: function(currentScope) {
         return bkCoreManager.getNotebookElement(currentScope);
@@ -655,8 +659,8 @@
 
       receiveEvaluationUpdate: function(modelOutput, evaluation, pluginName, shellId) {
         var beakerObj = bkHelper.getBeakerObject().beakerObj;
-        var maxNumOfLines = beakerObj.options
-            && beakerObj.options.outputLineLimit ? beakerObj.options.outputLineLimit : 1000;
+        var maxNumOfLines = beakerObj.prefs
+            && beakerObj.prefs.outputLineLimit ? beakerObj.prefs.outputLineLimit : 1000;
 
         if (modelOutput.result !== undefined)
           modelOutput.result.status = evaluation.status;

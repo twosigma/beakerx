@@ -20,9 +20,9 @@ import com.twosigma.beaker.NamespaceClient;
 import java.io.IOException;
 import java.util.Map;
 
-public class BeakerOptionsUtils {
+public class BeakerPrefsUtils {
 
-  private final static String OPTIONS_NAME = "options";
+  private final static String PREFS_NAME = "prefs";
   private final static String USE_OUTPUT_PANEL_KEY = "useOutputPanel";
 
   public static Boolean isUseOutputPanel(final NamespaceClient nc) {
@@ -32,9 +32,9 @@ public class BeakerOptionsUtils {
   public static Object getOptionValue(final NamespaceClient nc, final String key) {
     Object optionValue = null;
     try {
-      Object options = nc.get(OPTIONS_NAME);
+      Object options = nc.get(PREFS_NAME);
       if (options instanceof Map) {
-        Map<String, Object> optionsMap = (Map<String, Object>) nc.get(OPTIONS_NAME);
+        Map<String, Object> optionsMap = (Map<String, Object>) nc.get(PREFS_NAME);
         if (optionsMap.containsKey(key)) {
           optionValue = optionsMap.get(key);
         }

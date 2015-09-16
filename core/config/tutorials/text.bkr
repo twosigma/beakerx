@@ -224,27 +224,5 @@
             "lineCount": 3
         }
     ],
-    "namespace": {
-        "options": {
-            "type": "TableDisplay",
-            "values": [
-                [
-                    "useOutputPanel",
-                    false
-                ],
-                [
-                    "outputLineLimit",
-                    1000
-                ]
-            ],
-            "subtype": "Dictionary",
-            "columnNames": [
-                "Key",
-                "Value"
-            ]
-        },
-        "x": 2.302585092994046,
-        "logTen": 2.302585092994046,
-        "name": "Berzelius"
-    }
+    "namespace": {}
 }

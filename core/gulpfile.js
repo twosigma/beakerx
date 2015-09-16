@@ -134,7 +134,7 @@ gulp.task("namespaceIPythonCss", function() {
   return gulp.src(Path.join(IPythonCssPath, "**.css"))
       .pipe(cssWrap({selector:'.ipy-output'}))
       .pipe(concat('ipython.min.css'))
-      .pipe(gulp.dest(tempPath));
+      .pipe(gulp.dest(buildPath));
 });
 
 gulp.task("compileBeakerScss", function() {

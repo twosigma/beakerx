@@ -45,3 +45,19 @@
   font-weight: bold;
   font-style: normal;
 }
+
+@font-face {
+  font-family: 'Ubuntu mono';
+  src: url("../fonts/ubuntu/UbuntuMono-R.ttf");
+  src: url("../fonts/ubuntu/UbuntuMono-R.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Ubuntu mono';
+  src: url("../fonts/ubuntu/UbuntuMono-B.ttf");
+  src: url("../fonts/ubuntu/UbuntuMono-B.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}

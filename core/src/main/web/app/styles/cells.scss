@@ -67,7 +67,7 @@ bk-section-cell, bk-markdown-cell {
 }
 
 bk-code-cell .CodeMirror pre {
-  font-family: 'Roboto mono';
+  font-family: 'Ubuntu mono';
 }
 
 bk-markdown-cell bk-markdown-editable {
@@ -186,7 +186,8 @@ bk-output-display {
   }
 
   &[type="Text"] pre{
-    font-family: 'Roboto mono';
+    font-family: 'Ubuntu mono';
+    font-size: 14px;
     padding-top: 3px;
   }
 

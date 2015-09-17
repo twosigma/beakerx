@@ -314,8 +314,7 @@ class DataFrameEncoder(json.JSONEncoder):
             out = {}
             out['type'] = "TableDisplay"
             out['subtype'] = "TableDisplay"
-            out['hasIndex'] = "true"
-            out['columnNames'] = ['Index'] + obj.columns.tolist()
+            out['columnNames'] = obj.columns.tolist()
             vals = obj.values.tolist()
             idx = obj.index.tolist()
             for x in range(0,len(vals)):

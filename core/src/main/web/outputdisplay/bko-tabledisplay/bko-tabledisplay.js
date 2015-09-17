@@ -739,7 +739,7 @@
             }
           }
           scope.doCreateData(model);
-          scope.doCreateTable();
+          scope.doCreateTable(model);
         };
 
         scope.doCreateData = function(model) {
@@ -801,12 +801,22 @@
           });
         };
 
-        scope.doCreateTable = function() {
+        scope.doCreateTable = function(model) {
           var cols = [];
           var i;
 
           // build configuration
-          cols.push({'title' : '    ', 'className': 'dtright', 'render': scope.allConverters[1]});
+          var converter = scope.allConverters[1];
+          if (model.hasIndex === "true") {
+            for (var i = 0; i < scope.allTypes.length; i++) {
+              if (scope.allTypes[i].name === model.types[0]) {
+                converter = scope.allConverters[scope.allTypes[i].type];
+                break;
+              }
+            }
+          }
+          cols.push({'title' : '    ', 'className': 'dtright', 'render': converter});
+
           for (i = 0; i < scope.columnNames.length; i++) {
             var type = scope.actualtype[i];
             var al = scope.actualalign[i];

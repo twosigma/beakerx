@@ -54,7 +54,7 @@ def convertTypeName(typ):
     if typ.startswith("bool"):
         return "boolean"
     if typ.startswith("date") or typ.startswith("Time"):
-        return "time"
+        return "datetime"
     return "string"
     
 def isPrimitiveType(typ):

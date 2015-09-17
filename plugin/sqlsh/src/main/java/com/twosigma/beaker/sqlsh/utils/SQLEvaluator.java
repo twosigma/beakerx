@@ -22,15 +22,16 @@ import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beaker.sqlsh.autocomplete.SqlAutocomplete;
 
+import javax.management.QueryEval;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SQLEvaluator {
 
@@ -40,11 +41,10 @@ public class SQLEvaluator {
 
     protected List<String> classPath = new ArrayList<>();
     protected String currentClassPath = "";
-    protected String outDir = "";
+    private Map<String, String> namedConnectionString = new HashMap<>();
 
     protected final BeakerCellExecutor executor;
     volatile protected boolean exit;
-    volatile protected boolean updateLoader;
 
     protected ClasspathScanner cps;
     protected SqlAutocomplete sac;
@@ -58,11 +58,6 @@ public class SQLEvaluator {
         shellId = id;
         sessionId = sId;
         packageId = "com.twosigma.beaker.sqlsh.bkr" + shellId.split("-")[0];
-        outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
-        try {
-            (new File(outDir)).mkdirs();
-        } catch (Exception e) {
-        }
         jdbcClient = new JDBCClient();
         cps = new ClasspathScanner();
         sac = createSqlAutocomplete(cps);
@@ -94,7 +89,6 @@ public class SQLEvaluator {
     public void resetEnvironment() {
         jdbcClient.loadDrivers(classPath);
         executor.killAllThreads();
-        updateLoader = true;
     }
 
     protected SqlAutocomplete createSqlAutocomplete(ClasspathScanner c) {
@@ -146,7 +140,6 @@ public class SQLEvaluator {
         public void run() {
             JobDescriptor job;
             NamespaceClient namespaceClient;
-            DynamicClassLoader loader = null;
 
             while (!exit) {
                 try {
@@ -187,7 +180,7 @@ public class SQLEvaluator {
         @Override
         public void run() {
             try {
-                simpleEvaluationObject.finished(queryExecutor.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient));
+                simpleEvaluationObject.finished(queryExecutor.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient, namedConnectionString));
             } catch (SQLException e) {
                 simpleEvaluationObject.error(e.getMessage());
             } catch (Exception e) {
@@ -197,25 +190,29 @@ public class SQLEvaluator {
         }
     }
 
-    public void setShellOptions(String cp, String od) throws IOException {
-
-        if (od == null || od.isEmpty()) {
-            od = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
-        } else {
-            od = od.replace("$BEAKERDIR", System.getenv("beaker_tmp_dir"));
-        }
-
-        // check if we are not changing anything
-        if (currentClassPath.equals(cp) && outDir.equals(od))
-            return;
-
+    public void setShellOptions(String cp, String datasorces) throws IOException {
         currentClassPath = cp;
-        outDir = od;
-
         if (cp.isEmpty())
             classPath = new ArrayList<String>();
         else
             classPath = Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"));
+
+        namedConnectionString = new HashMap<>();
+        Scanner sc = new Scanner(datasorces);
+        while (sc.hasNext()) {
+            String line = sc.nextLine();
+            int i = line.indexOf('=');
+            if (i < 1 || i == line.length() - 1) {
+                Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Error in datasource line, this line will be ignored: {0}.", line);
+                continue;
+            }
+            String name = line.substring(0, i).trim();
+            String value = line.substring(i + 1).trim();
+            if (value.startsWith("\"") && value.endsWith("\"")) {
+                value = value.substring(1, value.length() - 1);
+            }
+            namedConnectionString.put(name, value);
+        }
 
         resetEnvironment();
     }

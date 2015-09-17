@@ -57,8 +57,6 @@ public class SQLEvaluator {
     public SQLEvaluator(String id, String sId) {
         shellId = id;
         sessionId = sId;
-        cps = new ClasspathScanner();
-        sac = createSqlAutocomplete(cps);
         packageId = "com.twosigma.beaker.sqlsh.bkr" + shellId.split("-")[0];
         outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
         try {
@@ -66,6 +64,8 @@ public class SQLEvaluator {
         } catch (Exception e) {
         }
         jdbcClient = new JDBCClient();
+        cps = new ClasspathScanner();
+        sac = createSqlAutocomplete(cps);
         executor = new BeakerCellExecutor("sqlsh");
         queryExecutor = new QueryExecutor(jdbcClient);
         new WorkerThread().start();
@@ -98,7 +98,7 @@ public class SQLEvaluator {
     }
 
     protected SqlAutocomplete createSqlAutocomplete(ClasspathScanner c) {
-        return new SqlAutocomplete(c);
+        return new SqlAutocomplete(c, jdbcClient, sessionId);
     }
 
     public List<String> autocomplete(String code, int caretPosition) {

@@ -1,6 +1,7 @@
 package com.twosigma.beaker.sqlsh.autocomplete.db;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -15,12 +16,12 @@ public class DbExplorerFactory {
 //	private static final String VENDOR_JDBC_ORACLE = "jdbc:oracle:";
 //	private static final String VENDOR_JDBC_MSSQL = "jdbc:sqlserver:";
 
-	public static DbInfo getDbInfo(String txt, JDBCClient jdbcClient, String sessionId) {
+	public static DbInfo getDbInfo(String txt, JDBCClient jdbcClient, String sessionId, Map<String, String> namedConnectionString) {
 		
 		final NamespaceClient namespaceClient = NamespaceClient.getBeaker(sessionId);
 		final BeakerParser beakerParser;
 		try {
-			beakerParser = new BeakerParser(txt, namespaceClient);
+			beakerParser = new BeakerParser(txt, namespaceClient, namedConnectionString);
 			
 			final String uri = beakerParser.getDbURI();
 			

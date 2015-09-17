@@ -92,7 +92,7 @@ public class SQLEvaluator {
     }
 
     protected SqlAutocomplete createSqlAutocomplete(ClasspathScanner c) {
-        return new SqlAutocomplete(c, jdbcClient, sessionId);
+        return new SqlAutocomplete(c, jdbcClient, sessionId, namedConnectionString);
     }
 
     public List<String> autocomplete(String code, int caretPosition) {

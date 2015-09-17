@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.sqlsh.autocomplete.db.DbExplorerFactory;
@@ -31,11 +32,15 @@ public class SqlAutocomplete {
 	
 	private final JDBCClient jdbcClient;
 	private final String sessionId;
+    private final Map<String, String> namedConnectionString;
+	
 
-	public SqlAutocomplete(ClasspathScanner _cps, JDBCClient jdbcClient, String sessionId) {
+
+	public SqlAutocomplete(ClasspathScanner _cps, JDBCClient jdbcClient, String sessionId, Map<String, String> namedConnectionString) {
 		super();
-		this.jdbcClient = jdbcClient; 
+		this.jdbcClient = jdbcClient;
 		this.sessionId = sessionId;
+		this.namedConnectionString = namedConnectionString;
 	}
 
 	private List<String> findKeys(final String key, final String[] keys){
@@ -111,7 +116,7 @@ public class SqlAutocomplete {
 			ret.addAll(findSqlKeys(key));
 		}
 
-		final DbInfo dbInfo = DbExplorerFactory.getDbInfo(txt, jdbcClient, sessionId);
+		final DbInfo dbInfo = DbExplorerFactory.getDbInfo(txt, jdbcClient, sessionId, namedConnectionString);
 		if (dbInfo != null) {
 			
 			List<String> dbRet = null;

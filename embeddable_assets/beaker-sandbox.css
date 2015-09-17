@@ -10886,7 +10886,6 @@ li.CodeMirror-hint-active {
     margin-bottom: 0;
     padding-top: 2px; }
   .beaker-sandbox bk-output-display[type="Text"] pre {
-    font-family: 'Roboto mono';
     padding-top: 3px; }
   .beaker-sandbox .code-cell-hidden {
     padding-top: 18px; }
@@ -11238,7 +11237,6 @@ li.CodeMirror-hint-active {
     border: none;
     background-color: white; }
   .beaker-sandbox .CodeMirror pre {
-    font-family: 'Roboto mono';
     z-index: initial; }
   .beaker-sandbox .CodeMirror-lines div[style="position: relative; z-index: 1;"] {
     z-index: 0 !important; }

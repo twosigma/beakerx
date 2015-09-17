@@ -39,9 +39,9 @@ public class QueryExecutor {
         this.jdbcClient = jdbcClient;
     }
 
-    public Object executeQuery(String script, NamespaceClient namespaceClient) throws SQLException, IOException, NoSuchFieldException, IllegalAccessException {
+    public Object executeQuery(String script, NamespaceClient namespaceClient, Map<String, String> namedConnectionString) throws SQLException, IOException, NoSuchFieldException, IllegalAccessException {
 
-        BeakerParser beakerParser = new BeakerParser(script, namespaceClient);
+        BeakerParser beakerParser = new BeakerParser(script, namespaceClient, namedConnectionString);
 
         DataSource ds = jdbcClient.getDataSource(beakerParser.getDbURI());
 

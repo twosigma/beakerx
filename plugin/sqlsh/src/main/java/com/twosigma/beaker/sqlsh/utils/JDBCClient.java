@@ -17,6 +17,7 @@
 package com.twosigma.beaker.sqlsh.utils;
 
 import javax.sql.DataSource;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -80,7 +81,7 @@ public class JDBCClient {
 
             String dbDriverString = System.getenv("BEAKER_JDBC_DRIVER_LIST");
             if (dbDriverString != null && !dbDriverString.isEmpty()) {
-                String[] dbDriverList = dbDriverString.split(";");
+                String[] dbDriverList = dbDriverString.split(File.pathSeparator);
                 for (String s : dbDriverList) {
                     try {
                         urlSet.add(toURL(s.trim()));

@@ -29,15 +29,21 @@ public class BeakerParser {
     public static final String SQL_FROM = "FROM";
     public static final String SQL_INTO = "INTO";
 
+    public static final String VAR_VALUE_START = "${";
+    public static final String VAR_VALUE_END = "}";
+
     private NamespaceClient client;
     private String dbURI;
     private Map<String, String> inputs = new HashMap<>();
     private Set<String> outputs = new HashSet<>();
+    private Map<String, String> namedConnectionString;
 
     private List<BeakerParseResult> results = new ArrayList<>();
 
-    public BeakerParser(String script, NamespaceClient client) throws IOException {
+    public BeakerParser(String script, NamespaceClient client, Map<String, String> namedConnectionString) throws IOException {
         this.client = client;
+        this.namedConnectionString = namedConnectionString;
+
         parseVar(script);
         List<String> queries = QueryParser.split(script);
         if (queries != null && !queries.isEmpty()) {
@@ -56,9 +62,9 @@ public class BeakerParser {
         int start = -1;
         int end = -1;
         do {
-            start = upper.indexOf("${", end);
+            start = upper.indexOf(VAR_VALUE_START, end);
             if (start >= 0) {
-                end = upper.indexOf('}', start);
+                end = upper.indexOf(VAR_VALUE_END, start);
                 if (end < 0) break;
                 String var = sql.substring(start + 2, end).trim();
                 if (var != null && !var.isEmpty() && inputs.keySet().contains(var)) {
@@ -91,9 +97,9 @@ public class BeakerParser {
                 into = upper.indexOf(SQL_INTO, select);
 
                 if (into > select && into < from) {
-                    int start = upper.indexOf("${", into);
+                    int start = upper.indexOf(VAR_VALUE_START, into);
                     if (start > into && start < from) {
-                        int end = upper.indexOf('}', into);
+                        int end = upper.indexOf(VAR_VALUE_END, into);
                         if (end > into && end < from) {
                             String var = sql.substring(start + 2, end);
                             sql = sql.substring(0, into) + sql.substring(end + 1);
@@ -126,10 +132,18 @@ public class BeakerParser {
                 vars.add(line);
 
                 if (line.indexOf(DB_URI_VAR) > 0) {
-                    String s = line.substring(line.indexOf('=') + 1).trim();
-                    if (s.startsWith("\"") && s.endsWith("\"")) {
-                        dbURI = s.substring(1, s.length() - 1);
-                    } else dbURI = client.get(s).toString();
+                    String value = line.substring(line.indexOf('=') + 1).trim();
+                    int start = value.indexOf(VAR_VALUE_START);
+                    int end = value.indexOf(VAR_VALUE_END, start);
+
+                    if (value.startsWith("\"") && value.endsWith("\"")) {
+                        dbURI = value.substring(1, value.length() - 1);
+                    } else if(start >= 0 && end > 0) {
+                        String var = value.substring(start + 2, end).trim();
+                        dbURI = client.get(var).toString();
+                    } else {
+                        dbURI = namedConnectionString.get(value);
+                    }
                 } else if (line.indexOf(OUTPUTS_VAR) > 0) {
                     String outLine = line.substring(line.indexOf(':') + 1).trim();
                     for (String out : outLine.split(";")) {

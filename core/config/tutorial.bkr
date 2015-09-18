@@ -229,14 +229,14 @@
                     "2+2",
                     "3*3*3",
                     "4-4-4-4",
-                    "5+5-5*5/5"
+                    "5/5/5/5/5"
                 ]
             },
             "output": {
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 21
+                "elapsedTime": 50
             },
             "evaluatorReader": true,
             "lineCount": 5

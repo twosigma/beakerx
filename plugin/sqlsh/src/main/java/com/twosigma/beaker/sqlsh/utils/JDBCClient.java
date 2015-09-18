@@ -65,7 +65,7 @@ public class JDBCClient {
                 return ds;
 
             } catch (SQLException e) {
-                Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
+                //Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
                 throw new DBConnectionException(uri, e);
             }
         }

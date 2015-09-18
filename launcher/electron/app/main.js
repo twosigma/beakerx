@@ -48,6 +48,8 @@ app.on('ready', function() {
     var paths = process.argv.splice(1, process.argv.length);
     if (!osName.startsWith('Windows'))
       paths = paths.filter(function(el) { return el.startsWith('/'); });
+    else
+      paths = paths.filter(function (el) {return el.charAt(0) === (':'); });
     request.post({
       'url':'http://localhost:' + ipcPort + '/open-files',
       'form': {

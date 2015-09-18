@@ -99,9 +99,13 @@ task realCleanElectron(type: Delete, dependsOn: 'cleanElectron') {
 
 // Global tasks
 task installElectron(type: Exec) {
-  if (win || mac) {
+  if (win) {
+    commandLine 'cmd', '/c', 'npm', 'install', 'electron-prebuilt', '-g'
+  }
+  else  if (mac) {
     commandLine 'npm', 'install', 'electron-prebuilt', '-g'
-  } else if (linux) {
+  }
+  else if (linux) {
     commandLine 'sudo', 'npm', 'install', 'electron-prebuilt', '-g'
   }
 }

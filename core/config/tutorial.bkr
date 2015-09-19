@@ -250,6 +250,14 @@
             "evaluatorReader": false
         },
         {
+            "id": "markdownkZGylZ",
+            "type": "markdown",
+            "body": [
+                "Beaker notebooks are fundamentally constructed from a sequence of cells that are layed-out top to bottom on the page."
+            ],
+            "evaluatorReader": false
+        },
+        {
             "id": "SectionIQvToW",
             "type": "section",
             "level": 2,
@@ -261,11 +269,18 @@
             "id": "markdownP6PhVe",
             "type": "markdown",
             "body": [
-                "Move your cursor to the area below this text. You'll see a blue bar appear with the text 'Insert JavaScript Cell.' Click on that bar and add a new code cell. It uses the language of the previous code cell in the notebook, which in this case is JavaScript.",
+                "Move your cursor to the area below this text. You should see a row of four blue buttons appear with labels 'Insert JavaScript Cell', 'code', text', and 'section'.",
+                "Click the leftmost button to add a new code cell. It uses the language of the previous code cell in the notebook, which in this case is JavaScript.",
                 "",
-                "If you want to create a cell of a different language or type, then click on the right side of the bar on the triangle. If the language you want isn't in the menu, then select \"Other Languages...\" and add it to the notebook.",
+                "If you want to create a code cell with a different language, then click on the next button, 'code', which should open a menu with the languages",
+                "available in this notebook. If the language you want isn't in the menu, then select \"Other Languages...\" and add it to the notebook.",
                 "",
-                "Click into the new cell and press Control-Shift-A. This will create a new cell of the same type."
+                "The next button 'text' creates a cell where you can write free-form text, Markdown, LaTeX,",
+                "and more as documented in its [own tutorial](/beaker/#/open?uri=file:config%2Ftutorials%2Ftext.bkr&readOnly=true).",
+                "",
+                "The final button 'section' inserts section cells, which create hierarchy, as explained below.",
+                "",
+                "Click into the new cell and press {{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"&#x2318;\":\"Control\"}}-Shift-A. This will create a new cell of the same type."
             ],
             "evaluatorReader": false,
             "mode": "preview"
@@ -282,11 +297,15 @@
             "id": "markdowntulyDU",
             "type": "markdown",
             "body": [
-                "Move your cursor into a code cell. Pressing the Up and Down arrow keys will move your cursor from line to line within the cell, and then from cell to cell if you keep going over the edge.",
+                "Move your cursor into a code cell.",
+                "Pressing the Up and Down arrow keys will move your cursor from line to line within the cell,",
+                "and then from cell to cell if you keep going over the edge.",
                 "",
-                "Pressing Control-Shift-E within a code cell will allow you to change the cell's language.",
+                "Pressing {{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"&#x2318;\":\"Control\"}}-Shift-E within a code cell will allow you to change the cell's language.",
                 "",
-                "In the top-right corner of the cell are some icons with common operations including deleting, moving the cell up and down, and three dots for a menu with more actions. Code cells have toggles to hide or show the input and output areas."
+                "In the top-right corner of the cell are some icons with common operations including deleting,",
+                "moving the cell up and down, and three dots for a menu with more actions.",
+                "Code cells have toggles to hide or show the input and output areas."
             ],
             "evaluatorReader": false,
             "mode": "preview"
@@ -303,11 +322,12 @@
             "id": "markdownXP6cYO",
             "type": "markdown",
             "body": [
-                "Notice that all the headings have +/- toggles on them. These are 'section cells' in Beaker, and they can contain any number of cells including other sections. There are four levels of heading, so you can organize your notebook in a tree and hide the parts you don't need. Try clicking the +/- buttons to get a feel for how the hierarchy works. The **View → Show Hierarchy** menu makes the hierarchy visible, including auto-numbering the sections.",
+                "Notice that all the headings have +/- toggles on them.",
+                "These are 'section cells' in Beaker, and they can contain any number of cells including other sections.",
+                "There are four levels of heading, so you can organize your notebook in a tree and hide the parts you don't need.",
+                "Try clicking the +/- buttons to get a feel for how the hierarchy works. The **View → Show Hierarchy** menu makes the hierarchy visible, including auto-numbering the sections.",
                 "",
-                "Each section has a three-dot menu on the right side of the screen with operations that pertain to it, including Sharing, running all the cells in it, and changing its header level.",
-                "",
-                "You can add sections with the usual Insert Cell menu."
+                "Each section has a three-dot menu on the right side of the screen with operations that pertain to it, including Sharing, running all the cells in it, and changing its header level."
             ],
             "evaluatorReader": false,
             "mode": "preview"
@@ -343,9 +363,14 @@
             "id": "markdownCnz1ie",
             "type": "markdown",
             "body": [
-                "Just like your web browser allows you to see many web pages at the same time, Beaker allows you to work on multiple notebooks simultaneously. Use the **File → New Beaker window** command, or command-click (or control-click) on the Beaker logo in the upper-left corner to create a new tab in your browser. Here you will find a list of the current editing sessions, just click on one to open it. You can also use the file menu to open an existing notebook, create a new one, or select one of your recently used notebooks.",
+                "Just like your web browser allows you to see many web pages at the same time,",
+                "Beaker allows you to work on multiple notebooks simultaneously. Use the **File → New Beaker window** command,",
+                "or {{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"&#x2318;\":\"Control\"}}-click on the Beaker logo in the upper-left corner to create a new tab in your browser.",
+                "Here you will find a list of the current editing sessions, just click on one to open it.",
+                "You can also use the file menu to open an existing notebook, create a new one, or select one of your recently used notebooks.",
                 "",
-                "Beaker keeps track of all notebook editing sessions even if you close all browser windows on them. If you lose your browser window, just reconnect to the start page, normally at http://127.0.0.1:8801/beaker/ and find your session in the list.",
+                "Beaker keeps track of all notebook editing sessions even if you close all browser windows on them.",
+                "If you lose your browser window, just reconnect to the start page, normally at http://127.0.0.1:8801/beaker/ and find your session in the list.",
                 "",
                 "During normal editing of notebooks, Beaker saves checkpoints of your work every minute automatically to the folder ~/.beaker/v1/var/sessionBackups."
             ],

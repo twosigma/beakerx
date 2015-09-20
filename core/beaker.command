@@ -36,7 +36,6 @@ if sys.platform == 'darwin':
     quote = '\''
     for arg in sys.argv:
         cmd = cmd + ' ' + quote + arg + quote
-    print("cmd=" + cmd)
     os.execvp('bash', ['bash', '-cl', cmd])
 
 args = [bin] + sys.argv

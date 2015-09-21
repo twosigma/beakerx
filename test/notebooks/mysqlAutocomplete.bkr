@@ -1,0 +1,140 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Sql",
+            "plugin": "Sql",
+            "imports": "",
+            "view": {
+                "cm": {
+                    "mode": "text/x-sql"
+                }
+            },
+            "classPath": "D:\\Beaker\\mysql-connector-java-5.1.36\\mysql-connector-java-5.1.36-bin.jar"
+        }
+    ],
+    "cells": [
+        {
+            "id": "section001",
+            "type": "section",
+            "level": 1,
+            "title": "Hello Notebook",
+            "collapsed": false,
+            "evaluatorReader": false
+        },
+        {
+            "id": "code001",
+            "type": "code",
+            "evaluator": "Sql",
+            "input": {
+                "body": [
+                    "%%beakerDB=\"jdbc:mysql://localhost:3306/test?user=root\"",
+                    "",
+                    "DROP TABLE if exists city;",
+                    "CREATE TABLE city ( id int(11) NOT NULL, name varchar(45) NOT NULL, address varchar(45) NOT NULL, country varchar(45) NOT NULL, state varchar(45) NOT NULL, PRIMARY KEY (id));",
+                    "INSERT INTO city (id, name, address, country, state) VALUES ('1', 'New York', 'Addr1', 'country1', 'ST1');",
+                    "INSERT INTO city  (id, name, address, country, state) VALUES ('2', 'Yorkville', 'Addr2', 'country2', 'ST1');",
+                    "select city.id, city.name, city.country from city;"
+                ]
+            },
+            "output": {
+                "selectedType": "Table",
+                "outputArrived": true,
+                "elapsedTime": 595,
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": false,
+                            "fixRight": false
+                        },
+                        "columnNames": [
+                            "id",
+                            "name",
+                            "country"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "pluginName": "Sql",
+                "shellId": "8f423c9d-1a9b-447a-a9cc-ecec278093aa",
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "id",
+                        "name",
+                        "country"
+                    ],
+                    "values": [
+                        [
+                            1,
+                            "New York",
+                            "country1"
+                        ],
+                        [
+                            2,
+                            "Yorkville",
+                            "country2"
+                        ]
+                    ],
+                    "types": [
+                        "java.lang.Integer",
+                        "java.lang.String",
+                        "java.lang.String"
+                    ],
+                    "subtype": "TableDisplay"
+                }
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        },
+        {
+            "id": "markdown188oO3",
+            "type": "markdown",
+            "body": [
+                "Beaker also supports JavaScript, Julia, Groovy, Ruby, Scala, Python3, Java, and Node. To add another language to this notebook, select **Notebook → Language manager** from the menu on top of the screen.",
+                "",
+                "For general help, see the tutorial notebook under **Help → Tutorial** notebook."
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        }
+    ]
+}

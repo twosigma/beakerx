@@ -28,7 +28,11 @@ bin = './build/install/core/bin/core'
 # there and want.
 
 if sys.platform == 'darwin':
-    cmd = bin
+    cmd = ''
+    java_home = os.getenv('JAVA_HOME')
+    if java_home:
+        cmd = 'export JAVA_HOME=\"' + java_home + '\"; '
+    cmd = cmd + bin
     quote = '\''
     for arg in sys.argv:
         cmd = cmd + ' ' + quote + arg + quote

@@ -11,20 +11,20 @@ import com.twosigma.beaker.sqlsh.utils.DBConnectionException;
 import com.twosigma.beaker.sqlsh.utils.JDBCClient;
 
 public class DbExplorerFactory {
-
+	
 	private static final String VENDOR_JDBC_MYSQL = "jdbc:mysql:";
 //	private static final String VENDOR_JDBC_ORACLE = "jdbc:oracle:";
 //	private static final String VENDOR_JDBC_MSSQL = "jdbc:sqlserver:";
 
 	public static DbInfo getDbInfo(String txt, JDBCClient jdbcClient, String sessionId, Map<String, String> namedConnectionString) {
-
+		
 		final NamespaceClient namespaceClient = NamespaceClient.getBeaker(sessionId);
 		final BeakerParser beakerParser;
 		try {
 			beakerParser = new BeakerParser(txt, namespaceClient, namedConnectionString);
-
+			
 			final String uri = beakerParser.getDbURI();
-
+			
 			if (uri != null) {
 				final DataSource ds = jdbcClient.getDataSource(uri);
 
@@ -37,9 +37,12 @@ public class DbExplorerFactory {
 			e.printStackTrace();
 		} catch (DBConnectionException e) {
 			e.printStackTrace();
-		}
+		}	
 
 		return null;
 	}
 
+	public static DbCache getDbCache() {
+		return new DbRequestCache();
+	}
 }

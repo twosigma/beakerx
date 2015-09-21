@@ -309,6 +309,10 @@
           }
           showing.CodeMirror.getWrapperElement().style.height = winHeight() + 'px';
         };
+        scope.scrollTo = function(){
+          window.scrollTo(0, element.offset().top - 100);
+          scope.focus();
+        };
         scope.focus = function() {
           if (scope.cm === undefined) {
             initCodeMirror();

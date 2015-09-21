@@ -51,7 +51,10 @@ define(function(require, exports, module) {
       name: 'Run all cells',
       sortorder: 130,
       action: function() {
-        bkHelper.evaluateRoot('root');
+        bkHelper.evaluateRoot('root').then(function(res) {
+        }, function(err) {
+          bkHelper.go2FirstErrorCodeCell();
+        });
       },
       tooltip: 'Run all cells',
       id: 'run-all-cells-menuitem'

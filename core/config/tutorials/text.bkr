@@ -45,7 +45,11 @@
             "id": "markdown8nMuAN",
             "type": "markdown",
             "body": [
-                "Beaker has three kinds of cells for text: Markdown, HTML and LaTeX. See below for examples of each of them.",
+                "Beaker's text cells (insert one by clicking 'text' in the blue button bar) are based primarily on markdown,",
+                "but have a number of more advanced features as described below.  There are also HTML and LaTeX cells,",
+                "which you can insert with the 'code' menu in the blue button bar, and are also explained in their own",
+                "sections below.",
+                "",
                 "In addition, there are menu commands to control how the notebook is displayed:",
                 "* **Notebook → Lock**: hides the all the code, and removes the boxes from around the cells.",
                 "* **View → Show Hierarchy**: indents sections and adds numbering and lines to show hierarchy.",
@@ -56,7 +60,7 @@
         {
             "id": "sectionHLDsZf",
             "type": "section",
-            "title": "Markdown",
+            "title": "Text Cells",
             "level": 2,
             "evaluatorReader": false,
             "collapsed": false
@@ -65,7 +69,7 @@
             "id": "markdowngV91Gh",
             "type": "markdown",
             "body": [
-                "[Markdown](http://daringfireball.net/projects/markdown/syntax) is a text-to-HTML conversion tool that allows",
+                "Beaker's text cells use [Markdown](http://daringfireball.net/projects/markdown/syntax), a text-to-HTML conversion tool that allows",
                 "you to write using an easy-to-read, easy-to-write plain text format.  Here's a quick demo:",
                 "",
                 "* Markdown is good for making *lists*,",
@@ -74,7 +78,7 @@
                 "",
                 "Click on this cell to see how this formatting was specified or to edit its contents.",
                 "Click away on the background of the notebook to reformat and display.",
-                "You can also use the control-enter (command-enter) keyboard shortcut to format a markdown cell.",
+                "You can also use the {{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"&#x2318;\":\"Control\"}}-Enter keyboard shortcut to format a markdown cell.",
                 "",
                 "You can embed LaTeX into a markdown cell by enclosing it with dollar characters: $e^{i\\pi}+1=0$.",
                 "",
@@ -87,7 +91,7 @@
         {
             "id": "sectione6ub6q",
             "type": "section",
-            "title": "Template Expansion in Markdown",
+            "title": "Template Expansion",
             "level": 3,
             "evaluatorReader": false,
             "collapsed": false
@@ -97,7 +101,7 @@
             "type": "markdown",
             "body": [
                 "In the prose part of a notebook that you can write it is sometimes useful to refer to values computed previously in the notebook.",
-                "Beaker makes it easy to do this by supporting a form a template expansion.  Start out by defining some values on the `beaker` object:"
+                "Beaker makes it easy to do this by supporting a form a template expansion.  Let's start out by defining some values on the `beaker` object:"
             ],
             "evaluatorReader": false
         },
@@ -127,8 +131,8 @@
             "type": "markdown",
             "body": [
                 "Markdown cells can include values computed by JavaScript, or from any language via autotranslation and the `beaker` object.",
-                "Just enclose a JavaScript expression in double braces, and that code will be replaced with the result of evaluating that code.",
-                "For example, given the definitions of `beaker.name` above, writing `{&#8203;{beaker.name}}` appears as {{beaker.name}} (click",
+                "Just enclose a JavaScript expression in double braces, and that code will be replaced with the result of its evaluation.",
+                "For example, given the definition of `beaker.name` above, writing `{&#8203;{beaker.name}}` appears as {{beaker.name}} (click",
                 "on this cell to see the markdown source).",
                 "",
                 "Since you have full access to JavaScript you can call functions to do things like",
@@ -136,7 +140,7 @@
                 "{{beaker.logTen.toFixed(3)}}.",
                 "",
                 "You can also customize content according to the reader's operating sytem.  For example, you are on a",
-                "{{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"Mac so &#x2318;-O\":\"PC so Control-O\"}} opens a notebook from disk.",
+                "{{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"Mac, so &#x2318;-O\":\"PC, so Control-O\"}} opens a file.",
                 "",
                 "In order to get double braces without triggering JavaScript evaluation, use a zero-width unicode space",
                 "(see the markdown source for this cell)."

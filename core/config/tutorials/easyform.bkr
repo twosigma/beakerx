@@ -1,0 +1,184 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectionJkQRfF",
+            "type": "section",
+            "title": "EasyForm Demos",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownUu2yXn",
+            "type": "markdown",
+            "body": [
+                "Beaker has a Groovy API for creating forms that the user can fill in and trigger execution.",
+                "It's easy to create a form with it, and easy to access the values entered.",
+                "Just create a form object, add fields to it, and then return it so it's displayed for the",
+                "user to interact with.",
+                "",
+                "The 2nd parameter to the addButton method specifies a tag.",
+                "All cells with that tag are executed when the button is pressed.",
+                "Cell tags are accessible from the options dialog on the cell menu (three dots in the upper-right corner)."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeBemRWy",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "f = new EasyForm(\"Form and Run\")",
+                    "f.addTextField(\"first\", 15)",
+                    "f.addTextField(\"last\", 15)",
+                    "f.addButton(\"Run!\", \"run\")",
+                    "f"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "update_id": "9905378f-93cc-42f5-90dc-7723596f85f7",
+                    "update_time": 1442783869112,
+                    "type": "EasyForm",
+                    "caption": "Form and Run",
+                    "components": [
+                        {
+                            "type": "TextField",
+                            "label": "first",
+                            "enabled": true,
+                            "value": "",
+                            "width": "15",
+                            "currentValue": ""
+                        },
+                        {
+                            "type": "TextField",
+                            "label": "last",
+                            "enabled": true,
+                            "value": "",
+                            "width": "15",
+                            "currentValue": ""
+                        },
+                        {
+                            "type": "ButtonComponent",
+                            "label": "Run!",
+                            "enabled": "Groovy",
+                            "value": "",
+                            "tag": "run"
+                        }
+                    ]
+                },
+                "selectedType": "EasyForm",
+                "pluginName": "Groovy",
+                "shellId": "b358e453-dc7c-4498-8571-331ca09fcad4",
+                "elapsedTime": 579
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "markdownvnogak",
+            "type": "markdown",
+            "body": [
+                "You can access the values from the form by treating it as an array indexed on the field names:"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "code0To6Tq",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "f['last'].reverse() + '...' + f['first']"
+                ]
+            },
+            "output": {
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "b358e453-dc7c-4498-8571-331ca09fcad4",
+                "elapsedTime": 590,
+                "state": {}
+            },
+            "evaluatorReader": true,
+            "tags": "run",
+            "lineCount": 1
+        },
+        {
+            "id": "markdownAcBtg3",
+            "type": "markdown",
+            "body": [
+                "The array works both ways, so you set default values on the fields by writing the array:"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codewQ8DKC",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "f['first'] = 'Beaker'",
+                    "f['last'] = 'Berzelius'"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "b358e453-dc7c-4498-8571-331ca09fcad4",
+                "elapsedTime": 573
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        }
+    ],
+    "namespace": {},
+    "metadata": {
+        "publication-id": "55e1d774-224c-4651-8333-5e4e4f11da74"
+    }
+}

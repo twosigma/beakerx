@@ -623,7 +623,7 @@
             // reorder the table data
             var model = $scope.model.getCellModel();
             $scope.doCreateData(model);
-            $scope.doCreateTable();
+            $scope.doCreateTable(model);
           }
         };
 

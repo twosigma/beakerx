@@ -40,7 +40,7 @@ task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG']) {
   }
 }
 
-task createBundle(dependsOn: ['nodeInstall', 'copyBeakerApp', 'copyDist', 'copyJRE', 'copyTools', 'macCopyElectron', 'copyPList', 'copyIcons', 'winCopyPython', 'winChangeDetails', 'linuxRename', 'linuxDepScript']) {
+task createBundle(dependsOn: ['nodeInstall', 'copyBeakerApp', 'copyDist', 'copyJRE', 'copyTools', 'macCopyElectron', 'copyPList', 'copyIcons', 'winChangeDetails', 'linuxRename', 'linuxDepScript']) {
 }
 
 task makeBundle(dependsOn: ['createBundle', 'checkIdentity', 'signBundle']) {
@@ -54,7 +54,7 @@ task runElectron(type: Exec, dependsOn: ['unzipJRE', 'unzipPython', 'nodeInstall
   }
 }
 
-task makeDist (dependsOn: ":beaker:build") << {
+task makeDist (dependsOn:[':beaker:build', 'unzipPython']) << {
   copy {
     from '../../core/config'
     into './dist/config'
@@ -86,6 +86,10 @@ task makeDist (dependsOn: ":beaker:build") << {
       from '../../core/beaker.command.bat'
       into './dist/'
     }
+    copy {
+      from './python'
+      into './dist/python'
+    }
   }
 }
 
@@ -99,9 +103,13 @@ task realCleanElectron(type: Delete, dependsOn: 'cleanElectron') {
 
 // Global tasks
 task installElectron(type: Exec) {
-  if (win || mac) {
+  if (win) {
+    commandLine 'cmd', '/c', 'npm', 'install', 'electron-prebuilt', '-g'
+  }
+  else  if (mac) {
     commandLine 'npm', 'install', 'electron-prebuilt', '-g'
-  } else if (linux) {
+  }
+  else if (linux) {
     commandLine 'sudo', 'npm', 'install', 'electron-prebuilt', '-g'
   }
 }
@@ -223,15 +231,10 @@ copyIcons.onlyIf { mac }
 
 // Windows build
 task unzipPython(type: Exec) {
-  commandLine 'unzip', '-uo', '-d', 'python', 'python.zip'
+  commandLine 'unzip', '-uo', 'python.zip'
 }
 unzipPython.onlyIf { win }
 
-task winCopyPython(type: Copy, dependsOn: ['unzipPython', 'copyDist']) {
-  from 'python'
-  into 'beaker/resources/dist/python'
-}
-winCopyPython.onlyIf { win }
 
 task winRename(dependsOn: ['unzipElectron']) {
     doFirst {

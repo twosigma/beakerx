@@ -29,8 +29,10 @@ Windows:
 
 4. Put a copy of tools.jar in this folder. Get it from a similar place as OSX.
 
+5. Install [UnZip for Windows](http://gnuwin32.sourceforge.net/packages/unzip.htm), make sure you also add it to  your `PATH`.
+
 (Only if you want to create an installer)
-5. Download Inno Setup 5, install it, and add its folder to your path (http://www.jrsoftware.org/isdl.php)
+6. Download Inno Setup 5, install it, and add its folder to your path (http://www.jrsoftware.org/isdl.php)
 
 Linux:
 

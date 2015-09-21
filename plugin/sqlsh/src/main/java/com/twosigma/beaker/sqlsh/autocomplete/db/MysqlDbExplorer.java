@@ -17,18 +17,17 @@ public class MysqlDbExplorer extends DbExplorer {
 
 	@Override
 	public List<String> queryTableNames(final Connection conn, String shemaName, final String key) throws SQLException {
-
 		String sql = "SELECT DISTINCT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='" + shemaName + "'";
-
+		
 		if (key != null && key.length() > 0) {
 			sql += " and TABLE_NAME like('" + key + "%')";
 		}
-
+		
 		try (final Statement stmt = conn.createStatement()) {
 			final ResultSet resultSet = stmt.executeQuery(sql);
 
 			final List<String> res = new ArrayList<>();
-
+			
 			while (resultSet.next()) {
 				final String str = resultSet.getString("TABLE_NAME");
 				res.add(str);
@@ -51,7 +50,7 @@ public class MysqlDbExplorer extends DbExplorer {
 			final ResultSet resultSet = stmt.executeQuery(sql);
 
 			final List<String> res = new ArrayList<>();
-
+			
 			while (resultSet.next()) {
 				final String str = resultSet.getString("COLUMN_NAME");
 				res.add(str);

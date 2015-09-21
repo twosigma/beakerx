@@ -39,7 +39,7 @@
                     "mode": "groovy"
                 }
             },
-            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*"
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*"
         }
     ],
     "cells": [
@@ -55,7 +55,8 @@
             "id": "markdownkufwpC",
             "type": "markdown",
             "body": [
-                "Groovy is a script version of Java.  You can use it to access the contents of any JAR, which you can include via the preferences in the Plugin Manager.",
+                "Groovy is the language that should have been called JavaScript because it is a scripting version of Java.",
+                "You can use it to access the contents of any JAR, which you can include via the classpath in the Language Manager.",
                 "",
                 "Groovy comes included with Beaker, so it should just work."
             ],
@@ -73,8 +74,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 98,
-                "state": {}
+                "elapsedTime": 595,
+                "state": {},
+                "pluginName": "Groovy",
+                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff"
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -90,8 +93,10 @@
             },
             "output": {
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 83,
-                "state": {}
+                "elapsedTime": 616,
+                "state": {},
+                "pluginName": "Groovy",
+                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -107,8 +112,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 89,
-                "state": {}
+                "elapsedTime": 622,
+                "state": {},
+                "pluginName": "Groovy",
+                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -124,9 +131,11 @@
                 ]
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 193,
-                "state": {}
+                "selectedType": "Text",
+                "elapsedTime": 627,
+                "state": {},
+                "pluginName": "Groovy",
+                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff"
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -141,9 +150,11 @@
                 ]
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 174,
-                "state": {}
+                "selectedType": "Text",
+                "elapsedTime": 623,
+                "state": {},
+                "pluginName": "Groovy",
+                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -158,9 +169,11 @@
                 ]
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 164,
-                "state": {}
+                "selectedType": "Text",
+                "elapsedTime": 625,
+                "state": {},
+                "pluginName": "Groovy",
+                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -176,12 +189,78 @@
                 ]
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 206,
-                "state": {}
+                "selectedType": "Table",
+                "elapsedTime": 618,
+                "state": {},
+                "pluginName": "Groovy",
+                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff"
             },
             "evaluatorReader": true,
             "lineCount": 2
+        },
+        {
+            "id": "codeKIMiDC",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// Like most languages, output normally appears in the cell output and",
+                    "// is saved in the notebook.",
+                    "println(\"standard output\")"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "Groovy",
+                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff",
+                "elapsedTime": 589
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codehp1B5U",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// But if you set the followin preference, then output is directed to a panel that opens up",
+                    "// and collects all ouput like a log, and is not saved in the notebook.",
+                    "// The preference itself is not saved in the notebook.",
+                    "beaker.prefs.useOutputPanel = false",
+                    "// After running this cell, run the above cell again."
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Hidden",
+                "pluginName": "JavaScript",
+                "elapsedTime": 27
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "codeUAzxIm",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// Normally the output that appears in cell output is limited to 1000 lines.",
+                    "// Set this preference to change that limit.",
+                    "beaker.prefs.outputLineLimit = 10000 "
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 26
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
         }
-    ]
+    ],
+    "namespace": {}
 }

@@ -137,12 +137,18 @@
         $scope.exportTo = function(data, format) {
           var i;
           var j;
+          var startingColumnIndex = 1;
           var order;
           var out = '';
           var eol = '\n';
           var sep = ',';
           var qot = '"';
           var fix = function(s) { return s.replace(/"/g, '""');};
+          var model = $scope.model.getCellModel();
+          var hasIndex = model.hasIndex === "true";
+          if (hasIndex) {
+            startingColumnIndex = 0;
+          }
 
           if (format === 'tabs') {
             sep = '\t';
@@ -153,7 +159,7 @@
             eol = '\r\n';
           }
 
-          for (i = 1; i < $scope.columns.length; i++) {
+          for (i = startingColumnIndex; i < $scope.columns.length; i++) {
             order = $scope.colorder[i];
             if (!$scope.table.column(order).visible()) {
               continue;
@@ -161,14 +167,18 @@
             if (out !== '') {
               out = out + sep;
             }
-            out = out + qot + fix($scope.columns[order].title) + qot;
+            var columnTitle
+                = (hasIndex && i === startingColumnIndex)
+                ? "Index"
+                : fix($scope.columns[order].title);
+            out = out + qot + columnTitle + qot;
           }
           out = out + eol;
 
           for (i = 0; i < data.length; i++) {
             var row = data[i];
             var some = false;
-            for (j = 1; j < row.length; j++) {
+            for (j = startingColumnIndex; j < row.length; j++) {
               order = $scope.colorder[j];
               if (!$scope.table.column(order).visible()) {
                 continue;

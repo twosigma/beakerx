@@ -120,7 +120,9 @@
             function (content) {
               var markdownFragment = $('<div>' + content + '</div>');
               doktex(markdownFragment);
-              element.find('.markup').html(marked(markdownFragment.html(), {
+              var escapedHtmlContent = markdownFragment.html();
+              var unescapedGtCharacter = escapedHtmlContent.replace(/&gt;/g, '>');
+              element.find('.markup').html(marked(unescapedGtCharacter, {
                 gfm: true,
                 renderer: bkRenderer
               }));

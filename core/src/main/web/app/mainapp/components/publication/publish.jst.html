@@ -45,7 +45,15 @@
           <a class="remove" ng-click="removeAttachment()">×</a>
         </div>
         <div class="error attachment" ng-if="attachmentErrors">{{attachmentErrors}}</div>
-        <a class="file-upload" ngf-select="uploadAttachment($file)">{{attachmentUrl ? "Update image" : "Add preview image"}}</a>
+        <a class="file-upload" ng-if="!file.progress" ngf-select="uploadAttachment($file)">{{attachmentUrl ? "Update image" : "Add preview image"}}</a>
+        <div class="progress" ng-if="file.progress >= 0">
+          <div class="progress-bar" role="progressbar"
+            aria-valuenow="{{file.progress}}"
+            aria-valuemin="0"
+            aria-valuemax="100"
+           style="width: {{file.progress}}%;">
+          </div>
+        </div>
         <ul ng-if="published" class="publication-details">
           <li>
             <div class="time-label">Published</div>

@@ -213,8 +213,13 @@
       };
 
       $scope.uploadAttachment = function(file) {
+        $scope.file = file;
+
         if (file && !file.$error) {
           file.upload = bkPublicationApi.uploadAttachment(file);
+          file.upload = file.upload.progress(function(evt) {
+            file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+          });
           file.upload.then(function(resp) {
             if ($scope.attachmentUrl) {
               bkPublicationApi.deleteAttachment($scope.model['attachment-id']);
@@ -223,6 +228,7 @@
             delete $scope.attachmentErrors;
             $scope.model['attachment-id'] = attachment['public-id'];
             $scope.attachmentUrl = bkPublicationApi.getAttachmentUrl(attachment['public-id']);
+            delete file.progress;
           }, function(resp) {
             var err = resp.data;
             $scope.attachmentErrors = _.chain(err).values().flatten().value().join(', ');

@@ -174,12 +174,12 @@ def transform(obj):
     if type(obj) == dict:
         out = {}
         for k,v in obj.items():
-            out[k] = transform(v)
+            out[k] = transformNR(v)
         return out
     if type(obj) == list:
         out = []
         for v in obj:
-            out.append(transform(v))
+            out.append(transformNR(v))
         return out
     if isinstance(obj, OutputContainer):
         out = {}
@@ -196,7 +196,40 @@ def transform(obj):
         out['evaluatorId'] = obj.getEvaluatorId()
         out['code'] = obj.getCode()
         out['outputtype'] = obj.getOutputType()
-        out['output'] = transform(obj.getOutput())
+        out['output'] = transformNR(obj.getOutput())
+        out['tags'] = obj.getTags()
+        return out
+    return transformNaN(obj)
+
+def transformNR(obj):
+    if type(obj) == bytes:
+        return str(obj)
+    if type(obj) == dict:
+        out = {}
+        for k,v in obj.items():
+            out[k] = transformNR(v)
+        return out
+    if type(obj) == list:
+        out = []
+        for v in obj:
+            out.append(transformNR(v))
+        return out
+    if isinstance(obj, OutputContainer):
+        out = {}
+        out['type'] = "OutputContainer"
+        items = []
+        for v in obj.getItems():
+            items.append(transform(v))
+        out['items'] = items
+        return out
+    if isinstance(obj, BeakerCodeCell):
+        out = {}
+        out['type'] = "BeakerCodeCell"
+        out['cellId'] = obj.getCellId()
+        out['evaluatorId'] = obj.getEvaluatorId()
+        out['code'] = obj.getCode()
+        out['outputtype'] = obj.getOutputType()
+        out['output'] = transformNR(obj.getOutput())
         out['tags'] = obj.getTags()
         return out
     return transformNaN(obj)

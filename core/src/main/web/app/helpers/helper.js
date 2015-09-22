@@ -375,6 +375,13 @@
           return [];
         }
       },
+      go2FirstErrorCodeCell: function() {
+        if (getCurrentApp() && getCurrentApp().go2FirstErrorCodeCell) {
+          return getCurrentApp().go2FirstErrorCodeCell();
+        } else {
+          return [];
+        }
+      },
       getCodeCells: function(filter) {
         if (getCurrentApp() && getCurrentApp().getCodeCells) {
           return getCurrentApp().getCodeCells(filter);

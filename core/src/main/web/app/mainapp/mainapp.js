@@ -901,6 +901,35 @@
               }
               return ret;
             },
+            go2FirstErrorCodeCell: function () {
+              var cellOp = bkSessionManager.getNotebookCellOp();
+              // get all code cells
+              var cells = cellOp.getAllCodeCells();
+
+              var go = function(id) {
+                if (bkNotebookWidget && bkNotebookWidget.getFocusable(id)) {
+                    bkNotebookWidget.getFocusable(id).scrollTo();
+                }
+              };
+
+              if (cells === undefined || (!_.isArray(cells) && cells.length === 0)) {
+                return null;
+              }
+              if (_.isArray(cells)) {
+                var i;
+                for (i = 0; i < cells.length; i++) {
+                  var cell = cells[i];
+                  if (cell.output.result && cell.output.result.innertype === "Error"){
+                    go(cell.id);
+                    break;
+                  }
+                }
+              } else {
+                if (cell.output.result && cells.output.result.innertype === "Error")
+                  go(cells.id);
+              }
+
+            },
             // get (a subset of) code cells
             getCodeCells: function(filter) {
               var cellOp = bkSessionManager.getNotebookCellOp();

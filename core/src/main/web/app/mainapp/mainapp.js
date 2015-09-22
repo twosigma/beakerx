@@ -918,13 +918,13 @@
                 var i;
                 for (i = 0; i < cells.length; i++) {
                   var cell = cells[i];
-                  if (cell.output.result.innertype === "Error"){
+                  if (cell.output.result && cell.output.result.innertype === "Error"){
                     go(cell.id);
                     break;
                   }
                 }
               } else {
-                if (cells.output.result.innertype === "Error")
+                if (cell.output.result && cells.output.result.innertype === "Error")
                   go(cells.id);
               }
 

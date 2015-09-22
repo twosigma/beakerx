@@ -52,6 +52,7 @@ define(function(require, exports, module) {
       sortorder: 130,
       action: function() {
         bkHelper.evaluateRoot('root').then(function(res) {
+          bkHelper.go2FirstErrorCodeCell();
         }, function(err) {
           bkHelper.go2FirstErrorCodeCell();
         });

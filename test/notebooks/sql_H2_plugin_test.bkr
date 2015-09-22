@@ -32,8 +32,8 @@
             }
         },
         {
-            "name": "Sql",
-            "plugin": "Sql",
+            "name": "SQL",
+            "plugin": "SQL",
             "imports": "",
             "view": {
                 "cm": {
@@ -72,11 +72,59 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": false,
+                            "fixRight": false
+                        },
+                        "columnNames": [
+                            "cid",
+                            "cname"
+                        ],
+                        "actualalign": [
+                            "R",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "getCellSho": [
+                            true,
+                            true
+                        ]
+                    }
+                },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
                 "elapsedTime": 38,
-                "hidden": true
+                "hidden": true,
+                "result": {
+                    "type": "TableDisplay",
+                    "subtype": "ListOfMaps",
+                    "columnNames": [
+                        "cid",
+                        "cname"
+                    ],
+                    "values": [
+                        [
+                            113,
+                            "York"
+                        ],
+                        [
+                            114,
+                            "Yorkville"
+                        ]
+                    ],
+                    "types": [
+                        "double",
+                        "string"
+                    ]
+                }
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -93,7 +141,7 @@
         {
             "id": "code9GX0lZ",
             "type": "code",
-            "evaluator": "Sql",
+            "evaluator": "SQL",
             "input": {
                 "body": [
                     "%%beakerDB=\"jdbc:h2:mem:db1\"",
@@ -112,9 +160,9 @@
             "output": {
                 "state": {},
                 "selectedType": "Hidden",
-                "pluginName": "Sql",
-                "shellId": "a15c9891-b9ea-4750-8f7e-62d7ef8ce4c2",
-                "elapsedTime": 935
+                "pluginName": "SQL",
+                "shellId": "4fef28a7-4bd5-49cc-849c-2352eea5de22",
+                "elapsedTime": 924
             },
             "evaluatorReader": true,
             "lineCount": 11,
@@ -131,14 +179,14 @@
         {
             "id": "codeW9O7kd",
             "type": "code",
-            "evaluator": "Sql",
+            "evaluator": "SQL",
             "input": {
                 "body": [
                     "/*",
                     "  test with using beaker object",
                     "*/",
                     "",
-                    "-- loading ofconnection string from plugin settings",
+                    "-- loading of connection string from plugin settings",
                     "%%beakerDB = H2MemDB2",
                     "",
                     "-- only declared variables can be used",
@@ -155,9 +203,9 @@
             "output": {
                 "state": {},
                 "selectedType": "Hidden",
-                "pluginName": "Sql",
-                "shellId": "c1ccb524-1276-4dfa-b5a2-f5a641a5ef99",
-                "elapsedTime": 692
+                "pluginName": "SQL",
+                "shellId": "4fef28a7-4bd5-49cc-849c-2352eea5de22",
+                "elapsedTime": 1060
             },
             "evaluatorReader": true,
             "lineCount": 16,
@@ -174,7 +222,7 @@
         {
             "id": "codef4U7zn",
             "type": "code",
-            "evaluator": "Sql",
+            "evaluator": "SQL",
             "input": {
                 "body": [
                     "-- load connection string from plugin setings",
@@ -194,9 +242,89 @@
             "output": {
                 "state": {},
                 "selectedType": "OutputContainer",
-                "pluginName": "Sql",
-                "shellId": "c1ccb524-1276-4dfa-b5a2-f5a641a5ef99",
-                "elapsedTime": 608
+                "pluginName": "SQL",
+                "shellId": "4fef28a7-4bd5-49cc-849c-2352eea5de22",
+                "elapsedTime": 600,
+                "result": {
+                    "type": "OutputContainer",
+                    "items": [
+                        "Single result example:  records qty = 3",
+                        {
+                            "type": "TableDisplay",
+                            "columnNames": [
+                                "Key",
+                                "Value"
+                            ],
+                            "values": [
+                                [
+                                    "ID",
+                                    112
+                                ],
+                                [
+                                    "NAME",
+                                    "New York"
+                                ],
+                                [
+                                    "STATE",
+                                    "NY"
+                                ],
+                                [
+                                    "DATE",
+                                    {
+                                        "type": "Date",
+                                        "timestamp": 1442869200000
+                                    }
+                                ]
+                            ],
+                            "subtype": "Dictionary"
+                        },
+                        {
+                            "type": "TableDisplay",
+                            "columnNames": [
+                                "ID",
+                                "NAME",
+                                "STATE",
+                                "DATE"
+                            ],
+                            "values": [
+                                [
+                                    112,
+                                    "New York",
+                                    "NY",
+                                    {
+                                        "type": "Date",
+                                        "timestamp": 1442869200000
+                                    }
+                                ],
+                                [
+                                    113,
+                                    "York",
+                                    "AL",
+                                    {
+                                        "type": "Date",
+                                        "timestamp": 1442869200000
+                                    }
+                                ],
+                                [
+                                    114,
+                                    "Yorkville",
+                                    "IL",
+                                    {
+                                        "type": "Date",
+                                        "timestamp": 1442869200000
+                                    }
+                                ]
+                            ],
+                            "types": [
+                                "java.lang.Integer",
+                                "java.lang.String",
+                                "java.lang.String",
+                                "java.sql.Date"
+                            ],
+                            "subtype": "TableDisplay"
+                        }
+                    ]
+                }
             },
             "evaluatorReader": true,
             "lineCount": 12,
@@ -233,8 +361,9 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 29,
-                "hidden": true
+                "elapsedTime": 26,
+                "hidden": true,
+                "result": "jdbc:h2:mem:db1"
             },
             "evaluatorReader": true,
             "lineCount": 11,
@@ -251,7 +380,7 @@
         {
             "id": "codeKwTSKL",
             "type": "code",
-            "evaluator": "Sql",
+            "evaluator": "SQL",
             "input": {
                 "body": [
                     "/*",
@@ -282,11 +411,97 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": false,
+                            "fixRight": false
+                        },
+                        "columnNames": [
+                            "ID",
+                            "COLOR",
+                            "CODE"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
                 "selectedType": "Table",
-                "pluginName": "Sql",
-                "shellId": "a15c9891-b9ea-4750-8f7e-62d7ef8ce4c2",
-                "elapsedTime": 1088
+                "pluginName": "SQL",
+                "shellId": "4fef28a7-4bd5-49cc-849c-2352eea5de22",
+                "elapsedTime": 897,
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "ID",
+                        "COLOR",
+                        "CODE"
+                    ],
+                    "values": [
+                        [
+                            1,
+                            "AliceBlue",
+                            "#F0F8FF"
+                        ],
+                        [
+                            2,
+                            "AntiqueWhite",
+                            "#FAEBD7"
+                        ],
+                        [
+                            3,
+                            "Aqua",
+                            "#00FFFF"
+                        ],
+                        [
+                            4,
+                            "Aquamarine",
+                            "#7FFFD4"
+                        ],
+                        [
+                            5,
+                            "Azure",
+                            "#F0FFFF"
+                        ],
+                        [
+                            6,
+                            "Beige",
+                            "#F5F5DC"
+                        ],
+                        [
+                            7,
+                            "Bisque",
+                            "#FFE4C4"
+                        ],
+                        [
+                            8,
+                            "Black",
+                            "#000000"
+                        ]
+                    ],
+                    "types": [
+                        "java.lang.Integer",
+                        "java.lang.String",
+                        "java.lang.String"
+                    ],
+                    "subtype": "TableDisplay"
+                }
             },
             "evaluatorReader": true,
             "lineCount": 25,
@@ -310,10 +525,107 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": false,
+                            "fixRight": false
+                        },
+                        "columnNames": [
+                            "ID",
+                            "COLOR",
+                            "CODE"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 27
+                "elapsedTime": 28,
+                "result": {
+                    "type": "TableDisplay",
+                    "subtype": "TableDisplay",
+                    "hasIndex": "true",
+                    "values": [
+                        [
+                            "0",
+                            1,
+                            "AliceBlue",
+                            "#F0F8FF"
+                        ],
+                        [
+                            "1",
+                            2,
+                            "AntiqueWhite",
+                            "#FAEBD7"
+                        ],
+                        [
+                            "2",
+                            3,
+                            "Aqua",
+                            "#00FFFF"
+                        ],
+                        [
+                            "3",
+                            4,
+                            "Aquamarine",
+                            "#7FFFD4"
+                        ],
+                        [
+                            "4",
+                            5,
+                            "Azure",
+                            "#F0FFFF"
+                        ],
+                        [
+                            "5",
+                            6,
+                            "Beige",
+                            "#F5F5DC"
+                        ],
+                        [
+                            "6",
+                            7,
+                            "Bisque",
+                            "#FFE4C4"
+                        ],
+                        [
+                            "7",
+                            8,
+                            "Black",
+                            "#000000"
+                        ]
+                    ],
+                    "types": [
+                        "integer",
+                        "java.lang.Integer",
+                        "java.lang.String",
+                        "java.lang.String"
+                    ],
+                    "columnNames": [
+                        "Index",
+                        "ID",
+                        "COLOR",
+                        "CODE"
+                    ]
+                }
             },
             "evaluatorReader": true,
             "lineCount": 1,
@@ -471,7 +783,7 @@
         "cname": "NewYork",
         "cdate": {
             "type": "Date",
-            "timestamp": 1442917372053
+            "timestamp": 1442924007633
         },
         "city": {
             "type": "TableDisplay",

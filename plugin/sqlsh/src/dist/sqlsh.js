@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 /**
- * Sql eval plugin
- * For creating and config evaluators that compile and/or evaluate Sql code and update code cell results.
+ * SQL eval plugin
+ * For creating and config evaluators that compile and/or evaluate SQL code and update code cell results.
  */
 define(function(require, exports, module) {
   'use strict';
-  var PLUGIN_NAME = "Sql";
+  var PLUGIN_NAME = "SQL";
   var COMMAND = "sqlsh/sqlshPlugin";
   var serviceBase = null;
   var cometdUtil = bkHelper.getUpdateService();
@@ -150,7 +150,7 @@ define(function(require, exports, module) {
       }
     },
     spec: {
-      datasorces:  {type: "settableString", action: "updateShell", name: "Datasources"},
+      datasorces:  {type: "settableString", action: "updateShell", name: "Data sources"},
       classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
       resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
       killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }

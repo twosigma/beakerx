@@ -81,7 +81,9 @@ public class StreamGobbler extends Thread {
     	// These come from third party libraries....
       	if (line.matches(".*(version 'RELEASE_6' from|compile).*")) continue;
     	if (line.matches("^\\s*$")) continue;
-    	  
+    	// remove nginx 
+    	if (line.matches(".*GET /.*/ready .*")) continue;
+    	
         if (pw != null) {
           pw.println(line);
         }

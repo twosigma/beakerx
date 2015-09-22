@@ -174,6 +174,12 @@
               }
             }
 
+            if (scope.cellmodel.type === 'section') {
+              var selectionStart = {line: 0, ch: 0};
+              var selectionEnd = {line: 0, ch: cm.getValue().length};
+              cm.setSelection(selectionStart, selectionEnd);
+            }
+
             cm.focus();
           });
         };

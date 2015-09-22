@@ -49,7 +49,6 @@ public class JDBCClient {
                 if (ds == null) {
                     Driver driver = null;
                     for (Driver test : drivers) {
-                        System.out.println(test +  " test conn " + uri);
                         if (test.acceptsURL(uri)) {
                             driver = test;
                             break;
@@ -85,7 +84,7 @@ public class JDBCClient {
                 String[] dbDriverList = dbDriverString.split(File.pathSeparator);
                 for (String s : dbDriverList) {
                     try {
-                        urlSet.add(toURL(s.trim()));
+                        urlSet.add(toURL(s));
                     } catch (MalformedURLException e) {
                         Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
                     }
@@ -122,10 +121,22 @@ public class JDBCClient {
     }
 
     private URL toURL(String s) throws MalformedURLException {
-        if (!s.startsWith("jar:")) {
-            return Paths.get(s).toUri().toURL();
-        } else {
-            return new URL(s);
+
+        s = s.trim();
+        URL url = null;
+        if (!s.startsWith("jar:") && !s.startsWith("http:") && !s.startsWith("https:")) {
+            try {
+                url = Paths.get(s).toUri().toURL();
+            } catch (Exception e) {
+                Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
+            }
+
         }
+        if (url == null) {
+            url = new URL(s);
+        }
+
+        return url;
+
     }
 }

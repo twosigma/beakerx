@@ -122,6 +122,7 @@ public class JDBCClient {
 
     private URL toURL(String s) throws MalformedURLException {
 
+        s = s.trim();
         URL url = null;
         if (!s.startsWith("jar:") && !s.startsWith("http:") && !s.startsWith("https:")) {
             try {

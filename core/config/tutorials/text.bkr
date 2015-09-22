@@ -72,9 +72,15 @@
                 "Beaker's text cells use [Markdown](http://daringfireball.net/projects/markdown/syntax), a text-to-HTML conversion tool that allows",
                 "you to write using an easy-to-read, easy-to-write plain text format.  Here's a quick demo:",
                 "",
-                "* Markdown is good for making *lists*,",
+                "* Markdown is good for making *lists that emphasize your points*,",
                 "* writing `code documentation`,",
                 "* and making **bold** statements.",
+                "",
+                "It has too many features to demonstrate all of them here, so we'll cut to this block quote:",
+                "",
+                "> The best way to get a feel for Markdown’s formatting syntax is simply to look at a",
+                "Markdown-formatted document. For example, you can view the Markdown source for",
+                "the article text on this page here: http://daringfireball.net/projects/markdown/index.text",
                 "",
                 "Click on this cell to see how this formatting was specified or to edit its contents.",
                 "Click away on the background of the notebook to reformat and display.",
@@ -87,6 +93,27 @@
             ],
             "evaluatorReader": false,
             "mode": "preview"
+        },
+        {
+            "id": "sectiony9k17o",
+            "type": "section",
+            "title": "Size, Color, and Face",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownMDiSsV",
+            "type": "markdown",
+            "body": [
+                "You can change the size, color, and face of text with familar HTML &lt;font&gt; tags.",
+                "For example, you can make the text <font size=\"+2\">larger</font> or <font size=\"-2\">smaller</font> compared to its normal size.",
+                "Or make it  <font color=\"green\">green</font>, or change face to font to <font face=\"Times\">Times</font> or <font face=\"Courier\">Courier</font>.",
+                "You can even change the background color like this: <font style=\"background-color: yellow\">yellow highlight</font>.",
+                "",
+                "These tags work with the math and markdown modes, for example: <font color=\"#00d5ff \">$\\lambda = 480$</font>, or **<font face=\"Times\">bold times</font>**."
+            ],
+            "evaluatorReader": false
         },
         {
             "id": "sectione6ub6q",
@@ -170,7 +197,7 @@
             "input": {
                 "body": [
                     "<p>",
-                    "  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.",
+                    "  The usual text formatting tags work, like <em> for <em>emphasis</em>.",
                     "</p>",
                     "<p>",
                     "  But you can also create interactive elements:<br/>",

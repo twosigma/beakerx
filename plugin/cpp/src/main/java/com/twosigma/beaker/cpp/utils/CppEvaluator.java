@@ -112,11 +112,11 @@ public class CppEvaluator {
     compileCommand.add("-I");
     compileCommand.add("./include");
     compileCommand.add("-I");
-    compileCommand.add(System.getenv().get("JAVA_HOME") + "/include");
+    compileCommand.add(System.getProperty("java.home") + "/../include");
     compileCommand.add("-I");
-    compileCommand.add(System.getenv().get("JAVA_HOME") + "/include/linux");
+    compileCommand.add(System.getProperty("java.home") + "/../include/linux");
     compileCommand.add("-I");
-    compileCommand.add(System.getenv().get("JAVA_HOME") + "/include/darwin");
+    compileCommand.add(System.getProperty("java.home") + "/../include/darwin");
 
     exit = false;
     currentClassPath = "";
@@ -302,13 +302,15 @@ public class CppEvaluator {
 
           ProcessBuilder pb;
 
-          // System.out.println("Compiling with:");
-          // StringBuilder builder = new StringBuilder();
-          // for (String s : clangCommand){
-          //   builder.append(s + " ");
-          // }
-          // System.out.println(builder.toString());
-
+          if(System.getenv("BEAKER_CPP_DEBUG") != null ) {
+            System.out.println("Compiling with:");
+            StringBuilder builder = new StringBuilder();
+            for (String s : clangCommand){
+              builder.append(s + " ");
+            }
+            System.out.println(builder.toString());
+          }
+          
           // Compile
           pb = new ProcessBuilder(clangCommand);
           pb.directory(new File(System.getProperty("user.dir")));

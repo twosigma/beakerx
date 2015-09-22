@@ -272,3 +272,7 @@ bk-language-menu-item {
 .markdown .toggle-menu {
   top: 6px;
 }
+
+bk-markdown-cell .markup blockquote {
+  font-size: $font-size-base;
+}

@@ -1,0 +1,649 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Sql",
+            "plugin": "Sql",
+            "imports": "",
+            "view": {
+                "cm": {
+                    "mode": "text/x-sql"
+                }
+            },
+            "classPath": "http://central.maven.org/maven2/com/h2database/h2/1.4.186/h2-1.4.186.jar",
+            "datasorces": "H2MemDB2=jdbc:h2:mem:db1",
+            "outdir": "123"
+        }
+    ],
+    "cells": [
+        {
+            "id": "section5arlN2",
+            "type": "section",
+            "title": "Setup data for test",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": true
+        },
+        {
+            "id": "code1XuTjx",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "//Setup varios data for test",
+                    "var city  = new Object();",
+                    "city.cid = 112;",
+                    "city.cname = \"New York\";",
+                    "beaker.city = city;",
+                    "beaker.states = [ 'VT', 'AL', 'NY', 'IN', 'IL'];",
+                    "beaker.cdate=new Date();",
+                    "",
+                    "beaker.cities = [{cid : 113, cname : 'York'},{cid: 114, cname: 'Yorkville'}];"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 38,
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 9,
+            "initialization": true
+        },
+        {
+            "id": "sectionHYkdH5",
+            "type": "section",
+            "title": "SQL Test 1. Connecting a database with a jdbc URI. Creating table.",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "code9GX0lZ",
+            "type": "code",
+            "evaluator": "Sql",
+            "input": {
+                "body": [
+                    "%%beakerDB=\"jdbc:h2:mem:db1\"",
+                    "",
+                    "-- rebuilding ",
+                    "drop table if exists city;",
+                    "CREATE TABLE city (",
+                    "  id int(11) NOT NULL,",
+                    "  name varchar(45) NOT NULL,",
+                    "  state varchar(10),",
+                    "  date date DEFAULT NULL,",
+                    "  PRIMARY KEY (`id`)",
+                    ");"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Hidden",
+                "pluginName": "Sql",
+                "shellId": "a15c9891-b9ea-4750-8f7e-62d7ef8ce4c2",
+                "elapsedTime": 935
+            },
+            "evaluatorReader": true,
+            "lineCount": 11,
+            "initialization": true
+        },
+        {
+            "id": "sectionnpx77s",
+            "type": "section",
+            "title": "SQL Test 2. Connecting a database with a jdbc URI from plugin settings. Inserting and Updating from beaker object.",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeW9O7kd",
+            "type": "code",
+            "evaluator": "Sql",
+            "input": {
+                "body": [
+                    "/*",
+                    "  test with using beaker object",
+                    "*/",
+                    "",
+                    "-- loading ofconnection string from plugin settings",
+                    "%%beakerDB = H2MemDB2",
+                    "",
+                    "-- only declared variables can be used",
+                    "%%inputs: city.cid; city.cname; cdate; states[1]; states[2]; states[4]; cities[0].cid; cities[0].cname; cities[1].cid; cities[1].cname",
+                    "",
+                    "INSERT INTO city (id, name) VALUES (${city.cid}, ${city.cname});",
+                    "INSERT INTO city VALUES (${cities[0].cid}, ${cities[0].cname}, ${states[1]}, ${cdate});",
+                    "INSERT INTO city VALUES (${cities[1].cid}, ${cities[1].cname}, ${states[4]}, ${cdate});",
+                    "",
+                    "UPDATE city SET date=${cdate} WHERE id = ${city.cid};",
+                    "UPDATE city SET state=${states[2]} WHERE id = ${city.cid};"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Hidden",
+                "pluginName": "Sql",
+                "shellId": "c1ccb524-1276-4dfa-b5a2-f5a641a5ef99",
+                "elapsedTime": 692
+            },
+            "evaluatorReader": true,
+            "lineCount": 16,
+            "initialization": true
+        },
+        {
+            "id": "sectiongbsEYV",
+            "type": "section",
+            "title": "SQL Test 3. Selecting data and outputting various result types. Using parameters from beaker object.",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codef4U7zn",
+            "type": "code",
+            "evaluator": "Sql",
+            "input": {
+                "body": [
+                    "-- load connection string from plugin setings",
+                    "%%beakerDB = H2MemDB2",
+                    "",
+                    "-- only declared variables can be used",
+                    "%%inputs: city.cid",
+                    "",
+                    "--Single result example",
+                    "select concat (c1, c2) from (select 'Single result example:  records qty = ' as c1, count(*) as c2 from city) as t1;",
+                    "--One row",
+                    "select * from city where id = ${city.cid};",
+                    "--Table",
+                    "select * from city;"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "OutputContainer",
+                "pluginName": "Sql",
+                "shellId": "c1ccb524-1276-4dfa-b5a2-f5a641a5ef99",
+                "elapsedTime": 608
+            },
+            "evaluatorReader": true,
+            "lineCount": 12,
+            "initialization": true
+        },
+        {
+            "id": "sectionAUiLli",
+            "type": "section",
+            "title": "Setup data for test",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": true
+        },
+        {
+            "id": "codeD5a1lh",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "//Setup varios data for test",
+                    "beaker.colorsArray=[{color:'AliceBlue',  \tcode:'#F0F8FF'},",
+                    "  {color:'AntiqueWhite',  \tcode:'#FAEBD7' },",
+                    "  {color:'Aqua',  \tcode:'#00FFFF'},",
+                    "  {color:'Aquamarine',  \tcode:'#7FFFD4'},",
+                    "  {color:'Azure',  \tcode:'#F0FFFF'},",
+                    "  {color:'Beige' , \tcode:'#F5F5DC'},",
+                    "  {color:'Bisque',  \tcode:'#FFE4C4'},",
+                    "  {color:'Black' , \tcode:'#000000'}]",
+                    "beaker.idArray=[1,2,3,4,5,6,7,8]",
+                    "beaker.H2MemDB2='jdbc:h2:mem:db1'"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 29,
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 11,
+            "initialization": true
+        },
+        {
+            "id": "sectionRfFJxO",
+            "type": "section",
+            "title": "SQL Test 4. Complex test of iteration over array and outputting result into beaker object.",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeKwTSKL",
+            "type": "code",
+            "evaluator": "Sql",
+            "input": {
+                "body": [
+                    "/*",
+                    "  test the iteration over array and output result into beaker object",
+                    "*/",
+                    "",
+                    "-- load connection string from beaker object",
+                    "%%beakerDB=${H2MemDB2}",
+                    "",
+                    "# only declared variables can be used",
+                    "",
+                    "%%inputs: idArray[*]; colorsArray[*].color; colorsArray[*].code",
+                    "%%outputs: colorTable",
+                    "",
+                    "-- rebuilding the table",
+                    "drop table if exists color;",
+                    "CREATE TABLE color (",
+                    "  id int(11) NOT NULL,",
+                    "  color varchar(45) NOT NULL,",
+                    "  code varchar(10),",
+                    "  PRIMARY KEY (id)",
+                    ");",
+                    "",
+                    "INSERT INTO color VALUES (${idArray[*]}, ${colorsArray[*].color}, ${colorsArray[*].code});",
+                    "",
+                    "select * from color;",
+                    "select * into ${colorTable} from color;"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Sql",
+                "shellId": "a15c9891-b9ea-4750-8f7e-62d7ef8ce4c2",
+                "elapsedTime": 1088
+            },
+            "evaluatorReader": true,
+            "lineCount": 25,
+            "initialization": true
+        },
+        {
+            "id": "sectionnwlcBB",
+            "type": "section",
+            "title": "Result from beaker object",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeDbiIzh",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.colorTable"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 27
+            },
+            "evaluatorReader": true,
+            "lineCount": 1,
+            "initialization": true
+        }
+    ],
+    "namespace": {
+        "rtable": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    "zip",
+                    1036
+                ],
+                [
+                    "state",
+                    "MA"
+                ],
+                [
+                    "city",
+                    "Hampden"
+                ],
+                [
+                    "lat",
+                    42.064756
+                ],
+                [
+                    "lng",
+                    -72.431823
+                ]
+            ],
+            "subtype": "Dictionary",
+            "columnNames": [
+                "Key",
+                "Value"
+            ]
+        },
+        "rtable2": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    "zip",
+                    1036
+                ],
+                [
+                    "state",
+                    "MA"
+                ],
+                [
+                    "city",
+                    "Hampden"
+                ],
+                [
+                    "lat",
+                    42.064756
+                ],
+                [
+                    "lng",
+                    -72.431823
+                ]
+            ],
+            "subtype": "Dictionary",
+            "columnNames": [
+                "Key",
+                "Value"
+            ]
+        },
+        "bkt1": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "Key",
+                "Value"
+            ],
+            "values": [
+                [
+                    "zip",
+                    1036
+                ],
+                [
+                    "state",
+                    "MA"
+                ],
+                [
+                    "city",
+                    "Hampden"
+                ],
+                [
+                    "lat",
+                    42.064756
+                ],
+                [
+                    "lng",
+                    -72.431823
+                ]
+            ],
+            "subtype": "Dictionary"
+        },
+        "bkt2": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "zip",
+                "city"
+            ],
+            "values": [
+                [
+                    1068,
+                    "Oakham"
+                ],
+                [
+                    1069,
+                    "Palmer"
+                ],
+                [
+                    1070,
+                    "Plainfield"
+                ],
+                [
+                    1071,
+                    "Russell"
+                ],
+                [
+                    1072,
+                    "Shutesbury"
+                ],
+                [
+                    1073,
+                    "Southampton"
+                ],
+                [
+                    1075,
+                    "South Hadley"
+                ],
+                [
+                    1077,
+                    "Southwick"
+                ],
+                [
+                    1080,
+                    "Three Rivers"
+                ],
+                [
+                    1081,
+                    "Wales"
+                ]
+            ],
+            "types": [
+                "java.lang.Integer",
+                "java.lang.String"
+            ],
+            "subtype": "TableDisplay"
+        },
+        "ttt": 222,
+        "ttt1": 10009,
+        "cid": 111,
+        "cname": "NewYork",
+        "cdate": {
+            "type": "Date",
+            "timestamp": 1442917372053
+        },
+        "city": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    "cid",
+                    112
+                ],
+                [
+                    "cname",
+                    "New York"
+                ]
+            ],
+            "subtype": "Dictionary",
+            "columnNames": [
+                "Key",
+                "Value"
+            ]
+        },
+        "states": [
+            "VT",
+            "AL",
+            "NY",
+            "IN",
+            "IL"
+        ],
+        "cities": {
+            "type": "TableDisplay",
+            "subtype": "ListOfMaps",
+            "columnNames": [
+                "cid",
+                "cname"
+            ],
+            "values": [
+                [
+                    113,
+                    "York"
+                ],
+                [
+                    114,
+                    "Yorkville"
+                ]
+            ],
+            "types": [
+                "double",
+                "string"
+            ]
+        },
+        "colorsArray": {
+            "type": "TableDisplay",
+            "subtype": "ListOfMaps",
+            "columnNames": [
+                "color",
+                "code"
+            ],
+            "values": [
+                [
+                    "AliceBlue",
+                    "#F0F8FF"
+                ],
+                [
+                    "AntiqueWhite",
+                    "#FAEBD7"
+                ],
+                [
+                    "Aqua",
+                    "#00FFFF"
+                ],
+                [
+                    "Aquamarine",
+                    "#7FFFD4"
+                ],
+                [
+                    "Azure",
+                    "#F0FFFF"
+                ],
+                [
+                    "Beige",
+                    "#F5F5DC"
+                ],
+                [
+                    "Bisque",
+                    "#FFE4C4"
+                ],
+                [
+                    "Black",
+                    "#000000"
+                ]
+            ],
+            "types": [
+                "string",
+                "string"
+            ]
+        },
+        "idArray": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+        ],
+        "colorTable": {
+            "type": "TableDisplay",
+            "subtype": "TableDisplay",
+            "hasIndex": "true",
+            "values": [
+                [
+                    "0",
+                    1,
+                    "AliceBlue",
+                    "#F0F8FF"
+                ],
+                [
+                    "1",
+                    2,
+                    "AntiqueWhite",
+                    "#FAEBD7"
+                ],
+                [
+                    "2",
+                    3,
+                    "Aqua",
+                    "#00FFFF"
+                ],
+                [
+                    "3",
+                    4,
+                    "Aquamarine",
+                    "#7FFFD4"
+                ],
+                [
+                    "4",
+                    5,
+                    "Azure",
+                    "#F0FFFF"
+                ],
+                [
+                    "5",
+                    6,
+                    "Beige",
+                    "#F5F5DC"
+                ],
+                [
+                    "6",
+                    7,
+                    "Bisque",
+                    "#FFE4C4"
+                ],
+                [
+                    "7",
+                    8,
+                    "Black",
+                    "#000000"
+                ]
+            ],
+            "types": [
+                "integer",
+                "java.lang.Integer",
+                "java.lang.String",
+                "java.lang.String"
+            ],
+            "columnNames": [
+                "Index",
+                "ID",
+                "COLOR",
+                "CODE"
+            ]
+        },
+        "mysqlds": "jdbc:mysql://localhost:3306/test?user=root&password=root",
+        "H2MemDB2": "jdbc:h2:mem:db1"
+    }
+}

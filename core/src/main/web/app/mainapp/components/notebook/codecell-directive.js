@@ -371,10 +371,18 @@
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
           scope.cm.on('change', changeHandler);
           scope.cm.on('blur', function () {
+            if ($('.CodeMirror-hint').length > 0) {
+              //codecomplete is up, skip
+              return;
+            }
             scope.cm.doc.sel.ranges[0].anchor.ch = -1;
             CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
           });
           scope.cm.on('focus', function () {
+            if ($('.CodeMirror-hint').length > 0) {
+              //codecomplete is up, skip
+              return;
+            }
             CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
           });
 

@@ -369,6 +369,7 @@
                       target.readOnly,
                       target.format,
                       notebookModel, false, sessionId, false);
+                  setDocumentTitle();
                 }).catch(function(data, status, headers, config) {
                   bkHelper.show1ButtonModal(data, "Open Failed", function() {
                     bkCoreManager.gotoControlPanel();

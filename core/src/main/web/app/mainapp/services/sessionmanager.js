@@ -56,28 +56,18 @@
         this.columnNames = [];
         this.types = [];
         this.values = [];
+        this.hasIndex = false;
       } else {
         this.columnNames = data.columnNames.slice(0);
         this.types = data.types.slice(0);
         this.values = [];
-        if (data.hasIndex === "true" ) {
-          this.columnNames.shift();
-          this.types.shift();
-          for (var j in data.values) {
-            var vals = [];
-            for (var i=1; i<data.values[j].length; i++) {
-              vals.push( transformBack(data.values[j][i]));
-            }
-            this.values.push(vals);
+        this.hasIndex = true;
+        for (var j in data.values) {
+          var vals = [];
+          for (var i in data.values[j]) {
+            vals.push( transformBack(data.values[j][i]));
           }
-        } else {
-          for (var j in data.values) {
-            var vals = [];
-            for (var i in data.values[j]) {
-              vals.push( transformBack(data.values[j][i]));
-            }
-            this.values.push(vals);
-          }
+          this.values.push(vals);
         }
       }
     };
@@ -88,10 +78,13 @@
         '  Rows: '+this.values.length+'\n' +
         '  Data columns (total '+this.columnNames.length+' columns):\n';
       for (var i in this.columnNames) {
-        s = s + '    '+this.columnNames[i]+'   '+this.types[i]+'\n';
+        s = s + '    '+this.columnNames[i]+'   '+this.types[i]+(this.hasIndex && i==0 ? ' *Index*\n' : '\n');
       }
-      ;
       return s;
+    };
+
+    DataFrame.prototype.hasIndex = function() {
+      return this.hasIndex;
     };
 
     DataFrame.prototype.columns = function() {
@@ -102,6 +95,16 @@
       return this.types;
     };
 
+    DataFrame.prototype.getIndex = function() {
+      if(!this.hasIndex)
+        return undefined;
+      var o = [];
+      for (var j in this.values) {
+        o.push(this.values[j][0]);
+      }
+      return o;
+    };
+    
     DataFrame.prototype.getColumn = function(name) {
       var i = this.columnNames.indexOf(name);
       if (i < 0)
@@ -131,6 +134,8 @@
       var i = this.columnNames.indexOf(name);
       if (i < 0)
           return false;
+      if (i==0)
+        this.hasIndex = false;
       for (var j in this.values) {
         this.values[j].splice(i,1);
       }
@@ -186,7 +191,7 @@
 
     function getDataType(v) {
       if (_.isDate(v))
-        return "time";
+        return "datetime";
       if(_.isNumber(v)) // can we do a better job here?
         return "double";
       if(_.isBoolean(v))
@@ -231,18 +236,18 @@
         var o = {}
         o.type = "TableDisplay";
         o.subtype = "TableDisplay";
-        o.hasIndex = "true";
+        o.hasIndex = v.hasIndex ? 'true' : 'false';
         o.values = [];
         for (var i in v.values) {
-          var row = [ i ];
+          var row = [ ];
           for (var j in v.values[i]) {
             row.push(transform(v.values[i][j], true));
           }
           o.values.push(row);
         }
-        o.types = ["integer"];
+        o.types = [ ];
         if (_.isArray(v.types)) o.types = o.types.concat(v.types.slice(0));
-        o.columnNames = [ "Index" ];
+        o.columnNames = [ ];
         if (_.isArray(v.columnNames)) o.columnNames = o.columnNames.concat(v.columnNames.slice(0));
         return o
       }

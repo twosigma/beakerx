@@ -81,41 +81,10 @@
             },
             "output": {
                 "state": {},
-                "result": {
-                    "update_id": "9905378f-93cc-42f5-90dc-7723596f85f7",
-                    "update_time": 1442783869112,
-                    "type": "EasyForm",
-                    "caption": "Form and Run",
-                    "components": [
-                        {
-                            "type": "TextField",
-                            "label": "first",
-                            "enabled": true,
-                            "value": "",
-                            "width": "15",
-                            "currentValue": ""
-                        },
-                        {
-                            "type": "TextField",
-                            "label": "last",
-                            "enabled": true,
-                            "value": "",
-                            "width": "15",
-                            "currentValue": ""
-                        },
-                        {
-                            "type": "ButtonComponent",
-                            "label": "Run!",
-                            "enabled": "Groovy",
-                            "value": "",
-                            "tag": "run"
-                        }
-                    ]
-                },
                 "selectedType": "EasyForm",
                 "pluginName": "Groovy",
-                "shellId": "b358e453-dc7c-4498-8571-331ca09fcad4",
-                "elapsedTime": 579
+                "shellId": "3386e8ff-2dbd-40cb-8634-2dfaa86ed7ea",
+                "elapsedTime": 569
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -140,8 +109,8 @@
             "output": {
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "b358e453-dc7c-4498-8571-331ca09fcad4",
-                "elapsedTime": 590,
+                "shellId": "3386e8ff-2dbd-40cb-8634-2dfaa86ed7ea",
+                "elapsedTime": 736,
                 "state": {}
             },
             "evaluatorReader": true,
@@ -175,6 +144,79 @@
             },
             "evaluatorReader": true,
             "lineCount": 2
+        },
+        {
+            "id": "sectionWzbYct",
+            "type": "section",
+            "title": "All Kinds of Fields",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeGKbEzK",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "g = new EasyForm(\"Field Types\")",
+                    "g.addTextField(\"Short Text Field\", 10)",
+                    "g.addTextField(\"Text Field\")",
+                    "g.addTextArea(\"Text Area\")",
+                    "g.addCheckBox(\"Check Box\")",
+                    "options = [\"a\", \"b\", \"c\", \"d\"]",
+                    "g.addComboBox(\"Combo Box\", options)",
+                    "g.addComboBox(\"Editable Combo\", options, true)",
+                    "",
+                    "g.addList(\"List\", options)",
+                    "g.addList(\"List Single\", options, false)",
+                    "g.addList(\"List Two Row\", options, 2)",
+                    "",
+                    "g.addCheckBoxes(\"Check Boxes\", options)",
+                    "g.addCheckBoxes(\"Check Boxes H\", options, EasyForm.HORIZONTAL)",
+                    "",
+                    "g.addRadioButtons(\"Radio Buttons\", options)",
+                    "g.addRadioButtons(\"Radio Buttons H\", options, EasyForm.HORIZONTAL)",
+                    "",
+                    "g.addDatePicker(\"Date\")",
+                    "",
+                    "g.addButton(\"Run\", \"run2\")",
+                    "g"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "EasyForm",
+                "pluginName": "Groovy",
+                "shellId": "3386e8ff-2dbd-40cb-8634-2dfaa86ed7ea",
+                "elapsedTime": 581
+            },
+            "evaluatorReader": true,
+            "lineCount": 23
+        },
+        {
+            "id": "code0x21x8",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "result = [:]",
+                    "g.keySet().each {",
+                    "  result[it] = g[it]",
+                    "}",
+                    "result"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "3386e8ff-2dbd-40cb-8634-2dfaa86ed7ea",
+                "elapsedTime": 612
+            },
+            "evaluatorReader": true,
+            "tags": "run2",
+            "lineCount": 5
         }
     ],
     "namespace": {},

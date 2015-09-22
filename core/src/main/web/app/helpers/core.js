@@ -346,9 +346,12 @@
             var self = this;
             this.showSpinner = true;
             bkUtils.httpPost("../beaker/rest/file-io/createDirectory", {path: path})
-                .complete(function (list) {
-                  self.showSpinner = false;
-                });
+              .success(function (list) {
+                self.showSpinner = false;
+              }).error(function (response) {
+                self.showSpinner = false;
+                console.log(response);
+              });
           };
           fileChooserStrategy.getSaveBtnDisabled = function() {
             return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');

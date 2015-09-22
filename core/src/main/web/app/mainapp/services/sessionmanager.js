@@ -1071,14 +1071,15 @@
             };
           },
           newSectionCell: function(level, title, id) {
+            var levelNumberToWordMapping = {1 : "One", 2 : "Two", 3 : "Three", 4 : "Four"};
             if (!level && level !== 0) {
               level = 1;
             }
             if (level <= 0) {
               throw "creating section cell with level " + level + " is not allowed";
             }
-            if (!title) {
-              title = "New Section H" + level;
+            if (!title && levelNumberToWordMapping[level]) {
+              title = "Section Level " + levelNumberToWordMapping[level];
             }
 
             if (!id) {

@@ -99,14 +99,16 @@ convertToJSONArrayNoRecurse <- function(val) {
 }
 
 getTypeName <- function(c) {
-  if (c == "numeric")
+  if (c[[1]] == "numeric")
     p = "\"double\""
-  else if (c == "integer")
+  else if (c[[1]] == "integer")
     p = "\"integer\""
-  else if (c == "logical")
+  else if (c[[1]] == "logical")
     p = "\"boolean\""
-  else if (c == "factor")
+  else if (c[[1]] == "factor")
     p = "\"select\""
+  else if (c[[1]] == "POSIXct")
+    p = "\"datetime\""
   else
     p = "\"string\""
   return(p)
@@ -236,6 +238,26 @@ convertToJSONNoRecurse <- function(val) {
   }
   return (o)
 }
+ 
+guessTypeName <- function(txt) {
+  if (grepl(paste0("^[0-9]*-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]$"),txt))
+    return ("POSIXct")
+  if (as.integer(txt) == txt)
+    return ("integer")
+  if (as.double(txt) == txt)
+    return ("numeric")
+  return ("character")
+} 
+
+guessType <- function(txt) {
+  if (grepl(paste0("^[0-9]*-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]$"),txt))
+    return (as.POSIXct(txt))
+  if (as.integer(txt) == txt)
+    return (as.integer(txt))
+  if (as.double(txt) == txt)
+    return (as.double(txt))
+  return (txt)
+} 
   
 convertToJSON <- function(val, collapse) { 
   if (class(val) == "numeric" || class(val) == "integer" || class(val) == "character" || class(val) == "logical" || class(val) == "factor") {
@@ -289,11 +311,14 @@ convertToJSON <- function(val, collapse) {
   	o = p
   }
   
-  else if (class(val) == "data.frame") {  
+  else if (class(val) == "data.frame") {
     p = "{ \"type\":\"TableDisplay\",\"subtype\":\"TableDisplay\",\"hasIndex\":\"true\",\"columnNames\":"
     colNames = c('Index')
     colNames = c(colNames,names(val))
+    rnames = rownames(val)
+    itype = guessTypeName(rnames[1])
     types = lapply(val,class)
+    types = c(itype,types)
     p = paste(p, toJSON(colNames), sep='')
     p = paste(p, ", \"values\": [", sep='')
 	firstr <- TRUE
@@ -304,7 +329,7 @@ convertToJSON <- function(val, collapse) {
 	    p = paste(p, ", ", sep='')
 	  }
       p = paste(p, "[", sep='')
-	  p = paste(p, (r-1), sep='')
+	  p = paste(p, convertToJSONNoRecurse(guessType(rnames[r])), sep='')
 	  for( c in 1:ncol(val)) {
 	    p = paste(p, ", ", sep='')
 		theval = val[r,c]
@@ -312,10 +337,15 @@ convertToJSON <- function(val, collapse) {
 	  }
       p = paste(p, "]", sep='')
     }    
-    p = paste(p, "], \"types\": [ \"integer\"", sep='')
+    p = paste(p, "], \"types\": [", sep='')
+    firstr <- TRUE
     for(i in 1:length(types)) {
-      p = paste(p, ",", sep='')
-      p = paste(p, getTypeName(c), sep='')
+      if (firstr) {
+	    firstr <- FALSE
+	  } else {
+	    p = paste(p, ",", sep='')
+	  }
+      p = paste(p, getTypeName(types[i]), sep='')
     }
     p = paste(p, "] }", sep='')
     o = p
@@ -446,7 +476,7 @@ transformJSON <- function(tres) {
 				      nv [j] <- as.integer( tres$values[[j]][[i]] )
 				  }
 			  	  df[ tres$columnNames[[i]] ] = nv
-			  	} else if (exists("types", where=tres) && !is.na(tres$types[i]) && (tres$types[i] == "time")) {
+			  	} else if (exists("types", where=tres) && !is.na(tres$types[i]) && (tres$types[i] == "datetime")) {
 				  nv <- .POSIXct( character(rows) );
 		          for( j in 1:rows) {
 		            if ( !is.null( tres$values[[j]][[i]] ) ) {
@@ -474,7 +504,12 @@ transformJSON <- function(tres) {
                 tres <- df[ tres$columnNames ]
                 tres = matrix(as.numeric(unlist(tres)),nrow=nrow(tres))
               } else if (exists("hasIndex", where=tres) && tres$hasIndex == "true") {
-              	tres <- subset(df[ tres$columnNames ], select = -c(Index) )
+                # we do transform an index into rownames
+                iname = tres$columnNames[1]
+                keeps = tres$columnNames[2:length(tres$columnNames)]
+                rnam = df [[iname]]
+              	tres <- df[ keeps ]
+              	rownames(tres) <- rnam            	
 		      } else {
                 tres <- df[ tres$columnNames ]
            	  }

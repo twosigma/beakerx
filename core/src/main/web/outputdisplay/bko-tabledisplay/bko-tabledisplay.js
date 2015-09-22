@@ -693,6 +693,8 @@
               }
             }
           }
+          
+          scope.hasIndex = model.hasIndex === 'true';
 
           // copy basic data
           if (model.columnNames !== undefined)
@@ -706,11 +708,19 @@
           else
             scope.types = undefined;
           
-          if (model.hasIndex === "true") {
-            if (scope.columnNames !== undefined)
+          if (scope.hasIndex) {
+            if (scope.columnNames !== undefined) {
+              scope.indexName = scope.columnNames[0];
               scope.columnNames.shift();
-            if (scope.types !== undefined)
+            } else {
+              scope.indexName = '     ';
+            }
+            if (scope.types !== undefined) {
+              scope.indexType = scope.types[0];
               scope.types.shift();
+            } else {
+              scope.indexType = 'index';
+            }
           }
 
           // compute how to display columns (remind: dummy column to keep server ordering)
@@ -754,7 +764,7 @@
 
         scope.doCreateData = function(model) {
           // create a dummy column to keep server ordering if not already present
-          if (model.hasIndex === undefined || model.hasIndex !== "true") {
+          if (!scope.hasIndex) {
             var data = [];
             var r;
             var selected = [];
@@ -817,15 +827,16 @@
 
           // build configuration
           var converter = scope.allConverters[1];
-          if (model.hasIndex === "true") {
+          if (scope.hasIndex) {
             for (var i = 0; i < scope.allTypes.length; i++) {
-              if (scope.allTypes[i].name === model.types[0]) {
+              if (scope.allTypes[i].name === scope.indexType) {
                 converter = scope.allConverters[scope.allTypes[i].type];
                 break;
               }
             }
-          }
-          cols.push({'title' : '    ', 'className': 'dtright', 'render': converter});
+            cols.push({'title' : scope.indexName+'&nbsp;&nbsp;', 'className': 'dtright', 'render': converter});
+          } else
+            cols.push({'title' : '    ', 'className': 'dtright', 'render': converter});
 
           for (i = 0; i < scope.columnNames.length; i++) {
             var type = scope.actualtype[i];

@@ -190,13 +190,15 @@
               {
                 name: "SVG",
                 action: function () {
-                  $scope.outputDisplayModel.saveAsSvg();
+                  $scope.outputDisplayModel.getCellModel().saveAsSvg ?
+                    $scope.outputDisplayModel.getCellModel().saveAsSvg() : $scope.outputDisplayModel.getCellModel().payload.saveAsSvg();
                 }
               },
               {
                 name: "PNG",
                 action: function () {
-                  $scope.outputDisplayModel.saveAsPng();
+                  $scope.outputDisplayModel.getCellModel().saveAsPng ?
+                    $scope.outputDisplayModel.getCellModel().saveAsPng() : $scope.outputDisplayModel.getCellModel().payload.saveAsPng();
                 }
               }];
           }else{

@@ -15,6 +15,9 @@
 library(RCurl, quietly=TRUE)
 library(RJSONIO, quietly=TRUE)
 
+require('png', quietly=TRUE)
+require('base64enc', quietly=TRUE)
+
 options(RCurlOptions = list(httpheader = c(Expect=''), noproxy = '127.0.0.1'))
 
 pwarg = paste('beaker:', Sys.getenv("beaker_core_password"), sep='')
@@ -123,6 +126,15 @@ containsOnlyBasicTypes <- function(l) {
       return (FALSE)
   }
   return (TRUE)
+}
+
+notContainKnownType  <- function(l) {
+  if (exists("type", where=l)) {
+    if(l$type == "ImageIcon") {
+      return(FALSE)
+    }
+  }
+  return(TRUE)
 }
 
 isListOfDictionaries <- function(l) {
@@ -259,7 +271,7 @@ guessType <- function(txt) {
   return (txt)
 } 
   
-convertToJSON <- function(val, collapse) { 
+convertToJSON <- function(val, collapse) {
   if (class(val) == "numeric" || class(val) == "integer" || class(val) == "character" || class(val) == "logical" || class(val) == "factor") {
     if (is.null(names(val))) {
   	  if (collapse && length(val) == 1) {
@@ -289,7 +301,7 @@ convertToJSON <- function(val, collapse) {
       p = paste(p, convertToJSONArray(val$items), sep='')
       p = paste(p, " }", sep='')
       o = p
-	} else if (containsOnlyBasicTypes(val)) {
+	} else if (notContainKnownType(val) && containsOnlyBasicTypes(val)) {
       # convert to datatable dictionary
       o = convertToDataTableDictionary(val)
     } else {
@@ -648,5 +660,12 @@ setCodeCellTags <- function(name,tags) {
 
 createOutputContainer <- function(items) {
 	return (list(type='OutputContainer', items=items))
+}
+
+displayImage <- function(img) {
+  if (! exists("writePNG") || !exists("base64encode")) {
+    return ("ERROR: you should install the 'png' and 'base64enc' R packages.")
+  }
+  return (list(type='ImageIcon', width=dim(img)[1], height=dim(img)[2], imageData=base64encode(writePNG(img, target = raw()))))
 }
 

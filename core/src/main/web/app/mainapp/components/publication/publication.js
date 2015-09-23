@@ -167,7 +167,7 @@
       };
 
       $scope.publish = function(action) {
-        var tab = $window.open(bkPublicationApi.getBaseUrl());
+        var tab = $window.open(bkPublicationApi.getBaseUrl() + '/#/publication_loading');
         $scope.saving = true;
         (action == "update" ? updatePublication : createPublication)()
         .then(function(publicationId) {

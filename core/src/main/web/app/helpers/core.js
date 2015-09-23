@@ -759,7 +759,7 @@
           callbackAction(result);
         }, function(result) {
           //Trigger when modal is dismissed
-          callbackAction(result);
+          callbackAction();
         }).catch(function() {
           removeSubmitListener();
         });

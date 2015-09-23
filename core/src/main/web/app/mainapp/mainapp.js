@@ -1280,7 +1280,7 @@
 
         var connectionManager = (function() {
           var RECONNECT_TIMEOUT = 5000; // 5 seconds
-          var OFFLINE_MESSAGE = "offline";
+          var OFFLINE_MESSAGE = "offline, click to download a copy";
           var CONNECTING_MESSAGE = "reconnecting";
           var reconnectTimeout;
           var statusMessage = OFFLINE_MESSAGE;

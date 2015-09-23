@@ -50,12 +50,6 @@
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
           $scope.model.resetShareMenuItems(newItems);
         });
-        $scope.model.saveAsSvg = function(){
-          return $scope.saveAsSvg();
-        };
-        $scope.model.saveAsPng = function(){
-          return $scope.saveAsPng();
-        };
       },
       link : function(scope, element, attrs) {
         // rendering code
@@ -1560,7 +1554,13 @@
           scope.stdmodel = plotFormatter.standardizeModel(model, scope.prefs);
           model.getSvgToSave = function(){
             return scope.getSvgToSave();
-          }
+          };
+          model.saveAsSvg = function(){
+            return scope.saveAsSvg();
+          };
+          model.saveAsPng = function(){
+            return scope.saveAsPng();
+          };
         };
 
         scope.dumpState = function() {

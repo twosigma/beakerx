@@ -174,19 +174,31 @@
         };
 
         $scope.getAdditionalMenuItems = function() {
-          var displayType = $scope.getOutputDisplayType() != null ? $scope.getOutputDisplayType() : $scope.applicableDisplays[0];
+
+          var getDisplayType = function(){
+            var displayType = $scope.getOutputDisplayType() != null ? $scope.getOutputDisplayType() : $scope.applicableDisplays[0];
+
+            if (displayType === "Results" && $scope.getOutputResult() && $scope.getOutputResult().payload){
+              displayType = $scope.getOutputResult().payload.type;
+            }
+            return displayType;
+          };
+
+          var displayType = getDisplayType();
           if(displayType === "Plot" || displayType === "CombinedPlot"){
             _saveAsItems = [
               {
                 name: "SVG",
                 action: function () {
-                  $scope.outputDisplayModel.saveAsSvg();
+                  $scope.outputDisplayModel.getCellModel().saveAsSvg ?
+                    $scope.outputDisplayModel.getCellModel().saveAsSvg() : $scope.outputDisplayModel.getCellModel().payload.saveAsSvg();
                 }
               },
               {
                 name: "PNG",
                 action: function () {
-                  $scope.outputDisplayModel.saveAsPng();
+                  $scope.outputDisplayModel.getCellModel().saveAsPng ?
+                    $scope.outputDisplayModel.getCellModel().saveAsPng() : $scope.outputDisplayModel.getCellModel().payload.saveAsPng();
                 }
               }];
           }else{

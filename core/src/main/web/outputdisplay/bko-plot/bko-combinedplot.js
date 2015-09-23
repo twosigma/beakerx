@@ -38,12 +38,6 @@
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
           $scope.model.resetShareMenuItems(newItems);
         });
-        $scope.model.saveAsSvg = function(){
-          return $scope.saveAsSvg();
-        };
-        $scope.model.saveAsPng = function(){
-          return $scope.saveAsPng();
-        };
       },
       link : function(scope, element, attrs) {
         scope.canvas = element.find("canvas")[0];
@@ -59,6 +53,12 @@
         scope.standardizeData = function() {
           var model = scope.model.getCellModel();
           scope.stdmodel = combinedplotFormatter.standardizeModel(model, scope.prefs);
+          model.saveAsSvg = function(){
+            return scope.saveAsSvg();
+          };
+          model.saveAsPng = function(){
+            return scope.saveAsPng();
+          };
         };
 
         scope.prepareSavedState = function(state) {

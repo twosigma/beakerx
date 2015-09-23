@@ -722,7 +722,6 @@
           //if (_v.namespace === undefined)
           //  _v.namespace = { };
           _bo = new BeakerObject(_v);
-          bkHelper.initBeakerPrefs();
           if (this.isEmpty()) {
             bkNotebookCellModelManager.reset([]);
           } else {
@@ -867,6 +866,7 @@
         _format = format;
         _notebookUri.set(notebookUri);
         _notebookModel.set(notebookModel);
+        bkHelper.initBeakerPrefs();
         this.setNotebookModelEdited(!!edited);
         _sessionId = sessionId;
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel, generateSaveData);
@@ -902,6 +902,7 @@
         _format = format;
         _notebookUri.set(notebookUri);
         _notebookModel.set(notebookModel);
+        bkHelper.initBeakerPrefs();
         _sessionId = sessionId;
 
         _needsBackup = _edited;

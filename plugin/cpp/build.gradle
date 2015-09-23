@@ -46,9 +46,9 @@ if (osName.startsWith('Mac')) {
 
 def java_home = "";
 if (mac){
-  java_home =  "readlink /usr/bin/javac".execute().text.trim()[0..-16];
+  java_home =  System.properties.'java.home';
 } else if (linux){
-  java_home = "readlink -f /usr/bin/javac".execute().text.trim()[0..-11];
+  java_home = System.properties.'java.home'; //"readlink -f /usr/bin/javah".execute().text.trim()[0..-11];
 }
 
 task makeCRunLib(type: Exec, dependsOn: ['compileCppKernel', 'makeCppKernelHeader']) {
@@ -57,9 +57,9 @@ task makeCRunLib(type: Exec, dependsOn: ['compileCppKernel', 'makeCppKernelHeade
   workingDir './src/main/cpp'
   def jvmDir = project(':plugin:jvm').projectDir
   if (mac){
-    commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/Headers", '-o', 'libCRun.jnilib', 'CRun.cpp'
+    commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/../include", '-I', "${java_home}/../include/darwin", '-o', 'libCRun.jnilib', 'CRun.cpp'
   } else if (linux) {
-    commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/include", '-I', "${java_home}/include/linux", '-o', 'libCRun.jnilib', 'CRun.cpp'
+    commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/../include", '-I', "${java_home}/../include/linux", '-o', 'libCRun.jnilib', 'CRun.cpp'
   }
 }
 

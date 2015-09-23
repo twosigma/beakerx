@@ -19,9 +19,6 @@
 #include <jni.h>
 #include <dlfcn.h>
 
-JNIEnv *globEnv;
-jobject globObj;
-
 JNIEXPORT jboolean JNICALL Java_com_twosigma_beaker_cpp_utils_CppKernel_cLoad(JNIEnv *env, jobject obj, jstring jfile) {
   const char* file = env->GetStringUTFChars(jfile, NULL);
   void* handle = dlopen(file, RTLD_LAZY | RTLD_GLOBAL);
@@ -38,26 +35,23 @@ JNIEXPORT jobject JNICALL Java_com_twosigma_beaker_cpp_utils_CppKernel_cLoadAndR
 
   handle = dlopen(file, RTLD_LAZY | RTLD_GLOBAL);
   if (handle == NULL){
-    return NULL;
+    return env->NewStringUTF(dlerror());
   }
 
   const char* type = env->GetStringUTFChars(jtype, NULL);
 
   handle = dlsym(handle, "call_beaker_main");
   if (handle == NULL) {
-    return NULL;
+    return env->NewStringUTF(dlerror());
   }
-
-  globEnv = env;
-  globObj = obj;
 
   jobject ret = NULL;
   if (strcmp(type, "void") == 0){
-    void (*mainCaller)() = reinterpret_cast<void (*)()>(reinterpret_cast<long>(handle));
-    mainCaller();
+    void (*mainCaller)(JNIEnv *,jobject) = reinterpret_cast<void (*)(JNIEnv *,jobject)>(reinterpret_cast<long>(handle));
+    mainCaller(env,obj);
   } else {
-    jobject (*mainCaller)() = reinterpret_cast<jobject (*)()>(reinterpret_cast<long>(handle));
-    ret = mainCaller();
+    jobject (*mainCaller)(JNIEnv *,jobject) = reinterpret_cast<jobject (*)(JNIEnv *,jobject)>(reinterpret_cast<long>(handle));
+    ret = mainCaller(env,obj);
   }
 
   return ret;

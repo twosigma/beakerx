@@ -102,22 +102,23 @@ public class CppEvaluator {
     loadedCells = new HashSet<String>();
     compileCommand = new ArrayList<String>();
     compileCommand.add("clang++");
-    compileCommand.add("-std=c++14");
     compileCommand.add("-shared");
-    compileCommand.add("-undefined");
-    compileCommand.add("dynamic_lookup");
+    if (System.getProperty("os.name").toLowerCase().startsWith("mac")) {
+      compileCommand.add("-undefined");
+      compileCommand.add("dynamic_lookup");
+    }
     compileCommand.add("-fPIC");
     compileCommand.add("-m64");
     compileCommand.add("-Wno-return-type-c-linkage");
     compileCommand.add("-I");
     compileCommand.add("./include");
     compileCommand.add("-I");
-    compileCommand.add(System.getenv().get("JAVA_HOME") + "/include");
+    compileCommand.add(System.getProperty("java.home") + "/../include");
     compileCommand.add("-I");
-    compileCommand.add(System.getenv().get("JAVA_HOME") + "/include/linux");
+    compileCommand.add(System.getProperty("java.home") + "/../include/linux");
     compileCommand.add("-I");
-    compileCommand.add(System.getenv().get("JAVA_HOME") + "/include/darwin");
-
+    compileCommand.add(System.getProperty("java.home") + "/../include/darwin");
+    
     exit = false;
     currentClassPath = "";
     currentImports = "";
@@ -243,12 +244,20 @@ public class CppEvaluator {
       private String createMainCaller(String type){
         StringBuilder builder = new StringBuilder();
         if (type != "void") {
-          builder.append("\nextern \"C\" jobject call_beaker_main() {\n");
+          builder.append("JNIEnv *globEnv;\n");
+          builder.append("jobject globObj;\n");
+          builder.append("\nextern \"C\" jobject call_beaker_main(JNIEnv *e,jobject o) {\n");
+          builder.append("\t" + "globEnv=e;\n");
+          builder.append("\t" + "globObj=o;\n");
           builder.append("\t" + type + " ret;\n");
           builder.append("\t" + "beaker_main(ret);\n");
           builder.append("\t" + "return Beaker::convert(ret);\n");
         } else {
-          builder.append("\nextern \"C\" void call_beaker_main() {\n");
+          builder.append("JNIEnv *globEnv;\n");
+          builder.append("jobject globObj;\n");
+          builder.append("\nextern \"C\" void call_beaker_main(JNIEnv *e,jobject o) {\n");
+          builder.append("\t" + "globEnv=e;\n");
+          builder.append("\t" + "globObj=o;\n");
           builder.append("beaker_main();\n");
           builder.append("return;\n");
         }
@@ -274,6 +283,8 @@ public class CppEvaluator {
           String cellType = extractor.returnType;
           int beakerMainLastToken = extractor.beakerMainLastToken;
 
+          cellType = cellType.replaceAll(">>", "> >");
+          
           String processedCode = theCode;
           // If beaker_main was found
           if (!cellType.equals("none")){
@@ -302,13 +313,15 @@ public class CppEvaluator {
 
           ProcessBuilder pb;
 
-          // System.out.println("Compiling with:");
-          // StringBuilder builder = new StringBuilder();
-          // for (String s : clangCommand){
-          //   builder.append(s + " ");
-          // }
-          // System.out.println(builder.toString());
-
+          if(System.getenv("BEAKER_CPP_DEBUG") != null ) {
+            System.out.println("Compiling with:");
+            StringBuilder builder = new StringBuilder();
+            for (String s : clangCommand){
+              builder.append(s + " ");
+            }
+            System.out.println(builder.toString());
+          }
+          
           // Compile
           pb = new ProcessBuilder(clangCommand);
           pb.directory(new File(System.getProperty("user.dir")));
@@ -359,18 +372,19 @@ public class CppEvaluator {
                 InputStream buffer = new BufferedInputStream(file);
                 ObjectInputStream input = new ObjectInputStream(buffer);
                 ret = input.readObject();
+                theOutput.finished(ret);
               } catch (EOFException ex){
                 System.out.println("EOFException!");
+                theOutput.error("Failed to read serialized cell output");
               } catch(IOException ex){
                 System.out.println("IOException!");
                 theOutput.error("Failed to read serialized cell output");
               }
             } else {
               theOutput.error("Execution failed");
-              theOutput.finished(null);
             }
-          }
-          theOutput.finished(ret);
+          } else
+            theOutput.finished(null);
 
         } catch(Throwable e) {
           if(e instanceof InvocationTargetException)

@@ -25,6 +25,9 @@ import com.twosigma.beaker.sqlsh.autocomplete.SqlAutocomplete;
 import javax.management.QueryEval;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.FileSystems;
 import java.sql.SQLException;
 import java.util.*;
@@ -155,10 +158,13 @@ public class SQLEvaluator {
                 job = jobQueue.poll();
                 job.getSimpleEvaluationObject().started();
 
+                job.getSimpleEvaluationObject().setOutputHandler();
                 namespaceClient = NamespaceClient.getBeaker(sessionId);
                 namespaceClient.setOutputObj(job.getSimpleEvaluationObject());
 
                 executor.executeTask(new MyRunnable(job.getSimpleEvaluationObject(), namespaceClient));
+
+                job.getSimpleEvaluationObject().clrOutputHandler();
 
                 namespaceClient.setOutputObj(null);
                 namespaceClient = null;
@@ -183,10 +189,13 @@ public class SQLEvaluator {
                 simpleEvaluationObject.finished(queryExecutor.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient, namedConnectionString));
             } catch (SQLException e) {
                 simpleEvaluationObject.error(e.getMessage());
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (ThreadDeath e) {
+                simpleEvaluationObject.error("... cancelled!");
+            } catch (Throwable e) {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
                 simpleEvaluationObject.error(e.getMessage());
             }
+
         }
     }
 
@@ -218,3 +227,4 @@ public class SQLEvaluator {
     }
 
 }
+

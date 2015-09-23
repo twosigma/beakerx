@@ -244,12 +244,20 @@ public class CppEvaluator {
       private String createMainCaller(String type){
         StringBuilder builder = new StringBuilder();
         if (type != "void") {
-          builder.append("\nextern \"C\" jobject call_beaker_main() {\n");
+          builder.append("JNIEnv *globEnv;\n");
+          builder.append("jobject globObj;\n");
+          builder.append("\nextern \"C\" jobject call_beaker_main(JNIEnv *e,jobject o) {\n");
+          builder.append("\t" + "globEnv=e;\n");
+          builder.append("\t" + "globObj=o;\n");
           builder.append("\t" + type + " ret;\n");
           builder.append("\t" + "beaker_main(ret);\n");
           builder.append("\t" + "return Beaker::convert(ret);\n");
         } else {
-          builder.append("\nextern \"C\" void call_beaker_main() {\n");
+          builder.append("JNIEnv *globEnv;\n");
+          builder.append("jobject globObj;\n");
+          builder.append("\nextern \"C\" void call_beaker_main(JNIEnv *e,jobject o) {\n");
+          builder.append("\t" + "globEnv=e;\n");
+          builder.append("\t" + "globObj=o;\n");
           builder.append("beaker_main();\n");
           builder.append("return;\n");
         }
@@ -364,18 +372,19 @@ public class CppEvaluator {
                 InputStream buffer = new BufferedInputStream(file);
                 ObjectInputStream input = new ObjectInputStream(buffer);
                 ret = input.readObject();
+                theOutput.finished(ret);
               } catch (EOFException ex){
                 System.out.println("EOFException!");
+                theOutput.error("Failed to read serialized cell output");
               } catch(IOException ex){
                 System.out.println("IOException!");
                 theOutput.error("Failed to read serialized cell output");
               }
             } else {
               theOutput.error("Execution failed");
-              theOutput.finished(null);
             }
-          }
-          theOutput.finished(ret);
+          } else
+            theOutput.finished(null);
 
         } catch(Throwable e) {
           if(e instanceof InvocationTargetException)

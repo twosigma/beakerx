@@ -102,10 +102,11 @@ public class CppEvaluator {
     loadedCells = new HashSet<String>();
     compileCommand = new ArrayList<String>();
     compileCommand.add("clang++");
-    compileCommand.add("-std=c++14");
     compileCommand.add("-shared");
-    compileCommand.add("-undefined");
-    compileCommand.add("dynamic_lookup");
+    if (System.getProperty("os.name").toLowerCase().startsWith("mac")) {
+      compileCommand.add("-undefined");
+      compileCommand.add("dynamic_lookup");
+    }
     compileCommand.add("-fPIC");
     compileCommand.add("-m64");
     compileCommand.add("-Wno-return-type-c-linkage");
@@ -117,7 +118,7 @@ public class CppEvaluator {
     compileCommand.add(System.getProperty("java.home") + "/../include/linux");
     compileCommand.add("-I");
     compileCommand.add(System.getProperty("java.home") + "/../include/darwin");
-
+    
     exit = false;
     currentClassPath = "";
     currentImports = "";
@@ -274,6 +275,8 @@ public class CppEvaluator {
           String cellType = extractor.returnType;
           int beakerMainLastToken = extractor.beakerMainLastToken;
 
+          cellType = cellType.replaceAll(">>", "> >");
+          
           String processedCode = theCode;
           // If beaker_main was found
           if (!cellType.equals("none")){

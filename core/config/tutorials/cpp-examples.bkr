@@ -40,7 +40,7 @@
                     "mode": "text/x-c++src"
                 }
             },
-            "flags": "-I/System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers/"
+            "flags": ""
         }
     ],
     "cells": [
@@ -72,6 +72,7 @@
             "evaluator": "C++",
             "input": {
                 "body": [
+                    "/* A basic C++ cell - you must define a beaker_main function with an optional parameter that is the return value */",
                     "#include <iostream>",
                     "void beaker_main(){",
                     "  std::cout << \"Hello world!\" << std::endl;",
@@ -92,11 +93,11 @@
                 },
                 "selectedType": "Results",
                 "pluginName": "C++",
-                "shellId": "36bd9693-3c3e-477c-89d0-bfdbc24c8e05",
-                "elapsedTime": 3581
+                "shellId": "a517b9a4-4873-4cff-b85b-602a8ed9c389",
+                "elapsedTime": 2126
             },
             "evaluatorReader": true,
-            "lineCount": 5
+            "lineCount": 6
         },
         {
             "id": "codey0EVnd",
@@ -104,6 +105,7 @@
             "evaluator": "C++",
             "input": {
                 "body": [
+                    "/* You can define functions */",
                     "#include <string>",
                     "std::string distant;",
                     "void setDistant(){",
@@ -115,11 +117,11 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "C++",
-                "shellId": "36bd9693-3c3e-477c-89d0-bfdbc24c8e05",
-                "elapsedTime": 1273
+                "shellId": "a517b9a4-4873-4cff-b85b-602a8ed9c389",
+                "elapsedTime": 738
             },
             "evaluatorReader": true,
-            "lineCount": 5
+            "lineCount": 6
         },
         {
             "id": "codevYfhgq",
@@ -127,6 +129,7 @@
             "evaluator": "C++",
             "input": {
                 "body": [
+                    "/* You can call functions defined in other C++ cells */",
                     "#include <string>",
                     "#include <iostream>",
                     "extern std::string distant;",
@@ -143,11 +146,11 @@
                 "result": "This is far away",
                 "selectedType": "Text",
                 "pluginName": "C++",
-                "shellId": "36bd9693-3c3e-477c-89d0-bfdbc24c8e05",
-                "elapsedTime": 2092
+                "shellId": "a517b9a4-4873-4cff-b85b-602a8ed9c389",
+                "elapsedTime": 1654
             },
             "evaluatorReader": true,
-            "lineCount": 9
+            "lineCount": 10
         },
         {
             "id": "code2wlBSW",
@@ -155,10 +158,11 @@
             "evaluator": "C++",
             "input": {
                 "body": [
+                    "/* You can store data in side beaker namespace */",
                     "#include <string>",
                     "#include <vector>",
                     "void beaker_main(int &ret){",
-                    "  std::map<std::string, std::vector<int>> test;",
+                    "  std::map<std::string, std::vector<int> > test;",
                     "  test[\"a\"] = std::vector<int>(1,1);",
                     "  test[\"b\"] = std::vector<int>(2,2);",
                     "  test[\"c\"] = std::vector<int>(3,3);",
@@ -172,11 +176,11 @@
                 "result": 1,
                 "selectedType": "Text",
                 "pluginName": "C++",
-                "elapsedTime": 3032,
-                "shellId": "36bd9693-3c3e-477c-89d0-bfdbc24c8e05"
+                "elapsedTime": 2441,
+                "shellId": "a517b9a4-4873-4cff-b85b-602a8ed9c389"
             },
             "evaluatorReader": true,
-            "lineCount": 10
+            "lineCount": 11
         },
         {
             "id": "codeB3Dqi0",
@@ -184,9 +188,10 @@
             "evaluator": "C++",
             "input": {
                 "body": [
+                    "/* You can read objects from the beaker namespace but, beinc C++, you must specify the type */",
                     "#include <vector>",
                     "#include <string>",
-                    "void beaker_main(std::map<std::string, std::vector<int>> &ret){",
+                    "void beaker_main(std::map<std::string, std::vector<int> > &ret){",
                     "  Beaker::get(\"x\", ret);",
                     "}"
                 ]
@@ -194,6 +199,9 @@
             "output": {
                 "state": {},
                 "result": {
+                    "a": [
+                        1
+                    ],
                     "b": [
                         2,
                         2
@@ -202,23 +210,130 @@
                         3,
                         3,
                         3
-                    ],
-                    "a": [
-                        1
                     ]
                 },
                 "selectedType": "Text",
                 "pluginName": "C++",
-                "shellId": "36bd9693-3c3e-477c-89d0-bfdbc24c8e05",
-                "elapsedTime": 3083
+                "shellId": "a517b9a4-4873-4cff-b85b-602a8ed9c389",
+                "elapsedTime": 2542
             },
             "evaluatorReader": true,
-            "lineCount": 5
+            "lineCount": 6
+        },
+        {
+            "id": "codeqDLV1T",
+            "type": "code",
+            "evaluator": "C++",
+            "input": {
+                "body": [
+                    "/* You can return hash tables and these are properly displayed */",
+                    "#include <vector>",
+                    "#include <string>",
+                    "void beaker_main(std::map<std::string, std::string > &ret){",
+                    "  ret[\"a\"] = \"Alpha\";",
+                    "  ret[\"b\"] = \"Beta\";",
+                    "  ret[\"c\"] = \"Gamma\";",
+                    "}"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": false,
+                            "fixRight": false
+                        },
+                        "columnNames": [
+                            "Key",
+                            "Value"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "getCellSho": [
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "Key",
+                        "Value"
+                    ],
+                    "values": [
+                        [
+                            "a",
+                            "Alpha"
+                        ],
+                        [
+                            "b",
+                            "Beta"
+                        ],
+                        [
+                            "c",
+                            "Gamma"
+                        ]
+                    ],
+                    "subtype": "Dictionary"
+                },
+                "selectedType": "Table",
+                "pluginName": "C++",
+                "shellId": "a517b9a4-4873-4cff-b85b-602a8ed9c389",
+                "elapsedTime": 1704
+            },
+            "evaluatorReader": true,
+            "lineCount": 8
+        },
+        {
+            "id": "code4UVEpX",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// autotranslation works",
+                    "beaker.x"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "a": [
+                        1
+                    ],
+                    "b": [
+                        2,
+                        2
+                    ],
+                    "c": [
+                        3,
+                        3,
+                        3
+                    ]
+                },
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 25
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         }
     ],
     "namespace": {
         "hello": "world!",
         "x": {
+            "a": [
+                1
+            ],
             "b": [
                 2,
                 2
@@ -227,9 +342,6 @@
                 3,
                 3,
                 3
-            ],
-            "a": [
-                1
             ]
         },
         "y": {

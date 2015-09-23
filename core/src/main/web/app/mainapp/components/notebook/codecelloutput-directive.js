@@ -174,7 +174,17 @@
         };
 
         $scope.getAdditionalMenuItems = function() {
-          var displayType = $scope.getOutputDisplayType() != null ? $scope.getOutputDisplayType() : $scope.applicableDisplays[0];
+
+          var getDisplayType = function(){
+            var displayType = $scope.getOutputDisplayType() != null ? $scope.getOutputDisplayType() : $scope.applicableDisplays[0];
+
+            if (displayType === "Results" && $scope.getOutputResult() && $scope.getOutputResult().payload){
+              displayType = $scope.getOutputResult().payload.type;
+            }
+            return displayType;
+          };
+
+          var displayType = getDisplayType();
           if(displayType === "Plot" || displayType === "CombinedPlot"){
             _saveAsItems = [
               {
@@ -250,7 +260,7 @@
         $scope.outputRefreshed = function() {
           if (!($scope.$$phase || $scope.$root.$$phase))
             $scope.$digest();
-        }
+        };
         if ( $scope.cellId !== undefined )
           bkEvaluateJobManager.registerOutputCell($scope.cellId, $scope);
       }

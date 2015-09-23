@@ -379,7 +379,6 @@
               //codecomplete is up, skip
               return;
             }
-            scope.cm.doc.sel.ranges[0].anchor.ch = -1;
             CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
           });
           scope.cm.on('focus', function () {

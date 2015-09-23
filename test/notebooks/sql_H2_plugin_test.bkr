@@ -40,7 +40,7 @@
                     "mode": "text/x-sql"
                 }
             },
-            "classPath": "http://central.maven.org/maven2/com/h2database/h2/1.4.186/h2-1.4.186.jar",
+            "classPath": "",
             "datasorces": "H2MemDB2=jdbc:h2:mem:db1",
             "outdir": "123"
         }
@@ -101,7 +101,7 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 38,
+                "elapsedTime": 25,
                 "hidden": true,
                 "result": {
                     "type": "TableDisplay",
@@ -161,8 +161,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "4fef28a7-4bd5-49cc-849c-2352eea5de22",
-                "elapsedTime": 924
+                "shellId": "196649d6-7e47-4409-b00e-1526eb2bc05d",
+                "elapsedTime": 199
             },
             "evaluatorReader": true,
             "lineCount": 11,
@@ -204,8 +204,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "4fef28a7-4bd5-49cc-849c-2352eea5de22",
-                "elapsedTime": 1060
+                "shellId": "196649d6-7e47-4409-b00e-1526eb2bc05d",
+                "elapsedTime": 1050
             },
             "evaluatorReader": true,
             "lineCount": 16,
@@ -243,8 +243,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "SQL",
-                "shellId": "4fef28a7-4bd5-49cc-849c-2352eea5de22",
-                "elapsedTime": 600,
+                "shellId": "196649d6-7e47-4409-b00e-1526eb2bc05d",
+                "elapsedTime": 607,
                 "result": {
                     "type": "OutputContainer",
                     "items": [
@@ -272,7 +272,7 @@
                                     "DATE",
                                     {
                                         "type": "Date",
-                                        "timestamp": 1442869200000
+                                        "timestamp": 1442955600000
                                     }
                                 ]
                             ],
@@ -293,7 +293,7 @@
                                     "NY",
                                     {
                                         "type": "Date",
-                                        "timestamp": 1442869200000
+                                        "timestamp": 1442955600000
                                     }
                                 ],
                                 [
@@ -302,7 +302,7 @@
                                     "AL",
                                     {
                                         "type": "Date",
-                                        "timestamp": 1442869200000
+                                        "timestamp": 1442955600000
                                     }
                                 ],
                                 [
@@ -311,7 +311,7 @@
                                     "IL",
                                     {
                                         "type": "Date",
-                                        "timestamp": 1442869200000
+                                        "timestamp": 1442955600000
                                     }
                                 ]
                             ],
@@ -361,7 +361,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 26,
+                "elapsedTime": 27,
                 "hidden": true,
                 "result": "jdbc:h2:mem:db1"
             },
@@ -444,8 +444,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "SQL",
-                "shellId": "4fef28a7-4bd5-49cc-849c-2352eea5de22",
-                "elapsedTime": 897,
+                "shellId": "196649d6-7e47-4409-b00e-1526eb2bc05d",
+                "elapsedTime": 875,
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -558,7 +558,7 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 28,
+                "elapsedTime": 31,
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "TableDisplay",
@@ -783,7 +783,7 @@
         "cname": "NewYork",
         "cdate": {
             "type": "Date",
-            "timestamp": 1442924007633
+            "timestamp": 1443019419348
         },
         "city": {
             "type": "TableDisplay",

@@ -30,6 +30,7 @@
       $scope.baseUrl = bkPublicationApi.getBaseUrl();
 
       $scope.signIn = function() {
+        $scope.saving = true;
         return bkPublicationAuth.signIn($scope.user)
         .then(function() {
           initPublication();
@@ -37,6 +38,9 @@
         })
         .catch(function(err) {
           $scope.error = 'Error: Invalid email or password';
+        })
+        .finally(function() {
+          $scope.saving = false;
         });
       };
 

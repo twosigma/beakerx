@@ -450,6 +450,10 @@
       this.nbmodel = nbmodel;
     };
 
+    BeakerObject.prototype.isBeakerObject = function(obj) {
+      return obj === this.beakerObj;
+    }
+    
     BeakerObject.prototype.setupBeakerObject = function(modelOutput) {
       var self = this;
 
@@ -650,7 +654,7 @@
       for (var p in this.setCache) {
         if (this.nbmodel.namespace === undefined)
           this.nbmodel.namespace = { };
-        if (this.isCircularObject(this.setCache[p]))
+        if (this.isCircularObject2(this.setCache[p]))
           this.nbmodel.namespace[p] = "ERROR: circular objects are not supported";
         else
           this.nbmodel.namespace[p] = transform(this.setCache[p]);
@@ -676,9 +680,34 @@
       this.getCache = { };
     };
 
-    BeakerObject.prototype.transform = transform;
-
+    BeakerObject.prototype.transform = function(obj) {
+      if (obj === this.beakerObj) {
+        var its = [];
+        var nms = [];
+        for (var p in this.nbmodel.namespace) {
+          if (this.predefined.indexOf(p)<0) {
+            var t = this.nbmodel.namespace[p];
+            its.push(t);
+            nms.push(p);
+          }
+        }
+        obj = {
+            type: 'OutputContainer',
+            items: its,
+            names: nms
+        };
+      }
+      return transform(obj);
+    }
+    
     BeakerObject.prototype.isCircularObject = function(node, parents) {
+      if (node === this.beakerObj)
+        return true;
+      
+      return this.isCircularObject2(node, parents);
+    }
+
+    BeakerObject.prototype.isCircularObject2 = function(node, parents) {
       parents = parents || [];
       if (!node || typeof node != "object"){
         return false;
@@ -690,7 +719,7 @@
           if (parents.indexOf(value)>=0) {
             return true;
           }
-          if (this.isCircularObject(value, parents)) {
+          if (this.isCircularObject2(value, parents)) {
             return true;
           }
         }

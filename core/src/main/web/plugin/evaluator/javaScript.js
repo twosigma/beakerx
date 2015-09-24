@@ -230,7 +230,7 @@ define(function(require, exports, module) {
                 beakerObj.clearOutput();
               });
             } else {
-              if (beakerObj.isCircularObject(output))
+              if (!beakerObj.isBeakerObject(output) && beakerObj.isCircularObject(output))
                 output = "ERROR: circular objects are not supported";
               else
                 output = beakerObj.transform(output);

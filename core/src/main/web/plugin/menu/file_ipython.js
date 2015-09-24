@@ -240,6 +240,7 @@ define(function(require, exports, module) {
         parent: "File",
         id: "file-menu",
         submenu: "Open",
+        submenusortorder: 110,
         items: [
           {
             name: "Open... IPython (.ipynb)",

@@ -409,6 +409,14 @@ convertToJSON <- function(val, collapse) {
   } else if (class(val) == "table") {
     o = toJSON(val)
 
+  } else if (class(val) == "ggvis") {
+    temp <- print(val)
+    p = "{ \"type\":\"GGVis\", \"first\":"
+    p = paste(p, toJSON(as.character(temp[[1]])), sep='')
+	p = paste(p, ", \"second\":", sep='')
+    p = paste(p, toJSON(as.character(temp[[2]])), sep='')
+	p = paste(p, "}", sep='')
+	o = p
   } else {
     o = paste("\"ERROR: invalid object type ", gsub("\"","\\\"",class(val)), sep='')
     o = paste(o, "\"", sep='')

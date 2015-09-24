@@ -58,7 +58,7 @@ RUN apt-get install -y libzmq3-dbg libzmq3-dev libzmq3 \
                        python-pip python-dev python-yaml \
                        python-matplotlib python-scipy
 
-RUN pip install ipython==3.0.0 jinja2 tornado pyzmq pandas jsonschema
+RUN pip install ipython jinja2 tornado pyzmq pandas jsonschema
 
 #############
 #  Python3  #
@@ -68,7 +68,7 @@ RUN pip install ipython==3.0.0 jinja2 tornado pyzmq pandas jsonschema
 RUN apt-get install -y python-virtualenv python3-dev pkgconf libfreetype6-dev libfreetype6 \
     	    libxft-dev libblas-dev liblapack-dev gfortran libyaml-dev && \
     virtualenv /home/beaker/py3k -p python3 && \
-    /home/beaker/py3k/bin/pip install ipython[notebook]==3.0.0 && \
+    /home/beaker/py3k/bin/pip install ipython[notebook] && \
     /home/beaker/py3k/bin/pip install numpy matplotlib scipy jinja2 tornado pyzmq pandas pyaml
 
 #######
@@ -80,7 +80,11 @@ RUN apt-get install -y r-base r-base-dev libxml2-dev libssl-dev libcurl4-gnutls-
     Rscript -e "install.packages('ggplot2',,'http://cran.us.r-project.org')" && \
     Rscript -e "install.packages('devtools',,'http://cran.us.r-project.org')" && \
     Rscript -e "install.packages('RJSONIO',,'http://cran.us.r-project.org')" && \
-    Rscript -e "install.packages('RCurl',,'http://cran.us.r-project.org')"
+    Rscript -e "install.packages('RCurl',,'http://cran.us.r-project.org')" && \
+    Rscript -e "install.packages('jpeg',,'http://cran.us.r-project.org')" && \
+    Rscript -e "install.packages('png',,'http://cran.us.r-project.org')" && \
+    Rscript -e "install.packages('base64enc',,'http://cran.us.r-project.org')"
+    
 
 ###########
 #  Julia  #

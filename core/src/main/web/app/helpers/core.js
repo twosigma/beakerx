@@ -347,6 +347,7 @@
             this.showSpinner = true;
             bkUtils.httpPost("../beaker/rest/file-io/createDirectory", {path: path})
               .success(function (list) {
+                self.treeViewfs.fillInput(path);
                 $rootScope.$broadcast("MAKE_NEW_DIR",{
                   path: path
                 });

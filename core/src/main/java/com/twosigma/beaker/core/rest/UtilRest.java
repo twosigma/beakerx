@@ -330,7 +330,7 @@ public class UtilRest {
 
     Object newValue = null;
     // Validate boolean preferences
-    String[] booleanPrefs = {"advanced-mode", "allow-anonymous-usage-tracking"};
+    String[] booleanPrefs = {"advanced-mode", "allow-anonymous-usage-tracking", "fs-reverse"};
     if (Arrays.asList(booleanPrefs).contains(preferenceName)){
       switch (preferenceValue){
         case "true":
@@ -353,6 +353,13 @@ public class UtilRest {
       if (Arrays.asList(validModes).contains(preferenceValue)){
         newValue = preferenceValue;
         this.editMode = preferenceValue;
+      }
+    }
+    // Validate edit mode
+    else if (preferenceName.equals("fs-order-by")){
+      String[] validModes = {"uri", "modified"};
+      if (Arrays.asList(validModes).contains(preferenceValue)){
+        newValue = preferenceValue;
       }
     }
 

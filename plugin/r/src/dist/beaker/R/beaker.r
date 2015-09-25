@@ -129,12 +129,17 @@ containsOnlyBasicTypes <- function(l) {
 }
 
 notContainKnownType  <- function(l) {
-  if (exists("type", where=l)) {
-    if(l$type == "ImageIcon") {
-      return(FALSE)
-    }
-  }
-  return(TRUE)
+  ret <- tryCatch({
+	  if (exists("type", where=l)) {
+	    if(l$type == "ImageIcon") {
+	      return(FALSE)
+	    }
+	  }
+	  return(TRUE)
+	}, error = function(err) {
+	  return (FALSE)
+    })
+  return(ret)
 }
 
 isListOfDictionaries <- function(l) {
@@ -252,23 +257,31 @@ convertToJSONNoRecurse <- function(val) {
 }
  
 guessTypeName <- function(txt) {
-  if (grepl(paste0("^[0-9]*-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]$"),txt))
-    return ("POSIXct")
-  if (as.integer(txt) == txt)
-    return ("integer")
-  if (as.double(txt) == txt)
-    return ("numeric")
-  return ("character")
+  return(tryCatch({
+	  if (grepl(paste0("^[0-9]*-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]$"),txt))
+	    return ("POSIXct")
+	  if (as.integer(txt) == txt)
+	    return ("integer")
+	  if (as.double(txt) == txt)
+	    return ("numeric")
+	  return ("character")
+	}, error = function(err) {
+	  return ("character")
+    }))
 } 
 
 guessType <- function(txt) {
-  if (grepl(paste0("^[0-9]*-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]$"),txt))
-    return (as.POSIXct(txt))
-  if (as.integer(txt) == txt)
-    return (as.integer(txt))
-  if (as.double(txt) == txt)
-    return (as.double(txt))
-  return (txt)
+  return(tryCatch({
+	  if (grepl(paste0("^[0-9]*-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]$"),txt))
+	    return (as.POSIXct(txt))
+	  if (as.integer(txt) == txt)
+	    return (as.integer(txt))
+	  if (as.double(txt) == txt)
+	    return (as.double(txt))
+	  return (txt)
+	}, error = function(err) {
+	  return (txt)
+    }))
 } 
   
 convertToJSON <- function(val, collapse) {
@@ -323,6 +336,9 @@ convertToJSON <- function(val, collapse) {
   	o = p
   }
   
+  else if (class(val) == "data.table") {
+    o = convertToJSON(as.data.frame(val))
+  }
   else if (class(val) == "data.frame") {
     p = "{ \"type\":\"TableDisplay\",\"subtype\":\"TableDisplay\",\"hasIndex\":\"true\",\"columnNames\":"
     colNames = c('Index')
@@ -396,6 +412,14 @@ convertToJSON <- function(val, collapse) {
   } else if (class(val) == "table") {
     o = toJSON(val)
 
+  } else if (class(val) == "ggvis") {
+    temp <- print(val)
+    p = "{ \"type\":\"GGVis\", \"first\":"
+    p = paste(p, toJSON(as.character(temp[[1]])), sep='')
+	p = paste(p, ", \"second\":", sep='')
+    p = paste(p, toJSON(as.character(temp[[2]])), sep='')
+	p = paste(p, "}", sep='')
+	o = p
   } else {
     o = paste("\"ERROR: invalid object type ", gsub("\"","\\\"",class(val)), sep='')
     o = paste(o, "\"", sep='')

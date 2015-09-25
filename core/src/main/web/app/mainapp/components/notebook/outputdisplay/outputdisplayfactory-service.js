@@ -134,8 +134,8 @@
         }
       },
       "OutputContainer": {
-        template: '<bk-code-cell-output ng-repeat="i in items" model="i" >' +
-            '</ bk-code-cell-output>',
+        template: '<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b ng-if="hasName($index)">{{getName($index)}}<br/></b><bk-code-cell-output model="i" >' +
+            '</ bk-code-cell-output><br/>></li></ul>',
         scope: {
           model: "="
         },
@@ -153,6 +153,12 @@
               }
             };
           });
+          $scope.getName = function(idx) {
+            return $scope.model.getCellModel().names[idx] || '';
+          }
+          $scope.hasName = function(idx) {
+            return $scope.model.getCellModel().names !== undefined;
+          }
           $scope.isShowMenu = function() { return false; };
           $scope.$watch('isShowOutput()', function(oldval, newval) {
             $scope.showoutput = newval;

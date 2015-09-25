@@ -22,7 +22,7 @@ import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.nio.file.Files;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,6 +42,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.type.TypeReference;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -372,18 +373,18 @@ public class UtilRest {
     java.nio.file.Path preferenceFile = Paths.get(preferenceFileUrl);
     try {
       ObjectMapper om = new ObjectMapper();
+      om.enable(SerializationConfig.Feature.FLUSH_AFTER_WRITE_VALUE);
       TypeReference readType = new TypeReference<HashMap<String, Object>>() {
       };
       Map<String, Object> prefs = om.readValue(preferenceFile.toFile(), readType);
 
       Object oldValue = (Object) prefs.get(preferenceName);
       // If value changed, write it to the file too
-      if (!(newValue.equals(oldValue))) {
-        Files.deleteIfExists(preferenceFileTmp);
+      if (newValue != null && !newValue.equals(oldValue)) {
         prefs.put(preferenceName, newValue);
         om.writerWithDefaultPrettyPrinter().writeValue(preferenceFileTmp.toFile(), prefs);
         // Move tmp to normal
-        Files.move(preferenceFileTmp, preferenceFile, REPLACE_EXISTING);
+        Files.move(preferenceFileTmp, preferenceFile, ATOMIC_MOVE);
       }
     } catch (IOException e) {
       e.printStackTrace();

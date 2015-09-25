@@ -173,7 +173,16 @@
             return !$scope.cellmodel.hideTitle;
           },
           attachCell: function(newCell) {
-            notebookCellOp.insertAfter($scope.cellmodel.id, newCell);
+            var children = notebookCellOp.getAllDescendants($scope.cellmodel.id);
+            if ($scope.cellmodel.collapsed && children) {
+              var lastChildCell = children[children.length - 1];
+              notebookCellOp.insertAfter(lastChildCell.id, newCell);
+              if (newCell.type !== "section") {
+                $scope.toggleShowChildren();
+              }
+            } else {
+              notebookCellOp.insertAfter($scope.cellmodel.id, newCell);
+            }
           },
           prevCell: function() {
             return $scope.cellmodel;

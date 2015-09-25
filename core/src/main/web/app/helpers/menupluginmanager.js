@@ -23,6 +23,8 @@
     // add newItem to itemsList, if an item with same name already exists in itemsList,
     // compare priorities, if newItem.priority > existingItem.priority, newItem will
     // replace the existingItem in place.
+    //
+    // if newItem already exists in itemsList with the same priority and has type submenu then merge submenus' items
     var addMenuItem = function(itemsList, newItem) {
       // check if an entry with same name already exist
       var existingItem = _(itemsList).find(function(it) {
@@ -31,7 +33,14 @@
       if (existingItem) {
         existingItem.priority = existingItem.priority ? existingItem.priority : DEFAULT_PRIORITY;
         newItem.priority = newItem.priority ? newItem.priority : DEFAULT_PRIORITY;
-        if (newItem.priority >= existingItem.priority) {
+        if (existingItem.type === 'submenu' && newItem.priority === existingItem.priority) {
+          //merge submenu items
+          if(newItem.items){
+            newItem.items.forEach(function (item) {
+              addMenuItem(existingItem.items, item);
+            });
+          }
+        } else if (newItem.priority >= existingItem.priority) {
           // replace in place
           itemsList.splice(itemsList.indexOf(existingItem), 1, newItem);
         } else {

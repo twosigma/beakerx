@@ -37,6 +37,7 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String) {
     val s = new Settings();
     s.bootclasspath.value = cp;
     s.classpath.value = cp;
+    s.usejavacp.value = true;
     s.termConflict.value = "package";
     s.embeddedDefaults(cl);
     s;

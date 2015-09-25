@@ -66,6 +66,10 @@ bk-section-cell, bk-markdown-cell {
   }
 }
 
+bk-code-cell .CodeMirror pre {
+  font-family: 'Roboto Mono';
+}
+
 bk-markdown-cell bk-markdown-editable {
   display: block;
 }
@@ -182,6 +186,7 @@ bk-output-display {
   }
 
   &[type="Text"] pre{
+    font-family: "Roboto Mono";
     padding-top: 3px;
   }
 

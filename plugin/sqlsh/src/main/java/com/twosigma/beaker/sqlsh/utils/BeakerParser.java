@@ -85,7 +85,7 @@ public class BeakerParser {
     private void parseSelectInto(BeakerParseResult result) {
         String sql = result.getResultQuery();
         String upper = sql.toUpperCase();
-        int select;
+        int select = -1;
         int from = -1;
         int into = -1;
 
@@ -94,6 +94,7 @@ public class BeakerParser {
             select = upper.indexOf(SQL_SELECT, select);
             if (select >= 0) {
                 from = upper.indexOf(SQL_FROM, select);
+                if(from < 0) break;
                 into = upper.indexOf(SQL_INTO, select);
 
                 if (into > select && into < from) {

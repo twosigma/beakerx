@@ -83,7 +83,7 @@
             "id": "markdownGthcqo",
             "type": "markdown",
             "body": [
-                "First and foremost, the beaker object is how autotranslation happens.",
+                "First and foremost, the `beaker` object is where autotranslation happens.",
                 "The object exists in each of the languages, and the variables defined on it are synchorized,",
                 "so you can set a value in one language, and access in another language, and the values are translated, automatically.",
                 "This is *autotranslation*.  For example, let's start out in Python:"
@@ -168,11 +168,16 @@
             "id": "markdownPqq8QH",
             "type": "markdown",
             "body": [
-                "In addition to working for simple values like integers, as above, autotranslation works for complex values like strings, arrays, images, dates, dictionaries, data frames, and more.",
-                "Beaker uses JSON as its *lengua franca*, or common format to translate the data.",
-                "Since some languages and classes have fundamental differences, not everything can be perfectly translated, but Beaker makes the best approximation possible.",
+                "In addition to working for simple values like integers, as above,",
+                "autotranslation works for complex values like strings, arrays, images, dates, dictionaries, data frames, and more.",
+                "Beaker uses JSON as its *lingua franca*, or common format to translate the data.",
+                "",
+                "Since some languages and classes have fundamental differences, not everything can be perfectly translated,",
+                "but Beaker makes the best approximation possible.  Some objects cannot be translated, such as closures,",
+                "though with every release we improve and expand Beaker's capabilities.",
+                "",
                 "Note also that every language has its own syntax for access to the object.",
-                "See the autotranslation tutorial for a more complete review of all the data types handled, and the syntax in each language."
+                "See the [Autotranslation](/beaker/#/open?uri=file:config%2Ftutorials%2Fautotranslation.bkr&readOnly=true)  tutorial for a more complete review of all the data types handled, and the syntax in each language."
             ],
             "evaluatorReader": false
         },
@@ -189,12 +194,15 @@
             "type": "markdown",
             "body": [
                 "A common problem with notebooks stems from the separation between the code and the data.",
-                "If  data is stored only in data files, and the code only in the notebook file, then if these files become separated, the notebook's results become difficult to reproduce.",
-                "To address this problem, Beaker saves the beaker object, and all data stored on it, in the notebook file.",
+                "If  data is stored only in data files, and the code only in the notebook file, then if these files become separated,",
+                "the notebook's results become difficult to reproduce.",
+                "To address this problem, Beaker saves the `beaker` object, and all data stored on it, in the notebook file.",
                 "So when you next open it, your data is right there, ready for you to continue working with it.",
-                "It also works if you share the notebook, or use Beaker's publication feature.",
+                "It also works if you share the notebook, or use Beaker's publication feature:",
+                "you can share a notebook and the data inside it with one click.",
                 "",
-                "For example, we have saved a small array in this notebook in the variable `beaker.y`.  You can access it even though there's no code above that sets it:"
+                "For example, we have saved a small array in this notebook in the variable `beaker.y`.",
+                "You can access it even though there's no code above that sets it:"
             ],
             "evaluatorReader": false
         },
@@ -236,7 +244,7 @@
             "id": "markdownJiBesS",
             "type": "markdown",
             "body": [
-                "You can see all the values set on the beaker object just by returning it from a JavaScript cell"
+                "You can see all the values set on the `beaker` object just by returning it from a JavaScript cell"
             ],
             "evaluatorReader": false
         },
@@ -299,7 +307,8 @@
             "id": "markdownIWgvRW",
             "type": "markdown",
             "body": [
-                "If a variable has a large value that you no longer need it is easy to reclaim that memory by simply assigning it to null or any other small value.",
+                "If a variable has a large (in size) value that you no longer need,",
+                "it is easy to reclaim that memory by simply assigning it to null, or any other small value.",
                 "But if you want to remove it completely, you can do so as follows:"
             ],
             "evaluatorReader": false
@@ -327,7 +336,7 @@
             "id": "markdownt3RjgV",
             "type": "markdown",
             "body": [
-                "After deleting `x`, evaluate the first JavaScript cell in this sectionagain  and look at the beaker object to confirm `x` is gone."
+                "After deleting `x`, evaluate the first JavaScript cell in this sectionagain  and look at the `beaker` object to confirm `x` is gone."
             ],
             "evaluatorReader": false
         },
@@ -343,14 +352,55 @@
             "id": "markdownmTxVlU",
             "type": "markdown",
             "body": [
-                "Beaker is scriptable through API calls on the `beaker` object.  ",
-                "For example you can call `beaker.timeout(fn, interval)` to have a function by called asynchronously after a fixed amount of time.",
-                "These calls are documented in the tutorials on [Progress Reporting](/beaker/#/open?uri=file:config%2Ftutorials%2FprogressUpdate.bkr&readOnly=true),",
+                "Beaker is scriptable through API calls on the `beaker` object. ",
+                "For example you can call `beaker.print(value)` to include output into the cell.",
+                "",
+                "These calls are documented in the tutorials on",
+                "[Progress Reporting](/beaker/#/open?uri=file:config%2Ftutorials%2FprogressUpdate.bkr&readOnly=true) (including asynchronous events in JavaScript),",
                 "[Notebook Control](/beaker/#/open?uri=file:config%2Ftutorials%2FnotebookControl.bkr&readOnly=true) (triggering evaluation of other cells and languages), and",
                 "[Notebook Reflection](/beaker/#/open?uri=file:config%2Ftutorials%2FnotebookReflection.bkr&readOnly=true) (gaining access to source text of cells and their results).",
                 "Note that so far only JavaScript supports all the calls."
             ],
             "evaluatorReader": false
+        },
+        {
+            "id": "codeLRsgl6",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.print(\"stdout for JavaScript:\")",
+                    "beaker.print(\"useful for debugging,\")",
+                    "beaker.print(\"different from\")",
+                    "\"a returned value\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "stdout for JavaScript:\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "useful for debugging,\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "different from\n"
+                        }
+                    ],
+                    "payload": "a returned value"
+                },
+                "selectedType": "Results",
+                "pluginName": "JavaScript",
+                "elapsedTime": 177
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
         }
     ],
     "namespace": {

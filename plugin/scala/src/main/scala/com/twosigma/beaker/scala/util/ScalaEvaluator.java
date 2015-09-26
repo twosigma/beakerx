@@ -51,6 +51,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.twosigma.beaker.scala.util.ScalaEvaluatorGlue;
 import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
@@ -211,10 +212,10 @@ public class ScalaEvaluator {
     return null;
   }
 
-  protected ScalaDynamicClassLoader loader = null;
+  //protected ScalaDynamicClassLoader loader = null;
   protected ScalaEvaluatorGlue shell;
   protected String loader_cp = "";
-  protected ScalaDynamicClassLoader acloader = null;
+  //protected ScalaDynamicClassLoader acloader = null;
   protected ScalaEvaluatorGlue acshell;
   protected String acloader_cp = "";
 
@@ -251,9 +252,8 @@ public class ScalaEvaluator {
           if (shell==null) {
             updateLoader=false;
             newEvaluator();
-          } else if(loader!=null)
-            loader.clearCache();
-
+          }
+          
           j.outputObject.started();
 
           nc = NamespaceClient.getBeaker(sessionId);
@@ -314,6 +314,7 @@ public class ScalaEvaluator {
     protected ClassLoader newClassLoader() throws MalformedURLException
     {
       logger.fine("creating new loader");
+
       loader_cp = "";
       URL[] urls = {};
       if (!classPath.isEmpty()) {
@@ -326,11 +327,8 @@ public class ScalaEvaluator {
             logger.finest("adding file: "+urls[i].toString());
         }
       }
-      loader = null;
-      ClassLoader cl;
-      loader = new ScalaDynamicClassLoader(outDir);
-      loader.addAll(Arrays.asList(urls));
-      cl = loader.getLoader();
+      DynamicClassLoaderSimple cl = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+      cl.addURLs(urls);
       return cl;
     }
 
@@ -398,11 +396,9 @@ public class ScalaEvaluator {
           logger.finest("adding file: "+urls[i].toString());
       }
     }
-    acloader = null;
-    ClassLoader cl;
-    acloader = new ScalaDynamicClassLoader(outDir);
-    acloader.addAll(Arrays.asList(urls));
-    cl = acloader.getLoader();
+    
+    DynamicClassLoaderSimple cl = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+    cl.addURLs(urls);
     return cl;
   }
 

@@ -54,7 +54,8 @@
             "id": "markdownb6zFNY",
             "type": "markdown",
             "body": [
-                "Beaker handles output from [ggvis](http://ggvis.rstudio.com/ggvis-basics.html), made by [RStudio](https://github.com/rstudio)."
+                "Beaker handles output from [ggvis](http://ggvis.rstudio.com/ggvis-basics.html), made by [RStudio](https://www.rstudio.com/),",
+                "and easily installable from [CRAN](https://cran.r-project.org/web/packages/ggvis/index.html) with a single R command."
             ],
             "evaluatorReader": false
         },

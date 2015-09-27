@@ -1,0 +1,172 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "R",
+            "plugin": "R",
+            "view": {
+                "cm": {
+                    "mode": "r"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "section7pZNhi",
+            "type": "section",
+            "title": "ggvis demo",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownb6zFNY",
+            "type": "markdown",
+            "body": [
+                "Beaker handles output from [ggvis](http://ggvis.rstudio.com/ggvis-basics.html), made by [RStudio](https://github.com/rstudio)."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeqAfSgX",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "library(ggvis)",
+                    "library(dplyr)"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "err",
+                            "value": "Attaching package: ‘dplyr’\nThe following objects are masked from ‘package:stats’:\n    filter, lag\nThe following objects are masked from ‘package:base’:\n    intersect, setdiff, setequal, union\n"
+                        }
+                    ],
+                    "payload": ""
+                },
+                "selectedType": "Results",
+                "pluginName": "R",
+                "shellId": "9393618f-97e8-4034-b5f5-b85af51abe3c",
+                "elapsedTime": 922,
+                "dataresult": [
+                    "dplyr",
+                    "ggvis",
+                    "beaker",
+                    "base64enc",
+                    "png",
+                    "RJSONIO",
+                    "RCurl",
+                    "bitops",
+                    "methods",
+                    "Rserve",
+                    "stats",
+                    "graphics",
+                    "grDevices",
+                    "utils",
+                    "datasets",
+                    "base"
+                ]
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codeXmpQbZ",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "mtcars %>% ggvis(~wt, ~mpg) %>% layer_points()"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "GGVis",
+                    "first": [
+                        "<div id=\"plot_292499663-container\" class=\"ggvis-output-container\">\n  <div id=\"plot_292499663\" class=\"ggvis-output\"></div>\n  <div class=\"plot-gear-icon\">\n    <nav class=\"ggvis-control\">\n      <a class=\"ggvis-dropdown-toggle\" title=\"Controls\" onclick=\"return false;\"></a>\n      <ul class=\"ggvis-dropdown\">\n        <li>\n          Renderer: \n          <a id=\"plot_292499663_renderer_svg\" class=\"ggvis-renderer-button\" onclick=\"return false;\" data-plot-id=\"plot_292499663\" data-renderer=\"svg\">SVG</a>\n           | \n          <a id=\"plot_292499663_renderer_canvas\" class=\"ggvis-renderer-button\" onclick=\"return false;\" data-plot-id=\"plot_292499663\" data-renderer=\"canvas\">Canvas</a>\n        </li>\n        <li>\n          <a id=\"plot_292499663_download\" class=\"ggvis-download\" data-plot-id=\"plot_292499663\">Download</a>\n        </li>\n      </ul>\n    </nav>\n  </div>\n</div>"
+                    ],
+                    "second": [
+                        "<script type=\"text/javascript\">\nvar plot_292499663_spec = {\n  \"data\": [\n    {\n      \"name\": \".0\",\n      \"format\": {\n        \"type\": \"csv\",\n        \"parse\": {\n          \"wt\": \"number\",\n          \"mpg\": \"number\"\n        }\n      },\n      \"values\": \"\\\"wt\\\",\\\"mpg\\\"\\n2.62,21\\n2.875,21\\n2.32,22.8\\n3.215,21.4\\n3.44,18.7\\n3.46,18.1\\n3.57,14.3\\n3.19,24.4\\n3.15,22.8\\n3.44,19.2\\n3.44,17.8\\n4.07,16.4\\n3.73,17.3\\n3.78,15.2\\n5.25,10.4\\n5.424,10.4\\n5.345,14.7\\n2.2,32.4\\n1.615,30.4\\n1.835,33.9\\n2.465,21.5\\n3.52,15.5\\n3.435,15.2\\n3.84,13.3\\n3.845,19.2\\n1.935,27.3\\n2.14,26\\n1.513,30.4\\n3.17,15.8\\n2.77,19.7\\n3.57,15\\n2.78,21.4\"\n    },\n    {\n      \"name\": \"scale/x\",\n      \"format\": {\n        \"type\": \"csv\",\n        \"parse\": {\n          \"domain\": \"number\"\n        }\n      },\n      \"values\": \"\\\"domain\\\"\\n1.31745\\n5.61955\"\n    },\n    {\n      \"name\": \"scale/y\",\n      \"format\": {\n        \"type\": \"csv\",\n        \"parse\": {\n          \"domain\": \"number\"\n        }\n      },\n      \"values\": \"\\\"domain\\\"\\n9.225\\n35.075\"\n    }\n  ],\n  \"scales\": [\n    {\n      \"name\": \"x\",\n      \"domain\": {\n        \"data\": \"scale/x\",\n        \"field\": \"data.domain\"\n      },\n      \"zero\": false,\n      \"nice\": false,\n      \"clamp\": false,\n      \"range\": \"width\"\n    },\n    {\n      \"name\": \"y\",\n      \"domain\": {\n        \"data\": \"scale/y\",\n        \"field\": \"data.domain\"\n      },\n      \"zero\": false,\n      \"nice\": false,\n      \"clamp\": false,\n      \"range\": \"height\"\n    }\n  ],\n  \"marks\": [\n    {\n      \"type\": \"symbol\",\n      \"properties\": {\n        \"update\": {\n          \"fill\": {\n            \"value\": \"#000000\"\n          },\n          \"size\": {\n            \"value\": 50\n          },\n          \"x\": {\n            \"scale\": \"x\",\n            \"field\": \"data.wt\"\n          },\n          \"y\": {\n            \"scale\": \"y\",\n            \"field\": \"data.mpg\"\n          }\n        },\n        \"ggvis\": {\n          \"data\": {\n            \"value\": \".0\"\n          }\n        }\n      },\n      \"from\": {\n        \"data\": \".0\"\n      }\n    }\n  ],\n  \"legends\": [],\n  \"axes\": [\n    {\n      \"type\": \"x\",\n      \"scale\": \"x\",\n      \"orient\": \"bottom\",\n      \"layer\": \"back\",\n      \"grid\": true,\n      \"title\": \"wt\"\n    },\n    {\n      \"type\": \"y\",\n      \"scale\": \"y\",\n      \"orient\": \"left\",\n      \"layer\": \"back\",\n      \"grid\": true,\n      \"title\": \"mpg\"\n    }\n  ],\n  \"padding\": null,\n  \"ggvis_opts\": {\n    \"width\": 600,\n    \"height\": 400,\n    \"keep_aspect\": false,\n    \"resizable\": true,\n    \"padding\": {},\n    \"duration\": 250,\n    \"renderer\": \"svg\",\n    \"hover_duration\": 0\n  },\n  \"handlers\": null\n};\nggvis.getPlot(\"plot_292499663\").parseSpec(plot_292499663_spec);\n</script>"
+                    ]
+                },
+                "selectedType": "GGVis",
+                "pluginName": "R",
+                "shellId": "9393618f-97e8-4034-b5f5-b85af51abe3c",
+                "elapsedTime": 118
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codePJXBlg",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "mtcars %>% ggvis(~wt, ~mpg) %>%",
+                    "  layer_smooths(span = 1) %>%",
+                    "  layer_smooths(span = 0.3, stroke := \"red\")"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "GGVis",
+                    "first": [
+                        "<div id=\"plot_617614373-container\" class=\"ggvis-output-container\">\n  <div id=\"plot_617614373\" class=\"ggvis-output\"></div>\n  <div class=\"plot-gear-icon\">\n    <nav class=\"ggvis-control\">\n      <a class=\"ggvis-dropdown-toggle\" title=\"Controls\" onclick=\"return false;\"></a>\n      <ul class=\"ggvis-dropdown\">\n        <li>\n          Renderer: \n          <a id=\"plot_617614373_renderer_svg\" class=\"ggvis-renderer-button\" onclick=\"return false;\" data-plot-id=\"plot_617614373\" data-renderer=\"svg\">SVG</a>\n           | \n          <a id=\"plot_617614373_renderer_canvas\" class=\"ggvis-renderer-button\" onclick=\"return false;\" data-plot-id=\"plot_617614373\" data-renderer=\"canvas\">Canvas</a>\n        </li>\n        <li>\n          <a id=\"plot_617614373_download\" class=\"ggvis-download\" data-plot-id=\"plot_617614373\">Download</a>\n        </li>\n      </ul>\n    </nav>\n  </div>\n</div>"
+                    ],
+                    "second": [
+                        "<script type=\"text/javascript\">\nvar plot_617614373_spec = {\n  \"data\": [\n    {\n      \"name\": \".0/model_prediction1\",\n      \"format\": {\n        \"type\": \"csv\",\n        \"parse\": {\n          \"pred_\": \"number\",\n          \"resp_\": \"number\"\n        }\n      },\n      \"values\": \"\\\"pred_\\\",\\\"resp_\\\"\\n1.513,32.3559076033652\\n1.56250632911392,31.8753059433938\\n1.61201265822785,31.4002837186303\\n1.66151898734177,30.9307786143783\\n1.7110253164557,30.4667283159411\\n1.76053164556962,30.0080705086221\\n1.81003797468354,29.5547428777247\\n1.85954430379747,29.1066831085523\\n1.90905063291139,28.6638288864083\\n1.95855696202532,28.2261593300757\\n2.00806329113924,27.7939085521993\\n2.05756962025316,27.3671227416083\\n2.10707594936709,26.9458006046978\\n2.15658227848101,26.5299408478625\\n2.20608860759494,26.1195421774975\\n2.25559493670886,25.7146032999975\\n2.30510126582278,25.3151229217576\\n2.35460759493671,24.9210997491726\\n2.40411392405063,24.5325324886374\\n2.45362025316456,24.1494198465469\\n2.50312658227848,23.7704013112288\\n2.55263291139241,23.3930410310992\\n2.60213924050633,23.0184854507692\\n2.65164556962025,22.648013375053\\n2.70115189873418,22.2829036087647\\n2.7506582278481,21.9244349567186\\n2.80016455696203,21.5738862237289\\n2.84967088607595,21.2325362146096\\n2.89917721518987,20.8994648774453\\n2.9486835443038,20.563314278298\\n2.99818987341772,20.2260322794124\\n3.04769620253165,19.8921207313051\\n3.09720253164557,19.5660814844932\\n3.14670886075949,19.2524163894935\\n3.19621518987342,18.9556272968227\\n3.24572151898734,18.6776819657173\\n3.29522784810127,18.4109241123963\\n3.34473417721519,18.1533810871694\\n3.39424050632911,17.9038917888661\\n3.44374683544304,17.6613801039195\\n3.49325316455696,17.4367412601373\\n3.54275949367089,17.2198928657746\\n3.59226582278481,16.9885817927012\\n3.64177215189873,16.7560619903523\\n3.69127848101266,16.5274875375278\\n3.74078481012658,16.3032371340526\\n3.79029113924051,16.0836894797512\\n3.83979746835443,15.8692232744485\\n3.88930379746835,15.6600927173047\\n3.93881012658228,15.4562638006676\\n3.9883164556962,15.2577332064667\\n4.03782278481013,15.064498632161\\n4.08732911392405,14.8765577752094\\n4.13683544303798,14.6939083330709\\n4.1863417721519,14.5165480032044\\n4.23584810126582,14.344474483069\\n4.28535443037975,14.1776854701235\\n4.33486075949367,14.016178661827\\n4.3843670886076,13.8599517556385\\n4.43387341772152,13.7090024490167\\n4.48337974683544,13.5633284394209\\n4.53288607594937,13.4229274243098\\n4.58239240506329,13.2877971011425\\n4.63189873417722,13.157935167378\\n4.68140506329114,13.0333393204751\\n4.73091139240506,12.9140072578929\\n4.78041772151899,12.7999366770903\\n4.82992405063291,12.6911252755264\\n4.87943037974684,12.58757075066\\n4.92893670886076,12.4892707999501\\n4.97844303797468,12.3962231208557\\n5.02794936708861,12.3084254108357\\n5.07745569620253,12.2258753673492\\n5.12696202531646,12.148570687855\\n5.17646835443038,12.0765090698122\\n5.2259746835443,12.0096882106797\\n5.27548101265823,11.9481058079165\\n5.32498734177215,11.8917595589815\\n5.37449367088608,11.8406471613337\\n5.424,11.7947663124321\"\n    },\n    {\n      \"name\": \".0/model_prediction2\",\n      \"format\": {\n        \"type\": \"csv\",\n        \"parse\": {\n          \"pred_\": \"number\",\n          \"resp_\": \"number\"\n        }\n      },\n      \"values\": \"\\\"pred_\\\",\\\"resp_\\\"\\n1.513,30.3528219184399\\n1.56250632911392,30.6813491639329\\n1.61201265822785,30.9240279407622\\n1.66151898734177,31.0840794539856\\n1.7110253164557,31.1631154036184\\n1.76053164556962,31.159151627668\\n1.81003797468354,31.0701942224979\\n1.85954430379747,30.9035377873267\\n1.90905063291139,30.6817149751938\\n1.95855696202532,30.3275430113279\\n2.00806329113924,29.7946392799927\\n2.05756962025316,29.1406588639895\\n2.10707594936709,28.4330772541569\\n2.15658227848101,27.7216611334163\\n2.20608860759494,26.9527448874162\\n2.25559493670886,26.2467425628351\\n2.30510126582278,25.4977429623696\\n2.35460759493671,24.4843623615219\\n2.40411392405063,23.1117647143157\\n2.45362025316456,21.9336896820517\\n2.50312658227848,21.2607437724578\\n2.55263291139241,20.7548408771298\\n2.60213924050633,20.4118891420239\\n2.65164556962025,20.3006993090861\\n2.70115189873418,20.48600311683\\n2.7506582278481,20.6900837446194\\n2.80016455696203,20.7082261939936\\n2.84967088607595,20.7377120826661\\n2.89917721518987,20.7255362806169\\n2.9486835443038,20.5172244269693\\n2.99818987341772,20.2292494002164\\n3.04769620253165,20.0172422880359\\n3.09720253164557,20.0368341781057\\n3.14670886075949,20.4436561581034\\n3.19621518987342,21.3977884988471\\n3.24572151898734,21.6762765675943\\n3.29522784810127,20.8353925819041\\n3.34473417721519,19.4634658229779\\n3.39424050632911,18.2173081543554\\n3.44374683544304,17.7139891153616\\n3.49325316455696,16.8900114461437\\n3.54275949367089,15.4046339999842\\n3.59226582278481,14.4298295635723\\n3.64177215189873,14.8530726748503\\n3.69127848101266,15.7187465076159\\n3.74078481012658,16.1456038160851\\n3.79029113924051,16.2329096529683\\n3.83979746835443,16.3041713942188\\n3.88930379746835,16.3820100701269\\n3.93881012658228,16.4227436392274\\n3.9883164556962,16.4308850916567\\n4.03782278481013,16.412135435139\\n4.08732911392405,16.3714426419233\\n4.13683544303798,16.3045097281056\\n4.1863417721519,16.2112110370203\\n4.23584810126582,16.0937725710335\\n4.28535443037975,15.954420332511\\n4.33486075949367,15.7953803238189\\n4.3843670886076,15.6188785473231\\n4.43387341772152,15.4271410053896\\n4.48337974683544,15.2223937003843\\n4.53288607594937,15.0068626346732\\n4.58239240506329,14.7827738106223\\n4.63189873417722,14.5523532305975\\n4.68140506329114,14.3178268969648\\n4.73091139240506,14.0814208120903\\n4.78041772151899,13.8453609783397\\n4.82992405063291,13.6118733980792\\n4.87943037974684,13.3831840736747\\n4.92893670886076,13.1615190074921\\n4.97844303797468,12.9491042018974\\n5.02794936708861,12.7481656592566\\n5.07745569620253,12.5609293819356\\n5.12696202531646,12.3896213723005\\n5.17646835443038,12.2364676327171\\n5.2259746835443,12.1036941655515\\n5.27548101265823,11.9895270705648\\n5.32498734177215,11.879947255423\\n5.37449367088608,11.7878631009542\\n5.424,11.7108087802481\"\n    },\n    {\n      \"name\": \"scale/x\",\n      \"format\": {\n        \"type\": \"csv\",\n        \"parse\": {\n          \"domain\": \"number\"\n        }\n      },\n      \"values\": \"\\\"domain\\\"\\n1.31745\\n5.61955\"\n    },\n    {\n      \"name\": \"scale/y\",\n      \"format\": {\n        \"type\": \"csv\",\n        \"parse\": {\n          \"domain\": \"number\"\n        }\n      },\n      \"values\": \"\\\"domain\\\"\\n10.6785538390922\\n33.3881625445211\"\n    }\n  ],\n  \"scales\": [\n    {\n      \"name\": \"x\",\n      \"domain\": {\n        \"data\": \"scale/x\",\n        \"field\": \"data.domain\"\n      },\n      \"zero\": false,\n      \"nice\": false,\n      \"clamp\": false,\n      \"range\": \"width\"\n    },\n    {\n      \"name\": \"y\",\n      \"domain\": {\n        \"data\": \"scale/y\",\n        \"field\": \"data.domain\"\n      },\n      \"zero\": false,\n      \"nice\": false,\n      \"clamp\": false,\n      \"range\": \"height\"\n    }\n  ],\n  \"marks\": [\n    {\n      \"type\": \"line\",\n      \"properties\": {\n        \"update\": {\n          \"stroke\": {\n            \"value\": \"#000000\"\n          },\n          \"strokeWidth\": {\n            \"value\": 2\n          },\n          \"x\": {\n            \"scale\": \"x\",\n            \"field\": \"data.pred_\"\n          },\n          \"y\": {\n            \"scale\": \"y\",\n            \"field\": \"data.resp_\"\n          },\n          \"fill\": {\n            \"value\": \"transparent\"\n          }\n        },\n        \"ggvis\": {\n          \"data\": {\n            \"value\": \".0/model_prediction1\"\n          }\n        }\n      },\n      \"from\": {\n        \"data\": \".0/model_prediction1\"\n      }\n    },\n    {\n      \"type\": \"line\",\n      \"properties\": {\n        \"update\": {\n          \"strokeWidth\": {\n            \"value\": 2\n          },\n          \"x\": {\n            \"scale\": \"x\",\n            \"field\": \"data.pred_\"\n          },\n          \"y\": {\n            \"scale\": \"y\",\n            \"field\": \"data.resp_\"\n          },\n          \"stroke\": {\n            \"value\": \"red\"\n          },\n          \"fill\": {\n            \"value\": \"transparent\"\n          }\n        },\n        \"ggvis\": {\n          \"data\": {\n            \"value\": \".0/model_prediction2\"\n          }\n        }\n      },\n      \"from\": {\n        \"data\": \".0/model_prediction2\"\n      }\n    }\n  ],\n  \"legends\": [],\n  \"axes\": [\n    {\n      \"type\": \"x\",\n      \"scale\": \"x\",\n      \"orient\": \"bottom\",\n      \"layer\": \"back\",\n      \"grid\": true,\n      \"title\": \"wt\"\n    },\n    {\n      \"type\": \"y\",\n      \"scale\": \"y\",\n      \"orient\": \"left\",\n      \"layer\": \"back\",\n      \"grid\": true,\n      \"title\": \"mpg\"\n    }\n  ],\n  \"padding\": null,\n  \"ggvis_opts\": {\n    \"width\": 600,\n    \"height\": 400,\n    \"keep_aspect\": false,\n    \"resizable\": true,\n    \"padding\": {},\n    \"duration\": 250,\n    \"renderer\": \"svg\",\n    \"hover_duration\": 0\n  },\n  \"handlers\": null\n};\nggvis.getPlot(\"plot_617614373\").parseSpec(plot_617614373_spec);\n</script>"
+                    ]
+                },
+                "selectedType": "GGVis",
+                "pluginName": "R",
+                "shellId": "9393618f-97e8-4034-b5f5-b85af51abe3c",
+                "elapsedTime": 677
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        }
+    ],
+    "namespace": {},
+    "metadata": {
+        "publication-id": "56075ae2-7848-4bc2-8e59-4e8325f9b881"
+    }
+}

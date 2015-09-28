@@ -206,11 +206,11 @@ public class QueryExecutor {
             }
 
         } catch (SQLException e) {
-            Logger.getLogger(QueryExecutor.class.getName()).log(Level.SEVERE, null, e);
+            //Logger.getLogger(QueryExecutor.class.getName()).log(Level.SEVERE, null, e);
             try {
                 conn.rollback();
             } catch (Exception e1) {
-                Logger.getLogger(QueryExecutor.class.getName()).log(Level.SEVERE, null, e1);
+                //Logger.getLogger(QueryExecutor.class.getName()).log(Level.SEVERE, null, e1);
             }
 
             throw e;

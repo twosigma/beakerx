@@ -341,8 +341,7 @@ public class JavaEvaluator {
             javaSourceCode.append("}\n");
         
             compilationUnit.addJavaSource(pname+".Foo", javaSourceCode.toString());
-  
-            //loader.resetDynamicLoader();
+
             try {
               javaSourceCompiler.compile(compilationUnit);
               

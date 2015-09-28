@@ -170,13 +170,21 @@
         return $scope.publish(action);
       };
 
-      $scope.publish = function(action) {
+      $scope.publish = function(action, skipAttachmentDeletion) {
         var tab = $window.open(bkPublicationApi.getBaseUrl() + '/#/publication_loading');
         $scope.saving = true;
         (action == "update" ? updatePublication : createPublication)()
         .then(function(publicationId) {
           $scope.saving = false;
           tab.location = bkPublicationApi.getBaseUrl() + '/#/publications/' + publicationId;
+        })
+        .then(function() {
+          if ($scope.deletedAttachment && !skipAttachmentDeletion) {
+            return bkPublicationApi.deleteAttachment($scope.deletedAttachment);
+          }
+        })
+        .then(function() {
+          delete $scope.deletedAttachment;
           $scope.close();
         });
       };
@@ -209,11 +217,9 @@
       };
 
       $scope.removeAttachment = function() {
-        return bkPublicationApi.deleteAttachment($scope.model['attachment-id'])
-        .then(function() {
-          $scope.model['attachment-id'] = -1;
-          delete $scope.attachmentUrl;
-        });
+        $scope.deletedAttachment = $scope.model['attachment-id'];
+        $scope.model['attachment-id'] = -1;
+        delete $scope.attachmentUrl;
       };
 
       $scope.uploadAttachment = function(file) {

@@ -49,15 +49,17 @@ public class SqlAutocomplete {
 	
 	private final JDBCClient jdbcClient;
 	private final String sessionId;
+	String defaultConnectionString;
     private final Map<String, String> namedConnectionString;
     private final DbCache cache; 
 	
 
 
-	public SqlAutocomplete(ClasspathScanner _cps, JDBCClient jdbcClient, String sessionId, Map<String, String> namedConnectionString) {
+	public SqlAutocomplete(ClasspathScanner _cps, JDBCClient jdbcClient, String sessionId, String defaultConnectionString, Map<String, String> namedConnectionString) {
 		super();
 		this.jdbcClient = jdbcClient;
 		this.sessionId = sessionId;
+		this.defaultConnectionString = defaultConnectionString;
 		this.namedConnectionString = namedConnectionString;
 		
 		this.cache = DbExplorerFactory.getDbCache(); 
@@ -135,7 +137,7 @@ public class SqlAutocomplete {
 			ret.addAll(findSqlKeys(key));
 		}
 
-		final DbInfo dbInfo = DbExplorerFactory.getDbInfo(txt, jdbcClient, sessionId, namedConnectionString);
+		final DbInfo dbInfo = DbExplorerFactory.getDbInfo(txt, jdbcClient, sessionId, defaultConnectionString, namedConnectionString);
 		if (dbInfo != null) {
 			
 			List<String> dbRet = null;

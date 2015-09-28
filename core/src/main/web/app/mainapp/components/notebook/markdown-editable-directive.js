@@ -200,10 +200,14 @@
         scope.cm.setValue(scope.cellmodel[contentAttribute]);
         preview();
 
-        scope.cm.on("blur", function(){
-          scope.$apply(function() {
-            syncContentAndPreview();
-          });
+        scope.cm.on("blur", function(cm){
+          setTimeout(function() {
+            if(!cm.state.focused){
+              scope.$apply(function() {
+                syncContentAndPreview();
+              });
+            }
+          }, 0);
         });
 
         scope.$on('beaker.cell.added', function(e, cellmodel) {

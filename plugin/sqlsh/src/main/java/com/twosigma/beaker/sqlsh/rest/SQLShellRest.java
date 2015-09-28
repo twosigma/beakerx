@@ -140,12 +140,13 @@ public class SQLShellRest {
     public void setShellOptions(
             @FormParam("shellId") String shellId,
             @FormParam("classPath") String classPath,
-            @FormParam("datasorces") String datasorces)
+            @FormParam("defaultDatasource") String defaultDatasource,
+            @FormParam("datasources") String datasorces)
             throws MalformedURLException, IOException {
         if (!this.shells.containsKey(shellId)) {
             return;
         }
-        this.shells.get(shellId).setShellOptions(classPath, datasorces);
+        this.shells.get(shellId).setShellOptions(classPath, defaultDatasource, datasorces);
     }
 
 }

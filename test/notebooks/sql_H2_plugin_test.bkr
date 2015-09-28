@@ -42,7 +42,9 @@
             },
             "classPath": "",
             "datasorces": "H2MemDB2=jdbc:h2:mem:db1",
-            "outdir": "123"
+            "outdir": "123",
+            "datasources": "H2MemDB2=jdbc:h2:mem:db1",
+            "defaultDatasource": "jdbc:h2:mem:db1"
         }
     ],
     "cells": [
@@ -101,7 +103,7 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 25,
+                "elapsedTime": 36,
                 "hidden": true,
                 "result": {
                     "type": "TableDisplay",
@@ -161,8 +163,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "196649d6-7e47-4409-b00e-1526eb2bc05d",
-                "elapsedTime": 199
+                "shellId": "94ead03c-3ff7-4c5c-b817-08ad21cbbc62",
+                "elapsedTime": 122
             },
             "evaluatorReader": true,
             "lineCount": 11,
@@ -204,8 +206,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "196649d6-7e47-4409-b00e-1526eb2bc05d",
-                "elapsedTime": 1050
+                "shellId": "94ead03c-3ff7-4c5c-b817-08ad21cbbc62",
+                "elapsedTime": 697
             },
             "evaluatorReader": true,
             "lineCount": 16,
@@ -225,9 +227,7 @@
             "evaluator": "SQL",
             "input": {
                 "body": [
-                    "-- load connection string from plugin setings",
-                    "%%beakerDB = H2MemDB2",
-                    "",
+                    "-- load connection string from default data source",
                     "-- only declared variables can be used",
                     "%%inputs: city.cid",
                     "",
@@ -243,8 +243,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "SQL",
-                "shellId": "196649d6-7e47-4409-b00e-1526eb2bc05d",
-                "elapsedTime": 607,
+                "shellId": "94ead03c-3ff7-4c5c-b817-08ad21cbbc62",
+                "elapsedTime": 603,
                 "result": {
                     "type": "OutputContainer",
                     "items": [
@@ -272,7 +272,7 @@
                                     "DATE",
                                     {
                                         "type": "Date",
-                                        "timestamp": 1442955600000
+                                        "timestamp": 1443387600000
                                     }
                                 ]
                             ],
@@ -293,7 +293,7 @@
                                     "NY",
                                     {
                                         "type": "Date",
-                                        "timestamp": 1442955600000
+                                        "timestamp": 1443387600000
                                     }
                                 ],
                                 [
@@ -302,7 +302,7 @@
                                     "AL",
                                     {
                                         "type": "Date",
-                                        "timestamp": 1442955600000
+                                        "timestamp": 1443387600000
                                     }
                                 ],
                                 [
@@ -311,7 +311,7 @@
                                     "IL",
                                     {
                                         "type": "Date",
-                                        "timestamp": 1442955600000
+                                        "timestamp": 1443387600000
                                     }
                                 ]
                             ],
@@ -327,7 +327,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 12,
+            "lineCount": 10,
             "initialization": true
         },
         {
@@ -359,11 +359,15 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "BeakerDisplay",
                 "pluginName": "JavaScript",
                 "elapsedTime": 27,
                 "hidden": true,
-                "result": "jdbc:h2:mem:db1"
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Error",
+                    "object": "Evaluation cancelled due to a failure of an earlier cell evaluation"
+                }
             },
             "evaluatorReader": true,
             "lineCount": 11,
@@ -444,8 +448,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "SQL",
-                "shellId": "196649d6-7e47-4409-b00e-1526eb2bc05d",
-                "elapsedTime": 875,
+                "shellId": "94ead03c-3ff7-4c5c-b817-08ad21cbbc62",
+                "elapsedTime": 870,
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -534,23 +538,19 @@
                             "fixRight": false
                         },
                         "columnNames": [
-                            "ID",
                             "COLOR",
                             "CODE"
                         ],
                         "actualalign": [
-                            "L",
                             "L",
                             "L"
                         ],
                         "colorder": [
                             0,
                             1,
-                            2,
-                            3
+                            2
                         ],
                         "getCellSho": [
-                            true,
                             true,
                             true
                         ]
@@ -558,69 +558,59 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 31,
+                "elapsedTime": 34,
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "TableDisplay",
                     "hasIndex": "true",
                     "values": [
                         [
-                            "0",
                             1,
                             "AliceBlue",
                             "#F0F8FF"
                         ],
                         [
-                            "1",
                             2,
                             "AntiqueWhite",
                             "#FAEBD7"
                         ],
                         [
-                            "2",
                             3,
                             "Aqua",
                             "#00FFFF"
                         ],
                         [
-                            "3",
                             4,
                             "Aquamarine",
                             "#7FFFD4"
                         ],
                         [
-                            "4",
                             5,
                             "Azure",
                             "#F0FFFF"
                         ],
                         [
-                            "5",
                             6,
                             "Beige",
                             "#F5F5DC"
                         ],
                         [
-                            "6",
                             7,
                             "Bisque",
                             "#FFE4C4"
                         ],
                         [
-                            "7",
                             8,
                             "Black",
                             "#000000"
                         ]
                     ],
                     "types": [
-                        "integer",
                         "java.lang.Integer",
                         "java.lang.String",
                         "java.lang.String"
                     ],
                     "columnNames": [
-                        "Index",
                         "ID",
                         "COLOR",
                         "CODE"
@@ -783,7 +773,7 @@
         "cname": "NewYork",
         "cdate": {
             "type": "Date",
-            "timestamp": 1443019419348
+            "timestamp": 1443453783642
         },
         "city": {
             "type": "TableDisplay",
@@ -894,62 +884,52 @@
             "hasIndex": "true",
             "values": [
                 [
-                    "0",
                     1,
                     "AliceBlue",
                     "#F0F8FF"
                 ],
                 [
-                    "1",
                     2,
                     "AntiqueWhite",
                     "#FAEBD7"
                 ],
                 [
-                    "2",
                     3,
                     "Aqua",
                     "#00FFFF"
                 ],
                 [
-                    "3",
                     4,
                     "Aquamarine",
                     "#7FFFD4"
                 ],
                 [
-                    "4",
                     5,
                     "Azure",
                     "#F0FFFF"
                 ],
                 [
-                    "5",
                     6,
                     "Beige",
                     "#F5F5DC"
                 ],
                 [
-                    "6",
                     7,
                     "Bisque",
                     "#FFE4C4"
                 ],
                 [
-                    "7",
                     8,
                     "Black",
                     "#000000"
                 ]
             ],
             "types": [
-                "integer",
                 "java.lang.Integer",
                 "java.lang.String",
                 "java.lang.String"
             ],
             "columnNames": [
-                "Index",
                 "ID",
                 "COLOR",
                 "CODE"

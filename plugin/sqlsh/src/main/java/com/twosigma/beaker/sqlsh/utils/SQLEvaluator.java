@@ -188,12 +188,12 @@ public class SQLEvaluator {
             try {
                 simpleEvaluationObject.finished(queryExecutor.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient, namedConnectionString));
             } catch (SQLException e) {
-                simpleEvaluationObject.error(e.getMessage());
+                simpleEvaluationObject.error(e.toString());
             } catch (ThreadDeath e) {
                 simpleEvaluationObject.error("... cancelled!");
             } catch (Throwable e) {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
-                simpleEvaluationObject.error(e.getMessage());
+                simpleEvaluationObject.error(e.toString());
             }
 
         }

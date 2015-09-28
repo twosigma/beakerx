@@ -1,0 +1,416 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "IPython",
+            "plugin": "IPython",
+            "setup": "%matplotlib inline\nimport numpy\nimport matplotlib\nfrom matplotlib import pylab, mlab, pyplot\nnp = numpy\nplt = pyplot\nfrom IPython.display import display\nfrom IPython.core.pylabtools import figsize, getfigs\nfrom pylab import *\nfrom numpy import *\n",
+            "view": {
+                "cm": {
+                    "mode": "python"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "section2hhKq4",
+            "type": "section",
+            "title": "The Beaker Object",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdown7EhWVr",
+            "type": "markdown",
+            "body": [
+                "The `beaker` object is often useful and has some unusual properties.",
+                "This tutorial explains what it's all about, starting with autotranslation, then looking at how its saved,",
+                "how to view and remove data from it, and finishing by using it to access Beaker's API."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "sectionsFO98e",
+            "type": "section",
+            "title": "Autotranslation",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownGthcqo",
+            "type": "markdown",
+            "body": [
+                "First and foremost, the `beaker` object is where autotranslation happens.",
+                "The object exists in each of the languages, and the variables defined on it are synchorized,",
+                "so you can set a value in one language, and access in another language, and the values are translated, automatically.",
+                "This is *autotranslation*.  For example, let's start out in Python:"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeT8xywV",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "beaker.x = 10"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Hidden",
+                "pluginName": "IPython",
+                "elapsedTime": 322,
+                "shellId": "76606624F62E46CC8754266B5E93CCD3"
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "markdownFzQwd5",
+            "type": "markdown",
+            "body": [
+                "Then increment (get and set) in JavaScript:"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codef0D32m",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.x += 1"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": 11,
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 40
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "markdown9ay2KU",
+            "type": "markdown",
+            "body": [
+                "And access once more in Groovy"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "code3PEiph",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "beaker.x + 1"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": 12,
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "8cb47126-94cd-4232-9f89-e90f043f9d6e",
+                "elapsedTime": 1358
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "markdownPqq8QH",
+            "type": "markdown",
+            "body": [
+                "In addition to working for simple values like integers, as above,",
+                "autotranslation works for complex values like strings, arrays, images, dates, dictionaries, data frames, and more.",
+                "Beaker uses JSON as its *lingua franca*, or common format to translate the data.",
+                "",
+                "Since some languages and classes have fundamental differences, not everything can be perfectly translated,",
+                "but Beaker makes the best approximation possible.  Some objects cannot be translated, such as closures,",
+                "though with every release we improve and expand Beaker's capabilities.",
+                "",
+                "Note also that every language has its own syntax for access to the object.",
+                "See the [Autotranslation](/beaker/#/open?uri=file:config%2Ftutorials%2Fautotranslation.bkr&readOnly=true)  tutorial for a more complete review of all the data types handled, and the syntax in each language."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "sectiono9i0R2",
+            "type": "section",
+            "title": "Storage and Sharing",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownoMCN2P",
+            "type": "markdown",
+            "body": [
+                "A common problem with notebooks stems from the separation between the code and the data.",
+                "If  data is stored only in data files, and the code only in the notebook file, then if these files become separated,",
+                "the notebook's results become difficult to reproduce.",
+                "To address this problem, Beaker saves the `beaker` object, and all data stored on it, in the notebook file.",
+                "So when you next open it, your data is right there, ready for you to continue working with it.",
+                "It also works if you share the notebook, or use Beaker's publication feature:",
+                "you can share a notebook and the data inside it with one click.",
+                "",
+                "For example, we have saved a small array in this notebook in the variable `beaker.y`.",
+                "You can access it even though there's no code above that sets it:"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeaINahj",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.y"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": [
+                    1,
+                    1,
+                    2,
+                    3,
+                    5,
+                    8
+                ],
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 32
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "sectionncYHLU",
+            "type": "section",
+            "title": "Viewing and Removing",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownJiBesS",
+            "type": "markdown",
+            "body": [
+                "You can see all the values set on the `beaker` object just by returning it from a JavaScript cell"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "coderACA1q",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "OutputContainer",
+                    "items": [
+                        {
+                            "type": "TableDisplay",
+                            "values": [
+                                [
+                                    "useOutputPanel",
+                                    false
+                                ],
+                                [
+                                    "outputLineLimit",
+                                    1000
+                                ]
+                            ],
+                            "subtype": "Dictionary",
+                            "columnNames": [
+                                "Key",
+                                "Value"
+                            ]
+                        },
+                        11,
+                        [
+                            1,
+                            1,
+                            2,
+                            3,
+                            5,
+                            8
+                        ]
+                    ],
+                    "names": [
+                        "prefs",
+                        "x",
+                        "y"
+                    ]
+                },
+                "selectedType": "OutputContainer",
+                "pluginName": "JavaScript",
+                "elapsedTime": 37
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "markdownIWgvRW",
+            "type": "markdown",
+            "body": [
+                "If a variable has a large (in size) value that you no longer need,",
+                "it is easy to reclaim that memory by simply assigning it to null, or any other small value.",
+                "But if you want to remove it completely, you can do so as follows:"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeAgGQzI",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "delete beaker.x"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": true,
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 44
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "markdownt3RjgV",
+            "type": "markdown",
+            "body": [
+                "After deleting `x`, evaluate the first JavaScript cell in this sectionagain  and look at the `beaker` object to confirm `x` is gone."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "sectionwFhso0",
+            "type": "section",
+            "title": "Beaker API Calls",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownmTxVlU",
+            "type": "markdown",
+            "body": [
+                "Beaker is scriptable through API calls on the `beaker` object. ",
+                "For example you can call `beaker.print(value)` to include output into the cell.",
+                "",
+                "These calls are documented in the tutorials on",
+                "[Progress Reporting](/beaker/#/open?uri=file:config%2Ftutorials%2FprogressUpdate.bkr&readOnly=true) (including asynchronous events in JavaScript),",
+                "[Notebook Control](/beaker/#/open?uri=file:config%2Ftutorials%2FnotebookControl.bkr&readOnly=true) (triggering evaluation of other cells and languages), and",
+                "[Notebook Reflection](/beaker/#/open?uri=file:config%2Ftutorials%2FnotebookReflection.bkr&readOnly=true) (gaining access to source text of cells and their results).",
+                "Note that so far only JavaScript supports all the calls."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeLRsgl6",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.print(\"stdout for JavaScript:\")",
+                    "beaker.print(\"useful for debugging,\")",
+                    "beaker.print(\"different from\")",
+                    "\"a returned value\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "stdout for JavaScript:\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "useful for debugging,\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "different from\n"
+                        }
+                    ],
+                    "payload": "a returned value"
+                },
+                "selectedType": "Results",
+                "pluginName": "JavaScript",
+                "elapsedTime": 177
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
+        }
+    ],
+    "namespace": {
+        "y": [
+            1,
+            1,
+            2,
+            3,
+            5,
+            8
+        ]
+    }
+}

@@ -101,6 +101,7 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String) {
   
   def evaluate(out: SimpleEvaluationObject, code: String) {
     baos.reset();
+    out.setOutputHandler();
     out.started();
     try {
       interpreter.interpret(code) match {
@@ -110,6 +111,7 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String) {
     } catch {
       case ex: Throwable => out.error(ex);
     }
+    out.clrOutputHandler();
   }
   
   def autocomplete(buf: String, len : Integer): ArrayList[CharSequence] = {

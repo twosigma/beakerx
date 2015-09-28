@@ -40,14 +40,14 @@
                     "mode": "text/x-scala"
                 }
             },
-            "classPath": "../../../../contrib/scala-spark/spark-assembly-1.5.0-hadoop2.4.0.jar"
+            "classPath": "/tmp/spark-assembly-1.5.0-hadoop2.4.0.jar"
         }
     ],
     "cells": [
         {
             "id": "sectionlL1RfR",
             "type": "section",
-            "title": "Section Level One",
+            "title": "Spark with Scala",
             "level": 1,
             "evaluatorReader": false,
             "collapsed": false
@@ -56,11 +56,10 @@
             "id": "markdownMNyVLe",
             "type": "markdown",
             "body": [
-                "Beaker supports using [Spark](http://spark.apache.org/) from Scala.",
+                "Beaker supports using [Spark](http://spark.apache.org/) with its native language, Scala.",
                 "",
-                "You must use a Spark version compatible with Scala 2.11 - Beaker includes a pre-built assembly with Hadoop 2.4.",
-                "",
-                "To use Scala Spark you must first create a SparkContext instance"
+                "You must use a Spark version compatible with Scala 2.11 (to be compatible with the Scala in Beaker).  We have one prebuilt you can [download](https://s3.amazonaws.com/beaker-distributions/spark-1.5.0-bin-custom-spark.tgz).",
+                "Just add `lib/spark-assembly-1.5.0-hadoop2.4.0.jar` to your class path (with the Language Manager) and then try the following demos."
             ],
             "evaluatorReader": false
         },
@@ -80,11 +79,11 @@
             },
             "output": {
                 "state": {},
-                "result": "org.apache.spark.SparkContext@322de140",
+                "result": "org.apache.spark.SparkContext@17e11a86",
                 "selectedType": "Text",
                 "pluginName": "Scala",
-                "shellId": "8b00fb77-db43-4ca9-bc17-dd0ea02c32a1",
-                "elapsedTime": 9757
+                "shellId": "ece85df1-3add-4b6f-839b-ec4e65955117",
+                "elapsedTime": 5441
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -114,8 +113,8 @@
                 "state": {},
                 "selectedType": "Results",
                 "pluginName": "Scala",
-                "shellId": "8b00fb77-db43-4ca9-bc17-dd0ea02c32a1",
-                "elapsedTime": 2934,
+                "shellId": "ece85df1-3add-4b6f-839b-ec4e65955117",
+                "elapsedTime": 2875,
                 "result": {
                     "type": "Results",
                     "outputdata": [
@@ -160,15 +159,15 @@
                     "outputdata": [
                         {
                             "type": "out",
-                            "value": "Pi is roughly 3.1412096\n"
+                            "value": "Pi is roughly 3.1414468\n"
                         }
                     ],
                     "payload": "()"
                 },
                 "selectedType": "Results",
                 "pluginName": "Scala",
-                "shellId": "8b00fb77-db43-4ca9-bc17-dd0ea02c32a1",
-                "elapsedTime": 3122
+                "shellId": "ece85df1-3add-4b6f-839b-ec4e65955117",
+                "elapsedTime": 4103
             },
             "evaluatorReader": true,
             "lineCount": 7

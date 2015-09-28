@@ -57,6 +57,7 @@
           url: baseUrl + '/user/v1/attachments',
           method: 'POST',
           headers: {'X-Authorization': 'Token ' + $localStorage.token},
+          fields: {style: 'publication-preview'},
           file: file
         });
       },

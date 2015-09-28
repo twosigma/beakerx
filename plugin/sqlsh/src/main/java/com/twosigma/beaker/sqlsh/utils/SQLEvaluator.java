@@ -17,7 +17,6 @@ package com.twosigma.beaker.sqlsh.utils;
 
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
-import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beaker.sqlsh.autocomplete.SqlAutocomplete;

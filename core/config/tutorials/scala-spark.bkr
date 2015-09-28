@@ -1,0 +1,178 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Scala",
+            "plugin": "Scala",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "view": {
+                "cm": {
+                    "mode": "text/x-scala"
+                }
+            },
+            "classPath": "../../../../contrib/scala-spark/spark-assembly-1.5.0-hadoop2.4.0.jar"
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectionlL1RfR",
+            "type": "section",
+            "title": "Section Level One",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownMNyVLe",
+            "type": "markdown",
+            "body": [
+                "Beaker supports using [Spark](http://spark.apache.org/) from Scala.",
+                "",
+                "You must use a Spark version compatible with Scala 2.11 - Beaker includes a pre-built assembly with Hadoop 2.4.",
+                "",
+                "To use Scala Spark you must first create a SparkContext instance"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeWDegFP",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "import org.apache.spark.SparkContext",
+                    "import org.apache.spark.SparkContext._",
+                    "import org.apache.spark.SparkConf",
+                    "",
+                    "val conf = new SparkConf().setAppName(\"Simple Application\").set(\"spark.ui.enabled\", \"false\")",
+                    "val sc = new SparkContext(\"local[4]\", \"Simple Application\", conf)"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "org.apache.spark.SparkContext@322de140",
+                "selectedType": "Text",
+                "pluginName": "Scala",
+                "shellId": "8b00fb77-db43-4ca9-bc17-dd0ea02c32a1",
+                "elapsedTime": 9757
+            },
+            "evaluatorReader": true,
+            "lineCount": 6
+        },
+        {
+            "id": "markdownDxvZC8",
+            "type": "markdown",
+            "body": [
+                "You can then count (in parallel) how many 'a' and 'b' are inside a text file."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "code6Vzt6O",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "val logFile = \"../../../../../LICENSE\"",
+                    "val logData = sc.textFile(logFile, 2).cache()",
+                    "val numAs = logData.filter(line => line.contains(\"a\")).count()",
+                    "val numBs = logData.filter(line => line.contains(\"b\")).count()",
+                    "println(\"Lines with a: %s, Lines with b: %s\".format(numAs, numBs))"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "Scala",
+                "shellId": "8b00fb77-db43-4ca9-bc17-dd0ea02c32a1",
+                "elapsedTime": 2934,
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "Lines with a: 159, Lines with b: 88\n"
+                        }
+                    ],
+                    "payload": "()"
+                }
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "markdownf3UnSb",
+            "type": "markdown",
+            "body": [
+                "Or you can try to approximate $\\pi$."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codefgeZRo",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "val NUM_SAMPLES = 10000000",
+                    "val count = sc.parallelize(1 to NUM_SAMPLES).map{i =>",
+                    "  val x = Math.random()",
+                    "  val y = Math.random()",
+                    "  if (x*x + y*y < 1) 1 else 0",
+                    "}.reduce(_ + _)",
+                    "println(\"Pi is roughly \" + 4.0 * count / NUM_SAMPLES)"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "Pi is roughly 3.1412096\n"
+                        }
+                    ],
+                    "payload": "()"
+                },
+                "selectedType": "Results",
+                "pluginName": "Scala",
+                "shellId": "8b00fb77-db43-4ca9-bc17-dd0ea02c32a1",
+                "elapsedTime": 3122
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        }
+    ],
+    "namespace": {}
+}

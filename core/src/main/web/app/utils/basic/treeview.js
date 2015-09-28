@@ -107,17 +107,19 @@
         };
         $scope.onMakeNewDir = function(path) {
 
-          var removeLastDirectoryPartOf =  function (the_url)
-          {
-            var the_arr = the_url.split('/');
-            the_arr.pop();
-            return( the_arr.join('/') );
-          };
+          if (path){
+            var removeLastDirectoryPartOf =  function (the_url)
+            {
+              var the_arr = the_url.split('/');
+              the_arr.pop();
+              return( the_arr.join('/') );
+            };
 
-          if (removeLastDirectoryPartOf(path) === $scope.data.uri) {
-            $scope.data.children = $scope.fs.getChildren($scope.data.uri).success(function (list) {
-              $scope.data.children = list;
-            });
+            if (removeLastDirectoryPartOf(path) === $scope.data.uri) {
+              $scope.data.children = $scope.fs.getChildren($scope.data.uri).success(function (list) {
+                $scope.data.children = list;
+              });
+            }
           }
         };
         $scope.click = function() {
@@ -158,16 +160,18 @@
           $scope.fs.open($scope.data.uri);
         };
         $scope.getIcon = function() {
-          if ($scope.data.type === 'directory') {
-            return 'folder-icon';
+          if ($scope.data) {
+            if ($scope.data.type === 'directory') {
+              return 'folder-icon';
+            }
+            if ($scope.data.type === 'application/prs.twosigma.beaker.notebook+json') {
+              return 'glyphicon glyphicon-book';
+            } else if ($scope.fs && $scope.fs.getIcon && $scope.fs.getIcon($scope.data.type)) {
+              return $scope.fs.getIcon($scope.data.type);
+            }
           }
-          if ($scope.data.type === 'application/prs.twosigma.beaker.notebook+json') {
-            return 'glyphicon glyphicon-book';
-          } else if ($scope.fs.getIcon && $scope.fs.getIcon($scope.data.type)) {
-            return $scope.fs.getIcon($scope.data.type);
-          } else {
-            return 'glyphicon glyphicon-th';
-          }
+
+          return 'glyphicon glyphicon-th';
         };
 
         $scope.getDisplayName = function() {

@@ -1,0 +1,737 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "SQL",
+            "plugin": "SQL",
+            "imports": "",
+            "view": {
+                "cm": {
+                    "mode": "text/x-sql"
+                }
+            },
+            "classPath": "",
+            "datasorces": "",
+            "outdir": "123"
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectionD3vV5U",
+            "type": "section",
+            "title": "SQL Examples",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownIz9a7e",
+            "type": "markdown",
+            "body": [
+                "[SQL](https://en.wikipedia.org/wiki/SQL) (Structured Query Language) is one of the oldest and most popular languages for database access.",
+                "Beaker has first-class support for SQL, including syntax highlighting, autocompletion, and autotranslation.",
+                "Most of the languages in Beaker have their own SQL APIs, and you can use them as well.",
+                "",
+                "In order to be completely self-contained, this demo notebook uses an in-memory database, and it's built from scratch",
+                "automatically when the notebook is opened (see the last section).",
+                "Normally you would connect to an existing database by putting its",
+                "JDBC configuration in the Language Manager."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "sectiongbsEYV",
+            "type": "section",
+            "title": "Basic Query",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codef4U7zn",
+            "type": "code",
+            "evaluator": "SQL",
+            "input": {
+                "body": [
+                    "%%beakerDB=\"jdbc:h2:mem:db1\"",
+                    "",
+                    "SELECT * FROM color WHERE name LIKE 'A%';"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "SQL",
+                "shellId": "b0c62f20-bd98-4389-976b-65bd4a3b7fe3",
+                "elapsedTime": 93,
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "ID",
+                        "NAME",
+                        "CODE"
+                    ],
+                    "values": [
+                        [
+                            1001,
+                            "AliceBlue",
+                            "#F0F8FF"
+                        ],
+                        [
+                            1002,
+                            "AntiqueWhite",
+                            "#FAEBD7"
+                        ],
+                        [
+                            1003,
+                            "Aqua",
+                            "#00FFFF"
+                        ],
+                        [
+                            1004,
+                            "Aquamarine",
+                            "#7FFFD4"
+                        ],
+                        [
+                            1005,
+                            "Azure",
+                            "#F0FFFF"
+                        ]
+                    ],
+                    "types": [
+                        "java.lang.Integer",
+                        "java.lang.String",
+                        "java.lang.String"
+                    ],
+                    "subtype": "TableDisplay"
+                }
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "sectionIJrvTV",
+            "type": "section",
+            "title": "Autotranslate Input to Query",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdown69fca9",
+            "type": "markdown",
+            "body": [
+                "Your query can be based on values computed elsewhere in the notebook"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeRXzfau",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.id = 1003"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": 1003,
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 25
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "code3jTM1a",
+            "type": "code",
+            "evaluator": "SQL",
+            "input": {
+                "body": [
+                    "%%beakerDB=\"jdbc:h2:mem:db1\"",
+                    "%%inputs: id",
+                    "",
+                    "SELECT * FROM color WHERE id = ${id};"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "Key",
+                        "Value"
+                    ],
+                    "values": [
+                        [
+                            "ID",
+                            1003
+                        ],
+                        [
+                            "NAME",
+                            "Aqua"
+                        ],
+                        [
+                            "CODE",
+                            "#00FFFF"
+                        ]
+                    ],
+                    "subtype": "Dictionary"
+                },
+                "selectedType": "Table",
+                "pluginName": "SQL",
+                "shellId": "b0c62f20-bd98-4389-976b-65bd4a3b7fe3",
+                "elapsedTime": 580
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
+        },
+        {
+            "id": "sectionRiHRgY",
+            "type": "section",
+            "title": "Autotranslate Output of Query",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeYmDlEC",
+            "type": "code",
+            "evaluator": "SQL",
+            "input": {
+                "body": [
+                    "%%beakerDB=\"jdbc:h2:mem:db1\"",
+                    "%%outputs: colorTable",
+                    "",
+                    "select * into ${colorTable} from color;"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Hidden",
+                "pluginName": "SQL",
+                "shellId": "b0c62f20-bd98-4389-976b-65bd4a3b7fe3",
+                "elapsedTime": 594
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
+        },
+        {
+            "id": "codeDbiIzh",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.colorTable"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 23,
+                "result": {
+                    "type": "TableDisplay",
+                    "subtype": "TableDisplay",
+                    "hasIndex": "true",
+                    "values": [
+                        [
+                            1001,
+                            "AliceBlue",
+                            "#F0F8FF"
+                        ],
+                        [
+                            1002,
+                            "AntiqueWhite",
+                            "#FAEBD7"
+                        ],
+                        [
+                            1003,
+                            "Aqua",
+                            "#00FFFF"
+                        ],
+                        [
+                            1004,
+                            "Aquamarine",
+                            "#7FFFD4"
+                        ],
+                        [
+                            1005,
+                            "Azure",
+                            "#F0FFFF"
+                        ],
+                        [
+                            1006,
+                            "Beige",
+                            "#F5F5DC"
+                        ],
+                        [
+                            1007,
+                            "Bisque",
+                            "#FFE4C4"
+                        ],
+                        [
+                            1008,
+                            "Black",
+                            "#000000"
+                        ]
+                    ],
+                    "types": [
+                        "java.lang.Integer",
+                        "java.lang.String",
+                        "java.lang.String"
+                    ],
+                    "columnNames": [
+                        "ID",
+                        "NAME",
+                        "CODE"
+                    ]
+                }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "section5arlN2",
+            "type": "section",
+            "title": "Initialize the Database",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownLWlLbm",
+            "type": "markdown",
+            "body": [
+                "This section is run automatically when the notebook is opened.  It creates a test database and adds some test records and tables to it."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "code1XuTjx",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.colorsArray=[",
+                    "  {name:'AliceBlue',  \tcode:'#F0F8FF'},",
+                    "  {name:'AntiqueWhite',  \tcode:'#FAEBD7' },",
+                    "  {name:'Aqua',  \tcode:'#00FFFF'},",
+                    "  {name:'Aquamarine',  \tcode:'#7FFFD4'},",
+                    "  {name:'Azure',  \tcode:'#F0FFFF'},",
+                    "  {name:'Beige' , \tcode:'#F5F5DC'},",
+                    "  {name:'Bisque',  \tcode:'#FFE4C4'},",
+                    "  {name:'Black' , \tcode:'#000000'}]",
+                    "beaker.idArray=[1001,1002,1003,1004,1005,1006,1007,1008]"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 32,
+                "hidden": true,
+                "result": [
+                    1001,
+                    1002,
+                    1003,
+                    1004,
+                    1005,
+                    1006,
+                    1007,
+                    1008
+                ]
+            },
+            "evaluatorReader": true,
+            "lineCount": 10,
+            "initialization": true
+        },
+        {
+            "id": "codeKwTSKL",
+            "type": "code",
+            "evaluator": "SQL",
+            "input": {
+                "body": [
+                    "%%beakerDB=\"jdbc:h2:mem:db1\"",
+                    "%%inputs: idArray[*]; colorsArray[*].name; colorsArray[*].code",
+                    "",
+                    "drop table if exists color;",
+                    "CREATE TABLE color (",
+                    "  id int(11) NOT NULL,",
+                    "  name varchar(45) NOT NULL,",
+                    "  code varchar(10),",
+                    "  PRIMARY KEY (id)",
+                    ");",
+                    "",
+                    "INSERT INTO color VALUES (${idArray[*]}, ${colorsArray[*].name}, ${colorsArray[*].code});"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Hidden",
+                "pluginName": "SQL",
+                "shellId": "b0c62f20-bd98-4389-976b-65bd4a3b7fe3",
+                "elapsedTime": 933
+            },
+            "evaluatorReader": true,
+            "lineCount": 12,
+            "initialization": true
+        }
+    ],
+    "namespace": {
+        "rtable": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    "zip",
+                    1036
+                ],
+                [
+                    "state",
+                    "MA"
+                ],
+                [
+                    "city",
+                    "Hampden"
+                ],
+                [
+                    "lat",
+                    42.064756
+                ],
+                [
+                    "lng",
+                    -72.431823
+                ]
+            ],
+            "subtype": "Dictionary",
+            "columnNames": [
+                "Key",
+                "Value"
+            ]
+        },
+        "rtable2": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    "zip",
+                    1036
+                ],
+                [
+                    "state",
+                    "MA"
+                ],
+                [
+                    "city",
+                    "Hampden"
+                ],
+                [
+                    "lat",
+                    42.064756
+                ],
+                [
+                    "lng",
+                    -72.431823
+                ]
+            ],
+            "subtype": "Dictionary",
+            "columnNames": [
+                "Key",
+                "Value"
+            ]
+        },
+        "bkt1": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "Key",
+                "Value"
+            ],
+            "values": [
+                [
+                    "zip",
+                    1036
+                ],
+                [
+                    "state",
+                    "MA"
+                ],
+                [
+                    "city",
+                    "Hampden"
+                ],
+                [
+                    "lat",
+                    42.064756
+                ],
+                [
+                    "lng",
+                    -72.431823
+                ]
+            ],
+            "subtype": "Dictionary"
+        },
+        "bkt2": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "zip",
+                "city"
+            ],
+            "values": [
+                [
+                    1068,
+                    "Oakham"
+                ],
+                [
+                    1069,
+                    "Palmer"
+                ],
+                [
+                    1070,
+                    "Plainfield"
+                ],
+                [
+                    1071,
+                    "Russell"
+                ],
+                [
+                    1072,
+                    "Shutesbury"
+                ],
+                [
+                    1073,
+                    "Southampton"
+                ],
+                [
+                    1075,
+                    "South Hadley"
+                ],
+                [
+                    1077,
+                    "Southwick"
+                ],
+                [
+                    1080,
+                    "Three Rivers"
+                ],
+                [
+                    1081,
+                    "Wales"
+                ]
+            ],
+            "types": [
+                "java.lang.Integer",
+                "java.lang.String"
+            ],
+            "subtype": "TableDisplay"
+        },
+        "ttt": 222,
+        "ttt1": 10009,
+        "cid": 111,
+        "cname": "NewYork",
+        "cdate": {
+            "type": "Date",
+            "timestamp": 1443377285008
+        },
+        "city": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    "cid",
+                    112
+                ],
+                [
+                    "cname",
+                    "New York"
+                ]
+            ],
+            "subtype": "Dictionary",
+            "columnNames": [
+                "Key",
+                "Value"
+            ]
+        },
+        "states": [
+            "VT",
+            "AL",
+            "NY",
+            "IN",
+            "IL"
+        ],
+        "cities": {
+            "type": "TableDisplay",
+            "subtype": "ListOfMaps",
+            "columnNames": [
+                "cid",
+                "cname"
+            ],
+            "values": [
+                [
+                    113,
+                    "York"
+                ],
+                [
+                    114,
+                    "Yorkville"
+                ]
+            ],
+            "types": [
+                "double",
+                "string"
+            ]
+        },
+        "colorsArray": {
+            "type": "TableDisplay",
+            "subtype": "ListOfMaps",
+            "columnNames": [
+                "name",
+                "code"
+            ],
+            "values": [
+                [
+                    "AliceBlue",
+                    "#F0F8FF"
+                ],
+                [
+                    "AntiqueWhite",
+                    "#FAEBD7"
+                ],
+                [
+                    "Aqua",
+                    "#00FFFF"
+                ],
+                [
+                    "Aquamarine",
+                    "#7FFFD4"
+                ],
+                [
+                    "Azure",
+                    "#F0FFFF"
+                ],
+                [
+                    "Beige",
+                    "#F5F5DC"
+                ],
+                [
+                    "Bisque",
+                    "#FFE4C4"
+                ],
+                [
+                    "Black",
+                    "#000000"
+                ]
+            ],
+            "types": [
+                "string",
+                "string"
+            ]
+        },
+        "idArray": [
+            1001,
+            1002,
+            1003,
+            1004,
+            1005,
+            1006,
+            1007,
+            1008
+        ],
+        "colorTable": {
+            "type": "TableDisplay",
+            "subtype": "TableDisplay",
+            "hasIndex": "true",
+            "values": [
+                [
+                    1001,
+                    "AliceBlue",
+                    "#F0F8FF"
+                ],
+                [
+                    1002,
+                    "AntiqueWhite",
+                    "#FAEBD7"
+                ],
+                [
+                    1003,
+                    "Aqua",
+                    "#00FFFF"
+                ],
+                [
+                    1004,
+                    "Aquamarine",
+                    "#7FFFD4"
+                ],
+                [
+                    1005,
+                    "Azure",
+                    "#F0FFFF"
+                ],
+                [
+                    1006,
+                    "Beige",
+                    "#F5F5DC"
+                ],
+                [
+                    1007,
+                    "Bisque",
+                    "#FFE4C4"
+                ],
+                [
+                    1008,
+                    "Black",
+                    "#000000"
+                ]
+            ],
+            "types": [
+                "java.lang.Integer",
+                "java.lang.String",
+                "java.lang.String"
+            ],
+            "columnNames": [
+                "ID",
+                "NAME",
+                "CODE"
+            ]
+        },
+        "mysqlds": "jdbc:mysql://localhost:3306/test?user=root&password=root",
+        "H2MemDB2": "jdbc:h2:mem:db1",
+        "size": [
+            145,
+            277
+        ],
+        "id": 1003
+    },
+    "metadata": {
+        "publication-id": "56083398-9d51-441b-80d1-b5a591c839f3"
+    }
+}

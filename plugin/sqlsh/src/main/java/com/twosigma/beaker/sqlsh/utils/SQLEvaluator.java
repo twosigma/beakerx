@@ -45,6 +45,7 @@ public class SQLEvaluator {
     protected List<String> classPath = new ArrayList<>();
     protected String currentClassPath = "";
     private Map<String, String> namedConnectionString = new HashMap<>();
+    private String defaultConnectionString;
 
     protected final BeakerCellExecutor executor;
     volatile protected boolean exit;
@@ -95,7 +96,7 @@ public class SQLEvaluator {
     }
 
     protected SqlAutocomplete createSqlAutocomplete(ClasspathScanner c) {
-        return new SqlAutocomplete(c, jdbcClient, sessionId, namedConnectionString);
+        return new SqlAutocomplete(c, jdbcClient, sessionId, defaultConnectionString, namedConnectionString);
     }
 
     public List<String> autocomplete(String code, int caretPosition) {
@@ -186,28 +187,29 @@ public class SQLEvaluator {
         @Override
         public void run() {
             try {
-                simpleEvaluationObject.finished(queryExecutor.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient, namedConnectionString));
+                simpleEvaluationObject.finished(queryExecutor.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient, defaultConnectionString, namedConnectionString));
             } catch (SQLException e) {
-                simpleEvaluationObject.error(e.getMessage());
+                simpleEvaluationObject.error("ERROR:\n"+e.toString());
             } catch (ThreadDeath e) {
                 simpleEvaluationObject.error("... cancelled!");
             } catch (Throwable e) {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
-                simpleEvaluationObject.error(e.getMessage());
+                simpleEvaluationObject.error("ERROR:\n"+e.toString());
             }
 
         }
     }
 
-    public void setShellOptions(String cp, String datasorces) throws IOException {
+    public void setShellOptions(String cp, String defaultDatasource, String datasources) throws IOException {
         currentClassPath = cp;
         if (cp.isEmpty())
             classPath = new ArrayList<String>();
         else
             classPath = Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"));
 
+        defaultConnectionString = defaultDatasource;
         namedConnectionString = new HashMap<>();
-        Scanner sc = new Scanner(datasorces);
+        Scanner sc = new Scanner(datasources);
         while (sc.hasNext()) {
             String line = sc.nextLine();
             int i = line.indexOf('=');

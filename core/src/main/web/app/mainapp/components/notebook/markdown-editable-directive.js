@@ -176,7 +176,8 @@
               }
             }
 
-            if (scope.cellmodel.type === 'section') {
+            if (scope.creatingNewSection === true && scope.cellmodel.type === 'section') {
+              scope.creatingNewSection = false;
               var selectionStart = {line: 0, ch: 0};
               var selectionEnd = {line: 0, ch: cm.getValue().length};
               cm.setSelection(selectionStart, selectionEnd);
@@ -207,7 +208,10 @@
         });
 
         scope.$on('beaker.cell.added', function(e, cellmodel) {
-          if (cellmodel === scope.cellmodel) scope.edit();
+          if (cellmodel === scope.cellmodel) {
+            scope.creatingNewSection = true;
+            scope.edit();
+          }
         });
 
         scope.$watch('cellmodel.body', function(newVal, oldVal) {

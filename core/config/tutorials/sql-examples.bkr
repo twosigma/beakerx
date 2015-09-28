@@ -42,7 +42,8 @@
             },
             "classPath": "",
             "datasorces": "",
-            "outdir": "123"
+            "outdir": "123",
+            "defaultDatasource": "jdbc:h2:mem:db1"
         }
     ],
     "cells": [
@@ -83,17 +84,45 @@
             "evaluator": "SQL",
             "input": {
                 "body": [
-                    "%%beakerDB=\"jdbc:h2:mem:db1\"",
-                    "",
                     "SELECT * FROM color WHERE name LIKE 'A%';"
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": false,
+                            "fixRight": false
+                        },
+                        "columnNames": [
+                            "ID",
+                            "NAME",
+                            "CODE"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
                 "selectedType": "Table",
                 "pluginName": "SQL",
-                "shellId": "b0c62f20-bd98-4389-976b-65bd4a3b7fe3",
-                "elapsedTime": 93,
+                "shellId": "32395731-8887-4cbd-94ea-344776000853",
+                "elapsedTime": 92,
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -137,7 +166,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 3
+            "lineCount": 1
         },
         {
             "id": "sectionIJrvTV",
@@ -180,14 +209,39 @@
             "evaluator": "SQL",
             "input": {
                 "body": [
-                    "%%beakerDB=\"jdbc:h2:mem:db1\"",
                     "%%inputs: id",
                     "",
                     "SELECT * FROM color WHERE id = ${id};"
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": false,
+                            "fixRight": false
+                        },
+                        "columnNames": [
+                            "Key",
+                            "Value"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "getCellSho": [
+                            true,
+                            true
+                        ]
+                    }
+                },
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -212,11 +266,11 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "SQL",
-                "shellId": "b0c62f20-bd98-4389-976b-65bd4a3b7fe3",
-                "elapsedTime": 580
+                "shellId": "32395731-8887-4cbd-94ea-344776000853",
+                "elapsedTime": 585
             },
             "evaluatorReader": true,
-            "lineCount": 4
+            "lineCount": 3
         },
         {
             "id": "sectionRiHRgY",
@@ -232,7 +286,6 @@
             "evaluator": "SQL",
             "input": {
                 "body": [
-                    "%%beakerDB=\"jdbc:h2:mem:db1\"",
                     "%%outputs: colorTable",
                     "",
                     "select * into ${colorTable} from color;"
@@ -242,11 +295,11 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "b0c62f20-bd98-4389-976b-65bd4a3b7fe3",
-                "elapsedTime": 594
+                "shellId": "32395731-8887-4cbd-94ea-344776000853",
+                "elapsedTime": 588
             },
             "evaluatorReader": true,
-            "lineCount": 4
+            "lineCount": 3
         },
         {
             "id": "codeDbiIzh",
@@ -258,10 +311,36 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": false,
+                            "fixRight": false
+                        },
+                        "columnNames": [
+                            "NAME",
+                            "CODE"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "getCellSho": [
+                            true,
+                            true
+                        ]
+                    }
+                },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 23,
+                "elapsedTime": 25,
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "TableDisplay",
@@ -361,7 +440,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 32,
+                "elapsedTime": 26,
                 "hidden": true,
                 "result": [
                     1001,
@@ -384,7 +463,6 @@
             "evaluator": "SQL",
             "input": {
                 "body": [
-                    "%%beakerDB=\"jdbc:h2:mem:db1\"",
                     "%%inputs: idArray[*]; colorsArray[*].name; colorsArray[*].code",
                     "",
                     "drop table if exists color;",
@@ -402,11 +480,11 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "b0c62f20-bd98-4389-976b-65bd4a3b7fe3",
-                "elapsedTime": 933
+                "shellId": "32395731-8887-4cbd-94ea-344776000853",
+                "elapsedTime": 1132
             },
             "evaluatorReader": true,
-            "lineCount": 12,
+            "lineCount": 11,
             "initialization": true
         }
     ],

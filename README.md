@@ -87,4 +87,3 @@ We're also looking to expand our full-time, NYC-based engineering team
 by two positions.  Especially high priority is our need for a
 [front-end web developer](http://www.twosigma.com/careers/position/935.html),
 but also hiring [full-stack](http://www.twosigma.com/careers/position/936.html).
-

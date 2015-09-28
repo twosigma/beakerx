@@ -212,10 +212,8 @@ public class ScalaEvaluator {
     return null;
   }
 
-  //protected ScalaDynamicClassLoader loader = null;
   protected ScalaEvaluatorGlue shell;
   protected String loader_cp = "";
-  //protected ScalaDynamicClassLoader acloader = null;
   protected ScalaEvaluatorGlue acshell;
   protected String acloader_cp = "";
 
@@ -316,19 +314,13 @@ public class ScalaEvaluator {
       logger.fine("creating new loader");
 
       loader_cp = "";
-      URL[] urls = {};
-      if (!classPath.isEmpty()) {
-        urls = new URL[classPath.size()];
-        for (int i = 0; i < classPath.size(); i++) {
-          urls[i] = new URL("file://" + classPath.get(i));
-          loader_cp += classPath.get(i);
-          loader_cp += File.pathSeparatorChar;
-          if (logger.isLoggable(Level.FINEST))
-            logger.finest("adding file: "+urls[i].toString());
-        }
+      for (int i = 0; i < classPath.size(); i++) {
+        loader_cp += classPath.get(i);
+        loader_cp += File.pathSeparatorChar;
       }
+      loader_cp += outDir;
       DynamicClassLoaderSimple cl = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
-      cl.addURLs(urls);
+      cl.addJars(classPath);
       return cl;
     }
 
@@ -385,20 +377,14 @@ public class ScalaEvaluator {
   {
     logger.fine("creating new autocomplete loader");
     acloader_cp = "";
-    URL[] urls = {};
-    if (!classPath.isEmpty()) {
-      urls = new URL[classPath.size()];
-      for (int i = 0; i < classPath.size(); i++) {
-        urls[i] = new URL("file://" + classPath.get(i));
-        acloader_cp += classPath.get(i);
-        acloader_cp += File.pathSeparatorChar;
-        if (logger.isLoggable(Level.FINEST))
-          logger.finest("adding file: "+urls[i].toString());
-      }
+    for (int i = 0; i < classPath.size(); i++) {
+      acloader_cp += classPath.get(i);
+      acloader_cp += File.pathSeparatorChar;
     }
-    
+    acloader_cp += outDir;
+        
     DynamicClassLoaderSimple cl = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
-    cl.addURLs(urls);
+    cl.addJars(classPath);
     return cl;
   }
 

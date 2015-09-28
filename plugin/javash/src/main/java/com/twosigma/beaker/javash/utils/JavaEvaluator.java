@@ -30,17 +30,19 @@ import java.io.StringWriter;
 
 import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 import com.twosigma.beaker.jvm.utils.BeakerPrefsUtils;
+
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
 import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
 
 import java.lang.reflect.*;
+import java.net.URL;
 import java.nio.file.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.regex.*;
 import java.io.File;
 
-import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
+import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
 
 public class JavaEvaluator {
@@ -119,7 +121,10 @@ public class JavaEvaluator {
       cpp += File.pathSeparator;
     }
     cpp += File.pathSeparator;
+    cpp += outDir;
+    cpp += File.pathSeparator;
     cpp += System.getProperty("java.class.path");
+    
     cps = new ClasspathScanner(cpp);
     jac = createJavaAutocomplete(cps);
     
@@ -218,7 +223,7 @@ public class JavaEvaluator {
      */
     
     public void run() {
-      DynamicClassLoader loader = null;;
+      DynamicClassLoaderSimple loader = null;
       jobDescriptor j = null;
       JavaSourceCompiler javaSourceCompiler;
   
@@ -232,10 +237,9 @@ public class JavaEvaluator {
           
           // check if we must create or update class loader
           if (loader==null || updateLoader) {
-            loader=new DynamicClassLoader(outDir);
-            for(String pt : classPath) {
-              loader.add(pt);
-            }
+            loader=new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+            loader.addJars(classPath);
+            loader.addDynamicDir(outDir);
           }
           
           // get next job descriptor
@@ -338,7 +342,7 @@ public class JavaEvaluator {
         
             compilationUnit.addJavaSource(pname+".Foo", javaSourceCode.toString());
   
-            loader.clearCache();
+            //loader.resetDynamicLoader();
             try {
               javaSourceCompiler.compile(compilationUnit);
               
@@ -346,7 +350,7 @@ public class JavaEvaluator {
               Class<?> fooClass = loader.loadClass(pname+".Foo");
               Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
               
-              if (!executor.executeTask(new MyRunnable(mth, j.outputObject, ret.equals("Object")))) {
+              if (!executor.executeTask(new MyRunnable(mth, j.outputObject, ret.equals("Object"), loader))) {
                 j.outputObject.error("... cancelled!");
               }
               if(nc!=null) {
@@ -373,15 +377,19 @@ public class JavaEvaluator {
       protected final SimpleEvaluationObject theOutput;
       protected final Method theMth;
       protected final boolean retObject;
+      protected final ClassLoader loader;
 
-      public MyRunnable(Method mth, SimpleEvaluationObject out, boolean ro) {
+      public MyRunnable(Method mth, SimpleEvaluationObject out, boolean ro, ClassLoader ld) {
         theMth = mth;
         theOutput = out;
         retObject = ro;
+        loader = ld;
       }
       
       @Override
       public void run() {
+        ClassLoader oldld = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(loader);
         theOutput.setOutputHandler();
         try {          
           Object o = theMth.invoke(null, (Object[])null);
@@ -403,6 +411,7 @@ public class JavaEvaluator {
           }
         }
         theOutput.clrOutputHandler();
+        Thread.currentThread().setContextClassLoader(oldld);
       }
 
     };

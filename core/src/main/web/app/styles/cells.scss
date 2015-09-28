@@ -67,7 +67,7 @@ bk-section-cell, bk-markdown-cell {
 }
 
 bk-code-cell .CodeMirror pre {
-  font-family: 'Roboto Mono';
+  font-family: $font-family-mono;
 }
 
 bk-markdown-cell bk-markdown-editable {
@@ -180,14 +180,30 @@ bk-output-display {
     background: transparent;
   }
 
-  &[type="Results"] .list-unstyled {
-    margin-bottom: 0;
-    padding-top: 2px;
+  &[type="Results"] {
+
+    .text-info, .text-warning {
+      font-family: $font-family-mono;
+    }
+
+    .list-unstyled {
+      margin-bottom: 0;
+      padding-top: 2px;
+    }
+
   }
 
-  &[type="Text"] pre{
-    font-family: "Roboto Mono";
+  &[type="Text"] pre {
+    font-family: $font-family-mono;
     padding-top: 3px;
+  }
+
+  &[type="Html"] div.output_subarea pre {
+    font-family: $font-family-mono;
+  }
+
+  &[type="Error"] pre {
+    font-family: $font-family-mono;
   }
 
 }
@@ -278,6 +294,12 @@ bk-language-menu-item {
   top: 6px;
 }
 
-bk-markdown-cell .markup blockquote {
-  font-size: $font-size-base;
+bk-markdown-cell .markup {
+  code {
+    font-family: $font-family-mono;
+  }
+
+  blockquote {
+    font-size: $font-size-base;
+  }
 }

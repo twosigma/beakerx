@@ -61,7 +61,7 @@
         this.columnNames = data.columnNames.slice(0);
         this.types = data.types.slice(0);
         this.values = [];
-        this.hasIndex = true;
+        this.hasIndex = data.hasIndex || false;
         for (var j in data.values) {
           var vals = [];
           for (var i in data.values[j]) {
@@ -685,7 +685,7 @@
         var its = [];
         var nms = [];
         for (var p in this.nbmodel.namespace) {
-          if (this.predefined.indexOf(p)<0) {
+          if (this.predefined.indexOf(p)<0 && p != 'prefs') {
             var t = this.nbmodel.namespace[p];
             its.push(t);
             nms.push(p);

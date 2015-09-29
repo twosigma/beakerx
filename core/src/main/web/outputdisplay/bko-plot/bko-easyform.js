@@ -688,7 +688,7 @@
                 "<div class='easyform-container'>" +
                   "<label class='easyform-label'/>" +
                   "<div class='easyform-component-container'>" +
-                    "<input type='date' class='date-picker' ng-disabled='!component.enabled'/>" +
+                    "<input type='text' class='date-picker' ng-disabled='!component.enabled'/>" +
                   "</div>" +
                 "</div>",
             link: function (scope, element, attrs) {
@@ -700,9 +700,17 @@
                 element.find('.easyform-label').text(efc.getComponent().label);
                 var datePicker = element.find('.date-picker');
                 datePicker.attr('ng-model', scope.ngModelAttr);
-
-                if ('true' === efc.getComponent().showTime) {
-                  datePicker.attr('type', 'datetime');
+                if (true === efc.getComponent().showTime) {
+                  datePicker.datetimepicker({
+                    format: EasyFormConstants.Components.DatePickerComponent.dateTimeFormat,
+                    mask: true
+                  });
+                } else {
+                  datePicker.datetimepicker({
+                    format: EasyFormConstants.Components.DatePickerComponent.dateFormat,
+                    mask: true,
+                    timepicker: false
+                  });
                 }
               };
 
@@ -1012,7 +1020,9 @@
       },
       DatePickerComponent: {
         type: "DatePickerComponent",
-        htmlTag: "<easy-form-date-picker-component/>"
+        htmlTag: "<easy-form-date-picker-component/>",
+        dateFormat: "Ymd",
+        dateTimeFormat: "Ymd H:i"
       },
       ButtonComponent: {
         type: "ButtonComponent",

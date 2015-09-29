@@ -103,7 +103,7 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 36,
+                "elapsedTime": 29,
                 "hidden": true,
                 "result": {
                     "type": "TableDisplay",
@@ -163,8 +163,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "94ead03c-3ff7-4c5c-b817-08ad21cbbc62",
-                "elapsedTime": 122
+                "shellId": "7751ff82-72dc-4f13-8ed1-1f08f7ec4eec",
+                "elapsedTime": 126
             },
             "evaluatorReader": true,
             "lineCount": 11,
@@ -191,9 +191,6 @@
                     "-- loading of connection string from plugin settings",
                     "%%beakerDB = H2MemDB2",
                     "",
-                    "-- only declared variables can be used",
-                    "%%inputs: city.cid; city.cname; cdate; states[1]; states[2]; states[4]; cities[0].cid; cities[0].cname; cities[1].cid; cities[1].cname",
-                    "",
                     "INSERT INTO city (id, name) VALUES (${city.cid}, ${city.cname});",
                     "INSERT INTO city VALUES (${cities[0].cid}, ${cities[0].cname}, ${states[1]}, ${cdate});",
                     "INSERT INTO city VALUES (${cities[1].cid}, ${cities[1].cname}, ${states[4]}, ${cdate});",
@@ -206,11 +203,11 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "94ead03c-3ff7-4c5c-b817-08ad21cbbc62",
+                "shellId": "7751ff82-72dc-4f13-8ed1-1f08f7ec4eec",
                 "elapsedTime": 697
             },
             "evaluatorReader": true,
-            "lineCount": 16,
+            "lineCount": 13,
             "initialization": true
         },
         {
@@ -228,8 +225,6 @@
             "input": {
                 "body": [
                     "-- load connection string from default data source",
-                    "-- only declared variables can be used",
-                    "%%inputs: city.cid",
                     "",
                     "--Single result example",
                     "select concat (c1, c2) from (select 'Single result example:  records qty = ' as c1, count(*) as c2 from city) as t1;",
@@ -243,8 +238,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "SQL",
-                "shellId": "94ead03c-3ff7-4c5c-b817-08ad21cbbc62",
-                "elapsedTime": 603,
+                "shellId": "7751ff82-72dc-4f13-8ed1-1f08f7ec4eec",
+                "elapsedTime": 593,
                 "result": {
                     "type": "OutputContainer",
                     "items": [
@@ -272,7 +267,7 @@
                                     "DATE",
                                     {
                                         "type": "Date",
-                                        "timestamp": 1443387600000
+                                        "timestamp": 1443474000000
                                     }
                                 ]
                             ],
@@ -293,7 +288,7 @@
                                     "NY",
                                     {
                                         "type": "Date",
-                                        "timestamp": 1443387600000
+                                        "timestamp": 1443474000000
                                     }
                                 ],
                                 [
@@ -302,7 +297,7 @@
                                     "AL",
                                     {
                                         "type": "Date",
-                                        "timestamp": 1443387600000
+                                        "timestamp": 1443474000000
                                     }
                                 ],
                                 [
@@ -311,7 +306,7 @@
                                     "IL",
                                     {
                                         "type": "Date",
-                                        "timestamp": 1443387600000
+                                        "timestamp": 1443474000000
                                     }
                                 ]
                             ],
@@ -327,7 +322,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 10,
+            "lineCount": 8,
             "initialization": true
         },
         {
@@ -359,15 +354,11 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "BeakerDisplay",
+                "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 27,
+                "elapsedTime": 25,
                 "hidden": true,
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Error",
-                    "object": "Evaluation cancelled due to a failure of an earlier cell evaluation"
-                }
+                "result": "jdbc:h2:mem:db1"
             },
             "evaluatorReader": true,
             "lineCount": 11,
@@ -393,11 +384,6 @@
                     "",
                     "-- load connection string from beaker object",
                     "%%beakerDB=${H2MemDB2}",
-                    "",
-                    "# only declared variables can be used",
-                    "",
-                    "%%inputs: idArray[*]; colorsArray[*].color; colorsArray[*].code",
-                    "%%outputs: colorTable",
                     "",
                     "-- rebuilding the table",
                     "drop table if exists color;",
@@ -448,8 +434,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "SQL",
-                "shellId": "94ead03c-3ff7-4c5c-b817-08ad21cbbc62",
-                "elapsedTime": 870,
+                "shellId": "7751ff82-72dc-4f13-8ed1-1f08f7ec4eec",
+                "elapsedTime": 812,
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -508,7 +494,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 25,
+            "lineCount": 20,
             "initialization": true
         },
         {
@@ -558,7 +544,7 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 34,
+                "elapsedTime": 29,
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "TableDisplay",
@@ -773,7 +759,7 @@
         "cname": "NewYork",
         "cdate": {
             "type": "Date",
-            "timestamp": 1443453783642
+            "timestamp": 1443512236434
         },
         "city": {
             "type": "TableDisplay",

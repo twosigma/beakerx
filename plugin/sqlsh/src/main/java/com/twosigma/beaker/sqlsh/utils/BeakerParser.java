@@ -69,7 +69,7 @@ public class BeakerParser {
                 end = upper.indexOf(VAR_VALUE_END, start);
                 if (end < 0) break;
                 String var = sql.substring(start + 2, end).trim();
-                if (var != null && !var.isEmpty() && inputs.keySet().contains(var)) {
+                if (var != null && !var.isEmpty()) {
                     sql = sql.substring(0, start) + "?" + sql.substring(end + 1);
                     upper = sql.toUpperCase();
                     end = start + 1;

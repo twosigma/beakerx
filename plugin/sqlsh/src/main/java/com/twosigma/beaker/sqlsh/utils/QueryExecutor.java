@@ -83,15 +83,13 @@ public class QueryExecutor {
             conn.commit();
 
             for (String output : resultsForNamspace.keySet()) {
-                if (beakerParser.getOutputs() != null && beakerParser.getOutputs().contains(output)) {
-                    if (resultsForNamspace.get(output).size() > 1) {
-                        OutputContainer outputContainer = new OutputContainer(resultsForNamspace.get(output));
-                        namespaceClient.set(output, outputContainer);
-                    } else if (!resultsForNamspace.get(output).isEmpty()) {
-                        namespaceClient.set(output, resultsForNamspace.get(output).get(0));
-                    } else {
-                        namespaceClient.set(output, null);
-                    }
+                if (resultsForNamspace.get(output).size() > 1) {
+                    OutputContainer outputContainer = new OutputContainer(resultsForNamspace.get(output));
+                    namespaceClient.set(output, outputContainer);
+                } else if (!resultsForNamspace.get(output).isEmpty()) {
+                    namespaceClient.set(output, resultsForNamspace.get(output).get(0));
+                } else {
+                    namespaceClient.set(output, null);
                 }
             }
 

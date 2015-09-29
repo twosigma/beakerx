@@ -19,6 +19,7 @@ before_script:
   - sudo apt-get install nginx
   - sudo apt-get install libzmq3-dbg libzmq3-dev libzmq3
   - sudo apt-get install python-pip python-dev
+  - sudo apt-get install rubygems
   - sudo gem install sass
   - sudo pip install ipython==3.2.1 jinja2 tornado
   - sudo pip install pyzmq

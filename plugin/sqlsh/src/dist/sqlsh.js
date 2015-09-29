@@ -144,13 +144,16 @@ define(function(require, exports, module) {
       var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/setShellOptions"), {
         shellId: this.settings.shellID,
         classPath: this.settings.classPath,
-       	datasorces: this.settings.datasorces});
+        defaultDatasource: this.settings.defaultDatasource,
+        datasources: this.settings.datasources
+       });
       if (cb) {
         p.success(cb);
       }
     },
     spec: {
-      datasorces:  {type: "settableString", action: "updateShell", name: "Data sources"},
+      defaultDatasource:  {type: "settableString", action: "updateShell", name: "Default data source"},
+      datasources:  {type: "settableString", action: "updateShell", name: "Named data sources"},
       classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
       resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
       killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }

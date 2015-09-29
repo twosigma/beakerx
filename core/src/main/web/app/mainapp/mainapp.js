@@ -516,7 +516,16 @@
                     function () {
                       _savePromptUriChooser(deferred, uriType, uri);
                     });
-              } else {
+              } else if (reason !== "cancelled"){
+                console.log(reason);
+                bkCoreManager.show1ButtonModal(
+                  "Error saving to " + uri,
+                  "Save Failed",
+                  function () {
+                    _savePromptUriChooser(deferred, uriType, uri);
+                  });
+              }
+              else {
                 deferred.reject(reason); // file save failed
               }
             });

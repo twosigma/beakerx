@@ -37,11 +37,13 @@ public class BeakerParser {
     private Map<String, String> inputs = new HashMap<>();
     private Set<String> outputs = new HashSet<>();
     private Map<String, String> namedConnectionString;
+    private String defaultConnectionString;
 
     private List<BeakerParseResult> results = new ArrayList<>();
 
-    public BeakerParser(String script, NamespaceClient client, Map<String, String> namedConnectionString) throws IOException {
+    public BeakerParser(String script, NamespaceClient client, String defaultConnectionString, Map<String, String> namedConnectionString) throws IOException {
         this.client = client;
+        this.defaultConnectionString = defaultConnectionString;
         this.namedConnectionString = namedConnectionString;
 
         parseVar(script);
@@ -163,6 +165,7 @@ public class BeakerParser {
                 }
             }
         }
+        if(dbURI == null) dbURI = defaultConnectionString;
     }
 
     public String getDbURI() {

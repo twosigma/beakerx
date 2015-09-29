@@ -83,7 +83,6 @@ public class QueryExecutor {
             conn.commit();
 
             for (String output : resultsForNamspace.keySet()) {
-                //  if (beakerParser.getOutputs() != null && beakerParser.getOutputs().contains(output)) { #2524 sql should not require %%inputs %%outputs
                 if (resultsForNamspace.get(output).size() > 1) {
                     OutputContainer outputContainer = new OutputContainer(resultsForNamspace.get(output));
                     namespaceClient.set(output, outputContainer);
@@ -92,7 +91,6 @@ public class QueryExecutor {
                 } else {
                     namespaceClient.set(output, null);
                 }
-                //}
             }
 
             if (resultsForOutputCell.size() > 1) {

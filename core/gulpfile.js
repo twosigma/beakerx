@@ -138,7 +138,8 @@ gulp.task("namespaceIPythonCss", function() {
 });
 
 gulp.task("compileBeakerScss", function() {
-  return gulp.src(Path.join(rootPath, "app.scss"))
+  return gulp.src([].concat(Path.join(rootPath, "app.scss"),
+                            Path.join(rootPath, "vendor.scss")))
   .pipe(sourcemaps.init('./'))
   .pipe(sass().on('error', handleError))
   .pipe(importCss())

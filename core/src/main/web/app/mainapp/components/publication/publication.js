@@ -28,6 +28,7 @@
       $scope.user = {role: 'beaker'};
       $scope.model = {};
       $scope.baseUrl = bkPublicationApi.getBaseUrl();
+      $scope.initializing = true;
 
       $scope.signIn = function() {
         $scope.saving = true;
@@ -207,6 +208,9 @@
           initPublication();
         }
       })
+      .finally(function() {
+        $scope.initializing = false;
+      });
 
       $scope.close = function() {
         $modalInstance.close('ok');

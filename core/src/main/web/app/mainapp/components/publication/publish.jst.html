@@ -70,7 +70,7 @@
         </ul>
         <div class="actions">
           <input ng-if="!saving" type="submit" ng-value="saveButton" class="btn btn-primary">
-          <input ng-if="!saving && published" type="button" class="btn" value="Publish as new" ng-click="publish('create')">
+          <input ng-if="!saving && published" type="button" class="btn" value="Publish as new" ng-click="publish('create', true)">
           <input ng-if="!saving && published" type="button" class="btn" value="Delete" ng-click="delete()" formnovalidate>
           <input ng-if="!saving" type="button" class="btn" value="Cancel" ng-click="close()" formnovalidate>
         </div>

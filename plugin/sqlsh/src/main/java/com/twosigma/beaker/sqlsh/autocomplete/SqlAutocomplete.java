@@ -130,7 +130,7 @@ public class SqlAutocomplete {
 		}
 		
 		final String key = findKey(txt, cur);
-		
+
 		if (key != null && key.length() > 0 && key.startsWith(PARAM_CHAR)) {
 			return findParamKeys(key);
 		} else {
@@ -154,7 +154,7 @@ public class SqlAutocomplete {
 				
 				final String tableName = findKey(txt, searchTableIndex);
 				
-				if (tableName != null) {
+				if (tableName != null && tableName.length() > 0) {
 					return dbInfo.getTableFieldNames(cache, null, tableName, fieldKey);
 				}
 				

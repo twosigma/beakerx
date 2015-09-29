@@ -16,14 +16,15 @@
 
 package com.twosigma.beaker.sqlsh.autocomplete.db;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DbRequestCache implements DbCache {
 
+
+	private final static String DEF_SCHEMA = "BKR_SHEMA_NULL";
 	
 	private final ConcurrentHashMap<String, Map<String, Map<String, Map<String, List<String>>>>> fieldsCache;
 	private final ConcurrentHashMap<String, Map<String, Map<String, List<String>>>> tablesCache;
@@ -39,17 +40,32 @@ public class DbRequestCache implements DbCache {
 		tablesCache = new ConcurrentHashMap<String, Map<String, Map<String, List<String>>>>();
 	}
 
+	private String checkSchema(Map<String, ?> map, final String schemaName) {
+		if (schemaName == null) {
+			if (map != null) {
+				Set<String> keys = map.keySet();
+				if (keys.size() == 1) {
+					for (String schema : keys) {
+						return schema;
+					}
+				}
+			}
+			
+			return DEF_SCHEMA;
+		}
+		
+		return schemaName;
+	}
 	
 	@Override
-	public List<String> getTableNames(Connection conn, String schemaName, String key) throws SQLException {
-		final String uri = conn.getMetaData().getURL();
-		final Map<String, Map<String, List<String>>> uriCache = tablesCache.get(uri);
+	public List<String> getTableNames(final String url, String schemaName, String key) {
+		final Map<String, Map<String, List<String>>> uriCache = tablesCache.get(url);
 
 		if (uriCache == null) {
 			return null;
 		}
 		
-		final Map<String, List<String>> schemaCache =  uriCache.get(schemaName);
+		final Map<String, List<String>> schemaCache =  uriCache.get(checkSchema(uriCache, schemaName));
 
 		if (schemaCache == null) {
 			return null;
@@ -59,18 +75,17 @@ public class DbRequestCache implements DbCache {
 	}
 
 	@Override
-	public void putTableNames(Connection conn, String schemaName, String key, List<String> values) throws SQLException {
+	public void putTableNames(final String url, String schemaName, String key, List<String> values) {
 		if (values != null) {
-			final String uri = conn.getMetaData().getURL();
-			
 			Map<String, Map<String, List<String>>> uriCache = new ConcurrentHashMap<String, Map<String, List<String>>>();
 			
-			if (tablesCache.putIfAbsent(uri, uriCache) != null) {
-				uriCache = tablesCache.get(uri);
+			if (tablesCache.putIfAbsent(url, uriCache) != null) {
+				uriCache = tablesCache.get(url);
 			}
 			
 			Map<String, List<String>> schemaCache = new ConcurrentHashMap<String, List<String>>();
 			
+			schemaName = checkSchema(uriCache, schemaName);
 			if (uriCache.putIfAbsent(schemaName, schemaCache) != null) {
 				schemaCache = uriCache.get(schemaName);
 			}
@@ -82,15 +97,14 @@ public class DbRequestCache implements DbCache {
 
 
 	@Override
-	public List<String> getTableFieldNames(Connection conn, String schemaName, String tableName, String key) throws SQLException {
-		final String uri = conn.getMetaData().getURL();
-		final Map<String, Map<String, Map<String, List<String>>>> uriCache = fieldsCache.get(uri);
+	public List<String> getTableFieldNames(final String url, String schemaName, String tableName, String key) {
+		final Map<String, Map<String, Map<String, List<String>>>> uriCache = fieldsCache.get(url);
 
 		if (uriCache == null) {
 			return null;
 		}
 		
-		final Map<String, Map<String, List<String>>> schemaCache =  uriCache.get(schemaName);
+		final Map<String, Map<String, List<String>>> schemaCache = uriCache.get(checkSchema(uriCache, schemaName));
 
 		if (schemaCache == null) {
 			return null;
@@ -108,18 +122,17 @@ public class DbRequestCache implements DbCache {
 
 
 	@Override
-	public void putTableFieldNames(Connection conn, String schemaName, String tableName, String key, List<String> values) throws SQLException {
+	public void putTableFieldNames(final String url, String schemaName, String tableName, String key, List<String> values) {
 		if (values != null) {
-			final String uri = conn.getMetaData().getURL();
-			
 			Map<String, Map<String, Map<String, List<String>>>> uriCache = new ConcurrentHashMap<String, Map<String, Map<String, List<String>>>>();
 			
-			if (fieldsCache.putIfAbsent(uri, uriCache) != null) {
-				uriCache = fieldsCache.get(uri);
+			if (fieldsCache.putIfAbsent(url, uriCache) != null) {
+				uriCache = fieldsCache.get(url);
 			}
 			
 			Map<String, Map<String, List<String>>> schemaCache = new ConcurrentHashMap<String, Map<String, List<String>>>();
 			
+			schemaName = checkSchema(uriCache, schemaName);
 			if (uriCache.putIfAbsent(schemaName, schemaCache) != null) {
 				schemaCache = uriCache.get(schemaName);
 			}

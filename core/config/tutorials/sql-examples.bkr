@@ -121,8 +121,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "SQL",
-                "shellId": "32395731-8887-4cbd-94ea-344776000853",
-                "elapsedTime": 92,
+                "shellId": "215685d1-fac0-4eac-a1ef-1fef405f0a1a",
+                "elapsedTime": 87,
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -198,7 +198,7 @@
                 "result": 1003,
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 25
+                "elapsedTime": 21
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -209,8 +209,6 @@
             "evaluator": "SQL",
             "input": {
                 "body": [
-                    "%%inputs: id",
-                    "",
                     "SELECT * FROM color WHERE id = ${id};"
                 ]
             },
@@ -266,11 +264,11 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "SQL",
-                "shellId": "32395731-8887-4cbd-94ea-344776000853",
-                "elapsedTime": 585
+                "shellId": "215685d1-fac0-4eac-a1ef-1fef405f0a1a",
+                "elapsedTime": 587
             },
             "evaluatorReader": true,
-            "lineCount": 3
+            "lineCount": 1
         },
         {
             "id": "sectionRiHRgY",
@@ -286,8 +284,6 @@
             "evaluator": "SQL",
             "input": {
                 "body": [
-                    "%%outputs: colorTable",
-                    "",
                     "select * into ${colorTable} from color;"
                 ]
             },
@@ -295,11 +291,11 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "32395731-8887-4cbd-94ea-344776000853",
-                "elapsedTime": 588
+                "shellId": "215685d1-fac0-4eac-a1ef-1fef405f0a1a",
+                "elapsedTime": 585
             },
             "evaluatorReader": true,
-            "lineCount": 3
+            "lineCount": 1
         },
         {
             "id": "codeDbiIzh",
@@ -320,19 +316,23 @@
                             "fixRight": false
                         },
                         "columnNames": [
+                            "ID",
                             "NAME",
                             "CODE"
                         ],
                         "actualalign": [
+                            "L",
                             "L",
                             "L"
                         ],
                         "colorder": [
                             0,
                             1,
-                            2
+                            2,
+                            3
                         ],
                         "getCellSho": [
+                            true,
                             true,
                             true
                         ]
@@ -340,11 +340,11 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 25,
+                "elapsedTime": 23,
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "TableDisplay",
-                    "hasIndex": "true",
+                    "hasIndex": "false",
                     "values": [
                         [
                             1001,
@@ -440,7 +440,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 26,
+                "elapsedTime": 23,
                 "hidden": true,
                 "result": [
                     1001,
@@ -463,8 +463,6 @@
             "evaluator": "SQL",
             "input": {
                 "body": [
-                    "%%inputs: idArray[*]; colorsArray[*].name; colorsArray[*].code",
-                    "",
                     "drop table if exists color;",
                     "CREATE TABLE color (",
                     "  id int(11) NOT NULL,",
@@ -480,11 +478,11 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "32395731-8887-4cbd-94ea-344776000853",
-                "elapsedTime": 1132
+                "shellId": "215685d1-fac0-4eac-a1ef-1fef405f0a1a",
+                "elapsedTime": 707
             },
             "evaluatorReader": true,
-            "lineCount": 11,
+            "lineCount": 9,
             "initialization": true
         }
     ],
@@ -747,7 +745,7 @@
         "colorTable": {
             "type": "TableDisplay",
             "subtype": "TableDisplay",
-            "hasIndex": "true",
+            "hasIndex": "false",
             "values": [
                 [
                     1001,

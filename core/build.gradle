@@ -173,6 +173,13 @@ task doRemove() {
   }
 }
 
+task deleteTemp() {
+  doLast {
+    delete fileTree(dir: "src/main/web/app/temp")
+    delete "src/main/web/app/temp"
+  }
+}
+
 task builddebug
 task debug
 task runembed
@@ -201,6 +208,7 @@ debug.dependsOn copyVendorStuff
 runembed.dependsOn buildembed
 runembed.dependsOn jar
 runembed.dependsOn copyVendorStuff
+clean.dependsOn deleteTemp
 
 if (mac() || windows()) {
   build.dependsOn copyNginx

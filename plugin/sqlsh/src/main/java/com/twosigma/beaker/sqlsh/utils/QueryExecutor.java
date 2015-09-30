@@ -23,31 +23,30 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Date;
 
 public class QueryExecutor {
 
     protected final JDBCClient jdbcClient;
 
+    private Connection connection;
+    private PreparedStatement statement;
+
     public QueryExecutor(JDBCClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
 
-    public Object executeQuery(String script, NamespaceClient namespaceClient, String defaultConnectionString, Map<String, String> namedConnectionString) throws SQLException, IOException, NoSuchFieldException, IllegalAccessException {
+    public synchronized Object executeQuery(String script, NamespaceClient namespaceClient, String defaultConnectionString, Map<String, String> namedConnectionString) throws SQLException, IOException, ReadVariableException {
 
         BeakerParser beakerParser = new BeakerParser(script, namespaceClient, defaultConnectionString, namedConnectionString);
 
         DataSource ds = jdbcClient.getDataSource(beakerParser.getDbURI());
 
-        try (Connection conn = ds.getConnection();) {
-
-            conn.setAutoCommit(false);
+        try (Connection connection = ds.getConnection();) {
+            this.connection = connection;
+            connection.setAutoCommit(false);
             List<Object> resultsForOutputCell = new ArrayList<>();
             Map<String, List<Object>> resultsForNamspace = new HashMap<>();
 
@@ -64,7 +63,12 @@ public class QueryExecutor {
 
                 if (basicIterationArray != null) {
                     int l;
-                    Object obj = namespaceClient.get(basicIterationArray.objectName);
+                    Object obj;
+                    try {
+                        obj = namespaceClient.get(basicIterationArray.objectName);
+                    } catch (Exception e) {
+                        throw new ReadVariableException(basicIterationArray.objectName, e);
+                    }
                     if (obj instanceof List) {
                         l = ((List) obj).size();
                     } else if (obj.getClass().isArray()) {
@@ -72,15 +76,15 @@ public class QueryExecutor {
                     } else break;
 
                     for (int i = 0; i < l; i++) {
-                        QueryResult queryResult = executeQuery(i, queryLine, conn, namespaceClient);
+                        QueryResult queryResult = executeQuery(i, queryLine, connection, namespaceClient);
                         adoptResult(queryLine, queryResult, resultsForOutputCell, resultsForNamspace);
                     }
                 } else {
-                    QueryResult queryResult = executeQuery(-1, queryLine, conn, namespaceClient);
+                    QueryResult queryResult = executeQuery(-1, queryLine, connection, namespaceClient);
                     adoptResult(queryLine, queryResult, resultsForOutputCell, resultsForNamspace);
                 }
             }
-            conn.commit();
+            connection.commit();
 
             for (String output : resultsForNamspace.keySet()) {
                 if (resultsForNamspace.get(output).size() > 1) {
@@ -102,6 +106,8 @@ public class QueryExecutor {
                 return null;
             }
 
+        } finally {
+            statement = null;
         }
     }
 
@@ -138,43 +144,49 @@ public class QueryExecutor {
         }
     }
 
-    private QueryResult executeQuery(int currentIterationIndex, BeakerParseResult queryLine, Connection conn, NamespaceClient namespaceClient) throws SQLException, IOException, NoSuchFieldException, IllegalAccessException {
+    private QueryResult executeQuery(int currentIterationIndex, BeakerParseResult queryLine, Connection conn, NamespaceClient namespaceClient) throws SQLException, ReadVariableException {
 
         QueryResult queryResult = new QueryResult();
 
         try (PreparedStatement statement = conn.prepareStatement(queryLine.getResultQuery())) {
-
+            this.statement = statement;
             int n = 1;
             for (BeakerInputVar parameter : queryLine.getInputVars()) {
-                Object obj = namespaceClient.get(parameter.objectName);
-                if (!parameter.isArray() && !parameter.isObject()) {
-                    statement.setObject(n, obj);
-                } else if (!parameter.isArray() && parameter.isObject()) {
-                    statement.setObject(n, getValue(obj, parameter.getFieldName()));
-                } else if (parameter.isArray()) {
-                    int index;
-                    if (currentIterationIndex > 0 && parameter.isAll()) {
-                        index = currentIterationIndex;
-                    } else {
-                        index = parameter.index;
-                    }
-                    if (!parameter.isObject()) {
-                        if (obj instanceof List) {
-                            statement.setObject(n, ((List) obj).get(index));
-                        } else if (obj.getClass().isArray()) {
-                            Object arrayElement = Array.get(obj, index);
-                            statement.setObject(n, arrayElement);
+                Object obj;
+                try {
+                    obj = namespaceClient.get(parameter.objectName);
+
+                    if (!parameter.isArray() && !parameter.isObject()) {
+                        statement.setObject(n, obj);
+                    } else if (!parameter.isArray() && parameter.isObject()) {
+                        statement.setObject(n, getValue(obj, parameter.getFieldName()));
+                    } else if (parameter.isArray()) {
+                        int index;
+                        if (currentIterationIndex > 0 && parameter.isAll()) {
+                            index = currentIterationIndex;
+                        } else {
+                            index = parameter.index;
                         }
-                    } else {
-                        if (obj instanceof List) {
-                            statement.setObject(n, getValue(((List) obj).get(index), parameter.getFieldName()));
-                        } else if (obj.getClass().isArray()) {
-                            Object arrayElement = Array.get(obj, index);
-                            statement.setObject(n, getValue(arrayElement, parameter.getFieldName()));
+                        if (!parameter.isObject()) {
+                            if (obj instanceof List) {
+                                statement.setObject(n, ((List) obj).get(index));
+                            } else if (obj.getClass().isArray()) {
+                                Object arrayElement = Array.get(obj, index);
+                                statement.setObject(n, arrayElement);
+                            }
+                        } else {
+                            if (obj instanceof List) {
+                                statement.setObject(n, getValue(((List) obj).get(index), parameter.getFieldName()));
+                            } else if (obj.getClass().isArray()) {
+                                Object arrayElement = Array.get(obj, index);
+                                statement.setObject(n, getValue(arrayElement, parameter.getFieldName()));
+                            }
                         }
                     }
+                    n++;
+                } catch (Exception e) {
+                    throw new ReadVariableException(parameter.objectName, e);
                 }
-                n++;
             }
 
             boolean hasResultSet = statement.execute();
@@ -253,6 +265,17 @@ public class QueryExecutor {
 
         public void setTypes(List<String> types) {
             this.types = types;
+        }
+    }
+
+    public void cancel() {
+        try {
+            if (statement != null && !statement.isClosed()) {
+                statement.cancel();
+                connection.rollback();
+            }
+        } catch (SQLException e) {
+            //do nothing
         }
     }
 

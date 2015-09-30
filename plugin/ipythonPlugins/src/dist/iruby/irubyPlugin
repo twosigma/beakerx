@@ -38,4 +38,7 @@ if len(sys.argv) > 1:
                   "--ipython-dir=" + sys.argv[2])
 
 plugin_dir = os.path.dirname(sys.argv[0])
-os.execlp("python", "python", plugin_dir+"/irubyPluginStart.py")
+if os.name == 'nt':
+    os.execlp("python", "python", "\"" + plugin_dir+"/irubyPluginStart.py\"")
+else:
+    os.execlp("python", "python", plugin_dir+"/irubyPluginStart.py")

@@ -29,6 +29,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import clojure.lang.RT;
 import clojure.lang.Var;
@@ -69,8 +71,8 @@ public class ClojureEvaluator {
     classPath = new ArrayList<String>();
     imports = new ArrayList<String>();
 
-    String run_str = String.format("(ns %1$s_%2$s)(ns %1$s)(defn run-str [s] (binding [*ns* (find-ns '%1$s_%2$s)] (load-string s)))", beaker_clojure_ns, shellId);
-    clojureLoadString = RT.var(beaker_clojure_ns, "run-str");
+    String run_str = String.format("(ns %1$s_%2$s)(defn run-str_%2$s [s] (binding [*ns* (find-ns '%1$s_%2$s)] (load-string s)))", beaker_clojure_ns, shellId);
+    clojureLoadString = RT.var(String.format("%1$s_%2$s",beaker_clojure_ns, shellId), String.format("run-str_%s", shellId));
     clojure.lang.Compiler.load(new StringReader(run_str));
 
     exit = false;

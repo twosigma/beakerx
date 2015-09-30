@@ -200,5 +200,9 @@
             "evaluatorReader": true,
             "lineCount": 21
         }
-    ]
+    ],
+    "namespace": {},
+    "metadata": {
+        "publication-id": "560b4e07-6785-4cc1-95d6-bde1ab80ff8f"
+    }
 }

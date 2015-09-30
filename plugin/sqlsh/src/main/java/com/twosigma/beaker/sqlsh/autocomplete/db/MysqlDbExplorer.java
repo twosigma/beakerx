@@ -23,13 +23,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.twosigma.beaker.sqlsh.utils.JDBCClient;
+import javax.sql.DataSource;
 
-public abstract class InfoSchemaDbExplorer extends DbExplorer {
+public class MysqlDbExplorer extends DbExplorer {
 
-
-	public InfoSchemaDbExplorer(String url, JDBCClient jdbcClient) {
-		super(url, jdbcClient);
+	public MysqlDbExplorer(DataSource ds) {
+		super(ds);
 	}
 
 	@Override
@@ -40,7 +39,6 @@ public abstract class InfoSchemaDbExplorer extends DbExplorer {
 			sql += " and TABLE_NAME like('" + key + "%')";
 		}
 		
-
 		try (final Statement stmt = conn.createStatement()) {
 			final ResultSet resultSet = stmt.executeQuery(sql);
 
@@ -63,7 +61,7 @@ public abstract class InfoSchemaDbExplorer extends DbExplorer {
 		if (key != null && key.length() > 0) {
 			sql += " and COLUMN_NAME LIKE('" + key + "%')";
 		}
-		
+
 		try (final Statement stmt = conn.createStatement()) {
 			final ResultSet resultSet = stmt.executeQuery(sql);
 
@@ -77,4 +75,5 @@ public abstract class InfoSchemaDbExplorer extends DbExplorer {
 			return res;
 		}
 	}
+
 }

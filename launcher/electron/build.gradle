@@ -166,18 +166,18 @@ task copyJRE(type: Copy, dependsOn: ['unzipJRE']) {
   from 'jre'
   if (mac) {
     dependsOn 'macCopyElectron'
-    into 'Beaker.app/Contents/Resources/jre'
+    into 'Beaker.app/Contents/Resources/jdk'
   } else if (win || linux) {
-    into 'beaker/resources/jre'
+    into 'beaker/resources/jdk'
   }
 }
 
 task copyTools(type: Copy, dependsOn: 'copyJRE') {
   from 'tools.jar'
   if (mac) {
-    into 'Beaker.app/Contents/Resources/jre/Contents/Home/lib'
+    into 'Beaker.app/Contents/Resources/jdk/Contents/Home/lib'
   } else if (win || linux) {
-    into 'beaker/resources/jre/lib'
+    into 'beaker/resources/jdk/lib'
   }
 }
 

@@ -305,8 +305,11 @@
           return false;
         }
       },
-      markupCellContent: function(cellContent) {
+      markupCellContent: function(cellContent, evaluateFn) {
         var markupDeferred = bkHelper.newDeferred();
+        if (!evaluateFn) {
+          evaluateFn = this.evaluateCode;
+        }
 
         if (!this.bkRenderer) {
           // Override markdown link renderer to always have `target="_blank"`
@@ -389,7 +392,7 @@
           if (index === results.length) {
             markIt(cellContent);
           } else {
-            bkHelper.evaluateCode("JavaScript", results[index][1]).then(
+            evaluateFn("JavaScript", results[index][1]).then(
                 function (r) {
                   cellContent = cellContent.replace(results[index][0], r);
                 },

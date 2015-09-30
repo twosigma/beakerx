@@ -8,6 +8,9 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
   - "curl -Lo chrome.zip https://download-chromium.appspot.com/dl/Linux_x64 && unzip chrome.zip"
   - "curl -Lo chromedriver.zip http://chromedriver.storage.googleapis.com/2.16/chromedriver_linux64.zip && unzip chromedriver.zip"
+  - "sudo add-apt-repository --yes ppa:nginx/stable"
+  - "sudo add-apt-repository --yes ppa:chris-lea/zeromq"
+  - "sudo add-apt-repository --yes ppa:marutter/rrutter"
   - "curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -"
   - "gem install sass"
   - "sudo apt-get install -y nodejs"
@@ -16,3 +19,8 @@ before_install:
   - 'ln -s /usr/bin/npm /home/travis/build/twosigma/beaker-notebook/'
 before_script:
   - export PATH=/home/travis/build/twosigma/beaker-notebook:$PATH
+  - sudo apt-get install libzmq3-dbg libzmq3-dev libzmq3
+  - sudo apt-get install python-pip python-dev
+  - sudo pip install ipython==3.2.1 jinja2 tornado
+  - sudo pip install pyzmq
+  - sudo apt-get install python-matplotlib python-scipy python-pandas

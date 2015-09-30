@@ -20,10 +20,10 @@
   'empty': isEmpty()
   }">
   <div class="bkcell code-cell-area">
-    <div class="code-cell-input" ng-click="backgroundClick($event)" ng-hide="isLocked()" ng-class="{'input-hidden': cellmodel.input.hidden}">
+    <div class="code-cell-input" ng-mousedown="backgroundClick($event)" ng-hide="isLocked()" ng-class="{'input-hidden': cellmodel.input.hidden}">
       <div class="code-cell-input-content">
         <bk-code-cell-input-menu class="advanced-hide"></bk-code-cell-input-menu>
-        <div ng-click="$event.stopPropagation()">
+        <div ng-mousedown="$event.stopPropagation()">
           <div class="bkcelltextarea">{{cellmodel.input.body}}</div>
           <bk-cell-tooltip editor="cm"></bk-cell-tooltip>
         </div>

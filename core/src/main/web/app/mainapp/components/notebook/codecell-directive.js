@@ -108,13 +108,16 @@
           // Even better would be to detect left/right and move to
           // beginning or end of line, but we can live with this for now.
           var cm = $scope.cm;
-          if (event.pageY < (top + bottom) / 2) {
-            cm.setCursor(0, 0);
-          } else {
-            cm.setCursor(cm.lineCount() - 1,
-                         cm.getLine(cm.lastLine()).length);
-          }
-          cm.focus();
+          setTimeout(function(){
+            if (event.pageY < (top + bottom) / 2) {
+              cm.setCursor(0, 0);
+            } else {
+              cm.setCursor(cm.lineCount() - 1,
+                cm.getLine(cm.lastLine()).length);
+            }
+            cm.focus();
+          }, 0);
+
         };
 
         $scope.isShowOutput = function() {

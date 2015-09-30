@@ -86,7 +86,7 @@ public class DbRequestCache implements DbCache {
 			Map<String, List<String>> schemaCache = new ConcurrentHashMap<String, List<String>>();
 			
 			schemaName = checkSchema(uriCache, schemaName);
-			if (uriCache.putIfAbsent(schemaName, schemaCache) != null) {
+			if (((ConcurrentHashMap<String, Map<String, List<String>>>) uriCache).putIfAbsent(schemaName, schemaCache) != null) {
 				schemaCache = uriCache.get(schemaName);
 			}
 			
@@ -133,13 +133,13 @@ public class DbRequestCache implements DbCache {
 			Map<String, Map<String, List<String>>> schemaCache = new ConcurrentHashMap<String, Map<String, List<String>>>();
 			
 			schemaName = checkSchema(uriCache, schemaName);
-			if (uriCache.putIfAbsent(schemaName, schemaCache) != null) {
+			if (((ConcurrentHashMap<String, Map<String, Map<String, List<String>>>>) uriCache).putIfAbsent(schemaName, schemaCache) != null) {
 				schemaCache = uriCache.get(schemaName);
 			}
 			
 			Map<String, List<String>> tableCache = new ConcurrentHashMap<String, List<String>>();
 			
-			if (schemaCache.putIfAbsent(tableName, tableCache) != null) {
+			if (((ConcurrentHashMap<String, Map<String, List<String>>>) schemaCache).putIfAbsent(tableName, tableCache) != null) {
 				tableCache = schemaCache.get(tableName);
 			}
 			

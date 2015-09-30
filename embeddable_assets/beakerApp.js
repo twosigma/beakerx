@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ return __p
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
-__p += '\n<ul class="notebook-dashboard-list bkr">\n  <li class="session clearfix bkr" ng-repeat="session in sessions | orderBy:&quot;openedDate&quot;:true">\n    <div class="pull-left bkr">\n      <div class="caption bkr" ng-click="open(session)">{{getCaption(session)}}</div>\n      <div class="light path bkr" ng-if="getDescription(session)">\n        {{getDescription(session)}}\n      </div>\n    </div>\n    <a class="btn btn-default btn-sm pull-right close-session bkr" ng-click="close(session)">Close</a>\n    <div class="open-date light pull-right bkr">\n      <span class="bkr">Opened on</span>\n      {{session.openedDate | date:\'medium\'}}\n    </div>\n  </li>\n</ul>';
+__p += '\n<ul class="notebook-dashboard-list bkr">\n  <li class="session clearfix bkr" ng-repeat="session in sessions | orderBy:&quot;openedDate&quot;:true">\n    <div class="pull-left bkr">\n      <a class="caption notebook-link bkr" href="{{getOpenSessionLink(session)}}">{{getCaption(session)}}</a>\n      <div class="light path bkr" ng-if="getDescription(session)">\n        {{getDescription(session)}}\n      </div>\n    </div>\n    <a class="btn btn-default btn-sm pull-right close-session bkr" ng-click="close(session)">Close</a>\n    <div class="open-date light pull-right bkr">\n      <span class="bkr">Opened on</span>\n      {{session.openedDate | date:\'medium\'}}\n    </div>\n  </li>\n</ul>';
 
 }
 return __p
@@ -66,7 +66,7 @@ return __p
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
-__p += '\n<li ng-class="getItemClass(item)" class="bkr">\n  <a href="#" tabindex="-1" ng-click="runAction(item)" ng-class="getAClass(item)" id="{{item.id}}" title="{{item.tooltip}}" eat-click="" class="bkr">\n    <i class="glyphicon glyphicon-ok bkr" ng-show="isMenuItemChecked(item)"></i>\n    {{getName(item)}}\n  </a>\n</li>';
+__p += '\n<li ng-class="getItemClass(item)" class="bkr">\n  <a href="#" tabindex="-1" ng-click="runAction(item)" ng-class="getAClass(item)" id="{{item.id}}" title="{{item.tooltip}}" eat-click="" class="bkr">\n    <i class="glyphicon glyphicon-ok bkr" ng-show="isMenuItemChecked(item)"></i>\n    <span ng-if="hasCustomMarkup(item)" ng-bind-html="getCustomMarkup(item)" class="bkr"></span>\n    {{getName(item)}}\n  </a>\n</li>';
 
 }
 return __p
@@ -153,7 +153,16 @@ return __p
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
-__p += '\n<div ng-class="isLocked() &amp;&amp; \'locked\'" class="bkcell {{cellmodel.type}} bkr">\n  <div ng-if="cellmodel.input.hidden &amp;&amp; cellmodel.type==\'code\' &amp;&amp; !isLocked()" class="mini-cell-stats advanced-hide bkr">\n    {{cellmodel.evaluator}} &nbsp;\n    ({{cellmodel.lineCount}} lines)\n  </div>\n  <div ng-if="isDebugging()" class="bkr">\n    [Debug]: cell Id = {{cellmodel.id}}, parent = {{getParentId()}}, level = {{cellmodel.level}}\n    <a ng-click="toggleShowDebugInfo()" ng-hide="isShowDebugInfo()" class="bkr">show more</a>\n    <a ng-click="toggleShowDebugInfo()" ng-show="isShowDebugInfo()" class="bkr">show less</a>\n    <div collapse="!isShowDebugInfo()" class="bkr">\n      <pre class="bkr">{{cellmodel | json}}</pre>\n    </div>\n  </div>\n  <div ng-include="getTypeCellUrl()" class="bkr"></div>\n  <div class="toggle-menu bkr">\n    <div class="dropdown dropdown-promoted bkr" data-toggle="dropdown" style="float: right">\n      <div class="cell-menu-item cell-dropdown dropdown-toggle bkr" title="cell menu"></div>\n      <bk-dropdown-menu menu-items="cellview.menu.items" submenu-classes="drop-left" class="bkr"></bk-dropdown-menu>\n    </div>\n    <div class="cell-menu-item move-cell-down bkr" ng-click="moveCellDown()" ng-class="moveCellDownDisabled() &amp;&amp; \'disabled\'" title="move cell down"></div>\n    <div class="cell-menu-item move-cell-up bkr" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() &amp;&amp; \'disabled\'" title="move cell up"></div>\n    <div class="cell-menu-item delete-cell bkr" ng-click="deleteCell()" title="delete cell"></div>\n    <div class="cell-menu-item expand-contract bkr" ng-if="cellmodel.type==\'code\'" ng-click="toggleCellInput()" ng-class="cellmodel.input.hidden &amp;&amp; \'collapsed\'" title="hide/show cell input"></div>\n    <div class="dropdown dropdown-promoted advanced-only bkr" ng-if="isCodeCell()" style="float: right">\n      <div ng-if="!cellmodel.evaluatorReader" class="bkr">\n        <div class="loading-spinner rotating bkr bkr"></div>\n      </div>\n      <bk-code-cell-input-menu ng-if="cellmodel.evaluatorReader" class="bkr"></bk-code-cell-input-menu>\n    </div>\n    <div class="cell-menu-item evaluate bkr" ng-if="isMarkdownCell()" title="run cell"></div>\n    <div class="cell-menu-item evaluate bkr" ng-click="evaluate($event)" ng-if="isCodeCell()" title="run cell"></div>\n    <div class="cell-status-item loading-state advanced-hide bkr" ng-if="isCodeCell() &amp;&amp; !cellmodel.evaluatorReader">Initializing {{cellmodel.evaluator}}\n      <div class="loading-spinner rotating bkr"></div>\n    </div>\n  </div>\n  <bk-new-cell-menu config="newCellMenuConfig" ng-class="isLarge &amp;&amp; \'large\'" is-large="isLarge" ng-if="newCellMenuConfig.isShow()" class="bkr"></bk-new-cell-menu>\n</div>';
+__p += '\n<div ng-class="isLocked() &amp;&amp; \'locked\'" class="bkcell {{cellmodel.type}} bkr">\n  <div ng-if="cellmodel.input.hidden &amp;&amp; cellmodel.type==\'code\' &amp;&amp; !isLocked()" class="mini-cell-stats advanced-hide bkr">\n    {{cellmodel.evaluator}} &nbsp;\n    ({{cellmodel.lineCount}} lines)\n  </div>\n  <div ng-if="isDebugging()" class="bkr">\n    [Debug]: cell Id = {{cellmodel.id}}, parent = {{getParentId()}}, level = {{cellmodel.level}}\n    <a ng-click="toggleShowDebugInfo()" ng-hide="isShowDebugInfo()" class="bkr">show more</a>\n    <a ng-click="toggleShowDebugInfo()" ng-show="isShowDebugInfo()" class="bkr">show less</a>\n    <div collapse="!isShowDebugInfo()" class="bkr">\n      <pre class="bkr">{{cellmodel | json}}</pre>\n    </div>\n  </div>\n  <div ng-include="getTypeCellUrl()" class="bkr"></div>\n  <div class="toggle-menu bkr">\n    <div class="dropdown dropdown-promoted bkr" data-toggle="dropdown" style="float: right">\n      <div class="cell-menu-item cell-dropdown dropdown-toggle bkr" title="cell menu"></div>\n      <bk-dropdown-menu menu-items="cellview.menu.items" submenu-classes="drop-left" class="bkr"></bk-dropdown-menu>\n    </div>\n    <div class="cell-menu-item move-cell-down bkr" ng-click="moveCellDown()" ng-class="moveCellDownDisabled() &amp;&amp; \'disabled\'" title="move cell down"></div>\n    <div class="cell-menu-item move-cell-up bkr" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() &amp;&amp; \'disabled\'" title="move cell up"></div>\n    <div class="cell-menu-item delete-cell bkr" ng-click="deleteCell()" title="delete cell"></div>\n    <div class="cell-menu-item expand-contract bkr" ng-if="cellmodel.type==\'code\'" ng-click="toggleCellInput()" ng-class="cellmodel.input.hidden &amp;&amp; \'collapsed\'" title="hide/show cell input"></div>\n    <div class="dropdown dropdown-promoted advanced-only bkr" ng-if="isCodeCell()" style="float: right">\n      <div ng-if="!cellmodel.evaluatorReader" class="bkr">\n        <div class="loading-spinner rotating bkr bkr"></div>\n      </div>\n      <bk-code-cell-input-menu ng-show="cellmodel.evaluatorReader" class="bkr"></bk-code-cell-input-menu>\n    </div>\n    <div class="cell-menu-item evaluate bkr" ng-if="isMarkdownCell()" title="run cell"></div>\n    <div class="cell-menu-item evaluate bkr" ng-click="evaluate($event)" ng-if="isCodeCell()" title="run cell"></div>\n    <div class="cell-status-item loading-state advanced-hide bkr" ng-if="isCodeCell() &amp;&amp; !cellmodel.evaluatorReader">Initializing {{cellmodel.evaluator}}\n      <div class="loading-spinner rotating bkr"></div>\n    </div>\n  </div>\n  <bk-new-cell-menu config="newCellMenuConfig" ng-class="isLarge &amp;&amp; \'large\'" is-large="isLarge" ng-if="newCellMenuConfig.isShow()" class="bkr"></bk-new-cell-menu>\n</div>';
+
+}
+return __p
+}})();
+(function() {(window["JST"] = window["JST"] || {})["mainapp/components/notebook/celltooltip"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '\n<div class="bkcelltooltip bkr"></div>';
 
 }
 return __p
@@ -162,7 +171,7 @@ return __p
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
-__p += '\n\n<div class="evaluator bkr" evaluator-type="{{ cellmodel.evaluator }}" ng-class="{\n  \'evaluator-ready\': cellmodel.evaluatorReader,\n  \'locked\': isLocked(),\n  \'empty\': isEmpty()\n  }">\n  <div class="bkcell code-cell-area bkr">\n    <div class="code-cell-input bkr" ng-click="backgroundClick($event)" ng-hide="isLocked()" ng-class="{\'input-hidden\': cellmodel.input.hidden}">\n      <div class="code-cell-input-content bkr">\n        <bk-code-cell-input-menu class="advanced-hide bkr"></bk-code-cell-input-menu>\n        <div ng-click="$event.stopPropagation()" class="bkr">\n          <div class="bkcelltextarea bkr">{{cellmodel.input.body}}</div>\n        </div>\n        <a href="#" class="btn btn-default evaluate-script advanced-hide bkr" ng-click="evaluate($event)" eat-click="">\n          {{ isJobCancellable() ? \'Stop\' : \'Run\' }}\n        </a>\n      </div>\n    </div>\n    <div ng-if="hasOutput()" class="code-cell-output bkr" ng-class="{\n      \'no-output\': isHiddenOutput(),\n      \'input-hidden\': cellmodel.input.hidden,\n      \'output-hidden\': cellmodel.output.hidden,\n      \'error\': isError()\n      }">\n      <h6 ng-if="outputTitle()" class="bkr">{{outputTitle()}}</h6>\n      <bk-code-cell-output model="cellmodel.output" evaluator-id="{{ cellmodel.evaluator }}" cell-id="{{ cellmodel.id }}" class="bkr">\n      </bk-code-cell-output>\n    </div>\n  </div>\n</div>';
+__p += '\n\n<div class="evaluator bkr" evaluator-type="{{ cellmodel.evaluator }}" ng-class="{\n  \'evaluator-ready\': cellmodel.evaluatorReader,\n  \'locked\': isLocked(),\n  \'empty\': isEmpty()\n  }">\n  <div class="bkcell code-cell-area bkr">\n    <div class="code-cell-input bkr" ng-click="backgroundClick($event)" ng-hide="isLocked()" ng-class="{\'input-hidden\': cellmodel.input.hidden}">\n      <div class="code-cell-input-content bkr">\n        <bk-code-cell-input-menu class="advanced-hide bkr"></bk-code-cell-input-menu>\n        <div ng-click="$event.stopPropagation()" class="bkr">\n          <div class="bkcelltextarea bkr">{{cellmodel.input.body}}</div>\n          <bk-cell-tooltip editor="cm" class="bkr"></bk-cell-tooltip>\n        </div>\n        <a href="#" class="btn btn-default evaluate-script advanced-hide bkr" ng-click="evaluate($event)" eat-click="">\n          {{ isJobCancellable() ? \'Stop\' : \'Run\' }}\n        </a>\n      </div>\n    </div>\n    <div ng-if="hasOutput()" class="code-cell-output bkr" ng-class="{\n      \'no-output\': isHiddenOutput(),\n      \'input-hidden\': cellmodel.input.hidden,\n      \'output-hidden\': cellmodel.output.hidden,\n      \'error\': isError()\n      }">\n      <h6 ng-if="outputTitle()" class="bkr">{{outputTitle()}}</h6>\n      <bk-code-cell-output model="cellmodel.output" evaluator-id="{{ cellmodel.evaluator }}" cell-id="{{ cellmodel.id }}" class="bkr">\n      </bk-code-cell-output>\n    </div>\n  </div>\n</div>';
 
 }
 return __p
@@ -171,7 +180,7 @@ return __p
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
-__p += '\n<div class="dropdown bk-code-cell-input bkr">\n  <a class="dropdown-toggle cell-evaluator-menu bkr" data-toggle="dropdown">\n    <bk-language-logo name="{{getEvaluator().shortName}}" bg-color="{{getEvaluator().bgColor}}" fg-color="{{getEvaluator().fgColor}}" border-color="{{getEvaluator().borderColor}}" class="bkr">\n    </bk-language-logo>\n    <b class="advanced-hide bkr">{{cellmodel.evaluator}}</b>\n  </a>\n  <ul class="dropdown-menu inputcellmenu bkr" role="menu" aria-labelledby="dLabel">\n    <li ng-repeat="(evaluatorName, evaluator) in getEvaluators()" class="bkr">\n      <a tabindex="-1" href="#" ng-click="setEvaluator(evaluatorName)" class="{{evaluatorName}}-menuitem bkr" eat-click="">\n        {{evaluatorName}}\n        <i class="fa fa-check bkr" ng-show="getShowEvalIcon(evaluatorName)"></i>\n      </a>\n    </li>\n  </ul>\n</div>';
+__p += '\n<div class="dropdown bk-code-cell-input bkr">\n  <a class="dropdown-toggle cell-evaluator-menu bkr" data-toggle="dropdown">\n    <bk-language-logo name="{{getEvaluator().shortName}}" bg-color="{{getEvaluator().bgColor}}" fg-color="{{getEvaluator().fgColor}}" border-color="{{getEvaluator().borderColor}}" class="bkr">\n    </bk-language-logo>\n    <b class="advanced-hide bkr">{{cellmodel.evaluator}}</b>\n  </a>\n  <ul class="dropdown-menu inputcellmenu bkr" role="menu" aria-labelledby="dLabel">\n    <li ng-repeat="(evaluatorName, evaluator) in getEvaluators()" class="bkr">\n      <a tabindex="-1" href="#" ng-click="setEvaluator(evaluatorName)" class="{{evaluatorName}}-menuitem bkr" eat-click="">\n          <bk-language-menu-item key="{{evaluatorName}}" bg-color="{{getEvaluatorDetails(evaluatorName).bgColor}}" name="{{getEvaluatorDetails(evaluatorName).shortName}}" fg-color="{{getEvaluatorDetails(evaluatorName).fgColor}}" border-color="{{getEvaluatorDetails(evaluatorName).borderColor}}" class="bkr"></bk-language-menu-item>\n        <i class="fa fa-check bkr" ng-show="getShowEvalIcon(evaluatorName)"></i>\n      </a>\n    </li>\n  </ul>\n</div>';
 
 }
 return __p
@@ -216,7 +225,7 @@ return __p
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
-__p += '\n<div class="btn-group new-cell bkr" ng-mouseleave="hideOpenMenus()">\n  <button ng-click="newDefaultCodeCell()" class="btn btn-primary insert-cell bkr" ng-class="!isLarge &amp;&amp; \'btn-xs\'">\n    <span ng-class="!isLarge &amp;&amp; \'advanced-hide\'" class="bkr">\n      Insert {{defaultEvaluator()}} Cell\n    </span>\n    <span ng-if="!isLarge" class="plus advanced-only bkr">+<i class="fa fa-sort-down fa-hidden bkr"></i></span>\n  </button>\n  <button class="btn btn-primary dropdown-toggle bkr" ng-class="!isLarge &amp;&amp; \'btn-xs\'" data-toggle="dropdown" data-target=".code-dropdown">code <i class="fa fa-sort-down bkr"></i></button>\n  <ul class="dropdown-menu code-dropdown bkr" role="menu">\n    <li ng-repeat="(key, value) in getEvaluators()" class="bkr">\n      <a ng-click="newCodeCell(key)" class="bkr">{{key}}</a>\n    </li>\n    <li class="bkr">\n       <a ng-click="showPluginManager()" class="bkr">Other languages...</a>\n    </li>\n  </ul>\n  <ul class="dropdown-menu section-menu bkr" role="menu">\n    <li ng-repeat="level in getLevels()" class="bkr">\n      <a ng-click="newSectionCell(level)" class="bkr">Level {{level}}</a>\n    </li>\n  </ul>\n  <button class="btn btn-primary insert-text bkr" ng-class="!isLarge &amp;&amp; \'btn-xs\'" ng-click="newMarkdownCell()">text<i class="fa fa-sort-down fa-hidden bkr"></i></button>\n  <button class="btn btn-primary insert-text bkr" ng-class="!isLarge &amp;&amp; \'btn-xs\'" data-toggle="dropdown" data-target=".section-menu">section <i class="fa fa-sort-down bkr"></i></button>\n</div>';
+__p += '\n<ul class="nav nav-pills new-cell bkr" role="tablist" ng-mouseleave="hideOpenMenus()">\n  <li role="presentation" class="active bkr">\n    <button ng-click="newDefaultCodeCell()" class="btn btn-primary insert-cell bkr" ng-class="!isLarge &amp;&amp; \'btn-xs\'">\n    <span ng-class="!isLarge &amp;&amp; \'advanced-hide\'" class="bkr">\n      Insert {{defaultEvaluator()}} Cell\n    </span>\n    <span ng-if="!isLarge" class="plus advanced-only bkr">+<i class="fa fa-sort-down fa-hidden bkr"></i>\n    </span>\n    </button>\n  </li>\n  <li role="presentation" class="dropdown bkr" ng-mouseleave="hideOpenMenus()">\n    <button class="btn btn-primary dropdown-toggle bkr" ng-class="!isLarge &amp;&amp; \'btn-xs\'" data-toggle="dropdown" data-target=".code-dropdown">code <i class="fa fa-sort-down bkr"></i>\n    </button>\n    <ul class="dropdown-menu code-dropdown bkr" role="menu">\n      <li ng-repeat="(key, value) in getEvaluators()" class="bkr">\n        <a class="new-cell-menu-item bkr" ng-click="newCodeCell(key)">\n          <bk-language-menu-item key="{{key}}" bg-color="{{getEvaluatorDetails(key).bgColor}}" name="{{getEvaluatorDetails(key).shortName}}" fg-color="{{getEvaluatorDetails(key).fgColor}}" border-color="{{getEvaluatorDetails(key).borderColor}}" class="bkr"></bk-language-menu-item>\n        </a>\n      </li>\n      <li class="bkr">\n        <a class="new-cell-menu-item bkr" ng-click="showPluginManager()">Other languages...</a>\n      </li>\n    </ul>\n  </li>\n  <li role="presentation" class="dropdown bkr">\n    <button class="btn btn-primary insert-text bkr" ng-class="!isLarge &amp;&amp; \'btn-xs\'" ng-click="newMarkdownCell()">text<i class="fa fa-sort-down fa-hidden bkr"></i>\n    </button>\n  </li>\n  <li role="presentation" class="dropdown bkr" ng-mouseleave="hideOpenMenus()">\n    <button class="btn btn-primary bkr" ng-class="!isLarge &amp;&amp; \'btn-xs\'" data-toggle="dropdown" data-target=".section-menu">section <i class="fa fa-sort-down bkr"></i>\n    </button>\n    <ul class="dropdown-menu section-menu bkr" role="menu">\n      <li ng-repeat="level in getLevels()" class="bkr">\n        <a class="new-cell-menu-item bkr" ng-click="newSectionCell(level)">Level {{level}}</a>\n      </li>\n    </ul>\n  </li>\n</ul>';
 
 }
 return __p
@@ -266,6 +275,15 @@ __p += '\n<div class="textcell-wrapper bkr" ng-click="edit()">\n  <div class="ed
 }
 return __p
 }})();
+(function() {(window["JST"] = window["JST"] || {})["mainapp/components/publication/publish"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '\n<div class="bkr">\n  <div class="modal-header bkr">\n    <div class="sign-in bkr" ng-if="!isSignedIn()">\n      <h1 class="error bkr" ng-if="error">{{error}}</h1>\n      <h1 ng-if="!error" class="bkr">Sign in to Beaker Publications</h1>\n      <form ng-submit="signIn()" class="bkr">\n        <input ng-model="user.email" type="email" name="email" placeholder="Email" class="field bkr">\n        <input ng-model="user.password" type="password" required="" name="password" placeholder="Password" class="field bkr">\n        <input type="submit" value="Sign in" class="btn btn-primary bkr" ng-if="!saving">\n        <p ng-if="saving" class="bkr">\n          Signing in…\n          <span class="loading-spinner rotating bkr bkr"></span>\n        </p>\n      </form>\n      <div class="sign-up bkr">\n        No account?\n        <a target="_blank" ng-href="{{signupUrl()}}" ng-click="close()" class="bkr">Create New Account</a>\n      </div>\n    </div>\n    <div class="publish bkr" ng-if="isSignedIn()">\n      <h1 class="bkr">{{title}}</h1>\n      <form ng-submit="publishAction()" class="bkr">\n        <label for="category" class="full bkr">Notebook name others will see when you publish:</label>\n        <input ng-model="model.name" required="" type="text" class="field bkr">\n        <label for="category" class="full bkr">Notebook description:</label>\n        <textarea ng-model="model.description" rows="3" class="field bkr"></textarea>\n        <label for="category" class="full bkr">Category that describes your notebook:</label>\n        <select ng-model="model[\'category-id\']" ng-options="category[\'public-id\'] as category.name for category in categories" name="category" class="field bkr">\n          <option value="" class="bkr">Select a category</option>\n        </select>\n        <div class="preview-image bkr" ng-if="attachmentUrl">\n          <label class="full bkr">Preview image:</label>\n          <img ng-src="{{attachmentUrl}}" width="50" class="bkr">\n          <a class="remove bkr" ng-click="removeAttachment()">×</a>\n        </div>\n        <div class="error attachment bkr" ng-if="attachmentErrors">{{attachmentErrors}}</div>\n        <a class="file-upload bkr" ng-if="!file.progress" ngf-select="uploadAttachment($file)">{{attachmentUrl ? "Update image" : "Add preview image"}}</a>\n        <div class="progress bkr" ng-if="file.progress >= 0">\n          <div class="progress-bar bkr" role="progressbar" aria-valuenow="{{file.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{file.progress}}%">\n          </div>\n        </div>\n        <ul ng-if="published" class="publication-details bkr">\n          <li class="bkr">\n            <div class="time-label bkr">Published</div>\n            <div class="value publish-time bkr">{{model[\'created-at\'] | date:\'short\'}}</div>\n          </li>\n          <li class="bkr">\n            <div class="time-label bkr">Last updated</div>\n            <div class="value update-time bkr">{{model[\'updated-at\'] | date:\'short\'}}</div>\n          </li>\n        </ul>\n        <div class="actions bkr">\n          <input ng-if="!saving" type="submit" ng-value="saveButton" class="btn btn-primary bkr">\n          <input ng-if="!saving &amp;&amp; published" type="button" class="btn bkr" value="Publish as new" ng-click="publish(\'create\', true)">\n          <input ng-if="!saving &amp;&amp; published" type="button" class="btn bkr" value="Delete" ng-click="delete()" formnovalidate="">\n          <input ng-if="!saving" type="button" class="btn bkr" value="Cancel" ng-click="close()" formnovalidate="">\n        </div>\n        <div class="identity bkr">\n          <img gravatar-src="currentUser().email" gravatar-size="30" gravatar-default="retro" class="bkr">\n          <span class="text bkr">\n            Publishing\n            as <span class="name bkr">{{currentUser().name}}</span>.\n            <a ng-if="!saving" ng-click="signOut()" class="bkr">Log out</a>\n            <span ng-if="saving" class="loading-spinner rotating bkr bkr"></span>\n          </span>\n        </div>\n      </form>\n    </div>\n  </div>\n</div>';
+
+}
+return __p
+}})();
 (function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
@@ -280,15 +298,6 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
 __p += '\n\n<div ng-repeat="property in properties" class="form-group language-option property clearfix bkr">\n  <label class="bkr">{{ property.name }}</label>\n  <textarea class="form-control bkr" ng-model="evaluator.settings[property.key]"></textarea>\n  <button class="btn btn-default pull-right set bkr" ng-click="set(property.key)">Set</button>\n</div>\n<div ng-repeat="action in actions" class="action language-option clearfix bkr">\n  <button class="btn btn-default bkr" ng-click="evaluator.perform(action.key)">{{ action.name }}</button>\n</div>';
-
-}
-return __p
-}})();
-(function() {(window["JST"] = window["JST"] || {})["mainapp/components/publication/publish"] = function(obj) {
-obj || (obj = {});
-var __t, __p = '', __e = _.escape;
-with (obj) {
-__p += '\n<div class="bkr">\n  <div class="modal-header bkr">\n    <div class="sign-in bkr" ng-if="!isSignedIn()">\n      <h1 class="error bkr" ng-if="error">{{error}}</h1>\n      <h1 ng-if="!error" class="bkr">Sign in to Beaker Publications</h1>\n      <form ng-submit="signIn()" class="bkr">\n        <input ng-model="user.email" type="email" name="email" placeholder="Email" class="field bkr">\n        <input ng-model="user.password" type="password" required="" name="password" placeholder="Password" class="field bkr">\n        <input type="submit" value="Sign in" class="btn btn-primary bkr">\n      </form>\n      <div class="sign-up bkr">\n        No account?\n        <a target="_blank" href="https://pub.beakernotebook.com/#/sign_up" class="bkr">Create New Account</a>\n      </div>\n    </div>\n    <div class="publish bkr" ng-if="isSignedIn()">\n      <h1 class="bkr">{{title}}</h1>\n      <form ng-submit="publishAction()" class="bkr">\n        <label for="category" class="full bkr">Notebook name others will see when you publish:</label>\n        <input ng-model="model.name" required="" type="text" class="field bkr">\n        <label for="category" class="full bkr">Notebook description:</label>\n        <textarea ng-model="model.description" required="" rows="3" class="field bkr"></textarea>\n        <label for="category" class="full bkr">Category that describes your notebook:</label>\n        <select ng-model="model[\'category-id\']" required="" ng-options="category[\'public-id\'] as category.name for category in categories" name="category" ng-class="{error: error}" ng-change="refresh()" class="field bkr">\n          <option value="" class="bkr">Select a category</option>\n        </select>\n        <ul ng-if="published" class="publication-details bkr">\n          <li class="bkr">\n            <div class="time-label bkr">Published</div>\n            <div class="value publish-time bkr">{{model[\'created-at\'] | date:\'short\'}}</div>\n          </li>\n          <li class="bkr">\n            <div class="time-label bkr">Last updated</div>\n            <div class="value update-time bkr">{{model[\'updated-at\'] | date:\'short\'}}</div>\n          </li>\n        </ul>\n        <div class="actions bkr">\n          <div class="warning bkr" ng-if="edited">Warning, your notebook has unsaved changes.</div>\n          <input ng-if="!saving" type="submit" ng-value="saveButton" class="btn btn-primary bkr">\n          <input ng-if="!saving &amp;&amp; published" type="button" class="btn bkr" value="Delete" ng-click="delete()" formnovalidate="">\n          <input ng-if="!saving" type="button" class="btn bkr" value="Cancel" ng-click="close()" formnovalidate="">\n        </div>\n      </form>\n    </div>\n  </div>\n</div>';
 
 }
 return __p
@@ -476,6 +485,16 @@ return __p
         };
 
         var keydownHandler = function(e) {
+          // Command H
+          if (e.metaKey && e.which === 72 && bkUtils.isElectron) {
+            bkElectron.minimize();
+          }
+
+          // Command W
+          if (e.metaKey && e.which === 87 && bkUtils.isElectron) {
+            bkElectron.closeWindow();
+          }
+
           if (e.ctrlKey && e.shiftKey && (e.which === 78)) { // Ctrl + Shift + n
             bkUtils.fcall(function() {
               $scope.newNotebook();
@@ -594,8 +613,8 @@ return __p
       restrict: 'E',
       template: JST['controlpanel/table'],
       controller: function($scope) {
-        $scope.open = function(session) {
-          bkCoreManager.openSession(session.id);
+        $scope.getOpenSessionLink = function(session) {
+          return bkUtils.getBaseUrl() + '/session/' + session.id;
         };
         $scope.close = function(session) {
           var format = session.format;
@@ -1013,7 +1032,7 @@ return __p
 
     var codeMirrorFileName = {
         type : 'string',
-        hint: function(token) {
+        hint: function(token, cm) {
           var deferred = bkHelper.newDeferred();
           $.ajax({
             type: "GET",
@@ -1131,9 +1150,16 @@ return __p
             var self = this;
             this.showSpinner = true;
             bkUtils.httpPost("../beaker/rest/file-io/createDirectory", {path: path})
-                .complete(function (list) {
-                  self.showSpinner = false;
+              .success(function (list) {
+                self.treeViewfs.fillInput(path);
+                $rootScope.$broadcast("MAKE_NEW_DIR",{
+                  path: path
                 });
+                self.showSpinner = false;
+              }).error(function (response) {
+                self.showSpinner = false;
+                console.log(response);
+              });
           };
           fileChooserStrategy.getSaveBtnDisabled = function() {
             return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');
@@ -1156,6 +1182,45 @@ return __p
       },
 
       codeMirrorOptions: function(scope, notebookCellOp) {
+
+        var goCharRightOrMoveFocusDown = function(cm) {
+          if ($('.CodeMirror-hint').length > 0) {
+            //codecomplete is up, skip
+            return;
+          }
+          if (cm.getCursor().line === scope.cm.doc.lastLine()
+            && cm.getCursor().ch === scope.cm.doc.getLine(scope.cm.doc.lastLine()).length) {
+            var nextCell = moveFocusDown();
+            if (nextCell){
+              var nextCm = scope.bkNotebook.getCM(nextCell.id);
+              if (nextCm){
+                nextCm.execCommand("goDocStart");
+              }
+            }
+          } else {
+            cm.execCommand("goCharRight");
+          }
+        };
+
+        var goCharLeftOrMoveFocusDown = function(cm) {
+          if ($('.CodeMirror-hint').length > 0) {
+            //codecomplete is up, skip
+            return;
+          }
+          if (cm.getCursor().line === 0
+            && cm.getCursor().ch === 0) {
+            var prevCell = moveFocusUp();
+            if (prevCell){
+              var prevCm = scope.bkNotebook.getCM(prevCell.id);
+              if (prevCm){
+                prevCm.execCommand("goDocEnd");
+              }
+            }
+          } else {
+            cm.execCommand("goCharLeft");
+          }
+        };
+
         var goUpOrMoveFocusUp = function(cm) {
           if ($('.CodeMirror-hint').length > 0) {
             //codecomplete is up, skip
@@ -1195,6 +1260,7 @@ return __p
               nextCell = notebookCellOp.getNext(nextCell.id);
             }
           }
+          return nextCell;
         };
 
         var moveFocusUp = function() {
@@ -1213,6 +1279,7 @@ return __p
               prevCell = notebookCellOp.getPrev(prevCell.id);
             }
           }
+          return prevCell;
         };
 
         var evaluate = function() {
@@ -1250,7 +1317,7 @@ return __p
             for(var i in codeMirrorExtension.autocomplete) {
               var t = codeMirrorExtension.autocomplete[i];
               if (t.type === token.type || t.type === '*') {
-                waitfor.push(t.hint(token));
+                waitfor.push(t.hint(token, editor));
               }
             }
 
@@ -1303,6 +1370,22 @@ return __p
             };
             CodeMirror.showHint(cm, getHints, options);
           }
+        };
+
+        var shiftTab = function(cm) {
+          var cursor = cm.getCursor();
+          var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
+          if (leftLine.match(/^\s*$/)) {
+            cm.execCommand("indentAuto");
+          } else {
+            showDocs(cm);
+          }
+        };
+
+        var showDocs = function(cm) {
+          var cur = cm.getCursor();
+          var cursorPos = cm.indexFromPos(cur);
+          scope.showDocs(cursorPos);
         };
 
         var moveCellUp = function(cm) {
@@ -1371,6 +1454,9 @@ return __p
             "Shift-Enter": evaluateAndGoDown,
             "Ctrl-Space": maybeShowAutoComplete,
             "Cmd-Space": showAutoComplete,
+            "Shift-Tab": shiftTab,
+            "Shift-Ctrl-Space": showDocs,
+            "Shift-Cmd-Space": showDocs,
             "Ctrl-Alt-Up": moveCellUp,
             "Cmd-Alt-Up": moveCellUp,
             "Ctrl-Alt-Down": moveCellDown,
@@ -1380,7 +1466,10 @@ return __p
             "Tab": tab,
             "Backspace": backspace,
             "Ctrl-/": "toggleComment",
-            "Cmd-/": "toggleComment"
+            "Cmd-/": "toggleComment",
+            'Right': goCharRightOrMoveFocusDown,
+            'Left': goCharLeftOrMoveFocusDown
+
           };
 
 
@@ -1401,7 +1490,9 @@ return __p
         return {
           lineNumbers: true,
           matchBrackets: true,
-          extraKeys: keys
+          extraKeys: keys,
+          goToNextCell: moveFocusDown,
+          scrollbarStyle: "simple"
         };
       },
 
@@ -1463,12 +1554,20 @@ return __p
 
         attachSubmitListener();
 
-        dd.result.then(function(result) {
+        var callbackAction = function(result) {
           removeSubmitListener();
 
           if (callback) {
             callback(result, uriType, readOnly, format);
           }
+        };
+
+        dd.result.then(function(result) {
+          //Trigger when modal is closed
+          callbackAction(result);
+        }, function(result) {
+          //Trigger when modal is dismissed
+          callbackAction();
         }).catch(function() {
           removeSubmitListener();
         });
@@ -1976,7 +2075,7 @@ return __p
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.share', 'bk.debug', 'bk.electron']);
+  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.share', 'bk.debug', 'bk.electron', 'bk.publication']);
   /**
    * bkHelper
    * - should be the only thing plugins depend on to interact with general beaker stuffs (other than
@@ -1986,15 +2085,15 @@ return __p
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkShare, bkDebug, bkElectron) {
+  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkShare, bkDebug, bkElectron, bkPublicationAuth) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
     var getBkNotebookWidget = function() {
-      if (getCurrentApp().getBkNotebookWidget) {
+      if (getCurrentApp() && getCurrentApp().getBkNotebookWidget) {
         return getCurrentApp().getBkNotebookWidget();
       } else {
-        console.error('Current app doesn\'t support getBkNotebookWidget');
+        return undefined;
       }
     };
 
@@ -2183,12 +2282,31 @@ return __p
           return { };
         }
       },
+      initBeakerPrefs: function () {
+        var beakerObj = this.getBeakerObject();
+        beakerObj.setupBeakerObject({});
+        beakerObj.notebookToBeakerObject();
+        var beaker = beakerObj.beakerObj;
+        beaker.prefs = {useOutputPanel: false, outputLineLimit: 1000};
+        beakerObj.beakerObjectToNotebook();
+      },
+      stripOutBeakerPrefs: function(model) {
+        if (model && model.namespace && model.namespace.prefs)
+          delete model.namespace.prefs;
+      },
       getNotebookElement: function(currentScope) {
         return bkCoreManager.getNotebookElement(currentScope);
       },
       collapseAllSections: function() {
         if (getCurrentApp() && getCurrentApp().collapseAllSections) {
           return getCurrentApp().collapseAllSections();
+        } else {
+          return false;
+        }
+      },
+      openAllSections: function() {
+        if (getCurrentApp() && getCurrentApp().openAllSections()) {
+          return getCurrentApp().openAllSections();
         } else {
           return false;
         }
@@ -2308,6 +2426,13 @@ return __p
       getEvaluators: function() {
         if (getCurrentApp() && getCurrentApp().getEvaluators) {
           return getCurrentApp().getEvaluators();
+        } else {
+          return [];
+        }
+      },
+      go2FirstErrorCodeCell: function() {
+        if (getCurrentApp() && getCurrentApp().go2FirstErrorCodeCell) {
+          return getCurrentApp().go2FirstErrorCodeCell();
         } else {
           return [];
         }
@@ -2505,8 +2630,14 @@ return __p
       showPublishForm: function() {
         return bkCoreManager.showPublishForm();
       },
+      isSignedIn: function() {
+        return bkPublicationAuth.isSignedIn();
+      },
+      signOutFromPublications: function() {
+        return bkPublicationAuth.signOut();
+      },
       // other JS utils
-      updateDocumentModelFromDOM: function(id) {
+      updateCellsFromDOM: function(cells) {
         function convertCanvasToImage(elem) {
           if (elem.nodeName == 'CANVAS') {
             var img = document.createElement('img');
@@ -2522,6 +2653,29 @@ return __p
           }
           return elem;
         }
+
+        for(var i = 0; i < cells.length; i++){
+          var cell = cells[i];
+          if (cell.type === 'section') { continue; }
+          var elem = $("bk-cell[cellid='" + cell.id +"']");
+          var body = elem.find( "bk-output-display[type='Html'] div div" );
+          if(body.length > 0){
+
+            // 2.5) search for any canvas elements in body and replace each with an image.
+            body = convertCanvasToImage(body[0]);
+
+            // 2) convert that part of the DOM to a string
+            var newOutput = body.innerHTML;
+
+            // 3) set the result.object to that string.
+            var res = cell.output.result;
+            if (res.innertype === "Html") {
+              res.object = newOutput;
+            }
+          }
+        }
+      },
+      updateDocumentModelFromDOM: function(id) {
         // 1) find the cell that contains elem
         var elem = $("#" + id).closest("bk-cell");
         if (elem === undefined || elem[0] === undefined) {
@@ -2533,32 +2687,13 @@ return __p
           console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
           return;
         }
-        var body = elem.find( "bk-output-display[type='Html'] div div" );
-        if (body === undefined || body[0] === undefined) {
-          console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
-          return;
-        }
-        // 2.5) search for any canvas elements in body and replace each with an image.
-        body = convertCanvasToImage(body[0]);
-
-        // 2) convert that part of the DOM to a string
-        var newOutput = body.innerHTML;
-
-        // 3) set the result.object to that string.
         var cell = bkCoreManager.getNotebookCellManager().getCell(cellid);
         if (cell === undefined) {
           console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
           return;
         }
-
-        var res = cell.output.result;
-        if (res.innertype === "Html") {
-          res.object = newOutput;
-        } else {
-          console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
-        }
+        this.updateCellsFromDOM([cell]);
       },
-
       // bkShare
       share: bkShare,
 
@@ -2585,7 +2720,9 @@ return __p
       },
 
       receiveEvaluationUpdate: function(modelOutput, evaluation, pluginName, shellId) {
-        var maxNumOfLines = 200;
+        var beakerObj = bkHelper.getBeakerObject().beakerObj;
+        var maxNumOfLines = beakerObj.prefs
+            && beakerObj.prefs.outputLineLimit ? beakerObj.prefs.outputLineLimit : 1000;
 
         if (modelOutput.result !== undefined)
           modelOutput.result.status = evaluation.status;
@@ -2794,6 +2931,8 @@ return __p
     // add newItem to itemsList, if an item with same name already exists in itemsList,
     // compare priorities, if newItem.priority > existingItem.priority, newItem will
     // replace the existingItem in place.
+    //
+    // if newItem already exists in itemsList with the same priority and has type submenu then merge submenus' items
     var addMenuItem = function(itemsList, newItem) {
       // check if an entry with same name already exist
       var existingItem = _(itemsList).find(function(it) {
@@ -2802,7 +2941,14 @@ return __p
       if (existingItem) {
         existingItem.priority = existingItem.priority ? existingItem.priority : DEFAULT_PRIORITY;
         newItem.priority = newItem.priority ? newItem.priority : DEFAULT_PRIORITY;
-        if (newItem.priority >= existingItem.priority) {
+        if (existingItem.type === 'submenu' && newItem.priority === existingItem.priority) {
+          //merge submenu items
+          if(newItem.items){
+            newItem.items.forEach(function (item) {
+              addMenuItem(existingItem.items, item);
+            });
+          }
+        } else if (newItem.priority >= existingItem.priority) {
           // replace in place
           itemsList.splice(itemsList.indexOf(existingItem), 1, newItem);
         } else {
@@ -3368,7 +3514,7 @@ return __p
               if (bkUtils.isElectron && (target.type == 'file')){
                 bkElectron.app.addRecentDocument(target.uri);
               }
-
+              bkSessionManager.updateNotebookUri(target.uri, target.type, target.readOnly, target.format);
               var importer = bkCoreManager.getNotebookImporter(target.format);
               if (!importer) {
                 if (retry) {
@@ -3397,6 +3543,7 @@ return __p
                       target.readOnly,
                       target.format,
                       notebookModel, false, sessionId, false);
+                  setDocumentTitle();
                 }).catch(function(data, status, headers, config) {
                   bkHelper.show1ButtonModal(data, "Open Failed", function() {
                     bkCoreManager.gotoControlPanel();
@@ -3408,6 +3555,8 @@ return __p
               }
             },
             fromSession: function(sessionId) {
+              $scope.loading = true;
+              showLoadingStatusMessage("Loading notebook");
               bkSession.load(sessionId).then(function(session) {
                 var notebookUri = session.notebookUri;
                 var uriType = session.uriType;
@@ -3415,8 +3564,11 @@ return __p
                 var format = session.format;
                 var notebookModel = angular.fromJson(session.notebookModelJson);
                 var edited = session.edited;
-                loadNotebookModelAndResetSession(
+                bkSessionManager.updateNotebookUri(notebookUri, uriType, readOnly, format);
+                $timeout(function() {
+                  loadNotebookModelAndResetSession(
                     notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, true);
+                }, 0);
               });
             },
             fromImport: function(sessionId) {
@@ -3538,7 +3690,16 @@ return __p
                     function () {
                       _savePromptUriChooser(deferred, uriType, uri);
                     });
-              } else {
+              } else if (reason !== "cancelled"){
+                console.log(reason);
+                bkCoreManager.show1ButtonModal(
+                  "Error saving to " + uri,
+                  "Save Failed",
+                  function () {
+                    _savePromptUriChooser(deferred, uriType, uri);
+                  });
+              }
+              else {
                 deferred.reject(reason); // file save failed
               }
             });
@@ -3739,6 +3900,13 @@ return __p
                 }
               });
             },
+            openAllSections: function() {
+              _.each(this.getNotebookModel().cells, function(cell) {
+                if (cell.type == "section") {
+                  cell.collapsed = false;
+                }
+              });
+            },
             hasCodeCell: function(toEval) {
               var cellOp = bkSessionManager.getNotebookCellOp();
               // toEval can be a tagName (string), either "initialization", name of an evaluator or user defined tag
@@ -3863,6 +4031,15 @@ return __p
                 return bkEvaluateJobManager.evaluateRootAll(toEval);
               }
             },
+            evaluateCellCode: function(cell, code) {
+              // cell: cellModel
+              // code: code to evaluate
+              if (cell == null || typeof cell !== 'object' || _.isArray(cell)) {
+                showTransientStatusMessage("ERROR: cannot evaluate cell");
+                return "cannot evaluate cell";
+              }
+              return bkEvaluateJobManager.evaluateCellCode(cell, code);
+            },
             evaluateCode: function(evaluator, code) {
               var outcontainer = { };
               var deferred = bkHelper.newDeferred();
@@ -3906,6 +4083,35 @@ return __p
                 }
               }
               return ret;
+            },
+            go2FirstErrorCodeCell: function () {
+              var cellOp = bkSessionManager.getNotebookCellOp();
+              // get all code cells
+              var cells = cellOp.getAllCodeCells();
+
+              var go = function(id) {
+                if (bkNotebookWidget && bkNotebookWidget.getFocusable(id)) {
+                    bkNotebookWidget.getFocusable(id).scrollTo();
+                }
+              };
+
+              if (cells === undefined || (!_.isArray(cells) && cells.length === 0)) {
+                return null;
+              }
+              if (_.isArray(cells)) {
+                var i;
+                for (i = 0; i < cells.length; i++) {
+                  var cell = cells[i];
+                  if (cell.output.result && cell.output.result.innertype === "Error"){
+                    go(cell.id);
+                    break;
+                  }
+                }
+              } else {
+                if (cell.output.result && cells.output.result.innertype === "Error")
+                  go(cells.id);
+              }
+
             },
             // get (a subset of) code cells
             getCodeCells: function(filter) {
@@ -4126,6 +4332,16 @@ return __p
             // TODO implement global redo
             } else if (bkUtils.isElectron) {
               var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
+              // Command H
+              if (ctrlXORCmd && e.which === 72) {
+                bkElectron.minimize();
+              }
+
+              // Command W
+              if (ctrlXORCmd && e.which === 87) {
+                bkElectron.closeWindow();
+              }
+
               if (e.which === 123) { // F12
                 bkElectron.toggleDevTools();
               } else if (ctrlXORCmd && ((e.which === 187) || (e.which === 107))) { // Ctrl + '+'
@@ -4226,26 +4442,28 @@ return __p
                 function() {
                   // "Save", save the notebook as a file on the client side
                   bkSessionManager.dumpDisplayStatus();
-                  $timeout(function() {
+                  var timeoutPromise = $timeout(function() {
                     bkUtils.saveAsClientFile(
                         bkSessionManager.getSaveData().notebookModelAsString,
                     "notebook.bkr");
                   }, 1);
+                  timeoutPromise.then(function() {
+                    prompted = false;
+                  })
                 },
                 function() {
                   // "Not now", hijack all keypress events to prompt again
                   window.addEventListener('keypress', $scope.promptToSave, true);
+                  prompted = false;
                 },
                 "Save", "Not now", "btn-primary", ""
-            ).then(function() {
-              prompted = false;
-            });
+            );
           };
         })();
 
         var connectionManager = (function() {
           var RECONNECT_TIMEOUT = 5000; // 5 seconds
-          var OFFLINE_MESSAGE = "offline";
+          var OFFLINE_MESSAGE = "offline, click to download a copy";
           var CONNECTING_MESSAGE = "reconnecting";
           var reconnectTimeout;
           var statusMessage = OFFLINE_MESSAGE;
@@ -4621,6 +4839,10 @@ return __p
       },
       // evaluate a cell in top level context
       evaluateRoot: function(cell, notick) {
+        return this.evaluateCellCode(cell, cell.input.body, notick);
+      },
+      // evaluate a code of a cell
+      evaluateCellCode: function(cell, code, notick){
         var deferred = bkUtils.newDeferred();
         if (jobQueue.isRunning(cell.id)) {
           bkHelper.showTransientStatus("ERROR: restart blocked for cell "+cell.id);
@@ -4637,7 +4859,7 @@ return __p
           parent: parent,
           cellId: cell.id,
           evaluatorId: cell.evaluator,
-          code: cell.input.body,
+          code: code,
           output: cell.output,
           retry: 0,
           finished: false,
@@ -5700,10 +5922,12 @@ return __p
         this.columnNames = [];
         this.types = [];
         this.values = [];
+        this.hasIndex = false;
       } else {
         this.columnNames = data.columnNames.slice(0);
         this.types = data.types.slice(0);
         this.values = [];
+        this.hasIndex = data.hasIndex || false;
         for (var j in data.values) {
           var vals = [];
           for (var i in data.values[j]) {
@@ -5720,10 +5944,13 @@ return __p
         '  Rows: '+this.values.length+'\n' +
         '  Data columns (total '+this.columnNames.length+' columns):\n';
       for (var i in this.columnNames) {
-        s = s + '    '+this.columnNames[i]+'   '+this.types[i]+'\n';
+        s = s + '    '+this.columnNames[i]+'   '+this.types[i]+(this.hasIndex && i==0 ? ' *Index*\n' : '\n');
       }
-      ;
       return s;
+    };
+
+    DataFrame.prototype.hasIndex = function() {
+      return this.hasIndex;
     };
 
     DataFrame.prototype.columns = function() {
@@ -5734,6 +5961,16 @@ return __p
       return this.types;
     };
 
+    DataFrame.prototype.getIndex = function() {
+      if(!this.hasIndex)
+        return undefined;
+      var o = [];
+      for (var j in this.values) {
+        o.push(this.values[j][0]);
+      }
+      return o;
+    };
+    
     DataFrame.prototype.getColumn = function(name) {
       var i = this.columnNames.indexOf(name);
       if (i < 0)
@@ -5763,6 +6000,8 @@ return __p
       var i = this.columnNames.indexOf(name);
       if (i < 0)
           return false;
+      if (i==0)
+        this.hasIndex = false;
       for (var j in this.values) {
         this.values[j].splice(i,1);
       }
@@ -5818,7 +6057,7 @@ return __p
 
     function getDataType(v) {
       if (_.isDate(v))
-        return "time";
+        return "datetime";
       if(_.isNumber(v)) // can we do a better job here?
         return "double";
       if(_.isBoolean(v))
@@ -5863,16 +6102,19 @@ return __p
         var o = {}
         o.type = "TableDisplay";
         o.subtype = "TableDisplay";
+        o.hasIndex = v.hasIndex ? 'true' : 'false';
         o.values = [];
         for (var i in v.values) {
-          var row = [];
+          var row = [ ];
           for (var j in v.values[i]) {
             row.push(transform(v.values[i][j], true));
           }
           o.values.push(row);
         }
-        o.types = _.isArray(v.types) ? v.types.slice(0) : undefined;
-        o.columnNames = _.isArray(v.columnNames) ? v.columnNames.slice(0) : undefined;
+        o.types = [ ];
+        if (_.isArray(v.types)) o.types = o.types.concat(v.types.slice(0));
+        o.columnNames = [ ];
+        if (_.isArray(v.columnNames)) o.columnNames = o.columnNames.concat(v.columnNames.slice(0));
         return o
       }
 
@@ -6074,6 +6316,10 @@ return __p
       this.nbmodel = nbmodel;
     };
 
+    BeakerObject.prototype.isBeakerObject = function(obj) {
+      return obj === this.beakerObj;
+    }
+    
     BeakerObject.prototype.setupBeakerObject = function(modelOutput) {
       var self = this;
 
@@ -6274,7 +6520,7 @@ return __p
       for (var p in this.setCache) {
         if (this.nbmodel.namespace === undefined)
           this.nbmodel.namespace = { };
-        if (this.isCircularObject(this.setCache[p]))
+        if (this.isCircularObject2(this.setCache[p]))
           this.nbmodel.namespace[p] = "ERROR: circular objects are not supported";
         else
           this.nbmodel.namespace[p] = transform(this.setCache[p]);
@@ -6300,9 +6546,34 @@ return __p
       this.getCache = { };
     };
 
-    BeakerObject.prototype.transform = transform;
-
+    BeakerObject.prototype.transform = function(obj) {
+      if (obj === this.beakerObj) {
+        var its = [];
+        var nms = [];
+        for (var p in this.nbmodel.namespace) {
+          if (this.predefined.indexOf(p)<0 && p != 'prefs') {
+            var t = this.nbmodel.namespace[p];
+            its.push(t);
+            nms.push(p);
+          }
+        }
+        obj = {
+            type: 'OutputContainer',
+            items: its,
+            names: nms
+        };
+      }
+      return transform(obj);
+    }
+    
     BeakerObject.prototype.isCircularObject = function(node, parents) {
+      if (node === this.beakerObj)
+        return true;
+      
+      return this.isCircularObject2(node, parents);
+    }
+
+    BeakerObject.prototype.isCircularObject2 = function(node, parents) {
       parents = parents || [];
       if (!node || typeof node != "object"){
         return false;
@@ -6314,7 +6585,7 @@ return __p
           if (parents.indexOf(value)>=0) {
             return true;
           }
-          if (this.isCircularObject(value, parents)) {
+          if (this.isCircularObject2(value, parents)) {
             return true;
           }
         }
@@ -6362,18 +6633,27 @@ return __p
           return angular.toJson(_v);
         },
         toCleanPrettyJson: function() {
+          var notebookModelCopy = angular.copy(_v);
+          bkHelper.stripOutBeakerPrefs(notebookModelCopy);
+          //Save running cells as interrupted
+          if (notebookModelCopy.cells) {
+            for (var i = 0; i < notebookModelCopy.cells.length; i++) {
+              var currentCell = notebookModelCopy.cells[i];
+              if (currentCell && currentCell.output && currentCell.output.result
+                  && currentCell.output.result.innertype === 'Progress') {
+                currentCell.output.result.innertype = 'Error';
+                currentCell.output.result.object = 'Interrupted, saved while running.'
+              }
+            }
+          }
+
           //strip out the shell IDs
-          var shellIds = _(_v.evaluators).map(function(evaluator) {
-            var shellId = evaluator.shellID;
+          _(notebookModelCopy.evaluators).each(function(evaluator) {
             delete evaluator.shellID;
-            return shellId;
           });
+
           // generate pretty JSON
-          var prettyJson = bkUtils.toPrettyJson(_v);
-          // put the shell IDs back
-          _(_v.evaluators).each(function(evaluator, index) {
-            evaluator.shellID = shellIds[index];
-          });
+          var prettyJson = bkUtils.toPrettyJson(notebookModelCopy);
           return prettyJson;
         }
       };
@@ -6481,6 +6761,7 @@ return __p
         _format = format;
         _notebookUri.set(notebookUri);
         _notebookModel.set(notebookModel);
+        bkHelper.initBeakerPrefs();
         this.setNotebookModelEdited(!!edited);
         _sessionId = sessionId;
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel, generateSaveData);
@@ -6516,6 +6797,7 @@ return __p
         _format = format;
         _notebookUri.set(notebookUri);
         _notebookModel.set(notebookModel);
+        bkHelper.initBeakerPrefs();
         _sessionId = sessionId;
 
         _needsBackup = _edited;
@@ -6597,6 +6879,7 @@ return __p
         return true;
       },
       getSaveData: function() {
+        bkHelper.updateCellsFromDOM(this.getRawNotebookModel().cells);
         return generateSaveData();
       },
       getNotebookModelAsString: function() {
@@ -6689,14 +6972,15 @@ return __p
             };
           },
           newSectionCell: function(level, title, id) {
+            var levelNumberToWordMapping = {1 : "One", 2 : "Two", 3 : "Three", 4 : "Four"};
             if (!level && level !== 0) {
               level = 1;
             }
             if (level <= 0) {
               throw "creating section cell with level " + level + " is not allowed";
             }
-            if (!title) {
-              title = "New Section H" + level;
+            if (!title && levelNumberToWordMapping[level]) {
+              title = "Section Level " + levelNumberToWordMapping[level];
             }
 
             if (!id) {
@@ -7189,6 +7473,21 @@ return __p
           }
         };
 
+        $scope.showDocs = function(cpos) {
+
+          var cb = function(doc) {
+            $scope.$broadcast('showTooltip', doc);
+          };
+
+          var evaluator = bkEvaluatorManager.getEvaluator($scope.cellmodel.evaluator);
+          if (!evaluator) {
+            return;
+          }
+          if (evaluator.showDocs) {
+            evaluator.showDocs($scope.cellmodel.input.body, cpos, cb);
+          }
+        };
+
         $scope.getEvaluators = function() {
           return bkEvaluatorManager.getAllEvaluators();
         };
@@ -7316,7 +7615,14 @@ return __p
           }
           showing.CodeMirror.getWrapperElement().style.height = winHeight() + 'px';
         };
+        scope.scrollTo = function(){
+          window.scrollTo(0, element.offset().top - 100);
+          scope.focus();
+        };
         scope.focus = function() {
+          if (scope.cm === undefined) {
+            initCodeMirror();
+          }
           scope.cm.focus();
         };
         CodeMirror.on(window, 'resize', resizeHandler);
@@ -7357,24 +7663,52 @@ return __p
           'Cmd-Alt-H': function(cm) { // cell hide
             scope.cellmodel.input.hidden = true;
             bkUtils.refreshRootScope();
+          },
+          'Shift-Ctrl-Enter': function(cm) {
+            scope.evaluateSelection(cm);
+          },
+          'Shift-Cmd-Enter':  function(cm) {
+            scope.evaluateSelection(cm);
           }
         });
 
+        var initCodeMirror = function(){
+
+          var template = '<textarea class="bkcelltextarea" ng-model="cellmodel.input.body">' + scope.cellmodel.input.body + '</textarea>';
+          $(element.find('.bkcelltextarea')[0]).replaceWith($(template));
+
+          scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
+          scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
+          scope.cm.on('change', changeHandler);
+          scope.cm.on('blur', function () {
+            if ($('.CodeMirror-hint').length > 0) {
+              //codecomplete is up, skip
+              return;
+            }
+            CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
+          });
+          scope.cm.on('focus', function () {
+            if ($('.CodeMirror-hint').length > 0) {
+              //codecomplete is up, skip
+              return;
+            }
+            CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
+          });
+
+          scope.updateUI(scope.getEvaluator());
+          // Since the instantiation of codemirror instances is now lazy,
+          // we need to track and handle focusing on an async cell add
+          if (scope._shouldFocusCodeMirror) {
+            delete scope._shouldFocusCodeMirror;
+            return scope.cm.focus();
+          }
+
+        };
+
+
         Scrollin.track(element[0], function() {
           if (scope.cm === undefined) {
-            var template = '<textarea class="bkcelltextarea" ng-model="cellmodel.input.body">' + scope.cellmodel.input.body + '</textarea>';
-            $(element.find('.bkcelltextarea')[0]).replaceWith($(template));
-
-            scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
-            scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
-            scope.cm.on('change', changeHandler);
-            scope.updateUI(scope.getEvaluator());
-            // Since the instantiation of codemirror instances is now lazy,
-            // we need to track and handle focusing on an async cell add
-            if (scope._shouldFocusCodeMirror) {
-              delete scope._shouldFocusCodeMirror;
-              return scope.cm.focus();
-            }
+            initCodeMirror();
           }
         });
 
@@ -7442,14 +7776,37 @@ return __p
           }
         });
 
+        scope.evaluateSelection = function(cm) {
+          var evalCode;
+          var currentLine;
+          if (cm.somethingSelected()) {
+            evalCode = cm.getSelection();
+          } else {
+            currentLine = cm.getCursor().line;
+            evalCode = cm.getLine(currentLine);
+          }
+
+          scope.cellmodel.output.state = {};
+          bkCoreManager.getBkApp().evaluateCellCode(scope.cellmodel, evalCode)
+            .then(function(data) {
+              if (currentLine != null) {
+                if (currentLine !== cm.lastLine()) {
+                  cm.setCursor(currentLine + 1, 0);
+                } else {
+                  codeMirrorOptions.goToNextCell(cm);
+                }
+              }
+            })
+            .catch(function(data) {
+              console.log('Evaluation failed');
+            });
+        };
+
         scope.$on('beaker.section.toggled', function(e, isCollapsed) {
           if (!isCollapsed) {
             $timeout(function() {
               if (scope.cm === undefined) {
-                scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
-                scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
-                scope.cm.on('change', changeHandler);
-                scope.updateUI(scope.getEvaluator());
+                initCodeMirror();
               } else {
                 scope.cm.refresh();
               }
@@ -7490,6 +7847,139 @@ return __p
  *  limitations under the License.
  */
 
+(function() {
+  'use strict';
+  var module = angular.module('bk.notebook');
+
+  module.directive('bkCellTooltip', function(bkUtils) {
+    return {
+      restrict: 'E',
+      template: JST["mainapp/components/notebook/celltooltip"](),
+      scope: {
+        editor: '='
+      },
+      controller: function($scope) {
+      },
+      link: function(scope, element, attrs) {
+        var tooltip = element.find('.bkcelltooltip');
+
+        ///handle showTooltip event//////////////////////
+        scope.$on('showTooltip', function(event, doc) {
+          showTooltip(doc);
+        });
+
+        function showTooltip(doc) {
+          bindEvents();
+          tooltip.empty();
+          var html;
+          if (doc.ansiHtml) {
+            html = ansi_up.ansi_to_html(doc.ansiHtml, {use_classes: true});
+          } else if (doc.text) {
+            html = doc.text;
+          }
+          if (html) {
+            tooltip.html(html);
+            tooltip.addClass('bkcelltooltip-open');
+            adjustTooltipPosition();
+          }
+        }
+
+        function hideTooltip() {
+          unbindEvents();
+          tooltip.removeClass('bkcelltooltip-open');
+        }
+
+        function adjustTooltipPosition() {
+          var jqEditor = $(scope.editor.getWrapperElement());
+          var cmPosition = jqEditor.position();
+          var position = scope.editor.cursorCoords(true, 'local');
+          var vMargins = jqEditor.outerHeight(true) - jqEditor.height();
+          var hMargins = jqEditor.outerWidth(true) - jqEditor.width();
+
+          var left = (cmPosition.left + position.left + hMargins);
+          var top = (cmPosition.top + position.bottom + vMargins);
+
+          tooltip.css('position', 'absolute');
+          tooltip.css('top', top);
+          tooltip.css('left', left);
+        }
+
+        function shouldHideTooltip(clickEventElement) {
+          return tooltipIsOpen() && !tooltip.is(clickEventElement) &&
+            tooltip.has(clickEventElement).length === 0;
+        }
+
+        function tooltipIsOpen() {
+          return tooltip.hasClass('bkcelltooltip-open');
+        }
+
+        var mouseDownHandler = function(e) {
+          if (shouldHideTooltip(e.target)) {
+            hideTooltip();
+          }
+        };
+
+        var resizeHandler = function() {
+          if (tooltipIsOpen()) {
+            adjustTooltipPosition();
+          }
+        };
+
+        var editorChangeHandler = function() {
+          if (tooltipIsOpen()) {
+            hideTooltip();
+          }
+        };
+
+        var escapeKeyBind = function(evt) {
+          if (evt.which === 27 && tooltipIsOpen()) {
+            hideTooltip();
+          }
+        };
+
+        function bindEvents() {
+          //handle document mousedown to close tooltip
+          $(window).on('mousedown', mouseDownHandler);
+          //adjust tooltip position on window resize
+          $(window).resize(resizeHandler);
+          //close tooltip on esc
+          $(window).on('keydown', escapeKeyBind);
+          //hide tooltip on typing in editor
+          scope.editor.on('change', editorChangeHandler);
+        }
+
+        function unbindEvents() {
+          $(window).off('resize', resizeHandler);
+          $(window).off('mousedown', mouseDownHandler);
+          $(window).off('keydown', escapeKeyBind);
+          if(scope.editor){
+            scope.editor.off('change', editorChangeHandler);
+          }
+        }
+
+        scope.$on('$destroy', function() {
+          unbindEvents();
+        });
+      }
+    };
+  });
+})();
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 /**
  * This module holds the logic for code cell, which is a typed {@link bkCell}.
  * The code cell contains an input cell an output cell ({@link bkCodeCellOutput}) and cell menus.
@@ -7498,7 +7988,7 @@ return __p
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('bkCodeCellInputMenu', function(bkCoreManager) {
+  module.directive('bkCodeCellInputMenu', function(bkCoreManager, bkEvaluatorManager) {
     var getBkNotebookWidget = function() {
       return bkCoreManager.getBkApp().getBkNotebookWidget();
     } ;
@@ -7527,6 +8017,9 @@ return __p
           var cellId = $scope.cellmodel.id;
           $scope.cellmodel.evaluator = evaluatorName;
           getBkNotebookWidget().getFocusable(cellId).focus();
+        };
+        $scope.getEvaluatorDetails = function(name) {
+          return bkEvaluatorManager.getVisualParams(name);
         };
       }
     };
@@ -7570,6 +8063,7 @@ return __p
       },
       controller: function($scope) {
         var _shareMenuItems = [];
+        var _saveAsItems = [];
 
         $scope.getOutputResult = function() {
           return $scope.model.result;
@@ -7666,6 +8160,10 @@ return __p
           return type;
         };
 
+        $scope.$watch('getOutputDisplayType()', function() {
+            $scope.outputCellMenuModel.refreshMenu();
+        });
+
         var getElapsedTimeString = function() {
           if ($scope.model.elapsedTime || $scope.model.elapsedTime === 0) {
             var elapsedTime = $scope.model.elapsedTime;
@@ -7703,9 +8201,38 @@ return __p
           return true;
         };
 
-        // to be used in output cell menu
-        $scope.outputCellMenuModel = (function() {
-          var _additionalMenuItems = [
+        $scope.getAdditionalMenuItems = function() {
+
+          var getDisplayType = function(){
+            var displayType = $scope.getOutputDisplayType() != null ? $scope.getOutputDisplayType() : $scope.applicableDisplays[0];
+
+            if (displayType === "Results" && $scope.getOutputResult() && $scope.getOutputResult().payload){
+              displayType = $scope.getOutputResult().payload.type;
+            }
+            return displayType;
+          };
+
+          var displayType = getDisplayType();
+          if(displayType === "Plot" || displayType === "CombinedPlot"){
+            _saveAsItems = [
+              {
+                name: "SVG",
+                action: function () {
+                  $scope.outputDisplayModel.getCellModel().saveAsSvg ?
+                    $scope.outputDisplayModel.getCellModel().saveAsSvg() : $scope.outputDisplayModel.getCellModel().payload.saveAsSvg();
+                }
+              },
+              {
+                name: "PNG",
+                action: function () {
+                  $scope.outputDisplayModel.getCellModel().saveAsPng ?
+                    $scope.outputDisplayModel.getCellModel().saveAsPng() : $scope.outputDisplayModel.getCellModel().payload.saveAsPng();
+                }
+              }];
+          }else{
+            _saveAsItems = [];
+          }
+          return [
             {
               name: "Share",
               items: function() {
@@ -7728,10 +8255,19 @@ return __p
               }
             },
             {
+              name: "Save Plot As",
+              items: _saveAsItems
+            },
+            {
               name: getElapsedTimeString,
               action: null
             }
           ];
+        };
+
+        // to be used in output cell menu
+        $scope.outputCellMenuModel = (function() {
+          var _additionalMenuItems = $scope.getAdditionalMenuItems();
           return {
             getApplicableDisplays: function() {
               return $scope.applicableDisplays;
@@ -7744,6 +8280,9 @@ return __p
             },
             getAdditionalMenuItems: function() {
               return _additionalMenuItems;
+            },
+            refreshMenu: function() {
+              _additionalMenuItems = $scope.getAdditionalMenuItems();
             }
           };
         })();
@@ -7866,7 +8405,7 @@ return __p
         //jshint ignore:end
         return '';
       }
-    };
+    }
     var out = '<a href="' + href + '"';
     if (title) {
       out += ' title="' + title + '"';
@@ -7874,7 +8413,7 @@ return __p
     out += ' target="_blank"'; // < ADDED THIS LINE ONLY
     out += '>' + text + '</a>';
     return out;
-  }
+  };
 
   bkRenderer.paragraph = function(text) {
     // Allow users to write \$ to escape $
@@ -7896,6 +8435,38 @@ return __p
       link: function(scope, element, attrs) {
         var contentAttribute = scope.cellmodel.type === "section" ? 'title' : 'body';
 
+
+        var evaluateJS = function (str, callback) {
+
+          var results = [], re = /{{([^}]+)}}/g, text;
+
+          while (text = re.exec(str)) {
+            if (results.indexOf(text) === -1)
+              results.push(text);
+          }
+
+          var evaluateCode = function (index) {
+
+            if (index === results.length) {
+               callback(str);
+            } else {
+              bkHelper.evaluateCode("JavaScript", results[index][1]).then(
+                function (r) {
+                  str = str.replace(results[index][0], r);
+                },
+                function (r) {
+                  str = str.replace(results[index][0], "<font color='red'>"+"Error: **" + r.object[0] + "**" + "</font>");
+                }
+              ).finally(function () {
+                  evaluateCode(index + 1);
+                }
+              );
+            }
+          };
+
+          evaluateCode(0);
+        };
+
         var doktex = function(markdownFragment) {
           try {
             renderMathInElement(markdownFragment[0], {
@@ -7909,14 +8480,24 @@ return __p
           } catch(err) {
             bkHelper.show1ButtonModal(err.message+'<br>See: <a target="_blank" href="http://khan.github.io/KaTeX/">KaTeX website</a> and its <a target="_blank" href="https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX">list of supported functions</a>.', "KaTex error");
           }
-        }
-        
-        var preview = function() {
-          var markdownFragment = $('<div>' + scope.cellmodel[contentAttribute] + '</div>');
-          doktex(markdownFragment);
-          element.find('.markup').html(marked(markdownFragment.html(), {gfm: true, renderer: bkRenderer}));
-          markdownFragment.remove();
-          scope.mode = 'preview';
+        };
+
+        var preview = function () {
+
+          evaluateJS(
+            scope.cellmodel[contentAttribute],
+            function (content) {
+              var markdownFragment = $('<div>' + content + '</div>');
+              doktex(markdownFragment);
+              var escapedHtmlContent = markdownFragment.html();
+              var unescapedGtCharacter = escapedHtmlContent.replace(/&gt;/g, '>');
+              element.find('.markup').html(marked(unescapedGtCharacter, {
+                gfm: true,
+                renderer: bkRenderer
+              }));
+              markdownFragment.remove();
+              scope.mode = 'preview';
+            });
         };
 
         var syncContentAndPreview = function() {
@@ -7964,6 +8545,13 @@ return __p
               }
             }
 
+            if (scope.creatingNewSection === true && scope.cellmodel.type === 'section') {
+              scope.creatingNewSection = false;
+              var selectionStart = {line: 0, ch: 0};
+              var selectionEnd = {line: 0, ch: cm.getValue().length};
+              cm.setSelection(selectionStart, selectionEnd);
+            }
+
             cm.focus();
           });
         };
@@ -7982,14 +8570,21 @@ return __p
         scope.cm.setValue(scope.cellmodel[contentAttribute]);
         preview();
 
-        scope.cm.on("blur", function(){
-          scope.$apply(function() {
-            syncContentAndPreview();
-          });
+        scope.cm.on("blur", function(cm){
+          setTimeout(function() {
+            if(!cm.state.focused){
+              scope.$apply(function() {
+                syncContentAndPreview();
+              });
+            }
+          }, 0);
         });
 
         scope.$on('beaker.cell.added', function(e, cellmodel) {
-          if (cellmodel === scope.cellmodel) scope.edit();
+          if (cellmodel === scope.cellmodel) {
+            scope.creatingNewSection = true;
+            scope.edit();
+          }
         });
 
         scope.$watch('cellmodel.body', function(newVal, oldVal) {
@@ -8124,10 +8719,15 @@ return __p
               || (prevCell && cellOps.findCodeCell(prevCell.id))
               || (prevCell && cellOps.findCodeCell(prevCell.id, true))
               || getLastCodeCell();
-          var evaluatorName = codeCell ?
-              codeCell.evaluator : _.keys(bkEvaluatorManager.getAllEvaluators())[0];
+          var defaultEvaluator = 'JavaScript';
+          var evaluatorName = codeCell ? codeCell.evaluator : bkEvaluatorManager.getEvaluator(defaultEvaluator) ?
+              defaultEvaluator : _.keys(bkEvaluatorManager.getAllEvaluators())[0];
 
           return evaluatorName;
+        };
+
+        $scope.getEvaluatorDetails = function(name) {
+          return bkEvaluatorManager.getVisualParams(name);
         };
 
         function attachCell(cell) {
@@ -8279,6 +8879,9 @@ return __p
             this._codeMirrors[cellId] = cm;
             cm.setOption('keyMap', this._cmKeyMapMode);
             cm.setOption('vimMode', this._cmKeyMapMode == 'vim');
+          },
+          getCM: function (cellId) {
+            return this._codeMirrors[cellId];
           },
           unregisterCM: function (cellId) {
             delete this._codeMirrors[cellId];
@@ -8619,36 +9222,17 @@ return __p
         });
         $scope.cellview.menu.addItem({
           name: 'Change Header Level',
-          items: [
-          {
-            name: 'H1',
-            action: function() {
-              $scope.cellmodel.level = 1;
-              notebookCellOp.reset();
-            }
-          },
-          {
-            name: 'H2',
-            action: function() {
-              $scope.cellmodel.level = 2;
-              notebookCellOp.reset();
-            }
-          },
-          {
-            name: 'H3',
-            action: function() {
-              $scope.cellmodel.level = 3;
-              notebookCellOp.reset();
-            }
-          },
-          {
-            name: 'H4',
-            action: function() {
-              $scope.cellmodel.level = 4;
-              notebookCellOp.reset();
-            }
-          }
-          ]
+          items: [1,2,3,4].map(function(level) {
+            return {
+              name: 'Level ' + level,
+              isChecked: function() {
+                return $scope.cellmodel.level === level;
+              },
+              action: function() {
+                $scope.cellmodel.level = level;
+                notebookCellOp.reset();
+              }};
+          })
         });
         $scope.getShareData = function() {
           var cells = [$scope.cellmodel]
@@ -8715,7 +9299,16 @@ return __p
             return !$scope.cellmodel.hideTitle;
           },
           attachCell: function(newCell) {
-            notebookCellOp.insertAfter($scope.cellmodel.id, newCell);
+            var children = notebookCellOp.getAllDescendants($scope.cellmodel.id);
+            if ($scope.cellmodel.collapsed && children) {
+              var lastChildCell = children[children.length - 1];
+              notebookCellOp.insertAfter(lastChildCell.id, newCell);
+              if (newCell.type !== "section") {
+                $scope.toggleShowChildren();
+              }
+            } else {
+              notebookCellOp.insertAfter($scope.cellmodel.id, newCell);
+            }
           },
           prevCell: function() {
             return $scope.cellmodel;
@@ -9017,8 +9610,8 @@ return __p
         }
       },
       "OutputContainer": {
-        template: '<bk-code-cell-output ng-repeat="i in items" model="i" >' +
-            '</ bk-code-cell-output>',
+        template: '<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b ng-if="hasName($index)">{{getName($index)}}<br/></b><bk-code-cell-output model="i" >' +
+            '</ bk-code-cell-output><br/>></li></ul>',
         scope: {
           model: "="
         },
@@ -9036,6 +9629,12 @@ return __p
               }
             };
           });
+          $scope.getName = function(idx) {
+            return $scope.model.getCellModel().names[idx] || '';
+          }
+          $scope.hasName = function(idx) {
+            return $scope.model.getCellModel().names !== undefined;
+          }
           $scope.isShowMenu = function() { return false; };
           $scope.$watch('isShowOutput()', function(oldval, newval) {
             $scope.showoutput = newval;
@@ -9069,8 +9668,8 @@ return __p
       "html": ["Html"],
       "ImageIcon": ["Image", "Text"],
       "BeakerDisplay": ["BeakerDisplay", "Text"],
-      "Plot": ["Plot", "Chart", "Text"],
-      "TimePlot": ["Plot", "Chart", "Text"],
+      "Plot": ["Plot", "Text"],
+      "TimePlot": ["Plot", "Text"],
       "EasyForm": ["EasyForm", "Text"],
       "NanoPlot": ["Plot", "Text"],
       "CombinedPlot": ["CombinedPlot", "Text"],
@@ -9502,36 +10101,108 @@ return __p
   var module = angular.module('bk.core');
 
   module.controller('publicationCtrl',
-    ['$scope', 'bkUtils', 'bkPublicationApi', 'bkPublicationAuth', 'bkSessionManager', '$modalInstance',
-    function($scope, bkUtils, bkPublicationApi, bkPublicationAuth, bkSessionManager, $modalInstance) {
+    ['$scope', 'bkUtils', 'bkPublicationApi', 'bkPublicationAuth', 'bkSessionManager', '$modalInstance', '$location', '$window',
+    function($scope, bkUtils, bkPublicationApi, bkPublicationAuth, bkSessionManager, $modalInstance, $location, $window) {
 
       var notebook = bkSessionManager.getRawNotebookModel();
 
       $scope.user = {role: 'beaker'};
       $scope.model = {};
+      $scope.baseUrl = bkPublicationApi.getBaseUrl();
 
       $scope.signIn = function() {
+        $scope.saving = true;
         return bkPublicationAuth.signIn($scope.user)
         .then(function() {
           initPublication();
+          delete $scope.user.password;
         })
         .catch(function(err) {
           $scope.error = 'Error: Invalid email or password';
+        })
+        .finally(function() {
+          $scope.saving = false;
         });
+      };
+
+      $scope.signOut = function() {
+        bkPublicationAuth.signOut();
       };
 
       $scope.isSignedIn = function() {
         return bkPublicationAuth.isSignedIn();
       };
 
-      function initPublication() {
-        $scope.edited = bkSessionManager.isNotebookModelEdited();
+      $scope.currentUser = function() {
+        return bkPublicationAuth.currentUser();
+      };
 
-        bkPublicationApi.getCategories()
-        .then(function(resp) {
-          $scope.categories = resp.data;
+      function defaultName() {
+        var section = _(notebook.cells).find(function(cell) {
+          return cell.type === 'section';
+        });
+        return section && section.title;
+      }
+
+      function initNodes(categories) {
+        var nodes = {};
+        _.each(categories, function(category) {
+          nodes[category['public-id']] = _.extend(category, {
+            count: +category.count,
+            children: []
+          });
         });
 
+        return nodes;
+      }
+
+      function generateTree(categories) {
+        var nodes = initNodes(categories);
+        var rootNodes = [];
+
+        _.each(categories, function(category) {
+          var parentNode;
+          if (category.parent) {
+            parentNode = nodes[category.parent['public-id']];
+          }
+          var node = nodes[category['public-id']];
+          if (parentNode) {
+            node.parent = parentNode;
+            parentNode.children.unshift(node);
+          } else {
+            rootNodes.unshift(node);
+          }
+        });
+
+        return rootNodes;
+      }
+
+      function flattenCategories(categories, prefix) {
+        if (!prefix) { prefix = ' '; }
+
+        return _.reduce(_.sortBy(categories, 'order'), function(newCategories, category) {
+          var toBeAdded = [];
+
+          if (category.children.length) {
+            Array.prototype.push.apply(toBeAdded, flattenCategories(category.children, '-' + prefix));
+          }
+
+          category.name = prefix + category.name;
+
+          toBeAdded.unshift(category);
+
+          return Array.prototype.concat.apply(newCategories, toBeAdded);
+        }, []);
+      }
+
+      function initPublication() {
+        bkPublicationApi.getCategories()
+        .then(function(resp) {
+          var tree = generateTree(resp.data)
+          $scope.categories = flattenCategories(tree);
+        });
+
+        $scope.model.name = defaultName();
         $scope.published = false;
         $scope.title = 'Publish Notebook';
         $scope.saveButton = 'Publish';
@@ -9539,16 +10210,17 @@ return __p
         if (wasPublished()) {
           bkPublicationApi.getPublication(notebook.metadata['publication-id'])
           .then(function(resp) {
-            $scope.model = resp.data;
-            $scope.model['category-id'] = resp.data.category['public-id'];
-            $scope.published = true;
-            $scope.title = 'Update Notebook';
-            $scope.saveButton = 'Update';
+            var pub = resp.data;
+            if (bkPublicationAuth.currentUser()['public-id'] == pub['author-id']) {
+              $scope.model = pub;
+              $scope.model['category-id'] = pub.category && pub.category['public-id'];
+              $scope.attachmentUrl = $scope.model['attachment-id'] &&
+                bkPublicationApi.getAttachmentUrl($scope.model['attachment-id']);
+              $scope.published = true;
+              $scope.title = 'Update Notebook';
+              $scope.saveButton = 'Update';
+            }
           });
-        }
-
-        if (bkSessionManager.isNotebookModelEdited()) {
-          $scope.saveButton = 'Save and ' + $scope.saveButton;
         }
       }
 
@@ -9562,22 +10234,38 @@ return __p
         .then(function(resp) {
           // save publication id as notebook metadata
           bkSessionManager.getRawNotebookModel().metadata = {'publication-id': resp.data['public-id']};
-          return bkHelper.saveNotebook();
+          return resp.data['public-id'];
         });
       }
 
       function updatePublication() {
         $scope.model.contents = bkSessionManager.getSaveData().notebookModelAsString;
-        return bkPublicationApi.updatePublication(notebook.metadata['publication-id'], $scope.model);
+        return bkPublicationApi.updatePublication(notebook.metadata['publication-id'], $scope.model)
+        .then(function() {
+          return notebook.metadata['publication-id'];
+        });
       }
 
       $scope.publishAction = function() {
+        var action = $scope.published ? "update" : "create";
+        return $scope.publish(action);
+      };
+
+      $scope.publish = function(action, skipAttachmentDeletion) {
+        var tab = $window.open(bkPublicationApi.getBaseUrl() + '/#/publication_loading');
         $scope.saving = true;
-        var action = $scope.published ? updatePublication : createPublication;
-        return bkHelper.saveNotebook()
-        .then(action)
-        .then(function() {
+        (action == "update" ? updatePublication : createPublication)()
+        .then(function(publicationId) {
           $scope.saving = false;
+          tab.location = bkPublicationApi.getBaseUrl() + '/#/publications/' + publicationId;
+        })
+        .then(function() {
+          if ($scope.deletedAttachment && !skipAttachmentDeletion) {
+            return bkPublicationApi.deleteAttachment($scope.deletedAttachment);
+          }
+        })
+        .then(function() {
+          delete $scope.deletedAttachment;
           $scope.close();
         });
       };
@@ -9588,17 +10276,55 @@ return __p
         .then(function() {
           delete bkSessionManager.getRawNotebookModel().metadata['publication-id'];
           delete $scope.model;
+          delete $scope.attachmentUrl;
           $scope.saving = false;
           $scope.close();
         });
       }
 
-      if ($scope.isSignedIn()) {
-        initPublication();
-      }
+      bkPublicationAuth.initSession()
+      .then(function() {
+        if ($scope.isSignedIn()) {
+          initPublication();
+        }
+      })
 
       $scope.close = function() {
         $modalInstance.close('ok');
+      };
+
+      $scope.signupUrl = function() {
+        return $scope.baseUrl + '#/sign_up?redirect=' + encodeURIComponent($location.absUrl());
+      };
+
+      $scope.removeAttachment = function() {
+        $scope.deletedAttachment = $scope.model['attachment-id'];
+        $scope.model['attachment-id'] = -1;
+        delete $scope.attachmentUrl;
+      };
+
+      $scope.uploadAttachment = function(file) {
+        $scope.file = file;
+
+        if (file && !file.$error) {
+          file.upload = bkPublicationApi.uploadAttachment(file);
+          file.upload = file.upload.progress(function(evt) {
+            file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+          });
+          file.upload.then(function(resp) {
+            if ($scope.attachmentUrl) {
+              bkPublicationApi.deleteAttachment($scope.model['attachment-id']);
+            }
+            var attachment = resp.data;
+            delete $scope.attachmentErrors;
+            $scope.model['attachment-id'] = attachment['public-id'];
+            $scope.attachmentUrl = bkPublicationApi.getAttachmentUrl(attachment['public-id']);
+            delete file.progress;
+          }, function(resp) {
+            var err = resp.data;
+            $scope.attachmentErrors = _.chain(err).values().flatten().value().join(', ');
+          });
+        }
       };
   }]);
 })();
@@ -10057,7 +10783,7 @@ return __p
       }
     };
   });
-  module.directive('bkDropdownMenuItem', function($compile) {
+  module.directive('bkDropdownMenuItem', function($compile, $sce) {
     return {
       restrict: 'E',
       template: JST['template/dropdown_item'](),
@@ -10122,6 +10848,13 @@ return __p
             }
           }
         };
+        $scope.hasCustomMarkup = function(item) {
+          return typeof _.result(item, 'markup') !== 'undefined';
+        }
+
+        $scope.getCustomMarkup = function(item) {
+          return $sce.trustAsHtml(_.result(item, 'markup') || '');
+        }
 
         $scope.getName = function(item) {
           var name = '';
@@ -10222,6 +10955,45 @@ return __p
       }
     };
   });
+
+  module.directive('bkLanguageMenuItem', function() {
+    return {
+      restrict: 'E',
+      template: '<span ng-style="style">{{name}}</span>&nbsp;{{key}}',
+      scope: {
+        key: '@',
+        name: '@',
+        bgColor: '@',
+        fgColor: '@',
+        borderColor: '@'
+      },
+      link: function(scope, element, attrs) {
+        scope.style = {
+          'background-color': scope.bgColor,
+          'color': scope.fgColor
+        };
+        var updateStyle = function() {
+          scope.style = {
+            'background-color': scope.bgColor,
+            'color': scope.fgColor
+          };
+          if (scope.borderColor) {
+            scope.style['border-width'] = '1px';
+            scope.style['border-color'] = scope.borderColor;
+            scope.style['border-style'] = 'solid';
+          } else {
+            delete scope.style['border-width'];
+            delete scope.style['border-color'];
+            delete scope.style['border-style'];
+          }
+        };
+        scope.$watch('bgColor', updateStyle);
+        scope.$watch('fgColor', updateStyle);
+        scope.$watch('borderColor', updateStyle);
+      }
+    };
+  });
+
 })();
 
 /*
@@ -10470,6 +11242,9 @@ return __p
       //jscs:enable
       scope: {data: '=', fs: '=', displayname: '@'},
       controller: function($scope, $rootScope) {
+
+
+
         var transform = function(c) {
           return {
             type: c.type,
@@ -10478,6 +11253,24 @@ return __p
             displayName: c.displayName,
             children: _.map(c.children, transform)
           };
+
+        };
+        $scope.onMakeNewDir = function(path) {
+
+          if (path){
+            var removeLastDirectoryPartOf =  function (the_url)
+            {
+              var the_arr = the_url.split('/');
+              the_arr.pop();
+              return( the_arr.join('/') );
+            };
+
+            if (removeLastDirectoryPartOf(path) === $scope.data.uri) {
+              $scope.data.children = $scope.fs.getChildren($scope.data.uri).success(function (list) {
+                $scope.data.children = list;
+              });
+            }
+          }
         };
         $scope.click = function() {
           if ($scope.data.type === 'directory') {
@@ -10517,16 +11310,18 @@ return __p
           $scope.fs.open($scope.data.uri);
         };
         $scope.getIcon = function() {
-          if ($scope.data.type === 'directory') {
-            return 'folder-icon';
+          if ($scope.data) {
+            if ($scope.data.type === 'directory') {
+              return 'folder-icon';
+            }
+            if ($scope.data.type === 'application/prs.twosigma.beaker.notebook+json') {
+              return 'glyphicon glyphicon-book';
+            } else if ($scope.fs && $scope.fs.getIcon && $scope.fs.getIcon($scope.data.type)) {
+              return $scope.fs.getIcon($scope.data.type);
+            }
           }
-          if ($scope.data.type === 'application/prs.twosigma.beaker.notebook+json') {
-            return 'glyphicon glyphicon-book';
-          } else if ($scope.fs.getIcon && $scope.fs.getIcon($scope.data.type)) {
-            return $scope.fs.getIcon($scope.data.type);
-          } else {
-            return 'glyphicon glyphicon-th';
-          }
+
+          return 'glyphicon glyphicon-th';
         };
 
         $scope.getDisplayName = function() {
@@ -10537,11 +11332,19 @@ return __p
             return $scope.data.displayName;
           }
           var name = $scope.data.uri;
-          if (name.length > 0 && name[name.length - 1] === '/') {
+          if (name && name.length > 0 && name[name.length - 1] === '/') {
             name = name.substring(0, name.length - 1);
           }
-          return name.replace(/^.*[\\\/]/, '');
+          return name ? name.replace(/^.*[\\\/]/, '') : '';
         };
+
+        if ($scope.fs.addListener){
+          $scope.fs.addListener($scope);
+        }
+
+        $scope.$on("MAKE_NEW_DIR", function (event, data) {
+          $scope.onMakeNewDir(data.path);
+        });
       }
     };
   });
@@ -10630,8 +11433,8 @@ return __p
   'use strict';
   var module = angular.module('bk.publication', ['bk.utils']);
 
-  module.factory('bkPublicationApi', function (bkUtils, $localStorage) {
-    var baseUrl = 'https://pub.beakernotebook.com';
+  module.factory('bkPublicationApi', function (bkUtils, $localStorage, Upload) {
+    var baseUrl = window.beaker !== undefined && window.beaker.pubblicationApiURL !== undefined ? window.beaker.pubblicationApiURL : 'https://pub.beakernotebook.com';
 
     function headers() {
       if ($localStorage.token) {
@@ -10644,7 +11447,7 @@ return __p
         return bkUtils.httpPostJson(baseUrl + '/user/v1/sessions', params)
       },
       getCurrentUser: function() {
-        return bkUtils.httpGetJson(baseUrl + '/user/v1/current_user', {}, headers())
+        return bkUtils.httpGetJson(baseUrl + '/user/v1/current_user', {silent: true}, headers())
       },
       createPublication: function(params) {
         return bkUtils.httpPostJson(baseUrl + '/notebook/v1/publications', params, headers());
@@ -10660,6 +11463,24 @@ return __p
       },
       getCategories: function() {
         return bkUtils.httpGetJson(baseUrl + '/notebook/v1/categories', {}, headers());
+      },
+      uploadAttachment: function(file) {
+        return Upload.upload({
+          url: baseUrl + '/user/v1/attachments',
+          method: 'POST',
+          headers: {'X-Authorization': 'Token ' + $localStorage.token},
+          fields: {style: 'publication-preview'},
+          file: file
+        });
+      },
+      deleteAttachment: function(id) {
+        return bkUtils.httpDeleteJson(baseUrl + '/user/v1/attachments/' + id, {}, headers());
+      },
+      getAttachmentUrl: function(id) {
+        return baseUrl + '/user/v1/attachments/' + id;
+      },
+      getBaseUrl: function () {
+        return baseUrl;
       }
     };
   });
@@ -10678,11 +11499,21 @@ return __p
           return self.initSession();
         });
       },
+      signOut: function() {
+        delete $localStorage.token;
+        currentUser = null;
+      },
       initSession: function() {
         return bkPublicationApi.getCurrentUser()
         .then(function(resp) {
+          if (resp.data && resp.data.token) {
+            $localStorage.token = resp.data.token
+          }
           return currentUser = resp.data;
         });
+      },
+      currentUser: function() {
+        return currentUser;
       },
       isSignedIn: function() {
         return !!currentUser;
@@ -11747,7 +12578,7 @@ return __p
           case 'New Notebook':
             return _ctrlKey + '+N';
           case 'Tutorial':
-            return _ctrlKey + '+H';
+            return _ctrlKey + '+Shift+H';
           default:
             return undefined;
         }
@@ -11833,6 +12664,12 @@ return __p
           BrowserWindow.getFocusedWindow().toggleDevTools();
         },
 
+        minimize: function() {
+          BrowserWindow.getFocusedWindow().minimize();
+        },
+        closeWindow: function() {
+          BrowserWindow.getFocusedWindow().close();
+        },
         thisWindow: thisWindow,
 
         updateMenus: function(menus) {

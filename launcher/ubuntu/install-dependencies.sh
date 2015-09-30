@@ -75,6 +75,7 @@ sudo add-apt-repository -y ppa:brightbox/ruby-ng
 sudo apt-get update
 sudo apt-get install -y ruby2.1 ruby2.1-dev libtool
 sudo gem install iruby
+sudo gem install sass
 
 # julia
 sudo add-apt-repository --yes ppa:staticfloat/juliareleases

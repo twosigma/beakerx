@@ -68737,6 +68737,154 @@ makeSwipeDirective('ngSwipeRight', 1, 'swiperight');
 })(function(CodeMirror) {
   "use strict";
 
+  function Bar(cls, orientation, scroll) {
+    this.orientation = orientation;
+    this.scroll = scroll;
+    this.screen = this.total = this.size = 1;
+    this.pos = 0;
+
+    this.node = document.createElement("div");
+    this.node.className = cls + "-" + orientation;
+    this.inner = this.node.appendChild(document.createElement("div"));
+
+    var self = this;
+    CodeMirror.on(this.inner, "mousedown", function(e) {
+      if (e.which != 1) return;
+      CodeMirror.e_preventDefault(e);
+      var axis = self.orientation == "horizontal" ? "pageX" : "pageY";
+      var start = e[axis], startpos = self.pos;
+      function done() {
+        CodeMirror.off(document, "mousemove", move);
+        CodeMirror.off(document, "mouseup", done);
+      }
+      function move(e) {
+        if (e.which != 1) return done();
+        self.moveTo(startpos + (e[axis] - start) * (self.total / self.size));
+      }
+      CodeMirror.on(document, "mousemove", move);
+      CodeMirror.on(document, "mouseup", done);
+    });
+
+    CodeMirror.on(this.node, "click", function(e) {
+      CodeMirror.e_preventDefault(e);
+      var innerBox = self.inner.getBoundingClientRect(), where;
+      if (self.orientation == "horizontal")
+        where = e.clientX < innerBox.left ? -1 : e.clientX > innerBox.right ? 1 : 0;
+      else
+        where = e.clientY < innerBox.top ? -1 : e.clientY > innerBox.bottom ? 1 : 0;
+      self.moveTo(self.pos + where * self.screen);
+    });
+
+    function onWheel(e) {
+      var moved = CodeMirror.wheelEventPixels(e)[self.orientation == "horizontal" ? "x" : "y"];
+      var oldPos = self.pos;
+      self.moveTo(self.pos + moved);
+      if (self.pos != oldPos) CodeMirror.e_preventDefault(e);
+    }
+    CodeMirror.on(this.node, "mousewheel", onWheel);
+    CodeMirror.on(this.node, "DOMMouseScroll", onWheel);
+  }
+
+  Bar.prototype.moveTo = function(pos, update) {
+    if (pos < 0) pos = 0;
+    if (pos > this.total - this.screen) pos = this.total - this.screen;
+    if (pos == this.pos) return;
+    this.pos = pos;
+    this.inner.style[this.orientation == "horizontal" ? "left" : "top"] =
+      (pos * (this.size / this.total)) + "px";
+    if (update !== false) this.scroll(pos, this.orientation);
+  };
+
+  var minButtonSize = 10;
+
+  Bar.prototype.update = function(scrollSize, clientSize, barSize) {
+    this.screen = clientSize;
+    this.total = scrollSize;
+    this.size = barSize;
+
+    var buttonSize = this.screen * (this.size / this.total);
+    if (buttonSize < minButtonSize) {
+      this.size -= minButtonSize - buttonSize;
+      buttonSize = minButtonSize;
+    }
+    this.inner.style[this.orientation == "horizontal" ? "width" : "height"] =
+      buttonSize + "px";
+    this.inner.style[this.orientation == "horizontal" ? "left" : "top"] =
+      this.pos * (this.size / this.total) + "px";
+  };
+
+  function SimpleScrollbars(cls, place, scroll) {
+    this.addClass = cls;
+    this.horiz = new Bar(cls, "horizontal", scroll);
+    place(this.horiz.node);
+    this.vert = new Bar(cls, "vertical", scroll);
+    place(this.vert.node);
+    this.width = null;
+  }
+
+  SimpleScrollbars.prototype.update = function(measure) {
+    if (this.width == null) {
+      var style = window.getComputedStyle ? window.getComputedStyle(this.horiz.node) : this.horiz.node.currentStyle;
+      if (style) this.width = parseInt(style.height);
+    }
+    var width = this.width || 0;
+
+    var needsH = measure.scrollWidth > measure.clientWidth + 1;
+    var needsV = measure.scrollHeight > measure.clientHeight + 1;
+    this.vert.node.style.display = needsV ? "block" : "none";
+    this.horiz.node.style.display = needsH ? "block" : "none";
+
+    if (needsV) {
+      this.vert.update(measure.scrollHeight, measure.clientHeight,
+                       measure.viewHeight - (needsH ? width : 0));
+      this.vert.node.style.display = "block";
+      this.vert.node.style.bottom = needsH ? width + "px" : "0";
+    }
+    if (needsH) {
+      this.horiz.update(measure.scrollWidth, measure.clientWidth,
+                        measure.viewWidth - (needsV ? width : 0) - measure.barLeft);
+      this.horiz.node.style.right = needsV ? width + "px" : "0";
+      this.horiz.node.style.left = measure.barLeft + "px";
+    }
+
+    return {right: needsV ? width : 0, bottom: needsH ? width : 0};
+  };
+
+  SimpleScrollbars.prototype.setScrollTop = function(pos) {
+    this.vert.moveTo(pos, false);
+  };
+
+  SimpleScrollbars.prototype.setScrollLeft = function(pos) {
+    this.horiz.moveTo(pos, false);
+  };
+
+  SimpleScrollbars.prototype.clear = function() {
+    var parent = this.horiz.node.parentNode;
+    parent.removeChild(this.horiz.node);
+    parent.removeChild(this.vert.node);
+  };
+
+  CodeMirror.scrollbarModel.simple = function(place, scroll) {
+    return new SimpleScrollbars("CodeMirror-simplescroll", place, scroll);
+  };
+  CodeMirror.scrollbarModel.overlay = function(place, scroll) {
+    return new SimpleScrollbars("CodeMirror-overlayscroll", place, scroll);
+  };
+});
+
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: http://codemirror.net/LICENSE
+
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
+    mod(require("../../lib/codemirror"));
+  else if (typeof define == "function" && define.amd) // AMD
+    define(["../../lib/codemirror"], mod);
+  else // Plain browser env
+    mod(CodeMirror);
+})(function(CodeMirror) {
+  "use strict";
+
   var HINT_ELEMENT_CLASS        = "CodeMirror-hint";
   var ACTIVE_HINT_ELEMENT_CLASS = "CodeMirror-hint-active";
 
@@ -75593,6 +75741,398 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
   });
 
 });
+
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: http://codemirror.net/LICENSE
+
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
+    mod(require("../../lib/codemirror"));
+  else if (typeof define == "function" && define.amd) // AMD
+    define(["../../lib/codemirror"], mod);
+  else // Plain browser env
+    mod(CodeMirror);
+})(function(CodeMirror) {
+"use strict";
+
+CodeMirror.defineMode("sql", function(config, parserConfig) {
+  "use strict";
+
+  var client         = parserConfig.client || {},
+      atoms          = parserConfig.atoms || {"false": true, "true": true, "null": true},
+      builtin        = parserConfig.builtin || {},
+      keywords       = parserConfig.keywords || {},
+      operatorChars  = parserConfig.operatorChars || /^[*+\-%<>!=&|~^]/,
+      support        = parserConfig.support || {},
+      hooks          = parserConfig.hooks || {},
+      dateSQL        = parserConfig.dateSQL || {"date" : true, "time" : true, "timestamp" : true};
+
+  function tokenBase(stream, state) {
+    var ch = stream.next();
+
+    // call hooks from the mime type
+    if (hooks[ch]) {
+      var result = hooks[ch](stream, state);
+      if (result !== false) return result;
+    }
+
+    if (support.hexNumber == true &&
+      ((ch == "0" && stream.match(/^[xX][0-9a-fA-F]+/))
+      || (ch == "x" || ch == "X") && stream.match(/^'[0-9a-fA-F]+'/))) {
+      // hex
+      // ref: http://dev.mysql.com/doc/refman/5.5/en/hexadecimal-literals.html
+      return "number";
+    } else if (support.binaryNumber == true &&
+      (((ch == "b" || ch == "B") && stream.match(/^'[01]+'/))
+      || (ch == "0" && stream.match(/^b[01]+/)))) {
+      // bitstring
+      // ref: http://dev.mysql.com/doc/refman/5.5/en/bit-field-literals.html
+      return "number";
+    } else if (ch.charCodeAt(0) > 47 && ch.charCodeAt(0) < 58) {
+      // numbers
+      // ref: http://dev.mysql.com/doc/refman/5.5/en/number-literals.html
+          stream.match(/^[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/);
+      support.decimallessFloat == true && stream.eat('.');
+      return "number";
+    } else if (ch == "?" && (stream.eatSpace() || stream.eol() || stream.eat(";"))) {
+      // placeholders
+      return "variable-3";
+    } else if (ch == "'" || (ch == '"' && support.doubleQuote)) {
+      // strings
+      // ref: http://dev.mysql.com/doc/refman/5.5/en/string-literals.html
+      state.tokenize = tokenLiteral(ch);
+      return state.tokenize(stream, state);
+    } else if ((((support.nCharCast == true && (ch == "n" || ch == "N"))
+        || (support.charsetCast == true && ch == "_" && stream.match(/[a-z][a-z0-9]*/i)))
+        && (stream.peek() == "'" || stream.peek() == '"'))) {
+      // charset casting: _utf8'str', N'str', n'str'
+      // ref: http://dev.mysql.com/doc/refman/5.5/en/string-literals.html
+      return "keyword";
+    } else if (/^[\(\),\;\[\]]/.test(ch)) {
+      // no highlightning
+      return null;
+    } else if (support.commentSlashSlash && ch == "/" && stream.eat("/")) {
+      // 1-line comment
+      stream.skipToEnd();
+      return "comment";
+    } else if ((support.commentHash && ch == "#")
+        || (ch == "-" && stream.eat("-") && (!support.commentSpaceRequired || stream.eat(" ")))) {
+      // 1-line comments
+      // ref: https://kb.askmonty.org/en/comment-syntax/
+      stream.skipToEnd();
+      return "comment";
+    } else if (ch == "/" && stream.eat("*")) {
+      // multi-line comments
+      // ref: https://kb.askmonty.org/en/comment-syntax/
+      state.tokenize = tokenComment;
+      return state.tokenize(stream, state);
+    } else if (ch == ".") {
+      // .1 for 0.1
+      if (support.zerolessFloat == true && stream.match(/^(?:\d+(?:e[+-]?\d+)?)/i)) {
+        return "number";
+      }
+      // .table_name (ODBC)
+      // // ref: http://dev.mysql.com/doc/refman/5.6/en/identifier-qualifiers.html
+      if (support.ODBCdotTable == true && stream.match(/^[a-zA-Z_]+/)) {
+        return "variable-2";
+      }
+    } else if (operatorChars.test(ch)) {
+      // operators
+      stream.eatWhile(operatorChars);
+      return null;
+    } else if (ch == '{' &&
+        (stream.match(/^( )*(d|D|t|T|ts|TS)( )*'[^']*'( )*}/) || stream.match(/^( )*(d|D|t|T|ts|TS)( )*"[^"]*"( )*}/))) {
+      // dates (weird ODBC syntax)
+      // ref: http://dev.mysql.com/doc/refman/5.5/en/date-and-time-literals.html
+      return "number";
+    } else {
+      stream.eatWhile(/^[_\w\d]/);
+      var word = stream.current().toLowerCase();
+      // dates (standard SQL syntax)
+      // ref: http://dev.mysql.com/doc/refman/5.5/en/date-and-time-literals.html
+      if (dateSQL.hasOwnProperty(word) && (stream.match(/^( )+'[^']*'/) || stream.match(/^( )+"[^"]*"/)))
+        return "number";
+      if (atoms.hasOwnProperty(word)) return "atom";
+      if (builtin.hasOwnProperty(word)) return "builtin";
+      if (keywords.hasOwnProperty(word)) return "keyword";
+      if (client.hasOwnProperty(word)) return "string-2";
+      return null;
+    }
+  }
+
+  // 'string', with char specified in quote escaped by '\'
+  function tokenLiteral(quote) {
+    return function(stream, state) {
+      var escaped = false, ch;
+      while ((ch = stream.next()) != null) {
+        if (ch == quote && !escaped) {
+          state.tokenize = tokenBase;
+          break;
+        }
+        escaped = !escaped && ch == "\\";
+      }
+      return "string";
+    };
+  }
+  function tokenComment(stream, state) {
+    while (true) {
+      if (stream.skipTo("*")) {
+        stream.next();
+        if (stream.eat("/")) {
+          state.tokenize = tokenBase;
+          break;
+        }
+      } else {
+        stream.skipToEnd();
+        break;
+      }
+    }
+    return "comment";
+  }
+
+  function pushContext(stream, state, type) {
+    state.context = {
+      prev: state.context,
+      indent: stream.indentation(),
+      col: stream.column(),
+      type: type
+    };
+  }
+
+  function popContext(state) {
+    state.indent = state.context.indent;
+    state.context = state.context.prev;
+  }
+
+  return {
+    startState: function() {
+      return {tokenize: tokenBase, context: null};
+    },
+
+    token: function(stream, state) {
+      if (stream.sol()) {
+        if (state.context && state.context.align == null)
+          state.context.align = false;
+      }
+      if (stream.eatSpace()) return null;
+
+      var style = state.tokenize(stream, state);
+      if (style == "comment") return style;
+
+      if (state.context && state.context.align == null)
+        state.context.align = true;
+
+      var tok = stream.current();
+      if (tok == "(")
+        pushContext(stream, state, ")");
+      else if (tok == "[")
+        pushContext(stream, state, "]");
+      else if (state.context && state.context.type == tok)
+        popContext(state);
+      return style;
+    },
+
+    indent: function(state, textAfter) {
+      var cx = state.context;
+      if (!cx) return CodeMirror.Pass;
+      var closing = textAfter.charAt(0) == cx.type;
+      if (cx.align) return cx.col + (closing ? 0 : 1);
+      else return cx.indent + (closing ? 0 : config.indentUnit);
+    },
+
+    blockCommentStart: "/*",
+    blockCommentEnd: "*/",
+    lineComment: support.commentSlashSlash ? "//" : support.commentHash ? "#" : null
+  };
+});
+
+(function() {
+  "use strict";
+
+  // `identifier`
+  function hookIdentifier(stream) {
+    // MySQL/MariaDB identifiers
+    // ref: http://dev.mysql.com/doc/refman/5.6/en/identifier-qualifiers.html
+    var ch;
+    while ((ch = stream.next()) != null) {
+      if (ch == "`" && !stream.eat("`")) return "variable-2";
+    }
+    stream.backUp(stream.current().length - 1);
+    return stream.eatWhile(/\w/) ? "variable-2" : null;
+  }
+
+  // variable token
+  function hookVar(stream) {
+    // variables
+    // @@prefix.varName @varName
+    // varName can be quoted with ` or ' or "
+    // ref: http://dev.mysql.com/doc/refman/5.5/en/user-variables.html
+    if (stream.eat("@")) {
+      stream.match(/^session\./);
+      stream.match(/^local\./);
+      stream.match(/^global\./);
+    }
+
+    if (stream.eat("'")) {
+      stream.match(/^.*'/);
+      return "variable-2";
+    } else if (stream.eat('"')) {
+      stream.match(/^.*"/);
+      return "variable-2";
+    } else if (stream.eat("`")) {
+      stream.match(/^.*`/);
+      return "variable-2";
+    } else if (stream.match(/^[0-9a-zA-Z$\.\_]+/)) {
+      return "variable-2";
+    }
+    return null;
+  };
+
+  // short client keyword token
+  function hookClient(stream) {
+    // \N means NULL
+    // ref: http://dev.mysql.com/doc/refman/5.5/en/null-values.html
+    if (stream.eat("N")) {
+        return "atom";
+    }
+    // \g, etc
+    // ref: http://dev.mysql.com/doc/refman/5.5/en/mysql-commands.html
+    return stream.match(/^[a-zA-Z.#!?]/) ? "variable-2" : null;
+  }
+
+  // these keywords are used by all SQL dialects (however, a mode can still overwrite it)
+  var sqlKeywords = "alter and as asc between by count create delete desc distinct drop from having in insert into is join like not on or order select set table union update values where ";
+
+  // turn a space-separated list into an array
+  function set(str) {
+    var obj = {}, words = str.split(" ");
+    for (var i = 0; i < words.length; ++i) obj[words[i]] = true;
+    return obj;
+  }
+
+  // A generic SQL Mode. It's not a standard, it just try to support what is generally supported
+  CodeMirror.defineMIME("text/x-sql", {
+    name: "sql",
+    keywords: set(sqlKeywords + "begin"),
+    builtin: set("bool boolean bit blob enum long longblob longtext medium mediumblob mediumint mediumtext time timestamp tinyblob tinyint tinytext text bigint int int1 int2 int3 int4 int8 integer float float4 float8 double char varbinary varchar varcharacter precision real date datetime year unsigned signed decimal numeric"),
+    atoms: set("false true null unknown"),
+    operatorChars: /^[*+\-%<>!=]/,
+    dateSQL: set("date time timestamp"),
+    support: set("ODBCdotTable doubleQuote binaryNumber hexNumber")
+  });
+
+  CodeMirror.defineMIME("text/x-mssql", {
+    name: "sql",
+    client: set("charset clear connect edit ego exit go help nopager notee nowarning pager print prompt quit rehash source status system tee"),
+    keywords: set(sqlKeywords + "begin trigger proc view index for add constraint key primary foreign collate clustered nonclustered declare"),
+    builtin: set("bigint numeric bit smallint decimal smallmoney int tinyint money float real char varchar text nchar nvarchar ntext binary varbinary image cursor timestamp hierarchyid uniqueidentifier sql_variant xml table "),
+    atoms: set("false true null unknown"),
+    operatorChars: /^[*+\-%<>!=]/,
+    dateSQL: set("date datetimeoffset datetime2 smalldatetime datetime time"),
+    hooks: {
+      "@":   hookVar
+    }
+  });
+
+  CodeMirror.defineMIME("text/x-mysql", {
+    name: "sql",
+    client: set("charset clear connect edit ego exit go help nopager notee nowarning pager print prompt quit rehash source status system tee"),
+    keywords: set(sqlKeywords + "accessible action add after algorithm all analyze asensitive at authors auto_increment autocommit avg avg_row_length before binary binlog both btree cache call cascade cascaded case catalog_name chain change changed character check checkpoint checksum class_origin client_statistics close coalesce code collate collation collations column columns comment commit committed completion concurrent condition connection consistent constraint contains continue contributors convert cross current current_date current_time current_timestamp current_user cursor data database databases day_hour day_microsecond day_minute day_second deallocate dec declare default delay_key_write delayed delimiter des_key_file describe deterministic dev_pop dev_samp deviance diagnostics directory disable discard distinctrow div dual dumpfile each elseif enable enclosed end ends engine engines enum errors escape escaped even event events every execute exists exit explain extended fast fetch field fields first flush for force foreign found_rows full fulltext function general get global grant grants group groupby_concat handler hash help high_priority hosts hour_microsecond hour_minute hour_second if ignore ignore_server_ids import index index_statistics infile inner innodb inout insensitive insert_method install interval invoker isolation iterate key keys kill language last leading leave left level limit linear lines list load local localtime localtimestamp lock logs low_priority master master_heartbeat_period master_ssl_verify_server_cert masters match max max_rows maxvalue message_text middleint migrate min min_rows minute_microsecond minute_second mod mode modifies modify mutex mysql_errno natural next no no_write_to_binlog offline offset one online open optimize option optionally out outer outfile pack_keys parser partition partitions password phase plugin plugins prepare preserve prev primary privileges procedure processlist profile profiles purge query quick range read read_write reads real rebuild recover references regexp relaylog release remove rename reorganize repair repeatable replace require resignal restrict resume return returns revoke right rlike rollback rollup row row_format rtree savepoint schedule schema schema_name schemas second_microsecond security sensitive separator serializable server session share show signal slave slow smallint snapshot soname spatial specific sql sql_big_result sql_buffer_result sql_cache sql_calc_found_rows sql_no_cache sql_small_result sqlexception sqlstate sqlwarning ssl start starting starts status std stddev stddev_pop stddev_samp storage straight_join subclass_origin sum suspend table_name table_statistics tables tablespace temporary terminated to trailing transaction trigger triggers truncate uncommitted undo uninstall unique unlock upgrade usage use use_frm user user_resources user_statistics using utc_date utc_time utc_timestamp value variables varying view views warnings when while with work write xa xor year_month zerofill begin do then else loop repeat"),
+    builtin: set("bool boolean bit blob decimal double float long longblob longtext medium mediumblob mediumint mediumtext time timestamp tinyblob tinyint tinytext text bigint int int1 int2 int3 int4 int8 integer float float4 float8 double char varbinary varchar varcharacter precision date datetime year unsigned signed numeric"),
+    atoms: set("false true null unknown"),
+    operatorChars: /^[*+\-%<>!=&|^]/,
+    dateSQL: set("date time timestamp"),
+    support: set("ODBCdotTable decimallessFloat zerolessFloat binaryNumber hexNumber doubleQuote nCharCast charsetCast commentHash commentSpaceRequired"),
+    hooks: {
+      "@":   hookVar,
+      "`":   hookIdentifier,
+      "\\":  hookClient
+    }
+  });
+
+  CodeMirror.defineMIME("text/x-mariadb", {
+    name: "sql",
+    client: set("charset clear connect edit ego exit go help nopager notee nowarning pager print prompt quit rehash source status system tee"),
+    keywords: set(sqlKeywords + "accessible action add after algorithm all always analyze asensitive at authors auto_increment autocommit avg avg_row_length before binary binlog both btree cache call cascade cascaded case catalog_name chain change changed character check checkpoint checksum class_origin client_statistics close coalesce code collate collation collations column columns comment commit committed completion concurrent condition connection consistent constraint contains continue contributors convert cross current current_date current_time current_timestamp current_user cursor data database databases day_hour day_microsecond day_minute day_second deallocate dec declare default delay_key_write delayed delimiter des_key_file describe deterministic dev_pop dev_samp deviance diagnostics directory disable discard distinctrow div dual dumpfile each elseif enable enclosed end ends engine engines enum errors escape escaped even event events every execute exists exit explain extended fast fetch field fields first flush for force foreign found_rows full fulltext function general generated get global grant grants group groupby_concat handler hard hash help high_priority hosts hour_microsecond hour_minute hour_second if ignore ignore_server_ids import index index_statistics infile inner innodb inout insensitive insert_method install interval invoker isolation iterate key keys kill language last leading leave left level limit linear lines list load local localtime localtimestamp lock logs low_priority master master_heartbeat_period master_ssl_verify_server_cert masters match max max_rows maxvalue message_text middleint migrate min min_rows minute_microsecond minute_second mod mode modifies modify mutex mysql_errno natural next no no_write_to_binlog offline offset one online open optimize option optionally out outer outfile pack_keys parser partition partitions password persistent phase plugin plugins prepare preserve prev primary privileges procedure processlist profile profiles purge query quick range read read_write reads real rebuild recover references regexp relaylog release remove rename reorganize repair repeatable replace require resignal restrict resume return returns revoke right rlike rollback rollup row row_format rtree savepoint schedule schema schema_name schemas second_microsecond security sensitive separator serializable server session share show shutdown signal slave slow smallint snapshot soft soname spatial specific sql sql_big_result sql_buffer_result sql_cache sql_calc_found_rows sql_no_cache sql_small_result sqlexception sqlstate sqlwarning ssl start starting starts status std stddev stddev_pop stddev_samp storage straight_join subclass_origin sum suspend table_name table_statistics tables tablespace temporary terminated to trailing transaction trigger triggers truncate uncommitted undo uninstall unique unlock upgrade usage use use_frm user user_resources user_statistics using utc_date utc_time utc_timestamp value variables varying view views virtual warnings when while with work write xa xor year_month zerofill begin do then else loop repeat"),
+    builtin: set("bool boolean bit blob decimal double float long longblob longtext medium mediumblob mediumint mediumtext time timestamp tinyblob tinyint tinytext text bigint int int1 int2 int3 int4 int8 integer float float4 float8 double char varbinary varchar varcharacter precision date datetime year unsigned signed numeric"),
+    atoms: set("false true null unknown"),
+    operatorChars: /^[*+\-%<>!=&|^]/,
+    dateSQL: set("date time timestamp"),
+    support: set("ODBCdotTable decimallessFloat zerolessFloat binaryNumber hexNumber doubleQuote nCharCast charsetCast commentHash commentSpaceRequired"),
+    hooks: {
+      "@":   hookVar,
+      "`":   hookIdentifier,
+      "\\":  hookClient
+    }
+  });
+
+  // the query language used by Apache Cassandra is called CQL, but this mime type
+  // is called Cassandra to avoid confusion with Contextual Query Language
+  CodeMirror.defineMIME("text/x-cassandra", {
+    name: "sql",
+    client: { },
+    keywords: set("add all allow alter and any apply as asc authorize batch begin by clustering columnfamily compact consistency count create custom delete desc distinct drop each_quorum exists filtering from grant if in index insert into key keyspace keyspaces level limit local_one local_quorum modify nan norecursive nosuperuser not of on one order password permission permissions primary quorum rename revoke schema select set storage superuser table three to token truncate ttl two type unlogged update use user users using values where with writetime"),
+    builtin: set("ascii bigint blob boolean counter decimal double float frozen inet int list map static text timestamp timeuuid tuple uuid varchar varint"),
+    atoms: set("false true infinity NaN"),
+    operatorChars: /^[<>=]/,
+    dateSQL: { },
+    support: set("commentSlashSlash decimallessFloat"),
+    hooks: { }
+  });
+
+  // this is based on Peter Raganitsch's 'plsql' mode
+  CodeMirror.defineMIME("text/x-plsql", {
+    name:       "sql",
+    client:     set("appinfo arraysize autocommit autoprint autorecovery autotrace blockterminator break btitle cmdsep colsep compatibility compute concat copycommit copytypecheck define describe echo editfile embedded escape exec execute feedback flagger flush heading headsep instance linesize lno loboffset logsource long longchunksize markup native newpage numformat numwidth pagesize pause pno recsep recsepchar release repfooter repheader serveroutput shiftinout show showmode size spool sqlblanklines sqlcase sqlcode sqlcontinue sqlnumber sqlpluscompatibility sqlprefix sqlprompt sqlterminator suffix tab term termout time timing trimout trimspool ttitle underline verify version wrap"),
+    keywords:   set("abort accept access add all alter and any array arraylen as asc assert assign at attributes audit authorization avg base_table begin between binary_integer body boolean by case cast char char_base check close cluster clusters colauth column comment commit compress connect connected constant constraint crash create current currval cursor data_base database date dba deallocate debugoff debugon decimal declare default definition delay delete desc digits dispose distinct do drop else elseif elsif enable end entry escape exception exception_init exchange exclusive exists exit external fast fetch file for force form from function generic goto grant group having identified if immediate in increment index indexes indicator initial initrans insert interface intersect into is key level library like limited local lock log logging long loop master maxextents maxtrans member minextents minus mislabel mode modify multiset new next no noaudit nocompress nologging noparallel not nowait number_base object of off offline on online only open option or order out package parallel partition pctfree pctincrease pctused pls_integer positive positiven pragma primary prior private privileges procedure public raise range raw read rebuild record ref references refresh release rename replace resource restrict return returning returns reverse revoke rollback row rowid rowlabel rownum rows run savepoint schema segment select separate session set share snapshot some space split sql start statement storage subtype successful synonym tabauth table tables tablespace task terminate then to trigger truncate type union unique unlimited unrecoverable unusable update use using validate value values variable view views when whenever where while with work"),
+    builtin:    set("abs acos add_months ascii asin atan atan2 average bfile bfilename bigserial bit blob ceil character chartorowid chr clob concat convert cos cosh count dec decode deref dual dump dup_val_on_index empty error exp false float floor found glb greatest hextoraw initcap instr instrb int integer isopen last_day least lenght lenghtb ln lower lpad ltrim lub make_ref max min mlslabel mod months_between natural naturaln nchar nclob new_time next_day nextval nls_charset_decl_len nls_charset_id nls_charset_name nls_initcap nls_lower nls_sort nls_upper nlssort no_data_found notfound null number numeric nvarchar2 nvl others power rawtohex real reftohex round rowcount rowidtochar rowtype rpad rtrim serial sign signtype sin sinh smallint soundex sqlcode sqlerrm sqrt stddev string substr substrb sum sysdate tan tanh to_char text to_date to_label to_multi_byte to_number to_single_byte translate true trunc uid unlogged upper user userenv varchar varchar2 variance varying vsize xml"),
+    operatorChars: /^[*+\-%<>!=~]/,
+    dateSQL:    set("date time timestamp"),
+    support:    set("doubleQuote nCharCast zerolessFloat binaryNumber hexNumber")
+  });
+
+  // Created to support specific hive keywords
+  CodeMirror.defineMIME("text/x-hive", {
+    name: "sql",
+    keywords: set("select alter $elem$ $key$ $value$ add after all analyze and archive as asc before between binary both bucket buckets by cascade case cast change cluster clustered clusterstatus collection column columns comment compute concatenate continue create cross cursor data database databases dbproperties deferred delete delimited desc describe directory disable distinct distribute drop else enable end escaped exclusive exists explain export extended external false fetch fields fileformat first format formatted from full function functions grant group having hold_ddltime idxproperties if import in index indexes inpath inputdriver inputformat insert intersect into is items join keys lateral left like limit lines load local location lock locks mapjoin materialized minus msck no_drop nocompress not of offline on option or order out outer outputdriver outputformat overwrite partition partitioned partitions percent plus preserve procedure purge range rcfile read readonly reads rebuild recordreader recordwriter recover reduce regexp rename repair replace restrict revoke right rlike row schema schemas semi sequencefile serde serdeproperties set shared show show_database sort sorted ssl statistics stored streamtable table tables tablesample tblproperties temporary terminated textfile then tmp to touch transform trigger true unarchive undo union uniquejoin unlock update use using utc utc_tmestamp view when where while with"),
+    builtin: set("bool boolean long timestamp tinyint smallint bigint int float double date datetime unsigned string array struct map uniontype"),
+    atoms: set("false true null unknown"),
+    operatorChars: /^[*+\-%<>!=]/,
+    dateSQL: set("date timestamp"),
+    support: set("ODBCdotTable doubleQuote binaryNumber hexNumber")
+  });
+}());
+
+});
+
+/*
+  How Properties of Mime Types are used by SQL Mode
+  =================================================
+
+  keywords:
+    A list of keywords you want to be highlighted.
+  builtin:
+    A list of builtin types you want to be highlighted (if you want types to be of class "builtin" instead of "keyword").
+  operatorChars:
+    All characters that must be handled as operators.
+  client:
+    Commands parsed and executed by the client (not the server).
+  support:
+    A list of supported syntaxes which are not common, but are supported by more than 1 DBMS.
+    * ODBCdotTable: .tableName
+    * zerolessFloat: .1
+    * doubleQuote
+    * nCharCast: N'string'
+    * charsetCast: _utf8'string'
+    * commentHash: use # char for comments
+    * commentSlashSlash: use // for comments
+    * commentSpaceRequired: require a space after -- for comments
+  atoms:
+    Keywords that must be highlighted as atoms,. Some DBMS's support more atoms than others:
+    UNKNOWN, INFINITY, UNDERFLOW, NaN...
+  dateSQL:
+    Used for date/time SQL standard syntax, because not all DBMS's support same temporal types.
+*/
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
@@ -98738,4 +99278,2106 @@ var i=new a.MathNode("mstyle",t);i.setAttribute("mathsize",h.sizingMultiplier[e.
 var V=function(e,t){return H[t][e.charCodeAt(0)]};t.exports={metrics:G,getCharacterMetrics:V}},{"./Style":7}],15:[function(e,t,i){var h=e("./utils");var a=e("./ParseError");var r={"\\sqrt":{numArgs:1,numOptionalArgs:1,handler:function(e,t,i,h){if(t!=null){throw new a("Optional arguments to \\sqrt aren't supported yet",this.lexer,h[1]-1)}return{type:"sqrt",body:i}}},"\\text":{numArgs:1,argTypes:["text"],greediness:2,handler:function(e,t){var i;if(t.type==="ordgroup"){i=t.value}else{i=[t]}return{type:"text",body:i}}},"\\color":{numArgs:2,allowedInText:true,greediness:3,argTypes:["color","original"],handler:function(e,t,i){var h;if(i.type==="ordgroup"){h=i.value}else{h=[i]}return{type:"color",color:t.value,value:h}}},"\\overline":{numArgs:1,handler:function(e,t){return{type:"overline",body:t}}},"\\rule":{numArgs:2,numOptionalArgs:1,argTypes:["size","size","size"],handler:function(e,t,i,h){return{type:"rule",shift:t&&t.value,width:i.value,height:h.value}}},"\\KaTeX":{numArgs:0,handler:function(e){return{type:"katex"}}},"\\phantom":{numArgs:1,handler:function(e,t){var i;if(t.type==="ordgroup"){i=t.value}else{i=[t]}return{type:"phantom",value:i}}}};var l={"\\bigl":{type:"open",size:1},"\\Bigl":{type:"open",size:2},"\\biggl":{type:"open",size:3},"\\Biggl":{type:"open",size:4},"\\bigr":{type:"close",size:1},"\\Bigr":{type:"close",size:2},"\\biggr":{type:"close",size:3},"\\Biggr":{type:"close",size:4},"\\bigm":{type:"rel",size:1},"\\Bigm":{type:"rel",size:2},"\\biggm":{type:"rel",size:3},"\\Biggm":{type:"rel",size:4},"\\big":{type:"textord",size:1},"\\Big":{type:"textord",size:2},"\\bigg":{type:"textord",size:3},"\\Bigg":{type:"textord",size:4}};var s=["(",")","[","\\lbrack","]","\\rbrack","\\{","\\lbrace","\\}","\\rbrace","\\lfloor","\\rfloor","\\lceil","\\rceil","<",">","\\langle","\\rangle","/","\\backslash","|","\\vert","\\|","\\Vert","\\uparrow","\\Uparrow","\\downarrow","\\Downarrow","\\updownarrow","\\Updownarrow","."];var p=[{funcs:["\\blue","\\orange","\\pink","\\red","\\green","\\gray","\\purple"],data:{numArgs:1,allowedInText:true,greediness:3,handler:function(e,t){var i;if(t.type==="ordgroup"){i=t.value}else{i=[t]}return{type:"color",color:"katex-"+e.slice(1),value:i}}}},{funcs:["\\arcsin","\\arccos","\\arctan","\\arg","\\cos","\\cosh","\\cot","\\coth","\\csc","\\deg","\\dim","\\exp","\\hom","\\ker","\\lg","\\ln","\\log","\\sec","\\sin","\\sinh","\\tan","\\tanh"],data:{numArgs:0,handler:function(e){return{type:"op",limits:false,symbol:false,body:e}}}},{funcs:["\\det","\\gcd","\\inf","\\lim","\\liminf","\\limsup","\\max","\\min","\\Pr","\\sup"],data:{numArgs:0,handler:function(e){return{type:"op",limits:true,symbol:false,body:e}}}},{funcs:["\\int","\\iint","\\iiint","\\oint"],data:{numArgs:0,handler:function(e){return{type:"op",limits:false,symbol:true,body:e}}}},{funcs:["\\coprod","\\bigvee","\\bigwedge","\\biguplus","\\bigcap","\\bigcup","\\intop","\\prod","\\sum","\\bigotimes","\\bigoplus","\\bigodot","\\bigsqcup","\\smallint"],data:{numArgs:0,handler:function(e){return{type:"op",limits:true,symbol:true,body:e}}}},{funcs:["\\dfrac","\\frac","\\tfrac","\\dbinom","\\binom","\\tbinom"],data:{numArgs:2,greediness:2,handler:function(e,t,i){var h;var a=null;var r=null;var l="auto";switch(e){case"\\dfrac":case"\\frac":case"\\tfrac":h=true;break;case"\\dbinom":case"\\binom":case"\\tbinom":h=false;a="(";r=")";break;default:throw new Error("Unrecognized genfrac command")}switch(e){case"\\dfrac":case"\\dbinom":l="display";break;case"\\tfrac":case"\\tbinom":l="text";break}return{type:"genfrac",numer:t,denom:i,hasBarLine:h,leftDelim:a,rightDelim:r,size:l}}}},{funcs:["\\llap","\\rlap"],data:{numArgs:1,allowedInText:true,handler:function(e,t){return{type:e.slice(1),body:t}}}},{funcs:["\\bigl","\\Bigl","\\biggl","\\Biggl","\\bigr","\\Bigr","\\biggr","\\Biggr","\\bigm","\\Bigm","\\biggm","\\Biggm","\\big","\\Big","\\bigg","\\Bigg","\\left","\\right"],data:{numArgs:1,handler:function(e,t,i){if(!h.contains(s,t.value)){throw new a("Invalid delimiter: '"+t.value+"' after '"+e+"'",this.lexer,i[1])}if(e==="\\left"||e==="\\right"){return{type:"leftright",value:t.value}}else{return{type:"delimsizing",size:l[e].size,delimType:l[e].type,value:t.value}}}}},{funcs:["\\tiny","\\scriptsize","\\footnotesize","\\small","\\normalsize","\\large","\\Large","\\LARGE","\\huge","\\Huge"],data:{numArgs:0}},{funcs:["\\displaystyle","\\textstyle","\\scriptstyle","\\scriptscriptstyle"],data:{numArgs:0}},{funcs:["\\acute","\\grave","\\ddot","\\tilde","\\bar","\\breve","\\check","\\hat","\\vec","\\dot"],data:{numArgs:1,handler:function(e,t){return{type:"accent",accent:e,base:t}}}},{funcs:["\\over","\\choose"],data:{numArgs:0,handler:function(e){var t;switch(e){case"\\over":t="\\frac";break;case"\\choose":t="\\binom";break;default:throw new Error("Unrecognized infix genfrac command")}return{type:"infix",replaceWith:t}}}}];var c=function(e,t){for(var i=0;i<e.length;i++){r[e[i]]=t}};for(var n=0;n<p.length;n++){c(p[n].funcs,p[n].data)}for(var o in r){if(r.hasOwnProperty(o)){var g=r[o];r[o]={numArgs:g.numArgs,argTypes:g.argTypes,greediness:g.greediness===undefined?1:g.greediness,allowedInText:g.allowedInText?g.allowedInText:false,numOptionalArgs:g.numOptionalArgs===undefined?0:g.numOptionalArgs,handler:g.handler}}}t.exports={funcs:r}},{"./ParseError":4,"./utils":19}],16:[function(e,t,i){var h=e("./utils");function a(e,t){this.type=e;this.attributes={};this.children=t||[]}a.prototype.setAttribute=function(e,t){this.attributes[e]=t};a.prototype.toNode=function(){var e=document.createElementNS("http://www.w3.org/1998/Math/MathML",this.type);for(var t in this.attributes){if(Object.prototype.hasOwnProperty.call(this.attributes,t)){e.setAttribute(t,this.attributes[t])}}for(var i=0;i<this.children.length;i++){e.appendChild(this.children[i].toNode())}return e};a.prototype.toMarkup=function(){var e="<"+this.type;for(var t in this.attributes){if(Object.prototype.hasOwnProperty.call(this.attributes,t)){e+=" "+t+'="';e+=h.escape(this.attributes[t]);e+='"'}}e+=">";for(var i=0;i<this.children.length;i++){e+=this.children[i].toMarkup()}e+="</"+this.type+">";return e};function r(e){this.text=e}r.prototype.toNode=function(){return document.createTextNode(this.text)};r.prototype.toMarkup=function(){return h.escape(this.text)};t.exports={MathNode:a,TextNode:r}},{"./utils":19}],17:[function(e,t,i){var h=e("./Parser");var a=function(e,t){var i=new h(e,t);return i.parse()};t.exports=a},{"./Parser":5}],18:[function(e,t,i){var h={math:{"\\equiv":{font:"main",group:"rel",replace:"\u2261"},"\\prec":{font:"main",group:"rel",replace:"\u227a"},"\\succ":{font:"main",group:"rel",replace:"\u227b"},"\\sim":{font:"main",group:"rel",replace:"\u223c"},"\\perp":{font:"main",group:"rel",replace:"\u22a5"},"\\preceq":{font:"main",group:"rel",replace:"\u2aaf"},"\\succeq":{font:"main",group:"rel",replace:"\u2ab0"},"\\simeq":{font:"main",group:"rel",replace:"\u2243"},"\\mid":{font:"main",group:"rel",replace:"\u2223"},"\\ll":{font:"main",group:"rel",replace:"\u226a"},"\\gg":{font:"main",group:"rel",replace:"\u226b"},"\\asymp":{font:"main",group:"rel",replace:"\u224d"},"\\parallel":{font:"main",group:"rel",replace:"\u2225"},"\\bowtie":{font:"main",group:"rel",replace:"\u22c8"},"\\smile":{font:"main",group:"rel",replace:"\u2323"},"\\sqsubseteq":{font:"main",group:"rel",replace:"\u2291"},"\\sqsupseteq":{font:"main",group:"rel",replace:"\u2292"},"\\doteq":{font:"main",group:"rel",replace:"\u2250"},"\\frown":{font:"main",group:"rel",replace:"\u2322"},"\\ni":{font:"main",group:"rel",replace:"\u220b"},"\\propto":{font:"main",group:"rel",replace:"\u221d"},"\\vdash":{font:"main",group:"rel",replace:"\u22a2"},"\\dashv":{font:"main",group:"rel",replace:"\u22a3"},"\\owns":{font:"main",group:"rel",replace:"\u220b"},"\\ldotp":{font:"main",group:"punct",replace:"."},"\\cdotp":{font:"main",group:"punct",replace:"\u22c5"},"\\#":{font:"main",group:"textord",replace:"#"},"\\&":{font:"main",group:"textord",replace:"&"},"\\aleph":{font:"main",group:"textord",replace:"\u2135"},"\\forall":{font:"main",group:"textord",replace:"\u2200"},"\\hbar":{font:"main",group:"textord",replace:"\u210f"},"\\exists":{font:"main",group:"textord",replace:"\u2203"},"\\nabla":{font:"main",group:"textord",replace:"\u2207"},"\\flat":{font:"main",group:"textord",replace:"\u266d"},"\\ell":{font:"main",group:"textord",replace:"\u2113"},"\\natural":{font:"main",group:"textord",replace:"\u266e"},"\\clubsuit":{font:"main",group:"textord",replace:"\u2663"},"\\wp":{font:"main",group:"textord",replace:"\u2118"},"\\sharp":{font:"main",group:"textord",replace:"\u266f"},"\\diamondsuit":{font:"main",group:"textord",replace:"\u2662"},"\\Re":{font:"main",group:"textord",replace:"\u211c"},"\\heartsuit":{font:"main",group:"textord",replace:"\u2661"},"\\Im":{font:"main",group:"textord",replace:"\u2111"},"\\spadesuit":{font:"main",group:"textord",replace:"\u2660"},"\\dag":{font:"main",group:"textord",replace:"\u2020"},"\\ddag":{font:"main",group:"textord",replace:"\u2021"},"\\rmoustache":{font:"main",group:"close",replace:"\u23b1"},"\\lmoustache":{font:"main",group:"open",replace:"\u23b0"},"\\rgroup":{font:"main",group:"close",replace:"\u27ef"},"\\lgroup":{font:"main",group:"open",replace:"\u27ee"},"\\mp":{font:"main",group:"bin",replace:"\u2213"},"\\ominus":{font:"main",group:"bin",replace:"\u2296"},"\\uplus":{font:"main",group:"bin",replace:"\u228e"},"\\sqcap":{font:"main",group:"bin",replace:"\u2293"},"\\ast":{font:"main",group:"bin",replace:"\u2217"},"\\sqcup":{font:"main",group:"bin",replace:"\u2294"},"\\bigcirc":{font:"main",group:"bin",replace:"\u25ef"},"\\bullet":{font:"main",group:"bin",replace:"\u2219"},"\\ddagger":{font:"main",group:"bin",replace:"\u2021"},"\\wr":{font:"main",group:"bin",replace:"\u2240"},"\\amalg":{font:"main",group:"bin",replace:"\u2a3f"},"\\longleftarrow":{font:"main",group:"rel",replace:"\u27f5"},"\\Leftarrow":{font:"main",group:"rel",replace:"\u21d0"},"\\Longleftarrow":{font:"main",group:"rel",replace:"\u27f8"},"\\longrightarrow":{font:"main",group:"rel",replace:"\u27f6"},"\\Rightarrow":{font:"main",group:"rel",replace:"\u21d2"},"\\Longrightarrow":{font:"main",group:"rel",replace:"\u27f9"},"\\leftrightarrow":{font:"main",group:"rel",replace:"\u2194"},"\\longleftrightarrow":{font:"main",group:"rel",replace:"\u27f7"},"\\Leftrightarrow":{font:"main",group:"rel",replace:"\u21d4"},"\\Longleftrightarrow":{font:"main",group:"rel",replace:"\u27fa"},"\\mapsto":{font:"main",group:"rel",replace:"\u21a6"},"\\longmapsto":{font:"main",group:"rel",replace:"\u27fc"},"\\nearrow":{font:"main",group:"rel",replace:"\u2197"},"\\hookleftarrow":{font:"main",group:"rel",replace:"\u21a9"},"\\hookrightarrow":{font:"main",group:"rel",replace:"\u21aa"},"\\searrow":{font:"main",group:"rel",replace:"\u2198"},"\\leftharpoonup":{font:"main",group:"rel",replace:"\u21bc"},"\\rightharpoonup":{font:"main",group:"rel",replace:"\u21c0"},"\\swarrow":{font:"main",group:"rel",replace:"\u2199"},"\\leftharpoondown":{font:"main",group:"rel",replace:"\u21bd"},"\\rightharpoondown":{font:"main",group:"rel",replace:"\u21c1"},"\\nwarrow":{font:"main",group:"rel",replace:"\u2196"},"\\rightleftharpoons":{font:"main",group:"rel",replace:"\u21cc"},"\\nless":{font:"ams",group:"rel",replace:"\u226e"},"\\nleqslant":{font:"ams",group:"rel",replace:"\ue010"},"\\nleqq":{font:"ams",group:"rel",replace:"\ue011"},"\\lneq":{font:"ams",group:"rel",replace:"\u2a87"},"\\lneqq":{font:"ams",group:"rel",replace:"\u2268"},"\\lvertneqq":{font:"ams",group:"rel",replace:"\ue00c"},"\\lnsim":{font:"ams",group:"rel",replace:"\u22e6"},"\\lnapprox":{font:"ams",group:"rel",replace:"\u2a89"},"\\nprec":{font:"ams",group:"rel",replace:"\u2280"},"\\npreceq":{font:"ams",group:"rel",replace:"\u22e0"},"\\precnsim":{font:"ams",group:"rel",replace:"\u22e8"},"\\precnapprox":{font:"ams",group:"rel",replace:"\u2ab9"},"\\nsim":{font:"ams",group:"rel",replace:"\u2241"},"\\nshortmid":{font:"ams",group:"rel",replace:"\ue006"},"\\nmid":{font:"ams",group:"rel",replace:"\u2224"},"\\nvdash":{font:"ams",group:"rel",replace:"\u22ac"},"\\nvDash":{font:"ams",group:"rel",replace:"\u22ad"},"\\ntriangleleft":{font:"ams",group:"rel",replace:"\u22ea"},"\\ntrianglelefteq":{font:"ams",group:"rel",replace:"\u22ec"},"\\subsetneq":{font:"ams",group:"rel",replace:"\u228a"},"\\varsubsetneq":{font:"ams",group:"rel",replace:"\ue01a"},"\\subsetneqq":{font:"ams",group:"rel",replace:"\u2acb"},"\\varsubsetneqq":{font:"ams",group:"rel",replace:"\ue017"},"\\ngtr":{font:"ams",group:"rel",replace:"\u226f"},"\\ngeqslant":{font:"ams",group:"rel",replace:"\ue00f"},"\\ngeqq":{font:"ams",group:"rel",replace:"\ue00e"},"\\gneq":{font:"ams",group:"rel",replace:"\u2a88"},"\\gneqq":{font:"ams",group:"rel",replace:"\u2269"},"\\gvertneqq":{font:"ams",group:"rel",replace:"\ue00d"},"\\gnsim":{font:"ams",group:"rel",replace:"\u22e7"},"\\gnapprox":{font:"ams",group:"rel",replace:"\u2a8a"},"\\nsucc":{font:"ams",group:"rel",replace:"\u2281"},"\\nsucceq":{font:"ams",group:"rel",replace:"\u22e1"},"\\succnsim":{font:"ams",group:"rel",replace:"\u22e9"},"\\succnapprox":{font:"ams",group:"rel",replace:"\u2aba"},"\\ncong":{font:"ams",group:"rel",replace:"\u2246"},"\\nshortparallel":{font:"ams",group:"rel",replace:"\ue007"},"\\nparallel":{font:"ams",group:"rel",replace:"\u2226"},"\\nVDash":{font:"ams",group:"rel",replace:"\u22af"},"\\ntriangleright":{font:"ams",group:"rel",replace:"\u22eb"},"\\ntrianglerighteq":{font:"ams",group:"rel",replace:"\u22ed"},"\\nsupseteqq":{font:"ams",group:"rel",replace:"\ue018"},"\\supsetneq":{font:"ams",group:"rel",replace:"\u228b"},"\\varsupsetneq":{font:"ams",group:"rel",replace:"\ue01b"},"\\supsetneqq":{font:"ams",group:"rel",replace:"\u2acc"},"\\varsupsetneqq":{font:"ams",group:"rel",replace:"\ue019"},"\\nVdash":{font:"ams",group:"rel",replace:"\u22ae"},"\\precneqq":{font:"ams",group:"rel",replace:"\u2ab5"},"\\succneqq":{font:"ams",group:"rel",replace:"\u2ab6"},"\\nsubseteqq":{font:"ams",group:"rel",replace:"\ue016"},"\\unlhd":{font:"ams",group:"bin",replace:"\u22b4"},"\\unrhd":{font:"ams",group:"bin",replace:"\u22b5"},"\\nleftarrow":{font:"ams",group:"rel",replace:"\u219a"},"\\nrightarrow":{font:"ams",group:"rel",replace:"\u219b"},"\\nLeftarrow":{font:"ams",group:"rel",replace:"\u21cd"},"\\nRightarrow":{font:"ams",group:"rel",replace:"\u21cf"},"\\nleftrightarrow":{font:"ams",group:"rel",replace:"\u21ae"},"\\nLeftrightarrow":{font:"ams",group:"rel",replace:"\u21ce"},"\\vartriangle":{font:"ams",group:"rel",replace:"\u25b3"},"\\hslash":{font:"ams",group:"textord",replace:"\u210f"},"\\triangledown":{font:"ams",group:"textord",replace:"\u25bd"},"\\lozenge":{font:"ams",group:"textord",replace:"\u25ca"},"\\circledS":{font:"ams",group:"textord",replace:"\u24c8"},"\\measuredangle":{font:"ams",group:"textord",replace:"\u2221"},"\\nexists":{font:"ams",group:"textord",replace:"\u2204"},"\\mho":{font:"ams",group:"textord",replace:"\u2127"},"\\Finv":{font:"ams",group:"textord",replace:"\u2132"},"\\Game":{font:"ams",group:"textord",replace:"\u2141"},"\\Bbbk":{font:"ams",group:"textord",replace:"k"},"\\backprime":{font:"ams",group:"textord",replace:"\u2035"},"\\blacktriangle":{font:"ams",group:"textord",replace:"\u25b2"},"\\blacktriangledown":{font:"ams",group:"textord",replace:"\u25bc"},"\\blacksquare":{font:"ams",group:"textord",replace:"\u25a0"},"\\blacklozenge":{font:"ams",group:"textord",replace:"\u29eb"},"\\bigstar":{font:"ams",group:"textord",replace:"\u2605"},"\\sphericalangle":{font:"ams",group:"textord",replace:"\u2222"},"\\complement":{font:"ams",group:"textord",replace:"\u2201"},"\\eth":{font:"ams",group:"textord",replace:"\xf0"},"\\diagup":{font:"ams",group:"textord",replace:"\u2571"},"\\diagdown":{font:"ams",group:"textord",replace:"\u2572"},"\\square":{font:"ams",group:"textord",replace:"\u25a1"},"\\Box":{font:"ams",group:"textord",replace:"\u25a1"},"\\Diamond":{font:"ams",group:"textord",replace:"\u25ca"},"\\yen":{font:"ams",group:"textord",replace:"\xa5"},"\\beth":{font:"ams",group:"textord",replace:"\u2136"},"\\daleth":{font:"ams",group:"textord",replace:"\u2138"},"\\gimel":{font:"ams",group:"textord",replace:"\u2137"},"\\digamma":{font:"ams",group:"textord",replace:"\u03dd"},"\\varkappa":{font:"ams",group:"textord",replace:"\u03f0"},"\\ulcorner":{font:"ams",group:"textord",replace:"\u250c"},"\\urcorner":{font:"ams",group:"textord",replace:"\u2510"},"\\llcorner":{font:"ams",group:"textord",replace:"\u2514"},"\\lrcorner":{font:"ams",group:"textord",replace:"\u2518"},"\\leqq":{font:"ams",group:"rel",replace:"\u2266"},"\\leqslant":{font:"ams",group:"rel",replace:"\u2a7d"},"\\eqslantless":{font:"ams",group:"rel",replace:"\u2a95"},"\\lesssim":{font:"ams",group:"rel",replace:"\u2272"},"\\lessapprox":{font:"ams",group:"rel",replace:"\u2a85"},"\\approxeq":{font:"ams",group:"rel",replace:"\u224a"},"\\lessdot":{font:"ams",group:"bin",replace:"\u22d6"},"\\lll":{font:"ams",group:"rel",replace:"\u22d8"},"\\lessgtr":{font:"ams",group:"rel",replace:"\u2276"},"\\lesseqgtr":{font:"ams",group:"rel",replace:"\u22da"},"\\lesseqqgtr":{font:"ams",group:"rel",replace:"\u2a8b"},"\\doteqdot":{font:"ams",group:"rel",replace:"\u2251"},"\\risingdotseq":{font:"ams",group:"rel",replace:"\u2253"},"\\fallingdotseq":{font:"ams",group:"rel",replace:"\u2252"},"\\backsim":{font:"ams",group:"rel",replace:"\u223d"},"\\backsimeq":{font:"ams",group:"rel",replace:"\u22cd"},"\\subseteqq":{font:"ams",group:"rel",replace:"\u2ac5"},"\\Subset":{font:"ams",group:"rel",replace:"\u22d0"},"\\sqsubset":{font:"ams",group:"rel",replace:"\u228f"},"\\preccurlyeq":{font:"ams",group:"rel",replace:"\u227c"},"\\curlyeqprec":{font:"ams",group:"rel",replace:"\u22de"},"\\precsim":{font:"ams",group:"rel",replace:"\u227e"},"\\precapprox":{font:"ams",group:"rel",replace:"\u2ab7"},"\\vartriangleleft":{font:"ams",group:"rel",replace:"\u22b2"},"\\trianglelefteq":{font:"ams",group:"rel",replace:"\u22b4"},"\\vDash":{font:"ams",group:"rel",replace:"\u22a8"},"\\Vvdash":{font:"ams",group:"rel",replace:"\u22aa"},"\\smallsmile":{font:"ams",group:"rel",replace:"\u2323"},"\\smallfrown":{font:"ams",group:"rel",replace:"\u2322"},"\\bumpeq":{font:"ams",group:"rel",replace:"\u224f"},"\\Bumpeq":{font:"ams",group:"rel",replace:"\u224e"},"\\geqq":{font:"ams",group:"rel",replace:"\u2267"},"\\geqslant":{font:"ams",group:"rel",replace:"\u2a7e"},"\\eqslantgtr":{font:"ams",group:"rel",replace:"\u2a96"},"\\gtrsim":{font:"ams",group:"rel",replace:"\u2273"},"\\gtrapprox":{font:"ams",group:"rel",replace:"\u2a86"},"\\gtrdot":{font:"ams",group:"bin",replace:"\u22d7"},"\\ggg":{font:"ams",group:"rel",replace:"\u22d9"},"\\gtrless":{font:"ams",group:"rel",replace:"\u2277"},"\\gtreqless":{font:"ams",group:"rel",replace:"\u22db"},"\\gtreqqless":{font:"ams",group:"rel",replace:"\u2a8c"},"\\eqcirc":{font:"ams",group:"rel",replace:"\u2256"},"\\circeq":{font:"ams",group:"rel",replace:"\u2257"},"\\triangleq":{font:"ams",group:"rel",replace:"\u225c"},"\\thicksim":{font:"ams",group:"rel",replace:"\u223c"},"\\thickapprox":{font:"ams",group:"rel",replace:"\u2248"},"\\supseteqq":{font:"ams",group:"rel",replace:"\u2ac6"},"\\Supset":{font:"ams",group:"rel",replace:"\u22d1"},"\\sqsupset":{font:"ams",group:"rel",replace:"\u2290"},"\\succcurlyeq":{font:"ams",group:"rel",replace:"\u227d"},"\\curlyeqsucc":{font:"ams",group:"rel",replace:"\u22df"},"\\succsim":{font:"ams",group:"rel",replace:"\u227f"},"\\succapprox":{font:"ams",group:"rel",replace:"\u2ab8"},"\\vartriangleright":{font:"ams",group:"rel",replace:"\u22b3"},"\\trianglerighteq":{font:"ams",group:"rel",replace:"\u22b5"},"\\Vdash":{font:"ams",group:"rel",replace:"\u22a9"},"\\shortmid":{font:"ams",group:"rel",replace:"\u2223"},"\\shortparallel":{font:"ams",group:"rel",replace:"\u2225"},"\\between":{font:"ams",group:"rel",replace:"\u226c"},"\\pitchfork":{font:"ams",group:"rel",replace:"\u22d4"},"\\varpropto":{font:"ams",group:"rel",replace:"\u221d"},"\\blacktriangleleft":{font:"ams",group:"rel",replace:"\u25c0"},"\\therefore":{font:"ams",group:"rel",replace:"\u2234"},"\\backepsilon":{font:"ams",group:"rel",replace:"\u220d"},"\\blacktriangleright":{font:"ams",group:"rel",replace:"\u25b6"},"\\because":{font:"ams",group:"rel",replace:"\u2235"},"\\llless":{font:"ams",group:"rel",replace:"\u22d8"},"\\gggtr":{font:"ams",group:"rel",replace:"\u22d9"},"\\lhd":{font:"ams",group:"bin",replace:"\u22b2"},"\\rhd":{font:"ams",group:"bin",replace:"\u22b3"},"\\eqsim":{font:"ams",group:"rel",replace:"\u2242"},"\\Join":{font:"main",group:"rel",replace:"\u22c8"},"\\Doteq":{font:"ams",group:"rel",replace:"\u2251"},"\\dotplus":{font:"ams",group:"bin",replace:"\u2214"},"\\smallsetminus":{font:"ams",group:"bin",replace:"\u2216"},"\\Cap":{font:"ams",group:"bin",replace:"\u22d2"},"\\Cup":{font:"ams",group:"bin",replace:"\u22d3"},"\\doublebarwedge":{font:"ams",group:"bin",replace:"\u2a5e"},"\\boxminus":{font:"ams",group:"bin",replace:"\u229f"},"\\boxplus":{font:"ams",group:"bin",replace:"\u229e"},"\\divideontimes":{font:"ams",group:"bin",replace:"\u22c7"},"\\ltimes":{font:"ams",group:"bin",replace:"\u22c9"},"\\rtimes":{font:"ams",group:"bin",replace:"\u22ca"},"\\leftthreetimes":{font:"ams",group:"bin",replace:"\u22cb"},"\\rightthreetimes":{font:"ams",group:"bin",replace:"\u22cc"},"\\curlywedge":{font:"ams",group:"bin",replace:"\u22cf"},"\\curlyvee":{font:"ams",group:"bin",replace:"\u22ce"},"\\circleddash":{font:"ams",group:"bin",replace:"\u229d"},"\\circledast":{font:"ams",group:"bin",replace:"\u229b"},"\\centerdot":{font:"ams",group:"bin",replace:"\u22c5"},"\\intercal":{font:"ams",group:"bin",replace:"\u22ba"},"\\doublecap":{font:"ams",group:"bin",replace:"\u22d2"},"\\doublecup":{font:"ams",group:"bin",replace:"\u22d3"},"\\boxtimes":{font:"ams",group:"bin",replace:"\u22a0"},"\\dashrightarrow":{font:"ams",group:"rel",replace:"\u21e2"},"\\dashleftarrow":{font:"ams",group:"rel",replace:"\u21e0"},"\\leftleftarrows":{font:"ams",group:"rel",replace:"\u21c7"},"\\leftrightarrows":{font:"ams",group:"rel",replace:"\u21c6"},"\\Lleftarrow":{font:"ams",group:"rel",replace:"\u21da"},"\\twoheadleftarrow":{font:"ams",group:"rel",replace:"\u219e"},"\\leftarrowtail":{font:"ams",group:"rel",replace:"\u21a2"},"\\looparrowleft":{font:"ams",group:"rel",replace:"\u21ab"},"\\leftrightharpoons":{font:"ams",group:"rel",replace:"\u21cb"},"\\curvearrowleft":{font:"ams",group:"rel",replace:"\u21b6"},"\\circlearrowleft":{font:"ams",group:"rel",replace:"\u21ba"},"\\Lsh":{font:"ams",group:"rel",replace:"\u21b0"},"\\upuparrows":{font:"ams",group:"rel",replace:"\u21c8"},"\\upharpoonleft":{font:"ams",group:"rel",replace:"\u21bf"},"\\downharpoonleft":{font:"ams",group:"rel",replace:"\u21c3"},"\\multimap":{font:"ams",group:"rel",replace:"\u22b8"},"\\leftrightsquigarrow":{font:"ams",group:"rel",replace:"\u21ad"},"\\rightrightarrows":{font:"ams",group:"rel",replace:"\u21c9"},"\\rightleftarrows":{font:"ams",group:"rel",replace:"\u21c4"},"\\twoheadrightarrow":{font:"ams",group:"rel",replace:"\u21a0"},"\\rightarrowtail":{font:"ams",group:"rel",replace:"\u21a3"},"\\looparrowright":{font:"ams",group:"rel",replace:"\u21ac"},"\\curvearrowright":{font:"ams",group:"rel",replace:"\u21b7"},"\\circlearrowright":{font:"ams",group:"rel",replace:"\u21bb"},"\\Rsh":{font:"ams",group:"rel",replace:"\u21b1"},"\\downdownarrows":{font:"ams",group:"rel",replace:"\u21ca"},"\\upharpoonright":{font:"ams",group:"rel",replace:"\u21be"},"\\downharpoonright":{font:"ams",group:"rel",replace:"\u21c2"},"\\rightsquigarrow":{font:"ams",group:"rel",replace:"\u21dd"},"\\leadsto":{font:"ams",group:"rel",replace:"\u21dd"},"\\Rrightarrow":{font:"ams",group:"rel",replace:"\u21db"},"\\restriction":{font:"ams",group:"rel",replace:"\u21be"},"`":{font:"main",group:"textord",replace:"\u2018"},"\\$":{font:"main",group:"textord",replace:"$"},"\\%":{font:"main",group:"textord",replace:"%"},"\\_":{font:"main",group:"textord",replace:"_"},"\\angle":{font:"main",group:"textord",replace:"\u2220"},"\\infty":{font:"main",group:"textord",replace:"\u221e"},"\\prime":{font:"main",group:"textord",replace:"\u2032"},"\\triangle":{font:"main",group:"textord",replace:"\u25b3"},"\\Gamma":{font:"main",group:"textord",replace:"\u0393"},"\\Delta":{font:"main",group:"textord",replace:"\u0394"},"\\Theta":{font:"main",group:"textord",replace:"\u0398"},"\\Lambda":{font:"main",group:"textord",replace:"\u039b"},"\\Xi":{font:"main",group:"textord",replace:"\u039e"},"\\Pi":{font:"main",group:"textord",replace:"\u03a0"},"\\Sigma":{font:"main",group:"textord",replace:"\u03a3"},"\\Upsilon":{font:"main",group:"textord",replace:"\u03a5"},"\\Phi":{font:"main",group:"textord",replace:"\u03a6"},"\\Psi":{font:"main",group:"textord",replace:"\u03a8"},"\\Omega":{font:"main",group:"textord",replace:"\u03a9"},"\\neg":{font:"main",group:"textord",replace:"\xac"},"\\lnot":{font:"main",group:"textord",replace:"\xac"},"\\top":{font:"main",group:"textord",replace:"\u22a4"},"\\bot":{font:"main",group:"textord",replace:"\u22a5"},"\\emptyset":{font:"main",group:"textord",replace:"\u2205"},"\\varnothing":{font:"ams",group:"textord",replace:"\u2205"},"\\alpha":{font:"main",group:"mathord",replace:"\u03b1"},"\\beta":{font:"main",group:"mathord",replace:"\u03b2"},"\\gamma":{font:"main",group:"mathord",replace:"\u03b3"},"\\delta":{font:"main",group:"mathord",replace:"\u03b4"},"\\epsilon":{font:"main",group:"mathord",replace:"\u03f5"},"\\zeta":{font:"main",group:"mathord",replace:"\u03b6"},"\\eta":{font:"main",group:"mathord",replace:"\u03b7"},"\\theta":{font:"main",group:"mathord",replace:"\u03b8"},"\\iota":{font:"main",group:"mathord",replace:"\u03b9"},"\\kappa":{font:"main",group:"mathord",replace:"\u03ba"},"\\lambda":{font:"main",group:"mathord",replace:"\u03bb"},"\\mu":{font:"main",group:"mathord",replace:"\u03bc"},"\\nu":{font:"main",group:"mathord",replace:"\u03bd"},"\\xi":{font:"main",group:"mathord",replace:"\u03be"},"\\omicron":{font:"main",group:"mathord",replace:"o"},"\\pi":{font:"main",group:"mathord",replace:"\u03c0"},"\\rho":{font:"main",group:"mathord",replace:"\u03c1"},"\\sigma":{font:"main",group:"mathord",replace:"\u03c3"},"\\tau":{font:"main",group:"mathord",replace:"\u03c4"},"\\upsilon":{font:"main",group:"mathord",replace:"\u03c5"},"\\phi":{font:"main",group:"mathord",replace:"\u03d5"},"\\chi":{font:"main",group:"mathord",replace:"\u03c7"},"\\psi":{font:"main",group:"mathord",replace:"\u03c8"},"\\omega":{font:"main",group:"mathord",replace:"\u03c9"},"\\varepsilon":{font:"main",group:"mathord",replace:"\u03b5"},"\\vartheta":{font:"main",group:"mathord",replace:"\u03d1"},"\\varpi":{font:"main",group:"mathord",replace:"\u03d6"},"\\varrho":{font:"main",group:"mathord",replace:"\u03f1"},"\\varsigma":{font:"main",group:"mathord",replace:"\u03c2"},"\\varphi":{font:"main",group:"mathord",replace:"\u03c6"},"*":{font:"main",group:"bin",replace:"\u2217"},"+":{font:"main",group:"bin"},"-":{font:"main",group:"bin",replace:"\u2212"},"\\cdot":{font:"main",group:"bin",replace:"\u22c5"},"\\circ":{font:"main",group:"bin",replace:"\u2218"},"\\div":{font:"main",group:"bin",replace:"\xf7"},"\\pm":{font:"main",group:"bin",replace:"\xb1"},"\\times":{font:"main",group:"bin",replace:"\xd7"},"\\cap":{font:"main",group:"bin",replace:"\u2229"},"\\cup":{font:"main",group:"bin",replace:"\u222a"},"\\setminus":{font:"main",group:"bin",replace:"\u2216"},"\\land":{font:"main",group:"bin",replace:"\u2227"},"\\lor":{font:"main",group:"bin",replace:"\u2228"},"\\wedge":{font:"main",group:"bin",replace:"\u2227"},"\\vee":{font:"main",group:"bin",replace:"\u2228"},"\\surd":{font:"main",group:"textord",replace:"\u221a"},"(":{font:"main",group:"open"},"[":{font:"main",group:"open"},"\\langle":{font:"main",group:"open",replace:"\u27e8"},"\\lvert":{font:"main",group:"open",replace:"\u2223"},")":{font:"main",group:"close"},"]":{font:"main",group:"close"},"?":{font:"main",group:"close"},"!":{font:"main",group:"close"},"\\rangle":{font:"main",group:"close",replace:"\u27e9"},"\\rvert":{font:"main",group:"close",replace:"\u2223"},"=":{font:"main",group:"rel"},"<":{font:"main",group:"rel"},">":{font:"main",group:"rel"},":":{font:"main",group:"rel"},"\\approx":{font:"main",group:"rel",replace:"\u2248"},"\\cong":{font:"main",group:"rel",replace:"\u2245"},"\\ge":{font:"main",group:"rel",replace:"\u2265"},"\\geq":{font:"main",group:"rel",replace:"\u2265"},"\\gets":{font:"main",group:"rel",replace:"\u2190"},"\\in":{font:"main",group:"rel",replace:"\u2208"},"\\notin":{font:"main",group:"rel",replace:"\u2209"},"\\subset":{font:"main",group:"rel",replace:"\u2282"},"\\supset":{font:"main",group:"rel",replace:"\u2283"},"\\subseteq":{font:"main",group:"rel",replace:"\u2286"},"\\supseteq":{font:"main",group:"rel",replace:"\u2287"},"\\nsubseteq":{font:"ams",group:"rel",replace:"\u2288"},"\\nsupseteq":{font:"ams",group:"rel",replace:"\u2289"},"\\models":{font:"main",group:"rel",replace:"\u22a8"},"\\leftarrow":{font:"main",group:"rel",replace:"\u2190"},"\\le":{font:"main",group:"rel",replace:"\u2264"},"\\leq":{font:"main",group:"rel",replace:"\u2264"},"\\ne":{font:"main",group:"rel",replace:"\u2260"},"\\neq":{font:"main",group:"rel",replace:"\u2260"},"\\rightarrow":{font:"main",group:"rel",replace:"\u2192"},"\\to":{font:"main",group:"rel",replace:"\u2192"},"\\ngeq":{font:"ams",group:"rel",replace:"\u2271"},"\\nleq":{font:"ams",group:"rel",replace:"\u2270"},"\\!":{font:"main",group:"spacing"},"\\ ":{font:"main",group:"spacing",replace:"\xa0"},"~":{font:"main",group:"spacing",replace:"\xa0"},"\\,":{font:"main",group:"spacing"},"\\:":{font:"main",group:"spacing"},"\\;":{font:"main",group:"spacing"},"\\enspace":{font:"main",group:"spacing"},"\\qquad":{font:"main",group:"spacing"},"\\quad":{font:"main",group:"spacing"},"\\space":{font:"main",group:"spacing",replace:"\xa0"},",":{font:"main",group:"punct"},";":{font:"main",group:"punct"},"\\colon":{font:"main",group:"punct",replace:":"},"\\barwedge":{font:"ams",group:"textord",replace:"\u22bc"},"\\veebar":{font:"ams",group:"textord",replace:"\u22bb"},"\\odot":{font:"main",group:"bin",replace:"\u2299"},"\\oplus":{font:"main",group:"bin",replace:"\u2295"},"\\otimes":{font:"main",group:"bin",replace:"\u2297"},"\\partial":{font:"main",group:"textord",replace:"\u2202"},"\\oslash":{font:"main",group:"bin",replace:"\u2298"},"\\circledcirc":{font:"ams",group:"textord",replace:"\u229a"},"\\boxdot":{font:"ams",group:"textord",replace:"\u22a1"},"\\bigtriangleup":{font:"main",group:"bin",replace:"\u25b3"},"\\bigtriangledown":{font:"main",group:"bin",replace:"\u25bd"},"\\dagger":{font:"main",group:"bin",replace:"\u2020"},"\\diamond":{font:"main",group:"bin",replace:"\u22c4"},"\\star":{font:"main",group:"bin",replace:"\u22c6"},"\\triangleleft":{font:"main",group:"bin",replace:"\u25c3"},"\\triangleright":{font:"main",group:"bin",replace:"\u25b9"},"\\{":{font:"main",group:"open",replace:"{"},"\\}":{font:"main",group:"close",replace:"}"},"\\lbrace":{font:"main",group:"open",replace:"{"},"\\rbrace":{font:"main",group:"close",replace:"}"},"\\lbrack":{font:"main",group:"open",replace:"["},"\\rbrack":{font:"main",group:"close",replace:"]"},"\\lfloor":{font:"main",group:"open",replace:"\u230a"},"\\rfloor":{font:"main",group:"close",replace:"\u230b"},"\\lceil":{font:"main",group:"open",replace:"\u2308"},"\\rceil":{font:"main",group:"close",replace:"\u2309"},"\\backslash":{font:"main",group:"textord",replace:"\\"},"|":{font:"main",group:"textord",replace:"\u2223"},"\\vert":{font:"main",group:"textord",replace:"\u2223"},"\\|":{font:"main",group:"textord",replace:"\u2225"},"\\Vert":{font:"main",group:"textord",replace:"\u2225"},"\\uparrow":{font:"main",group:"textord",replace:"\u2191"},"\\Uparrow":{font:"main",group:"textord",replace:"\u21d1"},"\\downarrow":{font:"main",group:"textord",replace:"\u2193"},"\\Downarrow":{font:"main",group:"textord",replace:"\u21d3"},"\\updownarrow":{font:"main",group:"textord",replace:"\u2195"},"\\Updownarrow":{font:"main",group:"textord",replace:"\u21d5"},"\\coprod":{font:"math",group:"op",replace:"\u2210"},"\\bigvee":{font:"math",group:"op",replace:"\u22c1"},"\\bigwedge":{font:"math",group:"op",replace:"\u22c0"},"\\biguplus":{font:"math",group:"op",replace:"\u2a04"},"\\bigcap":{font:"math",group:"op",replace:"\u22c2"},"\\bigcup":{font:"math",group:"op",replace:"\u22c3"},"\\int":{font:"math",group:"op",replace:"\u222b"},"\\intop":{font:"math",group:"op",replace:"\u222b"},"\\iint":{font:"math",group:"op",replace:"\u222c"},"\\iiint":{font:"math",group:"op",replace:"\u222d"},"\\prod":{font:"math",group:"op",replace:"\u220f"},"\\sum":{font:"math",group:"op",replace:"\u2211"},"\\bigotimes":{font:"math",group:"op",replace:"\u2a02"},"\\bigoplus":{font:"math",group:"op",replace:"\u2a01"},"\\bigodot":{font:"math",group:"op",replace:"\u2a00"},"\\oint":{font:"math",group:"op",replace:"\u222e"},"\\bigsqcup":{font:"math",group:"op",replace:"\u2a06"},"\\smallint":{font:"math",group:"op",replace:"\u222b"},"\\ldots":{font:"main",group:"punct",replace:"\u2026"},"\\cdots":{font:"main",group:"inner",replace:"\u22ef"},"\\ddots":{font:"main",group:"inner",replace:"\u22f1"},"\\vdots":{font:"main",group:"textord",replace:"\u22ee"},"\\acute":{font:"main",group:"accent",replace:"\xb4"},"\\grave":{font:"main",group:"accent",replace:"`"},"\\ddot":{font:"main",group:"accent",replace:"\xa8"},"\\tilde":{font:"main",group:"accent",replace:"~"},"\\bar":{font:"main",group:"accent",replace:"\xaf"},"\\breve":{font:"main",group:"accent",replace:"\u02d8"},"\\check":{font:"main",group:"accent",replace:"\u02c7"},"\\hat":{font:"main",group:"accent",replace:"^"},"\\vec":{font:"main",group:"accent",replace:"\u20d7"},"\\dot":{font:"main",group:"accent",replace:"\u02d9"}},text:{"\\ ":{font:"main",group:"spacing",replace:"\xa0"}," ":{font:"main",group:"spacing",replace:"\xa0"},"~":{font:"main",group:"spacing",replace:"\xa0"}}};
 var a='0123456789/@."';for(var r=0;r<a.length;r++){var l=a.charAt(r);h.math[l]={font:"main",group:"textord"}}var s="0123456789`!@*()-=+[]'\";:?/.,";for(var r=0;r<s.length;r++){var l=s.charAt(r);h.text[l]={font:"main",group:"textord"}}var p="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";for(var r=0;r<p.length;r++){var l=p.charAt(r);h.math[l]={font:"main",group:"mathord"};h.text[l]={font:"main",group:"textord"}}t.exports=h},{}],19:[function(e,t,i){var h=Array.prototype.indexOf;var a=function(e,t){if(e==null){return-1}if(h&&e.indexOf===h){return e.indexOf(t)}var i=0,a=e.length;for(;i<a;i++){if(e[i]===t){return i}}return-1};var r=function(e,t){return a(e,t)!==-1};var l=/([A-Z])/g;var s=function(e){return e.replace(l,"-$1").toLowerCase()};var p={"&":"&amp;",">":"&gt;","<":"&lt;",'"':"&quot;","'":"&#x27;"};var c=/[&><"']/g;function n(e){return p[e]}function o(e){return(""+e).replace(c,n)}var g;if(typeof document!=="undefined"){var d=document.createElement("span");if("textContent"in d){g=function(e,t){e.textContent=t}}else{g=function(e,t){e.innerText=t}}}function u(e){g(e,"")}t.exports={contains:r,escape:o,hyphenate:s,indexOf:a,setTextContent:g,clearNode:u}},{}]},{},[1])(1)});
 (function(e){if("function"==typeof bootstrap)bootstrap("rendermathinelement",e);else if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else if("undefined"!=typeof ses){if(!ses.ok())return;ses.makeRenderMathInElement=e}else"undefined"!=typeof window?window.renderMathInElement=e():global.renderMathInElement=e()})(function(){var e,t,r,n,a;return function i(e,t,r){function n(o,l){if(!t[o]){if(!e[o]){var f=typeof require=="function"&&require;if(!l&&f)return f(o,!0);if(a)return a(o,!0);throw new Error("Cannot find module '"+o+"'")}var s=t[o]={exports:{}};e[o][0].call(s.exports,function(t){var r=e[o][1][t];return n(r?r:t)},s,s.exports,i,e,t,r)}return t[o].exports}var a=typeof require=="function"&&require;for(var o=0;o<r.length;o++)n(r[o]);return n}({1:[function(e,t,r){var n=e("./splitAtDelimiters");var a=function(e,t){var r=[{type:"text",data:e}];for(var a=0;a<t.length;a++){var i=t[a];r=n(r,i.left,i.right,i.display||false)}return r};var i=function(e,t){var r=a(e,t);var n=document.createDocumentFragment();for(var i=0;i<r.length;i++){if(r[i].type==="text"){n.appendChild(document.createTextNode(r[i].data))}else{var o=document.createElement("span");var l=r[i].data;katex.render(l,o,{displayMode:r[i].display});n.appendChild(o)}}return n};var o=function(e,t,r){for(var n=0;n<e.childNodes.length;n++){var a=e.childNodes[n];if(a.nodeType===3){var l=i(a.textContent,t);n+=l.childNodes.length-1;e.replaceChild(l,a)}else if(a.nodeType===1){var f=r.indexOf(a.nodeName.toLowerCase())===-1;if(f){o(a,t,r)}}else{}}};var l={delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],ignoredTags:["script","noscript","style","textarea","pre","code"]};var f=function(e){var t,r;for(var n=1,a=arguments.length;n<a;n++){t=arguments[n];for(r in t){if(Object.prototype.hasOwnProperty.call(t,r)){e[r]=t[r]}}}return e};var s=function(e,t){if(!e){throw new Error("No element provided to render")}t=f({},l,t);o(e,t.delimiters,t.ignoredTags)};t.exports=s},{"./splitAtDelimiters":2}],2:[function(e,t,r){var n=function(e,t,r){var n=r;var a=0;var i=e.length;while(n<t.length){var o=t[n];if(a<=0&&t.slice(n,n+i)===e){return n}else if(o==="\\"){n++}else if(o==="{"){a++}else if(o==="}"){a--}n++}return-1};var a=function(e,t,r,a){var i=[];for(var o=0;o<e.length;o++){if(e[o].type==="text"){var l=e[o].data;var f=true;var s=0;var d;d=l.indexOf(t);if(d!==-1){s=d;i.push({type:"text",data:l.slice(0,s)});f=false}while(true){if(f){d=l.indexOf(t,s);if(d===-1){break}i.push({type:"text",data:l.slice(s,d)});s=d}else{d=n(r,l,s+t.length);if(d===-1){break}i.push({type:"math",data:l.slice(s+t.length,d),display:a});s=d+r.length}f=!f}i.push({type:"text",data:l.slice(s)})}else{i.push(e[o])}}return i};t.exports=a},{}]},{},[1])(1)});
+// ansi_up.js
+// version : 1.3.0
+// author : Dru Nelson
+// license : MIT
+// http://github.com/drudru/ansi_up
+
+(function (Date, undefined) {
+
+    var ansi_up,
+        VERSION = "1.3.0",
+
+        // check for nodeJS
+        hasModule = (typeof module !== 'undefined'),
+
+        // Normal and then Bright
+        ANSI_COLORS = [
+          [
+            { color: "0, 0, 0",        'class': "ansi-black"   },
+            { color: "187, 0, 0",      'class': "ansi-red"     },
+            { color: "0, 187, 0",      'class': "ansi-green"   },
+            { color: "187, 187, 0",    'class': "ansi-yellow"  },
+            { color: "0, 0, 187",      'class': "ansi-blue"    },
+            { color: "187, 0, 187",    'class': "ansi-magenta" },
+            { color: "0, 187, 187",    'class': "ansi-cyan"    },
+            { color: "255,255,255",    'class': "ansi-white"   }
+          ],
+          [
+            { color: "85, 85, 85",     'class': "ansi-bright-black"   },
+            { color: "255, 85, 85",    'class': "ansi-bright-red"     },
+            { color: "0, 255, 0",      'class': "ansi-bright-green"   },
+            { color: "255, 255, 85",   'class': "ansi-bright-yellow"  },
+            { color: "85, 85, 255",    'class': "ansi-bright-blue"    },
+            { color: "255, 85, 255",   'class': "ansi-bright-magenta" },
+            { color: "85, 255, 255",   'class': "ansi-bright-cyan"    },
+            { color: "255, 255, 255",  'class': "ansi-bright-white"   }
+          ]
+        ],
+
+        // 256 Colors Palette
+        PALETTE_COLORS;
+
+    function Ansi_Up() {
+      this.fg = this.bg = this.fg_truecolor = this.bg_truecolor = null;
+      this.bright = 0;
+    }
+
+    Ansi_Up.prototype.setup_palette = function() {
+      PALETTE_COLORS = [];
+      // Index 0..15 : System color
+      (function() {
+        var i, j;
+        for (i = 0; i < 2; ++i) {
+          for (j = 0; j < 8; ++j) {
+            PALETTE_COLORS.push(ANSI_COLORS[i][j]['color']);
+          }
+        }
+      })();
+
+      // Index 16..231 : RGB 6x6x6
+      // https://gist.github.com/jasonm23/2868981#file-xterm-256color-yaml
+      (function() {
+        var levels = [0, 95, 135, 175, 215, 255];
+        var format = function (r, g, b) { return levels[r] + ', ' + levels[g] + ', ' + levels[b] };
+        var r, g, b;
+        for (r = 0; r < 6; ++r) {
+          for (g = 0; g < 6; ++g) {
+            for (b = 0; b < 6; ++b) {
+              PALETTE_COLORS.push(format.call(this, r, g, b));
+            }
+          }
+        }
+      })();
+
+      // Index 232..255 : Grayscale
+      (function() {
+        var level = 8;
+        var format = function(level) { return level + ', ' + level + ', ' + level };
+        var i;
+        for (i = 0; i < 24; ++i, level += 10) {
+          PALETTE_COLORS.push(format.call(this, level));
+        }
+      })();
+    };
+
+    Ansi_Up.prototype.escape_for_html = function (txt) {
+      return txt.replace(/[&<>]/gm, function(str) {
+        if (str == "&") return "&amp;";
+        if (str == "<") return "&lt;";
+        if (str == ">") return "&gt;";
+      });
+    };
+
+    Ansi_Up.prototype.linkify = function (txt) {
+      return txt.replace(/(https?:\/\/[^\s]+)/gm, function(str) {
+        return "<a href=\"" + str + "\">" + str + "</a>";
+      });
+    };
+
+    Ansi_Up.prototype.ansi_to_html = function (txt, options) {
+      return this.process(txt, options, true);
+    };
+
+    Ansi_Up.prototype.ansi_to_text = function (txt) {
+      var options = {};
+      return this.process(txt, options, false);
+    };
+
+    Ansi_Up.prototype.process = function (txt, options, markup) {
+      var self = this;
+      var raw_text_chunks = txt.split(/\033\[/);
+      var first_chunk = raw_text_chunks.shift(); // the first chunk is not the result of the split
+
+      var color_chunks = raw_text_chunks.map(function (chunk) {
+        return self.process_chunk(chunk, options, markup);
+      });
+
+      color_chunks.unshift(first_chunk);
+
+      return color_chunks.join('');
+    };
+
+    Ansi_Up.prototype.process_chunk = function (text, options, markup) {
+
+      // Are we using classes or styles?
+      options = typeof options == 'undefined' ? {} : options;
+      var use_classes = typeof options.use_classes != 'undefined' && options.use_classes;
+      var key = use_classes ? 'class' : 'color';
+
+      // Each 'chunk' is the text after the CSI (ESC + '[') and before the next CSI/EOF.
+      //
+      // This regex matches four groups within a chunk.
+      //
+      // The first and third groups match code type.
+      // We supported only SGR command. It has empty first group and 'm' in third.
+      //
+      // The second group matches all of the number+semicolon command sequences
+      // before the 'm' (or other trailing) character.
+      // These are the graphics or SGR commands.
+      //
+      // The last group is the text (including newlines) that is colored by
+      // the other group's commands.
+      var matches = text.match(/^([!\x3c-\x3f]*)([\d;]*)([\x20-\x2c]*[\x40-\x7e])([\s\S]*)/m);
+
+      if (!matches) return text;
+
+      var orig_txt = matches[4];
+      var nums = matches[2].split(';');
+
+      // We currently support only "SGR" (Select Graphic Rendition)
+      // Simply ignore if not a SGR command.
+      if (matches[1] !== '' || matches[3] !== 'm') {
+        return orig_txt;
+      }
+
+      if (!markup) {
+        return orig_txt;
+      }
+
+      var self = this;
+
+      while (nums.length > 0) {
+        var num_str = nums.shift();
+        var num = parseInt(num_str);
+
+        if (isNaN(num) || num === 0) {
+          self.fg = self.bg = null;
+          self.bright = 0;
+        } else if (num === 1) {
+          self.bright = 1;
+        } else if (num == 39) {
+          self.fg = null;
+        } else if (num == 49) {
+          self.bg = null;
+        } else if ((num >= 30) && (num < 38)) {
+          self.fg = ANSI_COLORS[self.bright][(num % 10)][key];
+        } else if ((num >= 90) && (num < 98)) {
+          self.fg = ANSI_COLORS[1][(num % 10)][key];
+        } else if ((num >= 40) && (num < 48)) {
+          self.bg = ANSI_COLORS[0][(num % 10)][key];
+        } else if ((num >= 100) && (num < 108)) {
+          self.bg = ANSI_COLORS[1][(num % 10)][key];
+        } else if (num === 38 || num === 48) { // extend color (38=fg, 48=bg)
+          (function() {
+            var is_foreground = (num === 38);
+            if (nums.length >= 1) {
+              var mode = nums.shift();
+              if (mode === '5' && nums.length >= 1) { // palette color
+                var palette_index = parseInt(nums.shift());
+                if (palette_index >= 0 && palette_index <= 255) {
+                  if (!use_classes) {
+                    if (!PALETTE_COLORS) {
+                      self.setup_palette.call(self);
+                    }
+                    if (is_foreground) {
+                      self.fg = PALETTE_COLORS[palette_index];
+                    } else {
+                      self.bg = PALETTE_COLORS[palette_index];
+                    }
+                  } else {
+                    var klass = (palette_index >= 16)
+                          ? ('ansi-palette-' + palette_index)
+                          : ANSI_COLORS[palette_index > 7 ? 1 : 0][palette_index % 8]['class'];
+                    if (is_foreground) {
+                      self.fg = klass;
+                    } else {
+                      self.bg = klass;
+                    }
+                  }
+                }
+              } else if(mode === '2' && nums.length >= 3) { // true color
+                var r = parseInt(nums.shift());
+                var g = parseInt(nums.shift());
+                var b = parseInt(nums.shift());
+                if ((r >= 0 && r <= 255) && (g >= 0 && g <= 255) && (b >= 0 && b <= 255)) {
+                  var color = r + ', ' + g + ', ' + b;
+                  if (!use_classes) {
+                    if (is_foreground) {
+                      self.fg = color;
+                    } else {
+                      self.bg = color;
+                    }
+                  } else {
+                    if (is_foreground) {
+                      self.fg = 'ansi-truecolor';
+                      self.fg_truecolor = color;
+                    } else {
+                      self.bg = 'ansi-truecolor';
+                      self.bg_truecolor = color;
+                    }
+                  }
+                }
+              }
+            }
+          })();
+        }
+      }
+
+      if ((self.fg === null) && (self.bg === null)) {
+        return orig_txt;
+      } else {
+        var styles = [];
+        var classes = [];
+        var data = {};
+        var render_data = function (data) {
+          var fragments = [];
+          var key;
+          for (key in data) {
+            if (data.hasOwnProperty(key)) {
+              fragments.push('data-' + key + '="' + this.escape_for_html(data[key]) + '"');
+            }
+          }
+          return fragments.length > 0 ? ' ' + fragments.join(' ') : '';
+        };
+
+        if (self.fg) {
+          if (use_classes) {
+            classes.push(self.fg + "-fg");
+            if (self.fg_truecolor !== null) {
+              data['ansi-truecolor-fg'] = self.fg_truecolor;
+              self.fg_truecolor = null;
+            }
+          } else {
+            styles.push("color:rgb(" + self.fg + ")");
+          }
+        }
+        if (self.bg) {
+          if (use_classes) {
+            classes.push(self.bg + "-bg");
+            if (self.bg_truecolor !== null) {
+              data['ansi-truecolor-bg'] = self.bg_truecolor;
+              self.bg_truecolor = null;
+            }
+          } else {
+            styles.push("background-color:rgb(" + self.bg + ")");
+          }
+        }
+        if (use_classes) {
+          return '<span class="' + classes.join(' ') + '"' + render_data.call(self, data) + '>' + orig_txt + '</span>';
+        } else {
+          return '<span style="' + styles.join(';') + '"' + render_data.call(self, data) + '>' + orig_txt + '</span>';
+        }
+      }
+    };
+
+    // Module exports
+    ansi_up = {
+
+      escape_for_html: function (txt) {
+        var a2h = new Ansi_Up();
+        return a2h.escape_for_html(txt);
+      },
+
+      linkify: function (txt) {
+        var a2h = new Ansi_Up();
+        return a2h.linkify(txt);
+      },
+
+      ansi_to_html: function (txt, options) {
+        var a2h = new Ansi_Up();
+        return a2h.ansi_to_html(txt, options);
+      },
+
+      ansi_to_text: function (txt) {
+        var a2h = new Ansi_Up();
+        return a2h.ansi_to_text(txt);
+      },
+
+      ansi_to_html_obj: function () {
+        return new Ansi_Up();
+      }
+    };
+
+    // CommonJS module is defined
+    if (hasModule) {
+        module.exports = ansi_up;
+    }
+    /*global ender:false */
+    if (typeof window !== 'undefined' && typeof ender === 'undefined') {
+        window.ansi_up = ansi_up;
+    }
+    /*global define:false */
+    if (typeof define === "function" && define.amd) {
+        define("ansi_up", [], function () {
+            return ansi_up;
+        });
+    }
+})(Date);
+
+/*
+ * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
+ * Digest Algorithm, as defined in RFC 1321.
+ * Version 2.2 Copyright (C) Paul Johnston 1999 - 2009
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ * Distributed under the BSD License
+ * See http://pajhome.org.uk/crypt/md5 for more info.
+ */
+angular.module('md5', []).factory('md5', function() {
+
+  /*
+   * Configurable variables. You may need to tweak these to be compatible with
+   * the server-side, but the defaults work in most cases.
+   */
+  var hexcase = 0;   /* hex output format. 0 - lowercase; 1 - uppercase        */
+  var b64pad  = "";  /* base-64 pad character. "=" for strict RFC compliance   */
+
+  /*
+   * These are the functions you'll usually want to call
+   * They take string arguments and return either hex or base-64 encoded strings
+   */
+  function hex_md5(s)    { return rstr2hex(rstr_md5(str2rstr_utf8(s))); }
+  function b64_md5(s)    { return rstr2b64(rstr_md5(str2rstr_utf8(s))); }
+  function any_md5(s, e) { return rstr2any(rstr_md5(str2rstr_utf8(s)), e); }
+  function hex_hmac_md5(k, d)
+    { return rstr2hex(rstr_hmac_md5(str2rstr_utf8(k), str2rstr_utf8(d))); }
+  function b64_hmac_md5(k, d)
+    { return rstr2b64(rstr_hmac_md5(str2rstr_utf8(k), str2rstr_utf8(d))); }
+  function any_hmac_md5(k, d, e)
+    { return rstr2any(rstr_hmac_md5(str2rstr_utf8(k), str2rstr_utf8(d)), e); }
+
+  /*
+   * Perform a simple self-test to see if the VM is working
+   */
+  function md5_vm_test()
+  {
+    return hex_md5("abc").toLowerCase() == "900150983cd24fb0d6963f7d28e17f72";
+  }
+
+  /*
+   * Calculate the MD5 of a raw string
+   */
+  function rstr_md5(s)
+  {
+    return binl2rstr(binl_md5(rstr2binl(s), s.length * 8));
+  }
+
+  /*
+   * Calculate the HMAC-MD5, of a key and some data (raw strings)
+   */
+  function rstr_hmac_md5(key, data)
+  {
+    var bkey = rstr2binl(key);
+    if(bkey.length > 16) bkey = binl_md5(bkey, key.length * 8);
+
+    var ipad = Array(16), opad = Array(16);
+    for(var i = 0; i < 16; i++)
+    {
+      ipad[i] = bkey[i] ^ 0x36363636;
+      opad[i] = bkey[i] ^ 0x5C5C5C5C;
+    }
+
+    var hash = binl_md5(ipad.concat(rstr2binl(data)), 512 + data.length * 8);
+    return binl2rstr(binl_md5(opad.concat(hash), 512 + 128));
+  }
+
+  /*
+   * Convert a raw string to a hex string
+   */
+  function rstr2hex(input)
+  {
+    try { hexcase } catch(e) { hexcase=0; }
+    var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
+    var output = "";
+    var x;
+    for(var i = 0; i < input.length; i++)
+    {
+      x = input.charCodeAt(i);
+      output += hex_tab.charAt((x >>> 4) & 0x0F)
+             +  hex_tab.charAt( x        & 0x0F);
+    }
+    return output;
+  }
+
+  /*
+   * Convert a raw string to a base-64 string
+   */
+  function rstr2b64(input)
+  {
+    try { b64pad } catch(e) { b64pad=''; }
+    var tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    var output = "";
+    var len = input.length;
+    for(var i = 0; i < len; i += 3)
+    {
+      var triplet = (input.charCodeAt(i) << 16)
+                  | (i + 1 < len ? input.charCodeAt(i+1) << 8 : 0)
+                  | (i + 2 < len ? input.charCodeAt(i+2)      : 0);
+      for(var j = 0; j < 4; j++)
+      {
+        if(i * 8 + j * 6 > input.length * 8) output += b64pad;
+        else output += tab.charAt((triplet >>> 6*(3-j)) & 0x3F);
+      }
+    }
+    return output;
+  }
+
+  /*
+   * Convert a raw string to an arbitrary string encoding
+   */
+  function rstr2any(input, encoding)
+  {
+    var divisor = encoding.length;
+    var i, j, q, x, quotient;
+
+    /* Convert to an array of 16-bit big-endian values, forming the dividend */
+    var dividend = Array(Math.ceil(input.length / 2));
+    for(i = 0; i < dividend.length; i++)
+    {
+      dividend[i] = (input.charCodeAt(i * 2) << 8) | input.charCodeAt(i * 2 + 1);
+    }
+
+    /*
+     * Repeatedly perform a long division. The binary array forms the dividend,
+     * the length of the encoding is the divisor. Once computed, the quotient
+     * forms the dividend for the next step. All remainders are stored for later
+     * use.
+     */
+    var full_length = Math.ceil(input.length * 8 /
+                                      (Math.log(encoding.length) / Math.log(2)));
+    var remainders = Array(full_length);
+    for(j = 0; j < full_length; j++)
+    {
+      quotient = Array();
+      x = 0;
+      for(i = 0; i < dividend.length; i++)
+      {
+        x = (x << 16) + dividend[i];
+        q = Math.floor(x / divisor);
+        x -= q * divisor;
+        if(quotient.length > 0 || q > 0)
+          quotient[quotient.length] = q;
+      }
+      remainders[j] = x;
+      dividend = quotient;
+    }
+
+    /* Convert the remainders to the output string */
+    var output = "";
+    for(i = remainders.length - 1; i >= 0; i--)
+      output += encoding.charAt(remainders[i]);
+
+    return output;
+  }
+
+  /*
+   * Encode a string as utf-8.
+   * For efficiency, this assumes the input is valid utf-16.
+   */
+  function str2rstr_utf8(input)
+  {
+    var output = "";
+    var i = -1;
+    var x, y;
+
+    while(++i < input.length)
+    {
+      /* Decode utf-16 surrogate pairs */
+      x = input.charCodeAt(i);
+      y = i + 1 < input.length ? input.charCodeAt(i + 1) : 0;
+      if(0xD800 <= x && x <= 0xDBFF && 0xDC00 <= y && y <= 0xDFFF)
+      {
+        x = 0x10000 + ((x & 0x03FF) << 10) + (y & 0x03FF);
+        i++;
+      }
+
+      /* Encode output as utf-8 */
+      if(x <= 0x7F)
+        output += String.fromCharCode(x);
+      else if(x <= 0x7FF)
+        output += String.fromCharCode(0xC0 | ((x >>> 6 ) & 0x1F),
+                                      0x80 | ( x         & 0x3F));
+      else if(x <= 0xFFFF)
+        output += String.fromCharCode(0xE0 | ((x >>> 12) & 0x0F),
+                                      0x80 | ((x >>> 6 ) & 0x3F),
+                                      0x80 | ( x         & 0x3F));
+      else if(x <= 0x1FFFFF)
+        output += String.fromCharCode(0xF0 | ((x >>> 18) & 0x07),
+                                      0x80 | ((x >>> 12) & 0x3F),
+                                      0x80 | ((x >>> 6 ) & 0x3F),
+                                      0x80 | ( x         & 0x3F));
+    }
+    return output;
+  }
+
+  /*
+   * Encode a string as utf-16
+   */
+  function str2rstr_utf16le(input)
+  {
+    var output = "";
+    for(var i = 0; i < input.length; i++)
+      output += String.fromCharCode( input.charCodeAt(i)        & 0xFF,
+                                    (input.charCodeAt(i) >>> 8) & 0xFF);
+    return output;
+  }
+
+  function str2rstr_utf16be(input)
+  {
+    var output = "";
+    for(var i = 0; i < input.length; i++)
+      output += String.fromCharCode((input.charCodeAt(i) >>> 8) & 0xFF,
+                                     input.charCodeAt(i)        & 0xFF);
+    return output;
+  }
+
+  /*
+   * Convert a raw string to an array of little-endian words
+   * Characters >255 have their high-byte silently ignored.
+   */
+  function rstr2binl(input)
+  {
+    var output = Array(input.length >> 2);
+    for(var i = 0; i < output.length; i++)
+      output[i] = 0;
+    for(var i = 0; i < input.length * 8; i += 8)
+      output[i>>5] |= (input.charCodeAt(i / 8) & 0xFF) << (i%32);
+    return output;
+  }
+
+  /*
+   * Convert an array of little-endian words to a string
+   */
+  function binl2rstr(input)
+  {
+    var output = "";
+    for(var i = 0; i < input.length * 32; i += 8)
+      output += String.fromCharCode((input[i>>5] >>> (i % 32)) & 0xFF);
+    return output;
+  }
+
+  /*
+   * Calculate the MD5 of an array of little-endian words, and a bit length.
+   */
+  function binl_md5(x, len)
+  {
+    /* append padding */
+    x[len >> 5] |= 0x80 << ((len) % 32);
+    x[(((len + 64) >>> 9) << 4) + 14] = len;
+
+    var a =  1732584193;
+    var b = -271733879;
+    var c = -1732584194;
+    var d =  271733878;
+
+    for(var i = 0; i < x.length; i += 16)
+    {
+      var olda = a;
+      var oldb = b;
+      var oldc = c;
+      var oldd = d;
+
+      a = md5_ff(a, b, c, d, x[i+ 0], 7 , -680876936);
+      d = md5_ff(d, a, b, c, x[i+ 1], 12, -389564586);
+      c = md5_ff(c, d, a, b, x[i+ 2], 17,  606105819);
+      b = md5_ff(b, c, d, a, x[i+ 3], 22, -1044525330);
+      a = md5_ff(a, b, c, d, x[i+ 4], 7 , -176418897);
+      d = md5_ff(d, a, b, c, x[i+ 5], 12,  1200080426);
+      c = md5_ff(c, d, a, b, x[i+ 6], 17, -1473231341);
+      b = md5_ff(b, c, d, a, x[i+ 7], 22, -45705983);
+      a = md5_ff(a, b, c, d, x[i+ 8], 7 ,  1770035416);
+      d = md5_ff(d, a, b, c, x[i+ 9], 12, -1958414417);
+      c = md5_ff(c, d, a, b, x[i+10], 17, -42063);
+      b = md5_ff(b, c, d, a, x[i+11], 22, -1990404162);
+      a = md5_ff(a, b, c, d, x[i+12], 7 ,  1804603682);
+      d = md5_ff(d, a, b, c, x[i+13], 12, -40341101);
+      c = md5_ff(c, d, a, b, x[i+14], 17, -1502002290);
+      b = md5_ff(b, c, d, a, x[i+15], 22,  1236535329);
+
+      a = md5_gg(a, b, c, d, x[i+ 1], 5 , -165796510);
+      d = md5_gg(d, a, b, c, x[i+ 6], 9 , -1069501632);
+      c = md5_gg(c, d, a, b, x[i+11], 14,  643717713);
+      b = md5_gg(b, c, d, a, x[i+ 0], 20, -373897302);
+      a = md5_gg(a, b, c, d, x[i+ 5], 5 , -701558691);
+      d = md5_gg(d, a, b, c, x[i+10], 9 ,  38016083);
+      c = md5_gg(c, d, a, b, x[i+15], 14, -660478335);
+      b = md5_gg(b, c, d, a, x[i+ 4], 20, -405537848);
+      a = md5_gg(a, b, c, d, x[i+ 9], 5 ,  568446438);
+      d = md5_gg(d, a, b, c, x[i+14], 9 , -1019803690);
+      c = md5_gg(c, d, a, b, x[i+ 3], 14, -187363961);
+      b = md5_gg(b, c, d, a, x[i+ 8], 20,  1163531501);
+      a = md5_gg(a, b, c, d, x[i+13], 5 , -1444681467);
+      d = md5_gg(d, a, b, c, x[i+ 2], 9 , -51403784);
+      c = md5_gg(c, d, a, b, x[i+ 7], 14,  1735328473);
+      b = md5_gg(b, c, d, a, x[i+12], 20, -1926607734);
+
+      a = md5_hh(a, b, c, d, x[i+ 5], 4 , -378558);
+      d = md5_hh(d, a, b, c, x[i+ 8], 11, -2022574463);
+      c = md5_hh(c, d, a, b, x[i+11], 16,  1839030562);
+      b = md5_hh(b, c, d, a, x[i+14], 23, -35309556);
+      a = md5_hh(a, b, c, d, x[i+ 1], 4 , -1530992060);
+      d = md5_hh(d, a, b, c, x[i+ 4], 11,  1272893353);
+      c = md5_hh(c, d, a, b, x[i+ 7], 16, -155497632);
+      b = md5_hh(b, c, d, a, x[i+10], 23, -1094730640);
+      a = md5_hh(a, b, c, d, x[i+13], 4 ,  681279174);
+      d = md5_hh(d, a, b, c, x[i+ 0], 11, -358537222);
+      c = md5_hh(c, d, a, b, x[i+ 3], 16, -722521979);
+      b = md5_hh(b, c, d, a, x[i+ 6], 23,  76029189);
+      a = md5_hh(a, b, c, d, x[i+ 9], 4 , -640364487);
+      d = md5_hh(d, a, b, c, x[i+12], 11, -421815835);
+      c = md5_hh(c, d, a, b, x[i+15], 16,  530742520);
+      b = md5_hh(b, c, d, a, x[i+ 2], 23, -995338651);
+
+      a = md5_ii(a, b, c, d, x[i+ 0], 6 , -198630844);
+      d = md5_ii(d, a, b, c, x[i+ 7], 10,  1126891415);
+      c = md5_ii(c, d, a, b, x[i+14], 15, -1416354905);
+      b = md5_ii(b, c, d, a, x[i+ 5], 21, -57434055);
+      a = md5_ii(a, b, c, d, x[i+12], 6 ,  1700485571);
+      d = md5_ii(d, a, b, c, x[i+ 3], 10, -1894986606);
+      c = md5_ii(c, d, a, b, x[i+10], 15, -1051523);
+      b = md5_ii(b, c, d, a, x[i+ 1], 21, -2054922799);
+      a = md5_ii(a, b, c, d, x[i+ 8], 6 ,  1873313359);
+      d = md5_ii(d, a, b, c, x[i+15], 10, -30611744);
+      c = md5_ii(c, d, a, b, x[i+ 6], 15, -1560198380);
+      b = md5_ii(b, c, d, a, x[i+13], 21,  1309151649);
+      a = md5_ii(a, b, c, d, x[i+ 4], 6 , -145523070);
+      d = md5_ii(d, a, b, c, x[i+11], 10, -1120210379);
+      c = md5_ii(c, d, a, b, x[i+ 2], 15,  718787259);
+      b = md5_ii(b, c, d, a, x[i+ 9], 21, -343485551);
+
+      a = safe_add(a, olda);
+      b = safe_add(b, oldb);
+      c = safe_add(c, oldc);
+      d = safe_add(d, oldd);
+    }
+    return Array(a, b, c, d);
+  }
+
+  /*
+   * These functions implement the four basic operations the algorithm uses.
+   */
+  function md5_cmn(q, a, b, x, s, t)
+  {
+    return safe_add(bit_rol(safe_add(safe_add(a, q), safe_add(x, t)), s),b);
+  }
+  function md5_ff(a, b, c, d, x, s, t)
+  {
+    return md5_cmn((b & c) | ((~b) & d), a, b, x, s, t);
+  }
+  function md5_gg(a, b, c, d, x, s, t)
+  {
+    return md5_cmn((b & d) | (c & (~d)), a, b, x, s, t);
+  }
+  function md5_hh(a, b, c, d, x, s, t)
+  {
+    return md5_cmn(b ^ c ^ d, a, b, x, s, t);
+  }
+  function md5_ii(a, b, c, d, x, s, t)
+  {
+    return md5_cmn(c ^ (b | (~d)), a, b, x, s, t);
+  }
+
+  /*
+   * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+   * to work around bugs in some JS interpreters.
+   */
+  function safe_add(x, y)
+  {
+    var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+    var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+    return (msw << 16) | (lsw & 0xFFFF);
+  }
+
+  /*
+   * Bitwise rotate a 32-bit number to the left.
+   */
+  function bit_rol(num, cnt)
+  {
+    return (num << cnt) | (num >>> (32 - cnt));
+  }
+
+  return hex_md5;
+});
+
+(function() {
+  var gravatarDirectiveFactory;
+
+  gravatarDirectiveFactory = function(bindOnce) {
+    return [
+      'gravatarService', function(gravatarService) {
+        var filterKeys;
+        filterKeys = function(prefix, object) {
+          var k, retVal, v;
+          retVal = {};
+          for (k in object) {
+            v = object[k];
+            if (k.indexOf(prefix) !== 0) {
+              continue;
+            }
+            k = k.substr(prefix.length).toLowerCase();
+            if (k.length > 0) {
+              retVal[k] = v;
+            }
+          }
+          return retVal;
+        };
+        return {
+          restrict: 'A',
+          link: function(scope, element, attrs) {
+            var directiveName, item, opts, unbind;
+            directiveName = bindOnce ? 'gravatarSrcOnce' : 'gravatarSrc';
+            item = attrs[directiveName];
+            delete attrs[directiveName];
+            opts = filterKeys('gravatar', attrs);
+            unbind = scope.$watch(item, function(newVal) {
+              if (bindOnce) {
+                if (newVal == null) {
+                  return;
+                }
+                unbind();
+              }
+              element.attr('src', gravatarService.url(newVal, opts));
+            });
+          }
+        };
+      }
+    ];
+  };
+
+  angular.module('ui.gravatar', ['md5']).provider('gravatarService', function() {
+    var hashRegex, self, serialize;
+    self = this;
+    hashRegex = /^[0-9a-f]{32}$/i;
+    serialize = function(object) {
+      var k, params, v;
+      params = [];
+      for (k in object) {
+        v = object[k];
+        params.push("" + k + "=" + (encodeURIComponent(v)));
+      }
+      return params.join('&');
+    };
+    this.defaults = {};
+    this.secure = false;
+    this.protocol = null;
+    this.$get = [
+      'md5', function(md5) {
+        return {
+          url: function(src, opts) {
+            var params, pieces, prefix, urlBase;
+            if (src == null) {
+              src = '';
+            }
+            if (opts == null) {
+              opts = {};
+            }
+            opts = angular.extend(angular.copy(self.defaults), opts);
+            prefix = self.protocol ? self.protocol + ':' : '';
+            urlBase = self.secure ? 'https://secure' : prefix + '//www';
+            src = hashRegex.test(src) ? src : md5(src);
+            pieces = [urlBase, '.gravatar.com/avatar/', src];
+            params = serialize(opts);
+            if (params.length > 0) {
+              pieces.push('?' + params);
+            }
+            return pieces.join('');
+          }
+        };
+      }
+    ];
+    return this;
+  }).directive('gravatarSrc', gravatarDirectiveFactory()).directive('gravatarSrcOnce', gravatarDirectiveFactory(true));
+
+}).call(this);
+
+/**!
+ * AngularJS file upload/drop directive and service with progress and abort
+ * @author  Danial  <danial.farid@gmail.com>
+ * @version 7.0.12
+ */
+
+if (window.XMLHttpRequest && !(window.FileAPI && FileAPI.shouldLoad)) {
+  window.XMLHttpRequest.prototype.setRequestHeader = (function (orig) {
+    return function (header, value) {
+      if (header === '__setXHR_') {
+        var val = value(this);
+        // fix for angular < 1.2.0
+        if (val instanceof Function) {
+          val(this);
+        }
+      } else {
+        orig.apply(this, arguments);
+      }
+    };
+  })(window.XMLHttpRequest.prototype.setRequestHeader);
+}
+
+var ngFileUpload = angular.module('ngFileUpload', []);
+
+ngFileUpload.version = '7.0.12';
+
+ngFileUpload.service('UploadBase', ['$http', '$q', '$timeout', function ($http, $q, $timeout) {
+  function sendHttp(config) {
+    config.method = config.method || 'POST';
+    config.headers = config.headers || {};
+
+    var deferred = $q.defer();
+    var promise = deferred.promise;
+
+    config.headers.__setXHR_ = function () {
+      return function (xhr) {
+        if (!xhr) return;
+        config.__XHR = xhr;
+        if (config.xhrFn) config.xhrFn(xhr);
+        xhr.upload.addEventListener('progress', function (e) {
+          e.config = config;
+          if (deferred.notify) {
+            deferred.notify(e);
+          } else if (promise.progressFunc) {
+            $timeout(function () {
+              promise.progressFunc(e);
+            });
+          }
+        }, false);
+        //fix for firefox not firing upload progress end, also IE8-9
+        xhr.upload.addEventListener('load', function (e) {
+          if (e.lengthComputable) {
+            e.config = config;
+            if (deferred.notify) {
+              deferred.notify(e);
+            } else if (promise.progressFunc) {
+              $timeout(function () {
+                promise.progressFunc(e);
+              });
+            }
+          }
+        }, false);
+      };
+    };
+
+    $http(config).then(function (r) {
+      deferred.resolve(r);
+    }, function (e) {
+      deferred.reject(e);
+    }, function (n) {
+      deferred.notify(n);
+    });
+
+    promise.success = function (fn) {
+      promise.then(function (response) {
+        fn(response.data, response.status, response.headers, config);
+      });
+      return promise;
+    };
+
+    promise.error = function (fn) {
+      promise.then(null, function (response) {
+        fn(response.data, response.status, response.headers, config);
+      });
+      return promise;
+    };
+
+    promise.progress = function (fn) {
+      promise.progressFunc = fn;
+      promise.then(null, null, function (update) {
+        fn(update);
+      });
+      return promise;
+    };
+    promise.abort = function () {
+      if (config.__XHR) {
+        $timeout(function () {
+          config.__XHR.abort();
+        });
+      }
+      return promise;
+    };
+    promise.xhr = function (fn) {
+      config.xhrFn = (function (origXhrFn) {
+        return function () {
+          if (origXhrFn) origXhrFn.apply(promise, arguments);
+          fn.apply(promise, arguments);
+        };
+      })(config.xhrFn);
+      return promise;
+    };
+
+    return promise;
+  }
+
+  this.upload = function (config) {
+    function addFieldToFormData(formData, val, key) {
+      if (val !== undefined) {
+        if (angular.isDate(val)) {
+          val = val.toISOString();
+        }
+        if (angular.isString(val)) {
+          formData.append(key, val);
+        } else if (config.sendFieldsAs === 'form') {
+          if (angular.isObject(val)) {
+            for (var k in val) {
+              if (val.hasOwnProperty(k)) {
+                addFieldToFormData(formData, val[k], key + '[' + k + ']');
+              }
+            }
+          } else {
+            formData.append(key, val);
+          }
+        } else {
+          val = angular.isString(val) ? val : angular.toJson(val);
+          if (config.sendFieldsAs === 'json-blob') {
+            formData.append(key, new Blob([val], {type: 'application/json'}));
+          } else {
+            formData.append(key, val);
+          }
+        }
+      }
+    }
+
+    config.headers = config.headers || {};
+    config.headers['Content-Type'] = undefined;
+    config.transformRequest = config.transformRequest ?
+      (angular.isArray(config.transformRequest) ?
+        config.transformRequest : [config.transformRequest]) : [];
+    config.transformRequest.push(function (data) {
+      var formData = new FormData();
+      var allFields = {};
+      var key;
+      for (key in config.fields) {
+        if (config.fields.hasOwnProperty(key)) {
+          allFields[key] = config.fields[key];
+        }
+      }
+      if (data) allFields.data = data;
+      for (key in allFields) {
+        if (allFields.hasOwnProperty(key)) {
+          var val = allFields[key];
+          if (config.formDataAppender) {
+            config.formDataAppender(formData, key, val);
+          } else {
+            addFieldToFormData(formData, val, key);
+          }
+        }
+      }
+
+      if (config.file != null) {
+        var fileFormName = config.fileFormDataName || 'file';
+
+        if (angular.isArray(config.file)) {
+          var isFileFormNameString = angular.isString(fileFormName);
+          for (var i = 0; i < config.file.length; i++) {
+            formData.append(isFileFormNameString ? fileFormName : fileFormName[i], config.file[i],
+              (config.fileName && config.fileName[i]) || config.file[i].name);
+          }
+        } else {
+          formData.append(fileFormName, config.file, config.fileName || config.file.name);
+        }
+      }
+      return formData;
+    });
+
+    return sendHttp(config);
+  };
+
+  this.http = function (config) {
+    config.transformRequest = config.transformRequest || function (data) {
+        if ((window.ArrayBuffer && data instanceof window.ArrayBuffer) || data instanceof Blob) {
+          return data;
+        }
+        return $http.defaults.transformRequest[0](arguments);
+      };
+    return sendHttp(config);
+  };
+
+  this.setDefaults = function(defaults) {
+    this.defaults = defaults || {};
+  };
+
+  this.defaults = {};
+  this.version = ngFileUpload.version;
+}
+
+]);
+
+(function () {
+
+  ngFileUpload.service('Upload', ['$parse', '$timeout', '$compile', 'UploadValidate',
+    function ($parse, $timeout, $compile, UploadValidate) {
+      var upload = UploadValidate;
+      upload.getAttrWithDefaults = function (attr, name) {
+        return attr[name] != null ? attr[name] :
+          (upload.defaults[name] == null ?
+            upload.defaults[name] : upload.defaults[name].toString());
+      };
+
+      upload.attrGetter = function (name, attr, scope, params) {
+        if (scope) {
+          try {
+            if (params) {
+              return $parse(this.getAttrWithDefaults(attr, name))(scope, params);
+            } else {
+              return $parse(this.getAttrWithDefaults(attr, name))(scope);
+            }
+          } catch (e) {
+            // hangle string value without single qoute
+            if (name.search(/min|max|pattern/i)) {
+              return this.getAttrWithDefaults(attr, name);
+            } else {
+              throw e;
+            }
+          }
+        } else {
+          return this.getAttrWithDefaults(attr, name);
+        }
+      };
+
+      upload.updateModel = function (ngModel, attr, scope, fileChange, files, evt, noDelay) {
+        function update() {
+          var keep = upload.attrGetter('ngfKeep', attr, scope);
+          if (keep === true) {
+            if (!files || !files.length) {
+              return;
+            } else {
+              var prevFiles = ((ngModel && ngModel.$modelValue) || attr.$$ngfPrevFiles || []).slice(0),
+                hasNew = false;
+              if (upload.attrGetter('ngfKeepDistinct', attr, scope) === true) {
+                var len = prevFiles.length;
+                for (var i = 0; i < files.length; i++) {
+                  for (var j = 0; j < len; j++) {
+                    if (files[i].name === prevFiles[j].name) break;
+                  }
+                  if (j === len) {
+                    prevFiles.push(files[i]);
+                    hasNew = true;
+                  }
+                }
+                if (!hasNew) return;
+                files = prevFiles;
+              } else {
+                files = prevFiles.concat(files);
+              }
+            }
+          }
+
+          attr.$$ngfPrevFiles = files;
+          var file = files && files.length ? files[0] : null;
+          if (ngModel) {
+            var singleModel = !upload.attrGetter('ngfMultiple', attr, scope) && !upload.attrGetter('multiple', attr) && !keep;
+            $parse(upload.attrGetter('ngModel', attr)).assign(scope, singleModel ? file : files);
+          }
+          var ngfModel = upload.attrGetter('ngfModel', attr);
+          if (ngfModel) {
+            $parse(ngfModel).assign(scope, files);
+          }
+
+          if (fileChange) {
+            $parse(fileChange)(scope, {
+              $files: files,
+              $file: file,
+              $event: evt
+            });
+          }
+        }
+
+        if (noDelay) {
+          update();
+        } else if (upload.validate(files, ngModel, attr, scope, upload.attrGetter('ngfValidateLater', attr), function () {
+            if (upload.attrGetter('ngfResize', attr, scope)) {
+              var img = angular.element('<img>');
+              img.attr('src', files[0].dataUrl || files[0].blobUrl);
+              img.bind('load', function() {
+                upload.resize(img[0], 100, 100).then(function(rimg) {
+                  console.log(rimg);
+                  document.body.appendChild(rimg);
+                });
+              });
+              document.body.appendChild(img[0]);
+            }
+
+            $timeout(function () {
+              update();
+            });
+          }));
+      };
+
+      return upload;
+    }]);
+})();
+
+(function () {
+
+  ngFileUpload.directive('ngfSelect', ['$parse', '$timeout', '$compile', 'Upload',
+    function ($parse, $timeout, $compile, Upload) {
+      return {
+        restrict: 'AEC',
+        require: '?ngModel',
+        link: function (scope, elem, attr, ngModel) {
+          linkFileSelect(scope, elem, attr, ngModel, $parse, $timeout, $compile, Upload);
+        }
+      };
+    }]);
+
+  function linkFileSelect(scope, elem, attr, ngModel, $parse, $timeout, $compile, upload) {
+    /** @namespace attr.ngfSelect */
+    /** @namespace attr.ngfChange */
+    /** @namespace attr.ngModel */
+    /** @namespace attr.ngfModel */
+    /** @namespace attr.ngfMultiple */
+    /** @namespace attr.ngfCapture */
+    /** @namespace attr.ngfValidate */
+    /** @namespace attr.ngfKeep */
+    /** @namespace attr.ngfKeepDistinct */
+    var attrGetter = function (name, scope) {
+      return upload.attrGetter(name, attr, scope);
+    };
+
+    upload.registerValidators(ngModel, attr, scope);
+
+    function isInputTypeFile() {
+      return elem[0].tagName.toLowerCase() === 'input' && attr.type && attr.type.toLowerCase() === 'file';
+    }
+
+    function fileChangeAttr() {
+      return attrGetter('ngfChange') || attrGetter('ngfSelect');
+    }
+
+    function changeFn(evt) {
+      var fileList = evt.__files_ || (evt.target && evt.target.files), files = [];
+      for (var i = 0; i < fileList.length; i++) {
+        files.push(fileList[i]);
+      }
+      upload.updateModel(ngModel, attr, scope, fileChangeAttr(), files.length ? files : null, evt);
+    }
+
+    scope.$watch(attrGetter('ngfMultiple'), function() {
+      fileElem.attr('multiple', attrGetter('ngfMultiple', scope));
+    });
+    scope.$watch(attrGetter('ngfCapture'), function() {
+      fileElem.attr('capture', attrGetter('ngfCapture', scope));
+    });
+    attr.$observe('accept', function() {
+      fileElem.attr('accept', attrGetter('accept'));
+    });
+    function bindAttrToFileInput(fileElem) {
+      if (elem !== fileElem) {
+        for (var i = 0; i < elem[0].attributes.length; i++) {
+          var attribute = elem[0].attributes[i];
+          if (attribute.name !== 'type' && attribute.name !== 'class' &&
+            attribute.name !== 'id' && attribute.name !== 'style') {
+            if (attribute.value == null || attribute.value === '') {
+              if (attribute.name === 'required') attribute.value = 'required';
+              if (attribute.name === 'multiple') attribute.value = 'multiple';
+            }
+            fileElem.attr(attribute.name, attribute.value);
+          }
+        }
+      }
+    }
+
+    function createFileInput() {
+      if (isInputTypeFile()) {
+        return elem;
+      }
+
+      var fileElem = angular.element('<input type="file">');
+      bindAttrToFileInput(fileElem);
+
+      fileElem.css('visibility', 'hidden').css('position', 'absolute').css('overflow', 'hidden')
+        .css('width', '0px').css('height', '0px').css('border', 'none')
+        .css('margin', '0px').css('padding', '0px').attr('tabindex', '-1');
+      document.body.appendChild(fileElem[0]);
+
+      return fileElem;
+    }
+
+    var initialTouchStartY = 0;
+
+    function clickHandler(evt) {
+      if (elem.attr('disabled') || attrGetter('ngfSelectDisabled', scope)) return false;
+
+      var r = handleTouch(evt);
+      if (r != null) return r;
+
+      resetModel(evt);
+
+      // fix for android native browser < 4.4
+      if (shouldClickLater(navigator.userAgent)) {
+        setTimeout(function () {
+          fileElem[0].click();
+        }, 0);
+      } else {
+        fileElem[0].click();
+      }
+
+      return false;
+    }
+
+    function handleTouch(evt) {
+      var touches = evt.changedTouches || (evt.originalEvent && evt.originalEvent.changedTouches);
+      if (evt.type === 'touchstart') {
+        initialTouchStartY = touches ? touches[0].clientY : 0;
+        return true; // don't block event default
+      } else {
+        evt.stopPropagation();
+        evt.preventDefault();
+
+        // prevent scroll from triggering event
+        if (evt.type === 'touchend') {
+          var currentLocation = touches ? touches[0].clientY : 0;
+          if (Math.abs(currentLocation - initialTouchStartY) > 20) return false;
+        }
+      }
+    }
+
+    function shouldClickLater(ua) {
+      // android below 4.4
+      var m = ua.match(/Android[^\d]*(\d+)\.(\d+)/);
+      if (m && m.length > 2) {
+        var v = upload.defaults.androidFixMinorVersion || 4;
+        return parseInt(m[1]) < 4 || (parseInt(m[1]) === v && parseInt(m[2]) < v);
+      }
+
+      // safari on windows
+      return ua.indexOf('Chrome') === -1 && /.*Windows.*Safari.*/.test(ua);
+    }
+
+    var fileElem = elem;
+
+    function resetModel(evt) {
+      if (fileElem.val()) {
+        fileElem.val(null);
+        upload.updateModel(ngModel, attr, scope, fileChangeAttr(), null, evt, true);
+      }
+    }
+
+    if (!isInputTypeFile()) {
+      fileElem = createFileInput();
+    }
+    fileElem.bind('change', changeFn);
+
+    if (!isInputTypeFile()) {
+      elem.bind('click touchstart touchend', clickHandler);
+    } else {
+      elem.bind('click', resetModel);
+    }
+
+    function ie10SameFileSelectFix(evt) {
+      if (fileElem && !fileElem.attr('__ngf_ie10_Fix_')) {
+        if (!fileElem[0].parentNode) {
+          fileElem = null;
+          return;
+        }
+        evt.preventDefault();
+        evt.stopPropagation();
+        fileElem.unbind('click');
+        var clone = fileElem.clone();
+        fileElem.replaceWith(clone);
+        fileElem = clone;
+        fileElem.attr('__ngf_ie10_Fix_', 'true');
+        fileElem.bind('change', changeFn);
+        fileElem.bind('click', ie10SameFileSelectFix);
+        fileElem[0].click();
+        return false;
+      } else {
+        fileElem.removeAttr('__ngf_ie10_Fix_');
+      }
+    }
+
+    if (navigator.appVersion.indexOf('MSIE 10') !== -1) {
+      fileElem.bind('click', ie10SameFileSelectFix);
+    }
+
+    scope.$on('$destroy', function () {
+      if (!isInputTypeFile()) fileElem.remove();
+    });
+
+    if (window.FileAPI && window.FileAPI.ngfFixIE) {
+      window.FileAPI.ngfFixIE(elem, fileElem, changeFn);
+    }
+  }
+})();
+
+(function () {
+
+  ngFileUpload.service('UploadDataUrl', ['UploadBase', '$timeout', '$q', function (UploadBase, $timeout, $q) {
+    var upload = UploadBase;
+    upload.dataUrl = function (file, disallowObjectUrl) {
+      if ((disallowObjectUrl && file.dataUrl != null) || (!disallowObjectUrl && file.blobUrl != null)) {
+        var d = $q.defer();
+        $timeout(function () {
+          d.resolve(disallowObjectUrl ? file.dataUrl : file.blobUrl);
+        });
+        return d.promise;
+      }
+      var p = disallowObjectUrl ? file.$ngfDataUrlPromise : file.$ngfBlobUrlPromise;
+      if (p) return p;
+
+      var deferred = $q.defer();
+      $timeout(function () {
+        if (window.FileReader && file &&
+          (!window.FileAPI || navigator.userAgent.indexOf('MSIE 8') === -1 || file.size < 20000) &&
+          (!window.FileAPI || navigator.userAgent.indexOf('MSIE 9') === -1 || file.size < 4000000)) {
+          //prefer URL.createObjectURL for handling refrences to files of all sizes
+          //since it doesn´t build a large string in memory
+          var URL = window.URL || window.webkitURL;
+          if (URL && URL.createObjectURL && !disallowObjectUrl) {
+            var url;
+            try {
+              url = URL.createObjectURL(file);
+            } catch (e) {
+              $timeout(function () {
+                file.blobUrl = '';
+                deferred.reject();
+              });
+              return;
+            }
+            $timeout(function () {
+              file.blobUrl = url;
+              if (url) deferred.resolve(url);
+            });
+          } else {
+            var fileReader = new FileReader();
+            fileReader.onload = function (e) {
+              $timeout(function () {
+                file.dataUrl = e.target.result;
+                deferred.resolve(e.target.result);
+              });
+            };
+            fileReader.onerror = function () {
+              $timeout(function () {
+                file.dataUrl = '';
+                deferred.reject();
+              });
+            };
+            fileReader.readAsDataURL(file);
+          }
+        } else {
+          $timeout(function () {
+            file[disallowObjectUrl ? 'dataUrl' : 'blobUrl'] = '';
+            deferred.reject();
+          });
+        }
+      });
+
+      if (disallowObjectUrl) {
+        p = file.$ngfDataUrlPromise = deferred.promise;
+      } else {
+        p = file.$ngfBlobUrlPromise = deferred.promise;
+      }
+      p['finally'](function () {
+        delete file[disallowObjectUrl ? '$ngfDataUrlPromise' : '$ngfBlobUrlPromise'];
+      });
+      return p;
+    };
+    return upload;
+  }]);
+
+  function getTagType(el) {
+    if (el.tagName.toLowerCase() === 'img') return 'image';
+    if (el.tagName.toLowerCase() === 'audio') return 'audio';
+    if (el.tagName.toLowerCase() === 'video') return 'video';
+    return /\./;
+  }
+
+  var style = angular.element('<style>.ngf-hide{display:none !important}</style>');
+  document.getElementsByTagName('head')[0].appendChild(style[0]);
+
+  /** @namespace attr.ngfSrc */
+  /** @namespace attr.ngfNoObjectUrl */
+  ngFileUpload.directive('ngfSrc', ['$compile', '$timeout', 'Upload', function ($compile, $timeout, Upload) {
+    return {
+      restrict: 'AE',
+      link: function (scope, elem, attr) {
+        $timeout(function () {
+          scope.$watch(attr.ngfSrc, function (file) {
+            if (angular.isString(file)) {
+              elem.removeClass('ngf-hide');
+              return elem.attr('src', file);
+            }
+            if (file && file.type.indexOf(getTagType(elem[0])) === 0) {
+              var disallowObjectUrl = Upload.attrGetter('ngfNoObjectUrl', attr, scope);
+              Upload.dataUrl(file, disallowObjectUrl)['finally'](function () {
+                $timeout(function () {
+                  if ((disallowObjectUrl && file.dataUrl) || (!disallowObjectUrl && file.blobUrl)) {
+                    elem.removeClass('ngf-hide');
+                    elem.attr('src', disallowObjectUrl ? file.dataUrl : file.blobUrl);
+                  } else {
+                    elem.addClass('ngf-hide');
+                  }
+                });
+              });
+            } else {
+              elem.addClass('ngf-hide');
+            }
+          });
+        });
+      }
+    };
+  }]);
+
+  /** @namespace attr.ngfBackground */
+  /** @namespace attr.ngfNoObjectUrl */
+  ngFileUpload.directive('ngfBackground', ['Upload', '$compile', '$timeout', function (Upload, $compile, $timeout) {
+    return {
+      restrict: 'AE',
+      link: function (scope, elem, attr) {
+        $timeout(function () {
+          scope.$watch(attr.ngfBackground, function (file) {
+            if (angular.isString(file)) return elem.css('background-image', 'url(\'' + file + '\')');
+            if (file && file.type.indexOf('image') === 0) {
+              var disallowObjectUrl = Upload.attrGetter('ngfNoObjectUrl', attr, scope);
+              Upload.dataUrl(file, disallowObjectUrl)['finally'](function () {
+                $timeout(function () {
+                  if ((disallowObjectUrl && file.dataUrl) || (!disallowObjectUrl && file.blobUrl)) {
+                    elem.css('background-image', 'url(\'' + (disallowObjectUrl ? file.dataUrl : file.blobUrl) + '\')');
+                  } else {
+                    elem.css('background-image', '');
+                  }
+                });
+              });
+            } else {
+              elem.css('background-image', '');
+            }
+          });
+        });
+      }
+    };
+  }]);
+
+  ngFileUpload.config(['$compileProvider', function ($compileProvider) {
+    if ($compileProvider.imgSrcSanitizationWhitelist) $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|local|file|data|blob):/);
+    if ($compileProvider.aHrefSanitizationWhitelist) $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|local|file|data|blob):/);
+  }]);
+
+  ngFileUpload.filter('ngfDataUrl', ['UploadDataUrl', '$sce', function (UploadDataUrl, $sce) {
+    return function (file, disallowObjectUrl) {
+      if (angular.isString(file)) {
+        return $sce.trustAsResourceUrl(file);
+      }
+      if (file && !file.dataUrl) {
+        if (file.dataUrl === undefined && angular.isObject(file)) {
+          file.dataUrl = null;
+          UploadDataUrl.dataUrl(file, disallowObjectUrl);
+        }
+        return '';
+      }
+      return (file && file.dataUrl ? $sce.trustAsResourceUrl(file.dataUrl) : file) || '';
+    };
+  }]);
+
+})();
+
+(function () {
+  function globStringToRegex(str) {
+    if (str.length > 2 && str[0] === '/' && str[str.length - 1] === '/') {
+      return str.substring(1, str.length - 1);
+    }
+    var split = str.split(','), result = '';
+    if (split.length > 1) {
+      for (var i = 0; i < split.length; i++) {
+        result += '(' + globStringToRegex(split[i]) + ')';
+        if (i < split.length - 1) {
+          result += '|';
+        }
+      }
+    } else {
+      if (str.indexOf('.') === 0) {
+        str = '*' + str;
+      }
+      result = '^' + str.replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\' + '-]', 'g'), '\\$&') + '$';
+      result = result.replace(/\\\*/g, '.*').replace(/\\\?/g, '.');
+    }
+    return result;
+  }
+
+  function translateScalars(str) {
+    if (angular.isString(str)) {
+      if (str.search(/kb/i) === str.length - 2) {
+        return parseFloat(str.substring(0, str.length - 2) * 1000);
+      } else if (str.search(/mb/i) === str.length - 2) {
+        return parseFloat(str.substring(0, str.length - 2) * 1000000);
+      } else if (str.search(/gb/i) === str.length - 2) {
+        return parseFloat(str.substring(0, str.length - 2) * 1000000000);
+      } else if (str.search(/b/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1));
+      } else if (str.search(/s/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1));
+      } else if (str.search(/m/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1) * 60);
+      } else if (str.search(/h/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1) * 3600);
+      }
+    }
+    return str;
+  }
+
+  ngFileUpload.service('UploadValidate', ['UploadDataUrl', '$q', '$timeout', function (UploadDataUrl, $q, $timeout) {
+    var upload = UploadDataUrl;
+
+    upload.registerValidators = function (ngModel, attr, scope, later) {
+      if (!ngModel) return;
+
+      ngModel.$ngfValidations = [];
+      function setValidities(ngModel) {
+        angular.forEach(ngModel.$ngfValidations, function (validation) {
+          ngModel.$setValidity(validation.name, validation.valid);
+        });
+      }
+
+      ngModel.$formatters.push(function (val) {
+        if (later) {
+          upload.validate(val, ngModel, attr, scope, false, function () {
+            setValidities(ngModel);
+          });
+        } else {
+          setValidities(ngModel);
+        }
+        return val;
+      });
+    };
+
+    upload.validatePattern = function (file, val) {
+      if (!val) {
+        return true;
+      }
+      var regexp = new RegExp(globStringToRegex(val), 'gi');
+      return (file.type != null && regexp.test(file.type.toLowerCase())) ||
+        (file.name != null && regexp.test(file.name.toLowerCase()));
+    };
+
+    upload.validate = function (files, ngModel, attr, scope, later, callback) {
+      ngModel = ngModel || {};
+      ngModel.$ngfValidations = [];
+
+      var attrGetter = function (name, params) {
+        return upload.attrGetter(name, attr, scope, params);
+      };
+
+      if (later) {
+        callback.call(ngModel);
+        return;
+      }
+
+      files = files.length === undefined ? [files] : files.slice(0);
+
+      function validateSync(name, validatorVal, fn) {
+        if (files) {
+          var dName = 'ngf' + name[0].toUpperCase() + name.substr(1);
+          var i = files.length, valid = null;
+
+          while (i--) {
+            var file = files[i];
+            var val = attrGetter(dName, {'$file': file});
+            if (val == null) {
+              val = validatorVal(attrGetter('ngfValidate') || {});
+              valid = valid == null ? true : valid;
+            }
+            if (val != null) {
+              if (!fn(file, val)) {
+                file.$error = name;
+                file.$errorParam = val;
+                files.splice(i, 1);
+                valid = false;
+              }
+            }
+          }
+          if (valid !== null) {
+            ngModel.$ngfValidations.push({name: name, valid: valid});
+          }
+        }
+      }
+
+      validateSync('pattern', function (cons) {
+        return cons.pattern;
+      }, upload.validatePattern);
+      validateSync('minSize', function (cons) {
+        return cons.size && cons.size.min;
+      }, function (file, val) {
+        return file.size >= translateScalars(val);
+      });
+      validateSync('maxSize', function (cons) {
+        return cons.size && cons.size.max;
+      }, function (file, val) {
+        return file.size <= translateScalars(val);
+      });
+
+      validateSync('validateFn', function () {
+        return null;
+      }, function (file, r) {
+        return r === true || r === null || r === '';
+      });
+
+      if (!files.length) {
+        callback.call(ngModel, ngModel.$ngfValidations);
+        return;
+      }
+
+      var pendings = 0;
+
+      function validateAsync(name, validatorVal, type, asyncFn, fn) {
+        if (files) {
+          var thisPendings = 0, hasError = false, dName = 'ngf' + name[0].toUpperCase() + name.substr(1);
+          files = files.length === undefined ? [files] : files;
+          angular.forEach(files, function (file) {
+            if (file.type.search(type) !== 0) {
+              return true;
+            }
+            var val = attrGetter(dName, {'$file': file}) || validatorVal(attrGetter('ngfValidate', {'$file': file}) || {});
+            if (val) {
+              pendings++;
+              thisPendings++;
+              asyncFn(file, val).then(function (d) {
+                if (!fn(d, val)) {
+                  file.$error = name;
+                  file.$errorParam = val;
+                  hasError = true;
+                }
+              }, function () {
+                if (attrGetter('ngfValidateForce', {'$file': file})) {
+                  file.$error = name;
+                  file.$errorParam = val;
+                  hasError = true;
+                }
+              })['finally'](function () {
+                pendings--;
+                thisPendings--;
+                if (!thisPendings) {
+                  ngModel.$ngfValidations.push({name: name, valid: !hasError});
+                }
+                if (!pendings) {
+                  callback.call(ngModel, ngModel.$ngfValidations);
+                }
+              });
+            }
+          });
+        }
+      }
+
+      validateAsync('maxHeight', function (cons) {
+        return cons.height && cons.height.max;
+      }, /image/, this.imageDimensions, function (d, val) {
+        return d.height <= val;
+      });
+      validateAsync('minHeight', function (cons) {
+        return cons.height && cons.height.min;
+      }, /image/, this.imageDimensions, function (d, val) {
+        return d.height >= val;
+      });
+      validateAsync('maxWidth', function (cons) {
+        return cons.height && cons.width.max;
+      }, /image/, this.imageDimensions, function (d, val) {
+        return d.width <= val;
+      });
+      validateAsync('minWidth', function (cons) {
+        return cons.height && cons.width.min;
+      }, /image/, this.imageDimensions, function (d, val) {
+        return d.width >= val;
+      });
+      validateAsync('maxDuration', function (cons) {
+        return cons.height && cons.duration.max;
+      }, /audio|video/, this.mediaDuration, function (d, val) {
+        return d <= translateScalars(val);
+      });
+      validateAsync('minDuration', function (cons) {
+        return cons.height && cons.duration.min;
+      }, /audio|video/, this.mediaDuration, function (d, val) {
+        return d >= translateScalars(val);
+      });
+
+      validateAsync('validateAsyncFn', function () {
+        return null;
+      }, /./, function (file, val) {
+        return val;
+      }, function (r) {
+        return r === true || r === null || r === '';
+      });
+
+      if (!pendings) {
+        callback.call(ngModel, ngModel.$ngfValidations);
+      }
+    };
+
+    upload.imageDimensions = function (file) {
+      if (file.width && file.height) {
+        var d = $q.defer();
+        $timeout(function () {
+          d.resolve({width: file.width, height: file.height});
+        });
+        return d.promise;
+      }
+      if (file.$ngfDimensionPromise) return file.$ngfDimensionPromise;
+
+      var deferred = $q.defer();
+      $timeout(function () {
+        if (file.type.indexOf('image') !== 0) {
+          deferred.reject('not image');
+          return;
+        }
+        upload.dataUrl(file).then(function (dataUrl) {
+          var img = angular.element('<img>').attr('src', dataUrl).css('visibility', 'hidden').css('position', 'fixed');
+
+          function success() {
+            var width = img[0].clientWidth;
+            var height = img[0].clientHeight;
+            img.remove();
+            file.width = width;
+            file.height = height;
+            deferred.resolve({width: width, height: height});
+          }
+
+          function error() {
+            img.remove();
+            deferred.reject('load error');
+          }
+
+          img.on('load', success);
+          img.on('error', error);
+          var count = 0;
+
+          function checkLoadError() {
+            $timeout(function () {
+              if (img[0].parentNode) {
+                if (img[0].clientWidth) {
+                  success();
+                } else if (count > 10) {
+                  error();
+                } else {
+                  checkLoadError();
+                }
+              }
+            }, 1000);
+          }
+
+          checkLoadError();
+
+          angular.element(document.getElementsByTagName('body')[0]).append(img);
+        }, function () {
+          deferred.reject('load error');
+        });
+      });
+
+      file.$ngfDimensionPromise = deferred.promise;
+      file.$ngfDimensionPromise['finally'](function () {
+        delete file.$ngfDimensionPromise;
+      });
+      return file.$ngfDimensionPromise;
+    };
+
+    upload.mediaDuration = function (file) {
+      if (file.duration) {
+        var d = $q.defer();
+        $timeout(function () {
+          d.resolve(file.duration);
+        });
+        return d.promise;
+      }
+      if (file.$ngfDurationPromise) return file.$ngfDurationPromise;
+
+      var deferred = $q.defer();
+      $timeout(function () {
+        if (file.type.indexOf('audio') !== 0 && file.type.indexOf('video') !== 0) {
+          deferred.reject('not media');
+          return;
+        }
+        upload.dataUrl(file).then(function (dataUrl) {
+          var el = angular.element(file.type.indexOf('audio') === 0 ? '<audio>' : '<video>')
+            .attr('src', dataUrl).css('visibility', 'none').css('position', 'fixed');
+
+          function success() {
+            var duration = el[0].duration;
+            file.duration = duration;
+            el.remove();
+            deferred.resolve(duration);
+          }
+
+          function error() {
+            el.remove();
+            deferred.reject('load error');
+          }
+
+          el.on('loadedmetadata', success);
+          el.on('error', error);
+          var count = 0;
+
+          function checkLoadError() {
+            $timeout(function () {
+              if (el[0].parentNode) {
+                if (el[0].duration) {
+                  success();
+                } else if (count > 10) {
+                  error();
+                } else {
+                  checkLoadError();
+                }
+              }
+            }, 1000);
+          }
+
+          checkLoadError();
+
+          angular.element(document.body).append(el);
+        }, function () {
+          deferred.reject('load error');
+        });
+      });
+
+      file.$ngfDurationPromise = deferred.promise;
+      file.$ngfDurationPromise['finally'](function () {
+        delete file.$ngfDurationPromise;
+      });
+      return file.$ngfDurationPromise;
+    };
+    return upload;
+  }
+  ]);
+
+})();
+
+(function () {
+  ngFileUpload.directive('ngfDrop', ['$parse', '$timeout', '$location', 'Upload',
+    function ($parse, $timeout, $location, Upload) {
+      return {
+        restrict: 'AEC',
+        require: '?ngModel',
+        link: function (scope, elem, attr, ngModel) {
+          linkDrop(scope, elem, attr, ngModel, $parse, $timeout, $location, Upload);
+        }
+      };
+    }]);
+
+  ngFileUpload.directive('ngfNoFileDrop', function () {
+    return function (scope, elem) {
+      if (dropAvailable()) elem.css('display', 'none');
+    };
+  });
+
+  ngFileUpload.directive('ngfDropAvailable', ['$parse', '$timeout', 'Upload', function ($parse, $timeout, Upload) {
+    return function (scope, elem, attr) {
+      if (dropAvailable()) {
+        var model = $parse(Upload.attrGetter('ngfDropAvailable', attr));
+        $timeout(function () {
+          model(scope);
+          if (model.assign) {
+            model.assign(scope, true);
+          }
+        });
+      }
+    };
+  }]);
+
+  function linkDrop(scope, elem, attr, ngModel, $parse, $timeout, $location, upload) {
+    var available = dropAvailable();
+
+    var attrGetter = function (name, scope, params) {
+      return upload.attrGetter(name, attr, scope, params);
+    };
+
+    if (attrGetter('dropAvailable')) {
+      $timeout(function () {
+        if (scope[attrGetter('dropAvailable')]) {
+          scope[attrGetter('dropAvailable')].value = available;
+        } else {
+          scope[attrGetter('dropAvailable')] = available;
+        }
+      });
+    }
+    if (!available) {
+      if (attrGetter('ngfHideOnDropNotAvailable', scope) === true) {
+        elem.css('display', 'none');
+      }
+      return;
+    }
+
+    function isDisabled() {
+      return elem.attr('disabled') || attrGetter('ngfDropDisabled', scope);
+    }
+
+    upload.registerValidators(ngModel, attr, scope);
+
+    var leaveTimeout = null;
+    var stopPropagation = $parse(attrGetter('ngfStopPropagation'));
+    var dragOverDelay = 1;
+    var actualDragOverClass;
+
+    elem[0].addEventListener('dragover', function (evt) {
+      if (isDisabled()) return;
+      evt.preventDefault();
+      if (stopPropagation(scope)) evt.stopPropagation();
+      // handling dragover events from the Chrome download bar
+      if (navigator.userAgent.indexOf('Chrome') > -1) {
+        var b = evt.dataTransfer.effectAllowed;
+        evt.dataTransfer.dropEffect = ('move' === b || 'linkMove' === b) ? 'move' : 'copy';
+      }
+      $timeout.cancel(leaveTimeout);
+      if (!actualDragOverClass) {
+        actualDragOverClass = 'C';
+        calculateDragOverClass(scope, attr, evt, function (clazz) {
+          actualDragOverClass = clazz;
+          elem.addClass(actualDragOverClass);
+        });
+      }
+    }, false);
+    elem[0].addEventListener('dragenter', function (evt) {
+      if (isDisabled()) return;
+      evt.preventDefault();
+      if (stopPropagation(scope)) evt.stopPropagation();
+    }, false);
+    elem[0].addEventListener('dragleave', function () {
+      if (isDisabled()) return;
+      leaveTimeout = $timeout(function () {
+        elem.removeClass(actualDragOverClass);
+        actualDragOverClass = null;
+      }, dragOverDelay || 1);
+    }, false);
+    elem[0].addEventListener('drop', function (evt) {
+      if (isDisabled()) return;
+      evt.preventDefault();
+      if (stopPropagation(scope)) evt.stopPropagation();
+      elem.removeClass(actualDragOverClass);
+      actualDragOverClass = null;
+      extractFiles(evt, function (files) {
+          upload.updateModel(ngModel, attr, scope, attrGetter('ngfChange') || attrGetter('ngfDrop'), files, evt);
+        }, attrGetter('ngfAllowDir', scope) !== false,
+        attrGetter('multiple') || attrGetter('ngfMultiple', scope));
+    }, false);
+    elem[0].addEventListener('paste', function (evt) {
+      if (isDisabled()) return;
+      var files = [];
+      var clipboard = evt.clipboardData || evt.originalEvent.clipboardData;
+      if (clipboard && clipboard.items) {
+        for (var k = 0; k < clipboard.items.length; k++) {
+          if (clipboard.items[k].type.indexOf('image') !== -1) {
+            files.push(clipboard.items[k].getAsFile());
+          }
+        }
+        upload.updateModel(ngModel, attr, scope, attrGetter('ngfChange') || attrGetter('ngfDrop'), files, evt);
+      }
+    }, false);
+
+    function calculateDragOverClass(scope, attr, evt, callback) {
+      var clazz = attrGetter('ngfDragOverClass', scope, {$event: evt}),
+        dClass = attrGetter('ngfDragOverClass') || 'dragover';
+      if (angular.isString(clazz)) {
+        callback(clazz);
+        return;
+      }
+      if (clazz) {
+        if (clazz.delay) dragOverDelay = clazz.delay;
+        if (clazz.accept || clazz.reject) {
+          var items = evt.dataTransfer.items;
+          if (items != null) {
+            var pattern = attrGetter('ngfPattern', scope, {$event: evt});
+            for (var i = 0; i < items.length; i++) {
+              if (items[i].kind === 'file' || items[i].kind === '') {
+                if (!upload.validatePattern(items[i], pattern)) {
+                  dClass = clazz.reject;
+                  break;
+                } else {
+                  dClass = clazz.accept;
+                }
+              }
+            }
+          }
+        }
+      }
+      callback(dClass);
+    }
+
+    function extractFiles(evt, callback, allowDir, multiple) {
+      var files = [], processing = 0;
+
+      function traverseFileTree(files, entry, path) {
+        if (entry != null) {
+          if (entry.isDirectory) {
+            var filePath = (path || '') + entry.name;
+            files.push({name: entry.name, type: 'directory', path: filePath});
+            var dirReader = entry.createReader();
+            var entries = [];
+            processing++;
+            var readEntries = function () {
+              dirReader.readEntries(function (results) {
+                try {
+                  if (!results.length) {
+                    for (var i = 0; i < entries.length; i++) {
+                      traverseFileTree(files, entries[i], (path ? path : '') + entry.name + '/');
+                    }
+                    processing--;
+                  } else {
+                    entries = entries.concat(Array.prototype.slice.call(results || [], 0));
+                    readEntries();
+                  }
+                } catch (e) {
+                  processing--;
+                  console.error(e);
+                }
+              }, function () {
+                processing--;
+              });
+            };
+            readEntries();
+          } else {
+            processing++;
+            entry.file(function (file) {
+              try {
+                processing--;
+                file.path = (path ? path : '') + file.name;
+                files.push(file);
+              } catch (e) {
+                processing--;
+                console.error(e);
+              }
+            }, function () {
+              processing--;
+            });
+          }
+        }
+      }
+
+      var items = evt.dataTransfer.items;
+
+      if (items && items.length > 0 && $location.protocol() !== 'file') {
+        for (var i = 0; i < items.length; i++) {
+          if (items[i].webkitGetAsEntry && items[i].webkitGetAsEntry() && items[i].webkitGetAsEntry().isDirectory) {
+            var entry = items[i].webkitGetAsEntry();
+            if (entry.isDirectory && !allowDir) {
+              continue;
+            }
+            if (entry != null) {
+              traverseFileTree(files, entry);
+            }
+          } else {
+            var f = items[i].getAsFile();
+            if (f != null) files.push(f);
+          }
+          if (!multiple && files.length > 0) break;
+        }
+      } else {
+        var fileList = evt.dataTransfer.files;
+        if (fileList != null) {
+          for (var j = 0; j < fileList.length; j++) {
+            files.push(fileList.item(j));
+            if (!multiple && files.length > 0) {
+              break;
+            }
+          }
+        }
+      }
+      var delays = 0;
+      (function waitForProcess(delay) {
+        $timeout(function () {
+          if (!processing) {
+            if (!multiple && files.length > 1) {
+              i = 0;
+              while (files[i].type === 'directory') i++;
+              files = [files[i]];
+            }
+            callback(files);
+          } else {
+            if (delays++ * 10 < 20 * 1000) {
+              waitForProcess(10);
+            }
+          }
+        }, delay || 0);
+      })();
+    }
+  }
+
+  function dropAvailable() {
+    var div = document.createElement('div');
+    return ('draggable' in div) && ('ondrop' in div) && !/Edge\/12./i.test(navigator.userAgent);
+  }
+
+})();
+
 //# sourceMappingURL=beakerVendor.js.map

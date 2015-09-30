@@ -6,23 +6,21 @@ env:
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
+  - "curl -Lo chrome.zip https://download-chromium.appspot.com/dl/Linux_x64 && unzip chrome.zip"
+  - "curl -Lo chromedriver.zip http://chromedriver.storage.googleapis.com/2.16/chromedriver_linux64.zip && unzip chromedriver.zip"
+  - "sudo add-apt-repository --yes ppa:nginx/stable"
+  - "sudo add-apt-repository --yes ppa:chris-lea/zeromq"
+  - "sudo add-apt-repository --yes ppa:marutter/rrutter"
+  - "curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -"
+  - "gem install sass"
+  - "sudo apt-get install -y nodejs"
+  - "sudo apt-get install nginx"
+  - 'ln -s /usr/bin/node /home/travis/build/twosigma/beaker-notebook/'
+  - 'ln -s /usr/bin/npm /home/travis/build/twosigma/beaker-notebook/'
 before_script:
-  - curl -Lo chrome.zip https://download-chromium.appspot.com/dl/Linux_x64 && unzip chrome.zip
-  - curl -Lo chromedriver.zip http://chromedriver.storage.googleapis.com/2.16/chromedriver_linux64.zip && unzip chromedriver.zip
   - export PATH=/home/travis/build/twosigma/beaker-notebook:$PATH
-  - sudo add-apt-repository --yes ppa:nginx/stable
-  - sudo add-apt-repository --yes ppa:chris-lea/zeromq
-  - sudo add-apt-repository --yes ppa:marutter/rrutter
-  - sudo apt-get update -q
-  - sudo apt-get install nginx
   - sudo apt-get install libzmq3-dbg libzmq3-dev libzmq3
   - sudo apt-get install python-pip python-dev
   - sudo pip install ipython==3.2.1 jinja2 tornado
   - sudo pip install pyzmq
   - sudo apt-get install python-matplotlib python-scipy python-pandas
-  - sudo apt-get install r-base r-base-dev
-  - sudo Rscript -e "install.packages('Rserve',,'http://cran.us.r-project.org')"
-  - sudo Rscript -e "install.packages('ggplot2',,'http://cran.us.r-project.org')"
-  - sudo Rscript -e "install.packages('devtools',,'http://cran.us.r-project.org')"
-  - sudo Rscript -e "install.packages('RJSONIO',,'http://cran.us.r-project.org')"
-  - sudo Rscript -e "install.packages('RCurl',,'http://cran.us.r-project.org')"

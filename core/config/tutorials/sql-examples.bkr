@@ -121,8 +121,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "SQL",
-                "shellId": "215685d1-fac0-4eac-a1ef-1fef405f0a1a",
-                "elapsedTime": 87,
+                "shellId": "51efc26a-5ef0-4129-a1b0-3a5e818545bd",
+                "elapsedTime": 102,
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -440,7 +440,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 23,
+                "elapsedTime": 29,
                 "hidden": true,
                 "result": [
                     1001,
@@ -478,8 +478,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "215685d1-fac0-4eac-a1ef-1fef405f0a1a",
-                "elapsedTime": 707
+                "shellId": "51efc26a-5ef0-4129-a1b0-3a5e818545bd",
+                "elapsedTime": 730
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -808,6 +808,6 @@
         "id": 1003
     },
     "metadata": {
-        "publication-id": "56083398-9d51-441b-80d1-b5a591c839f3"
+        "publication-id": "560b4a2f-546b-4929-acd7-0d47365b896e"
     }
 }

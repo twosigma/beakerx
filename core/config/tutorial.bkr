@@ -384,5 +384,8 @@
             "mode": "preview"
         }
     ],
-    "namespace": {}
+    "namespace": {},
+    "metadata": {
+        "publication-id": "560b4726-ce94-4e2a-820a-8c828094e309"
+    }
 }

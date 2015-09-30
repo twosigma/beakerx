@@ -56,13 +56,10 @@
             "id": "markdowngo27FF",
             "type": "markdown",
             "body": [
-                "Beaker's [C++](https://en.wikipedia.org/wiki/C%2B%2B) support is brand new",
-                "but it works on at least Mac platform.",
-                "You may have to change the compiler options in the language",
-                "manager to get it to work on other platforms (watch for an",
-                "error about `jni.h` not found).",
+                "Beaker's [C++](https://en.wikipedia.org/wiki/C%2B%2B) support is great for linking with and calling into libraries like [OpenCV](http://opencv.org/),",
+                "or Google's [OR-Tools](https://developers.google.com/optimization/?hl=en).",
                 "",
-                "You can link with and call into libraries like [OpenCV](http://opencv.org/)."
+                "[Windows is not yet supported](https://github.com/twosigma/beaker-notebook/issues/2542), unfortunately."
             ],
             "evaluatorReader": false
         },

@@ -2146,11 +2146,11 @@
                     "subtype": "ListOfMaps"
                 },
                 "selectedType": "Table",
-                "elapsedTime": 806,
+                "elapsedTime": 1486,
                 "state": {},
                 "hidden": true,
                 "pluginName": "Groovy",
-                "shellId": "54330f42-b83e-4b01-8d8d-d87ad04625a9"
+                "shellId": "a9fbefd4-90ce-4bab-b15b-31f9ba5f5042"
             },
             "evaluatorReader": true,
             "lineCount": 23,
@@ -6890,7 +6890,7 @@
             "title": "Adding data",
             "level": 2,
             "evaluatorReader": false,
-            "collapsed": true
+            "collapsed": false
         },
         {
             "id": "sectionv6czjY",
@@ -8425,7 +8425,7 @@
             "title": "Adding tooltips, legend box, cursor hint",
             "level": 2,
             "evaluatorReader": false,
-            "collapsed": true
+            "collapsed": false
         },
         {
             "id": "markdowndCnZtY",
@@ -11467,7 +11467,7 @@
                                     "upper_margin": 0.05,
                                     "lower_bound": 0,
                                     "upper_bound": 0,
-                                    "log": true,
+                                    "use_log": true,
                                     "log_base": 10
                                 }
                             ],
@@ -11485,7 +11485,7 @@
                             "log_x": false,
                             "x_log_base": 10,
                             "log_y": true,
-                            "time_zone": null,
+                            "timezone": null,
                             "crosshair": null,
                             "legend_position": {
                                 "type": "LegendPosition",
@@ -11943,7 +11943,7 @@
                                     "upper_margin": 0.05,
                                     "lower_bound": 0,
                                     "upper_bound": 0,
-                                    "log": false,
+                                    "use_log": false,
                                     "log_base": 10
                                 }
                             ],
@@ -11961,7 +11961,7 @@
                             "log_x": false,
                             "x_log_base": 10,
                             "log_y": false,
-                            "time_zone": null,
+                            "timezone": null,
                             "crosshair": null,
                             "legend_position": {
                                 "type": "LegendPosition",
@@ -11980,8 +11980,8 @@
                 },
                 "selectedType": "CombinedPlot",
                 "pluginName": "Groovy",
-                "shellId": "6938b010-ae85-4b8d-9bc5-c4a595d95dcd",
-                "elapsedTime": 397
+                "shellId": "a9fbefd4-90ce-4bab-b15b-31f9ba5f5042",
+                "elapsedTime": 839
             },
             "evaluatorReader": true,
             "lineCount": 24
@@ -12460,7 +12460,7 @@
                             "upper_margin": 0.05,
                             "lower_bound": 0,
                             "upper_bound": 0,
-                            "log": true,
+                            "use_log": true,
                             "log_base": 10
                         }
                     ],
@@ -12478,7 +12478,7 @@
                     "log_x": true,
                     "x_log_base": 10,
                     "log_y": true,
-                    "time_zone": null,
+                    "timezone": null,
                     "crosshair": null,
                     "legend_position": {
                         "type": "LegendPosition",
@@ -12489,11 +12489,15 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "6938b010-ae85-4b8d-9bc5-c4a595d95dcd",
-                "elapsedTime": 303
+                "shellId": "a9fbefd4-90ce-4bab-b15b-31f9ba5f5042",
+                "elapsedTime": 814
             },
             "evaluatorReader": true,
             "lineCount": 16
         }
-    ]
+    ],
+    "namespace": {},
+    "metadata": {
+        "publication-id": "560c510c-16a8-4a22-9bed-93071e9f88e8"
+    }
 }

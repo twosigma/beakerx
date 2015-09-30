@@ -66,7 +66,8 @@
             "type": "markdown",
             "body": [
                 "The `beaker` object is often useful and has some unusual properties.",
-                "This tutorial explains what it's all about, starting with autotranslation, then looking at how its saved,",
+                "This tutorial explains it, starting with autotranslation,",
+                "how its used to save data in a notebook,",
                 "how to view and remove data from it, and finishing by using it to access Beaker's API."
             ],
             "evaluatorReader": false
@@ -103,8 +104,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "IPython",
-                "elapsedTime": 322,
-                "shellId": "76606624F62E46CC8754266B5E93CCD3"
+                "elapsedTime": 374,
+                "shellId": "6F42D3E0E4A6419E81F4119BEFFF70F6"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -131,7 +132,7 @@
                 "result": 11,
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 40
+                "elapsedTime": 25
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -158,8 +159,8 @@
                 "result": 12,
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "8cb47126-94cd-4232-9f89-e90f043f9d6e",
-                "elapsedTime": 1358
+                "shellId": "91dc7ee8-fd5c-4689-8913-31c4b93fb94c",
+                "elapsedTime": 1329
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -196,7 +197,10 @@
                 "A common problem with notebooks stems from the separation between the code and the data.",
                 "If  data is stored only in data files, and the code only in the notebook file, then if these files become separated,",
                 "the notebook's results become difficult to reproduce.",
-                "To address this problem, Beaker saves the `beaker` object, and all data stored on it, in the notebook file.",
+                "",
+                "Similar problems arrise when you download data from a website. Will it work and give the same result next week or next year?",
+                "",
+                "To address this, Beaker saves the `beaker` object, and all data stored on it, in the notebook file.",
                 "So when you next open it, your data is right there, ready for you to continue working with it.",
                 "It also works if you share the notebook, or use Beaker's publication feature:",
                 "you can share a notebook and the data inside it with one click.",
@@ -227,7 +231,7 @@
                 ],
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 32
+                "elapsedTime": 33
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -262,25 +266,6 @@
                 "result": {
                     "type": "OutputContainer",
                     "items": [
-                        {
-                            "type": "TableDisplay",
-                            "values": [
-                                [
-                                    "useOutputPanel",
-                                    false
-                                ],
-                                [
-                                    "outputLineLimit",
-                                    1000
-                                ]
-                            ],
-                            "subtype": "Dictionary",
-                            "columnNames": [
-                                "Key",
-                                "Value"
-                            ]
-                        },
-                        11,
                         [
                             1,
                             1,
@@ -288,17 +273,17 @@
                             3,
                             5,
                             8
-                        ]
+                        ],
+                        11
                     ],
                     "names": [
-                        "prefs",
-                        "x",
-                        "y"
+                        "y",
+                        "x"
                     ]
                 },
                 "selectedType": "OutputContainer",
                 "pluginName": "JavaScript",
-                "elapsedTime": 37
+                "elapsedTime": 28
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -353,7 +338,7 @@
             "type": "markdown",
             "body": [
                 "Beaker is scriptable through API calls on the `beaker` object. ",
-                "For example you can call `beaker.print(value)` to include output into the cell.",
+                "For example, one of many, you can call `beaker.print(value)` to include output into the cell.",
                 "",
                 "These calls are documented in the tutorials on",
                 "[Progress Reporting](/beaker/#/open?uri=file:config%2Ftutorials%2FprogressUpdate.bkr&readOnly=true) (including asynchronous events in JavaScript),",
@@ -411,6 +396,7 @@
             3,
             5,
             8
-        ]
+        ],
+        "x": 11
     }
 }

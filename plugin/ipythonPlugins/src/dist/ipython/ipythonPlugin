@@ -48,4 +48,7 @@ if "PYTHONPATH" in os.environ:
 else:
     old_path = ''
 os.environ["PYTHONPATH"] = plugin_dir + old_path
-os.execlp("python", "python", plugin_dir+"/ipythonPluginStart.py")
+if os.name == 'nt':
+    os.execlp("python", "python", "\"" + plugin_dir+"/ipythonPluginStart.py\"")
+else:
+    os.execlp("python", "python", plugin_dir+"/ipythonPluginStart.py")

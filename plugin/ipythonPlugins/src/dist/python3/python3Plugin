@@ -36,4 +36,7 @@ else:
     old_path = ''
 os.environ["PYTHONPATH"] = plugin_dir + old_path
 
-os.execlp("python", "python", plugin_dir+"/python3PluginStart.py")
+if os.name == 'nt':
+    os.execlp("python", "python", "\"" + plugin_dir+"/python3PluginStart.py\"")
+else:
+    os.execlp("python", "python", plugin_dir+"/python3PluginStart.py")

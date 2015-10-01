@@ -27,53 +27,53 @@ import javax.sql.DataSource;
 
 public class MysqlDbExplorer extends DbExplorer {
 
-	public MysqlDbExplorer(DataSource ds) {
-		super(ds);
-	}
+  public MysqlDbExplorer(DataSource ds) {
+    super(ds);
+  }
 
-	@Override
-	public List<String> queryTableNames(final Connection conn, String shemaName, final String key) throws SQLException {
-		String sql = "SELECT DISTINCT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='" + shemaName + "'";
-		
-		if (key != null && key.length() > 0) {
-			sql += " and TABLE_NAME like('" + key + "%')";
-		}
-		
-		try (final Statement stmt = conn.createStatement()) {
-			final ResultSet resultSet = stmt.executeQuery(sql);
+  @Override
+  public List<String> queryTableNames(final Connection conn, String shemaName, final String key) throws SQLException {
+    String sql = "SELECT DISTINCT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='" + shemaName + "'";
 
-			final List<String> res = new ArrayList<>();
-			
-			while (resultSet.next()) {
-				final String str = resultSet.getString("TABLE_NAME");
-				res.add(str);
-			}
+    if (key != null && key.length() > 0) {
+      sql += " and TABLE_NAME like('" + key + "%')";
+    }
 
-			return res;
-		}
-	}
+    try (final Statement stmt = conn.createStatement()) {
+        final ResultSet resultSet = stmt.executeQuery(sql);
 
-	@Override
-	public List<String> queryFieldNames(final Connection conn, final String shemaName, String tableName, final String key) throws SQLException {
-		String sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='" + shemaName
-				+ "' and TABLE_NAME LIKE ('" + tableName + "')";
+        final List<String> res = new ArrayList<>();
 
-		if (key != null && key.length() > 0) {
-			sql += " and COLUMN_NAME LIKE('" + key + "%')";
-		}
+        while (resultSet.next()) {
+          final String str = resultSet.getString("TABLE_NAME");
+          res.add(str);
+        }
 
-		try (final Statement stmt = conn.createStatement()) {
-			final ResultSet resultSet = stmt.executeQuery(sql);
+        return res;
+      }
+  }
 
-			final List<String> res = new ArrayList<>();
-			
-			while (resultSet.next()) {
-				final String str = resultSet.getString("COLUMN_NAME");
-				res.add(str);
-			}
+  @Override
+  public List<String> queryFieldNames(final Connection conn, final String shemaName, String tableName, final String key) throws SQLException {
+    String sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='" + shemaName
+      + "' and TABLE_NAME LIKE ('" + tableName + "')";
 
-			return res;
-		}
-	}
+    if (key != null && key.length() > 0) {
+      sql += " and COLUMN_NAME LIKE('" + key + "%')";
+    }
+
+    try (final Statement stmt = conn.createStatement()) {
+        final ResultSet resultSet = stmt.executeQuery(sql);
+
+        final List<String> res = new ArrayList<>();
+
+        while (resultSet.next()) {
+          final String str = resultSet.getString("COLUMN_NAME");
+          res.add(str);
+        }
+
+        return res;
+      }
+  }
 
 }

@@ -19,44 +19,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BeakerParseResult {
-    boolean selectInto;
-    String resultQuery;
-    String selectIntoVar;
-    List<BeakerInputVar> inputVars = new ArrayList<>();
+  boolean selectInto;
+  String resultQuery;
+  String selectIntoVar;
+  List<BeakerInputVar> inputVars = new ArrayList<>();
 
-    public BeakerParseResult(String resultQuery) {
-        this.resultQuery = resultQuery;
-    }
+  public BeakerParseResult(String resultQuery) {
+    this.resultQuery = resultQuery;
+  }
 
-    public String getResultQuery() {
-        return resultQuery;
-    }
+  public String getResultQuery() {
+    return resultQuery;
+  }
 
-    public void setResultQuery(String resultQuery) {
-        this.resultQuery = resultQuery;
-    }
+  public void setResultQuery(String resultQuery) {
+    this.resultQuery = resultQuery;
+  }
 
-    public String getSelectIntoVar() {
-        return selectIntoVar;
-    }
+  public String getSelectIntoVar() {
+    return selectIntoVar;
+  }
 
-    public void setSelectIntoVar(String selectIntoVar) {
-        this.selectIntoVar = selectIntoVar;
-    }
+  public void setSelectIntoVar(String selectIntoVar) {
+    this.selectIntoVar = selectIntoVar;
+  }
 
-    public boolean isSelectInto() {
-        return selectInto;
-    }
+  public boolean isSelectInto() {
+    return selectInto;
+  }
 
-    public void setSelectInto(boolean selectInto) {
-        this.selectInto = selectInto;
-    }
+  public void setSelectInto(boolean selectInto) {
+    this.selectInto = selectInto;
+  }
 
-    public List<BeakerInputVar> getInputVars() {
-        return inputVars;
-    }
+  public List<BeakerInputVar> getInputVars() {
+    return inputVars;
+  }
 
-    public void setInputVars(List<BeakerInputVar> inputVars) {
-        this.inputVars = inputVars;
-    }
+  public void setInputVars(List<BeakerInputVar> inputVars) {
+    this.inputVars = inputVars;
+  }
 }

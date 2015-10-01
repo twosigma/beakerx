@@ -16,91 +16,135 @@
 package com.twosigma.beaker.sqlsh.utils;
 
 public class BeakerInputVar {
-    String fieldName;
-    String objectName;
-    String type;
-    boolean array;
-    boolean object;
-    boolean all;
-    int index;
+  String fieldName;
+  String objectName;
+  String type;
+  boolean array;
+  boolean object;
+  boolean all;
+  int index;
+  String errorMessage;
 
-    public BeakerInputVar(String var) {
-        int a = var.indexOf('[');
-        int b = var.indexOf(']');
-        if (a > 0 && b > a) {
-            array = true;
-            objectName = var.substring(0, a);
-            String index = var.substring(a + 1, b);
-            if ("*".equals(index)) {
-                all = true;
-            } else {
-                this.index = Integer.parseInt(index);
-            }
+  public BeakerInputVar(String var) {
+    int a = var.indexOf('[');
+    int b = var.indexOf(']');
+    int dot = var.indexOf('.', b);
+
+    if (a >= 0 && b > a) {
+      if ((dot - b) > 1 || (dot < 1 && (var.length() - 1) > b)) {
+        errorMessage = "expected token '.' after ']': " + var;
+        return;
+      }
+      array = true;
+      objectName = var.substring(0, a);
+      String index = var.substring(a + 1, b);
+      if (objectName.isEmpty()) {
+        errorMessage = "unexpected token '[': " + var;
+        return;
+      }
+      if (index.isEmpty()) {
+        errorMessage = "index of array element should be defined: " + var;
+        return;
+      }
+      if ("*".equals(index)) {
+        all = true;
+      } else {
+        try {
+          this.index = Integer.parseInt(index);
+        } catch (NumberFormatException n) {
+          errorMessage = "NumberFormatException in " + var + "; " + n.getMessage();
+          return;
         }
-        int dot = var.indexOf('.');
-        if (dot > 0) {
-            object = true;
-            fieldName = var.substring(dot + 1);
-            if (objectName == null) {
-                objectName = var.substring(0, dot);
-            }
-        }
-        if (objectName == null) objectName = var;
+      }
+    } else if (a > b && b >=0) {
+      errorMessage = "unexpected token ']': " + var;
+      return;
+    } else if (a >= 0) {
+      errorMessage = "unexpected token '[': " + var;
+      return;
+    } else if (b >= 0) {
+      errorMessage = "unexpected token ']': " + var;
+      return;
     }
 
-    public String getFieldName() {
-        return fieldName;
+
+    if (dot > 0) {
+      object = true;
+      fieldName = var.substring(dot + 1);
+      if (fieldName.isEmpty()) {
+        errorMessage = "unexpected token '.': " + var;
+        return;
+      }
+      if (objectName == null) {
+        objectName = var.substring(0, dot);
+      }
     }
 
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
+    if (objectName == null) objectName = var;
+  }
 
-    public String getType() {
-        return type;
-    }
+  public String getFieldName() {
+    return fieldName;
+  }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  public void setFieldName(String fieldName) {
+    this.fieldName = fieldName;
+  }
 
-    public boolean isArray() {
-        return array;
-    }
+  public String getType() {
+    return type;
+  }
 
-    public void setArray(boolean array) {
-        this.array = array;
-    }
+  public void setType(String type) {
+    this.type = type;
+  }
 
-    public boolean isObject() {
-        return object;
-    }
+  public boolean isArray() {
+    return array;
+  }
 
-    public void setObject(boolean object) {
-        this.object = object;
-    }
+  public void setArray(boolean array) {
+    this.array = array;
+  }
 
-    public boolean isAll() {
-        return all;
-    }
+  public boolean isObject() {
+    return object;
+  }
 
-    public void setAll(boolean all) {
-        this.all = all;
-    }
+  public void setObject(boolean object) {
+    this.object = object;
+  }
 
-    public int getIndex() {
-        return index;
-    }
+  public boolean isAll() {
+    return all;
+  }
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
+  public void setAll(boolean all) {
+    this.all = all;
+  }
 
-    public String getObjectName() {
-        return objectName;
-    }
+  public int getIndex() {
+    return index;
+  }
 
-    public void setObjectName(String objectName) {
-        this.objectName = objectName;
-    }
+  public void setIndex(int index) {
+    this.index = index;
+  }
+
+  public String getObjectName() {
+    return objectName;
+  }
+
+  public void setObjectName(String objectName) {
+    this.objectName = objectName;
+  }
+
+  public String getErrorMessage() {
+    return errorMessage;
+  }
+
+  public void setErrorMessage(String errorMessage) {
+    this.errorMessage = errorMessage;
+  }
+
 }

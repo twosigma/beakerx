@@ -153,12 +153,13 @@ gulp.task('prepareCssForNamespacing', function(){
       path.basename = "_" + path.basename;
       path.extname = ".scss";
     }))
+    .pipe(replace('@charset "UTF-8";',''))
     .pipe(gulp.dest(Path.join(tempPath, "namespacedCss")))
     .on('error', handleError);
 });
 gulp.task("namespacePreparedCss", function() {
-  return gulp.src("beaker-sandbox.scss")
-    .pipe(sass()).on('error', handleError)
+  return sass("beaker-sandbox.scss")
+    .on('error', handleError)
     // Only set html/body styles if the body is the .beaker-sandbox
     .pipe(replace('.beaker-sandbox html {', 'html.beaker-sandbox {'))
     .pipe(replace('.beaker-sandbox body {', 'body.beaker-sandbox {'))

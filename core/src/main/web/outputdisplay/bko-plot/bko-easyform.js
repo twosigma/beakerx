@@ -714,9 +714,10 @@
                   return true;
                 }
 
+                datePicker.attr('maxlength',
+                    EasyFormConstants.Components.DatePickerComponent.inputLength);
+
                 if (true === efc.getComponent().showTime) {
-                  datePicker.attr('size',
-                      EasyFormConstants.Components.DatePickerComponent.dateTimeFormat.length);
                   datePicker.datetimepicker({
                     format: EasyFormConstants.Components.DatePickerComponent.dateTimeFormat,
                     onShow: onShowHandler,
@@ -724,8 +725,6 @@
                     allowBlank: true
                   });
                 } else {
-                  datePicker.attr('size',
-                      EasyFormConstants.Components.DatePickerComponent.dateFormat.length);
                   datePicker.datetimepicker({
                     format: EasyFormConstants.Components.DatePickerComponent.dateFormat,
                     onShow: onShowHandler,
@@ -1054,7 +1053,8 @@
         type: "DatePickerComponent",
         htmlTag: "<easy-form-date-picker-component/>",
         dateFormat: "Ymd",
-        dateTimeFormat: "Ymd H:i"
+        dateTimeFormat: "Ymd H:i",
+        inputLength: 9
       },
       ButtonComponent: {
         type: "ButtonComponent",

@@ -16,19 +16,27 @@
 
 package com.twosigma.beaker.sqlsh.autocomplete.db;
 
-import java.util.List;
+import java.sql.Connection;
+import java.sql.SQLException;
 
-public interface DbCache {
+import com.twosigma.beaker.sqlsh.utils.JDBCClient;
 
-  public List<String> getTableNames(final String url, final String schemaName, final String key);
+public class H2DbExplorer extends InfoSchemaDbExplorer {
 
-  public void putTableNames(final String url, final String schemaName, final String key,
-      final List<String> values);
+  public static final String defaultSchemaName = "PUBLIC";
 
-  public List<String> getTableFieldNames(final String url, final String schemaName,
-      final String tableName, final String key);
+  public H2DbExplorer(String url, JDBCClient jdbcClient) {
+    super(url, jdbcClient);
+  }
 
-  public void putTableFieldNames(final String url, final String schemaName, final String tableName,
-      final String key, final List<String> values);
+  @Override
+  public String getDefaultSchema(Connection conn) throws SQLException {
+    String schemaName = conn.getSchema();
 
+    if (schemaName == null) {
+      schemaName = defaultSchemaName;
+    }
+
+    return schemaName;
+  }
 }

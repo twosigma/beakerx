@@ -19,46 +19,50 @@ package com.twosigma.beaker.sqlsh.autocomplete.db;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.sqlsh.utils.BeakerParser;
 import com.twosigma.beaker.sqlsh.utils.DBConnectionException;
 import com.twosigma.beaker.sqlsh.utils.JDBCClient;
 
 public class DbExplorerFactory {
-	
-	private static final String VENDOR_JDBC_MYSQL = "jdbc:mysql:";
-//	private static final String VENDOR_JDBC_ORACLE = "jdbc:oracle:";
-//	private static final String VENDOR_JDBC_MSSQL = "jdbc:sqlserver:";
 
-	public static DbInfo getDbInfo(String txt, JDBCClient jdbcClient, String sessionId, String defaultConnectionString, Map<String, String> namedConnectionString) {
-		
-		final NamespaceClient namespaceClient = NamespaceClient.getBeaker(sessionId);
-		final BeakerParser beakerParser;
-		try {
-			beakerParser = new BeakerParser(txt, namespaceClient, defaultConnectionString, namedConnectionString);
-			
-			final String uri = beakerParser.getDbURI();
-			
-			if (uri != null) {
-				final DataSource ds = jdbcClient.getDataSource(uri);
+  private static final String VENDOR_JDBC_MYSQL = "jdbc:mysql:";
+  private static final String VENDOR_JDBC_H2 = "jdbc:h2:";
+  private static final String VENDOR_JDBC_ORACLE = "jdbc:oracle:";
+  private static final String VENDOR_JDBC_MSSQL = "jdbc:sqlserver:";
 
-				if (uri.startsWith(VENDOR_JDBC_MYSQL)) {
-					return new MysqlDbExplorer(ds);
-				}
-			}
+  public static DbInfo getDbInfo(String txt, JDBCClient jdbcClient, String sessionId,
+      String defaultConnectionString, Map<String, String> namedConnectionString) {
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (DBConnectionException e) {
-			e.printStackTrace();
-		}	
+    final NamespaceClient namespaceClient = NamespaceClient.getBeaker(sessionId);
+    final BeakerParser beakerParser;
+    try {
+      beakerParser =
+          new BeakerParser(txt, namespaceClient, defaultConnectionString, namedConnectionString);
 
-		return null;
-	}
+      final String uri = beakerParser.getDbURI();
 
-	public static DbCache getDbCache() {
-		return new DbRequestCache();
-	}
+      if (uri != null) {
+
+        if (uri.startsWith(VENDOR_JDBC_MYSQL)) {
+          return new MySqlDbExplorer(uri, jdbcClient);
+        } else if (uri.startsWith(VENDOR_JDBC_H2)) {
+          return new H2DbExplorer(uri, jdbcClient);
+        } else if (uri.startsWith(VENDOR_JDBC_ORACLE)) {
+          return new OracleDbExplorer(uri, jdbcClient);
+        } else if (uri.startsWith(VENDOR_JDBC_MSSQL)) {
+          return new MsSqlDbExplorer(uri, jdbcClient);
+        }
+      }
+
+    } catch (IOException | DBConnectionException e) {
+      System.out.print(e.getMessage() + "\n");
+    }
+
+    return null;
+  }
+
+  public static DbCache getDbCache() {
+    return new DbRequestCache();
+  }
 }

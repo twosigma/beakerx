@@ -29,7 +29,7 @@ public class DatePickerComponentSerializer
                                      final DatePickerComponent component)
       throws IOException {
     if (component.getShowTime() != null) {
-      jgen.writeObjectField("showTime", component.getShowTime().toString());
+      jgen.writeBooleanField("showTime", component.getShowTime());
     }
   }
 }

@@ -687,8 +687,11 @@
             template:
                 "<div class='easyform-container'>" +
                   "<label class='easyform-label'/>" +
-                  "<div class='easyform-component-container'>" +
-                    "<input type='date' class='date-picker' ng-disabled='!component.enabled'/>" +
+                  "<div class='easyform-component-container datepicker-container'>" +
+                    "<input type='text' class='date-picker' ng-disabled='!component.enabled'/>" +
+                    "<a tabindex='-1' title='Select date' class='date-picker-button ui-button ui-widget ui-state-default ui-button-icon-only custom-combobox-toggle ui-corner-right' role='button' aria-disabled='false'>" +
+                      "<span class='ui-button-icon-primary ui-icon ui-icon-triangle-1-s'></span><span class='ui-button-text'></span>" +
+                    "</a>" +
                   "</div>" +
                 "</div>",
             link: function (scope, element, attrs) {
@@ -698,12 +701,48 @@
 
               efc.buildUI = function() {
                 element.find('.easyform-label').text(efc.getComponent().label);
+
                 var datePicker = element.find('.date-picker');
                 datePicker.attr('ng-model', scope.ngModelAttr);
 
-                if ('true' === efc.getComponent().showTime) {
-                  datePicker.attr('type', 'datetime');
+                var datePickerButtonClicked = false;
+                var onShowHandler = function() {
+                  return datePickerButtonClicked;
+                };
+                var onCloseHandler = function() {
+                  datePickerButtonClicked = false;
+                  return true;
                 }
+
+                datePicker.attr('maxlength',
+                    EasyFormConstants.Components.DatePickerComponent.inputLength);
+
+                if (true === efc.getComponent().showTime) {
+                  datePicker.datetimepicker({
+                    format: EasyFormConstants.Components.DatePickerComponent.dateTimeFormat,
+                    onShow: onShowHandler,
+                    onClose: onCloseHandler,
+                    allowBlank: true
+                  });
+                } else {
+                  datePicker.datetimepicker({
+                    format: EasyFormConstants.Components.DatePickerComponent.dateFormat,
+                    onShow: onShowHandler,
+                    onClose: onCloseHandler,
+                    timepicker: false,
+                    allowBlank: true
+                  });
+                }
+
+                var datePickerButton = element.find('.date-picker-button');
+                datePickerButton.on("mousedown", function() {
+                  event.stopPropagation();
+                  event.preventDefault();
+                });
+                datePickerButton.click(function() {
+                  datePickerButtonClicked = true;
+                  datePicker.datetimepicker("toggle");
+                });
               };
 
               efc.init();
@@ -1012,7 +1051,10 @@
       },
       DatePickerComponent: {
         type: "DatePickerComponent",
-        htmlTag: "<easy-form-date-picker-component/>"
+        htmlTag: "<easy-form-date-picker-component/>",
+        dateFormat: "Ymd",
+        dateTimeFormat: "Ymd H:i",
+        inputLength: 9
       },
       ButtonComponent: {
         type: "ButtonComponent",

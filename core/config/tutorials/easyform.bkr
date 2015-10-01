@@ -75,7 +75,7 @@
                     "f = new EasyForm(\"Form and Run\")",
                     "f.addTextField(\"first\", 15)",
                     "f.addTextField(\"last\", 15)",
-                    "f.addButton(\"Run!\", \"run\")",
+                    "f.addButton(\"Go!\", \"run\")",
                     "f"
                 ]
             },
@@ -83,8 +83,39 @@
                 "state": {},
                 "selectedType": "EasyForm",
                 "pluginName": "Groovy",
-                "shellId": "3386e8ff-2dbd-40cb-8634-2dfaa86ed7ea",
-                "elapsedTime": 569
+                "shellId": "89a44022-5f45-43bc-90f4-3c0c585cfcfb",
+                "elapsedTime": 594,
+                "result": {
+                    "update_id": "ace9d52f-f694-460d-974c-cd33bb90fedf",
+                    "update_time": 1443669914315,
+                    "type": "EasyForm",
+                    "caption": "Form and Run",
+                    "components": [
+                        {
+                            "type": "TextField",
+                            "label": "first",
+                            "enabled": true,
+                            "value": "",
+                            "width": "15",
+                            "currentValue": "Berzeius"
+                        },
+                        {
+                            "type": "TextField",
+                            "label": "last",
+                            "enabled": true,
+                            "value": "",
+                            "width": "15",
+                            "currentValue": "Beaker"
+                        },
+                        {
+                            "type": "ButtonComponent",
+                            "label": "Go!",
+                            "enabled": "Groovy",
+                            "value": "",
+                            "tag": "run"
+                        }
+                    ]
+                }
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -109,9 +140,10 @@
             "output": {
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "3386e8ff-2dbd-40cb-8634-2dfaa86ed7ea",
-                "elapsedTime": 736,
-                "state": {}
+                "shellId": "89a44022-5f45-43bc-90f4-3c0c585cfcfb",
+                "elapsedTime": 723,
+                "state": {},
+                "result": "rekaeB...Berzeius"
             },
             "evaluatorReader": true,
             "tags": "run",
@@ -180,7 +212,7 @@
                     "",
                     "g.addDatePicker(\"Date\")",
                     "",
-                    "g.addButton(\"Run\", \"run2\")",
+                    "g.addButton(\"Go!\", \"run2\")",
                     "g"
                 ]
             },
@@ -188,8 +220,192 @@
                 "state": {},
                 "selectedType": "EasyForm",
                 "pluginName": "Groovy",
-                "shellId": "3386e8ff-2dbd-40cb-8634-2dfaa86ed7ea",
-                "elapsedTime": 581
+                "shellId": "89a44022-5f45-43bc-90f4-3c0c585cfcfb",
+                "elapsedTime": 607,
+                "result": {
+                    "update_id": "b726ad08-7102-4c81-a810-cc278de23319",
+                    "update_time": 1443669952409,
+                    "type": "EasyForm",
+                    "caption": "Field Types",
+                    "components": [
+                        {
+                            "type": "TextField",
+                            "label": "Short Text Field",
+                            "enabled": true,
+                            "value": "",
+                            "width": "10",
+                            "currentValue": ""
+                        },
+                        {
+                            "type": "TextField",
+                            "label": "Text Field",
+                            "enabled": true,
+                            "value": "",
+                            "width": 1,
+                            "currentValue": ""
+                        },
+                        {
+                            "type": "TextArea",
+                            "label": "Text Area",
+                            "enabled": true,
+                            "width": 1,
+                            "height": 3
+                        },
+                        {
+                            "type": "CheckBox",
+                            "label": "Check Box",
+                            "enabled": true,
+                            "value": false,
+                            "currentValue": false
+                        },
+                        {
+                            "type": "ComboBox",
+                            "label": "Combo Box",
+                            "enabled": true,
+                            "value": "a",
+                            "editable": "false",
+                            "width": "-1",
+                            "values": [
+                                "a",
+                                "b",
+                                "c",
+                                "d"
+                            ],
+                            "currentValue": "a"
+                        },
+                        {
+                            "type": "ComboBox",
+                            "label": "Editable Combo",
+                            "enabled": true,
+                            "value": "a",
+                            "editable": "true",
+                            "width": "-1",
+                            "values": [
+                                "a",
+                                "b",
+                                "c",
+                                "d"
+                            ],
+                            "currentValue": "a"
+                        },
+                        {
+                            "type": "ListComponent",
+                            "label": "List",
+                            "enabled": true,
+                            "value": "a",
+                            "size": "4",
+                            "multipleSelection": "true",
+                            "values": [
+                                "a",
+                                "b",
+                                "c",
+                                "d"
+                            ],
+                            "currentValue": "[a]"
+                        },
+                        {
+                            "type": "ListComponent",
+                            "label": "List Single",
+                            "enabled": true,
+                            "value": "a",
+                            "size": "4",
+                            "multipleSelection": "false",
+                            "values": [
+                                "a",
+                                "b",
+                                "c",
+                                "d"
+                            ],
+                            "currentValue": "a"
+                        },
+                        {
+                            "type": "ListComponent",
+                            "label": "List Two Row",
+                            "enabled": true,
+                            "value": "a",
+                            "size": "2",
+                            "multipleSelection": "true",
+                            "values": [
+                                "a",
+                                "b",
+                                "c",
+                                "d"
+                            ],
+                            "currentValue": "[a]"
+                        },
+                        {
+                            "type": "CheckBoxGroup",
+                            "label": "Check Boxes",
+                            "enabled": true,
+                            "value": "",
+                            "isHorizontal": "false",
+                            "values": [
+                                "a",
+                                "b",
+                                "c",
+                                "d"
+                            ],
+                            "currentValue": ""
+                        },
+                        {
+                            "type": "CheckBoxGroup",
+                            "label": "Check Boxes H",
+                            "enabled": true,
+                            "value": "",
+                            "isHorizontal": "true",
+                            "values": [
+                                "a",
+                                "b",
+                                "c",
+                                "d"
+                            ],
+                            "currentValue": ""
+                        },
+                        {
+                            "type": "RadioButtonComponent",
+                            "label": "Radio Buttons",
+                            "enabled": true,
+                            "value": "",
+                            "isHorizontal": "false",
+                            "values": [
+                                "a",
+                                "b",
+                                "c",
+                                "d"
+                            ],
+                            "currentValue": ""
+                        },
+                        {
+                            "type": "RadioButtonComponent",
+                            "label": "Radio Buttons H",
+                            "enabled": true,
+                            "value": "",
+                            "isHorizontal": "true",
+                            "values": [
+                                "a",
+                                "b",
+                                "c",
+                                "d"
+                            ],
+                            "currentValue": ""
+                        },
+                        {
+                            "type": "DatePickerComponent",
+                            "label": "Date",
+                            "enabled": true,
+                            "value": "",
+                            "showTime": "false",
+                            "currentValue": ""
+                        },
+                        {
+                            "type": "ButtonComponent",
+                            "label": "Go!",
+                            "enabled": "Groovy",
+                            "value": "",
+                            "tag": "run2"
+                        }
+                    ]
+                }
             },
             "evaluatorReader": true,
             "lineCount": 23
@@ -211,8 +427,74 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "3386e8ff-2dbd-40cb-8634-2dfaa86ed7ea",
-                "elapsedTime": 612
+                "shellId": "89a44022-5f45-43bc-90f4-3c0c585cfcfb",
+                "elapsedTime": 620,
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "Key",
+                        "Value"
+                    ],
+                    "values": [
+                        [
+                            "Combo Box",
+                            "b"
+                        ],
+                        [
+                            "List Single",
+                            "d"
+                        ],
+                        [
+                            "Check Box",
+                            "true"
+                        ],
+                        [
+                            "Text Area",
+                            "multi\nline\nstrings"
+                        ],
+                        [
+                            "Short Text Field",
+                            "short text"
+                        ],
+                        [
+                            "Date",
+                            "2015-09-08"
+                        ],
+                        [
+                            "Check Boxes H",
+                            "[a, c]"
+                        ],
+                        [
+                            "Check Boxes",
+                            "[c, d]"
+                        ],
+                        [
+                            "Radio Buttons H",
+                            "c"
+                        ],
+                        [
+                            "Radio Buttons",
+                            "b"
+                        ],
+                        [
+                            "Text Field",
+                            "text field for long long lines"
+                        ],
+                        [
+                            "List",
+                            "[a, b, c]"
+                        ],
+                        [
+                            "List Two Row",
+                            "[a]"
+                        ],
+                        [
+                            "Editable Combo",
+                            "xyz"
+                        ]
+                    ],
+                    "subtype": "Dictionary"
+                }
             },
             "evaluatorReader": true,
             "tags": "run2",
@@ -221,6 +503,6 @@
     ],
     "namespace": {},
     "metadata": {
-        "publication-id": "55e1d774-224c-4651-8333-5e4e4f11da74"
+        "publication-id": "560ca655-12df-43b9-9ecd-5714766b8fc4"
     }
 }

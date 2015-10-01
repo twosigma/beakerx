@@ -34,7 +34,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -271,5 +271,8 @@
             "tags": "mytag"
         }
     ],
-    "namespace": {}
+    "namespace": {},
+    "metadata": {
+        "publication-id": "560cbaf1-bb51-4adf-bc97-34bef369ca50"
+    }
 }

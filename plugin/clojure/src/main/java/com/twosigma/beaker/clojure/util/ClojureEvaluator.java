@@ -16,22 +16,18 @@
 
 package com.twosigma.beaker.clojure.util;
 
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 
 import clojure.lang.RT;
 import clojure.lang.Var;
@@ -53,7 +49,7 @@ public class ClojureEvaluator {
     String codeToBeExecuted;
     SimpleEvaluationObject outputObject;
 
-    jobDescriptor(String c , SimpleEvaluationObject o) {
+    jobDescriptor(String c, SimpleEvaluationObject o) {
       codeToBeExecuted = c;
       outputObject = o;
     }
@@ -72,8 +68,11 @@ public class ClojureEvaluator {
     updateLoader = false;
     currentClassPath = "";
     currentImports = "";
-    outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
-    try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
+    outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
+    try {
+      (new File(outDir)).mkdirs();
+    } catch (Exception e) {
+    }
     executor = new BeakerCellExecutor("clojure");
     startWorker();
   }
@@ -83,7 +82,9 @@ public class ClojureEvaluator {
     myWorker.start();
   }
 
-  public String getShellId() { return shellId; }
+  public String getShellId() {
+    return shellId;
+  }
 
   public void killAllThreads() {
     executor.killAllThreads();
@@ -95,7 +96,7 @@ public class ClojureEvaluator {
 
   public void resetEnvironment() {
     executor.killAllThreads();
-    updateLoader=true;
+    updateLoader = true;
     syncObject.release();
   }
 
@@ -107,7 +108,7 @@ public class ClojureEvaluator {
 
   public void evaluate(SimpleEvaluationObject seo, String code) {
     // send job to thread
-    jobQueue.add(new jobDescriptor(code,seo));
+    jobQueue.add(new jobDescriptor(code, seo));
     syncObject.release();
   }
 
@@ -124,14 +125,14 @@ public class ClojureEvaluator {
     public void run() {
       jobDescriptor j = null;
 
-      while(!exit) {
+      while (!exit) {
         try {
           // wait for work
           syncObject.acquire();
 
           // get next job descriptor
           j = jobQueue.poll();
-          if(j==null)
+          if (j == null)
             continue;
 
           j.outputObject.started();
@@ -139,7 +140,7 @@ public class ClojureEvaluator {
           if (!executor.executeTask(new MyRunnable(j.codeToBeExecuted, j.outputObject))) {
             j.outputObject.error("... cancelled!");
           }
-        } catch(Throwable e) {
+        } catch (Throwable e) {
           e.printStackTrace();
         }
       }
@@ -160,8 +161,15 @@ public class ClojureEvaluator {
         theOutput.setOutputHandler();
         Object result;
         try {
-          theOutput.finished(clojureLoadString.invoke(theCode));
-        } catch(Throwable e) {
+          Object o = clojureLoadString.invoke(theCode);
+          try {
+            //workaround, checking of corrupted clojure objects
+            o.hashCode();
+            theOutput.finished(o);
+          } catch (Exception e) {
+            theOutput.error("Object: " + o.getClass() + ", value cannot be displayed due to following error: " + e.getMessage());
+          }
+        } catch (Throwable e) {
           if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
             theOutput.error("... cancelled!");
           } else {
@@ -174,6 +182,6 @@ public class ClojureEvaluator {
         theOutput.setOutputHandler();
       }
 
-    };
+    }
   }
 }

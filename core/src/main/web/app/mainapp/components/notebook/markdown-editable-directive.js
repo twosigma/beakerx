@@ -17,40 +17,6 @@
 (function() {
   'use strict';
 
-  // Override markdown link renderer to always have `target="_blank"`
-  // Mostly from Renderer.prototype.link
-  // https://github.com/chjj/marked/blob/master/lib/marked.js#L862-L881
-  var bkRenderer = new marked.Renderer();
-  bkRenderer.link = function(href, title, text) {
-    var prot;
-    if (this.options.sanitize) {
-      try {
-        prot = decodeURIComponent(unescape(href))
-        .replace(/[^\w:]/g, '')
-        .toLowerCase();
-      } catch (e) {
-        return '';
-      }
-      //jshint ignore:start
-      if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0) {
-        //jshint ignore:end
-        return '';
-      }
-    }
-    var out = '<a href="' + href + '"';
-    if (title) {
-      out += ' title="' + title + '"';
-    }
-    out += ' target="_blank"'; // < ADDED THIS LINE ONLY
-    out += '>' + text + '</a>';
-    return out;
-  };
-
-  bkRenderer.paragraph = function(text) {
-    // Allow users to write \$ to escape $
-    return marked.Renderer.prototype.paragraph.call(this, text.replace(/\\\$/g, '$'));
-  };
-
   var module = angular.module('bk.notebook');
   module.directive('bkMarkdownEditable', ['bkSessionManager', 'bkHelper', 'bkCoreManager', '$timeout', function(bkSessionManager, bkHelper, bkCoreManager, $timeout) {
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
@@ -66,69 +32,12 @@
       link: function(scope, element, attrs) {
         var contentAttribute = scope.cellmodel.type === "section" ? 'title' : 'body';
 
-
-        var evaluateJS = function (str, callback) {
-
-          var results = [], re = /{{([^}]+)}}/g, text;
-
-          while (text = re.exec(str)) {
-            if (results.indexOf(text) === -1)
-              results.push(text);
-          }
-
-          var evaluateCode = function (index) {
-
-            if (index === results.length) {
-               callback(str);
-            } else {
-              bkHelper.evaluateCode("JavaScript", results[index][1]).then(
-                function (r) {
-                  str = str.replace(results[index][0], r);
-                },
-                function (r) {
-                  str = str.replace(results[index][0], "<font color='red'>"+"Error: **" + r.object[0] + "**" + "</font>");
-                }
-              ).finally(function () {
-                  evaluateCode(index + 1);
-                }
-              );
-            }
-          };
-
-          evaluateCode(0);
-        };
-
-        var doktex = function(markdownFragment) {
-          try {
-            renderMathInElement(markdownFragment[0], {
-              delimiters: [
-                {left: "$$", right: "$$", display: true},
-                {left: "$", right:  "$", display: false},
-                {left: "\\[", right: "\\]", display: true},
-                {left: "\\(", right: "\\)", display: false}
-              ]
-            });
-          } catch(err) {
-            bkHelper.show1ButtonModal(err.message+'<br>See: <a target="_blank" href="http://khan.github.io/KaTeX/">KaTeX website</a> and its <a target="_blank" href="https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX">list of supported functions</a>.', "KaTex error");
-          }
-        };
-
         var preview = function () {
-
-          evaluateJS(
-            scope.cellmodel[contentAttribute],
-            function (content) {
-              var markdownFragment = $('<div>' + content + '</div>');
-              doktex(markdownFragment);
-              var escapedHtmlContent = markdownFragment.html();
-              var unescapedGtCharacter = escapedHtmlContent.replace(/&gt;/g, '>');
-              element.find('.markup').html(marked(unescapedGtCharacter, {
-                gfm: true,
-                renderer: bkRenderer
-              }));
-              markdownFragment.remove();
-              scope.mode = 'preview';
-            });
+          bkHelper.markupCellContent(scope.cellmodel[contentAttribute], bkHelper.evaluateCode)
+              .then(function (transformedHtml) {
+                element.find('.markup').html(transformedHtml);
+                scope.mode = 'preview';
+              });
         };
 
         var syncContentAndPreview = function() {

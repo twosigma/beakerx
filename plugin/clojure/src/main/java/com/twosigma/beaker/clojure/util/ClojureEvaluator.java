@@ -17,8 +17,8 @@
 package com.twosigma.beaker.clojure.util;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
@@ -29,12 +29,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import clojure.lang.RT;
 import clojure.lang.Var;
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 
 public class ClojureEvaluator {
   protected final String shellId;
@@ -59,7 +60,8 @@ public class ClojureEvaluator {
     }
   }
 
-  protected static final Var clojureLoadString = RT.var("clojure.core", "load-string");
+  protected static final String beaker_clojure_ns = "beaker_clojure_shell";
+  protected final Var clojureLoadString; //= RT.var("clojure.core", "load-string");
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
@@ -68,6 +70,11 @@ public class ClojureEvaluator {
     sessionId = sId;
     classPath = new ArrayList<String>();
     imports = new ArrayList<String>();
+
+    String run_str = String.format("(ns %1$s_%2$s)(defn run-str_%2$s [s] (binding [*ns* (find-ns '%1$s_%2$s)] (load-string s)))", beaker_clojure_ns, shellId);
+    clojureLoadString = RT.var(String.format("%1$s_%2$s",beaker_clojure_ns, shellId), String.format("run-str_%s", shellId));
+    clojure.lang.Compiler.load(new StringReader(run_str));
+
     exit = false;
     updateLoader = false;
     currentClassPath = "";

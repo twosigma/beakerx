@@ -18,6 +18,7 @@ package com.twosigma.beaker.sqlsh.utils;
 import com.twosigma.beaker.NamespaceClient;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 
 public class BeakerParser {
@@ -41,7 +42,7 @@ public class BeakerParser {
 
     private List<BeakerParseResult> results = new ArrayList<>();
 
-    public BeakerParser(String script, NamespaceClient client, String defaultConnectionString, Map<String, String> namedConnectionString) throws IOException {
+    public BeakerParser(String script, NamespaceClient client, String defaultConnectionString, Map<String, String> namedConnectionString) throws IOException, DBConnectionException {
         this.client = client;
         this.defaultConnectionString = defaultConnectionString;
         this.namedConnectionString = namedConnectionString;
@@ -69,7 +70,7 @@ public class BeakerParser {
                 end = upper.indexOf(VAR_VALUE_END, start);
                 if (end < 0) break;
                 String var = sql.substring(start + 2, end).trim();
-                if (var != null && !var.isEmpty() && inputs.keySet().contains(var)) {
+                if (var != null && !var.isEmpty()) {
                     sql = sql.substring(0, start) + "?" + sql.substring(end + 1);
                     upper = sql.toUpperCase();
                     end = start + 1;
@@ -121,7 +122,7 @@ public class BeakerParser {
         result.setResultQuery(sql);
     }
 
-    private void parseVar(String script) throws IOException {
+    private void parseVar(String script) throws IOException, DBConnectionException {
         List<String> vars = new ArrayList<>();
         Scanner scanner = new Scanner(script);
         StringBuffer sb = new StringBuffer();
@@ -146,6 +147,7 @@ public class BeakerParser {
                         dbURI = client.get(var).toString();
                     } else {
                         dbURI = namedConnectionString.get(value);
+                        if (dbURI == null) throw new DBConnectionException(value, new SQLException("Named connection witn name " + value + " not found"));
                     }
                 } else if (line.indexOf(OUTPUTS_VAR) > 0) {
                     String outLine = line.substring(line.indexOf(':') + 1).trim();

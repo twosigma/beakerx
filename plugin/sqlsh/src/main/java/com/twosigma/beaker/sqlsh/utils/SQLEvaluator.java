@@ -78,21 +78,22 @@ public class SQLEvaluator {
 
     public void exit() {
         exit = true;
-        executor.cancelExecution();
-        syncObject.release();
+        cancelExecution();
     }
 
     public void cancelExecution() {
         executor.cancelExecution();
+        queryExecutor.cancel();
     }
 
     public void killAllThreads() {
+        queryExecutor.cancel();
         executor.killAllThreads();
     }
 
     public void resetEnvironment() {
         jdbcClient.loadDrivers(classPath);
-        executor.killAllThreads();
+        killAllThreads();
     }
 
     protected SqlAutocomplete createSqlAutocomplete(ClasspathScanner c) {
@@ -135,11 +136,9 @@ public class SQLEvaluator {
         public WorkerThread() {
             super("sqlsh worker");
         }
-
-
         /*
-     * This thread performs all the evaluation
-     */
+        * This thread performs all the evaluation
+        */
 
         public void run() {
             JobDescriptor job;
@@ -149,7 +148,7 @@ public class SQLEvaluator {
                 try {
                     syncObject.acquire();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
                 }
 
                 if (exit) {
@@ -192,11 +191,12 @@ public class SQLEvaluator {
                 simpleEvaluationObject.error(e.toString());
             } catch (ThreadDeath e) {
                 simpleEvaluationObject.error("... cancelled!");
-            } catch (Throwable e) {
+            } catch (ReadVariableException e) {
+                simpleEvaluationObject.error(e.getMessage());
+            }  catch (Throwable e) {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
                 simpleEvaluationObject.error(e.toString());
             }
-
         }
     }
 

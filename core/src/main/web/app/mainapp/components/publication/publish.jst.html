@@ -15,7 +15,11 @@
 -->
 <div>
   <div class="modal-header">
-    <div class="sign-in" ng-if="!isSignedIn()">
+    <div class="init" ng-if="initializing">
+      Loading&hellip;
+      <span class="loading-spinner rotating bkr"></span>
+    </div>
+    <div class="sign-in" ng-if="!initializing && !isSignedIn()">
       <h1 class="error" ng-if="error">{{error}}</h1>
       <h1 ng-if="!error">Sign in to Beaker Publications</h1>
       <form ng-submit="signIn()">
@@ -32,7 +36,7 @@
         <a target="_blank" ng-href="{{signupUrl()}}" ng-click="close()">Create New Account</a>
       </div>
     </div>
-    <div class="publish" ng-if="isSignedIn()">
+    <div class="publish" ng-if="!initializing && isSignedIn()">
       <h1>{{title}}</h1>
       <form ng-submit="publishAction()">
         <label for="category" class="full">Notebook name others will see when you publish:</label>
@@ -70,7 +74,7 @@
         </ul>
         <div class="actions">
           <input ng-if="!saving" type="submit" ng-value="saveButton" class="btn btn-primary">
-          <input ng-if="!saving && published" type="button" class="btn" value="Publish as new" ng-click="publish('create')">
+          <input ng-if="!saving && published" type="button" class="btn" value="Publish as new" ng-click="publish('create', true)">
           <input ng-if="!saving && published" type="button" class="btn" value="Delete" ng-click="delete()" formnovalidate>
           <input ng-if="!saving" type="button" class="btn" value="Cancel" ng-click="close()" formnovalidate>
         </div>

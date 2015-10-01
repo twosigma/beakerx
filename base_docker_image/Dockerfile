@@ -100,7 +100,8 @@ RUN apt-get install -y julia && \
 
 # First install zmq3, as per Python instructions above. Then:
 RUN apt-get install -y ruby2.1 ruby2.1-dev libtool && \
-    gem install iruby
+    gem install iruby \
+    gem install sass
 
 ##########
 #  Node  #

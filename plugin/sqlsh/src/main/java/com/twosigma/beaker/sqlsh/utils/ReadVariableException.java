@@ -17,6 +17,9 @@ package com.twosigma.beaker.sqlsh.utils;
 
 public class ReadVariableException extends Exception {
     public ReadVariableException(String var, Exception e) {
-        super("Object with name " + var + " not found: " + e.getMessage());
+        super("Object with name " + var + " not found; " + e.getMessage());
+    }
+    public ReadVariableException(String msg) {
+        super("Bad value; " + msg);
     }
 }

@@ -57,6 +57,7 @@ public class QueryExecutor {
         for (BeakerInputVar parameter : queryLine.getInputVars()) {
           if (parameter.isAll()) {
             basicIterationArray = parameter;
+            if(parameter.getErrorMessage() != null) throw new ReadVariableException(parameter.getErrorMessage());
             //ToDo make recursively iteration over several arrays
             break;
           }
@@ -153,6 +154,7 @@ public class QueryExecutor {
       this.statement = statement;
       int n = 1;
       for (BeakerInputVar parameter : queryLine.getInputVars()) {
+        if(parameter.getErrorMessage() != null) throw new ReadVariableException(parameter.getErrorMessage());
         Object obj;
         try {
           obj = namespaceClient.get(parameter.objectName);

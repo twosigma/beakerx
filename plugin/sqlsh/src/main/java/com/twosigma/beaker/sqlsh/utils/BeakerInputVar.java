@@ -23,28 +23,63 @@ public class BeakerInputVar {
   boolean object;
   boolean all;
   int index;
+  String errorMessage;
 
   public BeakerInputVar(String var) {
     int a = var.indexOf('[');
     int b = var.indexOf(']');
-    if (a > 0 && b > a) {
+    int dot = var.indexOf('.', b);
+
+    if (a >= 0 && b > a) {
+      if ((dot - b) > 1 || (dot < 1 && (var.length() - 1) > b)) {
+        errorMessage = "expected token '.' after ']': " + var;
+        return;
+      }
       array = true;
       objectName = var.substring(0, a);
       String index = var.substring(a + 1, b);
+      if (objectName.isEmpty()) {
+        errorMessage = "unexpected token '[': " + var;
+        return;
+      }
+      if (index.isEmpty()) {
+        errorMessage = "index of array element should be defined: " + var;
+        return;
+      }
       if ("*".equals(index)) {
         all = true;
       } else {
-        this.index = Integer.parseInt(index);
+        try {
+          this.index = Integer.parseInt(index);
+        } catch (NumberFormatException n) {
+          errorMessage = "NumberFormatException in " + var + "; " + n.getMessage();
+          return;
+        }
       }
+    } else if (a > b) {
+      errorMessage = "unexpected token ']': " + var;
+      return;
+    } else if (a >= 0) {
+      errorMessage = "unexpected token '[': " + var;
+      return;
+    } else if (b >= 0) {
+      errorMessage = "unexpected token ']': " + var;
+      return;
     }
-    int dot = var.indexOf('.');
+
+
     if (dot > 0) {
       object = true;
       fieldName = var.substring(dot + 1);
+      if (fieldName.isEmpty()) {
+        errorMessage = "unexpected token '.': " + var;
+        return;
+      }
       if (objectName == null) {
         objectName = var.substring(0, dot);
       }
     }
+
     if (objectName == null) objectName = var;
   }
 
@@ -103,4 +138,13 @@ public class BeakerInputVar {
   public void setObjectName(String objectName) {
     this.objectName = objectName;
   }
+
+  public String getErrorMessage() {
+    return errorMessage;
+  }
+
+  public void setErrorMessage(String errorMessage) {
+    this.errorMessage = errorMessage;
+  }
+
 }

@@ -17,6 +17,7 @@
 package com.twosigma.beaker.sqlsh.utils;
 
 import javax.sql.DataSource;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,109 +35,109 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 public class JDBCClient {
 
-    private Map<String, BasicDataSource> dsMap = new HashMap<>();
-    private Set<Driver> drivers = new HashSet<>();
+  private Map<String, BasicDataSource> dsMap = new HashMap<>();
+  private Set<Driver> drivers = new HashSet<>();
 
-    public JDBCClient() {
-        loadDrivers(null);
+  public JDBCClient() {
+    loadDrivers(null);
+  }
+
+  public DataSource getDataSource(String uri) throws DBConnectionException {
+    synchronized (this) {
+      try {
+
+        BasicDataSource ds = dsMap.get(uri);
+        if (ds == null) {
+          Driver driver = null;
+          for (Driver test : drivers) {
+            if (test.acceptsURL(uri)) {
+              driver = test;
+              break;
+            }
+          }
+          if (driver == null) {
+            DriverManager.getDriver(uri);
+          }
+          ds = new BasicDataSource();
+          ds.setDriver(driver);
+          ds.setUrl(uri);
+          dsMap.put(uri, ds);
+        }
+        return ds;
+
+      } catch (SQLException e) {
+        //Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
+        throw new DBConnectionException(uri, e);
+      }
     }
+  }
 
-    public DataSource getDataSource(String uri) throws DBConnectionException {
-        synchronized (this) {
-            try {
+  public void loadDrivers(List<String> pathList) {
+    synchronized (this) {
 
-                BasicDataSource ds = dsMap.get(uri);
-                if (ds == null) {
-                    Driver driver = null;
-                    for (Driver test : drivers) {
-                        if (test.acceptsURL(uri)) {
-                            driver = test;
-                            break;
-                        }
-                    }
-                    if (driver == null) {
-                        DriverManager.getDriver(uri);
-                    }
-                    ds = new BasicDataSource();
-                    ds.setDriver(driver);
-                    ds.setUrl(uri);
-                    dsMap.put(uri, ds);
-                }
-                return ds;
+      dsMap = new HashMap<>();
+      drivers = new HashSet<>();
 
-            } catch (SQLException e) {
-                //Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
-                throw new DBConnectionException(uri, e);
-            }
+      Set<URL> urlSet = new HashSet<>();
+
+      String dbDriverString = System.getenv("BEAKER_JDBC_DRIVER_LIST");
+      if (dbDriverString != null && !dbDriverString.isEmpty()) {
+        String[] dbDriverList = dbDriverString.split(File.pathSeparator);
+        for (String s : dbDriverList) {
+          try {
+            urlSet.add(toURL(s));
+          } catch (MalformedURLException e) {
+            Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
+          }
         }
+      }
+
+      if (pathList != null) {
+        for (String path : pathList) {
+          path = path.trim();
+          if (path.startsWith("--") || path.startsWith("#")) {
+            continue;
+          }
+          try {
+            urlSet.add(toURL(path));
+          } catch (MalformedURLException e) {
+            Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
+          }
+        }
+      }
+
+      URLClassLoader loader = new URLClassLoader(urlSet.toArray(new URL[urlSet.size()]));
+
+      ServiceLoader<Driver> loadedDrivers = ServiceLoader.load(Driver.class, loader);
+      Iterator<Driver> driversIterator = loadedDrivers.iterator();
+      try {
+        while (driversIterator.hasNext()) {
+          Driver d = driversIterator.next();
+          drivers.add(d);
+        }
+      } catch (Throwable t) {
+        Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, t);
+      }
     }
+  }
 
-    public void loadDrivers(List<String> pathList) {
-        synchronized (this) {
+  private URL toURL(String s) throws MalformedURLException {
 
-            dsMap = new HashMap<>();
-            drivers = new HashSet<>();
-
-            Set<URL> urlSet = new HashSet<>();
-
-            String dbDriverString = System.getenv("BEAKER_JDBC_DRIVER_LIST");
-            if (dbDriverString != null && !dbDriverString.isEmpty()) {
-                String[] dbDriverList = dbDriverString.split(File.pathSeparator);
-                for (String s : dbDriverList) {
-                    try {
-                        urlSet.add(toURL(s));
-                    } catch (MalformedURLException e) {
-                        Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
-                    }
-                }
-            }
-
-            if (pathList != null) {
-                for (String path : pathList) {
-                    path = path.trim();
-                    if (path.startsWith("--") || path.startsWith("#")) {
-                        continue;
-                    }
-                    try {
-                        urlSet.add(toURL(path));
-                    } catch (MalformedURLException e) {
-                        Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
-                    }
-                }
-            }
-
-            URLClassLoader loader = new URLClassLoader(urlSet.toArray(new URL[urlSet.size()]));
-
-            ServiceLoader<Driver> loadedDrivers = ServiceLoader.load(Driver.class, loader);
-            Iterator<Driver> driversIterator = loadedDrivers.iterator();
-            try {
-                while (driversIterator.hasNext()) {
-                    Driver d = driversIterator.next();
-                    drivers.add(d);
-                }
-            } catch (Throwable t) {
-                Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, t);
-            }
-        }
-    }
-
-    private URL toURL(String s) throws MalformedURLException {
-
-        s = s.trim();
-        URL url = null;
-        if (!s.startsWith("jar:") && !s.startsWith("http:") && !s.startsWith("https:")) {
-            try {
-                url = Paths.get(s).toUri().toURL();
-            } catch (Exception e) {
-                Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
-            }
-
-        }
-        if (url == null) {
-            url = new URL(s);
-        }
-
-        return url;
+    s = s.trim();
+    URL url = null;
+    if (!s.startsWith("jar:") && !s.startsWith("http:") && !s.startsWith("https:")) {
+      try {
+        url = Paths.get(s).toUri().toURL();
+      } catch (Exception e) {
+        Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
+      }
 
     }
+    if (url == null) {
+      url = new URL(s);
+    }
+
+    return url;
+
+  }
 }

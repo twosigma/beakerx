@@ -17,6 +17,7 @@ package com.twosigma.beaker.sqlsh;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+
 import com.twosigma.beaker.jvm.module.SerializerModule;
 import com.twosigma.beaker.jvm.module.WebServerModule;
 import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
@@ -35,9 +36,9 @@ import org.eclipse.jetty.server.Server;
 public class Main {
 
   private static final Logger GuiceComponentProviderFactoryLogger =
-          Logger.getLogger(com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory.class.getName());
+      Logger.getLogger(com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory.class.getName());
   private static final Logger WebApplicationImplLogger =
-          Logger.getLogger(com.sun.jersey.server.impl.application.WebApplicationImpl.class.getName());
+      Logger.getLogger(com.sun.jersey.server.impl.application.WebApplicationImpl.class.getName());
 
   static {
     GuiceComponentProviderFactoryLogger.setLevel(java.util.logging.Level.WARNING);
@@ -53,11 +54,11 @@ public class Main {
     final int port = Integer.parseInt(args[0]);
     WebAppConfigPref webAppPref = new DefaultWebAppConfigPref(port);
     Injector injector = Guice.createInjector(
-        new DefaultWebServerConfigModule(webAppPref),
-        new WebServerModule(),
-        new com.twosigma.beaker.sqlsh.module.URLConfigModule(),
-        new SerializerModule(),
-        new GuiceCometdModule());
+      new DefaultWebServerConfigModule(webAppPref),
+      new WebServerModule(),
+      new com.twosigma.beaker.sqlsh.module.URLConfigModule(),
+      new SerializerModule(),
+      new GuiceCometdModule());
 
     Server server = injector.getInstance(Server.class);
     server.start();

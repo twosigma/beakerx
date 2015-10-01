@@ -18,7 +18,7 @@ package com.twosigma.beaker.sqlsh.utils;
 import java.sql.SQLException;
 
 public class DBConnectionException extends SQLException {
-    public DBConnectionException(String uri, SQLException e) {
-        super("Connection URI:" + uri + "; " + e.getMessage(), e.getSQLState(), e.getErrorCode(), e.getCause());
-    }
+  public DBConnectionException(String uri, SQLException e) {
+    super("Connection URI:" + uri + "; " + e.getMessage(), e.getSQLState(), e.getErrorCode(), e.getCause());
+  }
 }

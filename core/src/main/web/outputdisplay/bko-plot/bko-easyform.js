@@ -736,6 +736,10 @@
                 }
 
                 var datePickerButton = element.find('.date-picker-button');
+                datePickerButton.on("mousedown", function() {
+                  event.stopPropagation();
+                  event.preventDefault();
+                });
                 datePickerButton.click(function() {
                   datePickerButtonClicked = true;
                   datePicker.datetimepicker("toggle");

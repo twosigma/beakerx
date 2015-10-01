@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -152,12 +152,18 @@
         $scope.exportTo = function(data, format) {
           var i;
           var j;
+          var startingColumnIndex = 1;
           var order;
           var out = '';
           var eol = '\n';
           var sep = ',';
           var qot = '"';
           var fix = function(s) { return s.replace(/"/g, '""');};
+          var model = $scope.model.getCellModel();
+          var hasIndex = model.hasIndex === "true";
+          if (hasIndex) {
+            startingColumnIndex = 0;
+          }
 
           if (format === 'tabs') {
             sep = '\t';
@@ -168,7 +174,7 @@
             eol = '\r\n';
           }
 
-          for (i = 1; i < $scope.columns.length; i++) {
+          for (i = startingColumnIndex; i < $scope.columns.length; i++) {
             order = $scope.colorder[i];
             if (!$scope.table.column(order).visible()) {
               continue;
@@ -176,14 +182,18 @@
             if (out !== '') {
               out = out + sep;
             }
-            out = out + qot + fix($scope.columns[order].title) + qot;
+            var columnTitle
+                = (hasIndex && i === startingColumnIndex)
+                ? "Index"
+                : fix($scope.columns[order].title);
+            out = out + qot + columnTitle + qot;
           }
           out = out + eol;
 
           for (i = 0; i < data.length; i++) {
             var row = data[i];
             var some = false;
-            for (j = 1; j < row.length; j++) {
+            for (j = startingColumnIndex; j < row.length; j++) {
               order = $scope.colorder[j];
               if (!$scope.table.column(order).visible()) {
                 continue;
@@ -261,7 +271,34 @@
           //jscs:enable
         };
         $scope.doCopyToClipboard = function(idx) {
-          // this is handled by the invisible flash movie
+          var queryCommandEnabled = true;
+          try {
+            document.execCommand('Copy');
+          } catch (e) {
+            queryCommandEnabled = false;
+          }
+          if (!bkUtils.isElectron && queryCommandEnabled) {
+            var getTableData = function() {
+              var data = $scope.table.rows(function(index, data, node) {
+                return $scope.selected[index];
+              }).data();
+              if (data === undefined || data.length === 0) {
+                data = $scope.table.rows().data();
+              }
+              var out = $scope.exportTo(data, 'tabs');
+              return out;
+            }
+            var executeCopy = function (text) {
+              var input = document.createElement('textarea');
+              document.body.appendChild(input);
+              input.value = text;
+              input.select();
+              document.execCommand('Copy');
+              input.remove();
+            }
+            var data = getTableData();
+            executeCopy(data);
+          }
         };
 
         $scope.getCellIdx      =  [];
@@ -611,7 +648,7 @@
             // reorder the table data
             var model = $scope.model.getCellModel();
             $scope.doCreateData(model);
-            $scope.doCreateTable();
+            $scope.doCreateTable(model);
           }
         };
 
@@ -671,12 +708,35 @@
               }
             }
           }
+          
+          scope.hasIndex = model.hasIndex === 'true';
 
           // copy basic data
-          scope.columnNames = model.columnNames;
+          if (model.columnNames !== undefined)
+            scope.columnNames = model.columnNames.slice(0);
+          else
+            scope.columnNames = undefined;
           scope.timeStrings = model.timeStrings;
           scope.tz          = model.timeZone;
-          scope.types       = model.types;
+          if (model.types !== undefined)
+            scope.types = model.types.slice(0);
+          else
+            scope.types = undefined;
+          
+          if (scope.hasIndex) {
+            if (scope.columnNames !== undefined) {
+              scope.indexName = scope.columnNames[0];
+              scope.columnNames.shift();
+            } else {
+              scope.indexName = '     ';
+            }
+            if (scope.types !== undefined) {
+              scope.indexType = scope.types[0];
+              scope.types.shift();
+            } else {
+              scope.indexType = 'index';
+            }
+          }
 
           // compute how to display columns (remind: dummy column to keep server ordering)
           if (scope.savedstate !== undefined) {
@@ -714,22 +774,35 @@
             }
           }
           scope.doCreateData(model);
-          scope.doCreateTable();
+          scope.doCreateTable(model);
         };
 
         scope.doCreateData = function(model) {
-          // create a dummy column to keep server ordering
-          var data = [];
-          var r;
-          var selected = [];
-          for (r = 0; r < model.values.length; r++) {
-            var row = [];
-            row.push(r);
-            data.push(row.concat(model.values[r]));
-            selected.push(false);
+          // create a dummy column to keep server ordering if not already present
+          if (!scope.hasIndex) {
+            var data = [];
+            var r;
+            var selected = [];
+            for (r = 0; r < model.values.length; r++) {
+              var row = [];
+              row.push(r);
+              data.push(row.concat(model.values[r]));
+              selected.push(false);
+            }
+            scope.data = data;
+            scope.selected = selected;
+          } else {
+            var data = [];
+            var r;
+            var selected = [];
+            for (r = 0; r < model.values.length; r++) {
+              var row = [];
+              data.push(row.concat(model.values[r]));
+              selected.push(false);
+            }
+            scope.data = data;
+            scope.selected = selected;
           }
-          scope.data = data;
-          scope.selected = selected;
         };
         //jscs:disable
         scope.update_size = function() {
@@ -740,6 +813,8 @@
           if (pp.width() > me.width() + 16) {
             pp.width(me.width() + 16);
           }
+          if (scope.fixcols)
+            scope.fixcols.fnRedrawLayout();
         };
         //jscs:disable
         scope.update_selected = function() {
@@ -761,12 +836,23 @@
           });
         };
 
-        scope.doCreateTable = function() {
+        scope.doCreateTable = function(model) {
           var cols = [];
           var i;
 
           // build configuration
-          cols.push({'title' : '    ', 'className': 'dtright', 'render': scope.allConverters[1]});
+          var converter = scope.allConverters[1];
+          if (scope.hasIndex) {
+            for (var i = 0; i < scope.allTypes.length; i++) {
+              if (scope.allTypes[i].name === scope.indexType) {
+                converter = scope.allConverters[scope.allTypes[i].type];
+                break;
+              }
+            }
+            cols.push({'title' : scope.indexName+'&nbsp;&nbsp;', 'className': 'dtright', 'render': converter});
+          } else
+            cols.push({'title' : '    ', 'className': 'dtright', 'render': converter});
+
           for (i = 0; i < scope.columnNames.length; i++) {
             var type = scope.actualtype[i];
             var al = scope.actualalign[i];
@@ -899,13 +985,20 @@
             var out = scope.exportTo(data, 'tabs');
             return out;
           }
-          if ((!bkUtils.isElectron) && (scope.clipclient === undefined)) {
+
+          var queryCommandEnabled = true;
+          try {
+            document.execCommand('Copy');
+          } catch (e) {
+            queryCommandEnabled = false;
+          }
+
+          if ((!bkUtils.isElectron) && (scope.clipclient === undefined) && !queryCommandEnabled) {
             scope.clipclient = new ZeroClipboard();
             var d = document.getElementById(scope.id + '_dt_copy');
             scope.clipclient.clip(d);
-
             scope.clipclient.on('copy', function(event) {
-              var clipboard = event.clipboardData;
+              var clipboard = event.clipboardData;	
               clipboard.setData('text/plain', getTableData());
             });
           } else if (bkUtils.isElectron) {
@@ -1247,6 +1340,81 @@
  *  limitations under the License.
  */
 /**
+ * bkoResults
+ */
+(function() {
+  'use strict';
+  beaker.bkoDirective("GGVis", ["$interval", "$compile", "$sce", "bkOutputDisplayFactory", function(
+      $interval, $compile, $sce, bkOutputDisplayFactory) {
+    return {
+      template: '<div><iframe srcdoc="{{getStuff()}}" style="height: 450px; width: 650px; resize: both; overflow: auto; border: 0;"></iframe></div>',
+      link: function(scope, element, attrs) {
+        scope.header = '<!DOCTYPE html>' +
+          '<html>\n' +
+          '<head>\n' +
+          '<meta charset="utf-8"/>\n' +
+          '<script src="app/vendor/ggvis/lib/jquery/jquery.min.js"></script>\n' +
+          '<script src="app/vendor/ggvis/lib/detect-resize/jquery.resize.js"></script>\n' +
+          '<link href="app/vendor/ggvis/lib/jquery-ui/jquery-ui.min.css" rel="stylesheet" />\n' +
+          '<script src="app/vendor/ggvis/lib/jquery-ui/jquery-ui.min.js"></script>\n' +
+          '<script src="app/vendor/ggvis/lib/d3/d3.min.js"></script>\n' +
+          '<script src="app/vendor/ggvis/lib/vega/vega.min.js"></script>\n' +
+          '<script src="app/vendor/ggvis/lib/lodash/lodash.min.js"></script>\n' +
+          '<script>var lodash = _.noConflict();</script>\n' +
+          '<link href="app/vendor/ggvis/ggvis/css/ggvis.css" rel="stylesheet" />\n' +
+          '<script src="app/vendor/ggvis/ggvis/js/ggvis.js"></script>\n' +
+          '</head>\n' +
+          '<body style="background-color:white;">\n';
+        
+        scope.footer = '</body>\n' +
+          '</html>\n';
+        
+        scope.getModel = function() {
+          return scope.model.getCellModel();
+        };
+        scope.isShowOutput = function() {
+          return scope.model.isShowOutput();
+        };
+        scope.getStuff = function() {
+          if (scope.payload)
+            return $sce.trustAsHtml(scope.header+scope.payload.first+scope.payload.second+scope.footer);
+          return $sce.trustAsHtml(scope.header + scope.footer);
+        };
+        
+        scope.isShowMenu = function() { return false; };
+        scope.showoutput = scope.model.isShowOutput();        
+        scope.payload = scope.getModel();
+        
+        scope.$watch('getModel()', function() {
+          scope.payload = scope.getModel();
+        });
+
+        scope.$watch('isShowOutput()', function(oldval, newval) {
+          scope.showoutput = newval;
+        });
+
+      }
+    };
+  }]);
+  beaker.registerOutputDisplay("GGVis", ["GGVis", "Text"]);
+})();
+
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
  * bkoVega
  * This is the output display component for displaying vega JSON (http://trifacta.github.io/vega/).
  */
@@ -1323,13 +1491,20 @@
           datarange.yr = 1;
         }
 
+        var increaseRange = function(value){
+          return value + (value || 1) / 10;
+        };
+        var decreaseRange = function(value){
+          return value - (value || 1) / 10;
+        };
+
         if(datarange.xl === datarange.xr){
-          datarange.xl = datarange.xl - datarange.xl / 10;
-          datarange.xr = datarange.xr + datarange.xr / 10;
+          datarange.xl = decreaseRange(datarange.xl);
+          datarange.xr = increaseRange(datarange.xr);
         }
         if(datarange.yl === datarange.yr) {
-          datarange.yl = datarange.yl - datarange.yl / 10;
-          datarange.yr = datarange.yr + datarange.yr / 10;
+          datarange.yl = decreaseRange(datarange.yl);
+          datarange.yr = increaseRange(datarange.yr);
         }
 
         datarange.xspan = datarange.xr - datarange.xl;
@@ -1382,6 +1557,17 @@
           .style("stroke", function(d) { return d.stroke; })
           .style("stroke-dasharray", function(d) { return d.stroke_dasharray; });
         sel.data(scope.rpipeGridlines, function(d) { return d.id; })
+          .attr("x1", function(d) { return d.x1; })
+          .attr("x2", function(d) { return d.x2; })
+          .attr("y1", function(d) { return d.y1; })
+          .attr("y2", function(d) { return d.y2; });
+      },
+      plotTicks: function(scope){
+        scope.labelg.selectAll("line").remove();
+        scope.labelg.selectAll("line")
+          .data(scope.rpipeTicks, function(d) { return d.id; }).enter().append("line")
+          .attr("id", function(d) { return d.id; })
+          .attr("class", function(d) { return d.class; })
           .attr("x1", function(d) { return d.x1; })
           .attr("x2", function(d) { return d.x2; })
           .attr("y1", function(d) { return d.y1; })
@@ -1669,7 +1855,115 @@
 
       useYAxisR : function(model, data){
         var yAxisR = model.yAxisR;
-        return yAxisR && (yAxisR.axisLabel === data.yAxis || yAxisR.label === data.yAxis);
+        return yAxisR && yAxisR.label === data.yAxis;
+      },
+
+      getHighlightedSize : function(size, highlighted) {
+        return highlighted ? size + 2 : size;
+      },
+
+      getHighlightDuration : function() {
+        return 100;
+      },
+
+      getElementStyles : function(element){
+        var elementStyles = "";
+        var styleSheets = document.styleSheets;
+        for (var i = 0; i < styleSheets.length; i++) {
+          var cssRules = styleSheets[i].cssRules;
+          for (var j = 0; j < cssRules.length; j++) {
+            var cssRule = cssRules[j];
+            if (cssRule.style) {
+              try{
+                var childElements = element.querySelectorAll(cssRule.selectorText);
+                if (childElements.length > 0 || element.matches(cssRule.selectorText)) {
+                  elementStyles += cssRule.selectorText + " { " + cssRule.style.cssText + " }\n";
+                }
+              } catch(err) {
+                //just ignore errors
+                //http://bugs.jquery.com/ticket/13881#comment:1
+              }
+            }
+          }
+        }
+        return elementStyles;
+      },
+
+      addInlineStyles: function (element){
+        var styleEl = document.createElement('style');
+        styleEl.setAttribute('type', 'text/css');
+        styleEl.innerHTML = '<![CDATA[\n' + this.getElementStyles(element) + '\n]]>';
+
+        var defsEl = document.createElement('defs');
+        defsEl.appendChild(styleEl);
+        element.insertBefore(defsEl, element.firstChild);
+      },
+
+      download: function(url, fileName){
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        a.remove();
+      },
+
+      translate: function(jqelement, x, y){
+        var getNumber = function(str){
+          return parseFloat(str.substring(0, str.length - 2));
+        };
+        var transform = jqelement.css('transform');
+        var elementTranslate = { x: 0, y: 0 };
+        if(transform && transform.indexOf("translate") != -1){
+          var translate = transform.match(/translate(.*)/)[1].substring(1);
+          var translateValues = translate.substring(0, translate.indexOf(')')).split(", ");
+          elementTranslate.x = getNumber(translateValues[0]);
+          elementTranslate.y = getNumber(translateValues[1]);
+        }
+        jqelement.css("transform", "translate(" + (elementTranslate.x + x) + "px, " + (elementTranslate.y + y) + "px)")
+      },
+
+      translateChildren: function(element, x, y){
+        for (var j = 0; j < element.childElementCount; j++) {
+          var child = element.children[j];
+          if (child.nodeName.toLowerCase() !== 'defs') {
+            this.translate($(child), x, y);
+          }
+        }
+      },
+
+      addTitleToSvg: function(svg, jqtitle, titleSize){
+        d3.select(svg).insert("text", "g")
+          .attr("id", jqtitle.attr("id"))
+          .attr("class", jqtitle.attr("class"))
+          .attr("x", titleSize.width / 2)
+          .attr("y", titleSize.height)
+          .style("text-anchor", "middle")
+          .text(jqtitle.text());
+      },
+
+      drawPng: function(canvas, imgsrc, fileName){
+        var download = this.download;
+        var context = canvas.getContext("2d");
+        var image = new Image;
+        image.src = imgsrc;
+        image.onload = function () {
+          context.drawImage(image, 0, 0);
+          download(canvas.toDataURL("image/png"), fileName);
+          context.clearRect(0, 0, canvas.width, canvas.height);
+        };
+      },
+
+      getElementActualHeight: function(jqelement, withMargins){
+        var height;
+        if (jqelement.is(":visible")) {
+          height = jqelement.outerHeight(!!withMargins);
+        } else {
+          var hiddenParent = jqelement.parents(".ng-hide:first");
+          hiddenParent.removeClass("ng-hide");
+          height = jqelement.outerHeight(!!withMargins);
+          hiddenParent.addClass("ng-hide");
+        }
+        return height;
       }
     };
   };
@@ -1979,6 +2273,19 @@
       }
     };
 
+    PlotAuxBox.prototype.setHighlighted = function(scope, highlighted, gid) {
+      if(gid == null) {gid = "";}
+      var svg = scope.maing;
+      var groupid = this.id + "_" + gid;
+      var itemsvg = svg.select("#" + this.id);
+      var groupsvg = itemsvg.select("#" + groupid);
+      groupsvg.selectAll("rect")
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
+        .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
+        .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
+    };
+
     PlotAuxBox.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,
@@ -2112,6 +2419,20 @@
       }
     };
 
+    PlotAuxRiver.prototype.setHighlighted = function(scope, highlighted, gid) {
+      if(gid == null) { gid = ""; }
+      var svg = scope.maing;
+      var groupid = this.id + "_" + gid;
+      var itemsvg = svg.select("#" + this.id);
+
+      var groupsvg = itemsvg.select("#" + groupid);
+      groupsvg.selectAll("polygon")
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
+        .style("stroke-width", function(d) { return plotUtils.getHighlightedSize(d.st_w, highlighted); });
+    };
+
+
     PlotAuxRiver.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,
@@ -2228,6 +2549,20 @@
       }
     };
 
+    PlotAuxStem.prototype.setHighlighted = function(scope, highlighted, gid) {
+      if(gid == null) { gid = ""; }
+      var svg = scope.maing;
+      var props = this.itemProps;
+
+      var groupid = this.id + "_" + gid;
+      var itemsvg = svg.select("#" + this.id);
+
+      itemsvg.select("#" + groupid)
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
+        .style("stroke-width", plotUtils.getHighlightedSize(props.st_w, highlighted));
+    };
+
     PlotAuxStem.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,
@@ -2309,6 +2644,17 @@
     PlotLine.prototype.respR = 5;
     PlotLine.prototype.plotClass = "plot-line";
     PlotLine.prototype.respClass = "plot-resp plot-respdot";
+
+    PlotLine.prototype.setHighlighted = function(scope, highlighted) {
+      var svg = scope.maing;
+      var itemsvg = svg.select("#" + this.id);
+      itemsvg.selectAll("path")
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
+        .style("stroke-width", function(d) {
+          return plotUtils.getHighlightedSize(d.st_w, highlighted);
+        })
+    };
 
     PlotLine.prototype.format = function() {
       if (this.color != null) {
@@ -2562,6 +2908,16 @@
     PlotBar.prototype.plotClass = "plot-bar";
     PlotBar.prototype.respClass = "plot-resp";
 
+    PlotBar.prototype.setHighlighted = function(scope, highlighted) {
+      var itemsvg = scope.maing.select("#" + this.id);
+      itemsvg.selectAll("rect")
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
+        .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
+        .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
+
+    };
+
     PlotBar.prototype.format = function() {
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
@@ -2748,7 +3104,7 @@
       if (this.legend != null) {
         tip.title = this.legend;
       }
-      tip.x = plotUtils.getTipString(ele._x, xAxis, true);
+      tip.x = plotUtils.getTipString((ele._x + ele._x2) / 2, xAxis, true);
       tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
       tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
       return plotUtils.createTipString(tip);
@@ -2785,6 +3141,16 @@
 
     PlotStem.prototype.plotClass = "plot-stem";
     PlotStem.prototype.respClass = "plot-resp";
+
+    PlotStem.prototype.setHighlighted = function(scope, highlighted) {
+      var svg = scope.maing;
+      var props = this.itemProps
+
+      svg.select("#" + this.id)
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
+        .style("stroke-width", plotUtils.getHighlightedSize(props.st_w, highlighted));
+    };
 
     PlotStem.prototype.format = function() {
       if (this.color != null) {
@@ -3001,6 +3367,67 @@
     PlotArea.prototype.plotClass = "plot-area";
     PlotArea.prototype.respClass = "plot-resp plot-respstem";
 
+    PlotArea.prototype.setHighlighted = function(scope, highlighted) {
+
+      var getHighlightedSize = function(size) {
+        return highlighted ? size - 2 : size;
+      };
+
+      var mapX = scope.data2scrXi,
+        mapY = scope.data2scrYi;
+      var eles = this.elements,
+          eleprops = this.elementProps;
+      var pstr = "";
+
+      for (var i = this.vindexL; i <= this.vindexR; i++) {
+        var ele = eles[i];
+        var x = mapX(ele.x), y = mapY(ele.y), y2 = mapY(ele.y2);
+
+        if (plotUtils.rangeAssert([x, y, y2])) {
+          eleprops.length = 0;
+          return;
+        }
+
+        if (this.interpolation === "linear") {
+          pstr += x + "," + y + " ";
+        } else if (this.interpolation === "none" && i < this.vindexR) {
+          var ele2 = eles[i + 1];
+          var x2 = mapX(ele2.x);
+          if (Math.abs(x2) > 1E6) {
+            break;
+          }
+          pstr += x + "," + y + " " + x2 + "," + y + " ";
+        }
+      }
+
+      for (var i = this.vindexR; i >= this.vindexL; i--) {
+        var ele = eles[i];
+        var x = mapX(ele.x), y2 = mapY(ele.y2);
+
+        if (this.interpolation === "linear") {
+          pstr += x + "," + getHighlightedSize(y2) + " ";
+        } else if (this.interpolation === "none" && i < this.vindexR) {
+          var ele2 = eles[i + 1];
+          var x2 = mapX(ele2.x);
+
+          if (plotUtils.rangeAssert([x2])) {
+            eleprops.length = 0;
+            return;
+          }
+
+          pstr += x2 + "," + getHighlightedSize(y2) + " " + x + "," + getHighlightedSize(y2) + " ";
+        }
+      }
+
+      var svg = scope.maing;
+      var itemsvg = svg.select("#" + this.id);
+      itemsvg.select("polygon")
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
+        .attr("points", pstr);
+
+    };
+
     PlotArea.prototype.format = function(){
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
@@ -3040,7 +3467,7 @@
         xl : Infinity,
         xr : -Infinity,
         yl : Infinity,
-        yr : -Infinity,
+        yr : -Infinity
       };
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
@@ -3263,6 +3690,51 @@
     PlotPoint.prototype.respClass = "plot-resp";
     PlotPoint.prototype.shapes = ["rect", "diamond", "circle"];
     PlotPoint.prototype.svgtags = ["rect", "polygon", "circle"];
+
+    PlotPoint.prototype.setHighlighted = function(scope, highlighted) {
+
+      var svg = scope.maing;
+
+      var itemsvg = svg.select("#" + this.id);
+
+      for (var i = 0; i < this.shapes.length; i++) {
+        var shape = this.shapes[i],
+          tag = this.svgtags[i];
+
+        var shapesvg = itemsvg.select("#" + shape);
+
+        switch (shape) {
+          case "circle":
+            shapesvg.selectAll(tag)
+              .transition()
+              .duration(plotUtils.getHighlightDuration())
+              .attr("r", function(d) { return plotUtils.getHighlightedSize(d.r, highlighted); });
+            break;
+          case "diamond":
+            shapesvg.selectAll(tag)
+              .transition()
+              .duration(plotUtils.getHighlightDuration())
+              .attr("points", function(d) {
+                var mapX = scope.data2scrXi, mapY = scope.data2scrYi;
+                var ele = d.ele, x = mapX(ele.x), y = mapY(ele.y),
+                    s = plotUtils.getHighlightedSize(ele.size, highlighted);
+                var pstr = "";
+                pstr += (x - s) + "," + (y    ) + " ";
+                pstr += (x    ) + "," + (y - s) + " ";
+                pstr += (x + s) + "," + (y    ) + " ";
+                pstr += (x    ) + "," + (y + s) + " ";
+                return pstr;
+              });
+            break;
+          default:  // rect
+            shapesvg.selectAll(tag)
+              .transition()
+              .duration(plotUtils.getHighlightDuration())
+              .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
+              .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
+        }
+      }
+    };
 
     PlotPoint.prototype.format = function() {
       if (this.color != null) {
@@ -4311,6 +4783,17 @@
       }
     };
 
+    PlotLodLine.prototype.setHighlighted = function(scope, highlighted) {
+      var svg = scope.maing;
+      var itemsvg = svg.select("#" + this.id);
+      itemsvg.selectAll("path")
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
+        .style("stroke-width", function(d) {
+          return plotUtils.getHighlightedSize(d.st_w, highlighted);
+        })
+    };
+
     PlotLodLine.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,
@@ -4499,6 +4982,22 @@
       if (this.avgOn === true && pd.length > 0) {
         this.itemProps.d = pd;
       }
+    };
+
+    PlotLodRiver.prototype.setHighlighted = function(scope, highlighted, gid) {
+      if(gid == null) {gid = "";}
+      var svg = scope.maing;
+      var props = this.itemProps;
+
+      var groupid = this.id + "_" + gid;
+      var itemsvg = svg.select("#" + this.id);
+
+      var groupsvg = itemsvg.select("#" + groupid);
+
+      groupsvg.select("polygon")
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
+        .style("stroke-width", plotUtils.getHighlightedSize(props.st_w || 1, highlighted));
     };
 
     PlotLodRiver.prototype.draw = function(scope, gid) {
@@ -4692,6 +5191,19 @@
         }
         eleprops.push(prop);
       }
+    };
+
+    PlotLodBox.prototype.setHighlighted = function(scope, highlighted, gid) {
+      if(gid == null) {gid = "";}
+      var svg = scope.maing;
+      var groupid = this.id + "_" + gid;
+      var itemsvg = svg.select("#" + this.id);
+      var groupsvg = itemsvg.select("#" + groupid);
+      groupsvg.selectAll("rect")
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
+        .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
+        .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
     };
 
     PlotLodBox.prototype.draw = function(scope, gid) {
@@ -4897,6 +5409,49 @@
       }
     };
 
+    PlotLodPoint.prototype.setHighlighted = function(scope, highlighted, gid) {
+      if(gid == null) {gid = "";}
+      var svg = scope.maing;
+      var shape = this.shape;
+      var tag = this.svgtags[this.shapes.indexOf(shape)];
+
+      var groupid = this.id + "_" + gid;
+      var itemsvg = svg.select("#" + this.id);
+
+      var groupsvg = itemsvg.select("#" + groupid);
+
+      switch (shape) {
+        case "circle":
+          groupsvg.selectAll(tag)
+            .transition()
+            .duration(plotUtils.getHighlightDuration())
+            .attr("r", function(d) { return plotUtils.getHighlightedSize(d.r, highlighted); });
+          break;
+        case "diamond":
+          groupsvg.selectAll(tag)
+            .transition()
+            .duration(plotUtils.getHighlightDuration())
+            .attr("points", function(d) {
+              var mapX = scope.data2scrXi, mapY = scope.data2scrYi;
+              var ele = d.ele, x = mapX(ele.x), y = mapY(ele.y),
+                s = plotUtils.getHighlightedSize(ele.size, highlighted);
+              var pstr = "";
+              pstr += (x - s) + "," + (y    ) + " ";
+              pstr += (x    ) + "," + (y - s) + " ";
+              pstr += (x + s) + "," + (y    ) + " ";
+              pstr += (x    ) + "," + (y + s) + " ";
+              return pstr;
+            });
+          break;
+        default:  // rect
+          groupsvg.selectAll(tag)
+            .transition()
+            .duration(plotUtils.getHighlightDuration())
+            .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
+            .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
+      }
+    };
+
     PlotLodPoint.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,
@@ -5086,6 +5641,20 @@
         }
         eleprops.push(prop);
       }
+    };
+
+    PlotLodStem.prototype.setHighlighted = function(scope, highlighted, gid) {
+      if(gid == null) { gid = ""; }
+      var svg = scope.maing;
+      var props = this.itemProps;
+
+      var groupid = this.id + "_" + gid;
+      var itemsvg = svg.select("#" + this.id);
+
+      itemsvg.select("#" + groupid)
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
+        .style("stroke-width", plotUtils.getHighlightedSize(props.st_w, highlighted));
     };
 
     PlotLodStem.prototype.draw = function(scope, gid) {
@@ -5324,6 +5893,14 @@
         this.lodplotter.render(scope, this.elementSamples);
       } else {
         this.plotter.render(scope);
+      }
+    };
+
+    PlotLineLodLoader.prototype.setHighlighted = function(scope, highlighted) {
+      if (this.lodOn === true) {
+        this.lodplotter.setHighlighted(scope, highlighted);
+      } else {
+        this.plotter.setHighlighted(scope, highlighted);
       }
     };
 
@@ -5594,6 +6171,20 @@
         this.auxplotter.render(scope, this.elementAuxes, "a");
         this.lodplotter.render(scope, this.elementSamples, "yBtm");
         this.lodplotter2.render(scope, this.elementSamples2, "yTop");
+      }
+    };
+
+    PlotAreaLodLoader.prototype.setHighlighted = function(scope, highlighted) {
+      if (this.lodOn === true) {
+        if (this.lodType === "area") {
+          this.lodplotter.setHighlighted(scope, highlighted);
+        } else if (this.lodType === "river") {
+          this.auxplotter.setHighlighted(scope, highlighted, "a");
+          this.lodplotter.setHighlighted(scope, highlighted, "yBtm");
+          this.lodplotter2.setHighlighted(scope, highlighted, "yTop");
+        }
+      } else {
+        this.plotter.setHighlighted(scope, highlighted);
       }
     };
 
@@ -5907,6 +6498,20 @@
         }
       } else {
         this.plotter.render(scope);
+      }
+    };
+
+    PlotBarLodLoader.prototype.setHighlighted = function(scope, highlighted) {
+      if (this.lodOn === true) {
+        if (this.lodType === "bar") {
+          this.lodplotter.setHighlighted(scope, highlighted);
+        } else if (this.lodType === "box") {
+          this.auxplotter.setHighlighted(scope, highlighted, "a");
+          this.lodplotter.setHighlighted(scope, highlighted, "yBtm");
+          this.lodplotter2.setHighlighted(scope, highlighted, "yTop");
+        }
+      } else {
+        this.plotter.setHighlighted(scope, highlighted);
       }
     };
 
@@ -6232,6 +6837,20 @@
       }
     };
 
+    PlotStemLodLoader.prototype.setHighlighted = function(scope, highlighted) {
+      if (this.lodOn === true) {
+        if (this.lodType === "stem") {
+          this.lodplotter.setHighlighted(scope, highlighted);
+        } else if (this.lodType === "stem+" || this.lodType === "box") {
+          this.auxplotter.setHighlighted(scope, highlighted, "a");
+          this.lodplotter.setHighlighted(scope, highlighted, "yBtm");
+          this.lodplotter2.setHighlighted(scope, highlighted, "yTop");
+        }
+      } else {
+        this.lodplotter.setHighlighted(scope, highlighted);
+      }
+    };
+
     PlotStemLodLoader.prototype.getRange = function(){
       return this.plotter.getRange();
     };
@@ -6521,6 +7140,14 @@
       }
     };
 
+    PlotPointLodLoader.prototype.setHighlighted = function(scope, highlighted) {
+      if (this.lodOn === true) {
+        this.lodplotter.setHighlighted(scope, highlighted);
+      } else {
+        this.plotter.setHighlighted(scope, highlighted);
+      }
+    };
+
     PlotPointLodLoader.prototype.getRange = function(){
       return this.plotter.getRange();
     };
@@ -6653,14 +7280,14 @@
       this.axisType = type == null ? "linear" : type; // linear, log, time, [nanotime, category]
       this.axisBase = 10;
       this.axisTime = 0;
-      this.axisTimezone = "America/New_York";
+      this.axisTimezone = "UTC";
       this.axisValL = 0;
       this.axisValR = 1;
       this.axisValSpan = 1;
       this.axisPctL = 0;
       this.axisPctR = 1;
       this.axisPctSpan = 1;
-      this.axisLabel = "";
+      this.label = "";
       this.axisGridlines = [];
       this.axisGridlineLabels = [];
       this.axisStep = 1;
@@ -6691,7 +7318,7 @@
       return Math.pow(this.axisBase, pct * this.axisValSpan + this.axisValL);
     };
     PlotAxis.prototype.setLabel = function(label) {
-      this.axisLabel = label;
+      this.label = label;
     };
     PlotAxis.prototype.setRange = function(vl, vr, para) {
       if (vl != null) { this.axisValL = vl; }
@@ -6787,7 +7414,7 @@
         return fixs[i];
       };
 
-      while (diff === mindiff) {
+      while (diff === mindiff && w !== Infinity) {
         w = calcW(i, this.axisType);
         f = calcF(i, this.axisType);
 
@@ -6815,7 +7442,12 @@
       );
 
       this.axisGridlines = lines;
-      this.axisGridlineLabels = labels;
+      this.axisGridlineLabels = labels.labels;
+      if (labels.common !== ''){
+        this.axisLabelWithCommon = this.label ? this.label + ' ' + labels.common : labels.common;
+      }else{
+        this.axisLabelWithCommon = this.label;
+      }
 
 
     };
@@ -6856,11 +7488,60 @@
           span = YEAR - 1;
         }
 
-        labels = this.calcLabels(lines, span, axisType);
+        return this.calcLabels(lines, span, axisType);
       }
 
-      return labels;
+      var calcCommonPart = function () {
+        var common = '';
 
+        if (axisType === "time" && span >= HOUR && labels.length > 1) {
+
+          var tokens = labels[0].split(' ');
+
+          var index = 0;
+
+          var checkCommon = function (index) {
+
+            var substring =  (common != '') ? common + ' ' + tokens[index] : tokens[index];
+            for (i = 1; i < labels.length; i++) {
+              if (substring !== labels[i].substring(0, substring.length)) {
+                return false;
+              }
+            }
+            return true;
+          };
+
+          while(checkCommon(index)){
+            common = (common != '') ? common + ' ' + tokens[index] : tokens[index];
+            index = index+1;
+          }
+
+          if (common.length > 1) {
+
+            for (i = 1; i < labels.length; i++) {
+              var label = labels[i];
+              if (common != label.substring(0, common.length)) {
+                common = '';
+                break;
+              }
+            }
+          }
+
+          if (common.length > 1) {
+            for (i = 0; i < labels.length; i++) {
+              labels[i] = labels[i].replace(common, '').trim();
+            }
+          }
+          common = common.replace(',', '').trim();
+        }
+
+        return common;
+      };
+
+      return {
+          common : calcCommonPart(),
+          labels : labels
+        };
     };
 
     PlotAxis.prototype.getGridlines = function() { return _.without(this.axisGridlines); };
@@ -6880,7 +7561,7 @@
     PlotAxis.prototype.getString = function(pct, span) {
       if (this.axisType != "time" && this.axisType != "nanotime") {
         if (this.axisType === "log") {
-          return "" + this.axisBase + "^" + this.getValue(pct).toFixed(this.axisFixed);
+          return "" + Math.pow(this.axisBase, this.getValue(pct)).toFixed(this.axisFixed);
         } else {
           return "" + this.getValue(pct).toFixed(this.axisFixed);
         }
@@ -6910,9 +7591,9 @@
       } else if (span <= HOUR) {
         ret = moment(d).tz(this.axisTimezone).format("HH:mm:ss");
       } else if (span <= DAY) {
-        ret = moment(d).tz(this.axisTimezone).format("MMM DD ddd, HH:mm");
+        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD ddd, HH:mm");
       } else if (span <= MONTH) {
-        ret = moment(d).tz(this.axisTimezone).format("MMM DD ddd");
+        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD ddd");
       } else if (span <= YEAR) {
         ret = moment(d).tz(this.axisTimezone).format("YYYY MMM");
       } else {
@@ -7134,7 +7815,7 @@
             }
           };
 
-          updateAxisSettings(model.rangeAxes[0], yAxisRSettings);
+          updateAxisSettings(model.rangeAxes[0], yAxisSettings);
           if(model.rangeAxes.length > 1){
             updateAxisSettings(model.rangeAxes[1], yAxisRSettings);
           }
@@ -7279,8 +7960,8 @@
             item.shape = this.pointShapeMap[item.shape];
           }
 
-          var axisSettings = plotUtils.useYAxisR(newmodel, item) ? yAxisRSettings : yAxisSettings;
-          if (item.base != null && axisSettings.logy) {
+          var yAxisSettings = plotUtils.useYAxisR(newmodel, item) ? yAxisRSettings : yAxisSettings;
+          if (item.base != null && yAxisSettings.logy) {
             if (item.base === 0) {
               item.base = 1;
             }
@@ -7293,7 +7974,8 @@
             ele.y = item.y[j];
 
             // discard NaN entries
-            if (ele.x === "NaN" || ele.y === "NaN")
+            if (ele.x === "NaN" || ele.y === "NaN" ||
+              logx && ele.x <= 0 || yAxisSettings.logy && ele.y <= 0 )
               continue;
 
             if (item.colors != null) {
@@ -7487,7 +8169,7 @@
         var updateYAxisRange = function(modelAxis, axisVRange){
           if(modelAxis == null || axisVRange == null) { return null; }
 
-          var axisLabel = modelAxis.label;
+          var label = modelAxis.label;
 
           var axis = new PlotAxis(modelAxis.type);
 
@@ -7497,8 +8179,8 @@
             axis.setRange(axisVRange.yl, axisVRange.yr, modelAxis.timezone);
           }
 
-          if (axisLabel != null) {
-            axis.setLabel(axisLabel);
+          if (label != null) {
+            axis.setLabel(label);
           }
           return axis;
         };
@@ -7997,10 +8679,10 @@
           var newplotmodel = plotFormatter.standardizeModel(plotmodel, prefs);
 
           if (i < plots.length - 1) {  // turn off x coordinate labels
-            newplotmodel.xAxis.axisLabel = null;
+            newplotmodel.xAxis.label = null;
             newplotmodel.xAxis.showGridlineLabels = false;
           } else {
-            newplotmodel.xAxis.axisLabel = newmodel.xAxisLabel;
+            newplotmodel.xAxis.label = newmodel.xAxisLabel;
           }
 
           newplotmodel.plotSize.width = width;
@@ -8042,6 +8724,7 @@
     var CELL_TYPE = "bko-plot";
     return {
       template :
+          "<canvas></canvas>" +
           "<div id='plotTitle' class='plot-title'></div>" +
           "<div id='plotLegendContainer' class='plot-plotlegendcontainer' oncontextmenu='return false;'>" +
           "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
@@ -8107,14 +8790,21 @@
         scope.initLayout = function() {
           var model = scope.stdmodel;
 
+          element.find(".ui-icon-gripsmall-diagonal-se")
+            .removeClass("ui-icon-gripsmall-diagonal-se")
+            .addClass("ui-icon-grip-diagonal-se");
+
           // hook container to use jquery interaction
           scope.container = d3.select(element[0]).select("#plotContainer");
           scope.jqcontainer = element.find("#plotContainer");
           scope.jqlegendcontainer = element.find("#plotLegendContainer");
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
+          scope.canvas = element.find("canvas")[0];
 
-          var plotSize = model.plotSize;
+          scope.canvas.style.display="none";
+
+          var plotSize = scope.plotSize;
           scope.jqcontainer.css(plotSize);
           scope.jqsvg.css(plotSize);
 
@@ -8155,8 +8845,8 @@
             y : 10
           };
           scope.intervalStepHint = {
-            x : 105,
-            y : 50
+            x : 75,
+            y : 30
           };
           scope.numIntervals = {
             x: parseInt(plotSize.width) / scope.intervalStepHint.x,
@@ -8168,12 +8858,18 @@
             y : -1
           };
 
+          scope.gridlineTickLength = 3;
+
           var factor = 2.0;
-          if (model.xAxis.axisLabel == null) { factor -= 1.0; }
+          if (model.xAxis.label == null) { factor -= 1.0; }
           if (model.xAxis.showGridlineLabels === false) { factor -= 1.0; }
           scope.layout.bottomLayoutMargin += scope.fonts.labelHeight * factor;
 
-          if (model.yAxis.axisLabel != null) {
+          if (model.yAxis.showGridlineLabels !== false) {
+            scope.layout.topLayoutMargin += scope.fonts.labelHeight / 2;
+          }
+
+          if (model.yAxis.label != null) {
             scope.layout.leftLayoutMargin += scope.fonts.labelHeight;
           }
           if(model.yAxisR != null) {
@@ -8496,32 +9192,32 @@
             }
           }
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
-          if (model.xAxis.axisLabel != null) {
+          if (model.xAxis.label != null) {
             scope.rpipeTexts.push({
               "id" : "xlabel",
               "class" : "plot-xylabel",
-              "text" : model.xAxis.axisLabel,
+              "text" : model.xAxis.axisLabelWithCommon,
               "x" : lMargin + (scope.jqsvg.width() - lMargin) / 2,
               "y" : scope.jqsvg.height() - scope.fonts.labelHeight
             });
           }
-          if (model.yAxis.axisLabel != null) {
+          if (model.yAxis.label != null) {
             var x = scope.fonts.labelHeight * 2, y = (scope.jqsvg.height() - bMargin) / 2;
             scope.rpipeTexts.push({
               "id" : "ylabel",
               "class" : "plot-xylabel",
-              "text" : model.yAxis.axisLabel,
+              "text" : model.yAxis.label,
               "x" : x,
               "y" : y,
               "transform" : "rotate(-90 " + x + " " + y + ")"
             });
           }
-          if (model.yAxisR && model.yAxisR.axisLabel != null) {
+          if (model.yAxisR && model.yAxisR.label != null) {
             var x = scope.jqsvg.width() - scope.fonts.labelHeight, y = (scope.jqsvg.height() - bMargin) / 2;
             scope.rpipeTexts.push({
               "id" : "yrlabel",
               "class" : "plot-xylabel",
-              "text" : model.yAxisR.axisLabel,
+              "text" : model.yAxisR.label,
               "x" : x,
               "y" : y,
               "transform" : "rotate(-90 " + x + " " + y + ")"
@@ -8529,13 +9225,65 @@
           }
         };
 
+        scope.renderGridlineTicks = function() {
+          var tickLength = scope.gridlineTickLength;
+          var mapX = scope.data2scrX, mapY = scope.data2scrY;
+          var focus = scope.focus;
+          var model = scope.stdmodel;
+          if (model.xAxis.showGridlineLabels !== false) {
+            var lines = model.xAxis.getGridlines(),
+              labels = model.xAxis.getGridlineLabels();
+            for (var i = 0; i < labels.length; i++) {
+              var x = lines[i];
+              scope.rpipeTicks.push({
+                "id" : "tick_x_" + i,
+                "class" : "plot-tick",
+                "x1" : mapX(x),
+                "y1" : mapY(focus.yl),
+                "x2" : mapX(x),
+                "y2" : mapY(focus.yl) + tickLength
+              });
+            }
+          }
+          if (model.yAxis.showGridlineLabels !== false) {
+            lines = model.yAxis.getGridlines();
+            labels = model.yAxis.getGridlineLabels();
+            for (var i = 0; i < labels.length; i++) {
+              var y = lines[i];
+              scope.rpipeTicks.push({
+                "id" : "tick_y_" + i,
+                "class" : "plot-tick",
+                "x1" : mapX(focus.xl) - tickLength,
+                "y1" : mapY(y),
+                "x2" : mapX(focus.xl),
+                "y2" : mapY(y)
+              });
+            }
+          }
+          if (model.yAxisR && model.yAxisR.showGridlineLabels !== false) {
+            lines = model.yAxisR.getGridlines();
+            labels = model.yAxisR.getGridlineLabels();
+            for (var i = 0; i < labels.length; i++) {
+              var y = lines[i];
+              scope.rpipeTicks.push({
+                "id" : "tick_yr_" + i,
+                "class" : "plot-tick",
+                "x1" : mapX(focus.xr),
+                "y1" : mapY(y),
+                "x2" : mapX(focus.xr) + tickLength,
+                "y2" : mapY(y)
+              });
+            }
+          }
+        };
+
         scope.renderCursor = function(e) {
           var x = e.offsetX, y = e.offsetY;
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin,
-              rMargin = scope.layout.rightLayoutMargin;
+              rMargin = scope.layout.rightLayoutMargin, tMargin = scope.layout.topLayoutMargin;
           var model = scope.stdmodel;
-          if (x < lMargin || model.yAxisR != null && x > W - rMargin || y > H - bMargin) {
+          if (x < lMargin || model.yAxisR != null && x > W - rMargin || y > H - bMargin || y < tMargin) {
             scope.svg.selectAll(".plot-cursor").remove();
             scope.jqcontainer.find(".plot-cursorlabel").remove();
             return;
@@ -8551,7 +9299,7 @@
               .style("stroke-width", opt.width)
               .style("stroke-dasharray", opt.stroke_dasharray);
             scope.svg.select("#cursor_x")
-              .attr("x1", x).attr("y1", 0).attr("x2", x).attr("y2", H - bMargin);
+              .attr("x1", x).attr("y1", tMargin).attr("x2", x).attr("y2", H - bMargin);
 
             scope.jqcontainer.find("#cursor_xlabel").remove();
             var label = $("<div id='cursor_xlabel' class='plot-cursorlabel'></div>")
@@ -8861,9 +9609,20 @@
             if (!scope.legendMergedLines.hasOwnProperty(id)) { continue; }
             var line = scope.legendMergedLines[id];
             if (line.legend == null || line.legend === "") { continue; }
+            var highlightTimeoutId;
             var unit = $(legendLineUnit).appendTo(legend)
               .attr("id", "legend_" + id)
-              .addClass("plot-legendline");
+              .addClass("plot-legendline")
+              .mouseenter(function(e){
+                var legendLine = $(this)[0];
+                highlightTimeoutId = setTimeout(function(){
+                  scope.highlightElements(legendLine.id.split("_")[1], true);
+                }, 300);
+              })
+              .mouseleave(function(e){
+                clearTimeout(highlightTimeoutId);
+                scope.highlightElements($(this)[0].id.split("_")[1], false);
+              });
             if(!scope.stdmodel.omitCheckboxes){
               // checkbox
               $("<input type='checkbox'></input>")
@@ -8989,6 +9748,18 @@
             if(["TOP_LEFT", "BOTTOM_LEFT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
               scope.jqcontainer.css("margin-left", legendScrollableContainer.width() + margin);
             }
+          }
+        };
+
+        scope.highlightElements = function(legendId, highlight){
+
+          if(!legendId) { return; }
+
+          var elementsIds = scope.legendMergedLines[legendId].dataIds;
+          for(var i=0; i<elementsIds.length; i++){
+            var id = elementsIds[i];
+            var data = scope.stdmodel.data[id];
+            data.setHighlighted(scope, highlight);
           }
         };
 
@@ -9414,6 +10185,7 @@
 
           scope.rpipeGridlines = [];
           scope.rpipeTexts = [];
+          scope.rpipeTicks = [];
         };
         scope.enableZoom = function() {
           scope.svg.call(scope.zoomObj.on("zoomstart", function(d) {
@@ -9479,6 +10251,15 @@
         scope.standardizeData = function() {
           var model = scope.model.getCellModel();
           scope.stdmodel = plotFormatter.standardizeModel(model, scope.prefs);
+          model.getSvgToSave = function(){
+            return scope.getSvgToSave();
+          };
+          model.saveAsSvg = function(){
+            return scope.saveAsSvg();
+          };
+          model.saveAsPng = function(){
+            return scope.saveAsPng();
+          };
         };
 
         scope.dumpState = function() {
@@ -9496,7 +10277,7 @@
           state.showItem = [];
           var data = scope.stdmodel.data;
           for (var i = 0; i < data.length; i++) {
-            state.lodOn[i] = data[i].lodType;
+            state.lodOn[i] = data[i].lodOn;
             state.lodType[i] = data[i].lodType;
             state.lodAuto[i] = data[i].lodAuto;
             state.zoomHash[i] = data[i].zoomHash;
@@ -9515,11 +10296,13 @@
           scope.focus = state.focus;
           var data = scope.stdmodel.data;
           for (var i = 0; i < data.length; i++) {
-            data[i].lodOn = state.lodOn[i];
-            if (state.lodOn[i]) {
-              data[i].applyLodType(state.lodType[i]);
-              data[i].applyLodAuto(state.lodAuto[i]);
-              data[i].applyZoomHash(state.zoomHash[i]);
+            if(data[i].isLodItem === true){
+              data[i].lodOn = state.lodOn[i];
+              if (state.lodOn[i]) {
+                data[i].applyLodType(state.lodType[i]);
+                data[i].applyLodAuto(state.lodAuto[i]);
+                data[i].applyZoomHash(state.zoomHash[i]);
+              }
             }
             data[i].showItem = state.showItem[i];
           }
@@ -9595,7 +10378,7 @@
         };
 
         scope.update = function(first) {
-          if (scope.model.isShowOutput() === false) {
+          if (scope.model.isShowOutput !== undefined && scope.model.isShowOutput() === false) {
             return;
           }
 
@@ -9606,8 +10389,10 @@
 
           scope.renderData();
           scope.renderGridlineLabels();
+          scope.renderGridlineTicks();
           scope.renderCoverBox(); // redraw
           plotUtils.plotLabels(scope); // redraw
+          plotUtils.plotTicks(scope); // redraw
 
           scope.renderTips();
           scope.renderLocateBox(); // redraw
@@ -9644,17 +10429,19 @@
         });
 
         scope.getCellWidth = function () {
-          return scope.container.node().getBoundingClientRect().width;
+          return scope.jqcontainer.width();
         };
 
         scope.getCellHeight= function () {
-          return scope.container.node().getBoundingClientRect().height;
+          return scope.jqcontainer.height();
         };
 
         var watchCellSize = function () {
-          scope.plotSize.width = scope.getCellWidth();
-          scope.plotSize.height = scope.getCellHeight();
-          scope.setDumpState(scope.dumpState());
+          if (!scope.model.isShowOutput || (scope.model.isShowOutput && scope.model.isShowOutput() === true)) {
+            scope.plotSize.width = scope.getCellWidth();
+            scope.plotSize.height = scope.getCellHeight();
+            scope.setDumpState(scope.dumpState());
+          }
         };
 
         scope.$watch('getCellWidth()', function () {
@@ -9676,7 +10463,49 @@
           scope.setDumpState(scope.dumpState());
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
+          scope.jqlegendcontainer.find(".plot-legendscrollablecontainer").remove();
         });
+
+        scope.getSvgToSave = function(){
+          var svg = scope.svg
+            .node()
+            .cloneNode(true);
+          svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+          svg.setAttribute('class', 'svg-export');
+
+          var plotTitle = scope.jqplottitle;
+          var titleOuterHeight = plotUtils.getElementActualHeight(plotTitle, true);
+
+          plotUtils.translateChildren(svg, 0, titleOuterHeight);
+          plotUtils.addTitleToSvg(svg, plotTitle, {
+            width: plotTitle.width(),
+            height: plotUtils.getElementActualHeight(plotTitle)
+          });
+          plotUtils.addInlineStyles(svg);
+
+          svg.setAttribute("width",  scope.jqcontainer.outerWidth(true));
+          svg.setAttribute("height", scope.jqcontainer.outerHeight(true) + titleOuterHeight);
+
+          return svg;
+        };
+
+        scope.saveAsSvg = function() {
+          var html = scope.getSvgToSave().outerHTML;
+          var fileName = _.isEmpty(scope.stdmodel.title) ? 'plot' : scope.stdmodel.title;
+          plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), fileName + ".svg");
+        };
+
+        scope.saveAsPng = function() {
+          var svg = scope.getSvgToSave();
+
+          scope.canvas.width = svg.getAttribute("width");
+          scope.canvas.height = svg.getAttribute("height");
+
+          var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.outerHTML)));
+          var fileName = _.isEmpty(scope.stdmodel.title) ? 'plot' : scope.stdmodel.title;
+          plotUtils.drawPng(scope.canvas, imgsrc, fileName + ".png");
+        };
+
       }
     };
   };
@@ -9704,6 +10533,9 @@
 
   (function ($) {
     $.widget("custom.combobox", {
+      options: {
+        change: null
+      },
       _create: function () {
         this.editable = this.element.attr('easyform-editable') === 'true';
         this.wrapper = $("<span>")
@@ -9758,6 +10590,9 @@
             this._trigger("select", event, {
               item: ui.item.option
             });
+            if ($.isFunction(this.options.change)) {
+              this.options.change(ui.item.option.value);
+            }
           }
         });
       },
@@ -9870,7 +10705,11 @@
         scope[scope.ngModelAttr] = component.value;
       }
 
-      scope.$watch(this.watchedExpression, this.valueChangeHandler, this.isWatchByObjectEquality());
+      if (scope.evaluatorExist) {
+        scope.$watch(this.watchedExpression,
+            this.valueChangeHandler,
+            this.isWatchByObjectEquality());
+      }
       this.addUpdatedListener();
       this.addValueLoadedListener();
     };
@@ -10163,7 +11002,7 @@
                 var editable = efc.getComponent().editable
                     && efc.getComponent().editable === 'true';
                 comboBox.attr('easyform-editable', editable);
-                element.find( ".combo-box[ng-model=\"" + scope.ngModelAttr + "\"]" ).combobox();
+                comboBox.combobox({change : efc.valueChangeHandler});
                 if (editable && efc.getComponent().width
                     && parseInt(efc.getComponent().width)
                         > efc.constants.Components.ComboBox.MIN_WIDTH) {
@@ -10396,11 +11235,12 @@
             restrict: "E",
             template:
                 "<div class='button-component-container'>" +
-                  "<button type='button' class='button-component' " +
+                  "<button type='button' class='btn btn-default' " +
                   "ng-disabled='!component.enabled'/>" +
                 "</div>",
             link: function (scope, element, attrs) {
               var component = scope.component;
+              scope.component.enabled = component.enabled && scope.evaluatorExist;
 
               var executeCellWithTag = function () {
                 var cellOp = bkSessionManager.getNotebookCellOp();
@@ -10426,12 +11266,11 @@
                 });
               };
 
-              var buttonComponent = element.find('.button-component');
+              var buttonComponent = element.find('div.button-component-container button');
 
               if (EasyFormConstants.Components.ButtonComponent.type == component.type) {
                 buttonComponent.text(component.label);
-
-                if (component.tag) {
+                if (component.tag && scope.evaluatorExist) {
                   buttonComponent.attr('title', component.tag).on('click', executeCellWithTag);
                 }
               } else if (EasyFormConstants.Components.SaveValuesButton.type == component.type) {
@@ -10464,6 +11303,8 @@
             template: "<div class='easy-form-container'></div>",
 
             controller: function ($scope) {
+              $scope.evaluatorExist = $scope.model.getEvaluatorId && $scope.model.getEvaluatorId();
+
               $scope.getUpdateService = function () {
                 if (window !== undefined && window.languageUpdateService !== undefined
                     && bkEvaluatorManager.getEvaluator($scope.model.getEvaluatorId()) !== undefined)
@@ -10493,7 +11334,9 @@
               };
 
               $scope.fetchFromCellModel = function (model, element) {
-                $scope.ingestUpdate(model);
+                if ($scope.evaluatorExist) {
+                  $scope.ingestUpdate(model);
+                }
                 var easyFormContainer = element.find('.easy-form-container');
 
                 if (model.caption) {
@@ -10509,7 +11352,10 @@
                     var childScope = $scope.$new();
                     childScope.component = component;
                     childScope.formId = $scope.update_id;
-                    childScope.evaluatorId = $scope.model.getEvaluatorId();
+                    childScope.evaluatorExist = $scope.evaluatorExist;
+                    if ($scope.evaluatorExist) {
+                      childScope.evaluatorId = $scope.model.getEvaluatorId();
+                    }
                     var newElement
                         = angular.element(EasyFormConstants.Components[component.type].htmlTag);
                     childScope.component.enabled = childScope.component.enabled ? true : false;
@@ -10580,7 +11426,7 @@
 
               $scope.$on('$destroy', function () {
                 $(window).off('resize', $scope.alignComponents);
-                if ($scope.subscribedId) {
+                if ($scope.evaluatorExist && $scope.subscribedId) {
                   var srv = $scope.getUpdateService();
                   if (srv !== undefined) {
                     srv.unsubscribe($scope.subscribedId);
@@ -10723,7 +11569,9 @@
   var retfunc = function(plotUtils, combinedplotFormatter, bkCellMenuPluginManager) {
     var CELL_TYPE = "bko-combinedplot";
     return {
-      template :  "<div id='combplotTitle' class='plot-title'></div>" +
+      template :
+          "<canvas></canvas>" +
+          "<div id='combplotTitle' class='plot-title'></div>" +
           "<div id='combplotContainer' class='combplot-plotcontainer'>" +
           "<bk-output-display type='Plot' ng-repeat='m in models' model='m'></bk-output-display>" +
           "</div>",
@@ -10737,16 +11585,25 @@
         });
       },
       link : function(scope, element, attrs) {
+        scope.canvas = element.find("canvas")[0];
+        scope.canvas.style.display="none";
+
         scope.initLayout = function() {
           var model = scope.stdmodel;
           if (model.title != null) {
-            element.find("#combplotTitle").text(model.title).css("width", scope.width);
+            element.find("#combplotTitle").text(model.title).css("width", scope.width || scope.stdmodel.plotSize.width);
           }
         };
 
         scope.standardizeData = function() {
           var model = scope.model.getCellModel();
           scope.stdmodel = combinedplotFormatter.standardizeModel(model, scope.prefs);
+          model.saveAsSvg = function(){
+            return scope.saveAsSvg();
+          };
+          model.saveAsPng = function(){
+            return scope.saveAsPng();
+          };
         };
 
         scope.prepareSavedState = function(state) {
@@ -10905,6 +11762,47 @@
         scope.$watch('getCellModel()', function() {
           scope.init();
         });
+
+        scope.getSvgToSave = function(){
+          var plots = scope.stdmodel.plots;
+
+          var combinedSvg = $("<svg></svg>").attr('xmlns', 'http://www.w3.org/2000/svg').attr('class', 'svg-export');
+
+          var plotTitle = element.find("#combplotTitle");
+
+          plotUtils.addTitleToSvg(combinedSvg[0], plotTitle, {
+            width: plotTitle.width(),
+            height: plotUtils.getElementActualHeight(plotTitle)
+          });
+
+          var combinedSvgHeight = plotUtils.getElementActualHeight(plotTitle, true);
+          for (var i = 0; i < plots.length; i++) {
+            var svg = plots[i].getSvgToSave();
+            plotUtils.translateChildren(svg, 0, combinedSvgHeight);
+            combinedSvgHeight += $(svg).outerHeight(true);
+            combinedSvg.append(svg.children);
+          }
+          combinedSvg.attr("width", scope.width || scope.stdmodel.plotSize.width);
+          combinedSvg.attr("height", combinedSvgHeight);
+          return combinedSvg[0];
+        };
+
+        scope.saveAsSvg = function() {
+          var html = scope.getSvgToSave().outerHTML;
+          var fileName = _.isEmpty(scope.stdmodel.title) ? 'combinedplot' : scope.stdmodel.title;
+          plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), fileName + '.svg');
+        };
+
+        scope.saveAsPng = function() {
+          var svg = scope.getSvgToSave();
+
+          scope.canvas.width = svg.getAttribute("width");
+          scope.canvas.height = svg.getAttribute("height");
+
+          var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.outerHTML)));
+          var fileName = _.isEmpty(scope.stdmodel.title) ? 'combinedplot' : scope.stdmodel.title;
+          plotUtils.drawPng(scope.canvas, imgsrc, fileName + '.png');
+        };
 
       }
     };

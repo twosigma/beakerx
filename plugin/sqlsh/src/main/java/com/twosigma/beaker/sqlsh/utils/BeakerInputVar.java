@@ -56,7 +56,7 @@ public class BeakerInputVar {
           return;
         }
       }
-    } else if (a > b) {
+    } else if (a > b && b >=0) {
       errorMessage = "unexpected token ']': " + var;
       return;
     } else if (a >= 0) {

@@ -25,7 +25,8 @@ os.chdir(os.path.dirname(self_path))
 
 if os.name == 'nt':
     bin = "bin\\clojure"
+    subprocess.call([bin, port], shell=True, stderr = subprocess.PIPE)
 else:
     bin = "bin/clojure"
+    os.execlp(bin, bin, port)
 
-subprocess.call([bin, port], shell=True, stderr = subprocess.PIPE)

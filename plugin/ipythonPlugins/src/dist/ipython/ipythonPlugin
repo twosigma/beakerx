@@ -16,6 +16,7 @@
 
 import os
 import sys
+import subprocess
 from subprocess import check_output
 
 def detect_cygwin_python():
@@ -53,6 +54,6 @@ else:
     old_path = ''
 os.environ["PYTHONPATH"] = plugin_dir + old_path
 if os.name == 'nt':
-    os.execlp("python", "python", "\"" + plugin_dir+"/ipythonPluginStart.py\"")
+    subprocess.call(["python", plugin_dir+"/ipythonPluginStart.py"], shell=True, stderr = subprocess.PIPE)
 else:
     os.execlp("python", "python", plugin_dir+"/ipythonPluginStart.py")

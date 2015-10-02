@@ -16,10 +16,14 @@
 
 import os
 import sys
+import subprocess
 
 port = sys.argv.pop()
 self_path = sys.argv.pop()
 
 os.chdir(os.path.dirname(self_path))
 
-os.execlp("node", "node", "app/app.js", port, "127.0.0.1")
+if os.name == 'nt':
+    subprocess.call([bin, "app/app.js", port, "127.0.0.1"], shell=True, stderr = subprocess.PIPE)
+else:
+    os.execlp("node", "node", "app/app.js", port, "127.0.0.1")

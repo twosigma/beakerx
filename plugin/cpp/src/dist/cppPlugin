@@ -16,6 +16,7 @@
 
 import os
 import sys
+import subprocess
 
 port = sys.argv.pop()
 self_path = sys.argv.pop(0)
@@ -26,7 +27,7 @@ os.environ["CPP_OPTS"] = "-Djava.library.path=/Users/diego/beaker-notebook/core/
 
 if os.name == 'nt':
     bin = "bin\\cpp"
+    subprocess.call([bin, port], shell=True, stderr = subprocess.PIPE)
 else:
     bin = "bin/cpp"
-
-os.execlp(bin, bin, port)
+    os.execlp(bin, bin, port)

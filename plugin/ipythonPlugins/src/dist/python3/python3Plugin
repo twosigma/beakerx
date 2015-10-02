@@ -16,6 +16,7 @@
 
 import os
 import sys
+import subprocess
 
 if len(sys.argv) > 1:
     arg1 = sys.argv[1]
@@ -41,6 +42,6 @@ else:
 os.environ["PYTHONPATH"] = plugin_dir + old_path
 
 if os.name == 'nt':
-    os.execlp("python", "python", "\"" + plugin_dir+"/python3PluginStart.py\"")
+    subprocess.call(["python", plugin_dir+"/python3PluginStart.py"], shell=True, stderr = subprocess.PIPE)
 else:
     os.execlp("python", "python", plugin_dir+"/python3PluginStart.py")

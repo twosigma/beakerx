@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# to build: sudo docker build -t ubuntu/beakerBase . # consider "build --no-cache" to sync network deps
+# to build: sudo docker build -t ubuntu/beakerbase . # consider "build --no-cache" to sync network deps
 # results hosted at: https://registry.hub.docker.com/u/beakernotebook/beaker/
 
 FROM ubuntu:14.04
@@ -58,7 +58,7 @@ RUN apt-get install -y libzmq3-dbg libzmq3-dev libzmq3 \
                        python-pip python-dev python-yaml \
                        python-matplotlib python-scipy
 
-RUN pip install ipython jinja2 tornado pyzmq pandas jsonschema
+RUN pip install ipython jinja2 tornado pyzmq pandas jsonschema jupyter
 
 #############
 #  Python3  #
@@ -68,8 +68,9 @@ RUN pip install ipython jinja2 tornado pyzmq pandas jsonschema
 RUN apt-get install -y python-virtualenv python3-dev pkgconf libfreetype6-dev libfreetype6 \
     	    libxft-dev libblas-dev liblapack-dev gfortran libyaml-dev && \
     virtualenv /home/beaker/py3k -p python3 && \
-    /home/beaker/py3k/bin/pip install ipython[notebook] && \
-    /home/beaker/py3k/bin/pip install numpy matplotlib scipy jinja2 tornado pyzmq pandas pyaml
+    /home/beaker/py3k/bin/pip install ipython[notebook] jupyter && \
+    /home/beaker/py3k/bin/pip install numpy matplotlib scipy jinja2 tornado pyzmq pandas pyaml && \
+    /home/beaker/py3k/bin/ipython kernelspec install-self
 
 #######
 #  R  #

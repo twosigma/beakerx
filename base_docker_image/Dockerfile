@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# to build: sudo docker build -t ubuntu/beakerBase . # consider "build --no-cache" to sync network deps
+# to build: sudo docker build -t ubuntu/beakerbase . # consider "build --no-cache" to sync network deps
 # results hosted at: https://registry.hub.docker.com/u/beakernotebook/beaker/
 
 FROM ubuntu:14.04

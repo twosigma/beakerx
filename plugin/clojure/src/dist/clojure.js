@@ -136,18 +136,32 @@ define(function(require, exports, module) {
       },
       updateShell: function (cb) {
         var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/setShellOptions"), {
-          shellId: this.settings.shellID
+          shellId: this.settings.shellID,
+          classPath: this.settings.classPath,
+          imports: this.settings.imports,
+          outdir: this.settings.outdir
         });
         if (cb) {
           p.success(cb);
         }
       },
       spec: {
+        outdir:      {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
+        classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
+        imports:     {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"},
         resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
         killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
       },
       cometdUtil: cometdUtil
   };
+
+  var defaultImports = [
+    "com.twosigma.beaker.chart.Color",
+    "com.twosigma.beaker.chart.Filter",
+    "com.twosigma.beaker.BeakerProgressUpdate",
+    "com.twosigma.beaker.NamespaceClient"
+   ];
+
   var shellReadyDeferred = bkHelper.newDeferred();
 
   var init = function() {
@@ -173,6 +187,11 @@ define(function(require, exports, module) {
           var setShellIdCB = function(id) {
             settings.shellID = id;
             self.settings = settings;
+            var imports = [];
+            if ("imports" in self.settings) {
+              imports = self.settings.imports.split('\n');
+            }
+            self.settings.imports = _.union(imports, defaultImports).join('\n');
             var cb = function() {
               if (doneCB) {
                 doneCB(self);

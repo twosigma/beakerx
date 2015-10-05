@@ -54,6 +54,6 @@ else:
     old_path = ''
 os.environ["PYTHONPATH"] = plugin_dir + old_path
 if os.name == 'nt':
-    subprocess.call(["python", plugin_dir+"/ipythonPluginStart.py"], shell=True, stderr = subprocess.PIPE)
+    subprocess.call(["python", plugin_dir+"/ipythonPluginStart.py"], shell=True)
 else:
     os.execlp("python", "python", plugin_dir+"/ipythonPluginStart.py")

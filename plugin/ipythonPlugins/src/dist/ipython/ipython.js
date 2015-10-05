@@ -336,24 +336,6 @@ define(function(require, exports, module) {
               } else {
                 oa.append_mime_type(content, elem);
               }
-              if ((content.data['text/latex'] !== undefined) ||
-                  (content.data['text/html'] !== undefined) ||
-                  (content.data['text/markdown'] !== undefined)) {
-                //mark html content to find it later using selector
-                var syntheticClass = myPython.utils.uuid() + "-latex-class";
-                if (elem.children().length > 0) {
-                  elem.children().eq(0).addClass(syntheticClass);
-                }
-                deferred.promise.then(function() {
-                  bkHelper.timeout(function() {
-                    var latexElement = $('.' + syntheticClass);
-                    if (latexElement) {
-                      myPython.utils.typeset(latexElement[0]);
-                      latexElement.removeClass(syntheticClass);
-                    }
-                  }, 0);
-                });
-              }
               var payload = elem.html();
               if (finalStuff !== undefined && finalStuff.payload !== undefined) {
                 // if we already received an output we should append this output to it

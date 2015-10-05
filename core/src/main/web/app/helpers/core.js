@@ -23,7 +23,6 @@
   'use strict';
   var module = angular.module('bk.core', [
     'ui.bootstrap',
-    'ui.keypress',
     'bk.commonUi',
     'bk.utils',
     'bk.recentMenu',

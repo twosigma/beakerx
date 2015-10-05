@@ -305,6 +305,24 @@
           return false;
         }
       },
+      typeset: function(element) {
+        try {
+          renderMathInElement(element[0], {
+            delimiters: [
+              {left: "$$", right: "$$", display: true},
+              {left: "$", right:  "$", display: false},
+              {left: "\\[", right: "\\]", display: true},
+              {left: "\\(", right: "\\)", display: false}
+            ]
+          });
+        } catch(err) {
+          bkHelper.show1ButtonModal(err.message + '<br>See: ' +
+              '<a target="_blank" href="http://khan.github.io/KaTeX/">KaTeX website</a> and its ' +
+              '<a target="_blank" href="https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX">' +
+              'list of supported functions</a>.',
+              "KaTex error");
+        }
+      },
       markupCellContent: function(cellContent, evaluateFn) {
         var markupDeferred = bkHelper.newDeferred();
         if (!evaluateFn) {
@@ -348,28 +366,9 @@
           this.bkRenderer = bkRenderer;
         }
 
-        var doktex = function(markdownFragment) {
-          try {
-            renderMathInElement(markdownFragment[0], {
-              delimiters: [
-                {left: "$$", right: "$$", display: true},
-                {left: "$", right:  "$", display: false},
-                {left: "\\[", right: "\\]", display: true},
-                {left: "\\(", right: "\\)", display: false}
-              ]
-            });
-          } catch(err) {
-            bkHelper.show1ButtonModal(err.message + '<br>See: ' +
-                '<a target="_blank" href="http://khan.github.io/KaTeX/">KaTeX website</a> and its ' +
-                '<a target="_blank" href="https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX">' +
-                'list of supported functions</a>.',
-                "KaTex error");
-          }
-        };
-
         var markIt = function(content) {
           var markdownFragment = $('<div>' + content + '</div>');
-          doktex(markdownFragment);
+          bkHelper.typeset(markdownFragment);
           var escapedHtmlContent = angular.copy(markdownFragment.html());
           markdownFragment.remove();
           var unescapedGtCharacter = escapedHtmlContent.replace(/&gt;/g, '>');

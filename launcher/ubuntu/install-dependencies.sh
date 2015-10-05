@@ -60,15 +60,16 @@ sudo apt-get install -y libzmq3-dbg libzmq3-dev libzmq3
 
 # ipython
 sudo apt-get install -y python-pip python-dev python-yaml
-sudo pip install ipython jinja2 tornado pyzmq pandas jsonschema
+sudo pip install ipython jinja2 tornado pyzmq pandas jsonschema jupyter
 sudo apt-get install -y python-matplotlib python-scipy
 
 # python3
 
 sudo apt-get install -y python-virtualenv python3-dev pkgconf libfreetype6-dev libfreetype6 libxft-dev libblas-dev liblapack-dev gfortran libyaml-dev
 virtualenv ~/py3k -p python3
-~/py3k/bin/pip install ipython[notebook]
+~/py3k/bin/pip install ipython[notebook] jupyter
 ~/py3k/bin/pip install numpy matplotlib scipy jinja2 tornado pyzmq pandas pyaml
+sudo ~/py3k/bin/ipython kernelspec install-self
 
 # ruby
 sudo add-apt-repository -y ppa:brightbox/ruby-ng

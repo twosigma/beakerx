@@ -1777,6 +1777,11 @@
           var plotTitle = scope.jqplottitle;
           var titleOuterHeight = plotUtils.getElementActualHeight(plotTitle, true);
 
+          //legend
+          scope.adjustSvgPositionWithLegend(svg);
+          scope.appendLegendToSvg(d3.select(svg));
+          ///////
+
           plotUtils.translateChildren(svg, 0, titleOuterHeight);
           plotUtils.addTitleToSvg(svg, plotTitle, {
             width: plotTitle.width(),
@@ -1784,14 +1789,11 @@
           });
           plotUtils.addInlineStyles(svg);
 
-          svg.setAttribute("width",  scope.jqcontainer.outerWidth(true));
-          svg.setAttribute("height", scope.jqcontainer.outerHeight(true) + titleOuterHeight);
-
           return svg;
         };
 
         scope.saveAsSvg = function() {
-          var html = scope.getSvgToSave().outerHTML;
+          var html = plotUtils.convertToXHTML(scope.getSvgToSave().outerHTML);
           var fileName = _.isEmpty(scope.stdmodel.title) ? 'plot' : scope.stdmodel.title;
           plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), fileName + ".svg");
         };
@@ -1802,10 +1804,98 @@
           scope.canvas.width = svg.getAttribute("width");
           scope.canvas.height = svg.getAttribute("height");
 
-          var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.outerHTML)));
+          var imgsrc = 'data:image/svg+xml;base64,' +
+                       btoa(unescape(encodeURIComponent(plotUtils.convertToXHTML(svg.outerHTML))));
           var fileName = _.isEmpty(scope.stdmodel.title) ? 'plot' : scope.stdmodel.title;
           plotUtils.drawPng(scope.canvas, imgsrc, fileName + ".png");
         };
+
+        scope.adjustSvgPositionWithLegend = function(svg){
+          var isHorizontal = scope.stdmodel.legendLayout === "HORIZONTAL";
+          var margin = scope.layout.legendMargin;
+          var legendScrollableContainer = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer");
+          var W = scope.jqcontainer.outerWidth();
+          var H = scope.jqcontainer.outerHeight();
+          var legendW = legendScrollableContainer.outerWidth(true);
+          var legendH = legendScrollableContainer.outerHeight(true);
+          var legendPosition = scope.stdmodel.legendPosition;
+
+          if(!legendPosition.position) {
+            if(legendPosition.x + legendW > W){
+              W += legendPosition.x + legendW - W;
+            }
+            if((legendPosition.y +legendH) > H){
+              H += legendPosition.y +legendH - H;
+            }
+          }
+
+          if(legendPosition.position === "LEFT") {
+            plotUtils.translateChildren(svg, legendW + margin, 0);
+            W += legendW + margin;
+          }
+          if(legendPosition.position === "RIGHT") {
+            W += legendW + margin;
+          }
+          if(legendPosition.position === "BOTTOM") {
+            H += legendH + margin;
+          }
+          if(legendPosition.position === "TOP") {
+            plotUtils.translateChildren(svg, 0, legendH + margin);
+            H += legendH + margin;
+          }
+          if(isHorizontal){
+            if(["TOP_LEFT", "TOP_RIGHT"].indexOf(legendPosition.position) !== -1) {
+              plotUtils.translateChildren(svg, 0, legendH + margin);
+              H += legendH + margin;
+            }
+            if(["BOTTOM_LEFT", "BOTTOM_RIGHT"].indexOf(legendPosition.position) !== -1) {
+              H += legendH + margin;
+            }
+          }else{
+            if(["TOP_LEFT", "BOTTOM_LEFT"].indexOf(legendPosition.position) !== -1) {
+              plotUtils.translateChildren(svg, legendW + margin, 0);
+              W += legendW + margin;
+            }
+            if(["TOP_RIGHT", "BOTTOM_RIGHT"].indexOf(legendPosition.position) !== -1) {
+              W += legendW + margin;
+            }
+          }
+          svg.setAttribute("width",  W);
+          svg.setAttribute("height", H);
+          $(svg).css("width",  W);
+          $(svg).css("height",  H);
+        };
+
+        scope.appendLegendToSvg = function(svg){
+
+          if (scope.legendableItem === 0 || scope.stdmodel.showLegend === false) { return; }
+
+          var legend = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer");
+          var legendCopy = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer").clone();
+          legendCopy.find(".plot-legendcheckbox").each(function(i, item){
+            if(item.checked){
+              item.setAttribute("checked", true);
+            }
+            item.setAttribute("onclick", "return false");
+          });
+          legendCopy.css("position", "inherit");
+
+          var getPositive = function(value){
+            return value > 0 ? value : 0;
+          };
+
+          var position = legend.position();
+          var x = getPositive(position.left);
+          var y = position.top != null ? getPositive(position.top) : getPositive(position.bottom);
+          svg.append("foreignObject")
+            .attr("width", legend.width())
+            .attr("height", legend.height())
+            .attr("x", x)
+            .attr("y", y)
+            .append("xhtml:body")
+            .attr("xmlns", "http://www.w3.org/1999/xhtml")
+            .html(legendCopy[0].outerHTML);
+        }
 
       }
     };

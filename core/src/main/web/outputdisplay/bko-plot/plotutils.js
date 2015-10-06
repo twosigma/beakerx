@@ -515,6 +515,10 @@
           hiddenParent.addClass("ng-hide");
         }
         return height;
+      },
+
+      convertToXHTML: function (html) {
+        return html.replace(/input[^>]+"/g, "$&" + '/');
       }
     };
   };

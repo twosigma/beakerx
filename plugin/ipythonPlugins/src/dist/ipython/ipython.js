@@ -42,7 +42,7 @@ define(function(require, exports, module) {
       borderColor: "",
       shortName: "Py",
       indentSpaces: 4,
-      newShell: function(shellID, cb) {
+      newShell: function(shellID, cb, ecb) {
 
         var kernel = null;
         var self = this;
@@ -151,6 +151,7 @@ define(function(require, exports, module) {
             setTimeout(spin, 100);
           } else {
             console.error("TIMED OUT - waiting for ipython kernel to start");
+            ecb("TIMED OUT - waiting for ipython kernel to start");
           }
         };
         bkHelper.fcall(spin);
@@ -507,7 +508,7 @@ define(function(require, exports, module) {
         nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2"
       }).success(function(ret) {
         serviceBase = ret;
-        var IPythonShell = function(settings, doneCB) {
+        var IPythonShell = function(settings, doneCB, ecb) {
           var self = this;
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
@@ -548,7 +549,12 @@ define(function(require, exports, module) {
           if (!settings.shellID) {
             settings.shellID = "";
           }
-          this.newShell(settings.shellID, setShellIdCB);
+          var newShellErrorCb = function(reason) {
+            if (ecb) {
+              ecb(reason);
+            }
+          };
+          this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
             this[action]();
@@ -609,6 +615,8 @@ define(function(require, exports, module) {
           var deferred = bkHelper.newDeferred();
           new Shell(settings, function(shell) {
             deferred.resolve(shell);
+          }, function(reason) {
+            deferred.reject(reason);
           });
           return deferred.promise;
         }

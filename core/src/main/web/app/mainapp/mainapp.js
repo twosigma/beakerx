@@ -412,7 +412,6 @@
             emptyNotebook: function(sessionId) {
               var notebookModel =
                 '{"beaker": "2", "evaluators": [{"name": "Html", "plugin": "Html"},' +
-                '{"name": "Latex", "plugin": "Latex"},' +
                 '{"name": "JavaScript", "plugin": "JavaScript"}], "cells": []}';
               var notebookUri = null;
               var uriType = null;

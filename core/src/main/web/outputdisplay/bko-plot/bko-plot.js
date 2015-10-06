@@ -809,25 +809,25 @@
               case "TOP_LEFT":
                 position = {
                   "left": 0,
-                  "top": 0
+                  "top": scope.layout.topLayoutMargin
                 };
                 break;
               case "TOP_RIGHT":
                 position = {
                   "left": containerWidthWithMargin,
-                  "top": 0
+                  "top": scope.layout.topLayoutMargin
                 };
                 break;
               case "BOTTOM_LEFT":
                 position = {
                   "left": 0,
-                  "bottom": 0
+                  "bottom": scope.layout.bottomLayoutMargin
                 };
                 break;
               case "BOTTOM_RIGHT":
                 position = {
                   "left": containerWidthWithMargin,
-                  "bottom": 0
+                  "bottom": scope.layout.bottomLayoutMargin
                 };
                 break;
             }
@@ -863,7 +863,7 @@
               },
               handle : "#legendDraggableContainer"
             })
-            .css("max-height", scope.jqsvg.height());
+            .css("max-height", scope.jqsvg.height() - scope.layout.bottomLayoutMargin - scope.layout.topLayoutMargin);
           if(isHorizontal){
             legendScrollableContainer.css("max-width", scope.jqcontainer.width());
           }

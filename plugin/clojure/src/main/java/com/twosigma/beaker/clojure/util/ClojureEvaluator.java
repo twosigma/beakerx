@@ -47,7 +47,6 @@ public class ClojureEvaluator {
   protected final String sessionId;
   protected List<String> classPath;
   protected List<String> imports;
-  protected String outDir;
   protected boolean exit;
   protected boolean updateLoader;
   protected final BeakerCellExecutor executor;
@@ -85,11 +84,6 @@ public class ClojureEvaluator {
     updateLoader = false;
     currentClassPath = "";
     currentImports = "";
-    outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
-    try {
-      (new File(outDir)).mkdirs();
-    } catch (Exception e) {
-    }
     executor = new BeakerCellExecutor("clojure");
     startWorker();
   }
@@ -224,20 +218,14 @@ public class ClojureEvaluator {
     }
   }
 
-  public void setShellOptions(String cp, String in, String od) throws IOException {
-    if (od == null || od.isEmpty()) {
-      od = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
-    } else {
-      od = od.replace("$BEAKERDIR", System.getenv("beaker_tmp_dir"));
-    }
+  public void setShellOptions(String cp, String in) throws IOException {
 
     // check if we are not changing anything
-    if (currentClassPath.equals(cp) && currentImports.equals(in) && outDir.equals(od))
+    if (currentClassPath.equals(cp) && currentImports.equals(in))
       return;
 
     currentClassPath = cp;
     currentImports = in;
-    outDir = od;
 
     if (cp.isEmpty())
       classPath = new ArrayList<String>();
@@ -247,11 +235,6 @@ public class ClojureEvaluator {
       imports = new ArrayList<String>();
     else
       imports = Arrays.asList(in.split("\\s+"));
-
-    try {
-      (new File(outDir)).mkdirs();
-    } catch (Exception e) {
-    }
 
     resetEnvironment();
   }

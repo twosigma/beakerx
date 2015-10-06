@@ -115,6 +115,15 @@
             url = nameOrUrl;
           }
 
+          var onPluginLoadError = function(pluginId, reason){
+            $modal.open({backdrop: true,
+              backdropClick: true,
+              windowClass: 'beaker-sandbox',
+              backdropClass: 'beaker-sandbox',
+              template: JST['helpers/plugin-load-error']({pluginId: pluginId})});
+            deferred.reject(reason);
+          };
+
           var loadJob = {
               name: name,
               url: url,
@@ -128,14 +137,11 @@
                 return ex.getEvaluatorFactory()
                   .then(function(factory) {
                     if (factory !== undefined && factory.create !== undefined) {
-                      return factory.create(evaluatorSettings).then(function(ev) { deferred.resolve(ev); });
+                      return factory.create(evaluatorSettings).then(
+                        function(ev) { deferred.resolve(ev); },
+                        function(reason){ onPluginLoadError(name, reason); });
                     } else {
-                      $modal.open({backdrop: true,
-                        backdropClick: true,
-                        windowClass: 'beaker-sandbox',
-                        backdropClass: 'beaker-sandbox',
-                        template: JST['helpers/plugin-load-error']({pluginId: name})});
-                      deferred.reject("no factory for evaluator plugin");
+                      onPluginLoadError(name, "no factory for evaluator plugin");
                     }
                   }, function(err) {
                     // This function is never called.  Instead the

@@ -1767,7 +1767,7 @@
           scope.jqlegendcontainer.find(".plot-legendscrollablecontainer").remove();
         });
 
-        scope.getSvgToSave = function(){
+        scope.getSvgToSave = function() {
           var svg = scope.svg
             .node()
             .cloneNode(true);
@@ -1805,12 +1805,12 @@
           scope.canvas.height = svg.getAttribute("height");
 
           var imgsrc = 'data:image/svg+xml;base64,' +
-                       btoa(unescape(encodeURIComponent(plotUtils.convertToXHTML(svg.outerHTML))));
+            btoa(unescape(encodeURIComponent(plotUtils.convertToXHTML(svg.outerHTML))));
           var fileName = _.isEmpty(scope.stdmodel.title) ? 'plot' : scope.stdmodel.title;
           plotUtils.drawPng(scope.canvas, imgsrc, fileName + ".png");
         };
 
-        scope.adjustSvgPositionWithLegend = function(svg){
+        scope.adjustSvgPositionWithLegend = function(svg) {
           var isHorizontal = scope.stdmodel.legendLayout === "HORIZONTAL";
           var margin = scope.layout.legendMargin;
           var legendScrollableContainer = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer");
@@ -1820,67 +1820,67 @@
           var legendH = plotUtils.getActualCss(legendScrollableContainer, 'outerHeight', true);
           var legendPosition = scope.stdmodel.legendPosition;
 
-          if(!legendPosition.position) {
-            if(legendPosition.x + legendW > W){
+          if (!legendPosition.position) {
+            if (legendPosition.x + legendW > W) {
               W += legendPosition.x + legendW - W;
             }
-            if((legendPosition.y +legendH) > H){
-              H += legendPosition.y +legendH - H;
+            if ((legendPosition.y + legendH) > H) {
+              H += legendPosition.y + legendH - H;
             }
           }
 
-          if(legendPosition.position === "LEFT") {
+          if (legendPosition.position === "LEFT") {
             plotUtils.translateChildren(svg, legendW + margin, 0);
             W += legendW + margin;
           }
-          if(legendPosition.position === "RIGHT") {
+          if (legendPosition.position === "RIGHT") {
             W += legendW + margin;
           }
-          if(legendPosition.position === "BOTTOM") {
+          if (legendPosition.position === "BOTTOM") {
             H += legendH + margin;
           }
-          if(legendPosition.position === "TOP") {
+          if (legendPosition.position === "TOP") {
             plotUtils.translateChildren(svg, 0, legendH + margin);
             H += legendH + margin;
           }
-          if(isHorizontal){
-            if(["TOP_LEFT", "TOP_RIGHT"].indexOf(legendPosition.position) !== -1) {
+          if (isHorizontal) {
+            if (["TOP_LEFT", "TOP_RIGHT"].indexOf(legendPosition.position) !== -1) {
               plotUtils.translateChildren(svg, 0, legendH + margin);
               H += legendH + margin;
             }
-            if(["BOTTOM_LEFT", "BOTTOM_RIGHT"].indexOf(legendPosition.position) !== -1) {
+            if (["BOTTOM_LEFT", "BOTTOM_RIGHT"].indexOf(legendPosition.position) !== -1) {
               H += legendH + margin;
             }
-          }else{
-            if(["TOP_LEFT", "BOTTOM_LEFT"].indexOf(legendPosition.position) !== -1) {
+          } else {
+            if (["TOP_LEFT", "BOTTOM_LEFT"].indexOf(legendPosition.position) !== -1) {
               plotUtils.translateChildren(svg, legendW + margin, 0);
               W += legendW + margin;
             }
-            if(["TOP_RIGHT", "BOTTOM_RIGHT"].indexOf(legendPosition.position) !== -1) {
+            if (["TOP_RIGHT", "BOTTOM_RIGHT"].indexOf(legendPosition.position) !== -1) {
               W += legendW + margin;
             }
           }
-          svg.setAttribute("width",  W);
+          svg.setAttribute("width", W);
           svg.setAttribute("height", H);
-          $(svg).css("width",  W);
-          $(svg).css("height",  H);
+          $(svg).css("width", W);
+          $(svg).css("height", H);
         };
 
-        scope.appendLegendToSvg = function(svg){
+        scope.appendLegendToSvg = function(svg) {
 
           if (scope.legendableItem === 0 || scope.stdmodel.showLegend === false) { return; }
 
           var legend = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer");
           var legendCopy = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer").clone();
-          legendCopy.find(".plot-legendcheckbox").each(function(i, item){
-            if(item.checked){
+          legendCopy.find(".plot-legendcheckbox").each(function(i, item) {
+            if (item.checked) {
               item.setAttribute("checked", true);
             }
             item.setAttribute("onclick", "return false");
           });
           legendCopy.css("position", "inherit");
 
-          var getPositive = function(value){
+          var getPositive = function(value) {
             return value > 0 ? value : 0;
           };
 

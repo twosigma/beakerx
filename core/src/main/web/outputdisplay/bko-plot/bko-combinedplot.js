@@ -218,7 +218,7 @@
           scope.init();
         });
 
-        scope.getSvgToSave = function(){
+        scope.getSvgToSave = function() {
           var plots = scope.stdmodel.plots;
 
           var combinedSvg = $("<svg></svg>").attr('xmlns', 'http://www.w3.org/2000/svg').attr('class', 'svg-export');

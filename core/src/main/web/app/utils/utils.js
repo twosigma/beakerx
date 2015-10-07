@@ -227,6 +227,11 @@
         var deferred = angularUtils.newDeferred();
         angularUtils.httpGet(serverUrl("beaker/rest/util/getDefaultNotebook")).
             success(function(data) {
+              if (!_.isString(data)) {
+                // angular $http auto-detects JSON response and deserialize it using a JSON parser
+                // we don't want this behavior, this is a hack to reverse it
+                data = JSON.stringify(data);
+              }
               deferred.resolve(angular.fromJson(data));
             }).
             error(function(data, status, header, config) {

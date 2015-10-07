@@ -504,17 +504,18 @@
         };
       },
 
-      getElementActualHeight: function(jqelement, withMargins){
-        var height;
+      getActualCss: function(jqelement, jqFunction, jqFunctionParams) {
+        //to get actual size/position/etc values of hidden elements
+        var value;
         if (jqelement.is(":visible")) {
-          height = jqelement.outerHeight(!!withMargins);
+          value = jqFunctionParams != null ? jqelement[jqFunction](jqFunctionParams) : jqelement[jqFunction]();
         } else {
           var hiddenParent = jqelement.parents(".ng-hide:first");
           hiddenParent.removeClass("ng-hide");
-          height = jqelement.outerHeight(!!withMargins);
+          value = jqFunctionParams != null ? jqelement[jqFunction](jqFunctionParams) : jqelement[jqFunction]();
           hiddenParent.addClass("ng-hide");
         }
-        return height;
+        return value;
       },
 
       convertToXHTML: function (html) {

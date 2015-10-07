@@ -1775,7 +1775,7 @@
           svg.setAttribute('class', 'svg-export');
 
           var plotTitle = scope.jqplottitle;
-          var titleOuterHeight = plotUtils.getElementActualHeight(plotTitle, true);
+          var titleOuterHeight = plotUtils.getActualCss(plotTitle, 'outerHeight', true);
 
           //legend
           scope.adjustSvgPositionWithLegend(svg);
@@ -1785,7 +1785,7 @@
           plotUtils.translateChildren(svg, 0, titleOuterHeight);
           plotUtils.addTitleToSvg(svg, plotTitle, {
             width: plotTitle.width(),
-            height: plotUtils.getElementActualHeight(plotTitle)
+            height: plotUtils.getActualCss(plotTitle, 'outerHeight')
           });
           plotUtils.addInlineStyles(svg);
 
@@ -1814,10 +1814,10 @@
           var isHorizontal = scope.stdmodel.legendLayout === "HORIZONTAL";
           var margin = scope.layout.legendMargin;
           var legendScrollableContainer = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer");
-          var W = scope.jqcontainer.outerWidth();
-          var H = scope.jqcontainer.outerHeight();
-          var legendW = legendScrollableContainer.outerWidth(true);
-          var legendH = legendScrollableContainer.outerHeight(true);
+          var W = plotUtils.getActualCss(scope.jqcontainer, 'outerWidth');
+          var H = plotUtils.getActualCss(scope.jqcontainer, 'outerHeight');
+          var legendW = plotUtils.getActualCss(legendScrollableContainer, 'outerWidth', true);
+          var legendH = plotUtils.getActualCss(legendScrollableContainer, 'outerHeight', true);
           var legendPosition = scope.stdmodel.legendPosition;
 
           if(!legendPosition.position) {
@@ -1884,12 +1884,12 @@
             return value > 0 ? value : 0;
           };
 
-          var position = legend.position();
+          var position = plotUtils.getActualCss(legend, 'position');
           var x = getPositive(position.left);
           var y = position.top != null ? getPositive(position.top) : getPositive(position.bottom);
           svg.append("foreignObject")
-            .attr("width", legend.width())
-            .attr("height", legend.height())
+            .attr("width", plotUtils.getActualCss(legend, 'outerWidth'))
+            .attr("height", plotUtils.getActualCss(legend, 'outerHeight'))
             .attr("x", x)
             .attr("y", y)
             .append("xhtml:body")

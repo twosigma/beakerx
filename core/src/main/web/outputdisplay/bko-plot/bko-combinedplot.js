@@ -227,23 +227,25 @@
 
           plotUtils.addTitleToSvg(combinedSvg[0], plotTitle, {
             width: plotTitle.width(),
-            height: plotUtils.getElementActualHeight(plotTitle)
+            height: plotUtils.getActualCss(plotTitle, 'outerHeight')
           });
 
-          var combinedSvgHeight = plotUtils.getElementActualHeight(plotTitle, true);
+          var combinedSvgHeight = plotUtils.getActualCss(plotTitle, 'outerHeight', true);
+          var combinedSvgWidth = 0;
           for (var i = 0; i < plots.length; i++) {
             var svg = plots[i].getSvgToSave();
             plotUtils.translateChildren(svg, 0, combinedSvgHeight);
             combinedSvgHeight += $(svg).outerHeight(true);
+            combinedSvgWidth = Math.max($(svg).outerWidth(true), combinedSvgWidth);
             combinedSvg.append(svg.children);
           }
-          combinedSvg.attr("width", scope.width || scope.stdmodel.plotSize.width);
+          combinedSvg.attr("width", combinedSvgWidth);
           combinedSvg.attr("height", combinedSvgHeight);
           return combinedSvg[0];
         };
 
         scope.saveAsSvg = function() {
-          var html = scope.getSvgToSave().outerHTML;
+          var html = plotUtils.convertToXHTML(scope.getSvgToSave().outerHTML);
           var fileName = _.isEmpty(scope.stdmodel.title) ? 'combinedplot' : scope.stdmodel.title;
           plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), fileName + '.svg');
         };
@@ -254,7 +256,8 @@
           scope.canvas.width = svg.getAttribute("width");
           scope.canvas.height = svg.getAttribute("height");
 
-          var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.outerHTML)));
+          var html = plotUtils.convertToXHTML(svg.outerHTML);
+          var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html)));
           var fileName = _.isEmpty(scope.stdmodel.title) ? 'combinedplot' : scope.stdmodel.title;
           plotUtils.drawPng(scope.canvas, imgsrc, fileName + '.png');
         };

@@ -28,7 +28,8 @@
           "<canvas></canvas>" +
           "<div id='combplotTitle' class='plot-title'></div>" +
           "<div id='combplotContainer' class='combplot-plotcontainer'>" +
-          "<bk-output-display type='Plot' ng-repeat='m in models' model='m'></bk-output-display>" +
+          "<bk-output-display type='Plot' ng-repeat='m in models' model='m' class='nocollapsing-margins'>" +
+          "</bk-output-display>" +
           "</div>",
       controller : function($scope) {
         $scope.getShareMenuPlugin = function() {
@@ -38,6 +39,13 @@
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
           $scope.model.resetShareMenuItems(newItems);
         });
+        var model = $scope.model.getCellModel();
+        model.saveAsSvg = function(){
+          return $scope.saveAsSvg();
+        };
+        model.saveAsPng = function(){
+          return $scope.saveAsPng();
+        };
       },
       link : function(scope, element, attrs) {
         scope.canvas = element.find("canvas")[0];
@@ -121,17 +129,9 @@
                   maxMargin = _.max([value, maxMargin]);
                 });
                 plots.css("margin-left", maxMargin);
-
-                //increase margin if two next plots have bottom and top legends
-                var plotsCount = plots.size();
-                plots.each(function(index) {
-                  if(index + 1 < plotsCount){
-                    var bottomMargin = parseFloat($(this).css('margin-bottom'));
-                    var nextPlotTopMargin = parseFloat($(plots[index + 1]).css('margin-top'));
-                    $(this).css("margin-bottom", bottomMargin + nextPlotTopMargin);
-                    $(plots[index + 1]).css('margin-top', 0);
-                  }
-                });
+                for (var i = 0; i < scope.stdmodel.plots.length; i++) {
+                  scope.stdmodel.plots[i].updateLegendPosition();
+                }
               },
               getWidth : function() {
                 return scope.width;

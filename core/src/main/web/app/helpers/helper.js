@@ -889,14 +889,15 @@
               if (!this.initialized) {
                 this.cometd = new $.Cometd();
                 this.cometd.init(bkUtils.serverUrl(serviceBase + "/cometd/"));
+                var self = this;
                 this.hlistener = this.cometd.addListener('/meta/handshake', function(message) {
                   if (window.bkDebug) console.log(pluginName+'/meta/handshake');
                   if (message.successful) {
                     this.cometd.batch(function() {
                       var k;
-                      for (k in Object.keys(this.subscriptions))
+                      for (k in Object.keys(self.subscriptions))
                       {
-                        this.subscriptions[k] = this.cometd.resubscribe(this.subscriptions[k]);
+                        self.subscriptions[k] = self.cometd.resubscribe(self.subscriptions[k]);
                       }
                     });
                   }

@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 
 import clojure.lang.RT;
 import clojure.lang.Var;
+
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 
@@ -54,7 +55,7 @@ public class ClojureEvaluator {
     String codeToBeExecuted;
     SimpleEvaluationObject outputObject;
 
-    jobDescriptor(String c , SimpleEvaluationObject o) {
+    jobDescriptor(String c, SimpleEvaluationObject o) {
       codeToBeExecuted = c;
       outputObject = o;
     }
@@ -72,15 +73,28 @@ public class ClojureEvaluator {
     imports = new ArrayList<String>();
 
     String run_str = String.format("(ns %1$s_%2$s)(defn run-str_%2$s [s] (binding [*ns* (find-ns '%1$s_%2$s)] (load-string s)))", beaker_clojure_ns, shellId);
-    clojureLoadString = RT.var(String.format("%1$s_%2$s",beaker_clojure_ns, shellId), String.format("run-str_%s", shellId));
+    String ns_proxy = String.format(
+        "(import '%1$s)\n" +
+            "(defn get-beaker [key] (%1$s/get \"%2$s\" key))\n" +
+            "(defn set-beaker [key value] (%1$s/set \"%2$s\" key value))\n" +
+            "(def beaker-method-map {:get get-beaker :set set-beaker})\n" +
+            "(defn beaker \n" +
+            "([method key] ((beaker-method-map method) key))\n" +
+            "([method key value] ((beaker-method-map method) key value)))", NSClientProxy.class.getName(), sessionId);
+
+    clojureLoadString = RT.var(String.format("%1$s_%2$s", beaker_clojure_ns, shellId), String.format("run-str_%s", shellId));
     clojure.lang.Compiler.load(new StringReader(run_str));
+    clojureLoadString.invoke(ns_proxy);
 
     exit = false;
     updateLoader = false;
     currentClassPath = "";
     currentImports = "";
-    outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
-    try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
+    outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
+    try {
+      (new File(outDir)).mkdirs();
+    } catch (Exception e) {
+    }
     executor = new BeakerCellExecutor("clojure");
     startWorker();
   }
@@ -90,7 +104,9 @@ public class ClojureEvaluator {
     myWorker.start();
   }
 
-  public String getShellId() { return shellId; }
+  public String getShellId() {
+    return shellId;
+  }
 
   public void killAllThreads() {
     executor.killAllThreads();
@@ -102,7 +118,7 @@ public class ClojureEvaluator {
 
   public void resetEnvironment() {
     executor.killAllThreads();
-    updateLoader=true;
+    updateLoader = true;
     syncObject.release();
   }
 
@@ -114,7 +130,7 @@ public class ClojureEvaluator {
 
   public void evaluate(SimpleEvaluationObject seo, String code) {
     // send job to thread
-    jobQueue.add(new jobDescriptor(code,seo));
+    jobQueue.add(new jobDescriptor(code, seo));
     syncObject.release();
   }
 
@@ -131,14 +147,14 @@ public class ClojureEvaluator {
     public void run() {
       jobDescriptor j = null;
 
-      while(!exit) {
+      while (!exit) {
         try {
           // wait for work
           syncObject.acquire();
 
           // get next job descriptor
           j = jobQueue.poll();
-          if(j==null)
+          if (j == null)
             continue;
 
           j.outputObject.started();
@@ -146,7 +162,7 @@ public class ClojureEvaluator {
           if (!executor.executeTask(new MyRunnable(j.codeToBeExecuted, j.outputObject))) {
             j.outputObject.error("... cancelled!");
           }
-        } catch(Throwable e) {
+        } catch (Throwable e) {
           e.printStackTrace();
         }
       }
@@ -168,7 +184,7 @@ public class ClojureEvaluator {
         Object result;
         try {
           theOutput.finished(clojureLoadString.invoke(theCode));
-        } catch(Throwable e) {
+        } catch (Throwable e) {
           if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
             theOutput.error("... cancelled!");
           } else {
@@ -180,7 +196,6 @@ public class ClojureEvaluator {
         }
         theOutput.setOutputHandler();
       }
-
-    };
+    }
   }
 }

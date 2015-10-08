@@ -148,6 +148,13 @@ bk-section-cell {
       .advanced-mode & {
         padding-top: 0;
       }
+
+      .advanced-mode & .toggle-error {
+        width: 16px;
+        height: 16px;
+        line-height: 12px;
+        margin-top: 5px;
+      }
     }
 
     .advanced-mode &.no-output .cell-menu-item {

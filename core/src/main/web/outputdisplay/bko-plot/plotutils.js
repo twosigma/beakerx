@@ -532,16 +532,16 @@
 
       base64Fonts: {},
 
-      getFontToInject: function(font){
+      getFontToInject: function(font) {
         var defer = bkUtils.newDeferred();
         var src = '';
         for (var url in font.urlformats) {
           if (font.urlformats.hasOwnProperty(url)) {
             var format = font.urlformats[url];
-            if(this.base64Fonts[url] == null){
-              this.base64Fonts[url] =  this.base64Encode(this.getBinary(url));
+            if (this.base64Fonts[url] == null) {
+              this.base64Fonts[url] = this.base64Encode(this.getFileSynchronously(url));
             }
-            src += "url('data:application/font-" + format +";charset=utf-8;base64," + this.base64Fonts[url] + "') format('" + format + "'), ";
+            src += "url('data:application/font-" + format + ";charset=utf-8;base64," + this.base64Fonts[url] + "') format('" + format + "'), ";
           }
         }
         src = src.replace(/,\s*$/, "");
@@ -555,7 +555,7 @@
       },
 
       //http://stackoverflow.com/questions/7370943/retrieving-binary-file-content-using-javascript-base64-encode-it-and-reverse-de
-      base64Encode: function (str) {
+      base64Encode: function(str) {
         var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
         var out = "", i = 0, len = str.length, c1, c2, c3;
         while (i < len) {
@@ -583,7 +583,7 @@
         return out;
       },
 
-      getBinary: function(file) {
+      getFileSynchronously: function(file) {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", file, false);
         xhr.overrideMimeType("text/plain; charset=x-user-defined");

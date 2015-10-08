@@ -91,9 +91,7 @@ RUN apt-get install -y r-base r-base-dev libxml2-dev libssl-dev libcurl4-gnutls-
 #  Julia  #
 ###########
 
-RUN apt-get install -y julia && \
-    julia --eval 'Pkg.add("IJulia")' && \
-    julia --eval 'Pkg.add("Gadfly")'
+RUN apt-get install -y julia
 
 ##########
 #  Ruby  #
@@ -112,3 +110,11 @@ RUN apt-get install -y ruby2.1 ruby2.1-dev libtool && \
 RUN curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
 RUN sudo apt-get install -y nodejs
 
+###################
+#      Setup      #
+###################
+
+RUN su -m beaker -c "julia --eval 'Pkg.add(\"IJulia\")'" && \
+    su -m beaker -c "julia --eval 'Pkg.add(\"Gadfly\")'"
+
+RUN su -m beaker -c "iruby register"

@@ -139,13 +139,15 @@ define(function(require, exports, module) {
         var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/setShellOptions"), {
           shellId: this.settings.shellID,
           classPath: this.settings.classPath,
-          imports: this.settings.imports
+          imports: this.settings.imports,
+          outdir: this.settings.outdir
         });
         if (cb) {
           p.success(cb);
         }
       },
       spec: {
+        outdir:      {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
         classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
         imports:     {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"},
         resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },

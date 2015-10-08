@@ -53,7 +53,8 @@ public class ClojureEvaluator {
   protected workerThread myWorker;
   protected String currentClassPath;
   protected String currentImports;
-  protected URLClassLoader loader;
+  protected String outDir = "";
+  protected DynamicClassLoaderSimple loader;
 
   protected class jobDescriptor {
     String codeToBeExecuted;
@@ -108,21 +109,17 @@ public class ClojureEvaluator {
   public void resetEnvironment() {
     executor.killAllThreads();
 
-    List<URL> urlList = new ArrayList<>();
-    for (String path : classPath) {
-      try {
-        urlList.add(Paths.get(path).toUri().toURL());
-      } catch (MalformedURLException e) {
-        Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
-      }
-    }
-    loader = new URLClassLoader(urlList.toArray(new URL[urlList.size()]));
+    loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+    loader.addJars(classPath);
+    loader.addDynamicDir(outDir);
+
     ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(loader);
 
     for (String s : imports) {
       if (s != null & !s.isEmpty())
         try {
+          loader.loadClass(s);
           clojureLoadString.invoke(String.format("(import '%s)", s));
         } catch (Exception e) {
           Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
@@ -199,9 +196,7 @@ public class ClojureEvaluator {
         theOutput.setOutputHandler();
         Object result;
         try {
-
           theOutput.finished(clojureLoadString.invoke(theCode));
-
         } catch (Throwable e) {
           if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
             theOutput.error("... cancelled!");
@@ -218,14 +213,21 @@ public class ClojureEvaluator {
     }
   }
 
-  public void setShellOptions(String cp, String in) throws IOException {
+  public void setShellOptions(String cp, String in, String od) throws IOException {
 
+
+    if (od == null || od.isEmpty()) {
+      od = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
+    } else {
+      od = od.replace("$BEAKERDIR", System.getenv("beaker_tmp_dir"));
+    }
     // check if we are not changing anything
-    if (currentClassPath.equals(cp) && currentImports.equals(in))
+    if (currentClassPath.equals(cp) && currentImports.equals(in) && outDir.equals(od))
       return;
 
     currentClassPath = cp;
     currentImports = in;
+    outDir = od;
 
     if (cp.isEmpty())
       classPath = new ArrayList<String>();

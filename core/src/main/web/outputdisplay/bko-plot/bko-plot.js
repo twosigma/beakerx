@@ -735,7 +735,7 @@
 
         scope.getLegendPosition = function(legendPosition, isHorizontal) {
           var margin = scope.layout.legendMargin,
-              containerWidth = scope.jqcontainer.width() + parseFloat(scope.jqcontainer.css("margin-left")),
+              containerWidth = scope.jqcontainer.outerWidth(true),
               containerWidthWithMargin = containerWidth + margin,
               legend = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer"),
               legendHeight = legend.height(),
@@ -785,8 +785,8 @@
         scope.getLegendPositionByLayout = function(legendPosition, isHorizontal){
           var legend = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer"),
               margin = scope.layout.legendMargin,
-              legendWidth = legend.width(),
-              containerWidth = scope.jqcontainer.width() + parseFloat(scope.jqcontainer.css("margin-left")),
+              legendWidth = legend.outerWidth(true),
+              containerWidth = scope.jqcontainer.outerWidth(true),
               containerWidthWithMargin = containerWidth + margin,
               legendHeight = legend.height(),
               legendHeightWithMargin = legendHeight + margin, position;
@@ -1788,7 +1788,7 @@
           var titleOuterHeight = plotUtils.getActualCss(plotTitle, 'outerHeight', true);
 
           //legend
-          scope.adjustSvgPositionWithLegend(svg);
+          scope.adjustSvgPositionWithLegend(svg, titleOuterHeight);
           scope.appendLegendToSvg(d3.select(svg));
           ///////
 
@@ -1820,13 +1820,13 @@
           plotUtils.drawPng(scope.canvas, imgsrc, fileName + ".png");
         };
 
-        scope.adjustSvgPositionWithLegend = function(svg) {
+        scope.adjustSvgPositionWithLegend = function(svg, titleOuterHeight) {
           var isHorizontal = scope.stdmodel.legendLayout === "HORIZONTAL";
           var margin = scope.layout.legendMargin;
           var legendScrollableContainer = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer");
           var containerLeftMargin = parseFloat(scope.jqcontainer.css("margin-left"));
-          var W = plotUtils.getActualCss(scope.jqcontainer, 'outerWidth') + containerLeftMargin;
-          var H = plotUtils.getActualCss(scope.jqcontainer, 'outerHeight');
+          var W = plotUtils.getActualCss(scope.jqcontainer, 'outerWidth') + containerLeftMargin + 1;//add 1 because jQuery round size
+          var H = plotUtils.getActualCss(scope.jqcontainer, 'outerHeight') + titleOuterHeight + 1;
           var legendW = plotUtils.getActualCss(legendScrollableContainer, 'outerWidth', true);
           var legendH = plotUtils.getActualCss(legendScrollableContainer, 'outerHeight', true);
           var legendPosition = scope.stdmodel.legendPosition;
@@ -1904,8 +1904,8 @@
           var x = getPositive(position.left);
           var y = position.top != null ? getPositive(position.top) : getPositive(position.bottom);
           svg.append("foreignObject")
-            .attr("width", plotUtils.getActualCss(legend, 'outerWidth'))
-            .attr("height", plotUtils.getActualCss(legend, 'outerHeight'))
+            .attr("width", plotUtils.getActualCss(legend, 'outerWidth', true) + 1)//add 1 because jQuery round size
+            .attr("height", plotUtils.getActualCss(legend, 'outerHeight', true) + 1)
             .attr("x", x)
             .attr("y", y)
             .append("xhtml:body")

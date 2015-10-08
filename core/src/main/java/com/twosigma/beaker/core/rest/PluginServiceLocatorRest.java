@@ -348,8 +348,9 @@ public class PluginServiceLocatorRest {
     if (null != plugPath) {
       for (int i = 0; i < envList.size(); i++) {
         String path = "PATH=";
-        if (envList.get(i).startsWith(path)) {
-          envList.set(i, path + plugPath + ":" + envList.get(i).substring(path.length()));
+        if (envList.get(i).toUpperCase().startsWith(path)) {
+          String pathSeparator = windows() ? ";" : ":";
+          envList.set(i, path + plugPath + pathSeparator + envList.get(i).substring(path.length()));
         }
       }
     }

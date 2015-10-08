@@ -22,16 +22,9 @@ import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.nio.file.Files;
-import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Arrays;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.QueryParam;
@@ -42,7 +35,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.type.TypeReference;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -322,7 +314,7 @@ public class UtilRest {
 
   @POST
   @Path("setPreference")
-  public void setPreference(
+  public synchronized void setPreference(
     @FormParam("preferencename") String preferenceName,
     @FormParam("preferencevalue") String preferenceValue) {
 
@@ -373,18 +365,18 @@ public class UtilRest {
     java.nio.file.Path preferenceFile = Paths.get(preferenceFileUrl);
     try {
       ObjectMapper om = new ObjectMapper();
-      om.enable(SerializationConfig.Feature.FLUSH_AFTER_WRITE_VALUE);
       TypeReference readType = new TypeReference<HashMap<String, Object>>() {
       };
       Map<String, Object> prefs = om.readValue(preferenceFile.toFile(), readType);
 
       Object oldValue = (Object) prefs.get(preferenceName);
       // If value changed, write it to the file too
-      if (newValue != null && !newValue.equals(oldValue)) {
+      if (!Objects.equals(newValue, oldValue)) {
+        Files.deleteIfExists(preferenceFileTmp);
         prefs.put(preferenceName, newValue);
         om.writerWithDefaultPrettyPrinter().writeValue(preferenceFileTmp.toFile(), prefs);
         // Move tmp to normal
-        Files.move(preferenceFileTmp, preferenceFile, ATOMIC_MOVE);
+        Files.move(preferenceFileTmp, preferenceFile, REPLACE_EXISTING);
       }
     } catch (IOException e) {
       e.printStackTrace();

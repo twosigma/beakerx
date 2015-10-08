@@ -38,5 +38,8 @@ if len(sys.argv) > 1:
                   "--ipython-dir=" + sys.argv[2])
 
 plugin_dir = os.path.dirname(sys.argv[0])
-os.execlp("python", "python", plugin_dir+"/juliaPluginStart.py")
+if os.name == 'nt':
+    subprocess.call(["python", plugin_dir+"/juliaPluginStart.py"], shell=True)
+else:
+    os.execlp("python", "python", plugin_dir+"/juliaPluginStart.py")
 

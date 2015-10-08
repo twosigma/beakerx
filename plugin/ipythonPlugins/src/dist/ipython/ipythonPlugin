@@ -16,6 +16,7 @@
 
 import os
 import sys
+import subprocess
 from subprocess import check_output
 
 def detect_cygwin_python():
@@ -43,9 +44,16 @@ if len(sys.argv) > 1:
 
 # set pythonpath to include this directory so we can import beaker_runtime.py
 plugin_dir = os.path.dirname(sys.argv[0])
+if os.name == 'nt':
+    pathsep = ';'
+else:
+    pathsep = ":"
 if "PYTHONPATH" in os.environ:
-    old_path = ':' + os.environ["PYTHONPATH"]
+    old_path = pathsep + os.environ["PYTHONPATH"]
 else:
     old_path = ''
 os.environ["PYTHONPATH"] = plugin_dir + old_path
-os.execlp("python", "python", plugin_dir+"/ipythonPluginStart.py")
+if os.name == 'nt':
+    subprocess.call(["python", plugin_dir+"/ipythonPluginStart.py"], shell=True)
+else:
+    os.execlp("python", "python", plugin_dir+"/ipythonPluginStart.py")

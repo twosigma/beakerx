@@ -32,12 +32,13 @@ define(function(require, exports, module) {
     fgColor: "#FFFFFF",
     borderColor: "",
     shortName: "K",
-    newShell: function(shellId, cb) {
+    newShell: function(shellId, cb, ecb) {
       if (!shellId) shellId = "";
       bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/kdb/getShell"), { shellid: shellId, sessionId: bkHelper.getSessionId() })
         .success(cb)
         .error(function() {
           console.log("failed to create shell", arguments);
+          ecb("failed to create shell");
         });
     },
     evaluate: function(code, modelOutput, refreshObj) {
@@ -103,7 +104,7 @@ define(function(require, exports, module) {
           shortest = undefined;
           for (i=0; i<x.length; i++) {
             if (shortest === undefined || shortest.length > x[1].length)
-              shortest = x[i];            
+              shortest = x[i];
           }
           for (i=shortest.length; i>0; i--) {
             var a = code.substring(cpos-i,cpos);
@@ -176,7 +177,7 @@ define(function(require, exports, module) {
         window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
         cometdUtil.init(PLUGIN_NAME, serviceBase);
 
-        var kdbShell = function(settings, doneCallback) {
+        var kdbShell = function(settings, doneCallback, ecb) {
           var self = this;
           var setShellIdCB = function(id) {
             settings.shellID = id;
@@ -185,8 +186,13 @@ define(function(require, exports, module) {
               doneCallback(self);
             }
           };
+          var newShellErrorCb = function(reason) {
+            if (ecb) {
+              ecb(reason);
+            }
+          };
           if (!settings.shellID) settings.shellID = "";
-          this.newShell(settings.shellID, setShellIdCB);
+          this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
             this[action]();
@@ -212,6 +218,8 @@ define(function(require, exports, module) {
           var deferred = bkHelper.newDeferred();
           new Shell(settings, function(shell) {
             deferred.resolve(shell);
+          }, function(reason) {
+            deferred.reject(reason);
           });
           return deferred.promise;
         }

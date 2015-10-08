@@ -23,7 +23,7 @@
 
   var module = angular.module('bk.outputDisplay');
 
-  module.factory("bkOutputDisplayFactory", function($rootScope, $sce) {
+  module.factory("bkOutputDisplayFactory", function($rootScope, $sce, bkHelper) {
 
     var impls = {
         "Text": {
@@ -120,22 +120,30 @@
               }
             }
           }
-        
+
+          function renderCell(cell) {
+            div.html(cell);
+            var latexElement = element[0].getElementsByClassName('output_latex')
+            if (latexElement.length > 0) {
+              bkHelper.typeset(latexElement);
+            }
+            scope.clean();
+          }
+
           var div = element.find("div").first();
           var cellModel = scope.model.getCellModel();
-          div.html(cellModel);
-          scope.clean();
+          renderCell(cellModel);
+
           scope.$watch('model.getCellModel()', function(newValue, oldValue) {
             if (newValue !== oldValue) {
-              div.html(newValue);
-              scope.clean();
+              renderCell(newValue);
             }
           });
         }
       },
       "OutputContainer": {
-        template: '<bk-code-cell-output ng-repeat="i in items" model="i" >' +
-            '</ bk-code-cell-output>',
+        template: '<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b ng-if="hasName($index)">{{getName($index)}}<br/></b><bk-code-cell-output model="i" >' +
+            '</ bk-code-cell-output><br/>></li></ul>',
         scope: {
           model: "="
         },
@@ -153,6 +161,12 @@
               }
             };
           });
+          $scope.getName = function(idx) {
+            return $scope.model.getCellModel().names[idx] || '';
+          }
+          $scope.hasName = function(idx) {
+            return $scope.model.getCellModel().names !== undefined;
+          }
           $scope.isShowMenu = function() { return false; };
           $scope.$watch('isShowOutput()', function(oldval, newval) {
             $scope.showoutput = newval;

@@ -54,6 +54,14 @@ bk-new-cell-menu {
       padding-top: 2px;
     }
   }
+  .btn-xs:focus,
+  .btn-xs.focus,
+  .btn-xs:active:focus,
+  .btn-xs:active.focus,
+  .btn-xs.active:focus,
+  .btn-xs.active.focus {
+    outline: 0;
+  }
   .plus {
     font-size: 14px;
   }

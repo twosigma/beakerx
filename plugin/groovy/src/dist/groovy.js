@@ -33,13 +33,14 @@ define(function(require, exports, module) {
     fgColor: "#FFFFFF",
     borderColor: "",
     shortName: "Gv",
-    newShell: function(shellId, cb) {
+    newShell: function(shellId, cb, ecb) {
       if (!shellId)
         shellId = "";
       bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/groovysh/getShell"), { shellId: shellId, sessionId: bkHelper.getSessionId() })
           .success(cb)
           .error(function() {
             console.log("failed to create shell", arguments);
+            ecb("failed to create shell");
           });
     },
     evaluate: function(code, modelOutput, refreshObj) {
@@ -190,7 +191,7 @@ define(function(require, exports, module) {
         window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
         cometdUtil.init(PLUGIN_NAME, serviceBase);
 
-        var GroovyShell = function(settings, doneCB) {
+        var GroovyShell = function(settings, doneCB, ecb) {
           var self = this;
           var setShellIdCB = function(id) {
             settings.shellID = id;
@@ -210,7 +211,12 @@ define(function(require, exports, module) {
           if (!settings.shellID) {
             settings.shellID = "";
           }
-          this.newShell(settings.shellID, setShellIdCB);
+          var newShellErrorCb = function(reason) {
+            if (ecb) {
+              ecb(reason);
+            }
+          };
+          this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
             // XXX should use promise cb to avoid silent failure
@@ -237,6 +243,8 @@ define(function(require, exports, module) {
           var deferred = bkHelper.newDeferred();
           new Shell(settings, function(shell) {
             deferred.resolve(shell);
+          }, function(reason) {
+            deferred.reject(reason);
           });
           return deferred.promise;
         }

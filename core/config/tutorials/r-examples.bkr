@@ -3413,7 +3413,7 @@
                     "  # red, green, blue, alpha. ",
                     "  beaker:::displayImage(img)",
                     "} else {",
-                    "  print(\"ERROR: this example requires installing the following packages: jpeg, png, base64encode\")",
+                    "  print(\"ERROR: this example requires installing the following packages: jpeg, png, base64enc\")",
                     "}"
                 ]
             },
@@ -3427,8 +3427,8 @@
                 },
                 "selectedType": "Image",
                 "pluginName": "R",
-                "shellId": "bc86e8d0-24fb-49ab-a673-b717bdeabbe9",
-                "elapsedTime": 625
+                "shellId": "807f03a9-d866-41d9-85d7-829215c53d21",
+                "elapsedTime": 85
             },
             "evaluatorReader": true,
             "lineCount": 10

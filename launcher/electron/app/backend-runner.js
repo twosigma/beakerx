@@ -34,14 +34,14 @@ module.exports = (function() {
       var eventEmitter = new events.EventEmitter();
 
       if (_osName.startsWith('Windows')) {
-        process.env['JAVA_HOME'] = path.resolve(__dirname + '/../jre');
+        process.env['JAVA_HOME'] = path.resolve(__dirname + '/../jdk');
         process.chdir(__dirname + '/../dist');
         _backend = spawn(path.resolve(__dirname + '/../dist/beaker.command.bat'), ['--open-browser', 'false']);
       } else if (_osName.startsWith('Darwin')) {
-        process.env['JAVA_HOME'] = path.resolve(__dirname + '/../jre/Contents/Home');
+        process.env['JAVA_HOME'] = path.resolve(__dirname + '/../jdk/Contents/Home');
         _backend = spawn(path.resolve(__dirname + '/../dist/beaker.command'), ['--open-browser', 'false']);
       } else if (_osName.startsWith('Linux')) {
-        process.env['JAVA_HOME'] = path.resolve(__dirname + '/../jre');
+        process.env['JAVA_HOME'] = path.resolve(__dirname + '/../jdk');
         _backend = spawn(path.resolve(__dirname + '/../dist/beaker.command'), ['--open-browser', 'false']);
       }
 

@@ -51,6 +51,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.twosigma.beaker.scala.util.ScalaEvaluatorGlue;
 import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
@@ -211,10 +212,8 @@ public class ScalaEvaluator {
     return null;
   }
 
-  protected ScalaDynamicClassLoader loader = null;
   protected ScalaEvaluatorGlue shell;
   protected String loader_cp = "";
-  protected ScalaDynamicClassLoader acloader = null;
   protected ScalaEvaluatorGlue acshell;
   protected String acloader_cp = "";
 
@@ -251,9 +250,8 @@ public class ScalaEvaluator {
           if (shell==null) {
             updateLoader=false;
             newEvaluator();
-          } else if(loader!=null)
-            loader.clearCache();
-
+          }
+          
           j.outputObject.started();
 
           nc = NamespaceClient.getBeaker(sessionId);
@@ -314,23 +312,15 @@ public class ScalaEvaluator {
     protected ClassLoader newClassLoader() throws MalformedURLException
     {
       logger.fine("creating new loader");
+
       loader_cp = "";
-      URL[] urls = {};
-      if (!classPath.isEmpty()) {
-        urls = new URL[classPath.size()];
-        for (int i = 0; i < classPath.size(); i++) {
-          urls[i] = new URL("file://" + classPath.get(i));
-          loader_cp += classPath.get(i);
-          loader_cp += File.pathSeparatorChar;
-          if (logger.isLoggable(Level.FINEST))
-            logger.finest("adding file: "+urls[i].toString());
-        }
+      for (int i = 0; i < classPath.size(); i++) {
+        loader_cp += classPath.get(i);
+        loader_cp += File.pathSeparatorChar;
       }
-      loader = null;
-      ClassLoader cl;
-      loader = new ScalaDynamicClassLoader(outDir);
-      loader.addAll(Arrays.asList(urls));
-      cl = loader.getLoader();
+      loader_cp += outDir;
+      DynamicClassLoaderSimple cl = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+      cl.addJars(classPath);
       return cl;
     }
 
@@ -387,22 +377,14 @@ public class ScalaEvaluator {
   {
     logger.fine("creating new autocomplete loader");
     acloader_cp = "";
-    URL[] urls = {};
-    if (!classPath.isEmpty()) {
-      urls = new URL[classPath.size()];
-      for (int i = 0; i < classPath.size(); i++) {
-        urls[i] = new URL("file://" + classPath.get(i));
-        acloader_cp += classPath.get(i);
-        acloader_cp += File.pathSeparatorChar;
-        if (logger.isLoggable(Level.FINEST))
-          logger.finest("adding file: "+urls[i].toString());
-      }
+    for (int i = 0; i < classPath.size(); i++) {
+      acloader_cp += classPath.get(i);
+      acloader_cp += File.pathSeparatorChar;
     }
-    acloader = null;
-    ClassLoader cl;
-    acloader = new ScalaDynamicClassLoader(outDir);
-    acloader.addAll(Arrays.asList(urls));
-    cl = acloader.getLoader();
+    acloader_cp += outDir;
+        
+    DynamicClassLoaderSimple cl = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+    cl.addJars(classPath);
     return cl;
   }
 

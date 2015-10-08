@@ -305,6 +305,110 @@
           return false;
         }
       },
+      typeset: function(element) {
+        try {
+          renderMathInElement(element[0], {
+            delimiters: [
+              {left: "$$", right: "$$", display: true},
+              {left: "$", right:  "$", display: false},
+              {left: "\\[", right: "\\]", display: true},
+              {left: "\\(", right: "\\)", display: false}
+            ]
+          });
+        } catch(err) {
+          bkHelper.show1ButtonModal(err.message + '<br>See: ' +
+              '<a target="_blank" href="http://khan.github.io/KaTeX/">KaTeX website</a> and its ' +
+              '<a target="_blank" href="https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX">' +
+              'list of supported functions</a>.',
+              "KaTex error");
+        }
+      },
+      markupCellContent: function(cellContent, evaluateFn) {
+        var markupDeferred = bkHelper.newDeferred();
+        if (!evaluateFn) {
+          evaluateFn = this.evaluateCode;
+        }
+
+        if (!this.bkRenderer) {
+          // Override markdown link renderer to always have `target="_blank"`
+          // Mostly from Renderer.prototype.link
+          // https://github.com/chjj/marked/blob/master/lib/marked.js#L862-L881
+          var bkRenderer = new marked.Renderer();
+          bkRenderer.link = function(href, title, text) {
+            var prot;
+            if (this.options.sanitize) {
+              try {
+                prot = decodeURIComponent(unescape(href))
+                    .replace(/[^\w:]/g, '')
+                    .toLowerCase();
+              } catch (e) {
+                return '';
+              }
+              //jshint ignore:start
+              if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0) {
+                //jshint ignore:end
+                return '';
+              }
+            }
+            var out = '<a href="' + href + '"';
+            if (title) {
+              out += ' title="' + title + '"';
+            }
+            out += ' target="_blank"'; // < ADDED THIS LINE ONLY
+            out += '>' + text + '</a>';
+            return out;
+          };
+
+          bkRenderer.paragraph = function(text) {
+            // Allow users to write \$ to escape $
+            return marked.Renderer.prototype.paragraph.call(this, text.replace(/\\\$/g, '$'));
+          };
+          this.bkRenderer = bkRenderer;
+        }
+
+        var markIt = function(content) {
+          var markdownFragment = $('<div>' + content + '</div>');
+          bkHelper.typeset(markdownFragment);
+          var escapedHtmlContent = angular.copy(markdownFragment.html());
+          markdownFragment.remove();
+          var unescapedGtCharacter = escapedHtmlContent.replace(/&gt;/g, '>');
+          var result = marked(unescapedGtCharacter, {
+            gfm: true,
+            renderer: bkRenderer
+          });
+          markupDeferred.resolve(result);
+        };
+
+        var results = [], re = /{{([^}]+)}}/g, text;
+
+        while (text = re.exec(cellContent)) {
+          if (results.indexOf(text) === -1)
+            results.push(text);
+        }
+
+        var evaluateCode = function (index) {
+
+          if (index === results.length) {
+            markIt(cellContent);
+          } else {
+            evaluateFn("JavaScript", results[index][1]).then(
+                function (r) {
+                  cellContent = cellContent.replace(results[index][0], r);
+                },
+                function (r) {
+                  cellContent = cellContent.replace(results[index][0], "<font color='red'>" + "Error: **" + r.object[0] + "**" + "</font>");
+                }
+            ).finally(function () {
+                  evaluateCode(index + 1);
+                }
+            );
+          }
+        };
+
+        evaluateCode(0);
+
+        return markupDeferred.promise;
+      },
       getEvaluatorMenuItems: function() {
         if (getCurrentApp() && getCurrentApp().getEvaluatorMenuItems) {
           return getCurrentApp().getEvaluatorMenuItems();
@@ -785,14 +889,15 @@
               if (!this.initialized) {
                 this.cometd = new $.Cometd();
                 this.cometd.init(bkUtils.serverUrl(serviceBase + "/cometd/"));
+                var self = this;
                 this.hlistener = this.cometd.addListener('/meta/handshake', function(message) {
                   if (window.bkDebug) console.log(pluginName+'/meta/handshake');
                   if (message.successful) {
                     this.cometd.batch(function() {
                       var k;
-                      for (k in Object.keys(this.subscriptions))
+                      for (k in Object.keys(self.subscriptions))
                       {
-                        this.subscriptions[k] = this.cometd.resubscribe(this.subscriptions[k]);
+                        self.subscriptions[k] = self.cometd.resubscribe(self.subscriptions[k]);
                       }
                     });
                   }

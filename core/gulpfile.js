@@ -15,7 +15,7 @@
  */
 var argv      = require('yargs').argv;
 var gulp      = require('gulp');
-var sass      = require('gulp-sass');
+var sass      = require('gulp-ruby-sass');
 var cssWrap  = require('gulp-css-wrap');
 var template  = require('gulp-template-compile');
 var concat    = require('gulp-concat');
@@ -138,9 +138,9 @@ gulp.task("namespaceIPythonCss", function() {
 });
 
 gulp.task("compileBeakerScss", function() {
-  return gulp.src(Path.join(rootPath, "**.scss"))
-  .pipe(sourcemaps.init('./'))
-  .pipe(sass().on('error', handleError))
+  return sass([].concat(Path.join(rootPath, "app.scss"),
+                        Path.join(rootPath, "vendor.scss")), { sourcemap: true })
+  .on('error', handleError)
   .pipe(importCss())
   .pipe(stripCssComments())
   .pipe(sourcemaps.write())
@@ -153,12 +153,13 @@ gulp.task('prepareCssForNamespacing', function(){
       path.basename = "_" + path.basename;
       path.extname = ".scss";
     }))
+    .pipe(replace('@charset "UTF-8";',''))
     .pipe(gulp.dest(Path.join(tempPath, "namespacedCss")))
     .on('error', handleError);
 });
 gulp.task("namespacePreparedCss", function() {
-  return gulp.src("beaker-sandbox.scss")
-    .pipe(sass()).on('error', handleError)
+  return sass("beaker-sandbox.scss")
+    .on('error', handleError)
     // Only set html/body styles if the body is the .beaker-sandbox
     .pipe(replace('.beaker-sandbox html {', 'html.beaker-sandbox {'))
     .pipe(replace('.beaker-sandbox body {', 'body.beaker-sandbox {'))

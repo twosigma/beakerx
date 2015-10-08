@@ -92,6 +92,9 @@
       //jscs:enable
       scope: {data: '=', fs: '=', displayname: '@'},
       controller: function($scope, $rootScope) {
+
+
+
         var transform = function(c) {
           return {
             type: c.type,
@@ -100,6 +103,24 @@
             displayName: c.displayName,
             children: _.map(c.children, transform)
           };
+
+        };
+        $scope.onMakeNewDir = function(path) {
+
+          if (path){
+            var removeLastDirectoryPartOf =  function (the_url)
+            {
+              var the_arr = the_url.split('/');
+              the_arr.pop();
+              return( the_arr.join('/') );
+            };
+
+            if (removeLastDirectoryPartOf(path) === $scope.data.uri) {
+              $scope.data.children = $scope.fs.getChildren($scope.data.uri).success(function (list) {
+                $scope.data.children = list;
+              });
+            }
+          }
         };
         $scope.click = function() {
           if ($scope.data.type === 'directory') {
@@ -139,16 +160,18 @@
           $scope.fs.open($scope.data.uri);
         };
         $scope.getIcon = function() {
-          if ($scope.data.type === 'directory') {
-            return 'folder-icon';
+          if ($scope.data) {
+            if ($scope.data.type === 'directory') {
+              return 'folder-icon';
+            }
+            if ($scope.data.type === 'application/prs.twosigma.beaker.notebook+json') {
+              return 'glyphicon glyphicon-book';
+            } else if ($scope.fs && $scope.fs.getIcon && $scope.fs.getIcon($scope.data.type)) {
+              return $scope.fs.getIcon($scope.data.type);
+            }
           }
-          if ($scope.data.type === 'application/prs.twosigma.beaker.notebook+json') {
-            return 'glyphicon glyphicon-book';
-          } else if ($scope.fs.getIcon && $scope.fs.getIcon($scope.data.type)) {
-            return $scope.fs.getIcon($scope.data.type);
-          } else {
-            return 'glyphicon glyphicon-th';
-          }
+
+          return 'glyphicon glyphicon-th';
         };
 
         $scope.getDisplayName = function() {
@@ -159,11 +182,19 @@
             return $scope.data.displayName;
           }
           var name = $scope.data.uri;
-          if (name.length > 0 && name[name.length - 1] === '/') {
+          if (name && name.length > 0 && name[name.length - 1] === '/') {
             name = name.substring(0, name.length - 1);
           }
-          return name.replace(/^.*[\\\/]/, '');
+          return name ? name.replace(/^.*[\\\/]/, '') : '';
         };
+
+        if ($scope.fs.addListener){
+          $scope.fs.addListener($scope);
+        }
+
+        $scope.$on("MAKE_NEW_DIR", function (event, data) {
+          $scope.onMakeNewDir(data.path);
+        });
       }
     };
   });

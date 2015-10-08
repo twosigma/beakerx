@@ -16,6 +16,7 @@
 
 import os
 import sys
+import subprocess
 
 port = sys.argv.pop()
 self_path = sys.argv.pop()
@@ -26,7 +27,7 @@ os.environ['beaker_r_init'] = os.getcwd() + '/beaker'
 
 if os.name == 'nt':
     bin = "bin\\kdb"
+    subprocess.call([bin, port], shell=True)
 else:
     bin ="bin/kdb"
-
-os.execlp(bin, bin, port)
+    os.execlp(bin, bin, port)

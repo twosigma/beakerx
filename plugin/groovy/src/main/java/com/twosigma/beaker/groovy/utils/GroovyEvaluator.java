@@ -16,6 +16,7 @@
 package com.twosigma.beaker.groovy.utils;
 
 import com.twosigma.beaker.jvm.utils.BeakerPrefsUtils;
+
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
@@ -39,6 +40,7 @@ import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.groovy.autocomplete.GroovyAutocomplete;
 import com.twosigma.beaker.groovy.autocomplete.GroovyClasspathScanner;
+import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
@@ -170,10 +172,10 @@ public class GroovyEvaluator {
   }
 
   public List<String> autocomplete(String code, int caretPosition) {    
-    return gac.doAutocomplete(code, caretPosition,loader!=null ? loader.getLoader() : null);
+    return gac.doAutocomplete(code, caretPosition,loader);
   }
 
-  protected GroovyDynamicClassLoader loader = null;
+  protected DynamicClassLoaderSimple loader = null;
   protected GroovyShell shell;
 
   protected class workerThread extends Thread {
@@ -210,8 +212,8 @@ public class GroovyEvaluator {
             newEvaluator();
           }
         
-          if(loader!=null)
-            loader.clearCache();
+          //if(loader!=null)
+          //  loader.resetDynamicLoader();
           
           nc = NamespaceClient.getBeaker(sessionId);
           nc.setOutputObj(j.outputObject);
@@ -225,7 +227,7 @@ public class GroovyEvaluator {
           }
           j.outputObject.started();
 
-          if (!executor.executeTask(new MyRunnable(j.codeToBeExecuted, j.outputObject))) {
+          if (!executor.executeTask(new MyRunnable(j.codeToBeExecuted, j.outputObject, loader))) {
             j.outputObject.error("... cancelled!");
           }
           
@@ -249,15 +251,19 @@ public class GroovyEvaluator {
 
       protected final String theCode;
       protected final SimpleEvaluationObject theOutput;
+      protected final DynamicClassLoaderSimple loader;
 
-      public MyRunnable(String code, SimpleEvaluationObject out) {
+      public MyRunnable(String code, SimpleEvaluationObject out, DynamicClassLoaderSimple ld) {
         theCode = code;
         theOutput = out;
+        loader = ld;
       }
       
       @Override
       public void run() {
         Object result;
+        ClassLoader oldld = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(loader);
         theOutput.setOutputHandler();
         try {
           result = shell.evaluate(theCode);
@@ -273,25 +279,16 @@ public class GroovyEvaluator {
           }
         }
         theOutput.clrOutputHandler();
+        Thread.currentThread().setContextClassLoader(oldld);
       }
     };
     
     protected ClassLoader newClassLoader() throws MalformedURLException
     {
-      URL[] urls = {};
-      if (!classPath.isEmpty()) {
-        urls = new URL[classPath.size()];
-        for (int i = 0; i < classPath.size(); i++) {
-          urls[i] = new URL("file://" + classPath.get(i));
-        }
-      }
-      loader = null;
-      ClassLoader cl;
-
-      loader = new GroovyDynamicClassLoader(outDir);
-      loader.addAll(Arrays.asList(urls));
-      cl = loader.getLoader();
-      return cl;
+      loader=new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+      loader.addJars(classPath);
+      loader.addDynamicDir(outDir);
+      return loader;
     }
 
     protected void newEvaluator() throws MalformedURLException
@@ -309,6 +306,15 @@ public class GroovyEvaluator {
         }
       }
       CompilerConfiguration config = new CompilerConfiguration().addCompilationCustomizers(icz);
+
+      String acloader_cp = "";
+      for (int i = 0; i < classPath.size(); i++) {
+        acloader_cp += classPath.get(i);
+        acloader_cp += File.pathSeparatorChar;
+      }
+      acloader_cp += outDir;
+
+      config.setClasspath(acloader_cp);
       shell = new GroovyShell(newClassLoader(), new Binding(), config);
       
       // ensure object is created

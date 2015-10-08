@@ -91,13 +91,13 @@
       var _editMenu = {
         label: 'Edit',
         submenu:[
-          {label: 'Undo', accelerator: _ctrlKey + '+Z', selector: 'undo:'},
-          {label: 'Redo', accelerator: _ctrlKey + '+Shift+Z', selector: 'redo:'},
+          {label: 'Undo', accelerator: _ctrlKey + '+Z', role: 'undo'},
+          {label: 'Redo', accelerator: _ctrlKey + '+Shift+Z', role: 'redo'},
           {type: 'separator'},
-          {label: 'Cut', accelerator: _ctrlKey + '+X', selector: 'cut:'},
-          {label: 'Copy', accelerator: _ctrlKey + '+C', selector: 'copy:'},
-          {label: 'Paste', accelerator: _ctrlKey + '+V', selector: 'paste:'},
-          {label: 'Select All', accelerator: _ctrlKey + '+A', selector: 'selectAll:'}
+          {label: 'Cut', accelerator: _ctrlKey + '+X', role: 'cut'},
+          {label: 'Copy', accelerator: _ctrlKey + '+C', role: 'copy'},
+          {label: 'Paste', accelerator: _ctrlKey + '+V', role: 'paste'},
+          {label: 'Select All', accelerator: _ctrlKey + '+A', role: 'selectAll'}
         ]
       };
 

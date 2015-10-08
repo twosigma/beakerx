@@ -74,6 +74,10 @@ input.date-picker {
   border: 1px solid #CCC;;
 }
 
+.datepicker-container {
+  position: relative;
+}
+
 .easyform-container {
   margin: 10px 0;
   word-wrap: break-word;

@@ -33,13 +33,14 @@ define(function(require, exports, module) {
     fgColor: "#FFFFFF",
     borderColor: "",
     shortName: "Sq",
-    newShell: function(shellId, cb) {
+    newShell: function(shellId, cb, ecb) {
       if (!shellId)
         shellId = "";
       bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/getShell"), { shellId: shellId, sessionId: bkHelper.getSessionId() })
           .success(cb)
           .error(function() {
             console.log("failed to create shell", arguments);
+            ecb("failed to create shell");
           });
     },
     evaluate: function(code, modelOutput,refreshObj) {
@@ -144,13 +145,16 @@ define(function(require, exports, module) {
       var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/setShellOptions"), {
         shellId: this.settings.shellID,
         classPath: this.settings.classPath,
-       	datasorces: this.settings.datasorces});
+        defaultDatasource: this.settings.defaultDatasource,
+        datasources: this.settings.datasources
+       });
       if (cb) {
         p.success(cb);
       }
     },
     spec: {
-      datasorces:  {type: "settableString", action: "updateShell", name: "Data sources"},
+      defaultDatasource:  {type: "settableString", action: "updateShell", name: "Default data source"},
+      datasources:  {type: "settableString", action: "updateShell", name: "Named data sources"},
       classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
       resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
       killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
@@ -178,7 +182,7 @@ define(function(require, exports, module) {
         window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
         cometdUtil.init(PLUGIN_NAME, serviceBase);
 
-        var SqlShell = function(settings, doneCB) {
+        var SqlShell = function(settings, doneCB, ecb) {
           var self = this;
           var setShellIdCB = function(id) {
             settings.shellID = id;
@@ -198,7 +202,12 @@ define(function(require, exports, module) {
           if (!settings.shellID) {
             settings.shellID = "";
           }
-          this.newShell(settings.shellID, setShellIdCB);
+          var newShellErrorCb = function(reason) {
+            if (ecb) {
+              ecb(reason);
+            }
+          };
+          this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
             this[action]();
@@ -224,6 +233,8 @@ define(function(require, exports, module) {
           var deferred = bkHelper.newDeferred();
           new Shell(settings, function(shell) {
             deferred.resolve(shell);
+          }, function(reason) {
+            deferred.reject(reason);
           });
           return deferred.promise;
         }

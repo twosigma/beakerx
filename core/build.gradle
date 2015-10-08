@@ -105,6 +105,11 @@ task (copyRequireJS, type: Copy) {
 	into 'src/main/web/app/vendor/requirejs/'
 }
 
+task (copyGGVis, type: Copy) {
+	from 'src/main/web/vendor/ggvis/'
+	into 'src/main/web/app/vendor/ggvis/'
+}
+
 task (copyJQueryUIImages, type: Copy) {
     from 'src/main/web/vendor/jquery-ui/css/smoothness/images/'
     into 'src/main/web/app/dist/images/'
@@ -114,6 +119,7 @@ task copyVendorStuff
 copyVendorStuff.dependsOn copyKatex
 copyVendorStuff.dependsOn copyRequireJS
 copyVendorStuff.dependsOn copyJQueryUIImages
+copyVendorStuff.dependsOn copyGGVis
 
 task (compileAssets, type: Exec) {
   commandLine(*(winOrUnix('npm', 'run-script', 'compile')))
@@ -167,6 +173,13 @@ task doRemove() {
   }
 }
 
+task deleteTemp() {
+  doLast {
+    delete fileTree(dir: "src/main/web/app/temp")
+    delete "src/main/web/app/temp"
+  }
+}
+
 task builddebug
 task debug
 task runembed
@@ -195,6 +208,7 @@ debug.dependsOn copyVendorStuff
 runembed.dependsOn buildembed
 runembed.dependsOn jar
 runembed.dependsOn copyVendorStuff
+clean.dependsOn deleteTemp
 
 if (mac() || windows()) {
   build.dependsOn copyNginx

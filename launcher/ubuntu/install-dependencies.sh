@@ -49,6 +49,9 @@ sudo Rscript -e "install.packages('ggplot2',,'http://cran.us.r-project.org')"
 sudo Rscript -e "install.packages('devtools',,'http://cran.us.r-project.org')"
 sudo Rscript -e "install.packages('RJSONIO',,'http://cran.us.r-project.org')"
 sudo Rscript -e "install.packages('RCurl',,'http://cran.us.r-project.org')"
+sudo Rscript -e "install.packages('jpeg',,'http://cran.us.r-project.org')"
+sudo Rscript -e "install.packages('png',,'http://cran.us.r-project.org')"
+sudo Rscript -e "install.packages('base64enc',,'http://cran.us.r-project.org')"
 
 # for zmq, needed by ipython and iruby
 sudo add-apt-repository --yes ppa:chris-lea/zeromq
@@ -57,21 +60,23 @@ sudo apt-get install -y libzmq3-dbg libzmq3-dev libzmq3
 
 # ipython
 sudo apt-get install -y python-pip python-dev python-yaml
-sudo pip install ipython==3.2.1 jinja2 tornado pyzmq pandas jsonschema
+sudo pip install ipython jinja2 tornado pyzmq pandas jsonschema jupyter
 sudo apt-get install -y python-matplotlib python-scipy
 
 # python3
 
 sudo apt-get install -y python-virtualenv python3-dev pkgconf libfreetype6-dev libfreetype6 libxft-dev libblas-dev liblapack-dev gfortran libyaml-dev
 virtualenv ~/py3k -p python3
-~/py3k/bin/pip install ipython[notebook]==3.0.0
+~/py3k/bin/pip install ipython[notebook] jupyter
 ~/py3k/bin/pip install numpy matplotlib scipy jinja2 tornado pyzmq pandas pyaml
+sudo ~/py3k/bin/ipython kernelspec install-self
 
 # ruby
 sudo add-apt-repository -y ppa:brightbox/ruby-ng
 sudo apt-get update
 sudo apt-get install -y ruby2.1 ruby2.1-dev libtool
 sudo gem install iruby
+sudo gem install sass
 
 # julia
 sudo add-apt-repository --yes ppa:staticfloat/juliareleases

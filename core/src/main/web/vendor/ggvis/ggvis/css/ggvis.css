@@ -1,0 +1,129 @@
+.vega {
+  -webkit-user-select: none;
+}
+.plots>div {
+  float: left;
+}
+
+/* Containers for plots shouldn't allow overflow */
+.ggvis-output-container {
+  overflow: hidden;
+  /* So that gear can be positioned absolutely inside. */
+  position: relative;
+}
+
+/* Outline box when resizing a plot */
+.ui-resizable-helper {
+  border: 1px dotted #999;
+}
+
+/* Tooltip box */
+.ggvis-tooltip {
+  position: absolute;
+  float: left;
+  border-radius: 3px;
+  border: 1px solid #999;
+  padding: 5px;
+  opacity: 0.85;
+  background-color: #fff;
+  box-shadow: 2px 2px 6px #888888;
+}
+
+/* Sidebar that goes to the bottom on small devices */
+.sidebar-bottom {
+  float:left;
+  margin-left:0;
+}
+
+/* Main content that goes to top on small devices */
+.main-top {
+  float:right !important;
+  margin-left:auto;
+}
+
+@media (max-width: 767px) {
+  /* Bootstrap-responsive adds padding, but we don't want it */
+  body {
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+
+  .sidebar-bottom {
+    display: inline-block;
+    width: 100%;
+  }
+
+  .main-top {
+    float:none !important;
+    margin-left:0;
+  }
+
+  .ggvis-input-container {
+    width: 45%;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
+    float: left;
+  }
+}
+
+/* For items in a dropdown menu that aren't links, make sure they display
+   same as links. */
+.ggvis-dropdown-menu .ggvis-dropdown-item {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 20px;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* For the gear icon on the right of the plot */
+.plot-gear-icon {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  top: 0px;
+  right: 5px;
+}
+nav.ggvis-control {
+  position: relative;
+  float: right;
+}
+a.ggvis-dropdown-toggle {
+  background: url(gear.png) no-repeat;
+  background-size: 14px;
+  width: 14px;
+  height: 14px;
+  opacity: 0.3;
+  padding-left: 14px;
+  cursor: pointer;
+}
+ul.ggvis-dropdown {
+  display: none;
+  text-align: right;
+  position: absolute;
+  margin-top: .5em;
+  border-radius: 3px;
+  border: 1px solid #999;
+  padding: 4px;
+  opacity: 0.85;
+  background-color: #fff;
+  box-shadow: 2px 2px 6px #888888;
+  width: 200px;
+  margin-left: -200px;
+}
+ul.ggvis-dropdown li {
+  list-style-type: none;
+  padding: 5px 2px;
+}
+ul.ggvis-dropdown li a {
+  color: #00f;
+  text-decoration: none;
+  padding: 2px 2px;
+  cursor: pointer;
+}
+ul.ggvis-dropdown li a.inactive {
+  color: black;
+  cursor: initial;
+}

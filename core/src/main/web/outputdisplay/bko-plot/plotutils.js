@@ -443,8 +443,21 @@
       addInlineStyles: function (element){
         var styleEl = document.createElement('style');
         styleEl.setAttribute('type', 'text/css');
-        styleEl.innerHTML = '<![CDATA[\n' + this.getElementStyles(element) + '\n]]>';
+        var elementStyles = this.getElementStyles(element);
+        elementStyles += this.getFontToInject({
+          fontFamily: 'pt-sans',
+          urlformats: {'app/fonts/regular/pts55f-webfont.woff' : 'woff'},
+          fontWeight: 'normal',
+          fontStyle: 'normal'
+        });
+        elementStyles += this.getFontToInject({
+          fontFamily: 'pt-sans',
+          urlformats: {'app/fonts/bold/pts75f-webfont.woff' : 'woff'},
+          fontWeight: 'bold',
+          fontStyle: 'normal'
+        });
 
+        styleEl.innerHTML = '<![CDATA[\n' + elementStyles + '\n]]>';
         var defsEl = document.createElement('defs');
         defsEl.appendChild(styleEl);
         element.insertBefore(defsEl, element.firstChild);
@@ -515,7 +528,69 @@
           hiddenParent.addClass("ng-hide");
         }
         return height;
+      },
+
+      base64Fonts: {},
+
+      getFontToInject: function(font) {
+        var defer = bkUtils.newDeferred();
+        var src = '';
+        for (var url in font.urlformats) {
+          if (font.urlformats.hasOwnProperty(url)) {
+            var format = font.urlformats[url];
+            if (this.base64Fonts[url] == null) {
+              this.base64Fonts[url] = this.base64Encode(this.getFileSynchronously(url));
+            }
+            src += "url('data:application/font-" + format + ";charset=utf-8;base64," + this.base64Fonts[url] + "') format('" + format + "'), ";
+          }
+        }
+        src = src.replace(/,\s*$/, "");
+        return '@font-face' + " { " +
+          "font-family: '" + font.fontFamily + "';" +
+          "src: " + src + ";" +
+          "font-weight: " + font.fontWeight + ";" +
+          "font-style: " + font.fontStyle + ";" +
+          " }\n";
+        return defer.promise;
+      },
+
+      //http://stackoverflow.com/questions/7370943/retrieving-binary-file-content-using-javascript-base64-encode-it-and-reverse-de
+      base64Encode: function(str) {
+        var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        var out = "", i = 0, len = str.length, c1, c2, c3;
+        while (i < len) {
+          c1 = str.charCodeAt(i++) & 0xff;
+          if (i == len) {
+            out += CHARS.charAt(c1 >> 2);
+            out += CHARS.charAt((c1 & 0x3) << 4);
+            out += "==";
+            break;
+          }
+          c2 = str.charCodeAt(i++);
+          if (i == len) {
+            out += CHARS.charAt(c1 >> 2);
+            out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+            out += CHARS.charAt((c2 & 0xF) << 2);
+            out += "=";
+            break;
+          }
+          c3 = str.charCodeAt(i++);
+          out += CHARS.charAt(c1 >> 2);
+          out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+          out += CHARS.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
+          out += CHARS.charAt(c3 & 0x3F);
+        }
+        return out;
+      },
+
+      getFileSynchronously: function(file) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", file, false);
+        xhr.overrideMimeType("text/plain; charset=x-user-defined");
+        xhr.send(null);
+        return xhr.responseText;
       }
+
     };
   };
   beaker.bkoFactory('plotUtils', ["bkUtils", retfunc]);

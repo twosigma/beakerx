@@ -428,6 +428,8 @@
                 var uriType = null;
                 var readOnly = true;
                 var format = null;
+                var importer = bkCoreManager.getNotebookImporter('bkr');
+                notebookModel = importer.import(notebookModel);
                 notebookModel = bkNotebookVersionManager.open(notebookModel);
                 loadNotebookModelAndResetSession(
                     notebookUri, uriType, readOnly, format, notebookModel, false, sessionId, false);

@@ -350,9 +350,15 @@
             "id": "markdownqWgOly",
             "type": "markdown",
             "body": [
-                "With just one click you can share your work with the public. The **File → Share** menu command copies your notebook to a Github gist, and then opens it with our sharing server. You can send that link to anyone, and they can view it without having to install Beaker. From that page, they can download the original notebook and open it in Beaker if they have it.",
+                "Beaker has two wasy to share your work, our original [sharing server](http://sharing.beakernotebook.com/), and a new [publication server](https://pub.beakernotebook.com).",
+                "Note that the sharing server is deprecated, and does not support all of Beaker's features.",
                 "",
-                "The three-dot menu for sections and code cells also has a Share item that applies to that subset of your notebook."
+                "The **File → Share** menu command copies your notebook to a Github gist, and then opens it with our sharing server, all with just one click.",
+                "You can send that link to anyone, and they can view it without having to install Beaker. From that page, they can download the original notebook and open it in Beaker if they have it.",
+                "The three-dot menu for sections and code cells also has a Share item that applies to that subset of your notebook.",
+                "",
+                "The **File → Publish** menu command opens a dialog where you can log into the publication server, and then publish your notebook, including adding a preview image, meta-data, and a preview image.",
+                "Later on you can update, edit, or delete your publication."
             ],
             "evaluatorReader": false,
             "mode": "preview"
@@ -384,5 +390,8 @@
             "mode": "preview"
         }
     ],
-    "namespace": {}
+    "namespace": {},
+    "metadata": {
+        "publication-id": "560b4726-ce94-4e2a-820a-8c828094e309"
+    }
 }

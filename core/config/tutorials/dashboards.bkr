@@ -34,7 +34,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -43,6 +43,14 @@
         }
     ],
     "cells": [
+        {
+            "id": "sectionNt4s3D",
+            "type": "section",
+            "title": "Dashboards",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
         {
             "id": "markdowntzgOPZ",
             "type": "markdown",
@@ -111,11 +119,11 @@
             },
             "output": {
                 "state": {},
-                "result": "Script50$_run_closure3@38515e2d",
+                "result": "Script2$_run_closure3@593c8f45",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "76d4391b-8f93-463f-a85b-286ba30d6d88",
-                "elapsedTime": 51
+                "shellId": "d93b79c0-87c2-45e5-ac9b-73799daf8881",
+                "elapsedTime": 590
             },
             "evaluatorReader": true,
             "lineCount": 35
@@ -1660,5 +1668,8 @@
             "lineCount": 2
         }
     ],
-    "namespace": {}
+    "namespace": {},
+    "metadata": {
+        "publication-id": "560cbd33-f85b-4131-8920-198b56e91317"
+    }
 }

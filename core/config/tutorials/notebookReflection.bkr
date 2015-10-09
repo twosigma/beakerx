@@ -34,7 +34,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -87,7 +87,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text"
+                "selectedType": "Text",
+                "result": "[{\"cellId\":\"code8FSM5W\",\"evaluatorId\":\"Groovy\",\"code\":\"// change the following cell type\\nbeaker.setCodeCellEvaluator('celltochange','Html')\\n// set a new body\\nbeaker.setCodeCellBody('celltochange','<h1>This is the new content</h1>')\\n// execute it\\nbeaker.evaluate('celltochange')\\n\",\"tags\":\"mytag\",\"output\":\"pending\",\"type\":\"BeakerCodeCell\"},{\"cellId\":\"celltochange\",\"evaluatorId\":\"Latex\",\"code\":\"\",\"tags\":\"mytag\",\"output\":\"pending\",\"type\":\"BeakerCodeCell\"}]",
+                "pluginName": "JavaScript",
+                "elapsedTime": 32
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -109,8 +112,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
-                "elapsedTime": 7493
+                "selectedType": "Hidden",
+                "elapsedTime": 612,
+                "pluginName": "Groovy",
+                "shellId": "dffee301-33b6-4899-be7a-94102b9797e8"
             },
             "evaluatorReader": true,
             "lineCount": 7,
@@ -119,21 +124,29 @@
         {
             "id": "celltochange",
             "type": "code",
-            "evaluator": "Latex",
+            "evaluator": "Html",
             "input": {
                 "body": [
-                    ""
+                    "<h1>This is the new content</h1>"
                 ]
             },
             "output": {
                 "state": {},
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 29
+                "elapsedTime": 34,
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Latex",
+                    "object": ""
+                }
             },
             "evaluatorReader": true,
             "tags": "mytag",
             "lineCount": 1
         }
     ],
-    "namespace": {}
+    "namespace": {},
+    "metadata": {
+        "publication-id": "560cbc09-a649-4ada-971b-20a3d46eab82"
+    }
 }

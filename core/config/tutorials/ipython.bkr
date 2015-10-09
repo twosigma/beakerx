@@ -164,6 +164,27 @@
             "lineCount": 3
         },
         {
+            "id": "codeHgTXDe",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "from IPython.display import Math",
+                    "Math('F(k) = \\int_{-\\infty}^{\\infty} f(x) e^{2\\pi i k} dx')"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "<div class=\"output_subarea output_latex FF14E0B33725410294E42C7700B6FA3D-latex-class\">$$F(k) = \\int_{-\\infty}^{\\infty} f(x) e^{2\\pi i k} dx$$</div>",
+                "selectedType": "Html",
+                "pluginName": "IPython",
+                "shellId": "2EBC3E14B14F42598C9C4A1CCE3CD50A",
+                "elapsedTime": 222
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
             "id": "codeBUkABL",
             "type": "code",
             "evaluator": "IPython",
@@ -244,5 +265,9 @@
             "evaluatorReader": true,
             "lineCount": 1
         }
-    ]
+    ],
+    "namespace": {},
+    "metadata": {
+        "publication-id": "560b5279-8469-45ae-823e-03de070213b6"
+    }
 }

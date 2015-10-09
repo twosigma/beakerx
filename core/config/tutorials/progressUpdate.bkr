@@ -34,7 +34,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -44,7 +44,7 @@
         {
             "name": "Java",
             "plugin": "Java",
-            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient",
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
             "view": {
                 "cm": {
                     "mode": "text/x-java"
@@ -98,7 +98,10 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "elapsedTime": 9582
+                "elapsedTime": 9623,
+                "result": "finished",
+                "pluginName": "Groovy",
+                "shellId": "2ccf532f-fdad-4023-bc6d-2b1d0cbb6312"
             },
             "evaluatorReader": true,
             "lineCount": 12
@@ -144,7 +147,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text"
+                "selectedType": "Text",
+                "result": "FINISHED (finally)",
+                "pluginName": "JavaScript",
+                "elapsedTime": 15048
             },
             "evaluatorReader": true,
             "lineCount": 20
@@ -214,9 +220,258 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 6,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
                 "selectedType": "Plot",
-                "elapsedTime": 13119
+                "elapsedTime": 13931,
+                "result": {
+                    "type": "Plot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": "this is a Java plot",
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "show_legend": false,
+                    "use_tool_tip": true,
+                    "graphics_list": [
+                        {
+                            "type": "Bars",
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": "#FFC0504D",
+                            "outline_color": null,
+                            "yAxis": null
+                        },
+                        {
+                            "type": "Bars",
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": "#FFC0504D",
+                            "outline_color": null,
+                            "yAxis": null
+                        },
+                        {
+                            "type": "Bars",
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": "#FFC0504D",
+                            "outline_color": null,
+                            "yAxis": null
+                        },
+                        {
+                            "type": "Bars",
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": "#FFC0504D",
+                            "outline_color": null,
+                            "yAxis": null
+                        },
+                        {
+                            "type": "Bars",
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": "#FFC0504D",
+                            "outline_color": null,
+                            "yAxis": null
+                        },
+                        {
+                            "type": "Bars",
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": "#FFC0504D",
+                            "outline_color": null,
+                            "yAxis": null
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": "",
+                            "auto_range": true,
+                            "auto_range_includes_zero": true,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "use_log": false,
+                            "log_base": 10
+                        }
+                    ],
+                    "x_auto_range": true,
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": true,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10,
+                    "log_y": false,
+                    "timezone": null,
+                    "crosshair": null,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "omit_checkboxes": false,
+                    "legend_layout": "VERTICAL"
+                },
+                "pluginName": "Java",
+                "shellId": "e9524614-bf1f-45d6-bad9-317e0604b734"
             },
             "evaluatorReader": true,
             "lineCount": 45
@@ -276,11 +531,16 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "elapsedTime": 22718
+                "elapsedTime": 15292,
+                "result": "FINISHED (finally)",
+                "pluginName": "JavaScript"
             },
             "evaluatorReader": true,
             "lineCount": 25
         }
     ],
-    "namespace": {}
+    "namespace": {},
+    "metadata": {
+        "publication-id": "560cb969-1967-430f-9e41-693f2a0ad1c0"
+    }
 }

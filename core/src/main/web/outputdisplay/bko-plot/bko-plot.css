@@ -243,3 +243,10 @@
   color: #333333;
   background-color: white;
 }
+.nocollapsing-margins:after
+{
+  content: "\00a0"; /* No-break space character */
+  display: block;
+  overflow: hidden;
+  height: 0;
+}

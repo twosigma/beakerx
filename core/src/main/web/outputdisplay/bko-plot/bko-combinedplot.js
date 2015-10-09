@@ -28,7 +28,8 @@
           "<canvas></canvas>" +
           "<div id='combplotTitle' class='plot-title'></div>" +
           "<div id='combplotContainer' class='combplot-plotcontainer'>" +
-          "<bk-output-display type='Plot' ng-repeat='m in models' model='m'></bk-output-display>" +
+          "<bk-output-display type='Plot' ng-repeat='m in models' model='m' class='nocollapsing-margins'>" +
+          "</bk-output-display>" +
           "</div>",
       controller : function($scope) {
         $scope.getShareMenuPlugin = function() {
@@ -38,6 +39,13 @@
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
           $scope.model.resetShareMenuItems(newItems);
         });
+        var model = $scope.model.getCellModel();
+        model.saveAsSvg = function(){
+          return $scope.saveAsSvg();
+        };
+        model.saveAsPng = function(){
+          return $scope.saveAsPng();
+        };
       },
       link : function(scope, element, attrs) {
         scope.canvas = element.find("canvas")[0];
@@ -121,17 +129,9 @@
                   maxMargin = _.max([value, maxMargin]);
                 });
                 plots.css("margin-left", maxMargin);
-
-                //increase margin if two next plots have bottom and top legends
-                var plotsCount = plots.size();
-                plots.each(function(index) {
-                  if(index + 1 < plotsCount){
-                    var bottomMargin = parseFloat($(this).css('margin-bottom'));
-                    var nextPlotTopMargin = parseFloat($(plots[index + 1]).css('margin-top'));
-                    $(this).css("margin-bottom", bottomMargin + nextPlotTopMargin);
-                    $(plots[index + 1]).css('margin-top', 0);
-                  }
-                });
+                for (var i = 0; i < scope.stdmodel.plots.length; i++) {
+                  scope.stdmodel.plots[i].updateLegendPosition();
+                }
               },
               getWidth : function() {
                 return scope.width;
@@ -218,7 +218,7 @@
           scope.init();
         });
 
-        scope.getSvgToSave = function(){
+        scope.getSvgToSave = function() {
           var plots = scope.stdmodel.plots;
 
           var combinedSvg = $("<svg></svg>").attr('xmlns', 'http://www.w3.org/2000/svg').attr('class', 'svg-export');
@@ -227,23 +227,25 @@
 
           plotUtils.addTitleToSvg(combinedSvg[0], plotTitle, {
             width: plotTitle.width(),
-            height: plotUtils.getElementActualHeight(plotTitle)
+            height: plotUtils.getActualCss(plotTitle, 'outerHeight')
           });
 
-          var combinedSvgHeight = plotUtils.getElementActualHeight(plotTitle, true);
+          var combinedSvgHeight = plotUtils.getActualCss(plotTitle, 'outerHeight', true);
+          var combinedSvgWidth = 0;
           for (var i = 0; i < plots.length; i++) {
             var svg = plots[i].getSvgToSave();
             plotUtils.translateChildren(svg, 0, combinedSvgHeight);
             combinedSvgHeight += $(svg).outerHeight(true);
+            combinedSvgWidth = Math.max($(svg).outerWidth(true), combinedSvgWidth);
             combinedSvg.append(svg.children);
           }
-          combinedSvg.attr("width", scope.width || scope.stdmodel.plotSize.width);
+          combinedSvg.attr("width", combinedSvgWidth);
           combinedSvg.attr("height", combinedSvgHeight);
           return combinedSvg[0];
         };
 
         scope.saveAsSvg = function() {
-          var html = scope.getSvgToSave().outerHTML;
+          var html = plotUtils.convertToXHTML(scope.getSvgToSave().outerHTML);
           var fileName = _.isEmpty(scope.stdmodel.title) ? 'combinedplot' : scope.stdmodel.title;
           plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), fileName + '.svg');
         };
@@ -254,7 +256,8 @@
           scope.canvas.width = svg.getAttribute("width");
           scope.canvas.height = svg.getAttribute("height");
 
-          var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.outerHTML)));
+          var html = plotUtils.convertToXHTML(svg.outerHTML);
+          var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html)));
           var fileName = _.isEmpty(scope.stdmodel.title) ? 'combinedplot' : scope.stdmodel.title;
           plotUtils.drawPng(scope.canvas, imgsrc, fileName + '.png');
         };

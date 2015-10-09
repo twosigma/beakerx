@@ -404,20 +404,20 @@
         return false;
       },
 
-      useYAxisR : function(model, data){
+      useYAxisR: function(model, data) {
         var yAxisR = model.yAxisR;
         return yAxisR && yAxisR.label === data.yAxis;
       },
 
-      getHighlightedSize : function(size, highlighted) {
+      getHighlightedSize: function(size, highlighted) {
         return highlighted ? size + 2 : size;
       },
 
-      getHighlightDuration : function() {
+      getHighlightDuration: function() {
         return 100;
       },
 
-      getElementStyles : function(element){
+      getElementStyles: function(element) {
         var elementStyles = "";
         var styleSheets = document.styleSheets;
         for (var i = 0; i < styleSheets.length; i++) {
@@ -425,12 +425,12 @@
           for (var j = 0; j < cssRules.length; j++) {
             var cssRule = cssRules[j];
             if (cssRule.style) {
-              try{
+              try {
                 var childElements = element.querySelectorAll(cssRule.selectorText);
                 if (childElements.length > 0 || element.matches(cssRule.selectorText)) {
                   elementStyles += cssRule.selectorText + " { " + cssRule.style.cssText + " }\n";
                 }
-              } catch(err) {
+              } catch (err) {
                 //just ignore errors
                 //http://bugs.jquery.com/ticket/13881#comment:1
               }
@@ -440,7 +440,7 @@
         return elementStyles;
       },
 
-      addInlineStyles: function (element){
+      addInlineStyles: function(element) {
         var styleEl = document.createElement('style');
         styleEl.setAttribute('type', 'text/css');
         var elementStyles = this.getElementStyles(element);
@@ -463,7 +463,7 @@
         element.insertBefore(defsEl, element.firstChild);
       },
 
-      download: function(url, fileName){
+      download: function(url, fileName) {
         var a = document.createElement('a');
         a.href = url;
         a.download = fileName;
@@ -471,13 +471,13 @@
         a.remove();
       },
 
-      translate: function(jqelement, x, y){
-        var getNumber = function(str){
+      translate: function(jqelement, x, y) {
+        var getNumber = function(str) {
           return parseFloat(str.substring(0, str.length - 2));
         };
         var transform = jqelement.css('transform');
-        var elementTranslate = { x: 0, y: 0 };
-        if(transform && transform.indexOf("translate") != -1){
+        var elementTranslate = {x: 0, y: 0};
+        if (transform && transform.indexOf("translate") != -1) {
           var translate = transform.match(/translate(.*)/)[1].substring(1);
           var translateValues = translate.substring(0, translate.indexOf(')')).split(", ");
           elementTranslate.x = getNumber(translateValues[0]);
@@ -486,7 +486,7 @@
         jqelement.css("transform", "translate(" + (elementTranslate.x + x) + "px, " + (elementTranslate.y + y) + "px)")
       },
 
-      translateChildren: function(element, x, y){
+      translateChildren: function(element, x, y) {
         for (var j = 0; j < element.childElementCount; j++) {
           var child = element.children[j];
           if (child.nodeName.toLowerCase() !== 'defs') {
@@ -495,7 +495,7 @@
         }
       },
 
-      addTitleToSvg: function(svg, jqtitle, titleSize){
+      addTitleToSvg: function(svg, jqtitle, titleSize) {
         d3.select(svg).insert("text", "g")
           .attr("id", jqtitle.attr("id"))
           .attr("class", jqtitle.attr("class"))
@@ -505,29 +505,34 @@
           .text(jqtitle.text());
       },
 
-      drawPng: function(canvas, imgsrc, fileName){
+      drawPng: function(canvas, imgsrc, fileName) {
         var download = this.download;
         var context = canvas.getContext("2d");
         var image = new Image;
         image.src = imgsrc;
-        image.onload = function () {
+        image.onload = function() {
           context.drawImage(image, 0, 0);
           download(canvas.toDataURL("image/png"), fileName);
           context.clearRect(0, 0, canvas.width, canvas.height);
         };
       },
 
-      getElementActualHeight: function(jqelement, withMargins){
-        var height;
+      getActualCss: function(jqelement, jqFunction, jqFunctionParams) {
+        //to get actual size/position/etc values of hidden elements
+        var value;
         if (jqelement.is(":visible")) {
-          height = jqelement.outerHeight(!!withMargins);
+          value = jqFunctionParams != null ? jqelement[jqFunction](jqFunctionParams) : jqelement[jqFunction]();
         } else {
           var hiddenParent = jqelement.parents(".ng-hide:first");
           hiddenParent.removeClass("ng-hide");
-          height = jqelement.outerHeight(!!withMargins);
+          value = jqFunctionParams != null ? jqelement[jqFunction](jqFunctionParams) : jqelement[jqFunction]();
           hiddenParent.addClass("ng-hide");
         }
-        return height;
+        return value;
+      },
+
+      convertToXHTML: function (html) {
+        return html.replace(/input[^>]+"/g, "$&" + '/');
       },
 
       base64Fonts: {},
@@ -540,7 +545,7 @@
             var format = font.urlformats[url];
             if (this.base64Fonts[url] == null) {
               this.base64Fonts[url] = this.base64Encode(this.getFileSynchronously(url));
-            }
+      }
             src += "url('data:application/font-" + format + ";charset=utf-8;base64," + this.base64Fonts[url] + "') format('" + format + "'), ";
           }
         }

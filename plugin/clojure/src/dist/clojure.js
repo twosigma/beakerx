@@ -33,7 +33,7 @@ define(function(require, exports, module) {
       fgColor: "#FFFFFF",
       borderColor: "",
       shortName: "Cj",
-      newShell: function(shellId, cb) {
+      newShell: function(shellId, cb, ecb) {
         if (!shellId) {
           shellId = "";
         }
@@ -41,6 +41,7 @@ define(function(require, exports, module) {
         .success(cb)
         .error(function() {
           console.log("failed to create shell", arguments);
+          ecb("failed to create shell");
         });
       },
       evaluate: function(code, modelOutput, refreshObj) {
@@ -168,7 +169,7 @@ define(function(require, exports, module) {
         window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
         cometdUtil.init(PLUGIN_NAME, serviceBase);
 
-        var clojureshell = function(settings, doneCB) {
+        var clojureshell = function(settings, doneCB, ecb) {
           var self = this;
           var setShellIdCB = function(id) {
             settings.shellID = id;
@@ -183,7 +184,12 @@ define(function(require, exports, module) {
           if (!settings.shellID) {
             settings.shellID = "";
           }
-          this.newShell(settings.shellID, setShellIdCB);
+          var newShellErrorCb = function(reason) {
+            if (ecb) {
+              ecb(reason);
+            }
+          };
+          this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
             this[action]();
@@ -209,6 +215,8 @@ define(function(require, exports, module) {
           var deferred = bkHelper.newDeferred();
           new shell(settings, function(shell) {
             deferred.resolve(shell);
+          }, function(reason) {
+            deferred.reject(reason);
           });
           return deferred.promise;
         }

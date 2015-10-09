@@ -19,7 +19,7 @@ import sys
 from IPython import start_ipython
 from subprocess import check_output
 
-ipyversion = check_output(["ipython", "ipython", "--version"])
+ipyversion = check_output(["ipython", "ipython", "--version"]).decode("utf-8")
 if ipyversion[0] == "4":
   sys.exit(start_ipython(["notebook", "--config=" + os.environ["beaker_ipython_notebook_config"]]))
 else:

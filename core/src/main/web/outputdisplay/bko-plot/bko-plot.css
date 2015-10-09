@@ -238,7 +238,7 @@
 }
 .svg-export {
   font-size: 13px;
-  font-family: sans-serif;
+  font-family: "pt-sans", Helvetica, sans-serif;
   line-height: 1.38462;
   color: #333333;
   background-color: white;

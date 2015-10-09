@@ -103,14 +103,14 @@
           $rootScope.$broadcast('modal.submit');
         },
         setOrderBy: function(options) {
-          $rootScope.fsPrefs.orderBy = options.orderBy;
-          $rootScope.fsPrefs.orderReverse = options.reverse;
+          bkCoreManager.setFSOrderBy(options.orderBy);
+          bkCoreManager.setFSReverse(options.reverse);
         },
         getOrderBy: function() {
-          return $rootScope.fsPrefs.orderBy || 'uri';
+          return bkCoreManager.getFSOrderBy();
         },
         getOrderReverse: function() {
-          return !!$rootScope.fsPrefs.orderReverse;
+          return !!bkCoreManager.getFSReverse();
         },
         getPrettyOrderBy: function() {
           var prettyNames = {
@@ -118,7 +118,7 @@
             modified: 'Date Modified'
           };
 
-          return prettyNames[$rootScope.fsPrefs.orderBy || 'uri'];
+          return prettyNames[newStrategy.treeViewfs.getOrderBy()];
         },
         showSpinner: false,
         applyExtFilter: true,
@@ -248,6 +248,43 @@
 
     var bkCoreManager = {
 
+      _prefs: {
+
+        setFSOrderBy: function (fs_order_by) {
+          this.fs_order_by = fs_order_by;
+        },
+        getFSOrderBy: function () {
+          return this.fs_order_by;
+        },
+        setFSReverse: function (fs_reverse) {
+          this.fs_reverse = fs_reverse;
+        },
+        getFSReverse: function () {
+          return this.fs_reverse;
+        }
+      },
+
+      setFSOrderBy: function (fs_order_by) {
+        this._prefs.setFSOrderBy(fs_order_by);
+        bkUtils.httpPost('../beaker/rest/util/setPreference', {
+          preferencename: 'fs-order-by',
+          preferencevalue: fs_order_by
+        });
+      },
+      getFSOrderBy: function () {
+        return this._prefs.getFSOrderBy();
+      },
+      setFSReverse: function (fs_reverse) {
+        this._prefs.setFSReverse(fs_reverse);
+        bkUtils.httpPost('../beaker/rest/util/setPreference', {
+          preferencename: 'fs-reverse',
+          preferencevalue: fs_reverse
+        });
+      },
+      getFSReverse: function () {
+        return this._prefs.getFSReverse();
+      },
+
       setNotebookImporter: function(format, importer) {
         _importers[format] = importer;
       },
@@ -346,7 +383,10 @@
             this.showSpinner = true;
             bkUtils.httpPost("../beaker/rest/file-io/createDirectory", {path: path})
               .success(function (list) {
-                self.treeViewfs.fillInput(path);
+
+                self.manualName = "";
+                self.input = path+'/';
+
                 $rootScope.$broadcast("MAKE_NEW_DIR",{
                   path: path
                 });
@@ -614,7 +654,7 @@
               cm.execCommand("indentMore");
             }
           }
-        }
+        };
 
         var backspace = function(cm) {
           var cursor = cm.getCursor();
@@ -633,7 +673,7 @@
           } else {
             cm.deleteH(-1, "char");
           }
-        }
+        };
 
         var keys = {
             "Up" : goUpOrMoveFocusUp,
@@ -943,6 +983,25 @@
         return dd.result;
       }
     };
+
+    bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
+      preference: 'fs-order-by'
+    }).success(function (fs_order_by) {
+      bkCoreManager._prefs.fs_order_by = !fs_order_by || fs_order_by.length === 0 ? 'uri' : fs_order_by;
+    }).error(function (response) {
+      console.log(response);
+      bkCoreManager._prefs.fs_order_by = 'uri';
+    });
+
+    bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
+      preference: 'fs-reverse'
+    }).success(function (fs_reverse) {
+      bkCoreManager._prefs.fs_reverse = !fs_reverse || fs_reverse.length === 0 ? false : fs_reverse;
+    }).error(function (response) {
+      console.log(response);
+      bkCoreManager._prefs.fs_reverse = false;
+    });
+
     return bkCoreManager;
   });
 

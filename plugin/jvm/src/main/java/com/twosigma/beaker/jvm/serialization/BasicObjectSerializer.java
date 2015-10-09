@@ -371,12 +371,16 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     @Override
     public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
       logger.fine("list of maps");
-      // convert this 'on the fly' to a datatable
-      @SuppressWarnings("unchecked")
-      Collection<Map<?, ?>> co = (Collection<Map<?, ?>>) obj;
-      TableDisplay t = new TableDisplay(co,parent);
-      jgen.writeObject(t);
-      return true;
+      try {
+        // convert this 'on the fly' to a datatable
+        @SuppressWarnings("unchecked")
+        Collection<Map<?, ?>> co = (Collection<Map<?, ?>>) obj;
+        TableDisplay t = new TableDisplay(co,parent);
+        jgen.writeObject(t);
+        return true;
+      } catch(Exception e) {
+        return false;
+      }
     }
   }
   

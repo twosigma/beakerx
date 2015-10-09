@@ -173,5 +173,8 @@
             "lineCount": 7
         }
     ],
-    "namespace": {}
+    "namespace": {},
+    "metadata": {
+        "publication-id": "560cb7e9-68b4-4659-9863-ce5d6ce93dd4"
+    }
 }

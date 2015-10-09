@@ -34,7 +34,7 @@ define(function(require, exports, module) {
         fgColor: "#FFFFFF",
         borderColor: "",
         shortName: "N",
-        newShell: function (shellID, cb) {
+        newShell: function (shellID, cb, ecb) {
             var self = this;
 
             if (!shellID) {
@@ -61,6 +61,7 @@ define(function(require, exports, module) {
                         cb(shellID);
                     }).fail(function () {
                         console.log("failed to create shell", arguments);
+                        ecb("failed to create shell");
                     });
                 })
             }
@@ -113,7 +114,7 @@ define(function(require, exports, module) {
         recordOutput: "true"
         }).success(function (ret) {
             serviceBase = ret;
-            var NodeShell = function (settings, doneCB) {
+            var NodeShell = function (settings, doneCB, ecb) {
                 var self = this;
                 var setShellIdCB = function (id) {
                     if (id !== settings.shellID) {
@@ -128,7 +129,12 @@ define(function(require, exports, module) {
                 if (!settings.shellID) {
                     settings.shellID = "";
                 }
-                this.newShell(settings.shellID, setShellIdCB);
+                var newShellErrorCb = function(reason) {
+                  if (ecb) {
+                    ecb(reason);
+                  }
+                };
+                this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
                 this.perform = function (what) {
                     var action = this.spec[what].action;
                     this[action]();
@@ -150,6 +156,8 @@ define(function(require, exports, module) {
           var deferred = bkHelper.newDeferred();
           new Shell(settings, function(shell) {
             deferred.resolve(shell);
+          }, function(reason) {
+            deferred.reject(reason);
           });
           return deferred.promise;
         }

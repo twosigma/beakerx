@@ -55,7 +55,7 @@
             "type": "markdown",
             "body": [
                 "Beaker handles output from [ggvis](http://ggvis.rstudio.com/ggvis-basics.html), made by [RStudio](https://www.rstudio.com/),",
-                "and easily installable from [CRAN](https://cran.r-project.org/web/packages/ggvis/index.html) with a single R command."
+                "and easily installable from [CRAN](https://cran.r-project.org/web/packages/ggvis/index.html).  Note that Shiny is not yet supported."
             ],
             "evaluatorReader": false
         },
@@ -168,6 +168,6 @@
     ],
     "namespace": {},
     "metadata": {
-        "publication-id": "56075ae2-7848-4bc2-8e59-4e8325f9b881"
+        "publication-id": "560ca254-071b-4647-8073-c4f941ca02e8"
     }
 }

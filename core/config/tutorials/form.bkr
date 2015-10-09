@@ -49,7 +49,7 @@
             "id": "section001",
             "type": "section",
             "level": 1,
-            "title": "Basic Form in Beaker",
+            "title": "Form made with HTML and JavaScript, triggering Python",
             "collapsed": false,
             "evaluatorReader": false
         },
@@ -78,7 +78,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 9
+                "elapsedTime": 28
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -103,7 +103,7 @@
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<p>\n  <input type='text' id='query' value='Berzelius'\n         onkeydown=\"if (event.keyCode == 13) beaker.process_form()\">\n<p/>\n\n<button onclick='beaker.process_form()'>Define</button>"
+                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<p>\n  <input type=\"text\" id=\"query\" value=\"Berzelius\" onkeydown=\"if (event.keyCode == 13) beaker.process_form()\">\n</p><p></p>\n\n<button onclick=\"beaker.process_form()\">Define</button>"
                 },
                 "elapsedTime": 0,
                 "state": {}
@@ -142,5 +142,8 @@
     "namespace": {
         "query": "Berzelius"
     },
-    "locked": true
+    "locked": true,
+    "metadata": {
+        "publication-id": "560ca2ea-c73e-440d-9112-3ba552afbe9e"
+    }
 }

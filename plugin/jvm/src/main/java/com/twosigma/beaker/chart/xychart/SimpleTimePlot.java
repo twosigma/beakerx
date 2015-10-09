@@ -39,12 +39,12 @@ public class SimpleTimePlot extends TimePlot {
   //saturation 75%
   //brightness 85%
   private static final Color[] NICE_COLORS = {
-    new Color(54, 54, 217),   //blue hue = 240
-    new Color(216, 54, 54),   //red hue = 0
-    new Color(54, 216, 54),   //green hue = 120
-    new Color(192, 54, 216),  //purple hue = 291
-    new Color(54, 126, 186),  //cyan hue = 169
-    new Color(216, 178, 54),  //yellow hue = 46
+    new Color(33, 87, 141), // blue
+    new Color(140, 29, 23), // red
+    new Color(150, 130, 54),// yellow
+    new Color(20, 30, 120), // violet
+    new Color(54, 100, 54), // green
+    new Color(60, 30, 50),  // dark
   };
 
   public SimpleTimePlot(List<Map<String, Object>> data, List<String> columns) {

@@ -36,7 +36,10 @@ RUN su -m beaker -c "cd /home/beaker/src  && gradle build"
 #      Setup      #
 ###################
 
-WhebRUN mkdir -p /home/beaker/.beaker/v1/config && \
+RUN su -m beaker -c "julia --eval 'Pkg.add(\"IJulia\")'" && \
+    su -m beaker -c "julia --eval 'Pkg.add(\"Gadfly\")'"
+
+RUN mkdir -p /home/beaker/.beaker/v1/config && \
     echo '{"pref-format" : "1", "languages" : {"Python3" : {"path": "/home/beaker/py3k/bin"}}}' > /home/beaker/.beaker/v1/config/beaker.pref.json
 
 RUN chown -R beaker:beaker /home/beaker/.beaker

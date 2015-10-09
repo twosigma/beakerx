@@ -132,6 +132,7 @@ gulp.task("buildSingleOutDispJs", function() {
 
 gulp.task("namespaceIPythonCss", function() {
   return gulp.src(Path.join(IPythonCssPath, "**.css"))
+      .pipe(replace('../components/bootstrap/fonts/', '../../app/fonts/'))
       .pipe(cssWrap({selector:'.ipy-output'}))
       .pipe(concat('ipython.min.css'))
       .pipe(gulp.dest(buildPath));

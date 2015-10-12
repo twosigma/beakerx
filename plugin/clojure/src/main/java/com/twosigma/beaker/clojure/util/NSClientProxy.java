@@ -25,21 +25,11 @@ import clojure.lang.PersistentArrayMap;
 public class NSClientProxy {
   public static Object get(String sessionId, String key) throws IOException {
     Object obj = NamespaceClient.getBeaker(sessionId).get(key);
-    System.out.println(obj);
     return obj;
   }
 
   public static void set(String sessionId, String key, Object value) throws IOException {
-    System.out.println(value.getClass().getName());
-
-    if (value instanceof clojure.lang.PersistentArrayMap) {
-      HashMap m = new HashMap();
-      for (Object k : ((PersistentArrayMap) value).keySet()) {
-        m.put(k, ((PersistentArrayMap) value).get(k));
-      }
-      NamespaceClient.getBeaker(sessionId).set(key, m);
-    } else
-      NamespaceClient.getBeaker(sessionId).set(key, value);
+    NamespaceClient.getBeaker(sessionId).set(key, value);
   }
 
 }

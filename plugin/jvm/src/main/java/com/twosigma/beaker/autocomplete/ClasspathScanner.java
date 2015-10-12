@@ -16,7 +16,10 @@
 
 package com.twosigma.beaker.autocomplete;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -25,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 public class ClasspathScanner {
   protected Map<String,List<String>> packages;
@@ -77,6 +81,24 @@ public class ClasspathScanner {
         } catch (Exception ex) {	
         }
         if (jar != null) {
+          try {
+            Manifest mf = jar.getManifest();
+            if(mf != null){
+              String cp = mf.getMainAttributes().getValue("Class-Path");
+              if(StringUtils.isNotEmpty(cp)){
+                for(String fn : cp.split(" ")){
+                  File child = new File(file.getParent() + System.getProperty("file.separator") + fn);
+                  if(child.exists()){
+                    if (!findClasses(root, child, includeJars)) {
+                      return false;
+                    }
+                  }
+                }
+              }
+            }
+          }catch (IOException e){
+          }
+
           Enumeration<JarEntry> entries = jar.entries();
           while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();

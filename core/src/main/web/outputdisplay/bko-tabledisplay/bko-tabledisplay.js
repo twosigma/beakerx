@@ -116,6 +116,32 @@
       return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
   });
+  moment.tz.link(['Etc/GMT+1|GMT+01:00',
+                  'Etc/GMT+2|GMT+02:00',
+                  'Etc/GMT+3|GMT+03:00',
+                  'Etc/GMT+4|GMT+04:00',
+                  'Etc/GMT+5|GMT+05:00',
+                  'Etc/GMT+6|GMT+06:00',
+                  'Etc/GMT+7|GMT+07:00',
+                  'Etc/GMT+8|GMT+08:00',
+                  'Etc/GMT+9|GMT+09:00',
+                  'Etc/GMT+10|GMT+10:00',
+                  'Etc/GMT+11|GMT+11:00',
+                  'Etc/GMT+12|GMT+12:00',
+                  'Etc/GMT-1|GMT-01:00',
+                  'Etc/GMT-2|GMT-02:00',
+                  'Etc/GMT-3|GMT-03:00',
+                  'Etc/GMT-4|GMT-04:00',
+                  'Etc/GMT-5|GMT-05:00',
+                  'Etc/GMT-6|GMT-06:00',
+                  'Etc/GMT-7|GMT-07:00',
+                  'Etc/GMT-8|GMT-08:00',
+                  'Etc/GMT-9|GMT-09:00',
+                  'Etc/GMT-10|GMT-10:00',
+                  'Etc/GMT-11|GMT-11:00',
+                  'Etc/GMT-12|GMT-12:00',
+                  'Etc/GMT-13|GMT-13:00',
+                  'Etc/GMT-14|GMT-14:00']);
   //jscs:disable
   beaker.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval) {
   //jscs:enable

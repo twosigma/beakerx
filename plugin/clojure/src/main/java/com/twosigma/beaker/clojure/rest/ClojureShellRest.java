@@ -128,12 +128,13 @@ public class ClojureShellRest {
       @FormParam("shellId") String shellId,
       @FormParam("classPath") String classPath,
       @FormParam("imports") String imports,
-      @FormParam("outdir") String outDir)
+      @FormParam("outdir") String outDir,
+      @FormParam("requirements") String requirements)
       throws MalformedURLException, IOException
   {
     if(!this.shells.containsKey(shellId)) {
       return;
     }
-    this.shells.get(shellId).setShellOptions(classPath, imports, outDir);
+    this.shells.get(shellId).setShellOptions(classPath, imports, outDir, requirements);
   }
 }

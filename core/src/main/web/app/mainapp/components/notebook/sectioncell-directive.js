@@ -188,6 +188,27 @@
             return $scope.cellmodel;
           }
         };
+        $scope.getFullIndex = function() {
+          var index = $scope.getIndexAmongSectionCells();
+          if ($scope.$parent.$parent.getNestedLevel) {
+            return $scope.$parent.$parent.getFullIndex() + '.' + (index + 1);
+          }
+
+          return index + $scope.getNestedLevel();
+        };
+        $scope.getIndexAmongSectionCells = function() {
+          var siblingSections = [];
+          if ($scope.isRoot()) {
+            siblingSections = notebookCellOp.getChildren('root');
+          } else {
+            var parent = notebookCellOp.getParent($scope.cellmodel.id);
+            siblingSections = notebookCellOp.getChildren(parent.id);
+          }
+          siblingSections = siblingSections.filter(function(element) {
+            return 'section' === element.type;
+          });
+          return siblingSections.indexOf($scope.cellmodel);
+        };
       }
     };
   });

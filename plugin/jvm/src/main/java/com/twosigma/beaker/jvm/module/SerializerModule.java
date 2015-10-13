@@ -23,9 +23,11 @@ import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.BeakerProgressUpdate;
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.categoryplot.plotitems.CategoryBars;
 import com.twosigma.beaker.chart.legend.LegendPosition;
 import com.twosigma.beaker.chart.serializer.AreaSerializer;
 import com.twosigma.beaker.chart.serializer.BarsSerializer;
+import com.twosigma.beaker.chart.serializer.CategoryBarsSerializer;
 import com.twosigma.beaker.chart.serializer.ColorSerializer;
 import com.twosigma.beaker.chart.serializer.CombinedPlotSerializer;
 import com.twosigma.beaker.chart.serializer.CrosshairSerializer;
@@ -207,6 +209,8 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(ButtonComponent.class, injector.getInstance(ButtonComponentSerializer.class));
       module.addSerializer(LoadValuesButton.class, injector.getInstance(LoadValuesButtonSerializer.class));
       module.addSerializer(SaveValuesButton.class, injector.getInstance(SaveValuesButtonSerializer.class));
+
+      module.addSerializer(CategoryBars.class, injector.getInstance(CategoryBarsSerializer.class));
 
       mapper.registerModule(module);
 

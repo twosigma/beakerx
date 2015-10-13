@@ -26,7 +26,6 @@ public class CategoryBars extends CategoryGraphics {
   private List<Number> widths;
   private Number baseBase = 0.0d;
   private List<Number> bases;
-  private Color baseColor;
   private List<Color> colors;
   private Color baseOutlineColor;
   private List<Color> outlineColors;
@@ -95,19 +94,10 @@ public class CategoryBars extends CategoryGraphics {
     }
   }
 
-  @Override
-  public void setColori(Color color) {
-    this.baseColor = color;
-  }
-
   private void setColors(List<Color> colors) {
     this.colors = colors;
   }
 
-  @Override
-  public Color getColor() {
-    return this.baseColor;
-  }
 
   public List<Color> getColors() {
     return this.colors;

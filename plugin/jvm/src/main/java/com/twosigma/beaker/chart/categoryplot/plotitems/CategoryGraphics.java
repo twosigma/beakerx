@@ -25,10 +25,17 @@ import java.util.List;
 public abstract class CategoryGraphics extends Graphics {
   protected Number[][] value;
   protected List<String> seriesNames;
+  protected Color baseColor;
 
-  abstract public void setColori(Color color);
+  @Override
+  public void setColori(Color color) {
+    this.baseColor = color;
+  }
 
-  abstract public Color getColor();
+  @Override
+  public Color getColor() {
+    return this.baseColor;
+  }
 
   public Number[][] getValue() {
     return value;

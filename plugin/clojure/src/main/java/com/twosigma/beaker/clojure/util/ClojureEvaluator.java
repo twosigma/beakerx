@@ -22,11 +22,7 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.FileSystems;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,13 +43,15 @@ public class ClojureEvaluator {
   protected final String sessionId;
   protected List<String> classPath;
   protected List<String> imports;
+  protected List<String> requirements;
   protected boolean exit;
   protected boolean updateLoader;
   protected final BeakerCellExecutor executor;
   protected workerThread myWorker;
-  protected String currentClassPath;
-  protected String currentImports;
+  protected String currentClassPath = "";
+  protected String currentImports = "";
   protected String outDir = "";
+  protected String currentRequirements = "";
   protected DynamicClassLoaderSimple loader;
 
   protected class jobDescriptor {
@@ -76,6 +74,7 @@ public class ClojureEvaluator {
     sessionId = sId;
     classPath = new ArrayList<String>();
     imports = new ArrayList<String>();
+    requirements = new ArrayList<>();
 
     String run_str = String.format("(ns %1$s_%2$s)(defn run-str_%2$s [s] (binding [*ns* (find-ns '%1$s_%2$s)] (load-string s)))", beaker_clojure_ns, shellId);
     clojureLoadString = RT.var(String.format("%1$s_%2$s", beaker_clojure_ns, shellId), String.format("run-str_%s", shellId));
@@ -83,8 +82,7 @@ public class ClojureEvaluator {
 
     exit = false;
     updateLoader = false;
-    currentClassPath = "";
-    currentImports = "";
+
     executor = new BeakerCellExecutor("clojure");
     startWorker();
   }
@@ -121,6 +119,15 @@ public class ClojureEvaluator {
         try {
           loader.loadClass(s);
           clojureLoadString.invoke(String.format("(import '%s)", s));
+        } catch (Exception e) {
+          Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
+    for (String s : requirements) {
+      if (s != null && !s.isEmpty())
+        try {
+          clojureLoadString.invoke(String.format("(require '%s)", s));
         } catch (Exception e) {
           Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
         }
@@ -213,8 +220,7 @@ public class ClojureEvaluator {
     }
   }
 
-  public void setShellOptions(String cp, String in, String od) throws IOException {
-
+  public void setShellOptions(String cp, String in, String od, String req) throws IOException {
 
     if (od == null || od.isEmpty()) {
       od = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
@@ -222,21 +228,36 @@ public class ClojureEvaluator {
       od = od.replace("$BEAKERDIR", System.getenv("beaker_tmp_dir"));
     }
     // check if we are not changing anything
-    if (currentClassPath.equals(cp) && currentImports.equals(in) && outDir.equals(od))
+    if (currentClassPath.equals(cp) && currentImports.equals(in) && outDir.equals(od) && currentRequirements.equals(req))
       return;
 
-    currentClassPath = cp;
-    currentImports = in;
     outDir = od;
 
-    if (cp.isEmpty())
-      classPath = new ArrayList<String>();
-    else
-      classPath = Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"));
-    if (in.isEmpty())
-      imports = new ArrayList<String>();
-    else
-      imports = Arrays.asList(in.split("\\s+"));
+    if(!currentClassPath.equals(cp)) {
+      currentClassPath = cp;
+      if (cp.isEmpty())
+        classPath = new ArrayList<String>();
+      else
+        classPath = Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"));
+    }
+
+    if (!currentImports.equals(in))
+    {
+      currentImports = in;
+      if (in.isEmpty())
+        imports = new ArrayList<String>();
+      else
+        imports = Arrays.asList(in.split("\\s+"));
+    }
+
+    if (!currentRequirements.equals(req))
+    {
+      currentRequirements = req;
+      if (req.isEmpty())
+        requirements = new ArrayList<String>();
+      else
+        requirements = Arrays.asList(req.split("\\R"));
+    }
 
     resetEnvironment();
   }

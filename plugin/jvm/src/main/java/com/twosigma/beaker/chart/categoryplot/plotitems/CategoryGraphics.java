@@ -18,10 +18,11 @@
 package com.twosigma.beaker.chart.categoryplot.plotitems;
 
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.Graphics;
 
 import java.util.List;
 
-public abstract class CategoryGraphics {
+public abstract class CategoryGraphics extends Graphics {
   protected Number[][] value;
   protected List<String> seriesNames;
 

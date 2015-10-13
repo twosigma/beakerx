@@ -17,9 +17,7 @@
 package com.twosigma.beaker.chart.categoryplot.plotitems;
 
 import com.twosigma.beaker.chart.Color;
-import com.twosigma.beaker.chart.Filter;
 
-import java.util.EnumSet;
 import java.util.List;
 
 public class CategoryBars extends CategoryGraphics {

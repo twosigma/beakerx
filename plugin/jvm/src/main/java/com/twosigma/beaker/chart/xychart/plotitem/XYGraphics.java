@@ -18,15 +18,15 @@ package com.twosigma.beaker.chart.xychart.plotitem;
 
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Filter;
+import com.twosigma.beaker.chart.Graphics;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-abstract public class XYGraphics {
+abstract public class XYGraphics extends Graphics {
   private List<Number> xs;
   private List<Number> ys;
-  private boolean visible     = true;
   private String  displayName = "";
   private String  yAxisName   = null;
   private Filter lodFilter;
@@ -48,14 +48,6 @@ abstract public class XYGraphics {
 
   public List<Number> getY() {
     return this.ys;
-  }
-
-  public void setVisible(boolean visible) {
-    this.visible = visible;
-  }
-
-  public Boolean getVisible() {
-    return this.visible;
   }
 
   public void setDisplayName(String displayName) {
@@ -100,7 +92,5 @@ abstract public class XYGraphics {
 
   }
 
-  abstract public void setColori(Color color);
-  abstract public Color getColor();
   abstract protected EnumSet<Filter> getPossibleFilters();
 }

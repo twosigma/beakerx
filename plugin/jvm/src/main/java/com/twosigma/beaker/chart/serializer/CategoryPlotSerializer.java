@@ -38,7 +38,7 @@ public class CategoryPlotSerializer extends AbstractChartSerializer<CategoryPlot
       jgen.writeObjectField("categoryNames", categoryPlot.getCategoryNames());
     }
     if (categoryPlot.getGraphics() != null) {
-      jgen.writeObjectField("graphics", categoryPlot.getGraphics());
+      jgen.writeObjectField("graphics_list", categoryPlot.getGraphics());
     }
 
     jgen.writeEndObject();

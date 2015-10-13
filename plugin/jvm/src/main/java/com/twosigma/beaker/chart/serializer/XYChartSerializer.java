@@ -52,13 +52,6 @@ public class XYChartSerializer extends AbstractChartSerializer<XYChart> {
 
     jgen.writeStartObject();
 
-    String type = xychart.getClass().getSimpleName();
-    if ("SimpleTimePlot".equals(type)){
-      jgen.writeObjectField("type", "TimePlot");
-    }else {
-      jgen.writeObjectField("type", type);
-    }
-
     serialize(xychart, jgen);
 
     int i = 0;

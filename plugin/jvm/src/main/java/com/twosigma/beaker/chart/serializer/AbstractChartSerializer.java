@@ -28,6 +28,12 @@ public abstract class AbstractChartSerializer<T extends AbstractChart> extends J
 
   protected void serialize(T chart, JsonGenerator jgen) throws IOException {
 
+    String type = chart.getClass().getSimpleName();
+    if ("SimpleTimePlot".equals(type)){
+      jgen.writeObjectField("type", "TimePlot");
+    }else {
+      jgen.writeObjectField("type", type);
+    }
 
     jgen.writeObjectField("init_width", chart.getInitWidth());
     jgen.writeObjectField("init_height", chart.getInitHeight());

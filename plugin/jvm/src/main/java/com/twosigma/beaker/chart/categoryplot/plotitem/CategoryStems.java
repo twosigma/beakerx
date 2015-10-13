@@ -15,7 +15,7 @@
  */
 
 
-package com.twosigma.beaker.chart.categoryplot.plotitems;
+package com.twosigma.beaker.chart.categoryplot.plotitem;
 
 
 public class CategoryStems  extends CategoryGraphics {

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.chart.categoryplot.plotitems;
+package com.twosigma.beaker.chart.categoryplot.plotitem;
 
 import com.twosigma.beaker.chart.Color;
 

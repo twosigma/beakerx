@@ -25,9 +25,9 @@ include 'shared',
         'plugin:r',
         'plugin:scala',
         'plugin:clojure',
-        'plugin:kdb'
-        'plugin:cpp'
-        'plugin:sql'
+        'plugin:kdb',
+        'plugin:cpp',
+        'plugin:sqlsh'
 
 project(':shared').projectDir = file("../shared")
 project(':plugin:jvm').projectDir = file("./jvm")

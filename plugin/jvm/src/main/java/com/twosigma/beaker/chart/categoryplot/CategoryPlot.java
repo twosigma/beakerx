@@ -17,7 +17,7 @@
 package com.twosigma.beaker.chart.categoryplot;
 
 import com.twosigma.beaker.AbstractChart;
-import com.twosigma.beaker.chart.categoryplot.plotitems.CategoryGraphics;
+import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
 
 import java.util.ArrayList;
 import java.util.List;

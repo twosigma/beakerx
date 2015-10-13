@@ -16,121 +16,25 @@
 
 package com.twosigma.beaker.chart.xychart;
 
-import com.twosigma.beaker.chart.legend.LegendLayout;
-import com.twosigma.beaker.chart.legend.LegendPosition;
+import com.twosigma.beaker.AbstractChart;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantBand;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
-import com.twosigma.beaker.chart.xychart.plotitem.Crosshair;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
-import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimeZone;
 
-abstract public class XYChart {
-  private int initWidth = 640;
-  private int initHeight = 480;
-  private String title;
-  private String xLabel;
-  private boolean showLegend = false;
-  private boolean useToolTip = true;
+abstract public class XYChart extends AbstractChart{
   private final List<XYGraphics> xyGraphics = new ArrayList<>();
   private final List<ConstantLine> constantLines = new ArrayList<>();
   private final List<ConstantBand> constantBands = new ArrayList<>();
   private final List<Text> texts = new ArrayList<>();
-  private final YAxis yAxis = new YAxis();
-  private final List<YAxis> yAxes = new ArrayList<>();
-  private double xLowerMargin = 0.05;
-  private double xUpperMargin = 0.05;
   private boolean xAutoRange = true;
   private double xLowerBound;
   private double xUpperBound;
   private boolean logX = false;
   private double xLogBase = 10;
-  protected TimeZone timeZone;
-  private Crosshair crosshair;
-  private LegendPosition legendPosition = new LegendPosition(LegendPosition.Position.TOP_RIGHT);
   private Integer lodThreshold = null;
-  private boolean omitCheckboxes = false;
-  private LegendLayout legendLayout = LegendLayout.VERTICAL;
-
-  protected XYChart() {
-    yAxes.add(yAxis);
-  }
-
-  public XYChart setInitWidth(int w) {
-    this.initWidth = w;
-    return this;
-  }
-
-  public Integer getInitWidth() {
-    return this.initWidth;
-  }
-
-  public XYChart setInitHeight(int h) {
-    this.initHeight = h;
-    return this;
-  }
-
-  public Integer getInitHeight() {
-    return this.initHeight;
-  }
-
-  public XYChart setTitle(String title) {
-    this.title = title;
-    return this;
-  }
-
-  public String getTitle() {
-    return this.title;
-  }
-
-  public XYChart setXLabel(String xLabel) {
-    this.xLabel = xLabel;
-    return this;
-  }
-
-  public XYChart setxLabel(String xLabel) {
-    this.xLabel = xLabel;
-    return this;
-  }
-
-  public String getXLabel() {
-    return this.xLabel;
-  }
-
-  public XYChart setYLabel(String yLabel) {
-    yAxis.setLabel(yLabel);
-    return this;
-  }
-
-  public XYChart setyLabel(String yLabel) {
-    yAxis.setLabel(yLabel);
-    return this;
-  }
-
-  public String getYLabel() {
-    return yAxis.getLabel();
-  }
-
-  public XYChart setShowLegend(boolean showLegend) {
-    this.showLegend = showLegend;
-    return this;
-  }
-
-  public Boolean getShowLegend() {
-    return this.showLegend;
-  }
-
-  public XYChart setUseToolTip(boolean useToolTip) {
-    this.useToolTip = useToolTip;
-    return this;
-  }
-
-  public Boolean getUseToolTip() {
-    return this.useToolTip;
-  }
 
   public XYChart add(XYGraphics graphics) {
     this.xyGraphics.add(graphics);
@@ -184,19 +88,6 @@ abstract public class XYChart {
     return this.texts;
   }
 
-  public XYChart add(YAxis yAxis) {
-    this.yAxes.add(yAxis);
-    return this;
-  }
-
-  public XYChart leftShift(YAxis yAxis) {
-    return add(yAxis);
-  }
-
-  public List<YAxis> getYAxes() {
-    return this.yAxes;
-  }
-
   public XYChart add(List items) {
     for (Object o : items) {
       if (o instanceof XYGraphics) {
@@ -207,17 +98,12 @@ abstract public class XYChart {
         add((ConstantBand) o);
       } else if (o instanceof Text) {
         add((Text) o);
-      } else if (o instanceof YAxis) {
-        add((YAxis) o);
+      } else {
+        super.add(items);
       }
     }
     return this;
   }
-
-  public XYChart leftShift(List items) {
-    return add(items);
-  }
-
 
   public XYChart setXAutoRange(boolean xAutoRange) {
     this.xAutoRange = xAutoRange;
@@ -230,34 +116,6 @@ abstract public class XYChart {
 
   public Boolean getXAutoRange() {
     return this.xAutoRange;
-  }
-
-  public XYChart setXLowerMargin(double margin) {
-    this.xLowerMargin = margin;
-    return this;
-  }
-
-  public XYChart setxLowerMargin(double margin) {
-    this.xLowerMargin = margin;
-    return this;
-  }
-
-  public double getXLowerMargin() {
-    return this.xLowerMargin;
-  }
-
-  public XYChart setXUpperMargin(double margin) {
-    this.xUpperMargin = margin;
-    return this;
-  }
-
-  public XYChart setxUpperMargin(double margin) {
-    this.xUpperMargin = margin;
-    return this;
-  }
-
-  public double getXUpperMargin() {
-    return this.xUpperMargin;
   }
 
   public XYChart setXBound(double lower, double upper) {
@@ -301,82 +159,6 @@ abstract public class XYChart {
     return this.setYAutoRange(yAutoRange);
   }
 
-  public Boolean getYAutoRange() {
-    return this.yAxis.getAutoRange();
-  }
-
-  public XYChart setYAutoRangeIncludesZero(boolean yAutoRangeIncludesZero) {
-    this.yAxis.setAutoRangeIncludesZero(yAutoRangeIncludesZero);
-    return this;
-  }
-
-  public XYChart setyAutoRangeIncludesZero(boolean yAutoRangeIncludesZero) {
-    return this.setYAutoRangeIncludesZero(yAutoRangeIncludesZero);
-  }
-
-  public Boolean getYAutoRangeIncludesZero() {
-    return this.yAxis.getAutoRangeIncludesZero();
-  }
-
-  public XYChart setYLowerMargin(double margin) {
-    this.yAxis.setLowerMargin(margin);
-    return this;
-  }
-
-  public XYChart setyLowerMargin(double margin) {
-    this.yAxis.setLowerMargin(margin);
-    return this;
-  }
-
-  public double getYLowerMargin() {
-    return this.yAxis.getLowerMargin();
-  }
-
-  public XYChart setYUpperMargin(double margin) {
-    this.yAxis.setUpperMargin(margin);
-    return this;
-  }
-
-  public XYChart setyUpperMargin(double margin) {
-    this.yAxis.setUpperMargin(margin);
-    return this;
-  }
-
-  public double getYUpperMargin() {
-    return this.yAxis.getUpperMargin();
-  }
-
-  public XYChart setYBound(double lower, double upper) {
-    this.yAxis.setAutoRange(false);
-    this.yAxis.setBound(lower, upper);
-    return this;
-  }
-
-  public XYChart setYBound(List bound) {
-    if (bound.size() != 2) {
-      throw new IllegalArgumentException("to set the y bound, the list needs to be of size=2");
-    }
-    if (!(bound.get(0) instanceof Number) || !(bound.get(1) instanceof Number)) {
-      throw new IllegalArgumentException("the elements in the list needs to be numbers");
-    }
-    Number n0 = (Number) bound.get(0);
-    Number n1 = (Number) bound.get(1);
-    setYBound(n0.doubleValue(), n1.doubleValue());
-    return this;
-  }
-
-  public XYChart setyBound(List bound) {
-    return this.setYBound(bound);
-  }
-
-  public Double getYLowerBound() {
-    return this.yAxis.getLowerBound();
-  }
-
-  public Double getYUpperBound() {
-    return this.yAxis.getUpperBound();
-  }
-
   protected XYChart setLogX(boolean logX) {
     this.logX = logX;
     return this;
@@ -397,73 +179,6 @@ abstract public class XYChart {
 
   public XYChart setxLogBase(double xLogBase) {
     return this.setXLogBase(xLogBase);
-  }
-
-  public XYChart setLogY(boolean logY) {
-    this.yAxis.setLog(logY);
-    return this;
-  }
-
-  public Boolean getLogY() {
-    return this.yAxis.getLog();
-  }
-
-  public XYChart setYLogBase(double yLogBase) {
-    this.yAxis.setLogBase(yLogBase);
-    return this;
-  }
-
-  public XYChart setyLogBase(double yLogBase) {
-    return this.setYLogBase(yLogBase);
-  }
-
-  public Double getYLogBase() {
-    return this.yAxis.getLogBase();
-  }
-
-  protected XYChart setTimeZone(TimeZone timeZone) {
-    this.timeZone = timeZone;
-    return this;
-  }
-
-  public TimeZone getTimeZone() {
-    return this.timeZone;
-  }
-
-  public XYChart setCrosshair(Crosshair crosshair) {
-    this.crosshair = crosshair;
-    return this;
-  }
-
-  public Crosshair getCrosshair() {
-    return this.crosshair;
-  }
-
-  public LegendPosition getLegendPosition() {
-    return legendPosition;
-  }
-
-  public XYChart setLegendPosition(LegendPosition legendPosition) {
-    this.legendPosition = legendPosition;
-    return this;
-  }
-
-  public LegendLayout getLegendLayout() {
-    return legendLayout;
-  }
-
-  public XYChart setLegendLayout(LegendLayout legendLayout) {
-    this.legendLayout = legendLayout;
-    return this;
-  }
-
-  public Boolean getOmitCheckboxes() {
-    return omitCheckboxes;
-  }
-
-  public XYChart setOmitCheckboxes(boolean omitCheckboxes) {
-    this.omitCheckboxes = omitCheckboxes;
-    return this;
   }
 
   public Integer getLodThreshold() {

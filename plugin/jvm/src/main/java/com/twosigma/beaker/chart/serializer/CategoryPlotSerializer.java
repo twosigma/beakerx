@@ -18,6 +18,7 @@ package com.twosigma.beaker.chart.serializer;
 
 
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
+import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.SerializerProvider;
@@ -33,6 +34,13 @@ public class CategoryPlotSerializer extends AbstractChartSerializer<CategoryPlot
     jgen.writeStartObject();
 
     serialize(categoryPlot, jgen);
+
+    int i = 0;
+    for (CategoryGraphics g : categoryPlot.getGraphics()) {
+      if (g.getColor() == null) {
+        g.setColori(ColorPalette.getColor(i++));
+      }
+    }
 
     if (categoryPlot.getCategoryNames() != null) {
       jgen.writeObjectField("categoryNames", categoryPlot.getCategoryNames());

@@ -16,27 +16,27 @@
 
 package com.twosigma.beaker.chart.serializer;
 
-import com.twosigma.beaker.chart.categoryplot.plotitems.CategoryLines;
+import com.twosigma.beaker.chart.categoryplot.plotitems.CategoryPoints;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
 
-public class CategoryPointsSerializer extends CategoryGraphicsSerializer<CategoryLines> {
+public class CategoryPointsSerializer extends CategoryGraphicsSerializer<CategoryPoints> {
 
   @Override
-  public void serialize(CategoryLines categoryLines,
+  public void serialize(CategoryPoints categoryPoints,
                         JsonGenerator jgen,
                         SerializerProvider provider) throws
                                                      IOException,
                                                      JsonProcessingException {
     jgen.writeStartObject();
 
-    serialize(categoryLines, jgen);
+    serialize(categoryPoints, jgen);
 
-    if (categoryLines.getColor() != null)
-      jgen.writeObjectField("color", categoryLines.getColor());
+    if (categoryPoints.getColor() != null)
+      jgen.writeObjectField("color", categoryPoints.getColor());
 
     jgen.writeEndObject();
   }

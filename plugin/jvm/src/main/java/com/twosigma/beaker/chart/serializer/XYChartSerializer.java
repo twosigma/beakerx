@@ -29,7 +29,7 @@ import org.codehaus.jackson.map.SerializerProvider;
  * XYChartSerializer
  *
  */
-public class XYChartSerializer extends JsonSerializer<XYChart> {
+public class XYChartSerializer extends AbstractChartSerializer<XYChart> {
 
   private static class ColorPalette {
     static final Color[] colors = new Color[]{
@@ -48,55 +48,31 @@ public class XYChartSerializer extends JsonSerializer<XYChart> {
 
   @Override
   public void serialize(XYChart xychart, JsonGenerator jgen, SerializerProvider sp)
-      throws IOException, JsonProcessingException {
+    throws IOException, JsonProcessingException {
+
+    jgen.writeStartObject();
+
+    serialize(xychart, jgen);
+
     int i = 0;
     for (XYGraphics g : xychart.getGraphics()) {
       if (g.getColor() == null) {
         g.setColori(ColorPalette.getColor(i++));
       }
     }
-
-    jgen.writeStartObject();
-    String type = xychart.getClass().getSimpleName();
-    if ("SimpleTimePlot".equals(type)){
-      jgen.writeObjectField("type", "TimePlot");
-    }else {
-      jgen.writeObjectField("type", type);
-    }
-    jgen.writeObjectField("init_width", xychart.getInitWidth());
-    jgen.writeObjectField("init_height", xychart.getInitHeight());
-    jgen.writeObjectField("chart_title", xychart.getTitle());
-    jgen.writeObjectField("domain_axis_label", xychart.getXLabel());
-    jgen.writeObjectField("y_label", xychart.getYLabel());
-    jgen.writeObjectField("show_legend", xychart.getShowLegend());
-    jgen.writeObjectField("use_tool_tip", xychart.getUseToolTip());
     jgen.writeObjectField("graphics_list", xychart.getGraphics());
     jgen.writeObjectField("constant_lines", xychart.getConstantLines());
     jgen.writeObjectField("constant_bands", xychart.getConstantBands());
     jgen.writeObjectField("texts", xychart.getTexts());
-    jgen.writeObjectField("rangeAxes", xychart.getYAxes());
     jgen.writeObjectField("x_auto_range", xychart.getXAutoRange());
-    jgen.writeObjectField("x_lower_margin", xychart.getXLowerMargin());
-    jgen.writeObjectField("x_upper_margin", xychart.getXUpperMargin());
     jgen.writeObjectField("x_lower_bound", xychart.getXLowerBound());
     jgen.writeObjectField("x_upper_bound", xychart.getXUpperBound());
-    jgen.writeObjectField("y_auto_range", xychart.getYAutoRange());
-    jgen.writeObjectField("y_auto_range_includes_zero", xychart.getYAutoRangeIncludesZero());
-    jgen.writeObjectField("y_lower_margin", xychart.getYLowerMargin());
-    jgen.writeObjectField("y_upper_margin", xychart.getYUpperMargin());
-    jgen.writeObjectField("y_lower_bound", xychart.getYLowerBound());
-    jgen.writeObjectField("y_upper_bound", xychart.getYUpperBound());
     jgen.writeObjectField("log_x", xychart.getLogX());
     jgen.writeObjectField("x_log_base", xychart.getXLogBase());
-    jgen.writeObjectField("log_y", xychart.getLogY());
-    jgen.writeObjectField("timezone", xychart.getTimeZone());
-    jgen.writeObjectField("crosshair", xychart.getCrosshair());
-    jgen.writeObjectField("legend_position", xychart.getLegendPosition());
     if (xychart.getLodThreshold() != null) {
       jgen.writeObjectField("lodThreshold", xychart.getLodThreshold());
     }
-    jgen.writeObjectField("omit_checkboxes", xychart.getOmitCheckboxes());
-    jgen.writeObjectField("legend_layout", xychart.getLegendLayout());
+
     jgen.writeEndObject();
   }
 

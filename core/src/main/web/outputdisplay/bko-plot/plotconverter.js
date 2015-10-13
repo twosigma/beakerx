@@ -17,37 +17,186 @@
 (function() {
   'use strict';
   var retfunc = function(bkUtils, plotUtils) {
-    return {
-      dataTypeMap : {
-        "Line" : "line",
+
+    var calcxs = function(categoryItem, categoryMargin, categoriesNumber, seriesNumber) {
+      var xs = new Array(seriesNumber);
+      for (var i = 0; i < xs.length; i++) {
+        xs[i] = new Array(categoriesNumber);
+      }
+
+      var resWidth = 0;
+      for (var colindex = 0; colindex < categoriesNumber; colindex++) {
+        for (var rowindex = 0; rowindex < seriesNumber; rowindex++) {
+          var elWidth;
+          if (_.isArray(categoryItem.widths)) {
+            var rowWidths = categoryItem.widths[rowindex];
+            if (_.isArray(rowWidths)) {
+              elWidth = rowWidths[colindex];
+            } else {
+              elWidth = rowWidths;
+            }
+          } else {
+            elWidth = categoryItem.width;
+          }
+          resWidth += elWidth || 1; //FIXME why width is null?
+          xs[rowindex][colindex] = resWidth;
+        }
+        resWidth += categoryMargin;
+      }
+      return xs;
+    };
+
+    var processItem = function(item, newmodel, yAxisRSettings, yAxisSettings) {
+      item.legend = item.display_name;
+      delete item.display_name;
+
+      if (item.use_tool_tip != null) {
+        item.useToolTip = item.use_tool_tip;
+        delete item.use_tool_tip;
+      }
+
+      if (item.color != null) {
+        item.color_opacity = parseInt(item.color.substr(1,2), 16) / 255;
+        item.color = "#" + item.color.substr(3);
+      }
+      if (item.fill != null && item.fill === false) {
+        item.color = "none";
+      }
+      if (item.outline_color != null) {
+        item.stroke_opacity = parseInt(item.outline_color.substr(1,2), 16) / 255;
+        item.stroke = "#" + item.outline_color.substr(3);
+        delete item.outline_color;
+      }
+
+      if (item.type == null) { item.type = ""; }
+      if (item.style == null) { item.style = ""; }
+      if (item.stroke_dasharray == null) { item.stroke_dasharray = ""; }
+      if (item.interpolation == null) { item.interpolation = ""; }
+
+      item.type = dataTypeMap[item.type];
+
+      if(item.type === "bar" || item.type === "area") {
+        //newmodel.yPreventNegative = true; // auto range to y = 0
+      }
+
+      if(item.type === "line" || item.type === "stem") {
+        item.style = lineStyleMap[item.style];
+      }
+
+      if(item.type === "line" || item.type === "area") {
+        item.interpolation = interpolationMap[item.interpolation];
+      }
+
+      if(item.type === "bar") {
+        if (item.width == null) {
+          item.width = 1;
+        }
+      }
+
+      if (item.type === "point") {
+        if (item.shape == null) {
+          item.shape = "DEFAULT";
+        }
+        item.shape = pointShapeMap[item.shape];
+      }
+
+      var yAxisSettings = plotUtils.useYAxisR(newmodel, item) ? yAxisRSettings : yAxisSettings;
+      if (item.base != null && yAxisSettings.logy) {
+        if (item.base === 0) {
+          item.base = 1;
+        }
+      }
+    };
+
+    var processElement = function(item, j, ele, yAxisSettings, logx) {
+      // discard NaN entries
+      if (ele.x === "NaN" || ele.y === "NaN" ||
+        logx && ele.x <= 0 || yAxisSettings.logy && ele.y <= 0 )
+        return;
+
+      if (item.colors != null) {
+        ele.color_opacity = parseInt(item.colors[j].substr(1,2), 16) / 255;
+        ele.color = "#" + item.colors[j].substr(3);
+      }
+      if (item.fills != null && item.fills[j] === false) {
+        ele.color = "none";
+      }
+      if (item.outline_colors != null) {
+        ele.stroke_opacity = parseInt(item.outline_colors[j].substr(1,2), 16) / 255;
+        ele.stroke = "#" + item.outline_colors[j].substr(3);
+      }
+
+      if (item.type === "line" || item.type === "stem") {
+        if (item.styles != null) {
+          var style = item.styles[j];
+          if (style == null) {
+            style = "";
+          }
+          item.style = lineStyleMap[style];
+        }
+      }
+
+      if ((item.type === "stem" || item.type === "bar" || item.type === "area") &&
+        ele.y2 == null) {
+        if (item.bases != null) {
+          ele.y2 = item.bases[j];
+        }
+      }
+
+      if (item.type === "point") {
+        if (item.sizes != null) {
+          ele.size = item.sizes[j];
+        }
+      }
+
+      if (item.type === "bar" && item.widths != null) {
+        ele.x -= item.widths[j] / 2;
+        ele.x2 = ele.x + item.widths[j];
+      }
+    };
+
+    var dataTypeMap = {
+      "Line" : "line",
         "Stems" : "stem",
         "Bars" : "bar",
         "Area" : "area",
         "Text" : "text",
         "Points" : "point",
+        "CategoryLine" : "line",
+        "CategoryStems" : "stem",
+        "CategoryBars" : "bar",
+        "CategoryArea" : "area",
+        "CategoryText" : "text",
+        "CategoryPoints" : "point",
         "" : ""
-      },
-      lineStyleMap : {
-        "DEFAULT": "solid",
+    };
+    var lineStyleMap = {
+      "DEFAULT": "solid",
         "SOLID" : "solid",
         "DASH" : "dash",
         "DOT" : "dot",
         "DASHDOT" : "dashdot",
         "LONGDASH" : "longdash",
         "" : "solid"
-      },
-      pointShapeMap : {
-        "DEFAULT" : "rect",
+    };
+    var pointShapeMap = {
+      "DEFAULT" : "rect",
         "CIRCLE" : "circle",
         "DIAMOND" : "diamond",
         "" : "rect"
-      },
-      interpolationMap : {
-        0 : "none",
+    };
+    var interpolationMap = {
+      0 : "none",
         1 : "linear",
         2 : "linear", // should be "curve" but right now it is not implemented yet
         "" : "linear"
-      },
+    };
+
+    return {
+      dataTypeMap : dataTypeMap,
+      lineStyleMap : lineStyleMap,
+      pointShapeMap : pointShapeMap,
+      interpolationMap : interpolationMap,
 
       convertGroovyData : function(newmodel, model) {
         var logx = false, logxb;
@@ -121,7 +270,7 @@
 
           var style = model.crosshair.style;
           if (style == null) style = "";
-          cursor.style = this.lineStyleMap[style];
+          cursor.style = lineStyleMap[style];
           cursor.width = model.crosshair.width != null ? model.crosshair.width : 2;
 
           newmodel.yCursor = {};
@@ -138,6 +287,10 @@
         } else {
           newmodel.xAxis.type = "linear";
         }
+        //TODO
+        //else if (model.type === "CategoryPlot") {
+        // newmodel.xAxis.type = "category";
+        //}
 
         var setYAxisType = function(axis, settings){
           if(axis == null){ return; };
@@ -153,127 +306,101 @@
 
         var list = model.graphics_list;
         var numLines = list.length;
-        for (var i = 0; i < numLines; i++) {
-          var item = list[i];
+        if(model.type !== "CategoryPlot"){
+          for (var i = 0; i < numLines; i++) {
+            var item = list[i];
 
-          item.legend = item.display_name;
-          delete item.display_name;
+            processItem(item, newmodel, yAxisRSettings, yAxisSettings);
 
-          if (item.use_tool_tip != null) {
-            item.useToolTip = item.use_tool_tip;
-            delete item.use_tool_tip;
-          }
+            var elements = [];
+            for (var j = 0; j < item.x.length; j++) {
+              var ele = {};
+              ele.x = item.x[j];
+              ele.y = item.y[j];
 
-          if (item.color != null) {
-            item.color_opacity = parseInt(item.color.substr(1,2), 16) / 255;
-            item.color = "#" + item.color.substr(3);
-          }
-          if (item.fill != null && item.fill === false) {
-            item.color = "none";
-          }
-          if (item.outline_color != null) {
-            item.stroke_opacity = parseInt(item.outline_color.substr(1,2), 16) / 255;
-            item.stroke = "#" + item.outline_color.substr(3);
-            delete item.outline_color;
-          }
+              processElement(item, j, ele, yAxisSettings);
 
-          if (item.type == null) { item.type = ""; }
-          if (item.style == null) { item.style = ""; }
-          if (item.stroke_dasharray == null) { item.stroke_dasharray = ""; }
-          if (item.interpolation == null) { item.interpolation = ""; }
-
-          item.type = this.dataTypeMap[item.type];
-
-          if(item.type === "bar" || item.type === "area") {
-            //newmodel.yPreventNegative = true; // auto range to y = 0
-          }
-
-          if(item.type === "line" || item.type === "stem") {
-            item.style = this.lineStyleMap[item.style];
-          }
-
-          if(item.type === "line" || item.type === "area") {
-            item.interpolation = this.interpolationMap[item.interpolation];
-          }
-
-          if(item.type === "bar") {
-            if (item.width == null) {
-              item.width = 1;
-            }
-          }
-
-          if (item.type === "point") {
-            if (item.shape == null) {
-              item.shape = "DEFAULT";
-            }
-            item.shape = this.pointShapeMap[item.shape];
-          }
-
-          var yAxisSettings = plotUtils.useYAxisR(newmodel, item) ? yAxisRSettings : yAxisSettings;
-          if (item.base != null && yAxisSettings.logy) {
-            if (item.base === 0) {
-              item.base = 1;
-            }
-          }
-
-          var elements = [];
-          for (var j = 0; j < item.x.length; j++) {
-            var ele = {};
-            ele.x = item.x[j];
-            ele.y = item.y[j];
-
-            // discard NaN entries
-            if (ele.x === "NaN" || ele.y === "NaN" ||
-              logx && ele.x <= 0 || yAxisSettings.logy && ele.y <= 0 )
-              continue;
-
-            if (item.colors != null) {
-              ele.color_opacity = parseInt(item.colors[j].substr(1,2), 16) / 255;
-              ele.color = "#" + item.colors[j].substr(3);
-            }
-            if (item.fills != null && item.fills[j] === false) {
-              ele.color = "none";
-            }
-            if (item.outline_colors != null) {
-              ele.stroke_opacity = parseInt(item.outline_colors[j].substr(1,2), 16) / 255;
-              ele.stroke = "#" + item.outline_colors[j].substr(3);
+              elements.push(ele);
             }
 
-            if (item.type === "line" || item.type === "stem") {
-              if (item.styles != null) {
-                var style = item.styles[j];
-                if (style == null) {
-                  style = "";
+            item.elements = elements;
+
+            newmodel.data.push(item);
+          }
+        }else{
+          for (var index = 0; index < list.length; index++) {
+            var categoryItem = list[index]; //e.g. CategoryBar
+            var value = categoryItem.value;
+            var categoriesNumber = value[0].length;
+            var seriesNumber = value.length;
+            var seriesNames = categoryItem.seriesNames;
+            if(seriesNames == null){
+              seriesNames = [];
+              for (var s = 0; s < seriesNumber; s++){
+                seriesNames.push("series" + i);
+              }
+            }
+
+            model.categoryMargin = 1; //FIXME
+
+            var xs = calcxs(categoryItem, model.categoryMargin, categoriesNumber, seriesNumber);
+
+            for (var i = 0; i < seriesNumber; i++) {
+              var series = value[i];
+              var item = _.extend({}, categoryItem);//
+              item.series = i;
+              item.display_name = seriesNames[i];
+
+              var processSeriesProperty = function(seriesindex, property, seriesproperty){
+                if(item[property]){
+                  var seriesPropertyValue = item[property][seriesindex];
+                  if(_.isArray(seriesPropertyValue)){
+                    item[property] = seriesPropertyValue;
+                  }else{
+                    item[seriesproperty] = seriesPropertyValue;
+                    delete item[property];
+                  }
                 }
-                item.style = this.lineStyleMap[style];
+              };
+              processSeriesProperty(i, 'colors', 'color');
+              processSeriesProperty(i, 'widths', 'widths');
+              processSeriesProperty(i, 'outline_colors', 'outline_color');
+              processSeriesProperty(i, 'bases', 'base');
+
+              delete item.value;
+              delete item.seriesNames;
+
+              item.y = [];
+              item.x = [];
+              for (var j = 0; j < categoriesNumber; j++) {
+                item.y.push(series[j]);
+                item.x.push(xs[i][j]);
               }
-            }
 
-            if ((item.type === "stem" || item.type === "bar" || item.type === "area") &&
-              ele.y2 == null) {
-              if (item.bases != null) {
-                ele.y2 = item.bases[j];
+              processItem(item, newmodel, yAxisRSettings, yAxisSettings);
+
+              var elements = [];
+              for (var j = 0; j < item.x.length; j++) {
+                var ele = {
+                  series: i,
+                  category: j,
+                  x: item.x[j],
+                  y: item.y[j]
+                };
+
+                processElement(item, j, ele, yAxisSettings);
+
+                elements.push(ele);
               }
-            }
 
-            if (item.type === "point") {
-              if (item.sizes != null) {
-                ele.size = item.sizes[j];
-              }
-            }
+              item.elements = elements;
 
-            if (item.type === "bar" && item.widths != null) {
-              ele.x -= item.widths[j] / 2;
-              ele.x2 = ele.x + item.widths[j];
-            }
+              newmodel.data.push(item);
 
-            elements.push(ele);
+            }
           }
-
-          item.elements = elements;
-
-          newmodel.data.push(item);
         }
+
         if(model.constant_lines != null) {
           for(var i = 0; i < model.constant_lines.length; i++) {
             var line = model.constant_lines[i];
@@ -289,7 +416,7 @@
             }
             var style = line.style;
             if (style == null) { style = ""; }
-            item.style = this.lineStyleMap[style];
+            item.style = lineStyleMap[style];
 
             if (line.x != null) {
               var ele = {"type": "x", "x": line.x};

@@ -268,8 +268,7 @@ public class ClojureEvaluator {
 
     String _code = code.substring(i, caretPosition);
 
-    String apropos = "(require '[clojure.repl :as repl_%1$s])\n" +
-        "(repl_%1$s/apropos \"%2$s\")";
+    String apropos = "(repl_%1$s/apropos \"%2$s\")";
 
     Object o = clojureLoadString.invoke(String.format(apropos, shellId, _code));
     List<String> result = new ArrayList<String>();

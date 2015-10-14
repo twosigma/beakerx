@@ -3434,5 +3434,8 @@
             "lineCount": 10
         }
     ],
-    "namespace": {}
+    "namespace": {},
+    "metadata": {
+        "publication-id": "560b487c-3f3e-4ce3-a987-12667f0e313c"
+    }
 }

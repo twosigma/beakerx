@@ -1,11 +1,11 @@
-/*! FixedColumns 3.0.5-dev
+/*! FixedColumns 3.1.0
  * ©2010-2014 SpryMedia Ltd - datatables.net/license
  */
 
 /**
  * @summary     FixedColumns
  * @description Freeze columns in place on a scrolling DataTable
- * @version     3.0.5-dev
+ * @version     3.1.0
  * @file        dataTables.fixedColumns.js
  * @author      SpryMedia Ltd (www.sprymedia.co.uk)
  * @contact     www.sprymedia.co.uk/contact
@@ -62,14 +62,12 @@ var FixedColumns = function ( dt, init ) {
 	var that = this;
 
 	/* Sanity check - you just know it will happen */
-	if ( ! ( this instanceof FixedColumns ) )
-	{
+	if ( ! ( this instanceof FixedColumns ) ) {
 		alert( "FixedColumns warning: FixedColumns must be initialised with the 'new' keyword." );
 		return;
 	}
 
-	if ( typeof init == 'undefined' )
-	{
+	if ( init === undefined || init === true ) {
 		init = {};
 	}
 
@@ -82,9 +80,7 @@ var FixedColumns = function ( dt, init ) {
 	}
 
 	// v1.10 allows the settings object to be got form a number of sources
-	var dtSettings = $.fn.dataTable.Api ?
-		new $.fn.dataTable.Api( dt ).settings()[0] :
-		dt.fnSettings();
+	var dtSettings = new $.fn.dataTable.Api( dt ).settings()[0];
 
 	/**
 	 * Settings object which contains customisable information for FixedColumns instance
@@ -264,6 +260,10 @@ var FixedColumns = function ( dt, init ) {
 			}
 		}
 	};
+
+	if ( dtSettings._oFixedColumns ) {
+		throw 'FixedColumns already initialised on this table';
+	}
 
 	/* Attach the instance to the DataTables instance so it can be accessed easily */
 	dtSettings._oFixedColumns = this;
@@ -474,7 +474,11 @@ FixedColumns.prototype = /** @lends FixedColumns.prototype */{
 			.on( 'mouseover.DTFC touchstart.DTFC', function () {
 				mouseController = 'main';
 			} )
-			.on( 'scroll.DTFC', function () {
+			.on( 'scroll.DTFC', function (e) {
+				if ( ! mouseController && e.originalEvent ) {
+					mouseController = 'main';
+				}
+
 				if ( mouseController === 'main' ) {
 					if ( that.s.iLeftColumns > 0 ) {
 						that.dom.grid.left.liner.scrollTop = that.dom.scroller.scrollTop;
@@ -495,7 +499,11 @@ FixedColumns.prototype = /** @lends FixedColumns.prototype */{
 				.on( 'mouseover.DTFC touchstart.DTFC', function () {
 					mouseController = 'left';
 				} )
-				.on( 'scroll.DTFC', function () {
+				.on( 'scroll.DTFC', function ( e ) {
+					if ( ! mouseController && e.originalEvent ) {
+						mouseController = 'left';
+					}
+
 					if ( mouseController === 'left' ) {
 						that.dom.scroller.scrollTop = that.dom.grid.left.liner.scrollTop;
 						if ( that.s.iRightColumns > 0 ) {
@@ -518,7 +526,11 @@ FixedColumns.prototype = /** @lends FixedColumns.prototype */{
 				.on( 'mouseover.DTFC touchstart.DTFC', function () {
 					mouseController = 'right';
 				} )
-				.on( 'scroll.DTFC', function () {
+				.on( 'scroll.DTFC', function ( e ) {
+					if ( ! mouseController && e.originalEvent ) {
+						mouseController = 'right';
+					}
+
 					if ( mouseController === 'right' ) {
 						that.dom.scroller.scrollTop = that.dom.grid.right.liner.scrollTop;
 						if ( that.s.iLeftColumns > 0 ) {
@@ -1375,30 +1387,108 @@ FixedColumns.defaults = /** @lends FixedColumns.defaults */{
  *  @default   See code
  *  @static
  */
-FixedColumns.version = "3.0.5-dev";
+FixedColumns.version = "3.1.0";
 
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Fired events (for documentation)
+ * DataTables API integration
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+DataTable.Api.register( 'fixedColumns()', function () {
+	return this;
+} );
 
-/**
- * Event fired whenever FixedColumns redraws the fixed columns (i.e. clones the table elements from the main DataTable). This will occur whenever the DataTable that the FixedColumns instance is attached does its own draw.
- * @name FixedColumns#draw.dtfc
- * @event
- * @param {event} e jQuery event object
- * @param {object} o Event parameters from FixedColumns
- * @param {object} o.leftClone Instance's object dom.clone.left for easy reference. This object contains references to the left fixed clumn column's nodes
- * @param {object} o.rightClone Instance's object dom.clone.right for easy reference. This object contains references to the right fixed clumn column's nodes
- */
+DataTable.Api.register( 'fixedColumns().update()', function () {
+	return this.iterator( 'table', function ( ctx ) {
+		if ( ctx._oFixedColumns ) {
+			ctx._oFixedColumns.fnUpdate();
+		}
+	} );
+} );
+
+DataTable.Api.register( 'fixedColumns().relayout()', function () {
+	return this.iterator( 'table', function ( ctx ) {
+		if ( ctx._oFixedColumns ) {
+			ctx._oFixedColumns.fnRedrawLayout();
+		}
+	} );
+} );
+
+DataTable.Api.register( 'rows().recalcHeight()', function () {
+	return this.iterator( 'row', function ( ctx, idx ) {
+		if ( ctx._oFixedColumns ) {
+			ctx._oFixedColumns.fnRecalculateHeight( this.row(idx).node() );
+		}
+	} );
+} );
+
+DataTable.Api.register( 'fixedColumns().rowIndex()', function ( row ) {
+	row = $(row);
+
+	return row.parents('.DTFC_Cloned').length ?
+		this.rows( { page: 'current' } ).indexes()[ row.index() ] :
+		this.row( row ).index();
+} );
+
+DataTable.Api.register( 'fixedColumns().cellIndex()', function ( cell ) {
+	cell = $(cell);
+
+	if ( cell.parents('.DTFC_Cloned').length ) {
+		var rowClonedIdx = cell.parent().index();
+		var rowIdx = this.rows( { page: 'current' } ).indexes()[ rowClonedIdx ];
+		var columnIdx;
+
+		if ( cell.parents('.DTFC_LeftWrapper').length ) {
+			columnIdx = cell.index();
+		}
+		else {
+			var columns = this.columns().flatten().length;
+			columnIdx = columns - this.context[0]._oFixedColumns.s.iRightColumns + cell.index();
+		}
+
+		return {
+			row: rowIdx,
+			column: this.column.index( 'toData', columnIdx ),
+			columnVisible: columnIdx
+		};
+	}
+	else {
+		return this.cell( cell ).index();
+	}
+} );
+
+
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Initialisation
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+// Attach a listener to the document which listens for DataTables initialisation
+// events so we can automatically initialise
+$(document).on( 'init.dt.fixedColumns', function (e, settings) {
+	if ( e.namespace !== 'dt' ) {
+		return;
+	}
+
+	var init = settings.oInit.fixedColumns;
+	var defaults = DataTable.defaults.fixedColumns;
+
+	if ( init || defaults ) {
+		var opts = $.extend( {}, init, defaults );
+
+		if ( init !== false ) {
+			new FixedColumns( settings, opts );
+		}
+	}
+} );
+
 
 
 // Make FixedColumns accessible from the DataTables instance
 $.fn.dataTable.FixedColumns = FixedColumns;
 $.fn.DataTable.FixedColumns = FixedColumns;
-
 
 return FixedColumns;
 }; // /factory

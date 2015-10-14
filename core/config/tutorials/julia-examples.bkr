@@ -40,7 +40,8 @@
                 "cm": {
                     "mode": "julia"
                 }
-            }
+            },
+            "setup": ""
         }
     ],
     "cells": [
@@ -158,5 +159,9 @@
             "evaluatorReader": true,
             "lineCount": 3
         }
-    ]
+    ],
+    "namespace": {},
+    "metadata": {
+        "publication-id": "560b4c5e-ace8-459d-aaf7-1e78b22dce12"
+    }
 }

@@ -112,3 +112,8 @@ RUN apt-get install -y ruby2.1 ruby2.1-dev libtool && \
 RUN curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
 RUN sudo apt-get install -y nodejs
 
+###################
+#      Setup      #
+###################
+
+RUN su -m beaker -c "iruby register"

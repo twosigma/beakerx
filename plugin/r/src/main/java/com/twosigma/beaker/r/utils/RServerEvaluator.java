@@ -41,6 +41,9 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
+import org.apache.batik.ext.awt.image.codec.png.PNGRegistryEntry;
+import org.apache.batik.ext.awt.image.codec.tiff.TIFFRegistryEntry;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -52,7 +55,6 @@ import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.r.module.ErrorGobbler;
 import com.twosigma.beaker.r.module.ROutputHandler;
@@ -108,7 +110,15 @@ public class RServerEvaluator {
     corePort = cp;
     iswindows = System.getProperty("os.name").contains("Windows");
     objSerializer = os;
+    registerBatikRegistryEntries();
     startWorker();
+  }
+
+  private void registerBatikRegistryEntries() {
+    //workaround for Batik
+    final ImageTagRegistry registry = ImageTagRegistry.getRegistry();
+    registry.register(new PNGRegistryEntry());
+    registry.register(new TIFFRegistryEntry());
   }
 
   protected void startWorker() {

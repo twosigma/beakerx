@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
@@ -321,7 +322,7 @@ public class UtilRest {
 
   @POST
   @Path("setPreference")
-  public void setPreference(
+  public synchronized void setPreference(
     @FormParam("preferencename") String preferenceName,
     @FormParam("preferencevalue") String preferenceValue) {
 
@@ -330,7 +331,7 @@ public class UtilRest {
 
     Object newValue = null;
     // Validate boolean preferences
-    String[] booleanPrefs = {"advanced-mode", "allow-anonymous-usage-tracking"};
+    String[] booleanPrefs = {"advanced-mode", "allow-anonymous-usage-tracking", "fs-reverse"};
     if (Arrays.asList(booleanPrefs).contains(preferenceName)){
       switch (preferenceValue){
         case "true":
@@ -355,6 +356,13 @@ public class UtilRest {
         this.editMode = preferenceValue;
       }
     }
+    // Validate edit mode
+    else if (preferenceName.equals("fs-order-by")){
+      String[] validModes = {"uri", "modified"};
+      if (Arrays.asList(validModes).contains(preferenceValue)){
+        newValue = preferenceValue;
+      }
+    }
 
     final String preferenceFileUrl = this.bkConfig.getPreferenceFileUrl();
 
@@ -371,7 +379,7 @@ public class UtilRest {
 
       Object oldValue = (Object) prefs.get(preferenceName);
       // If value changed, write it to the file too
-      if (!(newValue.equals(oldValue))) {
+      if (!Objects.equals(newValue, oldValue)) {
         Files.deleteIfExists(preferenceFileTmp);
         prefs.put(preferenceName, newValue);
         om.writerWithDefaultPrettyPrinter().writeValue(preferenceFileTmp.toFile(), prefs);

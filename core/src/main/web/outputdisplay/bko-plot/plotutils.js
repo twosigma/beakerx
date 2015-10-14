@@ -404,20 +404,20 @@
         return false;
       },
 
-      useYAxisR : function(model, data){
+      useYAxisR: function(model, data) {
         var yAxisR = model.yAxisR;
         return yAxisR && yAxisR.label === data.yAxis;
       },
 
-      getHighlightedSize : function(size, highlighted) {
+      getHighlightedSize: function(size, highlighted) {
         return highlighted ? size + 2 : size;
       },
 
-      getHighlightDuration : function() {
+      getHighlightDuration: function() {
         return 100;
       },
 
-      getElementStyles : function(element){
+      getElementStyles: function(element) {
         var elementStyles = "";
         var styleSheets = document.styleSheets;
         for (var i = 0; i < styleSheets.length; i++) {
@@ -425,12 +425,12 @@
           for (var j = 0; j < cssRules.length; j++) {
             var cssRule = cssRules[j];
             if (cssRule.style) {
-              try{
+              try {
                 var childElements = element.querySelectorAll(cssRule.selectorText);
                 if (childElements.length > 0 || element.matches(cssRule.selectorText)) {
                   elementStyles += cssRule.selectorText + " { " + cssRule.style.cssText + " }\n";
                 }
-              } catch(err) {
+              } catch (err) {
                 //just ignore errors
                 //http://bugs.jquery.com/ticket/13881#comment:1
               }
@@ -440,17 +440,30 @@
         return elementStyles;
       },
 
-      addInlineStyles: function (element){
+      addInlineStyles: function(element) {
         var styleEl = document.createElement('style');
         styleEl.setAttribute('type', 'text/css');
-        styleEl.innerHTML = '<![CDATA[\n' + this.getElementStyles(element) + '\n]]>';
+        var elementStyles = this.getElementStyles(element);
+        elementStyles += this.getFontToInject({
+          fontFamily: 'pt-sans',
+          urlformats: {'app/fonts/regular/pts55f-webfont.woff' : 'woff'},
+          fontWeight: 'normal',
+          fontStyle: 'normal'
+        });
+        elementStyles += this.getFontToInject({
+          fontFamily: 'pt-sans',
+          urlformats: {'app/fonts/bold/pts75f-webfont.woff' : 'woff'},
+          fontWeight: 'bold',
+          fontStyle: 'normal'
+        });
 
+        styleEl.innerHTML = '<![CDATA[\n' + elementStyles + '\n]]>';
         var defsEl = document.createElement('defs');
         defsEl.appendChild(styleEl);
         element.insertBefore(defsEl, element.firstChild);
       },
 
-      download: function(url, fileName){
+      download: function(url, fileName) {
         var a = document.createElement('a');
         a.href = url;
         a.download = fileName;
@@ -458,13 +471,13 @@
         a.remove();
       },
 
-      translate: function(jqelement, x, y){
-        var getNumber = function(str){
+      translate: function(jqelement, x, y) {
+        var getNumber = function(str) {
           return parseFloat(str.substring(0, str.length - 2));
         };
         var transform = jqelement.css('transform');
-        var elementTranslate = { x: 0, y: 0 };
-        if(transform && transform.indexOf("translate") != -1){
+        var elementTranslate = {x: 0, y: 0};
+        if (transform && transform.indexOf("translate") != -1) {
           var translate = transform.match(/translate(.*)/)[1].substring(1);
           var translateValues = translate.substring(0, translate.indexOf(')')).split(", ");
           elementTranslate.x = getNumber(translateValues[0]);
@@ -473,7 +486,7 @@
         jqelement.css("transform", "translate(" + (elementTranslate.x + x) + "px, " + (elementTranslate.y + y) + "px)")
       },
 
-      translateChildren: function(element, x, y){
+      translateChildren: function(element, x, y) {
         for (var j = 0; j < element.childElementCount; j++) {
           var child = element.children[j];
           if (child.nodeName.toLowerCase() !== 'defs') {
@@ -482,7 +495,7 @@
         }
       },
 
-      addTitleToSvg: function(svg, jqtitle, titleSize){
+      addTitleToSvg: function(svg, jqtitle, titleSize) {
         d3.select(svg).insert("text", "g")
           .attr("id", jqtitle.attr("id"))
           .attr("class", jqtitle.attr("class"))
@@ -492,30 +505,97 @@
           .text(jqtitle.text());
       },
 
-      drawPng: function(canvas, imgsrc, fileName){
+      drawPng: function(canvas, imgsrc, fileName) {
         var download = this.download;
         var context = canvas.getContext("2d");
         var image = new Image;
         image.src = imgsrc;
-        image.onload = function () {
+        image.onload = function() {
           context.drawImage(image, 0, 0);
           download(canvas.toDataURL("image/png"), fileName);
           context.clearRect(0, 0, canvas.width, canvas.height);
         };
       },
 
-      getElementActualHeight: function(jqelement, withMargins){
-        var height;
+      getActualCss: function(jqelement, jqFunction, jqFunctionParams) {
+        //to get actual size/position/etc values of hidden elements
+        var value;
         if (jqelement.is(":visible")) {
-          height = jqelement.outerHeight(!!withMargins);
+          value = jqFunctionParams != null ? jqelement[jqFunction](jqFunctionParams) : jqelement[jqFunction]();
         } else {
           var hiddenParent = jqelement.parents(".ng-hide:first");
           hiddenParent.removeClass("ng-hide");
-          height = jqelement.outerHeight(!!withMargins);
+          value = jqFunctionParams != null ? jqelement[jqFunction](jqFunctionParams) : jqelement[jqFunction]();
           hiddenParent.addClass("ng-hide");
         }
-        return height;
+        return value;
+      },
+
+      convertToXHTML: function (html) {
+        return html.replace(/input[^>]+"/g, "$&" + '/');
+      },
+
+      base64Fonts: {},
+
+      getFontToInject: function(font) {
+        var defer = bkUtils.newDeferred();
+        var src = '';
+        for (var url in font.urlformats) {
+          if (font.urlformats.hasOwnProperty(url)) {
+            var format = font.urlformats[url];
+            if (this.base64Fonts[url] == null) {
+              this.base64Fonts[url] = this.base64Encode(this.getFileSynchronously(url));
       }
+            src += "url('data:application/font-" + format + ";charset=utf-8;base64," + this.base64Fonts[url] + "') format('" + format + "'), ";
+          }
+        }
+        src = src.replace(/,\s*$/, "");
+        return '@font-face' + " { " +
+          "font-family: '" + font.fontFamily + "';" +
+          "src: " + src + ";" +
+          "font-weight: " + font.fontWeight + ";" +
+          "font-style: " + font.fontStyle + ";" +
+          " }\n";
+        return defer.promise;
+      },
+
+      //http://stackoverflow.com/questions/7370943/retrieving-binary-file-content-using-javascript-base64-encode-it-and-reverse-de
+      base64Encode: function(str) {
+        var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        var out = "", i = 0, len = str.length, c1, c2, c3;
+        while (i < len) {
+          c1 = str.charCodeAt(i++) & 0xff;
+          if (i == len) {
+            out += CHARS.charAt(c1 >> 2);
+            out += CHARS.charAt((c1 & 0x3) << 4);
+            out += "==";
+            break;
+          }
+          c2 = str.charCodeAt(i++);
+          if (i == len) {
+            out += CHARS.charAt(c1 >> 2);
+            out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+            out += CHARS.charAt((c2 & 0xF) << 2);
+            out += "=";
+            break;
+          }
+          c3 = str.charCodeAt(i++);
+          out += CHARS.charAt(c1 >> 2);
+          out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+          out += CHARS.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
+          out += CHARS.charAt(c3 & 0x3F);
+        }
+        return out;
+      },
+
+      getFileSynchronously: function(file) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", file, false);
+        xhr.overrideMimeType("text/plain; charset=x-user-defined");
+        xhr.send(null);
+        return xhr.responseText;
+      }
+
     };
   };
   beaker.bkoFactory('plotUtils', ["bkUtils", retfunc]);

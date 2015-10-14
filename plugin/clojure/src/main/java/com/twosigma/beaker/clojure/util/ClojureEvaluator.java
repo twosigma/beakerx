@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -42,25 +43,24 @@ import java.util.logging.Logger;
 import clojure.lang.RT;
 import clojure.lang.Var;
 
+import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
-
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class ClojureEvaluator {
   protected final String shellId;
   protected final String sessionId;
   protected List<String> classPath;
   protected List<String> imports;
-  protected String outDir;
   protected boolean exit;
   protected boolean updateLoader;
   protected final BeakerCellExecutor executor;
   protected workerThread myWorker;
   protected String currentClassPath;
   protected String currentImports;
+  protected String outDir = "";
+  protected DynamicClassLoaderSimple loader;
 
   protected class jobDescriptor {
     String codeToBeExecuted;
@@ -97,11 +97,6 @@ public class ClojureEvaluator {
     updateLoader = false;
     currentClassPath = "";
     currentImports = "";
-    outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
-    try {
-      (new File(outDir)).mkdirs();
-    } catch (Exception e) {
-    }
     executor = new BeakerCellExecutor("clojure");
     startWorker();
   }
@@ -125,7 +120,26 @@ public class ClojureEvaluator {
 
   public void resetEnvironment() {
     executor.killAllThreads();
-    updateLoader = true;
+
+    loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+    loader.addJars(classPath);
+    loader.addDynamicDir(outDir);
+
+    ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader(loader);
+
+    for (String s : imports) {
+      if (s != null & !s.isEmpty())
+        try {
+          loader.loadClass(s);
+          clojureLoadString.invoke(String.format("(import '%s)", s));
+        } catch (Exception e) {
+          Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
+    Thread.currentThread().setContextClassLoader(oldLoader);
+
     syncObject.release();
   }
 
@@ -187,11 +201,14 @@ public class ClojureEvaluator {
 
       @Override
       public void run() {
+
+        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(loader);
+
         theOutput.setOutputHandler();
         Object result;
         try {
-          if (clojureLoadString != null)
-            theOutput.finished(clojureLoadString.invoke(theCode));
+          theOutput.finished(clojureLoadString.invoke(theCode));
         } catch (Throwable e) {
           if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
             theOutput.error("... cancelled!");
@@ -203,7 +220,36 @@ public class ClojureEvaluator {
           }
         }
         theOutput.setOutputHandler();
+        Thread.currentThread().setContextClassLoader(oldLoader);
       }
     }
+  }
+
+  public void setShellOptions(String cp, String in, String od) throws IOException {
+
+
+    if (od == null || od.isEmpty()) {
+      od = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
+    } else {
+      od = od.replace("$BEAKERDIR", System.getenv("beaker_tmp_dir"));
+    }
+    // check if we are not changing anything
+    if (currentClassPath.equals(cp) && currentImports.equals(in) && outDir.equals(od))
+      return;
+
+    currentClassPath = cp;
+    currentImports = in;
+    outDir = od;
+
+    if (cp.isEmpty())
+      classPath = new ArrayList<String>();
+    else
+      classPath = Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"));
+    if (in.isEmpty())
+      imports = new ArrayList<String>();
+    else
+      imports = Arrays.asList(in.split("\\s+"));
+
+    resetEnvironment();
   }
 }

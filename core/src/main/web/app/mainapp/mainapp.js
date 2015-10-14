@@ -412,7 +412,6 @@
             emptyNotebook: function(sessionId) {
               var notebookModel =
                 '{"beaker": "2", "evaluators": [{"name": "Html", "plugin": "Html"},' +
-                '{"name": "Latex", "plugin": "Latex"},' +
                 '{"name": "JavaScript", "plugin": "JavaScript"}], "cells": []}';
               var notebookUri = null;
               var uriType = null;
@@ -428,6 +427,8 @@
                 var uriType = null;
                 var readOnly = true;
                 var format = null;
+                var importer = bkCoreManager.getNotebookImporter('bkr');
+                notebookModel = importer.import(notebookModel);
                 notebookModel = bkNotebookVersionManager.open(notebookModel);
                 loadNotebookModelAndResetSession(
                     notebookUri, uriType, readOnly, format, notebookModel, false, sessionId, false);

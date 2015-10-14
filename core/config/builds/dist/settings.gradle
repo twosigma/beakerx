@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-include 'shared', 'core', 'plugin:jvm', 'plugin:groovy', 'plugin:javash', 'plugin:ipythonPlugins', 'plugin:node', 'plugin:r', 'plugin:scala', 'plugin:sql', 'dev'
+include 'shared', 'core', 'plugin:jvm', 'plugin:groovy', 'plugin:javash', 'plugin:ipythonPlugins', 'plugin:node', 'plugin:r', 'plugin:scala', 'plugin:sqlsh', 'dev'
 def root = new File(settingsDir, "../../../../")
 project(':shared').projectDir = new File(root, "shared")
 project(':core').projectDir = new File(root, "core")

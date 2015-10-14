@@ -16,7 +16,6 @@
 
 package com.twosigma.beaker.jvm.classloader;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,12 +23,16 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.cxf.helpers.IOUtils;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DynamicClassLoaderSimple extends ClassLoader {
   private URLClassLoader myloader;
@@ -42,18 +45,19 @@ public class DynamicClassLoaderSimple extends ClassLoader {
   }
   
   public void addJars(List<String> dirs) {
-    URL[] urls = new URL[dirs.size()];
-    for (int i = 0; i < dirs.size(); i++) {
+    List<URL> urlList = new ArrayList<>();
+    for (String dir : dirs) {
       try {
-        urls[i] = new URL("file://" + dirs.get(i));
+        urlList.add(Paths.get(dir).toUri().toURL());
       } catch (MalformedURLException e) {
+        Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
       }
     }
-    myloader = new URLClassLoader(urls, null);
+    myloader = new URLClassLoader(urlList.toArray(new URL[urlList.size()]), null);
   }
   
   public void addDynamicDir(String o) {
-    outDir = o+"/";
+    outDir = o + File.separator;
   }
   
   private Class<?> getClass(String cname, byte[] bytes, boolean resolveIt) {

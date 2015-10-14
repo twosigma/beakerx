@@ -132,6 +132,16 @@ html {
       }
     }
   }
+  .share-private {
+    input {
+      width: auto;
+      display: inline-block;
+    }
+    label {
+      margin-right: 2px;
+      display: inline-block;
+    }
+  }
   .preview-image {
     position: relative;
     margin-bottom: 10px;

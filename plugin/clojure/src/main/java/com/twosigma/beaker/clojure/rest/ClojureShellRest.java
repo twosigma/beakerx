@@ -26,6 +26,7 @@ import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.clojure.util.ClojureEvaluator;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -133,7 +134,16 @@ public class ClojureShellRest {
 
   @POST
   @Path("setShellOptions")
-  public void setShellOptions() {
-    return;
+  public void setShellOptions(
+      @FormParam("shellId") String shellId,
+      @FormParam("classPath") String classPath,
+      @FormParam("imports") String imports,
+      @FormParam("outdir") String outDir)
+      throws MalformedURLException, IOException
+  {
+    if(!this.shells.containsKey(shellId)) {
+      return;
+    }
+    this.shells.get(shellId).setShellOptions(classPath, imports, outDir);
   }
 }

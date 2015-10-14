@@ -91,14 +91,6 @@
           }
         };
 
-        $scope.getFullIndex = function() {
-          if ($scope.$parent.getNestedLevel) {
-            return $scope.$parent.getFullIndex() + '.' + ($scope.index + 1);
-          }
-
-          return $scope.index + $scope.getNestedLevel();
-        };
-
         $scope.isRoot = function() {
           return $scope.$parent.getNestedLevel === undefined;
         };

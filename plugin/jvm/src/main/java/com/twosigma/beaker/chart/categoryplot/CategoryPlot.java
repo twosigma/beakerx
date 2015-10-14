@@ -27,6 +27,7 @@ public class CategoryPlot extends AbstractChart {
   private final List<CategoryGraphics> categoryGraphics = new ArrayList<>();
   private       List<String>           categoryNames    = new ArrayList<>();
   private       PlotOrientationType    orientation      = PlotOrientationType.VERTICAL;
+  private       double                 categoryMargin   = 0.2;
 
 
   public CategoryPlot leftShift(CategoryGraphics graphics) {
@@ -72,5 +73,13 @@ public class CategoryPlot extends AbstractChart {
 
   public void setOrientation(PlotOrientationType orientation) {
     this.orientation = orientation;
+  }
+
+  public double getCategoryMargin() {
+    return categoryMargin;
+  }
+
+  public void setCategoryMargin(double categoryMargin) {
+    this.categoryMargin = categoryMargin;
   }
 }

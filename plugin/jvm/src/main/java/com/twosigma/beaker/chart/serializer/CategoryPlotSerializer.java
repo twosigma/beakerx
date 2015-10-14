@@ -56,6 +56,7 @@ public class CategoryPlotSerializer extends AbstractChartSerializer<CategoryPlot
     }
 
     jgen.writeObjectField("orientation", categoryPlot.getOrientation());
+    jgen.writeObjectField("category_margin", categoryPlot.getCategoryMargin());
 
     jgen.writeEndObject();
   }

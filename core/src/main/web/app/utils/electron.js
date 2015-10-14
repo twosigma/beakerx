@@ -80,6 +80,9 @@
             }
           },
           {
+            type: 'separator'
+          },
+          {
             label: 'Quit',
             click: function() {
               IPC.send('quit');
@@ -100,6 +103,20 @@
           {label: 'Select All', accelerator: _ctrlKey + '+A', role: 'selectAll'}
         ]
       };
+
+      if (bkUtils.osName == 'MacOS') {
+        _beakerMenu.submenu.unshift(
+            {
+              label: 'About Beaker',
+              click: function() {
+                IPC.send('show-about');
+              }
+            },
+            {
+              type: 'separator'
+            }
+        );
+      }
 
       var _refreshWindowTitle = function() {
         if (_status !== '') {

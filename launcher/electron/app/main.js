@@ -157,6 +157,10 @@ ipc.on('new-window', function(e, url, type) {
   windowManager.newWindow(url, type, e.sender);
 });
 
+ipc.on('show-about', function() {
+  windowManager.newWindow('file://' + __dirname + '/templates/about.html', 'notebook');
+});
+
 // Launches a server in this thread. Used for IPC between
 // multiple electron threads (e.g. for opening files with
 // only one instance)

@@ -30,6 +30,32 @@
   font-style: normal;
 }
 
+* {
+  font-family: pt-sans, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+}
+
+p {
+  margin: 0 0 9px;
+}
+
+a {
+  color: #337ab7;
+  text-decoration: none;
+}
+
+a:hover, a:focus {
+  color: #23527c;
+  text-decoration: underline;
+}
+
+a:focus {
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
 input {
   -webkit-appearance: textfield;
   -webkit-rtl-ordering: logical;
@@ -137,4 +163,8 @@ button {
 .change-server-dialog{
   padding: 10px;
   text-align: center;
+}
+
+.about-window{
+  padding: 0 25px;
 }

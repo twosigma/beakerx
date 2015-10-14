@@ -278,7 +278,7 @@
         });
 
         $scope.defaultEvaluatorLoaded = function() {
-          if (_.isEmpty(bkEvaluatorManager.getAllEvaluators()) || _.chain(bkEvaluatorManager.getLoadingEvaluators()).pluck("name").contains(GLOBALS.DEFAULT_EVALUATOR).value()) {
+          if (_.isEmpty(bkEvaluatorManager.getLoadedEvaluators()) || _.chain(bkEvaluatorManager.getLoadingEvaluators()).pluck("name").contains(GLOBALS.DEFAULT_EVALUATOR).value()) {
             return false;
           }
           return true;

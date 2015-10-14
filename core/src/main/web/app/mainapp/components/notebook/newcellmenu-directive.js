@@ -39,7 +39,7 @@
         var recentlyAddedLanguage;
 
         $scope.getEvaluators = function() {
-          return bkEvaluatorManager.getAllEvaluators();
+          return bkEvaluatorManager.getLoadedEvaluators();
         };
         var levels = [1, 2, 3, 4];
         $scope.getLevels = function() {
@@ -80,7 +80,7 @@
               || getLastCodeCell();
           var defaultEvaluator = GLOBALS.DEFAULT_EVALUATOR;
           var evaluatorName = codeCell ? codeCell.evaluator : bkEvaluatorManager.getEvaluator(defaultEvaluator) ?
-              defaultEvaluator : _.keys(bkEvaluatorManager.getAllEvaluators())[0];
+              defaultEvaluator : _.keys(bkEvaluatorManager.getLoadedEvaluators())[0];
 
           return evaluatorName;
         };

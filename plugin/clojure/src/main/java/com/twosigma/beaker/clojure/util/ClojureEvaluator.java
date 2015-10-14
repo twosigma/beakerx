@@ -16,13 +16,19 @@
 
 package com.twosigma.beaker.clojure.util;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +42,7 @@ import clojure.lang.Var;
 
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 
 public class ClojureEvaluator {
@@ -65,7 +72,7 @@ public class ClojureEvaluator {
   }
 
   protected static final String beaker_clojure_ns = "beaker_clojure_shell";
-  protected final Var clojureLoadString; //= RT.var("clojure.core", "load-string");
+  protected Var clojureLoadString = null;
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
@@ -75,10 +82,16 @@ public class ClojureEvaluator {
     classPath = new ArrayList<String>();
     imports = new ArrayList<String>();
     requirements = new ArrayList<>();
+    String loadFunctionPrefix = "run_str";
 
-    String run_str = String.format("(ns %1$s_%2$s)(defn run-str_%2$s [s] (binding [*ns* (find-ns '%1$s_%2$s)] (load-string s)))", beaker_clojure_ns, shellId);
-    clojureLoadString = RT.var(String.format("%1$s_%2$s", beaker_clojure_ns, shellId), String.format("run-str_%s", shellId));
-    clojure.lang.Compiler.load(new StringReader(run_str));
+    try {
+      URL url = this.getClass().getClassLoader().getResource("init_clojure_script.txt");
+      String clojureInitScript = String.format(Resources.toString(url, Charsets.UTF_8), beaker_clojure_ns, shellId, loadFunctionPrefix, NSClientProxy.class.getName(), sessionId);
+      clojureLoadString = RT.var(String.format("%1$s_%2$s", beaker_clojure_ns, shellId), String.format("%1$s_%2$s", loadFunctionPrefix, shellId));
+      clojure.lang.Compiler.load(new StringReader(clojureInitScript));
+    } catch (IOException e) {
+      Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+    }
 
     exit = false;
     updateLoader = false;
@@ -179,7 +192,7 @@ public class ClojureEvaluator {
             j.outputObject.error("... cancelled!");
           }
         } catch (Throwable e) {
-          e.printStackTrace();
+          Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
         }
       }
     }

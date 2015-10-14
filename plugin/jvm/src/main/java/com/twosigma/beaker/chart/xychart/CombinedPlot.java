@@ -78,6 +78,12 @@ public class CombinedPlot {
     return this;
   }
 
+  public CombinedPlot add(XYChart plot) {
+    this.subplots.add(plot);
+    this.weights.add(1);
+    return this;
+  }
+
   public CombinedPlot leftShift(Object obj) {
     if (obj instanceof XYChart) {
       this.add((XYChart) obj, 1);

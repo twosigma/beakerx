@@ -22,12 +22,17 @@ import java.util.List;
 
 public class CategoryBars extends CategoryGraphics {
 
-  private Number baseWidth;
+  private Number       baseWidth;
   private List<Number> widths;
   private Number baseBase = 0.0d;
-  private List<Number> bases;
-  private Color baseOutlineColor;
-  private List<Color> outlineColors;
+  private List<Number>  bases;
+  private Color         baseOutlineColor;
+  private List<Color>   outlineColors;
+  private Boolean       baseFill;
+  private List<Boolean> fills;
+  private Boolean       baseOutline;
+  private List<Boolean> outlines;
+
 
   public void setBase(Object base) {
     if (base instanceof Number) {
@@ -104,6 +109,52 @@ public class CategoryBars extends CategoryGraphics {
 
   public List<Color> getOutlineColors() {
     return this.outlineColors;
+  }
+
+  public void setFill(Object fill) {
+    if (fill instanceof Boolean) {
+      this.baseFill = (Boolean) fill;
+    } else if (fill instanceof List) {
+      @SuppressWarnings("unchecked")
+      List<Boolean> fs = (List<Boolean>) fill;
+      setFills(fs);
+    } else {
+      throw new IllegalArgumentException(
+        "setFill takes boolean or List of boolean");
+    }
+  }
+
+  private void setFills(List<Boolean> fills) {
+    this.fills = fills;
+  }
+
+  public Boolean getFill() {
+    return this.baseFill;
+  }
+
+  public List<Boolean> getFills() {
+    return this.fills;
+  }
+
+  public void setDrawOutline(Object outline) {
+    if (outline instanceof Boolean) {
+      this.baseOutline = (Boolean) outline;
+    } else if (outline instanceof List) {
+      @SuppressWarnings("unchecked")
+      List<Boolean> fs = (List<Boolean>) outline;
+      this.outlines = fs;
+    } else {
+      throw new IllegalArgumentException(
+        "drawOutline takes boolean or List of boolean");
+    }
+  }
+
+  public List<Boolean> getDrawOutlines() {
+    return this.outlines;
+  }
+
+  public Boolean getDrawOutline() {
+    return this.baseOutline;
   }
 
 }

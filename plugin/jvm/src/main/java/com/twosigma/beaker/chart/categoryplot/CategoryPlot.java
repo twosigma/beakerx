@@ -30,6 +30,7 @@ public class CategoryPlot extends AbstractChart {
   private       double                 categoryMargin   = 0.2;
 
 
+
   public CategoryPlot leftShift(CategoryGraphics graphics) {
     return add(graphics);
   }

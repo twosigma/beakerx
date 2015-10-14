@@ -92,7 +92,7 @@ public class CategoryPoints extends CategoryGraphics {
       setFills(fs);
     } else {
       throw new IllegalArgumentException(
-        "setFill takes ShapeType or List of ShapeType");
+        "setFill takes boolean or List of boolean");
     }
   }
 

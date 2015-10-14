@@ -19,6 +19,7 @@ package com.twosigma.beaker.chart.categoryplot.plotitem;
 
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Graphics;
+import com.twosigma.beaker.chart.xychart.plotitem.LabelPositionType;
 
 import java.util.List;
 
@@ -27,6 +28,9 @@ public abstract class CategoryGraphics extends Graphics {
   protected List<String> seriesNames;
   protected Color        baseColor;
   private   List<Color>  colors;
+  private LabelPositionType labelPosition = LabelPositionType.CENTER;
+  private boolean           showItemLabel = false;
+  private boolean           centerSeries  = false;
 
   public void setColor(Object color) {
     if (color instanceof Color) {
@@ -74,5 +78,29 @@ public abstract class CategoryGraphics extends Graphics {
 
   public void setSeriesNames(List<String> seriesNames) {
     this.seriesNames = seriesNames;
+  }
+
+  public LabelPositionType getLabelPosition() {
+    return labelPosition;
+  }
+
+  public void setLabelPosition(LabelPositionType labelPosition) {
+    this.labelPosition = labelPosition;
+  }
+
+  public boolean getShowItemLabel() {
+    return showItemLabel;
+  }
+
+  public void setShowItemLabel(boolean showItemLabel) {
+    this.showItemLabel = showItemLabel;
+  }
+
+  public boolean getCenterSeries() {
+    return centerSeries;
+  }
+
+  public void setCenterSeries(boolean centerSeries) {
+    this.centerSeries = centerSeries;
   }
 }

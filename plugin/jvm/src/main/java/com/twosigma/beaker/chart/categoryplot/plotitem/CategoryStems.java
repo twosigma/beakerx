@@ -72,7 +72,7 @@ public class CategoryStems extends CategoryGraphics {
       setStyles(ss);
     } else {
       throw new IllegalArgumentException(
-        "setStyle takes ShapeType or List of ShapeType");
+        "setStyle takes StrokeType or List of StrokeType");
     }
   }
 

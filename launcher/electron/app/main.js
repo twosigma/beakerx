@@ -158,7 +158,7 @@ ipc.on('new-window', function(e, url, type) {
 });
 
 ipc.on('show-about', function() {
-  windowManager.newWindow('file://' + __dirname + '/templates/about.html', 'notebook');
+  windowManager.newWindow('file://' + __dirname + '/templates/about.html', 'popup-service-window');
 });
 
 // Launches a server in this thread. Used for IPC between

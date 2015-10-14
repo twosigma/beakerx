@@ -136,4 +136,16 @@ public class ClojureShellRest {
     }
     this.shells.get(shellId).setShellOptions(classPath, imports, outDir);
   }
+
+  @POST
+  @Path("autocomplete")
+  public List<String> autocomplete(
+      @FormParam("shellId") String shellId,
+      @FormParam("code") String code,
+      @FormParam("caretPosition") int caretPosition) throws InterruptedException {
+    if(!this.shells.containsKey(shellId)) {
+      return null;
+    }
+    return this.shells.get(shellId).autocomplete(code, caretPosition);
+  }
 }

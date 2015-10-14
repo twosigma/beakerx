@@ -29,6 +29,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
@@ -172,7 +173,7 @@ public class ClojureEvaluator {
             j.outputObject.error("... cancelled!");
           }
         } catch (Throwable e) {
-          e.printStackTrace();
+          Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
         }
       }
     }
@@ -239,5 +240,32 @@ public class ClojureEvaluator {
       imports = Arrays.asList(in.split("\\s+"));
 
     resetEnvironment();
+  }
+
+  public List<String> autocomplete(String code, int caretPosition) {
+
+    int i = caretPosition;
+    while (i > 0) {
+      char c = code.charAt(i - 1);
+      if (!Character.isUnicodeIdentifierStart(c) || "[]{}()/\\".indexOf(c) >= 0) {
+        break;
+      } else {
+        i--;
+      }
+    }
+
+    String _code = code.substring(i, caretPosition);
+
+    String apropos = "(require '[clojure.repl :as repl_%1$s])\n" +
+        "(repl_%1$s/apropos \"%2$s\")";
+
+    Object o = clojureLoadString.invoke(String.format(apropos, shellId, _code));
+    List<String> result = new ArrayList<String>();
+
+    for(Object s : ((Collection) o)) {
+      result.add(s.toString());
+    }
+
+    return result;
   }
 }

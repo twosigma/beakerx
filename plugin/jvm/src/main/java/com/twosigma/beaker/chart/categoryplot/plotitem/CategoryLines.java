@@ -18,5 +18,39 @@
 package com.twosigma.beaker.chart.categoryplot.plotitem;
 
 
+import com.twosigma.beaker.chart.xychart.plotitem.StrokeType;
+
 public class CategoryLines extends CategoryGraphics {
+  private Float width = 1.5f;
+  private StrokeType style;
+  private Integer    interpolation;
+
+  public void setWidth(Float width) {
+    this.width = width;
+  }
+
+  public Float getWidth() {
+    return this.width;
+  }
+
+  public void setStyle(StrokeType style) {
+    this.style = style;
+  }
+
+  public StrokeType getStyle() {
+    return this.style;
+  }
+
+  public void setInterpolation(Integer interpolation) {
+    if (interpolation < 0 || interpolation > 2) {
+      throw new IllegalArgumentException(
+        "Line interpolation is limited to 0, 1, 2");
+    }
+
+    this.interpolation = interpolation;
+  }
+
+  public Integer getInterpolation() {
+    return this.interpolation;
+  }
 }

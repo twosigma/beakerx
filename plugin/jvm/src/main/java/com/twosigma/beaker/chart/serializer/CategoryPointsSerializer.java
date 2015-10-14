@@ -35,8 +35,26 @@ public class CategoryPointsSerializer extends CategoryGraphicsSerializer<Categor
 
     serialize(categoryPoints, jgen);
 
-    if (categoryPoints.getColor() != null)
-      jgen.writeObjectField("color", categoryPoints.getColor());
+    if (categoryPoints.getSizes() != null) {
+      jgen.writeObjectField("sizes", categoryPoints.getSizes());
+    } else {
+      jgen.writeObjectField("size", categoryPoints.getSize());
+    }
+    if (categoryPoints.getShapes() != null) {
+      jgen.writeObjectField("shaps", categoryPoints.getShapes());
+    } else {
+      jgen.writeObjectField("shape", categoryPoints.getShape());
+    }
+    if (categoryPoints.getFills() != null) {
+      jgen.writeObjectField("fills", categoryPoints.getFills());
+    } else {
+      jgen.writeObjectField("fill", categoryPoints.getFill());
+    }
+    if (categoryPoints.getOutlineColors() != null) {
+      jgen.writeObjectField("outline_colors", categoryPoints.getOutlineColors());
+    } else {
+      jgen.writeObjectField("outline_color", categoryPoints.getOutlineColor());
+    }
 
     jgen.writeEndObject();
   }

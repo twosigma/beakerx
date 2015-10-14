@@ -38,6 +38,16 @@ public class CategoryLinesSerializer extends CategoryGraphicsSerializer<Category
     if (categoryLines.getColor() != null)
       jgen.writeObjectField("color", categoryLines.getColor());
 
+    if (categoryLines.getWidth() != null) {
+      jgen.writeObjectField("width", categoryLines.getWidth());
+    }
+    if (categoryLines.getStyle() != null) {
+      jgen.writeObjectField("style", categoryLines.getStyle().toString());
+    }
+    if (categoryLines.getInterpolation() != null) {
+      jgen.writeObjectField("interpolation", categoryLines.getInterpolation());
+    }
+
     jgen.writeEndObject();
   }
 }

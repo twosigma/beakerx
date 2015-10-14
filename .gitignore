@@ -1,4 +1,5 @@
 core/build
+core/.sass-cache
 beaker/*
 node_modules
 core/nginx/bin

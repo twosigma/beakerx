@@ -18,13 +18,15 @@ package com.twosigma.beaker.chart.categoryplot;
 
 import com.twosigma.beaker.AbstractChart;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
+import com.twosigma.beaker.chart.xychart.plotitem.PlotOrientationType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryPlot extends AbstractChart {
   private final List<CategoryGraphics> categoryGraphics = new ArrayList<>();
-  private List<String> categoryNames = new ArrayList<>();
+  private       List<String>           categoryNames    = new ArrayList<>();
+  private       PlotOrientationType    orientation      = PlotOrientationType.VERTICAL;
 
 
   public CategoryPlot leftShift(CategoryGraphics graphics) {
@@ -58,5 +60,17 @@ public class CategoryPlot extends AbstractChart {
   public CategoryPlot setCategoryNames(List<String> categoryNames) {
     this.categoryNames = categoryNames;
     return this;
+  }
+
+  public List<CategoryGraphics> getCategoryGraphics() {
+    return categoryGraphics;
+  }
+
+  public PlotOrientationType getOrientation() {
+    return orientation;
+  }
+
+  public void setOrientation(PlotOrientationType orientation) {
+    this.orientation = orientation;
   }
 }

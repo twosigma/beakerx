@@ -14,22 +14,13 @@
  *  limitations under the License.
  */
 /**
- * Module bk.notebook
- * This is the 'notebook view' part of {@link bkApp}. What is the root cell holding the nested
- * {@link bkCell}s.
+ * Module bk.datatables
  */
-
 (function() {
   'use strict';
-  var module = angular.module('bk.notebook', [
-    'bk.globals',
-    'bk.commonUi',
-    'bk.utils',
-    'bk.outputLog',
-    'bk.core',
-    'bk.sessionManager',
-    'bk.evaluatorManager',
-    'bk.cellMenuPluginManager',
-    'bk.outputDisplay'
-  ]);
+  angular.module('bk.globals', []).factory('GLOBALS', function() {
+    return {
+      DEFAULT_EVALUATOR: 'JavaScript'
+    };
+  });
 })();

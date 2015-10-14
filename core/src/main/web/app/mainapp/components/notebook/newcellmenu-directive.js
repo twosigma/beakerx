@@ -34,7 +34,7 @@
           $(document).trigger('click.bs.dropdown.data-api');
         };
       },
-      controller: function($scope) {
+      controller: function($scope, GLOBALS) {
         var newCellFactory = bkSessionManager.getNotebookNewCellFactory();
         var recentlyAddedLanguage;
 
@@ -78,7 +78,7 @@
               || (prevCell && cellOps.findCodeCell(prevCell.id))
               || (prevCell && cellOps.findCodeCell(prevCell.id, true))
               || getLastCodeCell();
-          var defaultEvaluator = 'JavaScript';
+          var defaultEvaluator = GLOBALS.DEFAULT_EVALUATOR;
           var evaluatorName = codeCell ? codeCell.evaluator : bkEvaluatorManager.getEvaluator(defaultEvaluator) ?
               defaultEvaluator : _.keys(bkEvaluatorManager.getAllEvaluators())[0];
 

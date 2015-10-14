@@ -42,7 +42,7 @@
         setBkNotebook: '&',
         isLoading: '='
       },
-      controller: function ($scope, bkEvaluatorManager) {
+      controller: function ($scope, bkEvaluatorManager, GLOBALS) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var _impl = {
           _viewModel: {
@@ -277,9 +277,11 @@
           }
         });
 
-        $scope.evaluatorsLoaded = function() {
-          return !_.isEmpty(bkEvaluatorManager.getAllEvaluators()) &&
-            _.isEmpty(bkEvaluatorManager.getLoadingEvaluators());
+        $scope.defaultEvaluatorLoaded = function() {
+          if (_.isEmpty(bkEvaluatorManager.getAllEvaluators()) || _.chain(bkEvaluatorManager.getLoadingEvaluators()).pluck("name").contains(GLOBALS.DEFAULT_EVALUATOR).value()) {
+            return false;
+          }
+          return true;
         };
 
         $scope.isInitializationCell = function () {

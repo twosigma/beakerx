@@ -13,8 +13,8 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div ng-class="{'advanced-mode': isAdvancedMode(), 'hierarchy-mode': isHierarchyEnabled()}" ng-show="evaluatorsLoaded()">
-  <bk-new-cell-menu ng-show="!isLocked() && !isLoading" ng-class="isEmpty() && 'only-child large'" is-large="isEmpty()" ng-class="" config="newCellMenuConfig"></bk-new-cell-menu>
+<div ng-class="{'advanced-mode': isAdvancedMode(), 'hierarchy-mode': isHierarchyEnabled()}">
+  <bk-new-cell-menu ng-show="!isLocked() && !isLoading && defaultEvaluatorLoaded()" ng-class="isEmpty() && 'only-child large'" is-large="isEmpty()" ng-class="" config="newCellMenuConfig"></bk-new-cell-menu>
   <div class="bkcell">
     <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index" cellid="{{cell.id}}">
     </bk-cell>

@@ -902,7 +902,7 @@
             },
             // return the names of all enabled evaluators
             getEvaluators: function() {
-              var evals = bkEvaluatorManager.getAllEvaluators();
+              var evals = bkEvaluatorManager.getLoadedEvaluators();
               var ret = [];
               for (var key in evals) {
                 if (evals.hasOwnProperty(key)) {

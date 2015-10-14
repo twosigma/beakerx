@@ -35,6 +35,12 @@ public abstract class CategoryGraphicsSerializer<T extends CategoryGraphics> ext
     }
     if (graphics.getValue() != null) {
       jgen.writeObjectField("value", graphics.getValue());
+
+    }
+    if (graphics.getColors() != null) {
+      jgen.writeObjectField("colors", graphics.getColors());
+    } else {
+      jgen.writeObjectField("color", graphics.getColor());
     }
   }
 }

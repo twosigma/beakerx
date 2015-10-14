@@ -23,9 +23,32 @@ import com.twosigma.beaker.chart.Graphics;
 import java.util.List;
 
 public abstract class CategoryGraphics extends Graphics {
-  protected Number[][] value;
+  protected Number[][]   value;
   protected List<String> seriesNames;
-  protected Color baseColor;
+  protected Color        baseColor;
+  private   List<Color>  colors;
+
+  public void setColor(Object color) {
+    if (color instanceof Color) {
+      this.baseColor = (Color) color;
+    } else if (color instanceof List) {
+      @SuppressWarnings("unchecked")
+      List<Color> cs = (List<Color>) color;
+      setColors(cs);
+    } else {
+      throw new IllegalArgumentException(
+        "setColor takes Color or List of Color");
+    }
+  }
+
+  private void setColors(List<Color> colors) {
+    this.colors = colors;
+  }
+
+
+  public List<Color> getColors() {
+    return this.colors;
+  }
 
   @Override
   public void setColori(Color color) {

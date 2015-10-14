@@ -17,6 +17,7 @@
 package com.twosigma.beaker.chart.serializer;
 
 
+import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
 import org.codehaus.jackson.JsonGenerator;
@@ -24,6 +25,8 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CategoryPlotSerializer extends AbstractChartSerializer<CategoryPlot> {
 
@@ -35,10 +38,13 @@ public class CategoryPlotSerializer extends AbstractChartSerializer<CategoryPlot
 
     serialize(categoryPlot, jgen);
 
-    int i = 0;
     for (CategoryGraphics g : categoryPlot.getGraphics()) {
-      if (g.getColor() == null) {
-        g.setColori(ColorPalette.getColor(i++));
+      if (g.getColor() == null && g.getColors() == null) {
+        List<Color> colors = new ArrayList<>();
+        for (int i = 0; i < g.getValue().length; i++) {
+          colors.add(ColorPalette.getColor(i));
+        }
+        g.setColor(colors);
       }
     }
 

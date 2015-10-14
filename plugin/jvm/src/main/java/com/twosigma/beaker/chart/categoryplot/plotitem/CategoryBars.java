@@ -26,7 +26,6 @@ public class CategoryBars extends CategoryGraphics {
   private List<Number> widths;
   private Number baseBase = 0.0d;
   private List<Number> bases;
-  private List<Color> colors;
   private Color baseOutlineColor;
   private List<Color> outlineColors;
 
@@ -81,27 +80,6 @@ public class CategoryBars extends CategoryGraphics {
     return this.widths;
   }
 
-  public void setColor(Object color) {
-    if (color instanceof Color) {
-      this.baseColor = (Color) color;
-    } else if (color instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<Color> cs = (List<Color>) color;
-      setColors(cs);
-    } else {
-      throw new IllegalArgumentException(
-        "setColor takes Color or List of Color");
-    }
-  }
-
-  private void setColors(List<Color> colors) {
-    this.colors = colors;
-  }
-
-
-  public List<Color> getColors() {
-    return this.colors;
-  }
 
   public void setOutlineColor(Object color) {
     if (color instanceof Color) {

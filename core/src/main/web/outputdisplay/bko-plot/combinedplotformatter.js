@@ -58,13 +58,26 @@
         var plotType = model.plot_type;
         if (plotType == null) { plotType = "Plot"; }
 
+        var layout = {
+          bottomLayoutMargin : 30,
+          labelHeight: 12
+        };
         var sumweights = 0;
+        var sumvmargins = 0;
+        var vmargins = [];
         var weights = model.weights == null ? [] : model.weights;
         for(var i = 0; i < model.plots.length; i++) {
           if(weights[i] == null) {
             weights[i] = 1;
           }
           sumweights += weights[i];
+          if (i < model.plots.length - 1) {  //add margins for correct height calculation
+            vmargins[i] = layout.bottomLayoutMargin;
+            sumvmargins += vmargins[i];
+          } else {
+            vmargins[i] = layout.bottomLayoutMargin + layout.labelHeight * 2;
+            sumvmargins += vmargins[i];
+          }
         }
         var plots = model.plots;
         for(var i = 0; i < plots.length; i++) {
@@ -85,7 +98,8 @@
           }
 
           newplotmodel.plotSize.width = width;
-          newplotmodel.plotSize.height = height * weights[i] / sumweights;
+
+          newplotmodel.plotSize.height = (height - sumvmargins) * weights[i] / sumweights + vmargins[i];
 
           newmodel.plots.push(newplotmodel);
         }

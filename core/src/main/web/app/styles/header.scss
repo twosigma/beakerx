@@ -24,6 +24,8 @@
 }
 
 header {
+  @include promote-to-layer();
+
   .navbar {
     padding-left: 35px;
     padding-right: 35px;

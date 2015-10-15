@@ -135,7 +135,7 @@
 
         return v;
       },
-      getAllEvaluators: function() {
+      getLoadedEvaluators: function() {
         return evaluators;
       },
       getLoadingEvaluators: function() {

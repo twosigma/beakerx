@@ -16,13 +16,19 @@
 package com.twosigma.beaker.clojure.rest;
 
 import com.google.inject.Singleton;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+
+import com.twosigma.beaker.clojure.util.ClojureCollectionDeserializer;
+import com.twosigma.beaker.clojure.util.ClojureMapDeserializer;
+import com.twosigma.beaker.clojure.util.ClojureTableDeserializer;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.clojure.util.ClojureEvaluator;
+import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -40,7 +46,12 @@ public class ClojureShellRest {
 
   private final Map<String, ClojureEvaluator> shells = new HashMap<>();
 
-  public ClojureShellRest() throws IOException {}
+  @Inject
+  public ClojureShellRest(Provider<BeakerObjectConverter> objectSerializerProvider) {
+    objectSerializerProvider.get().addfTypeDeserializer(new ClojureCollectionDeserializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeDeserializer(new ClojureMapDeserializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeDeserializer(new ClojureTableDeserializer(objectSerializerProvider.get()));
+  }
 
   @GET
   @Path("ready")
@@ -53,13 +64,12 @@ public class ClojureShellRest {
   @Path("getShell")
   @Produces(MediaType.TEXT_PLAIN)
   public String getShell(@FormParam("shellId") String shellId,
-      @FormParam("sessionId") String sessionId)
-  throws InterruptedException, MalformedURLException
-  {
+                         @FormParam("sessionId") String sessionId)
+      throws InterruptedException, MalformedURLException {
     // if the shell does not already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
       shellId = UUID.randomUUID().toString();
-      ClojureEvaluator js = new ClojureEvaluator(shellId,sessionId);
+      ClojureEvaluator js = new ClojureEvaluator(shellId, sessionId);
       this.shells.put(shellId, js);
       return shellId;
     }
@@ -69,10 +79,10 @@ public class ClojureShellRest {
   @POST
   @Path("evaluate")
   public SimpleEvaluationObject evaluate(@FormParam("shellId") String shellId,
-      @FormParam("code") String code) throws InterruptedException {
+                                         @FormParam("code") String code) throws InterruptedException {
     SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
     obj.started();
-    if(!this.shells.containsKey(shellId)) {
+    if (!this.shells.containsKey(shellId)) {
       obj.error("Cannot find shell");
       return obj;
     }
@@ -88,7 +98,7 @@ public class ClojureShellRest {
   @POST
   @Path("exit")
   public void exit(@FormParam("shellId") String shellId) {
-    if(!this.shells.containsKey(shellId)) {
+    if (!this.shells.containsKey(shellId)) {
       return;
     }
     this.shells.get(shellId).exit();
@@ -98,7 +108,7 @@ public class ClojureShellRest {
   @POST
   @Path("cancelExecution")
   public void cancelExecution(@FormParam("shellId") String shellId) {
-    if(!this.shells.containsKey(shellId)) {
+    if (!this.shells.containsKey(shellId)) {
       return;
     }
     this.shells.get(shellId).cancelExecution();
@@ -107,7 +117,7 @@ public class ClojureShellRest {
   @POST
   @Path("killAllThreads")
   public void killAllThreads(@FormParam("shellId") String shellId) {
-    if(!this.shells.containsKey(shellId)) {
+    if (!this.shells.containsKey(shellId)) {
       return;
     }
     this.shells.get(shellId).killAllThreads();
@@ -116,7 +126,7 @@ public class ClojureShellRest {
   @POST
   @Path("resetEnvironment")
   public void resetEnvironment(@FormParam("shellId") String shellId) {
-    if(!this.shells.containsKey(shellId)) {
+    if (!this.shells.containsKey(shellId)) {
       return;
     }
     this.shells.get(shellId).resetEnvironment();
@@ -124,8 +134,16 @@ public class ClojureShellRest {
 
   @POST
   @Path("setShellOptions")
-  public void setShellOptions()
+  public void setShellOptions(
+      @FormParam("shellId") String shellId,
+      @FormParam("classPath") String classPath,
+      @FormParam("imports") String imports,
+      @FormParam("outdir") String outDir)
+      throws MalformedURLException, IOException
   {
-    return;
+    if(!this.shells.containsKey(shellId)) {
+      return;
+    }
+    this.shells.get(shellId).setShellOptions(classPath, imports, outDir);
   }
 }

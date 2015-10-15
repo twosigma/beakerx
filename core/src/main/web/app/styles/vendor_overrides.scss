@@ -108,3 +108,8 @@ bk-output-display .progress-bar {
   visibility: hidden;
   width: 0;
 }
+
+table.DTFC_Cloned thead,
+table.DTFC_Cloned tfoot {
+  background-color: #E6E6E6;
+}

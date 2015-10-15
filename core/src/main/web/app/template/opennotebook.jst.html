@@ -33,7 +33,7 @@
        <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>
        <tree-view rooturi="<%- homedir %>" fs="getStrategy().treeViewfs"></tree-view>
     </div>
-   <div ng-repeat="drive in getLocalDrives()" ng-if="isWindows() === true">
+   <div ng-repeat="drive in getStrategy().localDrives" ng-if="isWindows() === true">
      <tree-view rooturi="{{drive}}" fs="getStrategy().treeViewfs"></tree-view>
    </div>
 </div>

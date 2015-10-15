@@ -137,7 +137,6 @@
 // Fix the top/bottom navbars when screen real estate supports it
 .navbar-fixed-top,
 .navbar-fixed-bottom {
-  @include promote-to-layer();
   position: fixed;
   right: 0;
   left: 0;

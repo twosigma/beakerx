@@ -202,6 +202,13 @@
             .error(deferred.reject);
         return deferred.promise;
       },
+      getLocalDrives: function() {
+        var deferred = angularUtils.newDeferred();
+        this.httpGet(serverUrl("beaker/rest/file-io/getLocalDrives"))
+            .success(deferred.resolve)
+            .error(deferred.reject);
+        return deferred.promise;
+      },
       getWorkingDirectory: function() {
         var deferred = angularUtils.newDeferred();
         this.httpGet(serverUrl("beaker/rest/file-io/getWorkingDirectory"))
@@ -388,6 +395,7 @@
     },
     // Electron: require('remote')
     isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
+    isWindows: osName === 'Windows',
     osName: osName
     };
     return bkUtils;

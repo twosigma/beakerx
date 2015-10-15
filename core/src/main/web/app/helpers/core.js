@@ -715,6 +715,12 @@
       getNotebookCellManager: function() {
         return bkNotebookCellModelManager;
       },
+      showOpenModalDialog: function (callback, template, strategy, localDrives, uriType, readOnly,
+                                     format) {
+        modalDialogOp.setLocalDrives(localDrives);
+        return bkCoreManager.showModalDialog(callback, template, strategy, uriType, readOnly,
+            format);
+      },
       showModalDialog: function(callback, template, strategy, uriType, readOnly, format) {
         var options = {
           windowClass: 'beaker-sandbox',
@@ -948,20 +954,34 @@
 
   module.factory('modalDialogOp', function() {
     var _strategy = {};
+    var _localDrives = [];
     return {
       setStrategy: function(strategy) {
         _strategy = strategy;
       },
       getStrategy: function() {
         return _strategy;
+      },
+      setLocalDrives: function(localDrives) {
+        _localDrives = localDrives;
+      },
+      getLocalDrives: function() {
+        return _localDrives;
       }
     };
   });
 
-  module.controller('modalDialogCtrl', function($scope, $rootScope, $modalInstance, modalDialogOp) {
+  module.controller('modalDialogCtrl', function($scope, $rootScope, $modalInstance, modalDialogOp,
+                                                bkUtils) {
+    $scope.getLocalDrives = function() {
+      return modalDialogOp.getLocalDrives();
+    };
     $scope.getStrategy = function() {
       return modalDialogOp.getStrategy();
     };
+    $scope.isWindows = function() {
+      return bkUtils.isWindows;
+    }
     $rootScope.$on('modal.submit', function() {
       $scope.close($scope.getStrategy().getResult());
     });

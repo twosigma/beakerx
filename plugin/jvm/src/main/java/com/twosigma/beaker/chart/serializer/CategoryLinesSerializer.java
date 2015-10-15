@@ -41,7 +41,9 @@ public class CategoryLinesSerializer extends CategoryGraphicsSerializer<Category
     if (categoryLines.getWidth() != null) {
       jgen.writeObjectField("width", categoryLines.getWidth());
     }
-    if (categoryLines.getStyle() != null) {
+    if (categoryLines.getStyles() != null) {
+      jgen.writeObjectField("styles", categoryLines.getStyles());
+    } else {
       jgen.writeObjectField("style", categoryLines.getStyle().toString());
     }
     if (categoryLines.getInterpolation() != null) {

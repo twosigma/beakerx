@@ -32,6 +32,7 @@ public abstract class CategoryGraphicsSerializer<T extends CategoryGraphics> ext
     jgen.writeObjectField("labelPosition", graphics.getLabelPosition());
     jgen.writeObjectField("showItemLabel", graphics.getShowItemLabel());
     jgen.writeObjectField("center_series", graphics.getCenterSeries());
+    jgen.writeObjectField("use_tool_tip", graphics.getUseToolTip());
 
 
     if (graphics.getSeriesNames() != null) {

@@ -20,10 +20,14 @@ package com.twosigma.beaker.chart.categoryplot.plotitem;
 
 import com.twosigma.beaker.chart.xychart.plotitem.StrokeType;
 
+import java.util.List;
+
 public class CategoryLines extends CategoryGraphics {
   private Float width = 1.5f;
-  private StrokeType style;
-  private Integer    interpolation;
+  private Integer interpolation;
+
+  private StrokeType baseStyle = StrokeType.SOLID;
+  private List<StrokeType> styles;
 
   public void setWidth(Float width) {
     this.width = width;
@@ -33,12 +37,29 @@ public class CategoryLines extends CategoryGraphics {
     return this.width;
   }
 
-  public void setStyle(StrokeType style) {
-    this.style = style;
+  public void setStyle(Object style) {
+    if (style instanceof StrokeType) {
+      this.baseStyle = (StrokeType) style;
+    } else if (style instanceof List) {
+      @SuppressWarnings("unchecked")
+      List<StrokeType> ss = (List<StrokeType>) style;
+      setStyles(ss);
+    } else {
+      throw new IllegalArgumentException(
+        "setStyle takes StrokeType or List of StrokeType");
+    }
+  }
+
+  private void setStyles(List<StrokeType> styles) {
+    this.styles = styles;
   }
 
   public StrokeType getStyle() {
-    return this.style;
+    return this.baseStyle;
+  }
+
+  public List<StrokeType> getStyles() {
+    return this.styles;
   }
 
   public void setInterpolation(Integer interpolation) {

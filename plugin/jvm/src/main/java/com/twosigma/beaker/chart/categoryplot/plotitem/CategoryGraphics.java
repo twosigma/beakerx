@@ -31,6 +31,7 @@ public abstract class CategoryGraphics extends Graphics {
   private LabelPositionType labelPosition = LabelPositionType.CENTER;
   private boolean           showItemLabel = false;
   private boolean           centerSeries  = false;
+  private boolean           useToolTip    = true;
 
   public void setColor(Object color) {
     if (color instanceof Color) {
@@ -102,5 +103,13 @@ public abstract class CategoryGraphics extends Graphics {
 
   public void setCenterSeries(boolean centerSeries) {
     this.centerSeries = centerSeries;
+  }
+
+  public void setUseToolTip(boolean useToolTip) {
+    this.useToolTip = useToolTip;
+  }
+
+  public Boolean getUseToolTip() {
+    return this.useToolTip;
   }
 }

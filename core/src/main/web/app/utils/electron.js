@@ -109,7 +109,11 @@
             {
               label: 'About Beaker',
               click: function() {
-                IPC.send('show-about');
+                bkUtils.getVersionInfo().then(function(versionInfo) {
+                  var buildTime = versionInfo.buildTime;
+                  var version = versionInfo.version;
+                  IPC.send('show-about', buildTime, version);
+                });
               }
             },
             {

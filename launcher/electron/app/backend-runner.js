@@ -26,6 +26,8 @@ module.exports = (function() {
   var _hash;
   var _local;
   var _backend;
+  var _buildTime;
+  var _version;
 
   var _osName = os.type();
 
@@ -97,6 +99,18 @@ module.exports = (function() {
     },
     setLocal: function(local) {
       _local = local;
+    },
+    setBuildTime: function(buildTime) {
+      _buildTime = buildTime;
+    },
+    getBuildTime: function() {
+      return _buildTime;
+    },
+    setVersion: function(version) {
+      _version = version;
+    },
+    getVersion: function() {
+      return _version;
     }
   }
 })();

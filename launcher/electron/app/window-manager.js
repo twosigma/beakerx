@@ -75,7 +75,7 @@ module.exports = (function() {
   var popupOptions = {
     type: 'toolbar',
     width: 420,
-    height: 170,
+    height: 210,
     show: false,
     resizable: false,
     'auto-hide-menu-bar': true,

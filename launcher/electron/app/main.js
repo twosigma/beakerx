@@ -157,7 +157,9 @@ ipc.on('new-window', function(e, url, type) {
   windowManager.newWindow(url, type, e.sender);
 });
 
-ipc.on('show-about', function() {
+ipc.on('show-about', function(e, buildTime, version) {
+  backendRunner.setBuildTime(buildTime);
+  backendRunner.setVersion(version);
   windowManager.newWindow('file://' + __dirname + '/templates/about.html', 'popup-service-window');
 });
 

@@ -17,9 +17,16 @@
 <html>
     <head>
         <title>About Beaker</title>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
+        <script type="text/javascript">
+            var remote = require('remote');
+            var backendRunner = remote.require('./backend-runner.js');
 
+            document.addEventListener('DOMContentLoaded', function() {
+                var buildTime = document.getElementById('build-time');
+                var version = document.getElementById('version');
+
+                buildTime.appendChild(document.createTextNode(backendRunner.getBuildTime()));
+                version.appendChild(document.createTextNode(backendRunner.getVersion()));
             });
         </script>
     </head>
@@ -46,8 +53,8 @@
             </p>
             <p>
             <div>
-                build time: {{ getBuildTime() }}<br>
-                version: {{ getVersion() }}<br>
+                build time: <span id="build-time"></span><br>
+                version: <span id="version"></span><br>
             </div>
             </p>
         </div>

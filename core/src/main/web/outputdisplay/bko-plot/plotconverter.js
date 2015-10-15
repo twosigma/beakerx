@@ -293,7 +293,7 @@
         //}
 
         var setYAxisType = function(axis, settings){
-          if(axis == null){ return; };
+          if(axis == null){ return; }
           if (settings.logy) {
             axis.type = "log";
             axis.base = settings.logyb;
@@ -334,9 +334,9 @@
             var categoriesNumber = value[0].length;
             var seriesNumber = value.length;
             var seriesNames = categoryItem.seriesNames;
-            if(seriesNames == null){
+            if (seriesNames == null) {
               seriesNames = [];
-              for (var s = 0; s < seriesNumber; s++){
+              for (var s = 0; s < seriesNumber; s++) {
                 seriesNames.push("series" + i);
               }
             }
@@ -351,12 +351,12 @@
               item.series = i;
               item.display_name = seriesNames[i];
 
-              var processSeriesProperty = function(seriesindex, property, seriesproperty){
-                if(item[property]){
+              var processSeriesProperty = function (seriesindex, property, seriesproperty) {
+                if (item[property]) {
                   var seriesPropertyValue = item[property][seriesindex];
-                  if(_.isArray(seriesPropertyValue)){
+                  if (_.isArray(seriesPropertyValue)) {
                     item[property] = seriesPropertyValue;
-                  }else{
+                  } else {
                     item[seriesproperty] = seriesPropertyValue;
                     delete item[property];
                   }
@@ -366,6 +366,9 @@
               processSeriesProperty(i, 'widths', 'widths');
               processSeriesProperty(i, 'outline_colors', 'outline_color');
               processSeriesProperty(i, 'bases', 'base');
+              processSeriesProperty(i, 'fills', 'fill');
+              processSeriesProperty(i, 'outlines', 'outline');
+              processSeriesProperty(i, 'styles', 'style');
 
               delete item.value;
               delete item.seriesNames;
@@ -396,7 +399,6 @@
               item.elements = elements;
 
               newmodel.data.push(item);
-
             }
           }
         }

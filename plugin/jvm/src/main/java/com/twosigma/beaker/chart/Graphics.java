@@ -18,6 +18,7 @@ package com.twosigma.beaker.chart;
 
 public abstract class Graphics {
   private boolean visible     = true;
+  private String  yAxisName   = null;
 
   public void setVisible(boolean visible) {
     this.visible = visible;
@@ -25,6 +26,18 @@ public abstract class Graphics {
 
   public Boolean getVisible() {
     return this.visible;
+  }
+
+  public void setYAxis(String yAxisName) {
+    this.yAxisName = yAxisName;
+  }
+
+  public void setyAxis(String yAxisName) {
+    this.yAxisName = yAxisName;
+  }
+
+  public String getYAxis() {
+    return yAxisName;
   }
 
   abstract public void setColori(Color color);

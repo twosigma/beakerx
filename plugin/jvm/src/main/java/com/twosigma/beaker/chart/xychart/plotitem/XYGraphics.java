@@ -28,7 +28,7 @@ abstract public class XYGraphics extends Graphics {
   private List<Number> xs;
   private List<Number> ys;
   private String  displayName = "";
-  private String  yAxisName   = null;
+
   private Filter lodFilter;
 
   public void setX(List<Number> xs) {
@@ -58,17 +58,7 @@ abstract public class XYGraphics extends Graphics {
     return this.displayName;
   }
 
-  public void setYAxis(String yAxisName) {
-    this.yAxisName = yAxisName;
-  }
 
-  public void setyAxis(String yAxisName) {
-    this.yAxisName = yAxisName;
-  }
-
-  public String getYAxis() {
-    return yAxisName;
-  }
 
   private void generateXs() {
     this.xs = new ArrayList<>(this.ys.size());

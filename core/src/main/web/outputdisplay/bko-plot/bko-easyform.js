@@ -170,6 +170,7 @@
     this.valueChangeHandler = function (newValue, oldValue) {
       if (newValue != undefined && newValue != null) {
         newValue = that.prepareValueForSave(newValue);
+        component.value = newValue;
         service.setComponentValue(scope.formId, scope.evaluatorId, component, newValue);
       }
     };

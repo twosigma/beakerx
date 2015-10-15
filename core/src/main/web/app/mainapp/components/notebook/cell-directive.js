@@ -143,7 +143,7 @@
         };
 
         $scope.getEvaluators = function() {
-          return bkEvaluatorManager.getAllEvaluators();
+          return bkEvaluatorManager.getLoadedEvaluators();
         };
 
         $scope.getEvaluator = function() {

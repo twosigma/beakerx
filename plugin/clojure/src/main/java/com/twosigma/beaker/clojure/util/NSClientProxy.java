@@ -13,23 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * Module bk.notebook
- * This is the 'notebook view' part of {@link bkApp}. What is the root cell holding the nested
- * {@link bkCell}s.
- */
+package com.twosigma.beaker.clojure.util;
 
-(function() {
-  'use strict';
-  var module = angular.module('bk.notebook', [
-    'bk.globals',
-    'bk.commonUi',
-    'bk.utils',
-    'bk.outputLog',
-    'bk.core',
-    'bk.sessionManager',
-    'bk.evaluatorManager',
-    'bk.cellMenuPluginManager',
-    'bk.outputDisplay'
-  ]);
-})();
+import com.twosigma.beaker.NamespaceClient;
+
+import java.io.IOException;
+import java.util.HashMap;
+
+import clojure.lang.PersistentArrayMap;
+
+public class NSClientProxy {
+  public static Object get(String sessionId, String key) throws IOException {
+    Object obj = NamespaceClient.getBeaker(sessionId).get(key);
+    return obj;
+  }
+
+  public static void set(String sessionId, String key, Object value) throws IOException {
+    NamespaceClient.getBeaker(sessionId).set(key, value);
+  }
+
+}

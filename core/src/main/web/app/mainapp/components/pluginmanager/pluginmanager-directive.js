@@ -51,11 +51,11 @@
       showWarning: false,
       showSecurityWarning: false,
       forceLoad: false,
-      getAllEvaluators: function() {
-        return bkEvaluatorManager.getAllEvaluators();
+      getLoadedEvaluators: function() {
+        return bkEvaluatorManager.getLoadedEvaluators();
       },
       getEvaluatorsWithSpec: function() {
-        var activePlugins = bkEvaluatorManager.getAllEvaluators();
+        var activePlugins = bkEvaluatorManager.getLoadedEvaluators();
         var result = {};
         for (var p in activePlugins) {
           if (Object.keys(activePlugins[p].spec).length > 0) {
@@ -69,7 +69,7 @@
       },
       getEvaluatorStatuses: function(name) {
         var knownPlugins = bkEvaluatePluginManager.getKnownEvaluatorPlugins();
-        var activePlugins = bkEvaluatorManager.getAllEvaluators();
+        var activePlugins = bkEvaluatorManager.getLoadedEvaluators();
         var loadingPlugins = bkEvaluatorManager.getLoadingEvaluators();
         var result = {};
         for (var p in knownPlugins) {

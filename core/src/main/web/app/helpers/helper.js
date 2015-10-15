@@ -180,16 +180,30 @@
         } else {
           var strategy = bkHelper.getFileSystemFileChooserStrategy();
           strategy.treeViewfs.extFilter = [ext];
-          return bkUtils.getHomeDirectory().then(function(homeDir) {
-            bkCoreManager.showModalDialog(
-                bkHelper.openNotebook,
-                JST['template/opennotebook']({homedir: homeDir, extension: '.' + ext}),
-                strategy,
-                uriType,
-                readOnly,
-                format
-            );
-          });
+          if (bkUtils.isWindows) {
+            return bkUtils.getLocalDrives().then(function(localDrives) {
+              bkCoreManager.showOpenModalDialog(
+                  bkHelper.openNotebook,
+                  JST['template/opennotebook']({homedir: null, extension: '.' + ext}),
+                  strategy,
+                  localDrives,
+                  uriType,
+                  readOnly,
+                  format
+              );
+            });
+          } else {
+            return bkUtils.getHomeDirectory().then(function(homeDir) {
+              bkCoreManager.showModalDialog(
+                  bkHelper.openNotebook,
+                  JST['template/opennotebook']({homedir: homeDir, extension: '.' + ext}),
+                  strategy,
+                  uriType,
+                  readOnly,
+                  format
+              );
+            });
+          }
         }
       },
       Electron: bkElectron,
@@ -646,18 +660,29 @@
         return bkCoreManager.getFileSystemFileChooserStrategy();
       },
       selectFile: function(callback, title, extension, closebtn) {
-          var strategy = bkCoreManager.getFileSystemFileChooserStrategy();
-          strategy.treeViewfs.extFilter = [ extension ];
-          strategy.ext = extension;
-          strategy.title = title;
-          strategy.closebtn = closebtn;
+        var strategy = bkCoreManager.getFileSystemFileChooserStrategy();
+        strategy.treeViewfs.extFilter = [ extension ];
+        strategy.ext = extension;
+        strategy.title = title;
+        strategy.closebtn = closebtn;
+        if (bkUtils.isWindows) {
+          return bkUtils.getLocalDrives().then(
+              function (localDrives) {
+                return bkCoreManager.showOpenModalDialog(
+                    callback,
+                    JST['template/opennotebook']({homedir: null, extension: extension}),
+                    strategy,
+                    localDrives);
+              });
+        } else {
           return bkUtils.getHomeDirectory().then(
-                  function(homeDir) {
-                      return bkCoreManager.showModalDialog(
-                              callback,
-                              JST['template/opennotebook']({homedir: homeDir, extension: extension}),
-                              strategy);
-                  });
+              function (homeDir) {
+                return bkCoreManager.showModalDialog(
+                    callback,
+                    JST['template/opennotebook']({homedir: homeDir, extension: extension}),
+                    strategy);
+              });
+        }
       },
 
       // eval utils

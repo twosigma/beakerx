@@ -182,11 +182,11 @@
           strategy.treeViewfs.extFilter = [ext];
           if (bkUtils.isWindows) {
             return bkUtils.getLocalDrives().then(function(localDrives) {
-              bkCoreManager.showOpenModalDialog(
+              strategy.localDrives = localDrives;
+              bkCoreManager.showModalDialog(
                   bkHelper.openNotebook,
                   JST['template/opennotebook']({homedir: null, extension: '.' + ext}),
                   strategy,
-                  localDrives,
                   uriType,
                   readOnly,
                   format
@@ -668,11 +668,11 @@
         if (bkUtils.isWindows) {
           return bkUtils.getLocalDrives().then(
               function (localDrives) {
-                return bkCoreManager.showOpenModalDialog(
+                strategy.localDrives = localDrives;
+                return bkCoreManager.showModalDialog(
                     callback,
                     JST['template/opennotebook']({homedir: null, extension: extension}),
-                    strategy,
-                    localDrives);
+                    strategy);
               });
         } else {
           return bkUtils.getHomeDirectory().then(

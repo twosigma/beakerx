@@ -318,10 +318,13 @@
       showDefaultSavingFileChooser: function(initPath) {
         var self = this;
         var deferred = bkUtils.newDeferred();
-        bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getStartUpDirectory()])
-            .then(function(values) {
+        var requests = [bkUtils.getHomeDirectory(), bkUtils.getStartUpDirectory(),
+          bkUtils.getLocalDrives()];
+        bkUtils.all(requests).then(function(values) {
           var homeDir = values[0];
+          var localDrives = values[2];
           var fileChooserStrategy = self.getFileSystemFileChooserStrategy();
+          fileChooserStrategy.localDrives = localDrives;
           fileChooserStrategy.input = initPath;
           fileChooserStrategy.getResult = function () {
             if (_.isEmpty(this.input)) {
@@ -715,12 +718,6 @@
       getNotebookCellManager: function() {
         return bkNotebookCellModelManager;
       },
-      showOpenModalDialog: function (callback, template, strategy, localDrives, uriType, readOnly,
-                                     format) {
-        modalDialogOp.setLocalDrives(localDrives);
-        return bkCoreManager.showModalDialog(callback, template, strategy, uriType, readOnly,
-            format);
-      },
       showModalDialog: function(callback, template, strategy, uriType, readOnly, format) {
         var options = {
           windowClass: 'beaker-sandbox',
@@ -954,28 +951,18 @@
 
   module.factory('modalDialogOp', function() {
     var _strategy = {};
-    var _localDrives = [];
     return {
       setStrategy: function(strategy) {
         _strategy = strategy;
       },
       getStrategy: function() {
         return _strategy;
-      },
-      setLocalDrives: function(localDrives) {
-        _localDrives = localDrives;
-      },
-      getLocalDrives: function() {
-        return _localDrives;
       }
     };
   });
 
   module.controller('modalDialogCtrl', function($scope, $rootScope, $modalInstance, modalDialogOp,
                                                 bkUtils) {
-    $scope.getLocalDrives = function() {
-      return modalDialogOp.getLocalDrives();
-    };
     $scope.getStrategy = function() {
       return modalDialogOp.getStrategy();
     };

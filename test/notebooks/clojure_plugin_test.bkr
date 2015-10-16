@@ -1,0 +1,1092 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        },
+        {
+            "name": "Clojure",
+            "plugin": "Clojure",
+            "imports": "com.twosigma.beaker.jvm.object.OutputContainer\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.NamespaceClient",
+            "view": {
+                "cm": {
+                    "mode": "text/x-clojure"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "codeXtJhip",
+            "type": "code",
+            "evaluator": "Clojure",
+            "input": {
+                "body": [
+                    "(def err (transient []))",
+                    "(if-not (instance? Integer (beaker :get \"v0\")) (conj! err \"ERROR reading Integer\"))",
+                    "(if-not (instance? Double (beaker :get \"v1\")) (conj! err \"ERROR reading Double\"))",
+                    "(if-not (instance? Boolean (beaker :get \"v2\")) (conj! err \"ERROR reading Boolean\"))",
+                    "(if-not (instance? String (beaker :get \"v3\")) (conj! err \"ERROR reading String\"))",
+                    "(if-not (instance? java.util.Date (beaker :get \"v4\")) (conj! err \"ERROR reading Date\"))",
+                    "(if-not (instance? com.twosigma.beaker.jvm.object.TableDisplay (beaker :get \"v5\")) (conj! err \"ERROR reading data frame\"))",
+                    "(if-not (instance? clojure.lang.PersistentVector (beaker :get \"v6\")) (conj! err \"ERROR reading list of dictionaries\"))",
+                    "",
+                    "(if-not (instance? clojure.lang.PersistentVector (beaker :get \"v7\")) (conj! err \"ERROR reading basic collection\"))",
+                    "(if-not (instance? clojure.lang.PersistentVector (beaker :get \"v8\")) (conj! err \"ERROR reading matrix\"))",
+                    "(if-not (instance? clojure.lang.PersistentVector (beaker :get \"v9\")) (conj! err \"ERROR reading matrix of objects\"))",
+                    "(if-not (instance? clojure.lang.PersistentVector (beaker :get \"v10\")) (conj! err \"ERROR reading xD array of basic types\"))",
+                    "(if-not (instance? clojure.lang.PersistentArrayMap (beaker :get \"v11\")) (conj! err \"ERROR reading dictionary\"))",
+                    "(if-not (instance? clojure.lang.PersistentHashMap (beaker :get \"v12\")) (conj! err \"ERROR reading plot\"))",
+                    "(if-not (instance? java.awt.image.BufferedImage (beaker :get \"v13\")) (conj! err \"ERROR reading image\"))",
+                    "(if-not (instance? com.twosigma.beaker.jvm.object.OutputContainer (beaker :get \"v14\")) (conj! err \"ERROR reading output container\"))",
+                    "(if-not (instance? clojure.lang.PersistentVector (beaker :get \"v15\")) (conj! err \"ERROR reading beaker code cells\"))",
+                    "(if-not (instance? clojure.lang.PersistentArrayMap (beaker :get \"v16\")) (conj! err \"ERROR reading dictionary\"))",
+                    "(if-not (instance? clojure.lang.PersistentVector (beaker :get \"v17\")) (conj! err \"ERROR reading list of dictionaries\"))",
+                    "",
+                    "(if (= (count err) 0) (prn \"OK\") (prn (persistent! err)))",
+                    ""
+                ],
+                "hidden": true
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "\"OK\"\r\n"
+                        }
+                    ]
+                },
+                "selectedType": "Results",
+                "pluginName": "Clojure",
+                "shellId": "1ef9a269-08ed-4d2a-996c-b5e3d0ab53b4",
+                "elapsedTime": 1190
+            },
+            "evaluatorReader": true,
+            "lineCount": 23,
+            "initialization": true
+        },
+        {
+            "id": "codeVog18V",
+            "type": "code",
+            "evaluator": "Clojure",
+            "input": {
+                "body": [
+                    "(defn b_var [i] (beaker :get (.concat \"v\" (str i)))) ",
+                    "(new com.twosigma.beaker.jvm.object.OutputContainer (for [i (range 17)] (b_var i)))"
+                ],
+                "hidden": true
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "OutputContainer",
+                    "items": [
+                        1,
+                        10.34,
+                        true,
+                        "test string",
+                        {
+                            "type": "Date",
+                            "timestamp": 1444987609511
+                        },
+                        {
+                            "type": "TableDisplay",
+                            "columnNames": [
+                                "a",
+                                "b"
+                            ],
+                            "values": [
+                                [
+                                    1,
+                                    2
+                                ],
+                                [
+                                    4,
+                                    5
+                                ]
+                            ],
+                            "types": [
+                                "integer",
+                                "integer"
+                            ],
+                            "subtype": "TableDisplay"
+                        },
+                        {
+                            "type": "TableDisplay",
+                            "columnNames": [
+                                "a",
+                                "b",
+                                "c"
+                            ],
+                            "values": [
+                                [
+                                    1,
+                                    3,
+                                    null
+                                ],
+                                [
+                                    4,
+                                    null,
+                                    5
+                                ]
+                            ],
+                            "types": [
+                                "integer",
+                                "integer",
+                                ""
+                            ],
+                            "subtype": "ListOfMaps"
+                        },
+                        [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        {
+                            "type": "TableDisplay",
+                            "columnNames": [
+                                "c0",
+                                "c1",
+                                "c2",
+                                "c3"
+                            ],
+                            "values": [
+                                [
+                                    1,
+                                    2,
+                                    3,
+                                    null
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    6,
+                                    null
+                                ],
+                                [
+                                    7,
+                                    8,
+                                    9,
+                                    10
+                                ]
+                            ],
+                            "subtype": "Matrix"
+                        },
+                        {
+                            "type": "TableDisplay",
+                            "columnNames": [
+                                "c0",
+                                "c1",
+                                "c2",
+                                "c3"
+                            ],
+                            "values": [
+                                [
+                                    1,
+                                    2,
+                                    3,
+                                    null
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    6,
+                                    null
+                                ],
+                                [
+                                    7,
+                                    8,
+                                    9,
+                                    "com.twosigma.beaker.chart.xychart.Plot@6cd06263"
+                                ]
+                            ],
+                            "subtype": "Matrix"
+                        },
+                        [
+                            [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    6
+                                ],
+                                [
+                                    7,
+                                    8,
+                                    9,
+                                    10
+                                ]
+                            ],
+                            [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    6
+                                ],
+                                [
+                                    7,
+                                    8,
+                                    9,
+                                    10
+                                ]
+                            ]
+                        ],
+                        {
+                            "type": "TableDisplay",
+                            "columnNames": [
+                                "Key",
+                                "Value"
+                            ],
+                            "values": [
+                                [
+                                    "a",
+                                    1
+                                ],
+                                [
+                                    "b",
+                                    2
+                                ],
+                                [
+                                    "c",
+                                    55
+                                ]
+                            ],
+                            "subtype": "Dictionary"
+                        },
+                        {
+                            "legend_position": {
+                                "position": "TOP_RIGHT",
+                                "type": "LegendPosition"
+                            },
+                            "x_lower_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "x_log_base": 10,
+                            "log_x": false,
+                            "y_label": "",
+                            "timezone": null,
+                            "domain_axis_label": null,
+                            "use_tool_tip": true,
+                            "chart_title": null,
+                            "graphics_list": [],
+                            "x_auto_range": true,
+                            "y_lower_margin": 0.05,
+                            "omit_checkboxes": false,
+                            "constant_bands": [],
+                            "init_width": 640,
+                            "x_upper_margin": 0.05,
+                            "texts": [],
+                            "crosshair": null,
+                            "constant_lines": [],
+                            "y_upper_margin": 0.05,
+                            "legend_layout": "VERTICAL",
+                            "type": "Plot",
+                            "y_auto_range_includes_zero": true,
+                            "y_upper_bound": 0,
+                            "init_height": 480,
+                            "show_legend": false,
+                            "y_auto_range": true,
+                            "rangeAxes": [
+                                {
+                                    "log_base": 10,
+                                    "lower_bound": 0,
+                                    "auto_range": true,
+                                    "label": "",
+                                    "auto_range_includes_zero": true,
+                                    "type": "YAxis",
+                                    "upper_margin": 0.05,
+                                    "upper_bound": 0,
+                                    "lower_margin": 0.05,
+                                    "use_log": false
+                                }
+                            ],
+                            "log_y": false,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0
+                        },
+                        {
+                            "type": "ImageIcon",
+                            "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                            "width": 100,
+                            "height": 100
+                        },
+                        {
+                            "type": "OutputContainer",
+                            "items": [
+                                "pippero",
+                                [
+                                    1,
+                                    2,
+                                    3,
+                                    4,
+                                    5,
+                                    6
+                                ],
+                                {
+                                    "type": "TableDisplay",
+                                    "columnNames": [
+                                        "a",
+                                        "b",
+                                        "c"
+                                    ],
+                                    "values": [
+                                        [
+                                            1,
+                                            3,
+                                            null
+                                        ],
+                                        [
+                                            4,
+                                            null,
+                                            5
+                                        ]
+                                    ],
+                                    "types": [
+                                        "integer",
+                                        "integer",
+                                        "integer"
+                                    ],
+                                    "subtype": "ListOfMaps"
+                                }
+                            ]
+                        },
+                        [
+                            {
+                                "type": "BeakerCodeCell",
+                                "cellId": "codecell",
+                                "evaluatorId": "Groovy",
+                                "code": "// output container - 14\nimport com.twosigma.beaker.jvm.object.OutputContainer\ndef o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])\nbeaker.v14 = o\no",
+                                "outputtype": "OutputContainer",
+                                "output": {
+                                    "type": "OutputContainer",
+                                    "items": [
+                                        "pippero",
+                                        [
+                                            1,
+                                            2,
+                                            3,
+                                            4,
+                                            5,
+                                            6
+                                        ],
+                                        {
+                                            "type": "TableDisplay",
+                                            "columnNames": [
+                                                "a",
+                                                "b",
+                                                "c"
+                                            ],
+                                            "values": [
+                                                [
+                                                    1,
+                                                    3,
+                                                    null
+                                                ],
+                                                [
+                                                    4,
+                                                    null,
+                                                    5
+                                                ]
+                                            ],
+                                            "types": [
+                                                "integer",
+                                                "integer",
+                                                "integer"
+                                            ],
+                                            "subtype": "ListOfMaps"
+                                        }
+                                    ]
+                                },
+                                "tags": "groovyret"
+                            }
+                        ],
+                        {
+                            "img": {
+                                "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                                "width": 100,
+                                "height": 100
+                            },
+                            "plot": "com.twosigma.beaker.chart.xychart.Plot@5ed399dc"
+                        }
+                    ]
+                },
+                "selectedType": "OutputContainer",
+                "pluginName": "Clojure",
+                "shellId": "1ef9a269-08ed-4d2a-996c-b5e3d0ab53b4",
+                "elapsedTime": 201
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "initialization": true
+        }
+    ],
+    "namespace": {
+        "out": [
+            1,
+            10.34,
+            true,
+            "test string",
+            {
+                "type": "Date",
+                "timestamp": 1444987609511
+            },
+            {
+                "columnNames": [
+                    "a",
+                    "b"
+                ],
+                "types": [
+                    "integer",
+                    "integer"
+                ],
+                "values": [
+                    [
+                        1,
+                        2
+                    ],
+                    [
+                        4,
+                        5
+                    ]
+                ],
+                "hasIndex": false,
+                "toString": null,
+                "columns": null,
+                "dtypes": null,
+                "getIndex": null,
+                "getColumn": null,
+                "getRow": null,
+                "length": null,
+                "removeColumn": null,
+                "addColumn": null,
+                "addRow": null
+            },
+            [
+                {
+                    "a": 1,
+                    "b": 3
+                },
+                {
+                    "a": 4,
+                    "c": 5
+                }
+            ],
+            [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            [
+                [
+                    1,
+                    2,
+                    3,
+                    null
+                ],
+                [
+                    4,
+                    5,
+                    6,
+                    null
+                ],
+                [
+                    7,
+                    8,
+                    9,
+                    10
+                ]
+            ],
+            [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    4,
+                    5,
+                    6
+                ],
+                [
+                    7,
+                    8,
+                    9,
+                    "com.twosigma.beaker.chart.xychart.Plot@6cd06263"
+                ]
+            ],
+            [
+                [
+                    [
+                        1,
+                        2,
+                        3
+                    ],
+                    [
+                        4,
+                        5,
+                        6
+                    ],
+                    [
+                        7,
+                        8,
+                        9,
+                        10
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        2,
+                        3
+                    ],
+                    [
+                        4,
+                        5,
+                        6
+                    ],
+                    [
+                        7,
+                        8,
+                        9,
+                        10
+                    ]
+                ]
+            ],
+            {
+                "a": 1,
+                "b": 2,
+                "c": 55
+            },
+            {
+                "type": "Plot",
+                "init_width": 640,
+                "init_height": 480,
+                "chart_title": null,
+                "domain_axis_label": null,
+                "y_label": "",
+                "show_legend": false,
+                "use_tool_tip": true,
+                "graphics_list": [],
+                "constant_lines": [],
+                "constant_bands": [],
+                "texts": [],
+                "rangeAxes": [
+                    {
+                        "type": "YAxis",
+                        "label": "",
+                        "auto_range": true,
+                        "auto_range_includes_zero": true,
+                        "lower_margin": 0.05,
+                        "upper_margin": 0.05,
+                        "lower_bound": 0,
+                        "upper_bound": 0,
+                        "use_log": false,
+                        "log_base": 10
+                    }
+                ],
+                "x_auto_range": true,
+                "x_lower_margin": 0.05,
+                "x_upper_margin": 0.05,
+                "x_lower_bound": 0,
+                "x_upper_bound": 0,
+                "y_auto_range": true,
+                "y_auto_range_includes_zero": true,
+                "y_lower_margin": 0.05,
+                "y_upper_margin": 0.05,
+                "y_lower_bound": 0,
+                "y_upper_bound": 0,
+                "log_x": false,
+                "x_log_base": 10,
+                "log_y": false,
+                "timezone": null,
+                "crosshair": null,
+                "legend_position": {
+                    "type": "LegendPosition",
+                    "position": "TOP_RIGHT"
+                },
+                "omit_checkboxes": false,
+                "legend_layout": "VERTICAL",
+                "getSvgToSave": {},
+                "saveAsSvg": {},
+                "saveAsPng": {},
+                "updateLegendPosition": {}
+            },
+            {
+                "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                "width": 100,
+                "height": 100
+            },
+            {
+                "type": "OutputContainer",
+                "items": [
+                    "pippero",
+                    [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6
+                    ],
+                    [
+                        {
+                            "a": 1,
+                            "b": 3
+                        },
+                        {
+                            "a": 4,
+                            "c": 5
+                        }
+                    ]
+                ]
+            },
+            [
+                {
+                    "type": "BeakerCodeCell",
+                    "cellId": "codecell",
+                    "evaluatorId": "Groovy",
+                    "code": "// output container - 14\nimport com.twosigma.beaker.jvm.object.OutputContainer\ndef o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])\nbeaker.v14 = o\no",
+                    "outputtype": "OutputContainer",
+                    "output": {
+                        "type": "OutputContainer",
+                        "items": [
+                            "pippero",
+                            [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6
+                            ],
+                            [
+                                {
+                                    "a": 1,
+                                    "b": 3
+                                },
+                                {
+                                    "a": 4,
+                                    "c": 5
+                                }
+                            ]
+                        ]
+                    },
+                    "tags": "groovyret"
+                }
+            ],
+            {
+                "plot": "com.twosigma.beaker.chart.xychart.Plot@5ed399dc",
+                "img": {
+                    "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                    "width": 100,
+                    "height": 100
+                }
+            },
+            [
+                {
+                    "plot": "com.twosigma.beaker.chart.xychart.Plot@5eb4178",
+                    "img": {
+                        "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                        "width": 100,
+                        "height": 100
+                    }
+                },
+                {
+                    "a": 10,
+                    "img": {
+                        "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                        "width": 100,
+                        "height": 100
+                    }
+                }
+            ]
+        ],
+        "v0": 1,
+        "v1": 10.34,
+        "v2": true,
+        "v3": "test string",
+        "v4": {
+            "type": "Date",
+            "timestamp": 1444987609511
+        },
+        "v5": {
+            "type": "TableDisplay",
+            "subtype": "TableDisplay",
+            "hasIndex": "false",
+            "values": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    4,
+                    5
+                ]
+            ],
+            "types": [
+                "integer",
+                "integer"
+            ],
+            "columnNames": [
+                "a",
+                "b"
+            ]
+        },
+        "v6": {
+            "type": "TableDisplay",
+            "subtype": "ListOfMaps",
+            "columnNames": [
+                "a",
+                "b",
+                "c"
+            ],
+            "values": [
+                [
+                    1,
+                    3,
+                    null
+                ],
+                [
+                    4,
+                    null,
+                    5
+                ]
+            ],
+            "types": [
+                "double",
+                "double",
+                "double"
+            ]
+        },
+        "v7": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+        ],
+        "v8": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    1,
+                    2,
+                    3,
+                    null
+                ],
+                [
+                    4,
+                    5,
+                    6,
+                    null
+                ],
+                [
+                    7,
+                    8,
+                    9,
+                    10
+                ]
+            ],
+            "subtype": "Matrix",
+            "columnNames": [
+                "c0",
+                "c1",
+                "c2",
+                "c3"
+            ],
+            "types": [
+                "double",
+                "double",
+                "double",
+                "string"
+            ]
+        },
+        "v9": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    4,
+                    5,
+                    6
+                ],
+                [
+                    7,
+                    8,
+                    9,
+                    "com.twosigma.beaker.chart.xychart.Plot@6cd06263"
+                ]
+            ],
+            "subtype": "Matrix",
+            "columnNames": [
+                "c0",
+                "c1",
+                "c2"
+            ],
+            "types": [
+                "double",
+                "double",
+                "double"
+            ]
+        },
+        "v10": [
+            [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    4,
+                    5,
+                    6
+                ],
+                [
+                    7,
+                    8,
+                    9,
+                    10
+                ]
+            ],
+            [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    4,
+                    5,
+                    6
+                ],
+                [
+                    7,
+                    8,
+                    9,
+                    10
+                ]
+            ]
+        ],
+        "v11": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    "a",
+                    1
+                ],
+                [
+                    "b",
+                    2
+                ],
+                [
+                    "c",
+                    55
+                ]
+            ],
+            "subtype": "Dictionary",
+            "columnNames": [
+                "Key",
+                "Value"
+            ]
+        },
+        "v12": {
+            "type": "Plot",
+            "init_width": 640,
+            "init_height": 480,
+            "chart_title": null,
+            "domain_axis_label": null,
+            "y_label": "",
+            "show_legend": false,
+            "use_tool_tip": true,
+            "graphics_list": [],
+            "constant_lines": [],
+            "constant_bands": [],
+            "texts": [],
+            "rangeAxes": [
+                {
+                    "type": "YAxis",
+                    "label": "",
+                    "auto_range": true,
+                    "auto_range_includes_zero": true,
+                    "lower_margin": 0.05,
+                    "upper_margin": 0.05,
+                    "lower_bound": 0,
+                    "upper_bound": 0,
+                    "use_log": false,
+                    "log_base": 10
+                }
+            ],
+            "x_auto_range": true,
+            "x_lower_margin": 0.05,
+            "x_upper_margin": 0.05,
+            "x_lower_bound": 0,
+            "x_upper_bound": 0,
+            "y_auto_range": true,
+            "y_auto_range_includes_zero": true,
+            "y_lower_margin": 0.05,
+            "y_upper_margin": 0.05,
+            "y_lower_bound": 0,
+            "y_upper_bound": 0,
+            "log_x": false,
+            "x_log_base": 10,
+            "log_y": false,
+            "timezone": null,
+            "crosshair": null,
+            "legend_position": {
+                "type": "LegendPosition",
+                "position": "TOP_RIGHT"
+            },
+            "omit_checkboxes": false,
+            "legend_layout": "VERTICAL"
+        },
+        "v13": {
+            "type": "ImageIcon",
+            "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+            "width": 100,
+            "height": 100
+        },
+        "v14": {
+            "type": "OutputContainer",
+            "items": [
+                "pippero",
+                [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                [
+                    {
+                        "a": 1,
+                        "b": 3
+                    },
+                    {
+                        "a": 4,
+                        "c": 5
+                    }
+                ]
+            ]
+        },
+        "v15": [
+            {
+                "type": "BeakerCodeCell",
+                "cellId": "codecell",
+                "evaluatorId": "Groovy",
+                "code": "// output container - 14\nimport com.twosigma.beaker.jvm.object.OutputContainer\ndef o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])\nbeaker.v14 = o\no",
+                "outputtype": "OutputContainer",
+                "output": {
+                    "type": "OutputContainer",
+                    "items": [
+                        "pippero",
+                        [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        [
+                            {
+                                "a": 1,
+                                "b": 3
+                            },
+                            {
+                                "a": 4,
+                                "c": 5
+                            }
+                        ]
+                    ]
+                },
+                "tags": "groovyret"
+            }
+        ],
+        "v16": {
+            "plot": "com.twosigma.beaker.chart.xychart.Plot@5ed399dc",
+            "img": {
+                "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                "width": 100,
+                "height": 100
+            }
+        },
+        "v17": [
+            {
+                "plot": "com.twosigma.beaker.chart.xychart.Plot@5eb4178",
+                "img": {
+                    "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                    "width": 100,
+                    "height": 100
+                }
+            },
+            {
+                "a": 10,
+                "img": {
+                    "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                    "width": 100,
+                    "height": 100
+                }
+            }
+        ]
+    }
+}

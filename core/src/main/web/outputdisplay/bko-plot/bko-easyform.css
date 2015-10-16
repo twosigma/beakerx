@@ -129,7 +129,6 @@ select.list-component {
 
 .list-component-outer.hide-scrollbar {
   vertical-align: top;
-  overflow: hidden;
   border: 1px solid #CCC;
 }
 

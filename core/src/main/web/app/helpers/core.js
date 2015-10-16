@@ -355,10 +355,13 @@
       showDefaultSavingFileChooser: function(initPath) {
         var self = this;
         var deferred = bkUtils.newDeferred();
-        bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getStartUpDirectory()])
-            .then(function(values) {
+        var requests = [bkUtils.getHomeDirectory(), bkUtils.getStartUpDirectory(),
+          bkUtils.getLocalDrives()];
+        bkUtils.all(requests).then(function(values) {
           var homeDir = values[0];
+          var localDrives = values[2];
           var fileChooserStrategy = self.getFileSystemFileChooserStrategy();
+          fileChooserStrategy.localDrives = localDrives;
           fileChooserStrategy.input = initPath;
           fileChooserStrategy.getResult = function () {
             if (_.isEmpty(this.input)) {
@@ -1017,10 +1020,14 @@
     };
   });
 
-  module.controller('modalDialogCtrl', function($scope, $rootScope, $modalInstance, modalDialogOp) {
+  module.controller('modalDialogCtrl', function($scope, $rootScope, $modalInstance, modalDialogOp,
+                                                bkUtils) {
     $scope.getStrategy = function() {
       return modalDialogOp.getStrategy();
     };
+    $scope.isWindows = function() {
+      return bkUtils.isWindows;
+    }
     $rootScope.$on('modal.submit', function() {
       $scope.close($scope.getStrategy().getResult());
     });

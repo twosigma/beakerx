@@ -18,7 +18,7 @@
  */
 (function() {
   'use strict';
-  var treeView = angular.module('bk.treeView', ['ngAnimate']);
+  var treeView = angular.module('bk.treeView', ['ngAnimate', 'bk.utils']);
 
   treeView.factory('fileService', function() {
     var _provider = {};
@@ -38,7 +38,19 @@
     };
   });
 
-  treeView.directive('treeView', function($templateCache, $rootScope) {
+  var addTrailingSlash = function(str, isWindows) {
+    if (isWindows) {
+      if (!_.string.endsWith(str, '\\')) {
+        str = str + '\\';
+      }
+    } else {
+      if (!_.string.endsWith(str, '/')) {
+        str = str + '/';
+      }
+    }
+  };
+
+  treeView.directive('treeView', function($templateCache, $rootScope, bkUtils) {
     return {
       restrict: 'E',
       template: '<tree-node data="root" fs="fs" displayname="{{ rooturi }}"></tree-node>',
@@ -50,9 +62,7 @@
           //jscs:enable
         }
 
-        if (!_.string.endsWith($scope.rooturi, '/')) {
-          $scope.rooturi = $scope.rooturi + '/';
-        }
+        addTrailingSlash($scope.rooturi, bkUtils.isWindows);
 
         $rootScope.fsPrefs = $rootScope.fsPrefs || {
           openFolders: []
@@ -81,7 +91,7 @@
     };
   });
 
-  treeView.directive('treeNode', function() {
+  treeView.directive('treeNode', function(bkUtils) {
     return {
       restrict: 'E',
       //jscs:disable
@@ -125,9 +135,7 @@
         $scope.click = function() {
           if ($scope.data.type === 'directory') {
             var uri = $scope.data.uri;
-            if (!_.string.endsWith(uri, '/')) {
-              uri = uri + '/';
-            }
+            addTrailingSlash(uri, bkUtils.isWindows);
             $scope.fs.fillInput(uri);
             // toggle
             if (!_.isEmpty($scope.data.children)) {

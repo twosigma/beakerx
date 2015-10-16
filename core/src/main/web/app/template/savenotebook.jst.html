@@ -30,8 +30,13 @@
   </div>
 </div>
 <div class="modal-body fixed" style="padding-bottom: 106px"> <!-- padding-bottom linked with modal-footer height -->
-  <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>
+  <div ng-if="isWindows() !== true">
+    <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>
+  </div>
   <tree-view rooturi="<%- homedir %>" fs="getStrategy().treeViewfs"></tree-view>
+  <div ng-repeat="drive in getStrategy().localDrives" ng-if="isWindows() === true">
+    <tree-view rooturi="{{drive}}" fs="getStrategy().treeViewfs"></tree-view>
+  </div>
 </div>
 <div class="modal-footer fixed" style="height: 106px"> <!-- height linked with modal-body padding-bottom -->
   <p>

@@ -29,7 +29,7 @@
           "<div id='plotTitle' class='plot-title'></div>" +
           "<div id='plotLegendContainer' class='plot-plotlegendcontainer' oncontextmenu='return false;'>" +
           "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
-          "<svg>"  +
+          "<svg id='svgg'>"  +
           "<defs>" +
             "<filter id='svgfilter'>" +
               "<feGaussianBlur result='blurOut' in='SourceGraphic' stdDeviation='1' />" +
@@ -159,8 +159,8 @@
             y : 10
           };
           scope.intervalStepHint = {
-            x : 75,
-            y : 30
+            x : scope.stdmodel.orientation === 'HORIZONTAL' ? 30 : 75,
+            y : scope.stdmodel.orientation === 'HORIZONTAL' ? 75 : 30
           };
           scope.numIntervals = {
             x: parseInt(plotSize.width) / scope.intervalStepHint.x,
@@ -332,6 +332,7 @@
               "Truncation has been disabled to display correct result.",
               "To enable truncation for better performance, please render x-monotonic line and area items." ]);
           }
+
         };
 
         scope.prepareInteraction = function() {

@@ -107,6 +107,12 @@
             logyR = newmodel.yAxisR && newmodel.yAxisR.type === "log",
             logybR = newmodel.yAxisR && newmodel.yAxisR.base;
 
+        if (newmodel.orientation === 'HORIZONTAL'){
+          var temp = newmodel.xAxis;
+          newmodel.xAxis = newmodel.yAxis;
+          newmodel.yAxis = temp;
+        }
+
         if (newmodel.data == null) { newmodel.data = []; }
         var data = newmodel.data;
         for (var i = 0; i < data.length; i++) {
@@ -273,7 +279,28 @@
                 ele.y2 = Math.log(ele.y2) / Math.log(itemlogyb);
               }
             }
+
+            if (newmodel.orientation === 'HORIZONTAL'){
+              var temp = {
+                x: ele.y,
+                x2: ele.y2,
+                y: ele.x,
+                y2: ele.x2
+              };
+
+              ele.x = temp.x;
+              ele.x2 = temp.x2;
+              ele.y = temp.y;
+              ele.y2 = temp.y2;
+            }
           }
+
+          if (newmodel.orientation === 'HORIZONTAL'){
+            var temp =  item.x;
+            item.x = item.y;
+            item.y = temp;
+          }
+
           // recreate rendering objects
           item.index = i;
           item.id = "i" + i;
@@ -355,6 +382,7 @@
             showLegend : model.show_legend != null ? model.show_legend : false,
             legendPosition : model.legend_position != null ? model.legend_position : {position: "TOP_RIGHT"},
             legendLayout : model.legend_layout != null ? model.legend_layout : "VERTICAL",
+            orientation : model.orientation != null ? model.orientation : "VERTICAL",
             omitCheckboxes : model.omit_checkboxes,
             useToolTip : model.use_tool_tip != null ? model.use_tool_tip : false,
             plotSize : {
@@ -369,6 +397,7 @@
             showLegend : model.showLegend != null ? model.showLegend : false,
             legendPosition : model.legendPosition != null ? model.legendPosition : {position: "TOP_RIGHT"},
             legendLayout : model.legendLayout != null ? model.legendLayout : "VERTICAL",
+            orientation : model.orientation != null ? model.orientation : "VERTICAL",
             omitCheckboxes : model.omitCheckboxes,
             useToolTip : model.useToolTip != null ? model.useToolTip : false,
             xAxis : model.xAxis != null ? model.xAxis : {},

@@ -42,7 +42,7 @@ define(function(require, exports, module) {
       name: "Keyboard shortcuts",
       sortorder: 110,
       action: function() {
-        bkHelper.openStaticWindow('keyboardshortcuts.html');
+        bkHelper.openStaticWindow('keyboardShortcuts.html');
       },
       tooltip: "Show keyboard shortcuts"
     },

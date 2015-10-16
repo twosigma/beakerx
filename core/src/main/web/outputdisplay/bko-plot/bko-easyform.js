@@ -987,21 +987,23 @@
         if (this.easyForm[component.label]) {
           this.easyForm[component.label].currentValue = value;
         }
-        var req = $.ajax({
-          type: "POST",
-          datatype: "json",
-          url: window.languageServiceBase[evaluatorId] + '/easyform/set',
-          data: {
-            id: formId,
-            key: component.label,
-            value: value
-          }
-        });
-        req.done(function (ret) {
-        });
-        req.error(function (jqXHR, textStatus) {
-          console.error("Unable to set easyform value");
-        });
+        if (window.languageServiceBase && window.languageServiceBase[evaluatorId]) {
+          var req = $.ajax({
+            type: "POST",
+            datatype: "json",
+            url: window.languageServiceBase[evaluatorId] + '/easyform/set',
+            data: {
+              id: formId,
+              key: component.label,
+              value: value
+            }
+          });
+          req.done(function (ret) {
+          });
+          req.error(function (jqXHR, textStatus) {
+            console.error("Unable to set easyform value");
+          });
+        }
       },
       getComponentValue: function (component) {
         if (this.easyForm[component.label]) {

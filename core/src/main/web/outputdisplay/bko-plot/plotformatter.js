@@ -292,6 +292,16 @@
               ele.x2 = temp.x2;
               ele.y = temp.y;
               ele.y2 = temp.y2;
+
+              ele._x = ele.x;
+              ele._x2 = ele.x2;
+              ele._y = ele.y;
+              ele._y2 = ele.y2;
+
+              if (item.type === 'stem'){
+                ele.y2 = ele.y;
+                ele._y2 = ele._y;
+              }
             }
           }
 

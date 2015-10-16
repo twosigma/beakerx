@@ -76,7 +76,7 @@
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
         range.xl = Math.min(range.xl, ele.x);
-        range.xr = Math.max(range.xr, ele.x);
+        range.xr = Math.max(range.xr, ele.x2 ? ele.x2 : ele.x);
         range.yl = Math.min(range.yl, ele.y);
         range.yr = Math.max(range.yr, ele.y2);
       }
@@ -89,6 +89,8 @@
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
         ele.x = xAxis.getPercent(ele.x);
+        if(ele.x2)
+          ele.x2 = xAxis.getPercent(ele.x2);
         ele.y = yAxis.getPercent(ele.y);
         ele.y2 = yAxis.getPercent(ele.y2);
       }
@@ -126,6 +128,7 @@
         if (ele.y2 < focus.yl || ele.y > focus.yr) { continue; }
 
         var x = mapX(ele.x), y = mapY(ele.y), y2 = mapY(ele.y2);
+        var x2 = (ele.x2) ? mapX(ele.x2) : x;
 
         if (plotUtils.rangeAssert([x, y, y2])) {
           eleprops.length = 0;
@@ -142,7 +145,7 @@
           "st_da": ele.stroke_dasharray,
           "x1" : x,
           "y1" : y,
-          "x2" : x,
+          "x2" : x2,
           "y2" : y2
         };
         eleprops.push(prop);

@@ -140,16 +140,18 @@ define(function(require, exports, module) {
           shellId: this.settings.shellID,
           classPath: this.settings.classPath,
           imports: this.settings.imports,
-          outdir: this.settings.outdir
+          outdir: this.settings.outdir,
+          requirements: this.settings.requirements
         });
         if (cb) {
           p.success(cb);
         }
       },
       spec: {
-        outdir:      {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
         classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
         imports:     {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"},
+        outdir:      {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
+        requirements:     {type: "settableString", action: "updateShell", name: "Require (Clojure libs, one per line)"},
         resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
         killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
       },

@@ -156,7 +156,7 @@ public class UtilRest {
   /**
    * This function returns a Boolean setting as string. If the setting is null in the preference,
    * it will use the setting in the config, otherwise, what is set in preference is used.
-   * @param settingsListName
+   * @param settingName
    * @param configs
    * @param prefs
    * @return
@@ -182,7 +182,7 @@ public class UtilRest {
   /**
    * This function returns a setting as a string. If the setting is null in the preference,
    * it will use the setting in the config, otherwise, what is set in preference is used.
-   * @param settingsListName
+   * @param settingName
    * @param configs
    * @param prefs
    * @return
@@ -299,7 +299,7 @@ public class UtilRest {
 
   @GET
   @Path("getPreference")
-  @Produces(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.TEXT_PLAIN)
   public Object getPreference(
     @QueryParam("preference") String preferenceName) {
     final String preferenceFileUrl = this.bkConfig.getPreferenceFileUrl();
@@ -310,10 +310,9 @@ public class UtilRest {
       JSONParser parser = new JSONParser();
       JSONObject preferenceJsonObject =
           (JSONObject) parser.parse(this.utils.readFile(preferenceFile));
-
       // Need to check config if not in preferences?
       Object preference = preferenceJsonObject.get(preferenceName); // Get returns null if not found
-      return preference;
+      return preference == null ? null : preference.toString();
 
     } catch (ParseException e) {
       throw new RuntimeException("failed getting beaker configurations from config file", e);

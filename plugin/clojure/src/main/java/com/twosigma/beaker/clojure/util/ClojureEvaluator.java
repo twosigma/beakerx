@@ -61,6 +61,7 @@ public class ClojureEvaluator {
   protected String currentClassPath;
   protected String currentImports;
   protected String outDir = "";
+  protected String currenClojureNS;
   protected DynamicClassLoaderSimple loader;
 
   protected class jobDescriptor {
@@ -84,6 +85,7 @@ public class ClojureEvaluator {
     classPath = new ArrayList<String>();
     imports = new ArrayList<String>();
     String loadFunctionPrefix = "run_str";
+    currenClojureNS = String.format("%1$s_%2$s", beaker_clojure_ns, shellId);
 
     try {
       URL url = this.getClass().getClassLoader().getResource("init_clojure_script.txt");
@@ -274,7 +276,19 @@ public class ClojureEvaluator {
     List<String> result = new ArrayList<String>();
 
     for(Object s : ((Collection) o)) {
-      result.add(s.toString());
+
+      String whole = s.toString();
+      int d = whole.indexOf('/');
+
+      if(d > 0)  {
+        String woNS = whole.substring(d + 1);
+        String ns =  whole.substring(0, d);
+        result.add(woNS);
+        if(!currenClojureNS.equals(ns) && !"clojure.core".equals(ns)) result.add(whole);
+      } else {
+        result.add(whole);
+      }
+
     }
 
     return result;

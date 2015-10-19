@@ -411,7 +411,7 @@
             var tipdiv = scope.jqcontainer.find("#" + tipid);
 
             if (tipdiv.length === 0) {
-              var tiptext = data[d.idx].createTip(d.ele, d.g);
+              var tiptext = data[d.idx].createTip(d.ele, d.g, scope.stdmodel);
 
               tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
                 .attr("id", tipid)

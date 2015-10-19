@@ -461,6 +461,15 @@
         var range = plotUtils.getDataRange(yAxisData).datarange;
         var rangeR = _.isEmpty(yAxisRData) ? null : plotUtils.getDataRange(yAxisRData).datarange;
 
+        if (newmodel.yIncludeZero === true && range.yl > 0) {
+          range.yl = 0;
+          range.yspan = range.yr - range.yl;
+        }
+        if (rangeR && newmodel.yRIncludeZero === true && rangeR.yl > 0) {
+          rangeR.yl = 0;
+          rangeR.yspan = rangeR.yr - rangeR.yl;
+        }
+
         var margin = newmodel.margin;
         if (margin.bottom == null) { margin.bottom = .05; }
         if (margin.top == null) { margin.top = .05; }
@@ -485,17 +494,6 @@
 
           if (newmodel.yPreventNegative === true) {
             vrange.yl = Math.min(0, range.yl);
-          }
-          if (newmodel.yIncludeZero === true) {
-            if (vrange.yl > 0) {
-              vrange.yl = 0;
-            }
-          }
-
-          if(vrangeR && newmodel.yRIncludeZero === true){
-            if (vrangeR.yl > 0) {
-              vrangeR.yl = 0;
-            }
           }
 
           var focus = newmodel.userFocus; // allow user to overide vrange

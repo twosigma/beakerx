@@ -31,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -102,6 +103,16 @@ public class FileIORest {
   @Produces(MediaType.TEXT_PLAIN)
   public String getHomeDirector() {
     return System.getProperty("user.home");
+  }
+
+  @GET
+  @Path("getLocalDrives")
+  public List<String> getLocalDrives() {
+    List<String> roots = new LinkedList<>();
+    for (File file : File.listRoots()) {
+      roots.add(file.getAbsolutePath());
+    }
+    return roots;
   }
 
   @GET

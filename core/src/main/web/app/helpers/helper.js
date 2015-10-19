@@ -180,10 +180,13 @@
         } else {
           var strategy = bkHelper.getFileSystemFileChooserStrategy();
           strategy.treeViewfs.extFilter = [ext];
-          return bkUtils.getHomeDirectory().then(function(homeDir) {
+          bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getLocalDrives()]).then(function(values) {
+            if (bkUtils.isWindows) {
+              strategy.localDrives = values[1];
+            }
             bkCoreManager.showModalDialog(
                 bkHelper.openNotebook,
-                JST['template/opennotebook']({homedir: homeDir, extension: '.' + ext}),
+                JST['template/opennotebook']({homedir: values[0], extension: '.' + ext}),
                 strategy,
                 uriType,
                 readOnly,
@@ -646,18 +649,20 @@
         return bkCoreManager.getFileSystemFileChooserStrategy();
       },
       selectFile: function(callback, title, extension, closebtn) {
-          var strategy = bkCoreManager.getFileSystemFileChooserStrategy();
-          strategy.treeViewfs.extFilter = [ extension ];
-          strategy.ext = extension;
-          strategy.title = title;
-          strategy.closebtn = closebtn;
-          return bkUtils.getHomeDirectory().then(
-                  function(homeDir) {
-                      return bkCoreManager.showModalDialog(
-                              callback,
-                              JST['template/opennotebook']({homedir: homeDir, extension: extension}),
-                              strategy);
-                  });
+        var strategy = bkCoreManager.getFileSystemFileChooserStrategy();
+        strategy.treeViewfs.extFilter = [ extension ];
+        strategy.ext = extension;
+        strategy.title = title;
+        strategy.closebtn = closebtn;
+        bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getLocalDrives()]).then(function (values) {
+          if (bkUtils.isWindows) {
+            strategy.localDrives = values[1];
+          }
+          return bkCoreManager.showModalDialog(
+              callback,
+              JST['template/opennotebook']({homedir: values[0], extension: extension}),
+              strategy);
+        });
       },
 
       // eval utils

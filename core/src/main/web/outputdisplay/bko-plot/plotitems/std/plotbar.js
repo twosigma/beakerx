@@ -214,16 +214,20 @@
       });
     };
 
-    PlotBar.prototype.createTip = function(ele) {
+    PlotBar.prototype.createTip = function(ele, g, model) {
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
       if (this.legend != null) {
         tip.title = this.legend;
       }
-      tip.x = plotUtils.getTipString((ele._x + ele._x2) / 2, xAxis, true);
-      tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
-      tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
+      if (model.orientation === 'HORIZONTAL'){
+        tip.value = plotUtils.getTipString(ele._x2 - ele._x, xAxis, true);
+      }else{
+        tip.x = plotUtils.getTipString((ele._x + ele._x2) / 2, xAxis, true);
+        tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
+        tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
+      }
       return plotUtils.createTipString(tip);
     };
 

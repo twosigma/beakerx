@@ -209,8 +209,8 @@
             item.shape = this.pointShapeMap[item.shape];
           }
 
-          var yAxisSettings = plotUtils.useYAxisR(newmodel, item) ? yAxisRSettings : yAxisSettings;
-          if (item.base != null && yAxisSettings.logy) {
+          var itemYAxisSettings = plotUtils.useYAxisR(newmodel, item) ? yAxisRSettings : yAxisSettings;
+          if (item.base != null && itemYAxisSettings.logy) {
             if (item.base === 0) {
               item.base = 1;
             }
@@ -224,7 +224,7 @@
 
             // discard NaN entries
             if (ele.x === "NaN" || ele.y === "NaN" ||
-              logx && ele.x <= 0 || yAxisSettings.logy && ele.y <= 0 )
+              logx && ele.x <= 0 || itemYAxisSettings.logy && ele.y <= 0 )
               continue;
 
             if (item.colors != null) {

@@ -42,7 +42,7 @@
         setBkNotebook: '&',
         isLoading: '='
       },
-      controller: function ($scope) {
+      controller: function ($scope, bkEvaluatorManager, GLOBALS) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var _impl = {
           _viewModel: {
@@ -276,6 +276,13 @@
             $scope.$evalAsync(Scrollin.checkForVisibleElements);
           }
         });
+
+        $scope.defaultEvaluatorLoaded = function() {
+          if (_.isEmpty(bkEvaluatorManager.getLoadedEvaluators()) || _.chain(bkEvaluatorManager.getLoadingEvaluators()).pluck("name").contains(GLOBALS.DEFAULT_EVALUATOR).value()) {
+            return false;
+          }
+          return true;
+        };
 
         $scope.isInitializationCell = function () {
           return bkSessionManager.isRootCellInitialization();

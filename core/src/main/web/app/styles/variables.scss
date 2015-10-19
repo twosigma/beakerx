@@ -74,3 +74,8 @@ $code-bg: #F4F4F4;
 @function strip-units($number) {
   @return $number / ($number * 0 + 1);
 }
+
+@mixin promote-to-layer() {
+	-webkit-transform: translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0);
+}

@@ -82,6 +82,13 @@
           focus.xr = range.xr + range.xspan * margin.right;
         }
         if (focus.yl == null) {
+          if (model.yIncludeZero === true) {
+            var yl = model.vrange.yspan * range.yl + model.vrange.yl;
+            if(yl > 0){
+              range.yl = (0 - model.vrange.yl) / model.vrange.yspan;
+              range.yspan = range.yr - range.yl;
+            }
+          }
           focus.yl = range.yl - range.yspan * margin.bottom;
         }
         if (focus.yr == null) {

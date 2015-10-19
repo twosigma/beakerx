@@ -24,6 +24,8 @@
 }
 
 header {
+  @include promote-to-layer();
+
   .navbar {
     padding-left: 35px;
     padding-right: 35px;
@@ -41,12 +43,7 @@ header {
 
   .navbar-brand {
     color: #fff !important;
-    padding-top: 10px;
-
-    img {
-      height: 22px;
-      margin-top: -7px;
-    }
+    padding: 3px 10px;
   }
 
   .navbar-text {

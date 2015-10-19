@@ -56,7 +56,10 @@
 
           var axis = new PlotAxis(modelAxis.type);
 
-          if (axis.axisType !== "time") {
+          if (axis.axisType === "category") {
+            axis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
+            axis.setCategoryNames(model.categoryNames, model.labelsxs);
+          } else if (axis.axisType !== "time") {
             axis.setRange(axisVRange.yl, axisVRange.yr, modelAxis.base);
           } else {
             axis.setRange(axisVRange.yl, axisVRange.yr, modelAxis.timezone);

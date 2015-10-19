@@ -17,6 +17,8 @@ plugin/jvm/src/main/dist/
 .idea
 src/main/main.iml
 *.iml
+*.ipr
+*.iws
 nbproject/
 build.xml
 manifest.mf

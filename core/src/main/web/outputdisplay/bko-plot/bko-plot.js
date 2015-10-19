@@ -262,17 +262,19 @@
           var focus = scope.focus, model = scope.stdmodel;
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
 
-          var xGridlines = model.xAxis.getGridlines();
-          for (var i = 0; i < xGridlines.length; i++) {
-            var x = xGridlines[i];
-            scope.rpipeGridlines.push({
-              "id" : "gridline_x_" + i,
-              "class" : "plot-gridline",
-              "x1" : mapX(x),
-              "y1" : mapY(focus.yl),
-              "x2" : mapX(x),
-              "y2" : mapY(focus.yr)
-            });
+          if(model.showXGridlines){
+            var xGridlines = model.xAxis.getGridlines();
+            for (var i = 0; i < xGridlines.length; i++) {
+              var x = xGridlines[i];
+              scope.rpipeGridlines.push({
+                "id" : "gridline_x_" + i,
+                "class" : "plot-gridline",
+                "x1" : mapX(x),
+                "y1" : mapY(focus.yl),
+                "x2" : mapX(x),
+                "y2" : mapY(focus.yr)
+              });
+            }
           }
           var yGridlines = model.yAxis.getGridlines();
           for (var i = 0; i < yGridlines.length; i++) {

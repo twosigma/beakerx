@@ -404,7 +404,8 @@
             },
             nanoOffset : null,
             timezone : model.timezone,
-            categoryNames: model.categoryNames
+            categoryNames: model.categoryNames,
+            showXGridlines: model.type === "CategoryPlot" ? false : true
           };
         } else {
           newmodel = {
@@ -427,7 +428,8 @@
               "height": model.height != null ? model.height : 350
             },
             timezone : model.timezone,
-            categoryNames: model.categoryNames
+            categoryNames: model.categoryNames,
+            showXGridlines: model.type === "CategoryPlot" ? false : true
           };
         }
 

@@ -18,7 +18,54 @@
   'use strict';
   var retfunc = function(bkUtils, plotUtils) {
 
-    var calccategoryitem = function(categoryItem, categoryMargin, categoriesNumber, seriesNumber) {
+    var calcWidths = function(categoryItems){
+
+      var categoriesNumber = 0;
+      var seriesNumber = 0;
+
+      for (var index = 0; index < categoryItems.length; index++) {
+        var categoryItem = categoryItems[index]; //e.g. CategoryBar
+        var value = categoryItem.value;
+        categoriesNumber = Math.max(categoriesNumber, value[0].length);
+        seriesNumber = Math.max(seriesNumber, value.length);
+      }
+
+      var calculatedWidths = new Array(categoriesNumber);
+      for (var i = 0; i < calculatedWidths.length; i++) {
+        calculatedWidths[i] = new Array(seriesNumber).fill(1);
+      }
+
+      for (var index = 0; index < categoryItems.length; index++) {
+        var categoryItem = categoryItems[index]; //e.g. CategoryBar
+        var value = categoryItem.value;
+        categoriesNumber = Math.max(categoriesNumber, value[0].length);
+        seriesNumber = Math.max(seriesNumber, value.length);
+
+        for (var colindex = 0; colindex < categoriesNumber; colindex++) {
+          for (var rowindex = 0; rowindex < seriesNumber; rowindex++) {
+            if (_.isArray(categoryItem.widths)) {
+              var rowWidths = categoryItem.widths[rowindex];
+              if (_.isArray(rowWidths)) {
+                calculatedWidths[colindex][rowindex] = rowWidths;
+                for (var rwi = 0; rwi < rowWidths.length; rwi++){
+                  calculatedWidths[colindex][rowindex][rwi] = Math.max(calculatedWidths[colindex][rowindex][rwi], rowWidths[rwi]);
+                }
+              } else {
+                calculatedWidths[colindex][rowindex] = Math.max(calculatedWidths[colindex][rowindex], categoryItem.width);
+              }
+            } else {
+              calculatedWidths[colindex][rowindex] = Math.max(calculatedWidths[colindex][rowindex], categoryItem.width);
+            }
+          }
+        }
+      }
+
+      return calculatedWidths;
+    };
+
+
+    var calccategoryitem = function(categoryItem, categoryMargin, categoriesNumber, seriesNumber, calculatedWidths) {
+
       var elementsxs = new Array(seriesNumber);
       for (var i = 0; i < elementsxs.length; i++) {
         elementsxs[i] = new Array(categoriesNumber);
@@ -33,19 +80,18 @@
           if (_.isArray(categoryItem.widths)) {
             var rowWidths = categoryItem.widths[rowindex];
             if (_.isArray(rowWidths)) {
-              elWidth = rowWidths[colindex];
+              elWidth = calculatedWidths[colindex][rowindex][colindex];
             } else {
-              elWidth = rowWidths;
+              elWidth = calculatedWidths[colindex][rowindex];
             }
           } else {
-            elWidth = categoryItem.width;
+            elWidth = calculatedWidths[colindex][rowindex];
           }
           elWidth = elWidth || 1; //FIXME why width is null?
           elementsxs[rowindex][colindex] = resWidth + elWidth / 2;
           resWidth += elWidth;
         }
-        var categoryxr = resWidth;
-        labelsxs.push(categoryxl + (categoryxr - categoryxl) / 2);
+        labelsxs.push(categoryxl + (resWidth - categoryxl) / 2);
         resWidth += categoryMargin;
       }
       return {
@@ -334,6 +380,9 @@
             newmodel.data.push(item);
           }
         }else{
+
+          var calculatedWidths = calcWidths(list);
+
           for (var index = 0; index < list.length; index++) {
             var categoryItem = list[index]; //e.g. CategoryBar
             var value = categoryItem.value;
@@ -346,7 +395,7 @@
               }
             }
 
-            var res = calccategoryitem(categoryItem, newmodel.categoryMargin, categoriesNumber, seriesNumber);
+            var res = calccategoryitem(categoryItem, newmodel.categoryMargin, categoriesNumber, seriesNumber, calculatedWidths);
             var elementsxs = res.elementsxs;
             newmodel.labelsxs = res.labelsxs;
 

@@ -47,7 +47,7 @@ public class YAxis {
   public YAxis(String label, double lowerMargin, double upperMargin) {
     this.label = label;
     this.autoRange = true;
-    this.autoRangeIncludesZero = true;
+    this.autoRangeIncludesZero = false;
     this.lowerMargin = lowerMargin;
     this.upperMargin = upperMargin;
     this.log = false;

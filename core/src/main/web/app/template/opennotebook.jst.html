@@ -29,8 +29,13 @@
    </div>
 </div>
 <div class="modal-body fixed">
-   <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>
-   <tree-view rooturi="<%- homedir %>" fs="getStrategy().treeViewfs"></tree-view>
+  <div ng-if="isWindows() !== true">
+    <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>
+  </div>
+  <tree-view rooturi="<%- homedir %>" fs="getStrategy().treeViewfs"></tree-view>
+  <div ng-repeat="drive in getStrategy().localDrives" ng-if="isWindows() === true">
+    <tree-view rooturi="{{drive}}" fs="getStrategy().treeViewfs"></tree-view>
+  </div>
 </div>
 <div class="modal-footer fixed">
    <div class=text-left>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>

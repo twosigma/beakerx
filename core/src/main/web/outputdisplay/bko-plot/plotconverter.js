@@ -18,14 +18,16 @@
   'use strict';
   var retfunc = function(bkUtils, plotUtils) {
 
-    var calcxs = function(categoryItem, categoryMargin, categoriesNumber, seriesNumber) {
-      var xs = new Array(seriesNumber);
-      for (var i = 0; i < xs.length; i++) {
-        xs[i] = new Array(categoriesNumber);
+    var calccategoryitem = function(categoryItem, categoryMargin, categoriesNumber, seriesNumber) {
+      var elementsxs = new Array(seriesNumber);
+      for (var i = 0; i < elementsxs.length; i++) {
+        elementsxs[i] = new Array(categoriesNumber);
       }
+      var labelsxs = [];
 
       var resWidth = 0;
       for (var colindex = 0; colindex < categoriesNumber; colindex++) {
+        var categoryxl = resWidth;
         for (var rowindex = 0; rowindex < seriesNumber; rowindex++) {
           var elWidth;
           if (_.isArray(categoryItem.widths)) {
@@ -39,11 +41,15 @@
             elWidth = categoryItem.width;
           }
           resWidth += elWidth || 1; //FIXME why width is null?
-          xs[rowindex][colindex] = resWidth;
+          elementsxs[rowindex][colindex] = resWidth;
         }
+        labelsxs.push(categoryxl + (resWidth - categoryxl) / 2);
         resWidth += categoryMargin;
       }
-      return xs;
+      return {
+        elementsxs: elementsxs,
+        labelsxs: labelsxs
+      };
     };
 
     var processItem = function(item, newmodel, yAxisRSettings, yAxisSettings) {
@@ -284,13 +290,11 @@
         } else if (model.type === "TimePlot") {
           newmodel.xAxis.type = "time";
         } else if (model.type === "NanoPlot"){  // TODO
+        } else if (model.type === "CategoryPlot") {
+          newmodel.xAxis.type = "category";
         } else {
           newmodel.xAxis.type = "linear";
         }
-        //TODO
-        //else if (model.type === "CategoryPlot") {
-        // newmodel.xAxis.type = "category";
-        //}
 
         var setYAxisType = function(axis, settings){
           if(axis == null){ return; }
@@ -337,13 +341,15 @@
             if (seriesNames == null) {
               seriesNames = [];
               for (var s = 0; s < seriesNumber; s++) {
-                seriesNames.push("series" + i);
+                seriesNames.push("series" + s);
               }
             }
 
             model.categoryMargin = 1; //FIXME
 
-            var xs = calcxs(categoryItem, model.categoryMargin, categoriesNumber, seriesNumber);
+            var res = calccategoryitem(categoryItem, model.categoryMargin, categoriesNumber, seriesNumber);
+            var elementsxs = res.elementsxs;
+            newmodel.labelsxs = res.labelsxs;
 
             for (var i = 0; i < seriesNumber; i++) {
               var series = value[i];
@@ -363,7 +369,7 @@
                 }
               };
               processSeriesProperty(i, 'colors', 'color');
-              processSeriesProperty(i, 'widths', 'widths');
+              processSeriesProperty(i, 'widths', 'width');
               processSeriesProperty(i, 'outline_colors', 'outline_color');
               processSeriesProperty(i, 'bases', 'base');
               processSeriesProperty(i, 'fills', 'fill');
@@ -377,7 +383,7 @@
               item.x = [];
               for (var j = 0; j < categoriesNumber; j++) {
                 item.y.push(series[j]);
-                item.x.push(xs[i][j]);
+                item.x.push(elementsxs[i][j]);
               }
 
               processItem(item, newmodel, yAxisRSettings, yAxisSettings);

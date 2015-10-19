@@ -35,7 +35,10 @@
 
         var xAxis = new PlotAxis(model.xAxis.type);
 
-        if (xAxis.axisType !== "time") {
+        if (xAxis.axisType === "category") {
+          xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
+          xAxis.setCategoryNames(model.categoryNames, model.labelsxs);
+        } else if (xAxis.axisType !== "time") {
           xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
         } else {
           xAxis.setRange(vrange.xl, vrange.xr, model.timezone);
@@ -400,7 +403,8 @@
               "height" : model.init_height != null ? model.init_height : 350
             },
             nanoOffset : null,
-            timezone : model.timezone
+            timezone : model.timezone,
+            categoryNames: model.categoryNames
           };
         } else {
           newmodel = {
@@ -422,7 +426,8 @@
               "width" : model.width != null ? model.width : 1200,
               "height": model.height != null ? model.height : 350
             },
-            timezone : model.timezone
+            timezone : model.timezone,
+            categoryNames: model.categoryNames
           };
         }
 

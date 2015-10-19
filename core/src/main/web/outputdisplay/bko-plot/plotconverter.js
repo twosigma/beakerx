@@ -40,10 +40,12 @@
           } else {
             elWidth = categoryItem.width;
           }
-          resWidth += elWidth || 1; //FIXME why width is null?
-          elementsxs[rowindex][colindex] = resWidth;
+          elWidth = elWidth || 1; //FIXME why width is null?
+          elementsxs[rowindex][colindex] = resWidth + elWidth / 2;
+          resWidth += elWidth;
         }
-        labelsxs.push(categoryxl + (resWidth - categoryxl) / 2);
+        var categoryxr = resWidth;
+        labelsxs.push(categoryxl + (categoryxr - categoryxl) / 2);
         resWidth += categoryMargin;
       }
       return {

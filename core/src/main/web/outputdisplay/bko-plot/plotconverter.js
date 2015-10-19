@@ -339,9 +339,8 @@
             var value = categoryItem.value;
             var categoriesNumber = value[0].length;
             var seriesNumber = value.length;
-            var seriesNames = categoryItem.seriesNames;
-            if (seriesNames == null) {
-              seriesNames = [];
+            var seriesNames = categoryItem.seriesNames || [];
+            if (_.isEmpty(seriesNames) && newmodel.showLegend) {
               for (var s = 0; s < seriesNumber; s++) {
                 seriesNames.push("series" + s);
               }

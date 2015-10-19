@@ -392,7 +392,7 @@
             xAxis : { label : model.domain_axis_label },
             yAxis : { label : model.y_label },
             yAxisR : model.rangeAxes.length > 1 ? { label : model.rangeAxes[1].label } : null,
-            showLegend : model.show_legend != null ? model.show_legend : false,
+            showLegend : model.show_legend,
             legendPosition : model.legend_position != null ? model.legend_position : {position: "TOP_RIGHT"},
             legendLayout : model.legend_layout != null ? model.legend_layout : "VERTICAL",
             orientation : model.orientation != null ? model.orientation : "VERTICAL",
@@ -410,7 +410,7 @@
           };
         } else {
           newmodel = {
-            showLegend : model.showLegend != null ? model.showLegend : false,
+            showLegend : model.showLegend,
             legendPosition : model.legendPosition != null ? model.legendPosition : {position: "TOP_RIGHT"},
             legendLayout : model.legendLayout != null ? model.legendLayout : "VERTICAL",
             orientation : model.orientation != null ? model.orientation : "VERTICAL",
@@ -453,12 +453,17 @@
         var yAxisData = [], yAxisRData = [];
         for (var i = 0; i < newmodel.data.length; i++) {
           var item = newmodel.data[i];
+          if(newmodel.showLegend == null && item.legend){
+              newmodel.showLegend = true;
+          }
           if(plotUtils.useYAxisR(newmodel, item)){
             yAxisRData.push(item);
           }else{
             yAxisData.push(item);
           }
         }
+
+        newmodel.showLegend = newmodel.showLegend != null ? newmodel.showLegend : false;
 
         var range = plotUtils.getDataRange(yAxisData).datarange;
         var rangeR = _.isEmpty(yAxisRData) ? null : plotUtils.getDataRange(yAxisRData).datarange;

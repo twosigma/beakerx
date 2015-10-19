@@ -30,7 +30,7 @@ public abstract class AbstractChart {
   private int initHeight = 480;
   private String title;
   private String xLabel;
-  private boolean showLegend = false;
+  private Boolean showLegend;
   private boolean useToolTip = true;
   private final YAxis yAxis = new YAxis();
   private final List<YAxis> yAxes = new ArrayList<>();
@@ -101,7 +101,7 @@ public abstract class AbstractChart {
     return yAxis.getLabel();
   }
 
-  public AbstractChart setShowLegend(boolean showLegend) {
+  public AbstractChart setShowLegend(Boolean showLegend) {
     this.showLegend = showLegend;
     return this;
   }

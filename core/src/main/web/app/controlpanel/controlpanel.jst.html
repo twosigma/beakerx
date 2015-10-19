@@ -40,8 +40,8 @@
     </a>
   </div>
   <div class="navbar navbar-default">
-    <ul class="nav navbar-nav">
-      <li class="dropdown" ng-repeat="m in getMenus()">
+    <ul class="nav navbar-nav">{{menus}}
+      <li class="dropdown" ng-repeat="m in getMenus() | orderBy: 'index'">
         <a href="#" role="button" class="dropdown-toggle {{m.id}}" data-toggle="dropdown">{{m.name}}</a>
         <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
       </li>

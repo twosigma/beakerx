@@ -405,7 +405,7 @@
             nanoOffset : null,
             timezone : model.timezone,
             categoryNames: model.categoryNames,
-            showXGridlines: model.type === "CategoryPlot" ? false : true,
+            showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
             categoryMargin: model.category_margin
           };
         } else {
@@ -430,7 +430,7 @@
             },
             timezone : model.timezone,
             categoryNames: model.categoryNames,
-            showXGridlines: model.type === "CategoryPlot" ? false : true,
+            showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
             categoryMargin: model.categoryMargin
           };
         }

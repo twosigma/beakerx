@@ -75,7 +75,7 @@ module.exports = (function() {
   var popupOptions = {
     type: 'toolbar',
     width: 420,
-    height: 153,
+    height: 210,
     show: false,
     resizable: false,
     'auto-hide-menu-bar': true,
@@ -145,6 +145,8 @@ module.exports = (function() {
         window.on('close', function(e) {
           changeServerDialogId = undefined;
         });
+        break;
+      case 'popup-service-window':
         break;
       default:
         break;

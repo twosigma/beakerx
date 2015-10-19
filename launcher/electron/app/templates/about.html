@@ -1,0 +1,62 @@
+<!-- 
+  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+
+<html>
+    <head>
+        <title>About Beaker</title>
+        <script type="text/javascript">
+            var remote = require('remote');
+            var backendRunner = remote.require('./backend-runner.js');
+
+            document.addEventListener('DOMContentLoaded', function() {
+                var buildTime = document.getElementById('build-time');
+                var version = document.getElementById('version');
+
+                buildTime.appendChild(document.createTextNode(backendRunner.getBuildTime()));
+                version.appendChild(document.createTextNode(backendRunner.getVersion()));
+            });
+        </script>
+    </head>
+    <link rel="stylesheet" type="text/css" href="../styles/dialog.css">
+    <body>
+        <div class="about-window">
+            <p>
+                Beaker is a web-based, polyglot research platform built by Two
+                Sigma Open Source, an affiliate
+                of <a target="_blank" href="http://www.twosigma.com">Two Sigma</a>.  This software
+                is available under the
+                <a target="_blank" href="http://beakernotebook.com/license">Apache 2.0 License</a>, and its
+                <a target="_blank" href="http://beakernotebook.com/privacy">Privacy Policy</a> and
+                <a target="_blank" href="http://beakernotebook.com/tou">Terms of Use</a>.
+            </p>
+            <p>
+                Beaker is made possible by code from
+                <a target="_blank" href="credits.html">many great open source software projects</a>.
+            </p>
+            <p>
+                Please report any bugs of feature requests as
+                <a target="_blank" href="https://github.com/twosigma/beaker-notebook/issues/new">GitHub issues</a>.
+                Learn more at <a target="_blank" href="http://beakernotebook.com">BeakerNotebook.com</a>.
+            </p>
+            <p>
+            <div>
+                build time: <span id="build-time"></span><br>
+                version: <span id="version"></span><br>
+            </div>
+            </p>
+        </div>
+    </body>
+</html>

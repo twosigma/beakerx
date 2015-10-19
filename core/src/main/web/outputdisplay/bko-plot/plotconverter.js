@@ -345,9 +345,7 @@
               }
             }
 
-            model.categoryMargin = 1; //FIXME
-
-            var res = calccategoryitem(categoryItem, model.categoryMargin, categoriesNumber, seriesNumber);
+            var res = calccategoryitem(categoryItem, newmodel.categoryMargin, categoriesNumber, seriesNumber);
             var elementsxs = res.elementsxs;
             newmodel.labelsxs = res.labelsxs;
 

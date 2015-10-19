@@ -15,6 +15,7 @@
 ;;
 (ns %1$s_%2$s)(defn %3$s_%2$s [s] (binding [*ns* (find-ns '%1$s_%2$s)] (load-string s)))
 (import '%4$s)
+(require '[clojure.repl :as repl_%2$s])
 (defn get-beaker [key] (%4$s/get "%5$s" key))
 (defn set-beaker [key value] (%4$s/set "%5$s" key value))
 (def beaker-method-map {:get get-beaker :set set-beaker})

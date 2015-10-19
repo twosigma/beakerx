@@ -29,6 +29,7 @@ import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -146,5 +147,17 @@ public class ClojureShellRest {
       return;
     }
     this.shells.get(shellId).setShellOptions(classPath, imports, outDir, requirements);
+  }
+
+  @POST
+  @Path("autocomplete")
+  public List<String> autocomplete(
+      @FormParam("shellId") String shellId,
+      @FormParam("code") String code,
+      @FormParam("caretPosition") int caretPosition) throws InterruptedException {
+    if(!this.shells.containsKey(shellId)) {
+      return null;
+    }
+    return this.shells.get(shellId).autocomplete(code, caretPosition);
   }
 }

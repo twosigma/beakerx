@@ -29,6 +29,7 @@ import java.net.URL;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
@@ -56,6 +57,7 @@ public class ClojureEvaluator {
   protected String currentClassPath = "";
   protected String currentImports = "";
   protected String outDir = "";
+  protected String currenClojureNS;
   protected String currentRequirements = "";
   protected DynamicClassLoaderSimple loader;
 
@@ -81,6 +83,7 @@ public class ClojureEvaluator {
     imports = new ArrayList<String>();
     requirements = new ArrayList<>();
     String loadFunctionPrefix = "run_str";
+    currenClojureNS = String.format("%1$s_%2$s", beaker_clojure_ns, shellId);
 
     try {
       URL url = this.getClass().getClassLoader().getResource("init_clojure_script.txt");
@@ -271,5 +274,43 @@ public class ClojureEvaluator {
     }
 
     resetEnvironment();
+  }
+
+  public List<String> autocomplete(String code, int caretPosition) {
+
+    int i = caretPosition;
+    while (i > 0) {
+      char c = code.charAt(i - 1);
+      if (!Character.isUnicodeIdentifierStart(c) || "[]{}()/\\".indexOf(c) >= 0) {
+        break;
+      } else {
+        i--;
+      }
+    }
+
+    String _code = code.substring(i, caretPosition);
+
+    String apropos = "(repl_%1$s/apropos \"%2$s\")";
+
+    Object o = clojureLoadString.invoke(String.format(apropos, shellId, _code));
+    List<String> result = new ArrayList<String>();
+
+    for(Object s : ((Collection) o)) {
+
+      String whole = s.toString();
+      int d = whole.indexOf('/');
+
+      if(d > 0)  {
+        String woNS = whole.substring(d + 1);
+        String ns =  whole.substring(0, d);
+        result.add(woNS);
+        if(!currenClojureNS.equals(ns) && !"clojure.core".equals(ns)) result.add(whole);
+      } else {
+        result.add(whole);
+      }
+
+    }
+
+    return result;
   }
 }

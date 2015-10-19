@@ -337,7 +337,7 @@
             if (seriesNames == null) {
               seriesNames = [];
               for (var s = 0; s < seriesNumber; s++) {
-                seriesNames.push("series" + i);
+                seriesNames.push("series" + s);
               }
             }
 

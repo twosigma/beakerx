@@ -24,7 +24,7 @@
   var module = angular.module('bk.notebook');
 
   module.directive('bkCodeCellOutput', function(
-      bkUtils, bkOutputDisplayFactory, bkEvaluatorManager, bkEvaluateJobManager) {
+      $rootScope, bkUtils, bkOutputDisplayFactory, bkEvaluatorManager, bkEvaluateJobManager) {
     return {
       restrict: "E",
       template: JST["mainapp/components/notebook/codecelloutput"](),
@@ -260,7 +260,7 @@
         })();
         
         $scope.outputRefreshed = function() {
-          if (!($scope.$$phase || $scope.$root.$$phase))
+          if (!($scope.$$phase || $rootScope.$$phase))
             $scope.$digest();
         }
         if ( $scope.cellId !== undefined )

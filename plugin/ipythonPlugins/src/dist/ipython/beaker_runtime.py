@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+
+if sys.version_info >= (3,0):
+    raise RuntimeError('Python3 was found when trying to start Python2. _beaker_python_mismatch_')
+
 import os, urllib, urllib2, json, pandas, numpy, IPython, datetime, calendar, math, traceback, types, time
 from IPython.utils.traitlets import Unicode
 

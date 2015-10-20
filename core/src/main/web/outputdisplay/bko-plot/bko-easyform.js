@@ -754,9 +754,9 @@
 
   module.directive("easyFormButtonComponent",
       ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService',
-        'bkCoreManager',
+        'bkCoreManager', '$rootScope',
         function ($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService,
-                  bkCoreManager) {
+                  bkCoreManager, $rootScope) {
           return {
             restrict: "E",
             template:
@@ -788,7 +788,7 @@
               var loadValues = function () {
                 bkUtils.loadFile(component.path).then(function (contentAsJson) {
                   EasyFormService.easyForm = JSON.parse(contentAsJson);
-                  scope.$root.$broadcast(EasyFormConstants.Events.VALUE_LOADED);
+                  $rootScope.$broadcast(EasyFormConstants.Events.VALUE_LOADED);
                 });
               };
 

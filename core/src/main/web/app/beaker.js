@@ -163,7 +163,7 @@
 
     // setup routing. the template is going to replace ng-view
     beaker.config(function($routeProvider) {
-      var sessionRouteResolve = {};
+      var _newSession, _import, _open, _target;
       var generateId = function() {
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         return _(_.range(6)).map(function() {
@@ -173,9 +173,7 @@
       var makeNewProvider = function(result) {
         return function() {
           var newSessionId = generateId();
-          sessionRouteResolve.isNewSession = function () {
-            return result;
-          };
+          _newSession = result;
           return '/session/' + newSessionId;
         };
       };
@@ -188,26 +186,36 @@
           })
           .when('/session/import', {
             redirectTo: function() {
-              sessionRouteResolve.isImport = function() {
-                return true;
-              };
+              _import = true;
               return '/session/' + generateId();
             }
           })
           .when('/session/:sessionId', {
             template: JST["template/mainapp/app"](),
             controller: 'notebookRouter',
-            resolve: sessionRouteResolve
+            resolve: {
+              isNewSession: function() {
+                return _newSession;
+              },
+              isImport: function() {
+                return _import;
+              },
+              isOpen: function() {
+                return _open;
+              },
+              target: function() {
+                return _target;
+              },
+              clearResolves: function() {
+                return function() {_newSession = _import = _open = _target = undefined;};
+              }
+            }
           })
           .when('/open', {
             redirectTo: function(routeParams, path, search) {
               var newSessionId = generateId();
-              sessionRouteResolve.isOpen = function() {
-                return true;
-              };
-              sessionRouteResolve.target = function() {
-                return search;
-              };
+              _open = true;
+              _target = search;
               return '/session/' + newSessionId;
             }
           })

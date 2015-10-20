@@ -26,10 +26,6 @@
     $scope.isImport = $route.current.locals.isImport;
     $scope.isOpen = $route.current.locals.isOpen;
     $scope.notebook = $route.current.locals.target;
-
-    delete sessionRouteResolve.isNewSession;
-    delete sessionRouteResolve.isImport;
-    delete sessionRouteResolve.isOpen;
-    delete sessionRouteResolve.target;
+    $route.current.locals.clearResolves();
   });
 })();

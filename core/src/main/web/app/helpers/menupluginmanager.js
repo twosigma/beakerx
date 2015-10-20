@@ -214,7 +214,7 @@
         }
       },
       getMenus: function() {
-        return menus;
+        return _.values(menus);
       },
       clear: function() {
         menus = {};

@@ -18,8 +18,8 @@
  */
 (function() {
   'use strict';
-  beaker.bkoDirective("Progress", ["$interval", "$compile", "bkEvaluateJobManager", "bkUtils", "bkOutputDisplayFactory", function(
-      $interval, $compile, bkEvaluateJobManager, bkUtils, bkOutputDisplayFactory) {
+  beaker.bkoDirective("Progress", ["$interval", "$compile", "$rootScope", "bkEvaluateJobManager", "bkUtils", "bkOutputDisplayFactory", function(
+      $interval, $compile, $rootScope, bkEvaluateJobManager, bkUtils, bkOutputDisplayFactory) {
     return {
       template: JST['mainapp/components/notebook/output-progress'],
       link: function(scope, element, attrs) {
@@ -32,7 +32,7 @@
           else
             start = now;
           scope.elapsed = now - start;
-          if (!(scope.$$phase || scope.$root.$$phase)) {
+          if (!(scope.$$phase || $rootScope.$$phase)) {
             // we don't execute the $interval within $apply so we have to manually refresh it. This refreshes only this scope.
             scope.$digest();
           }

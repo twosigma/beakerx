@@ -767,7 +767,7 @@ public class PluginServiceLocatorRest {
 
   @GET
   @Path("getIPythonVersion")
-  @Produces(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.TEXT_PLAIN)
   public String getIPythonVersion(@QueryParam("pluginId") String pluginId,
                                   @QueryParam("command") String command)
       throws IOException
@@ -784,7 +784,7 @@ public class PluginServiceLocatorRest {
 
   @GET
   @Path("getIPythonPassword")
-  @Produces(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.TEXT_PLAIN)
   public String getIPythonPassword(@QueryParam("pluginId") String pluginId)
   {
     PluginConfig pConfig = this.plugins.get(pluginId);

@@ -46,6 +46,7 @@
   module.directive('bkMainApp', function(
       $timeout,
       $sessionStorage,
+      $rootScope,
       bkUtils,
       bkCoreManager,
       bkSession,
@@ -75,7 +76,7 @@
             bkElectron.setStatus(message);
           } else {
             $scope.loadingmsg = message;
-            if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
+            if (nodigest !== true && !($scope.$$phase || $rootScope.$$phase))
               $scope.$digest();
           }
         };
@@ -83,7 +84,7 @@
           if (bkHelper.isElectron) {
             return;
           }
-          if (!($scope.$$phase || $scope.$root.$$phase))
+          if (!($scope.$$phase || $rootScope.$$phase))
             $scope.$digest();
         };
         var getLoadingStatusMessage = function() {
@@ -100,20 +101,20 @@
           } else {
             if ($scope.loadingmsg === message) {
               $scope.loadingmsg = "";
-              if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
+              if (nodigest !== true && !($scope.$$phase || $rootScope.$$phase))
                 $scope.$digest();
             }
           }
         };
         var showTransientStatusMessage = function(message, nodigest) {
           $scope.loadingmsg = message;
-          if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
+          if (nodigest !== true && !($scope.$$phase || $rootScope.$$phase))
             $scope.$digest();
           if (message !== "") {
             $timeout(function() {
               if ($scope.loadingmsg === message) {
                 $scope.loadingmsg = "";
-                if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
+                if (nodigest !== true && !($scope.$$phase || $rootScope.$$phase))
                   $scope.$digest();
               }
             }, 500, 0, false);

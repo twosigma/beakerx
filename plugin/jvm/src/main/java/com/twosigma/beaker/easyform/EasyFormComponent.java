@@ -16,7 +16,11 @@
 
 package com.twosigma.beaker.easyform;
 
+import com.twosigma.beaker.easyform.formitem.EasyFormListener;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class EasyFormComponent {
 
@@ -24,9 +28,62 @@ public class EasyFormComponent {
   private boolean enabled = true;
   //Acts like ID
   private String label;
+  private List<EasyFormListener> onChangeListeners = new LinkedList<>();
+  private List<EasyFormListener> onInitListeners = new LinkedList<>();
 
   public EasyFormComponent() {
     setValue(StringUtils.EMPTY);
+  }
+
+  public void fireInit() {
+    for (EasyFormListener listener : onInitListeners) {
+      listener.execute(value);
+    }
+  }
+
+  public EasyFormComponent onInit(final EasyFormListener listener) {
+    addOnInitListener(listener);
+    return this;
+  }
+
+  public void addOnInitListener(final EasyFormListener listener) {
+    if (listener != null) {
+      onInitListeners.add(listener);
+    }
+  }
+
+  public void removeOnInitListener(final EasyFormListener listener) {
+    if (onInitListeners.contains(listener)) {
+      onInitListeners.remove(listener);
+    }
+  }
+
+  public EasyFormComponent onChange(final EasyFormListener listener) {
+    addOnChangeListener(listener);
+    return this;
+  }
+
+  public void fireChanged() {
+    for (EasyFormListener listener : onChangeListeners) {
+      listener.execute(this.getValue());
+    }
+  }
+
+  public void addOnChangeListener(final EasyFormListener listener) {
+    if (listener != null) {
+      onChangeListeners.add(listener);
+    }
+  }
+
+  public void removeOnChangeListener(final EasyFormListener listener) {
+    if (onChangeListeners.contains(listener)) {
+      onChangeListeners.remove(listener);
+    }
+  }
+
+  public void clearListeners() {
+    onChangeListeners.clear();
+    onInitListeners.clear();
   }
 
   public boolean isEnabled() {

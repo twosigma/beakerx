@@ -898,6 +898,10 @@
                 }
 
                 $scope.alignComponents();
+
+                if ($scope.evaluatorExist) {
+                  EasyFormService.setReady($scope.update_id, $scope.model.getEvaluatorId());
+                }
               };
 
               $scope.alignComponents = function() {
@@ -1008,6 +1012,20 @@
       getComponentValue: function (component) {
         if (this.easyForm[component.label]) {
           return this.easyForm[component.label].currentValue;
+        }
+      },
+      setReady: function (formId, evaluatorId) {
+        if (window.languageServiceBase && window.languageServiceBase[evaluatorId]) {
+          var req = $.ajax({
+            type: "POST",
+            datatype: "json",
+            url: window.languageServiceBase[evaluatorId] + '/easyform/setReady/' + formId
+          });
+          req.done(function (ret) {
+          });
+          req.error(function (jqXHR, textStatus) {
+            console.error("Unable to set easyform value");
+          });
         }
       }
     };

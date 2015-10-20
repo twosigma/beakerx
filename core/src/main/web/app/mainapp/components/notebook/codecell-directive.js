@@ -470,6 +470,7 @@
             }
 
             scope._shouldFocusCodeMirror = true;
+            scope.scrollTo();
           }
         });
 

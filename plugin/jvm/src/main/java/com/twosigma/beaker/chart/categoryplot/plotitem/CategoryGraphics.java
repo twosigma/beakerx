@@ -20,7 +20,9 @@ package com.twosigma.beaker.chart.categoryplot.plotitem;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Graphics;
 import com.twosigma.beaker.chart.xychart.plotitem.LabelPositionType;
+import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class CategoryGraphics extends Graphics {
@@ -69,8 +71,18 @@ public abstract class CategoryGraphics extends Graphics {
     return value;
   }
 
-  public void setValue(Number[][] value) {
-    this.value = value;
+  public void setValue(Object[] value) {
+    if(value != null && ArrayUtils.isNotEmpty(value)){
+      if(value[0] instanceof List){
+        this.value = new Number[value.length][];
+        for(int i=0; i < value.length; i++){
+          List<?> a = (List<?>)value[0];
+          this.value[i] = a.toArray(new Number[a.size()]);
+        }
+      }else{
+        this.value = new Number[][]{Arrays.copyOf(value, value.length, Integer[].class)};
+      }
+    }
   }
 
   public List<String> getSeriesNames() {

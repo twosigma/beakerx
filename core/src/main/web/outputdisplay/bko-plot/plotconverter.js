@@ -166,7 +166,7 @@
       // discard NaN entries
       if (ele.x === "NaN" || ele.y === "NaN" ||
         logx && ele.x <= 0 || yAxisSettings.logy && ele.y <= 0 )
-        return;
+        return false;
 
       if (item.colors != null) {
         ele.color_opacity = parseInt(item.colors[j].substr(1,2), 16) / 255;
@@ -207,6 +207,7 @@
         ele.x -= item.widths[j] / 2;
         ele.x2 = ele.x + item.widths[j];
       }
+      return true;
     };
 
     var dataTypeMap = {
@@ -370,9 +371,9 @@
               ele.x = item.x[j];
               ele.y = item.y[j];
 
-              processElement(item, j, ele, yAxisSettings);
-
-              elements.push(ele);
+              if(processElement(item, j, ele, yAxisSettings, logx)){
+                elements.push(ele);
+              }
             }
 
             item.elements = elements;
@@ -434,7 +435,7 @@
                 item.x.push(elementsxs[i][j]);
               }
 
-              processItem(item, newmodel, yAxisRSettings, yAxisSettings);
+              processItem(item, newmodel, yAxisRSettings, yAxisSettings, logx);
 
               var elements = [];
               for (var j = 0; j < item.x.length; j++) {
@@ -445,9 +446,9 @@
                   y: item.y[j]
                 };
 
-                processElement(item, j, ele, yAxisSettings);
-
-                elements.push(ele);
+                if(processElement(item, j, ele, yAxisSettings)){
+                  elements.push(ele);
+                }
               }
 
               item.elements = elements;

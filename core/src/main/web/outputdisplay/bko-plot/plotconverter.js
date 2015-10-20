@@ -32,7 +32,9 @@
 
       var calculatedWidths = new Array(plotSeriesNumber);
       for (var i = 0; i < calculatedWidths.length; i++) {
-        calculatedWidths[i] = new Array(plotCategoriesNumber).fill(0);
+        calculatedWidths[i] = Array.apply(null, Array(plotCategoriesNumber)).map(function (item, index) {
+          return 0;
+        });
       }
 
       for (var index = 0; index < categoryItems.length; index++) {

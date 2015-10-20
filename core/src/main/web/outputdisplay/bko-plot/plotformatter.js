@@ -409,7 +409,8 @@
             timezone : model.timezone,
             categoryNames: model.categoryNames,
             showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
-            categoryMargin: model.category_margin
+            categoryMargin: model.category_margin,
+            category_names_label_angle: model.category_names_label_angle
           };
         } else {
           newmodel = {
@@ -434,7 +435,8 @@
             timezone : model.timezone,
             categoryNames: model.categoryNames,
             showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
-            categoryMargin: model.categoryMargin
+            categoryMargin: model.categoryMargin,
+            category_names_label_angle: model.category_names_label_angle
           };
         }
 

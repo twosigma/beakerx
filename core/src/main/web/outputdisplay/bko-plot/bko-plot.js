@@ -465,32 +465,43 @@
             var lines = model.xAxis.getGridlines(),
                 labels = model.xAxis.getGridlineLabels();
             for (var i = 0; i < labels.length; i++) {
-              var x = lines[i];
-              scope.rpipeTexts.push({
-                "id" : "label_x_" + i,
-                "class" : "plot-label",
-                "text" : labels[i],
-                "x" : mapX(x),
-                "y" : mapY(scope.focus.yl) + scope.labelPadding.y,
-                "text-anchor" : "middle",
-                "dominant-baseline" : "hanging"
-              });
+              var x = mapX(lines[i]);
+              var y = mapY(scope.focus.yl) + scope.labelPadding.y;
+							var rpipeText = {
+                "id": "label_x_" + i,
+                "class": "plot-label",
+                "text": labels[i],
+                "x": x,
+                "y": y,
+                "text-anchor": "middle",
+                "dominant-baseline": "hanging"
+              };
+              if (model.category_names_label_angle !== 0 && model.orientation === 'VERTICAL'){
+                rpipeText.transform = "rotate(" + model.category_names_label_angle * (180 / Math.PI) + " " + x + " " + y + ")";
+              }
+              scope.rpipeTexts.push(rpipeText);
             }
           }
           if (model.yAxis.showGridlineLabels !== false) {
             lines = model.yAxis.getGridlines();
             labels = model.yAxis.getGridlineLabels();
             for (var i = 0; i < labels.length; i++) {
-              var y = lines[i];
-              scope.rpipeTexts.push({
-                "id" : "label_y_" + i,
-                "class" : "plot-label",
-                "text" : labels[i],
-                "x" : mapX(scope.focus.xl) - scope.labelPadding.x,
-                "y" : mapY(y),
-                "text-anchor" : "end",
-                "dominant-baseline" : "central"
-              });
+              var x = mapX(scope.focus.xl) - scope.labelPadding.x;
+              var y = mapY(lines[i]) + scope.labelPadding.y;
+
+							var rpipeText = {
+                "id": "label_y_" + i,
+                "class": "plot-label",
+                "text": labels[i],
+                "x": x,
+                "y": y,
+                "text-anchor": "end",
+                "dominant-baseline": "central"
+              };
+              if (model.category_names_label_angle !== 0 && model.orientation === 'HORIZONTAL'){
+                rpipeText.transform = "rotate(" + model.category_names_label_angle * (180 / Math.PI) + " " + x + " " + y + ")";
+              }
+              scope.rpipeTexts.push(rpipeText);
             }
           }
           if (model.yAxisR && model.yAxisR.showGridlineLabels !== false) {

@@ -988,6 +988,9 @@
         this.easyForm[component.label] = component;
       },
       setComponentValue: function (formId, evaluatorId, component, value) {
+        if (!this.easyForm.ready) {
+          return;
+        }
         if (this.easyForm[component.label]) {
           this.easyForm[component.label].currentValue = value;
         }
@@ -1021,12 +1024,17 @@
             datatype: "json",
             url: window.languageServiceBase[evaluatorId] + '/easyform/setReady/' + formId
           });
+          var self = this;
           req.done(function (ret) {
+            self.easyForm.ready = true;
           });
           req.error(function (jqXHR, textStatus) {
             console.error("Unable to set easyform value");
           });
         }
+      },
+      setNotReady: function() {
+        this.easyForm.ready = false;
       }
     };
     return service;

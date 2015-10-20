@@ -53,7 +53,6 @@ public class EasyFormSerializer extends JsonSerializer<EasyForm> {
       String id = um.register(easyForm);
       easyFormObjectManager.registerForm(id, easyForm);
       easyForm.setId(id);
-      easyForm.setNotReady();
 
       jgen.writeStartObject();
       jgen.writeStringField("update_id", id);

@@ -43,7 +43,7 @@ public class EasyForm extends ObservableMap<String, String> {
 
   private final String caption;
   private String id;
-  private Boolean ready;
+  private Boolean ready = Boolean.FALSE;
   private Map<String, EasyFormComponent> componentMap = new LinkedHashMap<>();
   private SaveValuesButton saveValuesButton;
   private LoadValuesButton loadValuesButton;
@@ -276,6 +276,9 @@ public class EasyForm extends ObservableMap<String, String> {
   }
 
   public String put(final String key, final String value) {
+    if (!isReady()) {
+      return null;
+    }
     checkComponentExists(key);
     EasyFormComponent component = getComponentMap().get(key);
     if (!component.checkValue(value)) {

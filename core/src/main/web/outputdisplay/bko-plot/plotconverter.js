@@ -73,9 +73,10 @@
       var labelsxs = [];
 
       var resWidth = 0;
-      var maxElWidth = 0;
+
       for (var colindex = 0; colindex < categoriesNumber; colindex++) {
         var categoryxl = resWidth;
+        var maxRowWidth = 0;
         for (var rowindex = 0; rowindex < seriesNumber; rowindex++) {
 
           var elWidth = calculatedWidths[rowindex][colindex] || 1; //FIXME why width default value is not set?
@@ -84,11 +85,12 @@
           if (!categoryItem.center_series) {
             resWidth += elWidth;
           } else {
-            maxElWidth = Math.max(maxElWidth, elWidth)
+            maxRowWidth = Math.max(maxRowWidth, elWidth)
           }
         }
-        if (categoryItem.center_series)
-          resWidth += maxElWidth;
+        if (categoryItem.center_series) {
+          resWidth += maxRowWidth;
+        }
 
         labelsxs.push(categoryxl + (resWidth - categoryxl) / 2);
         resWidth += categoryMargin;

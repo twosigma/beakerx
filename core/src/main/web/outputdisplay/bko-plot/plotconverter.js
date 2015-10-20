@@ -62,7 +62,9 @@
     };
 
 
-    var calccategoryitem = function(categoryItem, categoryMargin, categoriesNumber, seriesNumber, calculatedWidths) {
+    var calccategoryitem = function(newmodel, categoryItem, categoriesNumber, seriesNumber, calculatedWidths) {
+
+      var categoryMargin = newmodel.categoryMargin;
 
       var elementsxs = new Array(seriesNumber);
       for (var i = 0; i < elementsxs.length; i++) {
@@ -71,13 +73,23 @@
       var labelsxs = [];
 
       var resWidth = 0;
+      var maxElWidth = 0;
       for (var colindex = 0; colindex < categoriesNumber; colindex++) {
         var categoryxl = resWidth;
         for (var rowindex = 0; rowindex < seriesNumber; rowindex++) {
+
           var elWidth = calculatedWidths[rowindex][colindex] || 1; //FIXME why width default value is not set?
           elementsxs[rowindex][colindex] = resWidth + elWidth / 2;
-          resWidth += elWidth;
+
+          if (!categoryItem.center_series) {
+            resWidth += elWidth;
+          } else {
+            maxElWidth = Math.max(maxElWidth, elWidth)
+          }
         }
+        if (categoryItem.center_series)
+          resWidth += maxElWidth;
+
         labelsxs.push(categoryxl + (resWidth - categoryxl) / 2);
         resWidth += categoryMargin;
       }
@@ -383,7 +395,7 @@
               }
             }
 
-            var res = calccategoryitem(categoryItem, newmodel.categoryMargin, categoriesNumber, seriesNumber, calculatedWidths);
+            var res = calccategoryitem(newmodel, categoryItem, categoriesNumber, seriesNumber, calculatedWidths);
             var elementsxs = res.elementsxs;
             newmodel.labelsxs = res.labelsxs;
 
@@ -430,7 +442,7 @@
                   series: i,
                   category: j,
                   x: item.x[j],
-                  y: item.y[j]
+                  y: (newmodel.orientation === 'HORIZONTAL' && j > 0) ? item.y[j]+item.y[j-1] : item.y[j]
                 };
 
                 if(processElement(item, j, ele, yAxisSettings)){

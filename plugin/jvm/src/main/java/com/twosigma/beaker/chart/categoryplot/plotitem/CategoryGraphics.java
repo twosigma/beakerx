@@ -76,7 +76,7 @@ public abstract class CategoryGraphics extends Graphics {
       if(value[0] instanceof List){
         this.value = new Number[value.length][];
         for(int i=0; i < value.length; i++){
-          List<?> a = (List<?>)value[0];
+          List<?> a = (List<?>)value[i];
           this.value[i] = a.toArray(new Number[a.size()]);
         }
       }else{

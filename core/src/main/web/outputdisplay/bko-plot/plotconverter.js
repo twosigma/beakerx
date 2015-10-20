@@ -442,7 +442,7 @@
                   series: i,
                   category: j,
                   x: item.x[j],
-                  y: (newmodel.orientation === 'HORIZONTAL' && j > 0) ? item.y[j]+item.y[j-1] : item.y[j]
+                  y: item.y[j]
                 };
 
                 if(processElement(item, j, ele, yAxisSettings)){

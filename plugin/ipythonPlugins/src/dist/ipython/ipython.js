@@ -504,7 +504,10 @@ define(function(require, exports, module) {
                   if (doneCB) {
                     doneCB(self);
                   }}, function(err) {
-                    bkHelper.show1ButtonModal('ERROR: '+err[0],'IPython initialization failed');
+                    var errorHtml =
+                      'See <a target="_blank" href="https://github.com/twosigma/beaker-notebook/wiki/Python-Mismatch-Errors">our wiki</a> for how to handle this.';
+                    bkHelper.show1ButtonModal('ERROR: ' + err[0].replace('_beaker_python_mismatch_', errorHtml),
+                                              'IPython initialization failed');
                     if (doneCB) {
                       doneCB(self);
                     }});

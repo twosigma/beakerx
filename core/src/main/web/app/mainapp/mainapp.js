@@ -222,7 +222,9 @@
                       if (bkUtils.beginsWith(name,"Html")) {
                         notebookModel.cells[i].evaluator = "Html";
                       } else if(bkUtils.beginsWith(name,"Latex")) {
-                        notebookModel.cells[i].evaluator = "Latex";
+                        notebookModel.cells[i].evaluator = "TeX";
+                      } else if(bkUtils.beginsWith(name,"TeX")) {
+                          notebookModel.cells[i].evaluator = "TeX";
                       } else if(bkUtils.beginsWith(name,"JavaScript")) {
                         notebookModel.cells[i].evaluator = "JavaScript";
                       } else if(bkUtils.beginsWith(name,"Groovy")) {
@@ -242,8 +244,11 @@
                   notebookModel.evaluators[k].name = "Html";
                   notebookModel.evaluators[k].plugin = "Html";
                 } else if(bkUtils.beginsWith(evaluatorName,"Latex")) {
-                  notebookModel.evaluators[k].name = "Latex";
-                  notebookModel.evaluators[k].plugin = "Latex";
+                  notebookModel.evaluators[k].name = "TeX";
+                  notebookModel.evaluators[k].plugin = "TeX";
+                } else if(bkUtils.beginsWith(evaluatorName,"TeX")) {
+                  notebookModel.evaluators[k].name = "TeX";
+                  notebookModel.evaluators[k].plugin = "TeX";
                 } else if(bkUtils.beginsWith(evaluatorName,"JavaScript")) {
                   notebookModel.evaluators[k].name = "JavaScript";
                   notebookModel.evaluators[k].plugin = "JavaScript";

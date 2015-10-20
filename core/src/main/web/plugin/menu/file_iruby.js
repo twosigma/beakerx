@@ -103,8 +103,8 @@ define(function(require, exports, module) {
             "plugin": "Html"
           },
           {
-            "name": "Latex",
-            "plugin": "Latex"
+            "name": "TeX",
+            "plugin": "TeX"
           },
           {
             "name": "IRuby",

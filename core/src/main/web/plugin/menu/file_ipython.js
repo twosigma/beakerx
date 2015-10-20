@@ -108,8 +108,8 @@ define(function(require, exports, module) {
             }
           },
           {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
               "cm": {
                 "mode": "stex"

@@ -19,14 +19,14 @@
  */
 define(function(require, exports, module) {
   'use strict';
-  var PLUGIN_NAME = "Latex";
+  var PLUGIN_NAME = "TeX";
   var Latex = {
     pluginName: PLUGIN_NAME,
     cmMode: "stex",
     bgColor: "#FFFFFF",
     fgColor: "#030303",
     borderColor: "3D4444",
-    shortName: "La",
+    shortName: "Tx",
     evaluate: function(code, modelOutput) {
       var startTime = new Date().getTime();
       return bkHelper.fcall(function() {

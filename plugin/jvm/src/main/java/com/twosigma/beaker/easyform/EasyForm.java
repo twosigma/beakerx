@@ -43,6 +43,7 @@ public class EasyForm extends ObservableMap<String, String> {
 
   private final String caption;
   private String id;
+  private Boolean ready = Boolean.FALSE;
   private Map<String, EasyFormComponent> componentMap = new LinkedHashMap<>();
   private SaveValuesButton saveValuesButton;
   private LoadValuesButton loadValuesButton;
@@ -67,31 +68,31 @@ public class EasyForm extends ObservableMap<String, String> {
     this.loadValuesButton = button;
   }
 
-  public void addTextField(final String label) throws Exception {
-    addTextField(label, -1);
+  public EasyFormComponent addTextField(final String label) throws Exception {
+    return addTextField(label, -1);
   }
 
-  public void addTextField(final String label, final Integer width) throws Exception {
+  public EasyFormComponent addTextField(final String label, final Integer width) throws Exception {
     TextField textField = new TextField();
     textField.setLabel(label);
     textField.setWidth(width);
-    addComponentOrThrow(label, textField);
+    return addComponentOrThrow(label, textField);
   }
 
-  public void addTextArea(final String label) throws Exception {
-    addTextArea(label, null, TextArea.AUTO_WIDTH, TextArea.AUTO_HEIGHT);
+  public EasyFormComponent addTextArea(final String label) throws Exception {
+    return addTextArea(label, null, TextArea.AUTO_WIDTH, TextArea.AUTO_HEIGHT);
   }
 
-  public void addTextArea(final String label, final Integer width, final Integer height)
+  public EasyFormComponent addTextArea(final String label, final Integer width, final Integer height)
       throws Exception {
-    addTextArea(label, null, width, height);
+    return addTextArea(label, null, width, height);
   }
 
-  public void addTextArea(final String label, final String initialValue) throws Exception {
-    addTextArea(label, initialValue, TextArea.AUTO_WIDTH, TextArea.AUTO_HEIGHT);
+  public EasyFormComponent addTextArea(final String label, final String initialValue) throws Exception {
+    return addTextArea(label, initialValue, TextArea.AUTO_WIDTH, TextArea.AUTO_HEIGHT);
   }
 
-  public void addTextArea(final String label,
+  public EasyFormComponent addTextArea(final String label,
                           final String initialValue,
                           final Integer width,
                           final Integer height) throws Exception {
@@ -100,32 +101,32 @@ public class EasyForm extends ObservableMap<String, String> {
     textArea.setWidth(width);
     textArea.setHeight(height);
     textArea.setValue(initialValue);
-    addComponentOrThrow(label, textArea);
+    return addComponentOrThrow(label, textArea);
   }
 
-  public void addCheckBox(final String label) throws Exception {
-    addCheckBox(label, Boolean.FALSE);
+  public EasyFormComponent addCheckBox(final String label) throws Exception {
+    return addCheckBox(label, Boolean.FALSE);
   }
 
-  public void addCheckBox(final String label, final Boolean value) throws Exception {
+  public EasyFormComponent addCheckBox(final String label, final Boolean value) throws Exception {
     CheckBox checkBox = new CheckBox();
     checkBox.setLabel(label);
     checkBox.setValue(String.valueOf(value));
-    addComponentOrThrow(label, checkBox);
+    return addComponentOrThrow(label, checkBox);
   }
 
-  public void addComboBox(final String label,
+  public EasyFormComponent addComboBox(final String label,
                           final Collection<String> values) throws Exception {
-    addComboBox(label, values, Boolean.FALSE);
+    return addComboBox(label, values, Boolean.FALSE);
   }
 
-  public void addComboBox(final String label,
+  public EasyFormComponent addComboBox(final String label,
                           final Collection<String> values,
                           final Boolean editable) throws Exception {
-    addComboBox(label, values, editable, EasyForm.AUTO_WIDTH);
+    return addComboBox(label, values, editable, EasyForm.AUTO_WIDTH);
   }
 
-  public void addComboBox(final String label,
+  public EasyFormComponent addComboBox(final String label,
                           final Collection<String> values,
                           final Boolean editable,
                           final Integer width) throws Exception {
@@ -137,27 +138,27 @@ public class EasyForm extends ObservableMap<String, String> {
     if (values != null && values.size() > 0) {
       comboBox.setValue(values.iterator().next());
     }
-    addComponentOrThrow(label, comboBox);
+    return addComponentOrThrow(label, comboBox);
   }
 
-  public void addList(final String label,
+  public EasyFormComponent addList(final String label,
                       final Collection<String> values) throws Exception {
-    addList(label, values, Boolean.TRUE, values.size());
+    return addList(label, values, Boolean.TRUE, values.size());
   }
 
-  public void addList(final String label,
+  public EasyFormComponent addList(final String label,
                       final Collection<String> values,
                       final Boolean multipleSelection) throws Exception {
-    addList(label, values, multipleSelection, values.size());
+    return addList(label, values, multipleSelection, values.size());
   }
 
-  public void addList(final String label,
+  public EasyFormComponent addList(final String label,
                       final Collection<String> values,
                       final Integer size) throws Exception {
-    addList(label, values, Boolean.TRUE, size);
+    return addList(label, values, Boolean.TRUE, size);
   }
 
-  public void addList(final String label,
+  public EasyFormComponent addList(final String label,
                       final Collection<String> values,
                       final Boolean multipleSelection,
                       final Integer size) throws Exception {
@@ -169,15 +170,15 @@ public class EasyForm extends ObservableMap<String, String> {
     if (values != null && values.size() > 0) {
       list.setValue(values.iterator().next());
     }
-    addComponentOrThrow(label, list);
+    return addComponentOrThrow(label, list);
   }
 
-  public void addRadioButtons(final String label,
+  public EasyFormComponent addRadioButtons(final String label,
                               final Collection<String> values) throws Exception {
-    addRadioButtons(label, values, EasyForm.VERTICAL);
+    return addRadioButtons(label, values, EasyForm.VERTICAL);
   }
 
-  public void addRadioButtons(final String label,
+  public EasyFormComponent addRadioButtons(final String label,
                               final Collection<String> values,
                               final Integer orientation) throws Exception {
     RadioButtonComponent radioButtonComponent = new RadioButtonComponent();
@@ -185,38 +186,37 @@ public class EasyForm extends ObservableMap<String, String> {
     radioButtonComponent.setHorizontal(
         orientation != null && EasyForm.HORIZONTAL.equals(orientation));
     radioButtonComponent.setValues(values);
-    addComponentOrThrow(label, radioButtonComponent);
+    return addComponentOrThrow(label, radioButtonComponent);
   }
 
-  public void addCheckBoxes(final String label,
+  public EasyFormComponent addCheckBoxes(final String label,
                             final Collection<String> values) throws Exception {
-    addCheckBoxes(label, values, EasyForm.VERTICAL);
+    return addCheckBoxes(label, values, EasyForm.VERTICAL);
   }
 
-  public void addCheckBoxes(final String label,
+  public EasyFormComponent addCheckBoxes(final String label,
                             final Collection<String> values,
                             final Integer orientation) throws Exception {
     CheckBoxGroup checkBoxGroup = new CheckBoxGroup();
     checkBoxGroup.setLabel(label);
     checkBoxGroup.setHorizontal(orientation != null && EasyForm.HORIZONTAL.equals(orientation));
     checkBoxGroup.setValues(values);
-    addComponentOrThrow(label, checkBoxGroup);
+    return addComponentOrThrow(label, checkBoxGroup);
   }
 
-  public void addDatePicker(final String label) throws Exception {
-    addDatePicker(label, Boolean.FALSE);
+  public EasyFormComponent addDatePicker(final String label) throws Exception {
+    return addDatePicker(label, Boolean.FALSE);
   }
 
-  public void addDateTimePicker(final String label) throws Exception {
-    addDatePicker(label, Boolean.TRUE);
+  public EasyFormComponent addDateTimePicker(final String label) throws Exception {
+    return addDatePicker(label, Boolean.TRUE);
   }
 
-  public void addDatePicker(final String label, final Boolean showTime) throws Exception {
+  public EasyFormComponent addDatePicker(final String label, final Boolean showTime) throws Exception {
     DatePickerComponent datePickerComponent = new DatePickerComponent();
     datePickerComponent.setLabel(label);
     datePickerComponent.setShowTime(showTime);
-    addComponentOrThrow(label, datePickerComponent);
-
+    return addComponentOrThrow(label, datePickerComponent);
   }
 
   public void addButton(final String label, final String actionCellTag) throws Exception {
@@ -226,14 +226,15 @@ public class EasyForm extends ObservableMap<String, String> {
     addComponentOrThrow(label, buttonComponent);
   }
 
-  private void addComponentOrThrow(final String label,
-                                   final EasyFormComponent component) throws Exception {
+  private EasyFormComponent addComponentOrThrow(final String label,
+                                                final EasyFormComponent component) throws Exception {
     if (getComponentMap().containsKey(label)) {
       throw new Exception(
           String.format("EasyForm already contains component with such label: %s.", label));
     } else {
       getComponentMap().put(label, component);
     }
+    return component;
   }
 
   public Map<String, EasyFormComponent> getComponentMap() {
@@ -275,6 +276,9 @@ public class EasyForm extends ObservableMap<String, String> {
   }
 
   public String put(final String key, final String value) {
+    if (!isReady()) {
+      return null;
+    }
     checkComponentExists(key);
     EasyFormComponent component = getComponentMap().get(key);
     if (!component.checkValue(value)) {
@@ -287,6 +291,7 @@ public class EasyForm extends ObservableMap<String, String> {
     getValuesMap().put(key, value);
     setChanged();
     notifyObservers();
+    component.fireChanged();
     return previousValue;
   }
 
@@ -307,6 +312,21 @@ public class EasyForm extends ObservableMap<String, String> {
       setChanged();
       notifyObservers();
     }
+  }
+
+  public Boolean isReady() {
+    return ready;
+  }
+
+  public void setReady() {
+    this.ready = Boolean.TRUE;
+    for (EasyFormComponent component : getComponentMap().values()) {
+      component.fireInit();
+    }
+  }
+
+  public void setNotReady() {
+    this.ready = Boolean.FALSE;
   }
 
 }

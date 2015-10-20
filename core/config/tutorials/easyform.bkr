@@ -178,6 +178,60 @@
             "lineCount": 2
         },
         {
+            "id": "markdownD6n1Wt",
+            "type": "markdown",
+            "body": [
+                "You can use onInit and onChange to handle events."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "code5Vo4bh",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "f = new EasyForm(\"Form and Run\")",
+                    "f.addTextField(\"first\", 15)",
+                    "f.addTextField(\"last\", 15).onInit({f['last'] = \"setinit\"}).onChange({text -> f['first'] = text})",
+                    "f"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "update_id": "d178101b-1f54-4d22-b363-8f4a04193f62",
+                    "update_time": 1445352766774,
+                    "type": "EasyForm",
+                    "caption": "Form and Run",
+                    "components": [
+                        {
+                            "type": "TextField",
+                            "label": "first",
+                            "enabled": true,
+                            "value": "setinit12",
+                            "width": "15",
+                            "currentValue": "setinit12"
+                        },
+                        {
+                            "type": "TextField",
+                            "label": "last",
+                            "enabled": true,
+                            "value": "setinit12",
+                            "width": "15",
+                            "currentValue": "setinit12"
+                        }
+                    ]
+                },
+                "selectedType": "EasyForm",
+                "pluginName": "Groovy",
+                "shellId": "eb32b49f-268c-4b26-ad75-6e796456796e",
+                "elapsedTime": 600
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
+        },
+        {
             "id": "sectionWzbYct",
             "type": "section",
             "title": "All Kinds of Fields",
@@ -292,7 +346,7 @@
                             "type": "ListComponent",
                             "label": "List",
                             "enabled": true,
-                            "value": "a",
+                            "value": "[a]",
                             "size": "4",
                             "multipleSelection": "true",
                             "values": [
@@ -322,7 +376,7 @@
                             "type": "ListComponent",
                             "label": "List Two Row",
                             "enabled": true,
-                            "value": "a",
+                            "value": "[a]",
                             "size": "2",
                             "multipleSelection": "true",
                             "values": [
@@ -424,7 +478,33 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": false,
+                            "fixRight": false
+                        },
+                        "columnNames": [
+                            "Key",
+                            "Value"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "getCellSho": [
+                            true,
+                            true
+                        ]
+                    }
+                },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
                 "shellId": "89a44022-5f45-43bc-90f4-3c0c585cfcfb",

@@ -20,41 +20,37 @@
 
     var calcWidths = function(categoryItems){
 
-      var categoriesNumber = 0;
-      var seriesNumber = 0;
+      var plotCategoriesNumber = 0;
+      var plotSeriesNumber = 0;
 
-      for (var index = 0; index < categoryItems.length; index++) {
-        var categoryItem = categoryItems[index]; //e.g. CategoryBar
+      for (var i = 0; i < categoryItems.length; i++) {
+        var categoryItem = categoryItems[i]; //e.g. CategoryBar
         var value = categoryItem.value;
-        categoriesNumber = Math.max(categoriesNumber, value[0].length);
-        seriesNumber = Math.max(seriesNumber, value.length);
+        plotCategoriesNumber = Math.max(plotCategoriesNumber, value[0].length);
+        plotSeriesNumber = Math.max(plotSeriesNumber, value.length);
       }
 
-      var calculatedWidths = new Array(categoriesNumber);
+      var calculatedWidths = new Array(plotSeriesNumber);
       for (var i = 0; i < calculatedWidths.length; i++) {
-        calculatedWidths[i] = new Array(seriesNumber).fill(1);
+        calculatedWidths[i] = new Array(plotCategoriesNumber).fill(0);
       }
 
       for (var index = 0; index < categoryItems.length; index++) {
         var categoryItem = categoryItems[index]; //e.g. CategoryBar
-        var value = categoryItem.value;
-        categoriesNumber = Math.max(categoriesNumber, value[0].length);
-        seriesNumber = Math.max(seriesNumber, value.length);
+        var itemCategoriesNumber = categoryItem.value[0].length;
+        var itemSeriesNumber = categoryItem.value.length;
 
-        for (var colindex = 0; colindex < categoriesNumber; colindex++) {
-          for (var rowindex = 0; rowindex < seriesNumber; rowindex++) {
+        for (var colindex = 0; colindex < itemCategoriesNumber; colindex++) {
+          for (var rowindex = 0; rowindex < itemSeriesNumber; rowindex++) {
             if (_.isArray(categoryItem.widths)) {
               var rowWidths = categoryItem.widths[rowindex];
               if (_.isArray(rowWidths)) {
-                calculatedWidths[colindex][rowindex] = rowWidths;
-                for (var rwi = 0; rwi < rowWidths.length; rwi++){
-                  calculatedWidths[colindex][rowindex][rwi] = Math.max(calculatedWidths[colindex][rowindex][rwi], rowWidths[rwi]);
-                }
+                calculatedWidths[rowindex][colindex] = Math.max(calculatedWidths[rowindex][colindex], rowWidths[colindex]);
               } else {
-                calculatedWidths[colindex][rowindex] = Math.max(calculatedWidths[colindex][rowindex], categoryItem.width);
+                calculatedWidths[rowindex][colindex] = Math.max(calculatedWidths[rowindex][colindex], rowWidths);
               }
             } else {
-              calculatedWidths[colindex][rowindex] = Math.max(calculatedWidths[colindex][rowindex], categoryItem.width);
+              calculatedWidths[rowindex][colindex] = Math.max(calculatedWidths[rowindex][colindex], categoryItem.width);
             }
           }
         }
@@ -76,18 +72,7 @@
       for (var colindex = 0; colindex < categoriesNumber; colindex++) {
         var categoryxl = resWidth;
         for (var rowindex = 0; rowindex < seriesNumber; rowindex++) {
-          var elWidth;
-          if (_.isArray(categoryItem.widths)) {
-            var rowWidths = categoryItem.widths[rowindex];
-            if (_.isArray(rowWidths)) {
-              elWidth = calculatedWidths[colindex][rowindex][colindex];
-            } else {
-              elWidth = calculatedWidths[colindex][rowindex];
-            }
-          } else {
-            elWidth = calculatedWidths[colindex][rowindex];
-          }
-          elWidth = elWidth || 1; //FIXME why width is null?
+          var elWidth = calculatedWidths[rowindex][colindex] || 1; //FIXME why width default value is not set?
           elementsxs[rowindex][colindex] = resWidth + elWidth / 2;
           resWidth += elWidth;
         }

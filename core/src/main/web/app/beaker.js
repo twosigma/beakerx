@@ -205,6 +205,9 @@
               },
               target: function() {
                 return _target;
+              },
+              clearResolves: function() {
+                return function() {_newSession = _import = _open = _target = undefined;};
               }
             }
           })

@@ -454,6 +454,23 @@
         };
 
         scope.renderGridlineLabels = function() {
+          var _size_ = function (s, clazz) {
+            var o = $('<div>' + s + '</div>')
+                .css({
+                  'position': 'absolute',
+                  'float': 'left',
+                  'white-space': 'nowrap',
+                  'visibility': 'hidden',
+                  'class': clazz
+                }).appendTo($('body')),
+              w = o.width(),
+              h = o.height();
+            o.remove();
+            return {
+              width : w,
+              height : h
+            };
+          };
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
           var model = scope.stdmodel;
           if (model.xAxis.showGridlineLabels !== false) {

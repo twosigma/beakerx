@@ -496,7 +496,7 @@
                   "translate(" +
                   (0) +
                   " " +
-                  ((Math.abs(__size__.width * Math.sin(model.category_names_label_angle)) / 2)) +
+                  ((Math.abs(__size__.width * Math.sin(model.category_names_label_angle)) / 2) - scope.labelPadding.y / 2) +
                   ") "
                   +
                   "rotate(" +

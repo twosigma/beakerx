@@ -162,19 +162,34 @@
 
         if(this.showItemLabel){
           var labely;
-          var labelmargin = 3;
-          var labeltext;
-          if(ele._y2 != this.base){
-            labely = y2 - labelmargin;
-            labeltext = ele._y2;
-          }else{
-            labely = y + plotUtils.fonts.labelHeight + labelmargin;
-            labeltext = ele._y;
+          var labelMargin = 3;
+          var labelHeight = plotUtils.fonts.labelHeight;
+          var isBarPositive = ele._y2 != this.base;
+
+          var labelText = isBarPositive ? ele._y2 : ele._y;
+
+          switch(this.labelPosition){
+            case "VALUE_OUTSIDE":
+              labely = isBarPositive ? y2 - labelMargin : y + labelHeight + labelMargin;
+              break;
+            case "VALUE_INSIDE":
+              labely = isBarPositive ? y2 + labelHeight + labelMargin : y - labelMargin;
+              break;
+            case "BASE_OUTSIDE":
+              labely = isBarPositive ? y + labelHeight + labelMargin : y2 - labelMargin;
+              break;
+            case "BASE_INSIDE":
+              labely = isBarPositive ? y - labelMargin : y2 + labelHeight + labelMargin;
+              break;
+            default: //CENTER
+              var center = (y - y2)/2;
+              labely = isBarPositive ? y2 + center + labelHeight/2 : y - center + labelHeight/2;
+              break;
           }
 
           var label = {
             "id": "label_" + id,
-            "text": labeltext,
+            "text": labelText,
             "x": x + sw/2,
             "y": labely
           };

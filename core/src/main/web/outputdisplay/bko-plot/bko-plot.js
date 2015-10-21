@@ -514,7 +514,7 @@
             labels = model.yAxis.getGridlineLabels();
             for (var i = 0; i < labels.length; i++) {
               var x = mapX(scope.focus.xl) - scope.labelPadding.x;
-              var y = mapY(lines[i]) + scope.labelPadding.y;
+              var y = mapY(lines[i]);
 
 							var rpipeText = {
                 "id": "label_y_" + i,

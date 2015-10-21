@@ -491,7 +491,7 @@
               if (model.category_names_label_angle &&
                 model.category_names_label_angle !== 0 && model.orientation === 'VERTICAL') {
                 var __size__ = _size_(labels[i], "plot-label");
-                var degree = model.category_names_label_angle * (180 / Math.PI);
+                var degree = -1 * model.category_names_label_angle * (180 / Math.PI);
                 rpipeText.transform =
                   "translate(" +
                   (0) +

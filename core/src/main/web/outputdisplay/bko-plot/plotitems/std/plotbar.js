@@ -230,6 +230,7 @@
         .attr("x", function(d) { return d.x; })
         .attr("y", function(d) { return d.y; })
         .attr("text-anchor", "middle")
+        .style("fill", "black")
         .text(function(d) {
           return d.text;
         });

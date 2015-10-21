@@ -17,6 +17,7 @@
 package com.twosigma.beaker.chart.categoryplot.plotitem;
 
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.xychart.plotitem.LabelPositionType;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class CategoryBars extends CategoryGraphics {
   private Boolean       baseOutline;
   private List<Boolean> outlines;
 
+  private LabelPositionType labelPosition = LabelPositionType.CENTER;
 
   public void setBase(Object base) {
     if (base instanceof Number) {
@@ -156,5 +158,14 @@ public class CategoryBars extends CategoryGraphics {
   public Boolean getDrawOutline() {
     return this.baseOutline;
   }
+
+  public LabelPositionType getLabelPosition() {
+    return labelPosition;
+  }
+
+  public void setLabelPosition(LabelPositionType labelPosition) {
+    this.labelPosition = labelPosition;
+  }
+
 
 }

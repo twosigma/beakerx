@@ -66,6 +66,8 @@ public class CategoryBarsSerializer extends CategoryGraphicsSerializer<CategoryB
       jgen.writeObjectField("outline", categoryBars.getDrawOutline());
     }
 
+    jgen.writeObjectField("labelPosition", categoryBars.getLabelPosition());
+
     jgen.writeEndObject();
   }
 }

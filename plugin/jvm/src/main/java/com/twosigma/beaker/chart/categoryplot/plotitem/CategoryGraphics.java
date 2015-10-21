@@ -30,7 +30,6 @@ public abstract class CategoryGraphics extends Graphics {
   protected List<String> seriesNames;
   protected Color        baseColor;
   private   List<Color>  colors;
-  private LabelPositionType labelPosition = LabelPositionType.CENTER;
   private boolean           showItemLabel = false;
   private boolean           centerSeries  = false;
   private boolean           useToolTip    = true;
@@ -91,14 +90,6 @@ public abstract class CategoryGraphics extends Graphics {
 
   public void setSeriesNames(List<String> seriesNames) {
     this.seriesNames = seriesNames;
-  }
-
-  public LabelPositionType getLabelPosition() {
-    return labelPosition;
-  }
-
-  public void setLabelPosition(LabelPositionType labelPosition) {
-    this.labelPosition = labelPosition;
   }
 
   public boolean getShowItemLabel() {

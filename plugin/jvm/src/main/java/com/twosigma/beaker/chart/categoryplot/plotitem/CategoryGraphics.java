@@ -19,7 +19,6 @@ package com.twosigma.beaker.chart.categoryplot.plotitem;
 
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Graphics;
-import com.twosigma.beaker.chart.xychart.plotitem.LabelPositionType;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;

@@ -143,11 +143,6 @@
             legendMargin : 10,
             legendBoxSize : 10
           };
-          scope.fonts = {
-            labelWidth : 6,
-            labelHeight : 12,
-            tooltipWidth : 10
-          };
           scope.zoomLevel = {
             minSpanX : 1E-12,
             minSpanY : 1E-12,
@@ -177,17 +172,17 @@
           var factor = 2.0;
           if (model.xAxis.label == null) { factor -= 1.0; }
           if (model.xAxis.showGridlineLabels === false) { factor -= 1.0; }
-          scope.layout.bottomLayoutMargin += scope.fonts.labelHeight * factor;
+          scope.layout.bottomLayoutMargin += plotUtils.fonts.labelHeight * factor;
 
           if (model.yAxis.showGridlineLabels !== false) {
-            scope.layout.topLayoutMargin += scope.fonts.labelHeight / 2;
+            scope.layout.topLayoutMargin += plotUtils.fonts.labelHeight / 2;
           }
 
           if (model.yAxis.label != null) {
-            scope.layout.leftLayoutMargin += scope.fonts.labelHeight;
+            scope.layout.leftLayoutMargin += plotUtils.fonts.labelHeight;
           }
           if(model.yAxisR != null) {
-            scope.layout.rightLayoutMargin += scope.fonts.labelHeight;
+            scope.layout.rightLayoutMargin += plotUtils.fonts.labelHeight;
           }
           scope.legendResetPosition = true;
 
@@ -439,7 +434,7 @@
             tipdiv
               .draggable({
                 stop : function(event, ui) {
-                  d.scrx = ui.position.left - scope.fonts.tooltipWidth;
+                  d.scrx = ui.position.left - plotUtils.fonts.tooltipWidth;
                   d.scry = ui.position.top;
                   d.datax = scope.scr2dataX(d.scrx);
                   d.datay = scope.scr2dataY(d.scry);
@@ -447,7 +442,7 @@
               });
 
             tipdiv
-              .css("left", x + scope.fonts.tooltipWidth)
+              .css("left", x + plotUtils.fonts.tooltipWidth)
               .css("top", y);
             if (d.isresp === true) {
               scope.jqsvg.find("#" + d.id).attr("opacity", 1);
@@ -526,11 +521,11 @@
               "class" : "plot-xylabel",
               "text" : model.xAxis.axisLabelWithCommon,
               "x" : lMargin + (scope.jqsvg.width() - lMargin) / 2,
-              "y" : scope.jqsvg.height() - scope.fonts.labelHeight
+              "y" : scope.jqsvg.height() - plotUtils.fonts.labelHeight
             });
           }
           if (model.yAxis.label != null) {
-            var x = scope.fonts.labelHeight * 2, y = (scope.jqsvg.height() - bMargin) / 2;
+            var x = plotUtils.fonts.labelHeight * 2, y = (scope.jqsvg.height() - bMargin) / 2;
             scope.rpipeTexts.push({
               "id" : "ylabel",
               "class" : "plot-xylabel",
@@ -541,7 +536,7 @@
             });
           }
           if (model.yAxisR && model.yAxisR.label != null) {
-            var x = scope.jqsvg.width() - scope.fonts.labelHeight, y = (scope.jqsvg.height() - bMargin) / 2;
+            var x = scope.jqsvg.width() - plotUtils.fonts.labelHeight, y = (scope.jqsvg.height() - bMargin) / 2;
             scope.rpipeTexts.push({
               "id" : "yrlabel",
               "class" : "plot-xylabel",

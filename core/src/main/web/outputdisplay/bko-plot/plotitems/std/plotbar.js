@@ -50,6 +50,7 @@
         "st_op": this.stroke_opacity
       };
       this.elementProps = [];
+      this.elementLabels = [];
     };
 
     PlotBar.prototype.render = function(scope) {
@@ -121,8 +122,10 @@
           mapY = scope.data2scrYi;
       var eleprops = this.elementProps,
           eles = this.elements;
+      var elelabels = this.elementLabels;
 
       eleprops.length = 0;
+      elelabels.length = 0;
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
         if (ele.y2 < focus.yl || ele.y > focus.yr) { continue; }
@@ -154,14 +157,37 @@
           "st_w" : ele.stroke_width,
           "st_op" : ele.stroke_opacity
         };
+
         eleprops.push(prop);
+
+        if(this.showItemLabel){
+          var labely;
+          var labelmargin = 3;
+          var labeltext;
+          if(ele._y2 != this.base){
+            labely = y2 - labelmargin;
+            labeltext = ele._y2;
+          }else{
+            labely = y + plotUtils.fonts.labelHeight + labelmargin;
+            labeltext = ele._y;
+          }
+
+          var label = {
+            "id": "label_" + id,
+            "text": labeltext,
+            "x": x + sw/2,
+            "y": labely
+          };
+          elelabels.push(label);
+        }
       }
     };
 
     PlotBar.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          eleprops = this.elementProps;
+          eleprops = this.elementProps,
+          elelabels = this.elementLabels;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -196,6 +222,17 @@
         .attr("y", function(d) { return d.y; })
         .attr("width", function(d) { return d.w; })
         .attr("height", function(d) { return d.h; });
+      itemsvg.selectAll("text")
+        .data(eleprops, function(d) { return d.id; }).exit().remove();
+      itemsvg.selectAll("text")
+        .data(elelabels, function(d) { return d.id; }).enter().append("text")
+        .attr("id", function(d) { return d.id; })
+        .attr("x", function(d) { return d.x; })
+        .attr("y", function(d) { return d.y; })
+        .attr("text-anchor", "middle")
+        .text(function(d) {
+          return d.text;
+        });
     };
 
     PlotBar.prototype.clear = function(scope) {

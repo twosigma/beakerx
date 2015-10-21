@@ -410,7 +410,9 @@
             categoryNames: model.categoryNames,
             showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
             categoryMargin: model.category_margin,
-            category_names_label_angle: model.category_names_label_angle
+            category_names_label_angle: model.category_names_label_angle,
+            showItemLabel: model.showItemLabel,
+            labelPosition: model.labelPosition
           };
         } else {
           newmodel = {
@@ -436,7 +438,9 @@
             categoryNames: model.categoryNames,
             showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
             categoryMargin: model.categoryMargin,
-            category_names_label_angle: model.category_names_label_angle
+            category_names_label_angle: model.category_names_label_angle,
+            showItemLabel: model.showItemLabel,
+            labelPosition: model.labelPosition
           };
         }
 

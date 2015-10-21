@@ -488,8 +488,23 @@
                 "text-anchor": "middle",
                 "dominant-baseline": "hanging"
               };
-              if (model.category_names_label_angle !== 0 && model.orientation === 'VERTICAL'){
-                rpipeText.transform = "rotate(" + model.category_names_label_angle * (180 / Math.PI) + " " + x + " " + y + ")";
+              if (model.category_names_label_angle &&
+                model.category_names_label_angle !== 0 && model.orientation === 'VERTICAL') {
+                var __size__ = _size_(labels[i], "plot-label");
+                var degree = model.category_names_label_angle * (180 / Math.PI);
+                rpipeText.transform =
+                  "translate(" +
+                  (0) +
+                  " " +
+                  ((Math.abs(__size__.width * Math.sin(model.category_names_label_angle)) / 2)) +
+                  ") "
+                  +
+                  "rotate(" +
+                  degree +
+                  " " + (x) +
+                  " " + (y) +
+                  ") "
+                ;
               }
               scope.rpipeTexts.push(rpipeText);
             }
@@ -510,8 +525,13 @@
                 "text-anchor": "end",
                 "dominant-baseline": "central"
               };
-              if (model.category_names_label_angle !== 0 && model.orientation === 'HORIZONTAL'){
-                rpipeText.transform = "rotate(" + model.category_names_label_angle * (180 / Math.PI) + " " + x + " " + y + ")";
+              if (model.category_names_label_angle &&
+                model.category_names_label_angle !== 0 && model.orientation === 'HORIZONTAL') {
+                rpipeText.transform = "rotate(" +
+                model.category_names_label_angle * (180 / Math.PI) +
+                " " + (x) +
+                " " + (y) +
+                ")";
               }
               scope.rpipeTexts.push(rpipeText);
             }

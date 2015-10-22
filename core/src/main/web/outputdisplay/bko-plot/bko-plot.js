@@ -491,18 +491,18 @@
               if (model.category_names_label_angle &&
                 model.category_names_label_angle !== 0 && model.orientation === 'VERTICAL') {
                 var __size__ = _size_(labels[i], "plot-label");
-                var degree = -1 * model.category_names_label_angle * (180 / Math.PI);
+                var degree = -model.category_names_label_angle * (180 / Math.PI);
+                var delta = degree > 0 ? (__size__.width / 2) : -(__size__.width / 2);
                 rpipeText.transform =
                   "translate(" +
-                  (0) +
-                  " " +
-                  ((Math.abs(__size__.width * Math.sin(model.category_names_label_angle)) / 2) - scope.labelPadding.y / 2) +
+                  delta +
+                  " " + -scope.labelPadding.y +
                   ") "
                   +
                   "rotate(" +
                   degree +
-                  " " + (x) +
-                  " " + (y) +
+                  " " + (x - delta) +
+                  " " + (y - __size__.height / 2) +
                   ") "
                 ;
               }

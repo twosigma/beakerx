@@ -173,7 +173,7 @@ describe('notebook', function() {
     });
 
     it('HTML', function(done) {
-      evalInLanguage('Html', '1+1', '1+1', done);
+      evalInLanguage('HTML', '1+1', '1+1', done);
     });
 
     /*

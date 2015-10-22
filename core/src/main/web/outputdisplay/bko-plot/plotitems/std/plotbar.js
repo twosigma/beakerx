@@ -237,8 +237,7 @@
         .attr("y", function(d) { return d.y; })
         .attr("width", function(d) { return d.w; })
         .attr("height", function(d) { return d.h; });
-      itemsvg.selectAll("text")
-        .data(eleprops, function(d) { return d.id; }).exit().remove();
+      itemsvg.selectAll("text").remove();
       itemsvg.selectAll("text")
         .data(elelabels, function(d) { return d.id; }).enter().append("text")
         .attr("id", function(d) { return d.id; })

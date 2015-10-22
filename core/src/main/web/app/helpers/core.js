@@ -227,7 +227,8 @@
       };
 
       $input = $('<input type="file" name="file" id="import-notebook" ' +
-          'ngf-select="uploadFile($file)" style="display: none"/>')
+          'ngf-select="uploadFile($file)" accept="application/json,application/text"' +
+      'ngf-pattern="\'application/json,application/text\'" style="display: none"/>')
                 .prependTo('body');
 
       return $input;

@@ -184,7 +184,10 @@
   <!-- endbuild -->
 
 </head>
-<body>
+<body ngf-drop="uploadFile($file)"
+      ngf-drag-over-class="dragover"
+      accept="application/json,application/text"
+      ngf-pattern="'application/json,application/text'">
   <ng-view class="beaker-sandbox"></ng-view>
 </body>
 </html>

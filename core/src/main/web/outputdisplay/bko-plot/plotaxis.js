@@ -19,7 +19,7 @@
   var retfunc = function() {
     var PlotAxis = function(type) {
       this.type = "axis";
-      this.axisType = type == null ? "linear" : type; // linear, log, time, [nanotime, category]
+      this.axisType = type == null ? "linear" : type; // linear, log, time, category, [nanotime]
       this.axisBase = 10;
       this.axisTime = 0;
       this.axisTimezone = "UTC";
@@ -37,6 +37,9 @@
 
       this.axisMarginValL = 0;
       this.axisMarginValR = 0;
+
+      this.fixedLines = [];
+      this.axisFixedLabels = {};
     };
 
     var SECOND = 1000;
@@ -75,6 +78,13 @@
         if (para != null) { this.axisTimezone = para; }
       }
       this.axisValSpan = this.axisValR - this.axisValL;
+    };
+    PlotAxis.prototype.setCategoryNames = function(categoryNames, categoryxs) {
+      this.axisFixedLabels = {};
+      for (var i = 0; i < categoryxs.length; i++) {
+        this.fixedLines.push(this.getPercent(categoryxs[i]));
+        this.axisFixedLabels[this.fixedLines[i]] = categoryNames[i];
+      }
     };
     PlotAxis.prototype.setGridlines = function(pl, pr, count, ml, mr) {
       if (pr < pl) {
@@ -171,12 +181,11 @@
 
       this.axisStep = w;
       this.axisFixed = f;
-      var val = Math.ceil(this.getValue(pl) / w) * w,
-        valr = this.getValue(pr);
 
       var lines, labels;
 
-      lines = this.calcLines(val, valr, w);
+      lines = this.calcLines(pl, pr, w);
+
       labels = this.calcLabels(
         lines,
         (this.axisValSpan - (this.axisMarginValL + this.axisMarginValR)) * this.axisPctSpan,
@@ -194,13 +203,24 @@
 
     };
 
-    PlotAxis.prototype.calcLines = function (val, valr, w) {
+    PlotAxis.prototype.calcLines = function (pl, pr, w) {
+      var val = Math.ceil(this.getValue(pl) / w) * w,
+        valr = this.getValue(pr);
       var lines = [];
 
-      while (val < valr) {
-        var pct = this.getPercent(val);
-        lines.push(pct);
-        val += w;
+      if (this.axisType === "category") {
+        for (var i = 0; i < this.fixedLines.length; i++) {
+          var pct = this.fixedLines[i];
+          if (pct >= this.getPercent(this.getValue(pl)) && pct <= this.getPercent(valr)) {
+            lines.push(pct);
+          }
+        }
+      } else {
+        while (val < valr) {
+          var pct = this.getPercent(val);
+          lines.push(pct);
+          val += w;
+        }
       }
 
       return lines;
@@ -210,9 +230,21 @@
 
       var labels = [];
 
-      for (var i = 0; i < lines.length; i++) {
-        var pct = lines[i];
-        labels.push(this.getString(pct, span));
+      if (axisType === "category"){
+        var min = Math.min.apply(null, lines);
+        var max = Math.max.apply(null, lines);
+        for (var key in this.axisFixedLabels) {
+          var pct = parseFloat(key);
+          if (!this.axisFixedLabels.hasOwnProperty(pct)) { continue; }
+          if(pct >= min && pct <= max){
+            labels.push(this.axisFixedLabels[pct]);
+          }
+        }
+      } else {
+        for (var i = 0; i < lines.length; i++) {
+          var pct = lines[i];
+          labels.push(this.getString(pct, span));
+        }
       }
 
       if (span > SECOND && axisType === "time" && labels.length != _.uniq(labels).length) {

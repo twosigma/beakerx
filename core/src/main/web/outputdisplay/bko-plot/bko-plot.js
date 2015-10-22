@@ -29,7 +29,7 @@
           "<div id='plotTitle' class='plot-title'></div>" +
           "<div id='plotLegendContainer' class='plot-plotlegendcontainer' oncontextmenu='return false;'>" +
           "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
-          "<svg>"  +
+          "<svg id='svgg'>"  +
           "<defs>" +
             "<filter id='svgfilter'>" +
               "<feGaussianBlur result='blurOut' in='SourceGraphic' stdDeviation='1' />" +
@@ -143,11 +143,6 @@
             legendMargin : 10,
             legendBoxSize : 10
           };
-          scope.fonts = {
-            labelWidth : 6,
-            labelHeight : 12,
-            tooltipWidth : 10
-          };
           scope.zoomLevel = {
             minSpanX : 1E-12,
             minSpanY : 1E-12,
@@ -159,8 +154,8 @@
             y : 10
           };
           scope.intervalStepHint = {
-            x : 75,
-            y : 30
+            x : scope.stdmodel.orientation === 'HORIZONTAL' ? 30 : 75,
+            y : scope.stdmodel.orientation === 'HORIZONTAL' ? 75 : 30
           };
           scope.numIntervals = {
             x: parseInt(plotSize.width) / scope.intervalStepHint.x,
@@ -177,17 +172,17 @@
           var factor = 2.0;
           if (model.xAxis.label == null) { factor -= 1.0; }
           if (model.xAxis.showGridlineLabels === false) { factor -= 1.0; }
-          scope.layout.bottomLayoutMargin += scope.fonts.labelHeight * factor;
+          scope.layout.bottomLayoutMargin += plotUtils.fonts.labelHeight * factor;
 
           if (model.yAxis.showGridlineLabels !== false) {
-            scope.layout.topLayoutMargin += scope.fonts.labelHeight / 2;
+            scope.layout.topLayoutMargin += plotUtils.fonts.labelHeight / 2;
           }
 
           if (model.yAxis.label != null) {
-            scope.layout.leftLayoutMargin += scope.fonts.labelHeight;
+            scope.layout.leftLayoutMargin += plotUtils.fonts.labelHeight;
           }
           if(model.yAxisR != null) {
-            scope.layout.rightLayoutMargin += scope.fonts.labelHeight;
+            scope.layout.rightLayoutMargin += plotUtils.fonts.labelHeight;
           }
           scope.legendResetPosition = true;
 
@@ -262,17 +257,19 @@
           var focus = scope.focus, model = scope.stdmodel;
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
 
-          var xGridlines = model.xAxis.getGridlines();
-          for (var i = 0; i < xGridlines.length; i++) {
-            var x = xGridlines[i];
-            scope.rpipeGridlines.push({
-              "id" : "gridline_x_" + i,
-              "class" : "plot-gridline",
-              "x1" : mapX(x),
-              "y1" : mapY(focus.yl),
-              "x2" : mapX(x),
-              "y2" : mapY(focus.yr)
-            });
+          if(model.showXGridlines){
+            var xGridlines = model.xAxis.getGridlines();
+            for (var i = 0; i < xGridlines.length; i++) {
+              var x = xGridlines[i];
+              scope.rpipeGridlines.push({
+                "id" : "gridline_x_" + i,
+                "class" : "plot-gridline",
+                "x1" : mapX(x),
+                "y1" : mapY(focus.yl),
+                "x2" : mapX(x),
+                "y2" : mapY(focus.yr)
+              });
+            }
           }
           var yGridlines = model.yAxis.getGridlines();
           for (var i = 0; i < yGridlines.length; i++) {
@@ -332,6 +329,7 @@
               "Truncation has been disabled to display correct result.",
               "To enable truncation for better performance, please render x-monotonic line and area items." ]);
           }
+
         };
 
         scope.prepareInteraction = function() {
@@ -408,7 +406,7 @@
             var tipdiv = scope.jqcontainer.find("#" + tipid);
 
             if (tipdiv.length === 0) {
-              var tiptext = data[d.idx].createTip(d.ele, d.g);
+              var tiptext = data[d.idx].createTip(d.ele, d.g, scope.stdmodel);
 
               tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
                 .attr("id", tipid)
@@ -436,7 +434,7 @@
             tipdiv
               .draggable({
                 stop : function(event, ui) {
-                  d.scrx = ui.position.left - scope.fonts.tooltipWidth;
+                  d.scrx = ui.position.left - plotUtils.fonts.tooltipWidth;
                   d.scry = ui.position.top;
                   d.datax = scope.scr2dataX(d.scrx);
                   d.datay = scope.scr2dataY(d.scry);
@@ -444,7 +442,7 @@
               });
 
             tipdiv
-              .css("left", x + scope.fonts.tooltipWidth)
+              .css("left", x + plotUtils.fonts.tooltipWidth)
               .css("top", y);
             if (d.isresp === true) {
               scope.jqsvg.find("#" + d.id).attr("opacity", 1);
@@ -456,38 +454,86 @@
         };
 
         scope.renderGridlineLabels = function() {
+          var _size_ = function (s, clazz) {
+            var o = $('<div>' + s + '</div>')
+                .css({
+                  'position': 'absolute',
+                  'float': 'left',
+                  'white-space': 'nowrap',
+                  'visibility': 'hidden',
+                  'class': clazz
+                }).appendTo($('body')),
+              w = o.width(),
+              h = o.height();
+            o.remove();
+            return {
+              width : w,
+              height : h
+            };
+          };
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
           var model = scope.stdmodel;
           if (model.xAxis.showGridlineLabels !== false) {
             var lines = model.xAxis.getGridlines(),
                 labels = model.xAxis.getGridlineLabels();
             for (var i = 0; i < labels.length; i++) {
-              var x = lines[i];
-              scope.rpipeTexts.push({
-                "id" : "label_x_" + i,
-                "class" : "plot-label",
-                "text" : labels[i],
-                "x" : mapX(x),
-                "y" : mapY(scope.focus.yl) + scope.labelPadding.y,
-                "text-anchor" : "middle",
-                "dominant-baseline" : "hanging"
-              });
+              var x = mapX(lines[i]);
+              var y = mapY(scope.focus.yl) + scope.labelPadding.y;
+							var rpipeText = {
+                "id": "label_x_" + i,
+                "class": "plot-label",
+                "text": labels[i],
+                "x": x,
+                "y": y,
+                "text-anchor": "middle",
+                "dominant-baseline": "hanging"
+              };
+              if (model.categoryNamesLabelAngle &&
+                model.categoryNamesLabelAngle !== 0 && model.orientation === 'VERTICAL') {
+                var __size__ = _size_(labels[i], "plot-label");
+                var degree = -1 * model.categoryNamesLabelAngle * (180 / Math.PI);
+								var delta = degree > 0 ? (__size__.width / 2) : -1 * (__size__.width / 2);
+                rpipeText.transform =
+                  "translate(" +
+                  delta +
+                  " " + -scope.labelPadding.y +
+                  ") "
+                  +
+                  "rotate(" +
+                  degree +
+                  " " + (x - delta) +
+                  " " + (y + __size__.height / 2) +
+                  ") "
+                ;
+              }
+              scope.rpipeTexts.push(rpipeText);
             }
           }
           if (model.yAxis.showGridlineLabels !== false) {
             lines = model.yAxis.getGridlines();
             labels = model.yAxis.getGridlineLabels();
             for (var i = 0; i < labels.length; i++) {
-              var y = lines[i];
-              scope.rpipeTexts.push({
-                "id" : "label_y_" + i,
-                "class" : "plot-label",
-                "text" : labels[i],
-                "x" : mapX(scope.focus.xl) - scope.labelPadding.x,
-                "y" : mapY(y),
-                "text-anchor" : "end",
-                "dominant-baseline" : "central"
-              });
+              var x = mapX(scope.focus.xl) - scope.labelPadding.x;
+              var y = mapY(lines[i]);
+
+							var rpipeText = {
+                "id": "label_y_" + i,
+                "class": "plot-label",
+                "text": labels[i],
+                "x": x,
+                "y": y,
+                "text-anchor": "end",
+                "dominant-baseline": "central"
+              };
+              if (model.categoryNamesLabelAngle &&
+                model.categoryNamesLabelAngle !== 0 && model.orientation === 'HORIZONTAL') {
+                rpipeText.transform = "rotate(" +
+                model.categoryNamesLabelAngle * (180 / Math.PI) +
+                " " + (x) +
+                " " + (y) +
+                ")";
+              }
+              scope.rpipeTexts.push(rpipeText);
             }
           }
           if (model.yAxisR && model.yAxisR.showGridlineLabels !== false) {
@@ -512,11 +558,11 @@
               "class" : "plot-xylabel",
               "text" : model.xAxis.axisLabelWithCommon,
               "x" : lMargin + (scope.jqsvg.width() - lMargin) / 2,
-              "y" : scope.jqsvg.height() - scope.fonts.labelHeight
+              "y" : scope.jqsvg.height() - plotUtils.fonts.labelHeight
             });
           }
           if (model.yAxis.label != null) {
-            var x = scope.fonts.labelHeight * 2, y = (scope.jqsvg.height() - bMargin) / 2;
+            var x = plotUtils.fonts.labelHeight * 2, y = (scope.jqsvg.height() - bMargin) / 2;
             scope.rpipeTexts.push({
               "id" : "ylabel",
               "class" : "plot-xylabel",
@@ -527,7 +573,7 @@
             });
           }
           if (model.yAxisR && model.yAxisR.label != null) {
-            var x = scope.jqsvg.width() - scope.fonts.labelHeight, y = (scope.jqsvg.height() - bMargin) / 2;
+            var x = scope.jqsvg.width() - plotUtils.fonts.labelHeight, y = (scope.jqsvg.height() - bMargin) / 2;
             scope.rpipeTexts.push({
               "id" : "yrlabel",
               "class" : "plot-xylabel",

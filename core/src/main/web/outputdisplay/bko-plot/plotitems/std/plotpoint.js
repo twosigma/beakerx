@@ -93,6 +93,11 @@
         "diamond" : [],
         "circle" : []
       };
+      this.elementLabels = {
+        "rect" : [],
+        "diamond" : [],
+        "circle" : []
+      };
     };
 
     PlotPoint.prototype.render = function(scope) {
@@ -165,13 +170,21 @@
         val.length = 0;
       });
 
+      _(this.elementLabels).each(function(val) {
+        val.length = 0;
+      });
+
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
         if (ele.y < focus.yl || ele.y > focus.yr) { continue; }
         var x = mapX(ele.x), y = mapY(ele.y), s = ele.size;
+        var labely;
 
         if (plotUtils.rangeAssert([x, y])) {
           _(this.elementProps).each(function(val) {
+            val.length = 0;
+          });
+          _(this.elementLabels).each(function(val) {
             val.length = 0;
           });
           return;
@@ -199,6 +212,7 @@
             _(prop).extend({
               "pts" : pstr
             });
+            labely = y - s;
             break;
           case "circle":
             _(prop).extend({
@@ -206,6 +220,7 @@
               "cy" : y,
               "r" : s
             });
+            labely = y - s;
             break;
           default:    // rects
             _(prop).extend({
@@ -214,8 +229,20 @@
               "w" : s,
               "h" : s
             });
+            labely = y - s / 2;
         }
         this.elementProps[shape].push(prop);
+        if(this.showItemLabel){
+          var labelMargin = 3;
+
+          var label = {
+            "id": "label_" + prop.id,
+            "text": ele._y,
+            "x": x,
+            "y": labely - labelMargin
+          };
+          this.elementLabels[shape].push(label);
+        }
       }
     };
 
@@ -287,6 +314,18 @@
               .attr("width", function(d) { return d.w; })
               .attr("height", function(d) { return d.h; });
         }
+        shapesvg.selectAll("text").remove();
+        shapesvg.selectAll("text")
+          .data(this.elementLabels[shape], function(d) { return d.id; }).enter().append("text")
+          .attr("id", function(d) { return tag + "_" + d.id; })
+          .attr("x", function(d) { return d.x; })
+          .attr("y", function(d) { return d.y; })
+          .attr("text-anchor", "middle")
+          .style("fill", "black")
+          .style("stroke", "none")
+          .text(function(d) {
+            return d.text;
+          });
       }
     };
 

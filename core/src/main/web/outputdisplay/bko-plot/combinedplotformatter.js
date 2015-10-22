@@ -17,7 +17,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils, plotFormatter) {
+  var retfunc = function(bkUtils, plotFormatter, plotUtils) {
     return {
       standardizeModel : function(model, prefs) {
         var newmodel = {
@@ -59,8 +59,7 @@
         if (plotType == null) { plotType = "Plot"; }
 
         var layout = {
-          bottomLayoutMargin : 30,
-          labelHeight: 12
+          bottomLayoutMargin : 30
         };
         var sumweights = 0;
         var sumvmargins = 0;
@@ -75,7 +74,7 @@
             vmargins[i] = layout.bottomLayoutMargin;
             sumvmargins += vmargins[i];
           } else {
-            vmargins[i] = layout.bottomLayoutMargin + layout.labelHeight * 2;
+            vmargins[i] = layout.bottomLayoutMargin + plotUtils.fonts.labelHeight * 2;
             sumvmargins += vmargins[i];
           }
         }
@@ -107,5 +106,5 @@
       }
     };
   };
-  beaker.bkoFactory('combinedplotFormatter', ["bkUtils", "plotFormatter", retfunc]);
+  beaker.bkoFactory('combinedplotFormatter', ["bkUtils", "plotFormatter", "plotUtils", retfunc]);
 })();

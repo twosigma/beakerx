@@ -601,6 +601,12 @@
         xhr.overrideMimeType("text/plain; charset=x-user-defined");
         xhr.send(null);
         return xhr.responseText;
+      },
+
+      fonts: {
+        labelWidth : 6,
+        labelHeight : 12,
+        tooltipWidth : 10
       }
 
     };

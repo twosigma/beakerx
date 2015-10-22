@@ -27,7 +27,7 @@
 
     PlotStem.prototype.setHighlighted = function(scope, highlighted) {
       var svg = scope.maing;
-      var props = this.itemProps
+      var props = this.itemProps;
 
       svg.select("#" + this.id)
         .transition()
@@ -49,6 +49,7 @@
         "st_da": this.stroke_dasharray
       };
       this.elementProps = [];
+      this.elementLabels = [];
     };
 
     PlotStem.prototype.render = function(scope) {
@@ -76,7 +77,7 @@
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
         range.xl = Math.min(range.xl, ele.x);
-        range.xr = Math.max(range.xr, ele.x);
+        range.xr = Math.max(range.xr, ele.x2 ? ele.x2 : ele.x);
         range.yl = Math.min(range.yl, ele.y);
         range.yr = Math.max(range.yr, ele.y2);
       }
@@ -89,6 +90,8 @@
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
         ele.x = xAxis.getPercent(ele.x);
+        if(ele.x2)
+          ele.x2 = xAxis.getPercent(ele.x2);
         ele.y = yAxis.getPercent(ele.y);
         ele.y2 = yAxis.getPercent(ele.y2);
       }
@@ -115,17 +118,20 @@
     PlotStem.prototype.prepare = function(scope) {
       var focus = scope.focus;
       var eles = this.elements,
-          eleprops = this.elementProps;
+          eleprops = this.elementProps,
+          elelabels = this.elementLabels;
       var mapX = scope.data2scrXi,
           mapY = scope.data2scrYi;
 
       eleprops.length = 0;
+      elelabels.length = 0;
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
         if (ele.y2 < focus.yl || ele.y > focus.yr) { continue; }
 
         var x = mapX(ele.x), y = mapY(ele.y), y2 = mapY(ele.y2);
+        var x2 = (ele.x2) ? mapX(ele.x2) : x;
 
         if (plotUtils.rangeAssert([x, y, y2])) {
           eleprops.length = 0;
@@ -142,17 +148,37 @@
           "st_da": ele.stroke_dasharray,
           "x1" : x,
           "y1" : y,
-          "x2" : x,
+          "x2" : x2,
           "y2" : y2
         };
         eleprops.push(prop);
+
+        if(this.showItemLabel){
+          var labelMargin = 3;
+          var labelHeight = plotUtils.fonts.labelHeight;
+          var base = this.base != null ? this.base : 0;
+          var isPositiveStem = ele._y2 != base;
+
+          var labelText = isPositiveStem ? ele._y2 : ele._y;
+          var labely = isPositiveStem ? y2 - labelMargin : y + labelHeight + labelMargin;
+
+          var label = {
+            "id": "label_" + prop.id,
+            "text": labelText,
+            "x": x,
+            "y": labely
+          };
+          elelabels.push(label);
+        }
+
       }
     };
 
     PlotStem.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          eleprops = this.elementProps;
+          eleprops = this.elementProps,
+          elelabels = this.elementLabels;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -184,6 +210,18 @@
         .attr("x2", function(d) { return d.x2; })
         .attr("y1", function(d) { return d.y1; })
         .attr("y2", function(d) { return d.y2; });
+      itemsvg.selectAll("text").remove();
+      itemsvg.selectAll("text")
+        .data(elelabels, function(d) { return d.id; }).enter().append("text")
+        .attr("id", function(d) { return d.id; })
+        .attr("x", function(d) { return d.x; })
+        .attr("y", function(d) { return d.y; })
+        .attr("text-anchor", "middle")
+        .style("fill", "black")
+        .style("stroke", "none")
+        .text(function(d) {
+          return d.text;
+        });
     };
 
     PlotStem.prototype.clear = function(scope) {
@@ -202,16 +240,20 @@
       });
     };
 
-    PlotStem.prototype.createTip = function(ele) {
+    PlotStem.prototype.createTip = function(ele, g, model) {
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
       if (this.legend != null) {
         tip.title = this.legend;
       }
-      tip.x = plotUtils.getTipString(ele._x, xAxis, true);
-      tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
-      tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
+      if (model.orientation === 'HORIZONTAL'){
+        tip.value = plotUtils.getTipString(ele._x2 - ele._x, xAxis, true);
+      }else {
+        tip.x = plotUtils.getTipString(ele._x, xAxis, true);
+        tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
+        tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
+      }
       return plotUtils.createTipString(tip);
     };
 

@@ -23,9 +23,19 @@ import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.BeakerProgressUpdate;
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
+import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryBars;
+import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryLines;
+import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryPoints;
+import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryStems;
 import com.twosigma.beaker.chart.legend.LegendPosition;
 import com.twosigma.beaker.chart.serializer.AreaSerializer;
 import com.twosigma.beaker.chart.serializer.BarsSerializer;
+import com.twosigma.beaker.chart.serializer.CategoryBarsSerializer;
+import com.twosigma.beaker.chart.serializer.CategoryLinesSerializer;
+import com.twosigma.beaker.chart.serializer.CategoryPlotSerializer;
+import com.twosigma.beaker.chart.serializer.CategoryPointsSerializer;
+import com.twosigma.beaker.chart.serializer.CategoryStemsSerializer;
 import com.twosigma.beaker.chart.serializer.ColorSerializer;
 import com.twosigma.beaker.chart.serializer.CombinedPlotSerializer;
 import com.twosigma.beaker.chart.serializer.CrosshairSerializer;
@@ -207,6 +217,12 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(ButtonComponent.class, injector.getInstance(ButtonComponentSerializer.class));
       module.addSerializer(LoadValuesButton.class, injector.getInstance(LoadValuesButtonSerializer.class));
       module.addSerializer(SaveValuesButton.class, injector.getInstance(SaveValuesButtonSerializer.class));
+
+      module.addSerializer(CategoryBars.class, injector.getInstance(CategoryBarsSerializer.class));
+      module.addSerializer(CategoryStems.class, injector.getInstance(CategoryStemsSerializer.class));
+      module.addSerializer(CategoryPoints.class, injector.getInstance(CategoryPointsSerializer.class));
+      module.addSerializer(CategoryLines.class, injector.getInstance(CategoryLinesSerializer.class));
+      module.addSerializer(CategoryPlot.class, injector.getInstance(CategoryPlotSerializer.class));
 
       mapper.registerModule(module);
 

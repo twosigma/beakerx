@@ -35,7 +35,10 @@
 
         var xAxis = new PlotAxis(model.xAxis.type);
 
-        if (xAxis.axisType !== "time") {
+        if (xAxis.axisType === "category") {
+          xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
+          xAxis.setCategoryNames(model.categoryNames, model.labelsxs);
+        } else if (xAxis.axisType !== "time") {
           xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
         } else {
           xAxis.setRange(vrange.xl, vrange.xr, model.timezone);
@@ -53,7 +56,10 @@
 
           var axis = new PlotAxis(modelAxis.type);
 
-          if (axis.axisType !== "time") {
+          if (axis.axisType === "category") {
+            axis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
+            axis.setCategoryNames(model.categoryNames, model.labelsxs);
+          } else if (axis.axisType !== "time") {
             axis.setRange(axisVRange.yl, axisVRange.yr, modelAxis.base);
           } else {
             axis.setRange(axisVRange.yl, axisVRange.yr, modelAxis.timezone);
@@ -106,6 +112,12 @@
             logyb = newmodel.yAxis.base,
             logyR = newmodel.yAxisR && newmodel.yAxisR.type === "log",
             logybR = newmodel.yAxisR && newmodel.yAxisR.base;
+
+        if (newmodel.orientation === 'HORIZONTAL'){
+          var temp = newmodel.xAxis;
+          newmodel.xAxis = newmodel.yAxis;
+          newmodel.yAxis = temp;
+        }
 
         if (newmodel.data == null) { newmodel.data = []; }
         var data = newmodel.data;
@@ -273,7 +285,38 @@
                 ele.y2 = Math.log(ele.y2) / Math.log(itemlogyb);
               }
             }
+
+            if (newmodel.orientation === 'HORIZONTAL'){
+              var temp = {
+                x: ele.y,
+                x2: ele.y2,
+                y: ele.x,
+                y2: ele.x2
+              };
+
+              ele.x = temp.x;
+              ele.x2 = temp.x2;
+              ele.y = temp.y;
+              ele.y2 = temp.y2;
+
+              ele._x = ele.x;
+              ele._x2 = ele.x2;
+              ele._y = ele.y;
+              ele._y2 = ele.y2;
+
+              if (item.type === 'stem'){
+                ele.y2 = ele.y;
+                ele._y2 = ele._y;
+              }
+            }
           }
+
+          if (newmodel.orientation === 'HORIZONTAL'){
+            var temp =  item.x;
+            item.x = item.y;
+            item.y = temp;
+          }
+
           // recreate rendering objects
           item.index = i;
           item.id = "i" + i;
@@ -352,9 +395,10 @@
             xAxis : { label : model.domain_axis_label },
             yAxis : { label : model.y_label },
             yAxisR : model.rangeAxes.length > 1 ? { label : model.rangeAxes[1].label } : null,
-            showLegend : model.show_legend != null ? model.show_legend : false,
+            showLegend : model.show_legend,
             legendPosition : model.legend_position != null ? model.legend_position : {position: "TOP_RIGHT"},
             legendLayout : model.legend_layout != null ? model.legend_layout : "VERTICAL",
+            orientation : model.orientation != null ? model.orientation : "VERTICAL",
             omitCheckboxes : model.omit_checkboxes,
             useToolTip : model.use_tool_tip != null ? model.use_tool_tip : false,
             plotSize : {
@@ -362,13 +406,18 @@
               "height" : model.init_height != null ? model.init_height : 350
             },
             nanoOffset : null,
-            timezone : model.timezone
+            timezone : model.timezone,
+            categoryNames: model.categoryNames,
+            showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
+            categoryMargin: model.category_margin,
+            categoryNamesLabelAngle: model.categoryNamesLabelAngle
           };
         } else {
           newmodel = {
-            showLegend : model.showLegend != null ? model.showLegend : false,
+            showLegend : model.showLegend,
             legendPosition : model.legendPosition != null ? model.legendPosition : {position: "TOP_RIGHT"},
             legendLayout : model.legendLayout != null ? model.legendLayout : "VERTICAL",
+            orientation : model.orientation != null ? model.orientation : "VERTICAL",
             omitCheckboxes : model.omitCheckboxes,
             useToolTip : model.useToolTip != null ? model.useToolTip : false,
             xAxis : model.xAxis != null ? model.xAxis : {},
@@ -383,7 +432,11 @@
               "width" : model.width != null ? model.width : 1200,
               "height": model.height != null ? model.height : 350
             },
-            timezone : model.timezone
+            timezone : model.timezone,
+            categoryNames: model.categoryNames,
+            showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
+            categoryMargin: model.categoryMargin,
+            categoryNamesLabelAngle: model.categoryNamesLabelAngle
           };
         }
 
@@ -405,12 +458,17 @@
         var yAxisData = [], yAxisRData = [];
         for (var i = 0; i < newmodel.data.length; i++) {
           var item = newmodel.data[i];
+          if(newmodel.showLegend == null && item.legend){
+              newmodel.showLegend = true;
+          }
           if(plotUtils.useYAxisR(newmodel, item)){
             yAxisRData.push(item);
           }else{
             yAxisData.push(item);
           }
         }
+
+        newmodel.showLegend = newmodel.showLegend != null ? newmodel.showLegend : false;
 
         var range = plotUtils.getDataRange(yAxisData).datarange;
         var rangeR = _.isEmpty(yAxisRData) ? null : plotUtils.getDataRange(yAxisRData).datarange;

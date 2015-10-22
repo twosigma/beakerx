@@ -40,8 +40,4 @@ public class TimePlot extends XYChart {
     return this;
   }
 
-  @Override
-  public XYChart setTimeZone(TimeZone timeZone) {
-    return super.setTimeZone(timeZone);
-  }
 }

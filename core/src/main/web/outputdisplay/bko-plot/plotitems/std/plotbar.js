@@ -50,6 +50,7 @@
         "st_op": this.stroke_opacity
       };
       this.elementProps = [];
+      this.elementLabels = [];
     };
 
     PlotBar.prototype.render = function(scope) {
@@ -121,8 +122,10 @@
           mapY = scope.data2scrYi;
       var eleprops = this.elementProps,
           eles = this.elements;
+      var elelabels = this.elementLabels;
 
       eleprops.length = 0;
+      elelabels.length = 0;
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
         if (ele.y2 < focus.yl || ele.y > focus.yr) { continue; }
@@ -154,14 +157,52 @@
           "st_w" : ele.stroke_width,
           "st_op" : ele.stroke_opacity
         };
+
         eleprops.push(prop);
+
+        if(this.showItemLabel){
+          var labely;
+          var labelMargin = 3;
+          var labelHeight = plotUtils.fonts.labelHeight;
+          var isBarPositive = ele._y2 != this.base;
+
+          var labelText = isBarPositive ? ele._y2 : ele._y;
+
+          switch(this.labelPosition){
+            case "VALUE_OUTSIDE":
+              labely = isBarPositive ? y2 - labelMargin : y + labelHeight + labelMargin;
+              break;
+            case "VALUE_INSIDE":
+              labely = isBarPositive ? y2 + labelHeight + labelMargin : y - labelMargin;
+              break;
+            case "BASE_OUTSIDE":
+              labely = isBarPositive ? y + labelHeight + labelMargin : y2 - labelMargin;
+              break;
+            case "BASE_INSIDE":
+              labely = isBarPositive ? y - labelMargin : y2 + labelHeight + labelMargin;
+              break;
+            default: //CENTER
+              var center = (y - y2)/2;
+              labely = isBarPositive ? y2 + center + labelHeight/2 : y - center + labelHeight/2;
+              break;
+          }
+
+          var label = {
+            "id": "label_" + id,
+            "text": labelText,
+            "x": x + sw/2,
+            "y": labely
+          };
+          elelabels.push(label);
+        }
       }
     };
 
     PlotBar.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          eleprops = this.elementProps;
+          eleprops = this.elementProps,
+          elelabels = this.elementLabels;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -196,6 +237,17 @@
         .attr("y", function(d) { return d.y; })
         .attr("width", function(d) { return d.w; })
         .attr("height", function(d) { return d.h; });
+      itemsvg.selectAll("text").remove();
+      itemsvg.selectAll("text")
+        .data(elelabels, function(d) { return d.id; }).enter().append("text")
+        .attr("id", function(d) { return d.id; })
+        .attr("x", function(d) { return d.x; })
+        .attr("y", function(d) { return d.y; })
+        .attr("text-anchor", "middle")
+        .style("fill", "black")
+        .text(function(d) {
+          return d.text;
+        });
     };
 
     PlotBar.prototype.clear = function(scope) {
@@ -214,16 +266,20 @@
       });
     };
 
-    PlotBar.prototype.createTip = function(ele) {
+    PlotBar.prototype.createTip = function(ele, g, model) {
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
       if (this.legend != null) {
         tip.title = this.legend;
       }
-      tip.x = plotUtils.getTipString((ele._x + ele._x2) / 2, xAxis, true);
-      tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
-      tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
+      if (model.orientation === 'HORIZONTAL'){
+        tip.value = plotUtils.getTipString(ele._x2 - ele._x, xAxis, true);
+      }else{
+        tip.x = plotUtils.getTipString((ele._x + ele._x2) / 2, xAxis, true);
+        tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
+        tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
+      }
       return plotUtils.createTipString(tip);
     };
 

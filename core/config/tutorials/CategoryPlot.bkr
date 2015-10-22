@@ -181,12 +181,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 890
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 844
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -295,12 +295,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 1042
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1026
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -405,12 +405,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 1033
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1023
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -517,12 +517,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 998
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1055
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -629,12 +629,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 988
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1030
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -759,12 +759,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 1044
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1026
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -870,12 +870,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 986
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1029
             },
             "evaluatorReader": true,
             "lineCount": 8
@@ -986,12 +986,12 @@
                     ],
                     "orientation": "HORIZONTAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 1049
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1028
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -1099,12 +1099,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": -0.7853981633974483
+                    "categoryNamesLabelAngle": -0.7853981633974483
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 934
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1030
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -1213,12 +1213,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.4,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 920
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1041
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -1328,12 +1328,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 514
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1022
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -1465,12 +1465,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 942
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1036
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -1580,12 +1580,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 638
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1045
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -1706,12 +1706,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 644
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1039
             },
             "evaluatorReader": true,
             "lineCount": 11
@@ -1822,12 +1822,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 810
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1038
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -1958,12 +1958,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 667
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1032
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -2061,12 +2061,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 563
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1043
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -2172,12 +2172,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 1054
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1039
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -2287,12 +2287,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 426
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1067
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -2427,12 +2427,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 740
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1047
             },
             "evaluatorReader": true,
             "lineCount": 12
@@ -2565,12 +2565,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 1016
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1038
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -2667,12 +2667,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 466
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 982
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -2770,12 +2770,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 907
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1058
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -2875,12 +2875,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 1283
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1078
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -3008,12 +3008,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 699
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1057
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -3133,12 +3133,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 618
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1065
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -3290,12 +3290,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 533
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1070
             },
             "evaluatorReader": true,
             "lineCount": 10
@@ -3511,12 +3511,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 655
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1077
             },
             "evaluatorReader": true,
             "lineCount": 15
@@ -3678,12 +3678,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 1035
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1065
             },
             "evaluatorReader": true,
             "lineCount": 14
@@ -3780,12 +3780,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 919
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1072
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -3912,12 +3912,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 907
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1086
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -4033,12 +4033,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 1110
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1085
             },
             "evaluatorReader": true,
             "lineCount": 8
@@ -4167,12 +4167,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 1267
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1099
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -4241,8 +4241,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 1049
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1102
             },
             "evaluatorReader": true,
             "lineCount": 8
@@ -4356,12 +4356,12 @@
                     ],
                     "orientation": "VERTICAL",
                     "category_margin": 0.2,
-                    "category_names_label_angle": 0
+                    "categoryNamesLabelAngle": 0
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf648d9-8a63-4679-92bd-e2d038b6bfab",
-                "elapsedTime": 1211
+                "shellId": "f13562fc-66e7-4020-9f56-1bd02af3c7ac",
+                "elapsedTime": 1111
             },
             "evaluatorReader": true,
             "lineCount": 5

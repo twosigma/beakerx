@@ -488,10 +488,10 @@
                 "text-anchor": "middle",
                 "dominant-baseline": "hanging"
               };
-              if (model.category_names_label_angle &&
-                model.category_names_label_angle !== 0 && model.orientation === 'VERTICAL') {
+              if (model.categoryNamesLabelAngle &&
+                model.categoryNamesLabelAngle !== 0 && model.orientation === 'VERTICAL') {
                 var __size__ = _size_(labels[i], "plot-label");
-                var degree = -1 * model.category_names_label_angle * (180 / Math.PI);
+                var degree = -1 * model.categoryNamesLabelAngle * (180 / Math.PI);
 								var delta = degree > 0 ? (__size__.width / 2) : -1 * (__size__.width / 2);
                 rpipeText.transform =
                   "translate(" +
@@ -525,10 +525,10 @@
                 "text-anchor": "end",
                 "dominant-baseline": "central"
               };
-              if (model.category_names_label_angle &&
-                model.category_names_label_angle !== 0 && model.orientation === 'HORIZONTAL') {
+              if (model.categoryNamesLabelAngle &&
+                model.categoryNamesLabelAngle !== 0 && model.orientation === 'HORIZONTAL') {
                 rpipeText.transform = "rotate(" +
-                model.category_names_label_angle * (180 / Math.PI) +
+                model.categoryNamesLabelAngle * (180 / Math.PI) +
                 " " + (x) +
                 " " + (y) +
                 ")";

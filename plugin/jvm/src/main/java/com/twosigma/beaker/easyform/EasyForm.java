@@ -321,6 +321,9 @@ public class EasyForm extends ObservableMap<String, String> {
   public void setReady() {
     this.ready = Boolean.TRUE;
     for (EasyFormComponent component : getComponentMap().values()) {
+      if (!component.isButton()) {
+        getValuesMap().put(component.getLabel(), component.getValue());
+      }
       component.fireInit();
     }
   }

@@ -116,4 +116,8 @@ public class EasyFormComponent {
   protected boolean checkValue(Object value) {
     return true;
   }
+
+  public boolean isButton() {
+    return false;
+  }
 }

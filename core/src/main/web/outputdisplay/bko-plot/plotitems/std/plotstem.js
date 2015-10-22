@@ -49,6 +49,7 @@
         "st_da": this.stroke_dasharray
       };
       this.elementProps = [];
+      this.elementLabels = [];
     };
 
     PlotStem.prototype.render = function(scope) {
@@ -117,11 +118,13 @@
     PlotStem.prototype.prepare = function(scope) {
       var focus = scope.focus;
       var eles = this.elements,
-          eleprops = this.elementProps;
+          eleprops = this.elementProps,
+          elelabels = this.elementLabels;
       var mapX = scope.data2scrXi,
           mapY = scope.data2scrYi;
 
       eleprops.length = 0;
+      elelabels.length = 0;
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
@@ -149,13 +152,33 @@
           "y2" : y2
         };
         eleprops.push(prop);
+
+        if(this.showItemLabel){
+          var labelMargin = 3;
+          var labelHeight = plotUtils.fonts.labelHeight;
+          var base = this.base != null ? this.base : 0;
+          var isPositiveStem = ele._y2 != base;
+
+          var labelText = isPositiveStem ? ele._y2 : ele._y;
+          var labely = isPositiveStem ? y2 - labelMargin : y + labelHeight + labelMargin;
+
+          var label = {
+            "id": "label_" + prop.id,
+            "text": labelText,
+            "x": x,
+            "y": labely
+          };
+          elelabels.push(label);
+        }
+
       }
     };
 
     PlotStem.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          eleprops = this.elementProps;
+          eleprops = this.elementProps,
+          elelabels = this.elementLabels;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -187,6 +210,18 @@
         .attr("x2", function(d) { return d.x2; })
         .attr("y1", function(d) { return d.y1; })
         .attr("y2", function(d) { return d.y2; });
+      itemsvg.selectAll("text").remove();
+      itemsvg.selectAll("text")
+        .data(elelabels, function(d) { return d.id; }).enter().append("text")
+        .attr("id", function(d) { return d.id; })
+        .attr("x", function(d) { return d.x; })
+        .attr("y", function(d) { return d.y; })
+        .attr("text-anchor", "middle")
+        .style("fill", "black")
+        .style("stroke", "none")
+        .text(function(d) {
+          return d.text;
+        });
     };
 
     PlotStem.prototype.clear = function(scope) {

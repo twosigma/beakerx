@@ -47,7 +47,7 @@
   </div>
   <div class="navbar navbar-default">
     <ul class="nav navbar-nav">
-      <li class="dropdown" ng-repeat="m in getMenus()">
+      <li class="dropdown" ng-repeat="m in getMenus() | orderBy: 'index'">
         <a href="#" role="button" class="dropdown-toggle" ng-class="m.classNames" data-toggle="dropdown">{{m.name}}</a>
         <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
       </li>

@@ -48,7 +48,8 @@
       bkRecentMenu,
       bkNotebookCellModelManager,
       bkElectron,
-      modalDialogOp) {
+      modalDialogOp,
+      Upload) {
 
     function isFilePath(path) {
       return path.split('/').pop() !== '';
@@ -208,17 +209,26 @@
 
       if (($input = $('input#import-notebook')).length) return $input;
 
-      $input = $('<input type="file" name="file" id="import-notebook" ' +
-                 'data-url="' + endpoint + '" ' +
-                 'style="display: none"/>')
-                .prependTo('body');
+      $rootScope.uploadFile = function(file) {
+        if (file) {
+          file.upload = Upload.upload({
+            url: endpoint,
+            file: file,
+            method: 'POST'
+          });
 
-      $input.fileupload({
-        dataType: 'json',
-        done: function(e, data) {
-          bkCoreManager.importNotebook(data.result);
+          file.upload.then(function (response) {
+            bkCoreManager.importNotebook(response.data);
+          }, function (response) {
+            if (response.status > 0)
+              console.log(response.status + ': ' + response.data);
+          });
         }
-      });
+      };
+
+      $input = $('<input type="file" name="file" id="import-notebook" ' +
+          'ngf-select="uploadFile($file)" style="display: none"/>')
+                .prependTo('body');
 
       return $input;
     };
@@ -347,10 +357,7 @@
       },
       importNotebook: function(notebook) {
         $sessionStorage.importedNotebook = notebook;
-
-        return $rootScope.$apply(function() {
-          $location.path("/session/import").search({});
-        });
+        $location.path("/session/import").search({});
       },
       showDefaultSavingFileChooser: function(initPath) {
         var self = this;

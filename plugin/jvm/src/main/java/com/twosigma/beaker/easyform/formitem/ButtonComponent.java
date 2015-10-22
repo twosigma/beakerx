@@ -29,4 +29,8 @@ public class ButtonComponent extends EasyFormComponent {
   public String getTag() {
     return tag;
   }
+
+  public boolean isButton() {
+    return true;
+  }
 }

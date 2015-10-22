@@ -29,4 +29,8 @@ public class SaveValuesButton extends EasyFormComponent {
   public String getPath() {
     return path;
   }
+
+  public boolean isButton() {
+    return true;
+  }
 }

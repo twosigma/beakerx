@@ -53,6 +53,7 @@
         "d" : null
       };
       this.elementProps = [];
+      this.elementLabels = [];
     };
 
     PlotLine.prototype.render = function(scope){
@@ -126,12 +127,14 @@
       var focus = scope.focus;
       var eles = this.elements,
           eleprops = this.elementProps,
+          elelabels = this.elementLabels,
           tipids = this.tipIds;
       var mapX = scope.data2scrXi,
           mapY = scope.data2scrYi;
       var pstr = "";
 
       eleprops.length = 0;
+      elelabels.length = 0;
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
@@ -181,6 +184,19 @@
           }
         }
         pstr += nxtp;
+
+        if(this.showItemLabel){
+          var labelMargin = 3;
+
+          var label = {
+            "id": "label_" + id,
+            "text": ele._y,
+            "x": x,
+            "y": y - labelMargin
+          };
+          elelabels.push(label);
+        }
+
       }
       if (pstr.length > 0) {
         this.itemProps.d = pstr;
@@ -190,7 +206,8 @@
     PlotLine.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          eleprops = this.elementProps;
+          eleprops = this.elementProps,
+          elelabels = this.elementLabels;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -225,6 +242,18 @@
           .attr("r", this.respR)
           .style("opacity", function(d) { return d.op; });
       }
+      itemsvg.selectAll("text").remove();
+      itemsvg.selectAll("text")
+        .data(elelabels, function(d) { return d.id; }).enter().append("text")
+        .attr("id", function(d) { return d.id; })
+        .attr("x", function(d) { return d.x; })
+        .attr("y", function(d) { return d.y; })
+        .attr("text-anchor", "middle")
+        .style("fill", "black")
+        .style("stroke", "none")
+        .text(function(d) {
+          return d.text;
+        });
     };
 
     PlotLine.prototype.clear = function(scope) {

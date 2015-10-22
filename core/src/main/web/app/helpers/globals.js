@@ -20,7 +20,8 @@
   'use strict';
   angular.module('bk.globals', []).factory('GLOBALS', function() {
     return {
-      DEFAULT_EVALUATOR: 'JavaScript'
+      DEFAULT_EVALUATOR: 'JavaScript',
+      REQUIREJS_TIMEOUT: 30
     };
   });
 })();

@@ -157,7 +157,8 @@
       'bk.helper',
       'bk.utils',
       'bk.publication',
-      'bk.electron'
+      'bk.electron',
+      'bk.globals'
     ]);
 
 
@@ -428,13 +429,15 @@
         $window.close();
       }
     });
+    beaker.run(function(GLOBALS) {
+      // make sure requirejs reports error
+      requirejs.config({
+        waitSeconds: GLOBALS.REQUIREJS_TIMEOUT,
+        enforceDefine: true
+      });
+    });
   };
   var bootstrapBkApp = function() {
-    // make sure requirejs reports error
-    requirejs.config({
-      enforceDefine: true
-    });
-
     angular.element(document).ready(function() {
       angular.bootstrap(document, ["beaker"]);
     });

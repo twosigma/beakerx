@@ -19,7 +19,7 @@
  */
 define(function(require, exports, module) {
   'use strict';
-  var PLUGIN_NAME = "Html";
+  var PLUGIN_NAME = "HTML";
   var Html = {
     pluginName: PLUGIN_NAME,
     cmMode: "htmlmixed",

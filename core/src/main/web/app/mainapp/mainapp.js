@@ -221,7 +221,7 @@
                     if (notebookModel.cells[i].evaluator === name) {
                       var plugin = notebookModel.evaluators[j].plugin;
                       if (bkUtils.beginsWith(name,"Html")) {
-                        notebookModel.cells[i].evaluator = "Html";
+                        notebookModel.cells[i].evaluator = "HTML";
                       } else if(bkUtils.beginsWith(name,"Latex")) {
                         notebookModel.cells[i].evaluator = "TeX";
                       } else if(bkUtils.beginsWith(name,"TeX")) {
@@ -242,8 +242,8 @@
                 var evaluatorName = notebookModel.evaluators[k].name;
                 var evaluatorPlugin = notebookModel.evaluators[k].plugin;
                 if (bkUtils.beginsWith(evaluatorName,"Html")) {
-                  notebookModel.evaluators[k].name = "Html";
-                  notebookModel.evaluators[k].plugin = "Html";
+                  notebookModel.evaluators[k].name = "HTML";
+                  notebookModel.evaluators[k].plugin = "HTML";
                 } else if(bkUtils.beginsWith(evaluatorName,"Latex")) {
                   notebookModel.evaluators[k].name = "TeX";
                   notebookModel.evaluators[k].plugin = "TeX";

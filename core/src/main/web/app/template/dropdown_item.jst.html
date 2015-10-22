@@ -14,6 +14,8 @@
     limitations under the License.
 -->
 <li ng-class="getItemClass(item)">
+  <i class="glyphicon glyphicon-ok" ng-show="isMenuItemChecked(item)"></i>
+  <span ng-if="hasCustomMarkup(item)" ng-bind-html="getCustomMarkup(item)"></span>
   <a href="#"
      tabindex="-1"
      ng-click="runAction(item)"
@@ -21,8 +23,6 @@
      id="{{item.id}}"
      title="{{item.tooltip}}"
      eat-click>
-    <i class="glyphicon glyphicon-ok" ng-show="isMenuItemChecked(item)"></i>
-    <span ng-if="hasCustomMarkup(item)" ng-bind-html="getCustomMarkup(item)"></span>
     {{getName(item)}}
   </a>
 </li>

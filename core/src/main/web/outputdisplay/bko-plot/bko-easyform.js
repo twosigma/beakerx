@@ -221,7 +221,7 @@
     this.addValueLoadedListener = function() {
       this.addListener(constants.Events.VALUE_LOADED, function(event, args) {
         scope.$apply(function() {
-          scope[scope.ngModelAttr] = service.getComponentValue(component);
+          scope[scope.ngModelAttr] = service.getComponentValue(scope.formId, component);
         });
       });
     };
@@ -439,7 +439,7 @@
 
               efc.addValueLoadedListener = function() {
                 efc.addListener(efc.constants.Events.VALUE_LOADED, function(event, args) {
-                  var loadedValue = efc.service.getComponentValue(efc.getComponent());
+                  var loadedValue = efc.service.getComponentValue(scope.formId, efc.getComponent());
                   if (loadedValue) {
                     scope.$apply(function() {
                       scope.values = JSON.parse(loadedValue);
@@ -518,7 +518,7 @@
 
               efc.addValueLoadedListener = function() {
                 efc.addListener(efc.constants.Events.VALUE_LOADED, function(event, args) {
-                  var loadedValue = efc.service.getComponentValue(efc.getComponent());
+                  var loadedValue = efc.service.getComponentValue(scope.formId, efc.getComponent());
                   if (loadedValue) {
                     scope.$apply(function() {
                       scope[scope.ngModelAttr] = JSON.parse(loadedValue);
@@ -612,7 +612,7 @@
 
               efc.addValueLoadedListener = function() {
                 efc.addListener(efc.constants.Events.VALUE_LOADED, function(event, args) {
-                  var loadedValue = efc.service.getComponentValue(efc.getComponent());
+                  var loadedValue = efc.service.getComponentValue(scope.formId, efc.getComponent());
                   if (loadedValue) {
                     scope.$apply(function() {
                       scope.values = JSON.parse(loadedValue);
@@ -781,13 +781,13 @@
               };
 
               var saveValues = function () {
-                var contentAsJson = JSON.stringify(EasyFormService.easyForm);
+                var contentAsJson = JSON.stringify(EasyFormService.easyForms[scope.formId]);
                 bkUtils.saveFile(component.path, contentAsJson, true);
               };
 
               var loadValues = function () {
                 bkUtils.loadFile(component.path).then(function (contentAsJson) {
-                  EasyFormService.easyForm = JSON.parse(contentAsJson);
+                  EasyFormService.easyForms[scope.formId] = JSON.parse(contentAsJson);
                   $rootScope.$broadcast(EasyFormConstants.Events.VALUE_LOADED);
                 });
               };
@@ -891,7 +891,7 @@
                         EasyFormConstants.Components.SaveValuesButton.type) == -1
                         || component.type.indexOf(
                         EasyFormConstants.Components.LoadValuesButton.type) == -1)) {
-                      EasyFormService.addComponent(component);
+                      EasyFormService.addComponent($scope.update_id, component);
                     }
 
                   });
@@ -983,16 +983,19 @@
 
   module.service('EasyFormService', function () {
     var service = {
-      easyForm: {},
-      addComponent: function (component) {
-        this.easyForm[component.label] = component;
+      easyForms: {},
+      addComponent: function (formId, component) {
+        if (!this.easyForms[formId]) {
+          this.easyForms[formId] = {};
+        }
+        this.easyForms[formId][component.label] = component;
       },
       setComponentValue: function (formId, evaluatorId, component, value) {
-        if (!this.easyForm.ready) {
+        if (!(this.easyForms[formId] && this.easyForms[formId].ready)) {
           return;
         }
-        if (this.easyForm[component.label]) {
-          this.easyForm[component.label].currentValue = value;
+        if (this.easyForms[formId][component.label]) {
+          this.easyForms[formId][component.label].currentValue = value;
         }
         if (window.languageServiceBase && window.languageServiceBase[evaluatorId]) {
           var req = $.ajax({
@@ -1012,9 +1015,9 @@
           });
         }
       },
-      getComponentValue: function (component) {
-        if (this.easyForm[component.label]) {
-          return this.easyForm[component.label].currentValue;
+      getComponentValue: function (formId, component) {
+        if (this.easyForms[formId] && this.easyForms[formId][component.label]) {
+          return this.easyForms[formId][component.label].currentValue;
         }
       },
       setReady: function (formId, evaluatorId) {
@@ -1026,15 +1029,15 @@
           });
           var self = this;
           req.done(function (ret) {
-            self.easyForm.ready = true;
+            self.easyForms[formId].ready = true;
           });
           req.error(function (jqXHR, textStatus) {
             console.error("Unable to set easyform value");
           });
         }
       },
-      setNotReady: function() {
-        this.easyForm.ready = false;
+      setNotReady: function(formId) {
+        this.easyForms[formId].ready = false;
       }
     };
     return service;

@@ -894,7 +894,7 @@
             "body": [
                 "• PlotOrientationType.VERTICAL (default)",
                 "",
-                "• PlotOrientationType.HORIZONTA"
+                "• PlotOrientationType.HORIZONTAL"
             ],
             "evaluatorReader": false
         },
@@ -4365,14 +4365,6 @@
             },
             "evaluatorReader": true,
             "lineCount": 5
-        },
-        {
-            "id": "sectionUJyN0u",
-            "type": "section",
-            "title": "(**TODO**)From a TS LoadedTable",
-            "level": 2,
-            "evaluatorReader": false,
-            "collapsed": false
         }
     ],
     "namespace": {}

@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -48,7 +48,7 @@
         {
             "id": "sectionTVNeVK",
             "type": "section",
-            "title": "Using d3.js",
+            "title": "Using D3.js",
             "level": 1,
             "evaluatorReader": false,
             "collapsed": false
@@ -57,12 +57,13 @@
             "id": "markdownArCCu2",
             "type": "markdown",
             "body": [
-                "Generate a random graph with Python, then visualize it with an [d3](http://d3js.org/) interactive force-directed graph.",
+                "Generate a random graph with Python, then visualize it with a [D3](http://d3js.org/) interactive, force-directed graph.",
                 "",
                 "The first cell is in Python, it generates the graph (made of nodes and edges, like a social network graph)",
                 "and stores it in the Beaker object.  An HTML cell creates a place to show the graph and defines some of its style.",
-                "Then a JavaScript cell gets the data from the Beaker object and renders it with d3. This final cell was a",
-                "copied almost verbatim from the [d3 documentation](http://bl.ocks.org/mbostock/4062045)."
+                "Then a JavaScript cell gets the data from the Beaker object and renders it with D3. This final cell was",
+                "copied almost verbatim from the [D3 documentation](http://bl.ocks.org/mbostock/4062045).  Other D3 examples",
+                "should be similarly easy to get working in Beaker."
             ],
             "evaluatorReader": false
         },
@@ -106,7 +107,7 @@
         {
             "id": "codegxgnTN",
             "type": "code",
-            "evaluator": "Html",
+            "evaluator": "HTML",
             "input": {
                 "body": [
                     "<style>",

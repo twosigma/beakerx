@@ -780,6 +780,11 @@
                     });
               };
 
+              var actionPerformed = function () {
+                EasyFormService.sendActionPerformed(scope.formId, scope.evaluatorId,
+                    component.label);
+              };
+
               var saveValues = function () {
                 var contentAsJson = JSON.stringify(EasyFormService.easyForms[scope.formId]);
                 bkUtils.saveFile(component.path, contentAsJson, true);
@@ -799,6 +804,7 @@
                 if (component.tag && scope.evaluatorExist) {
                   buttonComponent.attr('title', component.tag).on('click', executeCellWithTag);
                 }
+                buttonComponent.on('click', actionPerformed);
               } else if (EasyFormConstants.Components.SaveValuesButton.type == component.type) {
                 buttonComponent.text("Save");
                 buttonComponent.on('click', saveValues);
@@ -1032,12 +1038,29 @@
             self.easyForms[formId].ready = true;
           });
           req.error(function (jqXHR, textStatus) {
-            console.error("Unable to set easyform value");
+            console.log("Unable to set easyform ready.");
           });
         }
       },
       setNotReady: function(formId) {
         this.easyForms[formId].ready = false;
+      },
+      sendActionPerformed: function(formId, evaluatorId, label) {
+        if (window.languageServiceBase && window.languageServiceBase[evaluatorId]) {
+          var req = $.ajax({
+            type: "POST",
+            datatype: "json",
+            url: window.languageServiceBase[evaluatorId] + '/easyform/actionPerformed/' + formId,
+            data: {
+              label: label
+            }
+          });
+          req.done(function (ret) {
+          });
+          req.error(function (jqXHR, textStatus) {
+            console.log("Unable to send information about action performed.");
+          });
+        }
       }
     };
     return service;

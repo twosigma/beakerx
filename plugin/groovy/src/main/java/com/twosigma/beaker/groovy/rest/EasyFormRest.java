@@ -19,7 +19,9 @@ package com.twosigma.beaker.groovy.rest;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.easyform.EasyForm;
+import com.twosigma.beaker.easyform.EasyFormComponent;
 import com.twosigma.beaker.easyform.EasyFormObjectManager;
+import com.twosigma.beaker.easyform.formitem.ButtonComponent;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -78,4 +80,17 @@ public class EasyFormRest {
     easyForm.setReady();
   }
 
+  @POST
+  @Path("actionPerformed/{id}")
+  public void setReady(@PathParam("id") String id,
+                       @FormParam("label") String label) throws IOException, InterruptedException {
+    EasyForm easyForm = _easyFormObjectManager.getForm(id);
+    if (easyForm == null) {
+      return;
+    }
+    EasyFormComponent buttonComponent = easyForm.getComponentMap().get(label);
+    if (buttonComponent != null && buttonComponent instanceof ButtonComponent) {
+      ((ButtonComponent) buttonComponent).fireActionPerformed();
+    }
+  }
 }

@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -1421,7 +1421,7 @@
             "id": "markdownsfa0TD",
             "type": "markdown",
             "body": [
-                "Use log scale y axis. Note. for now. this options is only available when renderer is set to Histogram.Style.INTERACTIVE. "
+                "Use log scale y axis. "
             ],
             "evaluatorReader": false
         },
@@ -1438,7 +1438,6 @@
                     "  yLabel:\"Heights\",",
                     "  ",
                     "  log: true,",
-                    "  style: Histogram.Style.INTERACTIVE, //The render needs to be INTERACTlVE to be able to use log y",
                     "  ",
                     "  data: data1, ",
                     "  rangeMin: -3, ",
@@ -1451,7 +1450,7 @@
                 "state": {}
             },
             "evaluatorReader": true,
-            "lineCount": 14
+            "lineCount": 13
         }
     ],
     "namespace": {}

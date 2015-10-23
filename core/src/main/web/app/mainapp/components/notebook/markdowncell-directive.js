@@ -17,19 +17,14 @@
 (function() {
   'use strict';
   var module = angular.module('bk.notebook');
-  module.directive('bkMarkdownCell', [
-      'bkSessionManager',
-      'bkHelper',
-      'bkCoreManager',
-      '$timeout', function(
-        bkSessionManager,
-        bkHelper,
-        bkCoreManager,
-        $timeout) {
 
-        return {
-          restrict: 'E',
-          template: JST['mainapp/components/notebook/markdowncell']()
-        };
-      }]);
+  module.directive('bkMarkdownCell', function(bkPublicationHelper) {
+    return {
+      restrict: 'E',
+      template: JST['mainapp/components/notebook/markdowncell'](),
+      controller: function($scope) {
+        bkPublicationHelper.helper('', $scope);
+      }
+    };
+  });
 })();

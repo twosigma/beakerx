@@ -740,7 +740,7 @@
 
         //strip out the shell IDs
         _(notebookModelCopy.evaluators).each(function(evaluator) {
-          delete evaluator.shellID;
+          if (_.isObject(evaluator)) delete evaluator.shellID;
         });
 
         // generate pretty JSON

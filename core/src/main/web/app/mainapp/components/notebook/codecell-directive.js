@@ -24,6 +24,7 @@
       bkCellMenuPluginManager,
       bkSessionManager,
       bkCoreManager,
+      bkPublicationHelper,
       $timeout) {
 
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
@@ -156,7 +157,6 @@
         $scope.$watch('cellmodel.initialization', editedListener);
         $scope.$watch('cellmodel.input.body', editedListener);
         $scope.$watch('cellmodel.output.result', editedListener);
-        $scope.$watch('cellmodel.metadata.publication-id', editedListener);
 
         $scope.autocomplete = function(cpos, onResults) {
           var evaluator = bkEvaluatorManager.getEvaluator($scope.cellmodel.evaluator);
@@ -216,28 +216,6 @@
           bkUtils.refreshRootScope();
         };
 
-        $scope.getPublishData = function() {
-          var evaluator = _(bkSessionManager.getRawNotebookModel().evaluators)
-            .find(function(evaluator) {
-              return evaluator.name === $scope.cellmodel.evaluator;
-            });
-          var cells = [$scope.cellmodel];
-          return bkUtils.generateNotebook([evaluator], cells, $scope.cellmodel.metadata);
-        };
-
-        $scope.cellmenu.addItem({
-          name: 'Publish',
-          action: function() {
-            var notebook = $scope.getPublishData();
-            function cb(r) {
-              if (r != 'done') {
-                $scope.cellmodel.metadata = {'publication-id': r};
-              }
-            }
-            bkCoreManager.showPublishForm(notebook, cb);
-          }
-        });
-
         $scope.cellmenu.addItem({
           name: 'Show input cell',
           isChecked: function() {
@@ -292,8 +270,9 @@
           }
         });
 
+        bkPublicationHelper.helper(CELL_TYPE, $scope);
       },
-      link: function(scope, element, attrs) {
+      link: function(scope, element) {
         scope.showDebug = false;
 
         function isFullScreen(cm) {

@@ -23,8 +23,8 @@
         bkEvaluatorManager,
         bkSessionManager,
         bkCoreManager,
-        bkCellMenuPluginManager,
-        $timeout) {
+        bkPublicationHelper) {
+
     var CELL_TYPE = 'section';
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {
@@ -79,7 +79,6 @@
         };
         $scope.$watch('cellmodel.title', editedListener);
         $scope.$watch('cellmodel.initialization', editedListener);
-        $scope.$watch('cellmodel.metadata.publication-id', editedListener);
 
         $scope.cellview.menu.renameItem({
           name: 'Delete cell',
@@ -126,18 +125,6 @@
             });
           return bkUtils.generateNotebook(evaluators, cells, $scope.cellmodel.metadata);
         };
-        $scope.cellview.menu.addItem({
-          name: "Publish",
-          action: function() {
-            var notebook = $scope.getPublishData();
-            function cb(r) {
-              if (r != 'done') {
-                $scope.cellmodel.metadata = {'publication-id': r};
-              }
-            }
-            bkCoreManager.showPublishForm(notebook, cb);
-          }
-        });
         $scope.cellview.menu.addItem({
           name: 'Run all',
           action: function() {
@@ -208,6 +195,8 @@
           });
           return siblingSections.indexOf($scope.cellmodel);
         };
+
+        bkPublicationHelper.helper(CELL_TYPE, $scope);
       }
     };
   });

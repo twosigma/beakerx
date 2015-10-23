@@ -355,7 +355,7 @@
                 "The **File → Publish** menu command opens a dialog where you can log into the publication server, and then publish your notebook, including adding a preview image, meta-data, and a preview image.",
                 "Later on you can update, edit, or delete your publication.",
                 "",
-                "In the same way you can also use **Publish** in three-dot menu for code cells and section cells to publish certain parts of your notebook."
+                "In the same way you can also use **Publish** in three-dot menu for cells and sections to publish certain parts of your notebook."
             ],
             "evaluatorReader": false,
             "mode": "preview"

@@ -450,6 +450,10 @@
                           .bins(model.bit_count)
                           (dataset);
               for(var j = 0; j < value.length; j++){
+                if (newmodel.cumulative && j != 0) {
+                  value[j].y = value[j - 1].y + value[j].y;
+                }
+
                 var v = value[j];
                 item.x.push(v.x);
                 item.y.push(v.y);

@@ -365,6 +365,23 @@
         }
       });
       bkCoreManager.addImportInput();
+      $document.bind('drop dragover', function (e) {
+        e.preventDefault();
+      });
+      var counter = 0;
+      $document.bind('dragenter', function (e) {
+        counter++;
+        $('body').addClass('dragover');
+      });
+      $document.bind('dragleave', function (e) {
+        counter--;
+        if (counter === 0) {
+          $('body').removeClass('dragover');
+        }
+      });
+      $document.bind('drop', function() {
+        $('body').removeClass('dragover');
+      });
       window.bkHelper = bkHelper;
       for (var i in window.beaker.postHelperHooks) {
         window.beaker.postHelperHooks[i]();

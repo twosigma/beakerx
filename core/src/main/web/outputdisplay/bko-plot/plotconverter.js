@@ -447,7 +447,7 @@
                 y: []
               };
               var value = d3.layout.histogram()
-                          .bins(model.bit_count)
+                          .bins(newmodel.bitCount)
                           (dataset);
               for(var j = 0; j < value.length; j++){
                 if (newmodel.cumulative && j != 0) {

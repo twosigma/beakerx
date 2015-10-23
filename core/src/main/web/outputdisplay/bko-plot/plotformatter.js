@@ -411,7 +411,8 @@
             showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
             categoryMargin: model.category_margin,
             categoryNamesLabelAngle: model.categoryNamesLabelAngle,
-            cumulative: model.cumulative
+            cumulative: model.cumulative,
+            bitCount: model.bit_count
           };
         } else {
           newmodel = {
@@ -438,8 +439,8 @@
             showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
             categoryMargin: model.categoryMargin,
             categoryNamesLabelAngle: model.categoryNamesLabelAngle,
-            cumulative: model.cumulative
-
+            cumulative: model.cumulative,
+            bitCount: model.bitCount
           };
         }
 

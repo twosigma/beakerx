@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -34,7 +34,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -181,7 +181,7 @@
             "id": "markdownD6n1Wt",
             "type": "markdown",
             "body": [
-                "You can use onInit and onChange to handle events."
+                "You can use onInit and onChange to handle component events. For button events use actionPerfromed."
             ],
             "evaluatorReader": false
         },
@@ -191,17 +191,19 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "f = new EasyForm(\"Form and Run\")",
-                    "f.addTextField(\"first\", 15)",
-                    "f.addTextField(\"last\", 15).onInit({f['last'] = \"setinit\"}).onChange({text -> f['first'] = text})",
-                    "f"
+                    "f1 = new EasyForm(\"Form and Run\")",
+                    "f1.addTextField(\"first\", 15)",
+                    "f1.addTextField(\"last\", 15).onInit({f1['last'] = \"setinit\"}).onChange({text -> f1['first'] = text})",
+                    "button = f1.addButton(\"actionPerformed button\")",
+                    "button.actionPerformed = {println(\"action performed\")}    ",
+                    "f1"
                 ]
             },
             "output": {
                 "state": {},
                 "result": {
-                    "update_id": "d178101b-1f54-4d22-b363-8f4a04193f62",
-                    "update_time": 1445352766774,
+                    "update_id": "d8d9f247-2f6b-461a-98c3-07de1b81caa8",
+                    "update_time": 1445609089985,
                     "type": "EasyForm",
                     "caption": "Form and Run",
                     "components": [
@@ -209,27 +211,33 @@
                             "type": "TextField",
                             "label": "first",
                             "enabled": true,
-                            "value": "setinit12",
+                            "value": "setinit",
                             "width": "15",
-                            "currentValue": "setinit12"
+                            "currentValue": "setinit"
                         },
                         {
                             "type": "TextField",
                             "label": "last",
                             "enabled": true,
-                            "value": "setinit12",
+                            "value": "setinit",
                             "width": "15",
-                            "currentValue": "setinit12"
+                            "currentValue": "setinit"
+                        },
+                        {
+                            "type": "ButtonComponent",
+                            "label": "actionPerformed button",
+                            "enabled": "Groovy",
+                            "value": ""
                         }
                     ]
                 },
                 "selectedType": "EasyForm",
                 "pluginName": "Groovy",
-                "shellId": "eb32b49f-268c-4b26-ad75-6e796456796e",
-                "elapsedTime": 600
+                "shellId": "42964a8a-8650-480f-82b1-9ca1cd703684",
+                "elapsedTime": 587
             },
             "evaluatorReader": true,
-            "lineCount": 4
+            "lineCount": 6
         },
         {
             "id": "sectionWzbYct",
@@ -346,7 +354,7 @@
                             "type": "ListComponent",
                             "label": "List",
                             "enabled": true,
-                            "value": "[a]",
+                            "value": "[[a]]",
                             "size": "4",
                             "multipleSelection": "true",
                             "values": [
@@ -376,7 +384,7 @@
                             "type": "ListComponent",
                             "label": "List Two Row",
                             "enabled": true,
-                            "value": "[a]",
+                            "value": "[[a]]",
                             "size": "2",
                             "multipleSelection": "true",
                             "values": [

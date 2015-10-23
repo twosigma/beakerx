@@ -11,15 +11,6 @@
             }
         },
         {
-            "name": "TeX",
-            "plugin": "TeX",
-            "view": {
-                "cm": {
-                    "mode": "stex"
-                }
-            }
-        },
-        {
             "name": "JavaScript",
             "plugin": "JavaScript",
             "jsSetting2": "",

@@ -22,6 +22,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
 
@@ -34,15 +35,15 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
     serialize(histogram, jgen);
 
     if (histogram.getColors() != null) {
-      jgen.writeObjectField("color", histogram.getColors());
+      jgen.writeObjectField("colors", histogram.getColors());
     } else {
       jgen.writeObjectField("color", histogram.getColor());
     }
 
     if (histogram.getListData() != null) {
-      jgen.writeObjectField("data", histogram.getListData());
+      jgen.writeObjectField("graphics_list", histogram.getListData());
     } else {
-      jgen.writeObjectField("data", histogram.getData());
+      jgen.writeObjectField("graphics_list", Arrays.asList(histogram.getData()));
     }
 
     jgen.writeObjectField("range_min", histogram.getRangeMin());

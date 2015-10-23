@@ -446,18 +446,30 @@
                 x: [],
                 y: []
               };
-              var value = d3.layout.histogram()
-                          .bins(newmodel.bitCount)
-                          (dataset);
-              for(var j = 0; j < value.length; j++){
+              var histvalues = d3.layout.histogram()
+                               .bins(newmodel.bitCount)
+                               (dataset);
+
+              var sumy = 0;
+              if(newmodel.normed === true) {
+                for (var j = 0; j < histvalues.length; j++) {
+                  sumy += histvalues[j].y;
+                }
+              }
+
+              for(var j = 0; j < histvalues.length; j++){
                 if (newmodel.cumulative && j != 0) {
-                  value[j].y = value[j - 1].y + value[j].y;
+                  histvalues[j].y = histvalues[j - 1].y + histvalues[j].y;
                 }
 
-                var v = value[j];
-                item.x.push(v.x);
-                item.y.push(v.y);
-                item.width = v.dx;
+                if(newmodel.normed === true){
+                  histvalues[j].y = histvalues[j].y / sumy;
+                }
+
+                var histvalue = histvalues[j];
+                item.x.push(histvalue.x);
+                item.y.push(histvalue.y);
+                item.width = histvalue.dx;
               }
 
               processItem(item, newmodel, yAxisRSettings, yAxisSettings, logx);

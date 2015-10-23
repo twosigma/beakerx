@@ -412,7 +412,8 @@
             categoryMargin: model.category_margin,
             categoryNamesLabelAngle: model.categoryNamesLabelAngle,
             cumulative: model.cumulative,
-            bitCount: model.bit_count
+            bitCount: model.bit_count,
+            normed: model.normed
           };
         } else {
           newmodel = {
@@ -440,7 +441,8 @@
             categoryMargin: model.categoryMargin,
             categoryNamesLabelAngle: model.categoryNamesLabelAngle,
             cumulative: model.cumulative,
-            bitCount: model.bitCount
+            bitCount: model.bitCount,
+            normed: model.normed
           };
         }
 

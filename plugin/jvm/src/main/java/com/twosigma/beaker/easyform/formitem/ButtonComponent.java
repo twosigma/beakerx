@@ -25,8 +25,12 @@ public class ButtonComponent extends EasyFormComponent {
 
   private String tag;
   private List<EasyFormListener> actionListeners = new LinkedList<>();
+  public EasyFormListener actionPerformed;
 
   public void fireActionPerformed() {
+    if (actionPerformed != null) {
+      actionPerformed.execute(getLabel());
+    }
     for (EasyFormListener listener : actionListeners) {
       listener.execute(getLabel());
     }

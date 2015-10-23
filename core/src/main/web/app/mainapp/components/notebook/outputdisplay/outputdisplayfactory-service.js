@@ -210,7 +210,8 @@
       "BeakerOutputContainerDisplay": ["OutputContainer", "Text"],
       "OutputContainerCell": ["OutputContainer", "Text"],
       "OutputContainer": ["OutputContainer", "Text"],
-      "CategoryPlot": ["Plot", "Text"]
+      "CategoryPlot": ["Plot", "Text"],
+      "Histogram": ["Plot", "Text"]
     };
     var factory = {
       add: function(type, impl) {

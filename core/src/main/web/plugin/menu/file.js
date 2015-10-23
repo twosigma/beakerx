@@ -83,15 +83,6 @@ define(function(require, exports, module) {
       tooltip: "Publish the notebook to Beaker Publications"
     },
     {
-      name: "Share to Web",
-      sortorder: 150,
-      id: "share-to-web-menuitem",
-      action: function () {
-        bkHelper.shareNotebook();
-      },
-      tooltip: "Share the notebook to a public web page using an anonymous github gist"
-    },
-    {
       name: "Close",
       id: "close-menuitem",
       sortorder: 160,

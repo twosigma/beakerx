@@ -20,10 +20,10 @@
   var module = angular.module('bk.core');
 
   module.controller('publicationCtrl',
-    ['$scope', 'bkUtils', 'bkPublicationApi', 'bkPublicationAuth', 'bkSessionManager', '$modalInstance', '$location', '$window',
-    function($scope, bkUtils, bkPublicationApi, bkPublicationAuth, bkSessionManager, $modalInstance, $location, $window) {
+    ['$scope', 'bkHelper', 'bkPublicationApi', 'bkPublicationAuth', 'bkSessionManager', '$modalInstance', '$location', '$window', 'nModel',
+    function($scope, bkHelper, bkPublicationApi, bkPublicationAuth, bkSessionManager, $modalInstance, $location, $window, nModel) {
 
-      var notebook = bkSessionManager.getRawNotebookModel();
+      var notebook = nModel || bkSessionManager.getRawNotebookModel();
 
       $scope.user = {role: 'beaker'};
       $scope.model = {};
@@ -148,18 +148,25 @@
         return notebook.metadata && notebook.metadata['publication-id'];
       }
 
+      function setModelContents() {
+        bkHelper.updateCellsFromDOM(notebook.cells);
+        $scope.model.contents = bkHelper.sanitizeNotebookModel(notebook);
+      }
+
       function createPublication() {
-        $scope.model.contents = bkSessionManager.getSaveData().notebookModelAsString;
+        setModelContents();
         return bkPublicationApi.createPublication($scope.model)
         .then(function(resp) {
-          // save publication id as notebook metadata
-          bkSessionManager.getRawNotebookModel().metadata = {'publication-id': resp.data['public-id']};
+          // save publication id as notebook metadata - only for entire notebook publication
+          if (_.isUndefined(nModel)) {
+            bkSessionManager.getRawNotebookModel().metadata = {'publication-id': resp.data['public-id']};
+          }
           return resp.data['public-id'];
         });
       }
 
       function updatePublication() {
-        $scope.model.contents = bkSessionManager.getSaveData().notebookModelAsString;
+        setModelContents();
         return bkPublicationApi.updatePublication(notebook.metadata['publication-id'], $scope.model)
         .then(function() {
           return notebook.metadata['publication-id'];
@@ -173,10 +180,12 @@
 
       $scope.publish = function(action, skipAttachmentDeletion) {
         var tab = $window.open(bkPublicationApi.getBaseUrl() + '/#/publication_loading');
+        var publicId;
         $scope.saving = true;
         (action == "update" ? updatePublication : createPublication)()
         .then(function(publicationId) {
           $scope.saving = false;
+          publicId = publicationId;
           tab.location = bkPublicationApi.getBaseUrl() + '/#/publications/' + publicationId;
         })
         .then(function() {
@@ -186,7 +195,7 @@
         })
         .then(function() {
           delete $scope.deletedAttachment;
-          $scope.close();
+          $scope.close(!_.isUndefined(nModel) && publicId);
         });
       };
 
@@ -212,8 +221,8 @@
         $scope.initializing = false;
       });
 
-      $scope.close = function() {
-        $modalInstance.close('ok');
+      $scope.close = function(publicationId) {
+        $modalInstance.close(publicationId || 'done');
       };
 
       $scope.signupUrl = function() {

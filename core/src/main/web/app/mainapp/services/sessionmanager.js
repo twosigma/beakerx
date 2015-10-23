@@ -767,28 +767,7 @@
           return angular.toJson(_v);
         },
         toCleanPrettyJson: function() {
-          var notebookModelCopy = angular.copy(_v);
-          bkHelper.stripOutBeakerPrefs(notebookModelCopy);
-          //Save running cells as interrupted
-          if (notebookModelCopy.cells) {
-            for (var i = 0; i < notebookModelCopy.cells.length; i++) {
-              var currentCell = notebookModelCopy.cells[i];
-              if (currentCell && currentCell.output && currentCell.output.result
-                  && currentCell.output.result.innertype === 'Progress') {
-                currentCell.output.result.innertype = 'Error';
-                currentCell.output.result.object = 'Interrupted, saved while running.'
-              }
-            }
-          }
-
-          //strip out the shell IDs
-          _(notebookModelCopy.evaluators).each(function(evaluator) {
-            delete evaluator.shellID;
-          });
-
-          // generate pretty JSON
-          var prettyJson = bkUtils.toPrettyJson(notebookModelCopy);
-          return prettyJson;
+          return bkHelper.sanitizeNotebookModel(_v);
         }
       };
     })();

@@ -156,6 +156,7 @@
         $scope.$watch('cellmodel.initialization', editedListener);
         $scope.$watch('cellmodel.input.body', editedListener);
         $scope.$watch('cellmodel.output.result', editedListener);
+        $scope.$watch('cellmodel.metadata.publication-id', editedListener);
 
         $scope.autocomplete = function(cpos, onResults) {
           var evaluator = bkEvaluatorManager.getEvaluator($scope.cellmodel.evaluator);
@@ -214,16 +215,27 @@
           notebookCellOp.appendAfter(thisCellId, newCell);
           bkUtils.refreshRootScope();
         };
-        $scope.getShareMenuPlugin = function() {
-          return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
+
+        $scope.getPublishData = function() {
+          var evaluator = _(bkSessionManager.getRawNotebookModel().evaluators)
+            .find(function(evaluator) {
+              return evaluator.name === $scope.cellmodel.evaluator;
+            });
+          var cells = [$scope.cellmodel];
+          return bkUtils.generateNotebook([evaluator], cells, $scope.cellmodel.metadata);
         };
-        var shareMenu = {
-          name: 'Share',
-          items: []
-        };
-        $scope.cellmenu.addItem(shareMenu);
-        $scope.$watch('getShareMenuPlugin()', function() {
-          shareMenu.items = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
+
+        $scope.cellmenu.addItem({
+          name: 'Publish',
+          action: function() {
+            var notebook = $scope.getPublishData();
+            function cb(r) {
+              if (r != 'done') {
+                $scope.cellmodel.metadata = {'publication-id': r};
+              }
+            }
+            bkCoreManager.showPublishForm(notebook, cb);
+          }
         });
 
         $scope.cellmenu.addItem({
@@ -454,6 +466,7 @@
           }
         });
 
+        /*
         scope.getShareData = function() {
           var evaluator = _(bkSessionManager.getRawNotebookModel().evaluators)
               .find(function(evaluator) {
@@ -462,6 +475,7 @@
           var cells = [scope.cellmodel];
           return bkUtils.generateNotebook([evaluator], cells);
         };
+        */
 
         scope.$on('beaker.cell.added', function(e, cellmodel) {
           if (cellmodel === scope.cellmodel) {

@@ -971,7 +971,7 @@
         var dd = $modal.open(options);
         return dd.result;
       },
-      showPublishForm: function() {
+      showPublishForm: function(nModel, callback) {
         var options = {
           windowClass: 'beaker-sandbox',
           backdropClass: 'beaker-sandbox',
@@ -979,11 +979,16 @@
           keyboard: true,
           backdropClick: true,
           controller: 'publicationCtrl',
-          template: JST['mainapp/components/publication/publish']()
+          template: JST['mainapp/components/publication/publish'](),
+          resolve: {nModel: function() { return (nModel ? nModel : undefined); } }
         };
 
         var dd = $modal.open(options);
-        return dd.result;
+        return dd.result.then(function(result) {
+          if (callback) {
+            callback(result);
+          }
+        });
       }
     };
 

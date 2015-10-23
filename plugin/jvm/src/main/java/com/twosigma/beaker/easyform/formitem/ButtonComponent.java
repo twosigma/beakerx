@@ -30,13 +30,13 @@ public class ButtonComponent extends EasyFormComponent {
   public void fireActionPerformed() {
     if (actionPerformed != null) {
       actionPerformed.execute(getLabel());
-    }
-    for (EasyFormListener listener : actionListeners) {
-      listener.execute(getLabel());
+      for (EasyFormListener listener : actionListeners) {
+        listener.execute(getLabel());
+      }
     }
   }
 
-  public EasyFormComponent actionPerformed(final EasyFormListener listener) {
+  public EasyFormComponent addAction(final EasyFormListener listener) {
     addActionListener(listener);
     return this;
   }

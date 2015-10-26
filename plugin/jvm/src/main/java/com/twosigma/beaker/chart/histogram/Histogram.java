@@ -41,7 +41,6 @@ public class Histogram extends AbstractChart {
   private   List<List<Number>> listData;
 
 
-  private boolean     log         = false;
   private DisplayMode displayMode = DisplayMode.OVERLAP;
 
 
@@ -102,11 +101,11 @@ public class Histogram extends AbstractChart {
   }
 
   public boolean getLog() {
-    return log;
+    return getLogY();
   }
 
   public void setLog(boolean log) {
-    this.log = log;
+    setLogY(log);
   }
 
   @SuppressWarnings("unchecked")

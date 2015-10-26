@@ -69,7 +69,7 @@ public class Histogram extends AbstractChart {
     this.bitCount = bitCount;
   }
 
-  public boolean isRightClose() {
+  public boolean getRightClose() {
     return rightClose;
   }
 

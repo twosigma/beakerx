@@ -447,12 +447,53 @@
                 x: [],
                 y: []
               };
+
+              var findElement = function (a, THRESHOLD, prev) {
+                var diff;
+                var index = -1;
+                for (var i = 0; i < a.length; i++) {
+                  if ((prev === true) ? a[i] < THRESHOLD : a[i] > THRESHOLD) {
+                    if (index === -1) {
+                      diff = (prev === true) ? THRESHOLD - a[i] : a[i] - THRESHOLD;
+                      index = i;
+                    } else {
+                      var diff_ = (prev === true) ? THRESHOLD - a[i] : a[i] - THRESHOLD;
+                      if (diff_ < diff) {
+                        diff = diff_;
+                        index = i;
+                      }
+                    }
+                  }
+                }
+                return a[index];
+              };
+
               if(newmodel.displayMode === 'STACK' && list.length > 1){
                 item.bases = [];
               }
 
               var histvalues = d3.layout.histogram()
                 .bins(newmodel.bitCount)
+                .range(function (values) {
+
+                  if (newmodel.rangeMin !== undefined && newmodel.rangeMax !== undefined) {
+                    if (newmodel.rightClose === true) {
+                      return [newmodel.rangeMin, findElement(values, newmodel.rangeMax, true)];
+                    } else {
+                      return [findElement(values, newmodel.rangeMin, false), newmodel.rangeMax];
+                    }
+                  } else if (newmodel.rangeMin !== undefined) {
+                    if (newmodel.rightClose !== true) {
+                      return [findElement(values, newmodel.rangeMin, false), d3.max(values)];
+                    }
+                  } else if (newmodel.rangeMax !== undefined) {
+                    if (newmodel.rightClose === true) {
+                      return [d3.min(values), findElement(values, newmodel.rangeMax, true)];
+                    }
+                  }
+
+                  return [d3.min(values), d3.max(values)];
+                })
                 .range([newmodel.rangeMin, newmodel.rangeMax])
                 (dataset);
               datasets.push(histvalues);

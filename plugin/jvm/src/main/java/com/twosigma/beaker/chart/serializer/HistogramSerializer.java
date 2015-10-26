@@ -46,6 +46,7 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
       jgen.writeObjectField("graphics_list", Arrays.asList(histogram.getData()));
     }
 
+    jgen.writeObjectField("right_close", histogram.getRightClose());
     jgen.writeObjectField("range_min", histogram.getRangeMin());
     jgen.writeObjectField("range_max", histogram.getRangeMax());
     jgen.writeObjectField("bit_count", histogram.getBitCount());

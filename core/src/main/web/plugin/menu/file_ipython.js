@@ -119,8 +119,6 @@ define(function(require, exports, module) {
           {
             "name": "JavaScript",
             "plugin": "JavaScript",
-            "jsSetting2": "",
-            "jsSetting1": "",
             "view": {
               "cm": {
                 "mode": "javascript",

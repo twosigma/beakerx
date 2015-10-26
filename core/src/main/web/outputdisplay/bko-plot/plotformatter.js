@@ -415,7 +415,8 @@
             bitCount: model.bit_count,
             normed: model.normed,
             rangeMin: model.range_min,
-            rangeMax: model.range_max
+            rangeMax: model.range_max,
+            displayMode: model.displayMode != null ? model.displayMode : 'OVERLAP'
           };
         } else {
           newmodel = {
@@ -446,7 +447,8 @@
             bitCount: model.bitCount,
             normed: model.normed,
             rangeMin: model.range_min,
-            rangeMax: model.range_max
+            rangeMax: model.range_max,
+            displayMode: model.displayMode != null ? model.displayMode : 'OVERLAP'
           };
         }
 

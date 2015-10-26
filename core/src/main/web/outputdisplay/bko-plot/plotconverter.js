@@ -438,6 +438,7 @@
             }
             break;
           case "Histogram":
+            var datasets = [];
             for (var i = 0; i < list.length; i++) {
               var dataset = list[i];
               var item = {
@@ -446,10 +447,15 @@
                 x: [],
                 y: []
               };
+              if(newmodel.displayMode === 'STACK' && list.length > 1){
+                item.bases = [];
+              }
+
               var histvalues = d3.layout.histogram()
                 .bins(newmodel.bitCount)
                 .range([newmodel.rangeMin, newmodel.rangeMax])
                 (dataset);
+              datasets.push(histvalues);
 
               var sumy = 0;
               if(newmodel.normed === true) {
@@ -465,6 +471,10 @@
 
                 if(newmodel.normed === true){
                   histvalues[j].y = histvalues[j].y / sumy;
+                }
+
+                if(newmodel.displayMode === 'STACK' && i != 0){
+                  histvalues[j].y = histvalues[j].y + datasets[i - 1][j].y;
                 }
 
                 var histvalue = histvalues[j];
@@ -490,6 +500,9 @@
 
               newmodel.data.push(item);
 
+            }
+            if(newmodel.displayMode === 'STACK' && list.length > 1){
+              _(newmodel.data).reverse().value();
             }
             break;
           default:

@@ -25,7 +25,7 @@ public class ButtonComponent extends EasyFormComponent {
 
   private String tag;
   private List<EasyFormListener> actionListeners = new LinkedList<>();
-  public EasyFormListener actionPerformed;
+  public EasyFormListener actionPerformed = new EmptyListener();
 
   public void fireActionPerformed() {
     if (actionPerformed != null) {

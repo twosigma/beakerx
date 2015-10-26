@@ -477,6 +477,11 @@
                   histvalues[j].y = histvalues[j].y + datasets[i - 1][j].y;
                 }
 
+                if(newmodel.displayMode === 'SIDE_BY_SIDE'){
+                  histvalues[j].dx = histvalues[j].dx / list.length;
+                  histvalues[j].x += histvalues[j].dx * i;
+                }
+
                 var histvalue = histvalues[j];
                 item.x.push(histvalue.x);
                 item.y.push(histvalue.y);

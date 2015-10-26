@@ -241,12 +241,13 @@
             });
         return deferred.promise;
       },
-      generateNotebook: function(evaluators, cells) {
-        return {
+      generateNotebook: function(evaluators, cells, metadata) {
+        var notebook = {
           beaker: "2",
           evaluators: evaluators,
           cells: cells
         };
+        return _.isUndefined(metadata) ? notebook : _.extend(notebook, {metadata: metadata});
       },
       loadFile: function(path) {
         var deferred = angularUtils.newDeferred();

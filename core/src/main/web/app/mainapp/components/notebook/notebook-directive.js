@@ -97,10 +97,6 @@
           getViewModel: function () {
             return this._viewModel;
           },
-          shareAndOpenPublished: function () {
-            // TODO, this is an ugly hack. Need refactoring.
-            shareMenu.items[0].action();
-          },
           deleteAllOutputCells: function () {
             bkSessionManager.getNotebookCellOp().deleteAllOutputCells();
           },
@@ -255,20 +251,6 @@
           return $scope.getChildren().length == 0;
         };
 
-        $scope.getShareMenuPlugin = function () {
-          return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
-        };
-        $scope.getShareData = function () {
-          return bkSessionManager.getRawNotebookModel();
-        };
-        var shareMenu = {
-          name: 'Share',
-          items: []
-        };
-        $scope.$watch('getShareMenuPlugin()', function() {
-          shareMenu.items = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
-        });
-
         $scope.$watch(function() {
           return document.body.clientHeight;
         }, function(v, prev) {
@@ -306,8 +288,7 @@
               bkSessionManager.setRootCellInitialization(!$scope.isInitializationCell());
               notebookCellOp.reset();
             }
-          },
-          shareMenu
+          }
         ];
 
         bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {

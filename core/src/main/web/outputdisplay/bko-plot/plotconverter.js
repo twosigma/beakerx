@@ -504,6 +504,7 @@
               for (var j = 0; j < item.x.length; j++) {
                 var ele = {};
                 ele.x = item.x[j];
+                ele.x2 = item.x[j] + item.width;
                 ele.y = item.y[j];
 
                 if(processElement(item, j, ele, yAxisSettings, logx)){

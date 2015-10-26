@@ -29,8 +29,8 @@ public class Histogram extends AbstractChart {
     SIDE_BY_SIDE
   }
 
-  private   int                rangeMin;
-  private   int                rangeMax;
+  private   Integer            rangeMin;
+  private   Integer            rangeMax;
   private   int                bitCount;
   private   boolean            rightClose;
   private   boolean            cumulative;
@@ -45,19 +45,19 @@ public class Histogram extends AbstractChart {
   private DisplayMode displayMode = DisplayMode.OVERLAP;
 
 
-  public int getRangeMin() {
+  public Integer getRangeMin() {
     return rangeMin;
   }
 
-  public void setRangeMin(int rangeMin) {
+  public void setRangeMin(Integer rangeMin) {
     this.rangeMin = rangeMin;
   }
 
-  public int getRangeMax() {
+  public Integer getRangeMax() {
     return rangeMax;
   }
 
-  public void setRangeMax(int rangeMax) {
+  public void setRangeMax(Integer rangeMax) {
     this.rangeMax = rangeMax;
   }
 

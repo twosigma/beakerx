@@ -464,7 +464,6 @@
                   }
                   return [d3.min(values), d3.max(values)];
                 })
-                .range([newmodel.rangeMin, newmodel.rangeMax])
               (dataset);
               datasets.push(histvalues);
 

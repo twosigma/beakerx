@@ -447,8 +447,9 @@
                 y: []
               };
               var histvalues = d3.layout.histogram()
-                               .bins(newmodel.bitCount)
-                               (dataset);
+                .bins(newmodel.bitCount)
+                .range([newmodel.rangeMin, newmodel.rangeMax])
+                (dataset);
 
               var sumy = 0;
               if(newmodel.normed === true) {

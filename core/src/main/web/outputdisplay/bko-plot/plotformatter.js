@@ -413,7 +413,9 @@
             categoryNamesLabelAngle: model.categoryNamesLabelAngle,
             cumulative: model.cumulative,
             bitCount: model.bit_count,
-            normed: model.normed
+            normed: model.normed,
+            rangeMin: model.range_min,
+            rangeMax: model.range_max
           };
         } else {
           newmodel = {
@@ -442,7 +444,9 @@
             categoryNamesLabelAngle: model.categoryNamesLabelAngle,
             cumulative: model.cumulative,
             bitCount: model.bitCount,
-            normed: model.normed
+            normed: model.normed,
+            rangeMin: model.range_min,
+            rangeMax: model.range_max
           };
         }
 

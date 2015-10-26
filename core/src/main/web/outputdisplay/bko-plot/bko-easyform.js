@@ -773,11 +773,11 @@
                 var result;
                 if (cellOp.hasUserTag(component.tag)) {
                   result = cellOp.getCellsWithUserTag(component.tag);
+                  bkCoreManager.getBkApp().evaluateRoot(result)
+                      .catch(function (data) {
+                        console.log('Evaluation failed');
+                      });
                 }
-                bkCoreManager.getBkApp().evaluateRoot(result)
-                    .catch(function (data) {
-                      console.log('Evaluation failed');
-                    });
               };
 
               var saveValues = function () {
@@ -799,6 +799,9 @@
                 if (component.tag && scope.evaluatorExist) {
                   buttonComponent.attr('title', component.tag).on('click', executeCellWithTag);
                 }
+                component.click = function() {
+                  buttonComponent.click();
+                };
               } else if (EasyFormConstants.Components.SaveValuesButton.type == component.type) {
                 buttonComponent.text("Save");
                 buttonComponent.on('click', saveValues);
@@ -826,10 +829,49 @@
         function ($compile, bkUtils, bkEvaluatorManager, bkSessionManager, EasyFormConstants,
                   EasyFormService) {
           return {
-            template: "<div class='easy-form-container'></div>",
+            template: "<div class='easy-form-container' bk-enter='clickRunButton()'></div>",
 
             controller: function ($scope) {
               $scope.evaluatorExist = $scope.model.getEvaluatorId && $scope.model.getEvaluatorId();
+
+
+              $scope.clickRunButton = function () {
+                if (event && event.target) {
+                  var el = $(event.target);
+                  var components = $scope.model.getCellModel().components;
+                  if (components) {
+                    var componentLabel = EasyFormService.getComponentLabel(
+                        EasyFormService.getComponentElement(el));
+                    if (componentLabel) {
+
+                      var getComponentIndex = function (label) {
+                        for (var i = 0; i < components.length; i++) {
+                          if (components[i].label === label) {
+                            return i;
+                          }
+                        }
+                      };
+
+                      var getNextButton = function (index) {
+                        for (var i = index, component = components[index];
+                             i < components.length; i++, component = components[i]) {
+                          if (component.type === EasyFormConstants.Components.ButtonComponent.type) {
+                            return component;
+                          }
+                        }
+                      };
+
+                      var index = getComponentIndex(componentLabel);
+                      var button = getNextButton(index);
+
+                      if (button) {
+                        button.click();
+                      }
+
+                    }
+                  }
+                }
+              };
 
               $scope.getUpdateService = function () {
                 if (window !== undefined && window.languageUpdateService !== undefined
@@ -884,6 +926,8 @@
                     }
                     var newElement
                         = angular.element(EasyFormConstants.Components[component.type].htmlTag);
+                    newElement.attr(EasyFormConstants.Attributes.EasyFormComponentID,
+                        component.label);
                     childScope.component.enabled = childScope.component.enabled ? true : false;
                     easyFormContainer.append($compile(newElement)(childScope));
 
@@ -981,7 +1025,7 @@
         }
       ]);
 
-  module.service('EasyFormService', function () {
+  module.service('EasyFormService', ["EasyFormConstants", function (EasyFormConstants) {
     var service = {
       easyForms: {},
       addComponent: function (formId, component) {
@@ -1038,12 +1082,32 @@
       },
       setNotReady: function(formId) {
         this.easyForms[formId].ready = false;
+      },
+      getComponentElement: function(childElement) {
+        var el = childElement;
+        while (el != null && el.parent() && !el.prop('tagName').toLowerCase().startsWith("easy-form")) {
+          el = el.parent();
+        }
+        if (el.prop('tagName').toLowerCase().startsWith("easy-form")) {
+          return el;
+        }
+      },
+      getComponentLabel: function(element) {
+        if (element) {
+          if (!element.jquery) {
+            element = $(element);
+          }
+          return element.attr(EasyFormConstants.Attributes.EasyFormComponentID);
+        }
       }
     };
     return service;
-  });
+  }]);
 
   module.constant("EasyFormConstants", {
+    Attributes: {
+      EasyFormComponentID: "data-easyform-component-id"
+    },
     Events: {
       UPDATED: "easyformupdated",
       VALUE_LOADED: "easyformvalueloaded"

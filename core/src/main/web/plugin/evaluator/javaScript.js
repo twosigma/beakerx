@@ -316,16 +316,6 @@ define(function(require, exports, module) {
           options);
       cb(ret,undefined,true);
     },
-    updateJsSetting1: function() {
-      //console.log("dummy Setting#1", this.settings.pySetting1);
-    },
-    updateJsSetting2: function() {
-      //console.log("dummy Setting#2", this.settings.jsSetting2);
-    },
-    updateAll: function() {
-      this.updateJsSetting1();
-      this.updateJsSetting2();
-    },
     exit: function(cb) {
       this.cancelExecution();
       JavascriptCancelFunction = null;
@@ -334,12 +324,6 @@ define(function(require, exports, module) {
     }
   };
   var JavaScript0 = function(settings) {
-    if (!settings.jsSetting2) {
-      settings.jsSetting2 = "";
-    }
-    if (!settings.jsSetting1) {
-      settings.jsSetting1 = "";
-    }
     if (!settings.view) {
       settings.view = {};
     }
@@ -349,7 +333,6 @@ define(function(require, exports, module) {
     settings.view.cm.mode = JavaScript_0.cmMode;
     settings.view.cm.background = JavaScript_0.background;
     this.settings = settings;
-    this.updateAll();
     this.perform = function(what) {
       var action = this.spec[what].action;
       this[action]();

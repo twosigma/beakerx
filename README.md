@@ -80,12 +80,10 @@ own [repository](https://github.com/twosigma/beaker-sharing-server).
 
 We welcome developers to extend and improve Beaker in ways that can
 benefit everyone. In order for us to accept your code or pull request,
-we need for you to fill out and send back to us a signed copy of the
+we need for you to fill out and email back to us a scan of a signed copy of the
 [Contributor License Agreement](http://beakernotebook.com/cla.zip).
 
 We're also looking to expand our full-time, NYC-based engineering team
-by two positions.  Especially high priority is our need for a
-[front-end web developer](http://www.twosigma.com/careers/position/935.html),
-but also hiring [full-stack](http://www.twosigma.com/careers/position/936.html).
+with a [full-stack web developer](http://www.twosigma.com/careers/position/936.html).
 
 

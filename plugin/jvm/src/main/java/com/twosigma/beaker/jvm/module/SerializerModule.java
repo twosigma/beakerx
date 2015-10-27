@@ -28,6 +28,7 @@ import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryBars;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryLines;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryPoints;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryStems;
+import com.twosigma.beaker.chart.heatmap.HeatMap;
 import com.twosigma.beaker.chart.legend.LegendPosition;
 import com.twosigma.beaker.chart.serializer.AreaSerializer;
 import com.twosigma.beaker.chart.serializer.BarsSerializer;
@@ -39,6 +40,7 @@ import com.twosigma.beaker.chart.serializer.CategoryStemsSerializer;
 import com.twosigma.beaker.chart.serializer.ColorSerializer;
 import com.twosigma.beaker.chart.serializer.CombinedPlotSerializer;
 import com.twosigma.beaker.chart.serializer.CrosshairSerializer;
+import com.twosigma.beaker.chart.serializer.HeatMapSerializer;
 import com.twosigma.beaker.chart.serializer.LegendPositionSerializer;
 import com.twosigma.beaker.chart.serializer.LineSerializer;
 import com.twosigma.beaker.chart.serializer.PointsSerializer;
@@ -223,6 +225,8 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(CategoryPoints.class, injector.getInstance(CategoryPointsSerializer.class));
       module.addSerializer(CategoryLines.class, injector.getInstance(CategoryLinesSerializer.class));
       module.addSerializer(CategoryPlot.class, injector.getInstance(CategoryPlotSerializer.class));
+
+      module.addSerializer(HeatMap.class, injector.getInstance(HeatMapSerializer.class));
 
       mapper.registerModule(module);
 

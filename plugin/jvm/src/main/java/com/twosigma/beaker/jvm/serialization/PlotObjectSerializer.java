@@ -17,6 +17,7 @@ package com.twosigma.beaker.jvm.serialization;
 
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
+import com.twosigma.beaker.chart.heatmap.HeatMap;
 import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.chart.xychart.XYChart;
@@ -50,6 +51,8 @@ public class PlotObjectSerializer extends BasicObjectSerializer {
         jgen.writeObject(new CategoryPlot().add((CategoryGraphics) obj));
       }else if (expand && obj instanceof CombinedPlot) {
         jgen.writeObject((CombinedPlot) obj);
+      }else if (expand && obj instanceof HeatMap) {
+        jgen.writeObject((HeatMap) obj);
       } else {
         return false;
       }

@@ -19,7 +19,11 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.publication', ['bk.utils']);
+  var module = angular.module('bk.publication', [
+    'bk.utils',
+    'bk.core',
+    'bk.sessionManager'
+  ]);
 
   module.factory('bkPublicationApi', function (bkUtils, $localStorage, Upload) {
     var baseUrl = window.beaker !== undefined && window.beaker.pubblicationApiURL !== undefined ? window.beaker.pubblicationApiURL : 'https://pub.beakernotebook.com';
@@ -107,5 +111,60 @@
         return !!currentUser;
       }
     };
+  });
+
+  module.factory('bkPublicationHelper', function (bkUtils, bkCoreManager, bkSessionManager) {
+    return {
+      helper: publicationHelper
+    };
+
+    function publicationHelper(type, $scope) {
+      function addPublishMenuItem() {
+        var item = {
+          name: 'Publish',
+          action: function() {
+            var notebook = $scope.getPublishData();
+            var cb = function(r) {
+              if (r != 'done') {
+                $scope.cellmodel.metadata = {'publication-id': r};
+              }
+            };
+            bkCoreManager.showPublishForm(notebook, cb);
+          }
+        };
+
+        if (type == 'code') {
+          $scope.cellmenu.addItem(item);
+        } else {
+          $scope.cellview.menu.addItem(item);
+        }
+      }
+
+      function initWatcher() {
+        $scope.$watch('cellmodel.metadata.publication-id', function(newValue, oldValue) {
+          if (newValue !== oldValue) {
+            bkSessionManager.setNotebookModelEdited(true);
+          }
+        });
+      }
+
+      function initPublishDataAction() {
+        if (!angular.isFunction($scope['getPublishData'])) {
+          $scope.getPublishData = function () {
+            var evaluator = _(bkSessionManager.getRawNotebookModel().evaluators)
+              .find(function (evaluator) {
+                return (type == 'code') ? (evaluator.name === $scope.cellmodel.evaluator) : true;
+              });
+            var cells = [$scope.cellmodel];
+            return bkUtils.generateNotebook([evaluator], cells, $scope.cellmodel.metadata);
+          };
+        }
+
+        addPublishMenuItem();
+        initWatcher();
+      };
+
+      initPublishDataAction();
+    }
   });
 })();

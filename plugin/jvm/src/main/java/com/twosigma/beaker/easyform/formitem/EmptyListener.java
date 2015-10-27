@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,17 +14,10 @@
  *  limitations under the License.
  */
 
-(function() {
-  'use strict';
-  var module = angular.module('bk.notebook');
+package com.twosigma.beaker.easyform.formitem;
 
-  module.directive('bkMarkdownCell', function(bkPublicationHelper) {
-    return {
-      restrict: 'E',
-      template: JST['mainapp/components/notebook/markdowncell'](),
-      controller: function($scope) {
-        bkPublicationHelper.helper('', $scope);
-      }
-    };
-  });
-})();
+public class EmptyListener implements EasyFormListener {
+  @Override
+  public void execute(String value) {
+  }
+}

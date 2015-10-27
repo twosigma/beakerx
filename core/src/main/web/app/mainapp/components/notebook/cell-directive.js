@@ -37,7 +37,7 @@
         cellmodel: '=',
         index: '='
       },
-      controller: function($scope, $element) {
+      controller: function($scope) {
         $scope.cellmodel.evaluatorReader = false;
 
         var getBkBaseViewModel = function() {

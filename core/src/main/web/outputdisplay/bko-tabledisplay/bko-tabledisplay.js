@@ -897,6 +897,9 @@
             'scrollX': '10%',
             'searching': false,
             'deferRender': true,
+            'language': {
+              'emptyTable': 'empty table'
+            },
             'drawCallback': function(settings) {
               //jscs:disable
               scope.update_size();

@@ -181,7 +181,7 @@
             "id": "markdownD6n1Wt",
             "type": "markdown",
             "body": [
-                "You can use onInit and onChange to handle events."
+                "You can use onInit and onChange to handle component events. For button events use actionPerfromed or addAction."
             ],
             "evaluatorReader": false
         },
@@ -191,10 +191,12 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "f = new EasyForm(\"Form and Run\")",
-                    "f.addTextField(\"first\", 15)",
-                    "f.addTextField(\"last\", 15).onInit({f['last'] = \"setinit\"}).onChange({text -> f['first'] = text})",
-                    "f"
+                    "f1 = new EasyForm(\"Form and Run\")",
+                    "f1.addTextField(\"first\", 15)",
+                    "f1.addTextField(\"last\", 15).onInit({f1['last'] = \"setinit\"}).onChange({text -> f1['first'] = text})",
+                    "button = f1.addButton(\"actionPerformed button\")",
+                    "button.actionPerformed = {println(\"action performed\")}    ",
+                    "f1"
                 ]
             },
             "output": {

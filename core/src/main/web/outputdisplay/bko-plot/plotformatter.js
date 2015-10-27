@@ -410,7 +410,14 @@
             categoryNames: model.categoryNames,
             showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
             categoryMargin: model.category_margin,
-            categoryNamesLabelAngle: model.categoryNamesLabelAngle
+            categoryNamesLabelAngle: model.categoryNamesLabelAngle,
+            cumulative: model.cumulative,
+            bitCount: model.bit_count,
+            normed: model.normed,
+            rangeMin: model.range_min,
+            rangeMax: model.range_max,
+            displayMode: model.displayMode != null ? model.displayMode : 'OVERLAP',
+            rightClose: model.right_close
           };
         } else {
           newmodel = {
@@ -436,7 +443,14 @@
             categoryNames: model.categoryNames,
             showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
             categoryMargin: model.categoryMargin,
-            categoryNamesLabelAngle: model.categoryNamesLabelAngle
+            categoryNamesLabelAngle: model.categoryNamesLabelAngle,
+            cumulative: model.cumulative,
+            bitCount: model.bitCount,
+            normed: model.normed,
+            rangeMin: model.range_min,
+            rangeMax: model.range_max,
+            displayMode: model.displayMode != null ? model.displayMode : 'OVERLAP',
+            rightClose: model.right_close
           };
         }
 

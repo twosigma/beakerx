@@ -54,6 +54,7 @@
         </div>
         <div class="error attachment" ng-if="attachmentErrors">{{attachmentErrors}}</div>
         <a class="file-upload" ng-if="!file.progress" ngf-select="uploadAttachment($file)">{{attachmentUrl ? "Update image" : "Add preview image"}}</a>
+        <em>(recommended at least 400x300 resolution)</em>
         <div class="progress" ng-if="file.progress >= 0">
           <div class="progress-bar" role="progressbar"
             aria-valuenow="{{file.progress}}"

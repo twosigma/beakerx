@@ -453,67 +453,11 @@
                 item.bases = [];
               }
 
-              var calcRange = function (values) {
-                if (newmodel.rangeMin !== undefined && newmodel.rangeMax !== undefined) {
-                  return [newmodel.rangeMin, newmodel.rangeMax];
-                } else if (newmodel.rangeMin !== undefined) {
-                  return [newmodel.rangeMin, d3.max(values)];
-                } else if (newmodel.rangeMax !== undefined) {
-                  return [d3.min(values), newmodel.rangeMax];
-                }
-                return [d3.min(values), d3.max(values)];
-              };
-
-
-              var calcThresholds = function (range, values) {
-                var n = newmodel.bitCount !== undefined ?
-                  newmodel.bitCount :
-                  Math.ceil(Math.log(values.length) / Math.LN2 + 1);
-                var x = -1, b = +range[0], m = (range[1] - b) / n, f = [];
-                while (++x <= n) f[x] = m * x + b;
-
-                if (newmodel.rightClose) {
-                  f.splice(0, 0, range[0] - m);
-                }
-
-                return f;
-              };
-
-              var histogram =d3.layout.histogram();
-              histogram.histogram2 = function(data, i){
-                  var bins = [],
-                    values = data.map(Number, this),
-                    range = calcRange(values),
-                    thresholds = calcThresholds (range, values),
-                    bin, i = -1,
-                    n = values.length,
-                    m = thresholds.length - 1,
-                    k = 1,
-                    x;
-
-                while (++i < m) {
-                  bin = bins[i] = [];
-                  bin.dx = thresholds[i + 1] - (bin.x = thresholds[i]);
-                  bin.y = 0;
-                }
-                if (m > 0) {
-                  i = -1;
-                  while (++i < n) {
-                    x = values[i];
-                    if (x >= range[0] && x <= range[1]) {
-                      bin = newmodel.rightClose ?
-                        bins[d3.bisectLeft(thresholds, x, 1, m) - 1] :
-                        bins[d3.bisect(thresholds, x, 1, m) - 1];
-                      bin.y += k;
-                      bin.push(data[i]);
-                    }
-                  }
-                }
-                return bins;
-              };
-
-              var histvalues = histogram
-                .bins(newmodel.bitCount).histogram2(dataset);
+              var histvalues = plotUtils.histogram().
+                rightClose(newmodel.rightClose).
+                bitCount(newmodel.bitCount).
+                rangeMin(newmodel.rangeMin).
+                rangeMax(newmodel.rangeMax)(dataset);
 
               datasets.push(histvalues);
 

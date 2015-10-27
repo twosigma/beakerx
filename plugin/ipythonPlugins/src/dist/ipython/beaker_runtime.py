@@ -361,11 +361,11 @@ class DataFrameEncoder(json.JSONEncoder):
             ty = []
             num = len(obj.columns.tolist())
             x = 0;
+            for x in range(0,len(vals)):
+                transformNaNs(vals[x])
             for x in range(0,num+1):
               	ty.append(convertTypeName(type(vals[0][x]).__name__))
             out['types'] = ty
-            for x in range(0,len(vals)):
-                transformNaNs(vals[x])
             out['values'] = vals
             return out
         if type(obj) == pandas.core.series.Series:

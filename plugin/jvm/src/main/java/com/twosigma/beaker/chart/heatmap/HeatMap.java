@@ -21,6 +21,13 @@ import com.twosigma.beaker.AbstractChart;
 public class HeatMap extends AbstractChart {
   private Number[][] data;
 
+  public HeatMap() {
+    setXLowerMargin(0);
+    setXUpperMargin(0);
+    setYLowerMargin(0);
+    setYUpperMargin(0);
+  }
+
   public Number[][] getData() {
     return data;
   }

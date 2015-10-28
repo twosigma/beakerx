@@ -13,7 +13,6 @@
 # limitations under the License.
 
 library(RCurl, quietly=TRUE)
-library(RJSONIO, quietly=TRUE)
 
 require('png', quietly=TRUE)
 require('base64enc', quietly=TRUE)
@@ -26,12 +25,6 @@ session_id = ''
 
 set_session <- function(id) {
   session_id <<- id
-}
-
-collapse_unit_vectors = FALSE
-
-set_collapse_unit_vectors <- function(val) {
-  collapse_unit_vectors <- val
 }
 
 convertToJSONObject <- function(val) {
@@ -219,17 +212,13 @@ convertToDataTableLoM <- function(val) {
 convertToJSONNoRecurse <- function(val) {
   if (class(val) == "numeric" || class(val) == "integer" || class(val) == "character" || class(val) == "logical" || class(val) == "factor") {
     if (is.null(names(val))) {
-  	  if (length(val) == 1) {
-  	    o = toJSON(val, .level=0L);
-  	  } else {
-   	    o = toJSON(val)
-      }
+      o = jsonlite::toJSON(val, null="null", na="null", auto_unbox=TRUE)
     } else {
       # convert to dictionary     
-	  o = convertToJSONObjectNoRecurse(val)
+	    o = convertToJSONObjectNoRecurse(val)
     }
   } else if (class(val) == "table") {
-    o = toJSON(val)
+    o = jsonlite::toJSON(val, dataframe="columns", null="null", na="null", auto_unbox=TRUE)
   } else if (class(val) == "list") {
     if (is.null(names(val))) {
       # this is a basic list
@@ -239,11 +228,7 @@ convertToJSONNoRecurse <- function(val) {
 	  o = convertToJSONObjectNoRecurse(val) 
 	}
   } else if (class(val) == "complex") {
-    if (collapse && length(val) == 1) {
-      o = toJSON(as.character(val), .level=0L)
-    } else {
-      o = toJSON(as.character(val))
-    }
+    o = jsonlite::toJSON(as.character(val), null="null", na="null", auto_unbox=TRUE)
   } else if(class(val) == "POSIXct" || class(val) == "POSIXlt" || class(val) == "Date") {
   	p = "{ \"type\": \"Date\", \"timestamp\": "
   	p = paste(p, as.numeric(as.POSIXct(val, tz = "UTC"))*1000, sep='')
@@ -284,14 +269,10 @@ guessType <- function(txt) {
     }))
 } 
   
-convertToJSON <- function(val, collapse) {
+convertToJSON <- function(val) {
   if (class(val) == "numeric" || class(val) == "integer" || class(val) == "character" || class(val) == "logical" || class(val) == "factor") {
     if (is.null(names(val))) {
-  	  if (collapse && length(val) == 1) {
-  	    o = toJSON(val, .level=0L);
-  	  } else {
-   	    o = toJSON(val)
-      }
+      o = jsonlite::toJSON(val, null="null", na="null", auto_unbox=TRUE)
     } else if (containsOnlyBasicTypes(val)) {
       # convert to datatable dictionary
       o = convertToDataTableDictionary(val)
@@ -323,12 +304,7 @@ convertToJSON <- function(val, collapse) {
 	}
 	
   } else if (class(val) == "complex") {
-    if (collapse && length(val) == 1) {
-      o = toJSON(as.character(val), .level=0L)
-    } else {
-      o = toJSON(as.character(val))
-    }
-    
+    o = jsonlite::toJSON(as.character(val), null="null", na="null", auto_unbox=TRUE)
   } else if(class(val) == "POSIXct" || class(val) == "POSIXlt" || class(val) == "Date") {
   	p = "{ \"type\": \"Date\", \"timestamp\": "
   	p = paste(p, as.numeric(as.POSIXct(val, tz = "UTC"))*1000, sep='')
@@ -347,7 +323,7 @@ convertToJSON <- function(val, collapse) {
     itype = guessTypeName(rnames[1])
     types = lapply(val,class)
     types = c(itype,types)
-    p = paste(p, toJSON(colNames), sep='')
+    p = paste(p, jsonlite::toJSON(colNames, dataframe="columns", null="null", na="null", auto_unbox=TRUE), sep='')
     p = paste(p, ", \"values\": [", sep='')
 	firstr <- TRUE
     for( r in 1:nrow(val)) {
@@ -389,12 +365,12 @@ convertToJSON <- function(val, collapse) {
 		for( j in 1:ncol(val)) {
 			colNames[j] <- paste('c',j, sep='')
     	}
-    	p = paste(p, toJSON(colNames), sep='')
+    	p = paste(p, jsonlite::toJSON(colNames, dataframe="columns", null="null", na="null", auto_unbox=TRUE), sep='')
     } else {
-    	p = paste(p, toJSON(tb), sep='')
+    	p = paste(p, jsonlite::toJSON(tb, dataframe="columns", null="null", na="null", auto_unbox=TRUE), sep='')
     }
     p = paste(p, ", \"values\":", sep='')
-    p = paste(p,toJSON(val), sep='')
+    p = paste(p,jsonlite::toJSON(val, dataframe="columns", null="null", na="null", auto_unbox=TRUE), sep='')
     rownames(val) <- ta
     colnames(val) <- tb
     p = paste(p, ", \"types\": [", sep='')
@@ -410,14 +386,14 @@ convertToJSON <- function(val, collapse) {
     o = p
 
   } else if (class(val) == "table") {
-    o = toJSON(val)
+    o = jsonlite::toJSON(val, dataframe="columns", null="null", na="null", auto_unbox=TRUE)
 
   } else if (class(val) == "ggvis") {
     temp <- print(val)
     p = "{ \"type\":\"GGVis\", \"first\":"
-    p = paste(p, toJSON(as.character(temp[[1]])), sep='')
+    p = paste(p, jsonlite::toJSON(as.character(temp[[1]]), dataframe="columns", null="null", na="null", auto_unbox=TRUE), sep='')
 	p = paste(p, ", \"second\":", sep='')
-    p = paste(p, toJSON(as.character(temp[[2]])), sep='')
+    p = paste(p, jsonlite::toJSON(as.character(temp[[2]]), dataframe="columns", null="null", na="null", auto_unbox=TRUE), sep='')
 	p = paste(p, "}", sep='')
 	o = p
   } else {
@@ -434,7 +410,7 @@ set4 <- function(var, val, unset, sync) {
   if (unset) {
     reply = postForm(req, style='POST', name=var, session=session_id, sync=sync, .opts=opts)
   } else {
-    reply = postForm(req, style='POST', name=var, value=convertToJSON(val, collapse_unit_vectors), session=session_id, sync=sync, .opts=opts)
+    reply = postForm(req, style='POST', name=var, value=convertToJSON(val), session=session_id, sync=sync, .opts=opts)
   }
   if (reply != 'ok') {
     stop(paste(reply))
@@ -456,7 +432,7 @@ set_fast <- function(var, val) {
 }
 
 convertVarFromJSON <- function(res, var) {
-  tres = fromJSON(res)
+  tres = jsonlite::fromJSON(res, simplifyVector=FALSE)
   if (!tres$defined) {
     stop(paste("object '", var, "' not found in notebook namespace.", sep=''))
   }
@@ -591,7 +567,7 @@ evaluate <- function(filter) {
   opts = list(userpwd=pwarg, httpauth = AUTH_BASIC)
   reply = postForm(req, style='POST', filter=filter, session=session_id, .opts=opts)
   if (isValidJSON(reply,TRUE))
-	res = transformJSON(fromJSON(reply))
+	res = transformJSON(jsonlite::fromJSON(reply, simplifyVector=FALSE))
   else
     res = reply
   return (res)
@@ -603,7 +579,7 @@ evaluateCode <- function(evaluator,code) {
   opts = list(userpwd=pwarg, httpauth = AUTH_BASIC)
   reply = postForm(req, style='POST', evaluator=evaluator, code=code, session=session_id, .opts=opts)
   if (isValidJSON(reply,TRUE))
-	res = transformJSON(fromJSON(reply))
+	res = transformJSON(jsonlite::fromJSON(reply, simplifyVector=FALSE))
   else
     res = reply
   return (res)
@@ -639,7 +615,7 @@ getEvaluators <- function() {
   reply = getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC)
   if (!isValidJSON(reply,TRUE))
     stop('the server returned an invalid response')
-  return (transformJSON(fromJSON(reply)))
+  return (transformJSON(jsonlite::fromJSON(reply, simplifyVector=FALSE)))
 }
 
 getCodeCells <- function(filter) {
@@ -648,7 +624,7 @@ getCodeCells <- function(filter) {
   reply = getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC)
   if (!isValidJSON(reply,TRUE))
     stop('the server returned an invalid response')
-  rr = fromJSON(reply)
+  rr = jsonlite::fromJSON(reply, simplifyVector=FALSE)
   iteml = length(rr)
   for (i in 1:iteml) {
     if (!is.list(rr[[i]]))

@@ -507,7 +507,7 @@ public class RServerEvaluator {
             String tryCode;
             connection.eval("do.call(svg,c(list('" + file + "'), beaker::saved_svg_options))");
             tryCode = "beaker_eval_=withVisible(try({ " + j.codeToBeExecuted + "\n},silent=TRUE))\n"+
-                    "list(beaker_eval_, beaker:::convertToJSON(beaker_eval_$value, beaker:::collapse_unit_vectors))";
+                    "list(beaker_eval_, beaker:::convertToJSON(beaker_eval_$value))";
             REXP result = connection.eval(tryCode);
             
             if (result!= null) {

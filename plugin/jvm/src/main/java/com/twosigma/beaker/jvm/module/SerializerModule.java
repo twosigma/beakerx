@@ -46,8 +46,11 @@ import com.twosigma.beaker.chart.serializer.LineSerializer;
 import com.twosigma.beaker.chart.serializer.PointsSerializer;
 import com.twosigma.beaker.chart.serializer.StemsSerializer;
 import com.twosigma.beaker.chart.serializer.TextSerializer;
+import com.twosigma.beaker.chart.serializer.TreeMapNodeSerializer;
+import com.twosigma.beaker.chart.serializer.TreeMapSerializer;
 import com.twosigma.beaker.chart.serializer.XYChartSerializer;
 import com.twosigma.beaker.chart.serializer.YAxisSerializer;
+import com.twosigma.beaker.chart.treemap.TreeMap;
 import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.chart.xychart.plotitem.Area;
@@ -106,6 +109,7 @@ import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
 import com.twosigma.beaker.shared.NamespaceBinding;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
+import net.sf.jtreemap.swing.TreeMapNode;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -225,6 +229,9 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(CategoryPoints.class, injector.getInstance(CategoryPointsSerializer.class));
       module.addSerializer(CategoryLines.class, injector.getInstance(CategoryLinesSerializer.class));
       module.addSerializer(CategoryPlot.class, injector.getInstance(CategoryPlotSerializer.class));
+
+      module.addSerializer(TreeMap.class, injector.getInstance(TreeMapSerializer.class));
+      module.addSerializer(TreeMapNode.class, injector.getInstance(TreeMapNodeSerializer.class));
 
       module.addSerializer(Histogram.class, injector.getInstance(HistogramSerializer.class));
 

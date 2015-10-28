@@ -211,7 +211,8 @@
       "OutputContainerCell": ["OutputContainer", "Text"],
       "OutputContainer": ["OutputContainer", "Text"],
       "CategoryPlot": ["Plot", "Text"],
-      "Histogram": ["Plot", "Text"]
+      "Histogram": ["Plot", "Text"],
+      "TreeMap": ["Plot", "Text"]
     };
     var factory = {
       add: function(type, impl) {

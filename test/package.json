@@ -8,6 +8,7 @@
     "humanize": "0.0.9",
     "protractor": "2.1.0",
     "underscore": "^1.7.0",
+    "protractor-perf": "^0.1.8",
     "browser-perf": "1.4.1"
   }
 }

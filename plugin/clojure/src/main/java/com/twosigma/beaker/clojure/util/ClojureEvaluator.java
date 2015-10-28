@@ -217,7 +217,14 @@ public class ClojureEvaluator {
         theOutput.setOutputHandler();
         Object result;
         try {
-          theOutput.finished(clojureLoadString.invoke(theCode));
+          Object o = clojureLoadString.invoke(theCode);
+          try {
+            //workaround, checking of corrupted clojure objects
+            o.hashCode();
+            theOutput.finished(o);
+          } catch (Exception e) {
+            theOutput.error("Object: " + o.getClass() + ", value cannot be displayed due to following error: " + e.getMessage());
+          }
         } catch (Throwable e) {
           if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
             theOutput.error("... cancelled!");

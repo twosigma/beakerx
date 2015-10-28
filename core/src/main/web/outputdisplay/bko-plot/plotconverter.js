@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+
 (function() {
   'use strict';
   var retfunc = function(bkUtils, plotUtils) {
@@ -360,94 +361,173 @@
 
         var list = model.graphics_list;
         var numLines = list.length;
-        if(model.type !== "CategoryPlot"){
-          for (var i = 0; i < numLines; i++) {
-            var item = list[i];
+        switch (model.type) {
+          case "CategoryPlot":
+            var calculatedWidths = calcWidths(list);
 
-            processItem(item, newmodel, yAxisRSettings, yAxisSettings);
-
-            var elements = [];
-            for (var j = 0; j < item.x.length; j++) {
-              var ele = {};
-              ele.x = item.x[j];
-              ele.y = item.y[j];
-
-              if(processElement(item, j, ele, yAxisSettings, logx)){
-                elements.push(ele);
+            for (var index = 0; index < list.length; index++) {
+              var categoryItem = list[index]; //e.g. CategoryBar
+              var value = categoryItem.value;
+              var categoriesNumber = value[0].length;
+              var seriesNumber = value.length;
+              var seriesNames = categoryItem.seriesNames || [];
+              if (_.isEmpty(seriesNames) && newmodel.showLegend) {
+                for (var s = 0; s < seriesNumber; s++) {
+                  seriesNames.push("series" + s);
+                }
               }
-            }
 
-            item.elements = elements;
+              var res = calccategoryitem(newmodel, categoryItem, categoriesNumber, seriesNumber, calculatedWidths);
+              var elementsxs = res.elementsxs;
+              newmodel.labelsxs = res.labelsxs;
 
-            newmodel.data.push(item);
-          }
-        }else{
+              for (var i = 0; i < seriesNumber; i++) {
+                var series = value[i];
+                var item = _.extend({}, categoryItem);//
+                item.series = i;
+                item.display_name = seriesNames[i];
 
-          var calculatedWidths = calcWidths(list);
+                var processSeriesProperty = function (seriesindex, property, seriesproperty) {
+                  if (item[property]) {
+                    var seriesPropertyValue = item[property][seriesindex];
+                    if (_.isArray(seriesPropertyValue)) {
+                      item[property] = seriesPropertyValue;
+                    } else {
+                      item[seriesproperty] = seriesPropertyValue;
+                      delete item[property];
+                    }
+                  }
+                };
+                processSeriesProperty(i, 'colors', 'color');
+                processSeriesProperty(i, 'widths', 'width');
+                processSeriesProperty(i, 'outline_colors', 'outline_color');
+                processSeriesProperty(i, 'bases', 'base');
+                processSeriesProperty(i, 'fills', 'fill');
+                processSeriesProperty(i, 'outlines', 'outline');
+                processSeriesProperty(i, 'styles', 'style');
 
-          for (var index = 0; index < list.length; index++) {
-            var categoryItem = list[index]; //e.g. CategoryBar
-            var value = categoryItem.value;
-            var categoriesNumber = value[0].length;
-            var seriesNumber = value.length;
-            var seriesNames = categoryItem.seriesNames || [];
-            if (_.isEmpty(seriesNames) && newmodel.showLegend) {
-              for (var s = 0; s < seriesNumber; s++) {
-                seriesNames.push("series" + s);
-              }
-            }
+                delete item.value;
+                delete item.seriesNames;
 
-            var res = calccategoryitem(newmodel, categoryItem, categoriesNumber, seriesNumber, calculatedWidths);
-            var elementsxs = res.elementsxs;
-            newmodel.labelsxs = res.labelsxs;
+                item.y = [];
+                item.x = [];
+                for (var j = 0; j < categoriesNumber; j++) {
+                  item.y.push(series[j]);
+                  item.x.push(elementsxs[i][j]);
+                }
 
-            for (var i = 0; i < seriesNumber; i++) {
-              var series = value[i];
-              var item = _.extend({}, categoryItem);//
-              item.series = i;
-              item.display_name = seriesNames[i];
+                processItem(item, newmodel, yAxisRSettings, yAxisSettings, logx);
 
-              var processSeriesProperty = function (seriesindex, property, seriesproperty) {
-                if (item[property]) {
-                  var seriesPropertyValue = item[property][seriesindex];
-                  if (_.isArray(seriesPropertyValue)) {
-                    item[property] = seriesPropertyValue;
-                  } else {
-                    item[seriesproperty] = seriesPropertyValue;
-                    delete item[property];
+                var elements = [];
+                for (var j = 0; j < item.x.length; j++) {
+                  var ele = {
+                    series: i,
+                    category: j,
+                    x: item.x[j],
+                    y: item.y[j]
+                  };
+
+                  if(processElement(item, j, ele, yAxisSettings)){
+                    elements.push(ele);
                   }
                 }
+
+                item.elements = elements;
+
+                newmodel.data.push(item);
+              }
+            }
+            break;
+          case "Histogram":
+            var datasets = [];
+            for (var i = 0; i < list.length; i++) {
+              var dataset = list[i];
+              var item = {
+                type: "Bars",
+                color: !_.isEmpty(model.colors) ? model.colors[i] : model.color,
+                x: [],
+                y: []
               };
-              processSeriesProperty(i, 'colors', 'color');
-              processSeriesProperty(i, 'widths', 'width');
-              processSeriesProperty(i, 'outline_colors', 'outline_color');
-              processSeriesProperty(i, 'bases', 'base');
-              processSeriesProperty(i, 'fills', 'fill');
-              processSeriesProperty(i, 'outlines', 'outline');
-              processSeriesProperty(i, 'styles', 'style');
 
-              delete item.value;
-              delete item.seriesNames;
+              if(newmodel.displayMode === 'STACK' && list.length > 1){
+                item.bases = [];
+              }
 
-              item.y = [];
-              item.x = [];
-              for (var j = 0; j < categoriesNumber; j++) {
-                item.y.push(series[j]);
-                item.x.push(elementsxs[i][j]);
+              var histvalues = plotUtils.histogram().
+                rightClose(newmodel.rightClose).
+                bitCount(newmodel.bitCount).
+                rangeMin(newmodel.rangeMin).
+                rangeMax(newmodel.rangeMax)(dataset);
+
+              datasets.push(histvalues);
+
+              var sumy = 0;
+              if(newmodel.normed === true) {
+                for (var j = 0; j < histvalues.length; j++) {
+                  sumy += histvalues[j].y;
+                }
+              }
+
+              for(var j = 0; j < histvalues.length; j++){
+                if (newmodel.cumulative && j != 0) {
+                  histvalues[j].y = histvalues[j - 1].y + histvalues[j].y;
+                }
+
+                if(newmodel.normed === true){
+                  histvalues[j].y = histvalues[j].y / sumy;
+                }
+
+                if(newmodel.displayMode === 'STACK' && i != 0){
+                  histvalues[j].y = histvalues[j].y + datasets[i - 1][j].y;
+                }
+
+                if(newmodel.displayMode === 'SIDE_BY_SIDE'){
+                  histvalues[j].dx = histvalues[j].dx / list.length;
+                  histvalues[j].x += histvalues[j].dx * i;
+                }
+
+                var histvalue = histvalues[j];
+                item.x.push(histvalue.x);
+                item.y.push(histvalue.y);
+                item.width = histvalue.dx;
               }
 
               processItem(item, newmodel, yAxisRSettings, yAxisSettings, logx);
 
               var elements = [];
               for (var j = 0; j < item.x.length; j++) {
-                var ele = {
-                  series: i,
-                  category: j,
-                  x: item.x[j],
-                  y: item.y[j]
-                };
+                var ele = {};
+                ele.x = item.x[j];
+                ele.x2 = item.x[j] + item.width;
+                ele.y = item.y[j];
 
-                if(processElement(item, j, ele, yAxisSettings)){
+                if(processElement(item, j, ele, yAxisSettings, logx)){
+                  elements.push(ele);
+                }
+              }
+
+              item.elements = elements;
+
+              newmodel.data.push(item);
+
+            }
+            if(newmodel.displayMode === 'STACK' && list.length > 1){
+              _(newmodel.data).reverse().value();
+            }
+            break;
+          default:
+            for (var i = 0; i < numLines; i++) {
+              var item = list[i];
+
+              processItem(item, newmodel, yAxisRSettings, yAxisSettings);
+
+              var elements = [];
+              for (var j = 0; j < item.x.length; j++) {
+                var ele = {};
+                ele.x = item.x[j];
+                ele.y = item.y[j];
+
+                if(processElement(item, j, ele, yAxisSettings, logx)){
                   elements.push(ele);
                 }
               }
@@ -456,7 +536,7 @@
 
               newmodel.data.push(item);
             }
-          }
+            break;
         }
 
         if(model.constant_lines != null) {

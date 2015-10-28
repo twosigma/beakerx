@@ -24,6 +24,7 @@
       bkCellMenuPluginManager,
       bkSessionManager,
       bkCoreManager,
+      bkPublicationHelper,
       $timeout) {
 
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
@@ -214,17 +215,6 @@
           notebookCellOp.appendAfter(thisCellId, newCell);
           bkUtils.refreshRootScope();
         };
-        $scope.getShareMenuPlugin = function() {
-          return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
-        };
-        var shareMenu = {
-          name: 'Share',
-          items: []
-        };
-        $scope.cellmenu.addItem(shareMenu);
-        $scope.$watch('getShareMenuPlugin()', function() {
-          shareMenu.items = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
-        });
 
         $scope.cellmenu.addItem({
           name: 'Show input cell',
@@ -280,8 +270,9 @@
           }
         });
 
+        bkPublicationHelper.helper(CELL_TYPE, $scope);
       },
-      link: function(scope, element, attrs) {
+      link: function(scope, element) {
         scope.showDebug = false;
 
         function isFullScreen(cm) {
@@ -454,6 +445,7 @@
           }
         });
 
+        /*
         scope.getShareData = function() {
           var evaluator = _(bkSessionManager.getRawNotebookModel().evaluators)
               .find(function(evaluator) {
@@ -462,6 +454,7 @@
           var cells = [scope.cellmodel];
           return bkUtils.generateNotebook([evaluator], cells);
         };
+        */
 
         scope.$on('beaker.cell.added', function(e, cellmodel) {
           if (cellmodel === scope.cellmodel) {

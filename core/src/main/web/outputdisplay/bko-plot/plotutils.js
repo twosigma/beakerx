@@ -603,6 +603,88 @@
         return xhr.responseText;
       },
 
+      //ideas and some code - from d3 library(d3.layout.histogram)
+      histogram: function () {
+
+        var rightClose = false, bitCount, rangeMin, rangeMax;
+
+        var calcRange = function (values) {
+          if (rangeMin !== undefined && rangeMax !== undefined) {
+            return [rangeMin, rangeMax];
+          } else if (rangeMin !== undefined) {
+            return [rangeMin, d3.max(values)];
+          } else if (rangeMax !== undefined) {
+            return [d3.min(values), rangeMax];
+          }
+          return [d3.min(values), d3.max(values)];
+        };
+
+        var calcThresholds = function (range, values) {
+          var n = bitCount !== undefined ?
+            bitCount :
+            Math.ceil(Math.log(values.length) / Math.LN2 + 1);
+          var x = -1, b = +range[0], m = (range[1] - b) / n, f = [];
+          while (++x <= n) f[x] = m * x + b;
+
+          if (rightClose) {
+            f.splice(0, 0, range[0] - m);
+          }
+
+          return f;
+        };
+
+        function histogram(data) {
+          var bins = [],
+            values = data.map(Number, this),
+            range = calcRange(values),
+            thresholds = calcThresholds(range, values),
+            bin, i = -1,
+            n = values.length,
+            m = thresholds.length - 1,
+            k = 1,
+            x;
+
+          while (++i < m) {
+            bin = bins[i] = [];
+            bin.dx = thresholds[i + 1] - (bin.x = thresholds[i]);
+            bin.y = 0;
+          }
+          if (m > 0) {
+            i = -1;
+            while (++i < n) {
+              x = values[i];
+              if (x >= range[0] && x <= range[1]) {
+                bin = rightClose ?
+                  bins[d3.bisectLeft(thresholds, x, 1, m) - 1] :
+                  bins[d3.bisect(thresholds, x, 1, m) - 1];
+                bin.y += k;
+                bin.push(data[i]);
+              }
+            }
+          }
+          return bins;
+        }
+
+        histogram.rangeMin = function (x) {
+          rangeMin = x;
+          return histogram;
+        };
+        histogram.rangeMax = function (x) {
+          rangeMax = x;
+          return histogram;
+        };
+        histogram.bitCount = function (x) {
+          bitCount = x;
+          return histogram;
+        };
+        histogram.rightClose = function (x) {
+          rightClose = x;
+          return histogram;
+        };
+
+        return histogram;
+      },
+
       fonts: {
         labelWidth : 6,
         labelHeight : 12,

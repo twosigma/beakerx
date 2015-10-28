@@ -206,12 +206,6 @@
           }
           return [
             {
-              name: "Share",
-              items: function() {
-                return _shareMenuItems;
-              }
-            },
-            {
               name: "Toggle Cell Output",
               isChecked: function() {
                 $scope.isExpanded();

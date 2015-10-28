@@ -18,9 +18,34 @@ package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class ButtonComponent extends EasyFormComponent {
 
   private String tag;
+  private List<EasyFormListener> actionListeners = new LinkedList<>();
+  public EasyFormListener actionPerformed = new EmptyListener();
+
+  public void fireActionPerformed() {
+    if (actionPerformed != null) {
+      actionPerformed.execute(getLabel());
+      for (EasyFormListener listener : actionListeners) {
+        listener.execute(getLabel());
+      }
+    }
+  }
+
+  public EasyFormComponent addAction(final EasyFormListener listener) {
+    addActionListener(listener);
+    return this;
+  }
+
+  public void addActionListener(final EasyFormListener listener) {
+    if (listener != null) {
+      actionListeners.add(listener);
+    }
+  }
 
   public void setTag(final String tag) {
     this.tag = tag;

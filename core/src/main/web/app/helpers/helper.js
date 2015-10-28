@@ -20,7 +20,7 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.share', 'bk.debug', 'bk.electron', 'bk.publication']);
+  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.debug', 'bk.electron', 'bk.publication']);
   /**
    * bkHelper
    * - should be the only thing plugins depend on to interact with general beaker stuffs (other than
@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkShare, bkDebug, bkElectron, bkPublicationAuth) {
+  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkDebug, bkElectron, bkPublicationAuth) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -518,12 +518,6 @@
         }
       },
       // bk-notebook
-      shareNotebook: function() {
-        var bkNotebook = getBkNotebookWidget();
-        if (bkNotebook) {
-          return bkNotebook.shareAndOpenPublished();
-        }
-      },
       deleteAllOutputCells: function() {
         var bkNotebook = getBkNotebookWidget();
         if (bkNotebook) {
@@ -729,6 +723,30 @@
           }
         }
       },
+      sanitizeNotebookModel: function(m) {
+        var notebookModelCopy = angular.copy(m);
+        bkHelper.stripOutBeakerPrefs(notebookModelCopy);
+        //Save running cells as interrupted
+        if (notebookModelCopy.cells) {
+          for (var i = 0; i < notebookModelCopy.cells.length; i++) {
+            var currentCell = notebookModelCopy.cells[i];
+            if (currentCell && currentCell.output && currentCell.output.result
+              && currentCell.output.result.innertype === 'Progress') {
+              currentCell.output.result.innertype = 'Error';
+              currentCell.output.result.object = 'Interrupted, saved while running.'
+            }
+          }
+        }
+
+        //strip out the shell IDs
+        _(notebookModelCopy.evaluators).each(function(evaluator) {
+          if (_.isObject(evaluator)) delete evaluator.shellID;
+        });
+
+        // generate pretty JSON
+        var prettyJson = bkUtils.toPrettyJson(notebookModelCopy);
+        return prettyJson;
+      },
       updateDocumentModelFromDOM: function(id) {
         // 1) find the cell that contains elem
         var elem = $("#" + id).closest("bk-cell");
@@ -748,11 +766,8 @@
         }
         this.updateCellsFromDOM([cell]);
       },
-      // bkShare
-      share: bkShare,
 
       // language plugin utilities
-
       setupProgressOutput: function(modelOutput) {
         var progressObj = {
             type: "BeakerDisplay",

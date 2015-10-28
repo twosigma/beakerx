@@ -48,7 +48,8 @@
       bkRecentMenu,
       bkNotebookCellModelManager,
       bkElectron,
-      modalDialogOp) {
+      modalDialogOp,
+      Upload) {
 
     function isFilePath(path) {
       return path.split('/').pop() !== '';
@@ -208,17 +209,27 @@
 
       if (($input = $('input#import-notebook')).length) return $input;
 
-      $input = $('<input type="file" name="file" id="import-notebook" ' +
-                 'data-url="' + endpoint + '" ' +
-                 'style="display: none"/>')
-                .prependTo('body');
+      $rootScope.uploadFile = function(file) {
+        if (file) {
+          file.upload = Upload.upload({
+            url: endpoint,
+            file: file,
+            method: 'POST'
+          });
 
-      $input.fileupload({
-        dataType: 'json',
-        done: function(e, data) {
-          bkCoreManager.importNotebook(data.result);
+          file.upload.then(function (response) {
+            bkCoreManager.importNotebook(response.data);
+          }, function (response) {
+            if (response.status > 0)
+              console.log(response.status + ': ' + response.data);
+          });
         }
-      });
+      };
+
+      $input = $('<input type="file" name="file" id="import-notebook" ' +
+          'ngf-select="uploadFile($file)" accept="application/json,application/text"' +
+      'ngf-pattern="\'application/json,application/text\'" style="display: none"/>')
+                .prependTo('body');
 
       return $input;
     };
@@ -347,10 +358,7 @@
       },
       importNotebook: function(notebook) {
         $sessionStorage.importedNotebook = notebook;
-
-        return $rootScope.$apply(function() {
-          $location.path("/session/import").search({});
-        });
+        $location.path("/session/import").search({});
       },
       showDefaultSavingFileChooser: function(initPath) {
         var self = this;
@@ -971,7 +979,7 @@
         var dd = $modal.open(options);
         return dd.result;
       },
-      showPublishForm: function() {
+      showPublishForm: function(nModel, callback) {
         var options = {
           windowClass: 'beaker-sandbox',
           backdropClass: 'beaker-sandbox',
@@ -979,11 +987,16 @@
           keyboard: true,
           backdropClick: true,
           controller: 'publicationCtrl',
-          template: JST['mainapp/components/publication/publish']()
+          template: JST['mainapp/components/publication/publish'](),
+          resolve: {nModel: function() { return (nModel ? nModel : undefined); } }
         };
 
         var dd = $modal.open(options);
-        return dd.result;
+        return dd.result.then(function(result) {
+          if (callback) {
+            callback(result);
+          }
+        });
       }
     };
 

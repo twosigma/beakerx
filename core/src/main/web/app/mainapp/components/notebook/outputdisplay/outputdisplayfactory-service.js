@@ -211,6 +211,7 @@
       "OutputContainerCell": ["OutputContainer", "Text"],
       "OutputContainer": ["OutputContainer", "Text"],
       "CategoryPlot": ["Plot", "Text"],
+      "Histogram": ["Plot", "Text"],
       "HeatMap": ["Text"]
     };
     var factory = {

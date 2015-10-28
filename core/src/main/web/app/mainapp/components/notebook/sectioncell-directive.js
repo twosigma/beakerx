@@ -23,8 +23,8 @@
         bkEvaluatorManager,
         bkSessionManager,
         bkCoreManager,
-        bkCellMenuPluginManager,
-        $timeout) {
+        bkPublicationHelper) {
+
     var CELL_TYPE = 'section';
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {
@@ -72,16 +72,13 @@
           $scope.cellmodel.title = newTitle;
           bkUtils.refreshRootScope();
         };
-        $scope.$watch('cellmodel.title', function(newVal, oldVal) {
-          if (newVal !== oldVal) {
+        var editedListener = function(newValue, oldValue) {
+          if (newValue !== oldValue) {
             bkSessionManager.setNotebookModelEdited(true);
           }
-        });
-        $scope.$watch('cellmodel.initialization', function(newVal, oldVal) {
-          if (newVal !== oldVal) {
-            bkSessionManager.setNotebookModelEdited(true);
-          }
-        });
+        };
+        $scope.$watch('cellmodel.title', editedListener);
+        $scope.$watch('cellmodel.initialization', editedListener);
 
         $scope.cellview.menu.renameItem({
           name: 'Delete cell',
@@ -108,28 +105,25 @@
               }};
           })
         });
-        $scope.getShareData = function() {
+
+        $scope.getPublishData = function() {
           var cells = [$scope.cellmodel]
           .concat(notebookCellOp.getAllDescendants($scope.cellmodel.id));
           var usedEvaluatorsNames = _(cells).chain()
             .filter(function(cell) {
               return cell.type === 'code';
             })
-          .map(function(cell) {
-            return cell.evaluator;
-          })
-          .unique().value();
+            .map(function(cell) {
+              return cell.evaluator;
+            })
+            .unique().value();
           var evaluators = bkSessionManager.getRawNotebookModel().evaluators
             .filter(function(evaluator) {
               return _.any(usedEvaluatorsNames, function(ev) {
                 return evaluator.name === ev;
               });
             });
-          return bkUtils.generateNotebook(evaluators, cells);
-        };
-
-        $scope.getShareMenuPlugin = function() {
-          return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
+          return bkUtils.generateNotebook(evaluators, cells, $scope.cellmodel.metadata);
         };
         $scope.cellview.menu.addItem({
           name: 'Run all',
@@ -139,14 +133,6 @@
                 console.error(data);
               });
           }
-        });
-        var shareMenu = {
-          name: 'Share',
-          items: []
-        };
-        $scope.cellview.menu.addItem(shareMenu);
-        $scope.$watch('getShareMenuPlugin()', function() {
-          shareMenu.items = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
         });
         $scope.isInitializationCell = function() {
           return $scope.cellmodel.initialization;
@@ -209,6 +195,8 @@
           });
           return siblingSections.indexOf($scope.cellmodel);
         };
+
+        bkPublicationHelper.helper(CELL_TYPE, $scope);
       }
     };
   });

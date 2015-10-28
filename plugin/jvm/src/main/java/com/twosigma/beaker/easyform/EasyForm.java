@@ -219,11 +219,16 @@ public class EasyForm extends ObservableMap<String, String> {
     return addComponentOrThrow(label, datePickerComponent);
   }
 
-  public void addButton(final String label, final String actionCellTag) throws Exception {
+  public ButtonComponent addButton(final String label) throws Exception {
+    return addButton(label, null);
+  }
+
+  public ButtonComponent addButton(final String label, final String actionCellTag) throws Exception {
     ButtonComponent buttonComponent = new ButtonComponent();
     buttonComponent.setLabel(label);
     buttonComponent.setTag(actionCellTag);
     addComponentOrThrow(label, buttonComponent);
+    return buttonComponent;
   }
 
   private EasyFormComponent addComponentOrThrow(final String label,

@@ -43,9 +43,7 @@ describe("bk.notebookVersionManager", function() {
       {
         "name": "JavaScript",
         "plugin": "JavaScript",
-        "shellID": null,
-        "jsSetting2": "",
-        "jsSetting1": ""
+        "shellID": null
       }
     ],
     "cells": [
@@ -117,9 +115,7 @@ describe("bk.notebookVersionManager", function() {
       {
         "name": "JavaScript",
         "plugin": "JavaScript",
-        "shellID": null,
-        "jsSetting2": "",
-        "jsSetting1": ""
+        "shellID": null
       }
     ],
     "cells": [

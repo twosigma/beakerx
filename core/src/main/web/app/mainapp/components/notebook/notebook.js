@@ -30,6 +30,7 @@
     'bk.sessionManager',
     'bk.evaluatorManager',
     'bk.cellMenuPluginManager',
-    'bk.outputDisplay'
+    'bk.outputDisplay',
+    'bk.publication'
   ]);
 })();

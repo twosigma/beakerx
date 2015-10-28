@@ -52,8 +52,6 @@
   <script src="vendor/bower_components/big.js/big.js"></script>
   <script src="vendor/bower_components/jquery/jquery.js"></script>
   <script src="vendor/bower_components/datatables/media/js/jquery.dataTables.js"></script>
-  <script src="vendor/bower_components/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
-  <script src="vendor/bower_components/jquery-file-upload/js/jquery.fileupload.js"></script>
   <script src="vendor/bower_components/datatables-fixedcolumns/js/dataTables.fixedColumns.js"></script>
   <script src="vendor/bower_components/datatables-colreorder/js/dataTables.colReorder.js"></script>
   <script src="vendor/bower_components/marked/marked.min.js"></script>
@@ -186,7 +184,10 @@
   <!-- endbuild -->
 
 </head>
-<body>
+<body ngf-drop="uploadFile($file)"
+      ngf-drag-over-class="dragover"
+      accept="application/json,application/text"
+      ngf-pattern="'application/json,application/text'">
   <ng-view class="beaker-sandbox"></ng-view>
 </body>
 </html>

@@ -17,6 +17,8 @@
 package com.twosigma.beaker.chart.heatmap;
 
 import com.twosigma.beaker.AbstractChart;
+import com.twosigma.beaker.chart.legend.LegendLayout;
+import com.twosigma.beaker.chart.legend.LegendPosition;
 
 public class HeatMap extends AbstractChart {
   private Number[][] data;
@@ -26,6 +28,8 @@ public class HeatMap extends AbstractChart {
     setXUpperMargin(0);
     setYLowerMargin(0);
     setYUpperMargin(0);
+    setLegendLayout(LegendLayout.HORIZONTAL);
+    setLegendPosition(LegendPosition.BOTTOM_RIGHT);
   }
 
   public Number[][] getData() {

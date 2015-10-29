@@ -17,16 +17,16 @@
 
 (function() {
   'use strict';
-  var retfunc = function(PlotAxis, PlotLine, PlotBar, PlotStem, PlotArea, PlotPoint,
-    PlotConstline, PlotConstband, PlotText,
-    PlotLineLodLoader, PlotBarLodLoader, PlotStemLodLoader, PlotAreaLodLoader,
-    PlotPointLodLoader) {
+  var retfunc = function (PlotAxis, PlotLine, PlotBar, PlotStem, PlotArea, PlotPoint,
+                          PlotConstline, PlotConstband, PlotText, PlotTreeMapNode,
+                          PlotLineLodLoader, PlotBarLodLoader, PlotStemLodLoader, PlotAreaLodLoader,
+                          PlotPointLodLoader) {
     return {
       createPlotItem : function(item, lodthresh) {
         if (!lodthresh){
           lodthresh = 1500;
         }
-        var size = item.elements.length;
+        var size = item.elements ?  item.elements.length : 0;
         var plotitem;
         switch (item.type) {
           case "line":
@@ -57,6 +57,9 @@
             break;
           case "text":
             plotitem = new PlotText(item);
+            break;
+          case "treemapnode":
+            plotitem = new PlotTreeMapNode(item);
             break;
           default:
             console.error("no type specified for item creation");
@@ -113,6 +116,9 @@
           case "axis":
             item.__proto__ = PlotAxis.prototype;
             break;
+          case "plottreemapnode":
+            item.__proto__ = PlotTreeMapNode.prototype;
+            break;
           default:
             console.error("no type specified for item recreation");
         }
@@ -121,8 +127,8 @@
   };
   beaker.bkoFactory('plotFactory',
     ['PlotAxis', 'PlotLine', 'PlotBar', 'PlotStem', 'PlotArea', 'PlotPoint',
-     'PlotConstline', 'PlotConstband', 'PlotText',
-     'PlotLineLodLoader', 'PlotBarLodLoader', 'PlotStemLodLoader', 'PlotAreaLodLoader',
-     'PlotPointLodLoader',
+      'PlotConstline', 'PlotConstband', 'PlotText', 'PlotTreeMapNode',
+      'PlotLineLodLoader', 'PlotBarLodLoader', 'PlotStemLodLoader', 'PlotAreaLodLoader',
+      'PlotPointLodLoader',
       retfunc]);
 })();

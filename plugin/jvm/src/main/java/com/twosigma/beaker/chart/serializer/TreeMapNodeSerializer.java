@@ -34,6 +34,8 @@ public class TreeMapNodeSerializer extends JsonSerializer<TreeMapNode> {
                                                      JsonProcessingException {
     jgen.writeStartObject();
 
+    jgen.writeObjectField("type", treeMapNode.getClass().getSimpleName());
+
     jgen.writeObjectField("label", treeMapNode.getLabel());
     jgen.writeObjectField("weight", treeMapNode.getWeight());
 

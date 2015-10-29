@@ -16,17 +16,16 @@
 
 package com.twosigma.beaker.chart.treemap;
 
-import com.twosigma.beaker.AbstractChart;
+import com.twosigma.beaker.Chart;
 import net.sf.jtreemap.swing.TreeMapNode;
 
-public class TreeMap extends AbstractChart {
+public class TreeMap extends Chart {
 
   // root of the tree
   private TreeMapNode root = null;
 
 
   public TreeMap(final TreeMapNode root) {
-
     setRoot(root);
   }
 

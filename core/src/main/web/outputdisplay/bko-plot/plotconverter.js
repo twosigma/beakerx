@@ -225,6 +225,7 @@
       "CategoryArea" : "area",
       "CategoryText" : "text",
       "CategoryPoints" : "point",
+      "TreeMapNode" : "treemapnode",
       "" : ""
     };
     var lineStyleMap = {
@@ -255,7 +256,17 @@
       pointShapeMap : pointShapeMap,
       interpolationMap : interpolationMap,
 
+      convertTreeMapGroovyData: function (newmodel, model) {
+        var item = model.graphics_list;
+        item.type = dataTypeMap[item.type];
+        newmodel.data.push(item);
+      },
+
       convertGroovyData : function(newmodel, model) {
+        if ( model.type === 'TreeMap'){
+          this.convertTreeMapGroovyData(newmodel, model);
+          return;
+        }
         var logx = false, logxb;
         var yAxisSettings = {yIncludeZero: false, logy: false, logyb: null};
         var yAxisRSettings = _.clone(yAxisSettings);

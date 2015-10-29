@@ -23,7 +23,7 @@ import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
 
-public class TreeMapSerializer extends AbstractChartSerializer<TreeMap> {
+public class TreeMapSerializer extends ChartSerializer<TreeMap> {
 
   @Override
   public void serialize(TreeMap treeMap, JsonGenerator jgen, SerializerProvider provider) throws
@@ -34,7 +34,7 @@ public class TreeMapSerializer extends AbstractChartSerializer<TreeMap> {
     serialize(treeMap, jgen);
 
     if (treeMap.getRoot() != null)
-      jgen.writeObjectField("root", treeMap.getRoot());
+      jgen.writeObjectField("graphics_list", treeMap.getRoot());
 
     jgen.writeEndObject();
   }

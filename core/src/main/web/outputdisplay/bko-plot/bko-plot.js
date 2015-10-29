@@ -78,12 +78,16 @@
 
             scope.jqsvg.css({"width": scope.width, "height": scope.height});
             scope.jqplottitle.css({"width": scope.width });
-            scope.numIntervals = {
-              x: scope.width / scope.intervalStepHint.x,
-              y: scope.height / scope.intervalStepHint.y
-            };
-            scope.calcRange();
-            scope.calcMapping(false);
+
+            if (scope.model.getCellModel().type !== 'TreeMap'){
+              scope.numIntervals = {
+                x: scope.width / scope.intervalStepHint.x,
+                y: scope.height / scope.intervalStepHint.y
+              };
+              scope.calcRange();
+              scope.calcMapping(false);
+            }
+
             scope.emitSizeChange();
             scope.legendDone = false;
             scope.legendResetPosition = true;
@@ -167,22 +171,30 @@
             y : -1
           };
 
-          scope.gridlineTickLength = 3;
+          if (model.xAxis && model.yAxis) {
 
-          var factor = 2.0;
-          if (model.xAxis.label == null) { factor -= 1.0; }
-          if (model.xAxis.showGridlineLabels === false) { factor -= 1.0; }
-          scope.layout.bottomLayoutMargin += plotUtils.fonts.labelHeight * factor;
+            scope.gridlineTickLength = 3;
 
-          if (model.yAxis.showGridlineLabels !== false) {
-            scope.layout.topLayoutMargin += plotUtils.fonts.labelHeight / 2;
-          }
+            var factor = 2.0;
+            if (model.xAxis.label == null) {
+              factor -= 1.0;
+            }
+            if (model.xAxis.showGridlineLabels === false) {
+              factor -= 1.0;
+            }
+            scope.layout.bottomLayoutMargin += plotUtils.fonts.labelHeight * factor;
 
-          if (model.yAxis.label != null) {
-            scope.layout.leftLayoutMargin += plotUtils.fonts.labelHeight;
-          }
-          if(model.yAxisR != null) {
-            scope.layout.rightLayoutMargin += plotUtils.fonts.labelHeight;
+            if (model.yAxis.showGridlineLabels !== false) {
+              scope.layout.topLayoutMargin += plotUtils.fonts.labelHeight / 2;
+            }
+
+            if (model.yAxis.label != null) {
+              scope.layout.leftLayoutMargin += plotUtils.fonts.labelHeight;
+            }
+            if (model.yAxisR != null) {
+              scope.layout.rightLayoutMargin += plotUtils.fonts.labelHeight;
+
+            }
           }
           scope.legendResetPosition = true;
 
@@ -1488,17 +1500,19 @@
           scope.jqsvg.css("cursor", "auto");
         };
         scope.fixFocus = function(focus) {
-          focus.xl = focus.xl < 0 ? 0 : focus.xl;
-          focus.xr = focus.xr > 1 ? 1 : focus.xr;
-          focus.yl = focus.yl < 0 ? 0 : focus.yl;
-          focus.yr = focus.yr > 1 ? 1 : focus.yr;
-          focus.xspan = focus.xr - focus.xl;
-          focus.yspan = focus.yr - focus.yl;
+          if (focus) {
+            focus.xl = focus.xl < 0 ? 0 : focus.xl;
+            focus.xr = focus.xr > 1 ? 1 : focus.xr;
+            focus.yl = focus.yl < 0 ? 0 : focus.yl;
+            focus.yr = focus.yr > 1 ? 1 : focus.yr;
+            focus.xspan = focus.xr - focus.xl;
+            focus.yspan = focus.yr - focus.yl;
 
-          if (focus.xl > focus.xr || focus.yl > focus.yr) {
-            console.error("visible range specified does not match data range, " +
-                "enforcing visible range");
-            _.extend(focus, scope.defaultFocus);
+            if (focus.xl > focus.xr || focus.yl > focus.yr) {
+              console.error("visible range specified does not match data range, " +
+              "enforcing visible range");
+              _.extend(focus, scope.defaultFocus);
+            }
           }
         };
         scope.resetFocus = function() {
@@ -1708,30 +1722,36 @@
           scope.initLayout();
 
           scope.resetSvg();
-          scope.zoomObj = d3.behavior.zoom();
 
-          // set zoom object
-          scope.svg.on("mousedown", function() {
-            return scope.mouseDown();
-          }).on("mouseup", function() {
-            return scope.mouseUp();
-          });
-          scope.jqsvg.mousemove(function(e) {
-            return scope.renderCursor(e);
-          }).mouseleave(function(e) {
-            return scope.mouseleaveClear(e);
-          });
-          scope.enableZoom();
-          scope.calcRange();
 
-          // init copies focus to defaultFocus, called only once
-          _(scope.focus).extend(scope.defaultFocus);
+          if (scope.model.getCellModel().type === 'TreeMap'){
+            scope.update();
+          }else{
+            scope.zoomObj = d3.behavior.zoom();
 
-          // init remove pipe
-          scope.removePipe = [];
+            // set zoom object
+            scope.svg.on("mousedown", function() {
+              return scope.mouseDown();
+            }).on("mouseup", function() {
+              return scope.mouseUp();
+            });
+            scope.jqsvg.mousemove(function(e) {
+              return scope.renderCursor(e);
+            }).mouseleave(function(e) {
+              return scope.mouseleaveClear(e);
+            });
+            scope.enableZoom();
+            scope.calcRange();
 
-          scope.calcMapping();
-          scope.update();
+            // init copies focus to defaultFocus, called only once
+            _(scope.focus).extend(scope.defaultFocus);
+
+            // init remove pipe
+            scope.removePipe = [];
+
+            scope.calcMapping();
+            scope.update();
+          }
         };
 
         scope.update = function(first) {
@@ -1740,25 +1760,33 @@
           }
 
           scope.resetSvg();
-          scope.calcGridlines();
-          scope.renderGridlines();
-          plotUtils.plotGridlines(scope);
 
-          scope.renderData();
-          scope.renderGridlineLabels();
-          scope.renderGridlineTicks();
-          scope.renderCoverBox(); // redraw
-          plotUtils.plotLabels(scope); // redraw
-          plotUtils.plotTicks(scope); // redraw
+          if (scope.model.getCellModel().type === 'TreeMap'){
+            scope.renderData();
+            scope.renderLegends(); // redraw
+            scope.updateMargin(); //update plot margins
+          }else{
+            scope.calcGridlines();
+            scope.renderGridlines();
+            plotUtils.plotGridlines(scope);
 
-          scope.renderTips();
-          scope.renderLocateBox(); // redraw
-          scope.renderLegends(); // redraw
-          scope.updateMargin(); //update plot margins
+            scope.renderData();
+            scope.renderGridlineLabels();
+            scope.renderGridlineTicks();
+            scope.renderCoverBox(); // redraw
+            plotUtils.plotLabels(scope); // redraw
+            plotUtils.plotTicks(scope); // redraw
 
-          scope.prepareInteraction();
+            scope.renderTips();
+            scope.renderLocateBox(); // redraw
+            scope.renderLegends(); // redraw
+            scope.updateMargin(); //update plot margins
 
-          scope.clearRemovePipe();
+            scope.prepareInteraction();
+
+            scope.clearRemovePipe();
+          }
+
         };
 
 

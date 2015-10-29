@@ -70,19 +70,20 @@
         for (var rowInd = 0; rowInd < data.length; rowInd++) {
           var row = data[rowInd];
           maxValue = Math.max(maxValue, Math.max.apply(null, row));
-          minValue = Math.min(maxValue, Math.min.apply(null, row));
+          minValue = Math.min(minValue, Math.min.apply(null, row));
         }
+
+        var item = {
+          type: "heatmap",
+          minValue: minValue,
+          maxValue: maxValue,
+          legend: "true"
+        };
+        var elements = [];
 
         for (var rowInd = 0; rowInd < data.length; rowInd++) {
           var row = data[rowInd];
 
-          var item = {
-            type: "heatmap",
-            minValue: minValue,
-            maxValue: maxValue
-          };
-
-          var elements = [];
           for (var colInd = 0; colInd < row.length; colInd++) {
             var value = row[colInd];
             if (value === "NaN")
@@ -99,11 +100,9 @@
 
             elements.push(ele);
           }
-
-          item.elements = elements;
-
-          newmodel.data.push(item);
         }
+        item.elements = elements;
+        newmodel.data.push(item);
       }
     };
   };

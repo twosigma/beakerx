@@ -348,7 +348,7 @@
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
           var item = data[i];
-          if (item.type === "constline" || item.type === "constband") { continue; }
+          if (item.type === "constline" || item.type === "constband" || item.type === "heatmap") { continue; }
 
           var eles = item.elements;
           var unordered = false;

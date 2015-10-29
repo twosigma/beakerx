@@ -502,7 +502,7 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "a12f29d5-7529-4e4e-bd72-5844dd343fe1",
+                "shellId": "8a2960b9-1a03-4e3c-9669-4f24e777707f",
                 "elapsedTime": 560,
                 "hidden": true
             },
@@ -527,7 +527,8 @@
                     "title: \"Heatmap example\",",
                     "xLabel:\"X Label\",",
                     "yLabel:\"Y Label\",",
-                    "data: data)",
+                    "data: data,",
+                    "legendPosition: LegendPosition.BOTTOM_RIGHT)",
                     "",
                     "heatmap"
                 ]
@@ -570,10 +571,10 @@
                     "crosshair": null,
                     "legend_position": {
                         "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
+                        "position": "BOTTOM_RIGHT"
                     },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
+                    "legend_layout": "HORIZONTAL",
                     "graphics_list": [
                         [
                             533.08714795974,
@@ -899,11 +900,11 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "a12f29d5-7529-4e4e-bd72-5844dd343fe1",
-                "elapsedTime": 565
+                "shellId": "8a2960b9-1a03-4e3c-9669-4f24e777707f",
+                "elapsedTime": 563
             },
             "evaluatorReader": true,
-            "lineCount": 7
+            "lineCount": 8
         }
     ],
     "namespace": {}

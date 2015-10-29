@@ -35,6 +35,7 @@ outputdisplay/bko-plot/plotconverter.js
 outputdisplay/bko-plot/heatmapconverter.js
 outputdisplay/bko-plot/plotformatter.js
 outputdisplay/bko-plot/combinedplotformatter.js
+outputdisplay/bko-plot/gradientlegend.js
 outputdisplay/bko-plot/bko-plot.js
 outputdisplay/bko-easyform/bko-easyform.js
 outputdisplay/bko-plot/bko-combinedplot.js

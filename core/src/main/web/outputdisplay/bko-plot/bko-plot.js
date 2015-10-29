@@ -21,7 +21,13 @@
 
 ( function() {
   'use strict';
-  var retfunc = function(plotUtils, plotFormatter, plotFactory, bkCellMenuPluginManager, bkSessionManager, bkUtils) {
+  var retfunc = function(plotUtils,
+                         plotFormatter,
+                         plotFactory,
+                         bkCellMenuPluginManager,
+                         bkSessionManager,
+                         bkUtils,
+                         gradientLegend) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -113,7 +119,7 @@
           scope.jqcontainer = element.find("#plotContainer");
           scope.jqlegendcontainer = element.find("#plotLegendContainer");
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
-          scope.jqsvg = element.find("svg");
+          scope.jqsvg = element.find("#svgg");
           scope.canvas = element.find("canvas")[0];
 
           scope.canvas.style.display="none";
@@ -929,6 +935,12 @@
           var legendDraggableContainer = $("<div></div>").appendTo(legendScrollableContainer)
             .attr("id", "legendDraggableContainer")
             .attr("class", "plot-legenddraggablecontainer");
+
+          if (scope.model.getCellModel().type === "HeatMap") {
+            gradientLegend.render(legendDraggableContainer, data);
+            scope.updateLegendPosition();
+            return;
+          }
 
           var legendUnit = isHorizontal ? "<div></div>" : "<table></table>",
               legendLineUnit = isHorizontal ? "<div class='plot-legenditeminline'></div>" : "<tr></tr>",
@@ -1962,5 +1974,13 @@
       }
     };
   };
-  beaker.bkoDirective("Plot", ["plotUtils", "plotFormatter", "plotFactory", "bkCellMenuPluginManager", "bkSessionManager", "bkUtils", retfunc]);
+  beaker.bkoDirective("Plot", [
+    "plotUtils",
+    "plotFormatter",
+    "plotFactory",
+    "bkCellMenuPluginManager",
+    "bkSessionManager",
+    "bkUtils",
+    "gradientLegend",
+    retfunc]);
 })();

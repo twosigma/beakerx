@@ -39,7 +39,8 @@
 }
 
 .plot-label,
-.plot-xylabel {
+.plot-xylabel,
+.plot-legend-label{
   font-family: "pt-sans", Helvetica, sans-serif;
   line-height: 1.38462;
 }
@@ -249,4 +250,12 @@
   display: block;
   overflow: hidden;
   height: 0;
+}
+
+.plot-legend-axis {
+  stroke: #333333;
+  stroke-width: 1;
+}
+.plot-legend-tick {
+  stroke: #333333;
 }

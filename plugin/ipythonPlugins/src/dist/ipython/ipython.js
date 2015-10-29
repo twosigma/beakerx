@@ -148,7 +148,7 @@ define(function(require, exports, module) {
           if (self.kernel !== undefined && self.kernel.running) {
             cb(shellID);
           } else if (now() < timeout) {
-            setTimeout(spin, 100);
+            bkHelper.timeout(spin, 100);
           } else {
             console.error("TIMED OUT - waiting for ipython kernel to start");
             ecb("TIMED OUT - waiting for ipython kernel to start");
@@ -240,9 +240,9 @@ define(function(require, exports, module) {
               evaluation.payload = "<pre>" + result + "</pre>";
             }
             finalStuff = evaluation;
-            bkHelper.timeout(doFinish,250);
+            bkHelper.timeout(doFinish, 250);
           }
-        }
+        };
         var output = function output(a0, a1) {
           if (_theCancelFunction === null || gotError)
             return;

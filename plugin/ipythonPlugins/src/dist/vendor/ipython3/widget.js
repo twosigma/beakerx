@@ -156,7 +156,7 @@ define('ipython3_widget', [
                 case 'display':
                   var elem = $(document.createElement("div"));
                   elem.addClass('ipy-output');
-                  elem.attr('data-msg-id', msg.parent_header.msg_id)
+                  elem.attr('data-msg-id', msg.parent_header.msg_id);
                   var widget_area = $(document.createElement("div"));
                   widget_area.addClass('widget-area');
                   var widget_subarea = $(document.createElement("div"));
@@ -165,7 +165,8 @@ define('ipython3_widget', [
                   widget_area.appendTo(elem);
                   var kernel = this.widget_manager.comm_manager.kernel;
                   if (kernel) {
-                    kernel.appendToWidgetOutput = true;
+                    //This cause fail on plot display
+                    //kernel.appendToWidgetOutput = true;
                     var callbacks = kernel.get_callbacks_for_msg(msg.parent_header.msg_id);
                     if (callbacks && callbacks.iopub) {
                       msg.content.data['text/html'] = elem[0].outerHTML;

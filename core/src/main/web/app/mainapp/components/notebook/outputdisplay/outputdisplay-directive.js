@@ -34,7 +34,7 @@
         type: "@",
         model: "=" // assume ref to model doesn't change after directive is created
       },
-      link: function(scope, element, attrs) {
+      link: function(scope, element) {
         var childScope = null;
         var refresh = function(type) {
           if (childScope) {

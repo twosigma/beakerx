@@ -135,12 +135,14 @@ define('ipython3_widgetmanager', [
       var that = this;
       return this.display_widget_view(msg, this.create_view(model, {}))
           .then(function (view) {
-            that._handle_display_view(view);
-            view.trigger('displayed');
-            if (that.comm_manager.kernel && !that.comm_manager.kernel.view) {
-              that.comm_manager.kernel.view = view;
-            }
-            return view;
+            bkHelper.timeout(function() {
+              that._handle_display_view(view);
+              view.trigger('displayed');
+              if (that.comm_manager.kernel && !that.comm_manager.kernel.view) {
+                that.comm_manager.kernel.view = view;
+              }
+              return view;
+            }, 250);
           }).catch(utils.reject('Could not create or display view', true));
     };
 
@@ -153,11 +155,11 @@ define('ipython3_widgetmanager', [
               + '] .widget-area .widget-subarea');
           view.$el.appendTo(ipy_output);
           view.oa = new IPython.OutputArea({
-                selector: '.ipy-output[data-msg-id=' + msg.parent_header.msg_id + ']',
-                keyboard_manager: that.keyboard_manager,
-                prompt_area: false,
-                events: that.notebook.events}
-          );
+            selector: '.ipy-output[data-msg-id=' + msg.parent_header.msg_id + ']',
+            keyboard_manager: that.keyboard_manager,
+            prompt_area: false,
+            events: that.notebook.events
+          });
           if (view.outputBuffer) {
             var callbacks = that.callbacks(view);
             if (callbacks && callbacks.iopub && callbacks.iopub.output) {
@@ -167,7 +169,7 @@ define('ipython3_widgetmanager', [
             }
             view.outputBuffer = null;
           }
-        }, 150);
+        }, 250);
         return view;
       });
     };

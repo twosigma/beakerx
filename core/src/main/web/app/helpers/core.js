@@ -668,22 +668,25 @@
         };
 
         var backspace = function(cm) {
-          var cursor = cm.getCursor();
-          var anchor = cm.getCursor("anchor");
-          if (cursor.line != anchor.line || cursor.ch != anchor.ch) {
-            cm.replaceRange("", cursor, anchor);
-            return;
-          }
-          var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
-          if (leftLine.match(/^\s+$/)) {
-            cm.deleteH(-1, "char");
-            var indent = cm.getOption('indentUnit');
-            while ((cm.getCursor().ch % indent) != 0) {
-              cm.deleteH(-1, "char");
+          var cursor, anchor,
+              toKill = [],
+              selections = cm.listSelections();
+
+          _.each(selections, function(range) {
+            cursor = range['head'];
+            anchor = range['anchor'];
+
+            if (cursor.line !== anchor.line || cursor.ch !== anchor.ch) {
+              cm.replaceRange("", cursor, anchor);
+            } else {
+              var from = cm.findPosH(cursor, -1, "char", false);
+              toKill.push({from: from, to: cursor});
             }
-          } else {
-            cm.deleteH(-1, "char");
-          }
+          });
+
+          _.each(toKill, function(i) {
+            cm.replaceRange("", i.from, i.to);
+          });
         };
 
         var keys = {
@@ -715,8 +718,7 @@
             "Cmd-/": "toggleComment",
             'Right': goCharRightOrMoveFocusDown,
             'Left': goCharLeftOrMoveFocusDown
-
-          };
+        };
 
 
         if (typeof window.bkInit !== 'undefined') {

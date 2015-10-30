@@ -37,6 +37,8 @@ See the page for your platform for how to build from source:
 
 Say `cd test; ./runner` to run the end-to-end tests with Protractor.
 
+Say `cd test; ./perftest` to run performance tests with Protractor. Performance tests are pretty demanding and will lock up the browser performing the tests. Any interaction with the browser while the tests are running will affect the tests and skew the results.
+
 [![Build Status](https://travis-ci.org/twosigma/beaker-notebook.svg?branch=master)](https://travis-ci.org/twosigma/beaker-notebook)
 
 To enable the debug menu, add the following to your `beaker.pref.json` file:

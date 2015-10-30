@@ -159,20 +159,28 @@
   vertical-align: middle;
   cursor: pointer;
 }
-.plot-plotlegendcontainer{
+
+.plot-plotlegendcontainer {
   position: relative;
 }
-.plot-legendscrollablecontainer {
+
+.plot-legend {
   position: absolute;
-  border: 1px solid #BBBBBB;
   background-color: #FEFEFE;
+}
+
+.plot-legenddraggable {
+  cursor: pointer;
+}
+
+.plot-legendscrollablecontainer {
+  border: 1px solid #BBBBBB;
   border-collapse: initial; /* override the global table setting*/
   overflow-y: auto;
 }
 
-.plot-legenddraggablecontainer{
+.plot-legendscrollablecontainer .plot-legenddraggable {
   padding: .25em 23px 0 .25em;
-  cursor: pointer;
 }
 
 .plot-legendline{

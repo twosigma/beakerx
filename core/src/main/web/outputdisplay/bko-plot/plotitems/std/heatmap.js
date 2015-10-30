@@ -34,7 +34,7 @@
         .range([colorLow, colorMed, colorHigh]);
 
       this.itemProps = {
-        "id" : this.id
+        "id": this.id
       };
       this.elementProps = [];
     };
@@ -53,13 +53,13 @@
       }
     };
 
-    HeatMap.prototype.getRange = function(){
+    HeatMap.prototype.getRange = function() {
       var eles = this.elements;
       var range = {
-        xl : Infinity,
-        xr : -Infinity,
-        yl : Infinity,
-        yr : -Infinity
+        xl: Infinity,
+        xr: -Infinity,
+        yl: Infinity,
+        yr: -Infinity
       };
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
@@ -128,14 +128,14 @@
 
         var id = this.id + "_" + i;
         var prop = {
-          "id" : id,
-          "idx" : this.index,
-          "ele" : ele,
-          "x" : x,
-          "y" : y2,
-          "w" : sw,
-          "h" : y - y2,
-          "fi" : this.colorScale(ele.value)
+          "id": id,
+          "idx": this.index,
+          "ele": ele,
+          "x": x,
+          "y": y2,
+          "w": sw,
+          "h": y - y2,
+          "fi": this.colorScale(ele.value)
         };
         eleprops.push(prop);
       }
@@ -179,7 +179,14 @@
     };
 
     HeatMap.prototype.clearTips = function(scope) {
-      //TODO
+      var eleprops = this.elementProps;
+      var itemid = this.id;
+      _(scope.tips).each(function(value, key) {
+        if (key.search("" + itemid) === 0) {
+          scope.jqcontainer.find("#tip_" + key).remove();
+          delete scope.tips[key];
+        }
+      });
     };
 
     HeatMap.prototype.createTip = function(ele, g, model) {

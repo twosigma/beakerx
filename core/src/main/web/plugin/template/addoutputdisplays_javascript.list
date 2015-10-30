@@ -34,6 +34,7 @@ outputdisplay/bko-plot/plotfactory.js
 outputdisplay/bko-plot/plotconverter.js
 outputdisplay/bko-plot/plotformatter.js
 outputdisplay/bko-plot/combinedplotformatter.js
+outputdisplay/bko-plot/bko-chart-extender.js
 outputdisplay/bko-plot/bko-plot.js
 outputdisplay/bko-easyform/bko-easyform.js
 outputdisplay/bko-plot/bko-combinedplot.js

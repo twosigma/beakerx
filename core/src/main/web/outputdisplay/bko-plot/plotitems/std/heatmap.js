@@ -129,6 +129,7 @@
         var id = this.id + "_" + i;
         var prop = {
           "id" : id,
+          "idx" : this.index,
           "ele" : ele,
           "x" : x,
           "y" : y2,
@@ -182,7 +183,10 @@
     };
 
     HeatMap.prototype.createTip = function(ele, g, model) {
-      //TODO
+      var tip = {
+        title: ele.value
+      };
+      return plotUtils.createTipString(tip);
     };
 
     return HeatMap;

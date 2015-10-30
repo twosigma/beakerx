@@ -164,6 +164,7 @@
 
         var legendSvg = d3.select(legendContainer[0]).append("svg")
           .attr("id", "legends")
+          .attr('xmlns', 'http://www.w3.org/2000/svg')
           .attr("height", layout.legendHeight);
         var legend = legendSvg
           .append("g")

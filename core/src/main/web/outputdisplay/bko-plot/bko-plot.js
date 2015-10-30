@@ -1979,6 +1979,13 @@
           });
           legendCopy.css("position", "inherit");
 
+          //remove base from urls
+          legendCopy.find("[style*='url']").each(function(i, item){
+            var style = $(item).attr('style');
+            style = style.replace("/beaker/", "");
+            $(item).attr('style', style);
+          });
+
           var getPositive = function(value) {
             return value > 0 ? value : 0;
           };

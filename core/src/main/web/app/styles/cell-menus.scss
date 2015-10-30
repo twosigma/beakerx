@@ -29,7 +29,7 @@ bk-new-cell-menu {
     opacity: 0;
   }
 
-  &:hover, &.only-child {
+  &:hover, &.only-child, &.large {
     .new-cell {
       opacity: 1;
     }

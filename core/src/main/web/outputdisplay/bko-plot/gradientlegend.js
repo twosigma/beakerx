@@ -24,7 +24,9 @@
       tickSize: 5,
       legendWidth: 350, //TODO can change it from outside?
       legendHeight: 60,
-      colorboxHeight: 20
+      colorboxHeight: 20,
+      axisPadding: 10,
+      histHeight: 7
     };
 
     var makeGradient = function(legend, colors) {
@@ -55,7 +57,7 @@
       var ticks;
       var axislines = [];
       var axislabels = [];
-      var axisliney = layout.colorboxHeight + 10;
+      var axisliney = layout.colorboxHeight + layout.axisPadding;
 
 
       axislines.push({
@@ -158,6 +160,52 @@
         .text(function(d) { return d.text; });
     };
 
+    var makeHistogram = function(legend, data) {
+
+      //create histogram data
+      var flatValues = [];
+      var elements = data[0].elements;
+      for (var i = 0; i < elements.length; i++) {
+        flatValues.push(elements[i].value);
+      }
+      var histValues = d3.layout.histogram().bins(100)(flatValues);
+      var min = histValues[0].y, max = min;
+      for (var i = 0; i < histValues.length; i++) {
+        min = Math.min(min, histValues[i].y);
+        max = Math.max(max, histValues[i].y);
+      }
+
+      // the x-scale parameters
+      var x = d3.scale.linear()
+        .domain([data[0].minValue, data[0].maxValue])
+        .range([0, layout.legendWidth]);
+
+      // the y-scale parameters
+      var axisliney = layout.colorboxHeight + layout.axisPadding;
+      var y = d3.scale.linear()
+        .domain([min, max])
+        .range([axisliney, axisliney - layout.histHeight]);
+
+      var yreflected = d3.scale.linear()
+        .domain([min, max])
+        .range([axisliney, axisliney + layout.histHeight]);
+
+      var createLine = function(yScale) {
+        return d3.svg.line()
+          .x(function(d) { return x(d.x + d.dx / 2); })
+          .y(function(d) { return yScale(d.y); });
+      };
+
+      legend.append("path")
+        .datum(histValues)
+        .attr("class", "plot-legend-histogram")
+        .attr("d", createLine(y));
+      legend.append("path")
+        .datum(histValues)
+        .attr("class", "plot-legend-histogram")
+        .attr("d", createLine(yreflected));
+    };
+
     return {
       render: function(legendContainer, data) {
         var colors = ["#780004", "#F15806", "#FFCE1F"];
@@ -177,6 +225,7 @@
           .attr("height", layout.colorboxHeight)
           .style("fill", "url(/beaker/#gradient)");
 
+        makeHistogram(legend, data);
         renderAxis(legend, data);
 
         legendSvg.attr("width", legend[0][0].getBBox().width);

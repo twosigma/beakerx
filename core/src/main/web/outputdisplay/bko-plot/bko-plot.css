@@ -261,9 +261,16 @@
 }
 
 .plot-legend-axis {
-  stroke: #333333;
+  stroke: black;
   stroke-width: 1;
 }
 .plot-legend-tick {
   stroke: #333333;
+}
+
+.plot-legend-histogram {
+  stroke: #333333;
+  stroke-width: 1;
+  opacity: 0.5;
+  fill: #333333;
 }

@@ -125,7 +125,7 @@
         class: "plot-legend-label",
         x: -layout.labelHPadding,
         y: axisliney,
-        text: data[0].minValue.toFixed(4),
+        text: data[0].minValue.toFixed(4) * 1,
         "text-anchor": "end",
         "dominant-baseline": "central"
       });
@@ -134,7 +134,7 @@
         class: "plot-legend-label",
         x: layout.legendWidth + layout.labelHPadding,
         y: axisliney,
-        text: data[0].maxValue.toFixed(4),
+        text: data[0].maxValue.toFixed(4) * 1,
         "text-anchor": "start",
         "dominant-baseline": "central"
       });

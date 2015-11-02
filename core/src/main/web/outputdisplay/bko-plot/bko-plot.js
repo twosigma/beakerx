@@ -27,7 +27,7 @@
                          bkCellMenuPluginManager,
                          bkSessionManager,
                          bkUtils,
-                         gradientLegend) {
+                         GradientLegend) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -958,7 +958,8 @@
           }
 
           if (scope.model.getCellModel().type === "HeatMap") {
-            gradientLegend.render(legendContainer, data);
+            scope.gradientLegend = new GradientLegend(data);
+            scope.gradientLegend.render(legendContainer);
             scope.updateLegendPosition();
             return;
           }
@@ -2013,6 +2014,6 @@
     "bkCellMenuPluginManager",
     "bkSessionManager",
     "bkUtils",
-    "gradientLegend",
+    "GradientLegend",
     retfunc]);
 })();

@@ -18,19 +18,22 @@
   'use strict';
   var retfunc = function() {
 
-    var layout = {
-      labelHPadding: 5,
-      labelVPadding: 15,
-      tickSize: 5,
-      legendWidth: 350, //TODO can change it from outside?
-      legendHeight: 60,
-      colorboxHeight: 20,
-      axisPadding: 10,
-      histHeight: 7
+    var GradientLegend = function(data) {
+      this.data = _.extend({}, data);
+      this.layout = {
+        labelHPadding: 5,
+        labelVPadding: 15,
+        tickSize: 5,
+        legendWidth: 350, //TODO can change it from outside?
+        legendHeight: 60,
+        colorboxHeight: 20,
+        axisPadding: 10,
+        histHeight: 7
+      };
     };
 
-    var makeGradient = function(legend, colors) {
-      var gradient = legend.append("defs")
+    GradientLegend.prototype.makeGradient = function(colors) {
+      var gradient = this.legend.append("defs")
         .append("linearGradient")
         .attr("id", "gradient")
         .attr("x1", "0%")
@@ -52,19 +55,19 @@
         .attr("stop-opacity", 1);
     };
 
-    var renderAxis = function(legend, data){
+    GradientLegend.prototype.drawAxis = function(){
       var labelsCount = 6; //TODO need to calculate labels count
       var ticks;
       var axislines = [];
       var axislabels = [];
-      var axisliney = layout.colorboxHeight + layout.axisPadding;
+      var axisliney = this.layout.colorboxHeight + this.layout.axisPadding;
 
 
       axislines.push({
         id: "legend-axis",
         class: "plot-legend-axis",
         x1: 0,
-        x2: layout.legendWidth,
+        x2: this.layout.legendWidth,
         y1: axisliney,
         y2: axisliney
       });
@@ -76,20 +79,20 @@
         x1: 0,
         x2: 0,
         y1: axisliney,
-        y2: axisliney - layout.tickSize
+        y2: axisliney - this.layout.tickSize
       });
       axislines.push({
         id: "legend-tick-right",
         class: "plot-legend-tick",
-        x1: layout.legendWidth,
-        x2: layout.legendWidth,
+        x1: this.layout.legendWidth,
+        x2: this.layout.legendWidth,
         y1: axisliney,
-        y2: axisliney - layout.tickSize
+        y2: axisliney - this.layout.tickSize
       });
 
       //ticks and labels
-      var axis = d3.scale.linear().range([0, layout.legendWidth]);
-      axis.domain([data[0].minValue, data[0].maxValue]);
+      var axis = d3.scale.linear().range([0, this.layout.legendWidth]);
+      axis.domain([this.data[0].minValue, this.data[0].maxValue]);
       ticks = axis.ticks(labelsCount);
 
       var first = axis(ticks[0]);
@@ -106,13 +109,13 @@
           x1: getTickX(i),
           x2: getTickX(i),
           y1: axisliney,
-          y2: axisliney + layout.tickSize
+          y2: axisliney + this.layout.tickSize
         });
         axislabels.push({
           id: "legend-tick-text-" + i,
           class: "plot-legend-label",
           x: getTickX(i),
-          y: axisliney + layout.labelVPadding,
+          y: axisliney + this.layout.labelVPadding,
           dy: ".35em",
           text: ticks[i],
           "text-anchor": "middle"
@@ -123,24 +126,24 @@
       axislabels.push({
         id: "legend-min-text",
         class: "plot-legend-label",
-        x: -layout.labelHPadding,
+        x: -this.layout.labelHPadding,
         y: axisliney,
-        text: data[0].minValue.toFixed(4) * 1,
+        text: this.data[0].minValue.toFixed(4) * 1,
         "text-anchor": "end",
         "dominant-baseline": "central"
       });
       axislabels.push({
         id: "legend-max-text",
         class: "plot-legend-label",
-        x: layout.legendWidth + layout.labelHPadding,
+        x: this.layout.legendWidth + this.layout.labelHPadding,
         y: axisliney,
-        text: data[0].maxValue.toFixed(4) * 1,
+        text: this.data[0].maxValue.toFixed(4) * 1,
         "text-anchor": "start",
         "dominant-baseline": "central"
       });
 
-      legend.selectAll("line").remove();
-      legend.selectAll("line")
+      this.legend.selectAll("line").remove();
+      this.legend.selectAll("line")
         .data(axislines, function(d) { return d.id; }).enter().append("line")
         .attr("id", function(d) { return d.id; })
         .attr("class", function(d) { return d.class; })
@@ -148,8 +151,8 @@
         .attr("x2", function(d) { return d.x2; })
         .attr("y1", function(d) { return d.y1; })
         .attr("y2", function(d) { return d.y2; });
-      legend.selectAll("text").remove();
-      legend.selectAll("text")
+      this.legend.selectAll("text").remove();
+      this.legend.selectAll("text")
         .data(axislabels, function(d) { return d.id; }).enter().append("text")
         .attr("id", function(d) { return d.id; })
         .attr("x", function(d) { return d.x; })
@@ -160,11 +163,11 @@
         .text(function(d) { return d.text; });
     };
 
-    var makeHistogram = function(legend, data) {
+    GradientLegend.prototype.drawHistogram = function() {
 
       //create histogram data
       var flatValues = [];
-      var elements = data[0].elements;
+      var elements = this.data[0].elements;
       for (var i = 0; i < elements.length; i++) {
         flatValues.push(elements[i].value);
       }
@@ -177,18 +180,18 @@
 
       // the x-scale parameters
       var x = d3.scale.linear()
-        .domain([data[0].minValue, data[0].maxValue])
-        .range([0, layout.legendWidth]);
+        .domain([this.data[0].minValue, this.data[0].maxValue])
+        .range([0, this.layout.legendWidth]);
 
       // the y-scale parameters
-      var axisliney = layout.colorboxHeight + layout.axisPadding;
+      var axisliney = this.layout.colorboxHeight + this.layout.axisPadding;
       var y = d3.scale.linear()
         .domain([min, max])
-        .range([axisliney, axisliney - layout.histHeight]);
+        .range([axisliney, axisliney - this.layout.histHeight]);
 
       var yreflected = d3.scale.linear()
         .domain([min, max])
-        .range([axisliney, axisliney + layout.histHeight]);
+        .range([axisliney, axisliney + this.layout.histHeight]);
 
       var createArea = function(yScale) {
         return d3.svg.area()
@@ -197,43 +200,43 @@
           .y1(function(d) { return yScale(d.y); });
       };
 
-      legend.append("path")
+      this.legend.append("path")
         .datum(histValues)
         .attr("class", "plot-legend-histogram")
         .attr("d", createArea(y));
-      legend.append("path")
+      this.legend.append("path")
         .datum(histValues)
         .attr("class", "plot-legend-histogram")
         .attr("d", createArea(yreflected));
     };
-
-    return {
-      render: function(legendContainer, data) {
-        var colors = ["#780004", "#F15806", "#FFCE1F"];
-
-        var legendSvg = d3.select(legendContainer[0]).append("svg")
-          .attr("id", "legends")
-          .attr('xmlns', 'http://www.w3.org/2000/svg')
-          .attr("height", layout.legendHeight);
-        var legend = legendSvg
-          .append("g")
-          .attr("transform", "translate(0.5, 0.5)");
-
-        makeGradient(legend, colors);
-
-        legend.append("rect")
-          .attr("width", layout.legendWidth)
-          .attr("height", layout.colorboxHeight)
-          .style("fill", "url(/beaker/#gradient)");
-
-        makeHistogram(legend, data);
-        renderAxis(legend, data);
-
-        legendSvg.attr("width", legend[0][0].getBBox().width);
-        var minValueLabelWidth = legend.selectAll("#legend-min-text")[0][0].getBBox().width + layout.labelHPadding;
-        legend.style("transform", "translate(" + minValueLabelWidth + "px, 0px)");
-      }
+  
+    GradientLegend.prototype.render = function(legendContainer) {
+      var colors = ["#780004", "#F15806", "#FFCE1F"];
+  
+      var legendSvg = d3.select(legendContainer[0]).append("svg")
+        .attr("id", "legends")
+        .attr('xmlns', 'http://www.w3.org/2000/svg')
+        .attr("height", this.layout.legendHeight);
+      this.legend = legendSvg
+        .append("g")
+        .attr("transform", "translate(0.5, 0.5)");
+  
+      this.makeGradient(colors);
+  
+      this.legend.append("rect")
+        .attr("width", this.layout.legendWidth)
+        .attr("height", this.layout.colorboxHeight)
+        .style("fill", "url(/beaker/#gradient)");
+  
+      this.drawHistogram();
+      this.drawAxis();
+  
+      legendSvg.attr("width", this.legend[0][0].getBBox().width);
+      var minValueLabelWidth = this.legend.selectAll("#legend-min-text")[0][0].getBBox().width + this.layout.labelHPadding;
+      this.legend.style("transform", "translate(" + minValueLabelWidth + "px, 0px)");
     };
+    
+    return GradientLegend;
   };
-  beaker.bkoFactory('gradientLegend', retfunc);
+  beaker.bkoFactory('GradientLegend', retfunc);
 })();

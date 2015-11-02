@@ -1779,7 +1779,7 @@
         };
 
         if (scope.model.getCellModel().type === "TreeMap"){
-          bkoChartExtender.extend(scope);
+          bkoChartExtender.extend(scope, element, attrs);
         }
         scope.init(); // initialize
         scope.$watch('getDumpState()', function (result) {

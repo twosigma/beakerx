@@ -27,23 +27,40 @@
 
 
 		PlotTreeMapNode.prototype.prepare = function (scope) {
-			var margin = {top: 5, right: 5, bottom: 10, left: 0},
+			var margin = {top: 0, right: 0, bottom: 0, left: 0},
 				width = (scope ? scope.jqsvg.width() : 300) - margin.left - margin.right,
 				height = (scope ? scope.jqsvg.height() : 200) - margin.top - margin.bottom;
 
-			this.nodes =  d3.layout.treemap()
+			var treemap = d3.layout.treemap()
 				.round(false)
 				.size([width, height])
 				.sticky(true)
 				.value(function (d) {
 					return d.weight;
-				})
+				});
+
+			if (scope.stdmodel.mode) {
+				treemap.mode(scope.stdmodel.mode)
+			}
+			if (scope.stdmodel.sticky) {
+				treemap.sticky(scope.stdmodel.sticky)
+			}
+			if (scope.stdmodel.ratio) {
+				treemap.ratio(scope.stdmodel.ratio)
+			}
+			if (scope.stdmodel.round) {
+				treemap.round(scope.stdmodel.round)
+			}
+
+			this.nodes =  treemap
 				//.mode("slice-dice")
 				.nodes(this)
 				.filter(function (d) {
 					return !d.children || d.children.length === 0;
 				})
 				;
+
+
 		};
 
 
@@ -78,7 +95,7 @@
 						return 'translate(' + d.x + ',' + d.y + ')';
 					})
 					.on("mouseover", function (d) {
-						if (d.label) {
+						if (scope.stdmodel.useToolTip === true && d.tooltip) {
 							scope.tooltip.style("visibility", "visible");
 							scope.tooltip.transition().duration(200).style("opacity", 0.9);
 						}
@@ -91,8 +108,8 @@
 							.style("left", xPosition + "px")
 							.style("top", yPosition + "px");
 
-						if (d.label) {
-							scope.tooltip.html(d.label);
+						if (d.tooltip) {
+							scope.tooltip.html(d.tooltip);
 						}
 					})
 					.on("mouseout", function () {
@@ -109,7 +126,7 @@
 					return Math.max(0, d.dy - 0.1);
 				})
 				.style("fill", function (d) {
-					return d.children ? null : color(d.label);
+					return d.children ? null : d.color;
 				})
 			;
 
@@ -140,13 +157,14 @@
 						var size = Math.min(18 / scale, Math.floor(d.dx));
 						return size + "px"
 					})
-					//.attr("textLength", function(d){
-					//	return this.getComputedTextLength() < d.dx ? this.getComputedTextLength() : d.dx;
-					//})
-					//.style("opacity", function(d){
-					//	d.w = this.getComputedTextLength();
-					//	return d.dx > d.w && d.showItem === true ? 1 : 0;
-					//})
+					.attr("textLength", function(d){
+						return this.getComputedTextLength() < d.dx ? this.getComputedTextLength() : d.dx;
+					})
+					.style("opacity", function(d){
+						d.w = this.getComputedTextLength();
+						//return d.dx > d.w && d.showItem === true ? 1 : 0;
+						return d.dx > d.w ? 1 : 0;
+					})
 
 				;
 			}

@@ -23,10 +23,12 @@ import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
+import java.util.Map;
 
 
 public class TreeMapNodeSerializer extends JsonSerializer<TreeMapNode> {
   @Override
+  @SuppressWarnings("unchecked")
   public void serialize(TreeMapNode treeMapNode,
                         JsonGenerator jgen,
                         SerializerProvider provider) throws
@@ -35,13 +37,17 @@ public class TreeMapNodeSerializer extends JsonSerializer<TreeMapNode> {
     jgen.writeStartObject();
 
     jgen.writeObjectField("type", treeMapNode.getClass().getSimpleName());
-
-    jgen.writeObjectField("label", treeMapNode.getLabel());
     jgen.writeObjectField("weight", treeMapNode.getWeight());
 
     if (treeMapNode.getValue() != null) {
-      jgen.writeObjectField("double_value", treeMapNode.getDoubleValue());
-      jgen.writeObjectField("label_value", treeMapNode.getLabelValue());
+      jgen.writeObjectField("value", treeMapNode.getDoubleValue());
+      jgen.writeObjectField("labelValue", treeMapNode.getLabelValue());
+
+      Object userObject = treeMapNode.getUserObject();
+      Map<String, Object> values = (Map<String, Object>) userObject;
+      jgen.writeObjectField("label", values.get("label"));
+      jgen.writeObjectField("color", values.get("color"));
+      jgen.writeObjectField("tooltip", values.get("tooltip"));
     }
 
     if (treeMapNode.getChildren() != null)

@@ -101,6 +101,23 @@
             rightClose: model.rightClose
           });
         }
+      }else{
+        if (model.version === "groovy") {  // model returned from serializer
+
+          newmodel = _.extend(newmodel, {
+            mode: model.mode,
+            ratio: model.ratio,
+            sticky: model.sticky,
+            round: model.round
+          });
+        } else {
+          newmodel = _.extend(newmodel, {
+            mode: model.mode,
+            ratio: model.ratio,
+            sticky: model.sticky,
+            round: model.round
+          });
+        }
       }
 
       return newmodel;

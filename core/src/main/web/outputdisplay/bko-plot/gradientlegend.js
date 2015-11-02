@@ -209,7 +209,31 @@
         .attr("class", "plot-legend-histogram")
         .attr("d", createArea(yreflected));
     };
-  
+
+    GradientLegend.prototype.drawPointer = function(pos) {
+      var size = 32;
+      var arc = d3.svg.symbol().type('triangle-down').size(size);
+
+      var height = Math.sqrt(size * Math.sqrt(3));
+      var data = [{x: pos, y: this.layout.colorboxHeight + this.layout.axisPadding - height / 2}];
+
+      var x = d3.scale.linear()
+        .domain([this.data[0].minValue, this.data[0].maxValue])
+        .range([0, this.layout.legendWidth]);
+
+      this.legend.selectAll('.legend-pointer').remove();
+      this.legend.selectAll('.legend-pointer')
+        .data(data)
+        .enter()
+        .append('path')
+        .attr('d', arc)
+        .attr('class', 'legend-pointer')
+        .attr('fill', '#333333')
+        .attr('stroke', '#333333')
+        .attr('stroke-width', 1)
+        .attr("transform", function(d) { return "translate(" + x(d.x) + "," + d.y + ")"; });
+    };
+
     GradientLegend.prototype.render = function(legendContainer) {
       var colors = ["#780004", "#F15806", "#FFCE1F"];
   
@@ -227,7 +251,7 @@
         .attr("width", this.layout.legendWidth)
         .attr("height", this.layout.colorboxHeight)
         .style("fill", "url(/beaker/#gradient)");
-  
+
       this.drawHistogram();
       this.drawAxis();
   

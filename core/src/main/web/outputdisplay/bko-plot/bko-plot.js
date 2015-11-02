@@ -345,6 +345,7 @@
           }
           scope.svg.selectAll(".plot-resp")
             .on('mouseenter', function(d) {
+              scope.drawLegendPointer(d);
               return scope.tooltip(d, d3.mouse(scope.svg[0][0]));
             })
             .on("mouseleave", function(d) {
@@ -353,6 +354,12 @@
             .on("click", function(d) {
               return scope.toggleTooltip(d);
             });
+        };
+
+        scope.drawLegendPointer = function(d) {
+          if(scope.gradientLegend){
+            scope.gradientLegend.drawPointer(d.ele.value);
+          }
         };
 
         scope.toggleTooltip = function(d) {

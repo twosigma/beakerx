@@ -190,20 +190,21 @@
         .domain([min, max])
         .range([axisliney, axisliney + layout.histHeight]);
 
-      var createLine = function(yScale) {
-        return d3.svg.line()
+      var createArea = function(yScale) {
+        return d3.svg.area()
           .x(function(d) { return x(d.x + d.dx / 2); })
-          .y(function(d) { return yScale(d.y); });
+          .y0(axisliney)
+          .y1(function(d) { return yScale(d.y); });
       };
 
       legend.append("path")
         .datum(histValues)
         .attr("class", "plot-legend-histogram")
-        .attr("d", createLine(y));
+        .attr("d", createArea(y));
       legend.append("path")
         .datum(histValues)
         .attr("class", "plot-legend-histogram")
-        .attr("d", createLine(yreflected));
+        .attr("d", createArea(yreflected));
     };
 
     return {

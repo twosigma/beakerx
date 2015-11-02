@@ -261,7 +261,7 @@
 }
 
 .plot-legend-axis {
-  stroke: black;
+  stroke: #333333;
   stroke-width: 1;
 }
 .plot-legend-tick {

@@ -77,8 +77,15 @@
           type: "heatmap",
           minValue: minValue,
           maxValue: maxValue,
-          legend: "true"
+          legend: "true",
+          colors: []
         };
+
+        var colors = model.color;
+        for (var i = 0; i < colors.length; i++) {
+          item.colors.push("#" + colors[i].substr(3));
+        }
+
         var elements = [];
 
         for (var rowInd = 0; rowInd < data.length; rowInd++) {

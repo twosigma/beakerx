@@ -966,7 +966,7 @@
 
           if (scope.model.getCellModel().type === "HeatMap") {
             scope.gradientLegend = new GradientLegend(data);
-            scope.gradientLegend.render(legendContainer);
+            scope.gradientLegend.render(legendContainer, data[0].colors);
             scope.updateLegendPosition();
             return;
           }

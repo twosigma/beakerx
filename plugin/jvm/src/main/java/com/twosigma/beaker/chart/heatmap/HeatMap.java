@@ -17,11 +17,13 @@
 package com.twosigma.beaker.chart.heatmap;
 
 import com.twosigma.beaker.AbstractChart;
+import com.twosigma.beaker.chart.GradientColor;
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
 
 public class HeatMap extends AbstractChart {
   private Number[][] data;
+  private GradientColor color = GradientColor.BROWN_RED_YELLOW;
 
   public HeatMap() {
     setXLowerMargin(0);
@@ -30,6 +32,14 @@ public class HeatMap extends AbstractChart {
     setYUpperMargin(0);
     setLegendLayout(LegendLayout.HORIZONTAL);
     setLegendPosition(LegendPosition.BOTTOM_RIGHT);
+  }
+
+  public void setColor(GradientColor color) {
+    this.color = color;
+  }
+
+  public GradientColor getColor() {
+    return color;
   }
 
   public Number[][] getData() {

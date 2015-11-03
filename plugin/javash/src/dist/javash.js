@@ -162,6 +162,7 @@ define(function(require, exports, module) {
   };
   var defaultImports = [
     "com.twosigma.beaker.chart.Color",
+    "com.twosigma.beaker.chart.GradientColor",
     "com.twosigma.beaker.chart.legend.*",
     "com.twosigma.beaker.chart.Filter",
     "com.twosigma.beaker.BeakerProgressUpdate",

@@ -16,9 +16,11 @@
 
 (function() {
   'use strict';
+  var count = 0;
   var retfunc = function() {
 
     var GradientLegend = function(data) {
+      this.id = count++;
       this.data = _.extend({}, data);
       this.layout = {
         labelHPadding: 5,
@@ -35,24 +37,19 @@
     GradientLegend.prototype.makeGradient = function(colors) {
       var gradient = this.legend.append("defs")
         .append("linearGradient")
-        .attr("id", "gradient")
+        .attr("id", "gradient" + this.id)
         .attr("x1", "0%")
         .attr("y1", "0%")
         .attr("x2", "100%")
         .attr("y2", "0%")
         .attr("spreadMethod", "pad");
-      gradient.append("stop")
-        .attr("offset", "0%")
-        .attr("stop-color", colors[0])
-        .attr("stop-opacity", 1);
-      gradient.append("stop")
-        .attr("offset", "50%")
-        .attr("stop-color", colors[1])
-        .attr("stop-opacity", 1);
-      gradient.append("stop")
-        .attr("offset", "100%")
-        .attr("stop-color", colors[2])
-        .attr("stop-opacity", 1);
+      var colorPctStep = 100 / (colors.length - 1);
+      for(var i = 0; i< colors.length; i++){
+        gradient.append("stop")
+          .attr("offset", colorPctStep * i  + "%")
+          .attr("stop-color", colors[i])
+          .attr("stop-opacity", 1);
+      }
     };
 
     GradientLegend.prototype.drawAxis = function(){
@@ -234,9 +231,7 @@
         .attr("transform", function(d) { return "translate(" + x(d.x) + "," + d.y + ")"; });
     };
 
-    GradientLegend.prototype.render = function(legendContainer) {
-      var colors = ["#780004", "#F15806", "#FFCE1F"];
-  
+    GradientLegend.prototype.render = function(legendContainer, colors) {
       var legendSvg = d3.select(legendContainer[0]).append("svg")
         .attr("id", "legends")
         .attr('xmlns', 'http://www.w3.org/2000/svg')
@@ -250,7 +245,7 @@
       this.legend.append("rect")
         .attr("width", this.layout.legendWidth)
         .attr("height", this.layout.colorboxHeight)
-        .style("fill", "url(/beaker/#gradient)");
+        .style("fill", "url(/beaker/#gradient" + this.id + ")");
 
       this.drawHistogram();
       this.drawAxis();

@@ -27,11 +27,15 @@
 
     HeatMap.prototype.format = function() {
 
-      //TODO get colors as a parameter
-      var colorLow = '#780004', colorMed = '#F15806', colorHigh = '#FFCE1F';
+      var valueStep = (this.maxValue - this.minValue) / (this.colors.length - 1);
+      var domain = [];
+      for(var i = 0; i < this.colors.length; i++){
+        domain.push(this.minValue + valueStep * i);
+      }
+
       this.colorScale = d3.scale.linear()
-        .domain([this.minValue, (this.minValue + this.maxValue) / 2, this.maxValue])
-        .range([colorLow, colorMed, colorHigh]);
+        .domain(domain)
+        .range(this.colors);
 
       this.itemProps = {
         "id": this.id

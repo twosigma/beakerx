@@ -13,29 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.twosigma.beaker.chart.serializer;
 
-import com.twosigma.beaker.chart.heatmap.HeatMap;
+import com.twosigma.beaker.chart.GradientColor;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
 
-public class HeatMapSerializer extends AbstractChartSerializer<HeatMap> {
+public class GradientColorSerializer extends JsonSerializer<GradientColor> {
 
   @Override
-  public void serialize(HeatMap heatmap, JsonGenerator jgen, SerializerProvider sp)
+  public void serialize(GradientColor gradientColor, JsonGenerator jgen, SerializerProvider sp)
     throws IOException, JsonProcessingException {
-
-    jgen.writeStartObject();
-
-    serialize(heatmap, jgen);
-
-    jgen.writeObjectField("graphics_list", heatmap.getData());
-    jgen.writeObjectField("color", heatmap.getColor());
-
-    jgen.writeEndObject();
+    jgen.writeObject(gradientColor.getColors());
   }
 
 }

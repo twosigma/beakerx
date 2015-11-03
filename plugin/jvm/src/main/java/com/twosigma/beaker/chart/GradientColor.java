@@ -15,7 +15,10 @@
  */
 package com.twosigma.beaker.chart;
 
+import org.apache.cxf.common.util.CollectionUtils;
+
 import java.io.Serializable;
+import java.util.List;
 
 public class GradientColor implements Serializable{
   public final static GradientColor BROWN_RED_YELLOW = new GradientColor(new Color[]{ new Color(120, 0, 4),
@@ -41,6 +44,14 @@ public class GradientColor implements Serializable{
 
   protected GradientColor(Color[] colors){
     this.colors = colors;
+  }
+
+  public GradientColor(List<Color> colors){
+    if(!CollectionUtils.isEmpty(colors)){
+      this.colors = colors.toArray(new Color[colors.size()]);
+    }else{
+      this.colors = GradientColor.BROWN_RED_YELLOW.getColors();
+    }
   }
 
   public Color[] getColors() {

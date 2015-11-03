@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<ul class="nav nav-pills new-cell" role="tablist" ng-mouseleave="hideOpenMenus()">
+<ul class="nav nav-pills new-cell" role="tablist">
   <li role="presentation" class="active">
     <button ng-click="newDefaultCodeCell()"
             class="btn btn-primary insert-cell"
@@ -26,7 +26,7 @@
     </span>
     </button>
   </li>
-  <li role="presentation" class="dropdown" ng-mouseleave="hideOpenMenus()">
+  <li role="presentation" class="dropdown" close-dropdown-on-mouseout>
     <button class="btn btn-primary dropdown-toggle"
             ng-class="!isLarge && 'btn-xs'"
             data-toggle="dropdown"
@@ -54,15 +54,15 @@
             ng-click="newMarkdownCell()">text<i class="fa fa-sort-down fa-hidden"></i>
     </button>
   </li>
-  <li role="presentation" class="dropdown" ng-mouseleave="hideOpenMenus()">
+  <li role="presentation" class="dropdown" close-dropdown-on-mouseout>
     <button class="btn btn-primary"
             ng-class="!isLarge && 'btn-xs'"
             data-toggle="dropdown"
             data-target=".section-menu">section <i class="fa fa-sort-down"></i>
     </button>
     <ul class="dropdown-menu section-menu" role="menu">
-      <li ng-repeat='level in getLevels()'>
-        <a class="new-cell-menu-item" ng-click="newSectionCell(level)">Level {{level}}</a>
+      <li ng-repeat='level in ::sectionLevels'>
+        <a class="new-cell-menu-item" ng-click="newSectionCell(level)">Level {{::level}}</a>
       </li>
     </ul>
   </li>

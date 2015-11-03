@@ -51,7 +51,7 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
       jgen.writeObjectField("range_min", histogram.getRangeMin());
     if (histogram.getRangeMax() != null)
       jgen.writeObjectField("range_max", histogram.getRangeMax());
-    jgen.writeObjectField("bit_count", histogram.getBitCount());
+    jgen.writeObjectField("bin_count", histogram.getBinCount());
     jgen.writeObjectField("cumulative", histogram.getCumulative());
     jgen.writeObjectField("normed", histogram.getNormed());
     jgen.writeObjectField("log", histogram.getLog());

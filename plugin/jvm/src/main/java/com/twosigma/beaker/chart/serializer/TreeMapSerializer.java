@@ -16,14 +16,14 @@
 
 package com.twosigma.beaker.chart.serializer;
 
-import com.twosigma.beaker.chart.treemap.IToolTipBuilder;
+import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.treemap.util.IToolTipBuilder;
 import com.twosigma.beaker.chart.treemap.TreeMap;
 import net.sf.jtreemap.swing.TreeMapNode;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.SerializerProvider;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +52,7 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
         if (userObject instanceof Map) {
           values = (Map<String, Object>) userObject;
           if (node.isLeaf()) {
-            Color color = treeMap.getColorProvider().getColor(node.getValue());
+            Color color = treeMap.getColorProvider().getColor(node);
             values.put("color", toHex(color));
             IToolTipBuilder toolTipBuilder = treeMap.getToolTipBuilder();
             if (toolTipBuilder != null) {
@@ -73,7 +73,7 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
           }
         }
         if (node.isLeaf()) {
-          Color color = treeMap.getColorProvider().getColor(node.getValue());
+          Color color = treeMap.getColorProvider().getColor(node);
           values.put("color", toHex(color));
         }
 
@@ -97,6 +97,8 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
       jgen.writeObjectField("ratio", treeMap.getRatio());
     if (treeMap.getRound() != null)
       jgen.writeObjectField("round", treeMap.getRound());
+
+    jgen.writeObjectField("valueAccessor", treeMap.getValueAccessor());
 
     jgen.writeEndObject();
   }

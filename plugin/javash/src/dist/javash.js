@@ -171,6 +171,7 @@ define(function(require, exports, module) {
     "com.twosigma.beaker.chart.categoryplot.plotitem.*",
     "com.twosigma.beaker.chart.histogram.*",
     "com.twosigma.beaker.chart.treemap.*",
+    "com.twosigma.beaker.chart.treemap.util.*",
     "net.sf.jtreemap.swing.*",
     "com.twosigma.beaker.NamespaceClient",
     "com.twosigma.beaker.easyform.*",

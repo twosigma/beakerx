@@ -36,7 +36,7 @@
 				.size([width, height])
 				.sticky(true)
 				.value(function (d) {
-					return d.weight;
+					return scope.stdmodel.valueAccessor === 'VALUE' ? d.value : d.weight;
 				});
 
 			if (scope.stdmodel.mode) {
@@ -52,14 +52,13 @@
 				treemap.round(scope.stdmodel.round)
 			}
 
-			this.nodes =  treemap
+			this.nodes = treemap
 				//.mode("slice-dice")
 				.nodes(this)
 				.filter(function (d) {
 					return !d.children || d.children.length === 0;
 				})
-				;
-
+			;
 
 		};
 
@@ -150,17 +149,17 @@
 				setTextStyles();
 			}
 
-			function setTextStyles(){
+			function setTextStyles() {
 				svg.selectAll("text")
-					.style('font-size', function(d){
+					.style('font-size', function (d) {
 						var scale = d3.event && d3.event.scale ? d3.event.scale : 1;
 						var size = Math.min(18 / scale, Math.floor(d.dx));
 						return size + "px"
 					})
-					.attr("textLength", function(d){
+					.attr("textLength", function (d) {
 						return this.getComputedTextLength() < d.dx ? this.getComputedTextLength() : d.dx;
 					})
-					.style("opacity", function(d){
+					.style("opacity", function (d) {
 						d.w = this.getComputedTextLength();
 						//return d.dx > d.w && d.showItem === true ? 1 : 0;
 						return d.dx > d.w ? 1 : 0;
@@ -176,14 +175,8 @@
 			scope.maing.selectAll("*").remove();
 		};
 
-		PlotTreeMapNode.prototype.clearTips = function (scope) {
-		};
-
-		PlotTreeMapNode.prototype.createTip = function (ele) {
-
-		};
 
 		return PlotTreeMapNode;
 	};
-	beaker.bkoFactory('PlotTreeMapNode', ['plotUtils',  retfunc]);
+	beaker.bkoFactory('PlotTreeMapNode', ['plotUtils', retfunc]);
 })();

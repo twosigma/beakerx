@@ -134,6 +134,7 @@
                     "    </li><li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fweb-content.bkr&readOnly=true\">Generating and accessing web content</a>",
                     "    </li><li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FCategoryPlot.bkr&readOnly=true\">Category Plots</a>",
                     "    </li><li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fhistogram.bkr&readOnly=true\">Histograms</a>",
+                    "    </li><li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Ftreemap.bkr&readOnly=true\">TreeMap</a>",
                     "  </li></div>",
                     "  <div class=\"col-md-4\">",
                     "    ",

@@ -17,9 +17,10 @@
 package com.twosigma.beaker.chart.treemap;
 
 import com.twosigma.beaker.Chart;
-import net.sf.jtreemap.swing.ColorProvider;
+import com.twosigma.beaker.chart.treemap.util.ColorProvider;
+import com.twosigma.beaker.chart.treemap.util.IToolTipBuilder;
+import com.twosigma.beaker.chart.treemap.util.RandomColorProvider;
 import net.sf.jtreemap.swing.TreeMapNode;
-import net.sf.jtreemap.swing.UniqueColorProvider;
 
 public class TreeMap extends Chart {
 
@@ -72,21 +73,17 @@ public class TreeMap extends Chart {
    */
   private Boolean round;
 
-  /**
-   * Constructor of TreeMap. <BR>
-   * The chosen color provider is UniqueColorProvider.
-   *
-   * @see UniqueColorProvider
-   * @param root
-   *            the root of the tree to display
-   */
+
+  //determine value accessor for chart
+  private ValueAccessor valueAccessor = ValueAccessor.VALUE;
+
   public TreeMap(final TreeMapNode root) {
     this();
     setRoot(root);
   }
 
   public TreeMap() {
-    setColorProvider(new UniqueColorProvider());
+    setColorProvider(new RandomColorProvider());
   }
 
   /**
@@ -138,6 +135,14 @@ public class TreeMap extends Chart {
 
   public void setRound(Boolean round) {
     this.round = round;
+  }
+
+  public ValueAccessor getValueAccessor() {
+    return valueAccessor;
+  }
+
+  public void setValueAccessor(ValueAccessor valueAccessor) {
+    this.valueAccessor = valueAccessor;
   }
 
   public void setColorProvider(final ColorProvider newColorProvider) {

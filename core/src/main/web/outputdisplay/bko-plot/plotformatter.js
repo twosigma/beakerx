@@ -108,14 +108,16 @@
             mode: model.mode,
             ratio: model.ratio,
             sticky: model.sticky,
-            round: model.round
+            round: model.round,
+            valueAccessor: model.valueAccessor
           });
         } else {
           newmodel = _.extend(newmodel, {
             mode: model.mode,
             ratio: model.ratio,
             sticky: model.sticky,
-            round: model.round
+            round: model.round,
+            valueAccessor: model.valueAccessor
           });
         }
       }

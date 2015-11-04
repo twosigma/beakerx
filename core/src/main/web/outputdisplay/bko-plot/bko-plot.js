@@ -445,6 +445,9 @@
                     $(this).remove();
                   }
                 });
+              if (data[d.idx].tip_class) {
+                tipdiv.addClass(data[d.idx].tip_class);
+              }
             }
             var w = tipdiv.outerWidth(), h = tipdiv.outerHeight();
             if (plotUtils.outsideScrBox(scope, x, y, w, h)) {

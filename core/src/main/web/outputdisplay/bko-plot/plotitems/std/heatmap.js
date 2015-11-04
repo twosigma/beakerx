@@ -27,6 +27,9 @@
 
     HeatMap.prototype.format = function() {
 
+      this.tip_class = "heatmap-tooltip";
+      this.tip_color = "#004C80";
+
       var valueStep = (this.maxValue - this.minValue) / (this.colors.length - 1);
       var domain = [];
       for(var i = 0; i < this.colors.length; i++){
@@ -194,10 +197,7 @@
     };
 
     HeatMap.prototype.createTip = function(ele, g, model) {
-      var tip = {
-        title: ele.value
-      };
-      return plotUtils.createTipString(tip);
+      return "<div>" + ele.value.toFixed(5) * 1 + "</div>";
     };
 
     return HeatMap;

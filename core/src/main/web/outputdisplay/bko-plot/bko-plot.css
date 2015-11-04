@@ -274,3 +274,12 @@
   opacity: 0.5;
   fill: #333333;
 }
+.heatmap-tooltip{
+  color: white;
+  background-color: #006BB3;
+  opacity: 0.5;
+  font-family: "pt-sans", Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 1.38462;
+  padding: 0.5em;
+}

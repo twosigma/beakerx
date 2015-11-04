@@ -21,7 +21,10 @@
   angular.module('bk.globals', []).factory('GLOBALS', function() {
     return {
       DEFAULT_EVALUATOR: 'JavaScript',
-      REQUIREJS_TIMEOUT: 30
+      REQUIREJS_TIMEOUT: 30,
+      EVENTS: {
+      	RECONNECT_FAILED: 'reconnect-failed'
+      }
     };
   });
 })();

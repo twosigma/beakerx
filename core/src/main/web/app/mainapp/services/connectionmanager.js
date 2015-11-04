@@ -1,0 +1,78 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
+ * Module bk.sessionManager
+ */
+(function() {
+  'use strict';
+  angular.module('bk.connectionManager',['bk.globals', 'bk.utils']).factory('connectionManager', function($timeout, $rootScope, bkUtils, GLOBALS) {
+    var RECONNECT_TIMEOUT = 5000; // 5 seconds
+    var OFFLINE_MESSAGE = "offline, click to download a copy";
+    var CONNECTING_MESSAGE = "reconnecting";
+    var reconnectTimeout;
+    var statusMessage = OFFLINE_MESSAGE;
+    var disconnected = false;
+
+    var indicateReconnectFailed = function() {
+      stopWaitingReconnect();
+      statusMessage = OFFLINE_MESSAGE;
+      bkUtils.disconnect(); // prevent further attempting to reconnect
+      $rootScope.$emit(GLOBALS.EVENTS.RECONNECT_FAILED);
+    };
+    var waitReconnect = function() {
+      statusMessage = CONNECTING_MESSAGE;
+
+      // wait for 5 sceonds, if reconnect didn't happen, prompt to save
+      if (!reconnectTimeout) {
+        reconnectTimeout = $timeout(indicateReconnectFailed, RECONNECT_TIMEOUT);
+      }
+      // if user attempts to interact within 5 second, also prompt to save
+      window.addEventListener('keypress', indicateReconnectFailed, true);
+    };
+    var stopWaitingReconnect = function() {
+      if (reconnectTimeout) {
+        $timeout.cancel(reconnectTimeout);
+        reconnectTimeout = undefined;
+      }
+      window.removeEventListener('keypress', indicateReconnectFailed, true);
+    };
+
+    return {
+      onDisconnected: function() {
+        disconnected = true;
+        waitReconnect();
+      },
+      onReconnected: function() {
+        bkSessionManager.isSessionValid().then(function(isValid) {
+          if (isValid) {
+            stopWaitingReconnect();
+            disconnected = false;
+            bkSessionManager.reconnectEvaluators();
+          } else {
+            indicateReconnectFailed();
+          }
+        });
+      },
+      getStatusMessage: function() {
+        return statusMessage;
+      },
+      isDisconnected: function() {
+        return disconnected;
+      }
+    };
+
+  });
+})();

@@ -43,9 +43,13 @@ function openNotebook() {
   }, 5000)
 }
 
+function waitForElement(fn) {
+  return driver.wait(function() {return fn().then(function() {return true;}).thenCatch(function() {return false;})}, 2500);
+}
+
 function openFileMenu() {
   driver.wait(function() {
-    return driver.findElement(webdriver.By.xpath('/html/body/ng-view/bk-main-app/header/div[2]/ul/li[1]/a')).click()
+    return driver.findElement(webdriver.By.css('a.dropdown-toggle')).click()
     .then(function() {
       return true;
     })
@@ -58,24 +62,19 @@ function openFileMenu() {
 function closeNotebook() {
   openFileMenu();
   driver.findElement(webdriver.By.css('#close-menuitem')).click();
-  driver.wait(function() {
-    return driver.findElement(webdriver.By.css('.btn.no')).click()
-    .then(function() { return true; })
-    .thenCatch(function() {
-      return false;
-    });
-  }, 5000);
+  waitForElement(function() {
+    return driver.findElement(webdriver.By.css('.btn.no')).click();
+  });
 
-  driver.wait(function() {
-    return driver.findElement(webdriver.By.css('bk-control-panel')).isDisplayed()
-    .thenCatch(function() {
-      return false;
-    });
-  }, 5000);
+  waitForElement(function() {
+    return driver.findElement(webdriver.By.css('bk-control-panel')).isDisplayed();
+  });
 }
 
 function addCell() {
-  driver.findElement(webdriver.By.css('button.insert-cell')).click();
+  waitForElement(function() {
+    return driver.findElement(webdriver.By.css('button.insert-cell')).click();
+  });
 }
 
 function addAndRemoveCell() {
@@ -84,29 +83,23 @@ function addAndRemoveCell() {
 }
 
 function evaluateCell() {
-  driver.findElement(webdriver.By.css('.cell-menu-item.evaluate')).click();
+  waitForElement(function() {return driver.findElement(webdriver.By.css('.cell-menu-item.evaluate')).click();});
+}
+
+function enterCode() {
+  return waitForElement(function() {
+    return driver.findElement(webdriver.By.css('.CodeMirror textarea')).sendKeys('1 + 1');
+  });
 }
 
 function deleteCellOutput() {
-  driver.wait(function() {
-    return driver.findElement(webdriver.By.css('bk-code-cell-output .cell-dropdown')).click()
-      .then(function() {
-        return true;
-      })
-      .thenCatch(function() {
-        return false;
-      });
-  }, 5000);
+  waitForElement(function() {
+    return driver.findElement(webdriver.By.css('bk-code-cell-output .cell-dropdown')).click();
+  });
 
-  driver.wait(function() {
-    return driver.findElement(webdriver.By.xpath('/html/body/ng-view/bk-main-app/div/div[1]/div/bk-notebook/ul/li[4]/a')).click()
-    .then(function() {
-      return true;
-    })
-    .thenCatch(function() {
-      return false;
-    });
-  }, 5000);
+  waitForElement(function() {
+    return driver.findElement(webdriver.By.xpath('/html/body/ng-view/bk-main-app/div/div[1]/div/bk-notebook/ul/li[4]/a')).click();
+  });
 }
 
 function evaluateAndRemoveOutputCell() {
@@ -155,6 +148,7 @@ for(var k = 0; k < retryCount; ++k) {
 
   //prime cache
   addCell();
+  enterCode();
   evaluateAndRemoveOutputCell();
 
   driver.sleep(1000);

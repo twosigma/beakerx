@@ -14,7 +14,7 @@
     "gulp": "^3.8.2",
     "yargs" : "",
     "gulp-css-wrap": "^0.1.2",
-    "gulp-ruby-sass": "",
+    "gulp-ruby-sass": "^2.0.4",
     "gulp-minify-css": "0.3.5",
     "gulp-uglify": "",
     "gulp-template-compile": "^0.2.0",
@@ -33,7 +33,7 @@
     "html-classer-gulp": "0.0.2",
     "gulp-load-plugins" : "",
     "event-stream" : "",
-    "gulp-htmlbuild" : "",
-    "gulp-remove-lines": ""
+    "gulp-htmlbuild" : "^0.4.1",
+    "gulp-remove-lines": "^0.1.0"
   }
 }

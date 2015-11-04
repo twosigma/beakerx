@@ -41,10 +41,7 @@
         $scope.getEvaluators = function() {
           return bkEvaluatorManager.getLoadedEvaluators();
         };
-        var levels = [1, 2, 3, 4];
-        $scope.getLevels = function() {
-          return levels;
-        };
+        $scope.sectionLevels = [1, 2, 3, 4];
 
         $scope.newCodeCell = function(evaluatorName) {
           var newCell = newCellFactory.newCodeCell(evaluatorName);

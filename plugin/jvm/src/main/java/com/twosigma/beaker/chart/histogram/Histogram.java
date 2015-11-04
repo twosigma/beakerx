@@ -31,7 +31,7 @@ public class Histogram extends AbstractChart {
 
   private   Integer            rangeMin;
   private   Integer            rangeMax;
-  private   int                bitCount;
+  private   int                binCount;
   private   boolean            rightClose;
   private   boolean            cumulative;
   private   boolean            normed;
@@ -60,12 +60,12 @@ public class Histogram extends AbstractChart {
     this.rangeMax = rangeMax;
   }
 
-  public int getBitCount() {
-    return bitCount;
+  public int getBinCount() {
+    return binCount;
   }
 
-  public void setBitCount(int bitCount) {
-    this.bitCount = bitCount;
+  public void setBinCount(int binCount) {
+    this.binCount = binCount;
   }
 
   public boolean getRightClose() {

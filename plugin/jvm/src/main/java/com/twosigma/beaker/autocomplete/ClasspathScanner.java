@@ -88,6 +88,9 @@ public class ClasspathScanner {
               if(StringUtils.isNotEmpty(cp)){
                 for(String fn : cp.split(" ")){
                   File child = new File(file.getParent() + System.getProperty("file.separator") + fn);
+                  if(child.getAbsolutePath().equals(jar.getName())){
+                    continue; //skip bad jars, that contain references to themselves in MANIFEST.MF
+                  }
                   if(child.exists()){
                     if (!findClasses(root, child, includeJars)) {
                       return false;

@@ -23,6 +23,8 @@
       restrict: 'A',
       link: function(scope, element) {
         element.on('mouseleave', function() {$(document).trigger('click.bs.dropdown.data-api');});
+
+        scope.$on('$destroy', function() {element.off();});
       }
     };
   });

@@ -63,9 +63,12 @@
               });
             break;
           default:  // rect
+            var diff = plotUtils.getHighlightedDiff(highlighted) / 2;
             shapesvg.selectAll(tag)
               .transition()
               .duration(plotUtils.getHighlightDuration())
+              .attr("x", function(d) { return d.x - diff; })
+              .attr("y", function(d) { return d.y - diff; })
               .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
               .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
         }

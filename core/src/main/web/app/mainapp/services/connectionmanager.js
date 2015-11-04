@@ -19,7 +19,6 @@
 (function() {
   'use strict';
   angular.module('bk.connectionManager',['bk.globals', 'bk.utils']).factory('connectionManager', function($timeout, $rootScope, bkUtils, GLOBALS) {
-    var RECONNECT_TIMEOUT = 5000; // 5 seconds
     var OFFLINE_MESSAGE = "offline, click to download a copy";
     var CONNECTING_MESSAGE = "reconnecting";
     var reconnectTimeout;
@@ -35,19 +34,16 @@
     var waitReconnect = function() {
       statusMessage = CONNECTING_MESSAGE;
 
-      // wait for 5 sceonds, if reconnect didn't happen, prompt to save
+      // if reconnect didn't happen during the timeout period, prompt to save
       if (!reconnectTimeout) {
-        reconnectTimeout = $timeout(indicateReconnectFailed, RECONNECT_TIMEOUT);
+        reconnectTimeout = $timeout(indicateReconnectFailed, GLOBALS.RECONNECT_TIMEOUT);
       }
-      // if user attempts to interact within 5 second, also prompt to save
-      window.addEventListener('keypress', indicateReconnectFailed, true);
     };
     var stopWaitingReconnect = function() {
       if (reconnectTimeout) {
         $timeout.cancel(reconnectTimeout);
         reconnectTimeout = undefined;
       }
-      window.removeEventListener('keypress', indicateReconnectFailed, true);
     };
 
     return {

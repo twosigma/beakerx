@@ -325,15 +325,14 @@ public class PluginServiceLocatorRest {
   private String[] buildEnv(String pluginId, String password) {
     String[] env = this.pluginEnvps.get(pluginId);
     List<String> envList = new ArrayList<>();
+    for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
+      if (!internalEnvar(entry.getKey() + "="))
+        envList.add(entry.getKey() + "=" + entry.getValue());
+    }
     if (env != null) {
       for (int i = 0; i < env.length; i++) {
         if (!internalEnvar(env[i]))
           envList.add(env[i]);
-      }
-    } else {
-      for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
-        if (!internalEnvar(entry.getKey() + "="))
-          envList.add(entry.getKey() + "=" + entry.getValue());
       }
     }
     if (password != null) {

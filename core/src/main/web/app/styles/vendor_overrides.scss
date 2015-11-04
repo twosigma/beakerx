@@ -57,6 +57,7 @@
 }
 
 .CodeMirror-linenumber {
+  font-family: $font-family-mono;
   padding-left: 0;
   padding-right: 5px;
   min-width: $grid-gutter-width - 3px;

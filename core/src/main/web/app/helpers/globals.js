@@ -22,7 +22,7 @@
     return {
       DEFAULT_EVALUATOR: 'JavaScript',
       REQUIREJS_TIMEOUT: 30,
-      RECONNECT_TIMEOUT: 60000, //1 minute
+      RECONNECT_TIMEOUT: 90000, // 90 seconds
       EVENTS: {
       	RECONNECT_FAILED: 'reconnect-failed'
       }

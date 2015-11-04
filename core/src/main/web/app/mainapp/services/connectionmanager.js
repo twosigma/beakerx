@@ -18,7 +18,8 @@
  */
 (function() {
   'use strict';
-  angular.module('bk.connectionManager',['bk.globals', 'bk.utils']).factory('connectionManager', function($timeout, $rootScope, bkUtils, GLOBALS) {
+  angular.module('bk.connectionManager',['bk.globals', 'bk.utils', 'bk.sessionManager'])
+  .factory('connectionManager', function($timeout, $rootScope, bkUtils, bkSessionManager, GLOBALS) {
     var OFFLINE_MESSAGE = "offline, click to download a copy";
     var CONNECTING_MESSAGE = "reconnecting";
     var reconnectTimeout;

@@ -317,7 +317,7 @@ public class PluginServiceLocatorRest {
                       "beaker_tmp_dir",
                       "beaker_core_password"};
     for (int i = 0; i < vars.length; i++)
-      if (var.startsWith(vars[0] + "="))
+      if (var.startsWith(vars[i] + "="))
         return true;
     return false;
   }

@@ -39,7 +39,8 @@
 }
 
 .plot-label,
-.plot-xylabel {
+.plot-xylabel,
+.plot-legend-label{
   font-family: "pt-sans", Helvetica, sans-serif;
   line-height: 1.38462;
 }
@@ -158,20 +159,28 @@
   vertical-align: middle;
   cursor: pointer;
 }
-.plot-plotlegendcontainer{
+
+.plot-plotlegendcontainer {
   position: relative;
 }
-.plot-legendscrollablecontainer {
+
+.plot-legend {
   position: absolute;
-  border: 1px solid #BBBBBB;
   background-color: #FEFEFE;
+}
+
+.plot-legenddraggable {
+  cursor: pointer;
+}
+
+.plot-legendscrollablecontainer {
+  border: 1px solid #BBBBBB;
   border-collapse: initial; /* override the global table setting*/
   overflow-y: auto;
 }
 
-.plot-legenddraggablecontainer{
+.plot-legendscrollablecontainer .plot-legenddraggable {
   padding: .25em 23px 0 .25em;
-  cursor: pointer;
 }
 
 .plot-legendline{
@@ -249,4 +258,28 @@
   display: block;
   overflow: hidden;
   height: 0;
+}
+
+.plot-legend-axis {
+  stroke: #333333;
+  stroke-width: 1;
+}
+.plot-legend-tick {
+  stroke: #333333;
+}
+
+.plot-legend-histogram {
+  stroke: #333333;
+  stroke-width: 1;
+  opacity: 0.5;
+  fill: #333333;
+}
+.heatmap-tooltip{
+  color: white;
+  background-color: #006BB3;
+  opacity: 0.5;
+  font-family: "pt-sans", Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 1.38462;
+  padding: 0.5em;
 }

@@ -158,6 +158,7 @@ define(function(require, exports, module) {
                         "com.twosigma.beaker.NamespaceClient",
                         "com.twosigma.beaker.BeakerProgressUpdate",
                         "com.twosigma.beaker.chart.Color",
+                        "com.twosigma.beaker.chart.GradientColor",
                         "com.twosigma.beaker.chart.legend.*",
                         "com.twosigma.beaker.chart.Filter",
                         "com.twosigma.beaker.chart.xychart.*",
@@ -165,6 +166,7 @@ define(function(require, exports, module) {
                         "com.twosigma.beaker.chart.categoryplot.*",
                         "com.twosigma.beaker.chart.categoryplot.plotitem.*",
                         "com.twosigma.beaker.chart.histogram.*",
+                        "com.twosigma.beaker.chart.heatmap.HeatMap",
                         "com.twosigma.beaker.easyform.*",
                         "com.twosigma.beaker.easyform.formitem.*"];
   var shellReadyDeferred = bkHelper.newDeferred();

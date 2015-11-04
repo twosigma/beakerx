@@ -162,6 +162,7 @@ define(function(require, exports, module) {
   };
   var defaultImports = [
     "com.twosigma.beaker.chart.Color",
+    "com.twosigma.beaker.chart.GradientColor",
     "com.twosigma.beaker.chart.legend.*",
     "com.twosigma.beaker.chart.Filter",
     "com.twosigma.beaker.BeakerProgressUpdate",
@@ -171,6 +172,7 @@ define(function(require, exports, module) {
     "com.twosigma.beaker.chart.categoryplot.plotitem.*",
     "com.twosigma.beaker.chart.histogram.*",
     "com.twosigma.beaker.NamespaceClient",
+    "com.twosigma.beaker.chart.heatmap.HeatMap",
     "com.twosigma.beaker.easyform.*",
     "com.twosigma.beaker.easyform.formitem.*"];
   var shellReadyDeferred = bkHelper.newDeferred();

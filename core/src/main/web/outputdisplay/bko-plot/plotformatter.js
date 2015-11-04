@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils, plotConverter, PlotAxis, plotFactory, plotUtils, bkHelper) {
+  var retfunc = function(bkUtils, plotConverter, heatmapConverter, PlotAxis, plotFactory, plotUtils, bkHelper) {
 
     return {
       lineDasharrayMap : {
@@ -348,7 +348,7 @@
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
           var item = data[i];
-          if (item.type === "constline" || item.type === "constband") { continue; }
+          if (item.type === "constline" || item.type === "constband" || item.type === "heatmap") { continue; }
 
           var eles = item.elements;
           var unordered = false;
@@ -460,7 +460,14 @@
         newmodel.data = [];
 
         if (model.version === "groovy") {
-          plotConverter.convertGroovyData(newmodel, model);
+          switch(model.type){
+            case 'HeatMap':
+              heatmapConverter.convertGroovyData(newmodel, model);
+              break;
+            default:
+              plotConverter.convertGroovyData(newmodel, model);
+              break;
+          }
         } else {  // DS generated directly
           _.extend(newmodel, model);
         }
@@ -546,5 +553,5 @@
     };
   };
   beaker.bkoFactory('plotFormatter',
-    ["bkUtils", 'plotConverter', 'PlotAxis', 'plotFactory', 'plotUtils', 'bkHelper', retfunc]);
+    ["bkUtils", 'plotConverter', 'heatmapConverter', 'PlotAxis', 'plotFactory', 'plotUtils', 'bkHelper', retfunc]);
 })();

@@ -23,12 +23,14 @@ import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.BeakerProgressUpdate;
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.GradientColor;
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryBars;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryLines;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryPoints;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryStems;
 import com.twosigma.beaker.chart.histogram.Histogram;
+import com.twosigma.beaker.chart.heatmap.HeatMap;
 import com.twosigma.beaker.chart.legend.LegendPosition;
 import com.twosigma.beaker.chart.serializer.AreaSerializer;
 import com.twosigma.beaker.chart.serializer.BarsSerializer;
@@ -40,7 +42,9 @@ import com.twosigma.beaker.chart.serializer.CategoryStemsSerializer;
 import com.twosigma.beaker.chart.serializer.ColorSerializer;
 import com.twosigma.beaker.chart.serializer.CombinedPlotSerializer;
 import com.twosigma.beaker.chart.serializer.CrosshairSerializer;
+import com.twosigma.beaker.chart.serializer.GradientColorSerializer;
 import com.twosigma.beaker.chart.serializer.HistogramSerializer;
+import com.twosigma.beaker.chart.serializer.HeatMapSerializer;
 import com.twosigma.beaker.chart.serializer.LegendPositionSerializer;
 import com.twosigma.beaker.chart.serializer.LineSerializer;
 import com.twosigma.beaker.chart.serializer.PointsSerializer;
@@ -195,6 +199,7 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(BeakerDashboard.class, injector.getInstance(BeakerDashboard.Serializer.class));
       
       module.addSerializer(Color.class, injector.getInstance(ColorSerializer.class));
+      module.addSerializer(GradientColor.class, injector.getInstance(GradientColorSerializer.class));
       module.addSerializer(XYChart.class, injector.getInstance(XYChartSerializer.class));
       module.addSerializer(CombinedPlot.class, injector.getInstance(CombinedPlotSerializer.class));
       module.addSerializer(Line.class, injector.getInstance(LineSerializer.class));
@@ -227,6 +232,8 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(CategoryPlot.class, injector.getInstance(CategoryPlotSerializer.class));
 
       module.addSerializer(Histogram.class, injector.getInstance(HistogramSerializer.class));
+
+      module.addSerializer(HeatMap.class, injector.getInstance(HeatMapSerializer.class));
 
       mapper.registerModule(module);
 

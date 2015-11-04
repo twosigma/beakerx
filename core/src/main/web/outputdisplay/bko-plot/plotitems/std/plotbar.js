@@ -27,9 +27,12 @@
 
     PlotBar.prototype.setHighlighted = function(scope, highlighted) {
       var itemsvg = scope.maing.select("#" + this.id);
+      var diff = plotUtils.getHighlightedDiff(highlighted) / 2;
       itemsvg.selectAll("rect")
         .transition()
         .duration(plotUtils.getHighlightDuration())
+        .attr("x", function(d) { return d.x - diff; })
+        .attr("y", function(d) { return d.y - diff; })
         .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
         .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
 

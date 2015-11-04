@@ -416,8 +416,12 @@
         return yAxisR && yAxisR.label === data.yAxis;
       },
 
+      getHighlightedDiff: function(highlighted) {
+        return highlighted ? 2 : 0;
+      },
+
       getHighlightedSize: function(size, highlighted) {
-        return highlighted ? size + 2 : size;
+        return size + this.getHighlightedDiff(highlighted);
       },
 
       getHighlightDuration: function() {

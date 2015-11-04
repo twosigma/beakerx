@@ -453,6 +453,10 @@
                 item.bases = [];
               }
 
+              if(list.length > 1){
+                item.display_name = "dataset" + (i + 1);
+              }
+
               var histvalues = plotUtils.histogram().
                 rightClose(newmodel.rightClose).
                 binCount(newmodel.binCount).

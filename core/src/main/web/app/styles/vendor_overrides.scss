@@ -68,6 +68,13 @@
   height: auto;
 }
 
+div.CodeMirror {
+  span.CodeMirror-matchingbracket {
+    color: #40BF40;
+    font-weight: bold;
+  }
+}
+
 /* This is for datatables customization */
 tbody tr {
   &, &.odd, &.even {

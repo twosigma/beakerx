@@ -40,7 +40,7 @@ public class TreeMapNodeSerializer extends JsonSerializer<TreeMapNode> {
     jgen.writeObjectField("weight", treeMapNode.getWeight());
 
     if (treeMapNode.getValue() != null) {
-      jgen.writeObjectField("value", treeMapNode.getDoubleValue());
+      jgen.writeObjectField("doubleValue", treeMapNode.getDoubleValue());
       jgen.writeObjectField("labelValue", treeMapNode.getLabelValue());
 
       Object userObject = treeMapNode.getUserObject();

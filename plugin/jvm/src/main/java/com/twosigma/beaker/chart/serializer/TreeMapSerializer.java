@@ -32,7 +32,8 @@ import java.util.Vector;
 public class TreeMapSerializer extends ChartSerializer<TreeMap> {
 
   protected String toHex(Color col) {
-    return  "RGB(" + col.getRed() + "," + col.getGreen() + "," + col.getBlue() + ")";
+    return "#" + Integer.toHexString(col.getRGB()).substring(2);
+//    return  "RGB(" + col.getRed() + "," + col.getGreen() + "," + col.getBlue() + ")";
   }
 
   @Override

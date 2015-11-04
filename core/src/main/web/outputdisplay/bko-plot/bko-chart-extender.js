@@ -43,6 +43,24 @@
 					}
 				});
 
+				scope.calcRange = function(){
+
+				};
+
+
+				scope.calcLegendableItem = function() {
+					scope.legendableItem = 0;
+					var visitor = {
+						i: 0,
+						visit: function (node) {
+							if (node.legend){
+								scope.legendableItem++;
+							}
+						}
+					};
+					scope.stdmodel.process(visitor);
+				};
+
 				scope.init = function () {
 
 					// first standardize data
@@ -76,6 +94,7 @@
 					scope.renderData();
 					scope.renderLegends(); // redraw
 					scope.updateMargin(); //update plot margins
+					scope.calcLegendableItem();
 				};
 
 				scope.initLayout = function () {

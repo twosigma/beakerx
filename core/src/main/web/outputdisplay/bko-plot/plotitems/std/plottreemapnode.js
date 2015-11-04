@@ -22,11 +22,34 @@
 			_(this).extend(data); // copy properties to itself
 		};
 
-		PlotTreeMapNode.prototype.translate = null;
-		PlotTreeMapNode.prototype.scale = null;
+
+		PlotTreeMapNode.prototype.isRoot = function () {
+			return this.root === true;
+		};
+
+		PlotTreeMapNode.prototype.clearTips = function (scope) {
+			//dummy function
+		};
+
+		PlotTreeMapNode.prototype.setHighlighted = function (scope, highlighted) {
+			if (this.isRoot())
+				return;
+			var itemsvg = scope.maing.select("g").select("#" + this.id);
+			itemsvg
+				.transition()
+				.duration(plotUtils.getHighlightDuration())
+				.attr("filter", highlighted ? "url(#outerDropShadow)" : "")
+				.select("rect")
+				.style("stroke", highlighted ? "#000000" : "#FFFFFF")
+				.style("stroke-width", highlighted ? 2 : 0.2)
+			;
+		};
 
 
 		PlotTreeMapNode.prototype.prepare = function (scope) {
+			if (!this.isRoot())
+				return;
+
 			var margin = {top: 0, right: 0, bottom: 0, left: 0},
 				width = (scope ? scope.jqsvg.width() : 300) - margin.left - margin.right,
 				height = (scope ? scope.jqsvg.height() : 200) - margin.top - margin.bottom;
@@ -36,7 +59,7 @@
 				.size([width, height])
 				.sticky(true)
 				.value(function (d) {
-					return scope.stdmodel.valueAccessor === 'VALUE' ? d.value : d.weight;
+					return d.showItem === true ? scope.stdmodel.valueAccessor === 'VALUE' ? d.doubleValue : d.weight : 0;
 				});
 
 			if (scope.stdmodel.mode) {
@@ -52,44 +75,60 @@
 				treemap.round(scope.stdmodel.round)
 			}
 
+			var old_data = this.nodes;
+
 			this.nodes = treemap
-				//.mode("slice-dice")
 				.nodes(this)
 				.filter(function (d) {
 					return !d.children || d.children.length === 0;
-				})
-			;
-
+				});
 		};
 
 
 		PlotTreeMapNode.prototype.render = function (scope) {
+			if (!this.isRoot())
+				return;
+
 			this.clear(scope);
-			this.draw(scope);
+			if (scope.showAllItems) {
+				var hasVisible = false;
+				var visitor = {
+
+					visit: function (node) {
+						if (!node.children && node.showItem === true)
+							hasVisible = true;
+					}
+				};
+				scope.stdmodel.process(visitor);
+				if (hasVisible === true) {
+					this.draw(scope);
+				}
+			}
 		};
 
 
 		PlotTreeMapNode.prototype.draw = function (scope) {
 
-			var color = d3.scale.category20c();
+			if (!this.isRoot())
+				return;
 
 			this.prepare(scope);
-
 			var zoom = d3.behavior.zoom()
 				.scaleExtent([1, 10])
 				.on("zoom", zoomed);
-
 
 			scope.maing
 				.call(zoom)
 			;
 
 			var svg = scope.maing.append("svg:g");
-
 			var cell = svg.selectAll("g")
 					.data(this.nodes)
 					.enter().append('svg:g')
 					.attr('class', 'cell')
+					.attr("id", function (d) {
+						return d.id;
+					})
 					.attr('transform', function (d) {
 						return 'translate(' + d.x + ',' + d.y + ')';
 					})
@@ -119,10 +158,10 @@
 
 			cell.append("svg:rect")
 				.attr("width", function (d) {
-					return Math.max(0, d.dx - 0.1);
+					return Math.max(0, d.dx - 0.2);
 				})
 				.attr("height", function (d) {
-					return Math.max(0, d.dy - 0.1);
+					return Math.max(0, d.dy - 0.2);
 				})
 				.style("fill", function (d) {
 					return d.children ? null : d.color;
@@ -161,17 +200,17 @@
 					})
 					.style("opacity", function (d) {
 						d.w = this.getComputedTextLength();
-						//return d.dx > d.w && d.showItem === true ? 1 : 0;
-						return d.dx > d.w ? 1 : 0;
+						return d.dx > d.w && d.showItem === true ? 1 : 0;
 					})
 
 				;
 			}
-
 		};
 
 
 		PlotTreeMapNode.prototype.clear = function (scope) {
+			if (!this.isRoot())
+				return;
 			scope.maing.selectAll("*").remove();
 		};
 

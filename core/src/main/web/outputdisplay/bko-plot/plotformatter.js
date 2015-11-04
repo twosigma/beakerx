@@ -207,11 +207,7 @@
         }
         var data = newmodel.data;
         for (var i = 0; i < data.length; i++) {
-          var item = data[i];
-          // recreate rendering objects
-          item.index = i;
-          item.id = "i" + i;
-          data[i] = plotFactory.createPlotItem(item, newmodel.lodThreshold);
+          plotFactory.recreatePlotItem(data[i]);
         }
       },
 

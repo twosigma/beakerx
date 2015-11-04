@@ -116,7 +116,7 @@
           case "axis":
             item.__proto__ = PlotAxis.prototype;
             break;
-          case "plottreemapnode":
+          case "treemapnode":
             item.__proto__ = PlotTreeMapNode.prototype;
             break;
           default:

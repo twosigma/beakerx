@@ -231,6 +231,10 @@
         .attr("transform", function(d) { return "translate(" + x(d.x) + "," + d.y + ")"; });
     };
 
+    GradientLegend.prototype.removePointer = function() {
+      this.legend.selectAll('.legend-pointer').remove();
+    };
+
     GradientLegend.prototype.render = function(legendContainer, colors) {
       var legendSvg = d3.select(legendContainer[0]).append("svg")
         .attr("id", "legends")

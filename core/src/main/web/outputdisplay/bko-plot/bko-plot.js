@@ -349,6 +349,7 @@
               return scope.tooltip(d, d3.mouse(scope.svg[0][0]));
             })
             .on("mouseleave", function(d) {
+              scope.removeLegendPointer();
               return scope.untooltip(d);
             })
             .on("click", function(d) {
@@ -359,6 +360,12 @@
         scope.drawLegendPointer = function(d) {
           if(scope.gradientLegend){
             scope.gradientLegend.drawPointer(d.ele.value);
+          }
+        };
+
+        scope.removeLegendPointer = function() {
+          if(scope.gradientLegend){
+            scope.gradientLegend.removePointer();
           }
         };
 

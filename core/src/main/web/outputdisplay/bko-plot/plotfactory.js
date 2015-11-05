@@ -20,7 +20,7 @@
   var retfunc = function (PlotAxis, PlotLine, PlotBar, PlotStem, PlotArea, PlotPoint,
                           PlotConstline, PlotConstband, PlotText, PlotTreeMapNode,
                           PlotLineLodLoader, PlotBarLodLoader, PlotStemLodLoader, PlotAreaLodLoader,
-                          PlotPointLodLoader) {
+                          PlotPointLodLoader, HeatMap) {
     return {
       createPlotItem : function(item, lodthresh) {
         if (!lodthresh){
@@ -60,6 +60,9 @@
             break;
           case "treemapnode":
             plotitem = new PlotTreeMapNode(item);
+            break;
+          case "heatmap":
+            plotitem = new HeatMap(item);
             break;
           default:
             console.error("no type specified for item creation");
@@ -129,6 +132,6 @@
     ['PlotAxis', 'PlotLine', 'PlotBar', 'PlotStem', 'PlotArea', 'PlotPoint',
       'PlotConstline', 'PlotConstband', 'PlotText', 'PlotTreeMapNode',
       'PlotLineLodLoader', 'PlotBarLodLoader', 'PlotStemLodLoader', 'PlotAreaLodLoader',
-      'PlotPointLodLoader',
+      'PlotPointLodLoader', 'HeatMap',
       retfunc]);
 })();

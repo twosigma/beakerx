@@ -547,7 +547,7 @@
 
               var histvalues = plotUtils.histogram().
                 rightClose(newmodel.rightClose).
-                bitCount(newmodel.bitCount).
+                binCount(newmodel.binCount).
                 rangeMin(newmodel.rangeMin).
                 rangeMax(newmodel.rangeMax)(dataset);
 

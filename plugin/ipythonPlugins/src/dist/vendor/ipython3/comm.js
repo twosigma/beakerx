@@ -150,7 +150,7 @@ define('ipython3_comm', [
         var content = {
             comm_id : this.comm_id,
             target_name : this.target_name,
-            data : data || {},
+            data : data || {}
         };
         return this.kernel.send_shell_message("comm_open", content, callbacks, metadata);
     };
@@ -158,7 +158,7 @@ define('ipython3_comm', [
     Comm.prototype.send = function (data, callbacks, metadata, buffers) {
         var content = {
             comm_id : this.comm_id,
-            data : data || {},
+            data : data || {}
         };
         return this.kernel.send_shell_message("comm_msg", content, callbacks, metadata, buffers);
     };
@@ -166,7 +166,7 @@ define('ipython3_comm', [
     Comm.prototype.close = function (data, callbacks, metadata) {
         var content = {
             comm_id : this.comm_id,
-            data : data || {},
+            data : data || {}
         };
         return this.kernel.send_shell_message("comm_close", content, callbacks, metadata);
     };

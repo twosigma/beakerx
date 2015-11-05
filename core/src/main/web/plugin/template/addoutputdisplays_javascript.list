@@ -19,6 +19,7 @@ outputdisplay/bko-plot/plotitems/std/plotconstline.js
 outputdisplay/bko-plot/plotitems/std/plotconstband.js
 outputdisplay/bko-plot/plotitems/std/plottext.js
 outputdisplay/bko-plot/plotitems/std/plottreemapnode.js
+outputdisplay/bko-plot/plotitems/std/heatmap.js
 outputdisplay/bko-plot/plotitems/lod/plotlodline.js
 outputdisplay/bko-plot/plotitems/lod/plotlodriver.js
 outputdisplay/bko-plot/plotitems/lod/plotlodbox.js
@@ -32,9 +33,11 @@ outputdisplay/bko-plot/plotitems/lodloader/plotpointlodloader.js
 outputdisplay/bko-plot/plotaxis.js
 outputdisplay/bko-plot/plotfactory.js
 outputdisplay/bko-plot/plotconverter.js
+outputdisplay/bko-plot/heatmapconverter.js
 outputdisplay/bko-plot/plotformatter.js
 outputdisplay/bko-plot/combinedplotformatter.js
 outputdisplay/bko-plot/bko-chart-extender.js
+outputdisplay/bko-plot/gradientlegend.js
 outputdisplay/bko-plot/bko-plot.js
 outputdisplay/bko-easyform/bko-easyform.js
 outputdisplay/bko-plot/bko-combinedplot.js

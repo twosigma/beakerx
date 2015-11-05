@@ -416,8 +416,12 @@
         return yAxisR && yAxisR.label === data.yAxis;
       },
 
+      getHighlightedDiff: function(highlighted) {
+        return highlighted ? 2 : 0;
+      },
+
       getHighlightedSize: function(size, highlighted) {
-        return highlighted ? size + 2 : size;
+        return size + this.getHighlightedDiff(highlighted);
       },
 
       getHighlightDuration: function() {
@@ -606,7 +610,7 @@
       //ideas and some code - from d3 library(d3.layout.histogram)
       histogram: function () {
 
-        var rightClose = false, bitCount, rangeMin, rangeMax;
+        var rightClose = false, binCount, rangeMin, rangeMax;
 
         var calcRange = function (values) {
           if (rangeMin !== undefined && rangeMax !== undefined) {
@@ -620,8 +624,8 @@
         };
 
         var calcThresholds = function (range, values) {
-          var n = bitCount !== undefined ?
-            bitCount :
+          var n = binCount !== undefined ?
+            binCount :
             Math.ceil(Math.log(values.length) / Math.LN2 + 1);
           var x = -1, b = +range[0], m = (range[1] - b) / n, f = [];
           while (++x <= n) f[x] = m * x + b;
@@ -673,8 +677,8 @@
           rangeMax = x;
           return histogram;
         };
-        histogram.bitCount = function (x) {
-          bitCount = x;
+        histogram.binCount = function (x) {
+          binCount = x;
           return histogram;
         };
         histogram.rightClose = function (x) {

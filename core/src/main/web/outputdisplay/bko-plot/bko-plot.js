@@ -1,18 +1,18 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
 
 /*
  * bkoPlot
@@ -21,27 +21,34 @@
 
 ( function() {
   'use strict';
-  var retfunc = function(plotUtils, plotFormatter, plotFactory, bkCellMenuPluginManager, bkSessionManager, bkUtils,bkoChartExtender) {
+  var retfunc = function(plotUtils,
+                         plotFormatter,
+                         plotFactory,
+                         bkCellMenuPluginManager,
+                         bkSessionManager,
+                         bkUtils,
+                         GradientLegend,
+                         bkoChartExtender) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
-      "<canvas></canvas>" +
-      "<div id='plotTitle' class='plot-title'></div>" +
-      "<div id='plotLegendContainer' class='plot-plotlegendcontainer' oncontextmenu='return false;'>" +
-      "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
-      "<svg id='svgg'>"  +
-      "<defs>" +
-      "<filter id='svgfilter'>" +
-      "<feGaussianBlur result='blurOut' in='SourceGraphic' stdDeviation='1' />" +
-      "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
-      "</filter>" +
-      "</defs>" +
-      "<g id='gridg'></g>" +
-      "<g id='maing'></g>" +
-      "<g id='labelg'></g> " +
-      "</svg>" +
-      "</div>" +
-      "</div>",
+          "<canvas></canvas>" +
+          "<div id='plotTitle' class='plot-title'></div>" +
+          "<div id='plotLegendContainer' class='plot-plotlegendcontainer' oncontextmenu='return false;'>" +
+          "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
+          "<svg id='svgg'>"  +
+          "<defs>" +
+            "<filter id='svgfilter'>" +
+              "<feGaussianBlur result='blurOut' in='SourceGraphic' stdDeviation='1' />" +
+              "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
+            "</filter>" +
+          "</defs>" +
+          "<g id='gridg'></g>" +
+          "<g id='maing'></g>" +
+          "<g id='labelg'></g> " +
+          "</svg>" +
+          "</div>" +
+          "</div>",
       controller : function($scope) {
         $scope.getShareMenuPlugin = function() {
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
@@ -113,7 +120,7 @@
           scope.jqcontainer = element.find("#plotContainer");
           scope.jqlegendcontainer = element.find("#plotLegendContainer");
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
-          scope.jqsvg = element.find("svg");
+          scope.jqsvg = element.find("#svgg");
           scope.canvas = element.find("canvas")[0];
 
           scope.canvas.style.display="none";
@@ -325,9 +332,9 @@
             scope.renderMessage("Unordered line / area detected",
               [ "The plot requires line and area elements to have x-monotonicity in order to apply " +
               "truncation for performance optimization.",
-                "Line or area items are found with unordered x coordinates.",
-                "Truncation has been disabled to display correct result.",
-                "To enable truncation for better performance, please render x-monotonic line and area items." ]);
+              "Line or area items are found with unordered x coordinates.",
+              "Truncation has been disabled to display correct result.",
+              "To enable truncation for better performance, please render x-monotonic line and area items." ]);
           }
 
         };
@@ -339,14 +346,28 @@
           }
           scope.svg.selectAll(".plot-resp")
             .on('mouseenter', function(d) {
+              scope.drawLegendPointer(d);
               return scope.tooltip(d, d3.mouse(scope.svg[0][0]));
             })
             .on("mouseleave", function(d) {
+              scope.removeLegendPointer();
               return scope.untooltip(d);
             })
             .on("click", function(d) {
               return scope.toggleTooltip(d);
             });
+        };
+
+        scope.drawLegendPointer = function(d) {
+          if(scope.gradientLegend){
+            scope.gradientLegend.drawPointer(d.ele.value);
+          }
+        };
+
+        scope.removeLegendPointer = function() {
+          if(scope.gradientLegend){
+            scope.gradientLegend.removePointer();
+          }
         };
 
         scope.toggleTooltip = function(d) {
@@ -399,7 +420,7 @@
           var focus = scope.focus;
           _.each(scope.tips, function(d) {
             var x = scope.data2scrX(d.datax),
-              y = scope.data2scrY(d.datay);
+                y = scope.data2scrY(d.datay);
             d.scrx = x;
             d.scry = y;
             var tipid = "tip_" + d.id;
@@ -425,6 +446,9 @@
                     $(this).remove();
                   }
                 });
+              if (data[d.idx].tip_class) {
+                tipdiv.addClass(data[d.idx].tip_class);
+              }
             }
             var w = tipdiv.outerWidth(), h = tipdiv.outerHeight();
             if (plotUtils.outsideScrBox(scope, x, y, w, h)) {
@@ -475,11 +499,11 @@
           var model = scope.stdmodel;
           if (model.xAxis.showGridlineLabels !== false) {
             var lines = model.xAxis.getGridlines(),
-              labels = model.xAxis.getGridlineLabels();
+                labels = model.xAxis.getGridlineLabels();
             for (var i = 0; i < labels.length; i++) {
               var x = mapX(lines[i]);
               var y = mapY(scope.focus.yl) + scope.labelPadding.y;
-              var rpipeText = {
+							var rpipeText = {
                 "id": "label_x_" + i,
                 "class": "plot-label",
                 "text": labels[i],
@@ -492,7 +516,7 @@
                 model.categoryNamesLabelAngle !== 0 && model.orientation === 'VERTICAL') {
                 var __size__ = _size_(labels[i], "plot-label");
                 var degree = -1 * model.categoryNamesLabelAngle * (180 / Math.PI);
-                var delta = degree > 0 ? (__size__.width / 2) : -1 * (__size__.width / 2);
+								var delta = degree > 0 ? (__size__.width / 2) : -1 * (__size__.width / 2);
                 rpipeText.transform =
                   "translate(" +
                   delta +
@@ -516,7 +540,7 @@
               var x = mapX(scope.focus.xl) - scope.labelPadding.x;
               var y = mapY(lines[i]);
 
-              var rpipeText = {
+							var rpipeText = {
                 "id": "label_y_" + i,
                 "class": "plot-label",
                 "text": labels[i],
@@ -641,7 +665,7 @@
           var x = e.offsetX, y = e.offsetY;
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin,
-            rMargin = scope.layout.rightLayoutMargin, tMargin = scope.layout.topLayoutMargin;
+              rMargin = scope.layout.rightLayoutMargin, tMargin = scope.layout.topLayoutMargin;
           var model = scope.stdmodel;
           if (x < lMargin || model.yAxisR != null && x > W - rMargin || y > H - bMargin || y < tMargin) {
             scope.svg.selectAll(".plot-cursor").remove();
@@ -723,7 +747,7 @@
 
           function getColorInfoUid(dat) {
             var color = plotUtils.createColor(dat.color, dat.color_opacity),
-              border = plotUtils.createColor(dat.stroke, dat.stroke_opacity);
+                border = plotUtils.createColor(dat.stroke, dat.stroke_opacity);
             return color + border;
           }
 
@@ -781,13 +805,13 @@
 
         scope.getLegendPosition = function(legendPosition, isHorizontal) {
           var margin = scope.layout.legendMargin,
-            containerWidth = scope.jqcontainer.outerWidth(true),
-            containerWidthWithMargin = containerWidth + margin,
-            legend = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer"),
-            legendHeight = legend.height(),
-            legendHeightWithMargin = legendHeight + margin,
-            verticalCenter = scope.jqcontainer.height() / 2 - legendHeight / 2,
-            horizontalCenter = containerWidth / 2 - legend.width() / 2;
+              containerWidth = scope.jqcontainer.outerWidth(true),
+              containerWidthWithMargin = containerWidth + margin,
+              legend = scope.jqlegendcontainer.find("#plotLegend"),
+              legendHeight = legend.height(),
+              legendHeightWithMargin = legendHeight + margin,
+              verticalCenter = scope.jqcontainer.height() / 2 - legendHeight / 2,
+              horizontalCenter = containerWidth / 2 - legend.width() / 2;
           if (!legendPosition) { return scope.getLegendPosition("TOP_RIGHT", isHorizontal); }
           var position;
           if(legendPosition.position){
@@ -829,13 +853,13 @@
         };
 
         scope.getLegendPositionByLayout = function(legendPosition, isHorizontal){
-          var legend = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer"),
-            margin = scope.layout.legendMargin,
-            legendWidth = legend.outerWidth(true),
-            containerWidth = scope.jqcontainer.outerWidth(true),
-            containerWidthWithMargin = containerWidth + margin,
-            legendHeight = legend.height(),
-            legendHeightWithMargin = legendHeight + margin, position;
+          var legend = scope.jqlegendcontainer.find("#plotLegend"),
+              margin = scope.layout.legendMargin,
+              legendWidth = legend.outerWidth(true),
+              containerWidth = scope.jqcontainer.outerWidth(true),
+              containerWidthWithMargin = containerWidth + margin,
+              legendHeight = legend.height(),
+              legendHeightWithMargin = legendHeight + margin, position;
           if(isHorizontal){
             switch(legendPosition.position){
               case "TOP_LEFT":
@@ -894,6 +918,45 @@
           return position;
         };
 
+        scope.createLegendContainer = function(clazz, handle) {
+          var isHorizontal = scope.stdmodel.legendLayout === "HORIZONTAL";
+          var draggable = {
+            start: function(event, ui) {
+              $(this).css({//avoid resizing for bottom-stacked legend
+                "bottom": "auto"
+              });
+            },
+            stop: function(event, ui) {
+              scope.legendPosition = {
+                "left": ui.position.left,
+                "top": ui.position.top
+              };
+            }
+          };
+
+          var legendContainer = $("<div></div>").appendTo(scope.jqlegendcontainer)
+            .attr("id", "plotLegend")
+            .attr("class", "plot-legend")
+            .draggable(draggable)
+            .css("max-height", scope.jqsvg.height() - scope.layout.bottomLayoutMargin - scope.layout.topLayoutMargin);
+
+          if (clazz != null) {
+            legendContainer.addClass(clazz);
+          }
+
+          if (handle != null) {
+            draggable.handle = handle;
+          } else {
+            legendContainer.addClass("plot-legenddraggable");
+          }
+
+          if (isHorizontal) {
+            legendContainer.css("max-width", scope.jqcontainer.width());
+          }
+
+          return legendContainer;
+        };
+
         scope.renderLegends = function() {
           // legend redraw is controlled by legendDone
           if (scope.legendableItem === 0 ||
@@ -902,37 +965,30 @@
           var data = scope.stdmodel.data;
           var isHorizontal = scope.stdmodel.legendLayout === "HORIZONTAL";
 
-          scope.jqlegendcontainer.find(".plot-legendscrollablecontainer").remove();
-
+          scope.jqlegendcontainer.find("#plotLegend").remove();
           scope.legendDone = true;
-          var legendScrollableContainer = $("<div></div>").appendTo(scope.jqlegendcontainer)
-            .attr("class", "plot-legendscrollablecontainer")
-            .draggable({
-              start: function( event, ui ) {
-                $(this).css({//avoid resizing for bottom-stacked legend
-                  "bottom": "auto"
-                });
-              },
-              stop : function(event, ui) {
-                scope.legendPosition = {
-                  "left" : ui.position.left,
-                  "top" : ui.position.top
-                };
-              },
-              handle : "#legendDraggableContainer"
-            })
-            .css("max-height", scope.jqsvg.height() - scope.layout.bottomLayoutMargin - scope.layout.topLayoutMargin);
-          if(isHorizontal){
-            legendScrollableContainer.css("max-width", scope.jqcontainer.width());
+
+          var legendContainer;
+          if (scope.model.getCellModel().type === "HeatMap"){
+            legendContainer = scope.createLegendContainer();
+          }else{
+            legendContainer = scope.createLegendContainer("plot-legendscrollablecontainer", "#legendDraggableContainer");
           }
 
-          var legendDraggableContainer = $("<div></div>").appendTo(legendScrollableContainer)
+          if (scope.model.getCellModel().type === "HeatMap") {
+            scope.gradientLegend = new GradientLegend(data);
+            scope.gradientLegend.render(legendContainer, data[0].colors);
+            scope.updateLegendPosition();
+            return;
+          }
+
+          var legendDraggableContainer = $("<div></div>").appendTo(legendContainer)
             .attr("id", "legendDraggableContainer")
-            .attr("class", "plot-legenddraggablecontainer");
+            .attr("class", "plot-legenddraggable");
 
           var legendUnit = isHorizontal ? "<div></div>" : "<table></table>",
-            legendLineUnit = isHorizontal ? "<div class='plot-legenditeminline'></div>" : "<tr></tr>",
-            legendLineItemUnit = isHorizontal ? "<span></span>" : "<td></td>";
+              legendLineUnit = isHorizontal ? "<div class='plot-legenditeminline'></div>" : "<tr></tr>",
+              legendLineItemUnit = isHorizontal ? "<span></span>" : "<td></td>";
           var legend = $(legendUnit).appendTo(legendDraggableContainer)
             .attr("id", "legends");
 
@@ -995,7 +1051,7 @@
             }
 
             var clr = plotUtils.createColor(line.color, line.color_opacity),
-              st_clr = plotUtils.createColor(line.stroke, line.stroke_opacity);
+                st_clr = plotUtils.createColor(line.stroke, line.stroke_opacity);
             var sty = line.color == null ? "dotted " : "solid ";
             // color box
             $("<span></span>")
@@ -1003,9 +1059,9 @@
               .attr("class", "plot-legendbox")
               .attr("title", line.color == null ? "Element-based colored item" : "")
               .css("background-color",
-              line.color == null ? "none" : clr)
+                line.color == null ? "none" : clr)
               .css("border",
-              line.stroke != null ? "1px " + sty + st_clr :
+                line.stroke != null ? "1px " + sty + st_clr :
                 (line.color != null ? "1px " + sty + clr : "1px dotted gray"))
               .appendTo($(legendLineItemUnit).appendTo(unit));
             // legend text
@@ -1014,7 +1070,7 @@
               .attr("class", "plot-label")
               .text(line.legend);
             var lodhint = $(legendLineItemUnit).appendTo(unit)
-              .attr("id", "hint_" + id);
+                .attr("id", "hint_" + id);
 
             if (line.isLodItem === true) {
               var light = $("<span></span>").appendTo(lodhint)
@@ -1038,7 +1094,7 @@
                   scope.renderMessage("LOD is being turned off. Are you sure?",
                     [ "You are trying to turning off LOD. Loading full resolution data is " +
                     "going to take time and may potentially crash the browser.",
-                      "PROCEED (left click) / CANCEL (right click)"],
+                    "PROCEED (left click) / CANCEL (right click)"],
                     "msg_lodoff",
                     function() {
                       for (var j = 0; j < dataIds.length; j++) {
@@ -1084,35 +1140,35 @@
         };
 
         scope.updateLegendPosition = function() {
-          var legendScrollableContainer = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer");
+          var legendContainer = scope.jqlegendcontainer.find("#plotLegend");
           var isHorizontal = scope.stdmodel.legendLayout === "HORIZONTAL";
           var margin = scope.layout.legendMargin;
           if (scope.legendResetPosition === true) {
             scope.legendPosition = scope.getLegendPosition(scope.stdmodel.legendPosition, isHorizontal);
             scope.legendResetPosition = false;
           }
-          legendScrollableContainer.css(scope.legendPosition);
+          legendContainer.css(scope.legendPosition);
 
           //increase plot margins if legend has predefined values
           if(scope.stdmodel.legendPosition.position === "LEFT") {
-            scope.jqcontainer.css("margin-left", legendScrollableContainer.width() + margin);
+            scope.jqcontainer.css("margin-left", legendContainer.width() + margin);
           }
           if(scope.stdmodel.legendPosition.position === "TOP") {
-            scope.jqcontainer.css("margin-top", legendScrollableContainer.height() + margin);
+            scope.jqcontainer.css("margin-top", legendContainer.height() + margin);
           }
           if(scope.stdmodel.legendPosition.position === "BOTTOM") {
-            scope.jqcontainer.css("margin-bottom", legendScrollableContainer.height() + margin);
+            scope.jqcontainer.css("margin-bottom", legendContainer.height() + margin);
           }
           if(isHorizontal){
             if(["TOP_LEFT", "TOP_RIGHT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
-              scope.jqcontainer.css("margin-top", legendScrollableContainer.height() + margin);
+              scope.jqcontainer.css("margin-top", legendContainer.height() + margin);
             }
             if(["BOTTOM_LEFT", "BOTTOM_RIGHT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
-              scope.jqcontainer.css("margin-bottom", legendScrollableContainer.height() + margin);
+              scope.jqcontainer.css("margin-bottom", legendContainer.height() + margin);
             }
           }else{
             if(["TOP_LEFT", "BOTTOM_LEFT"].indexOf(scope.stdmodel.legendPosition.position) !== -1) {
-              scope.jqcontainer.css("margin-left", legendScrollableContainer.width() + margin);
+              scope.jqcontainer.css("margin-left", legendContainer.width() + margin);
             }
           }
         };
@@ -1159,14 +1215,14 @@
           var legend = scope.jqlegendcontainer.find("#legends");
           var hint = legend.find("#hint_" + legendLineId);
           var light = hint.find("#light"),
-            type = hint.find("#type"),
-            auto = hint.find("#auto");
+              type = hint.find("#type"),
+              auto = hint.find("#auto");
           // lod hint light
           light.attr("title",
             lodInfo.lodOn === true ? "LOD is on" : "")
-            .css("background-color",
+          .css("background-color",
             lodInfo.lodOn === true ? "red" : "gray")
-            .css("border",
+          .css("border",
             lodInfo.lodOn === true ? "1px solid red" : "1px solid gray");
           // lod hint text
           type.css("color", lodInfo.lodOn === true ? "red" : "gray")
@@ -1218,8 +1274,8 @@
               dat.clearTips(scope);
               if (dat.isLodItem === true) {
                 dat.lodOn = false;
-              }
             }
+          }
           }
           if (line.showItem === false) {
             if (line.isLodItem === true) {
@@ -1255,7 +1311,7 @@
           }
 
           var content = $("<div></div>").appendTo(message)
-            .attr("class", "plot-message-content");
+              .attr("class", "plot-message-content");
           if (typeof(msgs) === "string") {
             msgs = [ msgs ];
           }
@@ -1266,7 +1322,7 @@
 
           var w = message.outerWidth(), h = message.outerHeight();
           var lMargin = scope.layout.leftLayoutMargin,
-            bMargin = scope.layout.bottomLayoutMargin;
+              bMargin = scope.layout.bottomLayoutMargin;
           message.css({
             "left" : (scope.jqcontainer.width() - lMargin) / 2 - w / 2 + lMargin,
             "top" : (scope.jqcontainer.height() - bMargin) / 2 - h / 2
@@ -1325,7 +1381,7 @@
         scope.calcLocateBox = function() {
           var p1 = scope.mousep1, p2 = scope.mousep2;
           var xl = Math.min(p1.x, p2.x), xr = Math.max(p1.x, p2.x),
-            yl = Math.min(p1.y, p2.y), yr = Math.max(p1.y, p2.y);
+              yl = Math.min(p1.y, p2.y), yr = Math.max(p1.y, p2.y);
           if (xr === xl) { xr = xl + 1; }
           if (yr === yl) { yr = yl + 1; }
           scope.locateBox = {
@@ -1378,7 +1434,7 @@
             var W = scope.jqsvg.width() - lMargin, H = scope.jqsvg.height() - bMargin;
             var d3trans = d3.event.translate, d3scale = d3.event.scale;
             var dx = d3trans[0] - scope.lastx, dy = d3trans[1] - scope.lasty,
-              ds = this.lastscale / d3scale;
+                ds = this.lastscale / d3scale;
             scope.lastx = d3trans[0];
             scope.lasty = d3trans[1];
             scope.lastscale = d3scale;
@@ -1423,7 +1479,7 @@
                 // scale y
                 var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;
                 var nyl = ym - ds * (ym - focus.yl), nyr = ym + ds * (focus.yr - ym),
-                  nyspan = nyr - nyl;
+                    nyspan = nyr - nyl;
 
                 if (nyspan >= level.minSpanY && nyspan <= level.maxScaleY) {
                   focus.yl = nyl;
@@ -1442,7 +1498,7 @@
                 // scale x
                 var xm = focus.xl + scope.scr2dataXp(mx) * focus.xspan;
                 var nxl = xm - ds * (xm - focus.xl), nxr = xm + ds * (focus.xr - xm),
-                  nxspan = nxr - nxl;
+                    nxspan = nxr - nxl;
                 if (nxspan >= level.minSpanX && nxspan <= level.maxScaleX) {
                   focus.xl = nxl;
                   focus.xr = nxr;
@@ -1497,7 +1553,7 @@
 
           if (focus.xl > focus.xr || focus.yl > focus.yr) {
             console.error("visible range specified does not match data range, " +
-            "enforcing visible range");
+                "enforcing visible range");
             _.extend(focus, scope.defaultFocus);
           }
         };
@@ -1685,7 +1741,7 @@
         };
 
         scope.init = function() {
-
+          
           // first standardize data
           scope.standardizeData();
           // init flags
@@ -1823,7 +1879,7 @@
           scope.setDumpState(scope.dumpState());
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
-          scope.jqlegendcontainer.find(".plot-legendscrollablecontainer").remove();
+          scope.jqlegendcontainer.find("#plotLegend").remove();
         });
 
         scope.getSvgToSave = function() {
@@ -1872,12 +1928,12 @@
         scope.adjustSvgPositionWithLegend = function(svg, titleOuterHeight) {
           var isHorizontal = scope.stdmodel.legendLayout === "HORIZONTAL";
           var margin = scope.layout.legendMargin;
-          var legendScrollableContainer = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer");
+          var legendContainer = scope.jqlegendcontainer.find("#plotLegend");
           var containerLeftMargin = parseFloat(scope.jqcontainer.css("margin-left"));
           var W = plotUtils.getActualCss(scope.jqcontainer, 'outerWidth') + containerLeftMargin + 1;//add 1 because jQuery round size
           var H = plotUtils.getActualCss(scope.jqcontainer, 'outerHeight') + titleOuterHeight + 1;
-          var legendW = plotUtils.getActualCss(legendScrollableContainer, 'outerWidth', true);
-          var legendH = plotUtils.getActualCss(legendScrollableContainer, 'outerHeight', true);
+          var legendW = plotUtils.getActualCss(legendContainer, 'outerWidth', true);
+          var legendH = plotUtils.getActualCss(legendContainer, 'outerHeight', true);
           var legendPosition = scope.stdmodel.legendPosition;
 
           if (!legendPosition.position) {
@@ -1934,9 +1990,9 @@
 
         scope.appendLegendToSvg = function(svg) {
 
-          var legend = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer");
+          var legend = scope.jqlegendcontainer.find("#plotLegend");
           if (scope.legendableItem === 0 || scope.stdmodel.showLegend === false || !legend.length) { return; }
-          var legendCopy = scope.jqlegendcontainer.find(".plot-legendscrollablecontainer").clone();
+          var legendCopy = scope.jqlegendcontainer.find("#plotLegend").clone();
           legendCopy.find(".plot-legendcheckbox").each(function(i, item) {
             if (item.checked) {
               item.setAttribute("checked", true);
@@ -1944,6 +2000,13 @@
             item.setAttribute("onclick", "return false");
           });
           legendCopy.css("position", "inherit");
+
+          //remove base from urls
+          legendCopy.find("[style*='url']").each(function(i, item){
+            var style = $(item).attr('style');
+            style = style.replace("/beaker/", "");
+            $(item).attr('style', style);
+          });
 
           var getPositive = function(value) {
             return value > 0 ? value : 0;
@@ -1965,5 +2028,14 @@
       }
     };
   };
-  beaker.bkoDirective("Plot", ["plotUtils", "plotFormatter", "plotFactory", "bkCellMenuPluginManager", "bkSessionManager", "bkUtils", "bkoChartExtender", retfunc]);
+  beaker.bkoDirective("Plot", [
+    "plotUtils",
+    "plotFormatter",
+    "plotFactory",
+    "bkCellMenuPluginManager",
+    "bkSessionManager",
+    "bkUtils",
+    "GradientLegend",
+    "bkoChartExtender",
+    retfunc]);
 })();

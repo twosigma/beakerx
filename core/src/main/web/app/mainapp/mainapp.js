@@ -26,6 +26,7 @@
                                              'bk.utils',
                                              'bk.commonUi',
                                              'bk.core',
+                                             'bk.globals',
                                              'bk.session',
                                              'bk.sessionManager',
                                              'bk.menuPluginManager',
@@ -35,7 +36,8 @@
                                              'bk.evaluateJobManager',
                                              'bk.notebookRouter',
                                              'bk.notebook',
-                                             'bk.electron'
+                                             'bk.electron',
+                                             'bk.connectionManager'
                                              ]);
 
   /**
@@ -70,7 +72,7 @@
         isImport: '@import',
         isOpen: '@open'
       },
-      controller: function($scope, $timeout) {
+      controller: function($scope, $timeout, connectionManager, GLOBALS) {
         var showLoadingStatusMessage = function(message, nodigest) {
           if (bkHelper.isElectron) {
             bkElectron.setStatus(message);
@@ -1293,62 +1295,7 @@
             );
           };
         })();
-
-        var connectionManager = (function() {
-          var RECONNECT_TIMEOUT = 5000; // 5 seconds
-          var OFFLINE_MESSAGE = "offline, click to download a copy";
-          var CONNECTING_MESSAGE = "reconnecting";
-          var reconnectTimeout;
-          var statusMessage = OFFLINE_MESSAGE;
-          var disconnected = false;
-          var indicateReconnectFailed = function() {
-            stopWaitingReconnect();
-            statusMessage = OFFLINE_MESSAGE;
-            bkUtils.disconnect(); // prevent further attempting to reconnect
-            $scope.promptToSave();
-          };
-          var waitReconnect = function() {
-            statusMessage = CONNECTING_MESSAGE;
-
-            // wait for 5 sceonds, if reconnect didn't happen, prompt to save
-            if (!reconnectTimeout) {
-              reconnectTimeout = $timeout(indicateReconnectFailed, RECONNECT_TIMEOUT);
-            }
-            // if user attempts to interact within 5 second, also prompt to save
-            window.addEventListener('keypress', indicateReconnectFailed, true);
-          };
-          var stopWaitingReconnect = function() {
-            if (reconnectTimeout) {
-              $timeout.cancel(reconnectTimeout);
-              reconnectTimeout = undefined;
-            }
-            window.removeEventListener('keypress', indicateReconnectFailed, true);
-          };
-
-          return {
-            onDisconnected: function() {
-              disconnected = true;
-              waitReconnect();
-            },
-            onReconnected: function() {
-              bkSessionManager.isSessionValid().then(function(isValid) {
-                if (isValid) {
-                  stopWaitingReconnect();
-                  disconnected = false;
-                  bkSessionManager.reconnectEvaluators();
-                } else {
-                  indicateReconnectFailed();
-                }
-              });
-            },
-            getStatusMessage: function() {
-              return statusMessage;
-            },
-            isDisconnected: function() {
-              return disconnected;
-            }
-          };
-        })();
+        $rootScope.$on(GLOBALS.EVENTS.RECONNECT_FAILED, $scope.promptToSave);
 
         $scope.getOffineMessage = function() {
           return connectionManager.getStatusMessage();

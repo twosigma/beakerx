@@ -212,6 +212,7 @@
       "OutputContainer": ["OutputContainer", "Text"],
       "CategoryPlot": ["Plot", "Text"],
       "Histogram": ["Plot", "Text"],
+      "HeatMap": ["Plot", "Text"],
       "TreeMap": ["Plot", "Text"]
     };
     var factory = {

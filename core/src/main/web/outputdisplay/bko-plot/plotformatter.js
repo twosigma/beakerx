@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils, plotConverter, PlotAxis, plotFactory, plotUtils, bkHelper) {
+  var retfunc = function(bkUtils, plotConverter, heatmapConverter, PlotAxis, plotFactory, plotUtils, bkHelper) {
 
     var createNewMode = function (model) {
 
@@ -470,7 +470,7 @@
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
           var item = data[i];
-          if (item.type === "treemapnode" || item.type === "constline" || item.type === "constband") { continue; }
+          if (item.type === "treemapnode" || item.type === "constline" || item.type === "constband" || item.type === "heatmap") { continue; }
 
           var eles = item.elements;
           var unordered = false;
@@ -493,8 +493,6 @@
         }
       },
 
-
-
       standardizeModel : function(_model, prefs) {
         var model = {};
         $.extend(true, model, _model); // deep copy model to prevent changing the original JSON
@@ -509,17 +507,26 @@
           model.version = "direct";
         }
         var newmodel = createNewMode(model);
-
+         
         newmodel.lodThreshold = (model.lodThreshold) ?
           model.lodThreshold : (prefs !== undefined && prefs.lodThreshold !== undefined ? prefs.lodThreshold : 1500) ;
 
         newmodel.data = [];
 
         if (model.version === "groovy") {
-          plotConverter.convertGroovyData(newmodel, model);
+          switch(model.type){
+            case 'HeatMap':
+              heatmapConverter.convertGroovyData(newmodel, model);
+              break;
+            default:
+              plotConverter.convertGroovyData(newmodel, model);
+              break;
+          }
         } else {  // DS generated directly
           _.extend(newmodel, model);
         }
+        this.formatModel(newmodel); // fill in null entries, compute y2, etc.
+        this.sortModel(newmodel);
 
         if (model.type === 'TreeMap'){
           this.formatTreeMapModel(newmodel);
@@ -541,6 +548,8 @@
               yAxisData.push(item);
             }
           }
+
+          newmodel.showLegend = newmodel.showLegend != null ? newmodel.showLegend : false;
 
           var range = plotUtils.getDataRange(yAxisData).datarange;
           var rangeR = _.isEmpty(yAxisRData) ? null : plotUtils.getDataRange(yAxisRData).datarange;
@@ -594,16 +603,15 @@
             };
             updateRangeSpan(vrange);
             updateRangeSpan(vrangeR);
-
-            this.remapModel(newmodel);
           }
+
+          this.remapModel(newmodel);
+
+          newmodel.version = "complete";
+          return newmodel;
         }
-        newmodel.showLegend = newmodel.showLegend != null ? newmodel.showLegend : false;
-        newmodel.version = "complete";
-        return newmodel;
-      }
-    };
+      };
   };
   beaker.bkoFactory('plotFormatter',
-    ["bkUtils", 'plotConverter', 'PlotAxis', 'plotFactory', 'plotUtils', 'bkHelper', retfunc]);
+    ["bkUtils", 'plotConverter', 'heatmapConverter', 'PlotAxis', 'plotFactory', 'plotUtils', 'bkHelper', retfunc]);
 })();

@@ -440,6 +440,7 @@
           _.each(cells, function(cell) {
             if (cell.output) {
               cell.output.result = undefined;
+              cell.output.elapsedTime = undefined;
             }
           });
         }

@@ -507,14 +507,14 @@
           model.version = "direct";
         }
         var newmodel = createNewMode(model);
-         
+
         newmodel.lodThreshold = (model.lodThreshold) ?
-          model.lodThreshold : (prefs !== undefined && prefs.lodThreshold !== undefined ? prefs.lodThreshold : 1500) ;
+          model.lodThreshold : (prefs !== undefined && prefs.lodThreshold !== undefined ? prefs.lodThreshold : 1500);
 
         newmodel.data = [];
 
         if (model.version === "groovy") {
-          switch(model.type){
+          switch (model.type) {
             case 'HeatMap':
               heatmapConverter.convertGroovyData(newmodel, model);
               break;
@@ -525,12 +525,10 @@
         } else {  // DS generated directly
           _.extend(newmodel, model);
         }
-        this.formatModel(newmodel); // fill in null entries, compute y2, etc.
-        this.sortModel(newmodel);
 
-        if (model.type === 'TreeMap'){
+        if (model.type === 'TreeMap') {
           this.formatTreeMapModel(newmodel);
-        }else{
+        } else {
           this.formatModel(newmodel); // fill in null entries, compute y2, etc.
           this.sortModel(newmodel);
 
@@ -539,12 +537,12 @@
           var yAxisData = [], yAxisRData = [];
           for (var i = 0; i < newmodel.data.length; i++) {
             var item = newmodel.data[i];
-            if(newmodel.showLegend == null && item.legend){
+            if (newmodel.showLegend == null && item.legend) {
               newmodel.showLegend = true;
             }
-            if(plotUtils.useYAxisR(newmodel, item)){
+            if (plotUtils.useYAxisR(newmodel, item)) {
               yAxisRData.push(item);
-            }else{
+            } else {
               yAxisData.push(item);
             }
           }
@@ -564,19 +562,27 @@
           }
 
           var margin = newmodel.margin;
-          if (margin.bottom == null) { margin.bottom = .05; }
-          if (margin.top == null) { margin.top = .05; }
-          if (margin.left == null) { margin.left = .05; }
-          if (margin.right == null) { margin.right = .05; }
+          if (margin.bottom == null) {
+            margin.bottom = .05;
+          }
+          if (margin.top == null) {
+            margin.top = .05;
+          }
+          if (margin.left == null) {
+            margin.left = .05;
+          }
+          if (margin.right == null) {
+            margin.right = .05;
+          }
 
           if (newmodel.vrange == null) {
             // visible range initially is 10x larger than data range by default
-            var getModelRange = function(r){
+            var getModelRange = function (r) {
               return r ? {
-                xl : r.xl - r.xspan * 10.0,
-                xr : r.xr + r.xspan * 10.0,
-                yl : r.yl - r.yspan * 10.0,
-                yr : r.yr + r.yspan * 10.0
+                xl: r.xl - r.xspan * 10.0,
+                xr: r.xr + r.xspan * 10.0,
+                yl: r.yl - r.yspan * 10.0,
+                yr: r.yr + r.yspan * 10.0
               } : null;
             };
             newmodel.vrange = getModelRange(range);
@@ -590,13 +596,21 @@
             }
 
             var focus = newmodel.userFocus; // allow user to overide vrange
-            if (focus.xl != null) { vrange.xl = Math.min(focus.xl, vrange.xl); }
-            if (focus.xr != null) { vrange.xr = Math.max(focus.xr, vrange.xr); }
-            if (focus.yl != null) { vrange.yl = Math.min(focus.yl, vrange.yl); }
-            if (focus.yr != null) { vrange.yr = Math.max(focus.yr, vrange.yr); }
+            if (focus.xl != null) {
+              vrange.xl = Math.min(focus.xl, vrange.xl);
+            }
+            if (focus.xr != null) {
+              vrange.xr = Math.max(focus.xr, vrange.xr);
+            }
+            if (focus.yl != null) {
+              vrange.yl = Math.min(focus.yl, vrange.yl);
+            }
+            if (focus.yr != null) {
+              vrange.yr = Math.max(focus.yr, vrange.yr);
+            }
 
-            var updateRangeSpan = function(r){
-              if(r){
+            var updateRangeSpan = function (r) {
+              if (r) {
                 r.xspan = r.xr - r.xl;
                 r.yspan = r.yr - r.yl;
               }
@@ -606,11 +620,11 @@
           }
 
           this.remapModel(newmodel);
-
-          newmodel.version = "complete";
-          return newmodel;
         }
-      };
+        newmodel.version = "complete";
+        return newmodel;
+      }
+    };
   };
   beaker.bkoFactory('plotFormatter',
     ["bkUtils", 'plotConverter', 'heatmapConverter', 'PlotAxis', 'plotFactory', 'plotUtils', 'bkHelper', retfunc]);

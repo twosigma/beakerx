@@ -18,7 +18,7 @@
   'use strict';
   var retfunc = function(bkUtils, plotConverter, heatmapConverter, PlotAxis, plotFactory, plotUtils, bkHelper) {
 
-    var createNewMode = function (model) {
+    var createNewModel = function (model) {
 
       var newmodel;
 
@@ -506,7 +506,7 @@
         } else {
           model.version = "direct";
         }
-        var newmodel = createNewMode(model);
+        var newmodel = createNewModel(model);
 
         newmodel.lodThreshold = (model.lodThreshold) ?
           model.lodThreshold : (prefs !== undefined && prefs.lodThreshold !== undefined ? prefs.lodThreshold : 1500);

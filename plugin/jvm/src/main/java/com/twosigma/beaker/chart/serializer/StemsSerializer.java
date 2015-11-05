@@ -20,27 +20,23 @@ import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import java.io.IOException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 /**
  * PointsSerializer
  *
  */
-public class StemsSerializer extends JsonSerializer<Stems> {
+public class StemsSerializer extends XYGraphicsSerializer<Stems> {
 
   @Override
   public void serialize(Stems stems, JsonGenerator jgen, SerializerProvider sp)
       throws IOException, JsonProcessingException {
 
     jgen.writeStartObject();
+
+    super.serialize(stems, jgen, sp);
+
     jgen.writeObjectField("type", stems.getClass().getSimpleName());
-    jgen.writeObjectField("x", stems.getX());
-    jgen.writeObjectField("y", stems.getY());
-    jgen.writeObjectField("visible", stems.getVisible());
-    jgen.writeObjectField("display_name", stems.getDisplayName());
-    if (stems.getLodFilter() != null)
-      jgen.writeObjectField("lod_filter", stems.getLodFilter().getText());
     if (stems.getBases() != null) {
       jgen.writeObjectField("bases", stems.getBases());
     } else {

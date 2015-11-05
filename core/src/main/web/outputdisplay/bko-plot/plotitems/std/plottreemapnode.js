@@ -35,13 +35,16 @@
 			if (this.isRoot())
 				return;
 			var itemsvg = scope.maing.select("g").select("#" + this.id);
+			if (highlighted){
+				itemsvg.node().parentNode.appendChild(itemsvg.node()); // workaround for bringing elements to the front (ie z-index)
+			}
 			itemsvg
 				.transition()
 				.duration(plotUtils.getHighlightDuration())
-				.attr("filter", highlighted ? "url(#outerDropShadow)" : "")
 				.select("rect")
 				.style("stroke", highlighted ? "#000000" : "#FFFFFF")
 				.style("stroke-width", highlighted ? 2 : 0.2)
+				.style("opacity", highlighted ? 0.9 : 1.0)
 			;
 		};
 
@@ -74,8 +77,6 @@
 			if (scope.stdmodel.round) {
 				treemap.round(scope.stdmodel.round)
 			}
-
-			var old_data = this.nodes;
 
 			this.nodes = treemap
 				.nodes(this)
@@ -117,9 +118,10 @@
 				.scaleExtent([1, 10])
 				.on("zoom", zoomed);
 
-			scope.maing
-				.call(zoom)
-			;
+			scope.maing.call(zoom).on("dblclick.zoom", function(){
+				svg.attr("transform", "translate(" + [0,0] + ")scale(" + 1 + ")");
+				setTextStyles();
+			});
 
 			var svg = scope.maing.append("svg:g");
 			var cell = svg.selectAll("g")

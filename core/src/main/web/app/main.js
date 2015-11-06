@@ -19,6 +19,8 @@ define('underscore',[], function() {return _;});
 
 requirejs.config({
   paths: {
+    'd3':                        "../vendor/bower_components/d3/d3",
+    'd3.chart.eventDrops':       "../vendor/bower_components/event-drops/src/eventDrops",
     'ipython3_comm':             "../plugins/eval/ipythonPlugins/vendor/ipython3/comm",
     'ipython3_namespace':        "../plugins/eval/ipythonPlugins/vendor/ipython3/namespace",
     'ipython3_kernel':           "../plugins/eval/ipythonPlugins/vendor/ipython3/kernel",
@@ -48,3 +50,5 @@ requirejs.config({
     'ipython3_events':    "../plugins/eval/ipythonPlugins/vendor/ipython3/events"
   }
 });
+
+require(['d3', 'd3.chart.eventDrops']);

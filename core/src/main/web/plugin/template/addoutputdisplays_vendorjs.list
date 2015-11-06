@@ -1,4 +1,3 @@
 vendor/vega/vega.js
 vendor/vega/d3.geo.projection.min.js
 vendor/vega/d3.layout.cloud.js
-vendor/bower_components/event-drops/src/eventDrops.js

@@ -21,15 +21,14 @@ var webdriver = require('./node_modules/drool/node_modules/selenium-webdriver');
 var config = {
   chromeOptions: 'no-sandbox'
 };
-
+var driver;
 if (typeof process.env.chromeBinaryPath !== 'undefined') {
   config.chromeBinaryPath = process.env.chromeBinaryPath;
 }
 
-var driver = drool.start(config);
-var snapshot = [];
-var retryCount = 1;
-var actionCount = 10;
+function instantiateDrool() {
+  return drool.start(config);
+}
 
 function openNotebook() {
   driver.wait(function() {
@@ -130,31 +129,29 @@ drool.flow({
   },
   assert: function(after, initial) {
     printChange(initial, after);
-    // assert.equal(initial.counts.nodes, after.counts.nodes, 'node count should match');
   },
   exit: function() {
-    closeNotebook();
+    driver.quit();
   }
-}, driver);
-
-drool.flow({
-  repeatCount: 20,
-  setup: function() {
-    driver.get('http://127.0.0.1:8801');
-    openNotebook();
-    addCell();
-    enterCode();
-  },
-  action: function() {
-    evaluateAndRemoveOutputCell();
-  },
-  beforeAssert: function() {
-  },
-  assert: function(after, initial) {
-    printChange(initial, after);
-  },
-  exit: function() {
-    closeNotebook();
-  }
-}, driver);
-driver.quit();
+}, driver = instantiateDrool()). then(function() {
+  drool.flow({
+    repeatCount: 20,
+    setup: function() {
+      driver.get('http://127.0.0.1:8801');
+      openNotebook();
+      addCell();
+      enterCode();
+    },
+    action: function() {
+      evaluateAndRemoveOutputCell();
+    },
+    beforeAssert: function() {
+    },
+    assert: function(after, initial) {
+      printChange(initial, after);
+    },
+    exit: function() {
+      driver.quit();
+    }
+  }, driver = drool.start(config));  
+});

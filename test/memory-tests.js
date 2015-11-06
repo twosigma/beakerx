@@ -125,8 +125,6 @@ drool.flow({
   action: function() {
     addAndRemoveCell();
   },
-  beforeAssert: function() {
-  },
   assert: function(after, initial) {
     printChange(initial, after);
   },
@@ -144,8 +142,6 @@ drool.flow({
     },
     action: function() {
       evaluateAndRemoveOutputCell();
-    },
-    beforeAssert: function() {
     },
     assert: function(after, initial) {
       printChange(initial, after);

@@ -28,6 +28,7 @@ abstract public class XYGraphics extends Graphics {
   private List<Number> xs;
   private List<Number> ys;
   private String  displayName = "";
+  private Class plotType;
 
   private Filter lodFilter;
 
@@ -83,4 +84,12 @@ abstract public class XYGraphics extends Graphics {
   }
 
   abstract protected EnumSet<Filter> getPossibleFilters();
+
+  public Class getPlotType() {
+    return plotType;
+  }
+
+  public void setPlotType(Class plotType) {
+    this.plotType = plotType;
+  }
 }

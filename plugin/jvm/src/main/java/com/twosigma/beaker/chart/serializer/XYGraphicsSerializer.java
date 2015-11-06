@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.chart.serializer;
 
+import com.twosigma.beaker.chart.xychart.NanoPlot;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
@@ -23,9 +24,11 @@ import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * XYGraphics
+ * XYGraphicsSerializer
  */
 public class XYGraphicsSerializer<T extends XYGraphics> extends JsonSerializer<T> {
 
@@ -33,7 +36,8 @@ public class XYGraphicsSerializer<T extends XYGraphics> extends JsonSerializer<T
   public void serialize(T xyGraphics, JsonGenerator jgen, SerializerProvider sp)
     throws IOException, JsonProcessingException {
 
-    jgen.writeObjectField("x", xyGraphics.getX());
+    boolean isNanoPlot = NanoPlot.class.equals(xyGraphics.getPlotType());
+    jgen.writeObjectField("x", isNanoPlot ? processLargeNumbers(xyGraphics.getX()) : xyGraphics.getX());
     jgen.writeObjectField("y", xyGraphics.getY());
     jgen.writeObjectField("visible", xyGraphics.getVisible());
     jgen.writeObjectField("display_name", xyGraphics.getDisplayName());
@@ -41,7 +45,18 @@ public class XYGraphicsSerializer<T extends XYGraphics> extends JsonSerializer<T
     if (xyGraphics.getLodFilter() != null){
       jgen.writeObjectField("lod_filter", xyGraphics.getLodFilter().getText());
     }
+  }
 
+  private List<String> processLargeNumbers(List<Number> list){
+    List<String> stringList = new ArrayList<>(list.size());
+    for(Number n : list){
+      if(n != null){
+        stringList.add(n.toString());
+      }else{
+        stringList.add("");
+      }
+    }
+    return stringList;
   }
 
 }

@@ -501,7 +501,7 @@
           if (!isCollapsed) {
             $timeout(function() {
               if (scope.cm === undefined) {
-                initCodeMirror();
+                Scrollin.checkForVisibleElements();
               } else {
                 scope.cm.refresh();
               }

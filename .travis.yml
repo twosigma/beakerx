@@ -3,6 +3,9 @@ jdk:
   - oraclejdk8
 env:
   - chromeBinaryPath=/home/travis/build/twosigma/beaker-notebook/chrome-linux/chrome
+sudo: required
+services:
+- docker
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
@@ -14,13 +17,13 @@ before_install:
   - "curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -"
   - "gem install sass"
   - "sudo apt-get install -y nodejs"
-  - "sudo apt-get install nginx"
+  - "sudo apt-get install -y nginx"
   - 'ln -s /usr/bin/node /home/travis/build/twosigma/beaker-notebook/'
   - 'ln -s /usr/bin/npm /home/travis/build/twosigma/beaker-notebook/'
 before_script:
   - export PATH=/home/travis/build/twosigma/beaker-notebook:$PATH
-  - sudo apt-get install libzmq3-dbg libzmq3-dev libzmq3
-  - sudo apt-get install python-pip python-dev
+  - sudo apt-get install -y libzmq3-dbg libzmq3-dev libzmq3
+  - sudo apt-get install -y python-pip python-dev
   - sudo pip install ipython==3.2.1 jinja2 tornado
   - sudo pip install pyzmq
-  - sudo apt-get install python-matplotlib python-scipy python-pandas
+  - sudo apt-get install -y python-matplotlib python-scipy python-pandas

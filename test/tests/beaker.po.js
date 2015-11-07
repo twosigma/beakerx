@@ -233,9 +233,17 @@ var BeakerPageObject = function() {
     return this.insertCellButton.click();
   };
 
+  this.openSection = function() {
+    return element(by.css('.bksectiontoggleplus')).click();
+  }
+
   this.getCellOutput = function() {
     return element(by.css('bk-output-display > div'));
   };
+
+  this.getLoadingIndicator = function() {
+    return element(by.css('.navbar-text > i'));
+  }
 
   this.waitForCellOutput = function(plugin) {
     var self = this;
@@ -260,6 +268,19 @@ var BeakerPageObject = function() {
       });
     }, 10000);
   };
+
+  this.waitUntilLoadingFinished = function() {
+    var self = this;
+    return browser.wait(function() {
+      return self.getLoadingIndicator().isPresent()
+      .then(function(present) {
+        return !present;
+      })
+      .thenCatch(function() {
+        return false;
+      });
+    }, 10000);
+  }
 
 };
 module.exports = BeakerPageObject;

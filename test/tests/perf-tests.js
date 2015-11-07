@@ -147,9 +147,8 @@ function reloadAndSaveStats() {
 }
 
 function reload() {
-  try {
-    browser.switchTo().alert().accept();
-  } catch (e) {
-    console.log(e);
-  }
+  browser.switchTo().alert().then(
+    function(alert) {alert.accept();},
+    function(err) {console.log(err);}
+  );
 }

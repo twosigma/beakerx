@@ -9,7 +9,7 @@
     "angular-animate": "1.4.7",
     "angular-touch": "1.4.7",
     "angular-mocks": "1.4.7",
-    "d3": "3.5.6",
+    "d3": "3.3.9",
     "lodash": "2.4.1",
     "underscore.string": "2.3.3",
     "codemirror": "5.2.0",

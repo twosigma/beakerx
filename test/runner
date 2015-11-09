@@ -34,9 +34,9 @@ for line in iter(beaker.stdout.readline, ''):
     if line.startswith('Beaker listening on'):
         break
 
-os.system("node memory-tests.js")
-
 result = os.system("./node_modules/protractor/bin/protractor protractorConf.js");
+
+os.system("node memory-tests.js")
 
 beaker.terminate()
 

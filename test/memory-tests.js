@@ -21,15 +21,14 @@ var webdriver = require('./node_modules/drool/node_modules/selenium-webdriver');
 var config = {
   chromeOptions: 'no-sandbox'
 };
-
+var driver;
 if (typeof process.env.chromeBinaryPath !== 'undefined') {
   config.chromeBinaryPath = process.env.chromeBinaryPath;
 }
 
-var driver = drool.start(config);
-var snapshot = [];
-var retryCount = 5;
-var actionCount = 10;
+function instantiateDrool() {
+  return drool.start(config);
+}
 
 function openNotebook() {
   driver.wait(function() {
@@ -98,7 +97,7 @@ function deleteCellOutput() {
   });
 
   waitForElement(function() {
-    return driver.findElement(webdriver.By.xpath('/html/body/ng-view/bk-main-app/div/div[1]/div/bk-notebook/ul/li[4]/a')).click();
+    return driver.findElement(webdriver.By.xpath('/html/body/ng-view/bk-main-app/div/div[1]/div/bk-notebook/ul/li[3]/a')).click();
   });
 }
 
@@ -108,65 +107,47 @@ function evaluateAndRemoveOutputCell() {
 }
 
 function printChange(original, current) {
-  var heapChange = current.jsHeapSizeUsed - original.jsHeapSizeUsed;
-  var nodeChange = current.nodes- original.nodes;
-  var listenerChange = current.jsEventListeners - original.jsEventListeners;
+  var heapChange = current.counts.jsHeapSizeUsed - original.counts.jsHeapSizeUsed;
+  var nodeChange = current.counts.nodes - original.counts.nodes;
+  var listenerChange = current.counts.jsEventListeners - original.counts.jsEventListeners;
 
   console.log('Heap Size Delta:      ' + chalk[heapChange > 0 ? 'red' : 'green'](humanize.filesize(heapChange)));
   console.log('Node Count Delta:     ' + chalk[nodeChange > 0 ? 'red' : 'green'](nodeChange));
   console.log('Event Listener Delta: ' + chalk[listenerChange > 0 ? 'red' : 'green'](listenerChange));
 }
 
-for(var k = 0; k < retryCount; ++k) {
-  driver.get('http://127.0.0.1:8801');
-  openNotebook();
-
-  //prime cache
-  addAndRemoveCell();
-  driver.sleep(1000);
-  drool.getCounts(driver)
-  .then(function(v) {
-    snapshot.push(v);
-    console.log(chalk.bgCyan.bold('Measuring Creating and destroying a code cell ' + actionCount + ' times -- run ' + (this+1)));
-  }.bind(k))
-
-  for(var i = 0; i < actionCount; ++i) {
+drool.flow({
+  repeatCount: 20,
+  setup: function() {
+    driver.get('http://127.0.0.1:8801');
+    openNotebook();
+  },
+  action: function() {
     addAndRemoveCell();
+  },
+  assert: function(after, initial) {
+    printChange(initial, after);
+  },
+  exit: function() {
+    driver.quit();
   }
-
-  driver.sleep(1000);
-  drool.getCounts(driver)
-  .then(function(mem) { printChange(snapshot.pop(), mem); });
-
-  closeNotebook();
-}
-
-for(var k = 0; k < retryCount; ++k) {
-  driver.get('http://127.0.0.1:8801');
-
-  openNotebook();
-
-  //prime cache
-  addCell();
-  enterCode();
-  evaluateAndRemoveOutputCell();
-
-  driver.sleep(1000);
-  drool.getCounts(driver)
-  .then(function(v) {
-    snapshot.push(v);
-    console.log(chalk.bgCyan.bold('Measuring Creating and destroying a output cell ' + actionCount + ' times -- run ' + (this+1)));
-  }.bind(k))
-
-  for(var i = 0; i < actionCount; ++i) {
-    evaluateAndRemoveOutputCell();
-  }
-
-  driver.sleep(1000);
-  drool.getCounts(driver)
-  .then(function(mem) { printChange(snapshot.pop(), mem); });
-
-  closeNotebook();
-}
-
-driver.quit();
+}, driver = instantiateDrool()). then(function() {
+  drool.flow({
+    repeatCount: 20,
+    setup: function() {
+      driver.get('http://127.0.0.1:8801');
+      openNotebook();
+      addCell();
+      enterCode();
+    },
+    action: function() {
+      evaluateAndRemoveOutputCell();
+    },
+    assert: function(after, initial) {
+      printChange(initial, after);
+    },
+    exit: function() {
+      driver.quit();
+    }
+  }, driver = drool.start(config));  
+});

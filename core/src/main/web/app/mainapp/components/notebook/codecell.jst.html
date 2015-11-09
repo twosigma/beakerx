@@ -35,7 +35,7 @@
         </a>
       </div>
     </div>
-    <div ng-if ="hasOutput()" class="code-cell-output" ng-class="{
+    <div ng-if ="displayOutput && hasOutput()" class="code-cell-output" ng-class="{
       'no-output': isHiddenOutput(),
       'input-hidden': cellmodel.input.hidden,
       'output-hidden': cellmodel.output.hidden,

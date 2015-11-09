@@ -27,7 +27,8 @@ var config = {
   specs: [
           'tests/landing-page.js',
           'tests/notebook.js',
-          'tests/language-manager.js'
+          'tests/language-manager.js',
+          'tests/bugs.js'
   ]
 };
 

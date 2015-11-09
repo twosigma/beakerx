@@ -30,7 +30,7 @@
 
     PlotPointLodLoader.prototype.format = function() {
       // create plot type index
-      this.lodTypeIndex =  (this.datacopy.lod_filter) ? this.lodTypes.indexOf(this.datacopy.lod_filter) : 0;
+      this.lodTypeIndex =  (this.datacopy.lod_filter) ? this.lodTypes.indexOf(this.datacopy.lod_filter) : 1;
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
       // create the plotters

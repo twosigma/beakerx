@@ -393,10 +393,14 @@
 
         };
 
+        scope.displayOutput = false;
 
         Scrollin.track(element[0], function() {
           if (scope.cm === undefined) {
-            initCodeMirror();
+            $timeout(function() {
+              initCodeMirror();
+              scope.displayOutput = true;
+            }, 1);
           }
         });
 
@@ -497,7 +501,7 @@
           if (!isCollapsed) {
             $timeout(function() {
               if (scope.cm === undefined) {
-                initCodeMirror();
+                Scrollin.checkForVisibleElements();
               } else {
                 scope.cm.refresh();
               }

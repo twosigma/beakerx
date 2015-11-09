@@ -18,7 +18,6 @@ package com.twosigma.beaker.jvm.serialization;
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
 import com.twosigma.beaker.chart.histogram.Histogram;
-import com.twosigma.beaker.chart.treemap.TreeMap;
 import com.twosigma.beaker.chart.heatmap.HeatMap;
 import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.Plot;
@@ -29,7 +28,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.jtreemap.swing.TreeMapNode;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 
@@ -54,10 +52,6 @@ public class PlotObjectSerializer extends BasicObjectSerializer {
         jgen.writeObject(new CategoryPlot().add((CategoryGraphics) obj));
       } else if (expand && obj instanceof Histogram) {
         jgen.writeObject((Histogram) obj);
-      } else if (expand && obj instanceof TreeMap) {
-        jgen.writeObject((TreeMap) obj);
-      } else if (expand && obj instanceof TreeMapNode) {
-        jgen.writeObject((TreeMapNode) obj);
       } else if (expand && obj instanceof CombinedPlot) {
         jgen.writeObject((CombinedPlot) obj);
       }else if (expand && obj instanceof HeatMap) {

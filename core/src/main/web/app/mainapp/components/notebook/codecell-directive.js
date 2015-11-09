@@ -305,13 +305,6 @@
         };
         scope.scrollTo = function(){
           window.scrollTo(0, element.offset().top - 100);
-          scope.focus();
-        };
-        scope.focus = function() {
-          if (scope.cm === undefined) {
-            initCodeMirror();
-          }
-          scope.cm.focus();
         };
         CodeMirror.on(window, 'resize', resizeHandler);
 
@@ -396,12 +389,10 @@
         scope.displayOutput = false;
 
         Scrollin.track(element[0], function() {
-          if (scope.cm === undefined) {
-            $timeout(function() {
-              initCodeMirror();
-              scope.displayOutput = true;
-            }, 1);
-          }
+          $timeout(function() {
+            initCodeMirror();
+            scope.displayOutput = true;
+          }, 1);
         });
 
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);

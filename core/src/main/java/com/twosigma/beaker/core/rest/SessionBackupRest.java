@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -183,11 +184,15 @@ public class SessionBackupRest {
   @POST
   @Path("close")
   public void close(
-      @FormParam("sessionid") String sessionID) {
+      @FormParam("sessionid") String sessionID,
+      @DefaultValue("false")
+      @FormParam("isElectron") boolean isElectron) {
     this.sessions.remove(sessionID);
 
     refreshFrontend();
-    refreshElectron(sessionID);
+    if (isElectron) {
+      refreshElectron(sessionID);
+    }
   }
 
   @GET

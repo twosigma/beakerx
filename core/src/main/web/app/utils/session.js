@@ -67,7 +67,10 @@
     };
     var closeSession = function(sessionId) {
       var deferred = bkUtils.newDeferred();
-      bkUtils.httpPost(bkUtils.serverUrl('beaker/rest/session-backup/close'), {sessionid: sessionId})
+      bkUtils.httpPost(bkUtils.serverUrl('beaker/rest/session-backup/close'), {
+            sessionid: sessionId,
+            isElectron: bkUtils.isElectron
+          })
           .success(function(ret) {
             deferred.resolve(sessionId);
           })

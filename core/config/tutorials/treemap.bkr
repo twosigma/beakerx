@@ -72,11 +72,11 @@
             },
             "output": {
                 "state": {},
-                "result": "ToolTipBuilder@620c6a74",
+                "result": "ToolTipBuilder@47470948",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 30461,
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 18572,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -130,8 +130,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 10279
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 9028
             },
             "evaluatorReader": true,
             "lineCount": 28
@@ -168,8 +168,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 223
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 875
             },
             "evaluatorReader": true,
             "lineCount": 20
@@ -389,8 +389,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "elapsedTime": 275,
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9"
+                "elapsedTime": 393,
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce"
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -483,7 +483,7 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "Mode.SQUARIFY",
-                    "show_legend": null,
+                    "show_legend": false,
                     "use_tool_tip": true,
                     "legend_position": {
                         "type": "LegendPosition",
@@ -636,8 +636,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 170
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 10132
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -689,7 +689,7 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "Mode.SLICE",
-                    "show_legend": null,
+                    "show_legend": false,
                     "use_tool_tip": true,
                     "legend_position": {
                         "type": "LegendPosition",
@@ -842,8 +842,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 331
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 740
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -895,7 +895,7 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "Mode.DICE",
-                    "show_legend": null,
+                    "show_legend": false,
                     "use_tool_tip": true,
                     "legend_position": {
                         "type": "LegendPosition",
@@ -1048,8 +1048,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 342
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 9927
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -1101,7 +1101,7 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "Mode.SLICE_DIC",
-                    "show_legend": null,
+                    "show_legend": false,
                     "use_tool_tip": true,
                     "legend_position": {
                         "type": "LegendPosition",
@@ -1254,8 +1254,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 238
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 712
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -1360,7 +1360,7 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "Property 'ratio' is 0.5",
-                    "show_legend": null,
+                    "show_legend": false,
                     "use_tool_tip": true,
                     "legend_position": {
                         "type": "LegendPosition",
@@ -1513,8 +1513,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 354
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 5137
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -1576,7 +1576,7 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "ValueAccessor.VALUE",
-                    "show_legend": null,
+                    "show_legend": false,
                     "use_tool_tip": true,
                     "legend_position": {
                         "type": "LegendPosition",
@@ -1728,8 +1728,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 354
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 753
             },
             "evaluatorReader": true,
             "lineCount": 8
@@ -1783,7 +1783,7 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "ValueAccessor.WEIGHT",
-                    "show_legend": null,
+                    "show_legend": false,
                     "use_tool_tip": true,
                     "legend_position": {
                         "type": "LegendPosition",
@@ -1935,8 +1935,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 241
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 528
             },
             "evaluatorReader": true,
             "lineCount": 8
@@ -1997,7 +1997,7 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "Using custom ToolTipBuilder",
-                    "show_legend": null,
+                    "show_legend": false,
                     "use_tool_tip": true,
                     "legend_position": {
                         "type": "LegendPosition",
@@ -2149,8 +2149,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 318
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 385
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -2232,7 +2232,7 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "Default RandomColorProvider",
-                    "show_legend": null,
+                    "show_legend": false,
                     "use_tool_tip": true,
                     "legend_position": {
                         "type": "LegendPosition",
@@ -2384,8 +2384,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 234
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 1421
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -2454,7 +2454,7 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "RandomColorProvider with different colours",
-                    "show_legend": null,
+                    "show_legend": false,
                     "use_tool_tip": true,
                     "legend_position": {
                         "type": "LegendPosition",
@@ -2606,8 +2606,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 241
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 620
             },
             "evaluatorReader": true,
             "lineCount": 23
@@ -2668,7 +2668,7 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "GradientColorProvider with default colours",
-                    "show_legend": null,
+                    "show_legend": false,
                     "use_tool_tip": true,
                     "legend_position": {
                         "type": "LegendPosition",
@@ -2820,8 +2820,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 265
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 674
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -2874,7 +2874,7 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "GradientColorProvider with overrides colours",
-                    "show_legend": null,
+                    "show_legend": false,
                     "use_tool_tip": true,
                     "legend_position": {
                         "type": "LegendPosition",
@@ -3026,8 +3026,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 213
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 429
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -18158,8 +18158,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "7b33870b-03b9-4da4-93be-f3ceeded73d9",
-                "elapsedTime": 256
+                "shellId": "b186e478-85ec-4531-bfbb-9fe933cdf5ce",
+                "elapsedTime": 1220
             },
             "evaluatorReader": true,
             "lineCount": 8

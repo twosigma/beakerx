@@ -84,6 +84,7 @@ public class TreeMap extends Chart {
 
   public TreeMap() {
     setColorProvider(new RandomColorProvider());
+    setShowLegend(false);
   }
 
   /**

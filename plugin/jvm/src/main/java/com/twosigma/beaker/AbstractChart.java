@@ -25,52 +25,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
-public abstract class AbstractChart {
-  private int initWidth = 640;
-  private int initHeight = 480;
-  private String title;
+public abstract class AbstractChart extends Chart {
   private String xLabel;
-  private Boolean showLegend;
-  private boolean useToolTip = true;
   private final YAxis yAxis = new YAxis();
   private final List<YAxis> yAxes = new ArrayList<>();
   private double xLowerMargin = 0.05;
   private double xUpperMargin = 0.05;
   protected TimeZone timeZone;
   private Crosshair crosshair;
-  private LegendPosition legendPosition = new LegendPosition(LegendPosition.Position.TOP_RIGHT);
   private boolean omitCheckboxes = false;
-  private LegendLayout legendLayout = LegendLayout.VERTICAL;
 
   protected AbstractChart() {
     yAxes.add(yAxis);
-  }
-
-  public AbstractChart setInitWidth(int w) {
-    this.initWidth = w;
-    return this;
-  }
-
-  public Integer getInitWidth() {
-    return this.initWidth;
-  }
-
-  public AbstractChart setInitHeight(int h) {
-    this.initHeight = h;
-    return this;
-  }
-
-  public Integer getInitHeight() {
-    return this.initHeight;
-  }
-
-  public AbstractChart setTitle(String title) {
-    this.title = title;
-    return this;
-  }
-
-  public String getTitle() {
-    return this.title;
   }
 
   public AbstractChart setXLabel(String xLabel) {
@@ -99,24 +65,6 @@ public abstract class AbstractChart {
 
   public String getYLabel() {
     return yAxis.getLabel();
-  }
-
-  public AbstractChart setShowLegend(Boolean showLegend) {
-    this.showLegend = showLegend;
-    return this;
-  }
-
-  public Boolean getShowLegend() {
-    return this.showLegend;
-  }
-
-  public AbstractChart setUseToolTip(boolean useToolTip) {
-    this.useToolTip = useToolTip;
-    return this;
-  }
-
-  public Boolean getUseToolTip() {
-    return this.useToolTip;
   }
 
   public AbstractChart add(YAxis yAxis) {
@@ -292,24 +240,6 @@ public abstract class AbstractChart {
 
   public Crosshair getCrosshair() {
     return this.crosshair;
-  }
-
-  public LegendPosition getLegendPosition() {
-    return legendPosition;
-  }
-
-  public AbstractChart setLegendPosition(LegendPosition legendPosition) {
-    this.legendPosition = legendPosition;
-    return this;
-  }
-
-  public LegendLayout getLegendLayout() {
-    return legendLayout;
-  }
-
-  public AbstractChart setLegendLayout(LegendLayout legendLayout) {
-    this.legendLayout = legendLayout;
-    return this;
   }
 
   public Boolean getOmitCheckboxes() {

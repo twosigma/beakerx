@@ -38,10 +38,10 @@
         if (xAxis.axisType === "category") {
           xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
           xAxis.setCategoryNames(model.categoryNames, model.labelsxs);
-        } else if (xAxis.axisType !== "time") {
-          xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
-        } else {
+        } else if (xAxis.axisType === "time" || xAxis.axisType === "nanotime") {
           xAxis.setRange(vrange.xl, vrange.xr, model.timezone);
+        } else {
+          xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
         }
 
         if (xAxisLabel != null) {
@@ -227,8 +227,13 @@
             }
 
             if (item.type === "bar" && ele.x2 == null) {
-              ele.x -= item.width / 2;
-              ele.x2 = ele.x + item.width;
+              if (ele.x instanceof Big) {
+                ele.x = ele.x.minus(item.width / 2);
+                ele.x2 = ele.x.plus(item.width);
+              } else {
+                ele.x -= item.width / 2;
+                ele.x2 = ele.x + item.width;
+              }
             }
             if ((item.type === "area" || item.type === "bar" || item.type === "stem")
               && ele.y2 == null) {
@@ -362,7 +367,11 @@
             if (item.type === "bar" || item.type === "stem" ||
             item.type === "point" || item.type === "text") {
               eles.sort(function(a, b) {
-                return a.x - b.x;
+                if (eles[j].x instanceof Big) {
+                  return a.x.minus(b.x);
+                } else {
+                  return a.x - b.x;
+                }
               });
             } else {
               item.isUnorderedItem = true;
@@ -512,12 +521,23 @@
         if (newmodel.vrange == null) {
           // visible range initially is 10x larger than data range by default
           var getModelRange = function(r){
-            return r ? {
-              xl : r.xl - r.xspan * 10.0,
-              xr : r.xr + r.xspan * 10.0,
-              yl : r.yl - r.yspan * 10.0,
-              yr : r.yr + r.yspan * 10.0
-            } : null;
+            if (r == null) { return null; }
+            var result = {
+              yl: r.yl - r.yspan * 10.0,
+              yr: r.yr + r.yspan * 10.0
+            };
+            if (r.xl instanceof Big) {
+              _.extend(result, {
+                xl: r.xl.minus(r.xspan * 10.0),
+                xr: r.xr.plus(r.xspan * 10.0)
+              });
+            } else {
+              _.extend(result, {
+                xl: r.xl - r.xspan * 10.0,
+                xr: r.xr + r.xspan * 10.0
+              });
+            }
+            return result;
           };
           newmodel.vrange = getModelRange(range);
           newmodel.vrangeR = getModelRange(rangeR);
@@ -535,9 +555,13 @@
           if (focus.yl != null) { vrange.yl = Math.min(focus.yl, vrange.yl); }
           if (focus.yr != null) { vrange.yr = Math.max(focus.yr, vrange.yr); }
 
-          var updateRangeSpan = function(r){
-            if(r){
-              r.xspan = r.xr - r.xl;
+          var updateRangeSpan = function(r) {
+            if (r) {
+              if (r.xr instanceof Big) {
+                r.xspan = r.xr.minus(r.xl);
+              } else {
+                r.xspan = r.xr - r.xl;
+              }
               r.yspan = r.yr - r.yl;
             }
           };

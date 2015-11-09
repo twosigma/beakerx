@@ -2,6 +2,32 @@
     'use strict';
     var retfunc = function(bkUtils) {
     return {
+      max: function(n1, n2){
+        if (n1 instanceof Big || n2 instanceof Big) {
+          if(n1 == -Infinity){
+            return n2;
+          }
+          if(n2 == -Infinity){
+            return n1;
+          }
+          return n1.gt(n2) ? n1 : n2;
+        } else {
+          return Math.max(n1, n2);
+        }
+      },
+      min: function(n1, n2){
+        if (n1 instanceof Big || n2 instanceof Big) {
+          if(n1 == Infinity){
+            return n2;
+          }
+          if(n2 == Infinity){
+            return n1;
+          }
+          return n1.lt(n2) ? n1 : n2;
+        } else {
+          return Math.min(n1, n2);
+        }
+      },
       outsideScr: function(scope, x, y) {
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
         return x < 0 || x > W || y < 0 || y > H;
@@ -11,8 +37,8 @@
         return x > W || x + w < 0 || y > H || y + h < 0;
       },
       updateRange : function(datarange, itemrange) {
-        if (itemrange.xl != null) { datarange.xl = Math.min(datarange.xl, itemrange.xl); }
-        if (itemrange.xr != null) { datarange.xr = Math.max(datarange.xr, itemrange.xr); }
+        if (itemrange.xl != null) { datarange.xl = this.min(datarange.xl, itemrange.xl); }
+        if (itemrange.xr != null) { datarange.xr = this.max(datarange.xr, itemrange.xr); }
         if (itemrange.yl != null) { datarange.yl = Math.min(datarange.yl, itemrange.yl); }
         if (itemrange.yr != null) { datarange.yr = Math.max(datarange.yr, itemrange.yr); }
       },
@@ -42,23 +68,35 @@
           datarange.yr = 1;
         }
 
-        var increaseRange = function(value){
-          return value + (value || 1) / 10;
+        var increaseRange = function(value) {
+          if (value instanceof Big) {
+            return value.plus(value.div(10));
+          } else {
+            return value + (value || 1) / 10;
+          }
         };
         var decreaseRange = function(value){
-          return value - (value || 1) / 10;
+          if (value instanceof Big) {
+            return value.minus(value.div(10));
+          } else {
+            return value - (value || 1) / 10;
+          }
         };
 
-        if(datarange.xl === datarange.xr){
+        if (datarange.xl === datarange.xr || datarange.xl instanceof Big && datarange.xl.eq(datarange.xr)) {
           datarange.xl = decreaseRange(datarange.xl);
           datarange.xr = increaseRange(datarange.xr);
         }
-        if(datarange.yl === datarange.yr) {
+        if (datarange.yl === datarange.yr) {
           datarange.yl = decreaseRange(datarange.yl);
           datarange.yr = increaseRange(datarange.yr);
         }
 
-        datarange.xspan = datarange.xr - datarange.xl;
+        if (datarange.xl instanceof Big) {
+          datarange.xspan = datarange.xr.minus(datarange.xl);
+        } else {
+          datarange.xspan = datarange.xr - datarange.xl;
+        }
         datarange.yspan = datarange.yr - datarange.yl;
         return {
           "datarange" : datarange,
@@ -75,12 +113,22 @@
           yl : model.userFocus.yl,
           yr : model.userFocus.yr
         };
-        if (focus.xl == null) {
-          focus.xl = range.xl - range.xspan * margin.left;
+        if (range.xspan instanceof Big) {
+          if (focus.xl == null) {
+            focus.xl = parseFloat(range.xl.minus(range.xspan).times(margin.left).toString());
+          }
+          if (focus.xr == null) {
+            focus.xr = parseFloat(range.xr.plus(range.xspan).times(margin.right).toString());
+          }
+        } else {
+          if (focus.xl == null) {
+            focus.xl = range.xl - range.xspan * margin.left;
+          }
+          if (focus.xr == null) {
+            focus.xr = range.xr + range.xspan * margin.right;
+          }
         }
-        if (focus.xr == null) {
-          focus.xr = range.xr + range.xspan * margin.right;
-        }
+
         if (focus.yl == null) {
           if (model.yIncludeZero === true) {
             var yl = model.vrange.yspan * range.yl + model.vrange.yl;
@@ -364,6 +412,11 @@
       getTipString : function(val, axis, fixed) {
         if (axis.axisType === "time") {
           return moment(val).tz(axis.axisTimezone).format("YYYY MMM DD ddd, HH:mm:ss .SSS");
+        }
+        if (axis.axisType === "nanotime") {
+          var d = parseFloat(val.div(1000000).toFixed(0));
+          var nanosec = val.mod(1000000000).toFixed(0);
+          return moment(d).tz(axis.axisTimezone).format("YYYY MMM DD ddd, HH:mm:ss") + "." + this.padStr(nanosec, 9);
         }
         if (typeof(val) === "number") {
           if (fixed === true) {
@@ -693,6 +746,12 @@
         labelWidth : 6,
         labelHeight : 12,
         tooltipWidth : 10
+      },
+
+      padStr: function(val, len) {
+        var str = "" + val;
+        while (str.length < len) str = "0" + str;
+        return str;
       }
 
     };

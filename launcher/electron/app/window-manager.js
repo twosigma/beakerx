@@ -49,7 +49,8 @@ module.exports = (function() {
       request.post({
         'url': backendRunner.getUrl() + '/' + backendRunner.getHash() + '/beaker/rest/session-backup/close',
         'form': {
-          'sessionid': oldSession
+          'sessionid': oldSession,
+          'isElectron': true
         }
       });
     }

@@ -51,7 +51,7 @@ var BeakerPageObject = function() {
   this.openFile = function(path) {
     this.openMenuAtIndex(0);
 
-    browser.sleep(700); // mouseMove happens too fast and the menu doesnt display sometimes. Couldn't find a better solution.
+    browser.sleep(1000); // mouseMove happens too fast and the menu doesnt display sometimes. Couldn't find a better solution.
     browser.actions().mouseMove(element(by.css('#open-menuitem'))).perform();
 
     element(by.css('a[title="Open a bkr notebook file"]')).click();

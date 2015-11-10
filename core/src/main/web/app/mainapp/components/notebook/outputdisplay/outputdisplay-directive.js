@@ -42,7 +42,7 @@
           }
           childScope = scope.$new();
           childScope.model = scope.model;
-          var lodT = (bkHelper.getBkNotebookViewModel() === undefined || bkHelper.getBkNotebookViewModel().getLodThreshold() === "") ? 1500 : bkHelper.getBkNotebookViewModel().getLodThreshold();
+          var lodT = (bkHelper.getBkNotebookViewModel() === undefined || bkHelper.getBkNotebookViewModel().getLodThreshold() === "") ? 5000 : bkHelper.getBkNotebookViewModel().getLodThreshold();
           childScope.prefs = {
               lodThreshold : lodT
           };

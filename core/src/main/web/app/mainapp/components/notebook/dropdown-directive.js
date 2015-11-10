@@ -18,14 +18,14 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('closeDropdownOnMouseout', function() {
+  module.directive('dropdown', function() {
     return {
       restrict: 'A',
       link: function(scope, element) {
         var dropdownButton = element.children('button');
+        var menu = element.children('.dropdown-menu')
         element.on('mouseleave', function() {$(document).trigger('click.bs.dropdown.data-api');});
-        dropdownButton.on('click', function() {element.dropdown('toggle')});
-
+        dropdownButton.on('click', function() {menu.dropdown();});
         scope.$on('$destroy', function() {element.off(); dropdownButton.off();});
       }
     };

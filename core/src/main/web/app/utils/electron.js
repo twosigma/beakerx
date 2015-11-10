@@ -169,6 +169,8 @@
               // Process submenu
               if (Array.isArray(bkItem.items)) {
                 newItem.submenu = makeMenu(bkItem.items);
+              } else if (_.isFunction(bkItem.items)) {
+                newItem.submenu = makeMenu(bkItem.items());
               }
               if (bkItem.index !== undefined) {
                 menu[bkItem.index] = newItem;

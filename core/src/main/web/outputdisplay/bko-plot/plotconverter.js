@@ -225,6 +225,7 @@
       "CategoryArea" : "area",
       "CategoryText" : "text",
       "CategoryPoints" : "point",
+      "TreeMapNode" : "treemapnode",
       "" : ""
     };
     var lineStyleMap = {
@@ -255,7 +256,98 @@
       pointShapeMap : pointShapeMap,
       interpolationMap : interpolationMap,
 
+      convertTreeMapGroovyData: function (newmodel, model) {
+
+        newmodel.process = process;
+
+        function findParent(node) {
+          var data = model.children;
+          for (var i = 0; i < data.length; i++) {
+            var _node_ = data[i];
+            var _parent_ = _findParent_(_node_, node);
+            if (_parent_)
+              return _parent_;
+          }
+
+          return null;
+        }
+
+        function _findParent_(parent, node) {
+          if (parent.children) {
+            for (var i = 0; i < parent.children.length; i++) {
+              var child = parent.children[i];
+              if (child == node)
+                return parent;
+
+              var _parent_ = _findParent_(parent.children[i], node);
+              if (_parent_)
+                return _parent_;
+            }
+          }
+
+          return null;
+        }
+
+        function _treatNode_(node, visitor) {
+          visitor.visit(node);
+          if (node.children) {
+            for (var i = 0; i < node.children.length; i++) {
+              _treatNode_(node.children[i], visitor);
+            }
+          }
+        }
+
+        var visitor = {
+          i: 0,
+          visit: function (node) {
+            node.showItem = true;
+            node.setShowItem = setShowItem;
+            node.type = dataTypeMap[node.type];
+
+            node.index = this.i;
+            node.id = "i" + this.i;
+
+            this.i = this.i + 1;
+            node.showItem = true;
+
+            if (!node.children){
+              node.legend = node.label;
+            }
+
+            newmodel.data.push(node)
+          }
+        };
+
+        function setShowItem(showItem, skipChildren) {
+          this.showItem = showItem;
+
+          if (!skipChildren && this.children) {
+            for (var i = 0; i < this.children.length; i++) {
+              this.children[i].setShowItem(showItem);
+            }
+          }
+
+          if (showItem === true) {
+            var _parent_ = findParent(this);
+            if (_parent_) {
+              _parent_.setShowItem(true, true);
+            }
+          }
+        }
+
+        var item = model.graphics_list;
+        function process(visitor) {
+          _treatNode_(item, visitor);
+        }
+        item.root = true;
+        process(visitor);
+      },
+
       convertGroovyData : function(newmodel, model) {
+        if ( model.type === 'TreeMap'){
+          this.convertTreeMapGroovyData(newmodel, model);
+          return;
+        }
         var logx = false, logxb;
         var yAxisSettings = {yIncludeZero: false, logy: false, logyb: null};
         var yAxisRSettings = _.clone(yAxisSettings);

@@ -277,9 +277,9 @@
         tip.title = this.legend;
       }
       if (model.orientation === 'HORIZONTAL'){
-        tip.value = plotUtils.getTipString(ele._x2 - ele._x, xAxis, true);
+        tip.value = plotUtils.getTipString(plotUtils.minus(ele._x2, ele._x), xAxis, true);
       }else{
-        tip.x = plotUtils.getTipString((ele._x + ele._x2) / 2, xAxis, true);
+        tip.x = plotUtils.getTipString(plotUtils.div(plotUtils.plus(ele._x, ele._x2), 2), xAxis, true);
         tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
         tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
       }

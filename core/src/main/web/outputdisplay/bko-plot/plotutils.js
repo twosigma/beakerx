@@ -2,32 +2,6 @@
     'use strict';
     var retfunc = function(bkUtils) {
     return {
-      max: function(n1, n2){
-        if (n1 instanceof Big || n2 instanceof Big) {
-          if(n1 == -Infinity){
-            return n2;
-          }
-          if(n2 == -Infinity){
-            return n1;
-          }
-          return n1.gt(n2) ? n1 : n2;
-        } else {
-          return Math.max(n1, n2);
-        }
-      },
-      min: function(n1, n2){
-        if (n1 instanceof Big || n2 instanceof Big) {
-          if(n1 == Infinity){
-            return n2;
-          }
-          if(n2 == Infinity){
-            return n1;
-          }
-          return n1.lt(n2) ? n1 : n2;
-        } else {
-          return Math.min(n1, n2);
-        }
-      },
       outsideScr: function(scope, x, y) {
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
         return x < 0 || x > W || y < 0 || y > H;
@@ -69,21 +43,13 @@
         }
 
         var increaseRange = function(value) {
-          if (value instanceof Big) {
-            return value.plus(value.div(10));
-          } else {
-            return value + (value || 1) / 10;
-          }
+          return this.plus(value, this.div((value || 1), 10));
         };
         var decreaseRange = function(value){
-          if (value instanceof Big) {
-            return value.minus(value.div(10));
-          } else {
-            return value - (value || 1) / 10;
-          }
+          return this.minus(value, this.div((value || 1), 10));
         };
 
-        if (datarange.xl === datarange.xr || datarange.xl instanceof Big && datarange.xl.eq(datarange.xr)) {
+        if (this.eq(datarange.xl, datarange.xr)) {
           datarange.xl = decreaseRange(datarange.xl);
           datarange.xr = increaseRange(datarange.xr);
         }
@@ -92,11 +58,7 @@
           datarange.yr = increaseRange(datarange.yr);
         }
 
-        if (datarange.xl instanceof Big) {
-          datarange.xspan = datarange.xr.minus(datarange.xl);
-        } else {
-          datarange.xspan = datarange.xr - datarange.xl;
-        }
+        datarange.xspan = this.minus(datarange.xr, datarange.xl);
         datarange.yspan = datarange.yr - datarange.yl;
         return {
           "datarange" : datarange,
@@ -113,20 +75,18 @@
           yl : model.userFocus.yl,
           yr : model.userFocus.yr
         };
-        if (range.xspan instanceof Big) {
-          if (focus.xl == null) {
-            focus.xl = parseFloat(range.xl.minus(range.xspan).times(margin.left).toString());
-          }
-          if (focus.xr == null) {
-            focus.xr = parseFloat(range.xr.plus(range.xspan).times(margin.right).toString());
-          }
-        } else {
-          if (focus.xl == null) {
-            focus.xl = range.xl - range.xspan * margin.left;
-          }
-          if (focus.xr == null) {
-            focus.xr = range.xr + range.xspan * margin.right;
-          }
+
+        if (focus.xl == null) {
+          focus.xl = this.minus(range.xl, this.mult(range.xspan, margin.left));
+        }
+        if (focus.xr == null) {
+          focus.xr = this.plus(range.xr, this.mult(range.xspan, margin.right));
+        }
+        if (focus.xl instanceof Big) {
+          focus.xl = parseFloat(focus.xl.toString());
+        }
+        if (focus.xr instanceof Big) {
+          focus.xr = parseFloat(focus.xr.toString());
         }
 
         if (focus.yl == null) {
@@ -749,11 +709,70 @@
       },
 
       padStr: function(val, len) {
-        var str = "" + val;
+        var str = "" + Math.abs(val);
         while (str.length < len) str = "0" + str;
         return str;
-      }
+      },
 
+      max: function(n1, n2){
+        if (n1 instanceof Big || n2 instanceof Big) {
+          if(n1 == -Infinity){
+            return n2;
+          }
+          if(n2 == -Infinity){
+            return n1;
+          }
+          return n1.gt(n2) ? n1 : n2;
+        } else {
+          return Math.max(n1, n2);
+        }
+      },
+      min: function(n1, n2){
+        if (n1 instanceof Big || n2 instanceof Big) {
+          if(n1 == Infinity){
+            return n2;
+          }
+          if(n2 == Infinity){
+            return n1;
+          }
+          return n1.lt(n2) ? n1 : n2;
+        } else {
+          return Math.min(n1, n2);
+        }
+      },
+
+      eq: function(n1, n2){
+        return n1 instanceof Big ? n1.eq(n2) : n1 === n2;
+      },
+
+      lt: function(n1, n2){
+        return n1 instanceof Big ? n1.lt(n2) : n1 < n2;
+      },
+
+      lte: function(n1, n2){
+        return n1 instanceof Big ? n1.lte(n2) : n1 <= n2;
+      },
+
+      gt: function(n1, n2){
+        return n1 instanceof Big ? n1.gt(n2) : n1 > n2;
+      },
+
+      gte: function(n1, n2){
+        return n1 instanceof Big ? n1.gte(n2) : n1 >= n2;
+      },
+
+      plus: function(n1, n2){
+        return n1 instanceof Big ? n1.plus(n2) : n1 + n2;
+      },
+      minus: function(n1, n2){
+        return n1 instanceof Big ? n1.minus(n2) : n1 - n2;
+      },
+      mult: function(n1, n2){
+        return n1 instanceof Big ? n1.times(n2) : n1 * n2;
+      },
+      div: function(n1, n2){
+        return n1 instanceof Big ? n1.div(n2) : n1 / n2;
+      }
     };
   };
   beaker.bkoFactory('plotUtils', ["bkUtils", retfunc]);

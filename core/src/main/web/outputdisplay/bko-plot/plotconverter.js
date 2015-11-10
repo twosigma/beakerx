@@ -206,13 +206,8 @@
       }
 
       if (item.type === "bar" && item.widths != null) {
-        if (ele.x instanceof Big) {
-          ele.x = ele.x.minus(item.widths[j] / 2)
-          ele.x2 = ele.x.plus(item.widths[j]);
-        } else {
-          ele.x -= item.widths[j] / 2;
-          ele.x2 = ele.x + item.widths[j];
-        }
+        ele.x = plotUtils.minus(ele.x, item.widths[j] / 2);
+        ele.x2 = plotUtils.plus(ele.x, item.widths[j]);
       }
       return true;
     };
@@ -617,6 +612,12 @@
               "color" : mtext.color != null ? mtext.color : "black",
               "elements" : []
             };
+            var x = mtext.x;
+            if (model.type === 'NanoPlot') {
+              if (_.isEmpty(x)) { continue; }
+              var bigv = new Big(x);
+              mtext.x = bigv;
+            }
             var ele = {
               "x" : mtext.x,
               "y" : mtext.y,

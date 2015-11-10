@@ -227,13 +227,8 @@
             }
 
             if (item.type === "bar" && ele.x2 == null) {
-              if (ele.x instanceof Big) {
-                ele.x = ele.x.minus(item.width / 2);
-                ele.x2 = ele.x.plus(item.width);
-              } else {
-                ele.x -= item.width / 2;
-                ele.x2 = ele.x + item.width;
-              }
+              ele.x = plotUtils.minus(ele.x, item.width / 2);
+              ele.x2 = plotUtils.plus(ele.x, item.width);
             }
             if ((item.type === "area" || item.type === "bar" || item.type === "stem")
               && ele.y2 == null) {
@@ -358,7 +353,7 @@
           var eles = item.elements;
           var unordered = false;
           for (var j = 1; j < eles.length; j++) {
-            if (eles[j].x < eles[j - 1].x) {
+            if (plotUtils.lt(eles[j].x, eles[j - 1].x)) {
               unordered = true;
               break;
             }
@@ -367,11 +362,7 @@
             if (item.type === "bar" || item.type === "stem" ||
             item.type === "point" || item.type === "text") {
               eles.sort(function(a, b) {
-                if (eles[j].x instanceof Big) {
-                  return a.x.minus(b.x);
-                } else {
-                  return a.x - b.x;
-                }
+                plotUtils.minus(a.x, b.x);
               });
             } else {
               item.isUnorderedItem = true;
@@ -521,23 +512,12 @@
         if (newmodel.vrange == null) {
           // visible range initially is 10x larger than data range by default
           var getModelRange = function(r){
-            if (r == null) { return null; }
-            var result = {
+            return r ? {
+              xl: plotUtils.minus(r.xl, r.xspan * 10.0),
+              xr: plotUtils.plus(r.xr, r.xspan * 10.0),
               yl: r.yl - r.yspan * 10.0,
               yr: r.yr + r.yspan * 10.0
-            };
-            if (r.xl instanceof Big) {
-              _.extend(result, {
-                xl: r.xl.minus(r.xspan * 10.0),
-                xr: r.xr.plus(r.xspan * 10.0)
-              });
-            } else {
-              _.extend(result, {
-                xl: r.xl - r.xspan * 10.0,
-                xr: r.xr + r.xspan * 10.0
-              });
-            }
-            return result;
+            } : null;
           };
           newmodel.vrange = getModelRange(range);
           newmodel.vrangeR = getModelRange(rangeR);
@@ -557,11 +537,7 @@
 
           var updateRangeSpan = function(r) {
             if (r) {
-              if (r.xr instanceof Big) {
-                r.xspan = r.xr.minus(r.xl);
-              } else {
-                r.xspan = r.xr - r.xl;
-              }
+              r.xspan = plotUtils.minus(r.xr, r.xl);
               r.yspan = r.yr - r.yl;
             }
           };

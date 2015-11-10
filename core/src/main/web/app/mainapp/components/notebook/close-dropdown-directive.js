@@ -22,9 +22,11 @@
     return {
       restrict: 'A',
       link: function(scope, element) {
+        var dropdownButton = element.children('button');
         element.on('mouseleave', function() {$(document).trigger('click.bs.dropdown.data-api');});
+        dropdownButton.on('click', function() {element.dropdown('toggle')});
 
-        scope.$on('$destroy', function() {element.off();});
+        scope.$on('$destroy', function() {element.off(); dropdownButton.off();});
       }
     };
   });

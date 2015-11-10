@@ -66,7 +66,7 @@ describe('Code Cell', function() {
     done();
   });
 
-  fit('can handle escaping $ in markdown', function(done) {
+  it('can handle escaping $ in markdown', function(done) {
     beakerPO.createMarkdownCell('hello world \\$').then(function() {
       return beakerPO.readMarkdownCell();
     }.bind(this))

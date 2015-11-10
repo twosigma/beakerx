@@ -280,6 +280,13 @@
           return false;
         }
       },
+      renameNotebookTo: function(notebookUri, uriType) {
+        if (getCurrentApp() && getCurrentApp().renameNotebookTo) {
+          return getCurrentApp().renameNotebookTo(notebookUri, uriType);
+        } else {
+          return false;
+        }
+      },
       hasCodeCell: function(toEval) {
         if (getCurrentApp() && getCurrentApp().evaluate) {
           return getCurrentApp().hasCodeCell(toEval);

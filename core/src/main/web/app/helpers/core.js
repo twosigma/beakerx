@@ -192,6 +192,9 @@
       save: function(uri, contentAsString, overwrite) {
         return bkUtils.saveFile(uri, contentAsString, overwrite);
       },
+      rename: function(oldUri, newUri, overwrite) {
+        return bkUtils.renameFile(oldUri, newUri, overwrite);
+      },
       showFileChooser: function(initUri) {
         return bkCoreManager.showDefaultSavingFileChooser(initUri);
       }

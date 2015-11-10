@@ -539,6 +539,56 @@
               }
             });
           };
+
+          var _renamePromptIfOverwrite = function(deferred, uri, uriType) {
+            var fileSaver = bkCoreManager.getFileSaver(uriType);
+            bkSessionManager.dumpDisplayStatus();
+            var oldPath = bkSessionManager.getNotebookPath();
+            $timeout(function() {
+              return fileSaver.rename(oldPath, uri, false);
+            }, 1).then(function() {
+              deferred.resolve({uri: uri, uriType: uriType}); // file rename succeed
+            }, function (reason) {
+              if (reason === "exists") {
+                promptIfOverwrite(uri).then(function () {
+                  fileSaver.rename(oldPath, uri, true).then(function() {
+                    deferred.resolve({uri: uri, uriType: uriType}); // file rename succeed
+                  }, function(reason) {
+                    deferred.reject(reason); // file rename failed
+                  });
+                }, function() {
+                  _renamePromptUriChooser(deferred, uriType, uri);
+                });
+              } else if (reason === "isDirectory") {
+                bkCoreManager.show1ButtonModal(
+                        uri + " is a directory. Please choose a different location",
+                    "Rename Failed",
+                    function () {
+                      _renamePromptUriChooser(deferred, uriType, uri);
+                    });
+              } else if (reason !== "cancelled"){
+                console.log(reason);
+                bkCoreManager.show1ButtonModal(
+                        "Error renaming to " + uri,
+                    "Rename Failed",
+                    function () {
+                      _renamePromptUriChooser(deferred, uriType, uri);
+                    });
+              }
+              else {
+                deferred.reject(reason); // file rename failed
+              }
+            });
+          };
+
+          var _renamePromptUriChooser = function(deferred, uriType, initUri) {
+            promptUriChooser(uriType, initUri).then(function(ret) {
+              _renamePromptIfOverwrite(deferred, ret.uri, ret.uriType);
+            }, function() {
+              deferred.reject("cancelled"); // file rename cancelled
+            });
+          };
+
           var _savePromptUriChooser = function(deferred, uriType, initUri) {
             promptUriChooser(uriType, initUri).then(function(ret) {
               _savePromptIfOverwrite(deferred, ret.uri, ret.uriType);
@@ -550,6 +600,12 @@
           var savePromptChooseUri = function() {
             var deferred = bkUtils.newDeferred();
             _savePromptUriChooser(deferred);
+            return deferred.promise;
+          };
+
+          var renamePromptIfOverwrite = function(uri, uriType) {
+            var deferred = bkUtils.newDeferred();
+            _renamePromptIfOverwrite(deferred, uri, uriType);
             return deferred.promise;
           };
 
@@ -585,6 +641,22 @@
             } else {
               bkCoreManager.show1ButtonModal(msg, "Save Failed");
               showTransientStatusMessage("Save Failed");
+            }
+          };
+
+          var renameDone = function(ret) {
+            bkSessionManager.setNotebookModelEdited(false);
+            bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
+            updateSessionStore(ret.uri, ret.uriType);
+            showTransientStatusMessage("Renamed");
+          };
+
+          var renameFailed = function (msg) {
+            if (msg === "cancelled") {
+              showTransientStatusMessage("Cancelled");
+            } else {
+              bkCoreManager.show1ButtonModal(msg, "Rename Failed");
+              showTransientStatusMessage("Rename Failed");
             }
           };
 
@@ -717,6 +789,14 @@
                 }
               }
               return thenable.then(saveDone, saveFailed);
+            },
+            renameNotebookTo: function(notebookUri, uriType) {
+              if (_.isEmpty(notebookUri)) {
+                console.error("cannot rename notebook, notebookUri is empty");
+                return;
+              }
+              showLoadingStatusMessage("Renaming");
+              return renamePromptIfOverwrite(notebookUri, uriType).then(renameDone, renameFailed);
             },
             saveNotebookAs: function(notebookUri, uriType) {
               if (_.isEmpty(notebookUri)) {
@@ -1223,9 +1303,17 @@
           }
         };
 
+        $scope.renameNotebook = function() {
+          bkHelper.showDefaultSavingFileChooser().then(function(ret) {
+            if (ret.uri) {
+              return bkHelper.renameNotebookTo(ret.uri, ret.uriType);
+            }
+          });
+        };
+
         $scope.getElectronMode = function() {
           return bkUtils.isElectron;
-        }
+        };
 
         $scope.filename = function() {
           return bkSessionManager.getNotebookTitle();

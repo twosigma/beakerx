@@ -16,6 +16,15 @@
 
 var BeakerPageObject = require('./beaker.po.js');
 var path = require('path');
+var beakerPO;
+
+function loadGroovy() {
+  beakerPO.notebookMenu.click();
+  beakerPO.languageManagerMenuItem.click();
+  beakerPO.languageManagerButton('Groovy').click();
+  beakerPO.waitForPlugin('Groovy');
+  beakerPO.languageManagerCloseButton.click();
+}
 
 describe('Code Cell', function() {
   beforeEach(function() {
@@ -24,16 +33,6 @@ describe('Code Cell', function() {
     browser.waitForAngular();
 
     beakerPO.newEmptyNotebook.click();
-    beakerPO.insertCellButton.click();
-    // load Groovy
-    beakerPO.notebookMenu.click();
-    beakerPO.languageManagerMenuItem.click();
-    beakerPO.languageManagerButton('Groovy').click();
-    beakerPO.waitForPlugin('Groovy');
-    beakerPO.languageManagerCloseButton.click();
-
-    beakerPO.cellEvaluatorMenu.click();
-    beakerPO.cellEvaluatorMenuItem('Groovy').click();
   });
 
   afterEach(function() {
@@ -41,11 +40,22 @@ describe('Code Cell', function() {
   });
 
   it('can set a cell language to Groovy', function(done) {
+    beakerPO.insertCellButton.click();
+    loadGroovy();
+
+    beakerPO.cellEvaluatorMenu.click();
+    beakerPO.cellEvaluatorMenuItem('Groovy').click();
     expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual('Groovy');
     done();
   });
 
   it('can hide the input', function(done) {
+    beakerPO.insertCellButton.click();
+    loadGroovy();
+
+    beakerPO.cellEvaluatorMenu.click();
+    beakerPO.cellEvaluatorMenuItem('Groovy').click();
+
     var cell = beakerPO.codeCell(0);
 
     cell.toggleInput().click();
@@ -55,48 +65,38 @@ describe('Code Cell', function() {
     expect(cell.miniCellStatus().isDisplayed()).toBe(true);
     done();
   });
-});
 
-it('can handle escaping $ in markdown', function(done) {
-  beakerPO.newEmptyNotebook.click()
-  .then(function() {
-    return beakerPO.createMarkdownCell('hello world \\$');
-  })
-  .then(function() {
-    return beakerPO.readMarkdownCell();
-  }.bind(this))
-  .then(function(txt) {
-    expect(txt).toEqual('hello world $');
-  })
-  .then(beakerPO.closeNotebook)
-  .then(done);
-});
+  fit('can handle escaping $ in markdown', function(done) {
+    beakerPO.createMarkdownCell('hello world \\$').then(function() {
+      return beakerPO.readMarkdownCell();
+    }.bind(this))
+    .then(function(txt) {
+      expect(txt).toEqual('hello world $');
+    }).then(done);
+  });
 
-it('can open a cells language menu in advanced mode', function(done) {
-  beakerPO.newEmptyNotebook.click()
-  .then(beakerPO.insertCellButton.click)
-  .then(beakerPO.toggleAdvancedMode)
-  .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 1}))
-  .then(beakerPO.isLanguageCellMenuOpen)
-  .then(function(isOpen) {
-    expect(isOpen).toEqual(true);
-  })
-  .then(beakerPO.toggleAdvancedMode)
-  .then(beakerPO.closeNotebook)
-  .then(done);
-});
+  it('can open a cells language menu in advanced mode', function(done) {
+    beakerPO.insertCellButton.click()
+    .then(beakerPO.toggleAdvancedMode)
+    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 1}))
+    .then(beakerPO.isLanguageCellMenuOpen)
+    .then(function(isOpen) {
+      expect(isOpen).toEqual(true);
+    })
+    .then(beakerPO.toggleAdvancedMode)
+    .then(done);
+  });
 
-it('can close a cell language menu by clicking off', function(done) {
-  beakerPO.newEmptyNotebook.click()
-  .then(beakerPO.insertCellButton.click)
-  .then(beakerPO.toggleAdvancedMode)
-  .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 1}))
-  .then(element(by.css('body')).click)
-  .then(beakerPO.isLanguageCellMenuOpen)
-  .then(function(isOpen) {
-    expect(isOpen).toEqual(false);
-  })
-  .then(beakerPO.toggleAdvancedMode)
-  .then(beakerPO.closeNotebook)
-  .then(done);
+  it('can close a cell language menu by clicking off', function(done) {
+    beakerPO.insertCellButton.click()
+    .then(beakerPO.toggleAdvancedMode)
+    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 1}))
+    .then(element(by.css('body')).click)
+    .then(beakerPO.isLanguageCellMenuOpen)
+    .then(function(isOpen) {
+      expect(isOpen).toEqual(false);
+    })
+    .then(beakerPO.toggleAdvancedMode)
+    .then(done);
+  });
 });

@@ -118,7 +118,7 @@ var BeakerPageObject = function() {
   };
 
   this.createMarkdownCell = function(text) {
-    element(by.css('bk-new-cell-menu .dropdown-toggle'))
+    return element(by.css('bk-new-cell-menu .dropdown-toggle'))
     .click()
     .then(function() {
       return element(by.css('.insert-text'));

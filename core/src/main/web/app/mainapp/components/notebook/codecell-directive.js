@@ -483,7 +483,7 @@
                 if (currentLine !== cm.lastLine()) {
                   cm.setCursor(currentLine + 1, 0);
                 } else {
-                  codeMirrorOptions.goToNextCell(cm);
+                  codeMirrorOptions.goToNextCodeCell(cm);
                 }
               }
             })

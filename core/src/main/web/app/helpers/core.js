@@ -752,7 +752,7 @@
           lineNumbers: true,
           matchBrackets: true,
           extraKeys: keys,
-          goToNextCell: moveFocusDown,
+          goToNextCodeCell: goToNextCodeCell,
           scrollbarStyle: "simple"
         };
       },

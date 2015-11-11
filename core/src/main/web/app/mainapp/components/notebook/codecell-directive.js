@@ -395,6 +395,10 @@
           }, 1);
         });
 
+        scope.focus = function() {
+          scope.cm.focus();
+        };
+
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
 
         // cellmodel.body --> CodeMirror

@@ -164,10 +164,10 @@ define(function(require, exports, module) {
           return deferred.promise;
         }
 
-        var self = this;
-        var kernel = kernels[self.settings.shellID];
-        var finalStuff = undefined;
-        var outputUpdate;
+        var self = this,
+          kernel = kernels[self.settings.shellID],
+          finalStuff = undefined;
+
         bkHelper.setupProgressOutput(modelOutput);
         gotError = false;
         kernel.appendToWidgetOutput = false;
@@ -180,7 +180,7 @@ define(function(require, exports, module) {
         };
 
         var doFinish = function() {
-          console.log("DO FINISH", finalStuff);
+          //console.log("DO FINISH", finalStuff);
           if (!finalStuff) return;
 
           if (bkHelper.receiveEvaluationUpdate(modelOutput, finalStuff, PLUGIN_NAME, self.settings.shellID)) {
@@ -235,7 +235,7 @@ define(function(require, exports, module) {
             proceed = true;
           }
 
-          console.log("execute_reply");
+          //console.log("execute_reply");
           finalStuff.status = (msg.status === "error") ? "ERROR" : "FINISHED";
 
           if (!_.isEmpty(result) && !finalStuff.payload) {
@@ -260,7 +260,7 @@ define(function(require, exports, module) {
           // this is called to write output
           type = (ipyVersion == '1') ? a0 : a0.msg_type;
           content =  (ipyVersion == '1') ? a1 : a0.content;
-          console.log('MESSAGE TYPE', type, finalStuff);
+          //console.log('MESSAGE TYPE', type, finalStuff);
 
           var evaluation = {};
           evaluation.status = "RUNNING";
@@ -308,7 +308,7 @@ define(function(require, exports, module) {
               jsonres = JSON.parse(content.data['application/json']);
             }
             if (jsonres && jsonres.type) {
-              if (finalStuff !== undefined && finalStuff.payload !== undefined) {
+              if (finalStuff && finalStuff.payload) {
                 // if we already received an output we should append this output to it
                 var temp = finalStuff.payload;
                 if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
@@ -354,17 +354,17 @@ define(function(require, exports, module) {
               } else if (ipyVersion == '2') {
                 oa.append_mime_type(content.data, elem);
               } else {
-                console.log("1 - appending contnent to the OA...", content);
+                //console.log("1 - appending contnent to the OA...", content);
                 oa.append_mime_type(content, elem);
               }
 
-              //content after appending, but not yet in finalStuff
+              //content after appending, but not yet assigned to finalStuff
               var payload = elem.html();
 
               if (finalStuff && finalStuff.payload) {
                 // if we already received an output we should append this output to it
                 var temp = finalStuff.payload;
-                console.log('2 - appending payload to the finalStuff...');
+                //console.log('2 - appending payload to the finalStuff...');
 
                 if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
                   temp.items.push(payload);
@@ -394,8 +394,6 @@ define(function(require, exports, module) {
             finalStuff.outputdata = evaluation.outputdata || finalStuff.outputdata;
           } else {
             finalStuff = evaluation;
-            //proceed = false;
-            //bkHelper.timeout(doFinish,150);
           }
 
           //localDeferred.resolve(proceed);
@@ -403,20 +401,12 @@ define(function(require, exports, module) {
           bkHelper.timeout(doFinish, 150);
         };
 
-        var outputCB = function (a0, a1) {
-          output(a0, a1);
-        };
-
-        var shellCB = function(msg) {
-          execute_reply(msg);
-        };
-
         var callbacks = (ipyVersion == '1') ? {
-          execute_reply: shellCB,
-          output: outputCB
+          execute_reply: execute_reply,
+          output: output
         } : {
-          shell: {reply: shellCB},
-          iopub: {output: outputCB}
+          shell: {reply: execute_reply},
+          iopub: {output: output}
         };
         kernel.execute(code, callbacks, {silent: false});
         return deferred.promise;

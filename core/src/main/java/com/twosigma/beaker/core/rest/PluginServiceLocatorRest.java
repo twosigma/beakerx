@@ -44,6 +44,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -599,11 +600,19 @@ public class PluginServiceLocatorRest {
     // but it would be nice if there were a way to make this explicit. XXX
     bw.write("print(passwd('" + password + "'))\n");
     bw.close();
-    String hash = br.readLine();
-    if (null == hash) {
-      throw new RuntimeException("unable to get IPython hash");
+
+    Object[] array = br.lines().filter(new Predicate<String>() {
+      @Override
+      public boolean test(String s) {
+        return s.contains("sha1:");
+      }
+    }).toArray();
+
+    if (array.length == 1) {
+      String s = (String) array[0];
+      return s.substring(s.indexOf("sha1:"));
     }
-    return hash;
+    throw new RuntimeException("unable to get IPython hash");
   }
 
   private void generateIPythonConfig(String pluginId, int port, String password, String command)

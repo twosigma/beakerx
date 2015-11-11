@@ -24,7 +24,7 @@ if len(sys.argv) > 1:
     if arg1 == "--version":
         os.execlp("ipython", "ipython", "--version")
     elif arg1 == "--hash":
-        os.execlp("python", "python")
+        os.execlp("ipython", "ipython")
     elif arg1 == "--profile":
         ver = subprocess.check_output(["ipython", "ipython", "--version"])
         if (ver.startswith("2.") or ver.startswith("1.")):
@@ -39,7 +39,7 @@ if len(sys.argv) > 1:
 
 plugin_dir = os.path.dirname(sys.argv[0])
 if os.name == 'nt':
-    subprocess.call(["python", plugin_dir+"/juliaPluginStart.py"], shell=True)
+    subprocess.call(["ipython", plugin_dir+"/juliaPluginStart.py"], shell=True)
 else:
-    os.execlp("python", "python", plugin_dir+"/juliaPluginStart.py")
+    os.execlp("ipython", "ipython", plugin_dir+"/juliaPluginStart.py")
 

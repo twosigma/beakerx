@@ -625,8 +625,8 @@
       setFileSaver: function(uriType, fileSaver) {
         return bkCoreManager.setFileSaver(uriType, fileSaver);
       },
-      showDefaultSavingFileChooser: function() {
-        return bkCoreManager.showDefaultSavingFileChooser();
+      showDefaultSavingFileChooser: function(initPath, saveButtonTitle) {
+        return bkCoreManager.showDefaultSavingFileChooser(initPath, saveButtonTitle);
       },
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();

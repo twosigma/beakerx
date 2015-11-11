@@ -363,7 +363,7 @@
         $sessionStorage.importedNotebook = notebook;
         $location.path("/session/import").search({});
       },
-      showDefaultSavingFileChooser: function(initPath) {
+      showDefaultSavingFileChooser: function(initPath, saveButtonTitle) {
         var self = this;
         var deferred = bkUtils.newDeferred();
         var requests = [bkUtils.getHomeDirectory(), bkUtils.getStartUpDirectory(),
@@ -414,7 +414,11 @@
             return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');
           };
           fileChooserStrategy.treeViewfs.applyExtFilter = false;
-          var fileChooserTemplate = JST['template/savenotebook']({homedir: homeDir });
+          saveButtonTitle = saveButtonTitle || "Save";
+          var fileChooserTemplate = JST['template/savenotebook']({
+            homedir: homeDir,
+            saveButtonTitle: saveButtonTitle
+          });
           var fileChooserResultHandler = function (chosenFilePath) {
             deferred.resolve({
               uri: chosenFilePath,

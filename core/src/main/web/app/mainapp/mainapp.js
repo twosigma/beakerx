@@ -1304,9 +1304,18 @@
         };
 
         $scope.renameNotebook = function() {
-          bkHelper.showDefaultSavingFileChooser().then(function(ret) {
+          var saveFn = bkHelper.saveNotebookAs;
+          var saveButtonTitle = "Save";
+          var initUri = bkSessionManager.getNotebookPath();
+          if (initUri !== "New Notebook") {
+            saveFn = bkHelper.renameNotebookTo;
+            saveButtonTitle = "Rename";
+          } else {
+            initUri = null;
+          }
+          bkHelper.showDefaultSavingFileChooser(initUri, saveButtonTitle).then(function(ret) {
             if (ret.uri) {
-              return bkHelper.renameNotebookTo(ret.uri, ret.uriType);
+              return saveFn(ret.uri, ret.uriType);
             }
           });
         };

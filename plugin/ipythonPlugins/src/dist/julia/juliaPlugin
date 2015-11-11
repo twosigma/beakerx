@@ -41,5 +41,5 @@ plugin_dir = os.path.dirname(sys.argv[0])
 if os.name == 'nt':
     subprocess.call(["ipython", plugin_dir+"/juliaPluginStart.py"], shell=True)
 else:
-    os.execlp("ipython", "ipython", plugin_dir+"/juliaPluginStart.py")
+    os.execlp("python", "python", plugin_dir+"/juliaPluginStart.py")
 

@@ -47,6 +47,7 @@ public class FileUploadServlet extends HttpServlet {
         // all into RAM.
         part.getInputStream().read(contents);
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         response.getWriter().print(new String(contents, "UTF-8"));
       }
     } catch (Exception e) {

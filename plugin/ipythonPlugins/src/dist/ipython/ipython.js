@@ -84,12 +84,8 @@ define(function(require, exports, module) {
               } else {
                 // Required by ipython backend, but not used.
                 var model = (ipyVersion == '2') ?
-                  {notebook : {name : "fakename" + shellID,
-                               path : "/some/path" + shellID}} :
-                {kernel: {id: shellID,
-                          name: "python"},
-                 notebook: {path: "/fake/path" + shellID}
-                };
+                  {notebook : {name : "fakename" + shellID, path : "/some/path" + shellID}} :
+                  {kernel: {id: shellID, name: "python"}, notebook: {path: "/fake/path" + shellID}};
                 var fakeNotebook = {
                   events: {
                     on: function () {},
@@ -103,7 +99,7 @@ define(function(require, exports, module) {
                   type: "POST",
                   data: JSON.stringify(model),
                   dataType: "json",
-                  success: function (data, status, xhr) {
+                  success: function (data) {
                     self.kernel = (ipyVersion == '2') ?
                       (new myPython.Kernel(baseurl+ "/api/kernels")) :
                       (new myPython.Kernel(baseurl+ "/api/kernels",
@@ -128,8 +124,7 @@ define(function(require, exports, module) {
         });
 
         // keepalive for the websockets
-        var nil = function() {
-        };
+        var nil = function() {};
         window.setInterval(function() {
           // XXX this is wrong (ipy1 layout) maybe it doesn't matter??
           var ignore = {
@@ -180,7 +175,6 @@ define(function(require, exports, module) {
         };
 
         var doFinish = function() {
-          //console.log("DO FINISH", finalStuff);
           if (!finalStuff) return;
 
           if (bkHelper.receiveEvaluationUpdate(modelOutput, finalStuff, PLUGIN_NAME, self.settings.shellID)) {
@@ -197,7 +191,7 @@ define(function(require, exports, module) {
 
           if (finalStuff.status === "FINISHED")
             finalStuff = undefined;
-        }
+        };
 
         var execute_reply = function(msg) {
           var proceed = false;
@@ -209,23 +203,20 @@ define(function(require, exports, module) {
           if (ipyVersion != '1') msg = msg.content;
 
           var exitFlag = _(msg.payload).find(function(payload) {
-            if (payload.source !== undefined && payload.source == 'ask_exit') {
+            if (payload.source !== undefined && payload.source == 'ask_exit')
               return true;
-            }
           });
 
-          if (exitFlag) {
-            bkHelper.show1ButtonModal('Kernel exited, restart completed','Success');
-          }
+          if (exitFlag) bkHelper.show1ButtonModal('Kernel exited, restart completed','Success');
 
           var result = _(msg.payload).map(function(payload) {
             // XXX can other mime types appear here?
             var text = "";
-            if (ipyVersion == '3' || ipyVersion == '4') {
+            if (ipyVersion == '3' || ipyVersion == '4')
               text = payload.data ? payload.data["text/plain"] : "";
-            } else {
+            else
               text = payload.text;
-            }
+
             return myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(text));
           }).join("");
 
@@ -236,12 +227,10 @@ define(function(require, exports, module) {
 
           finalStuff.status = (msg.status === "error") ? "ERROR" : "FINISHED";
 
-          if (!_.isEmpty(result) && !finalStuff.payload) {
+          if (!_.isEmpty(result) && !finalStuff.payload)
             finalStuff.payload = "<pre>" + result + "</pre>";
-          }
 
-          if (proceed)
-            bkHelper.timeout(doFinish, 250);
+          if (proceed) bkHelper.timeout(doFinish, 250);
         };
 
         function output(a0, a1) {

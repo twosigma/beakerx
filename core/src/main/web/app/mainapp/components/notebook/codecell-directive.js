@@ -401,6 +401,10 @@
 
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
 
+        scope.focus = function() {
+          scope.cm.focus();
+        };
+
         // cellmodel.body --> CodeMirror
         scope.$watch('cellmodel.input.body', function(newVal, oldVal) {
           if (scope.cm && newVal !== scope.cm.getValue()) {

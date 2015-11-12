@@ -134,7 +134,7 @@
         });
 
         scope.$on('$destroy', function() {
-          scope.bkNotebook.unregisterFocusable(scope.cellmodel.id, scope);
+          scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id, scope.cm);
           scope.cm.off();
         });

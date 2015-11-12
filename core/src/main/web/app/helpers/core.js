@@ -530,9 +530,9 @@
             var t = scope.bkNotebook.getFocusable(prevCell.id);
             if (t) {
               t.focus();
-              var top = t.cm.cursorCoords(true,'window').top;
+              var top = t.cm.cursorCoords(true, 'window').top;
               if ( top < 150)
-                window.scrollBy(0, top-150);
+                window.scrollBy(0, top - 150);
               break;
             } else {
               prevCell = notebookCellOp.getPrev(prevCell.id);

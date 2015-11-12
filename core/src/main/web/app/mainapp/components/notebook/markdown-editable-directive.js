@@ -104,7 +104,7 @@
 
         scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], codeMirrorOptions);
 
-        scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
+        scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope.cm);
         scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
 
         scope.cm.setValue(scope.cellmodel[contentAttribute]);
@@ -134,7 +134,7 @@
         });
 
         scope.$on('$destroy', function() {
-          scope.bkNotebook.unregisterFocusable(scope.cellmodel.id, scope);
+          scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id, scope.cm);
           scope.cm.off();
         });

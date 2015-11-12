@@ -360,6 +360,7 @@
 
           scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
+          scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope.cm);
           scope.cm.on('change', changeHandler);
           scope.cm.on('blur', function () {
             if ($('.CodeMirror-hint').length > 0) {
@@ -394,8 +395,6 @@
             scope.displayOutput = true;
           }, 1);
         });
-
-        scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
 
         // cellmodel.body --> CodeMirror
         scope.$watch('cellmodel.input.body', function(newVal, oldVal) {

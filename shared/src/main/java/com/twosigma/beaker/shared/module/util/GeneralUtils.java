@@ -53,6 +53,16 @@ public interface GeneralUtils {
   public void saveFile(String file, String content) throws IOException;
   public void saveFile(URI file, String content) throws IOException;
 
+  /**
+   * Rename file. Move the original atomically if possible, otherwise copy & delete old.
+   * Make sure they are different
+   *
+   * @param oldFile
+   * @param newFile
+   * @throws IOException
+   */
+  public void renameFile(String oldFile, String newFile) throws IOException;
+
 
   /**
    * ensureDirectoryExists

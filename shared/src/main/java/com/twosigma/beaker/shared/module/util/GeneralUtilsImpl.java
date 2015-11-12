@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -123,6 +124,19 @@ public class GeneralUtilsImpl implements GeneralUtils {
   @Override
   public void saveFile(URI file, String content) throws IOException {
     this.saveFile(castToPath(file), content);
+  }
+
+  @Override
+  public void renameFile(String oldFile, String newFile) throws IOException {
+    try {
+      Files.move(castToPath(oldFile), castToPath(newFile), StandardCopyOption.ATOMIC_MOVE);
+    } catch (AtomicMoveNotSupportedException e) {
+      Logger.getLogger(GeneralUtilsImpl.class.getName())
+          .log(Level.INFO,
+              "Renaming from {0} to {1}. Atomic move not supported. Maybe target filesystem differs.",
+              new Object[]{oldFile, newFile});
+      Files.move(castToPath(oldFile), castToPath(newFile), StandardCopyOption.REPLACE_EXISTING);
+    }
   }
 
   @Override

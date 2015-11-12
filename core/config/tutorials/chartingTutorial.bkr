@@ -40,7 +40,7 @@
                     "background": "#E0FFE0"
                 }
             },
-            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*"
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\njava.time.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap"
         }
     ],
     "cells": [
@@ -13597,6 +13597,293 @@
             },
             "evaluatorReader": true,
             "lineCount": 16
+        },
+        {
+            "id": "sectionTPWGiv",
+            "type": "section",
+            "title": "Working with dates",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownmhT1xf",
+            "type": "markdown",
+            "body": [
+                "For Time plots you can provide x coordinate in the following format:",
+                "",
+                "* list of numbers (milliseconds)",
+                "* list of java.util.Date object",
+                "* list of LocalDateTime objects"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codekBlglo",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def cal = Calendar.getInstance();",
+                    "cal.add(Calendar.HOUR, -1)",
+                    "",
+                    "def today = new Date();",
+                    "def millis = today.time;",
+                    "def hour = 1000 * 60 * 60;",
+                    "",
+                    "def plot = new TimePlot(",
+                    "  timeZone: new SimpleTimeZone(10800000, \"America/New_York\")",
+                    ");",
+                    "//list of milliseconds",
+                    "plot << new Points(x:(0..10).collect{millis + hour * it}, y:(0..10), displayName: \"milliseconds\");",
+                    "//list of java.util.Date objects",
+                    "plot << new Points(x:(0..10).collect{cal.add(Calendar.HOUR, 1); cal.getTime()}, y:(0..10), displayName: \"date\");"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "TimePlot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": null,
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "show_legend": null,
+                    "use_tool_tip": true,
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": "",
+                            "auto_range": true,
+                            "auto_range_includes_zero": false,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "use_log": false,
+                            "log_base": 10
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": false,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_y": false,
+                    "timezone": "America/New_York",
+                    "crosshair": null,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "omit_checkboxes": false,
+                    "legend_layout": "VERTICAL",
+                    "graphics_list": [
+                        {
+                            "type": "Points",
+                            "x": [
+                                1447326853030,
+                                1447330453030,
+                                1447334053030,
+                                1447337653030,
+                                1447341253030,
+                                1447344853030,
+                                1447348453030,
+                                1447352053030,
+                                1447355653030,
+                                1447359253030,
+                                1447362853030
+                            ],
+                            "y": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10
+                            ],
+                            "visible": true,
+                            "display_name": "milliseconds",
+                            "size": 6,
+                            "shape": "DEFAULT",
+                            "fill": null,
+                            "color": "#FFC0504D",
+                            "outline_color": null,
+                            "yAxis": null
+                        },
+                        {
+                            "type": "Points",
+                            "x": [
+                                1447326853030,
+                                1447330453030,
+                                1447334053030,
+                                1447337653030,
+                                1447341253030,
+                                1447344853030,
+                                1447348453030,
+                                1447352053030,
+                                1447355653030,
+                                1447359253030,
+                                1447362853030
+                            ],
+                            "y": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10
+                            ],
+                            "visible": true,
+                            "display_name": "date",
+                            "size": 6,
+                            "shape": "DEFAULT",
+                            "fill": null,
+                            "color": "#FF4F81BD",
+                            "outline_color": null,
+                            "yAxis": null
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10
+                },
+                "selectedType": "Plot",
+                "pluginName": "Groovy",
+                "shellId": "c4d0d34d-651b-49ba-927f-8824eb2ac9f3",
+                "elapsedTime": 686
+            },
+            "evaluatorReader": true,
+            "lineCount": 14
+        },
+        {
+            "id": "code3T9Fzl",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "//list of LocalDateTime objects",
+                    "def plot = new TimePlot();",
+                    "def localDate = LocalDateTime.now(ZoneId.of(\"America/New_York\"));",
+                    "plot << new Points(x:(0..10).collect{localDate.plusHours(it)}, y:(0..10))"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "TimePlot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": null,
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "show_legend": null,
+                    "use_tool_tip": true,
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": "",
+                            "auto_range": true,
+                            "auto_range_includes_zero": false,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "use_log": false,
+                            "log_base": 10
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": false,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_y": false,
+                    "timezone": null,
+                    "crosshair": null,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "omit_checkboxes": false,
+                    "legend_layout": "VERTICAL",
+                    "graphics_list": [
+                        {
+                            "type": "Points",
+                            "x": [
+                                1447308848570,
+                                1447312448570,
+                                1447316048570,
+                                1447319648570,
+                                1447323248570,
+                                1447326848570,
+                                1447330448570,
+                                1447334048570,
+                                1447337648570,
+                                1447341248570,
+                                1447344848570
+                            ],
+                            "y": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "size": 6,
+                            "shape": "DEFAULT",
+                            "fill": null,
+                            "color": "#FFC0504D",
+                            "outline_color": null,
+                            "yAxis": null
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10
+                },
+                "selectedType": "Plot",
+                "pluginName": "Groovy",
+                "shellId": "c4d0d34d-651b-49ba-927f-8824eb2ac9f3",
+                "elapsedTime": 949
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
         }
     ],
     "namespace": {},

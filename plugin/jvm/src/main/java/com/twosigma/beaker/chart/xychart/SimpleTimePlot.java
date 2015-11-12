@@ -160,7 +160,7 @@ public class SimpleTimePlot extends TimePlot {
       }
     });
 
-    List<Number> xs = new ArrayList<>();
+    List<Object> xs = new ArrayList<>();
     List<List<Number>> yss = new ArrayList<>();
 
     if (data != null && columns != null) {

@@ -44,7 +44,7 @@ public class Line extends XYGraphics {
     super.setY(ys);
   }
 
-  public Line(List<Number> xs, List<Number> ys) {
+  public Line(List<Object> xs, List<Number> ys) {
     super.setX(xs);
     super.setY(ys);
   }

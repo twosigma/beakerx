@@ -645,7 +645,6 @@
           };
 
           var renameDone = function(ret) {
-            bkSessionManager.setNotebookModelEdited(false);
             bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
             updateSessionStore(ret.uri, ret.uriType);
             showTransientStatusMessage("Renamed");

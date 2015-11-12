@@ -26,11 +26,10 @@
     </span>
     </button>
   </li>
-  <li role="presentation" class="dropdown" close-dropdown-on-mouseout>
+  <li role="presentation" class="dropdown" dropdown>
     <button class="btn btn-primary dropdown-toggle"
             ng-class="!isLarge && 'btn-xs'"
-            data-toggle="dropdown"
-            data-target="> .code-dropdown">code <i class="fa fa-sort-down"></i>
+            data-toggle="dropdown">code <i class="fa fa-sort-down"></i>
     </button>
     <ul class="dropdown-menu code-dropdown" role="menu">
       <li ng-repeat="(key, value) in getEvaluators()">
@@ -54,11 +53,10 @@
             ng-click="newMarkdownCell()">text<i class="fa fa-sort-down fa-hidden"></i>
     </button>
   </li>
-  <li role="presentation" class="dropdown" close-dropdown-on-mouseout>
+  <li role="presentation" class="dropdown" dropdown>
     <button class="btn btn-primary"
             ng-class="!isLarge && 'btn-xs'"
-            data-toggle="dropdown"
-            data-target="> .section-menu">section <i class="fa fa-sort-down"></i>
+            data-toggle="dropdown">section <i class="fa fa-sort-down"></i>
     </button>
     <ul class="dropdown-menu section-menu" role="menu">
       <li ng-repeat='level in ::sectionLevels'>

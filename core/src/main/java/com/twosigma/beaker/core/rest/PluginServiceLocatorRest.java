@@ -593,6 +593,7 @@ public class PluginServiceLocatorRest {
     cmdBase.add("--hash");
     Process proc = Runtime.getRuntime().exec(listToArray(cmdBase), buildEnv(pluginId, null));
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+    BufferedReader be = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
     bw.write("from IPython.lib import passwd\n");
@@ -600,17 +601,11 @@ public class PluginServiceLocatorRest {
     // but it would be nice if there were a way to make this explicit. XXX
     bw.write("print(passwd('" + password + "'))\n");
     bw.close();
-
-    Object[] array = br.lines().filter(new Predicate<String>() {
-      @Override
-      public boolean test(String s) {
-        return s.contains("sha1:");
+    String line;
+    while ((line = br.readLine()) != null) {
+      if (line.contains("sha1:")) {
+        return line.substring(line.indexOf("sha1:"));
       }
-    }).toArray();
-
-    if (array.length == 1) {
-      String s = (String) array[0];
-      return s.substring(s.indexOf("sha1:"));
     }
     throw new RuntimeException("unable to get IPython hash");
   }

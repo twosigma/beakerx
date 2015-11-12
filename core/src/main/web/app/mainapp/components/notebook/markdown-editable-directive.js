@@ -104,7 +104,7 @@
 
         scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], codeMirrorOptions);
 
-        scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope.cm);
+        scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
         scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
 
         scope.cm.setValue(scope.cellmodel[contentAttribute]);

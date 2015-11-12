@@ -395,6 +395,10 @@
           }, 1);
         });
 
+        scope.focus = function() {
+          scope.cm.focus();
+        };
+
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
 
         // cellmodel.body --> CodeMirror
@@ -479,7 +483,7 @@
                 if (currentLine !== cm.lastLine()) {
                   cm.setCursor(currentLine + 1, 0);
                 } else {
-                  codeMirrorOptions.goToNextCell(cm);
+                  codeMirrorOptions.goToNextCodeCell(cm);
                 }
               }
             })

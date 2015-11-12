@@ -555,6 +555,13 @@
         }
         return this.getCellAtIndex(index - 1);
       },
+      findNextCodeCell: function(id) {
+        var index = this.getIndex(id);
+        if (index === cells.length - 1) {
+          return null;
+        }
+        return this.findCodeCell(this.getCellAtIndex(index + 1).id, true);
+      },
       isContainer: function(id) {
         return id === 'root' || !!this.getCell(id).level;
       },

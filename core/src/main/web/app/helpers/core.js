@@ -494,6 +494,19 @@
           }
         };
 
+        var goToNextCodeCell = function(){
+          var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
+          while (nextCell) {
+            if (scope.bkNotebook.getFocusable(nextCell.id)) {
+              scope.bkNotebook.getFocusable(nextCell.id).focus();
+              break;
+            } else {
+              nextCell = notebookCellOp.findNextCodeCell(nextCell.id);
+            }
+          }
+          return nextCell;
+        };
+
         var moveFocusDown = function() {
           // move focus to next code cell
           var thisCellId = scope.cellmodel.id;
@@ -535,7 +548,7 @@
 
         var evaluateAndGoDown = function() {
           scope.evaluate();
-          moveFocusDown();
+          goToNextCodeCell();
         };
 
         var maybeShowAutoComplete = function(cm) {
@@ -739,7 +752,7 @@
           lineNumbers: true,
           matchBrackets: true,
           extraKeys: keys,
-          goToNextCell: moveFocusDown,
+          goToNextCodeCell: goToNextCodeCell,
           scrollbarStyle: "simple"
         };
       },

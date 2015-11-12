@@ -22,8 +22,7 @@
         bkUtils,
         bkEvaluatorManager,
         bkSessionManager,
-        bkCoreManager,
-        bkPublicationHelper) {
+        bkCoreManager) {
 
     var CELL_TYPE = 'section';
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
@@ -195,8 +194,6 @@
           });
           return siblingSections.indexOf($scope.cellmodel);
         };
-
-        bkPublicationHelper.helper(CELL_TYPE, $scope);
       }
     };
   });

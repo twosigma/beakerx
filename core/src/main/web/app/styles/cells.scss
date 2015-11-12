@@ -170,6 +170,23 @@ bk-section-cell {
       margin: -1px;
     }
   }
+
+  .cell-power-button {
+    display:    none;
+    color:      #d8d8d8;
+    float:      right;
+    cursor:     pointer;
+    height:     14px;
+    margin-top: 26px;
+    position:   relative;
+
+    .advanced-mode & {
+      margin-top: -26px;
+    }
+  }
+  .cell-power-button.visible {
+    display: block;
+  }
 }
 
 bk-code-cell .locked .code-cell-output {

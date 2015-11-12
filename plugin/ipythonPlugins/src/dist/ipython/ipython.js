@@ -200,11 +200,10 @@ define(function(require, exports, module) {
         }
 
         var execute_reply = function(msg) {
-          var //localDeferred = bkHelper.newDeferred(),
-              proceed = false;
+          var proceed = false;
 
           if (_theCancelFunction === null)
-            return; //localDeferred.reject();
+            return;
 
           // this is called when processing is completed
           if (ipyVersion != '1') msg = msg.content;
@@ -235,7 +234,6 @@ define(function(require, exports, module) {
             proceed = true;
           }
 
-          //console.log("execute_reply");
           finalStuff.status = (msg.status === "error") ? "ERROR" : "FINISHED";
 
           if (!_.isEmpty(result) && !finalStuff.payload) {
@@ -244,23 +242,17 @@ define(function(require, exports, module) {
 
           if (proceed)
             bkHelper.timeout(doFinish, 250);
-
-          //localDeferred.resolve(doFinish);
-          //return localDeferred.promise;
         };
 
         function output(a0, a1) {
-          var type, content,
-              proceed = false;
-              //localDeferred = bkHelper.newDeferred();
+          var type, content;
 
           if (_theCancelFunction === null || gotError)
-            return; //localDeferred.reject();
+            return;
 
           // this is called to write output
           type = (ipyVersion == '1') ? a0 : a0.msg_type;
           content =  (ipyVersion == '1') ? a1 : a0.content;
-          //console.log('MESSAGE TYPE', type, finalStuff);
 
           var evaluation = {};
           evaluation.status = "RUNNING";
@@ -273,19 +265,7 @@ define(function(require, exports, module) {
             }, myPython.utils.fixConsole(content.evalue));
 
             evaluation.payload = (content.ename === "KeyboardInterrupt") ? "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
-            /*
-            if (finalStuff) {
-              finalStuff.payload = evaluation.payload
-            }
-            */
           }
-          //fault??
-          /*
-          else if (kernel.appendToWidgetOutput && kernel.view) {
-            kernel.view.outputBuffer = kernel.view.outputBuffer || [];
-            kernel.view.outputBuffer.push(a0);
-          }
-          */
           // if output is a print statement
           else if (type === "stream") {
             evaluation.outputdata = [];
@@ -295,54 +275,58 @@ define(function(require, exports, module) {
 
             var text = (ipyVersion == '3' || ipyVersion == '4') ? content.text : content.data;
             evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out', value: text});
-            /*
-            if (finalStuff) {
-              finalStuff.outputdata = evaluation.outputdata;
-            }
-            */
           }
           //if output is some data to display
           else {
-            var jsonres;
-            if(content.data && content.data['application/json']) {
-              jsonres = JSON.parse(content.data['application/json']);
-            }
-            if (jsonres && jsonres.type) {
+            var payloadOutput = function(data) {
               if (finalStuff && finalStuff.payload) {
                 // if we already received an output we should append this output to it
                 var temp = finalStuff.payload;
                 if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
-                  temp.items.push(jsonres);
-                  jsonres = temp;
+                  temp.items.push(data);
+                  data = temp;
                 } else {
                   var temp2 = { 'type' : 'OutputContainer', 'psubtype': 'OutputContainer', 'items' : []};
                   temp2.items.push(temp);
-                  temp2.items.push(jsonres);
-                  jsonres = temp2;
-                }
-              }
-              evaluation.payload = jsonres;
-              /*
-              if (finalStuff) {
-                finalStuff.payload = evaluation.payload;
-              }
-              */
-            } else {
-              if (finalStuff && finalStuff.jsonres) {
-                // if we already received an output we should append this output to it
-                var temp = finalStuff.jsonres;
-                if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
-                  temp.items.push(jsonres);
-                  jsonres = temp;
-                } else {
-                  var temp2 = { 'type' : 'OutputContainer', 'psubtype': 'OutputContainer', 'items' : []};
-                  temp2.items.push(temp);
-                  temp2.items.push(jsonres);
-                  jsonres = temp2;
+                  temp2.items.push(data);
+                  data = temp2;
                 }
               }
 
+              return data;
+            };
+
+            var jsonOutput = function(data) {
+              if (finalStuff && finalStuff.jsonres) {
+                // if we already received an output we should append this output to it
+                var temp = finalStuff.jsonres;
+
+                if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
+                  temp.items.push(data);
+                  data = temp;
+                } else {
+                  var temp2 = { 'type' : 'OutputContainer', 'psubtype': 'OutputContainer', 'items' : []};
+                  temp2.items.push(temp);
+                  temp2.items.push(data);
+                  data = temp2;
+                }
+              }
+
+              return data;
+            };
+
+            var jsonres;
+            if(content.data && content.data['application/json']) {
+              jsonres = JSON.parse(content.data['application/json']);
+            }
+
+            if (jsonres && jsonres.type) {
+              jsonres = payloadOutput(jsonres);
+              evaluation.payload = jsonres;
+            } else {
+              jsonres = jsonOutput(jsonres);
               evaluation.jsonres = jsonres;
+
               var elem = $(document.createElement("div"));
               var oa = (ipyVersion == '3' || ipyVersion == '4') ?
                   (new myPython.OutputArea({events: {trigger: function(){}}, keyboard_manager: keyboard_manager})) :
@@ -354,37 +338,14 @@ define(function(require, exports, module) {
               } else if (ipyVersion == '2') {
                 oa.append_mime_type(content.data, elem);
               } else {
-                //console.log("1 - appending contnent to the OA...", content);
                 oa.append_mime_type(content, elem);
               }
 
               //content after appending, but not yet assigned to finalStuff
               var payload = elem.html();
 
-              if (finalStuff && finalStuff.payload) {
-                // if we already received an output we should append this output to it
-                var temp = finalStuff.payload;
-                //console.log('2 - appending payload to the finalStuff...');
-
-                if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
-                  temp.items.push(payload);
-                  payload = temp;
-                } else {
-                  var temp2 = {'type' : 'OutputContainer', 'psubtype': 'OutputContainer', 'items' : []};
-                  temp2.items.push(temp);
-                  temp2.items.push(payload);
-                  payload = temp2;
-                }
-              }
-
+              payload = payloadOutput(payload);
               evaluation.payload = payload;
-              /*
-              if (finalStuff) {
-                console.log('3- assigning evaluation result to finalStuff....');
-                finalStuff.payload = evaluation.payload;
-                finalStuff.jsonres = evaluation.jsonres;
-              }
-              */
             }
           }
 
@@ -396,8 +357,6 @@ define(function(require, exports, module) {
             finalStuff = evaluation;
           }
 
-          //localDeferred.resolve(proceed);
-          //return localDeferred.promise;
           bkHelper.timeout(doFinish, 150);
         };
 

@@ -24,7 +24,6 @@
       bkCellMenuPluginManager,
       bkSessionManager,
       bkCoreManager,
-      bkPublicationHelper,
       $timeout) {
 
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
@@ -269,8 +268,6 @@
                 'app/mainapp/dialogs/codecelloptions.jst.html', 'CodeCellOptionsController', $scope.cellmodel);
           }
         });
-
-        bkPublicationHelper.helper(CELL_TYPE, $scope);
       },
       link: function(scope, element) {
         scope.showDebug = false;

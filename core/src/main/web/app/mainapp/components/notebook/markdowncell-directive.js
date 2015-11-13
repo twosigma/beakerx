@@ -18,13 +18,10 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('bkMarkdownCell', function(bkPublicationHelper) {
+  module.directive('bkMarkdownCell', function() {
     return {
       restrict: 'E',
-      template: JST['mainapp/components/notebook/markdowncell'](),
-      controller: function($scope) {
-        bkPublicationHelper.helper('', $scope);
-      }
+      template: JST['mainapp/components/notebook/markdowncell']()
     };
   });
 })();

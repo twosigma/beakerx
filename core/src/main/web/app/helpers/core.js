@@ -504,8 +504,9 @@
         var goToNextCodeCell = function(){
           var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
           while (nextCell) {
-            if (scope.bkNotebook.getFocusable(nextCell.id)) {
-              scope.bkNotebook.getFocusable(nextCell.id).focus();
+            var focusable = scope.bkNotebook.getFocusable(nextCell.id);
+            if (focusable && focusable.isShowInput()) {
+              focusable.focus();
               break;
             } else {
               nextCell = notebookCellOp.findNextCodeCell(nextCell.id);

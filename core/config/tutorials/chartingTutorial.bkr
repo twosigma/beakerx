@@ -13613,8 +13613,7 @@
                 "For Time plots you can provide x coordinate in the following format:",
                 "",
                 "* list of numbers (milliseconds)",
-                "* list of java.util.Date object",
-                "* list of LocalDateTime objects"
+                "* list of java.util.Date object"
             ],
             "evaluatorReader": false
         },
@@ -13774,116 +13773,6 @@
             },
             "evaluatorReader": true,
             "lineCount": 14
-        },
-        {
-            "id": "code3T9Fzl",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": [
-                    "//list of LocalDateTime objects",
-                    "def plot = new TimePlot();",
-                    "def localDate = LocalDateTime.now(ZoneId.of(\"America/New_York\"));",
-                    "plot << new Points(x:(0..10).collect{localDate.plusHours(it)}, y:(0..10))"
-                ]
-            },
-            "output": {
-                "state": {},
-                "result": {
-                    "type": "TimePlot",
-                    "init_width": 640,
-                    "init_height": 480,
-                    "chart_title": null,
-                    "domain_axis_label": null,
-                    "y_label": "",
-                    "show_legend": null,
-                    "use_tool_tip": true,
-                    "rangeAxes": [
-                        {
-                            "type": "YAxis",
-                            "label": "",
-                            "auto_range": true,
-                            "auto_range_includes_zero": false,
-                            "lower_margin": 0.05,
-                            "upper_margin": 0.05,
-                            "lower_bound": 0,
-                            "upper_bound": 0,
-                            "use_log": false,
-                            "log_base": 10
-                        }
-                    ],
-                    "x_lower_margin": 0.05,
-                    "x_upper_margin": 0.05,
-                    "y_auto_range": true,
-                    "y_auto_range_includes_zero": false,
-                    "y_lower_margin": 0.05,
-                    "y_upper_margin": 0.05,
-                    "y_lower_bound": 0,
-                    "y_upper_bound": 0,
-                    "log_y": false,
-                    "timezone": null,
-                    "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
-                    "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
-                    "graphics_list": [
-                        {
-                            "type": "Points",
-                            "x": [
-                                1447308848570,
-                                1447312448570,
-                                1447316048570,
-                                1447319648570,
-                                1447323248570,
-                                1447326848570,
-                                1447330448570,
-                                1447334048570,
-                                1447337648570,
-                                1447341248570,
-                                1447344848570
-                            ],
-                            "y": [
-                                0,
-                                1,
-                                2,
-                                3,
-                                4,
-                                5,
-                                6,
-                                7,
-                                8,
-                                9,
-                                10
-                            ],
-                            "visible": true,
-                            "display_name": "",
-                            "size": 6,
-                            "shape": "DEFAULT",
-                            "fill": null,
-                            "color": "#FFC0504D",
-                            "outline_color": null,
-                            "yAxis": null
-                        }
-                    ],
-                    "constant_lines": [],
-                    "constant_bands": [],
-                    "texts": [],
-                    "x_auto_range": true,
-                    "x_lower_bound": 0,
-                    "x_upper_bound": 0,
-                    "log_x": false,
-                    "x_log_base": 10
-                },
-                "selectedType": "Plot",
-                "pluginName": "Groovy",
-                "shellId": "c4d0d34d-651b-49ba-927f-8824eb2ac9f3",
-                "elapsedTime": 949
-            },
-            "evaluatorReader": true,
-            "lineCount": 4
         }
     ],
     "namespace": {},

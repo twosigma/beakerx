@@ -53,6 +53,11 @@
           scope.$apply();
         };
 
+        scope.isShowInput = function() {
+          //Markdown cell input is always visible
+          return true;
+        };
+
         scope.edit = function(event) {
           var selection = window.getSelection() || {};
           // If the user is selecting some text, do not enter the edit markdown mode

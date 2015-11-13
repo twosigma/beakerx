@@ -585,6 +585,36 @@ public class PluginServiceLocatorRest {
     }
   }
 
+
+  @GET
+  @Path("/jupiter_kernelspec_list")
+  public Response jupiterKernelspecList() {
+
+    try {
+      final String[] output = {""};
+      final Process p = Runtime.getRuntime().exec("jupyter kernelspec list --json");
+
+      new Thread(new Runnable() {
+        public void run() {
+          BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+          String line = null;
+          try {
+            while ((line = input.readLine()) != null)
+              output[0] += line;
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+        }
+      }).start();
+
+      p.waitFor();
+      return Response.status(200).entity(output[0]).build();
+    } catch (InterruptedException | IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+
   private String hashIPythonPassword(String password, String pluginId, String command)
     throws IOException
   {

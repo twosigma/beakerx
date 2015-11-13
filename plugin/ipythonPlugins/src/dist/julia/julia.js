@@ -61,12 +61,26 @@ define(function(require, exports, module) {
             document.cookie = theCookie[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/";
           }
         }
-        
+
+         bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"), {pluginId: PLUGIN_NAME}).success(function(result) { });
+
         bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"),
                          {pluginId: PLUGIN_NAME}).success(function(result) {
                            bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/login")).then(function () {
             bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2F"),
                               {password: result}).success(function(result) {
+                              bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/jupiter_kernelspec_list")).success(function(kernel_list) {
+
+              var juliaKernel = 'julia-0.3';
+              var kernelNames = Object.keys(kernel_list['kernelspecs']);
+              var kernelsCount = kernelNames.length;
+              for (var i = 0; i < kernelsCount; i++) {
+                if (kernelNames[i].indexOf('julia') !== -1){
+                   juliaKernel = kernelNames[i];
+                   break;
+                 }
+              }
+
               var baseurl = bkHelper.serverUrl(serviceBase);
               var t = baseurl.indexOf('//');
               if (t >= 0) {
@@ -86,7 +100,7 @@ define(function(require, exports, module) {
                   {notebook : {name : "fakename" + shellID,
                                path : "/some/path" + shellID}} :
                 {kernel: {id: shellID,
-                          name: "julia-0.3"},
+                          name: juliaKernel},
                  notebook: {path: "/fake/path" + shellID}
                 };
                 var fakeNotebook = {
@@ -119,6 +133,7 @@ define(function(require, exports, module) {
                 var url = myPython.utils.url_join_encode(baseurl, 'api/sessions/');
                 $.ajax(url, ajaxsettings);
               }
+             });
             });
           });
         });

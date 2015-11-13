@@ -1302,6 +1302,11 @@
           }
         };
 
+        $scope.renamingAllowed = function() {
+          var uriType = bkSessionManager.getNotebookUriType();
+          return !uriType || GLOBALS.FILE_LOCATION.FILESYS === uriType;
+        };
+
         $scope.renameNotebook = function() {
           var saveFn = bkHelper.saveNotebookAs;
           var saveButtonTitle = "Save";

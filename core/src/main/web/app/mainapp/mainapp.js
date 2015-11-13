@@ -1328,7 +1328,11 @@
         };
 
         $scope.pathname = function() {
-          return bkSessionManager.getNotebookPath();
+          if ($scope.isEdited()) {
+            return '*' + bkSessionManager.getNotebookPath();
+          } else {
+            return bkSessionManager.getNotebookPath();
+          }
         };
 
         $scope.$on("$locationChangeStart", function(event, next, current) {

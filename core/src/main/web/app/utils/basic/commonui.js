@@ -80,7 +80,7 @@
         }
 
         var showDropdown = function() {
-          window.requestAnimationFrame(function() {
+          window.rAF(function() {
             var notebook = bkHelper.getNotebookElement(scope);
             var togglePosition = toggle.offset();
             var notebookPosition = notebook.offset();

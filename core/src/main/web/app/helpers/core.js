@@ -504,8 +504,9 @@
         var goToNextCodeCell = function(){
           var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
           while (nextCell) {
-            if (scope.bkNotebook.getFocusable(nextCell.id)) {
-              scope.bkNotebook.getFocusable(nextCell.id).focus();
+            var focusable = scope.bkNotebook.getFocusable(nextCell.id);
+            if (focusable && focusable.isShowInput()) {
+              focusable.focus();
               break;
             } else {
               nextCell = notebookCellOp.findNextCodeCell(nextCell.id);
@@ -519,8 +520,9 @@
           var thisCellId = scope.cellmodel.id;
           var nextCell = notebookCellOp.getNext(thisCellId);
           while (nextCell) {
-            if (scope.bkNotebook.getFocusable(nextCell.id)) {
-              scope.bkNotebook.getFocusable(nextCell.id).focus();
+            var focusable = scope.bkNotebook.getFocusable(nextCell.id);
+            if (focusable && focusable.isShowInput()) {
+              focusable.focus();
               break;
             } else {
               nextCell = notebookCellOp.getNext(nextCell.id);
@@ -534,11 +536,11 @@
           var thisCellID = scope.cellmodel.id;
           var prevCell = notebookCellOp.getPrev(thisCellID);
           while (prevCell) {
-            var t = scope.bkNotebook.getFocusable(prevCell.id);
-            if (t) {
-              t.focus();
-              var top = t.cm.cursorCoords(true, 'window').top;
-              if ( top < 150)
+            var focusable = scope.bkNotebook.getFocusable(prevCell.id);
+            if (focusable && focusable.isShowInput()) {
+              focusable.focus();
+              var top = focusable.cm.cursorCoords(true, 'window').top;
+              if (top < 150)
                 window.scrollBy(0, top - 150);
               break;
             } else {

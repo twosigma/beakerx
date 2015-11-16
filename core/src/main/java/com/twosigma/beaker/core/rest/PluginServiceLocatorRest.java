@@ -587,20 +587,27 @@ public class PluginServiceLocatorRest {
   }
 
   private String hashIPythonPassword(String password, String pluginId, String command)
-    throws IOException
-  {
+    throws IOException, InterruptedException {
+    final String[] hash = {null};
     List<String> cmdBase = pythonBaseCommand(pluginId, command);
     cmdBase.add("--hash");
     cmdBase.add(password);
-
-    Process proc = Runtime.getRuntime().exec(listToArray(cmdBase), buildEnv(pluginId, null));
-    BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-    new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
-    String hash = br.readLine();
-    if (null == hash) {
+    final Process proc = Runtime.getRuntime().exec(listToArray(cmdBase), buildEnv(pluginId, null));
+    new Thread(new Runnable() {
+      public void run() {
+        BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+        try {
+          hash[0] = input.readLine();
+        } catch (IOException e) {
+          //expected
+        }
+      }
+    }).start();
+    proc.waitFor();
+    if (StringUtils.isEmpty(hash[0])) {
       throw new RuntimeException("unable to get IPython hash");
     }
-    return hash;
+    return hash[0];
   }
 
   private void generateIPythonConfig(String pluginId, int port, String password, String command)

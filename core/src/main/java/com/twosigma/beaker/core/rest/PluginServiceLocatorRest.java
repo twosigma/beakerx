@@ -593,7 +593,6 @@ public class PluginServiceLocatorRest {
     cmdBase.add("--hash");
     Process proc = Runtime.getRuntime().exec(listToArray(cmdBase), buildEnv(pluginId, null));
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-    BufferedReader be = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
     bw.write("from IPython.lib import passwd\n");

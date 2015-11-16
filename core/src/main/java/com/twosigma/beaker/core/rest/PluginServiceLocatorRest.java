@@ -598,16 +598,25 @@ public class PluginServiceLocatorRest {
     class Task implements Callable<String> {
       @Override
       public String call() throws Exception {
-        Process proc = Runtime.getRuntime().exec(listToArray(cmdBase), buildEnv(pluginId, null));
-        BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-        new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
+        ProcessBuilder processBuilder = new ProcessBuilder(listToArray(cmdBase));
+        Map<String, String> environment = processBuilder.environment();
+        String[] buildEnv = buildEnv(pluginId, null);
+        for (String env : buildEnv) {
+          String[] envPairs = env.split("=");
+          if (envPairs.length == 2)
+            environment.put(envPairs[0], envPairs[1]);
+        }
+        processBuilder.redirectErrorStream(true);
+        Process process = processBuilder.start();
+        BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
         return br.readLine();
       }
     }
 
     ExecutorService executor = Executors.newSingleThreadExecutor();
     List<Future<String>> futures = executor.invokeAll(Arrays.asList(new Task()),
-                                                      1,
+                                                      3,
                                                       TimeUnit.SECONDS);
     executor.shutdownNow();
 

@@ -170,22 +170,42 @@ bk-section-cell {
       margin: -1px;
     }
   }
+}
 
-  .cell-power-button {
-    display:    none;
-    color:      #d8d8d8;
-    float:      right;
-    cursor:     pointer;
-    height:     14px;
-    margin-top: 26px;
-    position:   relative;
+.bkcell {
+  .power-menu {
+    position: absolute;
 
-    .advanced-mode & {
-      margin-top: -26px;
+    &:not(.input-hidden) {
+      bottom: 90px;
+      right: 20px;
+    }
+
+    &.input-hidden {
+      top: 16px;
+      left: 120px;
+      .advanced-mode & {
+        display: none;
+      }
     }
   }
-  .cell-power-button.visible {
-    display: block;
+  .cell-power-button {
+    color:        #d8d8d8;
+    cursor:       pointer;
+    height:       24px;
+
+    .fa-power-off {
+      padding:    6px 10px;
+    }
+  }
+
+  .input-hidden.cell-power-button {
+
+  }
+
+  .cell-power-button:hover {
+    color: #FFF;
+    background-color: $highlight-blue;
   }
 }
 

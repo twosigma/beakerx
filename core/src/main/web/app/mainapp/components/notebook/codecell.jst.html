@@ -15,9 +15,9 @@
 -->
 
 <div class='evaluator' evaluator-type="{{ cellmodel.evaluator }}" ng-class="{
-  'evaluator-ready': cellmodel.evaluatorReader,
-  'locked': isLocked(),
-  'empty': isEmpty()
+    'evaluator-ready': cellmodel.evaluatorReader,
+    'locked': isLocked(),
+    'empty': isEmpty()
   }">
   <div class="bkcell code-cell-area">
     <div class="code-cell-input" ng-mousedown="backgroundClick($event)" ng-hide="isLocked()" ng-class="{'input-hidden': cellmodel.input.hidden}">
@@ -33,7 +33,6 @@
            eat-click>
           {{ isJobCancellable() ? 'Stop' : 'Run' }}
         </a>
-        <div class="cell-power-button" title="initialization cell is on" data-ng-class="{'visible': isInitializationCell()}"><i class="fa fa-power-off"></i></div>
       </div>
     </div>
     <div ng-if ="displayOutput && hasOutput()" class="code-cell-output" ng-class="{

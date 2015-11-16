@@ -591,38 +591,15 @@ public class PluginServiceLocatorRest {
   private String hashIPythonPassword(String password, final String pluginId, String command)
     throws IOException, InterruptedException, ExecutionException {
 
-    final List<String> cmdBase = pythonBaseCommand(pluginId, command);
+    List<String> cmdBase = pythonBaseCommand(pluginId, command);
     cmdBase.add("--hash");
     cmdBase.add(password);
 
-    class Task implements Callable<String> {
-      @Override
-      public String call() throws Exception {
-        ProcessBuilder processBuilder = new ProcessBuilder(listToArray(cmdBase));
-        Map<String, String> environment = processBuilder.environment();
-        String[] buildEnv = buildEnv(pluginId, null);
-        for (String env : buildEnv) {
-          String[] envPairs = env.split("=");
-          if (envPairs.length == 2)
-            environment.put(envPairs[0], envPairs[1]);
-        }
-        processBuilder.redirectErrorStream(true);
-        Process process = processBuilder.start();
-        BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-        return br.readLine();
-      }
-    }
-
-    ExecutorService executor = Executors.newSingleThreadExecutor();
-    List<Future<String>> futures = executor.invokeAll(Arrays.asList(new Task()),
-                                                      3,
-                                                      TimeUnit.SECONDS);
-    executor.shutdownNow();
-
-
-    String hash = futures.size() > 0 ? futures.get(0).get() : null;
-    if (StringUtils.isEmpty(hash)) {
+    Process proc = Runtime.getRuntime().exec(listToArray(cmdBase), buildEnv(pluginId, null));
+    BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+    new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
+    String hash = br.readLine();
+    if (null == hash) {
       throw new RuntimeException("unable to get IPython hash");
     }
     return hash;

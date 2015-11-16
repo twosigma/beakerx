@@ -23,7 +23,9 @@ if len(sys.argv) > 1:
     if arg1 == "--version":
         os.execlp("ipython", "ipython", "--version")
     elif arg1 == "--hash":
-        os.execlp("ipython", "ipython")
+        password = sys.argv[2]
+        os.execlp("ipython", "ipython", "-c",
+                  'from IPython.lib import passwd;print (passwd("' + password + '"))')
     elif arg1 == "--profile":
         os.execlp("ipython", "ipython", "profile",
                   "create", "beaker_backend_" + sys.argv[3],

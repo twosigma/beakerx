@@ -34,8 +34,6 @@ public class Points extends XYGraphics {
   private List<ShapeType> shapes;
   private Boolean baseFill;
   private List<Boolean> fills;
-  private Color baseColor;
-  private List<Color> colors;
   private Color baseOutlineColor;
   private List<Color> outlineColors;
 
@@ -112,37 +110,6 @@ public class Points extends XYGraphics {
 
   public List<Boolean> getFills() {
     return this.fills;
-  }
-
-  public void setColor(Object color) {
-    if (color instanceof Color) {
-      this.baseColor = (Color) color;
-    } else if (color instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<Color> cs = (List<Color>) color;
-      setColors(cs);
-    } else {
-      throw new IllegalArgumentException(
-          "setColor takes Color or List of Color");
-    }
-  }
-
-  @Override
-  public void setColori(Color color) {
-    this.baseColor = color;
-  }
-
-  private void setColors(List<Color> colors) {
-    this.colors = colors;
-  }
-
-  @Override
-  public Color getColor() {
-    return this.baseColor;
-  }
-
-  public List<Color> getColors() {
-    return this.colors;
   }
 
   public void setOutlineColor(Object color) {

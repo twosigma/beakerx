@@ -28,6 +28,8 @@ abstract public class XYGraphics extends Graphics {
   private List<Number> xs;
   private List<Number> ys;
   private String  displayName = "";
+  protected Color baseColor;
+  private   List<Color>  colors;
 
   private Filter lodFilter;
 
@@ -80,6 +82,54 @@ abstract public class XYGraphics extends Graphics {
                                                lodFilter.getText()));
     }
 
+  }
+
+  public void setColor(Object color) {
+    if (color instanceof Color) {
+      this.baseColor = (Color) color;
+    } else if (color instanceof java.awt.Color) {
+      this.baseColor = new Color((java.awt.Color) color);
+    } else if (color instanceof List) {
+      @SuppressWarnings("unchecked")
+      List<Object> cs = (List<Object>) color;
+      setColors(cs);
+    } else {
+      throw new IllegalArgumentException(
+        "setColor takes Color or List of Color");
+    }
+  }
+
+  private void setColors(List<Object> colors) {
+    if (colors != null) {
+      this.colors = new ArrayList<>(colors.size());
+      for (Object c : colors) {
+        if (c instanceof Color) {
+          this.colors.add((Color)c);
+        } else if (c instanceof java.awt.Color) {
+          this.colors.add(new Color((java.awt.Color) c));
+        } else {
+          throw new IllegalArgumentException("setColor takes Color or List of Color");
+        }
+      }
+    } else {
+      this.colors = null;
+    }
+
+  }
+
+
+  public List<Color> getColors() {
+    return this.colors;
+  }
+
+  @Override
+  public void setColori(Color color) {
+    this.baseColor = color;
+  }
+
+  @Override
+  public Color getColor() {
+    return this.baseColor;
   }
 
   abstract protected EnumSet<Filter> getPossibleFilters();

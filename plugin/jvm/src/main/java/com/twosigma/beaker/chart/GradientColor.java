@@ -46,10 +46,20 @@ public class GradientColor implements Serializable{
     this.colors = colors;
   }
 
-  public GradientColor(List<Color> colors){
-    if(!CollectionUtils.isEmpty(colors)){
-      this.colors = colors.toArray(new Color[colors.size()]);
-    }else{
+  public GradientColor(List<Object> colors){
+    if (!CollectionUtils.isEmpty(colors)) {
+      this.colors = new Color[colors.size()];
+      for (int i = 0; i < colors.size(); i++) {
+        Object c = colors.get(i);
+        if (c instanceof Color) {
+          this.colors[i] = (Color) c;
+        } else if (c instanceof java.awt.Color) {
+          this.colors[i] = new Color((java.awt.Color) c);
+        } else {
+          throw new IllegalArgumentException("GradientColor takes List of Color");
+        }
+      }
+    } else {
       this.colors = GradientColor.BROWN_RED_YELLOW.getColors();
     }
   }

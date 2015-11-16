@@ -21,6 +21,7 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Graphics;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,9 +37,11 @@ public abstract class CategoryGraphics extends Graphics {
   public void setColor(Object color) {
     if (color instanceof Color) {
       this.baseColor = (Color) color;
+    } else if (color instanceof java.awt.Color) {
+      this.baseColor = new Color((java.awt.Color)color);
     } else if (color instanceof List) {
       @SuppressWarnings("unchecked")
-      List<Color> cs = (List<Color>) color;
+      List<Object> cs = (List<Object>) color;
       setColors(cs);
     } else {
       throw new IllegalArgumentException(
@@ -46,10 +49,23 @@ public abstract class CategoryGraphics extends Graphics {
     }
   }
 
-  private void setColors(List<Color> colors) {
-    this.colors = colors;
-  }
+  private void setColors(List<Object> colors) {
+    if (colors != null) {
+      this.colors = new ArrayList<>(colors.size());
+      for (Object c : colors) {
+        if (c instanceof Color) {
+          this.colors.add((Color)c);
+        } else if (c instanceof java.awt.Color) {
+          this.colors.add(new Color((java.awt.Color) c));
+        } else {
+          throw new IllegalArgumentException("setColor takes Color or List of Color");
+        }
+      }
+    } else {
+      this.colors = null;
+    }
 
+  }
 
   public List<Color> getColors() {
     return this.colors;

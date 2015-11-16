@@ -31,8 +31,6 @@ public class Bars extends XYGraphics {
   private List<Number> widths;
   private Number baseBase = 0.0d;
   private List<Number> bases;
-  private Color baseColor;
-  private List<Color> colors;
   private Color baseOutlineColor;
   private List<Color> outlineColors;
 
@@ -85,37 +83,6 @@ public class Bars extends XYGraphics {
 
   public List<Number> getWidths() {
     return this.widths;
-  }
-
-  public void setColor(Object color) {
-    if (color instanceof Color) {
-      this.baseColor = (Color) color;
-    } else if (color instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<Color> cs = (List<Color>) color;
-      setColors(cs);
-    } else {
-      throw new IllegalArgumentException(
-          "setColor takes Color or List of Color");
-    }
-  }
-
-  @Override
-  public void setColori(Color color) {
-    this.baseColor = color;
-  }
-
-  private void setColors(List<Color> colors) {
-    this.colors = colors;
-  }
-
-  @Override
-  public Color getColor() {
-    return this.baseColor;
-  }
-
-  public List<Color> getColors() {
-    return this.colors;
   }
 
   public void setOutlineColor(Object color) {

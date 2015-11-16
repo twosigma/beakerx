@@ -972,6 +972,9 @@
           return "New Notebook";
         }
       },
+      getNotebookUriType: function() {
+        return _uriType;
+      },
       getNotebookTitle: function() {
         if (_notebookUri.get()) {
           return _notebookUri.get().replace(/^.*[\\\/]/, '');

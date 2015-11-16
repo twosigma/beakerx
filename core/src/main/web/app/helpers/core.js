@@ -49,7 +49,8 @@
       bkNotebookCellModelManager,
       bkElectron,
       modalDialogOp,
-      Upload) {
+      Upload,
+      GLOBALS) {
 
     function isFilePath(path) {
       return path.split('/').pop() !== '';
@@ -161,9 +162,9 @@
       }
     };
 
-    var LOCATION_FILESYS = "file";
-    var LOCATION_HTTP = "http";
-    var LOCATION_AJAX = "ajax";
+    var LOCATION_FILESYS = GLOBALS.FILE_LOCATION.FILESYS;
+    var LOCATION_HTTP = GLOBALS.FILE_LOCATION.HTTP;
+    var LOCATION_AJAX = GLOBALS.FILE_LOCATION.AJAX;
 
     // fileLoaders are responsible for loading files and output the file content as string
     // fileLoader impl must define an 'load' method which returns a then-able

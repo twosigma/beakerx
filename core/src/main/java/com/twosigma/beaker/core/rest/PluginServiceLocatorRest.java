@@ -609,7 +609,7 @@ public class PluginServiceLocatorRest {
     List<Future<String>> futures = executor.invokeAll(Arrays.asList(new Task()),
                                                       1,
                                                       TimeUnit.SECONDS);
-    executor.shutdown();
+    executor.shutdownNow();
 
 
     String hash = futures.size() > 0 ? futures.get(0).get() : null;

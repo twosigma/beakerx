@@ -1306,7 +1306,7 @@
           var saveFn = bkHelper.saveNotebookAs;
           var saveButtonTitle = "Save";
           var initUri = bkSessionManager.getNotebookPath();
-          if (initUri !== "New Notebook") {
+          if (bkSessionManager.isSavable()) {
             saveFn = bkHelper.renameNotebookTo;
             saveButtonTitle = "Rename";
           } else {

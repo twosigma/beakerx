@@ -1674,55 +1674,6 @@
           scope.stdmodel = plotFormatter.standardizeModel(model, scope.prefs);
         };
 
-        scope.dumpState = function() {
-          var state = {};
-
-          state.showAllItems = scope.showAllItems;
-          state.plotSize = scope.plotSize;
-          state.zoomed = scope.zoomed;
-          state.focus = scope.focus;
-
-          state.lodOn = [];
-          state.lodType = [];
-          state.lodAuto = [];
-          state.zoomHash = [];
-          state.showItem = [];
-          var data = scope.stdmodel.data;
-          for (var i = 0; i < data.length; i++) {
-            state.lodOn[i] = data[i].lodOn;
-            state.lodType[i] = data[i].lodType;
-            state.lodAuto[i] = data[i].lodAuto;
-            state.zoomHash[i] = data[i].zoomHash;
-            state.showItem[i] = data[i].showItem;
-          }
-          state.visibleItem = scope.visibleItem;
-          state.legendableItem = scope.legendableItem;
-          state.defaultFocus = scope.defaultFocus;
-          return state;
-        };
-
-        scope.loadState = function(state) {
-          scope.showAllItems = state.showAllItems;
-          scope.plotSize = state.plotSize;
-          scope.zoomed = state.zoomed;
-          scope.focus = state.focus;
-          var data = scope.stdmodel.data;
-          for (var i = 0; i < data.length; i++) {
-            if(data[i].isLodItem === true){
-              data[i].lodOn = state.lodOn[i];
-              if (state.lodOn[i]) {
-                data[i].applyLodType(state.lodType[i]);
-                data[i].applyLodAuto(state.lodAuto[i]);
-                data[i].applyZoomHash(state.zoomHash[i]);
-              }
-            }
-            data[i].showItem = state.showItem[i];
-          }
-          scope.visibleItem = state.visibleItem;
-          scope.legendableItem = state.legendableItem;
-          scope.defaultFocus = state.defaultFocus;
-          scope.fixFocus(scope.defaultFocus);
-        };
 
         scope.initFlags = function() {
           scope.showAllItems = true;
@@ -1746,18 +1697,11 @@
           // init flags
           scope.initFlags();
 
-          // see if previous state can be applied
           scope.focus = {};
           scope.tips = {};
           scope.plotSize = {};
 
           _(scope.plotSize).extend(scope.stdmodel.plotSize);
-          var savedstate = scope.model.getDumpState();
-          if (savedstate !== undefined && savedstate.plotSize !== undefined) {
-            scope.loadState(savedstate);
-          } else {
-            scope.setDumpState(scope.dumpState());
-          }
 
           // create layout elements
           scope.initLayout();
@@ -1817,28 +1761,7 @@
         };
 
 
-        scope.getDumpState = function () {
-          if (scope.model.getDumpState !== undefined) {
-            return scope.model.getDumpState();
-          }
-        };
-
-
-        scope.setDumpState = function (state) {
-          if (scope.model.setDumpState !== undefined) {
-              scope.model.setDumpState(state);
-
-              bkSessionManager.setNotebookModelEdited(true);
-              bkUtils.refreshRootScope();
-          }
-        };
-
         scope.init(); // initialize
-        scope.$watch('getDumpState()', function (result) {
-          if (result !== undefined && result.plotSize === undefined) {
-            scope.setDumpState(scope.dumpState());
-          }
-        });
 
         scope.getCellWidth = function () {
           return scope.jqcontainer.width();
@@ -1848,21 +1771,7 @@
           return scope.jqcontainer.height();
         };
 
-        var watchCellSize = function () {
-          if (!scope.model.isShowOutput || (scope.model.isShowOutput && scope.model.isShowOutput() === true)) {
-            scope.plotSize.width = scope.getCellWidth();
-            scope.plotSize.height = scope.getCellHeight();
-            scope.setDumpState(scope.dumpState());
-          }
-        };
 
-        scope.$watch('getCellWidth()', function () {
-          watchCellSize();
-        });
-
-        scope.$watch('getCellHeight()', function () {
-          watchCellSize();
-        });
 
         scope.getCellModel = function() {
           return scope.model.getCellModel();
@@ -1872,7 +1781,6 @@
         });
 
         scope.$on('$destroy', function() {
-          scope.setDumpState(scope.dumpState());
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
           scope.jqlegendcontainer.find("#plotLegend").remove();

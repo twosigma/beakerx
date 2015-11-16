@@ -60,6 +60,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.jvnet.winp.WinProcess;
@@ -606,13 +607,13 @@ public class PluginServiceLocatorRest {
 
     ExecutorService executor = Executors.newSingleThreadExecutor();
     List<Future<String>> futures = executor.invokeAll(Arrays.asList(new Task()),
-                                                      5,
+                                                      1,
                                                       TimeUnit.SECONDS);
     executor.shutdown();
 
 
     String hash = futures.size() > 0 ? futures.get(0).get() : null;
-    if (null == hash) {
+    if (StringUtils.isEmpty(hash)) {
       throw new RuntimeException("unable to get IPython hash");
     }
     return hash;

@@ -66,7 +66,7 @@ import org.jvnet.winp.WinProcess;
 
 /**
  * This is the service that locates a plugin service. And a service will be started if the target
- * service doesn't exist. See {@link locatePluginService} for details
+ * service doesn't exist.
  */
 @Path("plugin-services")
 @Produces(MediaType.APPLICATION_JSON)
@@ -588,26 +588,27 @@ public class PluginServiceLocatorRest {
 
   private String hashIPythonPassword(String password, String pluginId, String command)
     throws IOException, InterruptedException {
-    final String[] hash = {null};
     List<String> cmdBase = pythonBaseCommand(pluginId, command);
     cmdBase.add("--hash");
     cmdBase.add(password);
-    final Process proc = Runtime.getRuntime().exec(listToArray(cmdBase), buildEnv(pluginId, null));
-    new Thread(new Runnable() {
-      public void run() {
-        BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-        try {
-          hash[0] = input.readLine();
-        } catch (IOException e) {
-          //expected
-        }
-      }
-    }).start();
-    proc.waitFor();
-    if (StringUtils.isEmpty(hash[0])) {
+
+    ProcessBuilder processBuilder = new ProcessBuilder(listToArray(cmdBase));
+    Map<String, String> environment = processBuilder.environment();
+    String[] buildEnv = buildEnv(pluginId, null);
+    for (String env : buildEnv) {
+      String[] envPairs = env.split("=");
+      if (envPairs.length == 2)
+        environment.put(envPairs[0], envPairs[1]);
+    }
+    processBuilder.redirectErrorStream(true);
+    Process process = processBuilder.start();
+    BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+    String hash = br.readLine();
+    if (StringUtils.isEmpty(hash)) {
       throw new RuntimeException("unable to get IPython hash");
     }
-    return hash[0];
+    return hash;
   }
 
   private void generateIPythonConfig(String pluginId, int port, String password, String command)

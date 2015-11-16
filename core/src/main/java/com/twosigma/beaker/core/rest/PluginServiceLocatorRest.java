@@ -592,20 +592,11 @@ public class PluginServiceLocatorRest {
     cmdBase.add("--hash");
     cmdBase.add(password);
 
-    ProcessBuilder processBuilder = new ProcessBuilder(listToArray(cmdBase));
-    Map<String, String> environment = processBuilder.environment();
-    String[] buildEnv = buildEnv(pluginId, null);
-    for (String env : buildEnv) {
-      String[] envPairs = env.split("=");
-      if (envPairs.length == 2)
-        environment.put(envPairs[0], envPairs[1]);
-    }
-    processBuilder.redirectErrorStream(true);
-    Process process = processBuilder.start();
-    BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
+    Process proc = Runtime.getRuntime().exec(listToArray(cmdBase), buildEnv(pluginId, null));
+    BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+    new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
     String hash = br.readLine();
-    if (StringUtils.isEmpty(hash)) {
+    if (null == hash) {
       throw new RuntimeException("unable to get IPython hash");
     }
     return hash;

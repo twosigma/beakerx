@@ -20,6 +20,9 @@ before_install:
   - "sudo apt-get install -y nginx"
   - 'ln -s /usr/bin/node /home/travis/build/twosigma/beaker-notebook/'
   - 'ln -s /usr/bin/npm /home/travis/build/twosigma/beaker-notebook/'
+install:
+  - travis_retry npm install ./core/
+  - travis_retry npm install ./test/
 before_script:
   - export PATH=/home/travis/build/twosigma/beaker-notebook:$PATH
   - sudo apt-get install -y libzmq3-dbg libzmq3-dev libzmq3

@@ -192,6 +192,9 @@
       save: function(uri, contentAsString, overwrite) {
         return bkUtils.saveFile(uri, contentAsString, overwrite);
       },
+      rename: function(oldUri, newUri, overwrite) {
+        return bkUtils.renameFile(oldUri, newUri, overwrite);
+      },
       showFileChooser: function(initUri) {
         return bkCoreManager.showDefaultSavingFileChooser(initUri);
       }
@@ -360,7 +363,7 @@
         $sessionStorage.importedNotebook = notebook;
         $location.path("/session/import").search({});
       },
-      showDefaultSavingFileChooser: function(initPath) {
+      showDefaultSavingFileChooser: function(initPath, saveButtonTitle) {
         var self = this;
         var deferred = bkUtils.newDeferred();
         var requests = [bkUtils.getHomeDirectory(), bkUtils.getStartUpDirectory(),
@@ -411,7 +414,11 @@
             return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');
           };
           fileChooserStrategy.treeViewfs.applyExtFilter = false;
-          var fileChooserTemplate = JST['template/savenotebook']({homedir: homeDir });
+          saveButtonTitle = saveButtonTitle || "Save";
+          var fileChooserTemplate = JST['template/savenotebook']({
+            homedir: homeDir,
+            saveButtonTitle: saveButtonTitle
+          });
           var fileChooserResultHandler = function (chosenFilePath) {
             deferred.resolve({
               uri: chosenFilePath,
@@ -494,6 +501,19 @@
           }
         };
 
+        var goToNextCodeCell = function(){
+          var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
+          while (nextCell) {
+            if (scope.bkNotebook.getFocusable(nextCell.id)) {
+              scope.bkNotebook.getFocusable(nextCell.id).focus();
+              break;
+            } else {
+              nextCell = notebookCellOp.findNextCodeCell(nextCell.id);
+            }
+          }
+          return nextCell;
+        };
+
         var moveFocusDown = function() {
           // move focus to next code cell
           var thisCellId = scope.cellmodel.id;
@@ -517,9 +537,9 @@
             var t = scope.bkNotebook.getFocusable(prevCell.id);
             if (t) {
               t.focus();
-              var top = t.cm.cursorCoords(true,'window').top;
+              var top = t.cm.cursorCoords(true, 'window').top;
               if ( top < 150)
-                window.scrollBy(0, top-150);
+                window.scrollBy(0, top - 150);
               break;
             } else {
               prevCell = notebookCellOp.getPrev(prevCell.id);
@@ -535,7 +555,7 @@
 
         var evaluateAndGoDown = function() {
           scope.evaluate();
-          moveFocusDown();
+          goToNextCodeCell();
         };
 
         var maybeShowAutoComplete = function(cm) {
@@ -739,7 +759,7 @@
           lineNumbers: true,
           matchBrackets: true,
           extraKeys: keys,
-          goToNextCell: moveFocusDown,
+          goToNextCodeCell: goToNextCodeCell,
           scrollbarStyle: "simple"
         };
       },

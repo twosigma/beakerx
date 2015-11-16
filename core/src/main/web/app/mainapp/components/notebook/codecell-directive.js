@@ -395,7 +395,15 @@
           }, 1);
         });
 
+        scope.focus = function() {
+          scope.cm.focus();
+        };
+
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
+
+        scope.focus = function() {
+          scope.cm.focus();
+        };
 
         // cellmodel.body --> CodeMirror
         scope.$watch('cellmodel.input.body', function(newVal, oldVal) {
@@ -479,7 +487,7 @@
                 if (currentLine !== cm.lastLine()) {
                   cm.setCursor(currentLine + 1, 0);
                 } else {
-                  codeMirrorOptions.goToNextCell(cm);
+                  codeMirrorOptions.goToNextCodeCell(cm);
                 }
               }
             })

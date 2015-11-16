@@ -23,12 +23,9 @@ import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -44,7 +41,12 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -58,7 +60,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.jvnet.winp.WinProcess;
@@ -388,7 +389,7 @@ public class PluginServiceLocatorRest {
       @QueryParam("startedIndicatorStream") @DefaultValue("stdout") String startedIndicatorStream,
       @QueryParam("recordOutput") @DefaultValue("false") boolean recordOutput,
       @QueryParam("waitfor") String waitfor)
-      throws InterruptedException, IOException {
+    throws InterruptedException, IOException, ExecutionException {
       
     PluginConfig pConfig = this.plugins.get(pluginId);
     if (pConfig != null && pConfig.isStarted()) {
@@ -586,16 +587,30 @@ public class PluginServiceLocatorRest {
     }
   }
 
-  private String hashIPythonPassword(String password, String pluginId, String command)
-    throws IOException, InterruptedException {
-    List<String> cmdBase = pythonBaseCommand(pluginId, command);
+  private String hashIPythonPassword(String password, final String pluginId, String command)
+    throws IOException, InterruptedException, ExecutionException {
+
+    final List<String> cmdBase = pythonBaseCommand(pluginId, command);
     cmdBase.add("--hash");
     cmdBase.add(password);
 
-    Process proc = Runtime.getRuntime().exec(listToArray(cmdBase), buildEnv(pluginId, null));
-    BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-    new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
-    String hash = br.readLine();
+    class Task implements Callable<String> {
+      @Override
+      public String call() throws Exception {
+        Process proc = Runtime.getRuntime().exec(listToArray(cmdBase), buildEnv(pluginId, null));
+        BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+        new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
+        return br.readLine();
+      }
+    }
+
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    List<Future<String>> futures = executor.invokeAll(Arrays.asList(new Task()),
+                                                      1,
+                                                      TimeUnit.MINUTES);// Timeout of 1 minute.
+    executor.shutdown();
+
+    String hash = futures.get(0).get();
     if (null == hash) {
       throw new RuntimeException("unable to get IPython hash");
     }
@@ -603,8 +618,7 @@ public class PluginServiceLocatorRest {
   }
 
   private void generateIPythonConfig(String pluginId, int port, String password, String command)
-    throws IOException, InterruptedException
-  {
+    throws IOException, InterruptedException, ExecutionException {
     // Can probably determine exactly what is needed and then just
     // make the files ourselves but this is a safe way to get started.
     List<String> cmd = pythonBaseCommand(pluginId, command);

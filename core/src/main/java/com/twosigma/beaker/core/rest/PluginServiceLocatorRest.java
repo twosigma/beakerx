@@ -606,11 +606,12 @@ public class PluginServiceLocatorRest {
 
     ExecutorService executor = Executors.newSingleThreadExecutor();
     List<Future<String>> futures = executor.invokeAll(Arrays.asList(new Task()),
-                                                      1,
-                                                      TimeUnit.MINUTES);// Timeout of 1 minute.
+                                                      5,
+                                                      TimeUnit.SECONDS);
     executor.shutdown();
 
-    String hash = futures.get(0).get();
+
+    String hash = futures.size() > 0 ? futures.get(0).get() : null;
     if (null == hash) {
       throw new RuntimeException("unable to get IPython hash");
     }

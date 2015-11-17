@@ -23,7 +23,7 @@
 
   var module = angular.module('bk.outputDisplay');
 
-  module.factory("bkOutputDisplayFactory", function($rootScope, $sce, bkHelper) {
+  module.factory("bkOutputDisplayFactory", function($rootScope, bkHelper) {
 
     var impls = {
         "Text": {
@@ -101,9 +101,9 @@
               }
             }
 
-            $scope.shortError   = $sce.trustAsHtml(shortError);
+            $scope.shortError   = shortError;
             $scope.canExpand    = longErrorIndex > 0;
-            $scope.longError    = $sce.trustAsHtml(errors.slice(longErrorIndex).join("\n"));
+            $scope.longError    = errors.slice(longErrorIndex).join("\n");
           });
         }
       },

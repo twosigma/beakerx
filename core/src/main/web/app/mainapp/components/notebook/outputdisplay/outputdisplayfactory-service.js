@@ -79,10 +79,10 @@
       },
       "Error": {
         template: "<pre class='out_error'>" +
-            "<span ng-show='canExpand' class='toggle-error' ng-click='expanded = !expanded'>{{expanded ? '-' : '+'}}</span>" +
-            "<span ng-bind-html='shortError'></span></pre>" +
-            "<pre ng-show='expanded'><span ng-bind-html='longError'></span>" +
-            "</pre>",
+        "<span ng-show='canExpand' class='toggle-error' ng-click='expanded = !expanded'>{{expanded ? '-' : '+'}}</span>" +
+        "<span>{{shortError}}</span></pre>" +
+        "<pre ng-show='expanded'><span>{{longError}}</span>" +
+        "</pre>",
         controller: function($scope, $element) {
           $scope.expanded = false;
 

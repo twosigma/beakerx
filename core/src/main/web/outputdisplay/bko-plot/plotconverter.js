@@ -283,11 +283,13 @@
         newmodel.margin = {};
         // set axis bound as focus
         if (model.x_auto_range === false) {
-          if (model.x_lower_bound != null) {
-            newmodel.userFocus.xl = model.x_lower_bound;
-          }
-          if (model.x_upper_bound != null) {
-            newmodel.userFocus.xr = model.x_upper_bound;
+          if (model.x_lower_bound !== model.x_upper_bound) {
+            if (model.x_lower_bound != null) {
+              newmodel.userFocus.xl = model.x_lower_bound;
+            }
+            if (model.x_upper_bound != null) {
+              newmodel.userFocus.xr = model.x_upper_bound;
+            }
           }
         } else {
           if (model.x_lower_margin != null) {

@@ -1302,11 +1302,16 @@
           }
         };
 
+        $scope.renamingAllowed = function() {
+          var uriType = bkSessionManager.getNotebookUriType();
+          return !uriType || GLOBALS.FILE_LOCATION.FILESYS === uriType;
+        };
+
         $scope.renameNotebook = function() {
           var saveFn = bkHelper.saveNotebookAs;
           var saveButtonTitle = "Save";
           var initUri = bkSessionManager.getNotebookPath();
-          if (initUri !== "New Notebook") {
+          if (bkSessionManager.isSavable()) {
             saveFn = bkHelper.renameNotebookTo;
             saveButtonTitle = "Rename";
           } else {
@@ -1328,7 +1333,11 @@
         };
 
         $scope.pathname = function() {
-          return bkSessionManager.getNotebookPath();
+          if ($scope.isEdited()) {
+            return '*' + bkSessionManager.getNotebookPath();
+          } else {
+            return bkSessionManager.getNotebookPath();
+          }
         };
 
         $scope.$on("$locationChangeStart", function(event, next, current) {

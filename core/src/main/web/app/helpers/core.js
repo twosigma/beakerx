@@ -49,7 +49,8 @@
       bkNotebookCellModelManager,
       bkElectron,
       modalDialogOp,
-      Upload) {
+      Upload,
+      GLOBALS) {
 
     function isFilePath(path) {
       return path.split('/').pop() !== '';
@@ -161,9 +162,9 @@
       }
     };
 
-    var LOCATION_FILESYS = "file";
-    var LOCATION_HTTP = "http";
-    var LOCATION_AJAX = "ajax";
+    var LOCATION_FILESYS = GLOBALS.FILE_LOCATION.FILESYS;
+    var LOCATION_HTTP = GLOBALS.FILE_LOCATION.HTTP;
+    var LOCATION_AJAX = GLOBALS.FILE_LOCATION.AJAX;
 
     // fileLoaders are responsible for loading files and output the file content as string
     // fileLoader impl must define an 'load' method which returns a then-able
@@ -504,8 +505,9 @@
         var goToNextCodeCell = function(){
           var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
           while (nextCell) {
-            if (scope.bkNotebook.getFocusable(nextCell.id)) {
-              scope.bkNotebook.getFocusable(nextCell.id).focus();
+            var focusable = scope.bkNotebook.getFocusable(nextCell.id);
+            if (focusable && focusable.isShowInput()) {
+              focusable.focus();
               break;
             } else {
               nextCell = notebookCellOp.findNextCodeCell(nextCell.id);
@@ -519,8 +521,9 @@
           var thisCellId = scope.cellmodel.id;
           var nextCell = notebookCellOp.getNext(thisCellId);
           while (nextCell) {
-            if (scope.bkNotebook.getFocusable(nextCell.id)) {
-              scope.bkNotebook.getFocusable(nextCell.id).focus();
+            var focusable = scope.bkNotebook.getFocusable(nextCell.id);
+            if (focusable && focusable.isShowInput()) {
+              focusable.focus();
               break;
             } else {
               nextCell = notebookCellOp.getNext(nextCell.id);
@@ -534,11 +537,11 @@
           var thisCellID = scope.cellmodel.id;
           var prevCell = notebookCellOp.getPrev(thisCellID);
           while (prevCell) {
-            var t = scope.bkNotebook.getFocusable(prevCell.id);
-            if (t) {
-              t.focus();
-              var top = t.cm.cursorCoords(true, 'window').top;
-              if ( top < 150)
+            var focusable = scope.bkNotebook.getFocusable(prevCell.id);
+            if (focusable && focusable.isShowInput()) {
+              focusable.focus();
+              var top = focusable.cm.cursorCoords(true, 'window').top;
+              if (top < 150)
                 window.scrollBy(0, top - 150);
               break;
             } else {

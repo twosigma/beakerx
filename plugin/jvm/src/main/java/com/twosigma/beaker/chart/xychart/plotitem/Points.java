@@ -19,6 +19,7 @@ package com.twosigma.beaker.chart.xychart.plotitem;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Filter;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -34,8 +35,6 @@ public class Points extends XYGraphics {
   private List<ShapeType> shapes;
   private Boolean baseFill;
   private List<Boolean> fills;
-  private Color baseColor;
-  private List<Color> colors;
   private Color baseOutlineColor;
   private List<Color> outlineColors;
 
@@ -114,43 +113,14 @@ public class Points extends XYGraphics {
     return this.fills;
   }
 
-  public void setColor(Object color) {
-    if (color instanceof Color) {
-      this.baseColor = (Color) color;
-    } else if (color instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<Color> cs = (List<Color>) color;
-      setColors(cs);
-    } else {
-      throw new IllegalArgumentException(
-          "setColor takes Color or List of Color");
-    }
-  }
-
-  @Override
-  public void setColori(Color color) {
-    this.baseColor = color;
-  }
-
-  private void setColors(List<Color> colors) {
-    this.colors = colors;
-  }
-
-  @Override
-  public Color getColor() {
-    return this.baseColor;
-  }
-
-  public List<Color> getColors() {
-    return this.colors;
-  }
-
   public void setOutlineColor(Object color) {
     if (color instanceof Color) {
       this.baseOutlineColor = (Color) color;
+    } else if (color instanceof java.awt.Color) {
+      this.baseOutlineColor = new Color((java.awt.Color) color);
     } else if (color instanceof List) {
       @SuppressWarnings("unchecked")
-      List<Color> cs = (List<Color>) color;
+      List<Object> cs = (List<Object>) color;
       setOutlineColors(cs);
     } else {
       throw new IllegalArgumentException(
@@ -158,8 +128,21 @@ public class Points extends XYGraphics {
     }
   }
 
-  private void setOutlineColors(List<Color> colors) {
-    this.outlineColors = colors;
+  private void setOutlineColors(List<Object> colors) {
+    if (colors != null) {
+      this.outlineColors = new ArrayList<>(colors.size());
+      for (Object c : colors) {
+        if (c instanceof Color) {
+          this.outlineColors.add((Color)c);
+        } else if (c instanceof java.awt.Color) {
+          this.outlineColors.add(new Color((java.awt.Color) c));
+        } else {
+          throw new IllegalArgumentException("setColor takes Color or List of Color");
+        }
+      }
+    } else {
+      this.outlineColors = null;
+    }
   }
 
   public Color getOutlineColor() {

@@ -24,7 +24,6 @@ import com.twosigma.beaker.shared.module.util.GeneralUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,7 +56,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.jvnet.winp.WinProcess;
@@ -105,6 +103,9 @@ public class PluginServiceLocatorRest {
     "location %(base_url)s/kernels/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/kernels;\n" +
     "}\n" +
+    "location %(base_url)s/kernelspecs/ {\n" +
+    "  proxy_pass http://127.0.0.1:%(port)s/kernelspecs;\n" +
+    "}\n" +
     "location ~ %(base_url)s/kernels/[0-9a-f-]+/ {\n" +
     IPYTHON_RULES_BASE;
 
@@ -115,6 +116,10 @@ public class PluginServiceLocatorRest {
     "}\n" +
     "location %(base_url)s/api/kernels/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;\n" +
+    "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
+    "}\n" +
+    "location %(base_url)s/api/kernelspecs/ {\n" +
+    "  proxy_pass http://127.0.0.1:%(port)s/api/kernelspecs;\n" +
     "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
     "}\n" +
     "location %(base_url)s/api/sessions/ {\n" +
@@ -582,35 +587,6 @@ public class PluginServiceLocatorRest {
     // XXX why is this in a try block?
     try (PrintWriter out = new PrintWriter(path.toFile())) {
       out.print(contents);
-    }
-  }
-
-
-  @GET
-  @Path("/jupiter_kernelspec_list")
-  public Response jupiterKernelspecList() {
-
-    try {
-      final String[] output = {""};
-      final Process p = Runtime.getRuntime().exec("jupyter kernelspec list --json");
-
-      new Thread(new Runnable() {
-        public void run() {
-          BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-          String line = null;
-          try {
-            while ((line = input.readLine()) != null)
-              output[0] += line;
-          } catch (IOException e) {
-            throw new RuntimeException(e);
-          }
-        }
-      }).start();
-
-      p.waitFor();
-      return Response.status(200).entity(output[0]).build();
-    } catch (InterruptedException | IOException e) {
-      throw new RuntimeException(e);
     }
   }
 

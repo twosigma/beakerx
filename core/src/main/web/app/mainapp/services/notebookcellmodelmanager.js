@@ -438,7 +438,7 @@
       deleteAllOutputCells: function() {
         if (cells) {
           _.each(cells, function(cell) {
-            if (cell.output) {
+            if (cell.output && cell.output.result && cell.output.result.status !== 'RUNNING') {
               cell.output.result = undefined;
               cell.output.elapsedTime = undefined;
             }

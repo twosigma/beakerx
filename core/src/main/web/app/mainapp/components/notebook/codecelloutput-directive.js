@@ -87,6 +87,13 @@
               return result;
             }
           },
+          getOutputHeight: function() {
+            var style, height = $scope.model.height;
+            if (height)
+              style = {'height': height + 'px'};
+
+            return style;
+          },
           isShowOutput: function() {
             return $scope.isShowOutput();
           },

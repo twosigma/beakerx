@@ -1,0 +1,43 @@
+{
+  "name": "request-frame",
+  "version": "1.4.1",
+  "description": "requestAnimationFrame & cancelAnimationFrame polyfill for optimal cross-browser development.",
+  "main": "dist/request-frame.js",
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "keywords": [
+    "requestAnimationFrame",
+    "webkitRequestAnimationFrame",
+    "mozRequestAnimationFrame",
+    "cancelAnimationFrame",
+    "mozCancelAnimationFrame",
+    "webkitCancelAnimationFrame",
+    "webkitCancelRequestAnimationFrame",
+    "setTimeout",
+    "cancelTimeout",
+    "timing functions",
+    "requestAnimationFrame polyfill",
+    "polyfill",
+    "animation timing",
+    "animation timestamp"
+  ],
+  "author": "Julien Etienne",
+  "license": "MIT",
+  "ignore": [
+    "node_modules",
+    "bower_components",
+    "test"
+  ],
+  "homepage": "https://github.com/julienetie/request-frame",
+  "_release": "1.4.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.4.1",
+    "commit": "80b142f616843165af30733cd3ecec062e6d6c4a"
+  },
+  "_source": "git://github.com/julienetie/request-frame.git",
+  "_target": "1.4.1",
+  "_originalSource": "request-frame"
+}

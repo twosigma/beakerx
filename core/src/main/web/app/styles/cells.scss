@@ -116,6 +116,7 @@ bk-section-cell {
 .code-cell-area {
   .code-cell-input {
     padding: $grid-row-height*2 $grid-gutter-width $grid-row-height;
+    position: relative;
 
     .advanced-mode & {
       padding: 8px $grid-gutter-width;
@@ -174,18 +175,20 @@ bk-section-cell {
 
 .bkcell {
   .power-menu {
-    position: absolute;
+    position:     absolute;
+    background:   rgba(255, 255, 255, 0.5);
+    z-index:      1;
 
     &:not(.input-hidden) {
-      bottom: 90px;
-      right: 20px;
+      bottom:     10px;
+      right:      20px;
     }
 
     &.input-hidden {
-      top: 16px;
-      left: 120px;
+      top:        16px;
+      left:       110px;
       .advanced-mode & {
-        display: none;
+        display:  none;
       }
     }
   }

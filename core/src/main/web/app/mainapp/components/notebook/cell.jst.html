@@ -49,12 +49,5 @@
       <div class="loading-spinner rotating"></div>
     </div>
   </div>
-
-  <div data-ng-if="cellmodel.type=='code'" class="power-menu" data-ng-class="{'input-hidden': cellmodel.input.hidden}">
-    <div class="dropdown dropdown-promoted" data-toggle="dropdown" data-ng-show="cellmodel.initialization">
-        <div class="cell-power-button dropdown-toggle" title="initialization cell is on"><i class="fa fa-power-off"></i></div>
-        <bk-dropdown-menu menu-items="cellmodel.power.menu.items" submenu-classes="drop-left"></bk-dropdown-menu>
-    </div>
-  </div>
   <bk-new-cell-menu config="newCellMenuConfig" ng-class="isLarge && 'large'" is-large="isLarge" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>
 </div>

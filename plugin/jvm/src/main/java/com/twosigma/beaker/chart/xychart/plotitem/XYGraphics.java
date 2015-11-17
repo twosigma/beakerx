@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
+import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Filter;
 import com.twosigma.beaker.chart.Graphics;
 

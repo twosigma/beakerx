@@ -30,8 +30,6 @@ public class Line extends XYGraphics {
                                                                          Filter.RIVER);
 
 
-  private Color       color;
-  private List<Color> colors;
   private Float width = 1.5f;
   private StrokeType style;
   private Integer    interpolation;
@@ -47,38 +45,6 @@ public class Line extends XYGraphics {
   public Line(List<Number> xs, List<Number> ys) {
     super.setX(xs);
     super.setY(ys);
-  }
-
-  public void setColor(Object color) {
-    if (color instanceof Color) {
-      this.color = (Color) color;
-    } else if (color instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<Color> temp = (List<Color>) color;
-      setColors(temp);
-    } else {
-      throw new IllegalArgumentException(
-        "setColor takes Color or List of Color");
-    }
-  }
-
-  @Override
-  public void setColori(Color color) {
-    this.color = color;
-  }
-
-  private void setColors(List<Color> colors) {
-    this.colors = colors;
-  }
-
-
-  @Override
-  public Color getColor() {
-    return this.color;
-  }
-
-  public List<Color> getColors() {
-    return this.colors;
   }
 
   public void setWidth(Float width) {

@@ -32,8 +32,6 @@ public class Stems extends XYGraphics {
 
   private Number baseBase;
   private List<Number> bases;
-  private Color baseColor;
-  private List<Color> colors;
   private Float width = 1.5f;
   private StrokeType baseStyle = StrokeType.SOLID;
   private List<StrokeType> styles;
@@ -62,37 +60,6 @@ public class Stems extends XYGraphics {
 
   public List<Number> getBases() {
     return this.bases;
-  }
-
-  public void setColor(Object color) {
-    if (color instanceof Color) {
-      this.baseColor = (Color) color;
-    } else if (color instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<Color> cs = (List<Color>) color;
-      setColors(cs);
-    } else {
-      throw new IllegalArgumentException(
-          "setColor takes Color or List of Color");
-    }
-  }
-
-  @Override
-  public void setColori(Color color) {
-    this.baseColor = color;
-  }
-
-  private void setColors(List<Color> colors) {
-    this.colors = colors;
-  }
-
-  @Override
-  public Color getColor() {
-    return this.baseColor;
-  }
-
-  public List<Color> getColors() {
-    return this.colors;
   }
 
   public void setWidth(Float width) {

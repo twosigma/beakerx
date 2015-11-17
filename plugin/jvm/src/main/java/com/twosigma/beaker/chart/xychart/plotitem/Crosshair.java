@@ -45,8 +45,15 @@ public class Crosshair {
     return this.width;
   }
 
-  public Crosshair setColor(Color color) {
-    this.color = color;
+  public Crosshair setColor(Object color) {
+    if (color instanceof Color) {
+      this.color = (Color) color;
+    } else if (color instanceof java.awt.Color) {
+      this.color = new Color((java.awt.Color) color);
+    } else {
+      throw new IllegalArgumentException(
+        "setColor takes Color or java.awt.Color");
+    }
     return this;
   }
 

@@ -16,8 +16,7 @@
 (function() {
   "use strict";
   var module = angular.module('bk.outputDisplay');
-  module.directive('bkOutputDisplay', function(
-      $compile, bkOutputDisplayFactory, bkUtils) {
+  module.directive('bkOutputDisplay', function($compile, bkOutputDisplayFactory, bkUtils) {
     var getResultType = function(model) {
       if (model && model.getCellModel()) {
         if (_.isString(model.getCellModel())) {
@@ -54,7 +53,7 @@
             });
           }
           var directiveName = bkOutputDisplayFactory.getDirectiveName(type);
-          element.html("<div " + directiveName + " model='model'></div>");
+          element.html("<div " + directiveName + " model='model' data-ng-style='model.getOutputHeight()'></div>");
           $compile(element.contents())(childScope);
         };
         scope.$watch("type", function(newType, oldType) {

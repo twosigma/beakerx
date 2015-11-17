@@ -36,7 +36,7 @@
       restrict: 'E',
       template: JST['mainapp/components/notebook/codecell'](),
       scope: {cellmodel: '=', cellmenu: '='},
-      controller: function($scope) {
+      controller: function($scope, $element) {
         $scope.cellview = {
           inputMenu: [],
           displays: []
@@ -93,6 +93,14 @@
         $scope.hasOutput = function() {
           return $scope.cellmodel.output.result !== undefined;
         };
+
+        $scope.$watch('cellmodel.output.result', function () {
+          var output = $element.find('.code-cell-output');
+          $timeout(function() {
+            var height = output.height();
+            _.extend($scope.cellmodel.output, {height: height});
+          }, 100);
+        });
 
         $scope.backgroundClick = function(event) {
           if (!$scope.isShowInput() || $(event.toElement).parents().hasClass('code-cell-output')) {
@@ -371,8 +379,7 @@
           }
         });
 
-        var initCodeMirror = function(){
-
+        var initCodeMirror = function() {
           var template = '<textarea class="bkcelltextarea" ng-model="cellmodel.input.body">' + scope.cellmodel.input.body + '</textarea>';
           $(element.find('.bkcelltextarea')[0]).replaceWith($(template));
 
@@ -401,7 +408,6 @@
             delete scope._shouldFocusCodeMirror;
             return scope.cm.focus();
           }
-
         };
 
         scope.displayOutput = false;

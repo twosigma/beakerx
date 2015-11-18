@@ -94,13 +94,14 @@
           return $scope.cellmodel.output.result !== undefined;
         };
 
-        $scope.$watch('cellmodel.output.result', function () {
-          var output = $element.find('.code-cell-output');
-          $timeout(function() {
-            var height = output.height();
-            _.extend($scope.cellmodel.output, {height: height});
-          }, 100);
-        });
+        $scope.getOutputHeight = function() {
+          var style,
+              height = $scope.cellmodel.output && $scope.cellmodel.output.height;
+          if (height)
+            style = {'height': height + 'px'};
+
+          return style;
+        };
 
         $scope.backgroundClick = function(event) {
           if (!$scope.isShowInput() || $(event.toElement).parents().hasClass('code-cell-output')) {
@@ -399,6 +400,16 @@
             initCodeMirror();
             scope.displayOutput = true;
           }, 1);
+        });
+
+        scope.$watch('displayOutput', function(value) {
+          if (!value) return;
+
+          var output = element.find('.code-cell-output');
+          $timeout(function() {
+            if (scope.hasOutput() && output)
+              scope.cellmodel.output.height = output[0].offsetHeight;
+          }, 100);
         });
 
         scope.focus = function() {

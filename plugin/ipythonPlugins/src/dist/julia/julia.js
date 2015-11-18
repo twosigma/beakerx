@@ -134,23 +134,30 @@ define(function(require, exports, module) {
                       baseurl = baseurl.substring(t);
                     }
                   }
-                  var url = myPython.utils.url_join_encode(baseurl, 'api/kernelspecs');
-                  $.ajax(url, {
-                    type: "GET",
-                    dataType: "json",
-                    success: function (kernelspecs, status, xhr) {
-                      var kernelNames = Object.keys(kernelspecs['kernelspecs']);
-                      console.log(kernelNames);
-                      var kernelsCount = kernelNames.length;
-                      for (var i = 0; i < kernelsCount; i++) {
-                        if (kernelNames[i].indexOf('julia') !== -1){
-                          loadKernel(baseurl, kernelNames[i]);
-                          return;
+                  if (ipyVersion == '2') {
+                    loadKernel(baseurl);
+                  } else {
+                    var juliaDefaultKernel = 'julia-0.4';
+                    var url = myPython.utils.url_join_encode(baseurl, 'api/kernelspecs');
+                    $.ajax(url, {
+                      type: "GET",
+                      dataType: "json",
+                      success: function (kernelspecs, status, xhr) {
+                        var kernelNames = Object.keys(kernelspecs['kernelspecs']);
+                        var kernelsCount = kernelNames.length;
+                        for (var i = 0; i < kernelsCount; i++) {
+                          if (kernelNames[i].indexOf('julia') !== -1) {
+                            loadKernel(baseurl, kernelNames[i]);
+                            return;
+                          }
                         }
+                        loadKernel(baseurl, juliaDefaultKernel);
+                      },
+                      error: function () {
+                        loadKernel(baseurl, juliaDefaultKernel);
                       }
-                      loadKernel(baseurl, 'julia-0.3');
-                    }
-                  });
+                    });
+                  }
                 });
             });
           });

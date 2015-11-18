@@ -23,7 +23,7 @@
 
   var module = angular.module('bk.outputDisplay');
 
-  module.factory("bkOutputDisplayFactory", function($rootScope, $sce, bkHelper) {
+  module.factory("bkOutputDisplayFactory", function($rootScope, bkHelper) {
 
     var impls = {
         "Text": {
@@ -87,12 +87,23 @@
           $scope.expanded = false;
 
           $scope.$watch('model.getCellModel()', function(cellModel) {
-            var outputs = $element.find('span');
             var errors  = Array.prototype.concat(cellModel);
+            var shortError = "";
+            var longErrorIndex;
+            for (var i = 0; i < errors.length; i++) {
+              if (errors[i].indexOf("	at") === 0) {
+                longErrorIndex = i;
+                break;
+              }
+              shortError += errors[i] + "\n";
+              if(i === 0){
+                shortError += "\n";
+              }
+            }
 
-            $scope.shortError   = errors[0];
-            $scope.canExpand    = errors.length > 1;
-            $scope.longError    = errors.slice(1).join("\n");
+            $scope.shortError   = shortError;
+            $scope.canExpand    = longErrorIndex > 0;
+            $scope.longError    = errors.slice(longErrorIndex).join("\n");
           });
         }
       },

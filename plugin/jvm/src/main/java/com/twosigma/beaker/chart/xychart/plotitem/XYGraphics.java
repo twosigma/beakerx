@@ -20,7 +20,12 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Filter;
 import com.twosigma.beaker.chart.Graphics;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -33,8 +38,26 @@ abstract public class XYGraphics extends Graphics {
 
   private Filter lodFilter;
 
-  public void setX(List<Number> xs) {
-    this.xs = xs;
+  public void setX(List<Object> xs) {
+    this.xs = new ArrayList<>();
+    if(xs != null){
+      for (Object x : xs) {
+        if (x instanceof Number) {
+          this.xs.add((Number)x);
+        } else if (x instanceof Date) {
+          Date date = (Date)x;
+          this.xs.add(date.getTime());
+        } else {
+          throw new IllegalArgumentException("x coordinates should be the list of numbers or java.util.Date objects");
+        }
+//        remove Java8 feature LocalDateTime, that has to wait
+//        else if (x instanceof LocalDateTime) {
+//          LocalDateTime date = (LocalDateTime)x;
+//          ZonedDateTime zdate = date.atZone(ZoneId.of("UTC"));
+//          this.xs.add(zdate.toEpochSecond() * 1000 + date.get(ChronoField.MILLI_OF_SECOND));
+//        }
+      }
+    }
   }
 
   public List<Number> getX() {

@@ -47,6 +47,9 @@ bk-markdown-editable .CodeMirror {
   color: $font-grey;
   position: absolute;
   font-size: 12px;
+  .advanced-mode & {
+    top: 11px;
+  }
 }
 .loading-state {
   color: $font-grey;

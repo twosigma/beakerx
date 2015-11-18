@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# to build: sudo docker build -t ubuntu/beakerbase . # consider "build --no-cache" to sync network deps
+# to build: sudo docker build -t beakernotebook/beaker-base . # consider "build --no-cache" to sync network deps
 # results hosted at: https://registry.hub.docker.com/u/beakernotebook/beaker/
 
 FROM ubuntu:14.04
@@ -108,12 +108,14 @@ RUN apt-get install -y ruby2.1 ruby2.1-dev libtool && \
 #  Node  #
 ##########
 
+RUN apt-get install curl
+
 # Note the new setup script name for Node.js v0.12
-RUN curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
+RUN curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash - 
 RUN sudo apt-get install -y nodejs
 
 ###################
 #      Setup      #
 ###################
 
-RUN su -m beaker -c "iruby register"
+RUN su -m beaker -c "HOME=/home/beaker iruby register"

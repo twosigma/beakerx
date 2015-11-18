@@ -98,7 +98,7 @@
           var style,
               height = $scope.cellmodel.output && $scope.cellmodel.output.height;
           if (height)
-            style = {'height': height + 'px'};
+            style = {'min-height': height + 'px'};
 
           return style;
         };
@@ -403,11 +403,11 @@
         });
 
         scope.$watch('displayOutput', function(value) {
-          if (!value) return;
+          if (!value || !scope.hasOutput()) return;
 
           var output = element.find('.code-cell-output');
           $timeout(function() {
-            if (scope.hasOutput() && output)
+            if (output)
               scope.cellmodel.output.height = output[0].offsetHeight;
           }, 100);
         });

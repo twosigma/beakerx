@@ -36,7 +36,7 @@
       restrict: 'E',
       template: JST['mainapp/components/notebook/codecell'](),
       scope: {cellmodel: '=', cellmenu: '='},
-      controller: function($scope, $element) {
+      controller: function($scope) {
         $scope.cellview = {
           inputMenu: [],
           displays: []

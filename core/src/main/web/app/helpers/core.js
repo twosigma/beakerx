@@ -641,6 +641,15 @@
           }
         };
 
+        var reformat = function (cm) {
+          var start = cm.getCursor(true).line;
+          var end = cm.getCursor(false).line;
+          do {
+            cm.indentLine(start);
+            start += 1;
+          } while (start <= end)
+        };
+
         var shiftTab = function(cm) {
           var cursor = cm.getCursor();
           var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
@@ -740,7 +749,9 @@
             "Ctrl-/": "toggleComment",
             "Cmd-/": "toggleComment",
             'Right': goCharRightOrMoveFocusDown,
-            'Left': goCharLeftOrMoveFocusDown
+            'Left': goCharLeftOrMoveFocusDown,
+            "Shift-Ctrl-T": reformat,
+            "Shift-Cmd-T": reformat
         };
 
 

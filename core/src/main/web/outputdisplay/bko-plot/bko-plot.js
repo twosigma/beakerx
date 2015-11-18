@@ -1721,7 +1721,9 @@
           scope.visibleItem = state.visibleItem;
           scope.legendableItem = state.legendableItem;
           scope.defaultFocus = state.defaultFocus;
-          scope.fixFocus(scope.defaultFocus);
+          if(scope.defaultFocus) {
+            scope.fixFocus(scope.defaultFocus);
+          }
         };
 
         scope.initFlags = function() {
@@ -1872,7 +1874,6 @@
         });
 
         scope.$on('$destroy', function() {
-          scope.setDumpState(scope.dumpState());
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
           scope.jqlegendcontainer.find("#plotLegend").remove();

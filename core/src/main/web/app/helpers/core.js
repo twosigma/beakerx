@@ -750,8 +750,8 @@
             "Cmd-/": "toggleComment",
             'Right': goCharRightOrMoveFocusDown,
             'Left': goCharLeftOrMoveFocusDown,
-            "Shift-Ctrl-T": reformat,
-            "Shift-Cmd-T": reformat
+            "Shift-Ctrl-F": reformat,
+            "Shift-Cmd-F": reformat
         };
 
 

@@ -53,7 +53,7 @@
             });
           }
           var directiveName = bkOutputDisplayFactory.getDirectiveName(type);
-          element.html("<div " + directiveName + " model='model' data-ng-style='model.getOutputHeight()'></div>");
+          element.html("<div " + directiveName + " model='model'></div>");
           $compile(element.contents())(childScope);
         };
         scope.$watch("type", function(newType, oldType) {

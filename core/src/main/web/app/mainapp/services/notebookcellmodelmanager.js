@@ -443,8 +443,9 @@
               if(!runningJob || runningJob.cellId !== cell.id){
                 cell.output.result = undefined;
                 cell.output.elapsedTime = undefined;
+                cell.output.height = undefined;
                 bkEvaluateJobManager.remove(cell);
-              }
+              }              
             }
           });
         }

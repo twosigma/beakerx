@@ -353,8 +353,7 @@
           }
         });
 
-        var initCodeMirror = function(){
-
+        var initCodeMirror = function() {
           var template = '<textarea class="bkcelltextarea" ng-model="cellmodel.input.body">' + scope.cellmodel.input.body + '</textarea>';
           $(element.find('.bkcelltextarea')[0]).replaceWith($(template));
 
@@ -383,7 +382,16 @@
             delete scope._shouldFocusCodeMirror;
             return scope.cm.focus();
           }
+        };
 
+        var setOutputHeight = function() {
+          if (!scope.hasOutput()) return;
+
+          $timeout(function() {
+            var output = element.find('.code-cell-output');
+            if (output && output[0])
+              scope.cellmodel.output.height = output[0].offsetHeight;
+          }, 100);
         };
 
         scope.displayOutput = false;
@@ -392,6 +400,7 @@
           $timeout(function() {
             initCodeMirror();
             scope.displayOutput = true;
+            setOutputHeight();
           }, 1);
         });
 

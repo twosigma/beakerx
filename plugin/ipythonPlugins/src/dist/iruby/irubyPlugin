@@ -26,7 +26,7 @@ if len(sys.argv) > 1:
     elif arg1 == "--hash":
         password = sys.argv[2]
         os.execlp("ipython", "ipython", "-c",
-                  'from IPython.lib import passwd;print (passwd("' + password + '"))')
+                  "\"from IPython.lib import passwd;print (passwd('" + password + "'))\"")
     elif arg1 == "--profile":
         ver = subprocess.check_output(["ipython", "ipython", "--version"])
         if (ver.startswith("2.") or ver.startswith("1.")):

@@ -81,6 +81,7 @@
             scope.width = ui.size.width;
             scope.height = ui.size.height;
             _(scope.plotSize).extend(ui.size);
+            scope.setDumpState(scope.dumpState());
 
             scope.jqsvg.css({"width": scope.width, "height": scope.height});
             scope.jqplottitle.css({"width": scope.width });

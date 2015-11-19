@@ -37,11 +37,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -54,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -350,6 +349,13 @@ public class PluginServiceLocatorRest {
         }
       }
     }
+    for (Iterator<String> it = envList.iterator(); it.hasNext();) {
+      //delete TERM variable for correct ipython hash reading on Mac OS
+      String envVar = it.next();
+      if (envVar.toUpperCase().startsWith("TERM=")) {
+        it.remove();
+      }
+    }
     env = new String[envList.size()];
     envList.toArray(env);
     return env;
@@ -586,15 +592,10 @@ public class PluginServiceLocatorRest {
     throws IOException {
     List<String> cmdBase = pythonBaseCommand(pluginId, command);
     cmdBase.add("--hash");
+    cmdBase.add(password);
     Process proc = Runtime.getRuntime().exec(listToArray(cmdBase), buildEnv(pluginId, null));
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
-    bw.write("from IPython.lib import passwd\n");
-    // I have confirmed that this does not go into ipython history by experiment
-    // but it would be nice if there were a way to make this explicit. XXX
-    bw.write("print(passwd('" + password + "'))\n");
-    bw.close();
     String hash = br.readLine();
     if (null == hash) {
       throw new RuntimeException("unable to get IPython hash");

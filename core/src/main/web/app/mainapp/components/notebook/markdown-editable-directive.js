@@ -125,6 +125,8 @@
           }, 0);
         });
 
+        scope.cm.on('change', bkCoreManager.replacePastedTabsWithSpaces);
+
         scope.$on('beaker.cell.added', function(e, cellmodel) {
           if (cellmodel === scope.cellmodel) {
             scope.creatingNewSection = true;
@@ -139,6 +141,7 @@
         });
 
         scope.$on('$destroy', function() {
+          CodeMirror.off('change', bkCoreManager.replacePastedTabsWithSpaces);
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id, scope.cm);
           scope.cm.off();

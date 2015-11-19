@@ -435,6 +435,13 @@
         return deferred.promise;
       },
 
+      replacePastedTabsWithSpaces: function(cm, e) {
+        if (e.origin != "paste") return;
+        if (cm.getValue().indexOf('\t') != -1) {
+          cm.setValue(cm.getValue().replace(/\t/g, '  '));
+        }
+      },
+
       codeMirrorOptions: function(scope, notebookCellOp) {
 
         var goCharRightOrMoveFocusDown = function(cm) {

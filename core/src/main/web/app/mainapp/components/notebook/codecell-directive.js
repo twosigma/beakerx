@@ -379,6 +379,7 @@
           scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
           scope.cm.on('change', changeHandler);
+          scope.cm.on('change', bkCoreManager.replaceTabsWithArrow);
           scope.cm.on('blur', function () {
             if ($('.CodeMirror-hint').length > 0) {
               //codecomplete is up, skip
@@ -530,6 +531,7 @@
           Scrollin.untrack(element[0]);
           CodeMirror.off(window, 'resize', resizeHandler);
           CodeMirror.off('change', changeHandler);
+          CodeMirror.off('change', bkCoreManager.replaceTabsWithArrow);
           if (scope.cm) {
             scope.cm.off();
           }

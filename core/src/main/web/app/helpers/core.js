@@ -435,6 +435,12 @@
         return deferred.promise;
       },
 
+      replaceTabsWithArrow: function(cm, e) {
+        if (cm.getValue().indexOf('\t') != -1) {
+          cm.setValue(cm.getValue().replace(/\t/g, '\u21E5'));
+        }
+      },
+
       codeMirrorOptions: function(scope, notebookCellOp) {
 
         var goCharRightOrMoveFocusDown = function(cm) {

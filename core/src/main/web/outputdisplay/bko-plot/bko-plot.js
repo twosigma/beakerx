@@ -1782,7 +1782,9 @@
           scope.calcRange();
 
           // init copies focus to defaultFocus, called only once
-          _(scope.focus).extend(scope.defaultFocus);
+          if(_.isEmpty(scope.focus)){
+            _(scope.focus).extend(scope.defaultFocus);
+          }
 
           // init remove pipe
           scope.removePipe = [];

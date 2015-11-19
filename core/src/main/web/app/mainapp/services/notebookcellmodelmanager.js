@@ -441,6 +441,7 @@
             if (cell.output) {
               cell.output.result = undefined;
               cell.output.elapsedTime = undefined;
+              cell.output.height = undefined;
             }
           });
         }

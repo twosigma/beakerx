@@ -21,32 +21,11 @@ import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.URI;
-import java.net.UnknownHostException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermission;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.fluent.Request;
+import org.jvnet.winp.WinProcess;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -57,13 +36,27 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.fluent.Request;
-import org.jvnet.winp.WinProcess;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.URI;
+import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -356,6 +349,13 @@ public class PluginServiceLocatorRest {
         }
       }
     }
+    for (Iterator<String> it = envList.iterator(); it.hasNext();) {
+      //delete TERM variable for correct ipython hash reading on Mac OS
+      String envVar = it.next();
+      if (envVar.toUpperCase().startsWith("TERM=")) {
+        it.remove();
+      }
+    }
     env = new String[envList.size()];
     envList.toArray(env);
     return env;
@@ -588,13 +588,11 @@ public class PluginServiceLocatorRest {
     }
   }
 
-  private String hashIPythonPassword(String password, final String pluginId, String command)
-    throws IOException, InterruptedException, ExecutionException {
-
+  private String hashIPythonPassword(String password, String pluginId, String command)
+    throws IOException {
     List<String> cmdBase = pythonBaseCommand(pluginId, command);
     cmdBase.add("--hash");
     cmdBase.add(password);
-
     Process proc = Runtime.getRuntime().exec(listToArray(cmdBase), buildEnv(pluginId, null));
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();

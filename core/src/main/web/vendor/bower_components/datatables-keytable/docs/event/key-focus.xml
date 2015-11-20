@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-event library="KeyTable">
+	<name>key-focus</name>
+	<summary>KeyTable has focused a cell</summary>
+	<since>2.0.0</since>
+
+	<type type="function">
+		<signature>function( e, datatable, cell )</signature>
+		<parameter type="object" name="e">
+			jQuery event object
+		</parameter>
+		<parameter type="DataTable.Api" name="datatable">
+			DataTable API instance for the table in question
+		</parameter>
+		<parameter type="DataTable.Api" name="key">
+			A DataTables API instance that contains the cell that was focused (`dt-api cell()`)
+		</parameter>
+		<scope>HTML table element</scope>
+	</type>
+
+	<description>
+		The `kt-event key-focus` event is triggered whenever KeyTable focuses on a cell. This can be the result of:
+
+		* Initialisation with a default focus (`kt-init keys.focus`)
+		* User interaction with the mouse (clicking on a cell)
+		* User interaction with the keyboard (moving focus)
+		* API focus (`kt-api cell().focus()`).
+
+		It can be useful to know when a cell has focus so actions can be taken - for example you might wish to show additional information about the cell, adjust the cell's styling or enable additional interaction options for the end user.
+
+		This event will occur after to the `kt-event key-focus` event (if there is a cell to be blurred - i.e. two cells can never have focus at the same time).
+
+		Additionally, this event is not triggered on an already focused cell - i.e. a focused cell cannot gain focus again before losing it.
+	</description>
+
+	<example title="Show information about a cell when focus is changed"><![CDATA[
+
+var table = $('#example').DataTable( {
+	keys: true
+} );
+
+table
+	.on( 'key-focus', function ( e, datatable, cell ) {
+		var rowData = datatable.row( cell.index().row ).data();
+
+		$('#details').html( 'Cell in '+rowData[0]+' focused' );
+	} )
+	.on( 'key-blur', function ( e, datatable, cell ) {
+		$('#details').html( 'No cell selected' );
+	} );
+
+]]></example>
+
+	<related>kt-init keys.focus</related>
+	<related>kt-api cell().focus()</related>
+	<related>kt-event key-blur</related>
+</dt-event>

@@ -1,0 +1,10 @@
+
+$keytable-focus: 3px solid #3366FF !default;
+
+table.dataTable {
+	th.focus,
+	td.focus {
+		outline: $keytable-focus;
+		outline-offset: -1px;
+	}
+}

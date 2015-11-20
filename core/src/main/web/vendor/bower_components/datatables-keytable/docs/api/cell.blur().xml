@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-api library="KeyTable">
+	<name>cell.blur()</name>
+	<summary>Blur focus from the table</summary>
+	<since>2.0.0</since>
+
+	<type type="function">
+	<name>cell.blur()</name>
+		<signature>cell.blur()</signature>
+		<description>
+			Blur the focus from the focused cell.
+		</description>
+		<returns type="DataTables.Api">DataTables API instance</returns>
+	</type>
+
+	<description>
+		This method provides the ability to programmatically blur focus from a table (i.e. remove focus). Please note that it is not cell specific - i.e. you do not use `dt-api cell()`, but rather simply the `cell` property of the API.
+
+		Tables which are disabled (`kt-api keys.disable()`) cannot be blurred. You must either blur the table before disabling, or re-enable the table (`kt-api keys.enable()`) to allow blurring, even via the API.
+
+		This method will not throw any errors if executed on a table that already does not have focus. The `kt-event key-blur` event will not be triggered, but otherwise there will be no notification that a blur did not occur.
+	</description>
+
+	<example title="Blur focus"><![CDATA[
+
+table.cell.blur();
+
+]]></example>
+
+	<related>kt-init keys.focus</related>
+	<related>kt-api cell().focus()</related>
+</dt-api>

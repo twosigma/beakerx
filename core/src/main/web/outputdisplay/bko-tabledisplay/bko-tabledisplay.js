@@ -850,6 +850,29 @@
         scope.doCreateTable = function(model) {
           var cols = [];
           var i;
+          var headerMenuItems = {
+            items: [
+              {
+                title: 'Format',
+                action: null,
+                items: []
+              },
+              {
+                title: 'Visible',
+                action: null
+              },
+              {
+                title: 'Alignment',
+                action: null,
+                items: []
+              },
+              {
+                title: 'Sorting',
+                action: null,
+                items: []
+              }
+            ]
+          };
 
           // build configuration
           var converter = scope.allConverters[1];
@@ -868,7 +891,8 @@
             var type = scope.actualtype[i];
             var al = scope.actualalign[i];
             var col = {
-              'title' : scope.columnNames[i]
+              'title' : scope.columnNames[i],
+              'header': { 'menu': headerMenuItems }
             };
             if (al === 'R') {
               col.className = 'dtright';
@@ -947,9 +971,12 @@
             } else {
               scope.colorder = scope.colreorg.fnOrder().slice(0);
             }
+            new $.fn.dataTable.KeyTable($(id));
             scope.refreshCells();
 
+            /*
             $(id + ' tbody').off('click');
+            */
             $(id + ' tbody').on('click', 'tr', function(event) {
               var iPos = scope.table.row(this).index();
               if (scope.selected[iPos]) {
@@ -998,7 +1025,7 @@
             }
             var out = scope.exportTo(data, 'tabs');
             return out;
-          }
+          };
 
           var queryCommandEnabled = true;
           try {
@@ -1082,6 +1109,7 @@
             });
           }
         });
+
       }
     };
   }]);

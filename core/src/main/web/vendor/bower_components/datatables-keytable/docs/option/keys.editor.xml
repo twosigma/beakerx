@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-option library="KeyTable">
+	<name>keys.editor</name>
+	<summary>Attach an Editor instance for Excel like editing</summary>
+	<since>KeyTable 2.0.0</since>
+
+	<type type="DataTable.Editor">
+		<description>
+			The Editor instance to use for editing of the table
+		</description>
+	</type>
+
+	<default value="null">
+		No Editor instance is automatically attached.
+	</default>
+
+	<description>
+		[Editor](//editor.datatables.net) provides an inline editing option (`e-api inline()`) whereby a cell's content can be edited inside a table's cell. A natural extension of that is to use KeyTable to activate that inline editing to provide an Excel like interface to your end users.
+
+		This option provides that ability built into KeyTable - it will automatically handle the event listeners required for Editor and matches the behaviour of Excel as closely as possible (arrow keys for example will move the focus, rather than the editing cursor).
+
+		The `kt-event key` event can be used to perform the same functionality as this option should you wish to implement your own event listeners to customise the key behaviour while editing (for example you may wish to disable KeyTable entirely, allowing the arrow keys to move the editing cursor rather than the cell focus).
+	</description>
+
+	<example title="Attach an Editor instance (`editor`) to a table to provide Excel like editing"><![CDATA[
+
+$('#myTable').DataTable( {
+	keys: {
+		editor: editor
+	}
+} );
+
+]]></example>
+
+	<related>kt-event key</related>
+</dt-option>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-api library="KeyTable">
+	<name>keys.disable()</name>
+	<summary>Disable KeyTable's interactions (mouse and keyboard)</summary>
+	<since>2.0.0</since>
+
+	<type type="function">
+	<name>keys.disable()</name>
+		<signature>keys.disable()</signature>
+		<description>
+			Disable KeyTable. Please note that this disallows future interactions with the table (until re-enabled), but does not cause the table to blur (i.e. loose focus). If a cell has focus, that focus will be retained after this method has been called.
+		</description>
+		<returns type="DataTables.Api">DataTables API instance</returns>
+	</type>
+
+	<description>
+		KeyTable is typically used as an enabler for other interaction options with a DataTable, such as editing a cell's content or triggering action that will display additional information about a cell or row. In such circumstances it is important that we have the ability to disable KeyTable's own listeners so keystrokes are not acted upon. This method provides exactly that ability.
+
+		As an example, consider the use of KeyTable with [Editor](//editor.datatables.net) where you wish to activate inline editing with a keystroke, but then disable KeyTable from taking other actions while the editing is in progress. This is what the `kt-init keys.editor` option provides built into KeyTable.
+	</description>
+
+	<example title="Disable KeyTable immediately on initialisation"><![CDATA[
+
+var table = $('#example').DataTable( {
+	keys: true
+} );
+
+table.keys.disable();
+
+]]></example>
+
+	<related>kt-api keys.enable()</related>
+</dt-api>

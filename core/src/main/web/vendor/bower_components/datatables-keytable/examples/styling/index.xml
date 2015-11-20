@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-example order="0">
+
+<title lib="KeyTable">Styling</title>
+
+<info><![CDATA[
+
+The KeyTable extension, like all DataTables extensions provides extensive styling options and the ability to be styled by the styling frameworks supported by DataTables core. This section shows KeyTable being styling using external CSS frameworks.
+
+]]></info>
+
+</dt-example>

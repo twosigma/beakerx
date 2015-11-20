@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-example table-type="ssp" order="4">
+
+<css lib="datatables keytable" />
+<js lib="jquery datatables keytable">
+<![CDATA[
+$(document).ready(function() {
+	$('#example').DataTable( {
+		serverSide: true,
+		ajax: "../../../../examples/server_side/scripts/server_processing.php",
+		keys: true
+	} );
+} );
+]]>
+</js>
+
+<title lib="KeyTable">Server-side processing</title>
+
+<info><![CDATA[
+
+KeyTable fully supports DataTables [server-side processing mode](//datatables.net/manual/server-side) which can be used to display a DataTable that contains thousands or millions of records.
+
+The interaction options of KeyTable operate in exactly the same way for server-side processing, as shown in this example (try using the arrow keys to move focus from one page to another for example).
+
+]]></info>
+
+</dt-example>

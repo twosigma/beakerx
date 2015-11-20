@@ -78,6 +78,14 @@ core/src/main/web/vendor/bower_components/datatables-fixedcolumns/Readme.md
 core/src/main/web/vendor/bower_components/datatables-fixedcolumns/bower.json
 core/src/main/web/vendor/bower_components/datatables-fixedcolumns/make.sh
 core/src/main/web/vendor/bower_components/datatables-fixedcolumns/examples
+core/src/main/web/vendor/bower_components/datatables-fixedcolumns/docs
+
+core/src/main/web/vendor/bower_components/datatables-keytable/bower.json
+core/src/main/web/vendor/bower_components/datatables-keytable/License.txt
+core/src/main/web/vendor/bower_components/datatables-keytable/make.sh
+core/src/main/web/vendor/bower_components/datatables-keytable/Readme.md
+core/src/main/web/vendor/bower_components/datatables-keytable/examples
+core/src/main/web/vendor/bower_components/datatables-keytable/docs
 
 core/src/main/web/vendor/bower_components/datatables/.bower.json
 core/src/main/web/vendor/bower_components/datatables/Contributing.md

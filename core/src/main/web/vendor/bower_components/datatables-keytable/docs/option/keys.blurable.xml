@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-option library="KeyTable">
+	<name>keys.blurable</name>
+	<summary>Allow KeyTable's focus to be blurred (removed) from a table</summary>
+	<since>KeyTable 2.0.0</since>
+
+	<type type="boolean">
+		<description>
+			When set to `true` this option allows the table to lose focus (i.e. to be blurred), while `false` will not allow the table to lose focus.
+		</description>
+	</type>
+
+	<default value="true">
+		Focus can be removed from the table
+	</default>
+
+	<description>
+		By default KeyTable will make the table act like a normal input element in an HTML page and the tab key can be used to move focus between fields. Tabbing when focused on the last cell in the table will then move the focus on to the next form element in the document - thus blurring the table.
+
+		This ability to loose focus (blurring) can be disabled in KeyTable by setting this option to `false`. That means that once the table has been focused (which it can be automatically using `kt-init keys.focus`) focus cannot be removed (although interaction can be disabled using `kt-api keys.disable()`).
+	</description>
+
+	<example title="Disallow the table form loosing focus"><![CDATA[
+
+$('#myTable').DataTable( {
+	keys: {
+		blurable: false
+	}
+} );
+
+]]></example>
+
+	<related>kt-init tabIndex</related>
+	<related>kt-init keys.focus</related>
+	<related>kt-api cell.blur()</related>
+	<related>kt-api cell().focus()</related>
+</dt-option>

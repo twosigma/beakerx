@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-example table-type="html" order="2">
+
+<css lib="datatables keytable">
+	#events {
+		margin-bottom: 1em;
+		padding: 1em;
+		background-color: #f6f6f6;
+		border: 1px solid #999;
+		border-radius: 3px;
+		height: 100px;
+		overflow: auto;
+	}
+</css>
+<js lib="jquery datatables keytable">
+<![CDATA[
+$(document).ready(function() {
+	var events = $('#events');
+	var table = $('#example').DataTable( {
+		keys: true
+	} );
+
+	table
+		.on( 'key', function ( e, datatable, key, cell, originalEvent ) {
+			events.prepend( '<div>Key press: '+key+' for cell <i>'+cell.data()+'</i></div>' );
+		} )
+		.on( 'key-focus', function ( e, datatable, cell ) {
+			events.prepend( '<div>Cell focus: <i>'+cell.data()+'</i></div>' );
+		} )
+		.on( 'key-blur', function ( e, datatable, cell ) {
+			events.prepend( '<div>Cell blur: <i>'+cell.data()+'</i></div>' );
+		} )
+} );
+]]>
+</js>
+
+<title lib="KeyTable">Events</title>
+
+<info><![CDATA[
+
+Enabling KeyTable on a DataTable is trivial with the `kt-init keys` option, however, to have it perform a useful function you'll want to know when the end user performs interaction options with the table's focus. For this KeyTable has a number of events it can trigger:
+
+* `kt-event key` - A key has been pressed while a cell has focus
+* `kt-event key-focus` - A cell has gained focus
+* `kt-event key-blur` - A cell has lost focus
+
+This trivial example shows information about each event as it occurs in an output element. More complex interactions can be created to [achieve Excel like editing](//editor.datatables.net/examples/extensions/keyTable) or other behaviours as required.
+
+]]></info>
+
+<demo-html>
+	<div id="events">Event summary - new events added at the top</div>
+</demo-html>
+
+</dt-example>

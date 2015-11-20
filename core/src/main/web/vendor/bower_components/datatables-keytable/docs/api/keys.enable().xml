@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-api library="KeyTable">
+	<name>keys.enable()</name>
+	<summary>Enable or disable KeyTable's interactions (mouse and keyboard)</summary>
+	<since>2.0.0</since>
+
+	<type type="function">
+	<name>keys.enable()</name>
+		<signature>keys.enable( [ options ] )</signature>
+		<description>
+			Enable end user and API modification of the focused cells in the DataTable. Differing levels of enablement are available via the optional parameter.
+		</description>
+		<parameter name="options" type="string|boolean" default="true">
+			This option can be given as the following values:
+
+			* `true` - Fully enable KeyTable
+			* `false` - Fully disable KeyTable (`kt-api keys.disable()`)
+			* `-string navigation-only` - Respond to navigation inputs only
+		</parameter>
+		<returns type="DataTables.Api">DataTables API instance</returns>
+	</type>
+
+	<description>
+		KeyTable is typically used as an enabler for other interaction options with a DataTable, such as editing a cell's content or triggering action that will display additional information about a cell or row. In such circumstances it is important that we have the ability to control KeyTable's own listeners so which keystrokes it acts upon can be finely controls as required by your situation. This method provides that ability.
+
+		When fully enabled KeyTable, when a cell has focus, will listen for all non-special character key pressed (i.e. shift, cmd / ctrl and alt are ignored) and trigger the `kt-event key` event. However, you may wish to stop KeyTable from listening for certain events, such as letters while editing a field. To provide this ability them method accepts an optional parameter that will inform KeyTable what level of listeners you would like it to listen for an act upon.
+
+		Please note that KeyTable's key listener is triggered on the `keydown` event and if KeyTable performs an action on the key (move focus for example) it will automatically call the `stopPropagation()` method of the event.
+	</description>
+
+	<example title="Only allow navigation (i.e. letter keys perform no action and trigger no events)"><![CDATA[
+
+var table = $('#example').DataTable( {
+	keys: true
+} );
+
+table.keys.enable( 'navigation-only' );
+
+]]></example>
+
+	<related>kt-api keys.disable()</related>
+</dt-api>

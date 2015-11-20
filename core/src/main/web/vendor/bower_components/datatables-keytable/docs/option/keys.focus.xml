@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-option library="KeyTable">
+	<name>keys.focus</name>
+	<summary>Cell to receive initial focus in the table</summary>
+	<since>KeyTable 2.0.0</since>
+
+	<type type="cell-selector">
+		<description>
+			The cell that will receive focus when the table is initialised. This accepts all of the options of `dt-type cell-selector` such as class name selector, jQuery pseudo selects and cell index selectors.
+		</description>
+	</type>
+
+	<default value="null">
+		The table will not automatically receive focus when initialised
+	</default>
+
+	<description>
+		This option can be used to define what cell in the table (if any) will automatically receive focus when the table is initialised with KeyTable enabled.
+
+		The value of this option will be over-ridden if state saving is enabled in DataTables (`dt-init stateSave`) and there is a saved focused cell - i.e. the state saved focused cell will instead receive the focus.
+	</description>
+
+	<example title="Automatically focus on the first cell in the table"><![CDATA[
+
+$('#myTable').DataTable( {
+	keys: {
+		focus: ':eq(0)'
+	}
+} );
+
+]]></example>
+
+	<related>kt-init keys.blurable</related>
+	<related>kt-api cell.blur()</related>
+	<related>kt-api cell().focus()</related>
+</dt-option>

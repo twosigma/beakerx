@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-example table-type="html" order="3">
+
+<css lib="datatables keytable" />
+<js lib="jquery datatables keytable">
+<![CDATA[
+$(document).ready(function() {
+	var table = $('#example').DataTable( {
+		scrollY: 300,
+		paging: false
+	} );
+
+	new $.fn.dataTable.KeyTable( table );
+} );
+]]>
+</js>
+
+<title lib="KeyTable">Scrolling table</title>
+
+<info><![CDATA[
+
+KeyTable supports DataTables' scrolling options (`dt-init scrollX` and `dt-init scrollY`) without required any additional configuration. As the navigation keys are used to alter the focus of the KeyTable, the DataTables scrolling position is altered to show the focused cell.
+
+]]></info>
+
+</dt-example>

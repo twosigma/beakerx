@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-api library="KeyTable">
+	<name>cell().focus()</name>
+	<summary>Focus on a cell</summary>
+	<since>2.0.0</since>
+
+	<type type="function">
+	<name>cell().focus()</name>
+		<signature>cell().focus()</signature>
+		<description>
+			Focus on the selected cell.
+		</description>
+		<returns type="DataTables.Api">DataTables API instance</returns>
+	</type>
+
+	<description>
+		This method provides the ability to programmatically give a cell focus. The cell to give focus to is selected by the `dt-api cell()` method and the `dt-type cell-selector` given to it.
+
+		If the selected cell is not in the DataTable's current page, the paging will be adjusted to make it visible and the table redraw.
+
+		Tables which are disabled (`kt-api keys.disable()`) cannot have cells focused. You must either give the cell focus before disabling, or re-enable the table (`kt-api keys.enable()`) to allow focusing, even via the API.
+
+		If a different cell has focus when this method is called, it will cause that cell to be blurred before this one is selected.
+	</description>
+
+	<example title="Focus on the first cell in the table"><![CDATA[
+
+table.cell( ':eq(0)' ).focus();
+
+]]></example>
+
+	<related>kt-init keys.focus</related>
+	<related>kt-api cell().focus()</related>
+</dt-api>

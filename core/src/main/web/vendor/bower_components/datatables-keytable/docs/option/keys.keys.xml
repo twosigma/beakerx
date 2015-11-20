@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-option library="KeyTable">
+	<name>keys.keys</name>
+	<summary>Limit the keys that KeyTable will listen for and take action on</summary>
+	<since>KeyTable 2.0.0</since>
+
+	<type type="array|null">
+		<description>
+			As `null` KeyTable will listen for all key presses, regardless of what key is pressed. As an array you can limit the keys that KeyTable will take action on to just the key codes given in the array.
+		</description>
+	</type>
+
+	<default value="null">
+		Listen for all keys
+	</default>
+
+	<description>
+		This option can be used to gain fine control over which keys that KeyTable will listen for. The `kt-api keys.enable()` and `kt-api keys.disable()` methods can be used to enable and disable KeyTable completely, but this option provides the ability to specify the character codes that KeyTable will take action on when enabled.
+
+		This can be used, for example, to listen only for arrow and return keys (effectively disabling the tab key), or only the tab key.
+
+		You can hard code the character code values if you wish, but a more flexible and potentially understandable option is to use the `String.charCodeAt()` method to obtain a character code - for example to get the tab key use `"\t".charCodeAt(0)`.
+	</description>
+
+	<example title="Listen for the `tab` key only"><![CDATA[
+
+$('#myTable').DataTable( {
+	keys: {
+		keys: [ "\t".charCodeAt(0) ]
+	}
+} );
+
+]]></example>
+</dt-option>

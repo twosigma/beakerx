@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-option library="KeyTable">
+	<name>keys.className</name>
+	<summary>Set the class name used for the focused cell</summary>
+	<since>KeyTable 2.0.0</since>
+
+	<type type="string">
+		<description>
+			The class name to be added and removed from cells as they gain and loose focus.
+		</description>
+	</type>
+
+	<default value="focus">
+		Focus can be removed from the table
+	</default>
+
+	<description>
+		Allowing the end user to visually identify which cell has focus is obviously fundamentally important to KeyTable's abilities, and this is done by added a class to the focused cell. This class can then be styled using CSS to visually highlight the cell. The [CSS `outline` property](https://developer.mozilla.org/en-US/docs/Web/CSS/outline) is useful for this, and is the styling option used by the KeyTable default stylesheet.
+
+		This property can be used to alter the class name used to show cell focus.
+	</description>
+
+	<example title="Set the class name of the focused cells"><![CDATA[
+
+$('#myTable').DataTable( {
+	keys: {
+		className: 'highlight'
+	}
+} );
+
+]]></example>
+</dt-option>

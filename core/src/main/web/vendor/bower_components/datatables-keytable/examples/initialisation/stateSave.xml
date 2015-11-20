@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-example table-type="html" order="5">
+
+<css lib="datatables keytable" />
+<js lib="jquery datatables keytable">
+<![CDATA[
+$(document).ready(function() {
+	$('#example').DataTable( {
+		keys: true,
+		stateSave: true
+	} );
+} );
+]]>
+</js>
+
+<title lib="KeyTable">State saving</title>
+
+<info><![CDATA[
+
+When DataTables' state saving option is enabled (`dt-init stateSave`) KeyTable will automatically store the last cell focused in a table and then restore that state when the page is reloaded.
+
+This simple example shows this behaviour - to demonstrate, give a cell focus by clicking on it and then reloading the page - the cell will retain focus after the reload.
+
+KeyTable uses the `keyTable` property in the DataTables state object should you wish to modify or remove it from the state information.
+
+]]></info>
+
+</dt-example>

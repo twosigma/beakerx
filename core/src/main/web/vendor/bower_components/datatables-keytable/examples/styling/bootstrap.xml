@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-example table-type="html" table-class="display" order="2" framework="bootstrap">
+
+<css lib="datatables keytable"/>
+<js lib="jquery datatables keytable">
+<![CDATA[
+
+$(document).ready(function() {
+	$('#example').DataTable( {
+		keys: true
+	} );
+} );
+
+]]>
+</js>
+
+<title lib="KeyTable">Bootstrap styling</title>
+
+<info><![CDATA[
+
+This example shows DataTables and KeyTable being used with the [Bootstrap](http://getbootstrap.com) framework providing the styling. The [DataTables / Bootstrap integration](//datatables.net/manual/styling/bootstrap) prove seamless integration for DataTables to be used in a Bootstrap page.
+
+]]></info>
+
+</dt-example>
+

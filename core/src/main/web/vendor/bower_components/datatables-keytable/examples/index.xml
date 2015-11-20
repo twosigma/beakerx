@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-example order="0">
+
+<title lib="KeyTable">Spreadsheet like keyboard navigation for DataTables</title>
+
+<info><![CDATA[
+
+KeyTable provides Excel like cell navigation on any table. Events (focus, blur, action etc) can be assigned to individual cells, columns, rows or all cells.
+
+]]></info>
+
+</dt-example>

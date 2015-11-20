@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-option library="KeyTable">
+	<name>keys.columns</name>
+	<summary>Select the columns that can gain focus</summary>
+	<since>2.0.0</since>
+
+	<type type="column-selector">
+		<description>
+			The columns that can gain focus. This accepts all of the options of `dt-type column-selector` such as class name selector, jQuery pseudo selects and column index selectors.
+		</description>
+	</type>
+
+	<default value="">
+		Empty string (i.e. all columns)
+	</default>
+
+	<description>
+		When working with complex tables it is not uncommon to have certain columns that you might not wish to allow spreadsheet like navigation on (for example a checkbox column for row selection or a column with editing action buttons). This option can be used to define which columns can receive focus. If a column cannot receive focus KeyTable will skip over it as if it was not present.
+
+		Please note that only visible cells can receive focus, so the columns defined by this option are automatically merged with the visible columns in the table. Non-visible columns will not receive focus.
+	</description>
+
+	<example title="Don't allow focus on the last column in the table"><![CDATA[
+
+$('#myTable').DataTable( {
+	keys: {
+		columns: ':not(:last-child)'
+	}
+} );
+
+]]></example>
+
+	<example title="Allow focus only on column indexes 1, 2, 3, 4"><![CDATA[
+
+$('#myTable').DataTable( {
+	keys: {
+		columns: [ 1, 2, 3, 4 ]
+	}
+} );
+
+]]></example>
+</dt-option>

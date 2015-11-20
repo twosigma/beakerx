@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-example table-type="html" order="1">
+
+<css lib="datatables">
+	table.dataTable td.focus {
+		outline: 1px solid #ac1212;
+		outline-offset: -3px;
+		background-color: #f8e6e6 !important;
+	}
+</css>
+<js lib="jquery datatables keytable">
+<![CDATA[
+$(document).ready(function() {
+	$('#example').DataTable( {
+		keys: true
+	} );
+} );
+]]>
+</js>
+
+<title lib="KeyTable">Focus cell custom styling</title>
+
+<info><![CDATA[
+
+When KeyTable adds focus to a table's cell it adds a class (defined by `kt-init keys.className` - default `-string focus`). This class can be used to provide styling information to highlight the focused cell to the end user. The provided stylesheets use [CSS `outline`](https://developer.mozilla.org/en-US/docs/Web/CSS/outline) to show focus, but any CSS property can be used.
+
+This example uses a thin outline with a red colour and a light red background to highlight the focused cell. Click the _CSS_ tab below the table to see the CSS used.
+
+]]></info>
+
+</dt-example>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dt-option library="KeyTable">
+	<name>keys</name>
+	<summary>Enable and configure the KeyTable extension for DataTables</summary>
+	<since>KeyTable 2.0.0</since>
+
+	<type type="boolean">
+		<description>
+			As a boolean value this property will enable KeyTable on the DataTable that is being created. `true` will enable KeyTable, while `false` will not.
+
+			This is a short-cut option to enable KeyTable with the default configuration options. Customisations can be made by giving this parameter as an object, see below.
+		</description>
+	</type>
+
+	<type type="object">
+		<description>
+			If given as an object, KeyTable will be enabled on the target DataTable, with the KeyTable defaults (`$.fn.dataTable.KeyTable.defaults`) extended, and potentially overwritten, by the options provided in this object. This is how KeyTable can be configured on an individual table basis, or through the defaults.
+		</description>
+	</type>
+
+	<default value="undefined">
+		KeyTable will not be initialised by default
+	</default>
+
+	<description>
+		KeyTable is an extension for DataTables that provides spreadsheet like keyboard navigation in a table, with the focused cell being movable with arrow keys, tab, home, end and page up / down. KeyTable will automatically adjust the table's paging and other parameters to show the focused cell as the user navigates around the table. Combined with [Editor](//editor.datatables.net) it makes it super easy to create an Excel like user interface in the browser.
+
+		This option provides the ability to enable and configure KeyTable for DataTables. In its simplest form as the boolean `true` it will enable KeyTable with the default configuration options (as defined by `$.fn.dataTable.KeyTable.defaults`). It can also be used as an object to provide custom configuration options as described below.
+
+		Please note that as with all other configuration options for KeyTable, this option is an extension to the [default set of DataTables options](/reference/option). This property should be set in the DataTables initialisation object.
+	</description>
+
+	<example title="Enable KeyTable for a table"><![CDATA[
+
+$('#myTable').DataTable( {
+	keys: true
+} );
+
+]]></example>
+
+	<example title="Enable KeyTable with configuration options"><![CDATA[
+
+$('#myTable').DataTable( {
+	keys: {
+		columns: ':not(:first-child)'
+	}
+} );
+
+]]></example>
+
+</dt-option>

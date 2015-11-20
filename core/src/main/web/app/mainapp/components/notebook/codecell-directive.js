@@ -270,6 +270,24 @@
           }
         });
 
+        $scope.cellmodel.power = {
+          menu: {
+            items: [
+              {
+                name: 'Disable initialization',
+                action: function() {
+                  if ($scope.isInitializationCell()) {
+                    $scope.cellmodel.initialization = undefined;
+                  } else {
+                    $scope.cellmodel.initialization = true;
+                  }
+                  notebookCellOp.reset();
+                }
+              }
+            ]
+          }
+        };
+
         bkPublicationHelper.helper(CELL_TYPE, $scope);
       },
       link: function(scope, element) {

@@ -94,7 +94,7 @@ var BeakerPageObject = function() {
   };
 
   this.toggleCellMenu = function(opts) {
-    return element.all(by.css('.bkcell .dropdown-promoted'))
+    return element.all(by.css('.bkcell .toggle-menu .dropdown-promoted'))
     .get(opts.cellIndex)
     .click();
   };

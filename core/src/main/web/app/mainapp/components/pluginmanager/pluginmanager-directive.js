@@ -145,18 +145,14 @@
       }
     };
 
-    $scope.$on(GLOBALS.EVENTS.LANGUAGE_MANAGER_SHOW_SPINNER, function(event, data) {
+    $rootScope.$on(GLOBALS.EVENTS.LANGUAGE_MANAGER_SHOW_SPINNER, function(event, data) {
       $scope.loading = true;
       $scope.loadingMessage = 'Restarting ' + data.pluginName + '...';
-      if (!($scope.$$phase || $rootScope.$$phase))
-        $scope.$digest();
     });
 
-    $scope.$on(GLOBALS.EVENTS.LANGUAGE_MANAGER_HIDE_SPINNER, function() {
+    $rootScope.$on(GLOBALS.EVENTS.LANGUAGE_MANAGER_HIDE_SPINNER, function() {
       $scope.loading = false;
       $scope.loadingMessage += 'done';
-      if (!($scope.$$phase || $rootScope.$$phase))
-        $scope.$digest();
     });
 
   }]);

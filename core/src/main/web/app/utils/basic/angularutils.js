@@ -147,10 +147,10 @@
         return deferred.promise;
       },
       showLanguageManagerSpinner: function(pluginName) {
-        $rootScope.$broadcast(GLOBALS.EVENTS.LANGUAGE_MANAGER_SHOW_SPINNER, {pluginName: pluginName});
+        $rootScope.$emit(GLOBALS.EVENTS.LANGUAGE_MANAGER_SHOW_SPINNER, {pluginName: pluginName});
       },
       hideLanguageManagerSpinner: function() {
-        $rootScope.$broadcast(GLOBALS.EVENTS.LANGUAGE_MANAGER_HIDE_SPINNER);
+        $rootScope.$emit(GLOBALS.EVENTS.LANGUAGE_MANAGER_HIDE_SPINNER);
       }
     };
   });

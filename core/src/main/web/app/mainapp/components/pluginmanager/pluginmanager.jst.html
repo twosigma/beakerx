@@ -15,14 +15,14 @@
 -->
 <div>
   <div class="modal-header fixed" style="height: 69px"><!-- height linked to modal-body padding-top  -->
-    <div style="float: left;">
+    <div class="pull-left">
       <h1>Language Manager</h1>
     </div>
-    <div style="float: right;">
+    <div class="pull-right">
       <span class="navbar-text" ng-show="loading">
         <i class='fa fa-refresh fa-spin'></i>
       </span>
-      <div class="navbar-text loadingmsg" ng-show="loading">
+      <div class="navbar-text loadingmsg" ng-show="loading || !!loadingMessage">
         {{loadingMessage}}
       </div>
     </div>

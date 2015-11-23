@@ -24,8 +24,8 @@
   var module = angular.module('bk.core');
 
   module.controller('pluginManagerCtrl', ['$scope', '$rootScope', '$modalInstance', 'bkCoreManager', 'bkSessionManager', 'bkMenuPluginManager', 'bkEvaluatePluginManager',
-                                          'bkEvaluatorManager', function($scope, $rootScope, $modalInstance, bkCoreManager,bkSessionManager, bkMenuPluginManager, bkEvaluatePluginManager,
-                                              bkEvaluatorManager) {
+                                          'bkEvaluatorManager', 'GLOBALS', 'bkUtils', function($scope, $rootScope, $modalInstance, bkCoreManager, bkSessionManager, bkMenuPluginManager, bkEvaluatePluginManager,
+                                              bkEvaluatorManager, GLOBALS, bkUtils) {
 
 
     $scope.doClose = function() {
@@ -144,6 +144,20 @@
         return bkMenuPluginManager.getLoadingPlugins();
       }
     };
+
+    $scope.$on(GLOBALS.EVENTS.LANGUAGE_MANAGER_SHOW_SPINNER, function(event, data) {
+      $scope.loading = true;
+      $scope.loadingMessage = 'Restarting ' + data.pluginName + '...';
+      if (!($scope.$$phase || $rootScope.$$phase))
+        $scope.$digest();
+    });
+
+    $scope.$on(GLOBALS.EVENTS.LANGUAGE_MANAGER_HIDE_SPINNER, function() {
+      $scope.loading = false;
+      $scope.loadingMessage += 'done';
+      if (!($scope.$$phase || $rootScope.$$phase))
+        $scope.$digest();
+    });
 
   }]);
 })();

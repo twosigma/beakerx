@@ -19,8 +19,8 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.angularUtils', []);
-  module.factory('angularUtils', function($rootScope, $location, $http, $q, $timeout) {
+  var module = angular.module('bk.angularUtils', ['bk.globals']);
+  module.factory('angularUtils', function($rootScope, $location, $http, $q, $timeout, GLOBALS) {
     return {
       setLocation: function(newLocation) {
         $location.path(newLocation);
@@ -145,6 +145,12 @@
           deferred.resolve();
         }, ms);
         return deferred.promise;
+      },
+      showLanguageManagerSpinner: function(pluginName) {
+        $rootScope.$broadcast(GLOBALS.EVENTS.LANGUAGE_MANAGER_SHOW_SPINNER, {pluginName: pluginName});
+      },
+      hideLanguageManagerSpinner: function() {
+        $rootScope.$broadcast(GLOBALS.EVENTS.LANGUAGE_MANAGER_HIDE_SPINNER);
       }
     };
   });

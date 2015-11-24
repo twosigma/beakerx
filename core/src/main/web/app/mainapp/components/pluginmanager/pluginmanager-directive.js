@@ -151,8 +151,12 @@
       $scope.loadingMessage = 'Restarting ' + data.pluginName + '...';
     });
 
-    $rootScope.$on(GLOBALS.EVENTS.LANGUAGE_MANAGER_HIDE_SPINNER, function() {
-      $scope.loadingMessage += 'done';
+    $rootScope.$on(GLOBALS.EVENTS.LANGUAGE_MANAGER_HIDE_SPINNER, function(event, data) {
+      if (data.error) {
+        $scope.loadingMessage += 'failed';
+      } else {
+        $scope.loadingMessage += 'done';
+      }
       $scope.showSpinner = false;
       bkUtils.timeout(function() {
         $scope.showMessage = false;

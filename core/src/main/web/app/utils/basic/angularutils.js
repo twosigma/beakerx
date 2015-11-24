@@ -149,8 +149,8 @@
       showLanguageManagerSpinner: function(pluginName) {
         $rootScope.$emit(GLOBALS.EVENTS.LANGUAGE_MANAGER_SHOW_SPINNER, {pluginName: pluginName});
       },
-      hideLanguageManagerSpinner: function() {
-        $rootScope.$emit(GLOBALS.EVENTS.LANGUAGE_MANAGER_HIDE_SPINNER);
+      hideLanguageManagerSpinner: function(err) {
+        $rootScope.$emit(GLOBALS.EVENTS.LANGUAGE_MANAGER_HIDE_SPINNER, {error: err});
       }
     };
   });

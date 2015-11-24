@@ -153,6 +153,10 @@ define(function(require, exports, module) {
           cb();
         }
         bkHelper.hideLanguageManagerSpinner();
+      })
+      .error(function(err) {
+        bkHelper.hideLanguageManagerSpinner(err);
+        bkHelper.show1ButtonModal('ERROR: ' + err, PLUGIN_NAME + ' restart failed');
       });
     },
     spec: {

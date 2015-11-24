@@ -524,6 +524,7 @@
           default:
             for (var i = 0; i < numLines; i++) {
               var item = list[i];
+              item.chartId = newmodel.plotId;
 
               processItem(item, newmodel, yAxisRSettings, yAxisSettings);
 

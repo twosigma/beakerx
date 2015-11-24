@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils) {
+  var retfunc = function(plotUtils, plotService) {
     var PlotLine = function(data){
       _(this).extend(data); // copy properties to itself
       this.format();
@@ -207,7 +207,8 @@
       var svg = scope.maing;
       var props = this.itemProps,
           eleprops = this.elementProps,
-          elelabels = this.elementLabels;
+          elelabels = this.elementLabels,
+          self = this;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -219,6 +220,9 @@
 
       itemsvg.selectAll("path")
         .data([props]).enter().append("path")
+        .on('click', function(e){
+          plotService.onClick(self, e);
+        })
         .attr("class", this.plotClass)
         .style("stroke", function(d) { return d.st; })
         .style("stroke-dasharray", function(d) { return d.st_da; })
@@ -288,6 +292,6 @@
 
     return PlotLine;
   };
-  beaker.bkoFactory('PlotLine', ['plotUtils', 'PlotSampler', retfunc]);
+  beaker.bkoFactory('PlotLine', ['plotUtils', 'plotService', retfunc]);
 })();
 

@@ -2146,15 +2146,24 @@
                     "subtype": "ListOfMaps"
                 },
                 "selectedType": "Table",
-                "elapsedTime": 670,
+                "elapsedTime": 631,
                 "state": {},
                 "hidden": true,
                 "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "shellId": "6535857f-f056-44e3-a4f6-9d008e24b310"
             },
             "evaluatorReader": true,
             "lineCount": 23,
-            "initialization": true
+            "initialization": true,
+            "power": {
+                "menu": {
+                    "items": [
+                        {
+                            "name": "Disable initialization"
+                        }
+                    ]
+                }
+            }
         },
         {
             "id": "code42QbvS",
@@ -5426,7 +5435,16 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
             },
             "evaluatorReader": true,
-            "lineCount": 16
+            "lineCount": 16,
+            "power": {
+                "menu": {
+                    "items": [
+                        {
+                            "name": "Disable initialization"
+                        }
+                    ]
+                }
+            }
         },
         {
             "id": "codePZwpbQ",
@@ -6533,7 +6551,16 @@
                 "elapsedTime": 651
             },
             "evaluatorReader": true,
-            "lineCount": 2
+            "lineCount": 2,
+            "power": {
+                "menu": {
+                    "items": [
+                        {
+                            "name": "Disable initialization"
+                        }
+                    ]
+                }
+            }
         },
         {
             "id": "markdown3BMeqf",
@@ -6748,7 +6775,16 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
             },
             "evaluatorReader": true,
-            "lineCount": 6
+            "lineCount": 6,
+            "power": {
+                "menu": {
+                    "items": [
+                        {
+                            "name": "Disable initialization"
+                        }
+                    ]
+                }
+            }
         },
         {
             "id": "section1v278n",
@@ -6843,7 +6879,16 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
             },
             "evaluatorReader": true,
-            "lineCount": 1
+            "lineCount": 1,
+            "power": {
+                "menu": {
+                    "items": [
+                        {
+                            "name": "Disable initialization"
+                        }
+                    ]
+                }
+            }
         },
         {
             "id": "sectionHRkjOo",
@@ -6920,7 +6965,16 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
             },
             "evaluatorReader": true,
-            "lineCount": 1
+            "lineCount": 1,
+            "power": {
+                "menu": {
+                    "items": [
+                        {
+                            "name": "Disable initialization"
+                        }
+                    ]
+                }
+            }
         },
         {
             "id": "sectionNMpFLc",
@@ -7054,7 +7108,16 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
             },
             "evaluatorReader": true,
-            "lineCount": 15
+            "lineCount": 15,
+            "power": {
+                "menu": {
+                    "items": [
+                        {
+                            "name": "Disable initialization"
+                        }
+                    ]
+                }
+            }
         },
         {
             "id": "markdownaW7cDe",
@@ -7239,7 +7302,16 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
             },
             "evaluatorReader": true,
-            "lineCount": 7
+            "lineCount": 7,
+            "power": {
+                "menu": {
+                    "items": [
+                        {
+                            "name": "Disable initialization"
+                        }
+                    ]
+                }
+            }
         },
         {
             "id": "sectionOkgmqA",
@@ -7369,7 +7441,16 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
             },
             "evaluatorReader": true,
-            "lineCount": 5
+            "lineCount": 5,
+            "power": {
+                "menu": {
+                    "items": [
+                        {
+                            "name": "Disable initialization"
+                        }
+                    ]
+                }
+            }
         },
         {
             "id": "markdownsVrthj",
@@ -7506,7 +7587,16 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
             },
             "evaluatorReader": true,
-            "lineCount": 5
+            "lineCount": 5,
+            "power": {
+                "menu": {
+                    "items": [
+                        {
+                            "name": "Disable initialization"
+                        }
+                    ]
+                }
+            }
         },
         {
             "id": "sectionGUyfdA",
@@ -7633,7 +7723,16 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
             },
             "evaluatorReader": true,
-            "lineCount": 4
+            "lineCount": 4,
+            "power": {
+                "menu": {
+                    "items": [
+                        {
+                            "name": "Disable initialization"
+                        }
+                    ]
+                }
+            }
         },
         {
             "id": "sectionI3JDTC",
@@ -7836,7 +7935,16 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
             },
             "evaluatorReader": true,
-            "lineCount": 9
+            "lineCount": 9,
+            "power": {
+                "menu": {
+                    "items": [
+                        {
+                            "name": "Disable initialization"
+                        }
+                    ]
+                }
+            }
         },
         {
             "id": "markdownBiikVc",
@@ -8058,7 +8166,16 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
             },
             "evaluatorReader": true,
-            "lineCount": 8
+            "lineCount": 8,
+            "power": {
+                "menu": {
+                    "items": [
+                        {
+                            "name": "Disable initialization"
+                        }
+                    ]
+                }
+            }
         },
         {
             "id": "sectionwfn6YU",
@@ -8225,7 +8342,16 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
             },
             "evaluatorReader": true,
-            "lineCount": 8
+            "lineCount": 8,
+            "power": {
+                "menu": {
+                    "items": [
+                        {
+                            "name": "Disable initialization"
+                        }
+                    ]
+                }
+            }
         },
         {
             "id": "markdownPZ5eJ3",
@@ -12830,6 +12956,139 @@
             },
             "evaluatorReader": true,
             "lineCount": 14
+        },
+        {
+            "id": "sectionWlbVev",
+            "type": "section",
+            "title": "Adding actions to plots",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codey2d2Q1",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "//event structure:",
+                    "//{",
+                    "//  graphics: line, points,etc",
+                    "//  x: xs coordinates",
+                    "//  y: ys coordinates,",
+                    "//  xInd: index of element in xs",
+                    "//  xInd: index of element in xs",
+                    "//}",
+                    "",
+                    "def p = new Plot();",
+                    "p << new Line(x: [1,2], y: [3,4], width: 4, displayName: \"line 1\").onClick({event -> println(event.graphics.displayName)})",
+                    "p << new Line(x: [1,2], y: [5,6], width: 4, displayName: \"line 2\").onClick({event -> println(event.graphics.uid)})"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "update_id": "be12b61d-2401-413d-bfb4-f8ff30c08064",
+                    "type": "Plot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": null,
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "show_legend": null,
+                    "use_tool_tip": true,
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": "",
+                            "auto_range": true,
+                            "auto_range_includes_zero": false,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "use_log": false,
+                            "log_base": 10
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": false,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_y": false,
+                    "timezone": null,
+                    "crosshair": null,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "omit_checkboxes": false,
+                    "legend_layout": "VERTICAL",
+                    "graphics_list": [
+                        {
+                            "type": "Line",
+                            "uid": "4a04092c-1f81-4f93-ab18-344dc8b1d3f2",
+                            "x": [
+                                1,
+                                2
+                            ],
+                            "y": [
+                                3,
+                                4
+                            ],
+                            "visible": true,
+                            "display_name": "line 1",
+                            "color": "#FFC0504D",
+                            "width": 4,
+                            "yAxis": null
+                        },
+                        {
+                            "type": "Line",
+                            "uid": "d5f6c9ea-fb08-466d-805b-3f4142495cce",
+                            "x": [
+                                1,
+                                2
+                            ],
+                            "y": [
+                                5,
+                                6
+                            ],
+                            "visible": true,
+                            "display_name": "line 2",
+                            "color": "#FF4F81BD",
+                            "width": 4,
+                            "yAxis": null
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10
+                },
+                "selectedType": "Plot",
+                "pluginName": "Groovy",
+                "shellId": "6535857f-f056-44e3-a4f6-9d008e24b310",
+                "elapsedTime": 666
+            },
+            "evaluatorReader": true,
+            "power": {
+                "menu": {
+                    "items": [
+                        {
+                            "name": "Disable initialization"
+                        }
+                    ]
+                }
+            },
+            "lineCount": 12
         }
     ],
     "namespace": {},

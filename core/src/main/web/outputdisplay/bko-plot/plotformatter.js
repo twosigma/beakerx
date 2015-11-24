@@ -388,6 +388,7 @@
         if (model.version === "groovy") {  // model returned from serializer
 
           newmodel = {
+            plotId: model.update_id,
             type : "plot",
             title : model.chart_title != null ? model.chart_title : model.title,
             margin : {},
@@ -421,6 +422,7 @@
           };
         } else {
           newmodel = {
+            plotId: model.id,
             showLegend : model.showLegend,
             legendPosition : model.legendPosition != null ? model.legendPosition : {position: "TOP_RIGHT"},
             legendLayout : model.legendLayout != null ? model.legendLayout : "VERTICAL",

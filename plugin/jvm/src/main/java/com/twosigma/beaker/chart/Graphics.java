@@ -16,9 +16,20 @@
 
 package com.twosigma.beaker.chart;
 
+import com.twosigma.beaker.chart.actions.GraphicsActionListener;
+import com.twosigma.beaker.chart.actions.GraphicsClickActionObject;
+
+import java.util.UUID;
+
 public abstract class Graphics {
+  private final String uid;
   private boolean visible     = true;
   private String  yAxisName   = null;
+  private GraphicsActionListener onClickListener = null;
+
+  public Graphics() {
+    this.uid = UUID.randomUUID().toString();
+  }
 
   public void setVisible(boolean visible) {
     this.visible = visible;
@@ -38,6 +49,22 @@ public abstract class Graphics {
 
   public String getYAxis() {
     return yAxisName;
+  }
+
+  public String getUid() {
+    return uid;
+  }
+
+  public Graphics onClick(GraphicsActionListener onClickListener) {
+    this.onClickListener = onClickListener;
+    return this;
+  }
+
+  public void fireClick(GraphicsClickActionObject actionObject) {
+    if(onClickListener != null){
+      actionObject.setGraphics(this);
+      onClickListener.execute(actionObject);
+    }
   }
 
   abstract public void setColori(Color color);

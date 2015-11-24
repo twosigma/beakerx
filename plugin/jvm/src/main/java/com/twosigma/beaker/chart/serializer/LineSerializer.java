@@ -32,6 +32,11 @@ public class LineSerializer extends JsonSerializer<Line> {
 
     jgen.writeStartObject();
     jgen.writeObjectField("type", line.getClass().getSimpleName());
+
+    //FIXME should be added to GraphicsSerializer, need merge from nanoplot branch
+    jgen.writeObjectField("uid", line.getUid());
+    /////////////////////////////////////////////////////////////////////////////
+
     jgen.writeObjectField("x", line.getX());
     jgen.writeObjectField("y", line.getY());
     jgen.writeObjectField("visible", line.getVisible());

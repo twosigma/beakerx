@@ -20,7 +20,12 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Filter;
 import com.twosigma.beaker.chart.Graphics;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -28,12 +33,32 @@ abstract public class XYGraphics extends Graphics {
   private List<Number> xs;
   private List<Number> ys;
   private String  displayName = "";
+  protected Color baseColor;
+  private   List<Color>  colors;
   private Class plotType;
 
   private Filter lodFilter;
 
-  public void setX(List<Number> xs) {
-    this.xs = xs;
+  public void setX(List<Object> xs) {
+    this.xs = new ArrayList<>();
+    if(xs != null){
+      for (Object x : xs) {
+        if (x instanceof Number) {
+          this.xs.add((Number)x);
+        } else if (x instanceof Date) {
+          Date date = (Date)x;
+          this.xs.add(date.getTime());
+        } else {
+          throw new IllegalArgumentException("x coordinates should be the list of numbers or java.util.Date objects");
+  }
+//        remove Java8 feature LocalDateTime, that has to wait
+//        else if (x instanceof LocalDateTime) {
+//          LocalDateTime date = (LocalDateTime)x;
+//          ZonedDateTime zdate = date.atZone(ZoneId.of("UTC"));
+//          this.xs.add(zdate.toEpochSecond() * 1000 + date.get(ChronoField.MILLI_OF_SECOND));
+//        }
+      }
+    }
   }
 
   public List<Number> getX() {
@@ -81,6 +106,54 @@ abstract public class XYGraphics extends Graphics {
                                                lodFilter.getText()));
     }
 
+  }
+
+  public void setColor(Object color) {
+    if (color instanceof Color) {
+      this.baseColor = (Color) color;
+    } else if (color instanceof java.awt.Color) {
+      this.baseColor = new Color((java.awt.Color) color);
+    } else if (color instanceof List) {
+      @SuppressWarnings("unchecked")
+      List<Object> cs = (List<Object>) color;
+      setColors(cs);
+    } else {
+      throw new IllegalArgumentException(
+        "setColor takes Color or List of Color");
+    }
+  }
+
+  private void setColors(List<Object> colors) {
+    if (colors != null) {
+      this.colors = new ArrayList<>(colors.size());
+      for (Object c : colors) {
+        if (c instanceof Color) {
+          this.colors.add((Color)c);
+        } else if (c instanceof java.awt.Color) {
+          this.colors.add(new Color((java.awt.Color) c));
+        } else {
+          throw new IllegalArgumentException("setColor takes Color or List of Color");
+        }
+      }
+    } else {
+      this.colors = null;
+    }
+
+  }
+
+
+  public List<Color> getColors() {
+    return this.colors;
+  }
+
+  @Override
+  public void setColori(Color color) {
+    this.baseColor = color;
+  }
+
+  @Override
+  public Color getColor() {
+    return this.baseColor;
   }
 
   abstract protected EnumSet<Filter> getPossibleFilters();

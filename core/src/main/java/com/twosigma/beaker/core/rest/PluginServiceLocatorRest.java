@@ -21,29 +21,11 @@ import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.URI;
-import java.net.UnknownHostException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermission;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.fluent.Request;
+import org.jvnet.winp.WinProcess;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -54,18 +36,32 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.fluent.Request;
-import org.jvnet.winp.WinProcess;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.URI;
+import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 
 /**
  * This is the service that locates a plugin service. And a service will be started if the target
- * service doesn't exist. See {@link locatePluginService} for details
+ * service doesn't exist.
  */
 @Path("plugin-services")
 @Produces(MediaType.APPLICATION_JSON)
@@ -317,7 +313,7 @@ public class PluginServiceLocatorRest {
                       "beaker_tmp_dir",
                       "beaker_core_password"};
     for (int i = 0; i < vars.length; i++)
-      if (var.startsWith(vars[0] + "="))
+      if (var.startsWith(vars[i] + "="))
         return true;
     return false;
   }
@@ -325,15 +321,14 @@ public class PluginServiceLocatorRest {
   private String[] buildEnv(String pluginId, String password) {
     String[] env = this.pluginEnvps.get(pluginId);
     List<String> envList = new ArrayList<>();
+    for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
+      if (!internalEnvar(entry.getKey() + "="))
+        envList.add(entry.getKey() + "=" + entry.getValue());
+    }
     if (env != null) {
       for (int i = 0; i < env.length; i++) {
         if (!internalEnvar(env[i]))
           envList.add(env[i]);
-      }
-    } else {
-      for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
-        if (!internalEnvar(entry.getKey() + "="))
-          envList.add(entry.getKey() + "=" + entry.getValue());
       }
     }
     if (password != null) {
@@ -352,6 +347,13 @@ public class PluginServiceLocatorRest {
           String pathSeparator = windows() ? ";" : ":";
           envList.set(i, path + plugPath + pathSeparator + envList.get(i).substring(path.length()));
         }
+      }
+    }
+    for (Iterator<String> it = envList.iterator(); it.hasNext();) {
+      //delete TERM variable for correct ipython hash reading on Mac OS
+      String envVar = it.next();
+      if (envVar.toUpperCase().startsWith("TERM=")) {
+        it.remove();
       }
     }
     env = new String[envList.size()];
@@ -388,7 +390,7 @@ public class PluginServiceLocatorRest {
       @QueryParam("startedIndicatorStream") @DefaultValue("stdout") String startedIndicatorStream,
       @QueryParam("recordOutput") @DefaultValue("false") boolean recordOutput,
       @QueryParam("waitfor") String waitfor)
-      throws InterruptedException, IOException {
+    throws InterruptedException, IOException, ExecutionException {
       
     PluginConfig pConfig = this.plugins.get(pluginId);
     if (pConfig != null && pConfig.isStarted()) {
@@ -587,19 +589,13 @@ public class PluginServiceLocatorRest {
   }
 
   private String hashIPythonPassword(String password, String pluginId, String command)
-    throws IOException
-  {
+    throws IOException {
     List<String> cmdBase = pythonBaseCommand(pluginId, command);
     cmdBase.add("--hash");
+    cmdBase.add(password);
     Process proc = Runtime.getRuntime().exec(listToArray(cmdBase), buildEnv(pluginId, null));
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
-    bw.write("from IPython.lib import passwd\n");
-    // I have confirmed that this does not go into ipython history by experiment
-    // but it would be nice if there were a way to make this explicit. XXX
-    bw.write("print(passwd('" + password + "'))\n");
-    bw.close();
     String hash = br.readLine();
     if (null == hash) {
       throw new RuntimeException("unable to get IPython hash");
@@ -608,8 +604,7 @@ public class PluginServiceLocatorRest {
   }
 
   private void generateIPythonConfig(String pluginId, int port, String password, String command)
-    throws IOException, InterruptedException
-  {
+    throws IOException, InterruptedException, ExecutionException {
     // Can probably determine exactly what is needed and then just
     // make the files ourselves but this is a safe way to get started.
     List<String> cmd = pythonBaseCommand(pluginId, command);

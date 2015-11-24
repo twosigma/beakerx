@@ -27,7 +27,6 @@ public class Area extends XYGraphics {
 
   private final static EnumSet<Filter> POSSIBLE_LOD_FILTERS = EnumSet.of(Filter.AREA, Filter.RIVER);
 
-  private Color color;
   private Number baseBase = 0.0d;
   private List<Number> bases = null;
   private Integer interpolation;
@@ -55,16 +54,6 @@ public class Area extends XYGraphics {
 
   public List<Number> getBases() {
     return this.bases;
-  }
-
-  @Override
-  public void setColori(Color color) {
-    this.color = color;
-  }
-
-  @Override
-  public Color getColor() {
-    return this.color;
   }
 
   public void setInterpolation(Integer interpolation) {

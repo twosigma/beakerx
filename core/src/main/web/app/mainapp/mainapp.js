@@ -37,7 +37,8 @@
                                              'bk.notebookRouter',
                                              'bk.notebook',
                                              'bk.electron',
-                                             'bk.connectionManager'
+                                             'bk.connectionManager',
+                                             'bk.fileManipulation'
                                              ]);
 
   /**
@@ -59,7 +60,8 @@
       bkEvaluatorManager,
       bkEvaluateJobManager,
       bkElectron,
-      $location) {
+      $location,
+      bkFileManipulation) {
 
     return {
       restrict: 'E',
@@ -452,113 +454,6 @@
 
         var _impl = (function() {
 
-          var promptUriChooser = function(uriType, initUri) {
-            if (!uriType) {
-              uriType = "file";
-            }
-            var deferred = bkUtils.newDeferred();
-            var fileSaver = bkCoreManager.getFileSaver(uriType);
-            if (!fileSaver || !fileSaver.showFileChooser) {
-              fileSaver = bkCoreManager.getFileSaver("file");
-            }
-            fileSaver.showFileChooser(initUri).then(function(ret) {
-              if (_.isEmpty(ret.uri)) {
-                deferred.reject("cancelled");
-              } else {
-                deferred.resolve(ret);
-              }
-            });
-            return deferred.promise;
-          };
-
-          var promptIfOverwrite = function(uri) {
-            var deferred = bkUtils.newDeferred();
-            bkCoreManager.show2ButtonModal(
-                "File " + uri + " exists. Overwrite?",
-                "File exists",
-                function() {
-                  deferred.reject();
-                },
-                function() {
-                  deferred.resolve();
-                }, "Cancel", "Overwrite", "", "btn-danger");
-            return deferred.promise;
-          };
-
-          var saveAlwaysOverwrite = function(uri, uriType) {
-            var deferred = bkUtils.newDeferred();
-            var fileSaver = bkCoreManager.getFileSaver(uriType);
-            bkSessionManager.dumpDisplayStatus();
-            $timeout(function() {
-              var content = bkSessionManager.getSaveData().notebookModelAsString;
-              return fileSaver.save(uri, content, true);}, 1).then(function() {
-                deferred.resolve({uri: uri, uriType: uriType});
-              }, function(reason) {
-                deferred.reject(reason);
-              });
-            return deferred.promise;
-          };
-
-          var _savePromptIfOverwrite = function(deferred, uri, uriType) {
-            var fileSaver = bkCoreManager.getFileSaver(uriType);
-            bkSessionManager.dumpDisplayStatus();
-            $timeout(function() {
-              var content = bkSessionManager.getSaveData().notebookModelAsString;
-              return fileSaver.save(uri, content);
-            }, 1).then(function() {
-              deferred.resolve({uri: uri, uriType: uriType}); // file save succeed
-            }, function (reason) {
-              if (reason === "exists") {
-                promptIfOverwrite(uri).then(function () {
-                  saveAlwaysOverwrite(uri, uriType).then(function(ret) {
-                    deferred.resolve(ret); // file save succeed
-                  }, function(reason) {
-                    deferred.reject(reason); // file save failed
-                  });
-                }, function() {
-                  _savePromptUriChooser(deferred, uriType, uri);
-                });
-              } else if (reason === "isDirectory") {
-                bkCoreManager.show1ButtonModal(
-                    uri + " is a directory. Please choose a different location",
-                    "Save Failed",
-                    function () {
-                      _savePromptUriChooser(deferred, uriType, uri);
-                    });
-              } else if (reason !== "cancelled"){
-                console.log(reason);
-                bkCoreManager.show1ButtonModal(
-                  "Error saving to " + uri,
-                  "Save Failed",
-                  function () {
-                    _savePromptUriChooser(deferred, uriType, uri);
-                  });
-              }
-              else {
-                deferred.reject(reason); // file save failed
-              }
-            });
-          };
-          var _savePromptUriChooser = function(deferred, uriType, initUri) {
-            promptUriChooser(uriType, initUri).then(function(ret) {
-              _savePromptIfOverwrite(deferred, ret.uri, ret.uriType);
-            }, function() {
-              deferred.reject("cancelled"); // file save cancelled
-            });
-          };
-
-          var savePromptChooseUri = function() {
-            var deferred = bkUtils.newDeferred();
-            _savePromptUriChooser(deferred);
-            return deferred.promise;
-          };
-
-          var savePromptIfOverwrite = function(uri, uriType) {
-            var deferred = bkUtils.newDeferred();
-            _savePromptIfOverwrite(deferred, uri, uriType);
-            return deferred.promise;
-          };
-
           var saveStart = function() {
             showLoadingStatusMessage("Saving");
           };
@@ -585,6 +480,21 @@
             } else {
               bkCoreManager.show1ButtonModal(msg, "Save Failed");
               showTransientStatusMessage("Save Failed");
+            }
+          };
+
+          var renameDone = function(ret) {
+            bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
+            updateSessionStore(ret.uri, ret.uriType);
+            showTransientStatusMessage("Renamed");
+          };
+
+          var renameFailed = function (msg) {
+            if (msg === "cancelled") {
+              showTransientStatusMessage("Cancelled");
+            } else {
+              bkCoreManager.show1ButtonModal(msg, "Rename Failed");
+              showTransientStatusMessage("Rename Failed");
             }
           };
 
@@ -662,61 +572,15 @@
 
             saveNotebook: function() {
               saveStart();
-              var thenable;
-              if (bkSessionManager.isSavable()) {
-                bkSessionManager.dumpDisplayStatus();
-                thenable = $timeout(function() {
-                  var saveData = bkSessionManager.getSaveData();
-                  var deferred = bkUtils.newDeferred();
-                  var fileSaver = bkCoreManager.getFileSaver(saveData.uriType);
-                  var content = saveData.notebookModelAsString;
-                  fileSaver.save(saveData.notebookUri, content, true).then(function() {
-                    deferred.resolve({uri: saveData.notebookUri, uriType: saveData.uriType});
-                  }, function(reason) {
-                    deferred.reject(reason);
-                  });
-                  return deferred.promise;
-                }, 1);
-              } else {
-                if (bkUtils.isElectron){
-                  var BrowserWindow = bkElectron.BrowserWindow;
-                  var Dialog = bkElectron.Dialog;
-                  var thisWindow = bkElectron.thisWindow;
-                  var deferred = bkUtils.newDeferred();
-                  bkUtils.getWorkingDirectory().then(function(defaultPath) {
-                    var options = {
-                      title: 'Save Beaker Notebook',
-                      defaultPath: defaultPath,
-                      filters: [
-                        { name: 'Beaker Notebook Files', extensions: ['bkr'] }
-                      ]
-                    };
-                    var path = Dialog.showSaveDialog(thisWindow, options);
-                    if (path === undefined){
-                      saveFailed('cancelled');
-                      return;
-                    }
-                    bkUtils.httpPost('rest/file-io/setWorkingDirectory', { dir: path });
-                    var ret = {
-                      uri: path,
-                      uriType: 'file'
-                    };
-                    bkSessionManager.dumpDisplayStatus();
-                    var saveData = bkSessionManager.getSaveData();
-                    var fileSaver = bkCoreManager.getFileSaver(ret.uriType);
-                    var content = saveData.notebookModelAsString;
-                    fileSaver.save(ret.uri, content, true).then(function() {
-                      deferred.resolve(ret);
-                    }, function(reason) {
-                      deferred.reject(reason);
-                    });
-                  });
-                  thenable = deferred.promise;
-                } else {
-                  thenable = savePromptChooseUri();
-                }
+              return bkFileManipulation.saveNotebook(saveFailed).then(saveDone, saveFailed);
+            },
+            renameNotebookTo: function(notebookUri, uriType) {
+              if (_.isEmpty(notebookUri)) {
+                console.error("cannot rename notebook, notebookUri is empty");
+                return;
               }
-              return thenable.then(saveDone, saveFailed);
+              showLoadingStatusMessage("Renaming");
+              return bkFileManipulation.renameNotebook(notebookUri, uriType).then(renameDone, renameFailed);
             },
             saveNotebookAs: function(notebookUri, uriType) {
               if (_.isEmpty(notebookUri)) {
@@ -724,7 +588,7 @@
                 return;
               }
               saveStart();
-              return savePromptIfOverwrite(notebookUri, uriType).then(saveDone, saveFailed);
+              return bkFileManipulation.saveNotebookAs(notebookUri, uriType).then(saveDone, saveFailed);
             },
             closeNotebook: closeNotebook,
             _closeNotebook: _closeNotebook,
@@ -1223,16 +1087,42 @@
           }
         };
 
+        $scope.renamingAllowed = function() {
+          var uriType = bkSessionManager.getNotebookUriType();
+          return !uriType || GLOBALS.FILE_LOCATION.FILESYS === uriType;
+        };
+
+        $scope.renameNotebook = function() {
+          var saveFn = bkHelper.saveNotebookAs;
+          var saveButtonTitle = "Save";
+          var initUri = bkSessionManager.getNotebookPath();
+          if (bkSessionManager.isSavable()) {
+            saveFn = bkHelper.renameNotebookTo;
+            saveButtonTitle = "Rename";
+          } else {
+            initUri = null;
+          }
+          bkHelper.showDefaultSavingFileChooser(initUri, saveButtonTitle).then(function(ret) {
+            if (ret.uri) {
+              return saveFn(ret.uri, ret.uriType);
+            }
+          });
+        };
+
         $scope.getElectronMode = function() {
           return bkUtils.isElectron;
-        }
+        };
 
         $scope.filename = function() {
           return bkSessionManager.getNotebookTitle();
         };
 
         $scope.pathname = function() {
-          return bkSessionManager.getNotebookPath();
+          if ($scope.isEdited()) {
+            return '*' + bkSessionManager.getNotebookPath();
+          } else {
+            return bkSessionManager.getNotebookPath();
+          }
         };
 
         $scope.$on("$locationChangeStart", function(event, next, current) {

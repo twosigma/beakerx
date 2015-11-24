@@ -25,6 +25,11 @@
       RECONNECT_TIMEOUT: 90000, // 90 seconds
       EVENTS: {
       	RECONNECT_FAILED: 'reconnect-failed'
+      },
+      FILE_LOCATION: {
+        FILESYS: "file",
+        HTTP: "http",
+        AJAX: "ajax"
       }
     };
   });

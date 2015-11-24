@@ -168,6 +168,28 @@ public class FileIORest {
     }
   }
 
+  @POST
+  @Path("rename")
+  public void saveIfNotExists(
+      @FormParam("oldPath") String oldPath,
+      @FormParam("newPath") String newPath,
+      @FormParam("overwrite") boolean overwrite) throws IOException {
+    newPath = removePrefix(newPath);
+    if (Files.exists(Paths.get(newPath))) {
+      if (new File(newPath).isDirectory()) {
+        throw new FileAlreadyExistsAndIsDirectoryException();
+      }
+      if (!overwrite) {
+        throw new FileAlreadyExistsException();
+      }
+    }
+    try {
+      utils.renameFile(oldPath, newPath);
+    } catch (Throwable t) {
+      throw new FileSaveException(ExceptionUtils.getStackTrace(t));
+    }
+  }
+
   @GET
   @Path("load")
   @Produces(MediaType.TEXT_PLAIN)

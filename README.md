@@ -19,7 +19,7 @@
 Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly switch between languages in your documents and add support for your favorite languages that we've missed.
 
 Beaker is both a server that you can run in the cloud, an application that you can download and run, and
-a [Docker container](https://registry.hub.docker.com/u/beakernotebook/beaker/) that you can run anywhere.
+a [Docker container](https://hub.docker.com/r/beakernotebook/beaker/) that you can run anywhere.
 
 This page is for developers.  If you want to use or learn more about Beaker, see the [home page](http://beakernotebook.com).
 
@@ -47,7 +47,7 @@ To enable the debug menu, add the following to your `beaker.pref.json` file:
 
 ##Presentation and Demo on YouTube
 
-[![Greenwood and Draves speak at PyData](http://img.youtube.com/vi/wu65cYffMSg/0.jpg)](http://www.youtube.com/watch?v=wu65cYffMSg)
+[![Greenwood and Draves speak at PyData](http://img.youtube.com/vi/wu65cYffMSg/0.jpg)](https://www.youtube.com/watch?v=wu65cYffMSg)
 
 ##Language support
 
@@ -87,5 +87,6 @@ we need for you to fill out and email back to us a scan of a signed copy of the
 
 We're also looking to expand our full-time, NYC-based engineering team
 with a [full-stack web developer](http://www.twosigma.com/careers/position/936.html).
+
 
 

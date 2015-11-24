@@ -81,6 +81,7 @@
             scope.width = ui.size.width;
             scope.height = ui.size.height;
             _(scope.plotSize).extend(ui.size);
+            scope.setDumpState(scope.dumpState());
 
             scope.jqsvg.css({"width": scope.width, "height": scope.height});
             scope.jqplottitle.css({"width": scope.width });
@@ -1726,7 +1727,9 @@
           scope.visibleItem = state.visibleItem;
           scope.legendableItem = state.legendableItem;
           scope.defaultFocus = state.defaultFocus;
-          scope.fixFocus(scope.defaultFocus);
+          if(scope.defaultFocus) {
+            scope.fixFocus(scope.defaultFocus);
+          }
         };
 
         scope.initFlags = function() {
@@ -1785,7 +1788,9 @@
           scope.calcRange();
 
           // init copies focus to defaultFocus, called only once
-          _(scope.focus).extend(scope.defaultFocus);
+          if(_.isEmpty(scope.focus)){
+            _(scope.focus).extend(scope.defaultFocus);
+          }
 
           // init remove pipe
           scope.removePipe = [];
@@ -1877,7 +1882,6 @@
         });
 
         scope.$on('$destroy', function() {
-          scope.setDumpState(scope.dumpState());
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
           scope.jqlegendcontainer.find("#plotLegend").remove();

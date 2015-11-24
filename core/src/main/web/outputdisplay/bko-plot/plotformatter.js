@@ -455,7 +455,7 @@
         }
 
         newmodel.lodThreshold = (model.lodThreshold) ?
-          model.lodThreshold : (prefs !== undefined && prefs.lodThreshold !== undefined ? prefs.lodThreshold : 1500) ;
+          model.lodThreshold : (prefs !== undefined && prefs.lodThreshold !== undefined ? prefs.lodThreshold : 4000) ;
 
         newmodel.data = [];
 

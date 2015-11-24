@@ -15,8 +15,12 @@
   limitations under the License.
 -->
 <div class="modal-header fixed">
-  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">
-  <i class="fa fa-refresh fa-spin"></i></span></h1>
+  <h1>
+    ${ saveButtonTitle }
+    <span ng-show="getStrategy().treeViewfs.showSpinner">
+      <i class="fa fa-refresh fa-spin"></i>
+    </span>
+  </h1>
   <div class="filters-and-sorts">
     <div class="dropdown">
       <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown">
@@ -45,5 +49,5 @@
   </p>
   <span style="float:left;">{{getStrategy().getResult()}}</span>
   <button ng-click="close()" class="btn btn-default">Cancel</button>
-  <button ng-click="close(getStrategy().getResult())" class="btn btn-primary" ng-disabled="getStrategy().getSaveBtnDisabled()" >Save</button>
+  <button ng-click="close(getStrategy().getResult())" class="btn btn-primary" ng-disabled="getStrategy().getSaveBtnDisabled()">${ saveButtonTitle }</button>
 </div>

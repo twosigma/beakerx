@@ -19,6 +19,7 @@ package com.twosigma.beaker.chart.histogram;
 import com.twosigma.beaker.AbstractChart;
 import com.twosigma.beaker.chart.Color;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Histogram extends AbstractChart {
@@ -112,8 +113,24 @@ public class Histogram extends AbstractChart {
   public void setColor(Object color) {
     if (color instanceof Color) {
       this.baseColor = (Color) color;
+    } else if (color instanceof java.awt.Color) {
+      this.baseColor = new Color((java.awt.Color) color);
     } else if (color instanceof List) {
-      this.colors = (List<Color>) color;
+      if (color != null) {
+        List cs = (List) color;
+        this.colors = new ArrayList<>(cs.size());
+        for (Object c : cs) {
+          if (c instanceof Color) {
+            this.colors.add((Color)c);
+          } else if (c instanceof java.awt.Color) {
+            this.colors.add(new Color((java.awt.Color) c));
+          } else {
+            throw new IllegalArgumentException("setColor takes Color or List of Color");
+          }
+        }
+      } else {
+        this.colors = null;
+      }
     } else {
       throw new IllegalArgumentException(
         "setColor takes Color or List of Color");

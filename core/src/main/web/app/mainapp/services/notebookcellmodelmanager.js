@@ -149,7 +149,7 @@
     oldArray.splice.apply(oldArray, args);
   };
 
-  module.factory('bkNotebookCellModelManager', function($timeout, $rootScope) {
+  module.factory('bkNotebookCellModelManager', function($timeout, $rootScope, bkEvaluateJobManager) {
     var cells = [];
     var cellMap = {};
     var tagMap = {};
@@ -439,7 +439,12 @@
         if (cells) {
           _.each(cells, function(cell) {
             if (cell.output) {
-              cell.output.result = undefined;
+              var runningJob = bkEvaluateJobManager.getCurrentJob();
+              if(!runningJob || runningJob.cellId !== cell.id){
+                cell.output.result = undefined;
+                cell.output.elapsedTime = undefined;
+                bkEvaluateJobManager.remove(cell);
+              }
             }
           });
         }
@@ -553,6 +558,13 @@
           return null;
         }
         return this.getCellAtIndex(index - 1);
+      },
+      findNextCodeCell: function(id) {
+        var index = this.getIndex(id);
+        if (index === cells.length - 1) {
+          return null;
+        }
+        return this.findCodeCell(this.getCellAtIndex(index + 1).id, true);
       },
       isContainer: function(id) {
         return id === 'root' || !!this.getCell(id).level;

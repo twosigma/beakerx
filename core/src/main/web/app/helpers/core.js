@@ -49,7 +49,8 @@
       bkNotebookCellModelManager,
       bkElectron,
       modalDialogOp,
-      Upload) {
+      Upload,
+      GLOBALS) {
 
     function isFilePath(path) {
       return path.split('/').pop() !== '';
@@ -161,9 +162,9 @@
       }
     };
 
-    var LOCATION_FILESYS = "file";
-    var LOCATION_HTTP = "http";
-    var LOCATION_AJAX = "ajax";
+    var LOCATION_FILESYS = GLOBALS.FILE_LOCATION.FILESYS;
+    var LOCATION_HTTP = GLOBALS.FILE_LOCATION.HTTP;
+    var LOCATION_AJAX = GLOBALS.FILE_LOCATION.AJAX;
 
     // fileLoaders are responsible for loading files and output the file content as string
     // fileLoader impl must define an 'load' method which returns a then-able
@@ -191,6 +192,9 @@
     _fileSavers[LOCATION_FILESYS] = {
       save: function(uri, contentAsString, overwrite) {
         return bkUtils.saveFile(uri, contentAsString, overwrite);
+      },
+      rename: function(oldUri, newUri, overwrite) {
+        return bkUtils.renameFile(oldUri, newUri, overwrite);
       },
       showFileChooser: function(initUri) {
         return bkCoreManager.showDefaultSavingFileChooser(initUri);
@@ -360,7 +364,7 @@
         $sessionStorage.importedNotebook = notebook;
         $location.path("/session/import").search({});
       },
-      showDefaultSavingFileChooser: function(initPath) {
+      showDefaultSavingFileChooser: function(initPath, saveButtonTitle) {
         var self = this;
         var deferred = bkUtils.newDeferred();
         var requests = [bkUtils.getHomeDirectory(), bkUtils.getStartUpDirectory(),
@@ -411,7 +415,11 @@
             return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');
           };
           fileChooserStrategy.treeViewfs.applyExtFilter = false;
-          var fileChooserTemplate = JST['template/savenotebook']({homedir: homeDir });
+          saveButtonTitle = saveButtonTitle || "Save";
+          var fileChooserTemplate = JST['template/savenotebook']({
+            homedir: homeDir,
+            saveButtonTitle: saveButtonTitle
+          });
           var fileChooserResultHandler = function (chosenFilePath) {
             deferred.resolve({
               uri: chosenFilePath,
@@ -494,13 +502,28 @@
           }
         };
 
+        var goToNextCodeCell = function(){
+          var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
+          while (nextCell) {
+            var focusable = scope.bkNotebook.getFocusable(nextCell.id);
+            if (focusable && focusable.isShowInput()) {
+              focusable.focus();
+              break;
+            } else {
+              nextCell = notebookCellOp.findNextCodeCell(nextCell.id);
+            }
+          }
+          return nextCell;
+        };
+
         var moveFocusDown = function() {
           // move focus to next code cell
           var thisCellId = scope.cellmodel.id;
           var nextCell = notebookCellOp.getNext(thisCellId);
           while (nextCell) {
-            if (scope.bkNotebook.getFocusable(nextCell.id)) {
-              scope.bkNotebook.getFocusable(nextCell.id).focus();
+            var focusable = scope.bkNotebook.getFocusable(nextCell.id);
+            if (focusable && focusable.isShowInput()) {
+              focusable.focus();
               break;
             } else {
               nextCell = notebookCellOp.getNext(nextCell.id);
@@ -514,12 +537,12 @@
           var thisCellID = scope.cellmodel.id;
           var prevCell = notebookCellOp.getPrev(thisCellID);
           while (prevCell) {
-            var t = scope.bkNotebook.getFocusable(prevCell.id);
-            if (t) {
-              t.focus();
-              var top = t.cm.cursorCoords(true,'window').top;
-              if ( top < 150)
-                window.scrollBy(0, top-150);
+            var focusable = scope.bkNotebook.getFocusable(prevCell.id);
+            if (focusable && focusable.isShowInput()) {
+              focusable.focus();
+              var top = focusable.cm.cursorCoords(true, 'window').top;
+              if (top < 150)
+                window.scrollBy(0, top - 150);
               break;
             } else {
               prevCell = notebookCellOp.getPrev(prevCell.id);
@@ -535,7 +558,7 @@
 
         var evaluateAndGoDown = function() {
           scope.evaluate();
-          moveFocusDown();
+          goToNextCodeCell();
         };
 
         var maybeShowAutoComplete = function(cm) {
@@ -616,6 +639,15 @@
             };
             CodeMirror.showHint(cm, getHints, options);
           }
+        };
+
+        var reformat = function (cm) {
+          var start = cm.getCursor(true).line;
+          var end = cm.getCursor(false).line;
+          do {
+            cm.indentLine(start);
+            start += 1;
+          } while (start <= end)
         };
 
         var shiftTab = function(cm) {
@@ -717,7 +749,9 @@
             "Ctrl-/": "toggleComment",
             "Cmd-/": "toggleComment",
             'Right': goCharRightOrMoveFocusDown,
-            'Left': goCharLeftOrMoveFocusDown
+            'Left': goCharLeftOrMoveFocusDown,
+            "Shift-Ctrl-F": reformat,
+            "Shift-Cmd-F": reformat
         };
 
 
@@ -739,7 +773,7 @@
           lineNumbers: true,
           matchBrackets: true,
           extraKeys: keys,
-          goToNextCell: moveFocusDown,
+          goToNextCodeCell: goToNextCodeCell,
           scrollbarStyle: "simple"
         };
       },

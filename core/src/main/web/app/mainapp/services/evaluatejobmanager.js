@@ -215,6 +215,14 @@
         },
         tick: function() {
           bkUtils.fcall(doNext);
+        },
+        remove: function(cellId) {
+          for (var idx=0; idx<_queue.length; idx++) {
+            if(_queue[idx].cellId === cellId){
+              delete running[_queue[idx].cellId];
+              _queue.splice(idx, 1);
+            }
+          }
         }
       };
     })();
@@ -357,6 +365,12 @@
       getOutputCell: function(id) {
         return outputMap[id];
       },
+      remove: function (cell) {
+        jobQueue.remove(cell.id);
+      },
+      getCurrentJob: function(){
+        return jobQueue.getCurrentJob();
+      }
 
     };
   });

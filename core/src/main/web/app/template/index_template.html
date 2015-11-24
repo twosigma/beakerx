@@ -95,7 +95,7 @@
   <script src="vendor/cometd/jquery/jquery.cometd.js"></script>
   <script src="vendor/jquery.event.drag/jquery.event.drag.js"></script>
   <script src="vendor/jquery-ui/js/jquery-ui.custom.min.js"></script>
-  <script src="vendor/bower_components/rAF/index.js"></script>
+  <script src="vendor/bower_components/request-frame/dist/request-frame.min.js"></script>
   <script src="vendor/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <script src="vendor/bower_components/bootstrap-sass/assets/javascripts/bootstrap.js"></script>
   <script src="vendor/bower_components/moment/min/moment.min.js"></script>
@@ -107,6 +107,12 @@
   <script src="vendor/bower_components/angular-gravatar/build/angular-gravatar.js"></script>
   <script src="vendor/bower_components/ng-file-upload/ng-file-upload.js"></script>
   <script src="vendor/bower_components/datetimepicker/jquery.datetimepicker.js"></script>
+  <!-- endbuild -->
+
+  <!-- htmlbuild:embedremove -->
+  <script>
+    (function(){ requestFrame('native'); })();
+  </script>
   <!-- endbuild -->
 
   <script src="app/vendor/requirejs/require.js" data-main="app/main.js"></script>
@@ -134,12 +140,13 @@
   <script src="app/mainapp/services/notebookmanager.js"></script>
   <script src="app/mainapp/services/connectionmanager.js"></script>
   <script src="app/mainapp/services/sessionmanager.js"></script>
+  <script src="app/mainapp/services/fileManipulation.js"></script>
   <script src="app/mainapp/components/notebook/notebook.js"></script>
   <script src="app/mainapp/components/notebook/cell-directive.js"></script>
   <script src="app/mainapp/components/notebook/codecell-directive.js"></script>
   <script src="app/mainapp/components/notebook/celltooltip-directive.js"></script>
   <script src="app/mainapp/components/notebook/codecellinputmenu-directive.js"></script>
-  <script src="app/mainapp/components/notebook/close-dropdown-directive.js"></script>
+  <script src="app/mainapp/components/notebook/dropdown-directive.js"></script>
   <script src="app/mainapp/components/notebook/codecelloutput-directive.js"></script>
   <script src="app/mainapp/components/notebook/codecelloutputmenu-directive.js"></script>
   <script src="app/mainapp/components/notebook/markdown-editable-directive.js"></script>

@@ -270,6 +270,24 @@
           }
         });
 
+        $scope.cellmodel.power = {
+          menu: {
+            items: [
+              {
+                name: 'Disable initialization',
+                action: function() {
+                  if ($scope.isInitializationCell()) {
+                    $scope.cellmodel.initialization = undefined;
+                  } else {
+                    $scope.cellmodel.initialization = true;
+                  }
+                  notebookCellOp.reset();
+                }
+              }
+            ]
+          }
+        };
+
         bkPublicationHelper.helper(CELL_TYPE, $scope);
       },
       link: function(scope, element) {
@@ -305,13 +323,6 @@
         };
         scope.scrollTo = function(){
           window.scrollTo(0, element.offset().top - 100);
-          scope.focus();
-        };
-        scope.focus = function() {
-          if (scope.cm === undefined) {
-            initCodeMirror();
-          }
-          scope.cm.focus();
         };
         CodeMirror.on(window, 'resize', resizeHandler);
 
@@ -393,14 +404,24 @@
 
         };
 
+        scope.displayOutput = false;
 
         Scrollin.track(element[0], function() {
-          if (scope.cm === undefined) {
+          $timeout(function() {
             initCodeMirror();
-          }
+            scope.displayOutput = true;
+          }, 1);
         });
 
+        scope.focus = function() {
+          scope.cm.focus();
+        };
+
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
+
+        scope.focus = function() {
+          scope.cm.focus();
+        };
 
         // cellmodel.body --> CodeMirror
         scope.$watch('cellmodel.input.body', function(newVal, oldVal) {
@@ -484,7 +505,7 @@
                 if (currentLine !== cm.lastLine()) {
                   cm.setCursor(currentLine + 1, 0);
                 } else {
-                  codeMirrorOptions.goToNextCell(cm);
+                  codeMirrorOptions.goToNextCodeCell(cm);
                 }
               }
             })
@@ -497,7 +518,7 @@
           if (!isCollapsed) {
             $timeout(function() {
               if (scope.cm === undefined) {
-                initCodeMirror();
+                Scrollin.checkForVisibleElements();
               } else {
                 scope.cm.refresh();
               }

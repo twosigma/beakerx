@@ -37,7 +37,10 @@
     <a class="navbar-left" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click>
       Beaker
     </a>
-    <p class="navbar-text">{{pathname()}}</p>
+    <div ng-switch="renamingAllowed()">
+      <a ng-switch-when="true" href="#" class="navbar-text" ng-click="renameNotebook()" eat-click>{{pathname()}}</a>
+      <p ng-switch-default class="navbar-text">{{pathname()}}</p>
+    </div>
     <span class="navbar-text" ng-if="loading || !!loadingmsg">
       <i class='fa fa-refresh fa-spin text-white'></i>
     </span>

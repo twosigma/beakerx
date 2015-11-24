@@ -51,6 +51,7 @@ var BeakerPageObject = function() {
   this.openFile = function(path) {
     this.openMenuAtIndex(0);
 
+    browser.sleep(1000); // mouseMove happens too fast and the menu doesnt display sometimes. Couldn't find a better solution.
     browser.actions().mouseMove(element(by.css('#open-menuitem'))).perform();
 
     element(by.css('a[title="Open a bkr notebook file"]')).click();
@@ -93,7 +94,7 @@ var BeakerPageObject = function() {
   };
 
   this.toggleCellMenu = function(opts) {
-    return element.all(by.css('.bkcell .dropdown-promoted'))
+    return element.all(by.css('.bkcell .toggle-menu .dropdown-promoted'))
     .get(opts.cellIndex)
     .click();
   };
@@ -117,7 +118,7 @@ var BeakerPageObject = function() {
   };
 
   this.createMarkdownCell = function(text) {
-    element(by.css('bk-new-cell-menu .dropdown-toggle'))
+    return element(by.css('bk-new-cell-menu .dropdown-toggle'))
     .click()
     .then(function() {
       return element(by.css('.insert-text'));
@@ -233,9 +234,17 @@ var BeakerPageObject = function() {
     return this.insertCellButton.click();
   };
 
+  this.openSection = function() {
+    return element(by.css('.bksectiontoggleplus')).click();
+  }
+
   this.getCellOutput = function() {
     return element(by.css('bk-output-display > div'));
   };
+
+  this.getLoadingIndicator = function() {
+    return element(by.css('.navbar-text > i'));
+  }
 
   this.waitForCellOutput = function(plugin) {
     var self = this;
@@ -260,6 +269,19 @@ var BeakerPageObject = function() {
       });
     }, 10000);
   };
+
+  this.waitUntilLoadingFinished = function() {
+    var self = this;
+    return browser.wait(function() {
+      return self.getLoadingIndicator().isPresent()
+      .then(function(present) {
+        return !present;
+      })
+      .thenCatch(function() {
+        return false;
+      });
+    }, 10000);
+  }
 
 };
 module.exports = BeakerPageObject;

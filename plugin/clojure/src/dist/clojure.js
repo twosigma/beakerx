@@ -136,16 +136,19 @@ define(function(require, exports, module) {
         }).done(cb);
       },
       updateShell: function (cb) {
-        var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/setShellOptions"), {
+        bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
+        bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/setShellOptions"), {
           shellId: this.settings.shellID,
           classPath: this.settings.classPath,
           imports: this.settings.imports,
           outdir: this.settings.outdir,
           requirements: this.settings.requirements
+        }).success(function() {
+          if (cb && _.isFunction(cb)) {
+            cb();
+          }
+          bkHelper.hideLanguageManagerSpinner();
         });
-        if (cb) {
-          p.success(cb);
-        }
       },
       spec: {
         classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},

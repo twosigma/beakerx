@@ -142,15 +142,18 @@ define(function(require, exports, module) {
       }).done(cb);
     },
     updateShell: function (cb) {
-      var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/setShellOptions"), {
+      bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/setShellOptions"), {
         shellId: this.settings.shellID,
         classPath: this.settings.classPath,
         defaultDatasource: this.settings.defaultDatasource,
         datasources: this.settings.datasources
-       });
-      if (cb) {
-        p.success(cb);
-      }
+       }).success(function() {
+        if (cb && _.isFunction(cb)) {
+          cb();
+        }
+        bkHelper.hideLanguageManagerSpinner();
+      });
     },
     spec: {
       defaultDatasource:  {type: "settableString", action: "updateShell", name: "Default data source"},

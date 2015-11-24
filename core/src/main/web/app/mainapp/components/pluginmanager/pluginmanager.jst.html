@@ -19,10 +19,10 @@
       <h1>Language Manager</h1>
     </div>
     <div class="pull-right">
-      <span class="navbar-text" ng-show="loading">
+      <span class="navbar-text" ng-show="showSpinner">
         <i class='fa fa-refresh fa-spin'></i>
       </span>
-      <div class="navbar-text loadingmsg" ng-show="loading || !!loadingMessage">
+      <div class="navbar-text loadingmsg animate-show" ng-show="showMessage">
         {{loadingMessage}}
       </div>
     </div>

@@ -26,3 +26,16 @@
 .rotating {
   -webkit-animation: rotating 2s linear infinite;
 }
+
+.animate-show {
+  opacity: 1;
+}
+
+.animate-show.ng-hide-add {
+  transition: all linear 0.5s;
+}
+
+.animate-show.ng-hide {
+  opacity: 0;
+  color: lightgrey;
+}

@@ -146,13 +146,17 @@
     };
 
     $rootScope.$on(GLOBALS.EVENTS.LANGUAGE_MANAGER_SHOW_SPINNER, function(event, data) {
-      $scope.loading = true;
+      $scope.showSpinner = true;
+      $scope.showMessage = true;
       $scope.loadingMessage = 'Restarting ' + data.pluginName + '...';
     });
 
     $rootScope.$on(GLOBALS.EVENTS.LANGUAGE_MANAGER_HIDE_SPINNER, function() {
-      $scope.loading = false;
       $scope.loadingMessage += 'done';
+      $scope.showSpinner = false;
+      bkUtils.timeout(function() {
+        $scope.showMessage = false;
+      }, 3000);
     });
 
   }]);

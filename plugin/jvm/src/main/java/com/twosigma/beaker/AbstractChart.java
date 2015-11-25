@@ -23,9 +23,10 @@ import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 import java.util.TimeZone;
 
-public abstract class AbstractChart {
+public abstract class AbstractChart extends Observable{
   private int initWidth = 640;
   private int initHeight = 480;
   private String title;

@@ -322,4 +322,8 @@ public abstract class AbstractChart extends Observable{
     return this;
   }
 
+  @Override
+  public synchronized void setChanged() {
+    super.setChanged();
+  }
 }

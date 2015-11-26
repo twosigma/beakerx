@@ -51,6 +51,8 @@ public class ChartRest {
       for(Graphics g: ((XYChart)chart).getGraphics()){
         if(StringUtils.equals(g.getUid(), graphicsId)){
           g.fireClick(info);
+          chart.setChanged();
+          chart.notifyObservers();
         }
       }
     }

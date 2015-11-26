@@ -27,7 +27,8 @@
                          bkCellMenuPluginManager,
                          bkSessionManager,
                          bkUtils,
-                         GradientLegend) {
+                         GradientLegend,
+                         plotService) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -69,6 +70,32 @@
         model.updateLegendPosition = function(){
           return $scope.updateLegendPosition();
         };
+
+        $scope.ingestUpdate = function(model) {
+          $scope.update_id = model.update_id;
+
+          $scope.model = model;
+          $scope.legendDone = false;
+          $scope.legendResetPosition = true;
+
+
+          var srv = plotService.getUpdateService($scope.model.getEvaluatorId());
+          if ($scope.subscribedId && $scope.subscribedId !== $scope.update_id) {
+            if (srv !== undefined)
+              srv.unsubscribe($scope.subscribedId);
+            $scope.subscribedId = null;
+          }
+          if (!$scope.subscribedId && $scope.update_id && srv !== undefined) {
+            var onUpdate = function(update) {
+              $scope.ingestUpdate(update);
+              $scope.$digest();
+            };
+            srv.subscribe($scope.update_id, onUpdate);
+            $scope.subscribedId = $scope.update_id;
+          }
+          $scope.init();
+        };
+
       },
       link : function(scope, element, attrs) {
         // rendering code
@@ -1873,13 +1900,19 @@
           return scope.model.getCellModel();
         };
         scope.$watch('getCellModel()', function() {
-          scope.init();
+          scope.ingestUpdate(scope.model);
         });
 
         scope.$on('$destroy', function() {
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
           scope.jqlegendcontainer.find("#plotLegend").remove();
+          if (scope.subscribedId) {
+            var srv = plotService.getUpdateService();
+            if (srv !== undefined) {
+              srv.unsubscribe($scope.subscribedId);
+            }
+          }
         });
 
         scope.getSvgToSave = function() {
@@ -2036,5 +2069,6 @@
     "bkSessionManager",
     "bkUtils",
     "GradientLegend",
+    "plotService",
     retfunc]);
 })();

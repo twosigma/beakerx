@@ -1,8 +1,14 @@
-(function() {
+(function () {
   'use strict';
-  var retfunc = function(bkUtils) {
+  var retfunc = function (bkUtils, bkEvaluatorManager) {
     return {
-      onClick: function(item, e) {
+      getUpdateService: function (evaluatorId) {
+        if (window !== undefined && window.languageUpdateService !== undefined &&
+          bkEvaluatorManager.getEvaluator(evaluatorId) !== undefined)
+          return window.languageUpdateService[evaluatorId];
+        return undefined;
+      },
+      onClick: function (item, e) {
         var evaluatorId = "Groovy"; //TODO can be not only groovy?
         if (window.languageServiceBase && window.languageServiceBase[evaluatorId]) {
           bkUtils.httpPostJson(
@@ -12,7 +18,6 @@
               'y': item.y
               //TODO index into the xs/ys arrays ?
             }
-
           );
           //TODO
           //.done(function (ret) {
@@ -22,5 +27,5 @@
       },
     };
   };
-  beaker.bkoFactory('plotService', ['bkUtils', retfunc]);
+  beaker.bkoFactory('plotService', ['bkUtils', 'bkEvaluatorManager', retfunc]);
 })();

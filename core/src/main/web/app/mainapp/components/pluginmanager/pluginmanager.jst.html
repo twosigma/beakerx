@@ -15,7 +15,17 @@
 -->
 <div>
   <div class="modal-header fixed" style="height: 69px"><!-- height linked to modal-body padding-top  -->
-    <h1>Language Manager</h1>
+    <div class="pull-left">
+      <h1>Language Manager</h1>
+    </div>
+    <div class="pull-right">
+      <span class="navbar-text" ng-show="showSpinner">
+        <i class='fa fa-refresh fa-spin'></i>
+      </span>
+      <div class="navbar-text loadingmsg animate-show" ng-show="showMessage">
+        {{loadingMessage}}
+      </div>
+    </div>
   </div>
   <div class="modal-body fixed modal-large plugin-manager" style="padding-top: 69px; padding-bottom: 68px;"><!-- padding linked to modal-header/-footer heights  -->
     <div class="languages clearfix">

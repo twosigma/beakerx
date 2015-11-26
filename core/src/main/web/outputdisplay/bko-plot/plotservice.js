@@ -8,8 +8,7 @@
           return window.languageUpdateService[evaluatorId];
         return undefined;
       },
-      onClick: function (item, e) {
-        var evaluatorId = "Groovy"; //TODO can be not only groovy?
+      onClick: function (item, e, evaluatorId) {
         if (window.languageServiceBase && window.languageServiceBase[evaluatorId]) {
           bkUtils.httpPostJson(
             window.languageServiceBase[evaluatorId] + '/chart/click/' + item.chartId + "/" + item.uid,
@@ -18,11 +17,9 @@
               'y': item.y
               //TODO index into the xs/ys arrays ?
             }
-          );
-          //TODO
-          //.done(function (ret) {
-          //}).error(function (jqXHR, textStatus) {
-          //});
+          ).then(
+            function () { },
+            function () { console.error("send onclick event error"); });
         }
       },
     };

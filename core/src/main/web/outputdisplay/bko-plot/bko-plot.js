@@ -383,6 +383,16 @@
             .on("click", function(d) {
               return scope.toggleTooltip(d);
             });
+
+          scope.svg.selectAll(".item-clickable")
+            .on('click', function (e) {
+              for (var i = 0; i < model.data.length; i++) {
+                var item = model.data[i];
+                if(item.id === e.id) {
+                  plotService.onClick(item, e, scope.model.getEvaluatorId());
+                }
+              }
+            })
         };
 
         scope.drawLegendPointer = function(d) {

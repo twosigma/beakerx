@@ -24,7 +24,7 @@
 
     // constants
     PlotLine.prototype.respR = 5;
-    PlotLine.prototype.plotClass = "plot-line";
+    PlotLine.prototype.plotClass = "plot-line item-clickable";
     PlotLine.prototype.respClass = "plot-resp plot-respdot";
 
     PlotLine.prototype.setHighlighted = function(scope, highlighted) {
@@ -207,8 +207,7 @@
       var svg = scope.maing;
       var props = this.itemProps,
           eleprops = this.elementProps,
-          elelabels = this.elementLabels,
-          self = this;
+          elelabels = this.elementLabels;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -220,9 +219,6 @@
 
       itemsvg.selectAll("path")
         .data([props]).enter().append("path")
-        .on('click', function(e){
-          plotService.onClick(self, e);
-        })
         .attr("class", this.plotClass)
         .style("stroke", function(d) { return d.st; })
         .style("stroke-dasharray", function(d) { return d.st_da; })

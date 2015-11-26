@@ -12979,23 +12979,23 @@
                     "//  xInd: index of element in xs",
                     "//  xInd: index of element in xs",
                     "//}",
-                    "",
-                    "def p = new Plot();",
-                    "p << new Line(x: [1,2], y: [3,4], width: 4, displayName: \"line 1\").onClick({event -> println(event.graphics.displayName)})",
-                    "p << new Line(x: [1,2], y: [5,6], width: 4, displayName: \"line 2\").onClick({event -> println(event.graphics.uid)})"
+                    "def random = new Random()",
+                    "def p = new Plot(showLegend: true);",
+                    "p << new Line(x: [1, 2, 3], y: [2, 3, 4], width: 4, displayName: \"line 1\").onClick({info -> info.graphics.displayName = \"new name\"})",
+                    "p << new Line(x: [1, 2, 3], y: [5, 6, 7,], width: 4, displayName: \"line 2\").onClick({info -> info.graphics.y[1] = random.nextInt(10)})"
                 ]
             },
             "output": {
                 "state": {},
                 "result": {
-                    "update_id": "be12b61d-2401-413d-bfb4-f8ff30c08064",
+                    "update_id": "69f0747f-912e-46cd-b48a-06b62093d83d",
                     "type": "Plot",
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": null,
                     "domain_axis_label": null,
                     "y_label": "",
-                    "show_legend": null,
+                    "show_legend": true,
                     "use_tool_tip": true,
                     "rangeAxes": [
                         {
@@ -13031,12 +13031,14 @@
                     "graphics_list": [
                         {
                             "type": "Line",
-                            "uid": "4a04092c-1f81-4f93-ab18-344dc8b1d3f2",
+                            "uid": "d29d7f35-b476-495f-984f-a881eed0936d",
                             "x": [
                                 1,
-                                2
+                                2,
+                                3
                             ],
                             "y": [
+                                2,
                                 3,
                                 4
                             ],
@@ -13048,14 +13050,16 @@
                         },
                         {
                             "type": "Line",
-                            "uid": "d5f6c9ea-fb08-466d-805b-3f4142495cce",
+                            "uid": "79c0a347-0326-4e8c-a6a0-f0e0a4c05bc8",
                             "x": [
                                 1,
-                                2
+                                2,
+                                3
                             ],
                             "y": [
                                 5,
-                                6
+                                6,
+                                7
                             ],
                             "visible": true,
                             "display_name": "line 2",
@@ -13075,8 +13079,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "6535857f-f056-44e3-a4f6-9d008e24b310",
-                "elapsedTime": 666
+                "shellId": "76353cdb-1613-45ee-80c4-33ff803ab6b3",
+                "elapsedTime": 663
             },
             "evaluatorReader": true,
             "power": {

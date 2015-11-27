@@ -917,6 +917,7 @@
             'stateSave': true,
             'processing': true,
             'autoWidth': true,
+            'ordering': false,
             'order': [[0, 'asc']],
             'scrollX': '10%',
             'searching': false,

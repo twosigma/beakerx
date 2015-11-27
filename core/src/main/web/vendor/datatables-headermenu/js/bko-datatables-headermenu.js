@@ -27,6 +27,11 @@ var HeaderMenu = function(dt, options) {
 
   this.c = options; //$.extend(true, {}, HeaderMenu.defaults, options);
 
+  this.dom = {
+    container: null,
+    menu: null
+  };
+
   this._constructor();
 };
 
@@ -37,21 +42,42 @@ HeaderMenu.prototype = {
     var that = this;
     var dt = this.s.dt;
     var dtSettings = dt.settings()[0];
-    //var table = dt.table().node();
+    var headerLayout = dtSettings.aoHeader;
 
-    var header = dtSettings.aoHeader;
+    this._appendMenuNode();
+    this._buildMenuData(headerLayout);
 
-    this._build(header);
+    var header = dt.table().header();
+    $(header).on('mouseenter', 'th', function() {
+      //hightlight column
+      var colIdx = $(this).data('columnIndex');
+
+      $(dt.cells().nodes()).removeClass('highlight');
+      $(dt.column(colIdx).nodes()).addClass('highlight');
+
+      //show menu
+      that._show($(this));
+    }).on('mouseleave', 'th', function() {
+      $(dt.cells().nodes()).removeClass('highlight');
+    });
 
     dt.on('destroy', function () {
       that.destroy();
     });
   },
 
+  _appendMenuNode: function() {
+    var node = this.s.dt.table().container();
+    var $container = $("<div/>", { 'class': 'bko-header-menu' });
+
+    $(node).before($container);
+    this.dom.container = $container;
+  },
+
   /**
    * @param layout {object} should be Array with header layout in it
    */
-  _build: function(layout) {
+  _buildMenuData: function(layout) {
     if (!$.isArray(layout)) {
       return;
     }
@@ -63,7 +89,7 @@ HeaderMenu.prototype = {
       var cell = cells[i];
 
       if (cols && cols[i] !== undefined) {
-        this._buildHeaderMenu(cell, cols[i]);
+        this._buildCellMenu(cell, cols[i]);
       }
     }
   },
@@ -72,47 +98,92 @@ HeaderMenu.prototype = {
    * @param col {object} current column header configuration
    * @param oCell {object} layout cell object
    */
-  _buildHeaderMenu: function (oCell, col)
+  _buildCellMenu: function (oCell, col)
   {
-    var $wrap = $("<div/>", { 'class': 'dropdown dtmenu clearfix' })
-      .css("z-index", "100")
-      .css("float", "left")
-      .append(
-        $("<a/>", { 'class': 'dropdown-toggle' })
-          .attr("data-toggle", "dropdown")
-          .append(
-            $('<span/>', { 'class': 'bko-menu' })
-              .attr('aria-hidden', 'true')
-          )
-      );
-    var $ul = $("<ul></ul>", { 'class': 'dropdown-menu' })
-      .attr("role", "menu")
-      .attr("submenu-classes", "drop-right")
-      .attr("aria-labellebdy", "dLabel");
-
     var menu = col.header && col.header.menu;
     var cell = oCell.cell;
 
+    //must be just little triangles instead menu dots
+    /*
+    var $el = $("<div/>", { 'class': 'dropdown dtmenu' })
+      .css("z-index", "10")
+      .css("float", "left")
+      .append(
+        $("<a/>", { 'class': 'dropdown-toggle bko-menu' })
+          .attr({ 'data-toggle': 'dropdown' })
+      );
+    */
+
     if (cell && menu && $.isArray(menu.items)) {
-      //this._buildMenuItems
-
-      $wrap.appendTo(cell);
+      $(cell).data('menu', menu.items);
     }
+  },
 
+  _hide: function() {
+    if (this.dom.menu) {
+      this.dom.menu.remove();
+      this.dom.menu = null;
+    }
+  },
 
+  _show: function(el) {
+    var that = this;
+    var menuItems = el.data('menu');
 
+    if ($.isArray(menuItems)) {
+      var $menu = $("<ul/>", { 'class': 'dropdown-menu' });
+      var node = this.dom.container;
+
+      that._buildMenuItems(menuItems, $menu);
+
+      $menu.offset({
+          top: el.height() + 10,
+          left: el.offset().left - 51
+        })
+        .appendTo(node);
+      that.dom.menu = $menu;
+
+      var $mainParent = $(node).parent();
+      $mainParent.on('mouseleave', ['thead th', '.bko-header-menu'], function() {
+        //rework this
+        that._hide();
+      });
+    }
   },
 
   /**
+   * @param oItems {object}
    * @param container {node} should be <ul> dropdown-menu container?
-   * @param
    */
-  _buildMenuItems: function (oItem, container)
+  _buildMenuItems: function (oItems, container)
   {
-    var itemConfig = {};
-    var itemDom = '<li><a tabindex="-1" href="#" id="dt-select-all" eat-click>Title</a></li>';
+    if (!$.isArray(oItems)) {
+      return;
+    }
 
+    var hasSubitems = $.isArray(oItems.items) && oItems.items.length;
 
+    for (var i = 0, ien = oItems.length; i < ien; i++) {
+      var oItem = oItems[i];
+
+      var $item = $('<li/>', {'class': hasSubitems ? 'dropdown-submenu drop-left' : ''})
+        .append(
+          $('<a/>')
+            .attr('href', '#')
+            .attr('tabindex', '-1')
+            .attr('id', 'dt-select-all')
+            .attr('eat-click', '')
+            .text(oItem.title)
+        );
+
+      if (hasSubitems) {
+        var $subContainer = $('<ul/>', { 'class': 'dropdown-menu bko-header-menu' });
+        $subContainer.appendTo($item);
+        this._buildMenuItems(oItem.items, $subContainer);
+      }
+
+      $item.appendTo(container);
+    }
   }
 };
 
@@ -129,7 +200,6 @@ HeaderMenu.defaults = {
     }
   }
 };
-
 
 $.fn.dataTable.HeaderMenu = HeaderMenu;
 $.fn.DataTable.HeaderMenu = HeaderMenu;

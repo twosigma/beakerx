@@ -91,6 +91,16 @@ tbody tr {
         background-color: #6699FF;
       }
     }
+
+    td.highlight {
+      background-color: #99CCFF !important;
+    }
+  }
+}
+
+.dataTables_scrollHead  table {
+  thead th {
+    cursor: pointer;
   }
 }
 

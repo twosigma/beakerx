@@ -549,6 +549,18 @@
           return bkNotebook.getCMKeyMapMode();
         }
       },
+      setInputCellTheme: function(theme) {
+        var bkNotebook = getBkNotebookWidget();
+        if (bkNotebook) {
+          return bkNotebook.setCMTheme(theme);
+        }
+      },
+      getInputCellTheme: function() {
+        var bkNotebook = getBkNotebookWidget();
+        if (bkNotebook) {
+          return bkNotebook.getCMTheme();
+        }
+      },
 
       // low level utils (bkUtils)
       refreshRootScope: function() {

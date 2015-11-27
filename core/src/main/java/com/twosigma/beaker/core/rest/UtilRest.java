@@ -296,6 +296,7 @@ public class UtilRest {
   private Boolean isAllowAnonymousTracking = null;
   private Boolean isUseAdvancedMode = null;
   private String editMode = "default";
+  private String theme = "default";
 
   @GET
   @Path("getPreference")
@@ -360,6 +361,14 @@ public class UtilRest {
       String[] validModes = {"uri", "modified"};
       if (Arrays.asList(validModes).contains(preferenceValue)){
         newValue = preferenceValue;
+      }
+    }
+    // Validate theme
+    else if (preferenceName.equals("theme")){
+      String[] validModes = {"default", "ambiance"};
+      if (Arrays.asList(validModes).contains(preferenceValue)){
+        newValue = preferenceValue;
+        this.theme = preferenceValue;
       }
     }
 

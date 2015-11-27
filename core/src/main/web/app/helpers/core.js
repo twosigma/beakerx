@@ -264,7 +264,14 @@
     var bkCoreManager = {
 
       _prefs: {
-
+        setTheme: function (theme) {
+          bkCoreManager.colorize(theme);
+          bkHelper.setInputCellTheme(theme);
+          this.theme = theme;
+        },
+        getTheme: function () {
+          return this.theme;
+        },
         setFSOrderBy: function (fs_order_by) {
           this.fs_order_by = fs_order_by;
         },
@@ -277,6 +284,18 @@
         getFSReverse: function () {
           return this.fs_reverse;
         }
+      },
+
+      setTheme: function (theme) {
+        this._prefs.setTheme(theme);
+
+        bkUtils.httpPost('../beaker/rest/util/setPreference', {
+          preferencename: 'theme',
+          preferencevalue: theme
+        });
+      },
+      getTheme: function () {
+        return this._prefs.getTheme();
       },
 
       setFSOrderBy: function (fs_order_by) {
@@ -774,7 +793,8 @@
           matchBrackets: true,
           extraKeys: keys,
           goToNextCodeCell: goToNextCodeCell,
-          scrollbarStyle: "simple"
+          scrollbarStyle: "simple",
+          theme: bkCoreManager.getTheme()
         };
       },
 
@@ -1033,6 +1053,26 @@
             callback(result);
           }
         });
+      },
+      colorize: function (theme) {
+
+        var colorizedElements = $("body, html");
+
+        //var colorizedElements = $("body, html, .navbar-default, .navbar-default a, .navbar-default ul, .navbar-default li, bk-markdown-editable");
+        colorizedElements.removeClass("beaker-s-ambiance");
+        if ("default" !== theme)
+          colorizedElements.addClass("beaker-s-" + theme);
+
+        //var codeCells = $(".code-cell-input");
+        //codeCells.removeClass("beaker-s-ambiance");
+        //if ("default" !== theme)
+        //  codeCells.addClass("beaker-s-" + theme);
+				//
+				//
+        //var outputCells = $(".code-cell-output");
+        //outputCells.removeClass("beaker-s-ambiance");
+        //if ("default" !== theme)
+        //  outputCells.addClass("beaker-s-" + theme);
       }
     };
 
@@ -1052,6 +1092,15 @@
     }).error(function (response) {
       console.log(response);
       bkCoreManager._prefs.fs_reverse = false;
+    });
+
+    bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
+      preference: 'theme'
+    }).success(function (theme) {
+      bkCoreManager._prefs.setTheme(theme);
+    }).error(function (response) {
+      console.log(response);
+      bkCoreManager._prefs.setTheme("default");
     });
 
     return bkCoreManager;

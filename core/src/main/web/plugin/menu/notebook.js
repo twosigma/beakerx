@@ -76,6 +76,11 @@ define(function(require, exports, module) {
       name: 'Edit mode',
       sortorder: 140,
       id: 'edit-mode-menuitem'
+    },
+    {
+      name: 'Theme',
+      sortorder: 150,
+      id: 'theme-menuitem'
     }
   ];
   var toAdd = [
@@ -142,6 +147,38 @@ define(function(require, exports, module) {
               preferencename: 'edit-mode',
               preferencevalue: 'emacs'
             });
+          }
+        }
+      ]
+    },
+    {
+      parent: 'Notebook',
+      submenu: 'Theme',
+      id: 'theme-menuitem',
+      items: [
+        {
+          name: 'Default',
+          sortorder: 151,
+          id: 'default-theme-menuitem',
+          isRadio: true,
+          isChecked: function() {
+            return bkCoreManager.getTheme() == 'default' ||
+              bkCoreManager.getTheme() == null;
+          },
+          action: function() {
+            bkCoreManager.setTheme('default');
+          }
+        },
+        {
+          name: 'Ambiance',
+          sortorder: 152,
+          id: 'ambiance-theme-menuitem',
+          isRadio: true,
+          isChecked: function() {
+            return bkCoreManager.getTheme() == 'ambiance';
+          },
+          action: function() {
+            bkCoreManager.setTheme('ambiance');
           }
         }
       ]

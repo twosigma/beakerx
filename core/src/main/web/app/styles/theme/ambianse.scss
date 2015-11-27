@@ -1,0 +1,228 @@
+$main-theme-panel-background: #202020;
+$main-theme-menu-background: black;
+$main-theme-color: white;
+
+$navbar-inverse-bg: #3f5264;
+$navbar-default-bg: $main-theme-menu-background;
+$navbar-default-link-color: $main-theme-color;
+//#3f5264;
+$navbar-default-link-hover-color: #fff;
+$navbar-default-link-active-color: #fff;
+$navbar-default-link-hover-bg: #39a9ed;
+$navbar-default-link-active-bg: #39a9ed;
+
+$navbar-default-color: $main-theme-color !default;
+//#777 !default;
+$navbar-default-border: darken($navbar-default-bg, 6.5%) !default;
+
+// Navbar links
+$navbar-default-link-disabled-color: #ccc !default;
+$navbar-default-link-disabled-bg: transparent !default;
+
+// Navbar brand label
+$navbar-default-brand-color: $navbar-default-link-color !default;
+$navbar-default-brand-hover-color: darken($navbar-default-brand-color, 10%) !default;
+$navbar-default-brand-hover-bg: transparent !default;
+
+// Navbar toggle
+$navbar-default-toggle-hover-bg: #ddd !default;
+$navbar-default-toggle-icon-bar-bg: #888 !default;
+$navbar-default-toggle-border-color: #ddd !default;
+
+$dropdown-menu-background: $main-theme-menu-background !default;
+$dropdown-menu-color: $main-theme-color !default;
+
+.beaker-s-ambiance {
+
+  body, html, bk-markdown-editable, .code-cell-input, .code-cell-output {
+    background: $main-theme-panel-background;
+    color: $main-theme-color;
+  }
+
+  .ui-icon,
+  .ui-widget-content .ui-icon {
+    background-image: url("images/ui-icons_888888_256x240.png");
+  }
+
+  .ui-widget-header .ui-icon {
+    background-image: url("images/ui-icons_888888_256x240png");
+  }
+
+  .cell-power-button {
+    color:        #d8d8d8;
+    background: $main-theme-panel-background;
+    .fa-power-off:before {
+      background: $main-theme-panel-background;
+    }
+  }
+
+
+  bk-output-display {
+    > div:nth-of-type(1) {
+      background: $main-theme-panel-background;
+      color: $main-theme-color;
+    }
+  }
+
+  #plotContainer {
+    background: #1a1a1a;
+  }
+
+  .plot-coverbox {
+    fill: $main-theme-panel-background;
+  }
+
+  .plot-label, .plot-xylabel {
+    fill: $main-theme-color;
+  }
+
+  #combplotContainer, #plotLegend, #plotLegendContainer {
+    background: $main-theme-panel-background;
+  }
+
+  .mini-cell-stats {
+    background: $dropdown-menu-color;
+    color: $dropdown-menu-background;
+  }
+
+  .loading-state {
+    color: $dropdown-menu-color;
+  }
+
+  .toggle-menu {
+    background: rgba(95, 82, 82, 0.5);
+  }
+
+  .dataTables_length {
+    & label {
+      color: $main-theme-color;
+    }
+    & select {
+      color: #595959;
+    }
+  }
+
+  //datatable
+
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: $main-theme-color !important;
+  }
+
+  .dataTables_wrapper .dataTables_length,
+  .dataTables_wrapper .dataTables_filter,
+  .dataTables_wrapper .dataTables_info,
+  .dataTables_wrapper .dataTables_processing,
+  .dataTables_wrapper .dataTables_paginate {
+    color: $main-theme-color;
+  }
+
+  .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+  .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+  .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+    color: $main-theme-color !important;
+    background: transparent;
+  }
+
+  .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+  .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    color: #595959 !important;
+  }
+
+  table.dataTable.display tbody tr.odd > .sorting_1,
+  table.dataTable.order-column.stripe tbody tr.odd > .sorting_1 {
+    background-color: #404040;
+  }
+
+  table.dataTable.display tbody tr.odd > .sorting_2,
+  table.dataTable.order-column.stripe tbody tr.odd > .sorting_2 {
+    background-color: #333333;
+  }
+
+  table.dataTable.display tbody tr.odd > .sorting_3,
+  table.dataTable.order-column.stripe tbody tr.odd > .sorting_3 {
+    background-color: #262626;
+  }
+
+  table.dataTable.display tbody tr.even > .sorting_1,
+  table.dataTable.order-column.stripe tbody tr.even > .sorting_1 {
+    background-color: #737373;
+  }
+
+  table.dataTable.display tbody tr.even > .sorting_2,
+  table.dataTable.order-column.stripe tbody tr.even > .sorting_2 {
+    background-color: #666666;
+  }
+
+  table.dataTable.display tbody tr.even > .sorting_3,
+  table.dataTable.order-column.stripe tbody tr.even > .sorting_3 {
+    background-color: #595959;
+  }
+
+  table.dataTable.stripe tbody tr.odd,
+  table.dataTable.display tbody tr.odd {
+    background-color: #4d4d4d;
+  }
+
+  table.dataTable.stripe tbody tr.even,
+  table.dataTable.display tbody tr.even {
+    background-color: #808080;
+  }
+
+  //dropdown menu
+
+  .dropdown-menu {
+    background-color: $dropdown-menu-background;
+  }
+
+  .dropdown-menu > li > a {
+    color: $dropdown-menu-color;
+  }
+
+  // Default navbar
+
+  .navbar-default {
+    background-color: $navbar-default-bg;
+    border-color: $navbar-default-border;
+
+    .navbar-brand {
+      color: $navbar-default-brand-color;
+      &:hover,
+      &:focus {
+        color: $navbar-default-brand-hover-color;
+        background-color: $navbar-default-brand-hover-bg;
+      }
+    }
+
+    .navbar-text {
+      color: $navbar-default-color;
+    }
+
+    .navbar-nav {
+      > li > a {
+        color: $navbar-default-link-color;
+
+        &:hover,
+        &:focus {
+          color: $navbar-default-link-hover-color;
+          background-color: $navbar-default-link-hover-bg;
+        }
+      }
+      > .active > a {
+        &,
+        &:hover,
+        &:focus {
+          color: $navbar-default-link-active-color;
+          background-color: $navbar-default-link-active-bg;
+        }
+      }
+      > .disabled > a {
+        &,
+        &:hover,
+        &:focus {
+          color: $navbar-default-link-disabled-color;
+          background-color: $navbar-default-link-disabled-bg;
+        }
+      }
+    }
+  }
+}

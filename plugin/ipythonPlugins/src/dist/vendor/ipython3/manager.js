@@ -135,14 +135,12 @@ define('ipython3_widgetmanager', [
       var that = this;
       return this.display_widget_view(msg, this.create_view(model, {}))
           .then(function (view) {
-            bkHelper.timeout(function() {
               that._handle_display_view(view);
               view.trigger('displayed');
               if (that.comm_manager.kernel && !that.comm_manager.kernel.view) {
                 that.comm_manager.kernel.view = view;
               }
               return view;
-            }, 250);
           }).catch(utils.reject('Could not create or display view', true));
     };
 
@@ -150,7 +148,6 @@ define('ipython3_widgetmanager', [
       // Display the view.
       var that = this;
       return view_promise.then(function(view) {
-        bkHelper.timeout(function() {
           var ipy_output = $('.ipy-output[data-msg-id=' + msg.parent_header.msg_id
               + '] .widget-area .widget-subarea');
           view.$el.appendTo(ipy_output);
@@ -169,7 +166,6 @@ define('ipython3_widgetmanager', [
             }
             view.outputBuffer = null;
           }
-        }, 250);
         return view;
       });
     };

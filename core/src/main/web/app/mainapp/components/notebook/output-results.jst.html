@@ -15,7 +15,7 @@
   limitations under the License.
 -->
 <ul ng-if="hasOutputData()" class="list-unstyled">
-  <li ng-repeat="i in outputdata">
+  <li ng-repeat="i in outputdata track by $index">
     <pre ng-class='i.type === "out" ? "text-info" : "text-warning"'>{{ i.value }}</pre>
   </li>
 </ul>

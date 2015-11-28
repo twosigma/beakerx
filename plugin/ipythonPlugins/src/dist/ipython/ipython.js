@@ -62,7 +62,7 @@ define(function(require, exports, module) {
             document.cookie = theCookie[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/";
           }
         }
-        
+
         bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"),
                          {pluginId: PLUGIN_NAME}).success(function(result) {
                            bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/login")).then(function () {
@@ -84,12 +84,8 @@ define(function(require, exports, module) {
               } else {
                 // Required by ipython backend, but not used.
                 var model = (ipyVersion == '2') ?
-                  {notebook : {name : "fakename" + shellID,
-                               path : "/some/path" + shellID}} :
-                {kernel: {id: shellID,
-                          name: "python"},
-                 notebook: {path: "/fake/path" + shellID}
-                };
+                  {notebook : {name : "fakename" + shellID, path : "/some/path" + shellID}} :
+                  {kernel: {id: shellID, name: "python"}, notebook: {path: "/fake/path" + shellID}};
                 var fakeNotebook = {
                   events: {
                     on: function () {},
@@ -103,7 +99,7 @@ define(function(require, exports, module) {
                   type: "POST",
                   data: JSON.stringify(model),
                   dataType: "json",
-                  success: function (data, status, xhr) {                   
+                  success: function (data) {
                     self.kernel = (ipyVersion == '2') ?
                       (new myPython.Kernel(baseurl+ "/api/kernels")) :
                       (new myPython.Kernel(baseurl+ "/api/kernels",
@@ -128,8 +124,7 @@ define(function(require, exports, module) {
         });
 
         // keepalive for the websockets
-        var nil = function() {
-        };
+        var nil = function() {};
         window.setInterval(function() {
           // XXX this is wrong (ipy1 layout) maybe it doesn't matter??
           var ignore = {
@@ -164,9 +159,10 @@ define(function(require, exports, module) {
           return deferred.promise;
         }
 
-        var self = this;
-        var kernel = kernels[self.settings.shellID];
-        var finalStuff = undefined;
+        var self = this,
+          kernel = kernels[self.settings.shellID],
+          finalStuff = undefined;
+
         bkHelper.setupProgressOutput(modelOutput);
         gotError = false;
         kernel.appendToWidgetOutput = false;
@@ -179,6 +175,8 @@ define(function(require, exports, module) {
         };
 
         var doFinish = function() {
+          if (!finalStuff) return;
+
           if (bkHelper.receiveEvaluationUpdate(modelOutput, finalStuff, PLUGIN_NAME, self.settings.shellID)) {
             _theCancelFunction = null;
             if (finalStuff.status === "ERROR")
@@ -186,149 +184,143 @@ define(function(require, exports, module) {
             else
               deferred.resolve(finalStuff.jsonres !== undefined ? finalStuff.jsonres : finalStuff.payload);
           }
-          if (refreshObj !== undefined)
+          if (refreshObj)
             refreshObj.outputRefreshed();
           else
-            bkHelper.refreshRootScope();       
-          finalStuff = undefined;
-        }
+            bkHelper.refreshRootScope();
+
+          if (finalStuff.status === "FINISHED")
+            finalStuff = undefined;
+        };
 
         var execute_reply = function(msg) {
+          var proceed = false;
+
           if (_theCancelFunction === null)
             return;
+
           // this is called when processing is completed
-          if (ipyVersion != '1') {
-            msg = msg.content;
-          }
+          if (ipyVersion != '1') msg = msg.content;
 
           var exitFlag = _(msg.payload).find(function(payload) {
-            if (payload.source !== undefined && payload.source == 'ask_exit') {
+            if (payload.source !== undefined && payload.source == 'ask_exit')
               return true;
-            }
           });
 
-          if (exitFlag) {
-            bkHelper.show1ButtonModal('Kernel exited, restart completed','Success');
-          }
+          if (exitFlag) bkHelper.show1ButtonModal('Kernel exited, restart completed','Success');
 
           var result = _(msg.payload).map(function(payload) {
             // XXX can other mime types appear here?
             var text = "";
-            if (ipyVersion == '3' || ipyVersion == '4') {
+            if (ipyVersion == '3' || ipyVersion == '4')
               text = payload.data ? payload.data["text/plain"] : "";
-            } else {
+            else
               text = payload.text;
-            }
+
             return myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(text));
           }).join("");
-          if (finalStuff !== undefined) {
-            if (msg.status === "error")
-              finalStuff.status = "ERROR";
-            else
-              finalStuff.status = "FINISHED";
 
-            if (!_.isEmpty(result) && finalStuff.payload === undefined) {
-              finalStuff.payload = "<pre>" + result + "</pre>";
-            }
-          } else {
-            var evaluation = { };
-            if (msg.status === "error")
-              evaluation.status = "ERROR";
-            else
-              evaluation.status = "FINISHED";
-            if (!_.isEmpty(result)) {
-              evaluation.payload = "<pre>" + result + "</pre>";
-            }
-            finalStuff = evaluation;
-            bkHelper.timeout(doFinish, 250);
+          if (_.isUndefined(finalStuff)) {
+            finalStuff = {};
+            proceed = true;
           }
+
+          finalStuff.status = (msg.status === "error") ? "ERROR" : "FINISHED";
+
+          if (!_.isEmpty(result) && !finalStuff.payload)
+            finalStuff.payload = "<pre>" + result + "</pre>";
+
+          if (proceed) bkHelper.timeout(doFinish, 250);
         };
-        var output = function output(a0, a1) {
+
+        function output(a0, a1) {
+          var type, content;
+
           if (_theCancelFunction === null || gotError)
             return;
-          // this is called to write output
-          var type;
-          var content;
-          if (ipyVersion == '1') {
-            type = a0;
-            content = a1;
-          } else {
-            type = a0.msg_type;
-            content = a0.content;
-          }
 
-          var evaluation = { };
+          // this is called to write output
+          type = (ipyVersion == '1') ? a0 : a0.msg_type;
+          content =  (ipyVersion == '1') ? a1 : a0.content;
+
+          var evaluation = {};
           evaluation.status = "RUNNING";
 
-          if ((ipyVersion == '3' || ipyVersion == '4') ? (type === "error") : (type === "pyerr")) {
+          // if output is a python error
+          if (_.indexOf(["error", "pyerr"], type) !== -1) {
             gotError = true;
             var trace = _.reduce(content.traceback, function(memo, line) {
               return  memo + "<br>" + myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(line));
             }, myPython.utils.fixConsole(content.evalue));
 
-            evaluation.payload = (content.ename === "KeyboardInterrupt") ?
-                "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
-            if (finalStuff !== undefined) {
-              finalStuff.payload = evaluation.payload
-            }
-          } else if (kernel.appendToWidgetOutput && kernel.view) {
-            kernel.view.outputBuffer = kernel.view.outputBuffer || [];
-            kernel.view.outputBuffer.push(a0);
-          } else if (type === "stream") {
+            evaluation.payload = (content.ename === "KeyboardInterrupt") ? "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
+          }
+          // if output is a print statement
+          else if (type === "stream") {
             evaluation.outputdata = [];
-            if (finalStuff !== undefined && finalStuff.outputdata !== undefined)
+            if (finalStuff && finalStuff.outputdata) {
               evaluation.outputdata = finalStuff.outputdata;
-            var text = (ipyVersion == '3' || ipyVersion == '4') ? content.text : content.data;
-            evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
-              value: text});
-            if (finalStuff !== undefined) {
-              finalStuff.outputdata = evaluation.outputdata;
             }
 
-          } else {
-            var jsonres;
-            if(content.data && content.data['application/json'] !== undefined) {
-              jsonres = JSON.parse(content.data['application/json']);
-            }
-            if (jsonres !== undefined && _.isObject(jsonres) && jsonres.type !== undefined) {
-              if (finalStuff !== undefined && finalStuff.payload !== undefined) {
+            var text = (ipyVersion == '3' || ipyVersion == '4') ? content.text : content.data;
+            evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out', value: text});
+          }
+          //if output is some data to display
+          else {
+            var payloadOutput = function(data) {
+              if (finalStuff && finalStuff.payload) {
                 // if we already received an output we should append this output to it
                 var temp = finalStuff.payload;
                 if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
-                  temp.items.push(jsonres);
-                  jsonres = temp;
+                  temp.items.push(data);
+                  data = temp;
                 } else {
                   var temp2 = { 'type' : 'OutputContainer', 'psubtype': 'OutputContainer', 'items' : []};
                   temp2.items.push(temp);
-                  temp2.items.push(jsonres);
-                  jsonres = temp2;
+                  temp2.items.push(data);
+                  data = temp2;
                 }
               }
-              evaluation.payload = jsonres;
-              if (finalStuff !== undefined) {
-                finalStuff.payload = jsonres;
-                finalStuff.payload = evaluation.payload;
-              }
-            } else {
-              if (finalStuff !== undefined && finalStuff.jsonres !== undefined) {
+
+              return data;
+            };
+
+            var jsonOutput = function(data) {
+              if (finalStuff && finalStuff.jsonres) {
                 // if we already received an output we should append this output to it
                 var temp = finalStuff.jsonres;
+
                 if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
-                  temp.items.push(jsonres);
-                  jsonres = temp;
+                  temp.items.push(data);
+                  data = temp;
                 } else {
                   var temp2 = { 'type' : 'OutputContainer', 'psubtype': 'OutputContainer', 'items' : []};
                   temp2.items.push(temp);
-                  temp2.items.push(jsonres);
-                  jsonres = temp2;
+                  temp2.items.push(data);
+                  data = temp2;
                 }
               }
+
+              return data;
+            };
+
+            var jsonres;
+            if(content.data && content.data['application/json']) {
+              jsonres = JSON.parse(content.data['application/json']);
+            }
+
+            if (jsonres && jsonres.type) {
+              jsonres = payloadOutput(jsonres);
+              evaluation.payload = jsonres;
+            } else {
+              jsonres = jsonOutput(jsonres);
               evaluation.jsonres = jsonres;
+
               var elem = $(document.createElement("div"));
               var oa = (ipyVersion == '3' || ipyVersion == '4') ?
-                  (new myPython.OutputArea({events: {trigger: function(){}},
-                    keyboard_manager: keyboard_manager})) :
-                      (new myPython.OutputArea(elem));
+                  (new myPython.OutputArea({events: {trigger: function(){}}, keyboard_manager: keyboard_manager})) :
+                  (new myPython.OutputArea(elem));
+
               // twiddle the mime types? XXX
               if (ipyVersion == '1') {
                 oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
@@ -337,32 +329,26 @@ define(function(require, exports, module) {
               } else {
                 oa.append_mime_type(content, elem);
               }
+
+              //content after appending, but not yet assigned to finalStuff
               var payload = elem.html();
-              if (finalStuff !== undefined && finalStuff.payload !== undefined) {
-                // if we already received an output we should append this output to it
-                var temp = finalStuff.payload;
-                if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
-                  temp.items.push(payload);
-                  payload = temp;
-                } else {
-                  var temp2 = { 'type' : 'OutputContainer', 'psubtype': 'OutputContainer', 'items' : []};
-                  temp2.items.push(temp);
-                  temp2.items.push(payload);
-                  payload = temp2;
-                }
-              }
-              evaluation.payload =payload;
-              if (finalStuff !== undefined) {
-                finalStuff.payload = evaluation.payload;
-                finalStuff.jsonres = evaluation.jsonres;
-              }
+
+              payload = payloadOutput(payload);
+              evaluation.payload = payload;
             }
           }
-          if (finalStuff === undefined) {            
+
+          if (finalStuff) {
+            finalStuff.payload = evaluation.payload || finalStuff.payload;
+            finalStuff.jsonres = evaluation.jsonres || finalStuff.jsonres;
+            finalStuff.outputdata = evaluation.outputdata || finalStuff.outputdata;
+          } else {
             finalStuff = evaluation;
-            bkHelper.timeout(doFinish,150);
           }
+
+          bkHelper.timeout(doFinish, 150);
         };
+
         var callbacks = (ipyVersion == '1') ? {
           execute_reply: execute_reply,
           output: output

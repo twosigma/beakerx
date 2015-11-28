@@ -800,7 +800,7 @@
         var maxNumOfLines = beakerObj.prefs
             && beakerObj.prefs.outputLineLimit ? beakerObj.prefs.outputLineLimit : 1000;
 
-        if (modelOutput.result !== undefined)
+        if (!_.isUndefined(modelOutput.result))
           modelOutput.result.status = evaluation.status;
 
         // save information to handle updatable results in displays
@@ -834,13 +834,13 @@
           }
         }
 
-        if (modelOutput.result === undefined) {
+        if (_.isUndefined(modelOutput.result)) {
           console.log("WARNING: this should not happen - your plugin javascript is broken!");
-          setupProgressOutput(modelOutput);
+          this.setupProgressOutput(modelOutput);
         }
 
         // now update payload (if needed)
-        if (evaluation.payload !== undefined && modelOutput.result !== undefined && modelOutput.result.object !== undefined) {
+        if (evaluation.payload && modelOutput.result && modelOutput.result.object) {
           modelOutput.result.object.payload = evaluation.payload;
         }
 

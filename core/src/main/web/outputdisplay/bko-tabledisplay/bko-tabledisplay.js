@@ -859,24 +859,46 @@
               },
               {
                 title: 'Visible',
-                action: null
+                isChecked: function() {},
+                action: function(e) {
+                  e.preventDefault;
+
+                }
               },
               {
                 title: 'Alignment',
                 action: null,
-                items: []
-              },
-              {
-                title: 'Sorting',
-                action: null,
+                //move to plugin
                 items: [
                   {
-                    name: 'Ascending',
+                    title: 'Left',
                     isChecked: function() {},
                     action: function() {}
                   },
                   {
-                    name: 'Descending',
+                    title: 'Center',
+                    isChecked: function() {},
+                    action: function() {}
+                  },
+                  {
+                    title: 'Right',
+                    isChecked: function() {},
+                    action: function() {}
+                  }
+                ]
+              },
+              {
+                title: 'Sorting',
+                action: null,
+                //move to plugin
+                items: [
+                  {
+                    title: 'Ascending',
+                    isChecked: function() {},
+                    action: function() {}
+                  },
+                  {
+                    title: 'Descending',
                     isChecked: function() {},
                     action: function() {}
                   }

@@ -129,7 +129,8 @@ HeaderMenu.prototype = {
     var menuItems = el.data('menu');
 
     if ($.isArray(menuItems)) {
-      var $menu = $("<ul/>", { 'class': 'dropdown-menu' });
+      var $menu = $("<ul/>", { 'class': 'dropdown-menu' })
+        .attr('eat-click', '');
       var node = this.dom.container;
 
       that._buildMenuItems(menuItems, $menu);
@@ -138,6 +139,7 @@ HeaderMenu.prototype = {
           top: el.height() + 10,
           left: el.offset().left - 51
         })
+        .css('display', 'block')
         .appendTo(node);
       that.dom.menu = $menu;
     }
@@ -153,12 +155,11 @@ HeaderMenu.prototype = {
       return;
     }
 
-    var hasSubitems = $.isArray(oItems.items) && oItems.items.length;
-
     for (var i = 0, ien = oItems.length; i < ien; i++) {
       var oItem = oItems[i];
+      var hasSubitems = $.isArray(oItem.items) && oItem.items.length;
 
-      var $item = $('<li/>', {'class': hasSubitems ? 'dropdown-submenu drop-left' : ''})
+      var $item = $('<li/>', {'class': hasSubitems ? 'dropdown-submenu' : ''})
         .append(
           $('<a/>')
             .attr('href', '#')
@@ -167,15 +168,23 @@ HeaderMenu.prototype = {
             .attr('eat-click', '')
             .text(oItem.title)
         );
+      //also append
+      //<i class="glyphicon glyphicon-ok"></i>
 
       if (hasSubitems) {
-        var $subContainer = $('<ul/>', { 'class': 'dropdown-menu bko-header-menu' });
+        var $subContainer = $('<ul/>', { 'class': 'dropdown-menu' });
         $subContainer.appendTo($item);
         this._buildMenuItems(oItem.items, $subContainer);
       }
 
       $item.appendTo(container);
     }
+  },
+
+  _toggleVisibility: function(el) {
+
+    //var column = this.dt.column( $(el).attr('data-column') );
+    //column.visible( ! column.visible() );
   }
 };
 
@@ -185,12 +194,15 @@ HeaderMenu.defaults = {
       tag: 'ul',
       class: 'dropdown-menu',
       attrs: {
-        'role': 'menu',
-        'submenu-classes': 'drop-right',
-        'aria-labelledby': 'dLabel'
+        'role': 'menu'
       }
     }
-  }
+  },
+  toAdd: [
+    {
+      parent: 'Format'
+    }
+  ]
 };
 
 $.fn.dataTable.HeaderMenu = HeaderMenu;

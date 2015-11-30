@@ -869,7 +869,18 @@
               {
                 title: 'Sorting',
                 action: null,
-                items: []
+                items: [
+                  {
+                    name: 'Ascending',
+                    isChecked: function() {},
+                    action: function() {}
+                  },
+                  {
+                    name: 'Descending',
+                    isChecked: function() {},
+                    action: function() {}
+                  }
+                ]
               }
             ]
           };

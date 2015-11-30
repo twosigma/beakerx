@@ -101,6 +101,20 @@ tbody tr {
 .dataTables_scrollHead  table {
   thead th {
     cursor: pointer;
+    .bko-menu {
+      float: left;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    &:hover {
+      .bko-menu {
+        opacity: 1;
+        &:hover {
+          background-color: $highlight-blue;
+        }
+      }
+    }
   }
 }
 

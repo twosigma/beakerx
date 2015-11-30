@@ -44,21 +44,23 @@ HeaderMenu.prototype = {
     var dtSettings = dt.settings()[0];
     var headerLayout = dtSettings.aoHeader;
 
-    this._appendMenuNode();
+    this._appendMenuContainer();
     this._buildMenuData(headerLayout);
 
     var header = dt.table().header();
+
     $(header).on('mouseenter', 'th', function() {
-      //hightlight column
+      //column hightlight
       var colIdx = $(this).data('columnIndex');
 
       $(dt.cells().nodes()).removeClass('highlight');
       $(dt.column(colIdx).nodes()).addClass('highlight');
-
-      //show menu
-      that._show($(this));
     }).on('mouseleave', 'th', function() {
       $(dt.cells().nodes()).removeClass('highlight');
+    });
+
+    $(document.body).bind('mousedown', function() {
+      that._hide();
     });
 
     dt.on('destroy', function () {
@@ -66,7 +68,7 @@ HeaderMenu.prototype = {
     });
   },
 
-  _appendMenuNode: function() {
+  _appendMenuContainer: function() {
     var node = this.s.dt.table().container();
     var $container = $("<div/>", { 'class': 'bko-header-menu' });
 
@@ -100,22 +102,18 @@ HeaderMenu.prototype = {
    */
   _buildCellMenu: function (oCell, col)
   {
+    var that = this;
     var menu = col.header && col.header.menu;
     var cell = oCell.cell;
-
-    //must be just little triangles instead menu dots
-    /*
-    var $el = $("<div/>", { 'class': 'dropdown dtmenu' })
-      .css("z-index", "10")
-      .css("float", "left")
-      .append(
-        $("<a/>", { 'class': 'dropdown-toggle bko-menu' })
-          .attr({ 'data-toggle': 'dropdown' })
-      );
-    */
+    var $el = $("<span/>", { 'class': 'bko-menu' });
 
     if (cell && menu && $.isArray(menu.items)) {
-      $(cell).data('menu', menu.items);
+      $el.data('menu', menu.items)
+        .on('click', function(e) {
+          that._show($(this));
+        });
+
+      $(cell).append($el);
     }
   },
 
@@ -142,12 +140,6 @@ HeaderMenu.prototype = {
         })
         .appendTo(node);
       that.dom.menu = $menu;
-
-      var $mainParent = $(node).parent();
-      $mainParent.on('mouseleave', ['thead th', '.bko-header-menu'], function() {
-        //rework this
-        that._hide();
-      });
     }
   },
 

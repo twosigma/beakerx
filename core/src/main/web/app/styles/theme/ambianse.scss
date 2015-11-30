@@ -34,9 +34,26 @@ $dropdown-menu-color: $main-theme-color !default;
 
 .beaker-s-ambiance {
 
-  body, html, bk-markdown-editable, .code-cell-input, .code-cell-output {
-    background: $main-theme-panel-background;
-    color: $main-theme-color;
+  body, html, bk-markdown-editable, .languages, .code-cell-input, .code-cell-output, .modal-header, .modal-body, .modal-footer  {
+    background: $main-theme-panel-background !important;
+    color: $main-theme-color !important;
+    .close {
+      color: $main-theme-color !important;
+    }
+    h1, h2, h3, h4, h5{
+      background: $main-theme-panel-background !important;
+      color: $main-theme-color !important;
+    }
+  }
+
+  textarea {
+    background: $main-theme-panel-background !important;
+    color: $main-theme-color !important;
+  }
+
+  button{
+    background: #505050;
+    color: #f5f5f5;
   }
 
   .ui-icon,
@@ -81,8 +98,7 @@ $dropdown-menu-color: $main-theme-color !default;
   }
 
   .mini-cell-stats {
-    background: $dropdown-menu-color;
-    color: $dropdown-menu-background;
+    z-index: 1;
   }
 
   .loading-state {
@@ -90,7 +106,12 @@ $dropdown-menu-color: $main-theme-color !default;
   }
 
   .toggle-menu {
-    background: rgba(95, 82, 82, 0.5);
+    background: $main-theme-panel-background;
+  }
+
+  .btn-default {
+    background: #505050;
+    color: #f5f5f5;
   }
 
   .dataTables_length {

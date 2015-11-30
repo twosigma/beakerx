@@ -1055,24 +1055,10 @@
         });
       },
       colorize: function (theme) {
-
         var colorizedElements = $("body, html");
-
-        //var colorizedElements = $("body, html, .navbar-default, .navbar-default a, .navbar-default ul, .navbar-default li, bk-markdown-editable");
         colorizedElements.removeClass("beaker-s-ambiance");
         if ("default" !== theme)
           colorizedElements.addClass("beaker-s-" + theme);
-
-        //var codeCells = $(".code-cell-input");
-        //codeCells.removeClass("beaker-s-ambiance");
-        //if ("default" !== theme)
-        //  codeCells.addClass("beaker-s-" + theme);
-				//
-				//
-        //var outputCells = $(".code-cell-output");
-        //outputCells.removeClass("beaker-s-ambiance");
-        //if ("default" !== theme)
-        //  outputCells.addClass("beaker-s-" + theme);
       }
     };
 

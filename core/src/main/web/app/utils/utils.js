@@ -409,6 +409,12 @@
         return str.replace(/[\s\d`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
       }
     },
+    showLanguageManagerSpinner: function(pluginName) {
+      angularUtils.showLanguageManagerSpinner(pluginName);
+    },
+    hideLanguageManagerSpinner: function() {
+      angularUtils.hideLanguageManagerSpinner();
+    },
     // Electron: require('remote')
     isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
     isWindows: osName === 'Windows',

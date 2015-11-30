@@ -206,8 +206,8 @@
       }
 
       if (item.type === "bar" && item.widths != null) {
-        ele.x -= item.widths[j] / 2;
-        ele.x2 = ele.x + item.widths[j];
+        ele.x = plotUtils.minus(ele.x, item.widths[j] / 2);
+        ele.x2 = plotUtils.plus(ele.x, item.widths[j]);
       }
       return true;
     };
@@ -342,7 +342,8 @@
           newmodel.xAxis.base = logxb;
         } else if (model.type === "TimePlot") {
           newmodel.xAxis.type = "time";
-        } else if (model.type === "NanoPlot"){  // TODO
+        } else if (model.type === "NanoPlot"){
+          newmodel.xAxis.type = "nanotime";
         } else if (model.type === "CategoryPlot") {
           newmodel.xAxis.type = "category";
         } else {
@@ -530,6 +531,14 @@
 
               var elements = [];
               for (var j = 0; j < item.x.length; j++) {
+                var x = item.x[j];
+                if (model.type === 'NanoPlot') {
+                  if (_.isEmpty(x)) { continue; }
+                  var bigv = new Big(x);
+                  if (logx && bigv.lte(0)){ continue; }
+                  item.x[j] = bigv;
+                }
+
                 var ele = {};
                 ele.x = item.x[j];
                 ele.y = item.y[j];
@@ -610,6 +619,12 @@
               "color" : mtext.color != null ? mtext.color : "black",
               "elements" : []
             };
+            var x = mtext.x;
+            if (model.type === 'NanoPlot') {
+              if (_.isEmpty(x)) { continue; }
+              var bigv = new Big(x);
+              mtext.x = bigv;
+            }
             var ele = {
               "x" : mtext.x,
               "y" : mtext.y,

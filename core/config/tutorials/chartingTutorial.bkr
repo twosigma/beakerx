@@ -40,7 +40,7 @@
                     "background": "#E0FFE0"
                 }
             },
-            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\njava.time.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap"
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap"
         }
     ],
     "cells": [
@@ -4347,7 +4347,7 @@
                                     "type": "YAxis",
                                     "label": "Volume",
                                     "auto_range": true,
-                                    "auto_range_includes_zero": true,
+                                    "auto_range_includes_zero": false,
                                     "lower_margin": 0.05,
                                     "upper_margin": 0.05,
                                     "lower_bound": 0,
@@ -4359,7 +4359,7 @@
                             "x_lower_margin": 0.05,
                             "x_upper_margin": 0.05,
                             "y_auto_range": true,
-                            "y_auto_range_includes_zero": true,
+                            "y_auto_range_includes_zero": false,
                             "y_lower_margin": 0.05,
                             "y_upper_margin": 0.05,
                             "y_lower_bound": 0,
@@ -6544,7 +6544,7 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10
-                },
+                    },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412",
@@ -6773,7 +6773,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
-            },
+                    },
             "evaluatorReader": true,
             "lineCount": 6,
             "power": {
@@ -6859,7 +6859,7 @@
                     "legend_position": {
                         "type": "LegendPosition",
                         "position": "TOP_RIGHT"
-                    },
+                },
                     "omit_checkboxes": false,
                     "legend_layout": "VERTICAL",
                     "graphics_list": [],
@@ -6877,7 +6877,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
-            },
+                    },
             "evaluatorReader": true,
             "lineCount": 1,
             "power": {
@@ -6945,7 +6945,7 @@
                     "legend_position": {
                         "type": "LegendPosition",
                         "position": "TOP_RIGHT"
-                    },
+                },
                     "omit_checkboxes": false,
                     "legend_layout": "VERTICAL",
                     "graphics_list": [],
@@ -6963,7 +6963,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
-            },
+                    },
             "evaluatorReader": true,
             "lineCount": 1,
             "power": {
@@ -7106,7 +7106,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
-            },
+                    },
             "evaluatorReader": true,
             "lineCount": 15,
             "power": {
@@ -7300,7 +7300,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
-            },
+                    },
             "evaluatorReader": true,
             "lineCount": 7,
             "power": {
@@ -7439,7 +7439,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
-            },
+                    },
             "evaluatorReader": true,
             "lineCount": 5,
             "power": {
@@ -7585,7 +7585,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
-            },
+                    },
             "evaluatorReader": true,
             "lineCount": 5,
             "power": {
@@ -7721,7 +7721,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
-            },
+                    },
             "evaluatorReader": true,
             "lineCount": 4,
             "power": {
@@ -7933,7 +7933,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
-            },
+                    },
             "evaluatorReader": true,
             "lineCount": 9,
             "power": {
@@ -8164,7 +8164,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
-            },
+                    },
             "evaluatorReader": true,
             "lineCount": 8,
             "power": {
@@ -8340,7 +8340,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
-            },
+                    },
             "evaluatorReader": true,
             "lineCount": 8,
             "power": {
@@ -8475,7 +8475,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
-            },
+                    },
             "evaluatorReader": true,
             "lineCount": 3
         },
@@ -8694,7 +8694,7 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10
-                },
+                    },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412",
@@ -8947,7 +8947,7 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10
-                },
+                    },
                 "selectedType": "Plot",
                 "elapsedTime": 622,
                 "state": {},
@@ -10091,7 +10091,7 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10
-                },
+                    },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412",
@@ -11236,7 +11236,7 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10
-                },
+                    },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412",
@@ -12901,7 +12901,7 @@
                             "color": "#FFC0504D",
                             "outline_color": null,
                             "yAxis": null
-                        },
+                },
                         {
                             "type": "Points",
                             "x": [
@@ -12956,6 +12956,167 @@
             },
             "evaluatorReader": true,
             "lineCount": 14
+        },
+        {
+            "id": "sectionGub7yV",
+            "type": "section",
+            "title": "NanoPlot",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codecHXmVR",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def today  = new Date()",
+                    "def millis = today.time",
+                    "def nanos  = millis * 1000 * 1000g",
+                    "def hour   = 1000g * 1000 * 1000 * 60 * 60",
+                    "def np = new NanoPlot()",
+                    "np << new Points(x:(0..10).collect{nanos + 10 * it}, y:(0..10))",
+                    "//np << new Points(x:(0..10).collect{nanos + hour * it + 10*it}, y:(0..10))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "zoomed": false,
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null
+                    ],
+                    "lodType": [
+                        null
+                    ],
+                    "lodAuto": [
+                        null
+                    ],
+                    "zoomHash": [
+                        null
+                    ],
+                    "showItem": [
+                        true
+                    ],
+                    "visibleItem": 1,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
+                "result": {
+                    "type": "NanoPlot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": null,
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "show_legend": null,
+                    "use_tool_tip": true,
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": "",
+                            "auto_range": true,
+                            "auto_range_includes_zero": false,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "use_log": false,
+                            "log_base": 10
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": false,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_y": false,
+                    "timezone": null,
+                    "crosshair": null,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "omit_checkboxes": false,
+                    "legend_layout": "VERTICAL",
+                    "graphics_list": [
+                        {
+                            "x": [
+                                "1447079364449000000",
+                                "1447079364449000010",
+                                "1447079364449000020",
+                                "1447079364449000030",
+                                "1447079364449000040",
+                                "1447079364449000050",
+                                "1447079364449000060",
+                                "1447079364449000070",
+                                "1447079364449000080",
+                                "1447079364449000090",
+                                "1447079364449000100"
+                            ],
+                            "y": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "yAxis": null,
+                            "type": "Points",
+                            "size": 6,
+                            "shape": "DEFAULT",
+                            "fill": null,
+                            "color": "#FFC0504D",
+                            "outline_color": null
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10
+                },
+                "selectedType": "Plot",
+                "pluginName": "Groovy",
+                "shellId": "f327aa3d-b710-43a5-973e-369f66a52a8d",
+                "elapsedTime": 683
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
         },
         {
             "id": "sectionWlbVev",

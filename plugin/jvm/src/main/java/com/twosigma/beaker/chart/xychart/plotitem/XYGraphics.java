@@ -35,6 +35,7 @@ abstract public class XYGraphics extends Graphics {
   private String  displayName = "";
   protected Color baseColor;
   private   List<Color>  colors;
+  private Class plotType;
 
   private Filter lodFilter;
 
@@ -49,7 +50,7 @@ abstract public class XYGraphics extends Graphics {
           this.xs.add(date.getTime());
         } else {
           throw new IllegalArgumentException("x coordinates should be the list of numbers or java.util.Date objects");
-        }
+  }
 //        remove Java8 feature LocalDateTime, that has to wait
 //        else if (x instanceof LocalDateTime) {
 //          LocalDateTime date = (LocalDateTime)x;
@@ -156,4 +157,12 @@ abstract public class XYGraphics extends Graphics {
   }
 
   abstract protected EnumSet<Filter> getPossibleFilters();
+
+  public Class getPlotType() {
+    return plotType;
+  }
+
+  public void setPlotType(Class plotType) {
+    this.plotType = plotType;
+  }
 }

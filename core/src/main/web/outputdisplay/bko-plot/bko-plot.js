@@ -188,9 +188,14 @@
             y : 10
           };
           scope.intervalStepHint = {
-            x : scope.stdmodel.orientation === 'HORIZONTAL' ? 30 : 75,
-            y : scope.stdmodel.orientation === 'HORIZONTAL' ? 75 : 30
+            x : scope.model.getCellModel().type === 'NanoPlot' ? 130 : 75,
+            y : 30
           };
+          if(scope.stdmodel.orientation === 'HORIZONTAL'){
+            var tempx = scope.intervalStepHint.x;
+            scope.intervalStepHint.x = scope.intervalStepHint.y;
+            scope.intervalStepHint.y = tempx;
+          }
           scope.numIntervals = {
             x: parseInt(plotSize.width) / scope.intervalStepHint.x,
             y: parseInt(plotSize.height) / scope.intervalStepHint.y

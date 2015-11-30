@@ -21,26 +21,23 @@ import com.twosigma.beaker.chart.Color;
 import java.io.IOException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-public class LineSerializer extends JsonSerializer<Line> {
+public class LineSerializer extends XYGraphicsSerializer<Line> {
 
   @Override
   public void serialize(Line line, JsonGenerator jgen, SerializerProvider sp)
       throws IOException, JsonProcessingException {
 
     jgen.writeStartObject();
+
+    super.serialize(line, jgen, sp);
+
     jgen.writeObjectField("type", line.getClass().getSimpleName());
 
     //FIXME should be added to GraphicsSerializer, need merge from nanoplot branch
     jgen.writeObjectField("uid", line.getUid());
     /////////////////////////////////////////////////////////////////////////////
-
-    jgen.writeObjectField("x", line.getX());
-    jgen.writeObjectField("y", line.getY());
-    jgen.writeObjectField("visible", line.getVisible());
-    jgen.writeObjectField("display_name", line.getDisplayName());
     if (line.getLodFilter() != null)
       jgen.writeObjectField("lod_filter", line.getLodFilter().getText());
     if (line.getColor() instanceof Color) {
@@ -55,7 +52,6 @@ public class LineSerializer extends JsonSerializer<Line> {
     if (line.getInterpolation() != null) {
       jgen.writeObjectField("interpolation", line.getInterpolation());
     }
-    jgen.writeObjectField("yAxis", line.getYAxis());
     jgen.writeEndObject();
   }
 

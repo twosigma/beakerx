@@ -38,10 +38,10 @@
         if (xAxis.axisType === "category") {
           xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
           xAxis.setCategoryNames(model.categoryNames, model.labelsxs);
-        } else if (xAxis.axisType !== "time") {
-          xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
-        } else {
+        } else if (xAxis.axisType === "time" || xAxis.axisType === "nanotime") {
           xAxis.setRange(vrange.xl, vrange.xr, model.timezone);
+        } else {
+          xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
         }
 
         if (xAxisLabel != null) {
@@ -227,8 +227,8 @@
             }
 
             if (item.type === "bar" && ele.x2 == null) {
-              ele.x -= item.width / 2;
-              ele.x2 = ele.x + item.width;
+              ele.x = plotUtils.minus(ele.x, item.width / 2);
+              ele.x2 = plotUtils.plus(ele.x, item.width);
             }
             if ((item.type === "area" || item.type === "bar" || item.type === "stem")
               && ele.y2 == null) {
@@ -353,7 +353,7 @@
           var eles = item.elements;
           var unordered = false;
           for (var j = 1; j < eles.length; j++) {
-            if (eles[j].x < eles[j - 1].x) {
+            if (plotUtils.lt(eles[j].x, eles[j - 1].x)) {
               unordered = true;
               break;
             }
@@ -362,7 +362,7 @@
             if (item.type === "bar" || item.type === "stem" ||
             item.type === "point" || item.type === "text") {
               eles.sort(function(a, b) {
-                return a.x - b.x;
+                plotUtils.minus(a.x, b.x);
               });
             } else {
               item.isUnorderedItem = true;
@@ -515,10 +515,10 @@
           // visible range initially is 10x larger than data range by default
           var getModelRange = function(r){
             return r ? {
-              xl : r.xl - r.xspan * 10.0,
-              xr : r.xr + r.xspan * 10.0,
-              yl : r.yl - r.yspan * 10.0,
-              yr : r.yr + r.yspan * 10.0
+              xl: plotUtils.minus(r.xl, r.xspan * 10.0),
+              xr: plotUtils.plus(r.xr, r.xspan * 10.0),
+              yl: r.yl - r.yspan * 10.0,
+              yr: r.yr + r.yspan * 10.0
             } : null;
           };
           newmodel.vrange = getModelRange(range);
@@ -537,9 +537,9 @@
           if (focus.yl != null) { vrange.yl = Math.min(focus.yl, vrange.yl); }
           if (focus.yr != null) { vrange.yr = Math.max(focus.yr, vrange.yr); }
 
-          var updateRangeSpan = function(r){
-            if(r){
-              r.xspan = r.xr - r.xl;
+          var updateRangeSpan = function(r) {
+            if (r) {
+              r.xspan = plotUtils.minus(r.xr, r.xl);
               r.yspan = r.yr - r.yl;
             }
           };

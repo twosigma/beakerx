@@ -36,7 +36,6 @@ public class StemsSerializer extends XYGraphicsSerializer<Stems> {
 
     super.serialize(stems, jgen, sp);
 
-    jgen.writeObjectField("type", stems.getClass().getSimpleName());
     if (stems.getBases() != null) {
       jgen.writeObjectField("bases", stems.getBases());
     } else {

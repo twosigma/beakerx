@@ -33,7 +33,7 @@ public class CategoryStemsSerializer extends CategoryGraphicsSerializer<Category
                                                      JsonProcessingException {
     jgen.writeStartObject();
 
-    serialize(categoryStems, jgen);
+    super.serialize(categoryStems, jgen, provider);
 
     if (categoryStems.getColor() != null)
       jgen.writeObjectField("color", categoryStems.getColor());

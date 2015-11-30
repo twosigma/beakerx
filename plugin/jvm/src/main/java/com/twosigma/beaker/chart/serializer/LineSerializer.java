@@ -33,11 +33,6 @@ public class LineSerializer extends XYGraphicsSerializer<Line> {
 
     super.serialize(line, jgen, sp);
 
-    jgen.writeObjectField("type", line.getClass().getSimpleName());
-
-    //FIXME should be added to GraphicsSerializer, need merge from nanoplot branch
-    jgen.writeObjectField("uid", line.getUid());
-    /////////////////////////////////////////////////////////////////////////////
     if (line.getLodFilter() != null)
       jgen.writeObjectField("lod_filter", line.getLodFilter().getText());
     if (line.getColor() instanceof Color) {

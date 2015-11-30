@@ -37,7 +37,6 @@ public class AreaSerializer extends XYGraphicsSerializer<Area> {
 
     super.serialize(area, jgen, sp);
 
-    jgen.writeObjectField("type", area.getClass().getSimpleName());
     if (area.getColor() instanceof Color) {
       jgen.writeObjectField("color", area.getColor());
     }

@@ -19,17 +19,16 @@ package com.twosigma.beaker.chart.serializer;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
 
-public abstract class CategoryGraphicsSerializer<T extends CategoryGraphics> extends JsonSerializer<T> {
+public abstract class CategoryGraphicsSerializer<T extends CategoryGraphics> extends GraphicsSerializer<T> {
 
-  protected void serialize(T graphics, JsonGenerator jgen) throws IOException {
+  public void serialize(T graphics, JsonGenerator jgen, SerializerProvider sp) throws IOException {
 
-    jgen.writeObjectField("type", graphics.getClass().getSimpleName());
+    super.serialize(graphics, jgen, sp);
 
-    jgen.writeObjectField("visible", graphics.getVisible());
-    jgen.writeObjectField("yAxis", graphics.getYAxis());
     jgen.writeObjectField("showItemLabel", graphics.getShowItemLabel());
     jgen.writeObjectField("center_series", graphics.getCenterSeries());
     jgen.writeObjectField("use_tool_tip", graphics.getUseToolTip());

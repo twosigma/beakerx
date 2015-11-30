@@ -36,7 +36,6 @@ public class BarsSerializer extends XYGraphicsSerializer<Bars> {
 
     super.serialize(bars, jgen, sp);
 
-    jgen.writeObjectField("type", bars.getClass().getSimpleName());
     if (bars.getBases() != null) {
       jgen.writeObjectField("bases", bars.getBases());
     } else {

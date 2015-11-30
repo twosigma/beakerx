@@ -65,7 +65,7 @@ startScripts {
 }
 
 if (hasProperty('evalPluginDir')) {
-  installApp.into new File(evalPluginDir, 'clojure')
+  installDist.into new File(evalPluginDir, 'clojure')
 }
 
 if (hasProperty('includeDepsInJar')) {

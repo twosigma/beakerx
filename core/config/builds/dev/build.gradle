@@ -53,7 +53,7 @@ task runembed (type: Exec) {
 task installPlugins {
   def pluginProjects = project.subprojects.grep { it.project.path.startsWith(':plugin:') }
   pluginProjects.each {
-    installPlugins.dependsOn(it.project.path + ":installApp")
+    installPlugins.dependsOn(it.project.path + ":installDist")
   }
 }
 
@@ -96,17 +96,17 @@ clean.dependsOn(":core:clean")
 clean.dependsOn(cleanPlugins)
 realclean.dependsOn(clean)
 build.dependsOn(":core:build")
-build.dependsOn(":core:installApp")
+build.dependsOn(":core:installDist")
 build.dependsOn(":core:copyVendorStuff")
 build.dependsOn(writeVersion)
 build.dependsOn(installPlugins)
 buildembed.dependsOn(":core:buildembed")
-buildembed.dependsOn(":core:installApp")
+buildembed.dependsOn(":core:installDist")
 buildembed.dependsOn(":core:copyVendorStuff")
 buildembed.dependsOn(writeVersion)
 buildembed.dependsOn(installPlugins)
 builddebug.dependsOn(":core:builddebug")
-builddebug.dependsOn(":core:installApp")
+builddebug.dependsOn(":core:installDist")
 builddebug.dependsOn(":core:copyVendorStuff")
 builddebug.dependsOn(writeVersion)
 builddebug.dependsOn(installPlugins)
@@ -115,7 +115,7 @@ runembed.dependsOn(buildembed)
 runembed.dependsOn(clearhash)
 debug.dependsOn(builddebug)
 check.dependsOn(":core:build")
-check.dependsOn(":core:installApp")
+check.dependsOn(":core:installDist")
 check.dependsOn(writeVersion)
 check.dependsOn(installPlugins)
 check.dependsOn(":core:copyVendorStuff")

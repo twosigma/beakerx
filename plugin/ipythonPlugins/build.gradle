@@ -15,7 +15,7 @@
  */
 def installDir = hasProperty('evalPluginDir') ? new File(evalPluginDir, 'ipythonPlugins') : project.buildDir
 
-task installApp (type: Sync) {
+task installDist (type: Sync) {
   from 'src/dist'
   into installDir
 }

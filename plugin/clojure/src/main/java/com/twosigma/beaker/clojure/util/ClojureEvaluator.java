@@ -220,7 +220,9 @@ public class ClojureEvaluator {
           Object o = clojureLoadString.invoke(theCode);
           try {
             //workaround, checking of corrupted clojure objects
-            o.hashCode();
+            if (null != o) {
+              o.hashCode();
+            }
             theOutput.finished(o);
           } catch (Exception e) {
             theOutput.error("Object: " + o.getClass() + ", value cannot be displayed due to following error: " + e.getMessage());

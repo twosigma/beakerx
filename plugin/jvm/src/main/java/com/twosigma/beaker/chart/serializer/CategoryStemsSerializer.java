@@ -35,9 +35,6 @@ public class CategoryStemsSerializer extends CategoryGraphicsSerializer<Category
 
     serialize(categoryStems, jgen);
 
-    if (categoryStems.getColor() != null)
-      jgen.writeObjectField("color", categoryStems.getColor());
-
     if (categoryStems.getBases() != null) {
       jgen.writeObjectField("bases", categoryStems.getBases());
     } else {

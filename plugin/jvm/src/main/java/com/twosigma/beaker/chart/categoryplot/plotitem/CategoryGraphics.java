@@ -29,7 +29,7 @@ public abstract class CategoryGraphics extends Graphics {
   protected Number[][]   value;
   protected List<String> seriesNames;
   protected Color        baseColor;
-  private   List<Color>  colors;
+  private   List<Object>  colors;
   private boolean           showItemLabel = false;
   private boolean           centerSeries  = false;
   private boolean           useToolTip    = true;
@@ -51,23 +51,30 @@ public abstract class CategoryGraphics extends Graphics {
 
   private void setColors(List<Object> colors) {
     if (colors != null) {
-      this.colors = new ArrayList<>(colors.size());
-      for (Object c : colors) {
-        if (c instanceof Color) {
-          this.colors.add((Color)c);
-        } else if (c instanceof java.awt.Color) {
-          this.colors.add(new Color((java.awt.Color) c));
-        } else {
-          throw new IllegalArgumentException("setColor takes Color or List of Color");
-        }
-      }
+      this.colors = convertColors(colors);
     } else {
       this.colors = null;
     }
 
   }
 
-  public List<Color> getColors() {
+  private List<Object> convertColors(List colors) {
+    List<Object> clist = new ArrayList<>(colors.size());
+    for(Object c : colors){
+      if (c instanceof Color) {
+        clist.add(c);
+      } else if (c instanceof java.awt.Color) {
+        clist.add(new Color((java.awt.Color) c));
+      } else if (c instanceof List) {
+        clist.add(convertColors((List)c));
+      } else {
+        throw new IllegalArgumentException("setColor takes Color or List of Color");
+      }
+    }
+    return clist;
+  }
+
+  public List<Object> getColors() {
     return this.colors;
   }
 

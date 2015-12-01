@@ -858,11 +858,14 @@
                 items: []
               },
               {
-                title: 'Visible',
-                isChecked: function() {},
-                action: function(e) {
-                  e.preventDefault;
+                title: 'Hide column',
+                action: function(el) {
+                  var table = scope.table;
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex')
+                  var column = table.column(colIdx);
 
+                  column.visible(!column.visible());
                 }
               },
               {

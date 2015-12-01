@@ -28,8 +28,8 @@ var HeaderMenu = function(dt, options) {
   this.c = options; //$.extend(true, {}, HeaderMenu.defaults, options);
 
   this.dom = {
-    container: null,
-    menu: null
+    container:  null,
+    menu:       null
   };
 
   this._constructor();
@@ -59,16 +59,22 @@ HeaderMenu.prototype = {
       $(dt.cells().nodes()).removeClass('highlight');
     });
 
-    $(document.body).bind('mousedown', function() {
-      that._hide();
+    $(document.body).bind('mousedown', function(e) {
+      var $container = that.dom.container;
+
+      if ($container[0] != e.target && !$.contains($container[0], e.target)) {
+        that._hide();
+      }
     });
 
     dt.on('destroy', function () {
+      //$(document.body).unbind('mousedown', function() {});
       that.destroy();
     });
   },
 
-  _appendMenuContainer: function() {
+  _appendMenuContainer: function()
+  {
     var node = this.s.dt.table().container();
     var $container = $("<div/>", { 'class': 'bko-header-menu' });
 
@@ -79,7 +85,8 @@ HeaderMenu.prototype = {
   /**
    * @param layout {object} should be Array with header layout in it
    */
-  _buildMenuData: function(layout) {
+  _buildMenuData: function(layout)
+  {
     if (!$.isArray(layout)) {
       return;
     }
@@ -111,27 +118,33 @@ HeaderMenu.prototype = {
       $el.data('menu', menu.items)
         .on('click', function(e) {
           that._show($(this));
+
+          e.preventDefault();
+          e.stopPropagation();
         });
 
       $(cell).append($el);
     }
   },
 
-  _hide: function() {
+  _hide: function()
+  {
     if (this.dom.menu) {
       this.dom.menu.remove();
       this.dom.menu = null;
     }
   },
 
-  _show: function(el) {
+  _show: function(el)
+  {
     var that = this;
     var menuItems = el.data('menu');
+    var colIdx = el.parent().data('columnIndex');
 
     if ($.isArray(menuItems)) {
-      var $menu = $("<ul/>", { 'class': 'dropdown-menu' })
-        .attr('eat-click', '');
+      var $menu = $("<ul/>", { 'class': 'dropdown-menu' });
       var node = this.dom.container;
+      node.data('columnIndex', colIdx);
 
       that._buildMenuItems(menuItems, $menu);
 
@@ -151,6 +164,7 @@ HeaderMenu.prototype = {
    */
   _buildMenuItems: function (oItems, container)
   {
+    var that = this;
     if (!$.isArray(oItems)) {
       return;
     }
@@ -159,32 +173,43 @@ HeaderMenu.prototype = {
       var oItem = oItems[i];
       var hasSubitems = $.isArray(oItem.items) && oItem.items.length;
 
-      var $item = $('<li/>', {'class': hasSubitems ? 'dropdown-submenu' : ''})
-        .append(
-          $('<a/>')
-            .attr('href', '#')
-            .attr('tabindex', '-1')
-            .attr('id', 'dt-select-all')
-            .attr('eat-click', '')
-            .text(oItem.title)
-        );
+      var $li = $('<li/>', {'class': hasSubitems ? 'dropdown-submenu' : ''});
+      var $item = $('<a/>')
+        .attr('href', '#')
+        .attr('tabindex', '-1')
+        .attr('id', 'dt-select-all')
+        .text(oItem.title)
+        .data('action', oItem.action || '')
+        .bind('click', function(e) {
+          that._handleItemClick($(this));
+          e.preventDefault();
+          e.stopPropagation();
+        });
+
+      $li.append($item);
+
       //also append
       //<i class="glyphicon glyphicon-ok"></i>
 
       if (hasSubitems) {
         var $subContainer = $('<ul/>', { 'class': 'dropdown-menu' });
-        $subContainer.appendTo($item);
+        $subContainer.appendTo($li);
         this._buildMenuItems(oItem.items, $subContainer);
       }
 
-      $item.appendTo(container);
+      $li.appendTo(container);
     }
   },
 
-  _toggleVisibility: function(el) {
+  _handleItemClick: function(el)
+  {
+    var action = el.data('action');
 
-    //var column = this.dt.column( $(el).attr('data-column') );
-    //column.visible( ! column.visible() );
+    if (action && action !== '' && typeof action == 'function') {
+      action(el);
+    }
+
+    this._hide();
   }
 };
 

@@ -56,7 +56,7 @@
             return;
           }
           return loadEvaluator(_loadInProgress)
-          .then(_loadInProgress.resolve,  _loadInProgress.reject)
+          .then(_loadInProgress.resolve, _loadInProgress.reject)
           .finally(function () {
             bkHelper.clearStatus("Starting language " + _loadInProgress.name)
             _loadInProgress = undefined;
@@ -91,7 +91,8 @@
       },
       getEvaluatorFactoryAndShell: function(evaluatorSettings) {
         var nameOrUrl = evaluatorSettings.plugin;
-        if (plugins[nameOrUrl]) { // plugin code already loaded
+        if (plugins[nameOrUrl]) {
+          // plugin code already loaded
           var deferred = bkUtils.newDeferred();
           plugins[nameOrUrl].getEvaluatorFactory().then(function(factory) {
             if (factory !== undefined && factory.create !== undefined) {
@@ -185,7 +186,7 @@
           }
         })
         .then(function() {
-          _(plugins).filter(function(aShell) {
+          _.filter(plugins, function(aShell) {
             return aShell !== theShell;
           });
         });

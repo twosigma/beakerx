@@ -58,7 +58,7 @@
       };
 
       function defaultName() {
-        var section = _(notebook.cells).find(function(cell) {
+        var section = _.find(notebook.cells, function(cell) {
           return cell.type === 'section';
         });
         return section && section.title;

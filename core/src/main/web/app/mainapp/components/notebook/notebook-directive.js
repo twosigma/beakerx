@@ -344,7 +344,7 @@
         scope.$on('$destroy', function() {
           scope.setBkNotebook({bkNotebook: undefined});
           bkOutputLog.unsubscribe();
-          _(scope.unregisters).each(function(unregister) {
+          _.each(scope.unregisters, function(unregister) {
             unregister();
           });
         });

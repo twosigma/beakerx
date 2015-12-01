@@ -151,10 +151,9 @@
       function initPublishDataAction() {
         if (!angular.isFunction($scope['getPublishData'])) {
           $scope.getPublishData = function () {
-            var evaluator = _(bkSessionManager.getRawNotebookModel().evaluators)
-              .find(function (evaluator) {
-                return (type == 'code') ? (evaluator.name === $scope.cellmodel.evaluator) : true;
-              });
+            var evaluator = _.find(bkSessionManager.getRawNotebookModel().evaluators, function (evaluator) {
+              return (type == 'code') ? (evaluator.name === $scope.cellmodel.evaluator) : true;
+            });
             var cells = [$scope.cellmodel];
             return bkUtils.generateNotebook([evaluator], cells, $scope.cellmodel.metadata);
           };

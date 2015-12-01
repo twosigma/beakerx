@@ -746,7 +746,7 @@
         }
 
         //strip out the shell IDs
-        _(notebookModelCopy.evaluators).each(function(evaluator) {
+        _.each(notebookModelCopy.evaluators, function(evaluator) {
           if (_.isObject(evaluator)) delete evaluator.shellID;
         });
 

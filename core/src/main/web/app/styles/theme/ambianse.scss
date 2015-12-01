@@ -34,7 +34,7 @@ $dropdown-menu-color: $main-theme-color !default;
 
 .beaker-s-ambiance {
 
-  body, html, bk-markdown-editable, .languages, .code-cell-input, .code-cell-output, .modal-header, .modal-body, .modal-footer  {
+  body, html, bk-markdown-editable, .well, .languages, .code-cell-input, .code-cell-output, .modal-header, .modal-body, .modal-footer  {
     background: $main-theme-panel-background !important;
     color: $main-theme-color !important;
     .close {
@@ -51,10 +51,20 @@ $dropdown-menu-color: $main-theme-color !default;
     color: $main-theme-color !important;
   }
 
-  button{
+  button {
     background: #505050;
     color: #f5f5f5;
   }
+
+  .btn-default {
+    color: #f5f5f5;
+    background: #909090;
+  }
+
+  .notebook-link {
+    color: #d6bb6d;
+  }
+
 
   .ui-icon,
   .ui-widget-content .ui-icon {
@@ -109,10 +119,7 @@ $dropdown-menu-color: $main-theme-color !default;
     background: $main-theme-panel-background;
   }
 
-  .btn-default {
-    background: #505050;
-    color: #f5f5f5;
-  }
+
 
   .dataTables_length {
     & label {

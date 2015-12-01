@@ -365,7 +365,41 @@ public class UtilRest {
     }
     // Validate theme
     else if (preferenceName.equals("theme")){
-      String[] validModes = {"default", "ambiance"};
+      String[] validModes = {"default",
+                             "3024-day",
+                             "3024-night",
+                             "ambiance",
+                             "ambiance-mobile",
+                             "base16-dark",
+                             "base16-light",
+                             "blackboard",
+                             "cobalt",
+                             "colorforth",
+                             "eclipse",
+                             "elegant",
+                             "erlang-dark",
+                             "lesser-dark",
+                             "liquibyte",
+                             "mbo",
+                             "mdn-like",
+                             "midnight",
+                             "monokai",
+                             "neat",
+                             "neo",
+                             "night",
+                             "paraiso-dark",
+                             "paraiso-light",
+                             "pastel-on-dark",
+                             "rubyblue",
+                             "solarized",
+                             "the-matrix",
+                             "tomorrow-night-bright",
+                             "tomorrow-night-eighties",
+                             "twilight",
+                             "vibrant-ink",
+                             "xq-dark",
+                             "xq-light",
+                             "zenburn"};
       if (Arrays.asList(validModes).contains(preferenceValue)){
         newValue = preferenceValue;
         this.theme = preferenceValue;

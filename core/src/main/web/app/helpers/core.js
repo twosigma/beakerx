@@ -1056,7 +1056,22 @@
       },
       colorize: function (theme) {
         var colorizedElements = $("body, html");
-        colorizedElements.removeClass("beaker-s-ambiance");
+        var ca = colorizedElements.attr('class');
+        var classes = [];
+        if(ca && ca.length && ca.split){
+          ca = jQuery.trim(ca); /* strip leading and trailing spaces */
+          ca = ca.replace(/\s+/g,' '); /* remove doube spaces */
+          classes = ca.split(' ');
+        }
+
+        var classCount = classes.length;
+        for (var i = 0; i < classCount; i++) {
+          var clazz = classes[i];
+          if (clazz.indexOf("beaker-s") >= 0){
+            colorizedElements.removeClass(clazz);
+            break;
+          }
+        }
         if ("default" !== theme)
           colorizedElements.addClass("beaker-s-" + theme);
       }

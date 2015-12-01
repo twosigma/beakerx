@@ -29,7 +29,7 @@ public class CategoryBars extends CategoryGraphics {
   private Number baseBase = 0.0d;
   private List<Number>  bases;
   private Color         baseOutlineColor;
-  private List<Color>   outlineColors;
+  private List<Object>   outlineColors;
   private Boolean       baseFill;
   private List<Boolean> fills;
   private Boolean       baseOutline;
@@ -106,26 +106,33 @@ public class CategoryBars extends CategoryGraphics {
 
   private void setOutlineColors(List<Object> colors) {
     if (colors != null) {
-      this.outlineColors = new ArrayList<>(colors.size());
-      for (Object c : colors) {
-        if (c instanceof Color) {
-          this.outlineColors.add((Color)c);
-        } else if (c instanceof java.awt.Color) {
-          this.outlineColors.add(new Color((java.awt.Color) c));
-        } else {
-          throw new IllegalArgumentException("setColor takes Color or List of Color");
-        }
-      }
+      this.outlineColors = convertColors(colors);
     } else {
       this.outlineColors = null;
     }
+  }
+
+  private List<Object> convertColors(List colors) {
+    List<Object> clist = new ArrayList<>(colors.size());
+    for(Object c : colors){
+      if (c instanceof Color) {
+        clist.add(c);
+      } else if (c instanceof java.awt.Color) {
+        clist.add(new Color((java.awt.Color) c));
+      } else if (c instanceof List) {
+        clist.add(convertColors((List)c));
+      } else {
+        throw new IllegalArgumentException("setOutlineColors takes Color or List of Color");
+      }
+    }
+    return clist;
   }
 
   public Color getOutlineColor() {
     return this.baseOutlineColor;
   }
 
-  public List<Color> getOutlineColors() {
+  public List<Object> getOutlineColors() {
     return this.outlineColors;
   }
 

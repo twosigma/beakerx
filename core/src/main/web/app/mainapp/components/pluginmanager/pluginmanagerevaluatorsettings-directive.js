@@ -24,14 +24,35 @@
   var module = angular.module('bk.core');
 
   module.directive('bkPluginManagerEvaluatorSettings', function(
-      $compile, bkSessionManager) {
+      $compile, bkSessionManager, GLOBALS) {
     return {
       restrict: 'E',
       template: JST["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"](),
       controller: function($scope) {
-        $scope.set = function(val) {
-          $scope.evaluator.perform(val);
+        $scope.savedSettings = angular.copy($scope.evaluator.settings);
+
+        $scope.$on(GLOBALS.EVENTS.DISCARD_LANGUAGE_SETTINGS, function(event, data) {
+          $scope.evaluator.settings = $scope.savedSettings;
+        });
+
+        $scope.set = function(property) {
+          $scope.evaluator.perform(property.key);
           bkSessionManager.setNotebookModelEdited(true);
+          property.edited = false;
+          var noMoreUnsavedProperties = true;
+          for (var i = 0; i < $scope.properties.length; i++) {
+            if ($scope.properties[i].edited) {
+              noMoreUnsavedProperties = false;
+              break;
+            }
+          }
+          if (noMoreUnsavedProperties) {
+            $scope.$emit(GLOBALS.EVENTS.SET_LANGUAGE_SETTINGS_EDITED, {
+              edited: false,
+              editedEvalutor: $scope.evaluatorName
+            });
+          }
+          $scope.savedSettings[property.key] = $scope.evaluator.settings[property.key];
         };
       },
       link: function(scope, element, attrs) {
@@ -42,6 +63,27 @@
         scope.properties = _.filter(spec, function(option) {
           return option.type === "settableString";
         });
+
+        var getEditedListener = function (property) {
+          return function (newValue, oldValue) {
+            if (newValue !== oldValue) {
+              property.edited = scope.evaluator.settings[property.key]
+                  !== scope.savedSettings[property.key];
+              scope.$emit(GLOBALS.EVENTS.SET_LANGUAGE_SETTINGS_EDITED, {
+                edited: property.edited,
+                editedEvalutor: scope.evaluatorName
+              });
+            }
+          };
+        };
+
+        for (var i = 0; i < scope.properties.length; i++) {
+          scope.properties[i].edited = false;
+          if (!scope.savedSettings[scope.properties[i].key]) {
+            scope.savedSettings[scope.properties[i].key] = "";
+          }
+          scope.$watch('evaluator.settings[\'' + scope.properties[i].key + '\']', getEditedListener(scope.properties[i]));
+        }
 
         scope.actions = _.filter(spec, function(option) {
           return option.type === "action";

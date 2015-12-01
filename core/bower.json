@@ -11,7 +11,6 @@
     "angular-mocks": "1.4.7",
     "d3": "3.3.9",
     "lodash": "3.10.1",
-    "underscore.string": "2.3.3",
     "codemirror": "5.2.0",
     "q": "0.9.7",
     "angular-bootstrap": "0.12.0",

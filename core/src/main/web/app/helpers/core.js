@@ -132,7 +132,7 @@
             return true;
           } else {
             return _(fs.extFilter).any(function(ext) {
-              return _.string.endsWith(child.uri, ext);
+              return _.endsWith(child.uri, ext);
             });
           }
         }
@@ -383,13 +383,13 @@
             var result = this.input;
             if (result === '~') {
               result = homeDir + "/"
-            } else if (_.string.startsWith(result, '~/')) {
+            } else if (_.startsWith(result, '~/')) {
               result = result.replace('~', homeDir);
-            } else if (!_.string.startsWith(result, '/') && !result.match(/^\w+:\\/)) {
+            } else if (!_.startsWith(result, '/') && !result.match(/^\w+:\\/)) {
               result = homeDir + "/" + result;
             }
-            if (!_.string.endsWith(result, '.bkr')
-                && !_.string.endsWith(result, '/')) {
+            if (!_.endsWith(result, '.bkr')
+                && !_.endsWith(result, '/')) {
               result = result + ".bkr";
             }
             return result;
@@ -413,7 +413,7 @@
               });
           };
           fileChooserStrategy.getSaveBtnDisabled = function() {
-            return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');
+            return _.isEmpty(this.input) || _.endsWith(this.input, '/');
           };
           fileChooserStrategy.treeViewfs.applyExtFilter = false;
           saveButtonTitle = saveButtonTitle || "Save";

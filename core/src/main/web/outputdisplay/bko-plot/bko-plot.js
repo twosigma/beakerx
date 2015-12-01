@@ -394,7 +394,11 @@
               for (var i = 0; i < model.data.length; i++) {
                 var item = model.data[i];
                 if(item.id === e.id) {
-                  plotService.onClick(item, e, scope.model.getEvaluatorId());
+                  if(!_.isEmpty(item.tag)){
+                    plotUtils.evaluateTagCell(item.tag);
+                  }else{
+                    plotService.onClick(item, e, scope.model.getEvaluatorId());
+                  }
                 }
               }
             })

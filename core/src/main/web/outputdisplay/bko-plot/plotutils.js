@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    var retfunc = function(bkUtils) {
+    var retfunc = function(bkUtils, bkCoreManager, bkSessionManager) {
     return {
       outsideScr: function(scope, x, y) {
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
@@ -772,8 +772,19 @@
       },
       div: function(n1, n2){
         return n1 instanceof Big ? n1.div(n2) : n1 / n2;
+      },
+      evaluateTagCell: function (tag) {
+        var cellOp = bkSessionManager.getNotebookCellOp();
+        var result;
+        if (cellOp.hasUserTag(tag)) {
+          result = cellOp.getCellsWithUserTag(tag);
+          bkCoreManager.getBkApp().evaluateRoot(result)
+            .catch(function () {
+              console.log('Evaluation failed: ' + tag);
+            });
+        }
       }
     };
   };
-  beaker.bkoFactory('plotUtils', ["bkUtils", retfunc]);
+  beaker.bkoFactory('plotUtils', ["bkUtils", "bkCoreManager", "bkSessionManager", retfunc]);
 })();

@@ -17,6 +17,7 @@
 package com.twosigma.beaker.chart.serializer;
 
 import com.twosigma.beaker.chart.Graphics;
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
@@ -36,5 +37,8 @@ public class GraphicsSerializer <T extends Graphics> extends JsonSerializer<T> {
         jgen.writeObjectField("uid", graphics.getUid());
         jgen.writeObjectField("visible", graphics.getVisible());
         jgen.writeObjectField("yAxis", graphics.getYAxis());
+        if(StringUtils.isNotEmpty(graphics.getTag())) {
+            jgen.writeObjectField("tag", graphics.getTag());
+        }
     }
 }

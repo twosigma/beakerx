@@ -20,27 +20,23 @@ import com.twosigma.beaker.chart.xychart.plotitem.Points;
 import java.io.IOException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 /**
  * PointsSerializer
  *
  */
-public class PointsSerializer extends JsonSerializer<Points> {
+public class PointsSerializer extends XYGraphicsSerializer<Points> {
 
   @Override
   public void serialize(Points points, JsonGenerator jgen, SerializerProvider sp)
       throws IOException, JsonProcessingException {
 
     jgen.writeStartObject();
+
+    super.serialize(points, jgen, sp);
+
     jgen.writeObjectField("type", points.getClass().getSimpleName());
-    jgen.writeObjectField("x", points.getX());
-    jgen.writeObjectField("y", points.getY());
-    jgen.writeObjectField("visible", points.getVisible());
-    jgen.writeObjectField("display_name", points.getDisplayName());
-    if (points.getLodFilter() != null)
-      jgen.writeObjectField("lod_filter", points.getLodFilter().getText());
     if (points.getSizes() != null) {
       jgen.writeObjectField("sizes", points.getSizes());
     } else {
@@ -66,7 +62,6 @@ public class PointsSerializer extends JsonSerializer<Points> {
     } else {
       jgen.writeObjectField("outline_color", points.getOutlineColor());
     }
-    jgen.writeObjectField("yAxis", points.getYAxis());
     jgen.writeEndObject();
   }
 

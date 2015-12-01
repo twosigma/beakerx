@@ -142,14 +142,20 @@ define(function(require, exports, module) {
       }).done(cb);
     },
     updateShell: function (cb) {
-      var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/javash/setShellOptions"), {
+      bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/javash/setShellOptions"), {
         shellId: this.settings.shellID,
         classPath: this.settings.classPath,
         imports: this.settings.imports,
-        outdir: this.settings.outdir});
-      if (cb) {
-        p.success(cb);
-      }
+        outdir: this.settings.outdir}).success(function() {
+        if (cb && _.isFunction(cb)) {
+          cb();
+        }
+        bkHelper.hideLanguageManagerSpinner();
+      }).error(function(err) {
+        bkHelper.hideLanguageManagerSpinner(err);
+        bkHelper.show1ButtonModal('ERROR: ' + err, PLUGIN_NAME + ' restart failed');
+      });
     },
     spec: {
       outdir:      {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
@@ -161,7 +167,6 @@ define(function(require, exports, module) {
     cometdUtil: cometdUtil
   };
   var defaultImports = [
-    "java.time.*",
     "com.twosigma.beaker.chart.Color",
     "com.twosigma.beaker.chart.GradientColor",
     "com.twosigma.beaker.chart.legend.*",

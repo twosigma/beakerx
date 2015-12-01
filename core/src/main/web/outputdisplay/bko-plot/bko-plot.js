@@ -81,6 +81,7 @@
             scope.width = ui.size.width;
             scope.height = ui.size.height;
             _(scope.plotSize).extend(ui.size);
+            scope.setDumpState(scope.dumpState());
 
             scope.jqsvg.css({"width": scope.width, "height": scope.height});
             scope.jqplottitle.css({"width": scope.width });
@@ -160,9 +161,14 @@
             y : 10
           };
           scope.intervalStepHint = {
-            x : scope.stdmodel.orientation === 'HORIZONTAL' ? 30 : 75,
-            y : scope.stdmodel.orientation === 'HORIZONTAL' ? 75 : 30
+            x : scope.model.getCellModel().type === 'NanoPlot' ? 130 : 75,
+            y : 30
           };
+          if(scope.stdmodel.orientation === 'HORIZONTAL'){
+            var tempx = scope.intervalStepHint.x;
+            scope.intervalStepHint.x = scope.intervalStepHint.y;
+            scope.intervalStepHint.y = tempx;
+          }
           scope.numIntervals = {
             x: parseInt(plotSize.width) / scope.intervalStepHint.x,
             y: parseInt(plotSize.height) / scope.intervalStepHint.y
@@ -1674,6 +1680,57 @@
           scope.stdmodel = plotFormatter.standardizeModel(model, scope.prefs);
         };
 
+        scope.dumpState = function() {
+          var state = {};
+
+          state.showAllItems = scope.showAllItems;
+          state.plotSize = scope.plotSize;
+          state.zoomed = scope.zoomed;
+          state.focus = scope.focus;
+
+          state.lodOn = [];
+          state.lodType = [];
+          state.lodAuto = [];
+          state.zoomHash = [];
+          state.showItem = [];
+          var data = scope.stdmodel.data;
+          for (var i = 0; i < data.length; i++) {
+            state.lodOn[i] = data[i].lodOn;
+            state.lodType[i] = data[i].lodType;
+            state.lodAuto[i] = data[i].lodAuto;
+            state.zoomHash[i] = data[i].zoomHash;
+            state.showItem[i] = data[i].showItem;
+          }
+          state.visibleItem = scope.visibleItem;
+          state.legendableItem = scope.legendableItem;
+          state.defaultFocus = scope.defaultFocus;
+          return state;
+        };
+
+        scope.loadState = function(state) {
+          scope.showAllItems = state.showAllItems;
+          scope.plotSize = state.plotSize;
+          scope.zoomed = state.zoomed;
+          scope.focus = state.focus;
+          var data = scope.stdmodel.data;
+          for (var i = 0; i < data.length; i++) {
+            if(data[i].isLodItem === true){
+              data[i].lodOn = state.lodOn[i];
+              if (state.lodOn[i]) {
+                data[i].applyLodType(state.lodType[i]);
+                data[i].applyLodAuto(state.lodAuto[i]);
+                data[i].applyZoomHash(state.zoomHash[i]);
+              }
+            }
+            data[i].showItem = state.showItem[i];
+          }
+          scope.visibleItem = state.visibleItem;
+          scope.legendableItem = state.legendableItem;
+          scope.defaultFocus = state.defaultFocus;
+          if(scope.defaultFocus) {
+            scope.fixFocus(scope.defaultFocus);
+          }
+        };
 
         scope.initFlags = function() {
           scope.showAllItems = true;
@@ -1697,11 +1754,18 @@
           // init flags
           scope.initFlags();
 
+          // see if previous state can be applied
           scope.focus = {};
           scope.tips = {};
           scope.plotSize = {};
 
           _(scope.plotSize).extend(scope.stdmodel.plotSize);
+          var savedstate = scope.model.getDumpState();
+          if (savedstate !== undefined && savedstate.plotSize !== undefined) {
+            scope.loadState(savedstate);
+          } else {
+            scope.setDumpState(scope.dumpState());
+          }
 
           // create layout elements
           scope.initLayout();
@@ -1724,7 +1788,9 @@
           scope.calcRange();
 
           // init copies focus to defaultFocus, called only once
-          _(scope.focus).extend(scope.defaultFocus);
+          if(_.isEmpty(scope.focus)){
+            _(scope.focus).extend(scope.defaultFocus);
+          }
 
           // init remove pipe
           scope.removePipe = [];
@@ -1761,7 +1827,28 @@
         };
 
 
+        scope.getDumpState = function () {
+          if (scope.model.getDumpState !== undefined) {
+            return scope.model.getDumpState();
+          }
+        };
+
+
+        scope.setDumpState = function (state) {
+          if (scope.model.setDumpState !== undefined) {
+              scope.model.setDumpState(state);
+
+              bkSessionManager.setNotebookModelEdited(true);
+              bkUtils.refreshRootScope();
+          }
+        };
+
         scope.init(); // initialize
+        scope.$watch('getDumpState()', function (result) {
+          if (result !== undefined && result.plotSize === undefined) {
+            scope.setDumpState(scope.dumpState());
+          }
+        });
 
         scope.getCellWidth = function () {
           return scope.jqcontainer.width();
@@ -1771,7 +1858,21 @@
           return scope.jqcontainer.height();
         };
 
+        var watchCellSize = function () {
+          if (!scope.model.isShowOutput || (scope.model.isShowOutput && scope.model.isShowOutput() === true)) {
+            scope.plotSize.width = scope.getCellWidth();
+            scope.plotSize.height = scope.getCellHeight();
+            scope.setDumpState(scope.dumpState());
+          }
+        };
 
+        scope.$watch('getCellWidth()', function () {
+          watchCellSize();
+        });
+
+        scope.$watch('getCellHeight()', function () {
+          watchCellSize();
+        });
 
         scope.getCellModel = function() {
           return scope.model.getCellModel();

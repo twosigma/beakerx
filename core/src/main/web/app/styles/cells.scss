@@ -119,6 +119,7 @@ bk-section-cell {
 .code-cell-area {
   .code-cell-input {
     padding: $grid-row-height*2 $grid-gutter-width $grid-row-height;
+    position: relative;
 
     .advanced-mode & {
       padding: 8px $grid-gutter-width;
@@ -173,22 +174,40 @@ bk-section-cell {
       margin: -1px;
     }
   }
+}
 
-  .cell-power-button {
-    display:    none;
-    color:      #d8d8d8;
-    float:      right;
-    cursor:     pointer;
-    height:     14px;
-    margin-top: 26px;
-    position:   relative;
+.bkcell {
+  .power-menu {
+    position:     absolute;
+    background:   rgba(255, 255, 255, 0.5);
+    z-index:      1;
 
-    .advanced-mode & {
-      margin-top: -26px;
+    &:not(.input-hidden) {
+      bottom:     10px;
+      right:      20px;
+    }
+
+    &.input-hidden {
+      top:        16px;
+      left:       132px;
+      .advanced-mode & {
+        display:  none;
+      }
     }
   }
-  .cell-power-button.visible {
-    display: block;
+  .cell-power-button {
+    color:        #d8d8d8;
+    cursor:       pointer;
+    height:       24px;
+
+    .fa-power-off {
+      padding:    6px 10px;
+    }
+  }
+
+  .cell-power-button:hover {
+    color: #FFF;
+    background-color: $highlight-blue;
   }
 }
 

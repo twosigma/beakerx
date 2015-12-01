@@ -145,13 +145,19 @@ define(function(require, exports, module) {
       }).done(cb);
     },
     updateShell: function(cb) {
-      var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + '/rest/cpp/setShellOptions'), {
+      bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + '/rest/cpp/setShellOptions'), {
         shellId: this.settings.shellID,
         flags: this.settings.flags
+      }).success(function() {
+        if (cb && _.isFunction(cb)) {
+          cb();
+        }
+        bkHelper.hideLanguageManagerSpinner();
+      }).error(function(err) {
+        bkHelper.hideLanguageManagerSpinner(err);
+        bkHelper.show1ButtonModal('ERROR: ' + err, PLUGIN_NAME + ' restart failed');
       });
-      if (cb) {
-        p.success(cb);
-      }
     },
     spec: {
       flags:       {type: 'settableString', action: 'updateShell', name: 'Compiler flags'},

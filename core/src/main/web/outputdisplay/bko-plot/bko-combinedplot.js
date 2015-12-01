@@ -112,6 +112,7 @@
                 scope.focus = {};
                 _(scope.focus).extend(focus);
                 scope.$apply();
+                this.setDumpState(scope.dumpState());
               },
               updateWidth : function(width) {
                 scope.width = width;

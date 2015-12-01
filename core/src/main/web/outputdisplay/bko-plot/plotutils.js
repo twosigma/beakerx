@@ -11,8 +11,8 @@
         return x > W || x + w < 0 || y > H || y + h < 0;
       },
       updateRange : function(datarange, itemrange) {
-        if (itemrange.xl != null) { datarange.xl = Math.min(datarange.xl, itemrange.xl); }
-        if (itemrange.xr != null) { datarange.xr = Math.max(datarange.xr, itemrange.xr); }
+        if (itemrange.xl != null) { datarange.xl = this.min(datarange.xl, itemrange.xl); }
+        if (itemrange.xr != null) { datarange.xr = this.max(datarange.xr, itemrange.xr); }
         if (itemrange.yl != null) { datarange.yl = Math.min(datarange.yl, itemrange.yl); }
         if (itemrange.yr != null) { datarange.yr = Math.max(datarange.yr, itemrange.yr); }
       },
@@ -42,23 +42,23 @@
           datarange.yr = 1;
         }
 
-        var increaseRange = function(value){
-          return value + (value || 1) / 10;
+        var increaseRange = function(value) {
+          return this.plus(value, this.div((value || 1), 10));
         };
         var decreaseRange = function(value){
-          return value - (value || 1) / 10;
+          return this.minus(value, this.div((value || 1), 10));
         };
 
-        if(datarange.xl === datarange.xr){
+        if (this.eq(datarange.xl, datarange.xr)) {
           datarange.xl = decreaseRange(datarange.xl);
           datarange.xr = increaseRange(datarange.xr);
         }
-        if(datarange.yl === datarange.yr) {
+        if (datarange.yl === datarange.yr) {
           datarange.yl = decreaseRange(datarange.yl);
           datarange.yr = increaseRange(datarange.yr);
         }
 
-        datarange.xspan = datarange.xr - datarange.xl;
+        datarange.xspan = this.minus(datarange.xr, datarange.xl);
         datarange.yspan = datarange.yr - datarange.yl;
         return {
           "datarange" : datarange,
@@ -75,12 +75,20 @@
           yl : model.userFocus.yl,
           yr : model.userFocus.yr
         };
+
         if (focus.xl == null) {
-          focus.xl = range.xl - range.xspan * margin.left;
+          focus.xl = this.minus(range.xl, this.mult(range.xspan, margin.left));
         }
         if (focus.xr == null) {
-          focus.xr = range.xr + range.xspan * margin.right;
+          focus.xr = this.plus(range.xr, this.mult(range.xspan, margin.right));
         }
+        if (focus.xl instanceof Big) {
+          focus.xl = parseFloat(focus.xl.toString());
+        }
+        if (focus.xr instanceof Big) {
+          focus.xr = parseFloat(focus.xr.toString());
+        }
+
         if (focus.yl == null) {
           if (model.yIncludeZero === true) {
             var yl = model.vrange.yspan * range.yl + model.vrange.yl;
@@ -364,6 +372,11 @@
       getTipString : function(val, axis, fixed) {
         if (axis.axisType === "time") {
           return moment(val).tz(axis.axisTimezone).format("YYYY MMM DD ddd, HH:mm:ss .SSS");
+        }
+        if (axis.axisType === "nanotime") {
+          var d = parseFloat(val.div(1000000).toFixed(0));
+          var nanosec = val.mod(1000000000).toFixed(0);
+          return moment(d).tz(axis.axisTimezone).format("YYYY MMM DD ddd, HH:mm:ss") + "." + this.padStr(nanosec, 9);
         }
         if (typeof(val) === "number") {
           if (fixed === true) {
@@ -693,8 +706,73 @@
         labelWidth : 6,
         labelHeight : 12,
         tooltipWidth : 10
-      }
+      },
 
+      padStr: function(val, len) {
+        var str = "" + Math.abs(val);
+        while (str.length < len) str = "0" + str;
+        return str;
+      },
+
+      max: function(n1, n2){
+        if (n1 instanceof Big || n2 instanceof Big) {
+          if(n1 == -Infinity){
+            return n2;
+          }
+          if(n2 == -Infinity){
+            return n1;
+          }
+          return n1.gt(n2) ? n1 : n2;
+        } else {
+          return Math.max(n1, n2);
+        }
+      },
+      min: function(n1, n2){
+        if (n1 instanceof Big || n2 instanceof Big) {
+          if(n1 == Infinity){
+            return n2;
+          }
+          if(n2 == Infinity){
+            return n1;
+          }
+          return n1.lt(n2) ? n1 : n2;
+        } else {
+          return Math.min(n1, n2);
+        }
+      },
+
+      eq: function(n1, n2){
+        return n1 instanceof Big ? n1.eq(n2) : n1 === n2;
+      },
+
+      lt: function(n1, n2){
+        return n1 instanceof Big ? n1.lt(n2) : n1 < n2;
+      },
+
+      lte: function(n1, n2){
+        return n1 instanceof Big ? n1.lte(n2) : n1 <= n2;
+      },
+
+      gt: function(n1, n2){
+        return n1 instanceof Big ? n1.gt(n2) : n1 > n2;
+      },
+
+      gte: function(n1, n2){
+        return n1 instanceof Big ? n1.gte(n2) : n1 >= n2;
+      },
+
+      plus: function(n1, n2){
+        return n1 instanceof Big ? n1.plus(n2) : n1 + n2;
+      },
+      minus: function(n1, n2){
+        return n1 instanceof Big ? n1.minus(n2) : n1 - n2;
+      },
+      mult: function(n1, n2){
+        return n1 instanceof Big ? n1.times(n2) : n1 * n2;
+      },
+      div: function(n1, n2){
+        return n1 instanceof Big ? n1.div(n2) : n1 / n2;
+      }
     };
   };
   beaker.bkoFactory('plotUtils', ["bkUtils", retfunc]);

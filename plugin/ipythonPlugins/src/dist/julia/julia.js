@@ -403,6 +403,7 @@ define(function(require, exports, module) {
       reset: function() {
         var kernel = kernels[this.settings.shellID];
         var self = this;
+        bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
         kernel.restart(function () {
           var waitForKernel = function() {
             if ((ipyVersion == '3' || ipyVersion == '4') ?
@@ -410,7 +411,12 @@ define(function(require, exports, module) {
                   (kernel.shell_channel.readyState == 1 &&
                       kernel.stdin_channel.readyState == 1 &&
                       kernel.iopub_channel.readyState == 1)) {
-              self.evaluate(self.initCode(), {});
+              self.evaluate(self.initCode(), {}).then(function() {
+                bkHelper.hideLanguageManagerSpinner();
+              }, function(err) {
+                bkHelper.hideLanguageManagerSpinner(err);
+                bkHelper.show1ButtonModal('ERROR: ' + err[0], PLUGIN_NAME + ' kernel restart failed');
+              });
             } else {
               setTimeout(waitForKernel, 50);
             }

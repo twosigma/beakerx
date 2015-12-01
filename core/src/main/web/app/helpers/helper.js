@@ -976,6 +976,12 @@
         };
         return cometdUtil;
       },
+      showLanguageManagerSpinner: function(pluginName) {
+        bkUtils.showLanguageManagerSpinner(pluginName);
+      },
+      hideLanguageManagerSpinner: function() {
+        bkUtils.hideLanguageManagerSpinner();
+      },
       isElectron: bkUtils.isElectron
     };
 

@@ -20,27 +20,23 @@ import com.twosigma.beaker.chart.xychart.plotitem.Bars;
 import java.io.IOException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 /**
  * PointsSerializer
  *
  */
-public class BarsSerializer extends JsonSerializer<Bars> {
+public class BarsSerializer extends XYGraphicsSerializer<Bars> {
 
   @Override
   public void serialize(Bars bars, JsonGenerator jgen, SerializerProvider sp)
       throws IOException, JsonProcessingException {
 
     jgen.writeStartObject();
+
+    super.serialize(bars, jgen, sp);
+
     jgen.writeObjectField("type", bars.getClass().getSimpleName());
-    jgen.writeObjectField("x", bars.getX());
-    jgen.writeObjectField("y", bars.getY());
-    jgen.writeObjectField("visible", bars.getVisible());
-    jgen.writeObjectField("display_name", bars.getDisplayName());
-    if (bars.getLodFilter() != null)
-      jgen.writeObjectField("lod_filter", bars.getLodFilter().getText());
     if (bars.getBases() != null) {
       jgen.writeObjectField("bases", bars.getBases());
     } else {
@@ -61,7 +57,6 @@ public class BarsSerializer extends JsonSerializer<Bars> {
     } else {
       jgen.writeObjectField("outline_color", bars.getOutlineColor());
     }
-    jgen.writeObjectField("yAxis", bars.getYAxis());
     jgen.writeEndObject();
   }
 

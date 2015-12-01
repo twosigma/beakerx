@@ -149,7 +149,7 @@
     oldArray.splice.apply(oldArray, args);
   };
 
-  module.factory('bkNotebookCellModelManager', function($timeout, $rootScope) {
+  module.factory('bkNotebookCellModelManager', function($timeout, $rootScope, bkEvaluateJobManager) {
     var cells = [];
     var cellMap = {};
     var tagMap = {};
@@ -439,8 +439,12 @@
         if (cells) {
           _.each(cells, function(cell) {
             if (cell.output) {
-              cell.output.result = undefined;
-              cell.output.elapsedTime = undefined;
+              var runningJob = bkEvaluateJobManager.getCurrentJob();
+              if(!runningJob || runningJob.cellId !== cell.id){
+                cell.output.result = undefined;
+                cell.output.elapsedTime = undefined;
+                bkEvaluateJobManager.remove(cell);
+              }
             }
           });
         }

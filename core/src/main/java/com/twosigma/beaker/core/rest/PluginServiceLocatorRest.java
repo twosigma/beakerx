@@ -59,13 +59,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.fluent.Request;
-import org.jvnet.winp.WinProcess;
-
-
 /**
  * This is the service that locates a plugin service. And a service will be started if the target
  * service doesn't exist.

@@ -270,7 +270,7 @@
           }
         });
 
-        $scope.cellmodel.power = {
+        $scope.power = {
           menu: {
             items: [
               {

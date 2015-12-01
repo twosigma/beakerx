@@ -18,10 +18,10 @@
 package com.twosigma.beaker.chart.categoryplot.plotitem;
 
 
+import com.twosigma.beaker.chart.ChartUtils;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.xychart.plotitem.ShapeType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryPoints extends CategoryGraphics {
@@ -32,7 +32,7 @@ public class CategoryPoints extends CategoryGraphics {
   private Boolean         baseFill;
   private List<Boolean>   fills;
   private Color           baseOutlineColor;
-  private List<Color>     outlineColors;
+  private List<Object>     outlineColors;
 
   public void setSize(Object size) {
     if (size instanceof Number) {
@@ -126,16 +126,7 @@ public class CategoryPoints extends CategoryGraphics {
 
   private void setOutlineColors(List<Object> colors) {
     if (colors != null) {
-      this.outlineColors = new ArrayList<>(colors.size());
-      for (Object c : colors) {
-        if (c instanceof Color) {
-          this.outlineColors.add((Color)c);
-        } else if (c instanceof java.awt.Color) {
-          this.outlineColors.add(new Color((java.awt.Color) c));
-        } else {
-          throw new IllegalArgumentException("setColor takes Color or List of Color");
-        }
-      }
+      this.outlineColors = ChartUtils.convertColors(colors, "setOutlineColor takes Color or List of Color");
     } else {
       this.outlineColors = null;
     }
@@ -145,7 +136,7 @@ public class CategoryPoints extends CategoryGraphics {
     return this.baseOutlineColor;
   }
 
-  public List<Color> getOutlineColors() {
+  public List<Object> getOutlineColors() {
     return this.outlineColors;
   }
 }

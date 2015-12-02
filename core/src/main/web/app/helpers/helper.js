@@ -43,6 +43,14 @@
     };
 
     var bkHelper = {
+
+      setTheme: function (theme) {
+        bkCoreManager.setTheme(theme);
+      },
+      getTheme: function () {
+        return bkCoreManager.getTheme();
+      },
+
       // enable debug
       debug: function() {
         window.bkDebug = bkDebug;

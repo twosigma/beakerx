@@ -378,7 +378,7 @@
           $(element.find('.bkcelltextarea')[0]).replaceWith($(template));
 
           _.extend(codeMirrorOptions, {
-            theme: bkCoreManager.getTheme()
+            theme: bkHelper.getTheme()
           });
 
 

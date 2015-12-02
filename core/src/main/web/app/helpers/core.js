@@ -1055,23 +1055,18 @@
         });
       },
       colorize: function (theme) {
-        var colorizedElements = $("body, html");
+        var colorizedElements = $("html");
         var ca = colorizedElements.attr('class');
         var classes = [];
         if(ca && ca.length && ca.split){
           ca = jQuery.trim(ca); /* strip leading and trailing spaces */
-          ca = ca.replace(/\s+/g,' '); /* remove doube spaces */
+          ca = ca.replace(/\s+/g,' '); /* remove double spaces */
           classes = ca.split(' ');
         }
-
-        var classCount = classes.length;
-        for (var i = 0; i < classCount; i++) {
-          var clazz = classes[i];
-          if (clazz.indexOf("beaker-s") >= 0){
-            colorizedElements.removeClass(clazz);
-            break;
-          }
-        }
+        var clazz = _.find(classes, function(e) {
+          return e.indexOf("beaker-s") !== -1
+        });
+        if (clazz) colorizedElements.removeClass(clazz);
         if ("default" !== theme)
           colorizedElements.addClass("beaker-s-" + theme);
       }

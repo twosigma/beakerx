@@ -162,11 +162,11 @@ define(function(require, exports, module) {
           id: 'default-theme-menuitem',
           isRadio: true,
           isChecked: function() {
-            return bkCoreManager.getTheme() == 'default' ||
-              bkCoreManager.getTheme() == null;
+            return bkHelper.getTheme() == 'default' ||
+              bkHelper.getTheme() == null;
           },
           action: function() {
-            bkCoreManager.setTheme('default');
+            bkHelper.setTheme('default');
           }
         },
         {
@@ -175,10 +175,10 @@ define(function(require, exports, module) {
           id: 'ambiance-theme-menuitem',
           isRadio: true,
           isChecked: function() {
-            return bkCoreManager.getTheme() == 'ambiance';
+            return bkHelper.getTheme() == 'ambiance';
           },
           action: function() {
-            bkCoreManager.setTheme('ambiance');
+            bkHelper.setTheme('ambiance');
           }
         }
       ]

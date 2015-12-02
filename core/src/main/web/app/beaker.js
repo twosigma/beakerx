@@ -383,7 +383,6 @@
       $document.bind('drop', function() {
         $('body').removeClass('dragover');
       });
-      window.bkCoreManager = bkCoreManager;
       window.bkHelper = bkHelper;
       for (var i in window.beaker.postHelperHooks) {
         window.beaker.postHelperHooks[i]();

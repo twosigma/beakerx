@@ -10,13 +10,16 @@
       },
       onClick: function (item, e, evaluatorId) {
         if (window.languageServiceBase && window.languageServiceBase[evaluatorId]) {
+          var params = {
+            'x': item.x,
+            'y': item.y
+          };
+          if(e.ele != null){
+            params.index = e.ele.index;
+          }
           bkUtils.httpPostJson(
             window.languageServiceBase[evaluatorId] + '/chart/click/' + item.chartId + "/" + item.uid,
-            {
-              'x': item.x,
-              'y': item.y
-              //TODO index into the xs/ys arrays ?
-            }
+            params
           ).then(
             function () { },
             function () { console.error("send onclick event error"); });

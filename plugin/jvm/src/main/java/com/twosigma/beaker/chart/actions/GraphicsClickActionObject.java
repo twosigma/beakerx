@@ -26,8 +26,7 @@ public class GraphicsClickActionObject implements Serializable{
   private Graphics graphics;
   private List x;
   private List y;
-  private int xInd;
-  private int yInd;
+  private int index;
 
   public Graphics getGraphics() {
     return graphics;
@@ -53,19 +52,11 @@ public class GraphicsClickActionObject implements Serializable{
     this.y = y;
   }
 
-  public int getxInd() {
-    return xInd;
+  public int getIndex() {
+    return index;
   }
 
-  public void setxInd(int xInd) {
-    this.xInd = xInd;
-  }
-
-  public int getyInd() {
-    return yInd;
-  }
-
-  public void setyInd(int yInd) {
-    this.yInd = yInd;
+  public void setIndex(int index) {
+    this.index = index;
   }
 }

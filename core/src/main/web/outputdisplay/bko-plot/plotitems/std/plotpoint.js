@@ -23,7 +23,7 @@
     };
 
     PlotPoint.prototype.plotClass = "plot-point";
-    PlotPoint.prototype.respClass = "plot-resp";
+    PlotPoint.prototype.respClass = "plot-resp item-clickable";
     PlotPoint.prototype.shapes = ["rect", "diamond", "circle"];
     PlotPoint.prototype.svgtags = ["rect", "polygon", "circle"];
 

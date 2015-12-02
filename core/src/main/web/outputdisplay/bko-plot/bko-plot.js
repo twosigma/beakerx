@@ -393,7 +393,7 @@
             .on('click', function (e) {
               for (var i = 0; i < model.data.length; i++) {
                 var item = model.data[i];
-                if(item.id === e.id) {
+                if(item.id === e.id || e.id.indexOf(item.id + "_") === 0) {
                   if(!_.isEmpty(item.tag)){
                     plotUtils.evaluateTagCell(item.tag);
                   }else{

@@ -1058,17 +1058,19 @@
         var colorizedElements = $("html");
         var ca = colorizedElements.attr('class');
         var classes = [];
-        if(ca && ca.length && ca.split){
-          ca = jQuery.trim(ca); /* strip leading and trailing spaces */
-          ca = ca.replace(/\s+/g,' '); /* remove double spaces */
+        if (ca && ca.length && ca.split) {
+          ca = jQuery.trim(ca);
+          /* strip leading and trailing spaces */
           classes = ca.split(' ');
         }
-        var clazz = _.find(classes, function(e) {
-          return e.indexOf("beaker-s") !== -1
+        var themeStylePrefix = "beaker-theme-";
+        var clazz = _.find(classes, function (e) {
+          return e.indexOf(themeStylePrefix) !== -1
         });
         if (clazz) colorizedElements.removeClass(clazz);
-        if ("default" !== theme)
-          colorizedElements.addClass("beaker-s-" + theme);
+        if ("default" !== theme) {
+          colorizedElements.addClass(themeStylePrefix + theme);
+        }
       }
     };
 

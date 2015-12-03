@@ -385,12 +385,12 @@
               scope.removeLegendPointer();
               return scope.untooltip(d);
             })
-            .on("click", function(d) {
+            .on("click.resp", function(d) {
               return scope.toggleTooltip(d);
             });
 
           scope.svg.selectAll(".item-clickable")
-            .on('click', function (e) {
+            .on('click.action', function (e) {
               for (var i = 0; i < model.data.length; i++) {
                 var item = model.data[i];
                 if(item.id === e.id || e.id.indexOf(item.id + "_") === 0) {

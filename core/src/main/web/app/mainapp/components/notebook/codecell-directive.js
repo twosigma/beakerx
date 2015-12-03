@@ -401,7 +401,7 @@
             delete scope._shouldFocusCodeMirror;
             return scope.cm.focus();
           }
-
+          toggleOffsetClass(scope.cm.lineCount());
         };
 
         scope.displayOutput = false;
@@ -438,10 +438,22 @@
           if (scope.cellmodel.input.body !== cm.getValue()) {
             scope.cellmodel.lineCount = cm.lineCount();
             scope.cellmodel.input.body = cm.getValue();
+            toggleOffsetClass(scope.cellmodel.lineCount);
             if (!bkSessionManager.isNotebookModelEdited()) {
               bkSessionManager.setNotebookModelEdited(true);
               bkUtils.refreshRootScope();
             }
+          }
+        };
+
+        var toggleOffsetClass = function(value) {
+          var powerMenu = element.find('.power-menu');
+          if (!powerMenu) return;
+
+          if (value == 1) {
+            powerMenu.addClass('offset');
+          } else {
+            powerMenu.removeClass('offset');
           }
         };
 

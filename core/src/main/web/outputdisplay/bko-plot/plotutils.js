@@ -42,11 +42,12 @@
           datarange.yr = 1;
         }
 
+        var self = this;
         var increaseRange = function(value) {
-          return this.plus(value, this.div((value || 1), 10));
+          return self.plus(value, self.div((value || 1), 10));
         };
         var decreaseRange = function(value){
-          return this.minus(value, this.div((value || 1), 10));
+          return self.minus(value, self.div((value || 1), 10));
         };
 
         if (this.eq(datarange.xl, datarange.xr)) {

@@ -24,6 +24,7 @@
     };
     PlotBar.prototype.plotClass = "plot-bar";
     PlotBar.prototype.respClass = "plot-resp";
+    PlotBar.prototype.actionClass = "item-clickable";
 
     PlotBar.prototype.setHighlighted = function(scope, highlighted) {
       var itemsvg = scope.maing.select("#" + this.id);
@@ -228,7 +229,7 @@
       itemsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
-        .attr("class", respClass)
+        .attr("class", respClass + " " + this.actionClass)
         .style("fill", function(d) { return d.fi; })
         .style("fill-opacity", function(d) { return d.fi_op; })
         .style("stroke", function(d) { return d.st; })

@@ -89,7 +89,6 @@
 
 .plot-constline,
 .plot-constband,
-.plot-area,
 .plot-cursor {
   pointer-events: none;
 }

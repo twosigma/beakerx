@@ -69,7 +69,7 @@ HeaderMenu.prototype = {
 
     dt.on('destroy', function () {
       //$(document.body).unbind('mousedown', function() {});
-      that.destroy();
+      //that.destroy();
     });
   },
 
@@ -188,8 +188,10 @@ HeaderMenu.prototype = {
 
       $li.append($item);
 
-      //also append
-      //<i class="glyphicon glyphicon-ok"></i>
+      if (typeof oItem.isChecked == 'function' && oItem.isChecked(that.dom.container)) {
+        var $glyph = $('<i/>', {'class': 'glyphicon glyphicon-ok'});
+        $li.append($glyph);
+      }
 
       if (hasSubitems) {
         var $subContainer = $('<ul/>', { 'class': 'dropdown-menu' });

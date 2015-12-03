@@ -853,20 +853,49 @@
           var headerMenuItems = {
             items: [
               {
-                title: 'Format',
-                action: null,
-                items: []
+                title: 'Sort Ascending',
+                isChecked: function(container) {
+                  var order = scope.table.order();
+                  var colIdx = container.data('columnIndex');
+
+                  return (order[0][0] == colIdx && order[0][1] == 'asc');
+                },
+                action: function(el) {
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex');
+                  scope.table.order([colIdx, "asc"]).draw();
+                }
+              },
+              {
+                title: 'Sort Descending',
+                isChecked: function(container) {
+                  var order = scope.table.order();
+                  var colIdx = container.data('columnIndex');
+
+                  return (order[0][0] == colIdx && order[0][1] == 'desc');
+                },
+                action: function(el) {
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex');
+
+                  scope.table.order([colIdx, 'desc']).draw();
+                }
               },
               {
                 title: 'Hide column',
                 action: function(el) {
                   var table = scope.table;
                   var container = el.closest('.bko-header-menu');
-                  var colIdx = container.data('columnIndex')
+                  var colIdx = container.data('columnIndex');
                   var column = table.column(colIdx);
 
                   column.visible(!column.visible());
                 }
+              },
+              {
+                title: 'Format',
+                action: null,
+                items: []
               },
               {
                 title: 'Alignment',
@@ -875,34 +904,23 @@
                 items: [
                   {
                     title: 'Left',
-                    isChecked: function() {},
+                    isChecked: function() {
+                      return false;
+                    },
                     action: function() {}
                   },
                   {
                     title: 'Center',
-                    isChecked: function() {},
+                    isChecked: function() {
+                      return false;
+                    },
                     action: function() {}
                   },
                   {
                     title: 'Right',
-                    isChecked: function() {},
-                    action: function() {}
-                  }
-                ]
-              },
-              {
-                title: 'Sorting',
-                action: null,
-                //move to plugin
-                items: [
-                  {
-                    title: 'Ascending',
-                    isChecked: function() {},
-                    action: function() {}
-                  },
-                  {
-                    title: 'Descending',
-                    isChecked: function() {},
+                    isChecked: function() {
+                      return false;
+                    },
                     action: function() {}
                   }
                 ]
@@ -953,7 +971,6 @@
             'stateSave': true,
             'processing': true,
             'autoWidth': true,
-            'ordering': false,
             'order': [[0, 'asc']],
             'scrollX': '10%',
             'searching': false,

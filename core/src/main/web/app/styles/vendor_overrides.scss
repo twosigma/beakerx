@@ -100,10 +100,10 @@ tbody tr {
 
 .dataTables_scrollHead  table {
   thead th {
-    cursor: pointer;
+    cursor:       pointer;
     .bko-menu {
-      float: left;
-      opacity: 0;
+      float:      left;
+      opacity:    0;
       transition: opacity 0.5s;
     }
 
@@ -115,6 +115,20 @@ tbody tr {
         }
       }
     }
+
+    &.sorting_asc > .bko-menu {
+      background-image: url("../images/sort_asc.png");
+      background-size:  20px;
+    }
+
+    &.sorting_desc > .bko-menu {
+      background-image: url("../images/sort_desc.png");
+      background-size:  20px;
+    }
+  }
+
+  thead .sorting, .sorting_asc, .sorting_desc {
+    background-image: none !important;
   }
 }
 

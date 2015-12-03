@@ -92,8 +92,13 @@ tbody tr {
       }
     }
 
-    td.highlight {
-      background-color: #99CCFF !important;
+    td {
+      &.highlight {
+        background-color: #99CCFF !important;
+      }
+      &.selected {
+        background-color: #aab7d1;
+      }
     }
   }
 }

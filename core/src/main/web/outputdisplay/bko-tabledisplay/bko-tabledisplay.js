@@ -1031,6 +1031,21 @@
             /*
             $(id + ' tbody').off('click');
             */
+            $(id + ' tbody').on('dblclick', 'td', function(e) {
+              var cellPos = scope.table.cell(this).index();
+              var rowIdx = cellPos && cellPos.row;
+
+              if (scope.selected[rowIdx]) {
+                scope.selected[rowIdx] = false;
+                $(scope.table.row(rowIdx).node()).removeClass('selected');
+              }
+
+              $(scope.table.cells().nodes()).removeClass('selected');
+              $(scope.table.cell(this).node()).addClass('selected');
+
+              e.stopPropagation();
+            });
+
             $(id + ' tbody').on('click', 'tr', function(event) {
               var iPos = scope.table.row(this).index();
               if (scope.selected[iPos]) {

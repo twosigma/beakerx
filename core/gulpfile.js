@@ -45,7 +45,7 @@ var rootPath  = Path.join(__dirname, "/src/main/web/app/");
 var IPythonCssPath  = Path.join(__dirname, "/src/main/web/app/styles/ipython/style");
 var root2Path  = Path.join(__dirname, "/src/main/web/outputdisplay/");
 var buildPath = Path.join(__dirname, "/src/main/web/app/dist/");
-var tempPath = Path.join(__dirname, "/src/main/web/app/temp/");
+var tempPath = Path.join(__dirname, "/src/main/web/app/genweb/");
 
 var banner = ['/*',
               ' *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC',

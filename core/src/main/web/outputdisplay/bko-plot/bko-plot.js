@@ -71,31 +71,6 @@
           return $scope.updateLegendPosition();
         };
 
-        $scope.ingestUpdate = function(model) {
-          $scope.update_id = model.update_id;
-
-          $scope.model = model;
-          $scope.legendDone = false;
-          $scope.legendResetPosition = true;
-
-
-          var srv = plotService.getUpdateService($scope.model.getEvaluatorId());
-          if ($scope.subscribedId && $scope.subscribedId !== $scope.update_id) {
-            if (srv !== undefined)
-              srv.unsubscribe($scope.subscribedId);
-            $scope.subscribedId = null;
-          }
-          if (!$scope.subscribedId && $scope.update_id && srv !== undefined) {
-            var onUpdate = function(update) {
-              $scope.ingestUpdate(update);
-              $scope.$digest();
-            };
-            srv.subscribe($scope.update_id, onUpdate);
-            $scope.subscribedId = $scope.update_id;
-          }
-          $scope.init();
-        };
-
       },
       link : function(scope, element, attrs) {
         // rendering code
@@ -397,6 +372,7 @@
                   if(!_.isEmpty(item.tag)){
                     plotUtils.evaluateTagCell(item.tag);
                   }else{
+                    scope.doNotLoadState = true;
                     plotService.onClick(item, e, scope.model.getEvaluatorId());
                   }
                 }
@@ -1802,11 +1778,12 @@
 
           _(scope.plotSize).extend(scope.stdmodel.plotSize);
           var savedstate = scope.model.getDumpState();
-          if (savedstate !== undefined && savedstate.plotSize !== undefined) {
+          if (scope.doNotLoadState !== true && savedstate !== undefined && savedstate.plotSize !== undefined) {
             scope.loadState(savedstate);
           } else {
             scope.setDumpState(scope.dumpState());
           }
+          scope.doNotLoadState = false;
 
           // create layout elements
           scope.initLayout();
@@ -1919,19 +1896,13 @@
           return scope.model.getCellModel();
         };
         scope.$watch('getCellModel()', function() {
-          scope.ingestUpdate(scope.model);
+          scope.init();
         });
 
         scope.$on('$destroy', function() {
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
           scope.jqlegendcontainer.find("#plotLegend").remove();
-          if (scope.subscribedId) {
-            var srv = plotService.getUpdateService();
-            if (srv !== undefined) {
-              srv.unsubscribe($scope.subscribedId);
-            }
-          }
         });
 
         scope.getSvgToSave = function() {

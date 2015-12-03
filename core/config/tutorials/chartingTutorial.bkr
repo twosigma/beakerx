@@ -2154,16 +2154,7 @@
             },
             "evaluatorReader": true,
             "lineCount": 23,
-            "initialization": true,
-            "power": {
-                "menu": {
-                    "items": [
-                        {
-                            "name": "Disable initialization"
-                        }
-                    ]
-                }
-            }
+            "initialization": true
         },
         {
             "id": "code42QbvS",
@@ -5435,16 +5426,7 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
             },
             "evaluatorReader": true,
-            "lineCount": 16,
-            "power": {
-                "menu": {
-                    "items": [
-                        {
-                            "name": "Disable initialization"
-                        }
-                    ]
-                }
-            }
+            "lineCount": 16
         },
         {
             "id": "codePZwpbQ",
@@ -6551,16 +6533,7 @@
                 "elapsedTime": 651
             },
             "evaluatorReader": true,
-            "lineCount": 2,
-            "power": {
-                "menu": {
-                    "items": [
-                        {
-                            "name": "Disable initialization"
-                        }
-                    ]
-                }
-            }
+            "lineCount": 2
         },
         {
             "id": "markdown3BMeqf",
@@ -6775,16 +6748,7 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
                     },
             "evaluatorReader": true,
-            "lineCount": 6,
-            "power": {
-                "menu": {
-                    "items": [
-                        {
-                            "name": "Disable initialization"
-                        }
-                    ]
-                }
-            }
+            "lineCount": 6
         },
         {
             "id": "section1v278n",
@@ -6879,16 +6843,7 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
                     },
             "evaluatorReader": true,
-            "lineCount": 1,
-            "power": {
-                "menu": {
-                    "items": [
-                        {
-                            "name": "Disable initialization"
-                        }
-                    ]
-                }
-            }
+            "lineCount": 1
         },
         {
             "id": "sectionHRkjOo",
@@ -6965,16 +6920,7 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
                     },
             "evaluatorReader": true,
-            "lineCount": 1,
-            "power": {
-                "menu": {
-                    "items": [
-                        {
-                            "name": "Disable initialization"
-                        }
-                    ]
-                }
-            }
+            "lineCount": 1
         },
         {
             "id": "sectionNMpFLc",
@@ -7108,16 +7054,7 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
                     },
             "evaluatorReader": true,
-            "lineCount": 15,
-            "power": {
-                "menu": {
-                    "items": [
-                        {
-                            "name": "Disable initialization"
-                        }
-                    ]
-                }
-            }
+            "lineCount": 15
         },
         {
             "id": "markdownaW7cDe",
@@ -7302,16 +7239,7 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
                     },
             "evaluatorReader": true,
-            "lineCount": 7,
-            "power": {
-                "menu": {
-                    "items": [
-                        {
-                            "name": "Disable initialization"
-                        }
-                    ]
-                }
-            }
+            "lineCount": 7
         },
         {
             "id": "sectionOkgmqA",
@@ -7441,16 +7369,7 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
                     },
             "evaluatorReader": true,
-            "lineCount": 5,
-            "power": {
-                "menu": {
-                    "items": [
-                        {
-                            "name": "Disable initialization"
-                        }
-                    ]
-                }
-            }
+            "lineCount": 5
         },
         {
             "id": "markdownsVrthj",
@@ -7587,16 +7506,7 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
                     },
             "evaluatorReader": true,
-            "lineCount": 5,
-            "power": {
-                "menu": {
-                    "items": [
-                        {
-                            "name": "Disable initialization"
-                        }
-                    ]
-                }
-            }
+            "lineCount": 5
         },
         {
             "id": "sectionGUyfdA",
@@ -7723,16 +7633,7 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
                     },
             "evaluatorReader": true,
-            "lineCount": 4,
-            "power": {
-                "menu": {
-                    "items": [
-                        {
-                            "name": "Disable initialization"
-                        }
-                    ]
-                }
-            }
+            "lineCount": 4
         },
         {
             "id": "sectionI3JDTC",
@@ -7935,16 +7836,7 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
                     },
             "evaluatorReader": true,
-            "lineCount": 9,
-            "power": {
-                "menu": {
-                    "items": [
-                        {
-                            "name": "Disable initialization"
-                        }
-                    ]
-                }
-            }
+            "lineCount": 9
         },
         {
             "id": "markdownBiikVc",
@@ -8166,16 +8058,7 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
                     },
             "evaluatorReader": true,
-            "lineCount": 8,
-            "power": {
-                "menu": {
-                    "items": [
-                        {
-                            "name": "Disable initialization"
-                        }
-                    ]
-                }
-            }
+            "lineCount": 8
         },
         {
             "id": "sectionwfn6YU",
@@ -8342,16 +8225,7 @@
                 "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
                     },
             "evaluatorReader": true,
-            "lineCount": 8,
-            "power": {
-                "menu": {
-                    "items": [
-                        {
-                            "name": "Disable initialization"
-                        }
-                    ]
-                }
-            }
+            "lineCount": 8
         },
         {
             "id": "markdownPZ5eJ3",
@@ -13243,15 +13117,6 @@
                 "elapsedTime": 663
             },
             "evaluatorReader": true,
-            "power": {
-                "menu": {
-                    "items": [
-                        {
-                            "name": "Disable initialization"
-                        }
-                    ]
-                }
-            },
             "lineCount": 12
         }
     ],

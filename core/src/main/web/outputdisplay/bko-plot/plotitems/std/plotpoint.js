@@ -18,7 +18,7 @@
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotPoint = function(data){
-      _(this).extend(data); // copy properties to itself
+      _.extend(this, data); // copy properties to itself
       this.format();
     };
 
@@ -169,11 +169,11 @@
       var mapX = scope.data2scrXi,
           mapY = scope.data2scrYi;
 
-      _(this.elementProps).each(function(val) {
+      _.each(this.elementProps, function(val) {
         val.length = 0;
       });
 
-      _(this.elementLabels).each(function(val) {
+      _.each(this.elementLabels, function(val) {
         val.length = 0;
       });
 
@@ -184,10 +184,10 @@
         var labely;
 
         if (plotUtils.rangeAssert([x, y])) {
-          _(this.elementProps).each(function(val) {
+          _.each(this.elementProps, function(val) {
             val.length = 0;
           });
-          _(this.elementLabels).each(function(val) {
+          _.each(this.elementLabels, function(val) {
             val.length = 0;
           });
           return;
@@ -212,13 +212,13 @@
             pstr += (x    ) + "," + (y - s) + " ";
             pstr += (x + s) + "," + (y    ) + " ";
             pstr += (x    ) + "," + (y + s) + " ";
-            _(prop).extend({
+            _.extend(prop, {
               "pts" : pstr
             });
             labely = y - s;
             break;
           case "circle":
-            _(prop).extend({
+            _.extend(prop, {
               "cx" : x,
               "cy" : y,
               "r" : s
@@ -226,7 +226,7 @@
             labely = y - s;
             break;
           default:    // rects
-            _(prop).extend({
+            _.extend(prop, {
               "x" : x - s / 2,
               "y" : y - s / 2,
               "w" : s,
@@ -340,7 +340,7 @@
     PlotPoint.prototype.clearTips = function(scope) {
       var eleprops = this.elementProps;
       var itemid = this.id;
-      _(scope.tips).each(function(value, key){
+      _.each(scope.tips, function(value, key){
         if (key.search("" + itemid) === 0) {
           scope.jqcontainer.find("#tip_" + key).remove();
           delete scope.tips[key];

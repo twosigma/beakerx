@@ -47,7 +47,7 @@ compileJava {
 }
 
 if (hasProperty('evalPluginDir')) {
-  installApp.into new File(evalPluginDir, 'sqlsh')
+  installDist.into new File(evalPluginDir, 'sqlsh')
 }
 
 if (hasProperty('includeDepsInJar')) {

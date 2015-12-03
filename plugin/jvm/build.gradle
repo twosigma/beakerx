@@ -40,7 +40,7 @@ compileJava {
   options.compilerArgs << '-Xlint:unchecked'
 }
 
-task installApp {
+task installDist {
   // do nothing, this is a library
 }
 

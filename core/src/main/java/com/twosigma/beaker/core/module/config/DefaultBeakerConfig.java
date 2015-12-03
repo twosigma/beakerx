@@ -137,8 +137,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
     utils.ensureDirectoryExists(userFolder); 
 
     final String prefDefaultNotebookUrl = pref.getDefaultNotebookUrl();
-    final String mainDefaultNotebookPath = this.dotDir + "/config/default.bkr";
-    final String defaultDefaultNotebookPath = this.installDir + "/config/default.bkr";
+    final String mainDefaultNotebookPath = this.dotDir + "/config/default-notebook.bkr";
+    final String defaultDefaultNotebookPath = this.installDir + "/config/default-notebook.bkr";
     if (prefDefaultNotebookUrl != null) {
       this.defaultNotebookUrl = prefDefaultNotebookUrl;
     } else {

@@ -24,6 +24,7 @@
     PlotLodLine.prototype.respR = 5;
     PlotLodLine.prototype.plotClass = "plot-line";
     PlotLodLine.prototype.respClass = "plot-resp plot-respdot";
+    PlotLodLine.prototype.actionClass = "item-clickable";
 
     PlotLodLine.prototype.render = function(scope, samples, gid){
       if (gid == null) { gid = ""; }
@@ -148,7 +149,7 @@
 
       itemsvg.selectAll("path")
         .data([props]).enter().append("path")
-        .attr("class", this.plotClass)
+        .attr("class", this.plotClass + " " + this.actionClass)
         .style("stroke", function(d) { return d.st; })
         .style("stroke-dasharray", function(d) { return d.st_da; })
         .style("stroke-width", function(d) { return d.st_w; })
@@ -162,7 +163,7 @@
         itemsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id; }).enter().append("circle")
           .attr("id", function(d) { return d.id; })
-          .attr("class", this.respClass)
+          .attr("class", this.respClass + " " + this.actionClass)
           .style("stroke", this.tip_color)
           .attr("r", this.respR);
         itemsvg.selectAll("circle")

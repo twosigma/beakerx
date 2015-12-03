@@ -18,7 +18,7 @@
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotConstband = function(data){
-      _(this).extend(data); // copy properties to itself
+      _.extend(this, data); // copy properties to itself
       this.format();
     };
 
@@ -138,7 +138,7 @@
           x = Math.max(x, lMargin);
           x2 = Math.min(x2, W - rMargin);
 
-          _(prop).extend({
+          _.extend(prop, {
             "x" : x,
             "w" : x2 - x,
             "y" : tMargin,
@@ -156,7 +156,7 @@
           y = Math.min(y, H - bMargin);
           y2 = Math.max(y2, tMargin);
 
-          _(prop).extend({
+          _.extend(prop, {
             "x" : lMargin,
             "w" : W - lMargin - rMargin,
             "y" : y2,

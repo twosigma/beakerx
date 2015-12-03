@@ -301,7 +301,7 @@
       // evaluate a cell (as a subcell of currently running cell)
       evaluateAll: function(cells) {
         var self = this;
-        var promises = _(cells).map(function(cell) {
+        var promises = _.map(cells, function(cell) {
           return self.evaluate(cell, true);
         });
         jobQueue.tick();
@@ -310,7 +310,7 @@
       // evaluate all cells in top level context
       evaluateRootAll: function(cells, parent) {
         var self = this;
-        var promises = _(cells).map(function(cell) {
+        var promises = _.map(cells, function(cell) {
           return self.evaluateRoot(cell, true);
         });
         jobQueue.tick();

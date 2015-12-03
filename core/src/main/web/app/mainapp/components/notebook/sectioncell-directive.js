@@ -109,7 +109,7 @@
         $scope.getPublishData = function() {
           var cells = [$scope.cellmodel]
           .concat(notebookCellOp.getAllDescendants($scope.cellmodel.id));
-          var usedEvaluatorsNames = _(cells).chain()
+          var usedEvaluatorsNames = _.chain(cells)
             .filter(function(cell) {
               return cell.type === 'code';
             })

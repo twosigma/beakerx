@@ -177,7 +177,7 @@
         // get list of opened sessions
         $scope.reloadSessionsList = function() {
           bkSession.getSessions().then(function(sessions) {
-            $scope.sessions = _(sessions).map(function(session, sessionId) {
+            $scope.sessions = _.map(sessions, function(session, sessionId) {
               session.id = sessionId;
               return session;
             });

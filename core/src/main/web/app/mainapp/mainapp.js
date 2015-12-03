@@ -136,7 +136,7 @@
           .then(function(evaluator) {
             if (!_.isEmpty(evaluator.spec)) {
               var actionItems = [];
-              _(evaluator.spec).each(function(value, key) {
+              _.each(evaluator.spec, function(value, key) {
                 if (value.type === "action") {
                   actionItems.push({
                     name: value.name ? value.name : value.action,
@@ -282,7 +282,7 @@
 
             // this is used to load evaluators before rendering the page
             if (notebookModel && notebookModel.evaluators) {
-              var promises = _(notebookModel.evaluators).map(function(ev) {
+              var promises = _.map(notebookModel.evaluators, function(ev) {
                 return addEvaluator(ev, !isExistingSession);
               });
               bkUtils.all(promises).then(function() {
@@ -291,7 +291,7 @@
                     uri: notebookUri,
                     uriType: uriType,
                     format: format,
-                    maxCellLevel: _(notebookModel.cells).max(function(cell) {
+                    maxCellLevel: _.max(notebookModel.cells, function(cell) {
                       return cell.level;
                     }).level,
                     cellCount: notebookModel.cells.length
@@ -318,7 +318,7 @@
                 uri: notebookUri,
                 uriType: uriType,
                 format: format,
-                maxCellLevel: _(notebookModel.cells).max(function(cell) {
+                maxCellLevel: _.max(notebookModel.cells, function(cell) {
                   return cell.level;
                 }).level,
                 cellCount: notebookModel.cells.length

@@ -107,7 +107,7 @@
         focus.yspan = focus.yr - focus.yl;
         var result = {};
         result.defaultFocus = focus;
-        _(result).extend(_.omit(ret, "datarange"));
+        _.extend(result, _.omit(ret, "datarange"));
         return result;
       },
 
@@ -402,7 +402,7 @@
 
       createTipString : function(obj) {
         var txt = "";
-        _(obj).each(function(value, key) {
+        _.each(obj, function(value, key) {
           if (key == "title") {
             txt += "<div style='font-weight:bold'>";
           } else {
@@ -416,7 +416,7 @@
       },
 
       rangeAssert : function(list) {
-        _(list).each(function(e, i){
+        _.each(list, function(e, i){
           if (Math.abs(e) > 1E6) {
             console.error("data not shown due to too large coordinate");
             return true;

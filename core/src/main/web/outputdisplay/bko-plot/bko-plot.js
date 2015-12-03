@@ -80,7 +80,7 @@
           resize : function(event, ui) {
             scope.width = ui.size.width;
             scope.height = ui.size.height;
-            _(scope.plotSize).extend(ui.size);
+            _.extend(scope.plotSize, ui.size);
             scope.setDumpState(scope.dumpState());
 
             scope.jqsvg.css({"width": scope.width, "height": scope.height});
@@ -1759,7 +1759,7 @@
           scope.tips = {};
           scope.plotSize = {};
 
-          _(scope.plotSize).extend(scope.stdmodel.plotSize);
+          _.extend(scope.plotSize, scope.stdmodel.plotSize);
           var savedstate = scope.model.getDumpState();
           if (savedstate !== undefined && savedstate.plotSize !== undefined) {
             scope.loadState(savedstate);
@@ -1789,7 +1789,7 @@
 
           // init copies focus to defaultFocus, called only once
           if(_.isEmpty(scope.focus)){
-            _(scope.focus).extend(scope.defaultFocus);
+            _.extend(scope.focus, scope.defaultFocus);
           }
 
           // init remove pipe

@@ -19,8 +19,8 @@
   var retfunc = function(plotUtils, PlotSampler, PlotLine, PlotLodLine, PlotLodBox, PlotLodRiver) {
     var PlotLineLodLoader = function(data, lodthresh){
       this.datacopy = {};
-      _(this.datacopy).extend(data);  // save for later use
-      _(this).extend(data); // copy properties to itself
+      _.extend(this.datacopy, data);  // save for later use
+      _.extend(this, data); // copy properties to itself
       this.lodthresh = lodthresh;
       this.format(lodthresh);
     };
@@ -93,7 +93,7 @@
 
     PlotLineLodLoader.prototype.createLodPlotter = function() {
       var data = {};
-      _(data).extend(this.datacopy);
+      _.extend(data, this.datacopy);
       if (this.lodType === "line") {
         this.lodplotter = new PlotLodLine(data);
         this.lodplotter.setZoomHash(this.zoomHash);

@@ -40,11 +40,11 @@
 
   var addTrailingSlash = function(str, isWindows) {
     if (isWindows) {
-      if (!_.string.endsWith(str, '\\')) {
+      if (!_.endsWith(str, '\\')) {
         str = str + '\\';
       }
     } else {
-      if (!_.string.endsWith(str, '/')) {
+      if (!_.endsWith(str, '/')) {
         str = str + '/';
       }
     }
@@ -87,7 +87,7 @@
 
   treeView.filter('fileFilter', function() {
     return function(children, filter) {
-      return _.isFunction(filter) ? _(children).filter(filter) : children;
+      return _.isFunction(filter) ? _.filter(children, filter) : children;
     };
   });
 
@@ -141,7 +141,7 @@
             if (!_.isEmpty($scope.data.children)) {
               $scope.data.children.splice(0, $scope.data.children.length);
               $rootScope.fsPrefs.openFolders = _.reject($rootScope.fsPrefs.openFolders, function(folder) {
-                return _.string.startsWith(folder, uri);
+                return _.startsWith(folder, uri);
               });
             } else {
               $rootScope.fsPrefs.openFolders.push(uri);

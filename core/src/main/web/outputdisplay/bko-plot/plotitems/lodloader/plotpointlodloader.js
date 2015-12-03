@@ -19,8 +19,8 @@
   var retfunc = function(plotUtils, PlotSampler, PlotPoint, PlotLodPoint, PlotLodBox) {
     var PlotPointLodLoader = function(data, lodthresh){
       this.datacopy = {};
-      _(this.datacopy).extend(data);  // save for later use
-      _(this).extend(data); // copy properties to itself
+      _.extend(this.datacopy, data);  // save for later use
+      _.extend(this, data); // copy properties to itself
       this.lodthresh = lodthresh;
       this.format(lodthresh);
     };
@@ -82,7 +82,7 @@
 
     PlotPointLodLoader.prototype.createLodPlotter = function() {
       var data = {};
-      _(data).extend(this.datacopy);
+      _.extend(data, this.datacopy);
       if (this.lodType === "point") {
         this.lodplotter = new PlotLodPoint(data);
         this.lodplotter.setZoomHash(this.zoomHash);

@@ -76,7 +76,7 @@ public class NamespaceService {
     data.put("name", name);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      System.err.println("channel not found for session " + session);
+      System.err.println("NamespaceService.get(): channel not found for session " + session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -100,7 +100,7 @@ public class NamespaceService {
     data.put("sync", sync);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      System.err.println("channel not found for session " + session);
+      System.err.println("NamespaceService.set(): channel not found for session " + session);
       return;
     }
     channel.publish(this.localSession, data, null);

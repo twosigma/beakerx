@@ -22,44 +22,55 @@
 
   module.factory("bkNotebookNamespaceModelManager", function() {
     var _subscriptions = {};
+    var _listeners = {};
     return {
       init: function(sessionId, notebookModel, generateSaveData) {
-        _subscriptions[sessionId] = $.cometd.subscribe("/namespace/" + sessionId, function(reply) {
-            var name = reply.data.name;
-            var value = reply.data.value;
-            var sync = reply.data.sync;
-            var namespace = notebookModel.namespace;
-            if (undefined === sync) {
-              var reply2 = {name: name, defined: false, session: sessionId};
-              if (undefined !== namespace) {
-                var readValue = namespace[name];
-                if (undefined !== readValue) {
-                  reply2.value = readValue;
-                  reply2.defined = true;
-                }
-              }
-              $.cometd.publish("/service/namespace/receive", JSON.stringify(reply2));
-            } else {
-              if (undefined === namespace) {
-                notebookModel.namespace = {};
-                namespace = notebookModel.namespace;
-              }
-              if (undefined === value) {
-                delete namespace[name];
-              } else {
-                namespace[name] = value;
-              }
-              if (sync) {
-                var reply2 = {name: name, session: sessionId};
-                $.cometd.publish("/service/namespace/receive", JSON.stringify(reply2));
+        var onMessage = function(reply) {
+          var name = reply.data.name;
+          var value = reply.data.value;
+          var sync = reply.data.sync;
+          var namespace = notebookModel.namespace;
+          if (undefined === sync) {
+            var reply2 = {name: name, defined: false, session: sessionId};
+            if (undefined !== namespace) {
+              var readValue = namespace[name];
+              if (undefined !== readValue) {
+                reply2.value = readValue;
+                reply2.defined = true;
               }
             }
-          });
+            $.cometd.publish("/service/namespace/receive", JSON.stringify(reply2));
+          } else {
+            if (undefined === namespace) {
+              notebookModel.namespace = {};
+              namespace = notebookModel.namespace;
+            }
+            if (undefined === value) {
+              delete namespace[name];
+            } else {
+              namespace[name] = value;
+            }
+            if (sync) {
+              var reply2 = {name: name, session: sessionId};
+              $.cometd.publish("/service/namespace/receive", JSON.stringify(reply2));
+            }
+          }
+        };
+        _subscriptions[sessionId] = $.cometd.subscribe("/namespace/" + sessionId, onMessage);
+
+        //if cometd channel was closed and a new one was opened we have to resubscribe to the new channel
+        _listeners[sessionId] = $.cometd.addListener("/meta/handshake", function (reply) {
+          if (reply.successful === true && sessionId) {
+            _subscriptions[sessionId] = $.cometd.subscribe("/namespace/" + sessionId, onMessage);
+          }
+        });
       },
       clear: function(sessionId) {
         if (sessionId) {
           $.cometd.unsubscribe(_subscriptions[sessionId]);
+          $.cometd.removeListener(_listeners[sessionId]);
           delete _subscriptions[sessionId];
+          delete _listeners[sessionId];
         }
       }
     };

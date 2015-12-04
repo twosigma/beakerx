@@ -372,6 +372,8 @@
                   if(!_.isEmpty(item.tag)){
                     plotUtils.evaluateTagCell(item.tag);
                   }else{
+                    scope.legendDone = false;
+                    scope.legendResetPosition = true;
                     scope.doNotLoadState = true;
                     plotService.onClick(item, e, scope.model.getEvaluatorId());
                   }

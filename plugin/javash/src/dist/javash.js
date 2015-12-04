@@ -167,7 +167,6 @@ define(function(require, exports, module) {
     cometdUtil: cometdUtil
   };
   var defaultImports = [
-    "java.time.*",
     "com.twosigma.beaker.chart.Color",
     "com.twosigma.beaker.chart.GradientColor",
     "com.twosigma.beaker.chart.legend.*",

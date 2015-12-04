@@ -101,6 +101,9 @@ public class PluginServiceLocatorRest {
     "location %(base_url)s/kernels/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/kernels;\n" +
     "}\n" +
+    "location %(base_url)s/kernelspecs/ {\n" +
+    "  proxy_pass http://127.0.0.1:%(port)s/kernelspecs;\n" +
+    "}\n" +
     "location ~ %(base_url)s/kernels/[0-9a-f-]+/ {\n" +
     IPYTHON_RULES_BASE;
 
@@ -111,6 +114,10 @@ public class PluginServiceLocatorRest {
     "}\n" +
     "location %(base_url)s/api/kernels/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;\n" +
+    "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
+    "}\n" +
+    "location %(base_url)s/api/kernelspecs/ {\n" +
+    "  proxy_pass http://127.0.0.1:%(port)s/api/kernelspecs;\n" +
     "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
     "}\n" +
     "location %(base_url)s/api/sessions/ {\n" +
@@ -593,6 +600,7 @@ public class PluginServiceLocatorRest {
     List<String> cmdBase = pythonBaseCommand(pluginId, command);
     cmdBase.add("--hash");
     cmdBase.add(password);
+
     Process proc = Runtime.getRuntime().exec(listToArray(cmdBase), buildEnv(pluginId, null));
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();

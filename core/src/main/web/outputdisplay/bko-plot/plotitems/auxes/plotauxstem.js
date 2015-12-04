@@ -18,7 +18,7 @@
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotAuxStem = function(data){
-      _(this).extend(data); // copy properties to itself
+      _.extend(this, data); // copy properties to itself
       this.format();
     };
 

@@ -164,7 +164,7 @@
           };
 
           $scope.showoutput = $scope.model.isShowOutput();
-          $scope.items = _($scope.model.getCellModel().items).map(function(it) {
+          $scope.items = _.map($scope.model.getCellModel().items, function(it) {
             return {
               result: it,
               isShowOutput: function() {
@@ -319,7 +319,7 @@
     return factory;
   });
 
-  _(_.range(MAX_CAPACITY)).each(function(i) {
+  _.each(_.range(MAX_CAPACITY), function(i) {
     module.directive("bko" + i,
         function(bkOutputDisplayFactory, bkOutputDisplayServiceManager, $injector) {
       var impl = bkOutputDisplayFactory.get(i);
@@ -345,5 +345,5 @@
         return impl;
       }
     });
-  })
+  });
 })();

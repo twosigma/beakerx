@@ -71,6 +71,7 @@ public class ClojureShellRest {
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
       shellId = UUID.randomUUID().toString();
       ClojureEvaluator js = new ClojureEvaluator(shellId, sessionId);
+      js.init();
       this.shells.put(shellId, js);
       return shellId;
     }

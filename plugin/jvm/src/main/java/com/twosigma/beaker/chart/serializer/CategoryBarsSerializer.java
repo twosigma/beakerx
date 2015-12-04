@@ -45,11 +45,6 @@ public class CategoryBarsSerializer extends CategoryGraphicsSerializer<CategoryB
     } else {
       jgen.writeObjectField("width", categoryBars.getWidth());
     }
-    if (categoryBars.getColors() != null) {
-      jgen.writeObjectField("colors", categoryBars.getColors());
-    } else {
-      jgen.writeObjectField("color", categoryBars.getColor());
-    }
     if (categoryBars.getOutlineColors() != null) {
       jgen.writeObjectField("outline_colors", categoryBars.getOutlineColors());
     } else {

@@ -68,7 +68,7 @@ task copyBeakerHeader(type: Copy) {
   into evalPluginDir.getAbsolutePath() + '/cpp/include'
 }
 
-task copyCRun(type: Copy, dependsOn: ['installApp', 'makeCRunLib', 'copyBeakerHeader']) {
+task copyCRun(type: Copy, dependsOn: ['installDist', 'makeCRunLib', 'copyBeakerHeader']) {
   from './src/main/cpp/libCRun.jnilib'
   into evalPluginDir.getAbsolutePath() + '/cpp/lib'
 }
@@ -137,9 +137,9 @@ startScripts {
 }
 
 if (hasProperty('evalPluginDir')) {
-  installApp.into new File(evalPluginDir, 'cpp')
+  installDist.into new File(evalPluginDir, 'cpp')
   if (mac || linux) {
-    installApp.finalizedBy copyCRun
+    installDist.finalizedBy copyCRun
   }
 }
 

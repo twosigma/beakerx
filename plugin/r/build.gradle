@@ -64,7 +64,7 @@ startScripts {
 }
 
 if (hasProperty('evalPluginDir')) {
-  installApp.into new File(evalPluginDir, 'r')
+  installDist.into new File(evalPluginDir, 'r')
 }
 
 if (hasProperty('includeDepsInJar')) {

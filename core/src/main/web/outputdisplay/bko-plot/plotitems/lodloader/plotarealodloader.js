@@ -20,8 +20,8 @@
     PlotAuxRiver) {
     var PlotAreaLodLoader = function(data, lodthresh){
       this.datacopy = {};
-      _(this.datacopy).extend(data);  // save for later use
-      _(this).extend(data); // copy properties to itself
+      _.extend(this.datacopy, data);  // save for later use
+      _.extend(this, data); // copy properties to itself
       this.lodthresh = lodthresh;
       this.format(lodthresh);
     };
@@ -106,7 +106,7 @@
 
     PlotAreaLodLoader.prototype.createLodPlotter = function() {
       var data = {};
-      _(data).extend(this.datacopy);
+      _.extend(data, this.datacopy);
       if (this.lodType === "area") {
         this.lodplotter = new PlotLodRiver(data);
         this.lodplotter.setZoomHash(this.zoomHash);
@@ -119,7 +119,7 @@
         this.lodplotter.setZoomHash(this.zoomHash);
         this.lodplotter2.setZoomHash(this.zoomHash);
 
-        _(data).extend(this.datacopy);
+        _.extend(data, this.datacopy);
         this.auxplotter = new PlotAuxRiver(data);
       }
     };

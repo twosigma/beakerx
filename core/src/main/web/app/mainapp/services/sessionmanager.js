@@ -1015,7 +1015,7 @@
           return bkUtils.newPromise("false");
         } else {
           return bkSession.getSessions().then(function(sessions) {
-            return _(sessions).chain().keys().contains(_sessionId).value();
+            return _(sessions).keys().contains(_sessionId);
           });
         }
       },

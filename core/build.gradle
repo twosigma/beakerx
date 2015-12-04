@@ -158,8 +158,8 @@ task doRemove() {
   doLast {
       delete fileTree(dir: "node_modules")
       delete "node_modules"
-      delete fileTree(dir: "src/main/web/app/temp")
-      delete "src/main/web/app/temp"
+      delete fileTree(dir: "src/main/web/app/genweb")
+      delete "src/main/web/app/genweb"
       delete fileTree(dir: "src/main/web/app/dist")
       delete "src/main/web/app/dist"
       delete fileTree(dir: "src/main/web/app/vendor") // why does this exist? XXX
@@ -175,8 +175,8 @@ task doRemove() {
 
 task deleteTemp() {
   doLast {
-    delete fileTree(dir: "src/main/web/app/temp")
-    delete "src/main/web/app/temp"
+    delete fileTree(dir: "src/main/web/app/genweb")
+    delete "src/main/web/app/genweb"
   }
 }
 

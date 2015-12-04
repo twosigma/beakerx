@@ -52,7 +52,7 @@ public class ClojureEvaluator {
   protected List<String> requirements;
   protected boolean exit;
   protected boolean updateLoader;
-  protected final BeakerCellExecutor executor;
+  protected BeakerCellExecutor executor;
   protected workerThread myWorker;
   protected String currentClassPath = "";
   protected String currentImports = "";
@@ -76,19 +76,35 @@ public class ClojureEvaluator {
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
+  protected String initScriptSource()
+    throws IOException
+  {
+    URL url = this.getClass().getClassLoader().getResource("init_clojure_script.txt");
+    return Resources.toString(url, Charsets.UTF_8);
+  }
+
   public ClojureEvaluator(String id, String sId) {
     shellId = id;
     sessionId = sId;
     classPath = new ArrayList<String>();
     imports = new ArrayList<String>();
     requirements = new ArrayList<>();
+  }
+
+  public void init() {
+
+    loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+    loader.addJars(classPath);
+    loader.addDynamicDir(outDir);
+
     String loadFunctionPrefix = "run_str";
     currenClojureNS = String.format("%1$s_%2$s", beaker_clojure_ns, shellId);
 
     try {
-      URL url = this.getClass().getClassLoader().getResource("init_clojure_script.txt");
-      String clojureInitScript = String.format(Resources.toString(url, Charsets.UTF_8), beaker_clojure_ns, shellId, loadFunctionPrefix, NSClientProxy.class.getName(), sessionId);
-      clojureLoadString = RT.var(String.format("%1$s_%2$s", beaker_clojure_ns, shellId), String.format("%1$s_%2$s", loadFunctionPrefix, shellId));
+      String clojureInitScript = String.format(initScriptSource(), beaker_clojure_ns, shellId,
+                                               loadFunctionPrefix, NSClientProxy.class.getName(), sessionId);
+      clojureLoadString = RT.var(String.format("%1$s_%2$s", beaker_clojure_ns, shellId),
+                                 String.format("%1$s_%2$s", loadFunctionPrefix, shellId));
       clojure.lang.Compiler.load(new StringReader(clojureInitScript));
     } catch (IOException e) {
       Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
@@ -220,7 +236,9 @@ public class ClojureEvaluator {
           Object o = clojureLoadString.invoke(theCode);
           try {
             //workaround, checking of corrupted clojure objects
-            o.hashCode();
+            if (null != o) {
+              o.hashCode();
+            }
             theOutput.finished(o);
           } catch (Exception e) {
             theOutput.error("Object: " + o.getClass() + ", value cannot be displayed due to following error: " + e.getMessage());

@@ -50,6 +50,6 @@ li.CodeMirror-hint-active {
 
 
 .beaker-sandbox {
-  @import "src/main/web/app/temp/namespacedCss/beakerApp";
-  @import "src/main/web/app/temp/namespacedCss/beakerOutputDisplay";
+  @import "src/main/web/app/genweb/namespacedCss/beakerApp";
+  @import "src/main/web/app/genweb/namespacedCss/beakerOutputDisplay";
 }

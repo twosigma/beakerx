@@ -20,8 +20,8 @@
     PlotLodStem, PlotAuxStem, PlotLodBox, PlotAuxBox) {
     var PlotStemLodLoader = function(data, lodthresh){
       this.datacopy = {};
-      _(this.datacopy).extend(data);  // save for later use
-      _(this).extend(data); // copy properties to itself
+      _.extend(this.datacopy, data);  // save for later use
+      _.extend(this, data); // copy properties to itself
       this.lodthresh = lodthresh;
       this.format(lodthresh);
     };
@@ -106,7 +106,7 @@
 
     PlotStemLodLoader.prototype.createLodPlotter = function() {
       var data = {};
-      _(data).extend(this.datacopy);
+      _.extend(data, this.datacopy);
       if (this.lodType === "stem") {
         this.lodplotter = new PlotLodStem(data);
         this.lodplotter.setZoomHash(this.zoomHash);
@@ -118,7 +118,7 @@
         this.lodplotter.setZoomHash(this.zoomHash);
         this.lodplotter2.setZoomHash(this.zoomHash);
 
-        _(data).extend(this.datacopy);
+        _.extend(data, this.datacopy);
         this.auxplotter = new PlotAuxStem(data);
       } else if (this.lodType === "box") {
         // lod boxes are plotted with special coloring (inversed color)
@@ -132,7 +132,7 @@
         this.lodplotter.setZoomHash(this.zoomHash);
         this.lodplotter2.setZoomHash(this.zoomHash);
 
-        _(data).extend(this.datacopy); // normal color for aux box
+        _.extend(data, this.datacopy); // normal color for aux box
         this.auxplotter = new PlotAuxBox(data);
         this.auxplotter.setWidthShrink(1);  // reduce box width by 1px (left and right)
       }

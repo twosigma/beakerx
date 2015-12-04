@@ -170,7 +170,6 @@ define(function(require, exports, module) {
   };
   var defaultImports = [
     "graxxia.*",
-    "java.time.*",
     "com.twosigma.beaker.NamespaceClient",
     "com.twosigma.beaker.BeakerProgressUpdate",
     "com.twosigma.beaker.chart.Color",

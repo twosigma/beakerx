@@ -92,7 +92,7 @@ startScripts {
 }
 
 if (hasProperty('evalPluginDir')) {
-  installApp.into new File(evalPluginDir, 'groovy')
+  installDist.into new File(evalPluginDir, 'groovy')
 }
 
 if (hasProperty('includeDepsInJar')) {

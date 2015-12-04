@@ -519,7 +519,7 @@
 
             }
             if(newmodel.displayMode === 'STACK' && list.length > 1){
-              _(newmodel.data).reverse().value();
+              _.reverse(newmodel.data);
             }
             break;
           default:

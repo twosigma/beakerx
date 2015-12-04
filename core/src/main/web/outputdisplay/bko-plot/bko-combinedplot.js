@@ -110,7 +110,7 @@
               },
               updateFocus : function(focus) {
                 scope.focus = {};
-                _(scope.focus).extend(focus);
+                _.extend(scope.focus, focus);
                 scope.$apply();
                 this.setDumpState(scope.dumpState());
               },

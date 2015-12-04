@@ -33,7 +33,7 @@ task installNodePackages (type: Exec) {
   }
 }
 
-task installApp
+task installDist
 
 installNodePackages.dependsOn syncFiles
-installApp.dependsOn installNodePackages
+installDist.dependsOn installNodePackages

@@ -26,7 +26,8 @@
       EVENTS: {
       	RECONNECT_FAILED: 'reconnect-failed',
         LANGUAGE_MANAGER_SHOW_SPINNER: 'language-manager-show-spinner',
-        LANGUAGE_MANAGER_HIDE_SPINNER: 'language-manager-hide-spinner'
+        LANGUAGE_MANAGER_HIDE_SPINNER: 'language-manager-hide-spinner',
+        CELL_OUTPUT_EXPANDED: 'cell-output-expanded'
       },
       FILE_LOCATION: {
         FILESYS: "file",

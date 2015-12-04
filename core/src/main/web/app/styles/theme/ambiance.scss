@@ -48,9 +48,13 @@ $navbar-default-toggle-border-color: #ddd !default;
 $dropdown-menu-background: $main-theme-menu-background !default;
 $dropdown-menu-color: $main-theme-color !default;
 
+$input-background-color: #2d2d37;
+$markdown-text-color: #e6e1dc;
+
+
 .beaker-theme-ambiance {
 
-  body, html, bk-markdown-editable, .well, .languages, .code-cell-input, .code-cell-output, .modal-header, .modal-body, .modal-footer  {
+  body, html, .well, .languages, .code-cell-input, .code-cell-output, .modal-header, .modal-body, .modal-footer  {
     background: $main-theme-panel-background !important;
     color: $main-theme-color !important;
     .close {
@@ -62,14 +66,23 @@ $dropdown-menu-color: $main-theme-color !default;
     }
   }
 
+  a {
+    color: #f4c20b;
+
+    &:hover {
+      color: #1492df;
+    }
+  }
+
   textarea {
-    background: $main-theme-panel-background !important;
+    background: $input-background-color !important;
     color: $main-theme-color !important;
   }
 
   button {
     background: #505050;
     color: #f5f5f5;
+    border-color: #7b7462;
   }
 
   .btn-default {
@@ -81,6 +94,10 @@ $dropdown-menu-color: $main-theme-color !default;
     color: #d6bb6d;
   }
 
+  input {
+    color: $main-theme-color;
+    background-color: $input-background-color;
+  }
 
   .ui-icon,
   .ui-widget-content .ui-icon {
@@ -107,6 +124,28 @@ $dropdown-menu-color: $main-theme-color !default;
     }
   }
 
+  bk-markdown-editable {
+    background: $main-theme-panel-background !important;
+    color: $markdown-text-color;
+  }
+
+  bk-markdown-cell bk-markdown-editable, .bkcell.code-cell-area, .textcell-wrapper {
+    border-color: #7e7a78;
+  }
+
+  .code-cell-area .code-cell-output {
+    border-top-color: #7e7a78;
+  }
+
+  bk-output-display[type="Text"] pre {
+    color: $markdown-text-color;
+  }
+
+  bk-markdown-cell .markup code {
+    background-color: $input-background-color;
+    color: $markdown-text-color;
+  }
+
   #plotContainer {
     background: #1a1a1a;
   }
@@ -117,6 +156,14 @@ $dropdown-menu-color: $main-theme-color !default;
 
   .plot-label, .plot-xylabel {
     fill: $main-theme-color;
+  }
+
+  .plot-gridline {
+    stroke: #787878;
+  }
+
+  .plot-tooltip {
+    background-color: $input-background-color;
   }
 
   #combplotContainer, #plotLegend, #plotLegendContainer {
@@ -148,6 +195,10 @@ $dropdown-menu-color: $main-theme-color !default;
 
   //datatable
 
+  .dataTable, table.dataTable thead th {
+    color: $markdown-text-color;
+  }
+
   .dataTables_wrapper .dataTables_paginate .paginate_button {
     color: $main-theme-color !important;
   }
@@ -174,7 +225,7 @@ $dropdown-menu-color: $main-theme-color !default;
 
   table.dataTable.display tbody tr.odd > .sorting_1,
   table.dataTable.order-column.stripe tbody tr.odd > .sorting_1 {
-    background-color: #404040;
+    background-color: #202020;
   }
 
   table.dataTable.display tbody tr.odd > .sorting_2,
@@ -189,7 +240,7 @@ $dropdown-menu-color: $main-theme-color !default;
 
   table.dataTable.display tbody tr.even > .sorting_1,
   table.dataTable.order-column.stripe tbody tr.even > .sorting_1 {
-    background-color: #737373;
+    background-color: #303030;
   }
 
   table.dataTable.display tbody tr.even > .sorting_2,
@@ -204,18 +255,26 @@ $dropdown-menu-color: $main-theme-color !default;
 
   table.dataTable.stripe tbody tr.odd,
   table.dataTable.display tbody tr.odd {
-    background-color: #4d4d4d;
+    background-color: #202020;
   }
 
   table.dataTable.stripe tbody tr.even,
   table.dataTable.display tbody tr.even {
-    background-color: #808080;
+    background-color: #303030;
+  }
+
+  table.dataTable tbody tr.selected {
+    background-color: #B0BED9;
+  }
+
+  table.dataTable thead {
+    background-color: #505050;
   }
 
   //dropdown menu
 
   .dropdown-menu {
-    background-color: $dropdown-menu-background;
+    background-color: $input-background-color;
   }
 
   .dropdown-menu > li > a {
@@ -268,5 +327,22 @@ $dropdown-menu-color: $main-theme-color !default;
         }
       }
     }
+  }
+
+  //CodeMirror
+  .CodeMirror ::selection {
+    background-color: #0662D2 !important;
+  }
+
+  .CodeMirror ::-moz-selection {
+    background-color: #0662D2 !important;
+  }
+
+  .CodeMirror-gutters {
+    background-color: $main-theme-panel-background;
+  }
+
+  .CodeMirror-linenumbers, .CodeMirror-linenumber {
+    color: #7e7a78;
   }
 }

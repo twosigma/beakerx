@@ -893,12 +893,9 @@
                 }
               },
               {
-                name: function(el) {
-                  var container = el.closest('.bko-header-menu');
+                name: function(container) {
                   var colIdx = container.data('columnIndex');
-                  var typeId = scope.actualtype[colIdx - 1];
-
-                  return (scope.types[typeId]) ? "Type: " + scope.types[typeId] : null;
+                  return (scope.types[colIdx - 1]) ? "Type: " + scope.types[colIdx - 1] : null;
                 },
                 title: null,
                 action: null

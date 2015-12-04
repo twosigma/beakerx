@@ -105,6 +105,7 @@ tbody tr {
     cursor:       pointer;
     .bko-menu {
       float:      left;
+      margin: -5px 0 0 -10px;
       opacity:    0;
       transition: opacity 0.5s;
     }
@@ -121,11 +122,13 @@ tbody tr {
     &.sorting_asc > .bko-menu {
       background-image: url("../images/sort_asc.png");
       background-size:  20px;
+      opacity:          1;
     }
 
     &.sorting_desc > .bko-menu {
       background-image: url("../images/sort_desc.png");
       background-size:  20px;
+      opacity:          1;
     }
   }
 

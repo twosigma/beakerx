@@ -891,14 +891,6 @@
 
                   column.visible(!column.visible());
                 }
-              },
-              {
-                name: function(container) {
-                  var colIdx = container.data('columnIndex');
-                  return (scope.types[colIdx - 1]) ? "Type: " + scope.types[colIdx - 1] : null;
-                },
-                title: null,
-                action: null
               }
               /*
               {

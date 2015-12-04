@@ -137,7 +137,7 @@ HeaderMenu.prototype = {
       that._buildMenuItems(menuItems, $menu);
 
       $menu.offset({
-          top: el.height() + 10,
+          top: el.height() + 2,
           left: el.offset().left - 51
         })
         .css('display', 'block')
@@ -160,11 +160,6 @@ HeaderMenu.prototype = {
     for (var i = 0, ien = oItems.length; i < ien; i++) {
       var oItem = oItems[i];
       var hasSubitems = $.isArray(oItem.items) && oItem.items.length;
-      var altTitle = null;
-
-      if (oItem.name && typeof oItem.name == 'function') {
-        var altTitle = oItem.name(that.dom.container);
-      }
 
       var $li = $('<li/>', {'class': hasSubitems ? 'dropdown-submenu' : ''});
       var $item = $('<a/>')

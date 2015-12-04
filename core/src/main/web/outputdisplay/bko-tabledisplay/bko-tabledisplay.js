@@ -143,7 +143,7 @@
                   'Etc/GMT-13|GMT-13:00',
                   'Etc/GMT-14|GMT-14:00']);
   //jscs:disable
-  beaker.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval) {
+  beaker.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS) {
   //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
     return {
@@ -698,6 +698,7 @@
             delete scope.actualalign;
             delete scope.data;
           }
+          unregisterOutputExpandEventListener();
         };
         scope.init = function(model) {
           scope.doDestroy(true);
@@ -1066,12 +1067,18 @@
         scope.isShowOutput = function() {
           return scope.model.isShowOutput();
         };
+
+        var tableChanged = false;
+
         scope.$watch('getCellModel()', function(m) {
           scope.init(m);
+          tableChanged = true;
         });
-        scope.$watch('isShowOutput()', function(oldval, newval) {
-          if (scope.table !== undefined && !newval) {
-            scope.table.draw(false);
+
+        var unregisterOutputExpandEventListener = scope.$on(GLOBALS.CELL_OUTPUT_EXPANDED, function() {
+          if (scope.table !== undefined && tableChanged) {
+            _.defer(function() {scope.table.draw(false);});
+            tableChanged = false;
           }
         });
 

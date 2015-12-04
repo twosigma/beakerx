@@ -893,10 +893,17 @@
                 }
               },
               {
-                title: 'Format',
-                action: null,
-                items: []
-              },
+                name: function(el) {
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex');
+                  var typeId = scope.actualtype[colIdx - 1];
+
+                  return (scope.types[typeId]) ? "Type: " + scope.types[typeId] : null;
+                },
+                title: null,
+                action: null
+              }
+              /*
               {
                 title: 'Alignment',
                 action: null,
@@ -924,7 +931,7 @@
                     action: function() {}
                   }
                 ]
-              }
+              }*/
             ]
           };
 

@@ -25,7 +25,7 @@ var HeaderMenu = function(dt, options) {
     dt: new DataTable.Api(dt)
   };
 
-  this.c = options; //$.extend(true, {}, HeaderMenu.defaults, options);
+  this.c = options;
 
   this.dom = {
     container:  null,
@@ -46,18 +46,6 @@ HeaderMenu.prototype = {
 
     this._appendMenuContainer();
     this._buildMenuData(headerLayout);
-
-    var header = dt.table().header();
-
-    $(header).on('mouseenter', 'th', function() {
-      //column hightlight
-      var colIdx = $(this).data('columnIndex');
-
-      $(dt.cells().nodes()).removeClass('highlight');
-      $(dt.column(colIdx).nodes()).addClass('highlight');
-    }).on('mouseleave', 'th', function() {
-      $(dt.cells().nodes()).removeClass('highlight');
-    });
 
     $(document.body).bind('mousedown', function(e) {
       var $container = that.dom.container;
@@ -160,7 +148,7 @@ HeaderMenu.prototype = {
 
   /**
    * @param oItems {object}
-   * @param container {node} should be <ul> dropdown-menu container?
+   * @param container {node} should be <ul> dropdown-menu container
    */
   _buildMenuItems: function (oItems, container)
   {
@@ -172,13 +160,18 @@ HeaderMenu.prototype = {
     for (var i = 0, ien = oItems.length; i < ien; i++) {
       var oItem = oItems[i];
       var hasSubitems = $.isArray(oItem.items) && oItem.items.length;
+      var altTitle = null;
+
+      if (oItem.name && typeof oItem.name == 'function') {
+        var altTitle = oItem.name(that.dom.container);
+      }
 
       var $li = $('<li/>', {'class': hasSubitems ? 'dropdown-submenu' : ''});
       var $item = $('<a/>')
         .attr('href', '#')
         .attr('tabindex', '-1')
         .attr('id', 'dt-select-all')
-        .text(oItem.title)
+        .text((oItem.title || altTitle))
         .data('action', oItem.action || '')
         .bind('click', function(e) {
           that._handleItemClick($(this));
@@ -213,23 +206,6 @@ HeaderMenu.prototype = {
 
     this._hide();
   }
-};
-
-HeaderMenu.defaults = {
-  dom: {
-    container: {
-      tag: 'ul',
-      class: 'dropdown-menu',
-      attrs: {
-        'role': 'menu'
-      }
-    }
-  },
-  toAdd: [
-    {
-      parent: 'Format'
-    }
-  ]
 };
 
 $.fn.dataTable.HeaderMenu = HeaderMenu;

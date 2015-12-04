@@ -264,7 +264,7 @@ $markdown-text-color: #e6e1dc;
   }
 
   table.dataTable tbody tr.selected {
-    background-color: #B0BED9;
+    background-color: #B0BED9 !important;
   }
 
   table.dataTable thead {
@@ -330,13 +330,10 @@ $markdown-text-color: #e6e1dc;
   }
 
   //CodeMirror
-  .CodeMirror ::selection {
-    background-color: #0662D2 !important;
-  }
-
-  .CodeMirror ::-moz-selection {
-    background-color: #0662D2 !important;
-  }
+  .CodeMirror-selected { background: #0662D2; }
+  .CodeMirror-focused .CodeMirror-selected { background: #0662D2; }
+  .CodeMirror ::selection { background-color: #0662D2; }
+  .CodeMirror ::-moz-selection { background-color: #0662D2; }
 
   .CodeMirror-gutters {
     background-color: $main-theme-panel-background;

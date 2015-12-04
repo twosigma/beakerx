@@ -23,7 +23,7 @@
 
   var module = angular.module('bk.outputDisplay');
 
-  module.factory("bkOutputDisplayFactory", function($rootScope, $sce, bkHelper) {
+  module.factory("bkOutputDisplayFactory", function($rootScope, bkHelper) {
 
     var impls = {
         "Text": {
@@ -79,20 +79,31 @@
       },
       "Error": {
         template: "<pre class='out_error'>" +
-            "<span ng-show='canExpand' class='toggle-error' ng-click='expanded = !expanded'>{{expanded ? '-' : '+'}}</span>" +
-            "<span ng-bind-html='shortError'></span></pre>" +
-            "<pre ng-show='expanded'><span ng-bind-html='longError'></span>" +
-            "</pre>",
+        "<span ng-show='canExpand' class='toggle-error' ng-click='expanded = !expanded'>{{expanded ? '-' : '+'}}</span>" +
+        "<span>{{shortError}}</span></pre>" +
+        "<pre ng-show='expanded'><span>{{longError}}</span>" +
+        "</pre>",
         controller: function($scope, $element) {
           $scope.expanded = false;
 
           $scope.$watch('model.getCellModel()', function(cellModel) {
-            var outputs = $element.find('span');
             var errors  = Array.prototype.concat(cellModel);
+            var shortError = "";
+            var longErrorIndex;
+            for (var i = 0; i < errors.length; i++) {
+              if (errors[i].indexOf("	at") === 0) {
+                longErrorIndex = i;
+                break;
+              }
+              shortError += errors[i] + "\n";
+              if(i === 0){
+                shortError += "\n";
+              }
+            }
 
-            $scope.shortError   = $sce.trustAsHtml(errors[0]);
-            $scope.canExpand    = errors.length > 1;
-            $scope.longError    = $sce.trustAsHtml(errors.slice(1).join("\n"));
+            $scope.shortError   = shortError;
+            $scope.canExpand    = longErrorIndex > 0;
+            $scope.longError    = errors.slice(longErrorIndex).join("\n");
           });
         }
       },

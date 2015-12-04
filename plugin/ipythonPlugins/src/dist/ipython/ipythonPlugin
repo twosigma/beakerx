@@ -19,23 +19,12 @@ import sys
 import subprocess
 from subprocess import check_output
 
-def detect_cygwin_python():
-    if os.name == 'nt':
-        version = check_output(["python", "-c", "import sys; print(sys.version)"])
-        if version.find("cygming") >= 0:
-            print >> sys.stderr, "**********************************************"
-            print >> sys.stderr, "It appears that cygwin's python is in your path"
-            print >> sys.stderr, "ahead of a python that works with Beaker."
-            print >> sys.stderr, "See https://github.com/twosigma/beaker-notebook/wiki/Cygwin-Compatibility"
-            print >> sys.stderr, "**********************************************"
-
 if len(sys.argv) > 1:
     arg1 = sys.argv[1]
     if arg1 == "--version":
         os.execlp("ipython", "ipython", "--version")
     elif arg1 == "--hash":
-        detect_cygwin_python()
-        os.execlp("python", "python")
+        os.execlp("ipython", "ipython", "-c", "\"from IPython.lib import passwd;print (passwd('" + sys.argv[2] + "'))\"")
     elif arg1 == "--profile":
         os.execlp("ipython", "ipython", "profile",
                   "create", "beaker_backend_" + sys.argv[3],

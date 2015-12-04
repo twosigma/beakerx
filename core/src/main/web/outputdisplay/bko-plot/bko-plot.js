@@ -82,6 +82,7 @@
             scope.width = ui.size.width;
             scope.height = ui.size.height;
             _(scope.plotSize).extend(ui.size);
+            scope.setDumpState(scope.dumpState());
 
             scope.jqsvg.css({"width": scope.width, "height": scope.height});
             scope.jqplottitle.css({"width": scope.width });
@@ -161,9 +162,14 @@
             y : 10
           };
           scope.intervalStepHint = {
-            x : scope.stdmodel.orientation === 'HORIZONTAL' ? 30 : 75,
-            y : scope.stdmodel.orientation === 'HORIZONTAL' ? 75 : 30
+            x : scope.model.getCellModel().type === 'NanoPlot' ? 130 : 75,
+            y : 30
           };
+          if(scope.stdmodel.orientation === 'HORIZONTAL'){
+            var tempx = scope.intervalStepHint.x;
+            scope.intervalStepHint.x = scope.intervalStepHint.y;
+            scope.intervalStepHint.y = tempx;
+          }
           scope.numIntervals = {
             x: parseInt(plotSize.width) / scope.intervalStepHint.x,
             y: parseInt(plotSize.height) / scope.intervalStepHint.y
@@ -1722,7 +1728,9 @@
           scope.visibleItem = state.visibleItem;
           scope.legendableItem = state.legendableItem;
           scope.defaultFocus = state.defaultFocus;
-          scope.fixFocus(scope.defaultFocus);
+          if(scope.defaultFocus) {
+            scope.fixFocus(scope.defaultFocus);
+          }
         };
 
         scope.initFlags = function() {
@@ -1781,7 +1789,9 @@
           scope.calcRange();
 
           // init copies focus to defaultFocus, called only once
-          _(scope.focus).extend(scope.defaultFocus);
+          if(_.isEmpty(scope.focus)){
+            _(scope.focus).extend(scope.defaultFocus);
+          }
 
           // init remove pipe
           scope.removePipe = [];
@@ -1876,7 +1886,6 @@
         });
 
         scope.$on('$destroy', function() {
-          scope.setDumpState(scope.dumpState());
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
           scope.jqlegendcontainer.find("#plotLegend").remove();

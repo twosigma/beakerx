@@ -44,6 +44,7 @@ import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
+import org.codehaus.groovy.runtime.StackTraceUtils;
 
 public class GroovyEvaluator {
   protected final String shellId;
@@ -274,7 +275,7 @@ public class GroovyEvaluator {
           } else {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
-            e.printStackTrace(pw);
+            StackTraceUtils.sanitize(e).printStackTrace(pw);
             theOutput.error(sw.toString());
           }
         }

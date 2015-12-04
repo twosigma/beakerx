@@ -89,7 +89,11 @@ public class Color implements java.io.Serializable {
     
   public Color(float r, float g, float b, float a) {
     this((int)(r*255+0.5), (int)(g*255+0.5), (int)(b*255+0.5), (int)(a*255+0.5));
-  }  
+  }
+
+  public Color(java.awt.Color awtColor) {
+    this(awtColor.getRed(), awtColor.getGreen(), awtColor.getBlue(), awtColor.getAlpha());
+  }
     
   public int getRed() {
     return (getRGB() >> 16) & 0xFF;

@@ -35,3 +35,18 @@ Enclosed are a set of tests powered by protractor.
 * start beaker in one shell
 * run './node_modules/protractor/bin/webdriver-manager start' in a second shell
 * run './node_modules/protractor/bin/protractor protractorConf.js ' in a third shell
+
+
+### Manual run of the tests on a Docker container
+
+ To run tests: sudo docker run -t -i ubuntu/beaker bash
+ and execute in a console:
+
+*  sudo apt-get install xvfb
+*  Xvfb :99 &
+*  export DISPLAY=:99
+*  sudo apt-get install firefox
+*  curl -Lo chrome.zip https://download-chromium.appspot.com/dl/Linux_x64 && unzip chrome.zip
+*  curl -Lo chromedriver.zip http://chromedriver.storage.googleapis.com/2.16/chromedriver_linux64.zip && unzip chromedriver.zip
+*  export PATH=$PATH:/home/beaker/src:/home/beaker/src/chrome-linux
+*  gradle check

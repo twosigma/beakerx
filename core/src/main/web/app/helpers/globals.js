@@ -24,7 +24,14 @@
       REQUIREJS_TIMEOUT: 30,
       RECONNECT_TIMEOUT: 90000, // 90 seconds
       EVENTS: {
-      	RECONNECT_FAILED: 'reconnect-failed'
+      	RECONNECT_FAILED: 'reconnect-failed',
+        LANGUAGE_MANAGER_SHOW_SPINNER: 'language-manager-show-spinner',
+        LANGUAGE_MANAGER_HIDE_SPINNER: 'language-manager-hide-spinner'
+      },
+      FILE_LOCATION: {
+        FILESYS: "file",
+        HTTP: "http",
+        AJAX: "ajax"
       }
     };
   });

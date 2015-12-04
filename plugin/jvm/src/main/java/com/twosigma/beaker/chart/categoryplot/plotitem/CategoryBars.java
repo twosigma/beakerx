@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.chart.categoryplot.plotitem;
 
+import com.twosigma.beaker.chart.ChartUtils;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.xychart.plotitem.LabelPositionType;
 
@@ -28,7 +29,7 @@ public class CategoryBars extends CategoryGraphics {
   private Number baseBase = 0.0d;
   private List<Number>  bases;
   private Color         baseOutlineColor;
-  private List<Color>   outlineColors;
+  private List<Object>   outlineColors;
   private Boolean       baseFill;
   private List<Boolean> fills;
   private Boolean       baseOutline;
@@ -91,9 +92,11 @@ public class CategoryBars extends CategoryGraphics {
   public void setOutlineColor(Object color) {
     if (color instanceof Color) {
       this.baseOutlineColor = (Color) color;
+    } else if (color instanceof java.awt.Color) {
+      this.baseOutlineColor = new Color((java.awt.Color) color);
     } else if (color instanceof List) {
       @SuppressWarnings("unchecked")
-      List<Color> cs = (List<Color>) color;
+      List<Object> cs = (List<Object>) color;
       setOutlineColors(cs);
     } else {
       throw new IllegalArgumentException(
@@ -101,15 +104,19 @@ public class CategoryBars extends CategoryGraphics {
     }
   }
 
-  private void setOutlineColors(List<Color> colors) {
-    this.outlineColors = colors;
+  private void setOutlineColors(List<Object> colors) {
+    if (colors != null) {
+      this.outlineColors = ChartUtils.convertColors(colors, "setOutlineColor takes Color or List of Color");
+    } else {
+      this.outlineColors = null;
+    }
   }
 
   public Color getOutlineColor() {
     return this.baseOutlineColor;
   }
 
-  public List<Color> getOutlineColors() {
+  public List<Object> getOutlineColors() {
     return this.outlineColors;
   }
 

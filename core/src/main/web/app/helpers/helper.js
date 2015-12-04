@@ -280,6 +280,13 @@
           return false;
         }
       },
+      renameNotebookTo: function(notebookUri, uriType) {
+        if (getCurrentApp() && getCurrentApp().renameNotebookTo) {
+          return getCurrentApp().renameNotebookTo(notebookUri, uriType);
+        } else {
+          return false;
+        }
+      },
       hasCodeCell: function(toEval) {
         if (getCurrentApp() && getCurrentApp().evaluate) {
           return getCurrentApp().hasCodeCell(toEval);
@@ -618,8 +625,8 @@
       setFileSaver: function(uriType, fileSaver) {
         return bkCoreManager.setFileSaver(uriType, fileSaver);
       },
-      showDefaultSavingFileChooser: function() {
-        return bkCoreManager.showDefaultSavingFileChooser();
+      showDefaultSavingFileChooser: function(initPath, saveButtonTitle) {
+        return bkCoreManager.showDefaultSavingFileChooser(initPath, saveButtonTitle);
       },
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();
@@ -968,6 +975,12 @@
             }
         };
         return cometdUtil;
+      },
+      showLanguageManagerSpinner: function(pluginName) {
+        bkUtils.showLanguageManagerSpinner(pluginName);
+      },
+      hideLanguageManagerSpinner: function() {
+        bkUtils.hideLanguageManagerSpinner();
       },
       isElectron: bkUtils.isElectron
     };

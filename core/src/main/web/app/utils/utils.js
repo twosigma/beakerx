@@ -292,6 +292,21 @@
             .error(deferred.reject);
         return deferred.promise;
       },
+      renameFile: function(oldPath, newPath, overwrite) {
+        var deferred = angularUtils.newDeferred();
+        angularUtils.httpPost(serverUrl("beaker/rest/file-io/rename"), {newPath: newPath, oldPath: oldPath, overwrite: overwrite})
+            .success(deferred.resolve)
+            .error(function (data, status, header, config) {
+              if (status === 409) {
+                deferred.reject("exists");
+              } else if (data === "isDirectory") {
+                deferred.reject(data);
+              } else {
+                deferred.reject(data, status, header, config);
+              }
+            });
+        return deferred.promise;
+      },
       saveFile: function(path, contentAsJson, overwrite) {
         var deferred = angularUtils.newDeferred();
         if (overwrite) {
@@ -393,6 +408,12 @@
       if (str) {
         return str.replace(/[\s\d`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
       }
+    },
+    showLanguageManagerSpinner: function(pluginName) {
+      angularUtils.showLanguageManagerSpinner(pluginName);
+    },
+    hideLanguageManagerSpinner: function() {
+      angularUtils.hideLanguageManagerSpinner();
     },
     // Electron: require('remote')
     isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,

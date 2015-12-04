@@ -145,10 +145,10 @@
         if (xAxis.axisType === "category") {
           xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
           xAxis.setCategoryNames(model.categoryNames, model.labelsxs);
-        } else if (xAxis.axisType !== "time") {
-          xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
-        } else {
+        } else if (xAxis.axisType === "time" || xAxis.axisType === "nanotime") {
           xAxis.setRange(vrange.xl, vrange.xr, model.timezone);
+        } else {
+          xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
         }
 
         if (xAxisLabel != null) {
@@ -240,7 +240,7 @@
         if (newmodel.data == null) { newmodel.data = []; }
         var data = newmodel.data;
         for (var i = 0; i < data.length; i++) {
-          var item = data[i];
+          var item = data[i], eles = item.elements;
 
           var eles = item.elements;
 
@@ -349,8 +349,8 @@
             }
 
             if (item.type === "bar" && ele.x2 == null) {
-              ele.x -= item.width / 2;
-              ele.x2 = ele.x + item.width;
+              ele.x = plotUtils.minus(ele.x, item.width / 2);
+              ele.x2 = plotUtils.plus(ele.x, item.width);
             }
             if ((item.type === "area" || item.type === "bar" || item.type === "stem")
               && ele.y2 == null) {
@@ -475,7 +475,7 @@
           var eles = item.elements;
           var unordered = false;
           for (var j = 1; j < eles.length; j++) {
-            if (eles[j].x < eles[j - 1].x) {
+            if (plotUtils.lt(eles[j].x, eles[j - 1].x)) {
               unordered = true;
               break;
             }
@@ -484,7 +484,7 @@
             if (item.type === "bar" || item.type === "stem" ||
             item.type === "point" || item.type === "text") {
               eles.sort(function(a, b) {
-                return a.x - b.x;
+                plotUtils.minus(a.x, b.x);
               });
             } else {
               item.isUnorderedItem = true;
@@ -509,12 +509,12 @@
         var newmodel = createNewModel(model);
 
         newmodel.lodThreshold = (model.lodThreshold) ?
-          model.lodThreshold : (prefs !== undefined && prefs.lodThreshold !== undefined ? prefs.lodThreshold : 1500);
+          model.lodThreshold : (prefs !== undefined && prefs.lodThreshold !== undefined ? prefs.lodThreshold : 4000) ;
 
         newmodel.data = [];
 
         if (model.version === "groovy") {
-          switch (model.type) {
+          switch(model.type){
             case 'HeatMap':
               heatmapConverter.convertGroovyData(newmodel, model);
               break;
@@ -532,95 +532,79 @@
           this.formatModel(newmodel); // fill in null entries, compute y2, etc.
           this.sortModel(newmodel);
 
-          // at this point, data is in standard format (log is applied as well)
+        // at this point, data is in standard format (log is applied as well)
 
-          var yAxisData = [], yAxisRData = [];
-          for (var i = 0; i < newmodel.data.length; i++) {
-            var item = newmodel.data[i];
-            if (newmodel.showLegend == null && item.legend) {
+        var yAxisData = [], yAxisRData = [];
+        for (var i = 0; i < newmodel.data.length; i++) {
+          var item = newmodel.data[i];
+          if(newmodel.showLegend == null && item.legend){
               newmodel.showLegend = true;
-            }
-            if (plotUtils.useYAxisR(newmodel, item)) {
-              yAxisRData.push(item);
-            } else {
-              yAxisData.push(item);
-            }
           }
-
-          newmodel.showLegend = newmodel.showLegend != null ? newmodel.showLegend : false;
-
-          var range = plotUtils.getDataRange(yAxisData).datarange;
-          var rangeR = _.isEmpty(yAxisRData) ? null : plotUtils.getDataRange(yAxisRData).datarange;
-
-          if (newmodel.yIncludeZero === true && range.yl > 0) {
-            range.yl = 0;
-            range.yspan = range.yr - range.yl;
+          if(plotUtils.useYAxisR(newmodel, item)){
+            yAxisRData.push(item);
+          }else{
+            yAxisData.push(item);
           }
-          if (rangeR && newmodel.yRIncludeZero === true && rangeR.yl > 0) {
-            rangeR.yl = 0;
-            rangeR.yspan = rangeR.yr - rangeR.yl;
-          }
-
-          var margin = newmodel.margin;
-          if (margin.bottom == null) {
-            margin.bottom = .05;
-          }
-          if (margin.top == null) {
-            margin.top = .05;
-          }
-          if (margin.left == null) {
-            margin.left = .05;
-          }
-          if (margin.right == null) {
-            margin.right = .05;
-          }
-
-          if (newmodel.vrange == null) {
-            // visible range initially is 10x larger than data range by default
-            var getModelRange = function (r) {
-              return r ? {
-                xl: r.xl - r.xspan * 10.0,
-                xr: r.xr + r.xspan * 10.0,
-                yl: r.yl - r.yspan * 10.0,
-                yr: r.yr + r.yspan * 10.0
-              } : null;
-            };
-            newmodel.vrange = getModelRange(range);
-            newmodel.vrangeR = getModelRange(rangeR);
-
-            var vrange = newmodel.vrange;
-            var vrangeR = newmodel.vrangeR;
-
-            if (newmodel.yPreventNegative === true) {
-              vrange.yl = Math.min(0, range.yl);
-            }
-
-            var focus = newmodel.userFocus; // allow user to overide vrange
-            if (focus.xl != null) {
-              vrange.xl = Math.min(focus.xl, vrange.xl);
-            }
-            if (focus.xr != null) {
-              vrange.xr = Math.max(focus.xr, vrange.xr);
-            }
-            if (focus.yl != null) {
-              vrange.yl = Math.min(focus.yl, vrange.yl);
-            }
-            if (focus.yr != null) {
-              vrange.yr = Math.max(focus.yr, vrange.yr);
-            }
-
-            var updateRangeSpan = function (r) {
-              if (r) {
-                r.xspan = r.xr - r.xl;
-                r.yspan = r.yr - r.yl;
-              }
-            };
-            updateRangeSpan(vrange);
-            updateRangeSpan(vrangeR);
-          }
-
-          this.remapModel(newmodel);
         }
+
+        newmodel.showLegend = newmodel.showLegend != null ? newmodel.showLegend : false;
+
+        var range = plotUtils.getDataRange(yAxisData).datarange;
+        var rangeR = _.isEmpty(yAxisRData) ? null : plotUtils.getDataRange(yAxisRData).datarange;
+
+        if (newmodel.yIncludeZero === true && range.yl > 0) {
+          range.yl = 0;
+          range.yspan = range.yr - range.yl;
+        }
+        if (rangeR && newmodel.yRIncludeZero === true && rangeR.yl > 0) {
+          rangeR.yl = 0;
+          rangeR.yspan = rangeR.yr - rangeR.yl;
+        }
+
+        var margin = newmodel.margin;
+        if (margin.bottom == null) { margin.bottom = .05; }
+        if (margin.top == null) { margin.top = .05; }
+        if (margin.left == null) { margin.left = .05; }
+        if (margin.right == null) { margin.right = .05; }
+
+        if (newmodel.vrange == null) {
+          // visible range initially is 10x larger than data range by default
+          var getModelRange = function(r){
+            return r ? {
+              xl: plotUtils.minus(r.xl, r.xspan * 10.0),
+              xr: plotUtils.plus(r.xr, r.xspan * 10.0),
+              yl: r.yl - r.yspan * 10.0,
+              yr: r.yr + r.yspan * 10.0
+            } : null;
+          };
+          newmodel.vrange = getModelRange(range);
+          newmodel.vrangeR = getModelRange(rangeR);
+
+          var vrange = newmodel.vrange;
+          var vrangeR = newmodel.vrangeR;
+
+          if (newmodel.yPreventNegative === true) {
+            vrange.yl = Math.min(0, range.yl);
+          }
+
+          var focus = newmodel.userFocus; // allow user to overide vrange
+          if (focus.xl != null) { vrange.xl = Math.min(focus.xl, vrange.xl); }
+          if (focus.xr != null) { vrange.xr = Math.max(focus.xr, vrange.xr); }
+          if (focus.yl != null) { vrange.yl = Math.min(focus.yl, vrange.yl); }
+          if (focus.yr != null) { vrange.yr = Math.max(focus.yr, vrange.yr); }
+
+          var updateRangeSpan = function(r) {
+            if (r) {
+              r.xspan = plotUtils.minus(r.xr, r.xl);
+              r.yspan = r.yr - r.yl;
+            }
+          };
+          updateRangeSpan(vrange);
+          updateRangeSpan(vrangeR);
+        }
+
+        this.remapModel(newmodel);
+
         newmodel.version = "complete";
         return newmodel;
       }

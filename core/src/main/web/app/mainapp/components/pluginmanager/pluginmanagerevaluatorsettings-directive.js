@@ -30,9 +30,14 @@
       template: JST["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"](),
       controller: function($scope) {
         $scope.savedSettings = angular.copy($scope.evaluator.settings);
+        $scope.highlight = false;
 
         $scope.$on(GLOBALS.EVENTS.DISCARD_LANGUAGE_SETTINGS, function(event, data) {
           $scope.evaluator.settings = $scope.savedSettings;
+        });
+
+        $scope.$on(GLOBALS.EVENTS.HIGHLIGHT_EDITED_LANGUAGE_SETTINGS, function(event, data) {
+          $scope.highlight = true;
         });
 
         $scope.set = function(property) {

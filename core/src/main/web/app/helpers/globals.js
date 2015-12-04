@@ -28,6 +28,7 @@
         LANGUAGE_MANAGER_SHOW_SPINNER: 'language-manager-show-spinner',
         LANGUAGE_MANAGER_HIDE_SPINNER: 'language-manager-hide-spinner',
         DISCARD_LANGUAGE_SETTINGS: 'discard-language-settings',
+        HIGHLIGHT_EDITED_LANGUAGE_SETTINGS: 'highlight-edited-language-settings',
         SET_LANGUAGE_SETTINGS_EDITED: 'set-language-settings-edited',
         CELL_OUTPUT_EXPANDED: 'cell-output-expanded'
       },

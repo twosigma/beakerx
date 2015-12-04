@@ -41,31 +41,43 @@
     };
 
     $scope.navigateToModifiedTab = function() {
+      $scope.$broadcast(GLOBALS.EVENTS.HIGHLIGHT_EDITED_LANGUAGE_SETTINGS);
       $scope.evalTabOp.setActiveTab($scope.editedEvalutor);
     };
 
-    $scope.closeDialog = function() {
+    $scope.doClose = function() {
+      $modalInstance.close("ok");
+    }
+
+    $scope.performOnClosingCleanup = function() {
       $scope.evalTabOp.showURL = false;
       $scope.evalTabOp.showWarning = false;
       $scope.evalTabOp.showSecurityWarning = false;
       $scope.evalTabOp.forceLoad = false;
       $scope.evalTabOp.newPluginNameOrUrl = "";
-      $modalInstance.close("ok");
     };
 
-    $scope.doClose = function() {
+    $scope.closePermitted = false;
+    $scope.$on('modal.closing', function(event, reason, closed) {
       if ($scope.edited) {
-        bkHelper.show2ButtonModal('Discard your changes to the settings?', 'Save changes',
-            function() {
-              $scope.discardChanges();
-              $scope.closeDialog();
-            },
-            $scope.navigateToModifiedTab,
-            "Ok", "Cancel", "", "");
+        if (!$scope.closePermitted) {
+          event.preventDefault();
+          bkHelper.show2ButtonModal('Discard your changes to the settings?', 'Discard changes',
+              function() {
+                $scope.discardChanges();
+                $scope.performOnClosingCleanup();
+                $scope.closePermitted = true;
+                $scope.doClose();
+              },
+              function() {
+                $scope.navigateToModifiedTab();
+              },
+              "Ok", "Cancel", "", "");
+        }
       } else {
-        $scope.closeDialog();
+        $scope.performOnClosingCleanup();
       }
-    };
+    });
 
     $scope.getEvaluatorDetails = function(name) {
       return bkEvaluatorManager.getVisualParams(name);

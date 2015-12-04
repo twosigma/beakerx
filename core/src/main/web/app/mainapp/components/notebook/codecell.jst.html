@@ -41,7 +41,7 @@
         </div>
       </div>
     </div>
-    <div data-ng-if="!displayOutput || !hasOutput()" data-ng-style="{'min-height': (cellmodel.output && cellmodel.output.height) + 'px'}"></div>
+    <div ng-if="!displayOutput || !hasOutput()" ng-style="{'min-height': (cellmodel.output && cellmodel.output.height) + 'px'}"></div>
     <div ng-if ="displayOutput && hasOutput()" class="code-cell-output" ng-class="{
       'no-output': isHiddenOutput(),
       'input-hidden': cellmodel.input.hidden,

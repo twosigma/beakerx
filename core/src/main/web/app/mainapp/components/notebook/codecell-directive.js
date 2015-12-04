@@ -405,11 +405,11 @@
         var setOutputHeight = function() {
           if (!scope.hasOutput()) return;
 
-          $timeout(function() {
+          _.defer(function() {
             var output = element.find('.code-cell-output');
             if (output && output[0])
               scope.cellmodel.output.height = output[0].offsetHeight;
-          }, 100);
+          });
         };
 
         scope.displayOutput = false;

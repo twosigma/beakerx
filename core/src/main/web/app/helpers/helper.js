@@ -733,14 +733,24 @@
       sanitizeNotebookModel: function(m) {
         var notebookModelCopy = angular.copy(m);
         bkHelper.stripOutBeakerPrefs(notebookModelCopy);
-        //Save running cells as interrupted
+
         if (notebookModelCopy.cells) {
           for (var i = 0; i < notebookModelCopy.cells.length; i++) {
             var currentCell = notebookModelCopy.cells[i];
-            if (currentCell && currentCell.output && currentCell.output.result
-              && currentCell.output.result.innertype === 'Progress') {
-              currentCell.output.result.innertype = 'Error';
-              currentCell.output.result.object = 'Interrupted, saved while running.'
+            if (currentCell && currentCell.output) {
+
+              //save output height
+              var cellId = currentCell.id;
+              var output = $("[cellid=" + cellId + "] div.code-cell-output");
+              if (output && output[0]) {
+                currentCell.output.height = output[0].offsetHeight;
+              }
+
+              //Save running cells as interrupted
+              if (currentCell.output.result && currentCell.output.result.innertype === 'Progress') {
+                currentCell.output.result.innertype = 'Error';
+                currentCell.output.result.object = 'Interrupted, saved while running.'
+              }
             }
           }
         }

@@ -402,23 +402,12 @@
           }
         };
 
-        var setOutputHeight = function() {
-          if (!scope.hasOutput()) return;
-
-          _.defer(function() {
-            var output = element.find('.code-cell-output');
-            if (output && output[0])
-              scope.cellmodel.output.height = output[0].offsetHeight;
-          });
-        };
-
         scope.displayOutput = false;
 
         Scrollin.track(element[0], function() {
           $timeout(function() {
             initCodeMirror();
             scope.displayOutput = true;
-            setOutputHeight();
           }, 1);
         });
 

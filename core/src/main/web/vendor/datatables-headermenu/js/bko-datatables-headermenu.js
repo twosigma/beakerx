@@ -49,8 +49,10 @@ HeaderMenu.prototype = {
 
     $(document.body).bind('mousedown', function(e) {
       var $container = that.dom.container;
+      var targetClass = $(e.target).attr('class');
+      var toggleClass = 'bko-menu';
 
-      if ($container[0] != e.target && !$.contains($container[0], e.target)) {
+      if ($container[0] != e.target && !$.contains($container[0], e.target) && targetClass != toggleClass) {
         that._hide();
       }
     });
@@ -104,8 +106,12 @@ HeaderMenu.prototype = {
 
     if (cell && menu && $.isArray(menu.items)) {
       $el.data('menu', menu.items)
-        .on('click', function(e) {
-          that._show($(this));
+        .bind('click', function(e) {
+          if (that.dom.menu) {
+            that._hide();
+          } else {
+            that._show($(this));
+          }
 
           e.preventDefault();
           e.stopPropagation();

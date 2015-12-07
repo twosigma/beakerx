@@ -64,7 +64,7 @@ public class EasyFormRest {
                     @FormParam("value") String value)
       throws IOException, InterruptedException {
     EasyForm easyForm = _easyFormObjectManager.getForm(id);
-    if (easyForm == null) {
+    if (easyForm == null || !easyForm.isReady()) {
       return;
     }
     easyForm.put(key, value);

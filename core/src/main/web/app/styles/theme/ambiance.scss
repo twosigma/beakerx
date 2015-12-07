@@ -54,15 +54,15 @@ $markdown-text-color: #e6e1dc;
 
 .beaker-theme-ambiance {
 
-  body, html, .well, .languages, .code-cell-input, .code-cell-output, .modal-header, .modal-body, .modal-footer  {
+  body, html, .well, .languages, .code-cell-input, .modal-header, .modal-body, .modal-footer  {
     background: $main-theme-panel-background !important;
     color: $main-theme-color !important;
     .close {
       color: $main-theme-color !important;
     }
-    h1, h2, h3, h4, h5{
+    h1, h2, h3, h4, h5, p {
       background: $main-theme-panel-background !important;
-      color: $main-theme-color !important;
+      color: $markdown-text-color !important;
     }
   }
 
@@ -94,9 +94,17 @@ $markdown-text-color: #e6e1dc;
     color: #d6bb6d;
   }
 
+  input, select {
+    background-color: $input-background-color;
+    background-image: none;
+  }
+
   input {
     color: $main-theme-color;
-    background-color: $input-background-color;
+  }
+
+  select {
+    color: $markdown-text-color;
   }
 
   .ui-icon,
@@ -124,7 +132,7 @@ $markdown-text-color: #e6e1dc;
     }
   }
 
-  bk-markdown-editable {
+  bk-markdown-editable, .code-cell-output {
     background: $main-theme-panel-background !important;
     color: $markdown-text-color;
   }
@@ -166,6 +174,10 @@ $markdown-text-color: #e6e1dc;
     background-color: $input-background-color;
   }
 
+  .plot-text, .plot-legend text, #maing text {
+    fill: $markdown-text-color !important;
+  }
+
   #combplotContainer, #plotLegend, #plotLegendContainer {
     background: $main-theme-panel-background;
   }
@@ -181,8 +193,6 @@ $markdown-text-color: #e6e1dc;
   .toggle-menu {
     background: $main-theme-panel-background;
   }
-
-
 
   .dataTables_length {
     & label {
@@ -264,7 +274,7 @@ $markdown-text-color: #e6e1dc;
   }
 
   table.dataTable tbody tr.selected {
-    background-color: #B0BED9 !important;
+    background-color: #435d72 !important;
   }
 
   table.dataTable thead {
@@ -284,7 +294,7 @@ $markdown-text-color: #e6e1dc;
   // Default navbar
 
   .navbar-default {
-    background-color: $navbar-default-bg;
+    background-color: $input-background-color;
     border-color: $navbar-default-border;
 
     .navbar-brand {

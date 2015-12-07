@@ -670,6 +670,8 @@
       },
       link: function(scope, element, attrs) {
 
+        var unregisterOutputExpandEventListener = angular.noop; // used for deregistering listener
+
         scope.doDestroy = function(all) {
           if (scope.table) {
             //jscs:disable
@@ -702,6 +704,13 @@
         };
         scope.init = function(model) {
           scope.doDestroy(true);
+
+          unregisterOutputExpandEventListener = scope.$on(GLOBALS.EVENTS.CELL_OUTPUT_EXPANDED, function() {
+            if (scope.table !== undefined && tableChanged) {
+              _.defer(function() {scope.table.draw(false);});
+              tableChanged = false;
+            }
+          });
 
           var i;
 
@@ -1073,13 +1082,6 @@
         scope.$watch('getCellModel()', function(m) {
           scope.init(m);
           tableChanged = true;
-        });
-
-        var unregisterOutputExpandEventListener = scope.$on(GLOBALS.CELL_OUTPUT_EXPANDED, function() {
-          if (scope.table !== undefined && tableChanged) {
-            _.defer(function() {scope.table.draw(false);});
-            tableChanged = false;
-          }
         });
 
         scope.$on('beaker.section.toggled', function(e, isCollapsed) {

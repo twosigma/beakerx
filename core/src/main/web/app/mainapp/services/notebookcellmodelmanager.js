@@ -440,10 +440,9 @@
           _.each(cells, function(cell) {
             if (cell.output) {
               var runningJob = bkEvaluateJobManager.getCurrentJob();
-              if(!runningJob || runningJob.cellId !== cell.id){
+              if (!runningJob || runningJob.cellId !== cell.id) {
                 cell.output.result = undefined;
                 cell.output.elapsedTime = undefined;
-                cell.output.height = undefined;
                 bkEvaluateJobManager.remove(cell);
               }              
             }

@@ -16,8 +16,8 @@
 
 <div ng-repeat="property in properties" class="form-group language-option property clearfix">
   <label>{{ property.name }}</label>
-  <textarea class="form-control" ng-model="evaluator.settings[property.key]"></textarea>
-  <button class="btn btn-default pull-right set" ng-click="set(property.key)">Set</button>
+  <textarea ng-class="{'edited-property': property.edited && highlight}" class="form-control" ng-model="evaluator.settings[property.key]"></textarea>
+  <button class="btn btn-default pull-right set" ng-click="set(property)">Set</button>
 </div>
 <div ng-repeat="action in actions" class="action language-option clearfix">
   <button class="btn btn-default" ng-click="evaluator.perform(action.key)">{{ action.name }}</button>

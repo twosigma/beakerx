@@ -64,7 +64,7 @@
       <p><br/></p>
     </div>
     <tabset>
-      <tab ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}">
+      <tab ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}" active="evalTabOp.tabs[$index].active">
         <bk-plugin-manager-evaluator-settings></bk-plugin-manager-evaluator-settings>
       </tab>
     </tabset>

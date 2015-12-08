@@ -457,20 +457,21 @@
           var saveStart = function() {
             showLoadingStatusMessage("Saving");
           };
-          var updateSessionStore = function(uri, uriType) {
+          var updateSessionStore = function(uri, uriType, readOnly) {
             return bkSession.getSessions().then(function(sessions){
               var sessionID = bkSessionManager.getSessionId();
               var currentSession = sessions[sessionID];
               currentSession.uriType = uriType;
               currentSession.notebookModelJson = JSON.stringify(bkHelper.getNotebookModel());
               currentSession.notebookUri = uri;
+              currentSession.readOnly = readOnly;
               return bkSession.backup(sessionID, currentSession);
             });
           };
           var saveDone = function(ret) {
             bkSessionManager.setNotebookModelEdited(false);
             bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
-            updateSessionStore(ret.uri, ret.uriType);
+            updateSessionStore(ret.uri, ret.uriType, false);
             showTransientStatusMessage("Saved");
           };
 
@@ -485,7 +486,7 @@
 
           var renameDone = function(ret) {
             bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
-            updateSessionStore(ret.uri, ret.uriType);
+            updateSessionStore(ret.uri, ret.uriType, false);
             showTransientStatusMessage("Renamed");
           };
 

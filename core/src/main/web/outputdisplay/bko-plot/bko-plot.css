@@ -236,7 +236,7 @@
 }
 
 .plot-lodavg,
-.plot-lodavgline, {
+.plot-lodavgline {
   pointer-events: none;
 }
 

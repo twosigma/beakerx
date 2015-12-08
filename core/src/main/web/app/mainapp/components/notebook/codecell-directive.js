@@ -371,8 +371,7 @@
           }
         });
 
-        var initCodeMirror = function(){
-
+        var initCodeMirror = function() {
           var template = '<textarea class="bkcelltextarea" ng-model="cellmodel.input.body">' + scope.cellmodel.input.body + '</textarea>';
           $(element.find('.bkcelltextarea')[0]).replaceWith($(template));
 
@@ -401,7 +400,6 @@
             delete scope._shouldFocusCodeMirror;
             return scope.cm.focus();
           }
-
         };
 
         scope.displayOutput = false;

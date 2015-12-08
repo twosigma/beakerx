@@ -16,8 +16,7 @@
 (function() {
   "use strict";
   var module = angular.module('bk.outputDisplay');
-  module.directive('bkOutputDisplay', function(
-      $compile, bkOutputDisplayFactory, bkUtils) {
+  module.directive('bkOutputDisplay', function($compile, bkOutputDisplayFactory, bkUtils) {
     var getResultType = function(model) {
       if (model && model.getCellModel()) {
         if (_.isString(model.getCellModel())) {

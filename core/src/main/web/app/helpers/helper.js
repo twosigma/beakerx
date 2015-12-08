@@ -751,6 +751,11 @@
                 currentCell.output.result.innertype = 'Error';
                 currentCell.output.result.object = 'Interrupted, saved while running.'
               }
+
+              //remove update_id to avoid subscribing to a nonexistent object
+              if (currentCell.output.result) {
+                delete currentCell.output.result.update_id;
+              }
             }
           }
         }

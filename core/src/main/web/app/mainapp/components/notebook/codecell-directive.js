@@ -321,9 +321,7 @@
           }
           showing.CodeMirror.getWrapperElement().style.height = winHeight() + 'px';
         };
-        scope.scrollTo = function(){
-          window.scrollTo(0, element.offset().top - 100);
-        };
+
         CodeMirror.on(window, 'resize', resizeHandler);
 
         var codeMirrorOptions = bkCoreManager.codeMirrorOptions(scope, notebookCellOp);
@@ -482,7 +480,6 @@
             }
 
             scope._shouldFocusCodeMirror = true;
-            scope.scrollTo();
           }
         });
 

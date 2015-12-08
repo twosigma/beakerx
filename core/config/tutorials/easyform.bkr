@@ -34,7 +34,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -74,6 +74,7 @@
                 "body": [
                     "f = new EasyForm(\"Form and Run\")",
                     "f.addTextField(\"first\", 15)",
+                    "f['first'] = \"Initial value\"",
                     "f.addTextField(\"last\", 15)",
                     "f.addButton(\"Go!\", \"run\")",
                     "f"
@@ -95,17 +96,15 @@
                             "type": "TextField",
                             "label": "first",
                             "enabled": true,
-                            "value": "",
-                            "width": "15",
-                            "currentValue": "Berzeius"
+                            "value": "Initial value",
+                            "width": "15"
                         },
                         {
                             "type": "TextField",
                             "label": "last",
                             "enabled": true,
                             "value": "",
-                            "width": "15",
-                            "currentValue": "Beaker"
+                            "width": "15"
                         },
                         {
                             "type": "ButtonComponent",
@@ -118,7 +117,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 5
+            "lineCount": 6
         },
         {
             "id": "markdownvnogak",

@@ -27,7 +27,8 @@
                          bkCellMenuPluginManager,
                          bkSessionManager,
                          bkUtils,
-                         GradientLegend) {
+                         GradientLegend,
+                         bkoChartExtender) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -1843,6 +1844,9 @@
           }
         };
 
+        if (scope.model.getCellModel().type === "TreeMap"){
+          bkoChartExtender.extend(scope, element, attrs);
+        }
         scope.init(); // initialize
         scope.$watch('getDumpState()', function (result) {
           if (result !== undefined && result.plotSize === undefined) {
@@ -2041,5 +2045,6 @@
     "bkSessionManager",
     "bkUtils",
     "GradientLegend",
+    "bkoChartExtender",
     retfunc]);
 })();

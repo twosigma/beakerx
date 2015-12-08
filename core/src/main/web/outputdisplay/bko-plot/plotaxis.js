@@ -241,7 +241,12 @@
           val = val.div(w).round(0, 0).times(w);
         }
       }else{
-        val = Math.ceil(val / w) * w
+        val = Math.ceil(val / w) * w;
+        if (this.axisType === "time") {
+          if (w >= this.YEAR) {
+            val = moment(val).tz("UTC").endOf("year").add(1, "ms");
+          }
+        }
       }
       var valr = this.getValue(pr);
       var lines = [];

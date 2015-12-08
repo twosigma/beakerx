@@ -1002,10 +1002,12 @@
           if (e.ctrlKey && !e.altKey && (e.which === 83)) { // Ctrl + s
             e.preventDefault();
             _impl.saveNotebook();
+            $scope.$apply();
             return false;
           } else if (e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83)) { // Cmd + s
             e.preventDefault();
             _impl.saveNotebook();
+            $scope.$apply();
             return false;
           } else if (e.target.nodeName !== "TEXTAREA") {
             if (e.ctrlKey && e.which === 90) { // Ctrl + z

@@ -922,7 +922,7 @@
 
                 if (model.components) {
                   model.components.forEach(function (component) {
-
+                    component.enabled = !_.isEmpty(model.update_id);
                     var childScope = $scope.$new();
                     childScope.component = component;
                     childScope.formId = $scope.update_id;

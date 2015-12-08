@@ -20,7 +20,8 @@
   (function ($) {
     $.widget("custom.combobox", {
       options: {
-        change: null
+        change: null,
+        disabled: false
       },
       _create: function () {
         this.editable = this.element.attr('easyform-editable') === 'true';
@@ -70,6 +71,10 @@
               });
         }
 
+        if(this.options.disabled){
+          this.input.attr('disabled', 'disabled');
+        }
+
         this._on(this.input, {
           autocompleteselect: function (event, ui) {
             ui.item.option.selected = true;
@@ -91,6 +96,7 @@
         //reverts to jquery button fn
         var bootstrapButtonFn = $.fn.button.noConflict();
 
+        var self = this;
         var showAllButton = $("<a>")
             .attr("tabIndex", -1)
             .attr("title", "Show All Items")
@@ -104,15 +110,25 @@
             .removeClass("ui-corner-all")
             .addClass("custom-combobox-toggle ui-corner-right")
             .mousedown(function () {
-              wasOpen = input.autocomplete("widget").is(":visible");
+              if (!self.options.disabled) {
+                wasOpen = input.autocomplete("widget").is(":visible");
+              }
             })
             .click(function () {
-              input.focus();
-              if (wasOpen) {
-                return;
+              if (!self.options.disabled) {
+                input.focus();
+                if (wasOpen) {
+                  return;
+                }
+                input.autocomplete("search", "");
               }
-              input.autocomplete("search", "");
             });
+
+        if (self.options.disabled) {
+          showAllButton.attr("disabled", "disabled");
+        } else {
+          showAllButton.removeAttr("disabled");
+        }
 
         //return to bootstrap button fn
         $.fn.button = bootstrapButtonFn;
@@ -484,12 +500,10 @@
                 var comboBox = element.find('.combo-box');
                 comboBox.attr('ng-model', scope.ngModelAttr);
 
-                scope.component.enabled = true;
-
                 var editable = efc.getComponent().editable
                     && efc.getComponent().editable === 'true';
                 comboBox.attr('easyform-editable', editable);
-                comboBox.combobox({change : efc.valueChangeHandler});
+                comboBox.combobox({change : efc.valueChangeHandler, disabled: !scope.component.enabled});
                 if (editable && efc.getComponent().width
                     && parseInt(efc.getComponent().width)
                         > efc.constants.Components.ComboBox.MIN_WIDTH) {
@@ -741,9 +755,16 @@
                   event.preventDefault();
                 });
                 datePickerButton.click(function() {
-                  datePickerButtonClicked = true;
-                  datePicker.datetimepicker("toggle");
+                  if (scope.component.enabled) {
+                    datePickerButtonClicked = true;
+                    datePicker.datetimepicker("toggle");
+                  }
                 });
+                if (scope.component.enabled) {
+                  datePickerButton.removeAttr("disabled");
+                } else {
+                  datePickerButton.attr("disabled", "disabled");
+                }
               };
 
               efc.init();

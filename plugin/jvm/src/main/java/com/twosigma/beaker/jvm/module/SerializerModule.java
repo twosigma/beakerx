@@ -90,6 +90,10 @@ import com.twosigma.beaker.easyform.serializer.TextFieldSerializer;
 import com.twosigma.beaker.jvm.object.BeakerDashboard;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
 import com.twosigma.beaker.jvm.object.OutputContainer;
+import com.twosigma.beaker.jvm.object.OutputContainerCell;
+import com.twosigma.beaker.jvm.serialization.OutputContainerCellSerializer;
+import com.twosigma.beaker.jvm.serialization.OutputContainerDeserializer;
+import com.twosigma.beaker.jvm.serialization.OutputContainerSerializer;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.object.UpdatableEvaluationResult;
@@ -134,7 +138,7 @@ public class SerializerModule extends AbstractModule {
     bind(SimpleEvaluationObject.Serializer.class);
     bind(EvaluationResult.Serializer.class);
     bind(UpdatableEvaluationResult.Serializer.class);
-    bind(OutputContainer.Serializer.class);
+    bind(OutputContainerSerializer.class);
     bind(BeakerProgressUpdate.Serializer.class);
     bind(EasyFormObjectManager.class);
     bind(EasyFormSerializer.class);
@@ -155,7 +159,8 @@ public class SerializerModule extends AbstractModule {
     BeakerObjectConverter serializer = injector.getInstance(PlotObjectSerializer.class);
     try {
       serializer.addTypeDeserializer(new TableDisplay.DeSerializer(serializer));
-      serializer.addTypeDeserializer(new OutputContainer.DeSerializer(serializer));
+      serializer.addTypeDeserializer(new OutputContainerDeserializer(serializer));
+      serializer.addTypeDeserializer(new OutputContainerDeserializer(serializer));
       serializer.addTypeDeserializer(new BeakerCodeCell.DeSerializer(serializer));
       serializer.addTypeDeserializer(new BeakerProgressUpdate.DeSerializer(serializer));
       serializer.addTypeDeserializer(new SimpleEvaluationObject.DeSerializer(serializer));
@@ -191,7 +196,8 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(BeakerCodeCell.class, injector.getInstance(BeakerCodeCell.Serializer.class));
 
       module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplay.Serializer.class));
-      module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainer.Serializer.class));
+      module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainerSerializer.class));
+      module.addSerializer(OutputContainerCell.class, injector.getInstance(OutputContainerCellSerializer.class));
       module.addSerializer(StringObject.class, injector.getInstance(StringObject.Serializer.class));
       module.addSerializer(BufferedImage.class, new BufferedImageSerializer());
       module.addSerializer(ImageIcon.class, new ImageIconSerializer());

@@ -21,6 +21,7 @@ import com.twosigma.beaker.easyform.EasyForm;
 import com.twosigma.beaker.jvm.object.BeakerDashboard;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
 import com.twosigma.beaker.jvm.object.OutputContainer;
+import com.twosigma.beaker.jvm.object.OutputContainerCell;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.object.UpdatableEvaluationResult;
 
@@ -172,26 +173,24 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     try {
       if (obj == null) {
         jgen.writeNull();
-      } else if ( (obj instanceof TableDisplay)  ||
-                  (obj instanceof EvaluationResult)||
-                  (obj instanceof UpdatableEvaluationResult) ||
-                  (obj instanceof BeakerCodeCell) ||
-                  (obj instanceof ImageIcon) ||
-                  (obj instanceof Date) ||
-                  (obj instanceof BeakerDashboard) ||
-                  (obj instanceof BufferedImage) ||
-                  (obj instanceof OutputContainer)  ||
-                  (obj instanceof BeakerProgressUpdate) ||
-                  (obj instanceof EasyForm) ) {
+      } else if ((obj instanceof TableDisplay) ||
+        (obj instanceof EvaluationResult) ||
+        (obj instanceof UpdatableEvaluationResult) ||
+        (obj instanceof BeakerCodeCell) ||
+        (obj instanceof ImageIcon) ||
+        (obj instanceof Date) ||
+        (obj instanceof BeakerDashboard) ||
+        (obj instanceof BufferedImage) ||
+        (obj instanceof OutputContainerCell) ||
+        (obj instanceof OutputContainer) ||
+        (obj instanceof BeakerProgressUpdate) ||
+        (obj instanceof EasyForm)) {
         logger.fine("basic object");
         jgen.writeObject(obj);
-      } else if(runThreadSerializers(obj,jgen,expand)) {
-        return true;
-      } else if(runConfiguredSerializers(obj,jgen,expand)) {
-        return true;
-      } else {
-        return false;
-      }
+      } else
+        return runThreadSerializers(obj, jgen, expand) || runConfiguredSerializers(obj,
+                                                                                   jgen,
+                                                                                   expand);
     } catch (Exception e) {
       logger.log(Level.SEVERE,"exception in serialization",e);
       return false;

@@ -15,5 +15,15 @@
  */
 package com.twosigma.beaker.jvm.object;
 
-public class OutputContainerLayoutManager {
+public abstract class OutputContainerLayoutManager {
+
+  private boolean borderDisplayed;
+
+  public boolean isBorderDisplayed() {
+    return borderDisplayed;
+  }
+
+  public void setBorderDisplayed(boolean borderDisplayed) {
+    this.borderDisplayed = borderDisplayed;
+  }
 }

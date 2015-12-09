@@ -15,22 +15,23 @@
  */
 package com.twosigma.beaker.jvm.serialization;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.twosigma.beaker.jvm.object.OutputContainerCell;
-import org.codehaus.jackson.JsonGenerator;
+import com.twosigma.beaker.jvm.object.DashboardLayoutManager;
+import org.codehaus.jackson.JsonNode;
 
-import java.io.IOException;
-
-public class OutputContainerCellSerializer extends BasicOutputContainerSerializer<OutputContainerCell> {
-
-  @Inject
-  public OutputContainerCellSerializer(Provider<BeakerObjectConverter> osp) {
-    super(osp);
+public class DashboardLayoutManagerDeserializer extends
+                                                            OutputContainerLayoutManagerDeserializer<DashboardLayoutManager> {
+  public DashboardLayoutManagerDeserializer(BeakerObjectConverter p) {
+    super(p);
+    parent.addKnownBeakerType("DashboardLayoutManager");
   }
 
   @Override
-  protected void serialize(OutputContainerCell value, JsonGenerator jgen) throws IOException {
+  public boolean canBeUsed(JsonNode n) {
+    return n.has("type") && n.get("type").asText().equals("DashboardLayoutManager");
   }
 
+  @Override
+  protected DashboardLayoutManager createObject() {
+    return new DashboardLayoutManager();
+  }
 }

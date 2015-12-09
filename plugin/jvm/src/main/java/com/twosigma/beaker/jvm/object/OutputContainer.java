@@ -24,7 +24,7 @@ public class OutputContainer {
 
   private final List<Object> items;
   private final List<String> labels = new ArrayList<>();
-  private OutputContainerLayoutManager layoutManager;
+  private OutputContainerLayoutManager layoutManager = new TabbedOutputContainerLayoutManager();
 
   public OutputContainer() {
     this(new ArrayList<>());

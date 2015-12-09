@@ -19,12 +19,21 @@ import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.BeakerProgressUpdate;
 import com.twosigma.beaker.easyform.EasyForm;
 import com.twosigma.beaker.jvm.object.BeakerDashboard;
+import com.twosigma.beaker.jvm.object.CyclingOutputContainerLayoutManager;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
+import com.twosigma.beaker.jvm.object.GridOutputContainerLayoutManager;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.jvm.object.OutputContainerCell;
+import com.twosigma.beaker.jvm.object.TabbedOutputContainerLayoutManager;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.object.UpdatableEvaluationResult;
+import com.twosigma.beaker.jvm.object.DashboardLayoutManager;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -38,13 +47,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.ImageIcon;
-
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
 
 public class BasicObjectSerializer implements BeakerObjectConverter {
 
@@ -181,6 +183,10 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         (obj instanceof Date) ||
         (obj instanceof BeakerDashboard) ||
         (obj instanceof BufferedImage) ||
+        (obj instanceof TabbedOutputContainerLayoutManager) ||
+        (obj instanceof GridOutputContainerLayoutManager) ||
+        (obj instanceof CyclingOutputContainerLayoutManager) ||
+        (obj instanceof DashboardLayoutManager) ||
         (obj instanceof OutputContainerCell) ||
         (obj instanceof OutputContainer) ||
         (obj instanceof BeakerProgressUpdate) ||

@@ -15,9 +15,8 @@
  */
 package com.twosigma.beaker.jvm.serialization;
 
-import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.twosigma.beaker.jvm.object.OutputContainer;
+import com.twosigma.beaker.jvm.object.OutputContainerLayoutManager;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
@@ -25,12 +24,12 @@ import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
 
-public abstract class BasicOutputContainerSerializer<T extends OutputContainer> extends JsonSerializer<T> {
+public abstract class OutputContainerLayoutManagerSerializer<T extends OutputContainerLayoutManager> extends
+                                                                                                     JsonSerializer<T> {
 
   private final Provider<BeakerObjectConverter> objectSerializerProvider;
 
-  @Inject
-  public BasicOutputContainerSerializer(Provider<BeakerObjectConverter> osp) {
+  public OutputContainerLayoutManagerSerializer(Provider<BeakerObjectConverter> osp) {
     objectSerializerProvider = osp;
   }
 
@@ -46,31 +45,12 @@ public abstract class BasicOutputContainerSerializer<T extends OutputContainer> 
 
     synchronized (value) {
       jgen.writeStartObject();
-
       jgen.writeObjectField("type", value.getClass().getSimpleName());
-
+      jgen.writeObjectField("borderDisplayed", value.isBorderDisplayed());
       serialize(value, jgen);
-
-      jgen.writeArrayFieldStart("labels");
-      if (value.getLabels() != null) {
-        for (String label : value.getLabels())
-          jgen.writeObject(label);
-      }
-      jgen.writeEndArray();
-
-      jgen.writeArrayFieldStart("items");
-      if (value.getItems() != null) {
-        for (Object obj : value.getItems())
-          if (!getObjectSerializer().writeObject(obj, jgen, true))
-            jgen.writeObject(obj.toString());
-      }
-      jgen.writeEndArray();
-
-      jgen.writeObjectField("layout", value.getLayoutManager());
-
       jgen.writeEndObject();
     }
   }
 
-  protected abstract  void serialize(T value, JsonGenerator jgen) throws IOException;
+  protected abstract void serialize(T value, JsonGenerator jgen) throws IOException;
 }

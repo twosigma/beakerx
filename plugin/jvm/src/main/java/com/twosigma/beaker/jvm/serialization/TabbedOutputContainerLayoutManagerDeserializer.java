@@ -15,24 +15,23 @@
  */
 package com.twosigma.beaker.jvm.serialization;
 
-import com.twosigma.beaker.jvm.object.OutputContainerCell;
+import com.twosigma.beaker.jvm.object.TabbedOutputContainerLayoutManager;
 import org.codehaus.jackson.JsonNode;
 
-public class OutputContainerCellDeserializer extends BasicOutputContainerDeserializer<OutputContainerCell> {
-
-  public OutputContainerCellDeserializer(BeakerObjectConverter p) {
+public class TabbedOutputContainerLayoutManagerDeserializer extends
+                                                            OutputContainerLayoutManagerDeserializer<TabbedOutputContainerLayoutManager> {
+  public TabbedOutputContainerLayoutManagerDeserializer(BeakerObjectConverter p) {
     super(p);
-    parent.addKnownBeakerType("OutputContainerCell");
-  }
-
-
-  @Override
-  protected OutputContainerCell createObject() {
-    return new OutputContainerCell();
+    parent.addKnownBeakerType("TabbedOutputContainerLayoutManager");
   }
 
   @Override
   public boolean canBeUsed(JsonNode n) {
-    return n.has("type") && n.get("type").asText().equals("OutputContainerCell");
+    return n.has("type") && n.get("type").asText().equals("TabbedOutputContainerLayoutManager");
+  }
+
+  @Override
+  protected TabbedOutputContainerLayoutManager createObject() {
+    return new TabbedOutputContainerLayoutManager();
   }
 }

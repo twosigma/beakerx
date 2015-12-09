@@ -17,20 +17,22 @@ package com.twosigma.beaker.jvm.serialization;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.twosigma.beaker.jvm.object.OutputContainerCell;
+import com.twosigma.beaker.jvm.object.GridOutputContainerLayoutManager;
 import org.codehaus.jackson.JsonGenerator;
 
 import java.io.IOException;
 
-public class OutputContainerCellSerializer extends BasicOutputContainerSerializer<OutputContainerCell> {
+public class GridOutputContainerLayoutManagerSerializer extends OutputContainerLayoutManagerSerializer<GridOutputContainerLayoutManager>  {
 
   @Inject
-  public OutputContainerCellSerializer(Provider<BeakerObjectConverter> osp) {
+  public GridOutputContainerLayoutManagerSerializer(Provider<BeakerObjectConverter> osp) {
     super(osp);
   }
 
   @Override
-  protected void serialize(OutputContainerCell value, JsonGenerator jgen) throws IOException {
+  protected void serialize(GridOutputContainerLayoutManager value, JsonGenerator jgen) throws
+                                                                                         IOException {
+    jgen.writeObjectField("columns", value.getColumns());
+    jgen.writeObjectField("dividerWidth", value.getDividerWidth());
   }
-
 }

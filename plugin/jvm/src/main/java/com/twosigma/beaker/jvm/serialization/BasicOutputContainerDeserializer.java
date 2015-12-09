@@ -16,6 +16,7 @@
 package com.twosigma.beaker.jvm.serialization;
 
 import com.twosigma.beaker.jvm.object.OutputContainer;
+import com.twosigma.beaker.jvm.object.OutputContainerLayoutManager;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -23,7 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-public abstract class BasicOutputContainerDeserializer<T extends OutputContainer> implements ObjectDeserializer {
+public abstract class BasicOutputContainerDeserializer<T extends OutputContainer> implements
+                                                                                  ObjectDeserializer {
   protected final BeakerObjectConverter parent;
 
   public BasicOutputContainerDeserializer(BeakerObjectConverter p) {
@@ -56,6 +58,11 @@ public abstract class BasicOutputContainerDeserializer<T extends OutputContainer
           }
         }
       }
+
+      OutputContainerLayoutManager layoutManager = (OutputContainerLayoutManager) parent.deserialize(
+        n.get("layout"),
+        mapper);
+
       o = createObject();
 
       if (items != null && labels != null && items.size() == labels.size()) {
@@ -73,5 +80,5 @@ public abstract class BasicOutputContainerDeserializer<T extends OutputContainer
   }
 
 
-  protected abstract T createObject ();
+  protected abstract T createObject();
 }

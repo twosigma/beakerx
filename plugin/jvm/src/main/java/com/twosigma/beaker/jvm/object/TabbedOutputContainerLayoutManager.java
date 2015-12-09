@@ -16,4 +16,5 @@
 package com.twosigma.beaker.jvm.object;
 
 public class TabbedOutputContainerLayoutManager extends OutputContainerLayoutManager {
+
 }

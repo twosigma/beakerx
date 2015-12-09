@@ -17,20 +17,24 @@ package com.twosigma.beaker.jvm.serialization;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.twosigma.beaker.jvm.object.OutputContainerCell;
+import com.twosigma.beaker.jvm.object.OutputContainerLayoutManager;
+import com.twosigma.beaker.jvm.object.TabbedOutputContainerLayoutManager;
 import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
 
-public class OutputContainerCellSerializer extends BasicOutputContainerSerializer<OutputContainerCell> {
+public class TabbedOutputContainerLayoutManagerSerializer extends OutputContainerLayoutManagerSerializer<TabbedOutputContainerLayoutManager>  {
 
   @Inject
-  public OutputContainerCellSerializer(Provider<BeakerObjectConverter> osp) {
+  public TabbedOutputContainerLayoutManagerSerializer(Provider<BeakerObjectConverter> osp) {
     super(osp);
   }
 
   @Override
-  protected void serialize(OutputContainerCell value, JsonGenerator jgen) throws IOException {
-  }
+  protected void serialize(TabbedOutputContainerLayoutManager value, JsonGenerator jgen) throws
+                                                                                         IOException {
 
+  }
 }

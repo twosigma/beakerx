@@ -252,7 +252,6 @@
             } else {
               value = selectStartOrEndInterval(value, "year");
             }
-            console.log("line:" + moment(value).tz("UTC").format("YYYY MMM DD ddd, HH:mm:ss .SSS"));
           }
         }
         return value;

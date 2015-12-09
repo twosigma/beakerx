@@ -114,7 +114,7 @@ public class SessionBackupRest {
       Map<String, Object> data = new HashMap<String, Object>();
       sessionChangeChannel.publish(this.localSession, data, null);
     } else {
-      System.out.println("Warning: Caught NPE of unknown origin.");
+      System.out.println("Warning: Caught NPE of unknown origin. frontend");
     }
   }
 
@@ -126,7 +126,7 @@ public class SessionBackupRest {
       data.put("id", sessionid);
       sessionChangeChannel.publish(this.localSession, data, null);
     } else {
-      System.out.println("Warning: Caught NPE of unknown origin.");
+      System.out.println("Warning: Caught NPE of unknown origin. electron");
     }
   }
 

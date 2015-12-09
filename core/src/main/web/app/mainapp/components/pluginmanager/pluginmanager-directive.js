@@ -65,6 +65,7 @@
         return result;
       },
       getLoadingEvaluators: function() {
+      getLoadingEvaluators: function() {
         return bkEvaluatorManager.getLoadingEvaluators();
       },
       getEvaluatorStatuses: function(name) {

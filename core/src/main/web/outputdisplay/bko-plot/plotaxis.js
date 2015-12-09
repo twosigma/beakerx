@@ -168,7 +168,7 @@
               } else if (prev < self.MONTH) {
                 intws.push(prev + self.DAY);
               } else if (prev < self.YEAR) {
-                intws.push(prev + self.DAY * 5);
+                intws.push(prev + self.DAY * 10);
               } else {
                 intws.push(prev + self.YEAR);
               }
@@ -233,6 +233,31 @@
     };
 
     PlotAxis.prototype.calcLines = function (pl, pr, w) {
+
+      var self = this;
+
+      var selectStartOrEndRange = function(value, range) {
+        var endOfRange = moment(value).tz(self.axisTimezone).endOf(range).add(1, "ms");
+        var startOfRange = moment(value).tz(self.axisTimezone).startOf(range);
+        return  ((endOfRange - value) > (value - startOfRange)) ? startOfRange : endOfRange;
+      };
+
+      var normalize = function (value) {
+        if (self.axisType === "time") {
+          if (plotUtils.gt(w, self.DAY)) {
+            if (plotUtils.lte(w, self.MONTH)) {
+              value = selectStartOrEndRange(value, "day");
+            } else if (plotUtils.lte(w, self.YEAR)) {
+              value = selectStartOrEndRange(value, "month");
+            } else {
+              value = selectStartOrEndRange(value, "year");
+            }
+            console.log("line:" + moment(value).tz("UTC").format("YYYY MMM DD ddd, HH:mm:ss .SSS"));
+          }
+        }
+        return value;
+      };
+
       var val = this.getValue(pl);
       if(val instanceof Big){
         if(val.gte(0)){
@@ -241,7 +266,7 @@
           val = val.div(w).round(0, 0).times(w);
         }
       }else{
-        val = Math.ceil(val / w) * w
+        val = normalize(Math.ceil(val / w) * w);
       }
       var valr = this.getValue(pr);
       var lines = [];
@@ -257,7 +282,7 @@
         while (plotUtils.lt(val, valr)) {
           var pct = this.getPercent(val);
           lines.push(pct);
-          val = plotUtils.plus(val, w);
+          val = normalize(plotUtils.plus(val, w));
         }
       }
 

@@ -376,13 +376,14 @@ public class RServerEvaluator {
     }
 
     public void cancelExecution() {
-      if (iswindows) {
-        return;
-      }
-      if (pid >0) {
+      if (pid > 0) {
         try {
           logger.fine("sending signal");
-          Runtime.getRuntime().exec("kill -SIGINT " + pid);
+          String command = "kill -SIGINT " + pid;
+          if (iswindows) {
+            command = "taskkill /pid " + pid + " /F";
+          }
+          Runtime.getRuntime().exec(command);
         } catch (IOException e) {
           logger.log(Level.SEVERE, "exception sending signal: ", e);
         }

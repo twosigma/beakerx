@@ -18,6 +18,7 @@ package com.twosigma.beaker.groovy.utils;
 import com.twosigma.beaker.jvm.utils.BeakerPrefsUtils;
 
 import groovy.lang.Binding;
+import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 
 import java.io.File;
@@ -25,8 +26,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,6 +62,10 @@ public class GroovyEvaluator {
   protected String currentClassPath;
   protected String currentImports;
 
+  public static boolean LOCAL_DEV = false;
+  
+  public static boolean GROOVY_SHELL = false;
+  
   protected class jobDescriptor {
     public String codeToBeExecuted;
     public SimpleEvaluationObject outputObject;
@@ -179,6 +184,14 @@ public class GroovyEvaluator {
   protected DynamicClassLoaderSimple loader = null;
   protected GroovyShell shell;
 
+  
+  protected CompilerConfiguration compilerConfiguration;
+  protected String getInitCode(String sessionId) { 
+      if(LOCAL_DEV) return "";
+      return "import com.twosigma.beaker.NamespaceClient\n" +
+          "beaker = NamespaceClient.getBeaker('" + sessionId + "')\n";
+  }
+  
   protected class workerThread extends Thread {
 
     public workerThread() {
@@ -196,6 +209,10 @@ public class GroovyEvaluator {
       while(!exit) {
         try {
           // wait for work
+
+          if(!LOCAL_DEV) {
+              
+          }
           syncObject.acquire();
           
           // check if we must create or update class loader
@@ -215,20 +232,31 @@ public class GroovyEvaluator {
         
           //if(loader!=null)
           //  loader.resetDynamicLoader();
-          
-          nc = NamespaceClient.getBeaker(sessionId);
-          nc.setOutputObj(j.outputObject);
 
-          Boolean useOutputPanel = BeakerPrefsUtils.isUseOutputPanel(nc);
+          if(!LOCAL_DEV) {
+              nc = NamespaceClient.getBeaker(sessionId);
+              nc.setOutputObj(j.outputObject);
+          }
+
+          Boolean useOutputPanel = nc != null ? BeakerPrefsUtils.isUseOutputPanel(nc) : false;
           if (useOutputPanel) {
             j.outputObject.clrOutputHandler();
             BeakerStdOutErrHandler.fini();
           } else {
-            BeakerStdOutErrHandler.init();
+            if(!LOCAL_DEV) BeakerStdOutErrHandler.init();
           }
           j.outputObject.started();
 
-          if (!executor.executeTask(new MyRunnable(j.codeToBeExecuted, j.outputObject, loader))) {
+          
+          String code = null;
+          if(GROOVY_SHELL) {
+              code = j.codeToBeExecuted;
+          } else {
+              code = getInitCode(sessionId) + "\n\n" + j.codeToBeExecuted;
+          }
+          
+          
+          if (!executor.executeTask(new MyRunnable(code, j.outputObject, loader))) {
             j.outputObject.error("... cancelled!");
           }
           
@@ -264,12 +292,43 @@ public class GroovyEvaluator {
       public void run() {
         Object result;
         ClassLoader oldld = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(loader);
         theOutput.setOutputHandler();
+        
+        GroovyClassLoader gcl = null;
         try {
-          result = shell.evaluate(theCode);
-          theOutput.finished(result);
+            
+            if(GROOVY_SHELL) {
+                
+                Thread.currentThread().setContextClassLoader(loader);
+                
+                result = shell.evaluate(theCode);
+                
+            } else {
+                
+                gcl = new GroovyClassLoader(newClassLoader(), compilerConfiguration);
+                Thread.currentThread().setContextClassLoader(gcl);
+                Class<?> parsedClass = gcl.parseClass(theCode);
+                
+                Method run = null;
+                for(Method m : parsedClass.getMethods() ) {
+                    if(m.getName().equals("run") && m.getParameterCount() == 0) {
+                        run = m;
+                    }
+                }
+                
+                Object instance = parsedClass.newInstance();
+                result = run.invoke(instance);
+                
+            }
+           
+            if(LOCAL_DEV) { System.out.println(result); }
+            theOutput.finished(result);
+            
         } catch(Throwable e) {
+          if(LOCAL_DEV) {
+              System.err.println(e);
+              e.printStackTrace();
+          }
           if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
             theOutput.error("... cancelled!");
           } else {
@@ -279,6 +338,7 @@ public class GroovyEvaluator {
             theOutput.error(sw.toString());
           }
         }
+        try {gcl.close(); } catch(Exception e) {}
         theOutput.clrOutputHandler();
         Thread.currentThread().setContextClassLoader(oldld);
       }
@@ -316,19 +376,31 @@ public class GroovyEvaluator {
       acloader_cp += outDir;
 
       config.setClasspath(acloader_cp);
-      shell = new GroovyShell(newClassLoader(), new Binding(), config);
       
-      // ensure object is created
-      NamespaceClient.getBeaker(sessionId);
+      if(GROOVY_SHELL) {
+          
+          shell = new GroovyShell(newClassLoader(), new Binding(), config);
+          
+          // ensure object is created
+          if(!LOCAL_DEV) {
+              NamespaceClient.getBeaker(sessionId);
+          }
 
-      // initialize interpreter
-      String initCode = "import com.twosigma.beaker.NamespaceClient\n" +
-          "beaker = NamespaceClient.getBeaker('" + sessionId + "')\n";
-      try {
-        shell.evaluate(initCode);
-      } catch(Throwable e) { }
+          // initialize interpreter
+          String initCode = "import com.twosigma.beaker.NamespaceClient\n" +
+              "beaker = NamespaceClient.getBeaker('" + sessionId + "')\n";
+          try {
+            shell.evaluate(initCode);
+          } catch(Throwable e) { }
+          
+      } else {
+          
+          compilerConfiguration = config;
+          
+      }
+      
+
     }
   }
 
 }
-

@@ -71,6 +71,9 @@ define(function(require, exports, module) {
           bkHelper.setupCancellingOutput(modelOutput);
         }
         var onEvalStatusUpdate = function(evaluation) {
+          if (evaluation.status === "ERROR" && evaluation.payload != null){
+            evaluation.payload = _.escape(evaluation.payload);
+          }
           if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
             cometdUtil.unsubscribe(evaluation.update_id);
             GroovyCancelFunction = null;

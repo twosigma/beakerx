@@ -213,6 +213,23 @@ $markdown-text-color: #e6e1dc;
     }
   }
 
+  .outputlogcontainer {
+    color: $markdown-text-color;
+    background-color: $input-background-color;
+
+    .outputloghandle {
+      background: linear-gradient(#202020, #7e7a78, #202020);
+    }
+
+    .btn-group .btn-primary {
+      color: #f5f5f5;
+
+        &:hover {
+          color: #f5f5f5;
+        }
+    }
+  }
+
   //datatable
 
   .dataTable, table.dataTable thead th {

@@ -20,12 +20,12 @@
   <div class="form-horizontal">
     <div class="form-group">
       <label for="cell-id" class="control-label col-sm-2">Id</label>
-      <div ng-class="isError() ? 'col-sm-7' : 'col-sm-10'"><input class="form-control" ng-model="cellName" ng-focus="focused=true" ng-blur="focused=false"></div>
+      <div ng-class="isError() ? 'col-sm-7' : 'col-sm-10'"><input class="form-control" ng-model="cellName" bk-enter="save()"></div>
       <div class="col-sm-3" ng-if="isError()"><span class="help-inline" style="color:red">{{getNameError()}}</span></div>
     </div>
     <div class="form-group">
       <label for="cell-tags" class="control-label col-sm-2">Tags</label>
-      <div ng-class="isError() ? 'col-sm-7' : 'col-sm-10'"><input class="form-control" ng-model="cellTags" ng-focus="focused=true" ng-blur="focused=false"></div>
+      <div ng-class="isError() ? 'col-sm-7' : 'col-sm-10'"><input class="form-control" ng-model="cellTags" bk-enter="save()"></div>
       <div class="col-sm-3" ng-if="isError()"><span class="help-inline" style="color:red">{{getTagError()}}</span></div>
     </div>
     <div class="form-group">

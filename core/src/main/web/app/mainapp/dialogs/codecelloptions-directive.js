@@ -30,7 +30,6 @@
   var module = angular.module('bk.core');
 
   module.controller('CodeCellOptionsController', ['$scope', '$modalInstance', 'dscope', 'bkCoreManager', function($scope, $modalInstance, dscope, bkCoreManager) {
-    $scope.focused = false;
     $scope.dscope = dscope;
     $scope.initializationCell = dscope.initialization;
     $scope.cellName = dscope.id;
@@ -73,12 +72,6 @@
         bkCoreManager.getNotebookCellManager().rebuildMaps()
       $modalInstance.close('save');
     };
-    $(document).on('keydown', function(evt) {
-      if ($scope.focused && evt.which === 13) {
-        $scope.save();
-        event.preventDefault();
-      }
-    });
 }]);
 
 })();

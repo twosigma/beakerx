@@ -236,21 +236,21 @@
 
       var self = this;
 
-      var selectStartOrEndRange = function(value, range) {
-        var endOfRange = moment(value).tz(self.axisTimezone).endOf(range).add(1, "ms");
-        var startOfRange = moment(value).tz(self.axisTimezone).startOf(range);
-        return  ((endOfRange - value) > (value - startOfRange)) ? startOfRange : endOfRange;
+      var selectStartOrEndInterval = function(value, interval) {
+        var nextIntervalStart = moment(value).tz(self.axisTimezone).endOf(interval).add(1, "ms");
+        var intervalStart = moment(value).tz(self.axisTimezone).startOf(interval);
+        return  ((nextIntervalStart - value) > (value - intervalStart)) ? intervalStart : nextIntervalStart;
       };
 
       var normalize = function (value) {
         if (self.axisType === "time") {
           if (plotUtils.gt(w, self.DAY)) {
             if (plotUtils.lte(w, self.MONTH)) {
-              value = selectStartOrEndRange(value, "day");
+              value = selectStartOrEndInterval(value, "day");
             } else if (plotUtils.lte(w, self.YEAR)) {
-              value = selectStartOrEndRange(value, "month");
+              value = selectStartOrEndInterval(value, "month");
             } else {
-              value = selectStartOrEndRange(value, "year");
+              value = selectStartOrEndInterval(value, "year");
             }
             console.log("line:" + moment(value).tz("UTC").format("YYYY MMM DD ddd, HH:mm:ss .SSS"));
           }

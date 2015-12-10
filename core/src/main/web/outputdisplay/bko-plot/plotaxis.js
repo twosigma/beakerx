@@ -424,9 +424,9 @@
           ret = moment(d).tz(this.axisTimezone).format("HH:mm:ss");
         }
       } else if (plotUtils.lte(span, this.DAY)) {
-        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD ddd, HH:mm");
+        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD, HH:mm");
       } else if (plotUtils.lte(span, this.MONTH)) {
-        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD ddd");
+        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD");
       } else if (plotUtils.lte(span, this.YEAR)) {
         ret = moment(d).tz(this.axisTimezone).format("YYYY MMM");
       } else {

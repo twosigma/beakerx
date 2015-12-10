@@ -367,11 +367,17 @@
           'Shift-Cmd-Enter':  function(cm) {
             scope.evaluateSelection(cm);
           }
+
         });
 
         var initCodeMirror = function() {
           var template = '<textarea class="bkcelltextarea" ng-model="cellmodel.input.body">' + scope.cellmodel.input.body + '</textarea>';
           $(element.find('.bkcelltextarea')[0]).replaceWith($(template));
+
+          _.extend(codeMirrorOptions, {
+            theme: bkHelper.getTheme()
+          });
+
 
           scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);

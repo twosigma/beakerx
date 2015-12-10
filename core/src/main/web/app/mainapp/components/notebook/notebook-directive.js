@@ -134,6 +134,11 @@
           },
           getCMKeyMapMode: function () {
             return this._cmKeyMapMode;
+          },
+          setCMTheme: function (theme) {
+            _.each(this._codeMirrors, function (cm) {
+              cm.setOption("theme", theme);
+            });
           }
         };
         $scope.setBkNotebook({bkNotebook: _impl});

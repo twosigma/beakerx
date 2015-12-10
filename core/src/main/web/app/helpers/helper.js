@@ -43,6 +43,14 @@
     };
 
     var bkHelper = {
+
+      setTheme: function (theme) {
+        bkCoreManager.setTheme(theme);
+      },
+      getTheme: function () {
+        return bkCoreManager.getTheme();
+      },
+
       // enable debug
       debug: function() {
         window.bkDebug = bkDebug;
@@ -547,6 +555,18 @@
         var bkNotebook = getBkNotebookWidget();
         if (bkNotebook) {
           return bkNotebook.getCMKeyMapMode();
+        }
+      },
+      setInputCellTheme: function(theme) {
+        var bkNotebook = getBkNotebookWidget();
+        if (bkNotebook) {
+          return bkNotebook.setCMTheme(theme);
+        }
+      },
+      getInputCellTheme: function() {
+        var bkNotebook = getBkNotebookWidget();
+        if (bkNotebook) {
+          return bkNotebook.getCMTheme();
         }
       },
 

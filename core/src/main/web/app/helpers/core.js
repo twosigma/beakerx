@@ -265,7 +265,14 @@
     var bkCoreManager = {
 
       _prefs: {
-
+        setTheme: function (theme) {
+          bkCoreManager.colorize(theme);
+          bkHelper.setInputCellTheme(theme);
+          this.theme = theme;
+        },
+        getTheme: function () {
+          return this.theme;
+        },
         setFSOrderBy: function (fs_order_by) {
           this.fs_order_by = fs_order_by;
         },
@@ -278,6 +285,18 @@
         getFSReverse: function () {
           return this.fs_reverse;
         }
+      },
+
+      setTheme: function (theme) {
+        this._prefs.setTheme(theme);
+
+        bkUtils.httpPost('../beaker/rest/util/setPreference', {
+          preferencename: 'theme',
+          preferencevalue: theme
+        });
+      },
+      getTheme: function () {
+        return this._prefs.getTheme();
       },
 
       setFSOrderBy: function (fs_order_by) {
@@ -775,7 +794,8 @@
           matchBrackets: true,
           extraKeys: keys,
           goToNextCodeCell: goToNextCodeCell,
-          scrollbarStyle: "simple"
+          scrollbarStyle: "simple",
+          theme: bkCoreManager.getTheme()
         };
       },
 
@@ -1034,6 +1054,24 @@
             callback(result);
           }
         });
+      },
+      colorize: function (theme) {
+        var colorizedElements = $("html");
+        var ca = colorizedElements.attr('class');
+        var classes = [];
+        if (ca && ca.length && ca.split) {
+          ca = jQuery.trim(ca);
+          /* strip leading and trailing spaces */
+          classes = ca.split(' ');
+        }
+        var themeStylePrefix = "beaker-theme-";
+        var clazz = _.find(classes, function (e) {
+          return e.indexOf(themeStylePrefix) !== -1
+        });
+        if (clazz) colorizedElements.removeClass(clazz);
+        if ("default" !== theme) {
+          colorizedElements.addClass(themeStylePrefix + theme);
+        }
       }
     };
 
@@ -1053,6 +1091,15 @@
     }).error(function (response) {
       console.log(response);
       bkCoreManager._prefs.fs_reverse = false;
+    });
+
+    bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
+      preference: 'theme'
+    }).success(function (theme) {
+      bkCoreManager._prefs.setTheme(theme);
+    }).error(function (response) {
+      console.log(response);
+      bkCoreManager._prefs.setTheme("default");
     });
 
     return bkCoreManager;

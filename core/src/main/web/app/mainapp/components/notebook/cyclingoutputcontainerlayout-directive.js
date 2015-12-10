@@ -18,19 +18,36 @@
 	'use strict';
 
 	var module = angular.module('bk.notebook');
-	module.directive('outputContainer', ['bkHelper', function (bkHelper) {
+	module.directive('cyclingOutputContainerLayout', ['bkHelper', function (bkHelper) {
 		return {
 			restrict: 'E',
-			template: JST["mainapp/components/notebook/outputcontainer"](),
+			template: 'CyclingOutputContainerLayoutManager<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b ng-if="hasName($index)">{{getName($index)}}<br/></b><bk-code-cell-output model="i" >' +
+			'</ bk-code-cell-output><br/>></li></ul>',
 			scope: {
 				model: '='
 			},
 			controller: function ($scope) {
-				$scope.layout = $scope.model.getCellModel().layout;
+				$scope.items = $scope.model.getCellModel().items;
+				$scope.labels = $scope.model.getCellModel().labels;
 				$scope.isShowOutput = function () {
 					return $scope.model.isShowOutput();
 				};
+
 				$scope.showoutput = $scope.model.isShowOutput();
+				$scope.items = _.map($scope.model.getCellModel().items, function (it) {
+					return {
+						result: it,
+						isShowOutput: function () {
+							return $scope.showoutput;
+						}
+					};
+				});
+				$scope.getName = function (idx) {
+					return $scope.model.getCellModel().labels[idx] || '';
+				};
+				$scope.hasName = function (idx) {
+					return $scope.model.getCellModel().labels !== undefined;
+				};
 				$scope.isShowMenu = function () {
 					return false;
 				};

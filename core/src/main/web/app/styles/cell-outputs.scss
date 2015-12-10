@@ -61,7 +61,11 @@ bk-code-cell-output {
   }
 }
 
-.outputcontainer-li {
+.outputcontainer {
 	display: block;
-	margin-bottom: 10px
+}
+
+.outputcontainer-li {
+  display: block;
+  margin-bottom: 10px
 }

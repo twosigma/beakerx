@@ -36,6 +36,10 @@
         FILESYS: "file",
         HTTP: "http",
         AJAX: "ajax"
+      },
+      THEMES: {
+        DEFAULT: 'default',
+        AMBIANCE: 'ambiance'
       }
     };
   });

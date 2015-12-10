@@ -1096,7 +1096,7 @@
     bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
       preference: 'theme'
     }).success(function (theme) {
-      bkCoreManager._prefs.setTheme(theme);
+      bkCoreManager._prefs.setTheme(_.contains(_.values(GLOBALS.THEMES), theme) ? theme : "default");
     }).error(function (response) {
       console.log(response);
       bkCoreManager._prefs.setTheme("default");

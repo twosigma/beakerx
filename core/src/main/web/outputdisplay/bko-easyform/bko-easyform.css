@@ -182,3 +182,7 @@ div.easy-form-container fieldset legend {
   height: 25px;
   border-color: #ccc;
 }
+
+.easy-form-container a[disabled] {
+  pointer-events: none;
+}

@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -87,7 +87,6 @@
                 "shellId": "89a44022-5f45-43bc-90f4-3c0c585cfcfb",
                 "elapsedTime": 594,
                 "result": {
-                    "update_id": "ace9d52f-f694-460d-974c-cd33bb90fedf",
                     "update_time": 1443669914315,
                     "type": "EasyForm",
                     "caption": "Form and Run",
@@ -114,7 +113,8 @@
                             "tag": "run"
                         }
                     ]
-                }
+                },
+                "height": 231
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -142,7 +142,8 @@
                 "shellId": "89a44022-5f45-43bc-90f4-3c0c585cfcfb",
                 "elapsedTime": 723,
                 "state": {},
-                "result": "rekaeB...Berzeius"
+                "result": "rekaeB...Berzeius",
+                "height": 52
             },
             "evaluatorReader": true,
             "tags": "run",
@@ -201,7 +202,6 @@
             "output": {
                 "state": {},
                 "result": {
-                    "update_id": "d178101b-1f54-4d22-b363-8f4a04193f62",
                     "update_time": 1445352766774,
                     "type": "EasyForm",
                     "caption": "Form and Run",
@@ -278,7 +278,6 @@
                 "shellId": "89a44022-5f45-43bc-90f4-3c0c585cfcfb",
                 "elapsedTime": 607,
                 "result": {
-                    "update_id": "b726ad08-7102-4c81-a810-cc278de23319",
                     "update_time": 1443669952409,
                     "type": "EasyForm",
                     "caption": "Field Types",
@@ -479,33 +478,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50,
-                            "fixLeft": false,
-                            "fixRight": false
-                        },
-                        "columnNames": [
-                            "Key",
-                            "Value"
-                        ],
-                        "actualalign": [
-                            "L",
-                            "L"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "getCellSho": [
-                            true,
-                            true
-                        ]
-                    }
-                },
+                "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
                 "shellId": "89a44022-5f45-43bc-90f4-3c0c585cfcfb",

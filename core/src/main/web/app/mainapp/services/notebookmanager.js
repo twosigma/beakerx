@@ -22,7 +22,7 @@
 
   module.factory('bkNotebookManager', function() {
     var registrations = [];
-
+    var listeners = [];
     return {
       init: function(notebookModel) {
         registrations.push(
@@ -34,10 +34,20 @@
             });
           })
         );
+
+        registrations.push($.cometd.subscribe('/sessionChange', function(reply){}));
+        listeners.push($.cometd.addListener("/meta/handshake", function (reply) {
+          if (reply.successful) {
+            registrations.push($.cometd.subscribe('/sessionChange', function(reply){}));
+          }
+        }));
       },
       reset: function() {
         _.each(registrations, function(v) {
           $.cometd.unsubscribe(v);
+        });
+        _.each(listeners, function(l) {
+          $.cometd.removeListener(l);
         });
       }
     };

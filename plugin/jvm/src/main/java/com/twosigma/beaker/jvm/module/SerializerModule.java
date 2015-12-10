@@ -112,7 +112,6 @@ import com.twosigma.beaker.jvm.serialization.ImageIconSerializer;
 import com.twosigma.beaker.jvm.serialization.MapDeserializer;
 import com.twosigma.beaker.jvm.serialization.NamespaceBindingDeserializer;
 import com.twosigma.beaker.jvm.serialization.OutputContainerCellSerializer;
-import com.twosigma.beaker.jvm.serialization.OutputContainerDeserializer;
 import com.twosigma.beaker.jvm.serialization.OutputContainerSerializer;
 import com.twosigma.beaker.jvm.serialization.PlotObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.ResultsDeserializer;
@@ -167,8 +166,6 @@ public class SerializerModule extends AbstractModule {
     BeakerObjectConverter serializer = injector.getInstance(PlotObjectSerializer.class);
     try {
       serializer.addTypeDeserializer(new TableDisplay.DeSerializer(serializer));
-      serializer.addTypeDeserializer(new OutputContainerDeserializer(serializer));
-      serializer.addTypeDeserializer(new OutputContainerDeserializer(serializer));
       serializer.addTypeDeserializer(new BeakerCodeCell.DeSerializer(serializer));
       serializer.addTypeDeserializer(new BeakerProgressUpdate.DeSerializer(serializer));
       serializer.addTypeDeserializer(new SimpleEvaluationObject.DeSerializer(serializer));

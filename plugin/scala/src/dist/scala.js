@@ -173,6 +173,7 @@ define(function(require, exports, module) {
                         "com.twosigma.beaker.chart.categoryplot.plotitem.*",
                         "com.twosigma.beaker.chart.histogram.*",
                         "com.twosigma.beaker.chart.heatmap.HeatMap",
+                        "com.twosigma.beaker.jvm.object.*",
                         "com.twosigma.beaker.easyform.*",
                         "com.twosigma.beaker.easyform.formitem.*"];
   var shellReadyDeferred = bkHelper.newDeferred();

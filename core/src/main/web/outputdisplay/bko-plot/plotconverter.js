@@ -611,7 +611,7 @@
 
             }
             if(newmodel.displayMode === 'STACK' && list.length > 1){
-              _.reverse(newmodel.data);
+              newmodel.data.reverse();
             }
             break;
           default:

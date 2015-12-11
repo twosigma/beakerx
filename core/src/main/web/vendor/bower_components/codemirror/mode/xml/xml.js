@@ -109,7 +109,6 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
       return null;
     }
   }
-  inText.isInText = true;
 
   function inTag(stream, state) {
     var ch = stream.next();

@@ -18,11 +18,10 @@
 	'use strict';
 
 	var module = angular.module('bk.notebook');
-	module.directive('cyclingOutputContainerLayout', ['bkHelper', function (bkHelper) {
+	module.directive('cyclingOutputContainerLayout', ['bkHelper', '$timeout', function (bkHelper, $timeout) {
 		return {
 			restrict: 'E',
-			template: 'CyclingOutputContainerLayoutManager<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b ng-if="hasName($index)">{{getName($index)}}<br/></b><bk-code-cell-output model="i" >' +
-			'</ bk-code-cell-output><br/>></li></ul>',
+			template: JST["mainapp/components/notebook/cyclingoutputcontainerlayout"](),
 			scope: {
 				model: '='
 			},
@@ -53,6 +52,21 @@
 				};
 				$scope.$watch('isShowOutput()', function (oldval, newval) {
 					$scope.showoutput = newval;
+				});
+			},
+			link: function ($scope, element) {
+				$timeout(function () {
+					var divs = $('div[id^="content-"]').hide(),
+						i = 0;
+					(function cycle() {
+
+						divs.eq(i).show(0)
+							.delay($scope.model.getCellModel().layout.period)
+							.hide(0, cycle);
+
+						i = ++i % divs.length;
+
+					})();
 				});
 			}
 		}

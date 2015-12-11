@@ -16,7 +16,7 @@
 package com.twosigma.beaker.jvm.object;
 
 public class CyclingOutputContainerLayoutManager extends OutputContainerLayoutManager {
-  private long period;
+  private long period = 5000L;
 
   public long getPeriod() {
     return period;

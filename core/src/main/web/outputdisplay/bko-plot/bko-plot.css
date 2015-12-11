@@ -213,6 +213,11 @@
   padding: 0.8em;
 }
 
+.fa.fa-times {
+  float: right;
+  cursor: pointer;
+}
+
 .plot-message-content {
   vertical-align: middle;
 }

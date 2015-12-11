@@ -364,7 +364,7 @@
         };
 
         scope.drawLegendPointer = function(d) {
-          if(scope.gradientLegend){
+          if (scope.gradientLegend) {
             scope.gradientLegend.drawPointer(d.ele.value);
           }
         };
@@ -430,6 +430,17 @@
             d.scry = y;
             var tipid = "tip_" + d.id;
             var tipdiv = scope.jqcontainer.find("#" + tipid);
+            var closeIcon = $('<i/>', {class: 'fa fa-times'})
+              .on('click', function() {
+                delete scope.tips[d.id];
+                if (d.isresp === true) {  // is interaction responsive element
+                  scope.jqsvg.find("#" + d.id).css("opacity", 0);
+                } else {
+                  scope.jqsvg.find("#" + d.id).removeAttr("filter");
+                }
+                scope.interactMode = "remove";
+                $(this).parent('.plot-tooltip').remove();
+              });
 
             if (tipdiv.length === 0) {
               var tiptext = data[d.idx].createTip(d.ele, d.g, scope.stdmodel);
@@ -438,6 +449,7 @@
                 .attr("id", tipid)
                 .attr("class", "plot-tooltip")
                 .css("border-color", data[d.idx].tip_color)
+                .append(closeIcon)
                 .append(tiptext)
                 .on('mouseup', function(e) {
                   if (e.which == 3) {
@@ -1677,7 +1689,9 @@
 
         scope.standardizeData = function() {
           var model = scope.model.getCellModel();
+          console.log('Model', model);
           scope.stdmodel = plotFormatter.standardizeModel(model, scope.prefs);
+          console.log('STD', scope.stdmodel);
         };
 
         scope.dumpState = function() {

@@ -74,13 +74,13 @@ $cell-border-color: #7e7a78;
     }
   }
 
-  textarea {
+  textarea, .publish input.field, .publish select, .publish textarea {
     border-color: $cell-border-color;
     background:   $input-background-color !important;
     color:        $std-fg-text-color !important;
   }
 
-  button, .btn-default {
+  button, .btn, .btn-default {
     background: #505050;
     color: $std-fg-text-color;
     border-color: #7b7462;
@@ -92,7 +92,7 @@ $cell-border-color: #7e7a78;
     }
   }
 
-  .modal-footer .btn-primary {
+  .modal-content .btn-primary {
     background: #39a9ed;
 
     &:hover {

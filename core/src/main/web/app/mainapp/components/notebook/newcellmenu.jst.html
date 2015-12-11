@@ -26,12 +26,12 @@
     </span>
     </button>
   </li>
-  <li role="presentation" class="dropdown" dropdown>
+  <li role="presentation" class="dropdown" uib-dropdown>
     <button class="btn btn-primary dropdown-toggle"
             ng-class="!isLarge && 'btn-xs'"
             data-toggle="dropdown">code <i class="fa fa-sort-down"></i>
     </button>
-    <ul class="dropdown-menu code-dropdown" role="menu">
+    <ul class="dropdown-menu code-dropdown" role="menu" uib-dropdown-menu>
       <li ng-repeat="(key, value) in getEvaluators()">
         <a class="new-cell-menu-item" ng-click="newCodeCell(key)">
           <bk-language-menu-item
@@ -53,12 +53,12 @@
             ng-click="newMarkdownCell()">text<i class="fa fa-sort-down fa-hidden"></i>
     </button>
   </li>
-  <li role="presentation" class="dropdown" dropdown>
+  <li role="presentation" class="dropdown" uib-dropdown>
     <button class="btn btn-primary"
             ng-class="!isLarge && 'btn-xs'"
             data-toggle="dropdown">section <i class="fa fa-sort-down"></i>
     </button>
-    <ul class="dropdown-menu section-menu" role="menu">
+    <ul class="dropdown-menu section-menu" role="menu" uib-dropdown-menu>
       <li ng-repeat='level in ::sectionLevels'>
         <a class="new-cell-menu-item" ng-click="newSectionCell(level)">Level {{::level}}</a>
       </li>

@@ -71,13 +71,54 @@ define(function(require, exports, module) {
           return notebookViewModel.isShowingOutput();
         }
       }
+    },
+    {
+      name: 'Theme',
+      sortorder: 150,
+      id: 'theme-menuitem'
     }
   ];
-  var menuItemPromise = bkHelper.newPromise({
-    items: menuItems,
-    id: 'view-menu',
-    parent: 'View'
-  });
+  var toAdd = [
+    {
+      parent: 'View',
+      id: 'view-menu',
+      items: menuItems
+    },
+    {
+      parent: 'View',
+      submenu: 'Theme',
+      id: 'theme-menuitem',
+      items: [
+        {
+          name: 'Default',
+          sortorder: 151,
+          id: 'default-theme-menuitem',
+          isRadio: true,
+          isChecked: function() {
+            return bkHelper.getTheme() == 'default' ||
+              bkHelper.getTheme() == null;
+          },
+          action: function() {
+            bkHelper.setTheme('default');
+          }
+        },
+        {
+          name: 'Ambiance',
+          sortorder: 152,
+          id: 'ambiance-theme-menuitem',
+          isRadio: true,
+          isChecked: function() {
+            return bkHelper.getTheme() == 'ambiance';
+          },
+          action: function() {
+            bkHelper.setTheme('ambiance');
+          }
+        }
+      ]
+    }
+  ];
+
+  var menuItemPromise = bkHelper.newPromise(toAdd);
   exports.getMenuItems = function() {
     return menuItemPromise;
   };

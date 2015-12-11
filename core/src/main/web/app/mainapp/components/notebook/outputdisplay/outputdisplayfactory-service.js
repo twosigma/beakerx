@@ -23,7 +23,7 @@
 
   var module = angular.module('bk.outputDisplay');
 
-  module.factory("bkOutputDisplayFactory", function($rootScope, bkHelper) {
+  module.factory("bkOutputDisplayFactory", function($rootScope, bkHelper, $sce) {
 
     var impls = {
         "Text": {
@@ -80,8 +80,8 @@
       "Error": {
         template: "<pre class='out_error'>" +
         "<span ng-show='canExpand' class='toggle-error' ng-click='expanded = !expanded'>{{expanded ? '-' : '+'}}</span>" +
-        "<span>{{shortError}}</span></pre>" +
-        "<pre ng-show='expanded'><span>{{longError}}</span>" +
+        "<span ng-bind-html='shortError'></span></pre>" +
+        "<pre ng-show='expanded'><span ng-bind-html='longError'></span>" +
         "</pre>",
         controller: function($scope, $element) {
           $scope.expanded = false;
@@ -101,9 +101,9 @@
               }
             }
 
-            $scope.shortError   = shortError;
+            $scope.shortError   = $sce.trustAsHtml(shortError);
             $scope.canExpand    = longErrorIndex > 0;
-            $scope.longError    = errors.slice(longErrorIndex).join("\n");
+            $scope.longError    = $sce.trustAsHtml(errors.slice(longErrorIndex).join("\n"));
           });
         }
       },
@@ -193,7 +193,8 @@
       "OutputContainer": ["OutputContainer", "Text"],
       "CategoryPlot": ["Plot", "Text"],
       "Histogram": ["Plot", "Text"],
-      "HeatMap": ["Plot", "Text"]
+      "HeatMap": ["Plot", "Text"],
+      "TreeMap": ["Plot", "Text"]
     };
     var factory = {
       add: function(type, impl) {

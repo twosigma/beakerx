@@ -70,21 +70,24 @@
           if ($scope.isLocked()) {
             return false;
           }
-          if ($scope.cellmodel.input.hidden === true) {
-            return false;
-          }
-          return true;
+          return $scope.cellmodel.input.hidden !== true;
         };
 
         $scope.bkNotebook = getBkNotebookWidget();
+
         // ensure cm refreshes when 'unhide'
-        $scope.$watch('isShowInput()', function(newValue, oldValue) {
-          if ($scope.cm && newValue === true && newValue !== oldValue) {
-            bkUtils.fcall(function() {
-              $scope.cm.refresh();
-            });
+        var lastInputHidden = $(".code-cell-input").hasClass("ng-hide");
+        window.setInterval(function () {
+          var inputHidden = $(".code-cell-input").hasClass("ng-hide");
+          if (inputHidden !== lastInputHidden) {
+            if ($scope.cm && inputHidden === false) {
+              bkUtils.fcall(function () {
+                $scope.cm.refresh();
+              });
+            }
+            lastInputHidden = inputHidden;
           }
-        });
+        }, 10);
 
         $scope.isHiddenOutput = function() {
           return $scope.cellmodel.output.selectedType == 'Hidden';

@@ -471,4 +471,8 @@ $cell-border-color: #7e7a78;
   .CodeMirror .cm-comment {
     color: $std-fg-text-color;
   }
+
+  .CodeMirror pre {
+    background-color: $main-theme-panel-background;
+  }
 }

@@ -477,7 +477,12 @@ transformJSON <- function(tres) {
 		    if (exists("subtype", where=tres) && tres$subtype == "Dictionary") {
 		      o = list()
 		      for (i in 1:rows) {
-		        o[[ tres$values[[i]][[1]] ]] = transformJSON(tres$values[[i]][[2]])
+            theval = tres$values[[i]][[1]]
+            if (is.list(theval) && !is.null(names(theval)) && exists("type", where=theval) && exists("timestamp", where=theval) && theval$type == "Date") {
+              o[[ transformJSON(theval) ]] = transformJSON(tres$values[[i]][[2]])
+            } else {
+		          o[[ tres$values[[i]][[1]] ]] = transformJSON(tres$values[[i]][[2]])
+            }
 		      }
 		      tres = o
 		    } else if (exists("subtype", where=tres) && tres$subtype == "ListOfMaps") {

@@ -63,11 +63,11 @@
       </div>
       <p><br/></p>
     </div>
-    <tabset>
-      <tab ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}" active="evalTabOp.tabs[$index].active">
+    <uib-tabset>
+      <uib-tab ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}" active="evalTabOp.tabs[$index].active">
         <bk-plugin-manager-evaluator-settings></bk-plugin-manager-evaluator-settings>
-      </tab>
-    </tabset>
+      </uib-tab>
+    </uib-tabset>
   </div>
   <div class="modal-footer fixed" style="height: 68px;"> <!-- height linked to modal-body padding-bottom -->
     <button class="btn btn-primary language-manager-close-button" ng-click='doClose()'>Close</button>

@@ -23,8 +23,8 @@
 
   var module = angular.module('bk.core');
 
-  module.controller('pluginManagerCtrl', ['$scope', '$rootScope', '$modalInstance', 'bkCoreManager', 'bkSessionManager', 'bkMenuPluginManager', 'bkEvaluatePluginManager',
-                                          'bkEvaluatorManager', 'GLOBALS', 'bkUtils', function($scope, $rootScope, $modalInstance, bkCoreManager, bkSessionManager, bkMenuPluginManager, bkEvaluatePluginManager,
+  module.controller('pluginManagerCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'bkCoreManager', 'bkSessionManager', 'bkMenuPluginManager', 'bkEvaluatePluginManager',
+                                          'bkEvaluatorManager', 'GLOBALS', 'bkUtils', function($scope, $rootScope, $uibModalInstance, bkCoreManager, bkSessionManager, bkMenuPluginManager, bkEvaluatePluginManager,
                                               bkEvaluatorManager, GLOBALS, bkUtils) {
 
 
@@ -46,7 +46,7 @@
     };
 
     $scope.doClose = function() {
-      $modalInstance.close("ok");
+      $uibModalInstance.close("ok");
     }
 
     $scope.performOnClosingCleanup = function() {

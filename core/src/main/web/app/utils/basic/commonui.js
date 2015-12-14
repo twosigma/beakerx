@@ -337,4 +337,30 @@
     };
   });
 
+  module.directive('bkBrandFill', function($rootScope) {
+    return {
+      restrict: 'A',
+      scope: {
+        bkBrandFill: '='
+      },
+      link: function(scope) {
+        var brandColors = {
+          'default': '#FFFFFF',
+          'ambiance': '#E6E1DC'
+        };
+
+        //for control panel
+        var theme = bkHelper.getTheme();
+        scope.bkBrandFill = (theme && _.contains(_.keys(brandColors), theme)) ? brandColors[theme] : brandColors['default'];
+
+        //on load & on theme change
+        $rootScope.$on('beaker.theme.set', function(evt, theme) {
+          if (_.contains(_.keys(brandColors), theme)) {
+            scope.bkBrandFill = brandColors[theme];
+          }
+        });
+      }
+    }
+  });
+
 })();

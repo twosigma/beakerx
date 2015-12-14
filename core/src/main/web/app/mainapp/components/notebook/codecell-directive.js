@@ -18,6 +18,26 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
+  module.directive('ngHideEx', function($animate) {
+    return {
+      scope: {
+        'ngHideEx': '=',
+        'afterShow': '&',
+        'afterHide': '&'
+      },
+      link: function(scope, element) {
+        scope.$watch('ngHideEx', function(hide, oldHide) {
+          if (hide) {
+            $animate.addClass(element, 'ng-hide', {tempClasses: 'ng-hide-animate'}).then(scope.afterHide);
+          }
+          if (!hide) {
+            $animate.removeClass(element, 'ng-hide', {tempClasses: 'ng-hide-animate'}).then(scope.afterShow);
+          }
+        });
+      }
+    }
+  });
+
   module.directive('bkCodeCell', function(
       bkUtils,
       bkEvaluatorManager,
@@ -76,18 +96,11 @@
 
         $scope.bkNotebook = getBkNotebookWidget();
 
-        // ensure cm refreshes when 'unhide'
-        $scope.$watch('isShowInput()', function(newValue, oldValue) {
-          if ($scope.cm && newValue !== oldValue) {
-						var inputCodeCell = $(".code-cell-input");
-            if (newValue === true){
-              inputCodeCell.removeClass("ng-hide");
-              $scope.cm.refresh();
-            }else{
-              inputCodeCell.addClass("ng-hide");
-            }
-          }
-        });
+        //ensure cm refreshes when 'unhide'
+        $scope.afterShow = function () {
+          $scope.cm.refresh();
+        };
+
 
         $scope.isHiddenOutput = function() {
           return $scope.cellmodel.output.selectedType == 'Hidden';

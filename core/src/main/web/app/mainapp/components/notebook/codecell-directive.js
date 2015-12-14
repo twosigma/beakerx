@@ -25,7 +25,8 @@
       bkSessionManager,
       bkCoreManager,
       bkPublicationHelper,
-      $timeout) {
+      $timeout,
+      $animate) {
 
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {
@@ -76,18 +77,17 @@
         $scope.bkNotebook = getBkNotebookWidget();
 
         // ensure cm refreshes when 'unhide'
-        var lastInputHidden = $(".code-cell-input").hasClass("ng-hide");
-        window.setInterval(function () {
-          var inputHidden = $(".code-cell-input").hasClass("ng-hide");
-          if (inputHidden !== lastInputHidden) {
-            if ($scope.cm && inputHidden === false) {
-              bkUtils.fcall(function () {
-                $scope.cm.refresh();
-              });
+        $scope.$watch('isShowInput()', function(newValue, oldValue) {
+          if ($scope.cm && newValue !== oldValue) {
+						var inputCodeCell = $(".code-cell-input");
+            if (newValue === true){
+              inputCodeCell.removeClass("ng-hide");
+              $scope.cm.refresh();
+            }else{
+              inputCodeCell.addClass("ng-hide");
             }
-            lastInputHidden = inputHidden;
           }
-        }, 10);
+        });
 
         $scope.isHiddenOutput = function() {
           return $scope.cellmodel.output.selectedType == 'Hidden';

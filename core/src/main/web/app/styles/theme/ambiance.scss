@@ -374,6 +374,10 @@ $markdown-text-color: #e6e1dc;
     color: $markdown-text-color !important;
   }
 
+  header .navbar-brand-fill {
+    fill: $markdown-text-color;
+  }
+
   //easy-form
   .easy-form-container {
     legend, label, input {

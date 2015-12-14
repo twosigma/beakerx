@@ -17,64 +17,13 @@ package com.twosigma.beaker.jvm.object;
 
 public class DashboardLayoutManager extends OutputContainerLayoutManager {
 
-  private int colCount;
+  private final int columns;
 
-  private int colSpan;
-
-  private int rowSpan;
-
-
-  //  Gets how many columns each widget occupies.
-  public int getxSpan() {
-    return colSpan;
+  public DashboardLayoutManager(int columns) {
+    this.columns = columns;
   }
 
-  //  Gets how many columns each widget occupies.
-  public int getXSpan() {
-    return colSpan;
-  }
-
-  //  Gets how many rows each widget occupies.
-  public int getySpan() {
-    return rowSpan;
-  }
-
-  //  Gets how many rows each widget occupies.
-  public int getYSpan() {
-    return rowSpan;
-  }
-
-  //  Sets how many columns of widgets.
-  public DashboardLayoutManager setColumnCount(int colCount) {
-    this.colCount = colCount;
-    return this;
-  }
-
-  //  Sets how many columns each widget is going to occupy.
-  public DashboardLayoutManager setxSpan(int colSpan) {
-    this.colSpan = colSpan;
-    return this;
-  }
-
-  //  Sets how many columns each widget is going to occupy.
-  public DashboardLayoutManager setXSpan(int colSpan) {
-    this.colSpan = colSpan;
-    return this;
-  }
-
-  //  Sets how many rows each widget is going to occupy.
-  public DashboardLayoutManager setySpan(int rowSpan) {
-    this.rowSpan = rowSpan;
-    return this;
-  }
-
-  //  Sets how many rows each widget is going to occupy.
-  public DashboardLayoutManager setYSpan(int rowSpan) {
-    this.rowSpan = rowSpan;
-    return this;
-  }
-
-  public int getColCount() {
-    return colCount;
+  public int getColumns() {
+    return columns;
   }
 }

@@ -32,8 +32,6 @@ public class DashboardLayoutManagerSerializer extends OutputContainerLayoutManag
   @Override
   protected void serialize(DashboardLayoutManager value, JsonGenerator jgen) throws
                                                                              IOException {
-    jgen.writeObjectField("colSpan", value.getXSpan());
-    jgen.writeObjectField("rowSpan", value.getYSpan());
-    jgen.writeObjectField("colCount", value.getColCount());
+    jgen.writeObjectField("columns", value.getColumns());
   }
 }

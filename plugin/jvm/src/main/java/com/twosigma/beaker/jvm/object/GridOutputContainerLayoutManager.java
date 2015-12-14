@@ -16,10 +16,10 @@
 package com.twosigma.beaker.jvm.object;
 
 public class GridOutputContainerLayoutManager extends OutputContainerLayoutManager {
-  private int dividerWidth;
+  private int dividerWidth = 0;
   private final int columns;
 
-  public GridOutputContainerLayoutManager(int columns){
+  public GridOutputContainerLayoutManager(int columns) {
     this.columns = columns;
   }
 

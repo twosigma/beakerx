@@ -423,7 +423,7 @@ $cell-border-color: #7e7a78;
       color: $std-fg-text-color !important;
     }
 
-   .navbar-inverse  .navbar-text {
+    .navbar-inverse .navbar-text {
       background-color: #3f5264 !important;
     }
   }
@@ -463,9 +463,5 @@ $cell-border-color: #7e7a78;
 
   .CodeMirror .cm-comment {
     color: $std-fg-text-color;
-  }
-
-  .CodeMirror pre {
-    background-color: $main-theme-panel-background;
   }
 }

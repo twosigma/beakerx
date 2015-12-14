@@ -1,0 +1,1469 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "HTML",
+            "plugin": "HTML",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "section8iyPbD",
+            "type": "section",
+            "title": "Layouts",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "sectionQb00Si",
+            "type": "section",
+            "title": "TabbedOutputContainerLayoutManager (default)",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeE22mjD",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "container = new OutputContainerCell()",
+                    "",
+                    "def plot1 = new Plot(title: \"Adding Stems\");",
+                    "def y1 = [1.5, 1, 6, 5, 2, 8]",
+                    "def cs = [Color.black, Color.red, Color.orange, Color.green, Color.blue, Color.pink]",
+                    "def ss = [StrokeType.SOLID, StrokeType.SOLID, StrokeType.DASH, StrokeType.DOT, StrokeType.DASHDOT, StrokeType.LONGDASH]",
+                    "plot1 << new Stems(y: y1, color: cs, style: ss, width: 3.5f)",
+                    "",
+                    "def plot2 = new Plot(title: \"Setting line properties\")",
+                    "def ys = [0, 1, 6, 5, 2, 8]",
+                    "def ys2 = [0, 2, 7, 6, 3, 8]",
+                    "plot2 << new Line(y: ys, width: 15.0) // thick line behold the orange line",
+                    "plot2 << new Line(y: ys, width: 5.0, color: Color.orange)",
+                    "plot2 << new Line(y: ys, width: 2, color: new Color(33, 87, 141), style: StrokeType.DASH, interpolation: 0)",
+                    "plot2 << new Line(y: ys2, width: 2, color: new Color(212, 57, 59), style: StrokeType.DOT)",
+                    "",
+                    "container.addItem(plot1, \"Adding Stems\")",
+                    "container.addItem(plot2, \"Setting line properties\")",
+                    "container"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "OutputContainerCell",
+                    "labels": [
+                        "Adding Stems",
+                        "Setting line properties"
+                    ],
+                    "items": [
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": "Adding Stems",
+                            "domain_axis_label": null,
+                            "y_label": "",
+                            "show_legend": null,
+                            "use_tool_tip": true,
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "label": "",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": false,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "use_log": false,
+                                    "log_base": 10
+                                }
+                            ],
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": false,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_y": false,
+                            "timezone": null,
+                            "crosshair": null,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "omit_checkboxes": false,
+                            "legend_layout": "VERTICAL",
+                            "graphics_list": [
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        1.5,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Stems",
+                                    "base": null,
+                                    "colors": [
+                                        "#FF000000",
+                                        "#FFFF0000",
+                                        "#FFFFC800",
+                                        "#FF00FF00",
+                                        "#FF0000FF",
+                                        "#FFFFAFAF"
+                                    ],
+                                    "width": 3.5,
+                                    "styles": [
+                                        "SOLID",
+                                        "SOLID",
+                                        "DASH",
+                                        "DOT",
+                                        "DASHDOT",
+                                        "LONGDASH"
+                                    ]
+                                }
+                            ],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "x_auto_range": true,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "log_x": false,
+                            "x_log_base": 10
+                        },
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": "Setting line properties",
+                            "domain_axis_label": null,
+                            "y_label": "",
+                            "show_legend": null,
+                            "use_tool_tip": true,
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "label": "",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": false,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "use_log": false,
+                                    "log_base": 10
+                                }
+                            ],
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": false,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_y": false,
+                            "timezone": null,
+                            "crosshair": null,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "omit_checkboxes": false,
+                            "legend_layout": "VERTICAL",
+                            "graphics_list": [
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FFC0504D",
+                                    "width": 15
+                                },
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FFFFC800",
+                                    "width": 5
+                                },
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FF21578D",
+                                    "width": 2,
+                                    "style": "DASH",
+                                    "interpolation": 0
+                                },
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        2,
+                                        7,
+                                        6,
+                                        3,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FFD4393B",
+                                    "width": 2,
+                                    "style": "DOT"
+                                }
+                            ],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "x_auto_range": true,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "log_x": false,
+                            "x_log_base": 10
+                        }
+                    ],
+                    "layout": {
+                        "type": "TabbedOutputContainerLayoutManager",
+                        "borderDisplayed": false
+                    }
+                },
+                "selectedType": "OutputContainer",
+                "pluginName": "Groovy",
+                "shellId": "b30df4f0-3ce2-4091-b6e4-4588d39c876c",
+                "elapsedTime": 569,
+                "height": 604
+            },
+            "evaluatorReader": true,
+            "lineCount": 19
+        },
+        {
+            "id": "sectiongLflYN",
+            "type": "section",
+            "title": "CyclingOutputContainerLayoutManager",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codei7XKpd",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "container = new OutputContainerCell()",
+                    "CyclingOutputContainerLayoutManager layout = new CyclingOutputContainerLayoutManager()",
+                    "layout.setPeriod(5000L);",
+                    "container.setLayoutManager(layout)",
+                    "",
+                    "def plot1 = new Plot(title: \"Adding Stems\");",
+                    "def y1 = [1.5, 1, 6, 5, 2, 8]",
+                    "def cs = [Color.black, Color.red, Color.orange, Color.green, Color.blue, Color.pink]",
+                    "def ss = [StrokeType.SOLID, StrokeType.SOLID, StrokeType.DASH, StrokeType.DOT, StrokeType.DASHDOT, StrokeType.LONGDASH]",
+                    "plot1 << new Stems(y: y1, color: cs, style: ss, width: 3.5f)",
+                    "",
+                    "def plot2 = new Plot(title: \"Setting line properties\")",
+                    "def ys = [0, 1, 6, 5, 2, 8]",
+                    "def ys2 = [0, 2, 7, 6, 3, 8]",
+                    "plot2 << new Line(y: ys, width: 15.0) // thick line behold the orange line",
+                    "plot2 << new Line(y: ys, width: 5.0, color: Color.orange)",
+                    "plot2 << new Line(y: ys, width: 2, color: new Color(33, 87, 141), style: StrokeType.DASH, interpolation: 0)",
+                    "plot2 << new Line(y: ys2, width: 2, color: new Color(212, 57, 59), style: StrokeType.DOT)",
+                    "",
+                    "container.addItem(plot1, \"Adding Stems\")",
+                    "container.addItem(plot2, \"Setting line properties\")",
+                    "",
+                    "container"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "OutputContainer",
+                "pluginName": "Groovy",
+                "shellId": "b30df4f0-3ce2-4091-b6e4-4588d39c876c",
+                "elapsedTime": 569,
+                "result": {
+                    "type": "OutputContainerCell",
+                    "labels": [
+                        "Adding Stems",
+                        "Setting line properties"
+                    ],
+                    "items": [
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": "Adding Stems",
+                            "domain_axis_label": null,
+                            "y_label": "",
+                            "show_legend": null,
+                            "use_tool_tip": true,
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "label": "",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": false,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "use_log": false,
+                                    "log_base": 10
+                                }
+                            ],
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": false,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_y": false,
+                            "timezone": null,
+                            "crosshair": null,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "omit_checkboxes": false,
+                            "legend_layout": "VERTICAL",
+                            "graphics_list": [
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        1.5,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Stems",
+                                    "base": null,
+                                    "colors": [
+                                        "#FF000000",
+                                        "#FFFF0000",
+                                        "#FFFFC800",
+                                        "#FF00FF00",
+                                        "#FF0000FF",
+                                        "#FFFFAFAF"
+                                    ],
+                                    "width": 3.5,
+                                    "styles": [
+                                        "SOLID",
+                                        "SOLID",
+                                        "DASH",
+                                        "DOT",
+                                        "DASHDOT",
+                                        "LONGDASH"
+                                    ]
+                                }
+                            ],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "x_auto_range": true,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "log_x": false,
+                            "x_log_base": 10
+                        },
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": "Setting line properties",
+                            "domain_axis_label": null,
+                            "y_label": "",
+                            "show_legend": null,
+                            "use_tool_tip": true,
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "label": "",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": false,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "use_log": false,
+                                    "log_base": 10
+                                }
+                            ],
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": false,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_y": false,
+                            "timezone": null,
+                            "crosshair": null,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "omit_checkboxes": false,
+                            "legend_layout": "VERTICAL",
+                            "graphics_list": [
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FFC0504D",
+                                    "width": 15
+                                },
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FFFFC800",
+                                    "width": 5
+                                },
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FF21578D",
+                                    "width": 2,
+                                    "style": "DASH",
+                                    "interpolation": 0
+                                },
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        2,
+                                        7,
+                                        6,
+                                        3,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FFD4393B",
+                                    "width": 2,
+                                    "style": "DOT"
+                                }
+                            ],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "x_auto_range": true,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "log_x": false,
+                            "x_log_base": 10
+                        }
+                    ],
+                    "layout": {
+                        "type": "CyclingOutputContainerLayoutManager",
+                        "borderDisplayed": false,
+                        "period": 5000
+                    }
+                },
+                "height": 549
+            },
+            "evaluatorReader": true,
+            "lineCount": 23
+        },
+        {
+            "id": "sectionZu1Uet",
+            "type": "section",
+            "title": "GridOutputContainerLayoutManager",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeyKNHIl",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "container = new OutputContainerCell()",
+                    "GridOutputContainerLayoutManager layout = new GridOutputContainerLayoutManager(2)",
+                    "container.setLayoutManager(layout)",
+                    "",
+                    "def plot1 = new Plot(title: \"Adding Stems\");",
+                    "def y1 = [1.5, 1, 6, 5, 2, 8]",
+                    "def cs = [Color.black, Color.red, Color.orange, Color.green, Color.blue, Color.pink]",
+                    "def ss = [StrokeType.SOLID, StrokeType.SOLID, StrokeType.DASH, StrokeType.DOT, StrokeType.DASHDOT, StrokeType.LONGDASH]",
+                    "plot1 << new Stems(y: y1, color: cs, style: ss, width: 3.5f)",
+                    "",
+                    "def plot2 = new Plot(title: \"Setting line properties\")",
+                    "def ys = [0, 1, 6, 5, 2, 8]",
+                    "def ys2 = [0, 2, 7, 6, 3, 8]",
+                    "plot2 << new Line(y: ys, width: 15.0) // thick line behold the orange line",
+                    "plot2 << new Line(y: ys, width: 5.0, color: Color.orange)",
+                    "plot2 << new Line(y: ys, width: 2, color: new Color(33, 87, 141), style: StrokeType.DASH, interpolation: 0)",
+                    "plot2 << new Line(y: ys2, width: 2, color: new Color(212, 57, 59), style: StrokeType.DOT)",
+                    "",
+                    "container.addItem(plot1, \"Adding Stems\")",
+                    "container.addItem(plot2, \"Setting line properties\")",
+                    "",
+                    "container.addItem(new Plot(title: \"Plot3\"), \"Plot3\")",
+                    "container.addItem(new Plot(title: \"Plot4\"), \"Plot4\")",
+                    "",
+                    "container"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "OutputContainerCell",
+                    "labels": [
+                        "Adding Stems",
+                        "Setting line properties",
+                        "Plot3",
+                        "Plot4"
+                    ],
+                    "items": [
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": "Adding Stems",
+                            "show_legend": null,
+                            "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": null,
+                            "y_label": "",
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "label": "",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": false,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "use_log": false,
+                                    "log_base": 10
+                                }
+                            ],
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": false,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_y": false,
+                            "timezone": null,
+                            "crosshair": null,
+                            "omit_checkboxes": false,
+                            "graphics_list": [
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        1.5,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Stems",
+                                    "base": null,
+                                    "colors": [
+                                        "#FF000000",
+                                        "#FFFF0000",
+                                        "#FFFFC800",
+                                        "#FF00FF00",
+                                        "#FF0000FF",
+                                        "#FFFFAFAF"
+                                    ],
+                                    "width": 3.5,
+                                    "styles": [
+                                        "SOLID",
+                                        "SOLID",
+                                        "DASH",
+                                        "DOT",
+                                        "DASHDOT",
+                                        "LONGDASH"
+                                    ]
+                                }
+                            ],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "x_auto_range": true,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "log_x": false,
+                            "x_log_base": 10
+                        },
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": "Setting line properties",
+                            "show_legend": null,
+                            "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": null,
+                            "y_label": "",
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "label": "",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": false,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "use_log": false,
+                                    "log_base": 10
+                                }
+                            ],
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": false,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_y": false,
+                            "timezone": null,
+                            "crosshair": null,
+                            "omit_checkboxes": false,
+                            "graphics_list": [
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FFC0504D",
+                                    "width": 15
+                                },
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FFFFC800",
+                                    "width": 5
+                                },
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FF21578D",
+                                    "width": 2,
+                                    "style": "DASH",
+                                    "interpolation": 0
+                                },
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        2,
+                                        7,
+                                        6,
+                                        3,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FFD4393B",
+                                    "width": 2,
+                                    "style": "DOT"
+                                }
+                            ],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "x_auto_range": true,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "log_x": false,
+                            "x_log_base": 10
+                        },
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": "Plot3",
+                            "show_legend": null,
+                            "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": null,
+                            "y_label": "",
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "label": "",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": false,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "use_log": false,
+                                    "log_base": 10
+                                }
+                            ],
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": false,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_y": false,
+                            "timezone": null,
+                            "crosshair": null,
+                            "omit_checkboxes": false,
+                            "graphics_list": [],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "x_auto_range": true,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "log_x": false,
+                            "x_log_base": 10
+                        },
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": "Plot4",
+                            "show_legend": null,
+                            "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": null,
+                            "y_label": "",
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "label": "",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": false,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "use_log": false,
+                                    "log_base": 10
+                                }
+                            ],
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": false,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_y": false,
+                            "timezone": null,
+                            "crosshair": null,
+                            "omit_checkboxes": false,
+                            "graphics_list": [],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "x_auto_range": true,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "log_x": false,
+                            "x_log_base": 10
+                        }
+                    ],
+                    "layout": {
+                        "type": "GridOutputContainerLayoutManager",
+                        "borderDisplayed": false,
+                        "columns": 2,
+                        "dividerWidth": 0
+                    }
+                },
+                "selectedType": "OutputContainer",
+                "pluginName": "Groovy",
+                "shellId": "5ede0ddc-daba-4b7a-91ca-95d7e175f348",
+                "elapsedTime": 574,
+                "height": 1061
+            },
+            "evaluatorReader": true,
+            "lineCount": 25
+        },
+        {
+            "id": "sectionbqfHvP",
+            "type": "section",
+            "title": "DashboardLayoutManager",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeM1HPqS",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "container = new OutputContainerCell()",
+                    "DashboardLayoutManager layout = new DashboardLayoutManager(2)",
+                    "container.setLayoutManager(layout)",
+                    "",
+                    "def plot1 = new Plot(title: \"Adding Stems\");",
+                    "def y1 = [1.5, 1, 6, 5, 2, 8]",
+                    "def cs = [Color.black, Color.red, Color.orange, Color.green, Color.blue, Color.pink]",
+                    "def ss = [StrokeType.SOLID, StrokeType.SOLID, StrokeType.DASH, StrokeType.DOT, StrokeType.DASHDOT, StrokeType.LONGDASH]",
+                    "plot1 << new Stems(y: y1, color: cs, style: ss, width: 3.5f)",
+                    "",
+                    "def plot2 = new Plot(title: \"Setting line properties\")",
+                    "def ys = [0, 1, 6, 5, 2, 8]",
+                    "def ys2 = [0, 2, 7, 6, 3, 8]",
+                    "plot2 << new Line(y: ys, width: 15.0) // thick line behold the orange line",
+                    "plot2 << new Line(y: ys, width: 5.0, color: Color.orange)",
+                    "plot2 << new Line(y: ys, width: 2, color: new Color(33, 87, 141), style: StrokeType.DASH, interpolation: 0)",
+                    "plot2 << new Line(y: ys2, width: 2, color: new Color(212, 57, 59), style: StrokeType.DOT)",
+                    "",
+                    "container.addItem(plot1, \"Adding Stems\")",
+                    "container.addItem(plot2, \"Setting line properties\")",
+                    "",
+                    "container.addItem(new Plot(title: \"Plot3\"), \"Plot3\")",
+                    "container.addItem(new Plot(title: \"Plot4\"), \"Plot4\")",
+                    "",
+                    "container"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "OutputContainerCell",
+                    "labels": [
+                        "Adding Stems",
+                        "Setting line properties",
+                        "Plot3",
+                        "Plot4"
+                    ],
+                    "items": [
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": "Adding Stems",
+                            "show_legend": null,
+                            "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": null,
+                            "y_label": "",
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "label": "",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": false,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "use_log": false,
+                                    "log_base": 10
+                                }
+                            ],
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": false,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_y": false,
+                            "timezone": null,
+                            "crosshair": null,
+                            "omit_checkboxes": false,
+                            "graphics_list": [
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        1.5,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Stems",
+                                    "base": null,
+                                    "colors": [
+                                        "#FF000000",
+                                        "#FFFF0000",
+                                        "#FFFFC800",
+                                        "#FF00FF00",
+                                        "#FF0000FF",
+                                        "#FFFFAFAF"
+                                    ],
+                                    "width": 3.5,
+                                    "styles": [
+                                        "SOLID",
+                                        "SOLID",
+                                        "DASH",
+                                        "DOT",
+                                        "DASHDOT",
+                                        "LONGDASH"
+                                    ]
+                                }
+                            ],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "x_auto_range": true,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "log_x": false,
+                            "x_log_base": 10
+                        },
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": "Setting line properties",
+                            "show_legend": null,
+                            "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": null,
+                            "y_label": "",
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "label": "",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": false,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "use_log": false,
+                                    "log_base": 10
+                                }
+                            ],
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": false,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_y": false,
+                            "timezone": null,
+                            "crosshair": null,
+                            "omit_checkboxes": false,
+                            "graphics_list": [
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FFC0504D",
+                                    "width": 15
+                                },
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FFFFC800",
+                                    "width": 5
+                                },
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        1,
+                                        6,
+                                        5,
+                                        2,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FF21578D",
+                                    "width": 2,
+                                    "style": "DASH",
+                                    "interpolation": 0
+                                },
+                                {
+                                    "x": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "y": [
+                                        0,
+                                        2,
+                                        7,
+                                        6,
+                                        3,
+                                        8
+                                    ],
+                                    "visible": true,
+                                    "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
+                                    "color": "#FFD4393B",
+                                    "width": 2,
+                                    "style": "DOT"
+                                }
+                            ],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "x_auto_range": true,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "log_x": false,
+                            "x_log_base": 10
+                        },
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": "Plot3",
+                            "show_legend": null,
+                            "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": null,
+                            "y_label": "",
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "label": "",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": false,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "use_log": false,
+                                    "log_base": 10
+                                }
+                            ],
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": false,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_y": false,
+                            "timezone": null,
+                            "crosshair": null,
+                            "omit_checkboxes": false,
+                            "graphics_list": [],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "x_auto_range": true,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "log_x": false,
+                            "x_log_base": 10
+                        },
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": "Plot4",
+                            "show_legend": null,
+                            "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": null,
+                            "y_label": "",
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "label": "",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": false,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "use_log": false,
+                                    "log_base": 10
+                                }
+                            ],
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": false,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_y": false,
+                            "timezone": null,
+                            "crosshair": null,
+                            "omit_checkboxes": false,
+                            "graphics_list": [],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "x_auto_range": true,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "log_x": false,
+                            "x_log_base": 10
+                        }
+                    ],
+                    "layout": {
+                        "type": "DashboardLayoutManager",
+                        "borderDisplayed": false,
+                        "col": 2
+                    }
+                },
+                "selectedType": "OutputContainer",
+                "pluginName": "Groovy",
+                "shellId": "4dbe9fce-ac0e-4bc8-8cc8-d087deb6e180",
+                "elapsedTime": 603,
+                "height": 638
+            },
+            "evaluatorReader": true,
+            "lineCount": 25
+        }
+    ],
+    "namespace": {}
+}

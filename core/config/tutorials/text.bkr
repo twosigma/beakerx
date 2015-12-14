@@ -87,7 +87,8 @@
                 "Click away on the background of the notebook to reformat and display.",
                 "You can also use the {{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"&#x2318;\":\"Control\"}}-Enter keyboard shortcut to format a markdown cell.",
                 "",
-                "You can embed LaTeX into a markdown cell by enclosing it with dollar characters: $e^{i\\pi}+1=0$.",
+                "You can embed TeX ([Donald Knuth's](https://en.wikipedia.org/wiki/Donald_Knuth) mathematical typesetting system)",
+                "into a markdown cell by enclosing it with dollar characters: $e^{i\\pi}+1=0$.",
                 "",
                 "You can just copy-and-paste unicode characters in: 玻璃, or you can enter HTML entities like &amp;dagger; for &dagger;.",
                 "In fact, many basic HTML elements work, like super&lt;sup&gt;scripts&lt;/sup&gt; for super<sup>scripts</sup>."

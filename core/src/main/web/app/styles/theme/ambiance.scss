@@ -471,11 +471,11 @@ $cell-border-color: #7e7a78;
   }
 
   .CodeMirror-hint {
-    color: $markdown-text-color;
+    color: $std-fg-text-color;
   }
 
   li.CodeMirror-hint-active {
     background: $navbar-default-link-active-bg;
-    color: $markdown-text-color;
+    color: $std-fg-text-color;
   }
 }

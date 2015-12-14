@@ -53,17 +53,19 @@
       this.MONTH = 1000 * 60 * 60 * 24 * 30 * this.UNIT;
       this.YEAR = 1000 * 60 * 60 * 24 * 365 * this.UNIT;
 
+      var numFixs = [];
+      var min = this.axisType === "log" ? 1 : 0;
+      for (var i = 0; i < 18; i++) {
+        var f = Math.max(6 - i, min);
+        numFixs = numFixs.concat([f, i <= 6 ? f + 1 : f, f]);
+      }
+      this.numFixs = numFixs;
     };
 
-    var dateIntws = [], numIntws = [], numFixs = [];
-    for (var i = 0; i < 18; i++) {
-      var f = Math.max(6 - i, 0);
-      numFixs = numFixs.concat([f, i <= 6 ? f + 1 : f, f]);
-    }
+    var dateIntws = [], numIntws = [];
 
     PlotAxis.prototype.dateIntws = dateIntws;
     PlotAxis.prototype.numIntws = numIntws;
-    PlotAxis.prototype.numFixs = numFixs;
 
     PlotAxis.prototype.axisPow = function(pct) {
       return Math.pow(this.axisBase, pct * this.axisValSpan + this.axisValL);

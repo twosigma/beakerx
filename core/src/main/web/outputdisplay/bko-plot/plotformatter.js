@@ -569,16 +569,26 @@
 
           if (newmodel.vrange == null) {
             // visible range initially is 10x larger than data range by default
-            var getModelRange = function(r){
-              return r ? {
+            var getModelRange = function(r, logx, logy){
+              if (r == null) { return null; }
+              var result = {
                 xl: plotUtils.minus(r.xl, r.xspan * 10.0),
                 xr: plotUtils.plus(r.xr, r.xspan * 10.0),
                 yl: r.yl - r.yspan * 10.0,
                 yr: r.yr + r.yspan * 10.0
-              } : null;
+              };
+              if(logx){
+                result.xl = Math.max(result.xl, r.xl - newmodel.margin.left * r.xspan);
+              }
+              if(logy){
+                result.yl = Math.max(result.yl, r.yl - newmodel.margin.left * r.yspan);
+              }
+              return result;
             };
-            newmodel.vrange = getModelRange(range);
-            newmodel.vrangeR = getModelRange(rangeR);
+            newmodel.vrange = getModelRange(range, newmodel.xAxis.type === "log", newmodel.yAxis.type === "log");
+            if(newmodel.yAxisR){
+              newmodel.vrangeR = getModelRange(rangeR, newmodel.xAxis.type === "log", newmodel.yAxisR.type === "log");
+            }
 
             var vrange = newmodel.vrange;
             var vrangeR = newmodel.vrangeR;

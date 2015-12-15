@@ -26,6 +26,14 @@
 				model: '='
 			},
 			controller: function ($scope) {
+
+				$scope.cellStyle = {
+					'border': $scope.model.getCellModel().layout.borderDisplayed ? 'solid 1px #CCC' : '',
+					'padding-top': $scope.model.getCellModel().layout.paddingTop+"px",
+					'padding-bottom': $scope.model.getCellModel().layout.paddingBottom+"px",
+					'padding-left': $scope.model.getCellModel().layout.paddingLeft+"px",
+					'padding-right': $scope.model.getCellModel().layout.paddingRight+"px"
+				};
 				$scope.colCount = $scope.model.getCellModel().layout.columns;
 				$scope.rows = [];
 

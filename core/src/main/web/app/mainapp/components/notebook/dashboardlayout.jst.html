@@ -14,17 +14,27 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<table cellspacing="15">
+<table>
   <tr ng-repeat="row in rows">
-    <td style="padding:0 15px 0 15px" ng-repeat="col in row">
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            <h3 class="panel-title">{{col.label}}</h3>
-          </div>
-          <div class="panel-body">
-            <bk-code-cell-output model="col"></bk-code-cell-output>
-          </div>
+    <td
+      ng-style="cellStyle"
+      ng-repeat="col in row">
+      <div ng-if="model.getCellModel().layout.borderDisplayed" class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">{{col.label}}</h3>
         </div>
+        <div class="panel-body">
+          <bk-code-cell-output id="cell_{{col.row}}_{{col.col}}" model="col"></bk-code-cell-output>
+        </div>
+      </div>
+      <div ng-if="!model.getCellModel().layout.borderDisplayed" class="panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">{{col.label}}</h3>
+        </div>
+        <div class="panel-body">
+          <bk-code-cell-output id="cell_{{col.row}}_{{col.col}}" model="col"></bk-code-cell-output>
+        </div>
+      </div>
     </td>
   </tr>
 </table>

@@ -15,6 +15,6 @@
   limitations under the License.
 -->
 
-<div id="content-{{$index}}"ng-repeat="i in items track by $index">
+<div id="content-{{$index}}" ng-style='borderStyle'  ng-repeat="i in items track by $index">
   <bk-code-cell-output model="i"></bk-code-cell-output>
 </div>

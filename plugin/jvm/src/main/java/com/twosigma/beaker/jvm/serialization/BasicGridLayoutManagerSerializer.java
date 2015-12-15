@@ -17,13 +17,23 @@ package com.twosigma.beaker.jvm.serialization;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.twosigma.beaker.jvm.object.GridOutputContainerLayoutManager;
+import com.twosigma.beaker.jvm.object.AbstractGridLayoutManager;
+import org.codehaus.jackson.JsonGenerator;
 
-public class GridOutputContainerLayoutManagerSerializer extends BasicGridLayoutManagerSerializer<GridOutputContainerLayoutManager>  {
+import java.io.IOException;
+
+public abstract class BasicGridLayoutManagerSerializer<T extends AbstractGridLayoutManager> extends OutputContainerLayoutManagerSerializer<T> {
 
   @Inject
-  public GridOutputContainerLayoutManagerSerializer(Provider<BeakerObjectConverter> osp) {
+  public BasicGridLayoutManagerSerializer(Provider<BeakerObjectConverter> osp) {
     super(osp);
   }
 
+  protected   void serialize(T value, JsonGenerator jgen) throws IOException{
+    jgen.writeObjectField("columns", value.getColumns());
+    jgen.writeObjectField("paddingBottom", value.getPaddingBottom());
+    jgen.writeObjectField("paddingTop", value.getPaddingTop());
+    jgen.writeObjectField("paddingRight", value.getPaddingRight());
+    jgen.writeObjectField("paddingLeft", value.getPaddingLeft());
+  }
 }

@@ -18,20 +18,11 @@ package com.twosigma.beaker.jvm.serialization;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.twosigma.beaker.jvm.object.DashboardLayoutManager;
-import org.codehaus.jackson.JsonGenerator;
 
-import java.io.IOException;
-
-public class DashboardLayoutManagerSerializer extends OutputContainerLayoutManagerSerializer<DashboardLayoutManager> {
+public class DashboardLayoutManagerSerializer extends BasicGridLayoutManagerSerializer<DashboardLayoutManager> {
 
   @Inject
   public DashboardLayoutManagerSerializer(Provider<BeakerObjectConverter> osp) {
     super(osp);
-  }
-
-  @Override
-  protected void serialize(DashboardLayoutManager value, JsonGenerator jgen) throws
-                                                                             IOException {
-    jgen.writeObjectField("columns", value.getColumns());
   }
 }

@@ -15,23 +15,8 @@
  */
 package com.twosigma.beaker.jvm.object;
 
-public class GridOutputContainerLayoutManager extends OutputContainerLayoutManager {
-  private int dividerWidth = 0;
-  private final int columns;
-
+public class GridOutputContainerLayoutManager extends AbstractGridLayoutManager {
   public GridOutputContainerLayoutManager(int columns) {
-    this.columns = columns;
-  }
-
-  public int getDividerWidth() {
-    return dividerWidth;
-  }
-
-  public void setDividerWidth(int dividerWidth) {
-    this.dividerWidth = dividerWidth;
-  }
-
-  public int getColumns() {
-    return columns;
+    super(columns);
   }
 }

@@ -15,15 +15,10 @@
  */
 package com.twosigma.beaker.jvm.object;
 
-public class DashboardLayoutManager extends OutputContainerLayoutManager {
-
-  private final int columns;
+public class DashboardLayoutManager extends AbstractGridLayoutManager {
 
   public DashboardLayoutManager(int columns) {
-    this.columns = columns;
+    super(columns);
   }
 
-  public int getColumns() {
-    return columns;
-  }
 }

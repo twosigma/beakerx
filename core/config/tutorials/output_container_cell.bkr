@@ -56,6 +56,10 @@
                 "body": [
                     "container = new OutputContainerCell()",
                     "",
+                    "TabbedOutputContainerLayoutManager layout = new TabbedOutputContainerLayoutManager()",
+                    "layout.setBorderDisplayed(true);",
+                    "container.setLayoutManager(layout)",
+                    "",
                     "def plot1 = new Plot(title: \"Adding Stems\");",
                     "def y1 = [1.5, 1, 6, 5, 2, 8]",
                     "def cs = [Color.black, Color.red, Color.orange, Color.green, Color.blue, Color.pink]",
@@ -89,10 +93,15 @@
                             "init_width": 640,
                             "init_height": 480,
                             "chart_title": "Adding Stems",
-                            "domain_axis_label": null,
-                            "y_label": "",
                             "show_legend": null,
                             "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": null,
+                            "y_label": "",
                             "rangeAxes": [
                                 {
                                     "type": "YAxis",
@@ -118,12 +127,7 @@
                             "log_y": false,
                             "timezone": null,
                             "crosshair": null,
-                            "legend_position": {
-                                "type": "LegendPosition",
-                                "position": "TOP_RIGHT"
-                            },
                             "omit_checkboxes": false,
-                            "legend_layout": "VERTICAL",
                             "graphics_list": [
                                 {
                                     "x": [
@@ -180,10 +184,15 @@
                             "init_width": 640,
                             "init_height": 480,
                             "chart_title": "Setting line properties",
-                            "domain_axis_label": null,
-                            "y_label": "",
                             "show_legend": null,
                             "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": null,
+                            "y_label": "",
                             "rangeAxes": [
                                 {
                                     "type": "YAxis",
@@ -209,12 +218,7 @@
                             "log_y": false,
                             "timezone": null,
                             "crosshair": null,
-                            "legend_position": {
-                                "type": "LegendPosition",
-                                "position": "TOP_RIGHT"
-                            },
                             "omit_checkboxes": false,
-                            "legend_layout": "VERTICAL",
                             "graphics_list": [
                                 {
                                     "x": [
@@ -328,17 +332,17 @@
                     ],
                     "layout": {
                         "type": "TabbedOutputContainerLayoutManager",
-                        "borderDisplayed": false
+                        "borderDisplayed": true
                     }
                 },
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "b30df4f0-3ce2-4091-b6e4-4588d39c876c",
-                "elapsedTime": 569,
-                "height": 604
+                "shellId": "e87d8320-09f6-416b-96e7-a370197819bf",
+                "elapsedTime": 920,
+                "height": 611
             },
             "evaluatorReader": true,
-            "lineCount": 19
+            "lineCount": 23
         },
         {
             "id": "sectiongLflYN",
@@ -357,6 +361,7 @@
                     "container = new OutputContainerCell()",
                     "CyclingOutputContainerLayoutManager layout = new CyclingOutputContainerLayoutManager()",
                     "layout.setPeriod(5000L);",
+                    "layout.setBorderDisplayed(true);",
                     "container.setLayoutManager(layout)",
                     "",
                     "def plot1 = new Plot(title: \"Adding Stems\");",
@@ -383,8 +388,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "b30df4f0-3ce2-4091-b6e4-4588d39c876c",
-                "elapsedTime": 569,
+                "shellId": "e87d8320-09f6-416b-96e7-a370197819bf",
+                "elapsedTime": 1110,
                 "result": {
                     "type": "OutputContainerCell",
                     "labels": [
@@ -397,10 +402,15 @@
                             "init_width": 640,
                             "init_height": 480,
                             "chart_title": "Adding Stems",
-                            "domain_axis_label": null,
-                            "y_label": "",
                             "show_legend": null,
                             "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": null,
+                            "y_label": "",
                             "rangeAxes": [
                                 {
                                     "type": "YAxis",
@@ -426,12 +436,7 @@
                             "log_y": false,
                             "timezone": null,
                             "crosshair": null,
-                            "legend_position": {
-                                "type": "LegendPosition",
-                                "position": "TOP_RIGHT"
-                            },
                             "omit_checkboxes": false,
-                            "legend_layout": "VERTICAL",
                             "graphics_list": [
                                 {
                                     "x": [
@@ -488,10 +493,15 @@
                             "init_width": 640,
                             "init_height": 480,
                             "chart_title": "Setting line properties",
-                            "domain_axis_label": null,
-                            "y_label": "",
                             "show_legend": null,
                             "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": null,
+                            "y_label": "",
                             "rangeAxes": [
                                 {
                                     "type": "YAxis",
@@ -517,12 +527,7 @@
                             "log_y": false,
                             "timezone": null,
                             "crosshair": null,
-                            "legend_position": {
-                                "type": "LegendPosition",
-                                "position": "TOP_RIGHT"
-                            },
                             "omit_checkboxes": false,
-                            "legend_layout": "VERTICAL",
                             "graphics_list": [
                                 {
                                     "x": [
@@ -636,14 +641,14 @@
                     ],
                     "layout": {
                         "type": "CyclingOutputContainerLayoutManager",
-                        "borderDisplayed": false,
+                        "borderDisplayed": true,
                         "period": 5000
                     }
                 },
-                "height": 549
+                "height": 581
             },
             "evaluatorReader": true,
-            "lineCount": 23
+            "lineCount": 24
         },
         {
             "id": "sectionZu1Uet",
@@ -661,6 +666,15 @@
                 "body": [
                     "container = new OutputContainerCell()",
                     "GridOutputContainerLayoutManager layout = new GridOutputContainerLayoutManager(2)",
+                    "",
+                    "//The padding properties set the size of the white space between the element content and the element border.",
+                    "layout.setPaddingLeft(5)",
+                    "layout.setPaddingRight(5)",
+                    "layout.setPaddingTop(0)",
+                    "layout.setPaddingBottom(0)",
+                    "",
+                    "layout.setBorderDisplayed(true);",
+                    "",
                     "container.setLayoutManager(layout)",
                     "",
                     "def plot1 = new Plot(title: \"Adding Stems\");",
@@ -1041,19 +1055,23 @@
                     ],
                     "layout": {
                         "type": "GridOutputContainerLayoutManager",
-                        "borderDisplayed": false,
+                        "borderDisplayed": true,
                         "columns": 2,
-                        "dividerWidth": 0
+                        "cellspacing": 15,
+                        "paddingBottom": 0,
+                        "paddingTop": 0,
+                        "paddingRight": 5,
+                        "paddingLeft": 5
                     }
                 },
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "5ede0ddc-daba-4b7a-91ca-95d7e175f348",
-                "elapsedTime": 574,
-                "height": 1061
+                "shellId": "e87d8320-09f6-416b-96e7-a370197819bf",
+                "elapsedTime": 180,
+                "height": 1064
             },
             "evaluatorReader": true,
-            "lineCount": 25
+            "lineCount": 34
         },
         {
             "id": "sectionbqfHvP",
@@ -1071,6 +1089,15 @@
                 "body": [
                     "container = new OutputContainerCell()",
                     "DashboardLayoutManager layout = new DashboardLayoutManager(2)",
+                    "",
+                    "//The padding properties set the size of the white space between the element content and the element border.",
+                    "layout.setPaddingLeft(10)",
+                    "layout.setPaddingRight(10)",
+                    "layout.setPaddingTop(0)",
+                    "layout.setPaddingBottom(0)",
+                    "",
+                    "layout.setBorderDisplayed(false);",
+                    "",
                     "container.setLayoutManager(layout)",
                     "",
                     "def plot1 = new Plot(title: \"Adding Stems\");",
@@ -1452,17 +1479,22 @@
                     "layout": {
                         "type": "DashboardLayoutManager",
                         "borderDisplayed": false,
-                        "col": 2
+                        "columns": 2,
+                        "cellspacing": 15,
+                        "paddingBottom": 0,
+                        "paddingTop": 0,
+                        "paddingRight": 10,
+                        "paddingLeft": 10
                     }
                 },
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "4dbe9fce-ac0e-4bc8-8cc8-d087deb6e180",
-                "elapsedTime": 603,
-                "height": 638
+                "shellId": "e87d8320-09f6-416b-96e7-a370197819bf",
+                "elapsedTime": 602,
+                "height": 1199
             },
             "evaluatorReader": true,
-            "lineCount": 25
+            "lineCount": 34
         }
     ],
     "namespace": {}

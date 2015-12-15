@@ -26,6 +26,10 @@
 				model: '='
 			},
 			controller: function ($scope) {
+				$scope.borderStyle = {
+					'border': $scope.model.getCellModel().layout.borderDisplayed ? 'solid 1px #CCC' : '',
+					'margin-top': $scope.model.getCellModel().layout.borderDisplayed ? '30px' : ''
+				};
 				$scope.items = $scope.model.getCellModel().items;
 				$scope.labels = $scope.model.getCellModel().labels;
 				$scope.isShowOutput = function () {

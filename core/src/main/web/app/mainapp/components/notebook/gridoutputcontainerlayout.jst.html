@@ -16,7 +16,7 @@
 -->
 <table>
   <tr ng-repeat="row in rows">
-    <td ng-repeat="col in row">
+    <td ng-style="cellStyle"  ng-repeat="col in row">
       <bk-code-cell-output model="col"></bk-code-cell-output>
     </td>
   </tr>

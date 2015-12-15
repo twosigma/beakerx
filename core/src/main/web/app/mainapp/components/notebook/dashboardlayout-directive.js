@@ -18,6 +18,7 @@
 	'use strict';
 
 	var module = angular.module('bk.notebook');
+
 	module.directive('dashboardLayout', ['bkHelper', function (bkHelper) {
 		return {
 			restrict: 'E',
@@ -26,6 +27,14 @@
 				model: '='
 			},
 			controller: function ($scope) {
+
+				$scope.cellStyle = {
+					'padding-top': $scope.model.getCellModel().layout.paddingTop+"px",
+					'padding-bottom': $scope.model.getCellModel().layout.paddingBottom+"px",
+					'padding-left': $scope.model.getCellModel().layout.paddingLeft+"px",
+					'padding-right': $scope.model.getCellModel().layout.paddingRight+"px"
+				};
+
 				$scope.colCount = $scope.model.getCellModel().layout.columns;
 				$scope.rows = [];
 
@@ -42,11 +51,14 @@
 						isShowOutput: function () {
 							return $scope.showoutput;
 						},
-						label: $scope.model.getCellModel().labels[i]
+						label: $scope.model.getCellModel().labels[i],
+						row: row,
+						col: col
 					});
 					col++;
 					if (col === $scope.colCount && i < $scope.model.getCellModel().items.length - 1) {
 						row++;
+						col = 0;
 						$scope.rows[row] = [];
 					}
 				}

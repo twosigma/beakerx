@@ -52,6 +52,8 @@ $std-fg-text-color: #e6e1dc;
 $input-background-color: #2d2d37;
 $cell-border-color: #7e7a78;
 
+$std-err-color: #e48d71;
+
 
 .beaker-theme-ambiance {
 
@@ -159,7 +161,7 @@ $cell-border-color: #7e7a78;
   bk-output-display {
     > div:nth-of-type(1) {
       background: $main-theme-panel-background;
-      color: $main-theme-color;
+      color: $std-fg-text-color;
     }
   }
 
@@ -168,7 +170,7 @@ $cell-border-color: #7e7a78;
   }
 
   .text-warning {
-    color: #e48d71;
+    color: $std-err-color;
   }
 
   bk-markdown-editable, .code-cell-output {
@@ -184,8 +186,20 @@ $cell-border-color: #7e7a78;
     border-top-color: $cell-border-color;
   }
 
+  .code-cell-area .code-cell-output.error {
+    border-color: $std-err-color;
+  }
+
+  .code-cell-output.error > h6 {
+    color: $std-err-color;
+  }
+
   bk-output-display pre {
     color: $std-fg-text-color;
+  }
+
+  pre.out_error {
+    color: $std-err-color;
   }
 
   bk-markdown-editable code, bk-markdown-cell pre {
@@ -463,6 +477,10 @@ $cell-border-color: #7e7a78;
 
   .CodeMirror .cm-comment {
     color: $std-fg-text-color;
+  }
+
+  .CodeMirror-simplescroll-horizontal, .CodeMirror-simplescroll-vertical {
+    background: $cell-border-color;
   }
 
   .CodeMirror-hints {

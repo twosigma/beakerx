@@ -451,6 +451,8 @@ $cell-border-color: #7e7a78;
 
   .CodeMirror-gutters {
     background-color: $main-theme-panel-background;
+    border: none;
+    box-shadow: none;
   }
 
   .CodeMirror-linenumbers, .CodeMirror-linenumber {

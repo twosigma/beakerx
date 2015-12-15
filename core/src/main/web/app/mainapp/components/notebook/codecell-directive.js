@@ -45,8 +45,7 @@
       bkSessionManager,
       bkCoreManager,
       bkPublicationHelper,
-      $timeout,
-      $animate) {
+      $timeout) {
 
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {

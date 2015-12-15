@@ -100,6 +100,13 @@
         $scope.afterShow = function () {
           $scope.cm.refresh();
         };
+        $scope.$watch('cellmodel.input.hidden', function(newValue, oldValue) {
+          if ($scope.cm && oldValue === true && newValue !== oldValue) {
+            bkUtils.fcall(function() {
+              $scope.afterShow();
+            });
+          }
+        });
 
 
         $scope.isHiddenOutput = function() {

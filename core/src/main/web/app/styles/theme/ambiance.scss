@@ -54,8 +54,7 @@ $markdown-text-color: #e6e1dc;
 
 .beaker-theme-ambiance {
 
-
-  body, html, .well, .languages, .code-cell-input, .modal-header, .modal-body, .modal-footer, .row, .panel-body {
+  body, html, .well, .languages, .code-cell-input, .modal-header, .modal-body, .modal-footer, .row {
     background: $main-theme-panel-background !important;
     color: $main-theme-color !important;
     .close {
@@ -67,15 +66,19 @@ $markdown-text-color: #e6e1dc;
     }
   }
 
-  .panel-heading{
-    background:#505050 !important;
-    border-color: #7b7462;
-    .panel-title{
-      background:#505050 !important;
-    }
-  }
+
   .panel-primary {
     border-color: #7b7462;
+    .panel-body{
+      background: $main-theme-panel-background !important;
+    }
+    .panel-heading{
+      background:#505050 !important;
+      border-color: #7b7462;
+      .panel-title{
+        background:#505050 !important;
+      }
+    }
   }
 
   a {
@@ -419,6 +422,4 @@ $markdown-text-color: #e6e1dc;
   .CodeMirror .cm-comment {
     color: $markdown-text-color;
   }
-
-
 }

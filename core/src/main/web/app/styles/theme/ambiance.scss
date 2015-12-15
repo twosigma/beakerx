@@ -428,6 +428,10 @@ $cell-border-color: #7e7a78;
     }
   }
 
+  header .navbar-brand-fill {
+    fill: $markdown-text-color;
+  }
+
   //easy-form
   .easy-form-container {
     legend, label, input {

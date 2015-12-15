@@ -371,7 +371,11 @@
           if (v.subtype === "Dictionary") {
             var o = {}
             for (var r in v.values) {
-              o[v.values[r][0]] = transformBack(v.values[r][1]);
+              if (typeof(v.values[r][0]) === 'object') {
+                o[transformBack(v.values[r][0])] = transformBack(v.values[r][1]);
+              } else {
+                o[v.values[r][0]] = transformBack(v.values[r][1]);
+              }
             }
             return o;
           }

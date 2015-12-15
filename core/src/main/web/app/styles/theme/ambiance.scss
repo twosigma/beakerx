@@ -479,10 +479,6 @@ $std-err-color: #e48d71;
     color: $std-fg-text-color;
   }
 
-  .CodeMirror-simplescroll-horizontal, .CodeMirror-simplescroll-vertical {
-    background: $cell-border-color;
-  }
-
   .CodeMirror-hints {
     background-color: $input-background-color;
     border-color: #7e7a78;

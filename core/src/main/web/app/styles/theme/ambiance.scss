@@ -188,8 +188,7 @@ $cell-border-color: #7e7a78;
     color: $std-fg-text-color;
   }
 
-  bk-markdown-editable code, bk-markdown-cell pre {
-    border-color:     $cell-border-color;
+  bk-markdown-editable code {
     background-color: #505050;
     color:            $std-fg-text-color;
   }

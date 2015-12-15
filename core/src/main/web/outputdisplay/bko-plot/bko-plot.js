@@ -463,6 +463,7 @@
             }
             tipdiv
               .draggable({
+                containment: scope.jqlegendcontainer,
                 stop : function(event, ui) {
                   d.scrx = ui.position.left - plotUtils.fonts.tooltipWidth;
                   d.scry = ui.position.top;

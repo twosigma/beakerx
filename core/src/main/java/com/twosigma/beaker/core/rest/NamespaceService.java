@@ -19,6 +19,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.shared.NamespaceBinding;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.concurrent.SynchronousQueue;
@@ -47,6 +49,7 @@ public class NamespaceService {
   private ObjectMapper mapper = new ObjectMapper();
   private String channelName = "/namespace";
   private Map<String, SynchronousQueue<NamespaceBinding>> handoff = new HashMap<>();
+  private Map<String, List<String>> namesMap = new HashMap<>();
 
   @Inject
   public NamespaceService(BayeuxServer bayeuxServer) {
@@ -68,6 +71,12 @@ public class NamespaceService {
     }
     return result;
   }
+  private List<String> getNames(String session) {
+    if(this.namesMap.get(session) == null) {
+      namesMap.put(session, new ArrayList<>());
+    }
+    return namesMap.get(session);
+  }
 
   public NamespaceBinding get(String session, String name)
     throws RuntimeException, InterruptedException
@@ -79,6 +88,7 @@ public class NamespaceService {
       System.err.println("NamespaceService.get(): channel not found for session " + session);
       return null;
     }
+    getNames(session).add(name);
     channel.publish(this.localSession, data, null);
     NamespaceBinding binding = getHandoff(session).take(); // blocks
     if (!binding.getName().equals(name)) {
@@ -103,6 +113,7 @@ public class NamespaceService {
       System.err.println("NamespaceService.set(): channel not found for session " + session);
       return;
     }
+    getNames(session).add(name);
     channel.publish(this.localSession, data, null);
     if (sync) {
       NamespaceBinding binding = getHandoff(session).take(); // blocks
@@ -118,6 +129,12 @@ public class NamespaceService {
     throws IOException, InterruptedException
   {
     NamespaceBinding binding = this.mapper.readValue(String.valueOf(msg.getData()), NamespaceBinding.class);
-    getHandoff(binding.getSession()).put(binding);
+
+    //if one session is opened in several browsers wait for 'receive' message from one of them
+    List<String> names = getNames(binding.getSession());
+    if(names.contains(binding.getName())){
+      names.remove(binding.getName());
+      getHandoff(binding.getSession()).put(binding);
+    }
   }
 }

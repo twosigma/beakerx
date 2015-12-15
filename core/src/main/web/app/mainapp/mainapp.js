@@ -1194,14 +1194,13 @@
         };
 
         bkUtils.addConnectedStatusListener(function(msg) {
-          if (msg.successful === $scope.isDisconnected()) {
-            var disconnected = !msg.successful;
-            if (disconnected) {
-              connectionManager.onDisconnected();
-            } else {
-              connectionManager.onReconnected();
-            }
-            $scope.$digest();
+          if ($scope.isDisconnected() && msg.successful) {
+            connectionManager.onReconnected();
+            return $scope.$digest();
+          }
+          if (msg.failure) {
+            connectionManager.onDisconnected();
+            return $scope.$digest();
           }
         });
         $scope.$watch('isDisconnected()', function(disconnected) {

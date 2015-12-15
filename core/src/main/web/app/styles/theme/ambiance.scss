@@ -52,6 +52,7 @@ $std-fg-text-color: #e6e1dc;
 $input-background-color: #2d2d37;
 $cell-border-color: #7e7a78;
 
+$btn-bkg-color: #505050;
 
 .beaker-theme-ambiance {
 
@@ -81,8 +82,8 @@ $cell-border-color: #7e7a78;
   }
 
   button, .btn, .btn-default {
-    background: #505050;
-    color: $std-fg-text-color;
+    background:   $btn-bkg-color;
+    color:        $std-fg-text-color;
     border-color: #7b7462;
 
     &:hover {
@@ -338,7 +339,7 @@ $cell-border-color: #7e7a78;
   }
 
   table.dataTable thead {
-    background-color: #505050;
+    background-color: $btn-bkg-color;
   }
 
   //dropdown menu
@@ -464,6 +465,10 @@ $cell-border-color: #7e7a78;
 
   .CodeMirror .cm-comment {
     color: $std-fg-text-color;
+  }
+
+  .CodeMirror-simplescroll-horizontal, .CodeMirror-simplescroll-vertical {
+    background: $btn-bkg-color;
   }
 
   .CodeMirror-hints {

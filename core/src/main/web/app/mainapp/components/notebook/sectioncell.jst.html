@@ -23,7 +23,7 @@
       <i class='fa fa-minus'></i>
     </span>
     <p class='depth-indicator'>{{getFullIndex()}}</p>
-    <bk-markdown-editable class='section{{cellmodel.level}} bk-section-title' cellmodel="cellmodel"></bk-markdown-editable>
+    <bk-markdown-editable class='section{{cellmodel.level}} bk-section-title' cellmodel="cellmodel" allowdblclickselection="true"></bk-markdown-editable>
   </div>
   <bk-new-cell-menu size="xs" config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>
   <div ng-show="isShowChildren()" class="section-children">

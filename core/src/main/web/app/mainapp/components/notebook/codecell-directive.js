@@ -18,6 +18,26 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
+  module.directive('ngHideEx', function($animate) {
+    return {
+      scope: {
+        'ngHideEx': '=',
+        'afterShow': '&',
+        'afterHide': '&'
+      },
+      link: function(scope, element) {
+        scope.$watch('ngHideEx', function(hide, oldHide) {
+          if (hide) {
+            $animate.addClass(element, 'ng-hide', {tempClasses: 'ng-hide-animate'}).then(scope.afterHide);
+          }
+          if (!hide) {
+            $animate.removeClass(element, 'ng-hide', {tempClasses: 'ng-hide-animate'}).then(scope.afterShow);
+          }
+        });
+      }
+    }
+  });
+
   module.directive('bkCodeCell', function(
       bkUtils,
       bkEvaluatorManager,
@@ -25,7 +45,8 @@
       bkSessionManager,
       bkCoreManager,
       bkPublicationHelper,
-      $timeout) {
+      $timeout,
+      $animate) {
 
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {
@@ -70,21 +91,16 @@
           if ($scope.isLocked()) {
             return false;
           }
-          if ($scope.cellmodel.input.hidden === true) {
-            return false;
-          }
-          return true;
+          return $scope.cellmodel.input.hidden !== true;
         };
 
         $scope.bkNotebook = getBkNotebookWidget();
-        // ensure cm refreshes when 'unhide'
-        $scope.$watch('isShowInput()', function(newValue, oldValue) {
-          if ($scope.cm && newValue === true && newValue !== oldValue) {
-            bkUtils.fcall(function() {
-              $scope.cm.refresh();
-            });
-          }
-        });
+
+        //ensure cm refreshes when 'unhide'
+        $scope.afterShow = function () {
+          $scope.cm.refresh();
+        };
+
 
         $scope.isHiddenOutput = function() {
           return $scope.cellmodel.output.selectedType == 'Hidden';

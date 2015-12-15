@@ -51,7 +51,7 @@ $dropdown-menu-color: $main-theme-color !default;
 $std-fg-text-color: #e6e1dc;
 $input-background-color: #2d2d37;
 $cell-border-color: #7e7a78;
-
+$std-err-color: #e48d71;
 $btn-bkg-color: #505050;
 
 .beaker-theme-ambiance {
@@ -160,7 +160,7 @@ $btn-bkg-color: #505050;
   bk-output-display {
     > div:nth-of-type(1) {
       background: $main-theme-panel-background;
-      color: $main-theme-color;
+      color: $std-fg-text-color;
     }
   }
 
@@ -169,7 +169,7 @@ $btn-bkg-color: #505050;
   }
 
   .text-warning {
-    color: #e48d71;
+    color: $std-err-color;
   }
 
   bk-markdown-editable, .code-cell-output {
@@ -185,12 +185,24 @@ $btn-bkg-color: #505050;
     border-top-color: $cell-border-color;
   }
 
+  .code-cell-area .code-cell-output.error {
+    border-color: $std-err-color;
+  }
+
+  .code-cell-output.error > h6 {
+    color: $std-err-color;
+  }
+
   bk-output-display pre {
     color: $std-fg-text-color;
   }
 
+  pre.out_error {
+    color: $std-err-color;
+  }
+
   bk-markdown-editable code {
-    background-color: #505050;
+    background-color: $btn-bkg-color;
     color:            $std-fg-text-color;
   }
 

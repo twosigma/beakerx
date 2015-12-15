@@ -249,7 +249,11 @@ public class ClojureEvaluator {
           } else {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
-            e.printStackTrace(pw);
+            if (null != e.getCause()) {
+              e.getCause().printStackTrace(pw);
+            } else {
+              e.printStackTrace(pw);
+            }
             theOutput.error(sw.toString());
           }
         }

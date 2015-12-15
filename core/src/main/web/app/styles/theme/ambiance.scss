@@ -51,9 +51,8 @@ $dropdown-menu-color: $main-theme-color !default;
 $std-fg-text-color: #e6e1dc;
 $input-background-color: #2d2d37;
 $cell-border-color: #7e7a78;
-
 $std-err-color: #e48d71;
-
+$btn-bkg-color: #505050;
 
 .beaker-theme-ambiance {
 
@@ -83,8 +82,8 @@ $std-err-color: #e48d71;
   }
 
   button, .btn, .btn-default {
-    background: #505050;
-    color: $std-fg-text-color;
+    background:   $btn-bkg-color;
+    color:        $std-fg-text-color;
     border-color: #7b7462;
 
     &:hover {
@@ -202,9 +201,8 @@ $std-err-color: #e48d71;
     color: $std-err-color;
   }
 
-  bk-markdown-editable code, bk-markdown-cell pre {
-    border-color:     $cell-border-color;
-    background-color: #505050;
+  bk-markdown-editable code {
+    background-color: $btn-bkg-color;
     color:            $std-fg-text-color;
   }
 
@@ -353,7 +351,7 @@ $std-err-color: #e48d71;
   }
 
   table.dataTable thead {
-    background-color: #505050;
+    background-color: $btn-bkg-color;
   }
 
   //dropdown menu
@@ -465,6 +463,8 @@ $std-err-color: #e48d71;
 
   .CodeMirror-gutters {
     background-color: $main-theme-panel-background;
+    border: none;
+    box-shadow: none;
   }
 
   .CodeMirror-linenumbers, .CodeMirror-linenumber {
@@ -477,6 +477,10 @@ $std-err-color: #e48d71;
 
   .CodeMirror .cm-comment {
     color: $std-fg-text-color;
+  }
+
+  .CodeMirror-simplescroll-horizontal, .CodeMirror-simplescroll-vertical {
+    background: $btn-bkg-color;
   }
 
   .CodeMirror-hints {

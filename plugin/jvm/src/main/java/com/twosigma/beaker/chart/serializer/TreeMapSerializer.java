@@ -106,7 +106,7 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
 
   private void process(TreeMapNode node, Visitor<TreeMapNode> visitor) {
     visitor.visit(node);
-    Vector<TreeMapNode> children = node.getChildren();
+    Iterable<TreeMapNode> children = node.getChildren();
     if (children != null) {
       for (TreeMapNode child : children) {
         process(child, visitor);

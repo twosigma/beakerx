@@ -16,4 +16,4 @@
 <div ng-show="mode=='edit'" ng-click="$event.stopPropagation()" class="codemirror-wrapper">
   <textarea></textarea>
 </div>
-<div ng-click="edit($event)" class="markup" ng-show="mode=='preview'"></div>
+<div ng-click="handleSingleClick($event)" ng-dblclick="allowdblclickselection && handleDoubleClick($event)" class="markup" ng-show="mode=='preview'"></div>

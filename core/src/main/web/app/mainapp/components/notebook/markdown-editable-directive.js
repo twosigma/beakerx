@@ -27,7 +27,8 @@
       restrict: 'E',
       template: JST["mainapp/components/notebook/markdown-editable"](),
       scope: {
-        cellmodel: '='
+        cellmodel: '=',
+        allowdblclickselection: '='
       },
       link: function(scope, element, attrs) {
         var contentAttribute = scope.cellmodel.type === "section" ? 'title' : 'body';
@@ -56,6 +57,22 @@
         scope.isShowInput = function() {
           //Markdown cell input is always visible
           return true;
+        };
+
+        scope.handleSingleClick = function(event) {
+          if (scope.allowdblclickselection) {
+            scope.clickTimer = $timeout(function() {
+                scope.edit(event);
+            }, 100);
+          } else {
+            scope.edit(event);
+          }
+        };
+
+        scope.handleDoubleClick = function(event) {
+          if (scope.clickTimer) {
+            $timeout.cancel(scope.clickTimer);
+          }
         };
 
         scope.edit = function(event) {

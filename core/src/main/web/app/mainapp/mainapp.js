@@ -1164,27 +1164,23 @@
             }
             prompted = true;
             bkCoreManager.show2ButtonModal(
-                "Beaker server disconnected. Further edits will not be saved.<br>" +
-                "Save current notebook as a file?",
-                "Disconnected",
-                function() {
-                  // "Save", save the notebook as a file on the client side
-                  bkSessionManager.dumpDisplayStatus();
-                  var timeoutPromise = $timeout(function() {
-                    bkUtils.saveAsClientFile(
-                        bkSessionManager.getSaveData().notebookModelAsString,
-                    "notebook.bkr");
-                  }, 1);
-                  timeoutPromise.then(function() {
-                    prompted = false;
-                  })
-                },
-                function() {
-                  // "Not now", hijack all keypress events to prompt again
-                  window.addEventListener('keypress', $scope.promptToSave, true);
+              "Beaker server disconnected. Further edits will not be saved.<br>" +
+              "Save current notebook as a file?",
+              "Disconnected", function() {
+                // "Save", save the notebook as a file on the client side
+                bkSessionManager.dumpDisplayStatus();
+                var timeoutPromise = $timeout(function() {
+                  bkUtils.saveAsClientFile(
+                      bkSessionManager.getSaveData().notebookModelAsString,
+                  "notebook.bkr");
+                }, 1);
+                timeoutPromise.then(function() {
                   prompted = false;
-                },
-                "Save", "Not now", "btn-primary", ""
+                })
+              }, function() {
+                prompted = false;
+              },
+              "Save", "Not now", "btn-primary", ""
             );
           };
         })();
@@ -1198,14 +1194,13 @@
         };
 
         bkUtils.addConnectedStatusListener(function(msg) {
-          if (msg.successful === $scope.isDisconnected()) {
-            var disconnected = !msg.successful;
-            if (disconnected) {
-              connectionManager.onDisconnected();
-            } else {
-              connectionManager.onReconnected();
-            }
-            $scope.$digest();
+          if ($scope.isDisconnected() && msg.successful) {
+            connectionManager.onReconnected();
+            return $scope.$digest();
+          }
+          if (msg.failure) {
+            connectionManager.onDisconnected();
+            return $scope.$digest();
           }
         });
         $scope.$watch('isDisconnected()', function(disconnected) {

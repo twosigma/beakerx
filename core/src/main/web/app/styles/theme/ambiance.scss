@@ -197,7 +197,7 @@ $btn-bkg-color: #505050;
     color: $std-fg-text-color;
   }
 
-  pre.out_error {
+  pre.out_error, bk-output-display[type='Error'] pre {
     color: $std-err-color;
   }
 

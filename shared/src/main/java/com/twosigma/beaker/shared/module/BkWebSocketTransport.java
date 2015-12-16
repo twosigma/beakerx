@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BkWebSocketTransport extends WebSocketTransport {
+  public static final int CLOSE_MESSAGE_TOO_LARGE = 1009;
 
   private List<BkWebSocketListener> listeners = new ArrayList<>();
 

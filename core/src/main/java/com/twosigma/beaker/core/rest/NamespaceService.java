@@ -87,7 +87,9 @@ public class NamespaceService {
           @Override
           public void onClose(int code, String message) {
             try {
-              getHandoff(session).put(new NamespaceBinding(session, message));
+              if(code == BkWebSocketTransport.CLOSE_MESSAGE_TOO_LARGE){
+                getHandoff(session).put(new NamespaceBinding(session, message));
+              }
             } catch (InterruptedException e) {
               throw new RuntimeException(e);
             }

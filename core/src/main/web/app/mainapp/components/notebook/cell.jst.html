@@ -45,6 +45,7 @@
     </div>
     <div class="cell-menu-item evaluate" ng-if="isMarkdownCell()" title="run cell"></div>
     <div class="cell-menu-item evaluate" ng-click="evaluate($event)" ng-if="isCodeCell()" title="run cell"></div>
+    <div class="cell-menu-item evaluate" ng-if="isSection()" ng-click="evaluateSection($event)" title="run all cells"></div>
     <div class="cell-status-item loading-state advanced-hide" ng-if="isCodeCell() && !cellmodel.evaluatorReader">Initializing {{cellmodel.evaluator}}
       <div class="loading-spinner rotating"></div>
     </div>

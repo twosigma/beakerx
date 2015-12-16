@@ -217,6 +217,30 @@
         $scope.isCodeCell = function() {
           return $scope.cellmodel.type == 'code';
         };
+
+        $scope.isSection = function() {
+          return $scope.cellmodel.type == 'section';
+        };
+
+        $scope.evaluateSection = function($evt) {
+          if ($evt) {
+            $evt.stopPropagation();
+          }
+
+          var notebookCellOp = bkSessionManager.getNotebookCellOp();
+          var siblings = notebookCellOp.getChildren($scope.cellmodel.id);
+          var toEval = [];
+          _.each(siblings, function(cellmodel) {
+            if (cellmodel.type == 'code') {
+              cellmodel.output.state = {};
+              toEval.push(cellmodel);
+            }
+          });
+
+          if (toEval.length) {
+            bkCoreManager.getBkApp().evaluateRoot(toEval);
+          }
+        }
       }
     };
   });

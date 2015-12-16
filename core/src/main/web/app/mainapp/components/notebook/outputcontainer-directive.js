@@ -15,31 +15,31 @@
  */
 
 (function () {
-	'use strict';
+  'use strict';
 
-	var module = angular.module('bk.notebook');
-	module.directive('outputContainer', ['bkHelper', function (bkHelper) {
-		return {
-			restrict: 'E',
-			template: JST["mainapp/components/notebook/outputcontainer"](),
-			scope: {
-				model: '='
-			},
-			controller: function ($scope) {
-				$scope.layout = $scope.model.getCellModel().layout;
-				$scope.isShowOutput = function () {
-					return $scope.model.isShowOutput();
-				};
-				$scope.showoutput = $scope.model.isShowOutput();
-				$scope.isShowMenu = function () {
-					return false;
-				};
-				$scope.$watch('isShowOutput()', function (oldval, newval) {
-					$scope.showoutput = newval;
-				});
-			}
-		}
-	}]);
+  var module = angular.module('bk.notebook');
+  module.directive('outputContainer', ['bkHelper', function (bkHelper) {
+    return {
+      restrict: 'E',
+      template: JST["mainapp/components/notebook/outputcontainer"](),
+      scope: {
+        model: '='
+      },
+      controller: function ($scope) {
+        $scope.layout = $scope.model.getCellModel().layout;
+        $scope.isShowOutput = function () {
+          return $scope.model.isShowOutput();
+        };
+        $scope.showoutput = $scope.model.isShowOutput();
+        $scope.isShowMenu = function () {
+          return false;
+        };
+        $scope.$watch('isShowOutput()', function (oldval, newval) {
+          $scope.showoutput = newval;
+        });
+      }
+    }
+  }]);
 })();
 
 

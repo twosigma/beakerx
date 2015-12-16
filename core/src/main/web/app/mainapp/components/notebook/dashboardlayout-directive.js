@@ -15,66 +15,66 @@
  */
 
 (function () {
-	'use strict';
+  'use strict';
 
-	var module = angular.module('bk.notebook');
+  var module = angular.module('bk.notebook');
 
-	module.directive('dashboardLayout', ['bkHelper', function (bkHelper) {
-		return {
-			restrict: 'E',
-			template: JST["mainapp/components/notebook/dashboardlayout"](),
-			scope: {
-				model: '='
-			},
-			controller: function ($scope) {
+  module.directive('dashboardLayout', ['bkHelper', function (bkHelper) {
+    return {
+      restrict: 'E',
+      template: JST["mainapp/components/notebook/dashboardlayout"](),
+      scope: {
+        model: '='
+      },
+      controller: function ($scope) {
 
-				$scope.cellStyle = {
-					'padding-top': $scope.model.getCellModel().layout.paddingTop+"px",
-					'padding-bottom': $scope.model.getCellModel().layout.paddingBottom+"px",
-					'padding-left': $scope.model.getCellModel().layout.paddingLeft+"px",
-					'padding-right': $scope.model.getCellModel().layout.paddingRight+"px"
-				};
+        $scope.cellStyle = {
+          'padding-top': $scope.model.getCellModel().layout.paddingTop + "px",
+          'padding-bottom': $scope.model.getCellModel().layout.paddingBottom + "px",
+          'padding-left': $scope.model.getCellModel().layout.paddingLeft + "px",
+          'padding-right': $scope.model.getCellModel().layout.paddingRight + "px"
+        };
 
-				$scope.colCount = $scope.model.getCellModel().layout.columns;
-				$scope.rows = [];
+        $scope.colCount = $scope.model.getCellModel().layout.columns;
+        $scope.rows = [];
 
-				$scope.isShowOutput = function () {
-					return $scope.model.isShowOutput();
-				};
+        $scope.isShowOutput = function () {
+          return $scope.model.isShowOutput();
+        };
 
-				var row = 0;
-				var col = 0;
-				$scope.rows[row] = [];
-				for (var i = 0; i < $scope.model.getCellModel().items.length; i++) {
-					$scope.rows[row].push({
-						result: $scope.model.getCellModel().items[i],
-						isShowOutput: function () {
-							return $scope.showoutput;
-						},
-						label: $scope.model.getCellModel().labels[i],
-						row: row,
-						col: col
-					});
-					col++;
-					if (col === $scope.colCount && i < $scope.model.getCellModel().items.length - 1) {
-						row++;
-						col = 0;
-						$scope.rows[row] = [];
-					}
-				}
+        var row = 0;
+        var col = 0;
+        $scope.rows[row] = [];
+        for (var i = 0; i < $scope.model.getCellModel().items.length; i++) {
+          $scope.rows[row].push({
+            result: $scope.model.getCellModel().items[i],
+            isShowOutput: function () {
+              return $scope.showoutput;
+            },
+            label: $scope.model.getCellModel().labels[i],
+            row: row,
+            col: col
+          });
+          col++;
+          if (col === $scope.colCount && i < $scope.model.getCellModel().items.length - 1) {
+            row++;
+            col = 0;
+            $scope.rows[row] = [];
+          }
+        }
 
-				$scope.showoutput = $scope.model.isShowOutput();
+        $scope.showoutput = $scope.model.isShowOutput();
 
-				$scope.isShowMenu = function () {
-					return false;
-				};
+        $scope.isShowMenu = function () {
+          return false;
+        };
 
-				$scope.$watch('isShowOutput()', function (oldval, newval) {
-					$scope.showoutput = newval;
-				});
-			}
-		}
-	}]);
+        $scope.$watch('isShowOutput()', function (oldval, newval) {
+          $scope.showoutput = newval;
+        });
+      }
+    }
+  }]);
 })();
 
 

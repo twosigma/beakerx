@@ -15,66 +15,66 @@
  */
 
 (function () {
-	'use strict';
+  'use strict';
 
-	var module = angular.module('bk.notebook');
-	module.directive('cyclingOutputContainerLayout', ['bkHelper', '$timeout', function (bkHelper, $timeout) {
-		return {
-			restrict: 'E',
-			template: JST["mainapp/components/notebook/cyclingoutputcontainerlayout"](),
-			scope: {
-				model: '='
-			},
-			controller: function ($scope) {
-				$scope.borderStyle = {
-					'border': $scope.model.getCellModel().layout.borderDisplayed ? 'solid 1px #CCC' : '',
-					'margin-top': $scope.model.getCellModel().layout.borderDisplayed ? '30px' : ''
-				};
-				$scope.items = $scope.model.getCellModel().items;
-				$scope.labels = $scope.model.getCellModel().labels;
-				$scope.isShowOutput = function () {
-					return $scope.model.isShowOutput();
-				};
+  var module = angular.module('bk.notebook');
+  module.directive('cyclingOutputContainerLayout', ['bkHelper', '$timeout', function (bkHelper, $timeout) {
+    return {
+      restrict: 'E',
+      template: JST["mainapp/components/notebook/cyclingoutputcontainerlayout"](),
+      scope: {
+        model: '='
+      },
+      controller: function ($scope) {
+        $scope.borderStyle = {
+          'border': $scope.model.getCellModel().layout.borderDisplayed ? 'solid 1px #CCC' : '',
+          'margin-top': $scope.model.getCellModel().layout.borderDisplayed ? '30px' : ''
+        };
+        $scope.items = $scope.model.getCellModel().items;
+        $scope.labels = $scope.model.getCellModel().labels;
+        $scope.isShowOutput = function () {
+          return $scope.model.isShowOutput();
+        };
 
-				$scope.showoutput = $scope.model.isShowOutput();
-				$scope.items = _.map($scope.model.getCellModel().items, function (it) {
-					return {
-						result: it,
-						isShowOutput: function () {
-							return $scope.showoutput;
-						}
-					};
-				});
-				$scope.getName = function (idx) {
-					return $scope.model.getCellModel().labels[idx] || '';
-				};
-				$scope.hasName = function (idx) {
-					return $scope.model.getCellModel().labels !== undefined;
-				};
-				$scope.isShowMenu = function () {
-					return false;
-				};
-				$scope.$watch('isShowOutput()', function (oldval, newval) {
-					$scope.showoutput = newval;
-				});
-			},
-			link: function ($scope, element) {
-				$timeout(function () {
-					var divs = $('div[id^="content-"]').hide(),
-						i = 0;
-					(function cycle() {
+        $scope.showoutput = $scope.model.isShowOutput();
+        $scope.items = _.map($scope.model.getCellModel().items, function (it) {
+          return {
+            result: it,
+            isShowOutput: function () {
+              return $scope.showoutput;
+            }
+          };
+        });
+        $scope.getName = function (idx) {
+          return $scope.model.getCellModel().labels[idx] || '';
+        };
+        $scope.hasName = function (idx) {
+          return $scope.model.getCellModel().labels !== undefined;
+        };
+        $scope.isShowMenu = function () {
+          return false;
+        };
+        $scope.$watch('isShowOutput()', function (oldval, newval) {
+          $scope.showoutput = newval;
+        });
+      },
+      link: function ($scope, element) {
+        $timeout(function () {
+          var divs = $('div[id^="content-"]').hide(),
+            i = 0;
+          (function cycle() {
 
-						divs.eq(i).show(0)
-							.delay($scope.model.getCellModel().layout.period)
-							.hide(0, cycle);
+            divs.eq(i).show(0)
+              .delay($scope.model.getCellModel().layout.period)
+              .hide(0, cycle);
 
-						i = ++i % divs.length;
+            i = ++i % divs.length;
 
-					})();
-				});
-			}
-		}
-	}]);
+          })();
+        });
+      }
+    }
+  }]);
 })();
 
 

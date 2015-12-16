@@ -237,7 +237,21 @@
           if (scope.model.updateWidth != null) {
             scope.model.updateWidth(scope.width);
           } // not stdmodel here
+
+          scope.$emit('plotSizeChanged', {
+            width: scope.width,
+            height: scope.height
+          });
         };
+        scope.$on('plotSizeChanged', function (event, data) {
+          //if (scope.width !== data.width
+          //  //|| scope.height !== data.height
+          //) {
+          //  scope.model.width = data.width;
+          //  //scope.model.height = data.height;
+          //}
+        });
+
         scope.calcRange = function() {
           var ret = plotUtils.getDefaultFocus(scope.stdmodel);
           scope.visibleItem = ret.visibleItem;

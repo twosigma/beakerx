@@ -42,25 +42,6 @@
             result: it,
             isShowOutput: function () {
               return $scope.showoutput;
-            },
-            updateWidth: function (width) {
-              var divs = $('div[id^="tab-"]').hide();
-              for (var i = 0; i < divs.length; i++) {
-                var div = divs[i];
-                if (!div.hasClass('active'))
-                  div.width(width);
-              }
-              $scope.$apply();
-            },
-            updateHeight: function (height) {
-
-              var divs = $('div[id^="tab-"]').hide();
-              for (var i = 0; i < divs.length; i++) {
-                var div = divs[i];
-                if (!div.hasClass('active'))
-                  div.height(height);
-              }
-              $scope.$apply();
             }
           };
         });
@@ -76,17 +57,6 @@
         $scope.$watch('isShowOutput()', function (oldval, newval) {
           $scope.showoutput = newval;
         });
-
-        $scope.updateWidth = function (width) {
-          var divs = $('div[id^="tab-"]').hide();
-          for (var i = 0; i < divs.length; i++) {
-            var div = divs[i];
-            if (!div.hasClass('active'))
-              div.width(width);
-          }
-          $scope.$apply();
-        };
-
       }
     }
   }]);

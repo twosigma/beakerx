@@ -209,7 +209,7 @@
       }
     };
 
-    $scope.$watch('evalTabOp.getEvaluatorsWithSpec()', $scope.evalTabOp.initTabs, true);
+    $scope.$watchCollection('evalTabOp.getEvaluatorsWithSpec()', $scope.evalTabOp.initTabs);
 
     $scope.menuTabOp = {
       newMenuPluginUrl: "./plugin/menu/debug.js",

@@ -48,21 +48,22 @@ $navbar-default-toggle-border-color: #ddd !default;
 $dropdown-menu-background: $main-theme-menu-background !default;
 $dropdown-menu-color: $main-theme-color !default;
 
+$std-fg-text-color: #e6e1dc;
 $input-background-color: #2d2d37;
-$markdown-text-color: #e6e1dc;
-
+$cell-border-color: #7e7a78;
+$std-err-color: #e48d71;
+$btn-bkg-color: #505050;
 
 .beaker-theme-ambiance {
 
   body, html, .well, .languages, .code-cell-input, .modal-header, .modal-body, .modal-footer, .row {
     background: $main-theme-panel-background !important;
-    color: $main-theme-color !important;
+    color: $std-fg-text-color !important;
     .close {
-      color: $main-theme-color !important;
+      color: $std-fg-text-color !important;
     }
     h1, h2, h3, h4, h5, p {
-      background: $main-theme-panel-background !important;
-      color: $markdown-text-color !important;
+      color: $std-fg-text-color !important;
     }
   }
 
@@ -89,24 +90,25 @@ $markdown-text-color: #e6e1dc;
     }
   }
 
-  textarea {
-    background: $input-background-color !important;
-    color: $main-theme-color !important;
+  textarea, .publish input.field, .publish select, .publish textarea {
+    border-color: $cell-border-color;
+    background:   $input-background-color !important;
+    color:        $std-fg-text-color !important;
   }
 
-  button, .btn-default {
-    background: #505050;
-    color: #f5f5f5;
+  button, .btn, .btn-default {
+    background:   $btn-bkg-color;
+    color:        $std-fg-text-color;
     border-color: #7b7462;
 
     &:hover {
-      color: #f5f5f5;
+      color: $std-fg-text-color;
       background: #1492df;
       border-color: #117dbe;
     }
   }
 
-  .modal-footer .btn-primary {
+  .modal-content .btn-primary {
     background: #39a9ed;
 
     &:hover {
@@ -129,54 +131,94 @@ $markdown-text-color: #e6e1dc;
   }
 
   select {
-    color: $markdown-text-color;
+    color: $std-fg-text-color;
+  }
+
+  .faux-drop-zone {
+    border-color: $std-fg-text-color;
+    color: $std-fg-text-color;
   }
 
   .ui-icon,
   .ui-widget-content .ui-icon {
-    background-image: url("images/ui-icons_888888_256x240.png");
+    background-image: url("images/ui-icons_222222_256x240.png");
   }
 
-  .ui-widget-header .ui-icon {
-    background-image: url("images/ui-icons_888888_256x240png");
+  .ui-widget-content {
+    background-image: none;
+    background-color: $input-background-color;
+    color: $std-fg-text-color;
+  }
+
+  .ui-widget-content > li > a {
+    color: $std-fg-text-color;
+  }
+
+  .ui-state-focus {
+    background-image: none;
+    background-color: $navbar-default-link-hover-bg;
+    border-color: #117dbe;
   }
 
   .cell-power-button {
     color:        #d8d8d8;
-    background: $main-theme-panel-background;
+    background-color:   $main-theme-panel-background;
+
     .fa-power-off:before {
-      background: $main-theme-panel-background;
+      background-color: $main-theme-panel-background;
+    }
+    .fa-power-off:hover::before {
+      background-color: $navbar-default-link-hover-bg;
     }
   }
-
 
   bk-output-display {
     > div:nth-of-type(1) {
       background: $main-theme-panel-background;
-      color: $main-theme-color;
+      color: $std-fg-text-color;
     }
+  }
+
+  .text-info {
+    color: #42A2D2;
+  }
+
+  .text-warning {
+    color: $std-err-color;
   }
 
   bk-markdown-editable, .code-cell-output {
     background: $main-theme-panel-background !important;
-    color: $markdown-text-color;
+    color: $std-fg-text-color;
   }
 
   bk-markdown-cell bk-markdown-editable, .bkcell.code-cell-area, .textcell-wrapper {
-    border-color: #7e7a78;
+    border-color: $cell-border-color;
   }
 
   .code-cell-area .code-cell-output {
-    border-top-color: #7e7a78;
+    border-top-color: $cell-border-color;
   }
 
-  bk-output-display[type="Text"] pre {
-    color: $markdown-text-color;
+  .code-cell-area .code-cell-output.error {
+    border-color: $std-err-color;
   }
 
-  bk-markdown-cell .markup code {
-    background-color: $input-background-color;
-    color: $markdown-text-color;
+  .code-cell-output.error > h6 {
+    color: $std-err-color;
+  }
+
+  bk-output-display pre {
+    color: $std-fg-text-color;
+  }
+
+  pre.out_error {
+    color: $std-err-color;
+  }
+
+  bk-markdown-editable code {
+    background-color: $btn-bkg-color;
+    color:            $std-fg-text-color;
   }
 
   #plotContainer {
@@ -200,7 +242,7 @@ $markdown-text-color: #e6e1dc;
   }
 
   .plot-text, .plot-legend text, #maing text {
-    fill: $markdown-text-color !important;
+    fill: $std-fg-text-color !important;
   }
 
   #combplotContainer, #plotLegend, #plotLegendContainer {
@@ -229,7 +271,7 @@ $markdown-text-color: #e6e1dc;
   }
 
   .outputlogcontainer {
-    color: $markdown-text-color;
+    color: $std-fg-text-color;
     background-color: $input-background-color;
 
     .outputloghandle {
@@ -237,7 +279,7 @@ $markdown-text-color: #e6e1dc;
     }
 
     .outputlogbox pre {
-      color: $markdown-text-color !important;
+      color: $std-fg-text-color !important;
     }
 
     .btn-group .btn-primary {
@@ -252,7 +294,7 @@ $markdown-text-color: #e6e1dc;
   //datatable
 
   .dataTable, table.dataTable thead th {
-    color: $markdown-text-color;
+    color: $std-fg-text-color;
   }
 
   .dataTables_wrapper .dataTables_paginate .paginate_button {
@@ -324,7 +366,7 @@ $markdown-text-color: #e6e1dc;
   }
 
   table.dataTable thead {
-    background-color: #505050;
+    background-color: $btn-bkg-color;
   }
 
   //dropdown menu
@@ -334,7 +376,7 @@ $markdown-text-color: #e6e1dc;
   }
 
   .dropdown-menu > li > a {
-    color: $markdown-text-color;
+    color: $std-fg-text-color;
   }
 
   // Default navbar
@@ -353,16 +395,16 @@ $markdown-text-color: #e6e1dc;
     }
 
     .navbar-text {
-      color: $navbar-default-color;
+      background-color: $input-background-color !important;
     }
 
     .navbar-nav {
       > li > a {
-        color: $markdown-text-color;
+        color: $std-fg-text-color;
 
         &:hover,
         &:focus {
-          color: $markdown-text-color;
+          color: $std-fg-text-color;
           background-color: $navbar-default-link-hover-bg;
         }
       }
@@ -385,20 +427,47 @@ $markdown-text-color: #e6e1dc;
     }
   }
 
-  header .navbar-left {
-    color: $markdown-text-color !important;
+  .nav-tabs {
+    border-bottom-color: $cell-border-color;
+
+    > li > a:hover {
+      border-color: #117dbe;
+      border-bottom-color: transparent;
+      background-color: $navbar-default-link-active-bg;
+      color: $std-fg-text-color;
+    }
+
+    > li.active > a {
+      border-color: $cell-border-color;
+      border-bottom-color: transparent;
+      background-color: $main-theme-panel-background;
+      color: $std-fg-text-color;
+    }
+  }
+
+  header {
+    .navbar-left {
+      color: $std-fg-text-color !important;
+    }
+
+    .navbar-inverse .navbar-text {
+      background-color: #3f5264 !important;
+    }
   }
 
   //easy-form
   .easy-form-container {
     legend, label, input {
-      color: $markdown-text-color;
+      color: $std-fg-text-color;
     }
 
-    fieldset, input {
-      border-color: #7e7a78;
+    fieldset, input, textarea, select, .custom-combobox-toggle {
+      border-color: $cell-border-color;
     }
 
+    .custom-combobox-toggle {
+      background-color: $cell-border-color;
+    }
   }
 
   //CodeMirror
@@ -409,10 +478,12 @@ $markdown-text-color: #e6e1dc;
 
   .CodeMirror-gutters {
     background-color: $main-theme-panel-background;
+    border: none;
+    box-shadow: none;
   }
 
   .CodeMirror-linenumbers, .CodeMirror-linenumber {
-    color: #7e7a78;
+    color: $cell-border-color;
   }
 
   .CodeMirror-fullscreen {
@@ -420,6 +491,24 @@ $markdown-text-color: #e6e1dc;
   }
 
   .CodeMirror .cm-comment {
-    color: $markdown-text-color;
+    color: $std-fg-text-color;
+  }
+
+  .CodeMirror-simplescroll-horizontal, .CodeMirror-simplescroll-vertical {
+    background: $btn-bkg-color;
+  }
+
+  .CodeMirror-hints {
+    background-color: $input-background-color;
+    border-color: #7e7a78;
+  }
+
+  .CodeMirror-hint {
+    color: $std-fg-text-color;
+  }
+
+  li.CodeMirror-hint-active {
+    background: $navbar-default-link-active-bg;
+    color: $std-fg-text-color;
   }
 }

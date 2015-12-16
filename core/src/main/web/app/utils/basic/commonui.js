@@ -62,9 +62,10 @@
     // ever get bullied again.
     return {
       restrict: 'C',
-      link: function(scope, element, attrs) {
+      link: function(scope, element) {
         $(window).on('click.' + scope.$id, hideDropdown);
         $(document).on('hide.bs.dropdown', hideDropdown);
+        $(document).on('keydown', keydownListener);
 
         var dropdown = element.find('.dropdown-menu').first();
         var toggle = element.find('.dropdown-toggle').first();
@@ -96,9 +97,16 @@
 
         function hideDropdown() { dropdown.hide();}
 
+        function keydownListener(evt) {
+          if (evt.which === 27) {
+            hideDropdown();
+          }
+        }
+
         scope.$on('$destroy', function() {
           $(document).off('hide.bs.dropdown', hideDropdown);
           $(window).off('.' + scope.$id);
+          $(document).off('keydown', keydownListener);
           // Since the dropdown is external to the directive we need
           // to make sure to clean it up when the directive goes away
           dropdown.remove();

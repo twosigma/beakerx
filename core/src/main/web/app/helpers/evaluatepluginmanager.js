@@ -19,7 +19,7 @@
 (function() {
   'use strict';
   var module = angular.module('bk.evaluatePluginManager', ['bk.utils']);
-  module.factory('bkEvaluatePluginManager', function(bkUtils, $modal) {
+  module.factory('bkEvaluatePluginManager', function(bkUtils, $uibModal) {
     var nameToUrlMap = {};
     var nameToVisualParams = {};
     var plugins = {};
@@ -117,7 +117,7 @@
           }
 
           var onPluginLoadError = function(pluginId, reason){
-            $modal.open({backdrop: true,
+            $uibModal.open({backdrop: true,
               backdropClick: true,
               windowClass: 'beaker-sandbox',
               backdropClass: 'beaker-sandbox',

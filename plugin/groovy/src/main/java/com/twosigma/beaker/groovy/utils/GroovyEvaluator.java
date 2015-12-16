@@ -26,14 +26,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
@@ -47,6 +48,9 @@ import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 import org.codehaus.groovy.runtime.StackTraceUtils;
 
 public class GroovyEvaluator {
+
+  private static final String STATIC_WORD_WITH_SPACE = "static ";
+  private static final String DOT_STAR_POSTFIX = ".*";
   protected final String shellId;
   protected final String sessionId;
   protected List<String> classPath;
@@ -152,14 +156,22 @@ public class GroovyEvaluator {
     currentImports = in;
     outDir = od;
     
-    if(cp.isEmpty())
+    if(cp.isEmpty()) {
       classPath = new ArrayList<String>();
-    else
-      classPath = Arrays.asList(cp.split("[\\s"+File.pathSeparatorChar+"]+"));
-    if (in.isEmpty())
-      imports = new ArrayList<String>();
-    else
-      imports = Arrays.asList(in.split("\\s+"));
+    } else {
+      classPath = Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"));
+    }
+
+    imports = new LinkedList<>();
+
+    if (!in.isEmpty()) {
+      String[] importLines = in.split("\\n+");
+      for (String line : importLines) {
+        if (!line.trim().isEmpty()) {
+          imports.add(line);
+        }
+      }
+    }
 
     try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
 
@@ -297,12 +309,31 @@ public class GroovyEvaluator {
       ImportCustomizer icz = new ImportCustomizer();
 
       if (!imports.isEmpty()) {
-        for (int i = 0; i < imports.size(); i++) {
-          // should trim too
-          if (imports.get(i).endsWith(".*")) {
-            icz.addStarImports(imports.get(i).substring(0, imports.get(i).length() - 2));
+        for (String importLine : imports) {
+          if (importLine.startsWith(STATIC_WORD_WITH_SPACE)) {
+
+            String pureImport = importLine
+                .replace(STATIC_WORD_WITH_SPACE, StringUtils.EMPTY)
+                .replace(DOT_STAR_POSTFIX, StringUtils.EMPTY);
+
+            if (importLine.endsWith(DOT_STAR_POSTFIX)) {
+              icz.addStaticStars(pureImport);
+            } else {
+              int index = pureImport.lastIndexOf('.');
+              if (index == -1) {
+                continue;
+              }
+              icz.addStaticImport(pureImport.substring(0, index), pureImport.substring(index + 1));
+            }
+
           } else {
-            icz.addImports(imports.get(i));
+
+            if (importLine.endsWith(DOT_STAR_POSTFIX)) {
+              icz.addStarImports(importLine.replace(DOT_STAR_POSTFIX, StringUtils.EMPTY));
+            } else {
+              icz.addImports(importLine);
+            }
+
           }
         }
       }

@@ -73,6 +73,12 @@ define(function(require, exports, module) {
         var onEvalStatusUpdate = function(evaluation) {
           if (evaluation.status === "ERROR" && evaluation.payload != null){
             evaluation.payload = _.escape(evaluation.payload);
+            var stacktraceInd = evaluation.payload.indexOf("\n	at");
+            if (stacktraceInd < 0) { stacktraceInd = evaluation.payload.length; }
+            var shortError = evaluation.payload.substring(0, stacktraceInd + 1);
+            shortError = shortError.replace(/\n/g, "<br/>");
+            evaluation.payload = shortError +
+              (stacktraceInd < evaluation.payload.length ? evaluation.payload.substring(stacktraceInd) : "");
           }
           if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
             cometdUtil.unsubscribe(evaluation.update_id);

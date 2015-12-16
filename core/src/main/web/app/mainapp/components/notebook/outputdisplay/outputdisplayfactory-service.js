@@ -88,22 +88,10 @@
 
           $scope.$watch('model.getCellModel()', function(cellModel) {
             var errors  = Array.prototype.concat(cellModel);
-            var shortError = "";
-            var longErrorIndex;
-            for (var i = 0; i < errors.length; i++) {
-              if (errors[i].indexOf("	at") === 0) {
-                longErrorIndex = i;
-                break;
-              }
-              shortError += errors[i] + "\n";
-              if(i === 0){
-                shortError += "\n";
-              }
-            }
 
-            $scope.shortError   = $sce.trustAsHtml(shortError);
-            $scope.canExpand    = longErrorIndex > 0;
-            $scope.longError    = $sce.trustAsHtml(errors.slice(longErrorIndex).join("\n"));
+            $scope.shortError   = $sce.trustAsHtml(errors[0]);
+            $scope.canExpand    = errors.length > 1;
+            $scope.longError    = $sce.trustAsHtml(errors.slice(1).join("\n"));
           });
         }
       },

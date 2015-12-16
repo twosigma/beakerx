@@ -14,7 +14,7 @@
  *
  *                     www.ObjectLab.co.uk
  *
- * $Id: TreeMapNode.java 74 2006-10-24 22:19:05Z benoitx $
+ * $Id: TreeMapNode.java 145 2011-09-30 09:25:10Z jense128 $
  * 
  * Copyright 2006 the original author or authors.
  *
@@ -33,7 +33,7 @@
 package net.sf.jtreemap.swing;
 
 import java.util.Enumeration;
-import java.util.Vector;
+import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -57,15 +57,10 @@ public class TreeMapNode extends DefaultMutableTreeNode {
     private static int border = DEFAULT_BORDER_SIZE;
 
     private int height;
-
     private Value value;
-
     private double weight = 0.0;
-
     private int width;
-
     private int x;
-
     private int y;
 
     /**
@@ -106,7 +101,7 @@ public class TreeMapNode extends DefaultMutableTreeNode {
      * @param weight
      *            weight of the leaf (if negative, we take the absolute value).
      * @param value
-     *            Value associï¿½e ï¿½ la feuille
+     *            Value associée à la feuille
      */
     public TreeMapNode(final String label, final double weight, final Value value) {
         super(label);
@@ -140,8 +135,7 @@ public class TreeMapNode extends DefaultMutableTreeNode {
     public TreeMapNode getActiveLeaf(final int xParam, final int yParam) {
 
         if (this.isLeaf()) {
-            if ((xParam >= this.getX()) && (xParam <= this.getX() + this.getWidth()) && (yParam >= this.getY())
-                    && (yParam <= this.getY() + this.getHeight())) {
+            if ((xParam >= this.getX()) && (xParam <= this.getX() + this.getWidth()) && (yParam >= this.getY()) && (yParam <= this.getY() + this.getHeight())) {
                 return this;
             }
         } else {
@@ -181,12 +175,12 @@ public class TreeMapNode extends DefaultMutableTreeNode {
     }
 
     /**
-     * get a Vector with the children.
+     * get a List with the children.
      * 
-     * @return Vector with the children
+     * @return List with the children
      */
     @SuppressWarnings("unchecked")
-    public Vector<TreeMapNode> getChildren() {
+    public List<TreeMapNode> getChildren() {
         return this.children;
     }
 
@@ -205,7 +199,7 @@ public class TreeMapNode extends DefaultMutableTreeNode {
      * @return the label
      */
     public String getLabel() {
-        return this.getUserObject().toString();
+        return getUserObject() != null ? getUserObject().toString() : "";
     }
 
     /**
@@ -214,7 +208,7 @@ public class TreeMapNode extends DefaultMutableTreeNode {
      * @return the label of the Value
      */
     public String getLabelValue() {
-        return this.value.getLabel();
+        return value != null ? this.value.getLabel() : "";
     }
 
     /**

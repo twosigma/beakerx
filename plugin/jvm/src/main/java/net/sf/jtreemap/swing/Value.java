@@ -14,7 +14,7 @@
  *
  *                     www.ObjectLab.co.uk
  *
- * $Id: Value.java 74 2006-10-24 22:19:05Z benoitx $
+ * $Id: Value.java 135 2009-06-22 11:37:58Z benoitx $
  * 
  * Copyright 2006 the original author or authors.
  *
@@ -41,6 +41,7 @@ import java.io.Serializable;
  */
 
 public abstract class Value implements Comparable, Serializable {
+    private static final long serialVersionUID = 1L;
     private static final int SHIFT = 32;
     private static final int PRIME = 31;
 
@@ -116,6 +117,13 @@ public abstract class Value implements Comparable, Serializable {
         }
         throw new IllegalArgumentException();
     }
+
+    public String toString() {
+        final StringBuilder b = new StringBuilder();
+        b.append(getLabel()).append(" - ").append(getValue());
+        return b.toString();
+    }
+
 }
 /*
  *                 ObjectLab is supporing JTreeMap

@@ -162,7 +162,7 @@ var BeakerPageObject = function() {
           deferred.fulfill(result);
         });
       return deferred.promise;
-    }.bind(this), 10000);
+    }.bind(this), 60000);
   };
 
   this.readMarkdownCell = function() {

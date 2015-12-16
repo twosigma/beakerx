@@ -49,7 +49,7 @@ describe('language manager', function () {
     beakerPO.languageManagerButton('IPython').click();
     beakerPO.waitForPlugin('IPython');
     expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(true);
-  });
+  }, 60000);
 
   it('can be closed', function () {
     beakerPO.languageManagerButton('Groovy').click();

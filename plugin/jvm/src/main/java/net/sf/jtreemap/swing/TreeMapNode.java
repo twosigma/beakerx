@@ -101,7 +101,7 @@ public class TreeMapNode extends DefaultMutableTreeNode {
      * @param weight
      *            weight of the leaf (if negative, we take the absolute value).
      * @param value
-     *            Value associée à la feuille
+     *            Value associee a la feuille
      */
     public TreeMapNode(final String label, final double weight, final Value value) {
         super(label);

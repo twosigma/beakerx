@@ -7715,7 +7715,7 @@
                 "pluginName": "Groovy",
                 "shellId": "13736cb0-5675-4191-923f-6d3a67bd2863",
                 "elapsedTime": 632,
-                "height": 604
+                "height": 281
             },
             "evaluatorReader": true,
             "lineCount": 42
@@ -7798,7 +7798,7 @@
                         "IBM Price 2008",
                         "Setting line properties",
                         "IBM Price 2008 Table",
-                        "Plot4"
+                        "Form and Run"
                     ],
                     "items": [
                         {
@@ -13236,54 +13236,34 @@
                             "subtype": "ListOfMaps"
                         },
                         {
-                            "type": "Plot",
-                            "init_width": 640,
-                            "init_height": 480,
-                            "chart_title": "Plot4",
-                            "show_legend": null,
-                            "use_tool_tip": true,
-                            "legend_position": {
-                                "type": "LegendPosition",
-                                "position": "TOP_RIGHT"
-                            },
-                            "legend_layout": "VERTICAL",
-                            "domain_axis_label": null,
-                            "y_label": "",
-                            "rangeAxes": [
+                            "update_id": "51a26a08-641d-4a9a-a09e-d387b6aaa9cc",
+                            "update_time": 1450351965584,
+                            "type": "EasyForm",
+                            "caption": "Form and Run",
+                            "components": [
                                 {
-                                    "type": "YAxis",
-                                    "label": "",
-                                    "auto_range": true,
-                                    "auto_range_includes_zero": false,
-                                    "lower_margin": 0.05,
-                                    "upper_margin": 0.05,
-                                    "lower_bound": 0,
-                                    "upper_bound": 0,
-                                    "use_log": false,
-                                    "log_base": 10
+                                    "type": "TextField",
+                                    "label": "first",
+                                    "enabled": true,
+                                    "value": "setinit",
+                                    "width": "15",
+                                    "currentValue": "setinit"
+                                },
+                                {
+                                    "type": "TextField",
+                                    "label": "last",
+                                    "enabled": true,
+                                    "value": "setinit",
+                                    "width": "15",
+                                    "currentValue": "setinit"
+                                },
+                                {
+                                    "type": "ButtonComponent",
+                                    "label": "actionPerformed button",
+                                    "enabled": "Groovy",
+                                    "value": ""
                                 }
-                            ],
-                            "x_lower_margin": 0.05,
-                            "x_upper_margin": 0.05,
-                            "y_auto_range": true,
-                            "y_auto_range_includes_zero": false,
-                            "y_lower_margin": 0.05,
-                            "y_upper_margin": 0.05,
-                            "y_lower_bound": 0,
-                            "y_upper_bound": 0,
-                            "log_y": false,
-                            "timezone": null,
-                            "crosshair": null,
-                            "omit_checkboxes": false,
-                            "graphics_list": [],
-                            "constant_lines": [],
-                            "constant_bands": [],
-                            "texts": [],
-                            "x_auto_range": true,
-                            "x_lower_bound": 0,
-                            "x_upper_bound": 0,
-                            "log_x": false,
-                            "x_log_base": 10
+                            ]
                         }
                     ],
                     "layout": {
@@ -13299,7 +13279,7 @@
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
                 "shellId": "13736cb0-5675-4191-923f-6d3a67bd2863",
-                "elapsedTime": 617,
+                "elapsedTime": 635,
                 "height": 1336
             },
             "evaluatorReader": true,
@@ -21354,7 +21334,7 @@
                         "period": 5000
                     }
                 },
-                "height": 549
+                "height": 231
             },
             "evaluatorReader": true,
             "lineCount": 32

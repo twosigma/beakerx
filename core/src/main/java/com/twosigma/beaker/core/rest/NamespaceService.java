@@ -73,7 +73,7 @@ public class NamespaceService {
   }
   private List<String> getNames(String session) {
     if(this.namesMap.get(session) == null) {
-      namesMap.put(session, new ArrayList<>());
+      namesMap.put(session, new ArrayList<String>());
     }
     return namesMap.get(session);
   }

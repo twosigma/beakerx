@@ -30,7 +30,10 @@ import java.util.List;
 import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
@@ -190,6 +193,33 @@ public class SimpleEvaluationObject extends Observable {
 
     private final Provider<UpdateManager> updateManagerProvider;
     private final Provider<BeakerObjectConverter> objectSerializerProvider;
+    private static final Pattern CONTROL_CHARACTERS_IN_STRING_PATTERN
+        = Pattern.compile("[^\\p{Cc}]*[\\p{Cc}]+[^\\p{Cc}]*(?U)");
+
+    private String escapeControlCharacters(final String value) {
+      if (StringUtils.isNotEmpty(value)) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < value.length(); i++) {
+          if (Character.isISOControl(value.charAt(i))) {
+            sb.append(
+                StringEscapeUtils.escapeJava(
+                    StringEscapeUtils.escapeJson(
+                        value.substring(i, i + 1))));
+          } else {
+            sb.append(value.charAt(i));
+          }
+        }
+        return sb.toString();
+      }
+      return StringUtils.EMPTY;
+    }
+
+    private boolean containsControlCharacters(final String value) {
+      if (StringUtils.isNotEmpty(value)) {
+        return CONTROL_CHARACTERS_IN_STRING_PATTERN.matcher(value).matches();
+      }
+      return false;
+    }
 
     @Inject
     private Serializer(Provider<UpdateManager> ump, Provider<BeakerObjectConverter> osp) {
@@ -226,15 +256,23 @@ public class SimpleEvaluationObject extends Observable {
             jgen.writeFieldName("payload");
             if (!getObjectSerializer().writeObject(o, jgen, true))
               jgen.writeObject(o.toString());
-          } else if(value.getJsonRes() != null) {
+          } else if (value.getJsonRes() != null) {
             jgen.writeFieldName("payload");
-            jgen.writeRawValue(value.getJsonRes());            
+            if (containsControlCharacters(value.getJsonRes())) {
+              jgen.writeRawValue(escapeControlCharacters(value.getJsonRes()));
+            } else {
+              jgen.writeRawValue(value.getJsonRes());
+            }
           }
         }
         if (value.getJsonRes() != null && value.getPayload() != null && value.getPayload().getValue() != null) {
-          logger.finest("adding raw json data: '"+value.getJsonRes()+"'");
+          logger.finest("adding raw json data: '" + value.getJsonRes() + "'");
           jgen.writeFieldName("jsonres");
-          jgen.writeRawValue(value.getJsonRes());
+          if (containsControlCharacters(value.getJsonRes())) {
+            jgen.writeRawValue(escapeControlCharacters(value.getJsonRes()));
+          } else {
+            jgen.writeRawValue(value.getJsonRes());
+          }
         }
         jgen.writeArrayFieldStart("outputdata");
         for (Object o : value.getOutputdata()) {

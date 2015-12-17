@@ -18,7 +18,7 @@
   'use strict';
 
   var module = angular.module('bk.notebook');
-  module.directive('cyclingOutputContainerLayout', ['bkHelper', '$timeout', function (bkHelper, $timeout) {
+  module.directive('cyclingOutputContainerLayout', ['bkHelper', '$timeout', "GLOBALS", function (bkHelper, $timeout, GLOBALS) {
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/cyclingoutputcontainerlayout"](),
@@ -60,16 +60,15 @@
       },
       link: function ($scope, element) {
         $timeout(function () {
-          var divs = $('div[id^="content-"]').hide(),
+          var divs = $('div[id^="lm-cycling-panel-"]').hide(),
             i = 0;
           (function cycle() {
 
             divs.eq(i).show(0)
               .delay($scope.model.getCellModel().layout.period)
               .hide(0, cycle);
-
+            $scope.$broadcast(GLOBALS.EVENTS.CELL_OUTPUT_LM_SHOWED);
             i = ++i % divs.length;
-
           })();
         });
       }

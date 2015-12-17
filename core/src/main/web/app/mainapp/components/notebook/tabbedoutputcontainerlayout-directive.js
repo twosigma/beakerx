@@ -19,12 +19,20 @@
 
   var module = angular.module('bk.notebook');
 
-  module.directive('tabbedOutputContainerLayout', ['bkHelper', function (bkHelper) {
+  module.directive('tabbedOutputContainerLayout', ['$timeout', 'GLOBALS', function ($timeout, GLOBALS) {
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/tabbedoutputcontainerlayout"](),
       scope: {
         model: '='
+      },
+      link: function (scope, element, attrs) {
+
+        $timeout(function () {
+          $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            scope.$broadcast(GLOBALS.EVENTS.CELL_OUTPUT_LM_SHOWED);
+          });
+        });
       },
       controller: function ($scope) {
         $scope.borderStyle = {

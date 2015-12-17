@@ -30,7 +30,8 @@
         DISCARD_LANGUAGE_SETTINGS: 'discard-language-settings',
         HIGHLIGHT_EDITED_LANGUAGE_SETTINGS: 'highlight-edited-language-settings',
         SET_LANGUAGE_SETTINGS_EDITED: 'set-language-settings-edited',
-        CELL_OUTPUT_EXPANDED: 'cell-output-expanded'
+        CELL_OUTPUT_EXPANDED: 'cell-output-expanded',
+        CELL_OUTPUT_LM_SHOWED: 'cell-output-lm-showed'
       },
       FILE_LOCATION: {
         FILESYS: "file",

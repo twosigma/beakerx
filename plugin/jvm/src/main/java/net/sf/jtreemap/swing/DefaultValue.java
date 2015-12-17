@@ -14,7 +14,7 @@
  *
  *                     www.ObjectLab.co.uk
  *
- * $Id: DefaultValue.java 74 2006-10-24 22:19:05Z benoitx $
+ * $Id: DefaultValue.java 135 2009-06-22 11:37:58Z benoitx $
  * 
  * Copyright 2006 the original author or authors.
  *
@@ -39,9 +39,6 @@ package net.sf.jtreemap.swing;
  * @author Laurent DUTHEIL
  */
 public class DefaultValue extends Value {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 367321198951855282L;
 
     private double value;

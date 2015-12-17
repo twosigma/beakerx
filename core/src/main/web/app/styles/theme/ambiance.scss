@@ -196,6 +196,12 @@ $btn-bkg-color: #505050;
     border-color: $cell-border-color;
   }
 
+  .locked {
+    bk-markdown-cell bk-markdown-editable, .bkcell.code-cell-area, .textcell-wrapper, bk-code-cell .code-cell-output {
+      border: none;
+    }
+  }
+
   .code-cell-area .code-cell-output {
     border-top-color: $cell-border-color;
   }
@@ -212,7 +218,7 @@ $btn-bkg-color: #505050;
     color: $std-fg-text-color;
   }
 
-  pre.out_error {
+  pre.out_error, bk-output-display[type='Error'] pre {
     color: $std-err-color;
   }
 

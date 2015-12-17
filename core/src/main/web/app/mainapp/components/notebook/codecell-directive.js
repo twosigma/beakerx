@@ -97,10 +97,11 @@
 
         //ensure cm refreshes when 'unhide'
         $scope.afterShow = function () {
-          $scope.cm.refresh();
+          if ($scope.cm)
+            $scope.cm.refresh();
         };
         $scope.$watch('cellmodel.input.hidden', function(newValue, oldValue) {
-          if ($scope.cm && oldValue === true && newValue !== oldValue) {
+          if (oldValue === true && newValue !== oldValue) {
             bkUtils.fcall(function() {
               $scope.afterShow();
             });

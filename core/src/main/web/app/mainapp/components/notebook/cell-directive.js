@@ -218,10 +218,6 @@
           return $scope.cellmodel.type == 'code';
         };
 
-        $scope.isSection = function() {
-          return $scope.cellmodel.type == 'section';
-        };
-
         $scope.evaluateSection = function($evt) {
           if ($evt) {
             $evt.stopPropagation();

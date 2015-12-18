@@ -51,6 +51,7 @@ $dropdown-menu-color: $main-theme-color !default;
 $std-fg-text-color: #e6e1dc;
 $input-background-color: #2d2d37;
 $cell-border-color: #7e7a78;
+$std-out-color: #42A2D2;
 $std-err-color: #e48d71;
 $btn-bkg-color: #505050;
 
@@ -162,10 +163,14 @@ $btn-bkg-color: #505050;
       background: $main-theme-panel-background;
       color: $std-fg-text-color;
     }
+
+    .bk-object-label {
+      color: $std-out-color;
+    }
   }
 
   .text-info {
-    color: #42A2D2;
+    color: $std-out-color;
   }
 
   .text-warning {

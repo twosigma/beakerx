@@ -141,7 +141,7 @@
         }
       },
       "OutputContainer": {
-        template: '<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b ng-if="hasName($index)">{{getName($index)}}<br/></b><bk-code-cell-output model="i" >' +
+        template: '<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b class="bk-object-label" ng-if="hasName($index)">{{getName($index)}}<br/></b><bk-code-cell-output model="i" >' +
             '</ bk-code-cell-output><br/>></li></ul>',
         scope: {
           model: "="

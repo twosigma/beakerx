@@ -128,11 +128,17 @@
           if ($event) {
             $event.stopPropagation();
           }
+          var toEval;
 
-          $scope.cellmodel.output.state = {};
+          if ($scope.cellmodel.type === 'section') {
+            toEval = $scope.cellmodel.id;
+          } else {
+            $scope.cellmodel.output.state = {};
+            toEval = $scope.cellmodel;
+          }
 
           bkCoreManager.getBkApp()
-            .evaluateRoot($scope.cellmodel)
+            .evaluateRoot(toEval)
             .catch(function(data) {
               console.error(data);
             });
@@ -217,26 +223,6 @@
         $scope.isCodeCell = function() {
           return $scope.cellmodel.type == 'code';
         };
-
-        $scope.evaluateSection = function($evt) {
-          if ($evt) {
-            $evt.stopPropagation();
-          }
-
-          var notebookCellOp = bkSessionManager.getNotebookCellOp();
-          var siblings = notebookCellOp.getChildren($scope.cellmodel.id);
-          var toEval = [];
-          _.each(siblings, function(cellmodel) {
-            if (cellmodel.type == 'code') {
-              cellmodel.output.state = {};
-              toEval.push(cellmodel);
-            }
-          });
-
-          if (toEval.length) {
-            bkCoreManager.getBkApp().evaluateRoot(toEval);
-          }
-        }
       }
     };
   });

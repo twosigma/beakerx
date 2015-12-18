@@ -14,7 +14,6 @@
 
 library(RCurl, quietly=TRUE)
 library(RJSONIO, quietly=TRUE)
-library(plotly, quietly=TRUE)
 
 require('png', quietly=TRUE)
 require('base64enc', quietly=TRUE)

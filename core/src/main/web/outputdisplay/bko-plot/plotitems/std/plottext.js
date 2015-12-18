@@ -101,6 +101,24 @@
       this.vlength = r - l + 1;
     };
 
+    /**
+     * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
+     *
+     * @param {String} text The text to be rendered.
+     * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold 14px verdana").
+     *
+     * @see http://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
+     */
+    var getTextWidth = function (text, font) {
+      // re-use canvas object for better performance
+      var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+      var context = canvas.getContext("2d");
+      context.font = font;
+      var metrics = context.measureText(text);
+      return metrics.width;
+    };
+
+
     PlotText.prototype.prepare = function(scope) {
       var focus = scope.focus;
       var eles = this.elements,
@@ -130,6 +148,18 @@
         }
         tf += "translate(" + x + "," + y + ")";
 
+        var line_tf = "";
+        if (this.itemProps.pointer_angle != null) {
+
+          if (this.itemProps.pointer_angle >= Math.PI / 2 && this.itemProps.pointer_angle <= Math.PI) {
+            y -= 15;
+            x += getTextWidth(ele.text, "12 px pt-sans, Helvetica, sans-serif");
+          }
+
+          line_tf = "rotate(" + this.itemProps.pointer_angle * (180 / Math.PI) + " " + x + " " + y + ")";
+          line_tf += "translate(" + x + "," + y + ")";
+        }
+
         var prop = {
           "id" : this.id + "_" + i,
           "idx" : this.index,
@@ -139,7 +169,8 @@
           "fi" : this.itemProps.fi,
           "fi_op" : this.itemProps.fi_op,
           "show_pointer": this.itemProps.show_pointer,
-          "pointer_angle": this.itemProps.pointer_angle
+          "pointer_angle": this.itemProps.pointer_angle,
+          "line_tf" : line_tf
         };
         eleprops.push(prop);
       }
@@ -160,6 +191,7 @@
 
       var respClass = this.useToolTip === true ? this.respClass : null;
       var itemsvg = svg.select("#" + this.id);
+
       itemsvg.selectAll("text")
         .data(eleprops, function(d) { return d.id; }).exit().remove();
       itemsvg.selectAll("text")
@@ -173,6 +205,44 @@
       itemsvg.selectAll("text")
         .data(eleprops, function(d) { return d.id; })
         .attr("transform", function(d) { return d.tf; });
+
+
+      var mapX = scope.data2scrXi,
+          mapY = scope.data2scrYi;
+
+      itemsvg.selectAll("line")
+        .data(eleprops, function (d) {return "line_" + d.id;}).exit().remove();
+
+      if (this.itemProps.pointer_angle != null ) {
+        itemsvg.selectAll("line")
+          .data(eleprops, function (d) {
+            return d.id;
+          }).enter().append("line")
+          .attr("id", function (d) {
+            return "line_" + d.id;
+          })
+
+          .attr("x1", 0)
+          .attr("x2", -15)
+          .attr("y1", 0)
+          .attr("y2", 0)
+
+          .attr("stroke-width", 1)
+          .attr("stroke", function (d) {
+            return d.fi;
+          })
+          .attr("marker-end", "url(/beaker/#Triangle)")
+        ;
+
+        itemsvg.selectAll("line")
+          .data(eleprops, function (d) {
+            return "line_" + d.id;
+          })
+          .attr("transform", function (d) {
+            return d.line_tf;
+          });
+      }
+
     };
 
     PlotText.prototype.clear = function(scope) {

@@ -23,8 +23,8 @@
   var retfunc = function($sce) {
     var CELL_TYPE = "bko-plotly";
     return {
-      template: '<div><iframe srcdoc="{{getHtml()}}" style="height: 480px; width: 640px; resize: both; overflow: auto; border: 0;' +
-                '"></iframe></div>',
+      template: '<div><iframe srcdoc="{{getHtml()}}" ' +
+                'style="height: 480px; width: 640px; resize: both; overflow: auto; border: 0;"></iframe></div>',
       link: function(scope, element, attrs) {
         scope.getModel = function(){
           return scope.model.getCellModel();
@@ -42,7 +42,9 @@
           '<script type="application/json" data-for="htmlwidget">' +
           angular.toJson(scope.model.getCellModel().data) +
           '</script>' +
-          '<script type="application/htmlwidget-sizing" data-for="htmlwidget-741">{"viewer":{"width":450,"height":350,"padding":5,"fill":true},"browser":{"width":960,"height":500,"padding":5,"fill":true}}</script>';
+          '<script type="application/htmlwidget-sizing" data-for="htmlwidget">{' +
+          '"viewer":{"width":640,"height":480,"padding":5,"fill":true},' +
+          '"browser":{"width":960,"height":500,"padding":5,"fill":true}}</script>';
 
         scope.getHtml = function() {
           return $sce.trustAsHtml(scope.html);

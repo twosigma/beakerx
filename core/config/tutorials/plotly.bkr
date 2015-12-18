@@ -46,7 +46,7 @@
                 "selectedType": "Hidden",
                 "pluginName": "R",
                 "shellId": "21bf9d35-34f7-4c8f-befe-ed9178193792",
-                "elapsedTime": 52,
+                "elapsedTime": 50,
                 "dataresult": [
                     "shiny",
                     "beaker",
@@ -86,7 +86,7 @@
             },
             "output": {
                 "selectedType": "Plotly",
-                "elapsedTime": 574,
+                "elapsedTime": 573,
                 "state": {},
                 "pluginName": "R",
                 "shellId": "21bf9d35-34f7-4c8f-befe-ed9178193792",
@@ -11832,7 +11832,8 @@
                 "selectedType": "Plotly",
                 "pluginName": "R",
                 "shellId": "21bf9d35-34f7-4c8f-befe-ed9178193792",
-                "elapsedTime": 583
+                "elapsedTime": 634,
+                "height": 523
             },
             "evaluatorReader": true,
             "lineCount": 2

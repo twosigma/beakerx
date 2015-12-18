@@ -14,6 +14,7 @@
 
 library(RCurl, quietly=TRUE)
 library(RJSONIO, quietly=TRUE)
+library(plotly, quietly=TRUE)
 
 require('png', quietly=TRUE)
 require('base64enc', quietly=TRUE)
@@ -423,7 +424,7 @@ convertToJSON <- function(val, collapse) {
   } else if(class(val) == "plotly") {
     temp <- print(val)
     p = "{ \"type\":\"Plotly\", \"data\":"
-    p = paste(p, toJSON(temp), sep='')
+    p = paste(p, plotly:::to_JSON(temp), sep='')
     p = paste(p, "}", sep='')
     o = p
   } else {

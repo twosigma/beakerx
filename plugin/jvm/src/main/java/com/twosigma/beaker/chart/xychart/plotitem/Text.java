@@ -16,16 +16,20 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
+import com.twosigma.beaker.chart.Color;
+
 /**
  * Text
  *
  */
 public class Text {
 
-  private Number x = 0.0d;
-  private Number y = 0.0d;
-  private boolean showPointer;
-  private String text = "";
+  private Number  x           = 0.0d;
+  private Number  y           = 0.0d;
+  private boolean showPointer = true;
+  private String  text        = "";
+  private Double pointerAngle;
+  private Color  color;
 
   public Number getX() {
     return x;
@@ -57,5 +61,22 @@ public class Text {
 
   public void setText(String text) {
     this.text = text;
+  }
+
+
+  public Double getPointerAngle() {
+    return pointerAngle;
+  }
+
+  public void setPointerAngle(Double pointerAngle) {
+    this.pointerAngle = pointerAngle;
+  }
+
+  public Color getColor() {
+    return color;
+  }
+
+  public void setColor(Color color) {
+    this.color = color;
   }
 }

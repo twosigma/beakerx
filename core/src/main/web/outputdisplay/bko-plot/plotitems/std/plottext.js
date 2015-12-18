@@ -32,9 +32,11 @@
         this.tip_color = "gray";
       }
       this.itemProps = {
-        "id" : this.id,
-        "fi" : this.color,
-        "fi_op" : this.color_opacity
+        "id": this.id,
+        "fi": this.color,
+        "fi_op": this.color_opacity,
+        "show_pointer": this.show_pointer,
+        "pointer_angle": this.pointer_angle
       };
       this.elementProps = [];
     };
@@ -59,7 +61,7 @@
         xl : Infinity,
         xr : -Infinity,
         yl : Infinity,
-        yr : -Infinity,
+        yr : -Infinity
       };
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
@@ -134,8 +136,10 @@
           "ele" : ele,
           "tf" : tf,
           "txt" : ele.text,
-          "fi" : ele.color,
-          "fi_op" : ele.opacity
+          "fi" : this.itemProps.fi,
+          "fi_op" : this.itemProps.fi_op,
+          "show_pointer": this.itemProps.show_pointer,
+          "pointer_angle": this.itemProps.pointer_angle
         };
         eleprops.push(prop);
       }
@@ -152,9 +156,7 @@
           .attr("id", function(d) { return d.id; });
       }
       svg.select("#" + this.id)
-        .attr("class", this.plotClass)
-        .style("fill", props.fi)
-        .style("fill-opacity", props.fi_op);
+        .attr("class", this.plotClass);
 
       var respClass = this.useToolTip === true ? this.respClass : null;
       var itemsvg = svg.select("#" + this.id);
@@ -164,8 +166,9 @@
         .data(eleprops, function(d) { return d.id; }).enter().append("text")
         .attr("id", function(d) { return d.id; })
         .attr("class", respClass)
-        .style("fill", function(d) { return d.fi; })
-        .style("fill_opacity", function(d) { return d.fi_op; })
+        .attr("fill", function(d){return d.fi;})
+        .attr("cursor", function(d){return d.show_pointer === false ? "none" : "default";})
+        .style("opacity", function(d) { return d.fi_op; })
         .text(function(d) { return d.txt; });
       itemsvg.selectAll("text")
         .data(eleprops, function(d) { return d.id; })

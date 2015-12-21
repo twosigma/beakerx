@@ -28,7 +28,6 @@ import java.util.Date;
 public class ConstantLine extends Graphics{
   private Number      x;
   private Number      y;
-  private String      displayName = "";
   private Color       baseColor;
   private Float       width       = 1.5f;
   private StrokeType  style;
@@ -75,14 +74,6 @@ public class ConstantLine extends Graphics{
   @Override
   public Color getColor() {
     return baseColor;
-  }
-
-  public String getDisplayName() {
-    return displayName;
-  }
-
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
   }
 
   public Float getWidth() {

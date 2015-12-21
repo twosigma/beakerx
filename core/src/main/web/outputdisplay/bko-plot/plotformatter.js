@@ -262,7 +262,7 @@
             //newmodel.yPreventNegative = true; // prevent move to y < 0
           }
 
-          if(item.type === "line" || item.type === "stem") {
+          if(item.type === "line" || item.type === "stem" || item.type === "constline") {
             if (item.color == null) {
               item.color = "black";
             }

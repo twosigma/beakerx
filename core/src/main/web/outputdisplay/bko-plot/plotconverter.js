@@ -664,12 +664,11 @@
             item.style = lineStyleMap[style];
 
             if (line.x != null) {
-              var ele = {"type": "x", "x": line.x};
-            } else if(line.y != null) {
-              var y = line.y;
-              var ele = {"type": "y", "y": y};
+              item.elements.push({"type": "x", "x": line.x});
             }
-            item.elements.push(ele);
+            if(line.y != null) {
+              item.elements.push({"type": "y", "y": line.y});
+            }
             newmodel.data.push(item);
           }
         }

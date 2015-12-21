@@ -27,7 +27,8 @@
                          bkCellMenuPluginManager,
                          bkSessionManager,
                          bkUtils,
-                         GradientLegend) {
+                         GradientLegend,
+                         TooltipsConnect) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -389,7 +390,6 @@
           }
         };
         scope.tooltip = function(d, mousePos) {
-
           if (scope.tips[d.id] != null) {
             return;
           }
@@ -411,6 +411,8 @@
           if (scope.tips[d.id].sticking === false){
             delete scope.tips[d.id];
             scope.jqcontainer.find("#tip_" + d.id).remove();
+            var tooltipsConnect = new TooltipsConnect({id: d.id});
+            tooltipsConnect.erase();
             if (d.isresp === true) {
               scope.jqsvg.find("#" + d.id).css("opacity", 0);
             } else {
@@ -420,12 +422,24 @@
           }
         };
 
+        var drawConnect = function(d) {
+          var tooltipsConnect = new TooltipsConnect({id: d.id});
+          var activePoint = scope.jqsvg.find("#" + d.id);
+          var tip = scope.jqcontainer.find("#tip_" + d.id);
+
+          if (tip.length) {
+            tooltipsConnect.erase();
+            tooltipsConnect.draw(activePoint, tip);
+          }
+        };
+
         scope.renderTips = function() {
           var data = scope.stdmodel.data;
           var focus = scope.focus;
           _.each(scope.tips, function(d) {
             var x = scope.data2scrX(d.datax),
                 y = scope.data2scrY(d.datay);
+            var tooltipsConnect = new TooltipsConnect({id: d.id});
             d.scrx = x;
             d.scry = y;
             var tipid = "tip_" + d.id;
@@ -440,6 +454,7 @@
                 }
                 scope.interactMode = "remove";
                 $(this).parent('.plot-tooltip').remove();
+                tooltipsConnect.erase();
               });
 
             if (tipdiv.length === 0) {
@@ -461,6 +476,7 @@
                     }
                     scope.interactMode = "remove";
                     $(this).remove();
+                    tooltipsConnect.erase();
                   }
                 });
               if (data[d.idx].tip_class) {
@@ -474,6 +490,9 @@
             }
             tipdiv
               .draggable({
+                drag: function() {
+                  drawConnect(d);
+                },
                 stop : function(event, ui) {
                   d.scrx = ui.position.left - plotUtils.fonts.tooltipWidth;
                   d.scry = ui.position.top;
@@ -1689,9 +1708,7 @@
 
         scope.standardizeData = function() {
           var model = scope.model.getCellModel();
-          console.log('Model', model);
           scope.stdmodel = plotFormatter.standardizeModel(model, scope.prefs);
-          console.log('STD', scope.stdmodel);
         };
 
         scope.dumpState = function() {
@@ -2055,5 +2072,6 @@
     "bkSessionManager",
     "bkUtils",
     "GradientLegend",
+    "TooltipsConnect",
     retfunc]);
 })();

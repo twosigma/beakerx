@@ -664,7 +664,15 @@
             item.style = lineStyleMap[style];
 
             if (line.x != null) {
-              item.elements.push({"type": "x", "x": line.x});
+              if (model.type === 'NanoPlot') {
+                if (!_.isEmpty(line.x)) {
+                  var bigv = new Big(line.x);
+                  if (logx && bigv.lte(0) && line.y == null) { continue; }
+
+                  line.x = bigv;
+                  item.elements.push({"type": "x", "x": line.x});
+                } else if (line.y == null) { continue; }
+              }
             }
             if(line.y != null) {
               item.elements.push({"type": "y", "y": line.y});

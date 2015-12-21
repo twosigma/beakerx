@@ -51,6 +51,7 @@ abstract public class XYChart extends AbstractChart{
   }
 
   public XYChart add(ConstantLine constantLine) {
+    constantLine.setPlotType(this.getClass());
     this.constantLines.add(constantLine);
     return this;
   }

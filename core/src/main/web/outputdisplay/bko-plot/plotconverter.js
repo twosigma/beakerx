@@ -672,6 +672,8 @@
                   line.x = bigv;
                   item.elements.push({"type": "x", "x": line.x});
                 } else if (line.y == null) { continue; }
+              } else {
+                item.elements.push({"type": "x", "x": line.x});
               }
             }
             if(line.y != null) {

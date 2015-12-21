@@ -19,6 +19,8 @@ package com.twosigma.beaker.chart.xychart.plotitem;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Graphics;
 
+import java.util.Date;
+
 /**
  * ConstantLine
  *
@@ -36,8 +38,14 @@ public class ConstantLine extends Graphics{
     return x;
   }
 
-  public void setX(Number x) {
-    this.x = x;
+  public void setX(Object x) {
+    if (x instanceof Number) {
+      this.x = (Number)x;
+    } else if (x instanceof Date) {
+      this.x = ((Date)x).getTime();
+    } else {
+      throw new IllegalArgumentException("x takes Number or Date");
+    }
   }
 
   public Number getY() {

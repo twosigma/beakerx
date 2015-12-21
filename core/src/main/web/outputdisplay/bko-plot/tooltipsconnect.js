@@ -25,7 +25,6 @@
         fill: 'none'
       };
 
-      console.log(opts);
       this.options = _.extend(settings, opts);
       this.connectorId = 'connector' + opts.id;
     };

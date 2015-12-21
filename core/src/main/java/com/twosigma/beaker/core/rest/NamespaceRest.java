@@ -17,8 +17,7 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.twosigma.beaker.shared.module.util.ControlCharacterUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.JsonParser.Feature;
 import java.io.IOException;
@@ -30,7 +29,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.util.regex.Pattern;
 
 /**
  * RESTful API for namespace service (in the notebook model).
@@ -41,8 +39,6 @@ import java.util.regex.Pattern;
 public class NamespaceRest {
 
   private String legalNamePattern = "[a-zA-Z_][a-zA-Z0-9_]*";
-  private static final Pattern CONTROL_CHARACTERS_IN_STRING_PATTERN
-      = Pattern.compile("[^\\p{Cc}]*[\\p{Cc}]+[^\\p{Cc}]*(?U)");
   private ObjectMapper mapper = new ObjectMapper().configure(Feature.ALLOW_NON_NUMERIC_NUMBERS, true);
 
   @Inject
@@ -69,39 +65,14 @@ public class NamespaceRest {
       return("name is illegal for notebook namespace: \'" + name + "\'");
     }
     if (null != value) {
-      if (containsControlCharacters(value)) {
-        value = escapeControlCharacters(value);
+      if (ControlCharacterUtils.containsControlCharacters(value)) {
+        value = ControlCharacterUtils.escapeControlCharacters(value);
       }
       parsedValue = mapper.readValue(value, Object.class);
       unset = false;
     }
     this.namespaceService.set(session, name, parsedValue, unset, sync);
     return "ok";
-  }
-
-  private String escapeControlCharacters(final String value) {
-    if (StringUtils.isNotEmpty(value)) {
-      StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < value.length(); i++) {
-        if (Character.isISOControl(value.charAt(i))) {
-          sb.append(
-              StringEscapeUtils.escapeJava(
-                  StringEscapeUtils.escapeJson(
-                      value.substring(i, i + 1))));
-        } else {
-          sb.append(value.charAt(i));
-        }
-      }
-      return sb.toString();
-    }
-    return StringUtils.EMPTY;
-  }
-
-  private boolean containsControlCharacters(final String value) {
-    if (StringUtils.isNotEmpty(value)) {
-      return CONTROL_CHARACTERS_IN_STRING_PATTERN.matcher(value).matches();
-    }
-    return false;
   }
 
 }

@@ -20,16 +20,16 @@ import com.twosigma.beaker.chart.Color;
 
 /**
  * Text
- *
  */
 public class Text {
 
-  private Number  x           = 0.0d;
-  private Number  y           = 0.0d;
-  private boolean showPointer = true;
-  private String  text        = "";
-  private Double pointerAngle;
-  private Color  color;
+  private Number  x            = 0.0d;
+  private Number  y            = 0.0d;
+  private boolean showPointer  = true;
+  private String  text         = "";
+  private Double  pointerAngle = (-0.25f) * Math.PI;
+  private Color   color;
+  private int size = 13;
 
   public Number getX() {
     return x;
@@ -78,5 +78,13 @@ public class Text {
 
   public void setColor(Color color) {
     this.color = color;
+  }
+
+  public int getSize() {
+    return size;
+  }
+
+  public void setSize(int size) {
+    this.size = size;
   }
 }

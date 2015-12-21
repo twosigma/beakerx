@@ -41,6 +41,7 @@ public class TextSerializer extends JsonSerializer<Text> {
     jgen.writeObjectField("text", text.getText());
     jgen.writeObjectField("pointer_angle", text.getPointerAngle());
     jgen.writeObjectField("color", text.getColor());
+    jgen.writeObjectField("size", text.getSize());
     jgen.writeEndObject();
   }
 

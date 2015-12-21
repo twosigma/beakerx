@@ -36,7 +36,8 @@
         "fi": this.color,
         "fi_op": this.color_opacity,
         "show_pointer": this.show_pointer,
-        "pointer_angle": this.pointer_angle
+        "pointer_angle": this.pointer_angle,
+        "size": this.size
       };
       this.elementProps = [];
     };
@@ -101,6 +102,7 @@
       this.vlength = r - l + 1;
     };
 
+
     /**
      * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
      *
@@ -137,54 +139,36 @@
           return;
         }
 
-        var tf = "", rot = null;
-        if (ele.rotate != null) {
-          rot = ele.rotate;
-        } else if (this.rotate != null) {
-          rot = this.rotate;
-        }
-        if (rot != null) {
-          tf = "rotate(" + rot + " " + x + " " + y + ")";
-        }
-        tf += "translate(" + x + "," + y + ")";
-
-        var line_tf = "";
-        if (this.itemProps.pointer_angle != null) {
-
-          if (this.itemProps.pointer_angle >= Math.PI / 2 && this.itemProps.pointer_angle <= Math.PI) {
-            y -= 15;
-            x += getTextWidth(ele.text, "12 px pt-sans, Helvetica, sans-serif");
-          }
-
-          line_tf = "rotate(" + this.itemProps.pointer_angle * (180 / Math.PI) + " " + x + " " + y + ")";
-          line_tf += "translate(" + x + "," + y + ")";
-        }
-
         var prop = {
           "id" : this.id + "_" + i,
           "idx" : this.index,
           "ele" : ele,
-          "tf" : tf,
           "txt" : ele.text,
-          "fi" : this.itemProps.fi,
-          "fi_op" : this.itemProps.fi_op,
-          "show_pointer": this.itemProps.show_pointer,
-          "pointer_angle": this.itemProps.pointer_angle,
-          "line_tf" : line_tf
+          "x" : x,
+          "y" : y
         };
         eleprops.push(prop);
       }
     };
 
-    PlotText.prototype.draw = function(scope) {
+    PlotText.prototype.draw = function (scope) {
+
+      var pointerSize = 20;
+      var pointerIndent = 10;
+
+      var self = this;
       var svg = scope.maing;
       var props = this.itemProps,
-          eleprops = this.elementProps;
+        eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
-          .data([props], function(d) { return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; });
+          .data([props], function (d) {
+            return d.id;
+          }).enter().append("g")
+          .attr("id", function (d) {
+            return d.id;
+          });
       }
       svg.select("#" + this.id)
         .attr("class", this.plotClass);
@@ -193,27 +177,16 @@
       var itemsvg = svg.select("#" + this.id);
 
       itemsvg.selectAll("text")
-        .data(eleprops, function(d) { return d.id; }).exit().remove();
-      itemsvg.selectAll("text")
-        .data(eleprops, function(d) { return d.id; }).enter().append("text")
-        .attr("id", function(d) { return d.id; })
-        .attr("class", respClass)
-        .attr("fill", function(d){return d.fi;})
-        .attr("cursor", function(d){return d.show_pointer === false ? "none" : "default";})
-        .style("opacity", function(d) { return d.fi_op; })
-        .text(function(d) { return d.txt; });
-      itemsvg.selectAll("text")
-        .data(eleprops, function(d) { return d.id; })
-        .attr("transform", function(d) { return d.tf; });
-
-
-      var mapX = scope.data2scrXi,
-          mapY = scope.data2scrYi;
-
+        .data(eleprops, function (d) {
+          return d.id;
+        }).exit().remove();
       itemsvg.selectAll("line")
-        .data(eleprops, function (d) {return "line_" + d.id;}).exit().remove();
+        .data(eleprops, function (d) {
+          return "line_" + d.id;
+        }).exit().remove();
 
-      if (this.itemProps.pointer_angle != null ) {
+      if (self.itemProps.show_pointer === true) {
+
         itemsvg.selectAll("line")
           .data(eleprops, function (d) {
             return d.id;
@@ -221,28 +194,104 @@
           .attr("id", function (d) {
             return "line_" + d.id;
           })
-
-          .attr("x1", 0)
-          .attr("x2", -15)
+          .attr("x1", pointerSize)
+          .attr("x2", pointerIndent)
           .attr("y1", 0)
           .attr("y2", 0)
-
           .attr("stroke-width", 1)
-          .attr("stroke", function (d) {
-            return d.fi;
-          })
-          .attr("marker-end", "url(/beaker/#Triangle)")
-        ;
+          .attr("stroke", "black")
+          .attr("marker-end", "url(/beaker/#Triangle)");
+
 
         itemsvg.selectAll("line")
           .data(eleprops, function (d) {
             return "line_" + d.id;
           })
           .attr("transform", function (d) {
-            return d.line_tf;
+            var x = d.x;
+            var y = d.y;
+            var transform = "rotate(" + self.itemProps.pointer_angle * (180 / Math.PI) + " " + x + " " + y + ")";
+            transform += "translate(" + x + "," + y + ")";
+            return transform;
           });
       }
 
+      itemsvg.selectAll("text")
+        .data(eleprops, function (d) {
+          return d.id;
+        }).enter().append("text")
+        .attr("id", function (d) {
+          return d.id;
+        })
+        .attr("class", respClass)
+        .attr("fill", self.itemProps.fi)
+        .style("opacity", self.itemProps.fi_op)
+        .style('font-size', self.itemProps.size)
+        .text(function (d) {
+          return d.txt;
+        });
+      itemsvg.selectAll("text")
+        .data(eleprops, function (d) {
+          return d.id;
+        })
+        .attr("transform", function (d) {
+
+          var x = d.x;
+          var y = d.y;
+
+          if (self.itemProps.show_pointer) {
+            var size = self.itemProps.size;
+
+            var width = getTextWidth(d.txt, size + "px pt-sans, Helvetica, sans-serif");
+            var height = size;
+
+            var angle = self.itemProps.pointer_angle;
+            if (angle < 0) {
+              angle = 2 * Math.PI + angle;
+            }
+            x += Math.cos(angle) * pointerSize;
+            y += Math.sin(angle) * pointerSize;
+
+            if (angle === 0) {
+              y += Math.floor(height / 2);
+            }
+            else if (angle === 0.5 * Math.PI) {
+              x -= Math.round(width / 2);
+              y += height;
+            }
+            else if (angle === 1.5 * Math.PI) {
+              x -= Math.round(width / 2);
+            }
+            else if (angle === Math.PI) {
+              y += Math.floor(height / 2);
+              x -= width;
+            }
+            else if (angle > 0 && angle < 0.5 * Math.PI) {
+              y += height;
+            }
+            else if (angle > 0.5 * Math.PI && angle < Math.PI) {
+              y += height;
+              x -= width;
+            }
+            else if (angle > Math.PI && angle < 1.5 * Math.PI) {
+              x -= width;
+            }
+            else if (angle > 1.5 * Math.PI && angle < 2 * Math.PI) {
+
+            }
+          }
+
+          var tf = "", rot = null;
+          if (d.ele.rotate != null) {
+            rot = d.ele.rotate;
+          }
+          if (rot != null) {
+            tf = "rotate(" + rot + " " + x + " " + y + ")";
+          }
+          tf += "translate(" + x + "," + y + ")";
+
+          return tf;
+        });
     };
 
     PlotText.prototype.clear = function(scope) {

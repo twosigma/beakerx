@@ -712,6 +712,7 @@
               "color_opacity" : mtext.color != null ? parseInt(mtext.color.substr(1,2), 16) / 255 : 1,
               "show_pointer" : mtext.show_pointer,
               "pointer_angle" : mtext.pointer_angle,
+              "size" : mtext.size,
 
               "elements" : []
             };

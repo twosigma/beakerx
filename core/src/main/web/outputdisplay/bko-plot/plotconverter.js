@@ -663,23 +663,28 @@
             if (style == null) { style = ""; }
             item.style = lineStyleMap[style];
 
-            if (line.x != null) {
-              if (model.type === 'NanoPlot') {
-                if (!_.isEmpty(line.x)) {
-                  var bigv = new Big(line.x);
-                  if (logx && bigv.lte(0) && line.y == null) { continue; }
-
-                  line.x = bigv;
-                  item.elements.push({"type": "x", "x": line.x});
-                } else if (line.y == null) { continue; }
-              } else {
-                item.elements.push({"type": "x", "x": line.x});
+            var addElement = function (line, type, log) {
+              if (line[type] == null || log && plotUtils.lte(line[type], 0)) {
+                return false;
               }
+              var ele = {"type": type};
+              ele[type] = line[type];
+              item.elements.push(ele);
+            };
+
+            if (model.type === "NanoPlot") {
+              if (!_.isEmpty(line.x)) {
+                line.x = new Big(line.x);
+                addElement(line, "x", logx)
+              }
+            } else {
+              addElement(line, "x", logx)
             }
-            if(line.y != null) {
-              item.elements.push({"type": "y", "y": line.y});
+            addElement(line, "y", yAxisSettings.logy)
+
+            if (!_.isEmpty(item.elements)) {
+              newmodel.data.push(item);
             }
-            newmodel.data.push(item);
           }
         }
         if (model.constant_bands != null) {

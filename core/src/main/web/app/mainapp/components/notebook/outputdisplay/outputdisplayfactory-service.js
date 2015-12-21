@@ -212,7 +212,8 @@
       "CategoryPlot": ["Plot", "Text"],
       "Histogram": ["Plot", "Text"],
       "HeatMap": ["Plot", "Text"],
-      "TreeMap": ["Plot", "Text"]
+      "TreeMap": ["Plot", "Text"],
+      "Plotly": ["Plotly", "Text"]
     };
     var factory = {
       add: function(type, impl) {

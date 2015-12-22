@@ -420,6 +420,12 @@ convertToJSON <- function(val, collapse) {
     p = paste(p, toJSON(as.character(temp[[2]])), sep='')
 	p = paste(p, "}", sep='')
 	o = p
+  } else if(class(val) == "plotly") {
+    temp <- print(val)
+    p = "{ \"type\":\"Plotly\", \"data\":"
+    p = paste(p, plotly:::to_JSON(temp), sep='')
+    p = paste(p, "}", sep='')
+    o = p
   } else {
     o = paste("\"ERROR: invalid object type ", gsub("\"","\\\"",class(val)), sep='')
     o = paste(o, "\"", sep='')

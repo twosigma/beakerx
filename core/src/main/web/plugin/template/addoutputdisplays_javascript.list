@@ -42,3 +42,4 @@ outputdisplay/bko-plot/bko-plot.js
 outputdisplay/bko-easyform/bko-easyform.js
 outputdisplay/bko-plot/bko-combinedplot.js
 outputdisplay/bkoBeakerDashboard.js
+outputdisplay/bko-plotly.js

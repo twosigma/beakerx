@@ -118,11 +118,11 @@
                 scripts[i].parentNode.removeChild(scripts[i]);
               }
             }
-          };
+          }
 
           function renderCell(cell) {
             div.html(cell);
-            var latexElement = element[0].getElementsByClassName('output_latex');
+            var latexElement = element[0].getElementsByClassName('output_latex')
             if (latexElement.length > 0) {
               bkHelper.typeset(latexElement);
             }

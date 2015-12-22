@@ -151,6 +151,7 @@
                     "    </li><li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fsparkr.bkr&readOnly=true\">SparkR</a>",
                     "    </li><li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fscala-spark.bkr&readOnly=true\">Scala Spark</a>",
                     "    </li><li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Foutput_container_cell.bkr&readOnly=true\">Working with OutputContainer(OutputContainerCell)</a>",
+                    "    </li><li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fplotly.bkr&readOnly=true\">Plotly</a>",
                     "  </li></div>",
                     "  <div class=\"col-md-4\">",
                     "    <h2> </h2>",

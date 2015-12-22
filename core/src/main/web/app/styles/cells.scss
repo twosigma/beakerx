@@ -218,12 +218,12 @@ bk-code-cell .locked .code-cell-output {
 
 bk-output-display {
   pre {
-    border:     none;
-    margin:     0;
-    padding:    0;
-    overflow:   visible;
-    line-height: 1;
-    background: transparent;
+    border:       none;
+    margin:       0;
+    padding:      0;
+    overflow:     visible;
+    line-height:  inherit;
+    background:   transparent;
   }
 
   &[type="Results"] {

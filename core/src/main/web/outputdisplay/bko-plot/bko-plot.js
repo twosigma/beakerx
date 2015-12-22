@@ -27,8 +27,7 @@
                          bkCellMenuPluginManager,
                          bkSessionManager,
                          bkUtils,
-                         GradientLegend,
-                         TooltipsConnect) {
+                         GradientLegend) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -388,7 +387,9 @@
               scope.untooltip(d);
             }
           }
+          scope.pinCloseIcon(d);
         };
+
         scope.tooltip = function(d, mousePos) {
           if (scope.tips[d.id] != null) {
             return;
@@ -411,8 +412,6 @@
           if (scope.tips[d.id].sticking === false){
             delete scope.tips[d.id];
             scope.jqcontainer.find("#tip_" + d.id).remove();
-            var tooltipsConnect = new TooltipsConnect({id: d.id});
-            tooltipsConnect.erase();
             if (d.isresp === true) {
               scope.jqsvg.find("#" + d.id).css("opacity", 0);
             } else {
@@ -422,40 +421,16 @@
           }
         };
 
-        var drawConnect = function(d) {
-          var tooltipsConnect = new TooltipsConnect({id: d.id});
-          var activePoint = scope.jqsvg.find("#" + d.id);
-          var tip = scope.jqcontainer.find("#tip_" + d.id);
-
-          if (tip.length) {
-            tooltipsConnect.erase();
-            tooltipsConnect.draw(activePoint, tip);
-          }
-        };
-
         scope.renderTips = function() {
           var data = scope.stdmodel.data;
-          var focus = scope.focus;
+
           _.each(scope.tips, function(d) {
             var x = scope.data2scrX(d.datax),
                 y = scope.data2scrY(d.datay);
-            var tooltipsConnect = new TooltipsConnect({id: d.id});
             d.scrx = x;
             d.scry = y;
             var tipid = "tip_" + d.id;
             var tipdiv = scope.jqcontainer.find("#" + tipid);
-            var closeIcon = $('<i/>', {class: 'fa fa-times'})
-              .on('click', function() {
-                delete scope.tips[d.id];
-                if (d.isresp === true) {  // is interaction responsive element
-                  scope.jqsvg.find("#" + d.id).css("opacity", 0);
-                } else {
-                  scope.jqsvg.find("#" + d.id).removeAttr("filter");
-                }
-                scope.interactMode = "remove";
-                $(this).parent('.plot-tooltip').remove();
-                tooltipsConnect.erase();
-              });
 
             if (tipdiv.length === 0) {
               var tiptext = data[d.idx].createTip(d.ele, d.g, scope.stdmodel);
@@ -464,7 +439,6 @@
                 .attr("id", tipid)
                 .attr("class", "plot-tooltip")
                 .css("border-color", data[d.idx].tip_color)
-                .append(closeIcon)
                 .append(tiptext)
                 .on('mouseup', function(e) {
                   if (e.which == 3) {
@@ -476,7 +450,6 @@
                     }
                     scope.interactMode = "remove";
                     $(this).remove();
-                    tooltipsConnect.erase();
                   }
                 });
               if (data[d.idx].tip_class) {
@@ -490,9 +463,6 @@
             }
             tipdiv
               .draggable({
-                drag: function() {
-                  drawConnect(d);
-                },
                 stop : function(event, ui) {
                   d.scrx = ui.position.left - plotUtils.fonts.tooltipWidth;
                   d.scry = ui.position.top;
@@ -511,6 +481,23 @@
                 .attr("filter", "url(#svgfilter)");
             }
           });
+        };
+
+        scope.pinCloseIcon = function(d) {
+          var tipid = "tip_" + d.id;
+          var tipdiv = scope.jqcontainer.find("#" + tipid);
+          var closeIcon = $('<i/>', {class: 'fa fa-times'})
+            .on('click', function() {
+              delete scope.tips[d.id];
+              if (d.isresp === true) {  // is interaction responsive element
+                scope.jqsvg.find("#" + d.id).css("opacity", 0);
+              } else {
+                scope.jqsvg.find("#" + d.id).removeAttr("filter");
+              }
+              scope.interactMode = "remove";
+              $(this).parent('.plot-tooltip').remove();
+            });
+          tipdiv.prepend(closeIcon);
         };
 
         scope.renderGridlineLabels = function() {
@@ -2072,6 +2059,5 @@
     "bkSessionManager",
     "bkUtils",
     "GradientLegend",
-    "TooltipsConnect",
     retfunc]);
 })();

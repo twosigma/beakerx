@@ -36,7 +36,7 @@ public class ConstantLineSerializer extends JsonSerializer<ConstantLine> {
 
     boolean isNanoPlot = NanoPlot.class.equals(constantLine.getPlotType());
     jgen.writeObjectField("type", constantLine.getClass().getSimpleName());
-    jgen.writeObjectField("x", isNanoPlot ? processLargeNumbers(constantLine.getX()) : constantLine.getX());
+    jgen.writeObjectField("x", isNanoPlot ? processLargeNumber(constantLine.getX()) : constantLine.getX());
     jgen.writeObjectField("y", constantLine.getY());
     jgen.writeObjectField("visible", constantLine.getVisible());
     jgen.writeObjectField("yAxis", constantLine.getYAxis());
@@ -53,7 +53,7 @@ public class ConstantLineSerializer extends JsonSerializer<ConstantLine> {
     jgen.writeEndObject();
   }
 
-  private String processLargeNumbers(Number largeNumber){
+  private String processLargeNumber(Number largeNumber){
     return largeNumber != null ? largeNumber.toString() : "";
   }
 

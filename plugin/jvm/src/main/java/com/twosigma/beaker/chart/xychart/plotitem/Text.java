@@ -26,6 +26,7 @@ public class Text {
   private Number y = 0.0d;
   private boolean showPointer;
   private String text = "";
+  private Class plotType;
 
   public Number getX() {
     return x;
@@ -57,5 +58,13 @@ public class Text {
 
   public void setText(String text) {
     this.text = text;
+  }
+
+  public Class getPlotType() {
+    return plotType;
+  }
+
+  public void setPlotType(Class plotType) {
+    this.plotType = plotType;
   }
 }

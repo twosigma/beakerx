@@ -77,6 +77,7 @@ abstract public class XYChart extends AbstractChart{
   }
 
   public XYChart add(Text text) {
+    text.setPlotType(this.getClass());
     this.texts.add(text);
     return this;
   }

@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.chart.serializer;
 
+import com.twosigma.beaker.chart.xychart.NanoPlot;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
@@ -33,13 +34,18 @@ public class TextSerializer extends JsonSerializer<Text> {
   public void serialize(Text text, JsonGenerator jgen, SerializerProvider sp)
     throws IOException, JsonProcessingException {
 
+    boolean isNanoPlot = NanoPlot.class.equals(text.getPlotType());
     jgen.writeStartObject();
     jgen.writeObjectField("type", text.getClass().getSimpleName());
-    jgen.writeObjectField("x", text.getX());
+    jgen.writeObjectField("x", isNanoPlot ? processLargeNumber(text.getX()) : text.getX());
     jgen.writeObjectField("y", text.getY());
     jgen.writeObjectField("show_pointer", text.getShowPointer());
     jgen.writeObjectField("text", text.getText());
     jgen.writeEndObject();
+  }
+
+  private String processLargeNumber(Number largeNumber){
+    return largeNumber != null ? largeNumber.toString() : "";
   }
 
 }

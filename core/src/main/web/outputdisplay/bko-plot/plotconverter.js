@@ -654,6 +654,7 @@
               "width": line.width != null ? line.width : 1,
               "color": "black",
               "yAxis": line.yAxis,
+              "showLabel": line.showLabel,
               "elements": []
             };
             if (line.color != null) {

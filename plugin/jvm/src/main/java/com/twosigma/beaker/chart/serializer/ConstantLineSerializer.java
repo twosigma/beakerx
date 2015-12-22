@@ -40,6 +40,7 @@ public class ConstantLineSerializer extends JsonSerializer<ConstantLine> {
     jgen.writeObjectField("y", constantLine.getY());
     jgen.writeObjectField("visible", constantLine.getVisible());
     jgen.writeObjectField("yAxis", constantLine.getYAxis());
+    jgen.writeObjectField("showLabel", constantLine.getShowLabel());
     if (constantLine.getWidth() != null) {
       jgen.writeObjectField("width", constantLine.getWidth());
     }

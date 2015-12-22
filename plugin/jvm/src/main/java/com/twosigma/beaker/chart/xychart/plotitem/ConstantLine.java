@@ -32,6 +32,8 @@ public class ConstantLine extends Graphics{
   private Float       width       = 1.5f;
   private StrokeType  style;
   private Class       plotType;
+  private boolean     showLabel;
+
 
   public Number getX() {
     return x;
@@ -100,4 +102,11 @@ public class ConstantLine extends Graphics{
     this.plotType = plotType;
   }
 
+  public Boolean getShowLabel() {
+    return showLabel;
+  }
+
+  public void setShowLabel(boolean showLabel) {
+    this.showLabel = showLabel;
+  }
 }

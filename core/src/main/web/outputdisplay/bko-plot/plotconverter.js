@@ -653,6 +653,7 @@
               "type": "constline",
               "width": line.width != null ? line.width : 1,
               "color": "black",
+              "yAxis": line.yAxis,
               "elements": []
             };
             if (line.color != null) {

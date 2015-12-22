@@ -24,18 +24,13 @@ public class OutputContainer {
 
   private final List<Object> items;
   private final List<String>                 labels        = new ArrayList<>();
-  private       OutputContainerLayoutManager layoutManager = new GridOutputContainerLayoutManager(1);
+  private       OutputContainerLayoutManager layoutManager = new SimpleLayoutManager();
 
   public OutputContainer() {
     this(new ArrayList<>());
   }
 
   public OutputContainer(List<Object> items) {
-    this(items, null);
-  }
-
-  public OutputContainer(List<Object> items, OutputContainerLayoutManager layoutManager) {
-    setLayoutManager(layoutManager);
     if (items == null)
       throw new RuntimeException();
     this.items = items;

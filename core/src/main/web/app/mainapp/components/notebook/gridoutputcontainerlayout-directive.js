@@ -55,6 +55,7 @@
           col++;
           if (col === $scope.colCount && i < $scope.model.getCellModel().items.length - 1) {
             row++;
+            col=0;
             $scope.rows[row] = [];
           }
         }

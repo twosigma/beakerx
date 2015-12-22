@@ -2175,7 +2175,7 @@
         {
             "id": "sectionQb00Si",
             "type": "section",
-            "title": "TabbedOutputContainerLayoutManager (default)",
+            "title": "TabbedOutputContainerLayoutManager ",
             "level": 3,
             "evaluatorReader": false,
             "collapsed": false
@@ -7723,7 +7723,7 @@
         {
             "id": "sectionZu1Uet",
             "type": "section",
-            "title": "GridOutputContainerLayoutManager",
+            "title": "GridOutputContainerLayoutManager(default)",
             "level": 3,
             "evaluatorReader": false,
             "collapsed": false
@@ -21334,7 +21334,7 @@
                         "period": 5000
                     }
                 },
-                "height": 231
+                "height": 776
             },
             "evaluatorReader": true,
             "lineCount": 32

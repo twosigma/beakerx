@@ -23,17 +23,25 @@ public class OutputContainer {
   public final static Logger LOGGER = Logger.getLogger(OutputContainer.class.getName());
 
   private final List<Object> items;
-  private final List<String> labels = new ArrayList<>();
-  private OutputContainerLayoutManager layoutManager = new TabbedOutputContainerLayoutManager();
+  private final List<String>                 labels        = new ArrayList<>();
+  private       OutputContainerLayoutManager layoutManager = new GridOutputContainerLayoutManager(1);
 
   public OutputContainer() {
     this(new ArrayList<>());
   }
 
   public OutputContainer(List<Object> items) {
+    this(items, null);
+  }
+
+  public OutputContainer(List<Object> items, OutputContainerLayoutManager layoutManager) {
+    setLayoutManager(layoutManager);
+    if (items == null)
+      throw new RuntimeException();
     this.items = items;
+    labels.clear();
     for (int i = 0; i < items.size(); i++) {
-      labels.set(i, "");
+      labels.add("");
     }
 
   }
@@ -83,7 +91,8 @@ public class OutputContainer {
   }
 
   public void setLayoutManager(OutputContainerLayoutManager layoutManager) {
-    this.layoutManager = layoutManager;
+    if (layoutManager != null)
+      this.layoutManager = layoutManager;
   }
 
 

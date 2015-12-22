@@ -18,54 +18,40 @@
   'use strict';
 
   var module = angular.module('bk.notebook');
-  module.directive('gridOutputContainerLayout', ['bkHelper', function (bkHelper) {
+  module.directive('simpleLayout', ['bkHelper', function (bkHelper) {
     return {
       restrict: 'E',
-      template: JST["mainapp/components/notebook/gridoutputcontainerlayout"](),
+      template: '<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b ng-if="hasName($index)">{{getName($index)}}<br/></b><bk-code-cell-output model="i" >' +
+      '</ bk-code-cell-output><br/>></li></ul>',
       scope: {
         model: '='
       },
       controller: function ($scope) {
+        $scope.items = $scope.model.getCellModel().items;
 
-        $scope.cellStyle = {
-          'border': $scope.model.getCellModel().layout.borderDisplayed ? 'solid 1px #CCC' : '',
-          'padding-top': $scope.model.getCellModel().layout.paddingTop + "px",
-          'padding-bottom': $scope.model.getCellModel().layout.paddingBottom + "px",
-          'padding-left': $scope.model.getCellModel().layout.paddingLeft + "px",
-          'padding-right': $scope.model.getCellModel().layout.paddingRight + "px"
-        };
-        $scope.colCount = $scope.model.getCellModel().layout.columns;
-        $scope.rows = [];
-
+        $scope.labels = $scope.model.getCellModel().labels;
         $scope.isShowOutput = function () {
           return $scope.model.isShowOutput();
         };
 
-        var row = 0;
-        var col = 0;
-        $scope.rows[row] = [];
-        for (var i = 0; i < $scope.model.getCellModel().items.length; i++) {
-          $scope.rows[row].push({
-            result: $scope.model.getCellModel().items[i],
+        $scope.showoutput = $scope.model.isShowOutput();
+        $scope.items = _.map($scope.model.getCellModel().items, function (it) {
+          return {
+            result: it,
             isShowOutput: function () {
               return $scope.showoutput;
-            },
-            label: $scope.model.getCellModel().labels[i]
-          });
-          col++;
-          if (col === $scope.colCount && i < $scope.model.getCellModel().items.length - 1) {
-            row++;
-            col=0;
-            $scope.rows[row] = [];
-          }
-        }
-
-        $scope.showoutput = $scope.model.isShowOutput();
-
+            }
+          };
+        });
+        $scope.getName = function (idx) {
+          return $scope.model.getCellModel().labels[idx] || '';
+        };
+        $scope.hasName = function (idx) {
+          return $scope.model.getCellModel().labels !== undefined;
+        };
         $scope.isShowMenu = function () {
           return false;
         };
-
         $scope.$watch('isShowOutput()', function (oldval, newval) {
           $scope.showoutput = newval;
         });

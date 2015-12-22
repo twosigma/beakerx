@@ -1,3 +1,7 @@
+
+
+
+
 /*
  *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
@@ -18,40 +22,54 @@
   'use strict';
 
   var module = angular.module('bk.notebook');
-  module.directive('simpleLayout', ['bkHelper', function (bkHelper) {
+  module.directive('gridOutputContainerLayout', ['bkHelper', function (bkHelper) {
     return {
       restrict: 'E',
-      template: 'GridOutputContainerLayoutManager<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b ng-if="hasName($index)">{{getName($index)}}<br/></b><bk-code-cell-output model="i" >' +
-      '</ bk-code-cell-output><br/>></li></ul>',
+      template: JST["mainapp/components/notebook/gridoutputcontainerlayout"](),
       scope: {
         model: '='
       },
       controller: function ($scope) {
-        $scope.items = $scope.model.getCellModel().items;
 
-        $scope.labels = $scope.model.getCellModel().labels;
+        $scope.cellStyle = {
+          'border': $scope.model.getCellModel().layout.borderDisplayed ? 'solid 1px #CCC' : '',
+          'padding-top': $scope.model.getCellModel().layout.paddingTop + "px",
+          'padding-bottom': $scope.model.getCellModel().layout.paddingBottom + "px",
+          'padding-left': $scope.model.getCellModel().layout.paddingLeft + "px",
+          'padding-right': $scope.model.getCellModel().layout.paddingRight + "px"
+        };
+        $scope.colCount = $scope.model.getCellModel().layout.columns;
+        $scope.rows = [];
+
         $scope.isShowOutput = function () {
           return $scope.model.isShowOutput();
         };
 
-        $scope.showoutput = $scope.model.isShowOutput();
-        $scope.items = _.map($scope.model.getCellModel().items, function (it) {
-          return {
-            result: it,
+        var row = 0;
+        var col = 0;
+        $scope.rows[row] = [];
+        for (var i = 0; i < $scope.model.getCellModel().items.length; i++) {
+          $scope.rows[row].push({
+            result: $scope.model.getCellModel().items[i],
             isShowOutput: function () {
               return $scope.showoutput;
-            }
-          };
-        });
-        $scope.getName = function (idx) {
-          return $scope.model.getCellModel().labels[idx] || '';
-        };
-        $scope.hasName = function (idx) {
-          return $scope.model.getCellModel().labels !== undefined;
-        };
+            },
+            label: $scope.model.getCellModel().labels[i]
+          });
+          col++;
+          if (col === $scope.colCount && i < $scope.model.getCellModel().items.length - 1) {
+            row++;
+            col=0;
+            $scope.rows[row] = [];
+          }
+        }
+
+        $scope.showoutput = $scope.model.isShowOutput();
+
         $scope.isShowMenu = function () {
           return false;
         };
+
         $scope.$watch('isShowOutput()', function (oldval, newval) {
           $scope.showoutput = newval;
         });
@@ -59,5 +77,3 @@
     }
   }]);
 })();
-
-

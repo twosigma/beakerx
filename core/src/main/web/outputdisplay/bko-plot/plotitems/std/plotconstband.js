@@ -63,11 +63,19 @@
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
         if (ele.type === "x") {
-          range.xl = Math.min(range.xl, ele.x);
-          range.xr = Math.max(range.xr, ele.x2);
+          if(ele.x !== -Infinity){
+            range.xl = Math.min(range.xl, ele.x);
+          }
+          if(ele.x2 !== Infinity){
+            range.xr = Math.max(range.xr, ele.x2);
+          }
         } else if (ele.type === "y") {
-          range.yl = Math.min(range.yl, ele.y);
-          range.yr = Math.max(range.yr, ele.y2);
+          if(ele.y !== -Infinity){
+            range.yl = Math.min(range.yl, ele.y);
+          }
+          if(ele.y2 !== Infinity){
+            range.yr = Math.max(range.yr, ele.y2);
+          }
         }
       }
       return range;
@@ -79,11 +87,19 @@
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
         if (ele.type === "x") {
-          ele.x = xAxis.getPercent(ele.x);
-          ele.x2 = xAxis.getPercent(ele.x2);
+          if(ele.x !== -Infinity){
+            ele.x = xAxis.getPercent(ele.x);
+          }
+          if(ele.x2 !== Infinity){
+            ele.x2 = xAxis.getPercent(ele.x2);
+          }
         } else if (ele.type === "y") {
-          ele.y = yAxis.getPercent(ele.y);
-          ele.y2 = yAxis.getPercent(ele.y2);
+          if(ele.y !== -Infinity){
+            ele.y = yAxis.getPercent(ele.y);
+          }
+          if(ele.y2 !== Infinity){
+            ele.y2 = yAxis.getPercent(ele.y2);
+          }
         }
       }
     };
@@ -133,8 +149,8 @@
             eleprops.push(prop);
           }
 
-          var x = mapX(ele.x),
-              x2 = mapX(ele.x2);
+          var x = mapX(ele.x !== -Infinity ? ele.x : focus.xl),
+              x2 = mapX(ele.x2 !== Infinity ? ele.x2 : focus.xr);
           x = Math.max(x, lMargin);
           x2 = Math.min(x2, W - rMargin);
 
@@ -151,8 +167,8 @@
             eleprops.push(prop);
           }
 
-          var y = mapY(ele.y),
-              y2 = mapY(ele.y2);
+          var y = mapY(ele.y !== -Infinity ? ele.y : focus.yl),
+              y2 = mapY(ele.y2 !== Infinity ? ele.y2 : focus.yr);
           y = Math.min(y, H - bMargin);
           y2 = Math.max(y2, tMargin);
 

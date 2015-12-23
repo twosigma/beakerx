@@ -687,8 +687,8 @@
             if (band.x != null) {
               var ele = {
                 "type" : "x",
-                "x" : band.x[0],
-                "x2" : band.x[1]
+                "x" : plotUtils.convertInfinityValue(band.x[0]),
+                "x2" : plotUtils.convertInfinityValue(band.x[1])
               };
               item.elements.push(ele);
             }
@@ -697,8 +697,8 @@
                 "type" : "y"
               };
               var y1 = band.y[0], y2 = band.y[1];
-              ele.y = y1;
-              ele.y2 = y2;
+              ele.y = plotUtils.convertInfinityValue(y1);
+              ele.y2 = plotUtils.convertInfinityValue(y2);
               item.elements.push(ele);
             }
             newmodel.data.push(item);

@@ -43,7 +43,9 @@ public class ConstantBandSerializer extends JsonSerializer<ConstantBand> {
     jgen.writeObjectField("y", constantBand.getY());
     jgen.writeObjectField("visible", constantBand.getVisible());
     jgen.writeObjectField("yAxis", constantBand.getYAxis());
-    if (constantBand.getColor() instanceof Color) {
+    if (constantBand.getColor() == null){
+      jgen.writeObjectField("color", new Color(0, 127, 255, 127));
+    }else{
       jgen.writeObjectField("color", constantBand.getColor());
     }
 

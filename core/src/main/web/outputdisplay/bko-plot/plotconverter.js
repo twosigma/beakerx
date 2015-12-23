@@ -690,15 +690,17 @@
                 "x" : band.x[0],
                 "x2" : band.x[1]
               };
-            } else if (band.y != null) {
+              item.elements.push(ele);
+            }
+            if (band.y != null) {
               var ele = {
                 "type" : "y"
               };
               var y1 = band.y[0], y2 = band.y[1];
               ele.y = y1;
               ele.y2 = y2;
+              item.elements.push(ele);
             }
-            item.elements.push(ele);
             newmodel.data.push(item);
           }
         }

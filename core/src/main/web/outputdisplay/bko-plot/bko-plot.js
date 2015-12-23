@@ -430,7 +430,7 @@
             d.scrx = x;
             d.scry = y;
             var tipid = "tip_" + d.id;
-            var tipdiv = scope.jqcontainer.find("#" + tipid);
+            var tipdiv = getTipElement(d);
 
             if (tipdiv.length === 0) {
               var tiptext = data[d.idx].createTip(d.ele, d.g, scope.stdmodel);
@@ -484,8 +484,7 @@
         };
 
         scope.pinCloseIcon = function(d) {
-          var tipid = "tip_" + d.id;
-          var tipdiv = scope.jqcontainer.find("#" + tipid);
+          var tip = getTipElement(d);
           var closeIcon = $('<i/>', {class: 'fa fa-times'})
             .on('click', function() {
               delete scope.tips[d.id];
@@ -497,7 +496,13 @@
               scope.interactMode = "remove";
               $(this).parent('.plot-tooltip').remove();
             });
-          tipdiv.prepend(closeIcon);
+          tip.prepend(closeIcon);
+        };
+
+        var getTipElement = function(d) {
+          if (!d || !d.id) { return; }
+          var tipid = "tip_" + d.id;
+          return scope.jqcontainer.find("#" + tipid);
         };
 
         scope.renderGridlineLabels = function() {

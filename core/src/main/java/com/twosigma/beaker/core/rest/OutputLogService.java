@@ -66,7 +66,7 @@ public class OutputLogService {
     this.log.add(line);
     ServerChannel channel = this.bayeux.getChannel("/outputlog");
     if (channel != null) {
-      channel.publish(this.localSession, line, null);
+      channel.publish(this.localSession, line);
     }
   }
 

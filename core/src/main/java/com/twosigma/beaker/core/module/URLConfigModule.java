@@ -31,7 +31,7 @@ import com.twosigma.beaker.core.rest.RecentMenuRest;
 import com.twosigma.beaker.core.rest.SessionBackupRest;
 import com.twosigma.beaker.core.rest.UtilRest;
 import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;
-import org.cometd.server.JacksonJSONContextServer;
+import org.cometd.server.Jackson1JSONContextServer;
 
 import java.util.HashMap;
 
@@ -53,7 +53,7 @@ public class URLConfigModule extends ServletModule {
     bind(GuiceCometdServlet.class);
     serve("/cometd/*").with(GuiceCometdServlet.class, new HashMap<String, String>() {
       {
-        put("jsonContext", JacksonJSONContextServer.class.getCanonicalName());
+        put("jsonContext", Jackson1JSONContextServer.class.getCanonicalName());
       }
     });
 

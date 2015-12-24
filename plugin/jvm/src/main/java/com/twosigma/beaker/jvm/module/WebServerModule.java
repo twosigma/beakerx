@@ -23,18 +23,18 @@ import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
-import org.eclipse.jetty.security.authentication.BasicAuthenticator;
-import org.eclipse.jetty.util.security.Constraint;
-import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.util.security.Credential;
 
 /**
  * The WebServer Module that sets up the server singleton to be started in Init
@@ -44,16 +44,6 @@ public class WebServerModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(OwnerFilter.class);
-  }
-
-  @Provides
-  @Singleton
-  Connector getConnector(final Injector injector) {
-    final Connector conn = new SelectChannelConnector();
-    WebServerConfig webAppConfig = injector.getInstance(WebServerConfig.class);
-    conn.setPort(webAppConfig.getPort());
-    conn.setHost("127.0.0.1");
-    return conn;
   }
 
   private SecurityHandler makeSecurityHandler(String password) {
@@ -84,7 +74,10 @@ public class WebServerModule extends AbstractModule {
     WebServerConfig webServerConfig = injector.getInstance(WebServerConfig.class);
     String staticDir = webServerConfig.getStaticDirectory();
     Server server = new Server();
-    server.addConnector(connector);
+    final ServerConnector conn = new ServerConnector(server, new HttpConnectionFactory());
+    WebServerConfig webAppConfig = injector.getInstance(WebServerConfig.class);
+    conn.setPort(webAppConfig.getPort());
+    conn.setHost("127.0.0.1");
     ServletContextHandler servletHandler = new ServletContextHandler();
     servletHandler.addEventListener(new GuiceServletContextListener() {
       @Override
@@ -95,7 +88,7 @@ public class WebServerModule extends AbstractModule {
 
     servletHandler.setSecurityHandler(makeSecurityHandler(System.getenv("beaker_plugin_password")));
     servletHandler.addFilter(GuiceFilter.class, "/*", null);
-    servletHandler.addServlet(DefaultServlet.class, "/*");
+    servletHandler.addServlet(org.eclipse.jetty.proxy.AsyncProxyServlet.class, "/*");
     servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", staticDir);
     servletHandler.setInitParameter("maxCacheSize", "0");
     servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");

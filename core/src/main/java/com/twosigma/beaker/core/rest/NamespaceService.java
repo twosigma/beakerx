@@ -89,7 +89,7 @@ public class NamespaceService {
       return null;
     }
     getNames(session).add(name);
-    channel.publish(this.localSession, data, null);
+    channel.publish(this.localSession, data);
     NamespaceBinding binding = getHandoff(session).take(); // blocks
     if (!binding.getName().equals(name)) {
       throw new RuntimeException("Namespace get, name mismatch.  Received " +
@@ -114,7 +114,7 @@ public class NamespaceService {
       return;
     }
     getNames(session).add(name);
-    channel.publish(this.localSession, data, null);
+    channel.publish(this.localSession, data);
     if (sync) {
       NamespaceBinding binding = getHandoff(session).take(); // blocks
       if (!binding.getName().equals(name)) {

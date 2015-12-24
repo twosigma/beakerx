@@ -24,7 +24,6 @@ import com.twosigma.beaker.core.module.WebServerModule;
 import com.twosigma.beaker.core.module.config.DefaultBeakerConfigModule;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.core.module.config.BeakerConfigPref;
-import com.twosigma.beaker.core.rest.PluginServiceLocatorRest;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import com.twosigma.beaker.shared.module.util.GeneralUtilsModule;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
@@ -205,9 +204,6 @@ public class Main {
         new SerializerModule(),
         new GuiceCometdModule(),
         new URLConfigModule());
-
-    PluginServiceLocatorRest processStarter = injector.getInstance(PluginServiceLocatorRest.class);
-    processStarter.start();
 
     BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
 

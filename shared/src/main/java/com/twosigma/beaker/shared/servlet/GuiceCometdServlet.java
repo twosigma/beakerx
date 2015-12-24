@@ -21,7 +21,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
-import org.cometd.annotation.AnnotationCometdServlet;
+import org.cometd.annotation.AnnotationCometDServlet;
 import org.cometd.annotation.ServerAnnotationProcessor;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.server.BayeuxServerImpl;
@@ -35,7 +35,7 @@ import org.eclipse.jetty.util.Loader;
  */
 @Singleton
 public class GuiceCometdServlet
-        extends AnnotationCometdServlet {
+        extends AnnotationCometDServlet {
 
   private static final long serialVersionUID = -7354582894239989530L;
   private final Injector injector;

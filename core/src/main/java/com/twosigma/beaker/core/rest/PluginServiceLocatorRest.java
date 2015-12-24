@@ -428,14 +428,13 @@ public class PluginServiceLocatorRest {
       }
 
       // reload nginx config
-      restartId = generateNginxConfig();
-      Process restartproc = Runtime.getRuntime().exec(this.nginxRestartCommand, this.nginxEnv);
-      startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
-      restartproc.waitFor();
+//      restartId = generateNginxConfig();
+//      Process restartproc = Runtime.getRuntime().exec(this.nginxRestartCommand, this.nginxEnv);
+//      startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
+//      restartproc.waitFor();
 
       ArrayList<String> fullCommand =
         new ArrayList<String>(Arrays.asList(command.split("\\s+")));
-      String args;
 
       fullCommand.set(0, (this.pluginLocations.containsKey(pluginId) ?
                           this.pluginLocations.get(pluginId) : this.pluginDir)
@@ -455,7 +454,7 @@ public class PluginServiceLocatorRest {
       String[] env = buildEnv(pluginId, password);
 
       if (windows()) {
-	String python = this.config.getInstallDirectory() + "\\python\\python";
+	      String python = this.config.getInstallDirectory() + "\\python\\python";
         fullCommand.add(0, python);
       }
       System.out.println("Running");
@@ -487,19 +486,19 @@ public class PluginServiceLocatorRest {
     startGobblers(proc, pluginId, recordOutput ? this.outputLogService : null, waitfor);
 
     // check that nginx did actually restart
-    String url = "http://127.0.0.1:" + this.restartPort + "/restart." + restartId + "/present.html";
-    try {
-      spinCheck(url);
-    } catch (Throwable t) {
-      System.err.println("time out plugin =" + pluginId);
-      this.plugins.remove(pluginId);
-      if (windows()) {
-        new WinProcess(proc).killRecursively();
-      } else {
-        proc.destroy(); // send SIGTERM
-      }
-      throw new NginxRestartFailedException("nginx restart failed.\n" + "url=" + url + "\n" + "message=" + t.getMessage());
-    }
+//    String url = "http://127.0.0.1:" + this.restartPort + "/restart." + restartId + "/present.html";
+//    try {
+//      spinCheck(url);
+//    } catch (Throwable t) {
+//      System.err.println("time out plugin =" + pluginId);
+//      this.plugins.remove(pluginId);
+//      if (windows()) {
+//        new WinProcess(proc).killRecursively();
+//      } else {
+//        proc.destroy(); // send SIGTERM
+//      }
+//      throw new NginxRestartFailedException("nginx restart failed.\n" + "url=" + url + "\n" + "message=" + t.getMessage());
+//    }
 
     pConfig.setProcess(proc);
     System.out.println("Done starting " + pluginId);

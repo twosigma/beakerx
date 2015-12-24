@@ -321,8 +321,8 @@
         $scope.pagination = {
           'use' : true,
           'rowsToDisplay' : 50,
-          'fixLeft' : false,
-          'fixRight' : false
+          'fixLeft' : 0,
+          'fixRight' : 0
         };
 
         $scope.getCellDispOptsF = function(i) {
@@ -767,6 +767,13 @@
             scope.colorder    = scope.savedstate.colorder;
             scope.getCellSho  = scope.savedstate.getCellSho;
             scope.pagination  = scope.savedstate.pagination;
+            //fix saved pagination values to be numbers
+            if (typeof scope.pagination.fixLeft === 'boolean') {
+              scope.pagination.fixLeft = 0;
+            }
+            if (typeof scope.pagination.fixRight === 'boolean') {
+              scope.pagination.fixRight = 0;
+            }
             scope.savedstate  = undefined;
           }
           // auto compute types

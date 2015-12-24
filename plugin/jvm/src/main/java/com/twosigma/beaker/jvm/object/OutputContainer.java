@@ -31,15 +31,23 @@ public class OutputContainer {
   }
 
   public OutputContainer(List<Object> items) {
-    if (items == null)
+    this(items, null);
+  }
+
+  public OutputContainer(List<Object> items, List<String> labels) {
+    if (items == null || (labels != null && labels.size() != items.size()))
       throw new RuntimeException();
     this.items = items;
-    labels.clear();
-    for (int i = 0; i < items.size(); i++) {
-      labels.add("");
+    this.labels.clear();
+    if (labels != null) {
+      this.labels.addAll(labels);
+    } else {
+      for (int i = 0; i < items.size(); i++) {
+        this.labels.add("");
+      }
     }
-
   }
+
 
   public void addItem(java.lang.Object item) {
     addItem(item, items.size(), null);

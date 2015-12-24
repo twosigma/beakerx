@@ -16,5 +16,17 @@
 package com.twosigma.beaker.jvm.object;
 
 
+import java.util.List;
+
 public class OutputContainerCell extends OutputContainer {
+  public OutputContainerCell() {
+  }
+
+  public OutputContainerCell(List<Object> items) {
+    super(items);
+  }
+
+  public OutputContainerCell(List<Object> items, List<String> labels) {
+    super(items, labels);
+  }
 }

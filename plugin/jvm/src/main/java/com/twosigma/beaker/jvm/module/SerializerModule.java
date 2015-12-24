@@ -108,18 +108,25 @@ import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.serialization.BufferedImageDeserializer;
 import com.twosigma.beaker.jvm.serialization.BufferedImageSerializer;
 import com.twosigma.beaker.jvm.serialization.CollectionDeserializer;
+import com.twosigma.beaker.jvm.serialization.CyclingOutputContainerLayoutManagerDeserializer;
 import com.twosigma.beaker.jvm.serialization.CyclingOutputContainerLayoutManagerSerializer;
+import com.twosigma.beaker.jvm.serialization.DashboardLayoutManagerDeserializer;
 import com.twosigma.beaker.jvm.serialization.DateDeserializer;
 import com.twosigma.beaker.jvm.serialization.DateSerializer;
+import com.twosigma.beaker.jvm.serialization.GridOutputContainerLayoutManagerDeserializer;
 import com.twosigma.beaker.jvm.serialization.GridOutputContainerLayoutManagerSerializer;
 import com.twosigma.beaker.jvm.serialization.ImageIconSerializer;
 import com.twosigma.beaker.jvm.serialization.MapDeserializer;
 import com.twosigma.beaker.jvm.serialization.NamespaceBindingDeserializer;
+import com.twosigma.beaker.jvm.serialization.OutputContainerCellDeserializer;
 import com.twosigma.beaker.jvm.serialization.OutputContainerCellSerializer;
+import com.twosigma.beaker.jvm.serialization.OutputContainerDeserializer;
 import com.twosigma.beaker.jvm.serialization.OutputContainerSerializer;
 import com.twosigma.beaker.jvm.serialization.PlotObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.ResultsDeserializer;
+import com.twosigma.beaker.jvm.serialization.SimpleLayoutManagerDeserializer;
 import com.twosigma.beaker.jvm.serialization.SimpleLayoutManagerSerializer;
+import com.twosigma.beaker.jvm.serialization.TabbedOutputContainerLayoutManagerDeserializer;
 import com.twosigma.beaker.jvm.serialization.TabbedOutputContainerLayoutManagerSerializer;
 import com.twosigma.beaker.jvm.serialization.DashboardLayoutManagerSerializer;
 import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
@@ -181,6 +188,15 @@ public class SerializerModule extends AbstractModule {
       serializer.addTypeDeserializer(new ResultsDeserializer(serializer));
       serializer.addTypeDeserializer(new CollectionDeserializer(serializer));
       serializer.addTypeDeserializer(new MapDeserializer(serializer));
+
+      serializer.addTypeDeserializer(new OutputContainerDeserializer(serializer));
+      serializer.addTypeDeserializer(new OutputContainerCellDeserializer(serializer));
+      serializer.addTypeDeserializer(new SimpleLayoutManagerDeserializer(serializer));
+      serializer.addTypeDeserializer(new TabbedOutputContainerLayoutManagerDeserializer(serializer));
+      serializer.addTypeDeserializer(new CyclingOutputContainerLayoutManagerDeserializer(serializer));
+      serializer.addTypeDeserializer(new GridOutputContainerLayoutManagerDeserializer(serializer));
+      serializer.addTypeDeserializer(new DashboardLayoutManagerDeserializer(serializer));
+
       } catch(Exception e) {
       logger.log(Level.SEVERE, "exception while creating ObjectSerializer", e);
     }

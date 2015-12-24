@@ -181,7 +181,7 @@
                     "\t\"ERROR reading plot\"",
                     "else if (!beaker.v13.getClass().getName().endsWith(\".BufferedImage\"))",
                     "\t\"ERROR reading image\"",
-                    "else if (!beaker.v14.getClass().getName().endsWith(\".HashMap\"))",
+                    "else if (!beaker.v14.getClass().getName().endsWith(\".OutputContainer\"))",
                     "\t\"ERROR reading output container\"",
                     "else if (!beaker.v15.getClass().getName().endsWith(\".ArrayList\") || !beaker.v15[0].getClass().getName().endsWith(\".BeakerCodeCell\"))",
                     "\t\"ERROR reading beaker code cells\"",

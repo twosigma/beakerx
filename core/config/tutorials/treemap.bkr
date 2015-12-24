@@ -79,11 +79,11 @@
             },
             "output": {
                 "state": {},
-                "result": "ToolTipBuilder@3fb2a15d",
+                "result": "ToolTipBuilder@300fd11",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 1304,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 620,
                 "hidden": true,
                 "height": 51
             },
@@ -138,8 +138,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 665
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 655
             },
             "evaluatorReader": true,
             "lineCount": 28
@@ -176,8 +176,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 677
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 687
             },
             "evaluatorReader": true,
             "lineCount": 20
@@ -216,8 +216,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 665
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 687
             },
             "evaluatorReader": true,
             "lineCount": 22
@@ -437,8 +437,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "elapsedTime": 624,
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
+                "elapsedTime": 734,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "height": 549
             },
             "evaluatorReader": true,
@@ -685,8 +685,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 605,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 675,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -866,8 +866,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 623,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 883,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -1047,8 +1047,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 606,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 615,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -1254,8 +1254,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 611,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 629,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -1514,8 +1514,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 605,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 659,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -1730,8 +1730,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 630,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 807,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -1754,33 +1754,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "showAllItems": true,
-                    "plotSize": {
-                        "width": 640,
-                        "height": 480
-                    },
-                    "showItem": [
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true
-                    ],
-                    "legendableItem": 13
-                },
+                "state": {},
                 "result": {
                     "type": "TreeMap",
                     "init_width": 640,
@@ -1938,8 +1912,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 607,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 631,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -1969,33 +1943,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "showAllItems": true,
-                    "plotSize": {
-                        "width": 640,
-                        "height": 480
-                    },
-                    "showItem": [
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true
-                    ],
-                    "legendableItem": 13
-                },
+                "state": {},
                 "result": {
                     "type": "TreeMap",
                     "init_width": 640,
@@ -2153,8 +2101,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 610,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 608,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -2389,8 +2337,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 603,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 625,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -2612,8 +2560,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 615,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 676,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -2827,8 +2775,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 618,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 659,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -3034,8 +2982,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 614,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 734,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -18167,8 +18115,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 656,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 703,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -18196,7 +18144,32 @@
                     "    initWidth:1300,",
                     "    initHeight:600",
                     ");",
-                    "x.setColorProvider(new GradientColorProvider(x))",
+                    "RandomColorProvider colorProvider = new RandomColorProvider(",
+                    "  [",
+                    "  '#3182bd',",
+                    "  '#6baed6',",
+                    "  '#9ecae1',",
+                    "  '#c6dbef',",
+                    "  '#e6550d',",
+                    "  '#fd8d3c',",
+                    "  '#fdae6b',",
+                    "  '#fdd0a2',",
+                    "  '#31a354',",
+                    "  '#74c476',",
+                    "  '#a1d99b',",
+                    "  '#c7e9c0',",
+                    "  '#756bb1',",
+                    "  '#9e9ac8',",
+                    "  '#bcbddc',",
+                    "  '#dadaeb',",
+                    "  '#636363',",
+                    "  '#969696',",
+                    "  '#bdbdbd',",
+                    "  '#d9d9d9'",
+                    "    ]",
+                    ")",
+                    "colorProvider.setGroupByParent(true)",
+                    "x.setColorProvider(colorProvider)",
                     "x"
                 ]
             },
@@ -18498,7 +18471,7 @@
                                                         "doubleValue": 3938,
                                                         "labelValue": "3938.0",
                                                         "label": "AgglomerativeCluster",
-                                                        "color": "#d82700",
+                                                        "color": "#3182bd",
                                                         "tooltip": "<b>Label:</b> AgglomerativeCluster<br/><b>Weight:</b> 3938.0<br/><b>Value:</b> 3938.0"
                                                     },
                                                     {
@@ -18507,7 +18480,7 @@
                                                         "doubleValue": 3812,
                                                         "labelValue": "3812.0",
                                                         "label": "CommunityStructure",
-                                                        "color": "#da2500",
+                                                        "color": "#3182bd",
                                                         "tooltip": "<b>Label:</b> CommunityStructure<br/><b>Weight:</b> 3812.0<br/><b>Value:</b> 3812.0"
                                                     },
                                                     {
@@ -18516,7 +18489,7 @@
                                                         "doubleValue": 6714,
                                                         "labelValue": "6714.0",
                                                         "label": "HierarchicalCluster",
-                                                        "color": "#bb4400",
+                                                        "color": "#3182bd",
                                                         "tooltip": "<b>Label:</b> HierarchicalCluster<br/><b>Weight:</b> 6714.0<br/><b>Value:</b> 6714.0"
                                                     },
                                                     {
@@ -18525,7 +18498,7 @@
                                                         "doubleValue": 743,
                                                         "labelValue": "743.0",
                                                         "label": "MergeEdge",
-                                                        "color": "#fa0500",
+                                                        "color": "#3182bd",
                                                         "tooltip": "<b>Label:</b> MergeEdge<br/><b>Weight:</b> 743.0<br/><b>Value:</b> 743.0"
                                                     }
                                                 ]
@@ -18540,7 +18513,7 @@
                                                         "doubleValue": 3534,
                                                         "labelValue": "3534.0",
                                                         "label": "BetweennessCentrality",
-                                                        "color": "#dd2200",
+                                                        "color": "#6baed6",
                                                         "tooltip": "<b>Label:</b> BetweennessCentrality<br/><b>Weight:</b> 3534.0<br/><b>Value:</b> 3534.0"
                                                     },
                                                     {
@@ -18549,7 +18522,7 @@
                                                         "doubleValue": 5731,
                                                         "labelValue": "5731.0",
                                                         "label": "LinkDistance",
-                                                        "color": "#c63900",
+                                                        "color": "#6baed6",
                                                         "tooltip": "<b>Label:</b> LinkDistance<br/><b>Weight:</b> 5731.0<br/><b>Value:</b> 5731.0"
                                                     },
                                                     {
@@ -18558,7 +18531,7 @@
                                                         "doubleValue": 7840,
                                                         "labelValue": "7840.0",
                                                         "label": "MaxFlowMinCut",
-                                                        "color": "#b04f00",
+                                                        "color": "#6baed6",
                                                         "tooltip": "<b>Label:</b> MaxFlowMinCut<br/><b>Weight:</b> 7840.0<br/><b>Value:</b> 7840.0"
                                                     },
                                                     {
@@ -18567,7 +18540,7 @@
                                                         "doubleValue": 5914,
                                                         "labelValue": "5914.0",
                                                         "label": "ShortestPaths",
-                                                        "color": "#c43b00",
+                                                        "color": "#6baed6",
                                                         "tooltip": "<b>Label:</b> ShortestPaths<br/><b>Weight:</b> 5914.0<br/><b>Value:</b> 5914.0"
                                                     },
                                                     {
@@ -18576,7 +18549,7 @@
                                                         "doubleValue": 3416,
                                                         "labelValue": "3416.0",
                                                         "label": "SpanningTree",
-                                                        "color": "#de2100",
+                                                        "color": "#6baed6",
                                                         "tooltip": "<b>Label:</b> SpanningTree<br/><b>Weight:</b> 3416.0<br/><b>Value:</b> 3416.0"
                                                     }
                                                 ]
@@ -18591,7 +18564,7 @@
                                                         "doubleValue": 7074,
                                                         "labelValue": "7074.0",
                                                         "label": "AspectRatioBanker",
-                                                        "color": "#b84700",
+                                                        "color": "#9ecae1",
                                                         "tooltip": "<b>Label:</b> AspectRatioBanker<br/><b>Weight:</b> 7074.0<br/><b>Value:</b> 7074.0"
                                                     }
                                                 ]
@@ -18608,7 +18581,7 @@
                                                 "doubleValue": 17010,
                                                 "labelValue": "17010.0",
                                                 "label": "Easing",
-                                                "color": "#4fb000",
+                                                "color": "#c6dbef",
                                                 "tooltip": "<b>Label:</b> Easing<br/><b>Weight:</b> 17010.0<br/><b>Value:</b> 17010.0"
                                             },
                                             {
@@ -18617,7 +18590,7 @@
                                                 "doubleValue": 5842,
                                                 "labelValue": "5842.0",
                                                 "label": "FunctionSequence",
-                                                "color": "#c53a00",
+                                                "color": "#c6dbef",
                                                 "tooltip": "<b>Label:</b> FunctionSequence<br/><b>Weight:</b> 5842.0<br/><b>Value:</b> 5842.0"
                                             },
                                             {
@@ -18630,7 +18603,7 @@
                                                         "doubleValue": 1983,
                                                         "labelValue": "1983.0",
                                                         "label": "ArrayInterpolator",
-                                                        "color": "#ed1200",
+                                                        "color": "#e6550d",
                                                         "tooltip": "<b>Label:</b> ArrayInterpolator<br/><b>Weight:</b> 1983.0<br/><b>Value:</b> 1983.0"
                                                     },
                                                     {
@@ -18639,7 +18612,7 @@
                                                         "doubleValue": 2047,
                                                         "labelValue": "2047.0",
                                                         "label": "ColorInterpolator",
-                                                        "color": "#ec1300",
+                                                        "color": "#e6550d",
                                                         "tooltip": "<b>Label:</b> ColorInterpolator<br/><b>Weight:</b> 2047.0<br/><b>Value:</b> 2047.0"
                                                     },
                                                     {
@@ -18648,7 +18621,7 @@
                                                         "doubleValue": 1375,
                                                         "labelValue": "1375.0",
                                                         "label": "DateInterpolator",
-                                                        "color": "#f30c00",
+                                                        "color": "#e6550d",
                                                         "tooltip": "<b>Label:</b> DateInterpolator<br/><b>Weight:</b> 1375.0<br/><b>Value:</b> 1375.0"
                                                     },
                                                     {
@@ -18657,7 +18630,7 @@
                                                         "doubleValue": 8746,
                                                         "labelValue": "8746.0",
                                                         "label": "Interpolator",
-                                                        "color": "#a65900",
+                                                        "color": "#e6550d",
                                                         "tooltip": "<b>Label:</b> Interpolator<br/><b>Weight:</b> 8746.0<br/><b>Value:</b> 8746.0"
                                                     },
                                                     {
@@ -18666,7 +18639,7 @@
                                                         "doubleValue": 2202,
                                                         "labelValue": "2202.0",
                                                         "label": "MatrixInterpolator",
-                                                        "color": "#eb1400",
+                                                        "color": "#e6550d",
                                                         "tooltip": "<b>Label:</b> MatrixInterpolator<br/><b>Weight:</b> 2202.0<br/><b>Value:</b> 2202.0"
                                                     },
                                                     {
@@ -18675,7 +18648,7 @@
                                                         "doubleValue": 1382,
                                                         "labelValue": "1382.0",
                                                         "label": "NumberInterpolator",
-                                                        "color": "#f30c00",
+                                                        "color": "#e6550d",
                                                         "tooltip": "<b>Label:</b> NumberInterpolator<br/><b>Weight:</b> 1382.0<br/><b>Value:</b> 1382.0"
                                                     },
                                                     {
@@ -18684,7 +18657,7 @@
                                                         "doubleValue": 1629,
                                                         "labelValue": "1629.0",
                                                         "label": "ObjectInterpolator",
-                                                        "color": "#f10e00",
+                                                        "color": "#e6550d",
                                                         "tooltip": "<b>Label:</b> ObjectInterpolator<br/><b>Weight:</b> 1629.0<br/><b>Value:</b> 1629.0"
                                                     },
                                                     {
@@ -18693,7 +18666,7 @@
                                                         "doubleValue": 1675,
                                                         "labelValue": "1675.0",
                                                         "label": "PointInterpolator",
-                                                        "color": "#f00f00",
+                                                        "color": "#e6550d",
                                                         "tooltip": "<b>Label:</b> PointInterpolator<br/><b>Weight:</b> 1675.0<br/><b>Value:</b> 1675.0"
                                                     },
                                                     {
@@ -18702,7 +18675,7 @@
                                                         "doubleValue": 2042,
                                                         "labelValue": "2042.0",
                                                         "label": "RectangleInterpolator",
-                                                        "color": "#ec1300",
+                                                        "color": "#e6550d",
                                                         "tooltip": "<b>Label:</b> RectangleInterpolator<br/><b>Weight:</b> 2042.0<br/><b>Value:</b> 2042.0"
                                                     }
                                                 ]
@@ -18713,7 +18686,7 @@
                                                 "doubleValue": 1041,
                                                 "labelValue": "1041.0",
                                                 "label": "ISchedulable",
-                                                "color": "#f70800",
+                                                "color": "#c6dbef",
                                                 "tooltip": "<b>Label:</b> ISchedulable<br/><b>Weight:</b> 1041.0<br/><b>Value:</b> 1041.0"
                                             },
                                             {
@@ -18722,7 +18695,7 @@
                                                 "doubleValue": 5176,
                                                 "labelValue": "5176.0",
                                                 "label": "Parallel",
-                                                "color": "#cc3300",
+                                                "color": "#c6dbef",
                                                 "tooltip": "<b>Label:</b> Parallel<br/><b>Weight:</b> 5176.0<br/><b>Value:</b> 5176.0"
                                             },
                                             {
@@ -18731,7 +18704,7 @@
                                                 "doubleValue": 449,
                                                 "labelValue": "449.0",
                                                 "label": "Pause",
-                                                "color": "#fd0200",
+                                                "color": "#c6dbef",
                                                 "tooltip": "<b>Label:</b> Pause<br/><b>Weight:</b> 449.0<br/><b>Value:</b> 449.0"
                                             },
                                             {
@@ -18740,7 +18713,7 @@
                                                 "doubleValue": 5593,
                                                 "labelValue": "5593.0",
                                                 "label": "Scheduler",
-                                                "color": "#c73800",
+                                                "color": "#c6dbef",
                                                 "tooltip": "<b>Label:</b> Scheduler<br/><b>Weight:</b> 5593.0<br/><b>Value:</b> 5593.0"
                                             },
                                             {
@@ -18749,7 +18722,7 @@
                                                 "doubleValue": 5534,
                                                 "labelValue": "5534.0",
                                                 "label": "Sequence",
-                                                "color": "#c83700",
+                                                "color": "#c6dbef",
                                                 "tooltip": "<b>Label:</b> Sequence<br/><b>Weight:</b> 5534.0<br/><b>Value:</b> 5534.0"
                                             },
                                             {
@@ -18758,7 +18731,7 @@
                                                 "doubleValue": 9201,
                                                 "labelValue": "9201.0",
                                                 "label": "Transition",
-                                                "color": "#a15e00",
+                                                "color": "#c6dbef",
                                                 "tooltip": "<b>Label:</b> Transition<br/><b>Weight:</b> 9201.0<br/><b>Value:</b> 9201.0"
                                             },
                                             {
@@ -18767,7 +18740,7 @@
                                                 "doubleValue": 19975,
                                                 "labelValue": "19975.0",
                                                 "label": "Transitioner",
-                                                "color": "#30cf00",
+                                                "color": "#c6dbef",
                                                 "tooltip": "<b>Label:</b> Transitioner<br/><b>Weight:</b> 19975.0<br/><b>Value:</b> 19975.0"
                                             },
                                             {
@@ -18776,7 +18749,7 @@
                                                 "doubleValue": 1116,
                                                 "labelValue": "1116.0",
                                                 "label": "TransitionEvent",
-                                                "color": "#f60900",
+                                                "color": "#c6dbef",
                                                 "tooltip": "<b>Label:</b> TransitionEvent<br/><b>Weight:</b> 1116.0<br/><b>Value:</b> 1116.0"
                                             },
                                             {
@@ -18785,7 +18758,7 @@
                                                 "doubleValue": 6006,
                                                 "labelValue": "6006.0",
                                                 "label": "Tween",
-                                                "color": "#c33c00",
+                                                "color": "#c6dbef",
                                                 "tooltip": "<b>Label:</b> Tween<br/><b>Weight:</b> 6006.0<br/><b>Value:</b> 6006.0"
                                             }
                                         ]
@@ -18804,7 +18777,7 @@
                                                         "doubleValue": 721,
                                                         "labelValue": "721.0",
                                                         "label": "Converters",
-                                                        "color": "#fa0500",
+                                                        "color": "#fd8d3c",
                                                         "tooltip": "<b>Label:</b> Converters<br/><b>Weight:</b> 721.0<br/><b>Value:</b> 721.0"
                                                     },
                                                     {
@@ -18813,7 +18786,7 @@
                                                         "doubleValue": 4294,
                                                         "labelValue": "4294.0",
                                                         "label": "DelimitedTextConverter",
-                                                        "color": "#d52a00",
+                                                        "color": "#fd8d3c",
                                                         "tooltip": "<b>Label:</b> DelimitedTextConverter<br/><b>Weight:</b> 4294.0<br/><b>Value:</b> 4294.0"
                                                     },
                                                     {
@@ -18822,7 +18795,7 @@
                                                         "doubleValue": 9800,
                                                         "labelValue": "9800.0",
                                                         "label": "GraphMLConverter",
-                                                        "color": "#9b6400",
+                                                        "color": "#fd8d3c",
                                                         "tooltip": "<b>Label:</b> GraphMLConverter<br/><b>Weight:</b> 9800.0<br/><b>Value:</b> 9800.0"
                                                     },
                                                     {
@@ -18831,7 +18804,7 @@
                                                         "doubleValue": 1314,
                                                         "labelValue": "1314.0",
                                                         "label": "IDataConverter",
-                                                        "color": "#f40b00",
+                                                        "color": "#fd8d3c",
                                                         "tooltip": "<b>Label:</b> IDataConverter<br/><b>Weight:</b> 1314.0<br/><b>Value:</b> 1314.0"
                                                     },
                                                     {
@@ -18840,7 +18813,7 @@
                                                         "doubleValue": 2220,
                                                         "labelValue": "2220.0",
                                                         "label": "JSONConverter",
-                                                        "color": "#ea1500",
+                                                        "color": "#fd8d3c",
                                                         "tooltip": "<b>Label:</b> JSONConverter<br/><b>Weight:</b> 2220.0<br/><b>Value:</b> 2220.0"
                                                     }
                                                 ]
@@ -18851,7 +18824,7 @@
                                                 "doubleValue": 1759,
                                                 "labelValue": "1759.0",
                                                 "label": "DataField",
-                                                "color": "#ef1000",
+                                                "color": "#fdae6b",
                                                 "tooltip": "<b>Label:</b> DataField<br/><b>Weight:</b> 1759.0<br/><b>Value:</b> 1759.0"
                                             },
                                             {
@@ -18860,7 +18833,7 @@
                                                 "doubleValue": 2165,
                                                 "labelValue": "2165.0",
                                                 "label": "DataSchema",
-                                                "color": "#eb1400",
+                                                "color": "#fdae6b",
                                                 "tooltip": "<b>Label:</b> DataSchema<br/><b>Weight:</b> 2165.0<br/><b>Value:</b> 2165.0"
                                             },
                                             {
@@ -18869,7 +18842,7 @@
                                                 "doubleValue": 586,
                                                 "labelValue": "586.0",
                                                 "label": "DataSet",
-                                                "color": "#fc0300",
+                                                "color": "#fdae6b",
                                                 "tooltip": "<b>Label:</b> DataSet<br/><b>Weight:</b> 586.0<br/><b>Value:</b> 586.0"
                                             },
                                             {
@@ -18878,7 +18851,7 @@
                                                 "doubleValue": 3331,
                                                 "labelValue": "3331.0",
                                                 "label": "DataSource",
-                                                "color": "#df2000",
+                                                "color": "#fdae6b",
                                                 "tooltip": "<b>Label:</b> DataSource<br/><b>Weight:</b> 3331.0<br/><b>Value:</b> 3331.0"
                                             },
                                             {
@@ -18887,7 +18860,7 @@
                                                 "doubleValue": 772,
                                                 "labelValue": "772.0",
                                                 "label": "DataTable",
-                                                "color": "#fa0500",
+                                                "color": "#fdae6b",
                                                 "tooltip": "<b>Label:</b> DataTable<br/><b>Weight:</b> 772.0<br/><b>Value:</b> 772.0"
                                             },
                                             {
@@ -18896,7 +18869,7 @@
                                                 "doubleValue": 3322,
                                                 "labelValue": "3322.0",
                                                 "label": "DataUtil",
-                                                "color": "#df2000",
+                                                "color": "#fdae6b",
                                                 "tooltip": "<b>Label:</b> DataUtil<br/><b>Weight:</b> 3322.0<br/><b>Value:</b> 3322.0"
                                             }
                                         ]
@@ -18911,7 +18884,7 @@
                                                 "doubleValue": 8833,
                                                 "labelValue": "8833.0",
                                                 "label": "DirtySprite",
-                                                "color": "#a55a00",
+                                                "color": "#fdd0a2",
                                                 "tooltip": "<b>Label:</b> DirtySprite<br/><b>Weight:</b> 8833.0<br/><b>Value:</b> 8833.0"
                                             },
                                             {
@@ -18920,7 +18893,7 @@
                                                 "doubleValue": 1732,
                                                 "labelValue": "1732.0",
                                                 "label": "LineSprite",
-                                                "color": "#f00f00",
+                                                "color": "#fdd0a2",
                                                 "tooltip": "<b>Label:</b> LineSprite<br/><b>Weight:</b> 1732.0<br/><b>Value:</b> 1732.0"
                                             },
                                             {
@@ -18929,7 +18902,7 @@
                                                 "doubleValue": 3623,
                                                 "labelValue": "3623.0",
                                                 "label": "RectSprite",
-                                                "color": "#dc2300",
+                                                "color": "#fdd0a2",
                                                 "tooltip": "<b>Label:</b> RectSprite<br/><b>Weight:</b> 3623.0<br/><b>Value:</b> 3623.0"
                                             },
                                             {
@@ -18938,7 +18911,7 @@
                                                 "doubleValue": 10066,
                                                 "labelValue": "10066.0",
                                                 "label": "TextSprite",
-                                                "color": "#986700",
+                                                "color": "#fdd0a2",
                                                 "tooltip": "<b>Label:</b> TextSprite<br/><b>Weight:</b> 10066.0<br/><b>Value:</b> 10066.0"
                                             }
                                         ]
@@ -18953,7 +18926,7 @@
                                                 "doubleValue": 4116,
                                                 "labelValue": "4116.0",
                                                 "label": "FlareVis",
-                                                "color": "#d72800",
+                                                "color": "#31a354",
                                                 "tooltip": "<b>Label:</b> FlareVis<br/><b>Weight:</b> 4116.0<br/><b>Value:</b> 4116.0"
                                             }
                                         ]
@@ -18968,7 +18941,7 @@
                                                 "doubleValue": 1082,
                                                 "labelValue": "1082.0",
                                                 "label": "DragForce",
-                                                "color": "#f60900",
+                                                "color": "#74c476",
                                                 "tooltip": "<b>Label:</b> DragForce<br/><b>Weight:</b> 1082.0<br/><b>Value:</b> 1082.0"
                                             },
                                             {
@@ -18977,7 +18950,7 @@
                                                 "doubleValue": 1336,
                                                 "labelValue": "1336.0",
                                                 "label": "GravityForce",
-                                                "color": "#f40b00",
+                                                "color": "#74c476",
                                                 "tooltip": "<b>Label:</b> GravityForce<br/><b>Weight:</b> 1336.0<br/><b>Value:</b> 1336.0"
                                             },
                                             {
@@ -18986,7 +18959,7 @@
                                                 "doubleValue": 319,
                                                 "labelValue": "319.0",
                                                 "label": "IForce",
-                                                "color": "#fe0100",
+                                                "color": "#74c476",
                                                 "tooltip": "<b>Label:</b> IForce<br/><b>Weight:</b> 319.0<br/><b>Value:</b> 319.0"
                                             },
                                             {
@@ -18995,7 +18968,7 @@
                                                 "doubleValue": 10498,
                                                 "labelValue": "10498.0",
                                                 "label": "NBodyForce",
-                                                "color": "#946b00",
+                                                "color": "#74c476",
                                                 "tooltip": "<b>Label:</b> NBodyForce<br/><b>Weight:</b> 10498.0<br/><b>Value:</b> 10498.0"
                                             },
                                             {
@@ -19004,7 +18977,7 @@
                                                 "doubleValue": 2822,
                                                 "labelValue": "2822.0",
                                                 "label": "Particle",
-                                                "color": "#e41b00",
+                                                "color": "#74c476",
                                                 "tooltip": "<b>Label:</b> Particle<br/><b>Weight:</b> 2822.0<br/><b>Value:</b> 2822.0"
                                             },
                                             {
@@ -19013,7 +18986,7 @@
                                                 "doubleValue": 9983,
                                                 "labelValue": "9983.0",
                                                 "label": "Simulation",
-                                                "color": "#996600",
+                                                "color": "#74c476",
                                                 "tooltip": "<b>Label:</b> Simulation<br/><b>Weight:</b> 9983.0<br/><b>Value:</b> 9983.0"
                                             },
                                             {
@@ -19022,7 +18995,7 @@
                                                 "doubleValue": 2213,
                                                 "labelValue": "2213.0",
                                                 "label": "Spring",
-                                                "color": "#eb1400",
+                                                "color": "#74c476",
                                                 "tooltip": "<b>Label:</b> Spring<br/><b>Weight:</b> 2213.0<br/><b>Value:</b> 2213.0"
                                             },
                                             {
@@ -19031,7 +19004,7 @@
                                                 "doubleValue": 1681,
                                                 "labelValue": "1681.0",
                                                 "label": "SpringForce",
-                                                "color": "#f00f00",
+                                                "color": "#74c476",
                                                 "tooltip": "<b>Label:</b> SpringForce<br/><b>Weight:</b> 1681.0<br/><b>Value:</b> 1681.0"
                                             }
                                         ]
@@ -19046,7 +19019,7 @@
                                                 "doubleValue": 1616,
                                                 "labelValue": "1616.0",
                                                 "label": "AggregateExpression",
-                                                "color": "#f10e00",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> AggregateExpression<br/><b>Weight:</b> 1616.0<br/><b>Value:</b> 1616.0"
                                             },
                                             {
@@ -19055,7 +19028,7 @@
                                                 "doubleValue": 1027,
                                                 "labelValue": "1027.0",
                                                 "label": "And",
-                                                "color": "#f70800",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> And<br/><b>Weight:</b> 1027.0<br/><b>Value:</b> 1027.0"
                                             },
                                             {
@@ -19064,7 +19037,7 @@
                                                 "doubleValue": 3891,
                                                 "labelValue": "3891.0",
                                                 "label": "Arithmetic",
-                                                "color": "#d92600",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Arithmetic<br/><b>Weight:</b> 3891.0<br/><b>Value:</b> 3891.0"
                                             },
                                             {
@@ -19073,7 +19046,7 @@
                                                 "doubleValue": 891,
                                                 "labelValue": "891.0",
                                                 "label": "Average",
-                                                "color": "#f80700",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Average<br/><b>Weight:</b> 891.0<br/><b>Value:</b> 891.0"
                                             },
                                             {
@@ -19082,7 +19055,7 @@
                                                 "doubleValue": 2893,
                                                 "labelValue": "2893.0",
                                                 "label": "BinaryExpression",
-                                                "color": "#e31c00",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> BinaryExpression<br/><b>Weight:</b> 2893.0<br/><b>Value:</b> 2893.0"
                                             },
                                             {
@@ -19091,7 +19064,7 @@
                                                 "doubleValue": 5103,
                                                 "labelValue": "5103.0",
                                                 "label": "Comparison",
-                                                "color": "#cc3300",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Comparison<br/><b>Weight:</b> 5103.0<br/><b>Value:</b> 5103.0"
                                             },
                                             {
@@ -19100,7 +19073,7 @@
                                                 "doubleValue": 3677,
                                                 "labelValue": "3677.0",
                                                 "label": "CompositeExpression",
-                                                "color": "#db2400",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> CompositeExpression<br/><b>Weight:</b> 3677.0<br/><b>Value:</b> 3677.0"
                                             },
                                             {
@@ -19109,7 +19082,7 @@
                                                 "doubleValue": 781,
                                                 "labelValue": "781.0",
                                                 "label": "Count",
-                                                "color": "#fa0500",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Count<br/><b>Weight:</b> 781.0<br/><b>Value:</b> 781.0"
                                             },
                                             {
@@ -19118,7 +19091,7 @@
                                                 "doubleValue": 4141,
                                                 "labelValue": "4141.0",
                                                 "label": "DateUtil",
-                                                "color": "#d62900",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> DateUtil<br/><b>Weight:</b> 4141.0<br/><b>Value:</b> 4141.0"
                                             },
                                             {
@@ -19127,7 +19100,7 @@
                                                 "doubleValue": 933,
                                                 "labelValue": "933.0",
                                                 "label": "Distinct",
-                                                "color": "#f80700",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Distinct<br/><b>Weight:</b> 933.0<br/><b>Value:</b> 933.0"
                                             },
                                             {
@@ -19136,7 +19109,7 @@
                                                 "doubleValue": 5130,
                                                 "labelValue": "5130.0",
                                                 "label": "Expression",
-                                                "color": "#cc3300",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Expression<br/><b>Weight:</b> 5130.0<br/><b>Value:</b> 5130.0"
                                             },
                                             {
@@ -19145,7 +19118,7 @@
                                                 "doubleValue": 3617,
                                                 "labelValue": "3617.0",
                                                 "label": "ExpressionIterator",
-                                                "color": "#dc2300",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> ExpressionIterator<br/><b>Weight:</b> 3617.0<br/><b>Value:</b> 3617.0"
                                             },
                                             {
@@ -19154,7 +19127,7 @@
                                                 "doubleValue": 3240,
                                                 "labelValue": "3240.0",
                                                 "label": "Fn",
-                                                "color": "#e01f00",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Fn<br/><b>Weight:</b> 3240.0<br/><b>Value:</b> 3240.0"
                                             },
                                             {
@@ -19163,7 +19136,7 @@
                                                 "doubleValue": 2732,
                                                 "labelValue": "2732.0",
                                                 "label": "If",
-                                                "color": "#e51a00",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> If<br/><b>Weight:</b> 2732.0<br/><b>Value:</b> 2732.0"
                                             },
                                             {
@@ -19172,7 +19145,7 @@
                                                 "doubleValue": 2039,
                                                 "labelValue": "2039.0",
                                                 "label": "IsA",
-                                                "color": "#ec1300",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> IsA<br/><b>Weight:</b> 2039.0<br/><b>Value:</b> 2039.0"
                                             },
                                             {
@@ -19181,7 +19154,7 @@
                                                 "doubleValue": 1214,
                                                 "labelValue": "1214.0",
                                                 "label": "Literal",
-                                                "color": "#f50a00",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Literal<br/><b>Weight:</b> 1214.0<br/><b>Value:</b> 1214.0"
                                             },
                                             {
@@ -19190,7 +19163,7 @@
                                                 "doubleValue": 3748,
                                                 "labelValue": "3748.0",
                                                 "label": "Match",
-                                                "color": "#da2500",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Match<br/><b>Weight:</b> 3748.0<br/><b>Value:</b> 3748.0"
                                             },
                                             {
@@ -19199,7 +19172,7 @@
                                                 "doubleValue": 843,
                                                 "labelValue": "843.0",
                                                 "label": "Maximum",
-                                                "color": "#f90600",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Maximum<br/><b>Weight:</b> 843.0<br/><b>Value:</b> 843.0"
                                             },
                                             {
@@ -19212,7 +19185,7 @@
                                                         "doubleValue": 593,
                                                         "labelValue": "593.0",
                                                         "label": "add",
-                                                        "color": "#fc0300",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> add<br/><b>Weight:</b> 593.0<br/><b>Value:</b> 593.0"
                                                     },
                                                     {
@@ -19221,7 +19194,7 @@
                                                         "doubleValue": 330,
                                                         "labelValue": "330.0",
                                                         "label": "and",
-                                                        "color": "#fe0100",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> and<br/><b>Weight:</b> 330.0<br/><b>Value:</b> 330.0"
                                                     },
                                                     {
@@ -19230,7 +19203,7 @@
                                                         "doubleValue": 287,
                                                         "labelValue": "287.0",
                                                         "label": "average",
-                                                        "color": "#ff0000",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> average<br/><b>Weight:</b> 287.0<br/><b>Value:</b> 287.0"
                                                     },
                                                     {
@@ -19239,7 +19212,7 @@
                                                         "doubleValue": 277,
                                                         "labelValue": "277.0",
                                                         "label": "count",
-                                                        "color": "#ff0000",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> count<br/><b>Weight:</b> 277.0<br/><b>Value:</b> 277.0"
                                                     },
                                                     {
@@ -19248,7 +19221,7 @@
                                                         "doubleValue": 292,
                                                         "labelValue": "292.0",
                                                         "label": "distinct",
-                                                        "color": "#ff0000",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> distinct<br/><b>Weight:</b> 292.0<br/><b>Value:</b> 292.0"
                                                     },
                                                     {
@@ -19257,7 +19230,7 @@
                                                         "doubleValue": 595,
                                                         "labelValue": "595.0",
                                                         "label": "div",
-                                                        "color": "#fc0300",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> div<br/><b>Weight:</b> 595.0<br/><b>Value:</b> 595.0"
                                                     },
                                                     {
@@ -19266,7 +19239,7 @@
                                                         "doubleValue": 594,
                                                         "labelValue": "594.0",
                                                         "label": "eq",
-                                                        "color": "#fc0300",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> eq<br/><b>Weight:</b> 594.0<br/><b>Value:</b> 594.0"
                                                     },
                                                     {
@@ -19275,7 +19248,7 @@
                                                         "doubleValue": 460,
                                                         "labelValue": "460.0",
                                                         "label": "fn",
-                                                        "color": "#fd0200",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> fn<br/><b>Weight:</b> 460.0<br/><b>Value:</b> 460.0"
                                                     },
                                                     {
@@ -19284,7 +19257,7 @@
                                                         "doubleValue": 603,
                                                         "labelValue": "603.0",
                                                         "label": "gt",
-                                                        "color": "#fb0400",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> gt<br/><b>Weight:</b> 603.0<br/><b>Value:</b> 603.0"
                                                     },
                                                     {
@@ -19293,7 +19266,7 @@
                                                         "doubleValue": 625,
                                                         "labelValue": "625.0",
                                                         "label": "gte",
-                                                        "color": "#fb0400",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> gte<br/><b>Weight:</b> 625.0<br/><b>Value:</b> 625.0"
                                                     },
                                                     {
@@ -19302,7 +19275,7 @@
                                                         "doubleValue": 748,
                                                         "labelValue": "748.0",
                                                         "label": "iff",
-                                                        "color": "#fa0500",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> iff<br/><b>Weight:</b> 748.0<br/><b>Value:</b> 748.0"
                                                     },
                                                     {
@@ -19311,7 +19284,7 @@
                                                         "doubleValue": 461,
                                                         "labelValue": "461.0",
                                                         "label": "isa",
-                                                        "color": "#fd0200",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> isa<br/><b>Weight:</b> 461.0<br/><b>Value:</b> 461.0"
                                                     },
                                                     {
@@ -19320,7 +19293,7 @@
                                                         "doubleValue": 597,
                                                         "labelValue": "597.0",
                                                         "label": "lt",
-                                                        "color": "#fc0300",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> lt<br/><b>Weight:</b> 597.0<br/><b>Value:</b> 597.0"
                                                     },
                                                     {
@@ -19329,7 +19302,7 @@
                                                         "doubleValue": 619,
                                                         "labelValue": "619.0",
                                                         "label": "lte",
-                                                        "color": "#fb0400",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> lte<br/><b>Weight:</b> 619.0<br/><b>Value:</b> 619.0"
                                                     },
                                                     {
@@ -19338,7 +19311,7 @@
                                                         "doubleValue": 283,
                                                         "labelValue": "283.0",
                                                         "label": "max",
-                                                        "color": "#ff0000",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> max<br/><b>Weight:</b> 283.0<br/><b>Value:</b> 283.0"
                                                     },
                                                     {
@@ -19347,7 +19320,7 @@
                                                         "doubleValue": 283,
                                                         "labelValue": "283.0",
                                                         "label": "min",
-                                                        "color": "#ff0000",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> min<br/><b>Weight:</b> 283.0<br/><b>Value:</b> 283.0"
                                                     },
                                                     {
@@ -19356,7 +19329,7 @@
                                                         "doubleValue": 591,
                                                         "labelValue": "591.0",
                                                         "label": "mod",
-                                                        "color": "#fc0300",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> mod<br/><b>Weight:</b> 591.0<br/><b>Value:</b> 591.0"
                                                     },
                                                     {
@@ -19365,7 +19338,7 @@
                                                         "doubleValue": 603,
                                                         "labelValue": "603.0",
                                                         "label": "mul",
-                                                        "color": "#fb0400",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> mul<br/><b>Weight:</b> 603.0<br/><b>Value:</b> 603.0"
                                                     },
                                                     {
@@ -19374,7 +19347,7 @@
                                                         "doubleValue": 599,
                                                         "labelValue": "599.0",
                                                         "label": "neq",
-                                                        "color": "#fb0400",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> neq<br/><b>Weight:</b> 599.0<br/><b>Value:</b> 599.0"
                                                     },
                                                     {
@@ -19383,7 +19356,7 @@
                                                         "doubleValue": 386,
                                                         "labelValue": "386.0",
                                                         "label": "not",
-                                                        "color": "#fe0100",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> not<br/><b>Weight:</b> 386.0<br/><b>Value:</b> 386.0"
                                                     },
                                                     {
@@ -19392,7 +19365,7 @@
                                                         "doubleValue": 323,
                                                         "labelValue": "323.0",
                                                         "label": "or",
-                                                        "color": "#fe0100",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> or<br/><b>Weight:</b> 323.0<br/><b>Value:</b> 323.0"
                                                     },
                                                     {
@@ -19401,7 +19374,7 @@
                                                         "doubleValue": 307,
                                                         "labelValue": "307.0",
                                                         "label": "orderby",
-                                                        "color": "#ff0000",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> orderby<br/><b>Weight:</b> 307.0<br/><b>Value:</b> 307.0"
                                                     },
                                                     {
@@ -19410,7 +19383,7 @@
                                                         "doubleValue": 772,
                                                         "labelValue": "772.0",
                                                         "label": "range",
-                                                        "color": "#fa0500",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> range<br/><b>Weight:</b> 772.0<br/><b>Value:</b> 772.0"
                                                     },
                                                     {
@@ -19419,7 +19392,7 @@
                                                         "doubleValue": 296,
                                                         "labelValue": "296.0",
                                                         "label": "select",
-                                                        "color": "#ff0000",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> select<br/><b>Weight:</b> 296.0<br/><b>Value:</b> 296.0"
                                                     },
                                                     {
@@ -19428,7 +19401,7 @@
                                                         "doubleValue": 363,
                                                         "labelValue": "363.0",
                                                         "label": "stddev",
-                                                        "color": "#fe0100",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> stddev<br/><b>Weight:</b> 363.0<br/><b>Value:</b> 363.0"
                                                     },
                                                     {
@@ -19437,7 +19410,7 @@
                                                         "doubleValue": 600,
                                                         "labelValue": "600.0",
                                                         "label": "sub",
-                                                        "color": "#fb0400",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> sub<br/><b>Weight:</b> 600.0<br/><b>Value:</b> 600.0"
                                                     },
                                                     {
@@ -19446,7 +19419,7 @@
                                                         "doubleValue": 280,
                                                         "labelValue": "280.0",
                                                         "label": "sum",
-                                                        "color": "#ff0000",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> sum<br/><b>Weight:</b> 280.0<br/><b>Value:</b> 280.0"
                                                     },
                                                     {
@@ -19455,7 +19428,7 @@
                                                         "doubleValue": 307,
                                                         "labelValue": "307.0",
                                                         "label": "update",
-                                                        "color": "#ff0000",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> update<br/><b>Weight:</b> 307.0<br/><b>Value:</b> 307.0"
                                                     },
                                                     {
@@ -19464,7 +19437,7 @@
                                                         "doubleValue": 335,
                                                         "labelValue": "335.0",
                                                         "label": "variance",
-                                                        "color": "#fe0100",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> variance<br/><b>Weight:</b> 335.0<br/><b>Value:</b> 335.0"
                                                     },
                                                     {
@@ -19473,7 +19446,7 @@
                                                         "doubleValue": 299,
                                                         "labelValue": "299.0",
                                                         "label": "where",
-                                                        "color": "#ff0000",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> where<br/><b>Weight:</b> 299.0<br/><b>Value:</b> 299.0"
                                                     },
                                                     {
@@ -19482,7 +19455,7 @@
                                                         "doubleValue": 354,
                                                         "labelValue": "354.0",
                                                         "label": "xor",
-                                                        "color": "#fe0100",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> xor<br/><b>Weight:</b> 354.0<br/><b>Value:</b> 354.0"
                                                     },
                                                     {
@@ -19491,7 +19464,7 @@
                                                         "doubleValue": 264,
                                                         "labelValue": "264.0",
                                                         "label": "_",
-                                                        "color": "#ff0000",
+                                                        "color": "#c7e9c0",
                                                         "tooltip": "<b>Label:</b> _<br/><b>Weight:</b> 264.0<br/><b>Value:</b> 264.0"
                                                     }
                                                 ]
@@ -19502,7 +19475,7 @@
                                                 "doubleValue": 843,
                                                 "labelValue": "843.0",
                                                 "label": "Minimum",
-                                                "color": "#f90600",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Minimum<br/><b>Weight:</b> 843.0<br/><b>Value:</b> 843.0"
                                             },
                                             {
@@ -19511,7 +19484,7 @@
                                                 "doubleValue": 1554,
                                                 "labelValue": "1554.0",
                                                 "label": "Not",
-                                                "color": "#f10e00",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Not<br/><b>Weight:</b> 1554.0<br/><b>Value:</b> 1554.0"
                                             },
                                             {
@@ -19520,7 +19493,7 @@
                                                 "doubleValue": 970,
                                                 "labelValue": "970.0",
                                                 "label": "Or",
-                                                "color": "#f80700",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Or<br/><b>Weight:</b> 970.0<br/><b>Value:</b> 970.0"
                                             },
                                             {
@@ -19529,7 +19502,7 @@
                                                 "doubleValue": 13896,
                                                 "labelValue": "13896.0",
                                                 "label": "Query",
-                                                "color": "#708f00",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Query<br/><b>Weight:</b> 13896.0<br/><b>Value:</b> 13896.0"
                                             },
                                             {
@@ -19538,7 +19511,7 @@
                                                 "doubleValue": 1594,
                                                 "labelValue": "1594.0",
                                                 "label": "Range",
-                                                "color": "#f10e00",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Range<br/><b>Weight:</b> 1594.0<br/><b>Value:</b> 1594.0"
                                             },
                                             {
@@ -19547,7 +19520,7 @@
                                                 "doubleValue": 4130,
                                                 "labelValue": "4130.0",
                                                 "label": "StringUtil",
-                                                "color": "#d62900",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> StringUtil<br/><b>Weight:</b> 4130.0<br/><b>Value:</b> 4130.0"
                                             },
                                             {
@@ -19556,7 +19529,7 @@
                                                 "doubleValue": 791,
                                                 "labelValue": "791.0",
                                                 "label": "Sum",
-                                                "color": "#f90600",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Sum<br/><b>Weight:</b> 791.0<br/><b>Value:</b> 791.0"
                                             },
                                             {
@@ -19565,7 +19538,7 @@
                                                 "doubleValue": 1124,
                                                 "labelValue": "1124.0",
                                                 "label": "Variable",
-                                                "color": "#f60900",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Variable<br/><b>Weight:</b> 1124.0<br/><b>Value:</b> 1124.0"
                                             },
                                             {
@@ -19574,7 +19547,7 @@
                                                 "doubleValue": 1876,
                                                 "labelValue": "1876.0",
                                                 "label": "Variance",
-                                                "color": "#ee1100",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Variance<br/><b>Weight:</b> 1876.0<br/><b>Value:</b> 1876.0"
                                             },
                                             {
@@ -19583,7 +19556,7 @@
                                                 "doubleValue": 1101,
                                                 "labelValue": "1101.0",
                                                 "label": "Xor",
-                                                "color": "#f60900",
+                                                "color": "#a1d99b",
                                                 "tooltip": "<b>Label:</b> Xor<br/><b>Weight:</b> 1101.0<br/><b>Value:</b> 1101.0"
                                             }
                                         ]
@@ -19598,7 +19571,7 @@
                                                 "doubleValue": 2105,
                                                 "labelValue": "2105.0",
                                                 "label": "IScaleMap",
-                                                "color": "#ec1300",
+                                                "color": "#756bb1",
                                                 "tooltip": "<b>Label:</b> IScaleMap<br/><b>Weight:</b> 2105.0<br/><b>Value:</b> 2105.0"
                                             },
                                             {
@@ -19607,7 +19580,7 @@
                                                 "doubleValue": 1316,
                                                 "labelValue": "1316.0",
                                                 "label": "LinearScale",
-                                                "color": "#f40b00",
+                                                "color": "#756bb1",
                                                 "tooltip": "<b>Label:</b> LinearScale<br/><b>Weight:</b> 1316.0<br/><b>Value:</b> 1316.0"
                                             },
                                             {
@@ -19616,7 +19589,7 @@
                                                 "doubleValue": 3151,
                                                 "labelValue": "3151.0",
                                                 "label": "LogScale",
-                                                "color": "#e11e00",
+                                                "color": "#756bb1",
                                                 "tooltip": "<b>Label:</b> LogScale<br/><b>Weight:</b> 3151.0<br/><b>Value:</b> 3151.0"
                                             },
                                             {
@@ -19625,7 +19598,7 @@
                                                 "doubleValue": 3770,
                                                 "labelValue": "3770.0",
                                                 "label": "OrdinalScale",
-                                                "color": "#da2500",
+                                                "color": "#756bb1",
                                                 "tooltip": "<b>Label:</b> OrdinalScale<br/><b>Weight:</b> 3770.0<br/><b>Value:</b> 3770.0"
                                             },
                                             {
@@ -19634,7 +19607,7 @@
                                                 "doubleValue": 2435,
                                                 "labelValue": "2435.0",
                                                 "label": "QuantileScale",
-                                                "color": "#e81700",
+                                                "color": "#756bb1",
                                                 "tooltip": "<b>Label:</b> QuantileScale<br/><b>Weight:</b> 2435.0<br/><b>Value:</b> 2435.0"
                                             },
                                             {
@@ -19643,7 +19616,7 @@
                                                 "doubleValue": 4839,
                                                 "labelValue": "4839.0",
                                                 "label": "QuantitativeScale",
-                                                "color": "#cf3000",
+                                                "color": "#756bb1",
                                                 "tooltip": "<b>Label:</b> QuantitativeScale<br/><b>Weight:</b> 4839.0<br/><b>Value:</b> 4839.0"
                                             },
                                             {
@@ -19652,7 +19625,7 @@
                                                 "doubleValue": 1756,
                                                 "labelValue": "1756.0",
                                                 "label": "RootScale",
-                                                "color": "#ef1000",
+                                                "color": "#756bb1",
                                                 "tooltip": "<b>Label:</b> RootScale<br/><b>Weight:</b> 1756.0<br/><b>Value:</b> 1756.0"
                                             },
                                             {
@@ -19661,7 +19634,7 @@
                                                 "doubleValue": 4268,
                                                 "labelValue": "4268.0",
                                                 "label": "Scale",
-                                                "color": "#d52a00",
+                                                "color": "#756bb1",
                                                 "tooltip": "<b>Label:</b> Scale<br/><b>Weight:</b> 4268.0<br/><b>Value:</b> 4268.0"
                                             },
                                             {
@@ -19670,7 +19643,7 @@
                                                 "doubleValue": 1821,
                                                 "labelValue": "1821.0",
                                                 "label": "ScaleType",
-                                                "color": "#ef1000",
+                                                "color": "#756bb1",
                                                 "tooltip": "<b>Label:</b> ScaleType<br/><b>Weight:</b> 1821.0<br/><b>Value:</b> 1821.0"
                                             },
                                             {
@@ -19679,7 +19652,7 @@
                                                 "doubleValue": 5833,
                                                 "labelValue": "5833.0",
                                                 "label": "TimeScale",
-                                                "color": "#c53a00",
+                                                "color": "#756bb1",
                                                 "tooltip": "<b>Label:</b> TimeScale<br/><b>Weight:</b> 5833.0<br/><b>Value:</b> 5833.0"
                                             }
                                         ]
@@ -19694,7 +19667,7 @@
                                                 "doubleValue": 8258,
                                                 "labelValue": "8258.0",
                                                 "label": "Arrays",
-                                                "color": "#ab5400",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> Arrays<br/><b>Weight:</b> 8258.0<br/><b>Value:</b> 8258.0"
                                             },
                                             {
@@ -19703,7 +19676,7 @@
                                                 "doubleValue": 10001,
                                                 "labelValue": "10001.0",
                                                 "label": "Colors",
-                                                "color": "#996600",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> Colors<br/><b>Weight:</b> 10001.0<br/><b>Value:</b> 10001.0"
                                             },
                                             {
@@ -19712,7 +19685,7 @@
                                                 "doubleValue": 8217,
                                                 "labelValue": "8217.0",
                                                 "label": "Dates",
-                                                "color": "#ac5300",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> Dates<br/><b>Weight:</b> 8217.0<br/><b>Value:</b> 8217.0"
                                             },
                                             {
@@ -19721,7 +19694,7 @@
                                                 "doubleValue": 12555,
                                                 "labelValue": "12555.0",
                                                 "label": "Displays",
-                                                "color": "#7e8100",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> Displays<br/><b>Weight:</b> 12555.0<br/><b>Value:</b> 12555.0"
                                             },
                                             {
@@ -19730,7 +19703,7 @@
                                                 "doubleValue": 2324,
                                                 "labelValue": "2324.0",
                                                 "label": "Filter",
-                                                "color": "#e91600",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> Filter<br/><b>Weight:</b> 2324.0<br/><b>Value:</b> 2324.0"
                                             },
                                             {
@@ -19739,7 +19712,7 @@
                                                 "doubleValue": 10993,
                                                 "labelValue": "10993.0",
                                                 "label": "Geometry",
-                                                "color": "#8f7000",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> Geometry<br/><b>Weight:</b> 10993.0<br/><b>Value:</b> 10993.0"
                                             },
                                             {
@@ -19752,7 +19725,7 @@
                                                         "doubleValue": 9354,
                                                         "labelValue": "9354.0",
                                                         "label": "FibonacciHeap",
-                                                        "color": "#a05f00",
+                                                        "color": "#bcbddc",
                                                         "tooltip": "<b>Label:</b> FibonacciHeap<br/><b>Weight:</b> 9354.0<br/><b>Value:</b> 9354.0"
                                                     },
                                                     {
@@ -19761,7 +19734,7 @@
                                                         "doubleValue": 1233,
                                                         "labelValue": "1233.0",
                                                         "label": "HeapNode",
-                                                        "color": "#f50a00",
+                                                        "color": "#bcbddc",
                                                         "tooltip": "<b>Label:</b> HeapNode<br/><b>Weight:</b> 1233.0<br/><b>Value:</b> 1233.0"
                                                     }
                                                 ]
@@ -19772,7 +19745,7 @@
                                                 "doubleValue": 335,
                                                 "labelValue": "335.0",
                                                 "label": "IEvaluable",
-                                                "color": "#fe0100",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> IEvaluable<br/><b>Weight:</b> 335.0<br/><b>Value:</b> 335.0"
                                             },
                                             {
@@ -19781,7 +19754,7 @@
                                                 "doubleValue": 383,
                                                 "labelValue": "383.0",
                                                 "label": "IPredicate",
-                                                "color": "#fe0100",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> IPredicate<br/><b>Weight:</b> 383.0<br/><b>Value:</b> 383.0"
                                             },
                                             {
@@ -19790,7 +19763,7 @@
                                                 "doubleValue": 874,
                                                 "labelValue": "874.0",
                                                 "label": "IValueProxy",
-                                                "color": "#f90600",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> IValueProxy<br/><b>Weight:</b> 874.0<br/><b>Value:</b> 874.0"
                                             },
                                             {
@@ -19803,7 +19776,7 @@
                                                         "doubleValue": 3165,
                                                         "labelValue": "3165.0",
                                                         "label": "DenseMatrix",
-                                                        "color": "#e11e00",
+                                                        "color": "#dadaeb",
                                                         "tooltip": "<b>Label:</b> DenseMatrix<br/><b>Weight:</b> 3165.0<br/><b>Value:</b> 3165.0"
                                                     },
                                                     {
@@ -19812,7 +19785,7 @@
                                                         "doubleValue": 2815,
                                                         "labelValue": "2815.0",
                                                         "label": "IMatrix",
-                                                        "color": "#e41b00",
+                                                        "color": "#dadaeb",
                                                         "tooltip": "<b>Label:</b> IMatrix<br/><b>Weight:</b> 2815.0<br/><b>Value:</b> 2815.0"
                                                     },
                                                     {
@@ -19821,7 +19794,7 @@
                                                         "doubleValue": 3366,
                                                         "labelValue": "3366.0",
                                                         "label": "SparseMatrix",
-                                                        "color": "#de2100",
+                                                        "color": "#dadaeb",
                                                         "tooltip": "<b>Label:</b> SparseMatrix<br/><b>Weight:</b> 3366.0<br/><b>Value:</b> 3366.0"
                                                     }
                                                 ]
@@ -19832,7 +19805,7 @@
                                                 "doubleValue": 17705,
                                                 "labelValue": "17705.0",
                                                 "label": "Maths",
-                                                "color": "#48b700",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> Maths<br/><b>Weight:</b> 17705.0<br/><b>Value:</b> 17705.0"
                                             },
                                             {
@@ -19841,7 +19814,7 @@
                                                 "doubleValue": 1486,
                                                 "labelValue": "1486.0",
                                                 "label": "Orientation",
-                                                "color": "#f20d00",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> Orientation<br/><b>Weight:</b> 1486.0<br/><b>Value:</b> 1486.0"
                                             },
                                             {
@@ -19854,7 +19827,7 @@
                                                         "doubleValue": 6367,
                                                         "labelValue": "6367.0",
                                                         "label": "ColorPalette",
-                                                        "color": "#bf4000",
+                                                        "color": "#636363",
                                                         "tooltip": "<b>Label:</b> ColorPalette<br/><b>Weight:</b> 6367.0<br/><b>Value:</b> 6367.0"
                                                     },
                                                     {
@@ -19863,7 +19836,7 @@
                                                         "doubleValue": 1229,
                                                         "labelValue": "1229.0",
                                                         "label": "Palette",
-                                                        "color": "#f50a00",
+                                                        "color": "#636363",
                                                         "tooltip": "<b>Label:</b> Palette<br/><b>Weight:</b> 1229.0<br/><b>Value:</b> 1229.0"
                                                     },
                                                     {
@@ -19872,7 +19845,7 @@
                                                         "doubleValue": 2059,
                                                         "labelValue": "2059.0",
                                                         "label": "ShapePalette",
-                                                        "color": "#ec1300",
+                                                        "color": "#636363",
                                                         "tooltip": "<b>Label:</b> ShapePalette<br/><b>Weight:</b> 2059.0<br/><b>Value:</b> 2059.0"
                                                     },
                                                     {
@@ -19881,7 +19854,7 @@
                                                         "doubleValue": 2291,
                                                         "labelValue": "2291.0",
                                                         "label": "SizePalette",
-                                                        "color": "#ea1500",
+                                                        "color": "#636363",
                                                         "tooltip": "<b>Label:</b> SizePalette<br/><b>Weight:</b> 2291.0<br/><b>Value:</b> 2291.0"
                                                     }
                                                 ]
@@ -19892,7 +19865,7 @@
                                                 "doubleValue": 5559,
                                                 "labelValue": "5559.0",
                                                 "label": "Property",
-                                                "color": "#c83700",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> Property<br/><b>Weight:</b> 5559.0<br/><b>Value:</b> 5559.0"
                                             },
                                             {
@@ -19901,7 +19874,7 @@
                                                 "doubleValue": 19118,
                                                 "labelValue": "19118.0",
                                                 "label": "Shapes",
-                                                "color": "#39c600",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> Shapes<br/><b>Weight:</b> 19118.0<br/><b>Value:</b> 19118.0"
                                             },
                                             {
@@ -19910,7 +19883,7 @@
                                                 "doubleValue": 6887,
                                                 "labelValue": "6887.0",
                                                 "label": "Sort",
-                                                "color": "#ba4500",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> Sort<br/><b>Weight:</b> 6887.0<br/><b>Value:</b> 6887.0"
                                             },
                                             {
@@ -19919,7 +19892,7 @@
                                                 "doubleValue": 6557,
                                                 "labelValue": "6557.0",
                                                 "label": "Stats",
-                                                "color": "#bd4200",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> Stats<br/><b>Weight:</b> 6557.0<br/><b>Value:</b> 6557.0"
                                             },
                                             {
@@ -19928,7 +19901,7 @@
                                                 "doubleValue": 22026,
                                                 "labelValue": "22026.0",
                                                 "label": "Strings",
-                                                "color": "#1be400",
+                                                "color": "#9e9ac8",
                                                 "tooltip": "<b>Label:</b> Strings<br/><b>Weight:</b> 22026.0<br/><b>Value:</b> 22026.0"
                                             }
                                         ]
@@ -19947,7 +19920,7 @@
                                                         "doubleValue": 1302,
                                                         "labelValue": "1302.0",
                                                         "label": "Axes",
-                                                        "color": "#f40b00",
+                                                        "color": "#969696",
                                                         "tooltip": "<b>Label:</b> Axes<br/><b>Weight:</b> 1302.0<br/><b>Value:</b> 1302.0"
                                                     },
                                                     {
@@ -19956,7 +19929,7 @@
                                                         "doubleValue": 24593,
                                                         "labelValue": "24593.0",
                                                         "label": "Axis",
-                                                        "color": "#00ff00",
+                                                        "color": "#969696",
                                                         "tooltip": "<b>Label:</b> Axis<br/><b>Weight:</b> 24593.0<br/><b>Value:</b> 24593.0"
                                                     },
                                                     {
@@ -19965,7 +19938,7 @@
                                                         "doubleValue": 652,
                                                         "labelValue": "652.0",
                                                         "label": "AxisGridLine",
-                                                        "color": "#fb0400",
+                                                        "color": "#969696",
                                                         "tooltip": "<b>Label:</b> AxisGridLine<br/><b>Weight:</b> 652.0<br/><b>Value:</b> 652.0"
                                                     },
                                                     {
@@ -19974,7 +19947,7 @@
                                                         "doubleValue": 636,
                                                         "labelValue": "636.0",
                                                         "label": "AxisLabel",
-                                                        "color": "#fb0400",
+                                                        "color": "#969696",
                                                         "tooltip": "<b>Label:</b> AxisLabel<br/><b>Weight:</b> 636.0<br/><b>Value:</b> 636.0"
                                                     },
                                                     {
@@ -19983,7 +19956,7 @@
                                                         "doubleValue": 6703,
                                                         "labelValue": "6703.0",
                                                         "label": "CartesianAxes",
-                                                        "color": "#bc4300",
+                                                        "color": "#969696",
                                                         "tooltip": "<b>Label:</b> CartesianAxes<br/><b>Weight:</b> 6703.0<br/><b>Value:</b> 6703.0"
                                                     }
                                                 ]
@@ -19998,7 +19971,7 @@
                                                         "doubleValue": 2138,
                                                         "labelValue": "2138.0",
                                                         "label": "AnchorControl",
-                                                        "color": "#eb1400",
+                                                        "color": "#bdbdbd",
                                                         "tooltip": "<b>Label:</b> AnchorControl<br/><b>Weight:</b> 2138.0<br/><b>Value:</b> 2138.0"
                                                     },
                                                     {
@@ -20007,7 +19980,7 @@
                                                         "doubleValue": 3824,
                                                         "labelValue": "3824.0",
                                                         "label": "ClickControl",
-                                                        "color": "#da2500",
+                                                        "color": "#bdbdbd",
                                                         "tooltip": "<b>Label:</b> ClickControl<br/><b>Weight:</b> 3824.0<br/><b>Value:</b> 3824.0"
                                                     },
                                                     {
@@ -20016,7 +19989,7 @@
                                                         "doubleValue": 1353,
                                                         "labelValue": "1353.0",
                                                         "label": "Control",
-                                                        "color": "#f40b00",
+                                                        "color": "#bdbdbd",
                                                         "tooltip": "<b>Label:</b> Control<br/><b>Weight:</b> 1353.0<br/><b>Value:</b> 1353.0"
                                                     },
                                                     {
@@ -20025,7 +19998,7 @@
                                                         "doubleValue": 4665,
                                                         "labelValue": "4665.0",
                                                         "label": "ControlList",
-                                                        "color": "#d12e00",
+                                                        "color": "#bdbdbd",
                                                         "tooltip": "<b>Label:</b> ControlList<br/><b>Weight:</b> 4665.0<br/><b>Value:</b> 4665.0"
                                                     },
                                                     {
@@ -20034,7 +20007,7 @@
                                                         "doubleValue": 2649,
                                                         "labelValue": "2649.0",
                                                         "label": "DragControl",
-                                                        "color": "#e61900",
+                                                        "color": "#bdbdbd",
                                                         "tooltip": "<b>Label:</b> DragControl<br/><b>Weight:</b> 2649.0<br/><b>Value:</b> 2649.0"
                                                     },
                                                     {
@@ -20043,7 +20016,7 @@
                                                         "doubleValue": 2832,
                                                         "labelValue": "2832.0",
                                                         "label": "ExpandControl",
-                                                        "color": "#e41b00",
+                                                        "color": "#bdbdbd",
                                                         "tooltip": "<b>Label:</b> ExpandControl<br/><b>Weight:</b> 2832.0<br/><b>Value:</b> 2832.0"
                                                     },
                                                     {
@@ -20052,7 +20025,7 @@
                                                         "doubleValue": 4896,
                                                         "labelValue": "4896.0",
                                                         "label": "HoverControl",
-                                                        "color": "#ce3100",
+                                                        "color": "#bdbdbd",
                                                         "tooltip": "<b>Label:</b> HoverControl<br/><b>Weight:</b> 4896.0<br/><b>Value:</b> 4896.0"
                                                     },
                                                     {
@@ -20061,7 +20034,7 @@
                                                         "doubleValue": 763,
                                                         "labelValue": "763.0",
                                                         "label": "IControl",
-                                                        "color": "#fa0500",
+                                                        "color": "#bdbdbd",
                                                         "tooltip": "<b>Label:</b> IControl<br/><b>Weight:</b> 763.0<br/><b>Value:</b> 763.0"
                                                     },
                                                     {
@@ -20070,7 +20043,7 @@
                                                         "doubleValue": 5222,
                                                         "labelValue": "5222.0",
                                                         "label": "PanZoomControl",
-                                                        "color": "#cb3400",
+                                                        "color": "#bdbdbd",
                                                         "tooltip": "<b>Label:</b> PanZoomControl<br/><b>Weight:</b> 5222.0<br/><b>Value:</b> 5222.0"
                                                     },
                                                     {
@@ -20079,7 +20052,7 @@
                                                         "doubleValue": 7862,
                                                         "labelValue": "7862.0",
                                                         "label": "SelectionControl",
-                                                        "color": "#af5000",
+                                                        "color": "#bdbdbd",
                                                         "tooltip": "<b>Label:</b> SelectionControl<br/><b>Weight:</b> 7862.0<br/><b>Value:</b> 7862.0"
                                                     },
                                                     {
@@ -20088,7 +20061,7 @@
                                                         "doubleValue": 8435,
                                                         "labelValue": "8435.0",
                                                         "label": "TooltipControl",
-                                                        "color": "#a95600",
+                                                        "color": "#bdbdbd",
                                                         "tooltip": "<b>Label:</b> TooltipControl<br/><b>Weight:</b> 8435.0<br/><b>Value:</b> 8435.0"
                                                     }
                                                 ]
@@ -20103,7 +20076,7 @@
                                                         "doubleValue": 20544,
                                                         "labelValue": "20544.0",
                                                         "label": "Data",
-                                                        "color": "#2ad500",
+                                                        "color": "#fdae6b",
                                                         "tooltip": "<b>Label:</b> Data<br/><b>Weight:</b> 20544.0<br/><b>Value:</b> 20544.0"
                                                     },
                                                     {
@@ -20112,7 +20085,7 @@
                                                         "doubleValue": 19788,
                                                         "labelValue": "19788.0",
                                                         "label": "DataList",
-                                                        "color": "#32cd00",
+                                                        "color": "#fdae6b",
                                                         "tooltip": "<b>Label:</b> DataList<br/><b>Weight:</b> 19788.0<br/><b>Value:</b> 19788.0"
                                                     },
                                                     {
@@ -20121,7 +20094,7 @@
                                                         "doubleValue": 10349,
                                                         "labelValue": "10349.0",
                                                         "label": "DataSprite",
-                                                        "color": "#956a00",
+                                                        "color": "#fdae6b",
                                                         "tooltip": "<b>Label:</b> DataSprite<br/><b>Weight:</b> 10349.0<br/><b>Value:</b> 10349.0"
                                                     },
                                                     {
@@ -20130,7 +20103,7 @@
                                                         "doubleValue": 3301,
                                                         "labelValue": "3301.0",
                                                         "label": "EdgeSprite",
-                                                        "color": "#df2000",
+                                                        "color": "#fdae6b",
                                                         "tooltip": "<b>Label:</b> EdgeSprite<br/><b>Weight:</b> 3301.0<br/><b>Value:</b> 3301.0"
                                                     },
                                                     {
@@ -20139,7 +20112,7 @@
                                                         "doubleValue": 19382,
                                                         "labelValue": "19382.0",
                                                         "label": "NodeSprite",
-                                                        "color": "#37c800",
+                                                        "color": "#fdae6b",
                                                         "tooltip": "<b>Label:</b> NodeSprite<br/><b>Weight:</b> 19382.0<br/><b>Value:</b> 19382.0"
                                                     },
                                                     {
@@ -20152,7 +20125,7 @@
                                                                 "doubleValue": 698,
                                                                 "labelValue": "698.0",
                                                                 "label": "ArrowType",
-                                                                "color": "#fa0500",
+                                                                "color": "#d9d9d9",
                                                                 "tooltip": "<b>Label:</b> ArrowType<br/><b>Weight:</b> 698.0<br/><b>Value:</b> 698.0"
                                                             },
                                                             {
@@ -20161,7 +20134,7 @@
                                                                 "doubleValue": 5569,
                                                                 "labelValue": "5569.0",
                                                                 "label": "EdgeRenderer",
-                                                                "color": "#c73800",
+                                                                "color": "#d9d9d9",
                                                                 "tooltip": "<b>Label:</b> EdgeRenderer<br/><b>Weight:</b> 5569.0<br/><b>Value:</b> 5569.0"
                                                             },
                                                             {
@@ -20170,7 +20143,7 @@
                                                                 "doubleValue": 353,
                                                                 "labelValue": "353.0",
                                                                 "label": "IRenderer",
-                                                                "color": "#fe0100",
+                                                                "color": "#d9d9d9",
                                                                 "tooltip": "<b>Label:</b> IRenderer<br/><b>Weight:</b> 353.0<br/><b>Value:</b> 353.0"
                                                             },
                                                             {
@@ -20179,7 +20152,7 @@
                                                                 "doubleValue": 2247,
                                                                 "labelValue": "2247.0",
                                                                 "label": "ShapeRenderer",
-                                                                "color": "#ea1500",
+                                                                "color": "#d9d9d9",
                                                                 "tooltip": "<b>Label:</b> ShapeRenderer<br/><b>Weight:</b> 2247.0<br/><b>Value:</b> 2247.0"
                                                             }
                                                         ]
@@ -20190,7 +20163,7 @@
                                                         "doubleValue": 11275,
                                                         "labelValue": "11275.0",
                                                         "label": "ScaleBinding",
-                                                        "color": "#8c7300",
+                                                        "color": "#fdae6b",
                                                         "tooltip": "<b>Label:</b> ScaleBinding<br/><b>Weight:</b> 11275.0<br/><b>Value:</b> 11275.0"
                                                     },
                                                     {
@@ -20199,7 +20172,7 @@
                                                         "doubleValue": 7147,
                                                         "labelValue": "7147.0",
                                                         "label": "Tree",
-                                                        "color": "#b74800",
+                                                        "color": "#fdae6b",
                                                         "tooltip": "<b>Label:</b> Tree<br/><b>Weight:</b> 7147.0<br/><b>Value:</b> 7147.0"
                                                     },
                                                     {
@@ -20208,7 +20181,7 @@
                                                         "doubleValue": 9930,
                                                         "labelValue": "9930.0",
                                                         "label": "TreeBuilder",
-                                                        "color": "#9a6500",
+                                                        "color": "#fdae6b",
                                                         "tooltip": "<b>Label:</b> TreeBuilder<br/><b>Weight:</b> 9930.0<br/><b>Value:</b> 9930.0"
                                                     }
                                                 ]
@@ -20223,7 +20196,7 @@
                                                         "doubleValue": 2313,
                                                         "labelValue": "2313.0",
                                                         "label": "DataEvent",
-                                                        "color": "#ea1500",
+                                                        "color": "#3182bd",
                                                         "tooltip": "<b>Label:</b> DataEvent<br/><b>Weight:</b> 2313.0<br/><b>Value:</b> 2313.0"
                                                     },
                                                     {
@@ -20232,7 +20205,7 @@
                                                         "doubleValue": 1880,
                                                         "labelValue": "1880.0",
                                                         "label": "SelectionEvent",
-                                                        "color": "#ee1100",
+                                                        "color": "#3182bd",
                                                         "tooltip": "<b>Label:</b> SelectionEvent<br/><b>Weight:</b> 1880.0<br/><b>Value:</b> 1880.0"
                                                     },
                                                     {
@@ -20241,7 +20214,7 @@
                                                         "doubleValue": 1701,
                                                         "labelValue": "1701.0",
                                                         "label": "TooltipEvent",
-                                                        "color": "#f00f00",
+                                                        "color": "#3182bd",
                                                         "tooltip": "<b>Label:</b> TooltipEvent<br/><b>Weight:</b> 1701.0<br/><b>Value:</b> 1701.0"
                                                     },
                                                     {
@@ -20250,7 +20223,7 @@
                                                         "doubleValue": 1117,
                                                         "labelValue": "1117.0",
                                                         "label": "VisualizationEvent",
-                                                        "color": "#f60900",
+                                                        "color": "#3182bd",
                                                         "tooltip": "<b>Label:</b> VisualizationEvent<br/><b>Weight:</b> 1117.0<br/><b>Value:</b> 1117.0"
                                                     }
                                                 ]
@@ -20265,7 +20238,7 @@
                                                         "doubleValue": 20859,
                                                         "labelValue": "20859.0",
                                                         "label": "Legend",
-                                                        "color": "#27d800",
+                                                        "color": "#6baed6",
                                                         "tooltip": "<b>Label:</b> Legend<br/><b>Weight:</b> 20859.0<br/><b>Value:</b> 20859.0"
                                                     },
                                                     {
@@ -20274,7 +20247,7 @@
                                                         "doubleValue": 4614,
                                                         "labelValue": "4614.0",
                                                         "label": "LegendItem",
-                                                        "color": "#d12e00",
+                                                        "color": "#6baed6",
                                                         "tooltip": "<b>Label:</b> LegendItem<br/><b>Weight:</b> 4614.0<br/><b>Value:</b> 4614.0"
                                                     },
                                                     {
@@ -20283,7 +20256,7 @@
                                                         "doubleValue": 10530,
                                                         "labelValue": "10530.0",
                                                         "label": "LegendRange",
-                                                        "color": "#936c00",
+                                                        "color": "#6baed6",
                                                         "tooltip": "<b>Label:</b> LegendRange<br/><b>Weight:</b> 10530.0<br/><b>Value:</b> 10530.0"
                                                     }
                                                 ]
@@ -20302,7 +20275,7 @@
                                                                 "doubleValue": 4461,
                                                                 "labelValue": "4461.0",
                                                                 "label": "BifocalDistortion",
-                                                                "color": "#d32c00",
+                                                                "color": "#9ecae1",
                                                                 "tooltip": "<b>Label:</b> BifocalDistortion<br/><b>Weight:</b> 4461.0<br/><b>Value:</b> 4461.0"
                                                             },
                                                             {
@@ -20311,7 +20284,7 @@
                                                                 "doubleValue": 6314,
                                                                 "labelValue": "6314.0",
                                                                 "label": "Distortion",
-                                                                "color": "#c03f00",
+                                                                "color": "#9ecae1",
                                                                 "tooltip": "<b>Label:</b> Distortion<br/><b>Weight:</b> 6314.0<br/><b>Value:</b> 6314.0"
                                                             },
                                                             {
@@ -20320,7 +20293,7 @@
                                                                 "doubleValue": 3444,
                                                                 "labelValue": "3444.0",
                                                                 "label": "FisheyeDistortion",
-                                                                "color": "#de2100",
+                                                                "color": "#9ecae1",
                                                                 "tooltip": "<b>Label:</b> FisheyeDistortion<br/><b>Weight:</b> 3444.0<br/><b>Value:</b> 3444.0"
                                                             }
                                                         ]
@@ -20335,7 +20308,7 @@
                                                                 "doubleValue": 3179,
                                                                 "labelValue": "3179.0",
                                                                 "label": "ColorEncoder",
-                                                                "color": "#e01f00",
+                                                                "color": "#c6dbef",
                                                                 "tooltip": "<b>Label:</b> ColorEncoder<br/><b>Weight:</b> 3179.0<br/><b>Value:</b> 3179.0"
                                                             },
                                                             {
@@ -20344,7 +20317,7 @@
                                                                 "doubleValue": 4060,
                                                                 "labelValue": "4060.0",
                                                                 "label": "Encoder",
-                                                                "color": "#d72800",
+                                                                "color": "#c6dbef",
                                                                 "tooltip": "<b>Label:</b> Encoder<br/><b>Weight:</b> 4060.0<br/><b>Value:</b> 4060.0"
                                                             },
                                                             {
@@ -20353,7 +20326,7 @@
                                                                 "doubleValue": 4138,
                                                                 "labelValue": "4138.0",
                                                                 "label": "PropertyEncoder",
-                                                                "color": "#d62900",
+                                                                "color": "#c6dbef",
                                                                 "tooltip": "<b>Label:</b> PropertyEncoder<br/><b>Weight:</b> 4138.0<br/><b>Value:</b> 4138.0"
                                                             },
                                                             {
@@ -20362,7 +20335,7 @@
                                                                 "doubleValue": 1690,
                                                                 "labelValue": "1690.0",
                                                                 "label": "ShapeEncoder",
-                                                                "color": "#f00f00",
+                                                                "color": "#c6dbef",
                                                                 "tooltip": "<b>Label:</b> ShapeEncoder<br/><b>Weight:</b> 1690.0<br/><b>Value:</b> 1690.0"
                                                             },
                                                             {
@@ -20371,7 +20344,7 @@
                                                                 "doubleValue": 1830,
                                                                 "labelValue": "1830.0",
                                                                 "label": "SizeEncoder",
-                                                                "color": "#ef1000",
+                                                                "color": "#c6dbef",
                                                                 "tooltip": "<b>Label:</b> SizeEncoder<br/><b>Weight:</b> 1830.0<br/><b>Value:</b> 1830.0"
                                                             }
                                                         ]
@@ -20386,7 +20359,7 @@
                                                                 "doubleValue": 5219,
                                                                 "labelValue": "5219.0",
                                                                 "label": "FisheyeTreeFilter",
-                                                                "color": "#cb3400",
+                                                                "color": "#e6550d",
                                                                 "tooltip": "<b>Label:</b> FisheyeTreeFilter<br/><b>Weight:</b> 5219.0<br/><b>Value:</b> 5219.0"
                                                             },
                                                             {
@@ -20395,7 +20368,7 @@
                                                                 "doubleValue": 3165,
                                                                 "labelValue": "3165.0",
                                                                 "label": "GraphDistanceFilter",
-                                                                "color": "#e11e00",
+                                                                "color": "#e6550d",
                                                                 "tooltip": "<b>Label:</b> GraphDistanceFilter<br/><b>Weight:</b> 3165.0<br/><b>Value:</b> 3165.0"
                                                             },
                                                             {
@@ -20404,7 +20377,7 @@
                                                                 "doubleValue": 3509,
                                                                 "labelValue": "3509.0",
                                                                 "label": "VisibilityFilter",
-                                                                "color": "#dd2200",
+                                                                "color": "#e6550d",
                                                                 "tooltip": "<b>Label:</b> VisibilityFilter<br/><b>Weight:</b> 3509.0<br/><b>Value:</b> 3509.0"
                                                             }
                                                         ]
@@ -20415,7 +20388,7 @@
                                                         "doubleValue": 1286,
                                                         "labelValue": "1286.0",
                                                         "label": "IOperator",
-                                                        "color": "#f40b00",
+                                                        "color": "#fd8d3c",
                                                         "tooltip": "<b>Label:</b> IOperator<br/><b>Weight:</b> 1286.0<br/><b>Value:</b> 1286.0"
                                                     },
                                                     {
@@ -20428,7 +20401,7 @@
                                                                 "doubleValue": 9956,
                                                                 "labelValue": "9956.0",
                                                                 "label": "Labeler",
-                                                                "color": "#996600",
+                                                                "color": "#fdae6b",
                                                                 "tooltip": "<b>Label:</b> Labeler<br/><b>Weight:</b> 9956.0<br/><b>Value:</b> 9956.0"
                                                             },
                                                             {
@@ -20437,7 +20410,7 @@
                                                                 "doubleValue": 3899,
                                                                 "labelValue": "3899.0",
                                                                 "label": "RadialLabeler",
-                                                                "color": "#d92600",
+                                                                "color": "#fdae6b",
                                                                 "tooltip": "<b>Label:</b> RadialLabeler<br/><b>Weight:</b> 3899.0<br/><b>Value:</b> 3899.0"
                                                             },
                                                             {
@@ -20446,7 +20419,7 @@
                                                                 "doubleValue": 3202,
                                                                 "labelValue": "3202.0",
                                                                 "label": "StackedAreaLabeler",
-                                                                "color": "#e01f00",
+                                                                "color": "#fdae6b",
                                                                 "tooltip": "<b>Label:</b> StackedAreaLabeler<br/><b>Weight:</b> 3202.0<br/><b>Value:</b> 3202.0"
                                                             }
                                                         ]
@@ -20461,7 +20434,7 @@
                                                                 "doubleValue": 6725,
                                                                 "labelValue": "6725.0",
                                                                 "label": "AxisLayout",
-                                                                "color": "#bb4400",
+                                                                "color": "#fdd0a2",
                                                                 "tooltip": "<b>Label:</b> AxisLayout<br/><b>Weight:</b> 6725.0<br/><b>Value:</b> 6725.0"
                                                             },
                                                             {
@@ -20470,7 +20443,7 @@
                                                                 "doubleValue": 3727,
                                                                 "labelValue": "3727.0",
                                                                 "label": "BundledEdgeRouter",
-                                                                "color": "#db2400",
+                                                                "color": "#fdd0a2",
                                                                 "tooltip": "<b>Label:</b> BundledEdgeRouter<br/><b>Weight:</b> 3727.0<br/><b>Value:</b> 3727.0"
                                                             },
                                                             {
@@ -20479,7 +20452,7 @@
                                                                 "doubleValue": 9317,
                                                                 "labelValue": "9317.0",
                                                                 "label": "CircleLayout",
-                                                                "color": "#a05f00",
+                                                                "color": "#fdd0a2",
                                                                 "tooltip": "<b>Label:</b> CircleLayout<br/><b>Weight:</b> 9317.0<br/><b>Value:</b> 9317.0"
                                                             },
                                                             {
@@ -20488,7 +20461,7 @@
                                                                 "doubleValue": 12003,
                                                                 "labelValue": "12003.0",
                                                                 "label": "CirclePackingLayout",
-                                                                "color": "#847b00",
+                                                                "color": "#fdd0a2",
                                                                 "tooltip": "<b>Label:</b> CirclePackingLayout<br/><b>Weight:</b> 12003.0<br/><b>Value:</b> 12003.0"
                                                             },
                                                             {
@@ -20497,7 +20470,7 @@
                                                                 "doubleValue": 4853,
                                                                 "labelValue": "4853.0",
                                                                 "label": "DendrogramLayout",
-                                                                "color": "#cf3000",
+                                                                "color": "#fdd0a2",
                                                                 "tooltip": "<b>Label:</b> DendrogramLayout<br/><b>Weight:</b> 4853.0<br/><b>Value:</b> 4853.0"
                                                             },
                                                             {
@@ -20506,7 +20479,7 @@
                                                                 "doubleValue": 8411,
                                                                 "labelValue": "8411.0",
                                                                 "label": "ForceDirectedLayout",
-                                                                "color": "#aa5500",
+                                                                "color": "#fdd0a2",
                                                                 "tooltip": "<b>Label:</b> ForceDirectedLayout<br/><b>Weight:</b> 8411.0<br/><b>Value:</b> 8411.0"
                                                             },
                                                             {
@@ -20515,7 +20488,7 @@
                                                                 "doubleValue": 4864,
                                                                 "labelValue": "4864.0",
                                                                 "label": "IcicleTreeLayout",
-                                                                "color": "#cf3000",
+                                                                "color": "#fdd0a2",
                                                                 "tooltip": "<b>Label:</b> IcicleTreeLayout<br/><b>Weight:</b> 4864.0<br/><b>Value:</b> 4864.0"
                                                             },
                                                             {
@@ -20524,7 +20497,7 @@
                                                                 "doubleValue": 3174,
                                                                 "labelValue": "3174.0",
                                                                 "label": "IndentedTreeLayout",
-                                                                "color": "#e01f00",
+                                                                "color": "#fdd0a2",
                                                                 "tooltip": "<b>Label:</b> IndentedTreeLayout<br/><b>Weight:</b> 3174.0<br/><b>Value:</b> 3174.0"
                                                             },
                                                             {
@@ -20533,7 +20506,7 @@
                                                                 "doubleValue": 7881,
                                                                 "labelValue": "7881.0",
                                                                 "label": "Layout",
-                                                                "color": "#af5000",
+                                                                "color": "#fdd0a2",
                                                                 "tooltip": "<b>Label:</b> Layout<br/><b>Weight:</b> 7881.0<br/><b>Value:</b> 7881.0"
                                                             },
                                                             {
@@ -20542,7 +20515,7 @@
                                                                 "doubleValue": 12870,
                                                                 "labelValue": "12870.0",
                                                                 "label": "NodeLinkTreeLayout",
-                                                                "color": "#7b8400",
+                                                                "color": "#fdd0a2",
                                                                 "tooltip": "<b>Label:</b> NodeLinkTreeLayout<br/><b>Weight:</b> 12870.0<br/><b>Value:</b> 12870.0"
                                                             },
                                                             {
@@ -20551,7 +20524,7 @@
                                                                 "doubleValue": 2728,
                                                                 "labelValue": "2728.0",
                                                                 "label": "PieLayout",
-                                                                "color": "#e51a00",
+                                                                "color": "#fdd0a2",
                                                                 "tooltip": "<b>Label:</b> PieLayout<br/><b>Weight:</b> 2728.0<br/><b>Value:</b> 2728.0"
                                                             },
                                                             {
@@ -20560,7 +20533,7 @@
                                                                 "doubleValue": 12348,
                                                                 "labelValue": "12348.0",
                                                                 "label": "RadialTreeLayout",
-                                                                "color": "#807f00",
+                                                                "color": "#fdd0a2",
                                                                 "tooltip": "<b>Label:</b> RadialTreeLayout<br/><b>Weight:</b> 12348.0<br/><b>Value:</b> 12348.0"
                                                             },
                                                             {
@@ -20569,7 +20542,7 @@
                                                                 "doubleValue": 870,
                                                                 "labelValue": "870.0",
                                                                 "label": "RandomLayout",
-                                                                "color": "#f90600",
+                                                                "color": "#fdd0a2",
                                                                 "tooltip": "<b>Label:</b> RandomLayout<br/><b>Weight:</b> 870.0<br/><b>Value:</b> 870.0"
                                                             },
                                                             {
@@ -20578,7 +20551,7 @@
                                                                 "doubleValue": 9121,
                                                                 "labelValue": "9121.0",
                                                                 "label": "StackedAreaLayout",
-                                                                "color": "#a25d00",
+                                                                "color": "#fdd0a2",
                                                                 "tooltip": "<b>Label:</b> StackedAreaLayout<br/><b>Weight:</b> 9121.0<br/><b>Value:</b> 9121.0"
                                                             },
                                                             {
@@ -20587,7 +20560,7 @@
                                                                 "doubleValue": 9191,
                                                                 "labelValue": "9191.0",
                                                                 "label": "TreeMapLayout",
-                                                                "color": "#a15e00",
+                                                                "color": "#fdd0a2",
                                                                 "tooltip": "<b>Label:</b> TreeMapLayout<br/><b>Weight:</b> 9191.0<br/><b>Value:</b> 9191.0"
                                                             }
                                                         ]
@@ -20598,7 +20571,7 @@
                                                         "doubleValue": 2490,
                                                         "labelValue": "2490.0",
                                                         "label": "Operator",
-                                                        "color": "#e81700",
+                                                        "color": "#fd8d3c",
                                                         "tooltip": "<b>Label:</b> Operator<br/><b>Weight:</b> 2490.0<br/><b>Value:</b> 2490.0"
                                                     },
                                                     {
@@ -20607,7 +20580,7 @@
                                                         "doubleValue": 5248,
                                                         "labelValue": "5248.0",
                                                         "label": "OperatorList",
-                                                        "color": "#cb3400",
+                                                        "color": "#fd8d3c",
                                                         "tooltip": "<b>Label:</b> OperatorList<br/><b>Weight:</b> 5248.0<br/><b>Value:</b> 5248.0"
                                                     },
                                                     {
@@ -20616,7 +20589,7 @@
                                                         "doubleValue": 4190,
                                                         "labelValue": "4190.0",
                                                         "label": "OperatorSequence",
-                                                        "color": "#d62900",
+                                                        "color": "#fd8d3c",
                                                         "tooltip": "<b>Label:</b> OperatorSequence<br/><b>Weight:</b> 4190.0<br/><b>Value:</b> 4190.0"
                                                     },
                                                     {
@@ -20625,7 +20598,7 @@
                                                         "doubleValue": 2581,
                                                         "labelValue": "2581.0",
                                                         "label": "OperatorSwitch",
-                                                        "color": "#e71800",
+                                                        "color": "#fd8d3c",
                                                         "tooltip": "<b>Label:</b> OperatorSwitch<br/><b>Weight:</b> 2581.0<br/><b>Value:</b> 2581.0"
                                                     },
                                                     {
@@ -20634,7 +20607,7 @@
                                                         "doubleValue": 2023,
                                                         "labelValue": "2023.0",
                                                         "label": "SortOperator",
-                                                        "color": "#ed1200",
+                                                        "color": "#fd8d3c",
                                                         "tooltip": "<b>Label:</b> SortOperator<br/><b>Weight:</b> 2023.0<br/><b>Value:</b> 2023.0"
                                                     }
                                                 ]
@@ -20645,7 +20618,7 @@
                                                 "doubleValue": 16540,
                                                 "labelValue": "16540.0",
                                                 "label": "Visualization",
-                                                "color": "#54ab00",
+                                                "color": "#31a354",
                                                 "tooltip": "<b>Label:</b> Visualization<br/><b>Weight:</b> 16540.0<br/><b>Value:</b> 16540.0"
                                             }
                                         ]
@@ -20658,12 +20631,12 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "f1b9dbcb-fab1-478e-99f9-1f9d07feb4a6",
-                "elapsedTime": 640,
+                "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
+                "elapsedTime": 743,
                 "height": 669
             },
             "evaluatorReader": true,
-            "lineCount": 10
+            "lineCount": 35
         }
     ],
     "namespace": {

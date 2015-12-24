@@ -31,7 +31,7 @@ import org.cometd.annotation.ServerAnnotationProcessor;
 import org.cometd.annotation.Service;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.server.BayeuxServerImpl;
-import org.cometd.server.JacksonJSONContextServer;
+import org.cometd.server.Jackson1JSONContextServer;
 import org.cometd.websocket.server.WebSocketTransport;
 
 // Should load from cometd-contrib
@@ -113,7 +113,7 @@ public class GuiceCometdModule extends AbstractModule {
     
     server.addTransport(new BkWebSocketTransport(server));
 
-    server.setOption(BayeuxServerImpl.JSON_CONTEXT, new JacksonJSONContextServer() {
+    server.setOption("jsonContext", new Jackson1JSONContextServer() {
       @Override
       public ObjectMapper getObjectMapper() {
         return om;

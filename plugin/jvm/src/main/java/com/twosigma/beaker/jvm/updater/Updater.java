@@ -34,6 +34,6 @@ public abstract class Updater {
   }
 
   final protected void deliverUpdate(Object update) {
-    this.session.deliver(this.localSession, this.channelId, update, null);
+    this.session.deliver(this.localSession, this.channelId, update);
   }
 }

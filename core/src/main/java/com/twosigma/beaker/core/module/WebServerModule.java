@@ -30,10 +30,9 @@ import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
-import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
@@ -44,16 +43,6 @@ public class WebServerModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(OwnerFilter.class);
-  }
-
-  @Provides
-  @Singleton
-  Connector getConnector(final Injector injector) {
-    final Connector conn = new SelectChannelConnector();
-    WebServerConfig webAppConfig = injector.getInstance(WebServerConfig.class);
-    conn.setPort(webAppConfig.getPort());
-    conn.setHost("127.0.0.1");
-    return conn;
   }
 
   private SecurityHandler makeSecurityHandler(String password) {
@@ -76,11 +65,14 @@ public class WebServerModule extends AbstractModule {
 
   @Provides
   @Singleton
-  public Server getServer(final Injector injector, Connector connector) {
+  public Server getServer(final Injector injector) {
     WebServerConfig webServerConfig = injector.getInstance(WebServerConfig.class);
     String staticDir = webServerConfig.getStaticDirectory();
     Server server = new Server();
-    server.addConnector(connector);
+    final ServerConnector conn = new ServerConnector(server, new HttpConnectionFactory());
+    WebServerConfig webAppConfig = injector.getInstance(WebServerConfig.class);
+    conn.setPort(webAppConfig.getPort());
+    conn.setHost("127.0.0.1");
     ServletContextHandler servletHandler = new ServletContextHandler();
     servletHandler.addEventListener(new GuiceServletContextListener() {
       @Override
@@ -91,7 +83,7 @@ public class WebServerModule extends AbstractModule {
 
     servletHandler.setSecurityHandler(makeSecurityHandler(webServerConfig.getPassword()));
     servletHandler.addFilter(GuiceFilter.class, "/*", null);
-    servletHandler.addServlet(DefaultServlet.class, "/*");
+    servletHandler.addServlet(org.eclipse.jetty.proxy.AsyncProxyServlet.class, "/*");
     servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", staticDir);
     servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
     servletHandler.setInitParameter("maxCacheSize", "0");

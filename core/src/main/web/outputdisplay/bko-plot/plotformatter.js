@@ -417,7 +417,8 @@
             rangeMin: model.range_min,
             rangeMax: model.range_max,
             displayMode: model.displayMode != null ? model.displayMode : 'OVERLAP',
-            rightClose: model.right_close
+            rightClose: model.right_close,
+            tips: model.tips ? model.tips : null
           };
         } else {
           newmodel = {
@@ -450,7 +451,8 @@
             rangeMin: model.range_min,
             rangeMax: model.range_max,
             displayMode: model.displayMode != null ? model.displayMode : 'OVERLAP',
-            rightClose: model.right_close
+            rightClose: model.right_close,
+            tips: model.tips ? model.tips : null
           };
         }
 

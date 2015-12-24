@@ -480,11 +480,17 @@
               scope.jqsvg.find("#" + d.id)
                 .attr("filter", "url(#svgfilter)");
             }
+
+            if (d.sticking == true){
+              scope.pinCloseIcon(d);
+            }
           });
         };
 
         scope.pinCloseIcon = function(d) {
           var tip = getTipElement(d);
+          if (tip.has("i").length > 0)
+            return;
           var closeIcon = $('<i/>', {class: 'fa fa-times'})
             .on('click', function() {
               delete scope.tips[d.id];
@@ -1727,6 +1733,11 @@
           state.visibleItem = scope.visibleItem;
           state.legendableItem = scope.legendableItem;
           state.defaultFocus = scope.defaultFocus;
+
+
+          state.tips = {};
+          $.extend(true, state.tips, scope.tips);
+
           return state;
         };
 
@@ -1753,6 +1764,8 @@
           if(scope.defaultFocus) {
             scope.fixFocus(scope.defaultFocus);
           }
+
+          $.extend(true, scope.tips, state.tips);
         };
 
         scope.initFlags = function() {
@@ -1779,7 +1792,12 @@
 
           // see if previous state can be applied
           scope.focus = {};
-          scope.tips = {};
+
+          if (!scope.model.getCellModel().tips) {
+            scope.model.getCellModel().tips = {};
+          }
+
+          scope.tips = scope.model.getCellModel().tips;
           scope.plotSize = {};
 
           _.extend(scope.plotSize, scope.stdmodel.plotSize);

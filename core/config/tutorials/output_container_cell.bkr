@@ -2156,8 +2156,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "d3431acf-d43f-458e-a726-2a830a4e402f",
-                "elapsedTime": 604,
+                "shellId": "e14bd21c-e1b1-4f0c-8508-84cc62001fff",
+                "elapsedTime": 585,
                 "height": 51,
                 "hidden": true
             },
@@ -4377,7 +4377,8 @@
                                     "x_lower_bound": 0,
                                     "x_upper_bound": 0,
                                     "log_x": false,
-                                    "x_log_base": 10
+                                    "x_log_base": 10,
+                                    "version": "groovy"
                                 },
                                 {
                                     "type": "TimePlot",
@@ -5464,7 +5465,8 @@
                                     "x_lower_bound": 0,
                                     "x_upper_bound": 0,
                                     "log_x": false,
-                                    "x_log_base": 10
+                                    "x_log_base": 10,
+                                    "version": "groovy"
                                 }
                             ],
                             "weights": [
@@ -7670,8 +7672,8 @@
                             "subtype": "ListOfMaps"
                         },
                         {
-                            "update_id": "711a5c90-b46b-4a2d-a30f-8415f7dac549",
-                            "update_time": 1450781121608,
+                            "update_id": "89a90969-d187-44c4-a266-c1c9b1e7737e",
+                            "update_time": 1450958917707,
                             "type": "EasyForm",
                             "caption": "Form and Run",
                             "components": [
@@ -7679,32 +7681,37 @@
                                     "type": "TextField",
                                     "label": "first",
                                     "enabled": true,
-                                    "value": "",
-                                    "width": "15"
+                                    "value": "setinit",
+                                    "width": "15",
+                                    "currentValue": "setinit"
                                 },
                                 {
                                     "type": "TextField",
                                     "label": "last",
                                     "enabled": true,
-                                    "value": "",
-                                    "width": "15"
+                                    "value": "setinit",
+                                    "width": "15",
+                                    "currentValue": "setinit"
                                 },
                                 {
                                     "type": "ButtonComponent",
                                     "label": "actionPerformed button",
-                                    "enabled": true,
+                                    "enabled": "Groovy",
                                     "value": ""
                                 }
                             ]
                         }
                     ],
-                    "layout": {}
+                    "layout": {
+                        "type": "SimpleLayoutManager",
+                        "borderDisplayed": false
+                    }
                 },
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "d3431acf-d43f-458e-a726-2a830a4e402f",
-                "elapsedTime": 645,
-                "height": 51
+                "shellId": "e14bd21c-e1b1-4f0c-8508-84cc62001fff",
+                "elapsedTime": 602,
+                "height": 2112
             },
             "evaluatorReader": true,
             "lineCount": 38
@@ -13213,8 +13220,8 @@
                             "subtype": "ListOfMaps"
                         },
                         {
-                            "update_id": "0d36543a-021e-42ba-b0a4-9fed9de1b1f2",
-                            "update_time": 1450351704724,
+                            "update_id": "319a6b3d-71da-48c9-8fa0-709e72f5d550",
+                            "update_time": 1450958920047,
                             "type": "EasyForm",
                             "caption": "Form and Run",
                             "components": [
@@ -13222,17 +13229,15 @@
                                     "type": "TextField",
                                     "label": "first",
                                     "enabled": true,
-                                    "value": "setinit",
-                                    "width": "15",
-                                    "currentValue": "setinit"
+                                    "value": "",
+                                    "width": "15"
                                 },
                                 {
                                     "type": "TextField",
                                     "label": "last",
                                     "enabled": true,
-                                    "value": "setinit",
-                                    "width": "15",
-                                    "currentValue": "setinit"
+                                    "value": "",
+                                    "width": "15"
                                 },
                                 {
                                     "type": "ButtonComponent",
@@ -13250,8 +13255,8 @@
                 },
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "13736cb0-5675-4191-923f-6d3a67bd2863",
-                "elapsedTime": 632,
+                "shellId": "e14bd21c-e1b1-4f0c-8508-84cc62001fff",
+                "elapsedTime": 578,
                 "height": 609
             },
             "evaluatorReader": true,
@@ -18773,8 +18778,8 @@
                             "subtype": "ListOfMaps"
                         },
                         {
-                            "update_id": "51a26a08-641d-4a9a-a09e-d387b6aaa9cc",
-                            "update_time": 1450351965584,
+                            "update_id": "f90066e9-f1c1-4850-910b-20d252dd3885",
+                            "update_time": 1450958920656,
                             "type": "EasyForm",
                             "caption": "Form and Run",
                             "components": [
@@ -18782,17 +18787,15 @@
                                     "type": "TextField",
                                     "label": "first",
                                     "enabled": true,
-                                    "value": "setinit",
-                                    "width": "15",
-                                    "currentValue": "setinit"
+                                    "value": "",
+                                    "width": "15"
                                 },
                                 {
                                     "type": "TextField",
                                     "label": "last",
                                     "enabled": true,
-                                    "value": "setinit",
-                                    "width": "15",
-                                    "currentValue": "setinit"
+                                    "value": "",
+                                    "width": "15"
                                 },
                                 {
                                     "type": "ButtonComponent",
@@ -18815,9 +18818,9 @@
                 },
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "13736cb0-5675-4191-923f-6d3a67bd2863",
-                "elapsedTime": 635,
-                "height": 51
+                "shellId": "e14bd21c-e1b1-4f0c-8508-84cc62001fff",
+                "elapsedTime": 573,
+                "height": 1336
             },
             "evaluatorReader": true,
             "lineCount": 54
@@ -24435,8 +24438,8 @@
                             "version": "groovy"
                         },
                         {
-                            "update_id": "85d5be19-0a44-40da-9f0c-1684eabcc20d",
-                            "update_time": 1450351774713,
+                            "update_id": "da49b54f-37b3-409f-b9e3-bc4c64ed250e",
+                            "update_time": 1450958921264,
                             "type": "EasyForm",
                             "caption": "Form and Run",
                             "components": [
@@ -24444,17 +24447,15 @@
                                     "type": "TextField",
                                     "label": "first",
                                     "enabled": true,
-                                    "value": "setinit",
-                                    "width": "15",
-                                    "currentValue": "setinit"
+                                    "value": "",
+                                    "width": "15"
                                 },
                                 {
                                     "type": "TextField",
                                     "label": "last",
                                     "enabled": true,
-                                    "value": "setinit",
-                                    "width": "15",
-                                    "currentValue": "setinit"
+                                    "value": "",
+                                    "width": "15"
                                 },
                                 {
                                     "type": "ButtonComponent",
@@ -24477,8 +24478,8 @@
                 },
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "13736cb0-5675-4191-923f-6d3a67bd2863",
-                "elapsedTime": 619,
+                "shellId": "e14bd21c-e1b1-4f0c-8508-84cc62001fff",
+                "elapsedTime": 570,
                 "height": 1749
             },
             "evaluatorReader": true,
@@ -24536,8 +24537,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "13736cb0-5675-4191-923f-6d3a67bd2863",
-                "elapsedTime": 651,
+                "shellId": "e14bd21c-e1b1-4f0c-8508-84cc62001fff",
+                "elapsedTime": 567,
                 "result": {
                     "type": "OutputContainerCell",
                     "labels": [
@@ -26835,8 +26836,8 @@
                             "subtype": "ListOfMaps"
                         },
                         {
-                            "update_id": "2845ec95-0ff1-46fe-9b1b-8f3dbf3c8717",
-                            "update_time": 1450351721236,
+                            "update_id": "5ce97730-3fe4-4d96-948a-38a21bf03d27",
+                            "update_time": 1450958921865,
                             "type": "EasyForm",
                             "caption": "Form and Run",
                             "components": [
@@ -26845,16 +26846,14 @@
                                     "label": "first",
                                     "enabled": true,
                                     "value": "setinit",
-                                    "width": "15",
-                                    "currentValue": "setinit"
+                                    "width": "15"
                                 },
                                 {
                                     "type": "TextField",
                                     "label": "last",
                                     "enabled": true,
                                     "value": "setinit",
-                                    "width": "15",
-                                    "currentValue": "setinit"
+                                    "width": "15"
                                 },
                                 {
                                     "type": "ButtonComponent",
@@ -26871,7 +26870,7 @@
                         "period": 5000
                     }
                 },
-                "height": 776
+                "height": 231
             },
             "evaluatorReader": true,
             "lineCount": 32

@@ -17,12 +17,12 @@
 
 <ul class="nav nav-tabs">
   <li class="{{$index==0 ? 'active' : ''}}" ng-repeat="i in items track by $index">
-    <a href="#lm-tab-panel-{{$index}}" data-toggle="tab">{{hasName($index) ? getName($index): " "}}</a>
+    <a href="#lm-tab-panel-{{guid}}-{{$index}}" data-toggle="tab">{{hasName($index) ? getName($index): " "}}</a>
   </li>
 </ul>
 
 <div class="tab-content">
-  <div id="lm-tab-panel-{{$index}}" ng-style='borderStyle'
+  <div id="lm-tab-panel-{{guid}}-{{$index}}" ng-style='borderStyle'
        class="{{$index==0 ? 'tab-pane fade in active' : 'tab-pane fade'}}"
        ng-repeat="i in items track by $index">
     <bk-code-cell-output model="i"></bk-code-cell-output>

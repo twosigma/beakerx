@@ -19,7 +19,7 @@
 
   var module = angular.module('bk.notebook');
 
-  module.directive('tabbedOutputContainerLayout', ['$timeout', 'GLOBALS', function ($timeout, GLOBALS) {
+  module.directive('tabbedOutputContainerLayout', ['$timeout', 'GLOBALS', 'bkHelper', function ($timeout, GLOBALS, bkHelper) {
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/tabbedoutputcontainerlayout"](),
@@ -35,6 +35,8 @@
         });
       },
       controller: function ($scope) {
+        $scope.guid =  bkHelper.guid();
+
         $scope.borderStyle = {
           'border': $scope.model.getCellModel().layout.borderDisplayed ? 'solid 1px #CCC' : ''
         };

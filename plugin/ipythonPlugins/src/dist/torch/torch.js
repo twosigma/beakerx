@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 /**
- * Torch eval plugin
- * For creating and config evaluators that uses a IPython kernel for evaluating torch code
+ * Torch/Lua eval plugin
+ * For creating and config evaluators that uses a IPython kernel for evaluating torch/lua code
  * and updating code cell outputs.
  */
 define(function(require, exports, module) {
@@ -28,7 +28,7 @@ define(function(require, exports, module) {
   var gotError = false;
   var serviceBase = null;
   var ipyVersion = false;
-  var myPython = null;
+  var myTorch = null;
   var now = function() {
     return new Date().getTime();
   };
@@ -40,7 +40,7 @@ define(function(require, exports, module) {
       fgColor: "#000000",
       borderColor: "",
       shortName: "Lu",
-      indentSpaces: 4,
+      indentSpaces: 2,
       newShell: function(shellID, cb, ecb) {
 
         var kernel = null;
@@ -51,7 +51,7 @@ define(function(require, exports, module) {
           return;
         }
         if (_.isEmpty(shellID)) {
-          shellID = myPython.utils.uuid();
+          shellID = myTorch.utils.uuid();
         }
 
         var theCookies = document.cookie.split(';');
@@ -61,106 +61,67 @@ define(function(require, exports, module) {
             document.cookie = theCookie[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/";
           }
         }
-
-        var loadKernel = function(baseurl, kernelName){
-            if (ipyVersion == '1') {
-              self.kernel = new myPython.Kernel(baseurl + "/kernels/");
-              kernels[shellID] = self.kernel;
-              self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
-            } else {
-              // Required by ipython backend, but not used.
-              var model = (ipyVersion == '2') ?
-              {
-                notebook: {
-                  name: "fakename" + shellID,
-                  path: "/some/path" + shellID
-                }
-              } :
-              {
-                kernel: {
-                  id: shellID,
-                  name: kernelName
-                },
-                notebook: {path: "/fake/path" + shellID}
-              };
-              var fakeNotebook = {
-                events: {
-                  on: function () {
-                  },
-                  trigger: function () {
-                  }
-                }
-              };
-              var ajaxsettings = {
-                processData: false,
-                cache: false,
-                type: "POST",
-                data: JSON.stringify(model),
-                dataType: "json",
-                success: function (data, status, xhr) {
-                  self.kernel = (ipyVersion == '2') ?
-                    (new myPython.Kernel(baseurl + "/api/kernels")) :
-                    (new myPython.Kernel(baseurl + "/api/kernels",
-                      undefined,
-                      fakeNotebook,
-                      "fakename"));
-                  kernels[shellID] = self.kernel;
-                  // the data.id is the session id but it is not used yet
-                  if (ipyVersion == '2') {
-                    self.kernel._kernel_started({id: data.kernel.id});
-                  } else {
-                    self.kernel._kernel_created({id: data.kernel.id});
-                    self.kernel.running = true;
-                  }
-                }
-              };
-
-              var url = myPython.utils.url_join_encode(baseurl, 'api/sessions/');
-              $.ajax(url, ajaxsettings);
-            }
-        };
-
+        
         bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"),
-          {pluginId: PLUGIN_NAME}).success(function(result) {
-            bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/login")).then(function () {
-              bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2F"),
-                {password: result}).success(function(result) {
-                  var baseurl = bkHelper.serverUrl(serviceBase);
-                  var t = baseurl.indexOf('//');
-                  if (t >= 0) {
-                    baseurl = baseurl.substring(t+2);
-                    t = baseurl.indexOf('/');
-                    if (t >= 0) {
-                      baseurl = baseurl.substring(t);
+                         {pluginId: PLUGIN_NAME}).success(function(result) {
+                           bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/login")).then(function () {
+            bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2F"),
+                              {password: result}).success(function(result) {
+              var baseurl = bkHelper.serverUrl(serviceBase);
+              var t = baseurl.indexOf('//');
+              if (t >= 0) {
+                baseurl = baseurl.substring(t+2);
+                t = baseurl.indexOf('/');
+                if (t >= 0) {
+                  baseurl = baseurl.substring(t);
+                }
+              }
+              if (ipyVersion == '1') {
+                self.kernel = new myTorch.Kernel(baseurl + "/kernels/");
+                kernels[shellID] = self.kernel;
+                self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
+              } else {
+                // Required by ipython backend, but not used.
+                var model = (ipyVersion == '2') ?
+                  {notebook : {name : "fakename" + shellID,
+                               path : "/some/path" + shellID}} :
+                {kernel: {id: shellID,
+                          name: "iTorch"},
+                 notebook: {path: "/fake/path" + shellID}
+                };
+                var fakeNotebook = {
+                  events: {on: function (){},
+                           trigger: function (){}}
+                };
+                var ajaxsettings = {
+                  processData : false,
+                  cache: false,
+                  type: "POST",
+                  data: JSON.stringify(model),
+                  dataType: "json",
+                  success: function (data, status, xhr) {                   
+                    self.kernel = (ipyVersion == '2') ?
+                      (new myTorch.Kernel(baseurl+ "/api/kernels")) :
+                      (new myTorch.Kernel(baseurl+ "/api/kernels",
+                                           undefined,
+                                           fakeNotebook,
+                                           "fakename"));
+                    kernels[shellID] = self.kernel;
+                    // the data.id is the session id but it is not used yet
+                    if (ipyVersion == '2') {
+                      self.kernel._kernel_started({id: data.kernel.id});
+                    } else {
+                      self.kernel._kernel_created({id: data.kernel.id});
+                      self.kernel.running = true;
                     }
                   }
-                  if (ipyVersion == '2') {
-                    loadKernel(baseurl);
-                  } else {
-                    var torchDefaultKernel = 'iTorch';
-                    var url = myPython.utils.url_join_encode(baseurl, 'api/kernelspecs');
-                    $.ajax(url, {
-                      type: "GET",
-                      dataType: "json",
-                      success: function (kernelspecs, status, xhr) {
-                        var kernelNames = Object.keys(kernelspecs['kernelspecs']);
-                        var kernelsCount = kernelNames.length;
-                        for (var i = 0; i < kernelsCount; i++) {
-                          if (kernelNames[i].indexOf('iTorch') !== -1) {
-                            loadKernel(baseurl, kernelNames[i]);
-                            return;
-                          }
-                        }
-                        loadKernel(baseurl, torchDefaultKernel);
-                      },
-                      error: function () {
-                        loadKernel(baseurl, torchDefaultKernel);
-                      }
-                    });
-                  }
-                });
+                };
+                var url = myTorch.utils.url_join_encode(baseurl, 'api/sessions/');
+                $.ajax(url, ajaxsettings);
+              }
             });
           });
+        });
 
         // keepalive for the websockets
         var nil = function() {
@@ -185,8 +146,8 @@ define(function(require, exports, module) {
           } else if (now() < timeout) {
             setTimeout(spin, 100);
           } else {
-            console.error("TIMED OUT - waiting for torch kernel to start");
-            ecb("TIMED OUT - waiting for torch kernel to start");
+            console.error("TIMED OUT - waiting for itorch kernel to start");
+            ecb("TIMED OUT - waiting for itorch kernel to start");
           }
         };
         bkHelper.fcall(spin);
@@ -253,7 +214,7 @@ define(function(require, exports, module) {
             } else {
               text = payload.text;
             }
-            return myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(text));
+            return myTorch.utils.fixCarriageReturn(myTorch.utils.fixConsole(text));
           }).join("");
           if (finalStuff !== undefined) {
             if (msg.status === "error")
@@ -297,11 +258,11 @@ define(function(require, exports, module) {
           if ((ipyVersion == '3' || ipyVersion == '4') ? (type === "error") : (type === "pyerr")) {
             gotError = true;
             var trace = _.reduce(content.traceback, function(memo, line) {
-              return  memo + "<br>" + myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(line));
-            }, myPython.utils.fixConsole(content.evalue));
+              return  memo + "<br>" + myTorch.utils.fixCarriageReturn(myTorch.utils.fixConsole(line));
+            }, myTorch.utils.fixConsole(content.evalue));
 
             evaluation.payload = (content.ename === "KeyboardInterrupt") ?
-                "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
+                "Interrupted" : [myTorch.utils.fixConsole(content.evalue), trace];
             if (finalStuff !== undefined) {
               finalStuff.payload = evaluation.payload
             }
@@ -314,21 +275,48 @@ define(function(require, exports, module) {
                 value: text});
           } else {
             var jsonres;
-            if(content.data && content.data['application/json'] !== undefined) {
+            if (content.data && content.data['application/json'] !== undefined) {
               jsonres = JSON.parse(content.data['application/json']);
             }
             if (jsonres !== undefined && _.isObject(jsonres) && jsonres.type !== undefined) {
+              if (finalStuff !== undefined && finalStuff.payload !== undefined) {
+                // if we already received an output we should append this output to it
+                var temp = finalStuff.payload;
+                if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
+                  temp.items.push(jsonres);
+                  jsonres = temp;
+                } else {
+                  var temp2 = { 'type' : 'OutputContainer', 'psubtype': 'OutputContainer', 'items' : []};
+                  temp2.items.push(temp);
+                  temp2.items.push(jsonres);
+                  jsonres = temp2;
+                }
+              }
               evaluation.payload = jsonres;
               if (finalStuff !== undefined) {
+                finalStuff.payload = jsonres;
                 finalStuff.payload = evaluation.payload;
               }
             } else {
+              if (finalStuff !== undefined && finalStuff.jsonres !== undefined) {
+                // if we already received an output we should append this output to it
+                var temp = finalStuff.jsonres;
+                if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
+                  temp.items.push(jsonres);
+                  jsonres = temp;
+                } else {
+                  var temp2 = { 'type' : 'OutputContainer', 'psubtype': 'OutputContainer', 'items' : []};
+                  temp2.items.push(temp);
+                  temp2.items.push(jsonres);
+                  jsonres = temp2;
+                }
+              }
               evaluation.jsonres = jsonres;
               var elem = $(document.createElement("div"));
               var oa = (ipyVersion == '3' || ipyVersion == '4') ?
-                  (new myPython.OutputArea({events: {trigger: function(){}},
+                  (new myTorch.OutputArea({events: {trigger: function(){}},
                     keyboard_manager: {register_events: function(){}}})) :
-                      (new myPython.OutputArea(elem));
+                      (new myTorch.OutputArea(elem));
                   // twiddle the mime types? XXX
                   if (ipyVersion == '1') {
                     oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
@@ -337,14 +325,25 @@ define(function(require, exports, module) {
                   } else {
                     oa.append_mime_type(content, elem);
                   }
-                  evaluation.payload = elem.html();
+                  var payload = elem.html();
+                  if (finalStuff !== undefined && finalStuff.payload !== undefined) {
+                    // if we already received an output we should append this output to it
+                    var temp = finalStuff.payload;
+                    if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
+                      temp.items.push(payload);
+                      payload = temp;
+                    } else {
+                      var temp2 = { 'type' : 'OutputContainer', 'psubtype': 'OutputContainer', 'items' : []};
+                      temp2.items.push(temp);
+                      temp2.items.push(payload);
+                      payload = temp2;
+                    }
+                  }
+                  evaluation.payload = payload;
                   if (finalStuff !== undefined) {
                     finalStuff.payload = evaluation.payload;
                     finalStuff.jsonres = evaluation.jsonres;
                   }
-            }
-            if (finalStuff !== undefined) {
-              finalStuff.payload = evaluation.payload;
             }
           }
           if (finalStuff === undefined) {            
@@ -379,6 +378,20 @@ define(function(require, exports, module) {
           });
         }
       },
+      showDocs: function(code, cpos, cb) {
+        var kernel = kernels[this.settings.shellID];
+        if (ipyVersion == '1') {
+          //no method to show docs
+        } else if (ipyVersion == '2') {
+          //no method to show docs
+        } else {
+          kernel.inspect(code, cpos, function(reply) {
+            cb({
+              ansiHtml: reply.content.data['text/plain']
+            });
+          });
+        }
+      },
       exit: function(cb) {
         this.cancelExecution();
         _theCancelFunction = null;
@@ -398,7 +411,10 @@ define(function(require, exports, module) {
         }
       },
       initCode: function() {
-        return this.settings.setup + "\n";
+        return ("package.path = package.path .. ';' .. os.getenv('beaker_torch_init') .. '/?.lua'\n" +
+		"beaker = require 'beaker'\n" +
+		"beaker.setSession('" + bkHelper.getSessionId() + "')\n" +
+		this.settings.setup + "\n");
       },
       reset: function() {
         var kernel = kernels[this.settings.shellID];
@@ -444,7 +460,7 @@ define(function(require, exports, module) {
         require('ipython3_utils');
         require('ipython3_outputarea');
       }
-      myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : IPython);
+      myTorch = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : IPython);
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
         nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2"
@@ -464,7 +480,10 @@ define(function(require, exports, module) {
                   if (doneCB) {
                     doneCB(self);
                   }}, function(err) {
-                    bkHelper.show1ButtonModal('ERROR: '+err[0],'torch initialization failed');
+                    var errorHtml =
+                      'See <a target="_blank" href="https://github.com/twosigma/beaker-notebook/wiki/Python-Mismatch-Errors">our wiki</a> for how to handle this.';
+                    bkHelper.show1ButtonModal('ERROR: '+err[0].replace('_beaker_python_mismatch_', errorHtml),
+                                              'Torch initialization failed');
                     if (doneCB) {
                       doneCB(self);
                     }});
@@ -510,7 +529,7 @@ define(function(require, exports, module) {
       });
     };
     var onFail = function() {
-      console.log("failed to load ipython libs");
+      console.log("failed to load itorch libs");
     };
 
     bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonVersion"),
@@ -518,7 +537,7 @@ define(function(require, exports, module) {
         .success(function(result) {
           var backendVersion = result;
           ipyVersion = backendVersion[0];
-          console.log("Using ipython compatibility mode: " + ipyVersion);
+          console.log("Using itorch compatibility mode: " + ipyVersion);
           if (ipyVersion == '1') {
             bkHelper.loadList([bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython/namespace.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython/utils.js"),

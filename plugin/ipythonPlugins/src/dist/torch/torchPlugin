@@ -38,6 +38,7 @@ if len(sys.argv) > 1:
                   "--ipython-dir=" + sys.argv[2])
 
 plugin_dir = os.path.dirname(sys.argv[0])
+os.environ['beaker_torch_init'] = plugin_dir
 if os.name == 'nt':
     subprocess.call(["python", plugin_dir+"/torchPluginStart.py"], shell=True)
 else:

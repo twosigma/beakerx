@@ -41,6 +41,13 @@ function beaker.get (var)
 end
 
 function beaker.set4 (var, val, unset, sync)
+  args = {name = var, session = beaker.sessionId, sync = sync}
+  if not unset then
+    args.value = json.encode(val)
+  end
+  reply = curl.post({url = 'http://' .. coreUrl .. '/rest/namespace/set',
+                     auth = coreAuth, form = args})
+  return reply
 end
 
 function beaker.set (var, val)

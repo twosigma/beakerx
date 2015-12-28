@@ -40,6 +40,8 @@ function beaker.get (var)
   return reply.value
 end
 
+# this does not work because this curl interface uses -F (multipart/form-data)
+# but our server needs -d (application/x-www-form-urlencoded).  use a different one.
 function beaker.set4 (var, val, unset, sync)
   args = {name = var, session = beaker.sessionId, sync = sync}
   if not unset then

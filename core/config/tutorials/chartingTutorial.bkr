@@ -40,7 +40,7 @@
                     "background": "#E0FFE0"
                 }
             },
-            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap"
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*"
         }
     ],
     "cells": [
@@ -2146,11 +2146,54 @@
                     "subtype": "ListOfMaps"
                 },
                 "selectedType": "Table",
-                "elapsedTime": 670,
-                "state": {},
+                "elapsedTime": 695,
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": false,
+                            "fixRight": false
+                        },
+                        "columnNames": [
+                            "time",
+                            "open",
+                            "close",
+                            "high",
+                            "low",
+                            "volume"
+                        ],
+                        "actualalign": [
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
                 "hidden": true,
                 "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "height": 34
             },
             "evaluatorReader": true,
             "lineCount": 23,
@@ -2194,10 +2237,15 @@
                             "init_width": 640,
                             "init_height": 480,
                             "chart_title": null,
-                            "domain_axis_label": "Time",
-                            "y_label": "Price",
                             "show_legend": true,
                             "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": "Time",
+                            "y_label": "Price",
                             "rangeAxes": [
                                 {
                                     "type": "YAxis",
@@ -2228,15 +2276,9 @@
                                 "style": "DOT",
                                 "width": 2
                             },
-                            "legend_position": {
-                                "type": "LegendPosition",
-                                "position": "TOP_RIGHT"
-                            },
                             "omit_checkboxes": false,
-                            "legend_layout": "VERTICAL",
                             "graphics_list": [
                                 {
-                                    "type": "Line",
                                     "x": [
                                         1199232000000,
                                         1199318400000,
@@ -2749,12 +2791,12 @@
                                     ],
                                     "visible": true,
                                     "display_name": "Low Price",
+                                    "yAxis": null,
+                                    "type": "Line",
                                     "color": "#FF21578D",
-                                    "width": 1.5,
-                                    "yAxis": null
+                                    "width": 1.5
                                 },
                                 {
-                                    "type": "Line",
                                     "x": [
                                         1199232000000,
                                         1199318400000,
@@ -3267,12 +3309,12 @@
                                     ],
                                     "visible": true,
                                     "display_name": "High Price",
+                                    "yAxis": null,
+                                    "type": "Line",
                                     "color": "#FF8C1D17",
-                                    "width": 1.5,
-                                    "yAxis": null
+                                    "width": 1.5
                                 },
                                 {
-                                    "type": "Points",
                                     "x": [
                                         1199232000000,
                                         1199318400000,
@@ -3785,15 +3827,15 @@
                                     ],
                                     "visible": true,
                                     "display_name": "Low Price",
+                                    "yAxis": null,
+                                    "type": "Points",
                                     "size": 6,
                                     "shape": "DEFAULT",
                                     "fill": null,
                                     "color": "#FF21578D",
-                                    "outline_color": null,
-                                    "yAxis": null
+                                    "outline_color": null
                                 },
                                 {
-                                    "type": "Points",
                                     "x": [
                                         1199232000000,
                                         1199318400000,
@@ -4306,12 +4348,13 @@
                                     ],
                                     "visible": true,
                                     "display_name": "High Price",
+                                    "yAxis": null,
+                                    "type": "Points",
                                     "size": 6,
                                     "shape": "DEFAULT",
                                     "fill": null,
                                     "color": "#FF8C1D17",
-                                    "outline_color": null,
-                                    "yAxis": null
+                                    "outline_color": null
                                 }
                             ],
                             "constant_lines": [],
@@ -4329,16 +4372,21 @@
                             "init_width": 640,
                             "init_height": 480,
                             "chart_title": null,
-                            "domain_axis_label": null,
-                            "y_label": "Volume",
                             "show_legend": false,
                             "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": null,
+                            "y_label": "Volume",
                             "rangeAxes": [
                                 {
                                     "type": "YAxis",
                                     "label": "Volume",
                                     "auto_range": true,
-                                    "auto_range_includes_zero": false,
+                                    "auto_range_includes_zero": true,
                                     "lower_margin": 0.05,
                                     "upper_margin": 0.05,
                                     "lower_bound": 0,
@@ -4350,7 +4398,7 @@
                             "x_lower_margin": 0.05,
                             "x_upper_margin": 0.05,
                             "y_auto_range": true,
-                            "y_auto_range_includes_zero": false,
+                            "y_auto_range_includes_zero": true,
                             "y_lower_margin": 0.05,
                             "y_upper_margin": 0.05,
                             "y_lower_bound": 0,
@@ -4358,15 +4406,9 @@
                             "log_y": false,
                             "timezone": null,
                             "crosshair": null,
-                            "legend_position": {
-                                "type": "LegendPosition",
-                                "position": "TOP_RIGHT"
-                            },
                             "omit_checkboxes": false,
-                            "legend_layout": "VERTICAL",
                             "graphics_list": [
                                 {
-                                    "type": "Area",
                                     "x": [
                                         1199232000000,
                                         1199318400000,
@@ -4879,12 +4921,12 @@
                                     ],
                                     "visible": true,
                                     "display_name": "Volume",
+                                    "yAxis": null,
+                                    "type": "Area",
                                     "color": "#80FF9900",
-                                    "base": 0,
-                                    "yAxis": null
+                                    "base": 0
                                 },
                                 {
-                                    "type": "Line",
                                     "x": [
                                         1199232000000,
                                         1199318400000,
@@ -5397,9 +5439,10 @@
                                     ],
                                     "visible": true,
                                     "display_name": "",
+                                    "yAxis": null,
+                                    "type": "Line",
                                     "color": "#FF808080",
-                                    "width": 1.5,
-                                    "yAxis": null
+                                    "width": 1.5
                                 }
                             ],
                             "constant_lines": [],
@@ -5420,10 +5463,118 @@
                     "version": "groovy"
                 },
                 "selectedType": "CombinedPlot",
-                "elapsedTime": 646,
-                "state": {},
+                "elapsedTime": 669,
+                "state": {
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762
+                    },
+                    "subplots": [
+                        {
+                            "showAllItems": true,
+                            "plotSize": {
+                                "width": 800,
+                                "height": 268
+                            },
+                            "focus": {
+                                "xl": 0.4738095238095238,
+                                "xr": 0.5261904761904762,
+                                "yl": 0.4738095238095238,
+                                "yr": 0.5261904761904761,
+                                "xspan": 0.05238095238095242,
+                                "yspan": 0.052380952380952306
+                            },
+                            "lodOn": [
+                                null,
+                                null,
+                                null,
+                                null
+                            ],
+                            "lodType": [
+                                null,
+                                null,
+                                null,
+                                null
+                            ],
+                            "lodAuto": [
+                                null,
+                                null,
+                                null,
+                                null
+                            ],
+                            "zoomHash": [
+                                null,
+                                null,
+                                null,
+                                null
+                            ],
+                            "showItem": [
+                                true,
+                                true,
+                                true,
+                                true
+                            ],
+                            "visibleItem": 4,
+                            "legendableItem": 4,
+                            "defaultFocus": {
+                                "xl": 0.4738095238095238,
+                                "xr": 0.5261904761904762,
+                                "yl": 0.4738095238095238,
+                                "yr": 0.5261904761904761,
+                                "xspan": 0.05238095238095242,
+                                "yspan": 0.052380952380952306
+                            }
+                        },
+                        {
+                            "showAllItems": true,
+                            "plotSize": {
+                                "width": 800,
+                                "height": 212
+                            },
+                            "focus": {
+                                "xl": 0.4738095238095238,
+                                "xr": 0.5261904761904762,
+                                "yl": 0.4738095238095238,
+                                "yr": 0.5261904761904761,
+                                "xspan": 0.05238095238095242,
+                                "yspan": 0.052380952380952306
+                            },
+                            "lodOn": [
+                                null,
+                                null
+                            ],
+                            "lodType": [
+                                null,
+                                null
+                            ],
+                            "lodAuto": [
+                                null,
+                                null
+                            ],
+                            "zoomHash": [
+                                null,
+                                null
+                            ],
+                            "showItem": [
+                                true,
+                                true
+                            ],
+                            "visibleItem": 2,
+                            "legendableItem": 1,
+                            "defaultFocus": {
+                                "xl": 0.4738095238095238,
+                                "xr": 0.5261904761904762,
+                                "yl": 0.4738095238095238,
+                                "yr": 0.5261904761904761,
+                                "xspan": 0.05238095238095242,
+                                "yspan": 0.052380952380952306
+                            }
+                        }
+                    ]
+                },
                 "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "height": 534
             },
             "evaluatorReader": true,
             "lineCount": 16
@@ -5439,16 +5590,65 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904761,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.052380952380952306
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904761,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.052380952380952306
+                    }
+                },
                 "result": {
                     "type": "TimePlot",
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": null,
-                    "domain_axis_label": "Time",
-                    "y_label": "",
                     "show_legend": true,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": "Time",
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -5474,15 +5674,9 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Line",
                             "x": [
                                 1199232000000,
                                 1199318400000,
@@ -5995,12 +6189,12 @@
                             ],
                             "visible": true,
                             "display_name": "low",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FF21578D",
-                            "width": 1.5,
-                            "yAxis": null
+                            "width": 1.5
                         },
                         {
-                            "type": "Line",
                             "x": [
                                 1199232000000,
                                 1199318400000,
@@ -6513,9 +6707,10 @@
                             ],
                             "visible": true,
                             "display_name": "high",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FF8C1D17",
-                            "width": 1.5,
-                            "yAxis": null
+                            "width": 1.5
                         }
                     ],
                     "constant_lines": [],
@@ -6526,11 +6721,12 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10
-                    },
+                },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412",
-                "elapsedTime": 651
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "elapsedTime": 664,
+                "height": 502
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -6611,10 +6807,15 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": null,
-                    "domain_axis_label": null,
-                    "y_label": "",
                     "show_legend": null,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -6640,15 +6841,9 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Line",
                             "x": [
                                 1000,
                                 10000
@@ -6659,12 +6854,12 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FFFFC800",
-                            "width": 10,
-                            "yAxis": null
+                            "width": 10
                         },
                         {
-                            "type": "Line",
                             "x": [
                                 5500,
                                 5500
@@ -6675,12 +6870,12 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FFFFC800",
-                            "width": 10,
-                            "yAxis": null
+                            "width": 10
                         },
                         {
-                            "type": "Line",
                             "x": [
                                 14000,
                                 14000,
@@ -6693,12 +6888,12 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FF0000FF",
-                            "width": 1,
-                            "yAxis": null
+                            "width": 1
                         },
                         {
-                            "type": "Line",
                             "x": [
                                 14000,
                                 15002,
@@ -6711,12 +6906,12 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FF0000FF",
-                            "width": 1,
-                            "yAxis": null
+                            "width": 1
                         },
                         {
-                            "type": "Line",
                             "x": [
                                 14000,
                                 15002
@@ -6727,9 +6922,10 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FF0000FF",
-                            "width": 1,
-                            "yAxis": null
+                            "width": 1
                         }
                     ],
                     "constant_lines": [],
@@ -6742,11 +6938,71 @@
                     "x_log_base": 10
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 666,
-                "state": {},
-                "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "elapsedTime": 680,
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
                     },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 5,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
+                "pluginName": "Groovy",
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "height": 502
+            },
             "evaluatorReader": true,
             "lineCount": 6
         },
@@ -6791,10 +7047,15 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": null,
-                    "domain_axis_label": null,
-                    "y_label": "",
                     "show_legend": null,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -6820,12 +7081,7 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [],
                     "constant_lines": [],
                     "constant_bands": [],
@@ -6837,11 +7093,41 @@
                     "x_log_base": 10
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 626,
-                "state": {},
-                "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "elapsedTime": 685,
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
                     },
+                    "focus": {
+                        "xl": 0,
+                        "xr": 1,
+                        "yl": 0,
+                        "yr": 1,
+                        "xspan": 1,
+                        "yspan": 1
+                    },
+                    "lodOn": [],
+                    "lodType": [],
+                    "lodAuto": [],
+                    "zoomHash": [],
+                    "showItem": [],
+                    "visibleItem": 0,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0,
+                        "xr": 1,
+                        "yl": 0,
+                        "yr": 1,
+                        "xspan": 1,
+                        "yspan": 1
+                    }
+                },
+                "pluginName": "Groovy",
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "height": 502
+            },
             "evaluatorReader": true,
             "lineCount": 1
         },
@@ -6868,10 +7154,15 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "My Chart",
-                    "domain_axis_label": "X Label",
-                    "y_label": "Y Label",
                     "show_legend": null,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": "X Label",
+                    "y_label": "Y Label",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -6897,12 +7188,7 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [],
                     "constant_lines": [],
                     "constant_bands": [],
@@ -6914,11 +7200,41 @@
                     "x_log_base": 10
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 628,
-                "state": {},
-                "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "elapsedTime": 674,
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
                     },
+                    "focus": {
+                        "xl": 0,
+                        "xr": 1,
+                        "yl": 0,
+                        "yr": 1,
+                        "xspan": 1,
+                        "yspan": 1
+                    },
+                    "lodOn": [],
+                    "lodType": [],
+                    "lodAuto": [],
+                    "zoomHash": [],
+                    "showItem": [],
+                    "visibleItem": 0,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0,
+                        "xr": 1,
+                        "yl": 0,
+                        "yr": 1,
+                        "xspan": 1,
+                        "yspan": 1
+                    }
+                },
+                "pluginName": "Groovy",
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "height": 529
+            },
             "evaluatorReader": true,
             "lineCount": 1
         },
@@ -6977,10 +7293,15 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": null,
-                    "domain_axis_label": null,
-                    "y_label": "",
                     "show_legend": null,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -7006,15 +7327,9 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Line",
                             "x": [
                                 0,
                                 1,
@@ -7033,9 +7348,10 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FFC0504D",
-                            "width": 1.5,
-                            "yAxis": null
+                            "width": 1.5
                         }
                     ],
                     "constant_lines": [],
@@ -7048,11 +7364,51 @@
                     "x_log_base": 10
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 626,
-                "state": {},
-                "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "elapsedTime": 699,
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
                     },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null
+                    ],
+                    "lodType": [
+                        null
+                    ],
+                    "lodAuto": [
+                        null
+                    ],
+                    "zoomHash": [
+                        null
+                    ],
+                    "showItem": [
+                        true
+                    ],
+                    "visibleItem": 1,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
+                "pluginName": "Groovy",
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "height": 502
+            },
             "evaluatorReader": true,
             "lineCount": 15
         },
@@ -7087,10 +7443,15 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "Setting line properties",
-                    "domain_axis_label": null,
-                    "y_label": "",
                     "show_legend": null,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -7116,15 +7477,9 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Line",
                             "x": [
                                 0,
                                 1,
@@ -7143,12 +7498,12 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FFC0504D",
-                            "width": 15,
-                            "yAxis": null
+                            "width": 15
                         },
                         {
-                            "type": "Line",
                             "x": [
                                 0,
                                 1,
@@ -7167,12 +7522,12 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FFFFC800",
-                            "width": 5,
-                            "yAxis": null
+                            "width": 5
                         },
                         {
-                            "type": "Line",
                             "x": [
                                 0,
                                 1,
@@ -7191,14 +7546,14 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FF21578D",
                             "width": 2,
                             "style": "DASH",
-                            "interpolation": 0,
-                            "yAxis": null
+                            "interpolation": 0
                         },
                         {
-                            "type": "Line",
                             "x": [
                                 0,
                                 1,
@@ -7217,10 +7572,11 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FFD4393B",
                             "width": 2,
-                            "style": "DOT",
-                            "yAxis": null
+                            "style": "DOT"
                         }
                     ],
                     "constant_lines": [],
@@ -7233,11 +7589,66 @@
                     "x_log_base": 10
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 620,
-                "state": {},
-                "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "elapsedTime": 662,
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
                     },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 4,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
+                "pluginName": "Groovy",
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "height": 529
+            },
             "evaluatorReader": true,
             "lineCount": 7
         },
@@ -7277,10 +7688,15 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": null,
-                    "domain_axis_label": null,
-                    "y_label": "",
                     "show_legend": null,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -7306,15 +7722,9 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Stems",
                             "x": [
                                 0,
                                 1,
@@ -7333,6 +7743,8 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Stems",
                             "base": null,
                             "colors": [
                                 "#FF000000",
@@ -7363,11 +7775,51 @@
                     "x_log_base": 10
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 639,
-                "state": {},
-                "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "elapsedTime": 686,
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
                     },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null
+                    ],
+                    "lodType": [
+                        null
+                    ],
+                    "lodAuto": [
+                        null
+                    ],
+                    "zoomHash": [
+                        null
+                    ],
+                    "showItem": [
+                        true
+                    ],
+                    "visibleItem": 1,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
+                "pluginName": "Groovy",
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "height": 502
+            },
             "evaluatorReader": true,
             "lineCount": 5
         },
@@ -7399,10 +7851,15 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "Setting the base of Stems",
-                    "domain_axis_label": null,
-                    "y_label": "",
                     "show_legend": null,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -7428,15 +7885,9 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Points",
                             "x": [
                                 0,
                                 1,
@@ -7453,15 +7904,15 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Points",
                             "size": 6,
                             "shape": "DEFAULT",
                             "fill": null,
                             "color": "#FFFF0000",
-                            "outline_color": null,
-                            "yAxis": null
+                            "outline_color": null
                         },
                         {
-                            "type": "Stems",
                             "x": [
                                 0,
                                 1,
@@ -7478,6 +7929,8 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Stems",
                             "bases": [
                                 2.5,
                                 -1,
@@ -7500,11 +7953,56 @@
                     "x_log_base": 10
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 634,
-                "state": {},
-                "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "elapsedTime": 684,
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
                     },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
+                "pluginName": "Groovy",
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "height": 529
+            },
             "evaluatorReader": true,
             "lineCount": 5
         },
@@ -7550,10 +8048,15 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "Bars",
-                    "domain_axis_label": null,
-                    "y_label": "",
                     "show_legend": null,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -7579,15 +8082,9 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Bars",
                             "x": [
                                 1,
                                 2,
@@ -7604,6 +8101,8 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Bars",
                             "base": 0,
                             "width": 0.3,
                             "colors": [
@@ -7613,8 +8112,7 @@
                                 "#FFFF0000",
                                 "#80FF0000"
                             ],
-                            "outline_color": "#FF000000",
-                            "yAxis": null
+                            "outline_color": "#FF000000"
                         }
                     ],
                     "constant_lines": [],
@@ -7627,11 +8125,51 @@
                     "x_log_base": 10
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 633,
-                "state": {},
-                "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "elapsedTime": 691,
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
                     },
+                    "focus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null
+                    ],
+                    "lodType": [
+                        null
+                    ],
+                    "lodAuto": [
+                        null
+                    ],
+                    "zoomHash": [
+                        null
+                    ],
+                    "showItem": [
+                        true
+                    ],
+                    "visibleItem": 1,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    }
+                },
+                "pluginName": "Groovy",
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "height": 529
+            },
             "evaluatorReader": true,
             "lineCount": 4
         },
@@ -7675,10 +8213,15 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "Changing Point Size, Color, Shape",
-                    "domain_axis_label": null,
-                    "y_label": "",
                     "show_legend": null,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -7704,15 +8247,9 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Points",
                             "x": [
                                 0,
                                 1,
@@ -7731,15 +8268,15 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Points",
                             "size": 6,
                             "shape": "DEFAULT",
                             "fill": null,
                             "color": "#FFC0504D",
-                            "outline_color": null,
-                            "yAxis": null
+                            "outline_color": null
                         },
                         {
-                            "type": "Points",
                             "x": [
                                 0,
                                 1,
@@ -7758,15 +8295,15 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Points",
                             "size": 6,
                             "shape": "CIRCLE",
                             "fill": null,
                             "color": "#FF4F81BD",
-                            "outline_color": null,
-                            "yAxis": null
+                            "outline_color": null
                         },
                         {
-                            "type": "Points",
                             "x": [
                                 0,
                                 1,
@@ -7785,15 +8322,15 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Points",
                             "size": 8,
                             "shape": "DIAMOND",
                             "fill": null,
                             "color": "#FF9BBB59",
-                            "outline_color": null,
-                            "yAxis": null
+                            "outline_color": null
                         },
                         {
-                            "type": "Points",
                             "x": [
                                 0,
                                 1,
@@ -7812,12 +8349,13 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Points",
                             "size": 12,
                             "shape": "DEFAULT",
                             "fill": null,
                             "color": "#FFFFC800",
-                            "outline_color": "#FFFF0000",
-                            "yAxis": null
+                            "outline_color": "#FFFF0000"
                         }
                     ],
                     "constant_lines": [],
@@ -7830,11 +8368,66 @@
                     "x_log_base": 10
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 642,
-                "state": {},
-                "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "elapsedTime": 673,
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
                     },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 4,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
+                "pluginName": "Groovy",
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "height": 529
+            },
             "evaluatorReader": true,
             "lineCount": 9
         },
@@ -7869,10 +8462,15 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "Changing point properties with list",
-                    "domain_axis_label": null,
-                    "y_label": "",
                     "show_legend": null,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -7898,15 +8496,9 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Points",
                             "x": [
                                 0,
                                 1,
@@ -7925,6 +8517,8 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Points",
                             "size": 12,
                             "shape": "DEFAULT",
                             "fill": null,
@@ -7936,11 +8530,9 @@
                                 "#FF0000FF",
                                 "#FFFFAFAF"
                             ],
-                            "outline_color": null,
-                            "yAxis": null
+                            "outline_color": null
                         },
                         {
-                            "type": "Points",
                             "x": [
                                 0,
                                 1,
@@ -7959,6 +8551,8 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Points",
                             "size": 12,
                             "shape": "DEFAULT",
                             "fill": null,
@@ -7970,11 +8564,9 @@
                                 "#FF00FF00",
                                 "#FF0000FF",
                                 "#FFFFAFAF"
-                            ],
-                            "yAxis": null
+                            ]
                         },
                         {
-                            "type": "Points",
                             "x": [
                                 0,
                                 1,
@@ -7993,6 +8585,8 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Points",
                             "sizes": [
                                 6,
                                 9,
@@ -8004,11 +8598,9 @@
                             "shape": "DEFAULT",
                             "fill": null,
                             "color": "#FFFF0000",
-                            "outline_color": null,
-                            "yAxis": null
+                            "outline_color": null
                         },
                         {
-                            "type": "Points",
                             "x": [
                                 0,
                                 1,
@@ -8027,6 +8619,8 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Points",
                             "size": 12,
                             "shape": "DEFAULT",
                             "fills": [
@@ -8038,8 +8632,7 @@
                                 false
                             ],
                             "color": "#FF000000",
-                            "outline_color": "#FF000000",
-                            "yAxis": null
+                            "outline_color": "#FF000000"
                         }
                     ],
                     "constant_lines": [],
@@ -8052,11 +8645,66 @@
                     "x_log_base": 10
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 642,
-                "state": {},
-                "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "elapsedTime": 717,
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
                     },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 4,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
+                "pluginName": "Groovy",
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "height": 529
+            },
             "evaluatorReader": true,
             "lineCount": 8
         },
@@ -8090,10 +8738,15 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": null,
-                    "domain_axis_label": null,
-                    "y_label": "",
                     "show_legend": null,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -8119,15 +8772,9 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Area",
                             "x": [
                                 0,
                                 1,
@@ -8142,12 +8789,12 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Area",
                             "color": "#80800080",
-                            "base": 0,
-                            "yAxis": null
+                            "base": 0
                         },
                         {
-                            "type": "Line",
                             "x": [
                                 0,
                                 1,
@@ -8162,12 +8809,12 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FF8000FF",
-                            "width": 3,
-                            "yAxis": null
+                            "width": 3
                         },
                         {
-                            "type": "Area",
                             "x": [
                                 3,
                                 4,
@@ -8182,13 +8829,13 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Area",
                             "color": "#80FFFF00",
                             "base": 0,
-                            "interpolation": 0,
-                            "yAxis": null
+                            "interpolation": 0
                         },
                         {
-                            "type": "Line",
                             "x": [
                                 3,
                                 4,
@@ -8203,10 +8850,11 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FFFFFF00",
                             "width": 3,
-                            "interpolation": 0,
-                            "yAxis": null
+                            "interpolation": 0
                         }
                     ],
                     "constant_lines": [],
@@ -8219,11 +8867,66 @@
                     "x_log_base": 10
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 654,
-                "state": {},
-                "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "elapsedTime": 1093,
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
                     },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 4,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
+                "pluginName": "Groovy",
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "height": 502
+            },
             "evaluatorReader": true,
             "lineCount": 8
         },
@@ -8253,10 +8956,15 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": null,
-                    "domain_axis_label": null,
-                    "y_label": "",
                     "show_legend": null,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -8282,15 +8990,9 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Line",
                             "x": [
                                 0,
                                 1,
@@ -8305,12 +9007,12 @@
                             ],
                             "visible": true,
                             "display_name": "Line 1",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FFC0504D",
-                            "width": 1.5,
-                            "yAxis": null
+                            "width": 1.5
                         },
                         {
-                            "type": "Area",
                             "x": [
                                 0,
                                 1,
@@ -8325,14 +9027,15 @@
                             ],
                             "visible": true,
                             "display_name": "error",
+                            "yAxis": null,
+                            "type": "Area",
                             "color": "#32FF0000",
                             "bases": [
                                 2,
                                 4,
                                 8,
                                 16
-                            ],
-                            "yAxis": null
+                            ]
                         }
                     ],
                     "constant_lines": [],
@@ -8345,11 +9048,56 @@
                     "x_log_base": 10
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 642,
-                "state": {},
-                "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "elapsedTime": 662,
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
                     },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
+                "pluginName": "Groovy",
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "height": 502
+            },
             "evaluatorReader": true,
             "lineCount": 3
         },
@@ -8371,7 +9119,7 @@
                     "def xs = (1..10)",
                     "def ys = [8.6, 6.1, 7.4, 2.5, 0.4, 3.0, 0.5, 1.7, 8.4, 1]",
                     "for(int i = 0; i < xs.size(); i++){",
-                    "  plot << new Text(x: xs[i] + 0.1, y: ys[i] - 0.2, text: ys[i])",
+                    "  plot << new Text(x: xs[i], y: ys[i], text: ys[i],  pointerAngle:0)",
                     "}",
                     "plot << new Line(displayName: \"Line\", x: xs, y: ys, width: 2)",
                     "plot << new Points(displayName: \"\", x: xs, y: ys, size: 6)",
@@ -8379,16 +9127,115 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.47380952380952385,
+                        "yr": 0.5261904761904761,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095225
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 12,
+                    "legendableItem": 1,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.47380952380952385,
+                        "yr": 0.5261904761904761,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095225
+                    }
+                },
                 "result": {
                     "type": "Plot",
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": null,
-                    "domain_axis_label": null,
-                    "y_label": "",
                     "show_legend": null,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -8414,15 +9261,9 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Line",
                             "x": [
                                 1,
                                 2,
@@ -8449,12 +9290,12 @@
                             ],
                             "visible": true,
                             "display_name": "Line",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FFC0504D",
-                            "width": 2,
-                            "yAxis": null
+                            "width": 2
                         },
                         {
-                            "type": "Points",
                             "x": [
                                 1,
                                 2,
@@ -8481,12 +9322,13 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Points",
                             "size": 6,
                             "shape": "DEFAULT",
                             "fill": null,
                             "color": "#FF4F81BD",
-                            "outline_color": null,
-                            "yAxis": null
+                            "outline_color": null
                         }
                     ],
                     "constant_lines": [],
@@ -8494,73 +9336,103 @@
                     "texts": [
                         {
                             "type": "Text",
-                            "x": 1.1,
+                            "x": 1,
+                            "y": 8.6,
+                            "show_pointer": true,
+                            "text": "8.6",
+                            "pointer_angle": 0,
+                            "color": null,
+                            "size": 13
+                        },
+                        {
+                            "type": "Text",
+                            "x": 2,
+                            "y": 6.1,
+                            "show_pointer": true,
+                            "text": "6.1",
+                            "pointer_angle": 0,
+                            "color": null,
+                            "size": 13
+                        },
+                        {
+                            "type": "Text",
+                            "x": 3,
+                            "y": 7.4,
+                            "show_pointer": true,
+                            "text": "7.4",
+                            "pointer_angle": 0,
+                            "color": null,
+                            "size": 13
+                        },
+                        {
+                            "type": "Text",
+                            "x": 4,
+                            "y": 2.5,
+                            "show_pointer": true,
+                            "text": "2.5",
+                            "pointer_angle": 0,
+                            "color": null,
+                            "size": 13
+                        },
+                        {
+                            "type": "Text",
+                            "x": 5,
+                            "y": 0.4,
+                            "show_pointer": true,
+                            "text": "0.4",
+                            "pointer_angle": 0,
+                            "color": null,
+                            "size": 13
+                        },
+                        {
+                            "type": "Text",
+                            "x": 6,
+                            "y": 3,
+                            "show_pointer": true,
+                            "text": "3.0",
+                            "pointer_angle": 0,
+                            "color": null,
+                            "size": 13
+                        },
+                        {
+                            "type": "Text",
+                            "x": 7,
+                            "y": 0.5,
+                            "show_pointer": true,
+                            "text": "0.5",
+                            "pointer_angle": 0,
+                            "color": null,
+                            "size": 13
+                        },
+                        {
+                            "type": "Text",
+                            "x": 8,
+                            "y": 1.7,
+                            "show_pointer": true,
+                            "text": "1.7",
+                            "pointer_angle": 0,
+                            "color": null,
+                            "size": 13
+                        },
+                        {
+                            "type": "Text",
+                            "x": 9,
                             "y": 8.4,
-                            "show_pointer": false,
-                            "text": "8.6"
+                            "show_pointer": true,
+                            "text": "8.4",
+                            "pointer_angle": 0,
+                            "color": null,
+                            "size": 13
                         },
                         {
                             "type": "Text",
-                            "x": 2.1,
-                            "y": 5.9,
-                            "show_pointer": false,
-                            "text": "6.1"
-                        },
-                        {
-                            "type": "Text",
-                            "x": 3.1,
-                            "y": 7.2,
-                            "show_pointer": false,
-                            "text": "7.4"
-                        },
-                        {
-                            "type": "Text",
-                            "x": 4.1,
-                            "y": 2.3,
-                            "show_pointer": false,
-                            "text": "2.5"
-                        },
-                        {
-                            "type": "Text",
-                            "x": 5.1,
-                            "y": 0.2,
-                            "show_pointer": false,
-                            "text": "0.4"
-                        },
-                        {
-                            "type": "Text",
-                            "x": 6.1,
-                            "y": 2.8,
-                            "show_pointer": false,
-                            "text": "3.0"
-                        },
-                        {
-                            "type": "Text",
-                            "x": 7.1,
-                            "y": 0.3,
-                            "show_pointer": false,
-                            "text": "0.5"
-                        },
-                        {
-                            "type": "Text",
-                            "x": 8.1,
-                            "y": 1.5,
-                            "show_pointer": false,
-                            "text": "1.7"
-                        },
-                        {
-                            "type": "Text",
-                            "x": 9.1,
-                            "y": 8.2,
-                            "show_pointer": false,
-                            "text": "8.4"
-                        },
-                        {
-                            "type": "Text",
-                            "x": 10.1,
-                            "y": 0.8,
-                            "show_pointer": false,
-                            "text": "1"
+                            "x": 10,
+                            "y": 1,
+                            "show_pointer": true,
+                            "text": "1",
+                            "pointer_angle": 0,
+                            "color": null,
+                            "size": 13
                         }
                     ],
                     "x_auto_range": true,
@@ -8568,11 +9440,12 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10
-                    },
+                },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412",
-                "elapsedTime": 649
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "elapsedTime": 656,
+                "height": 502
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -8690,10 +9563,15 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": null,
-                    "domain_axis_label": null,
-                    "y_label": "",
                     "show_legend": true,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP"
+                    },
+                    "legend_layout": "HORIZONTAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -8724,15 +9602,9 @@
                         "style": "DOT",
                         "width": 2
                     },
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP"
-                    },
                     "omit_checkboxes": true,
-                    "legend_layout": "HORIZONTAL",
                     "graphics_list": [
                         {
-                            "type": "Line",
                             "x": [
                                 1,
                                 4,
@@ -8749,12 +9621,12 @@
                             ],
                             "visible": true,
                             "display_name": "Line",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FFC0504D",
-                            "width": 3,
-                            "yAxis": null
+                            "width": 3
                         },
                         {
-                            "type": "Bars",
                             "x": [
                                 1,
                                 2,
@@ -8781,14 +9653,14 @@
                             ],
                             "visible": true,
                             "display_name": "Bar",
+                            "yAxis": null,
+                            "type": "Bars",
                             "base": 0,
                             "width": 0.5,
                             "color": "#A0000080",
-                            "outline_color": "#FF000000",
-                            "yAxis": null
+                            "outline_color": "#FF000000"
                         },
                         {
-                            "type": "Points",
                             "x": [
                                 1,
                                 4,
@@ -8805,12 +9677,13 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Points",
                             "size": 10,
                             "shape": "DEFAULT",
                             "fill": null,
                             "color": "#A0800000",
-                            "outline_color": "#FF000000",
-                            "yAxis": null
+                            "outline_color": "#FF000000"
                         }
                     ],
                     "constant_lines": [],
@@ -8821,12 +9694,62 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10
-                    },
+                },
                 "selectedType": "Plot",
-                "elapsedTime": 622,
-                "state": {},
+                "elapsedTime": 692,
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 3,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
                 "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412"
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "height": 528
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -8872,16 +9795,65 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904761,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.052380952380952306
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904761,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.052380952380952306
+                    }
+                },
                 "result": {
                     "type": "TimePlot",
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": null,
-                    "domain_axis_label": "Time",
-                    "y_label": "Price",
                     "show_legend": true,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": "Time",
+                    "y_label": "Price",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -8907,15 +9879,9 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Points",
                             "x": [
                                 1199232000000,
                                 1199318400000,
@@ -9428,15 +10394,15 @@
                             ],
                             "visible": true,
                             "display_name": "Low Price",
+                            "yAxis": null,
+                            "type": "Points",
                             "size": 6,
                             "shape": "DEFAULT",
                             "fill": null,
                             "color": "#FFD89A36",
-                            "outline_color": null,
-                            "yAxis": null
+                            "outline_color": null
                         },
                         {
-                            "type": "Points",
                             "x": [
                                 1199232000000,
                                 1199318400000,
@@ -9949,12 +10915,13 @@
                             ],
                             "visible": true,
                             "display_name": "High Price",
+                            "yAxis": null,
+                            "type": "Points",
                             "size": 6,
                             "shape": "DEFAULT",
                             "fill": null,
                             "color": "#FFAABBCC",
-                            "outline_color": null,
-                            "yAxis": null
+                            "outline_color": null
                         }
                     ],
                     "constant_lines": [],
@@ -9965,11 +10932,12 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10
-                    },
+                },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412",
-                "elapsedTime": 623
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "elapsedTime": 655,
+                "height": 502
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -10006,16 +10974,65 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.47380952380952385,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095236
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.47380952380952385,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095236
+                    }
+                },
                 "result": {
                     "type": "TimePlot",
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": null,
-                    "domain_axis_label": "Time",
-                    "y_label": "Price",
                     "show_legend": true,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": "Time",
+                    "y_label": "Price",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -10058,15 +11075,9 @@
                         "style": "DOT",
                         "width": 2
                     },
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Line",
                             "x": [
                                 1199232000000,
                                 1199318400000,
@@ -10579,12 +11590,12 @@
                             ],
                             "visible": true,
                             "display_name": "Low Price",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FF21578D",
-                            "width": 1.5,
-                            "yAxis": null
+                            "width": 1.5
                         },
                         {
-                            "type": "Line",
                             "x": [
                                 1199232000000,
                                 1199318400000,
@@ -11097,9 +12108,10 @@
                             ],
                             "visible": true,
                             "display_name": "Volume",
+                            "yAxis": "Volume",
+                            "type": "Line",
                             "color": "#FFC0504D",
-                            "width": 1.5,
-                            "yAxis": "Volume"
+                            "width": 1.5
                         }
                     ],
                     "constant_lines": [],
@@ -11110,11 +12122,12 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10
-                    },
+                },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412",
-                "elapsedTime": 621
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "elapsedTime": 663,
+                "height": 502
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -11170,7 +12183,104 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "focus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762
+                    },
+                    "subplots": [
+                        {
+                            "showAllItems": true,
+                            "plotSize": {
+                                "width": 640,
+                                "height": 228
+                            },
+                            "focus": {
+                                "xl": 0.47380952380952385,
+                                "xr": 0.5261904761904762,
+                                "yl": 2.6020852139652106e-18,
+                                "yr": 0.09954751131221717,
+                                "xspan": 0.05238095238095236,
+                                "yspan": 0.09954751131221717
+                            },
+                            "lodOn": [
+                                null,
+                                null
+                            ],
+                            "lodType": [
+                                null,
+                                null
+                            ],
+                            "lodAuto": [
+                                null,
+                                null
+                            ],
+                            "zoomHash": [
+                                null,
+                                null
+                            ],
+                            "showItem": [
+                                true,
+                                true
+                            ],
+                            "visibleItem": 2,
+                            "legendableItem": 2,
+                            "defaultFocus": {
+                                "xl": 0.47380952380952385,
+                                "xr": 0.5261904761904762,
+                                "yl": 2.6020852139652106e-18,
+                                "yr": 0.09954751131221717,
+                                "xspan": 0.05238095238095236,
+                                "yspan": 0.09954751131221717
+                            }
+                        },
+                        {
+                            "showAllItems": true,
+                            "plotSize": {
+                                "width": 640,
+                                "height": 252
+                            },
+                            "focus": {
+                                "xl": 0.47380952380952385,
+                                "xr": 0.5261904761904762,
+                                "yl": 0.47380952380952385,
+                                "yr": 0.5261904761904762,
+                                "xspan": 0.05238095238095236,
+                                "yspan": 0.05238095238095236
+                            },
+                            "lodOn": [
+                                null,
+                                null
+                            ],
+                            "lodType": [
+                                null,
+                                null
+                            ],
+                            "lodAuto": [
+                                null,
+                                null
+                            ],
+                            "zoomHash": [
+                                null,
+                                null
+                            ],
+                            "showItem": [
+                                true,
+                                true
+                            ],
+                            "visibleItem": 2,
+                            "legendableItem": 2,
+                            "defaultFocus": {
+                                "xl": 0.47380952380952385,
+                                "xr": 0.5261904761904762,
+                                "yl": 0.47380952380952385,
+                                "yr": 0.5261904761904762,
+                                "xspan": 0.05238095238095236,
+                                "yspan": 0.05238095238095236
+                            }
+                        }
+                    ]
+                },
                 "result": {
                     "type": "CombinedPlot",
                     "init_width": 640,
@@ -11184,10 +12294,15 @@
                             "init_width": 640,
                             "init_height": 480,
                             "chart_title": "Linear x, Log y",
-                            "domain_axis_label": null,
-                            "y_label": "Log",
                             "show_legend": true,
                             "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": null,
+                            "y_label": "Log",
                             "rangeAxes": [
                                 {
                                     "type": "YAxis",
@@ -11213,15 +12328,9 @@
                             "log_y": true,
                             "timezone": null,
                             "crosshair": null,
-                            "legend_position": {
-                                "type": "LegendPosition",
-                                "position": "TOP_RIGHT"
-                            },
                             "omit_checkboxes": false,
-                            "legend_layout": "VERTICAL",
                             "graphics_list": [
                                 {
-                                    "type": "Line",
                                     "x": [
                                         0,
                                         0.0666666667,
@@ -11428,12 +12537,12 @@
                                     ],
                                     "visible": true,
                                     "display_name": "f(x) = exp(x)",
+                                    "yAxis": null,
+                                    "type": "Line",
                                     "color": "#FFC0504D",
-                                    "width": 1.5,
-                                    "yAxis": null
+                                    "width": 1.5
                                 },
                                 {
-                                    "type": "Line",
                                     "x": [
                                         0,
                                         0.0666666667,
@@ -11640,9 +12749,10 @@
                                     ],
                                     "visible": true,
                                     "display_name": "g(x) = x",
+                                    "yAxis": null,
+                                    "type": "Line",
                                     "color": "#FF4F81BD",
-                                    "width": 1.5,
-                                    "yAxis": null
+                                    "width": 1.5
                                 }
                             ],
                             "constant_lines": [],
@@ -11660,10 +12770,15 @@
                             "init_width": 640,
                             "init_height": 480,
                             "chart_title": "Linear x, Linear y",
-                            "domain_axis_label": null,
-                            "y_label": "Linear",
                             "show_legend": true,
                             "use_tool_tip": true,
+                            "legend_position": {
+                                "type": "LegendPosition",
+                                "position": "TOP_RIGHT"
+                            },
+                            "legend_layout": "VERTICAL",
+                            "domain_axis_label": null,
+                            "y_label": "Linear",
                             "rangeAxes": [
                                 {
                                     "type": "YAxis",
@@ -11689,15 +12804,9 @@
                             "log_y": false,
                             "timezone": null,
                             "crosshair": null,
-                            "legend_position": {
-                                "type": "LegendPosition",
-                                "position": "TOP_RIGHT"
-                            },
                             "omit_checkboxes": false,
-                            "legend_layout": "VERTICAL",
                             "graphics_list": [
                                 {
-                                    "type": "Line",
                                     "x": [
                                         0,
                                         0.0666666667,
@@ -11904,12 +13013,12 @@
                                     ],
                                     "visible": true,
                                     "display_name": "f(x) = exp(x)",
+                                    "yAxis": null,
+                                    "type": "Line",
                                     "color": "#FFC0504D",
-                                    "width": 1.5,
-                                    "yAxis": null
+                                    "width": 1.5
                                 },
                                 {
-                                    "type": "Line",
                                     "x": [
                                         0,
                                         0.0666666667,
@@ -12116,9 +13225,10 @@
                                     ],
                                     "visible": true,
                                     "display_name": "g(x) = x",
+                                    "yAxis": null,
+                                    "type": "Line",
                                     "color": "#FF4F81BD",
-                                    "width": 1.5,
-                                    "yAxis": null
+                                    "width": 1.5
                                 }
                             ],
                             "constant_lines": [],
@@ -12140,8 +13250,9 @@
                 },
                 "selectedType": "CombinedPlot",
                 "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412",
-                "elapsedTime": 626
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "elapsedTime": 656,
+                "height": 561
             },
             "evaluatorReader": true,
             "lineCount": 24
@@ -12171,16 +13282,65 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0,
+                        "xr": 0.0995475113122172,
+                        "yl": 2.6020852139652106e-18,
+                        "yr": 0.09954751131221717,
+                        "xspan": 0.0995475113122172,
+                        "yspan": 0.09954751131221717
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0,
+                        "xr": 0.0995475113122172,
+                        "yl": 2.6020852139652106e-18,
+                        "yr": 0.09954751131221717,
+                        "xspan": 0.0995475113122172,
+                        "yspan": 0.09954751131221717
+                    }
+                },
                 "result": {
                     "type": "Plot",
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "Log x, Log y",
-                    "domain_axis_label": "Log",
-                    "y_label": "Log",
                     "show_legend": true,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": "Log",
+                    "y_label": "Log",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -12206,15 +13366,9 @@
                     "log_y": true,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Line",
                             "x": [
                                 0,
                                 0.0666666667,
@@ -12421,12 +13575,12 @@
                             ],
                             "visible": true,
                             "display_name": "f(x) = exp(x)",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FFC0504D",
-                            "width": 1.5,
-                            "yAxis": null
+                            "width": 1.5
                         },
                         {
-                            "type": "Line",
                             "x": [
                                 0,
                                 0.0666666667,
@@ -12633,9 +13787,10 @@
                             ],
                             "visible": true,
                             "display_name": "f(x) = x",
+                            "yAxis": null,
+                            "type": "Line",
                             "color": "#FF4F81BD",
-                            "width": 1.5,
-                            "yAxis": null
+                            "width": 1.5
                         }
                     ],
                     "constant_lines": [],
@@ -12649,8 +13804,9 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412",
-                "elapsedTime": 622
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "elapsedTime": 650,
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 16
@@ -12697,16 +13853,65 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
                 "result": {
                     "type": "TimePlot",
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": null,
-                    "domain_axis_label": null,
-                    "y_label": "",
                     "show_legend": null,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -12732,27 +13937,21 @@
                     "log_y": false,
                     "timezone": "America/New_York",
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
-                            "type": "Points",
                             "x": [
-                                1447785324013,
-                                1447788924013,
-                                1447792524013,
-                                1447796124013,
-                                1447799724013,
-                                1447803324013,
-                                1447806924013,
-                                1447810524013,
-                                1447814124013,
-                                1447817724013,
-                                1447821324013
+                                1450715885108,
+                                1450719485108,
+                                1450723085108,
+                                1450726685108,
+                                1450730285108,
+                                1450733885108,
+                                1450737485108,
+                                1450741085108,
+                                1450744685108,
+                                1450748285108,
+                                1450751885108
                             ],
                             "y": [
                                 0,
@@ -12769,27 +13968,27 @@
                             ],
                             "visible": true,
                             "display_name": "milliseconds",
+                            "yAxis": null,
+                            "type": "Points",
                             "size": 6,
                             "shape": "DEFAULT",
                             "fill": null,
                             "color": "#FFC0504D",
-                            "outline_color": null,
-                            "yAxis": null
-                },
+                            "outline_color": null
+                        },
                         {
-                            "type": "Points",
                             "x": [
-                                1447785324004,
-                                1447788924004,
-                                1447792524004,
-                                1447796124004,
-                                1447799724004,
-                                1447803324004,
-                                1447806924004,
-                                1447810524004,
-                                1447814124004,
-                                1447817724004,
-                                1447821324004
+                                1450715885102,
+                                1450719485102,
+                                1450723085102,
+                                1450726685102,
+                                1450730285102,
+                                1450733885102,
+                                1450737485102,
+                                1450741085102,
+                                1450744685102,
+                                1450748285102,
+                                1450751885102
                             ],
                             "y": [
                                 0,
@@ -12806,12 +14005,13 @@
                             ],
                             "visible": true,
                             "display_name": "date",
+                            "yAxis": null,
+                            "type": "Points",
                             "size": 6,
                             "shape": "DEFAULT",
                             "fill": null,
                             "color": "#FF4F81BD",
-                            "outline_color": null,
-                            "yAxis": null
+                            "outline_color": null
                         }
                     ],
                     "constant_lines": [],
@@ -12825,8 +14025,9 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "fbc562a5-1bf5-47fa-bdc3-229a1f011412",
-                "elapsedTime": 622
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "elapsedTime": 659,
+                "height": 502
             },
             "evaluatorReader": true,
             "lineCount": 14
@@ -12850,8 +14051,7 @@
                     "def nanos  = millis * 1000 * 1000g",
                     "def hour   = 1000g * 1000 * 1000 * 60 * 60",
                     "def np = new NanoPlot()",
-                    "np << new Points(x:(0..10).collect{nanos + 10 * it}, y:(0..10))",
-                    "//np << new Points(x:(0..10).collect{nanos + hour * it + 10*it}, y:(0..10))"
+                    "np << new Points(x:(0..10).collect{nanos + 10 * it}, y:(0..10))"
                 ]
             },
             "output": {
@@ -12861,7 +14061,6 @@
                         "width": 640,
                         "height": 480
                     },
-                    "zoomed": false,
                     "focus": {
                         "xl": 0.4738095238095238,
                         "xr": 0.5261904761904762,
@@ -12901,10 +14100,15 @@
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": null,
-                    "domain_axis_label": null,
-                    "y_label": "",
                     "show_legend": null,
                     "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
@@ -12930,26 +14134,21 @@
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL",
                     "graphics_list": [
                         {
                             "x": [
-                                "1447079364449000000",
-                                "1447079364449000010",
-                                "1447079364449000020",
-                                "1447079364449000030",
-                                "1447079364449000040",
-                                "1447079364449000050",
-                                "1447079364449000060",
-                                "1447079364449000070",
-                                "1447079364449000080",
-                                "1447079364449000090",
-                                "1447079364449000100"
+                                "1450715885958000000",
+                                "1450715885958000010",
+                                "1450715885958000020",
+                                "1450715885958000030",
+                                "1450715885958000040",
+                                "1450715885958000050",
+                                "1450715885958000060",
+                                "1450715885958000070",
+                                "1450715885958000080",
+                                "1450715885958000090",
+                                "1450715885958000100"
                             ],
                             "y": [
                                 0,
@@ -12986,11 +14185,12 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "f327aa3d-b710-43a5-973e-369f66a52a8d",
-                "elapsedTime": 683
+                "shellId": "6857c2dc-a582-4d69-9744-96c4c25edc80",
+                "elapsedTime": 662,
+                "height": 502
             },
             "evaluatorReader": true,
-            "lineCount": 7
+            "lineCount": 6
         }
     ],
     "namespace": {},

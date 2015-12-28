@@ -9102,6 +9102,379 @@
             "lineCount": 3
         },
         {
+            "id": "sectionabbKV6",
+            "type": "section",
+            "title": "Adding ConstantBands",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeK6Nb0u",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "p = new Plot() << new Line(y:[-3, 1,2,4,5].reverse(), x:[-3, 1,2,4,5])",
+                    "p << new ConstantBand(x:[1,2], y:[2,3])"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
+                "result": {
+                    "type": "Plot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": null,
+                    "show_legend": null,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": "",
+                            "auto_range": true,
+                            "auto_range_includes_zero": false,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "use_log": false,
+                            "log_base": 10
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": false,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_y": false,
+                    "timezone": null,
+                    "crosshair": null,
+                    "omit_checkboxes": false,
+                    "graphics_list": [
+                        {
+                            "x": [
+                                -3,
+                                1,
+                                2,
+                                4,
+                                5
+                            ],
+                            "y": [
+                                5,
+                                4,
+                                2,
+                                1,
+                                -3
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
+                            "color": "#FFC0504D",
+                            "width": 1.5
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [
+                        {
+                            "type": "ConstantBand",
+                            "x": [
+                                1,
+                                2
+                            ],
+                            "y": [
+                                2,
+                                3
+                            ],
+                            "visible": true,
+                            "yAxis": null,
+                            "color": "#7F007FFF"
+                        }
+                    ],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10
+                },
+                "selectedType": "Plot",
+                "pluginName": "Groovy",
+                "shellId": "1ec12285-08dc-4a8e-90e6-af3a09d9f1b5",
+                "elapsedTime": 890,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "markdowndutw3L",
+            "type": "markdown",
+            "body": [
+                "You can change bands colors and use Infinity for values"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeAw8sVM",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def p = new Plot() ",
+                    "p << new Line(x:[-3, 1,2,4,5], y:[4, 2, 6, 1, 5], color: Color.RED)",
+                    "p << new ConstantBand(x:[Double.NEGATIVE_INFINITY,1], color: new Color(192, 192, 192, 127))",
+                    "p << new ConstantBand(x:[1,2])",
+                    "p << new ConstantBand(x:[2,4], color: new Color(192, 192, 192, 127))",
+                    "p << new ConstantBand(x:[4, Double.POSITIVE_INFINITY])"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "zoomed": false,
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 5,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
+                "result": {
+                    "type": "Plot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": null,
+                    "show_legend": null,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": "",
+                            "auto_range": true,
+                            "auto_range_includes_zero": false,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "use_log": false,
+                            "log_base": 10
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": false,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_y": false,
+                    "timezone": null,
+                    "crosshair": null,
+                    "omit_checkboxes": false,
+                    "graphics_list": [
+                        {
+                            "x": [
+                                -3,
+                                1,
+                                2,
+                                4,
+                                5
+                            ],
+                            "y": [
+                                4,
+                                2,
+                                6,
+                                1,
+                                5
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
+                            "color": "#FFFF0000",
+                            "width": 1.5
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [
+                        {
+                            "type": "ConstantBand",
+                            "x": [
+                                "-Infinity",
+                                1
+                            ],
+                            "y": null,
+                            "visible": true,
+                            "yAxis": null,
+                            "color": "#7FC0C0C0"
+                        },
+                        {
+                            "type": "ConstantBand",
+                            "x": [
+                                1,
+                                2
+                            ],
+                            "y": null,
+                            "visible": true,
+                            "yAxis": null,
+                            "color": "#7F007FFF"
+                        },
+                        {
+                            "type": "ConstantBand",
+                            "x": [
+                                2,
+                                4
+                            ],
+                            "y": null,
+                            "visible": true,
+                            "yAxis": null,
+                            "color": "#7FC0C0C0"
+                        },
+                        {
+                            "type": "ConstantBand",
+                            "x": [
+                                4,
+                                "Infinity"
+                            ],
+                            "y": null,
+                            "visible": true,
+                            "yAxis": null,
+                            "color": "#7F007FFF"
+                        }
+                    ],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10
+                },
+                "selectedType": "Plot",
+                "pluginName": "Groovy",
+                "shellId": "893d3b34-ac30-4308-84ef-bb9cae309755",
+                "elapsedTime": 676,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 6
+        },
+
+        {
             "id": "sectionRsx3xB",
             "type": "section",
             "title": "Adding text",

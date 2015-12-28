@@ -141,37 +141,7 @@
         }
       },
       "OutputContainer": {
-        template: '<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b class="bk-object-label" ng-if="hasName($index)">{{getName($index)}}<br/></b><bk-code-cell-output model="i" >' +
-            '</ bk-code-cell-output><br/>></li></ul>',
-        scope: {
-          model: "="
-        },
-        controller: function($scope) {
-          $scope.isShowOutput = function() {
-            return $scope.model.isShowOutput();
-          };
-
-          $scope.showoutput = $scope.model.isShowOutput();
-          $scope.items = _.map($scope.model.getCellModel().items, function(it) {
-            return {
-              result: it,
-              isShowOutput: function() {
-                return $scope.showoutput;
-              }
-            };
-          });
-          $scope.getName = function(idx) {
-            return $scope.model.getCellModel().names[idx] || '';
-          }
-          $scope.hasName = function(idx) {
-            return $scope.model.getCellModel().names !== undefined;
-          }
-          $scope.isShowMenu = function() { return false; };
-          $scope.$watch('isShowOutput()', function(oldval, newval) {
-            $scope.showoutput = newval;
-          });
-
-        }
+        template: "<output-container model='model'></output-container>"
       }
     };
 

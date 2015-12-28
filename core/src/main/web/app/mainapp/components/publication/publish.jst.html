@@ -17,7 +17,7 @@
   <div class="modal-header">
     <div class="init" ng-if="initializing">
       Loading&hellip;
-      <span class="loading-spinner rotating bkr"></span>
+      <i class='fa fa-refresh fa-spin loading-state'></i>
     </div>
     <div class="sign-in" ng-if="!initializing && !isSignedIn()">
       <h1 class="error" ng-if="error">{{error}}</h1>
@@ -28,7 +28,7 @@
         <input type="submit" value="Sign in" class="btn btn-primary" ng-if="!saving">
         <p ng-if="saving">
           Signing in&hellip;
-          <span class="loading-spinner rotating bkr"></span>
+          <i class='fa fa-refresh fa-spin loading-state'></i>
         </p>
       </form>
       <div class="sign-up">
@@ -89,7 +89,7 @@
             Publishing
             as <span class="name">{{currentUser().name}}</span>.
             <a ng-if="!saving" ng-click="signOut()">Log out</a>
-            <span ng-if="saving" class="loading-spinner rotating bkr"></span>
+            <span ng-if="saving"><i  class='fa fa-refresh fa-spin loading-state'></i></span>
           </span>
         </div>
       </form>

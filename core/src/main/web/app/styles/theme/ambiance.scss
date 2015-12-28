@@ -254,7 +254,7 @@ $btn-bkg-color: #505050;
   }
 
   .toggle-menu {
-    background: $main-theme-panel-background;
+    background: transparent;
   }
 
   .dataTables_length {
@@ -373,6 +373,10 @@ $btn-bkg-color: #505050;
 
   .dropdown-menu > li > a {
     color: $std-fg-text-color;
+  }
+
+  #start-page-menu-item {
+    border-color: $cell-border-color;
   }
 
   // Default navbar

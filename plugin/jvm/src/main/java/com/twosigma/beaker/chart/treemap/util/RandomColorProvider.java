@@ -19,6 +19,9 @@ package com.twosigma.beaker.chart.treemap.util;
 import com.twosigma.beaker.chart.Color;
 import net.sf.jtreemap.swing.TreeMapNode;
 
+import java.lang.reflect.Field;
+import java.util.List;
+
 
 public class RandomColorProvider extends ColorProvider {
 
@@ -37,8 +40,10 @@ public class RandomColorProvider extends ColorProvider {
                                                      new Color(153, 102, 0)};
 
   private int cursor = 0;
+  private final Color[] colours;
+  private boolean groupByParent = false;
 
-  private final java.util.TreeMap<Double, Color> mapping = new java.util.TreeMap<>();
+  private final java.util.TreeMap<Object, Color> mapping = new java.util.TreeMap<>();
 
   public RandomColorProvider() {
     this.colours = COLOURS;
@@ -48,11 +53,22 @@ public class RandomColorProvider extends ColorProvider {
     this.colours = colours;
   }
 
-  private final Color[] colours;
+  public RandomColorProvider(List<Object> colors) {
+    this.colours = new Color[colors.size()];
+    for (int i = 0; i < colors.size(); i++) {
+      this.colours[i] = createChartColor(colors.get(i));
+    }
+  }
 
   @Override
-  public Color getColor(final TreeMapNode node) {
-    double value = getValue(node);
+  public Color getColor(TreeMapNode node) {
+    Object value;
+    if (groupByParent && node.getParent() instanceof TreeMapNode){
+      value = ((TreeMapNode) node.getParent()).getLabel();
+    }else{
+      value = getValue(node);
+    }
+
     if (!this.mapping.containsKey(value)) {
       mapping.put(value, colours[this.cursor]);
       cursor++;
@@ -63,5 +79,39 @@ public class RandomColorProvider extends ColorProvider {
     return mapping.get(value);
   }
 
+  private Color createChartColor(Object color) {
+    if (color instanceof List) {
+      try {
+        return new Color((int) ((List) color).get(0),
+                         (int) ((List) color).get(1),
+                         (int) ((List) color).get(2));
+      } catch (IndexOutOfBoundsException x) {
+        throw new RuntimeException("Color list too short");
+      }
+
+    }
+    String colorAsStr = (String) color;
+    if (colorAsStr.indexOf("#") == 0) {
+      return Color.decode(colorAsStr);
+    }
+    return colorFromName(colorAsStr);
+  }
+
+  private Color colorFromName(String color) {
+    try {
+      Field field = Class.forName("com.twosigma.beaker.chart.Color").getField(color);
+      return (Color) field.get(null);
+    } catch (ClassNotFoundException | IllegalAccessException | NoSuchFieldException x) {
+      throw new RuntimeException(String.format("Can not parse color '%s'", color), x);
+    }
+  }
+
+  public boolean isGroupByParent() {
+    return groupByParent;
+  }
+
+  public void setGroupByParent(boolean groupByParent) {
+    this.groupByParent = groupByParent;
+  }
 }
 

@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils) {
+  var retfunc = function(plotUtils, plotTip) {
     var PlotText = function(data){
       _.extend(this, data);
       this.format();
@@ -178,14 +178,7 @@
     };
 
     PlotText.prototype.clearTips = function(scope) {
-      var eleprops = this.elementProps;
-      var itemid = this.id;
-      _.each(scope.tips, function(value, key){
-        if (key.search("" + itemid) === 0) {
-          scope.jqcontainer.find("#tip_" + key).remove();
-          delete scope.tips[key];
-        }
-      });
+      plotTip.clearTips(scope, this.id);
     };
 
     PlotText.prototype.createTip = function(ele) {
@@ -202,5 +195,5 @@
 
     return PlotText;
   };
-  beaker.bkoFactory('PlotText', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotText', ['plotUtils', 'plotTip',  retfunc]);
 })();

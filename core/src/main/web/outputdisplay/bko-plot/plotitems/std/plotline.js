@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils) {
+  var retfunc = function(plotUtils, plotTip) {
     var PlotLine = function(data){
       _.extend(this, data); // copy properties to itself
       this.format();
@@ -262,14 +262,7 @@
     };
 
     PlotLine.prototype.clearTips = function(scope) {
-      var eleprops = this.elementProps;
-      var itemid = this.id;
-      _.each(scope.tips, function(value, key){
-        if (key.search("" + itemid) === 0) {
-          scope.jqcontainer.find("#tip_" + key).remove();
-          delete scope.tips[key];
-        }
-      });
+      plotTip.clearTips(scope, this.id);
     };
 
     PlotLine.prototype.createTip = function(ele) {
@@ -288,6 +281,6 @@
 
     return PlotLine;
   };
-  beaker.bkoFactory('PlotLine', ['plotUtils', 'PlotSampler', retfunc]);
+  beaker.bkoFactory('PlotLine', ['plotUtils', 'plotTip', retfunc]);
 })();
 

@@ -74,7 +74,8 @@
             rangeMin: model.range_min,
             rangeMax: model.range_max,
             displayMode: model.displayMode != null ? model.displayMode : 'OVERLAP',
-            rightClose: model.right_close
+            rightClose: model.right_close,
+            tips: model.tips ? model.tips : null
           });
         } else {
           newmodel = _.extend(newmodel, {
@@ -98,7 +99,8 @@
             rangeMin: model.rangeMin,
             rangeMax: model.rangeMax,
             displayMode: model.displayMode != null ? model.displayMode : 'OVERLAP',
-            rightClose: model.rightClose
+            rightClose: model.rightClose,
+            tips: model.tips ? model.tips : null
           });
         }
       }else{

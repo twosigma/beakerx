@@ -265,7 +265,7 @@ $btn-bkg-color: #505050;
   }
 
   .loading-state {
-    color: $dropdown-menu-color;
+    color: $std-fg-text-color;
   }
 
   .toggle-menu {
@@ -463,6 +463,10 @@ $btn-bkg-color: #505050;
 
     .navbar-inverse .navbar-text {
       background-color: #3f5264 !important;
+    }
+
+    .fa.fa-refresh {
+      color: $std-fg-text-color !important;
     }
   }
 

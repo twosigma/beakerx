@@ -17,6 +17,7 @@
 package com.twosigma.beaker.chart.serializer;
 
 
+import com.twosigma.beaker.chart.ChartUtils.ColorPalette;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;

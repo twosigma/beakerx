@@ -16,13 +16,12 @@
 
 package com.twosigma.beaker.chart.serializer;
 
+import com.twosigma.beaker.chart.ChartUtils.ColorPalette;
 import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
-import com.twosigma.beaker.chart.Color;
 import java.io.IOException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 /**

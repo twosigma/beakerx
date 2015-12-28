@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.chart.xychart;
 
+import com.twosigma.beaker.chart.ChartUtils.ColorPalette;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.Points;
@@ -35,17 +36,6 @@ public class SimpleTimePlot extends TimePlot {
   private boolean displayLines  = true;
   private boolean displayPoints = false;
 
-
-  //saturation 75%
-  //brightness 85%
-  private static final Color[] NICE_COLORS = {
-    new Color(33, 87, 141), // blue
-    new Color(140, 29, 23), // red
-    new Color(150, 130, 54),// yellow
-    new Color(20, 30, 120), // violet
-    new Color(54, 100, 54), // green
-    new Color(60, 30, 50),  // dark
-  };
 
   public SimpleTimePlot(List<Map<String, Object>> data, List<String> columns) {
     this(null, data, columns);
@@ -90,9 +80,9 @@ public class SimpleTimePlot extends TimePlot {
           color = createChartColor(colors.get(i));
         }
         if (color == null) {
-          color = createNiceColor();
+          color = ColorPalette.createNiceColor();
           while (chartColors.contains(color)) {
-            color = createNiceColor();
+            color = ColorPalette.createNiceColor();
           }
         }
         chartColors.add(color);
@@ -104,16 +94,9 @@ public class SimpleTimePlot extends TimePlot {
 
   private List<Color> getNiceColors(int n) {
     List<Color> colors = new ArrayList<>();
-    for (int i = 0; i < n; i++)
-      if (i < NICE_COLORS.length)
-        colors.add(NICE_COLORS[i]);
-      else {
-        Color color = createNiceColor();
-        while (colors.contains(color)) {
-          color = createNiceColor();
-        }
-        colors.add(color);
-      }
+    for (int i = 0; i < n; i++){
+      colors.add(ColorPalette.getColor(i));
+    }
     return colors;
   }
 
@@ -142,14 +125,6 @@ public class SimpleTimePlot extends TimePlot {
     } catch (ClassNotFoundException | IllegalAccessException | NoSuchFieldException x) {
       throw new RuntimeException(String.format("Can not parse color '%s'", color), x);
     }
-  }
-
-  private Color createNiceColor() {
-    Random random = new Random();
-    final float hue = random.nextFloat();
-    final float saturation = 0.75f;
-    final float luminance = 0.85f;
-    return new Color(java.awt.Color.getHSBColor(hue, saturation, luminance).getRGB());
   }
 
   private void reinitialize() {

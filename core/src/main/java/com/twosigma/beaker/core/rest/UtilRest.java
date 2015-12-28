@@ -350,7 +350,7 @@ public class UtilRest {
     }
     // Validate edit mode
     else if (preferenceName.equals("edit-mode")){
-      String[] validModes = {"vim", "emacs", "default"};
+      String[] validModes = {"vim", "emacs", "default", "sublime"};
       if (Arrays.asList(validModes).contains(preferenceValue)){
         newValue = preferenceValue;
         this.editMode = preferenceValue;

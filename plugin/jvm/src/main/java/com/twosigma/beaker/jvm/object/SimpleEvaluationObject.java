@@ -31,6 +31,7 @@ import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.twosigma.beaker.shared.module.util.ControlCharacterUtils;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
@@ -226,15 +227,23 @@ public class SimpleEvaluationObject extends Observable {
             jgen.writeFieldName("payload");
             if (!getObjectSerializer().writeObject(o, jgen, true))
               jgen.writeObject(o.toString());
-          } else if(value.getJsonRes() != null) {
+          } else if (value.getJsonRes() != null) {
             jgen.writeFieldName("payload");
-            jgen.writeRawValue(value.getJsonRes());            
+            if (ControlCharacterUtils.containsControlCharacters(value.getJsonRes())) {
+              jgen.writeRawValue(ControlCharacterUtils.escapeControlCharacters(value.getJsonRes()));
+            } else {
+              jgen.writeRawValue(value.getJsonRes());
+            }
           }
         }
         if (value.getJsonRes() != null && value.getPayload() != null && value.getPayload().getValue() != null) {
-          logger.finest("adding raw json data: '"+value.getJsonRes()+"'");
+          logger.finest("adding raw json data: '" + value.getJsonRes() + "'");
           jgen.writeFieldName("jsonres");
-          jgen.writeRawValue(value.getJsonRes());
+          if (ControlCharacterUtils.containsControlCharacters(value.getJsonRes())) {
+            jgen.writeRawValue(ControlCharacterUtils.escapeControlCharacters(value.getJsonRes()));
+          } else {
+            jgen.writeRawValue(value.getJsonRes());
+          }
         }
         jgen.writeArrayFieldStart("outputdata");
         for (Object o : value.getOutputdata()) {

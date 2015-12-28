@@ -1,0 +1,510 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+$main-theme-panel-background: #202020;
+$main-theme-menu-background: black;
+$main-theme-color: white;
+
+$navbar-inverse-bg: #3f5264;
+$navbar-default-bg: $main-theme-menu-background;
+$navbar-default-link-color: $main-theme-color;
+//#3f5264;
+$navbar-default-link-hover-color: #fff;
+$navbar-default-link-active-color: #fff;
+$navbar-default-link-hover-bg: #39a9ed;
+$navbar-default-link-active-bg: #39a9ed;
+
+$navbar-default-color: $main-theme-color !default;
+//#777 !default;
+$navbar-default-border: darken($navbar-default-bg, 6.5%) !default;
+
+// Navbar links
+$navbar-default-link-disabled-color: #ccc !default;
+$navbar-default-link-disabled-bg: transparent !default;
+
+// Navbar brand label
+$navbar-default-brand-color: $navbar-default-link-color !default;
+$navbar-default-brand-hover-color: darken($navbar-default-brand-color, 10%) !default;
+$navbar-default-brand-hover-bg: transparent !default;
+
+// Navbar toggle
+$navbar-default-toggle-hover-bg: #ddd !default;
+$navbar-default-toggle-icon-bar-bg: #888 !default;
+$navbar-default-toggle-border-color: #ddd !default;
+
+$dropdown-menu-background: $main-theme-menu-background !default;
+$dropdown-menu-color: $main-theme-color !default;
+
+$std-fg-text-color: #e6e1dc;
+$input-background-color: #2d2d37;
+$cell-border-color: #7e7a78;
+$std-out-color: #42A2D2;
+$std-err-color: #e48d71;
+$btn-bkg-color: #505050;
+
+.beaker-theme-ambiance {
+
+  body, html, .well, .languages, .code-cell-input, .modal-header, .modal-body, .modal-footer, .row {
+    background: $main-theme-panel-background !important;
+    color: $std-fg-text-color !important;
+    .close {
+      color: $std-fg-text-color !important;
+    }
+    h1, h2, h3, h4, h5, p {
+      color: $std-fg-text-color !important;
+    }
+  }
+
+  a {
+    color: #f4c20b;
+
+    &:hover {
+      color: #1492df;
+    }
+  }
+
+  textarea, .publish input.field, .publish select, .publish textarea {
+    border-color: $cell-border-color;
+    background:   $input-background-color !important;
+    color:        $std-fg-text-color !important;
+  }
+
+  button, .btn, .btn-default {
+    background:   $btn-bkg-color;
+    color:        $std-fg-text-color;
+    border-color: #7b7462;
+
+    &:hover {
+      color: $std-fg-text-color;
+      background: #1492df;
+      border-color: #117dbe;
+    }
+  }
+
+  .modal-content .btn-primary {
+    background: #39a9ed;
+
+    &:hover {
+      background: #1492df;
+      border-color: #117dbe;
+    }
+  }
+
+  .notebook-link {
+    color: #d6bb6d;
+  }
+
+  input, select {
+    background-color: $input-background-color;
+    background-image: none;
+  }
+
+  input {
+    color: $main-theme-color;
+  }
+
+  select {
+    color: $std-fg-text-color;
+  }
+
+  .faux-drop-zone {
+    border-color: $std-fg-text-color;
+    color: $std-fg-text-color;
+  }
+
+  .ui-icon,
+  .ui-widget-content .ui-icon {
+    background-image: url("images/ui-icons_222222_256x240.png");
+  }
+
+  .ui-widget-content {
+    background-image: none;
+    background-color: $input-background-color;
+    color: $std-fg-text-color;
+  }
+
+  .ui-widget-content > li > a {
+    color: $std-fg-text-color;
+  }
+
+  .ui-state-focus {
+    background-image: none;
+    background-color: $navbar-default-link-hover-bg;
+    border-color: #117dbe;
+  }
+
+  .cell-power-button {
+    color:        #d8d8d8;
+    background-color:   $main-theme-panel-background;
+
+    .fa-power-off:before {
+      background-color: $main-theme-panel-background;
+    }
+    .fa-power-off:hover::before {
+      background-color: $navbar-default-link-hover-bg;
+    }
+  }
+
+  bk-output-display {
+    > div:nth-of-type(1) {
+      background: $main-theme-panel-background;
+      color: $std-fg-text-color;
+    }
+
+    .bk-object-label {
+      color: $std-out-color;
+    }
+  }
+
+  .text-info {
+    color: $std-out-color;
+  }
+
+  .text-warning {
+    color: $std-err-color;
+  }
+
+  bk-markdown-editable, .code-cell-output {
+    background: $main-theme-panel-background !important;
+    color: $std-fg-text-color;
+  }
+
+  bk-markdown-cell bk-markdown-editable, .bkcell.code-cell-area, .textcell-wrapper {
+    border-color: $cell-border-color;
+  }
+
+  .locked {
+    bk-markdown-cell bk-markdown-editable, .bkcell.code-cell-area, .textcell-wrapper, bk-code-cell .code-cell-output {
+      border: none;
+    }
+  }
+
+  .code-cell-area .code-cell-output {
+    border-top-color: $cell-border-color;
+  }
+
+  .code-cell-area .code-cell-output.error {
+    border-color: $std-err-color;
+  }
+
+  .code-cell-output.error > h6 {
+    color: $std-err-color;
+  }
+
+  bk-output-display pre {
+    color: $std-fg-text-color;
+  }
+
+  pre.out_error, bk-output-display[type='Error'] pre {
+    color: $std-err-color;
+  }
+
+  bk-markdown-editable code {
+    background-color: $btn-bkg-color;
+    color:            $std-fg-text-color;
+  }
+
+  #plotContainer {
+    background: #1a1a1a;
+  }
+
+  .plot-coverbox {
+    fill: $main-theme-panel-background;
+  }
+
+  .plot-label, .plot-xylabel {
+    fill: $main-theme-color;
+  }
+
+  .plot-gridline {
+    stroke: #787878;
+  }
+
+  .plot-tooltip {
+    background-color: $input-background-color;
+  }
+
+  .plot-text, .plot-legend text, #maing text {
+    fill: $std-fg-text-color !important;
+  }
+
+  #combplotContainer, #plotLegend, #plotLegendContainer {
+    background: $main-theme-panel-background;
+  }
+
+  .mini-cell-stats {
+    z-index: 1;
+  }
+
+  .loading-state {
+    color: $dropdown-menu-color;
+  }
+
+  .toggle-menu {
+    background: $main-theme-panel-background;
+  }
+
+  .dataTables_length {
+    & label {
+      color: $main-theme-color;
+    }
+    & select {
+      color: #595959;
+    }
+  }
+
+  .outputlogcontainer {
+    color: $std-fg-text-color;
+    background-color: $input-background-color;
+
+    .outputloghandle {
+      background: linear-gradient(#202020, #7e7a78, #202020);
+    }
+
+    .outputlogbox pre {
+      color: $std-fg-text-color !important;
+    }
+
+    .btn-group .btn-primary {
+      color: #f5f5f5;
+
+        &:hover {
+          color: #f5f5f5;
+        }
+    }
+  }
+
+  //datatable
+
+  .dataTable, table.dataTable thead th {
+    color: $std-fg-text-color;
+  }
+
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: $main-theme-color !important;
+  }
+
+  .dataTables_wrapper .dataTables_length,
+  .dataTables_wrapper .dataTables_filter,
+  .dataTables_wrapper .dataTables_info,
+  .dataTables_wrapper .dataTables_processing,
+  .dataTables_wrapper .dataTables_paginate {
+    color: $main-theme-color;
+  }
+
+  .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+  .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+  .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+    color: $main-theme-color !important;
+    background: transparent;
+  }
+
+  .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+  .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    color: #595959 !important;
+  }
+
+  table.dataTable.display tbody tr.odd > .sorting_1,
+  table.dataTable.order-column.stripe tbody tr.odd > .sorting_1 {
+    background-color: #202020;
+  }
+
+  table.dataTable.display tbody tr.odd > .sorting_2,
+  table.dataTable.order-column.stripe tbody tr.odd > .sorting_2 {
+    background-color: #333333;
+  }
+
+  table.dataTable.display tbody tr.odd > .sorting_3,
+  table.dataTable.order-column.stripe tbody tr.odd > .sorting_3 {
+    background-color: #262626;
+  }
+
+  table.dataTable.display tbody tr.even > .sorting_1,
+  table.dataTable.order-column.stripe tbody tr.even > .sorting_1 {
+    background-color: #303030;
+  }
+
+  table.dataTable.display tbody tr.even > .sorting_2,
+  table.dataTable.order-column.stripe tbody tr.even > .sorting_2 {
+    background-color: #666666;
+  }
+
+  table.dataTable.display tbody tr.even > .sorting_3,
+  table.dataTable.order-column.stripe tbody tr.even > .sorting_3 {
+    background-color: #595959;
+  }
+
+  table.dataTable.stripe tbody tr.odd,
+  table.dataTable.display tbody tr.odd {
+    background-color: #202020;
+  }
+
+  table.dataTable.stripe tbody tr.even,
+  table.dataTable.display tbody tr.even {
+    background-color: #303030;
+  }
+
+  table.dataTable tbody tr.selected {
+    background-color: #435d72 !important;
+  }
+
+  table.dataTable thead {
+    background-color: $btn-bkg-color;
+  }
+
+  //dropdown menu
+
+  .dropdown-menu {
+    background-color: $input-background-color;
+  }
+
+  .dropdown-menu > li > a {
+    color: $std-fg-text-color;
+  }
+
+  // Default navbar
+
+  .navbar-default {
+    background-color: $input-background-color;
+    border-color: $navbar-default-border;
+
+    .navbar-brand {
+      color: $navbar-default-brand-color;
+      &:hover,
+      &:focus {
+        color: $navbar-default-brand-hover-color;
+        background-color: $navbar-default-brand-hover-bg;
+      }
+    }
+
+    .navbar-text {
+      background-color: $input-background-color !important;
+    }
+
+    .navbar-nav {
+      > li > a {
+        color: $std-fg-text-color;
+
+        &:hover,
+        &:focus {
+          color: $std-fg-text-color;
+          background-color: $navbar-default-link-hover-bg;
+        }
+      }
+      > .active > a {
+        &,
+        &:hover,
+        &:focus {
+          color: $navbar-default-link-active-color;
+          background-color: $navbar-default-link-active-bg;
+        }
+      }
+      > .disabled > a {
+        &,
+        &:hover,
+        &:focus {
+          color: $navbar-default-link-disabled-color;
+          background-color: $navbar-default-link-disabled-bg;
+        }
+      }
+    }
+  }
+
+  .nav-tabs {
+    border-bottom-color: $cell-border-color;
+
+    > li > a:hover {
+      border-color: #117dbe;
+      border-bottom-color: transparent;
+      background-color: $navbar-default-link-active-bg;
+      color: $std-fg-text-color;
+    }
+
+    > li.active > a {
+      border-color: $cell-border-color;
+      border-bottom-color: transparent;
+      background-color: $main-theme-panel-background;
+      color: $std-fg-text-color;
+    }
+  }
+
+  header {
+    .navbar-left {
+      color: $std-fg-text-color !important;
+    }
+
+    .navbar-inverse .navbar-text {
+      background-color: #3f5264 !important;
+    }
+  }
+
+  //easy-form
+  .easy-form-container {
+    legend, label, input {
+      color: $std-fg-text-color;
+    }
+
+    fieldset, input, textarea, select, .custom-combobox-toggle {
+      border-color: $cell-border-color;
+    }
+
+    .custom-combobox-toggle {
+      background-color: $cell-border-color;
+    }
+  }
+
+  //CodeMirror
+  .CodeMirror-selected { background: #0662D2; }
+  .CodeMirror-focused .CodeMirror-selected { background: #0662D2; }
+  .CodeMirror ::selection { background-color: #0662D2; }
+  .CodeMirror ::-moz-selection { background-color: #0662D2; }
+
+  .CodeMirror-gutters {
+    background-color: $main-theme-panel-background;
+    border: none;
+    box-shadow: none;
+  }
+
+  .CodeMirror-linenumbers, .CodeMirror-linenumber {
+    color: $cell-border-color;
+  }
+
+  .CodeMirror-fullscreen {
+    background: $main-theme-panel-background;
+  }
+
+  .CodeMirror .cm-comment {
+    color: $std-fg-text-color;
+  }
+
+  .CodeMirror-simplescroll-horizontal, .CodeMirror-simplescroll-vertical {
+    background: $btn-bkg-color;
+  }
+
+  .CodeMirror-hints {
+    background-color: $input-background-color;
+    border-color: #7e7a78;
+  }
+
+  .CodeMirror-hint {
+    color: $std-fg-text-color;
+  }
+
+  li.CodeMirror-hint-active {
+    background: $navbar-default-link-active-bg;
+    color: $std-fg-text-color;
+  }
+}

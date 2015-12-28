@@ -420,6 +420,12 @@ convertToJSON <- function(val, collapse) {
     p = paste(p, toJSON(as.character(temp[[2]])), sep='')
 	p = paste(p, "}", sep='')
 	o = p
+  } else if(class(val) == "plotly") {
+    temp <- print(val)
+    p = "{ \"type\":\"Plotly\", \"data\":"
+    p = paste(p, plotly:::to_JSON(temp), sep='')
+    p = paste(p, "}", sep='')
+    o = p
   } else {
     o = paste("\"ERROR: invalid object type ", gsub("\"","\\\"",class(val)), sep='')
     o = paste(o, "\"", sep='')
@@ -477,7 +483,12 @@ transformJSON <- function(tres) {
 		    if (exists("subtype", where=tres) && tres$subtype == "Dictionary") {
 		      o = list()
 		      for (i in 1:rows) {
-		        o[[ tres$values[[i]][[1]] ]] = transformJSON(tres$values[[i]][[2]])
+            theval = tres$values[[i]][[1]]
+            if (is.list(theval) && !is.null(names(theval)) && exists("type", where=theval) && exists("timestamp", where=theval) && theval$type == "Date") {
+              o[[ transformJSON(theval) ]] = transformJSON(tres$values[[i]][[2]])
+            } else {
+		          o[[ tres$values[[i]][[1]] ]] = transformJSON(tres$values[[i]][[2]])
+            }
 		      }
 		      tres = o
 		    } else if (exists("subtype", where=tres) && tres$subtype == "ListOfMaps") {

@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -46,14 +46,15 @@
             "type": "markdown",
             "body": [
                 "Beaker's text cells (insert one by clicking 'text' in the blue button bar) are based primarily on markdown,",
-                "but have a number of more advanced features as described below.  There are also HTML and LaTeX cells,",
+                "but have a number of more advanced features as described below.  There are also HTML and TeX cells,",
                 "which you can insert with the 'code' menu in the blue button bar, and are also explained in their own",
                 "sections below.",
                 "",
                 "In addition, there are menu commands to control how the notebook is displayed:",
                 "* **Notebook → Lock**: hides the all the code, and removes the boxes from around the cells.",
                 "* **View → Show Hierarchy**: indents sections and adds numbering and lines to show hierarchy.",
-                "* **View → Advanced Mode**: reduces vertical space and hides the big run button (you can still run cells with the little run button in the upper-right of each cell."
+                "* **View → Advanced Mode**: reduces vertical space and hides the big run button (you can still run cells with the little run button in the upper-right of each cell.",
+                "* **View → Theme**: switch from the default black-on-white color theme to the light-on-dark ambiance theme."
             ],
             "evaluatorReader": false
         },
@@ -86,7 +87,8 @@
                 "Click away on the background of the notebook to reformat and display.",
                 "You can also use the {{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"&#x2318;\":\"Control\"}}-Enter keyboard shortcut to format a markdown cell.",
                 "",
-                "You can embed LaTeX into a markdown cell by enclosing it with dollar characters: $e^{i\\pi}+1=0$.",
+                "You can embed TeX ([Donald Knuth's](https://en.wikipedia.org/wiki/Donald_Knuth) mathematical typesetting system)",
+                "into a markdown cell by enclosing it with dollar characters: $e^{i\\pi}+1=0$.",
                 "",
                 "You can just copy-and-paste unicode characters in: 玻璃, or you can enter HTML entities like &amp;dagger; for &dagger;.",
                 "In fact, many basic HTML elements work, like super&lt;sup&gt;scripts&lt;/sup&gt; for super<sup>scripts</sup>."
@@ -109,7 +111,7 @@
                 "You can change the size, color, and face of text with familar HTML &lt;font&gt; tags.",
                 "For example, you can make the text <font size=\"+2\">larger</font> or <font size=\"-2\">smaller</font> compared to its normal size.",
                 "Or make it  <font color=\"green\">green</font>, or change face to font to <font face=\"Times\">Times</font> or <font face=\"Courier\">Courier</font>.",
-                "You can even change the background color like this: <font style=\"background-color: yellow\">yellow highlight</font>.",
+                "You can even change the background color like this: <font style=\"background-color: chocolate\">chocolate highlight</font>.",
                 "",
                 "These tags work with the math and markdown modes, for example: <font color=\"#00d5ff \">$\\lambda = 480$</font>, or **<font face=\"Times\">bold times</font>**."
             ],
@@ -128,7 +130,7 @@
             "type": "markdown",
             "body": [
                 "In the prose part of a notebook that you can write it is sometimes useful to refer to values computed previously in the notebook.",
-                "Beaker makes it easy to do this by supporting a form a template expansion.  Let's start out by defining some values on the `beaker` object:"
+                "Beaker makes it easy to do this by supporting a form of template expansion.  To see this, start out by defining some values on the `beaker` object:"
             ],
             "evaluatorReader": false
         },
@@ -140,15 +142,16 @@
                 "body": [
                     "// some values to be inserted below",
                     "beaker.name = 'Berzelius';",
-                    "beaker.logTen = Math.log(10);"
+                    "beaker.e = Math.exp(1);"
                 ]
             },
             "output": {
                 "state": {},
-                "result": 2.302585092994046,
+                "result": 2.718281828459045,
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 27
+                "elapsedTime": 28,
+                "height": 34
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -163,8 +166,8 @@
                 "on this cell to see the markdown source).",
                 "",
                 "Since you have full access to JavaScript you can call functions to do things like",
-                "format numbers and call out results computed elsewhere in your notebook.  For example, the natural logarithm of ten is about",
-                "{{beaker.logTen.toFixed(3)}}.",
+                "format numbers and call out results computed elsewhere in your notebook.  For example, $e$ the base of the natural logarithm, is about",
+                "{{beaker.e.toFixed(3)}}.",
                 "",
                 "You can also customize content according to the reader's operating sytem.  For example, you are on a",
                 "{{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"Mac, so &#x2318;-O\":\"PC, so Control-O\"}} opens a file.",
@@ -193,7 +196,7 @@
         {
             "id": "codeB8fmAw",
             "type": "code",
-            "evaluator": "Html",
+            "evaluator": "HTML",
             "input": {
                 "body": [
                     "<p>",
@@ -222,7 +225,8 @@
                 },
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 0,
-                "state": {}
+                "state": {},
+                "height": 161
             },
             "evaluatorReader": true,
             "lineCount": 16
@@ -238,7 +242,7 @@
         {
             "id": "codegJITkE",
             "type": "code",
-            "evaluator": "Latex",
+            "evaluator": "TeX",
             "input": {
                 "body": [
                     "1 +  \\frac{q^2}{(1-q)}+\\frac{q^6}{(1-q)(1-q^2)}+\\cdots =",
@@ -254,7 +258,8 @@
                 },
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 8,
-                "state": {}
+                "state": {},
+                "height": 41
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -262,7 +267,8 @@
     ],
     "namespace": {
         "x": 2.302585092994046,
-        "logTen": 2.302585092994046,
-        "name": "Berzelius"
+        "logTen": 2.718281828459045,
+        "name": "Berzelius",
+        "e": 2.718281828459045
     }
 }

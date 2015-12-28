@@ -18,6 +18,113 @@
   'use strict';
   var retfunc = function(bkUtils, plotConverter, heatmapConverter, PlotAxis, plotFactory, plotUtils, bkHelper) {
 
+    var createNewModel = function (model) {
+
+      var newmodel;
+
+      if (model.version === "groovy") {  // model returned from serializer
+
+        newmodel = {
+          type: "plot",
+          title: model.chart_title != null ? model.chart_title : model.title,
+          margin: {},
+          showLegend: model.show_legend,
+          legendPosition: model.legend_position != null ? model.legend_position : {position: "TOP_RIGHT"},
+          legendLayout: model.legend_layout != null ? model.legend_layout : "VERTICAL",
+          useToolTip: model.use_tool_tip != null ? model.use_tool_tip : false,
+          plotSize: {
+            "width": model.init_width != null ? model.init_width : 1200,
+            "height": model.init_height != null ? model.init_height : 350
+          }
+        };
+      } else {
+        newmodel = {
+          showLegend: model.showLegend,
+          legendPosition: model.legendPosition != null ? model.legendPosition : {position: "TOP_RIGHT"},
+          legendLayout: model.legendLayout != null ? model.legendLayout : "VERTICAL",
+          useToolTip: model.useToolTip != null ? model.useToolTip : false,
+          margin: model.margin != null ? model.margin : {},
+          plotSize: {
+            "width": model.width != null ? model.width : 1200,
+            "height": model.height != null ? model.height : 350
+          }
+        };
+      }
+
+      if (model.type !== "TreeMap") {
+
+        if (model.version === "groovy") {  // model returned from serializer
+
+          newmodel = _.extend(newmodel, {
+            userFocus: {},
+            xAxis: {label: model.domain_axis_label},
+            yAxis: {label: model.y_label},
+            yAxisR: model.rangeAxes.length > 1 ? {label: model.rangeAxes[1].label} : null,
+            orientation: model.orientation != null ? model.orientation : "VERTICAL",
+            omitCheckboxes: model.omit_checkboxes,
+            nanoOffset: null,
+            timezone: model.timezone,
+            categoryNames: model.categoryNames,
+            showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
+            categoryMargin: model.category_margin,
+            categoryNamesLabelAngle: model.categoryNamesLabelAngle,
+            cumulative: model.cumulative,
+            binCount: model.bin_count,
+            normed: model.normed,
+            rangeMin: model.range_min,
+            rangeMax: model.range_max,
+            displayMode: model.displayMode != null ? model.displayMode : 'OVERLAP',
+            rightClose: model.right_close
+          });
+        } else {
+          newmodel = _.extend(newmodel, {
+            orientation: model.orientation != null ? model.orientation : "VERTICAL",
+            omitCheckboxes: model.omitCheckboxes,
+            xAxis: model.xAxis != null ? model.xAxis : {},
+            yAxis: model.yAxis != null ? model.yAxis : {},
+            yAxisR: model.yAxisR,
+            range: model.range != null ? model.range : null,
+            userFocus: model.focus != null ? model.focus : {},
+            xCursor: model.xCursor,
+            yCursor: model.yCursor,
+            timezone: model.timezone,
+            categoryNames: model.categoryNames,
+            showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
+            categoryMargin: model.categoryMargin,
+            categoryNamesLabelAngle: model.categoryNamesLabelAngle,
+            cumulative: model.cumulative,
+            binCount: model.binCount,
+            normed: model.normed,
+            rangeMin: model.rangeMin,
+            rangeMax: model.rangeMax,
+            displayMode: model.displayMode != null ? model.displayMode : 'OVERLAP',
+            rightClose: model.rightClose
+          });
+        }
+      }else{
+        if (model.version === "groovy") {  // model returned from serializer
+
+          newmodel = _.extend(newmodel, {
+            mode: model.mode,
+            ratio: model.ratio,
+            sticky: model.sticky,
+            round: model.round,
+            valueAccessor: model.valueAccessor
+          });
+        } else {
+          newmodel = _.extend(newmodel, {
+            mode: model.mode,
+            ratio: model.ratio,
+            sticky: model.sticky,
+            round: model.round,
+            valueAccessor: model.valueAccessor
+          });
+        }
+      }
+
+      return newmodel;
+    };
+
     return {
       lineDasharrayMap : {
         "solid" : "",
@@ -75,7 +182,8 @@
 
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
-          var item = data[i], eles = item.elements;
+          var item = data[i];
+          if (item.type === "treemapnode")  continue;
 
           // map coordinates using percentage
           // tooltips are possibly generated at the same time
@@ -91,6 +199,16 @@
         if (focus.xr != null) { focus.xr = xAxis.getPercent(focus.xr); }
         if (focus.yl != null) { focus.yl = yAxis.getPercent(focus.yl); }
         if (focus.yr != null) { focus.yr = yAxis.getPercent(focus.yr); }
+      },
+
+      formatTreeMapModel: function (newmodel) {
+        if (newmodel.data == null) {
+          newmodel.data = [];
+        }
+        var data = newmodel.data;
+        for (var i = 0; i < data.length; i++) {
+          plotFactory.recreatePlotItem(data[i]);
+        }
       },
 
       formatModel: function(newmodel) {
@@ -124,9 +242,13 @@
         for (var i = 0; i < data.length; i++) {
           var item = data[i], eles = item.elements;
 
-          var useYAxisR = plotUtils.useYAxisR(newmodel, item);
-          var itemlogy = useYAxisR ? logyR : logy;
-          var itemlogyb = useYAxisR ? logybR : logyb;
+          var eles = item.elements;
+
+          if (item.type !== "treemapnode") {
+            var useYAxisR = plotUtils.useYAxisR(newmodel, item);
+            var itemlogy = useYAxisR ? logyR : logy;
+            var itemlogyb = useYAxisR ? logybR : logyb;
+          }
 
           if (eles == null) eles = [];
 
@@ -348,7 +470,7 @@
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
           var item = data[i];
-          if (item.type === "constline" || item.type === "constband" || item.type === "heatmap") { continue; }
+          if (item.type === "treemapnode" || item.type === "constline" || item.type === "constband" || item.type === "heatmap") { continue; }
 
           var eles = item.elements;
           var unordered = false;
@@ -384,77 +506,7 @@
         } else {
           model.version = "direct";
         }
-        var newmodel;
-        if (model.version === "groovy") {  // model returned from serializer
-
-          newmodel = {
-            type : "plot",
-            title : model.chart_title != null ? model.chart_title : model.title,
-            margin : {},
-            userFocus : {},
-            xAxis : { label : model.domain_axis_label },
-            yAxis : { label : model.y_label },
-            yAxisR : model.rangeAxes.length > 1 ? { label : model.rangeAxes[1].label } : null,
-            showLegend : model.show_legend,
-            legendPosition : model.legend_position != null ? model.legend_position : {position: "TOP_RIGHT"},
-            legendLayout : model.legend_layout != null ? model.legend_layout : "VERTICAL",
-            orientation : model.orientation != null ? model.orientation : "VERTICAL",
-            omitCheckboxes : model.omit_checkboxes,
-            useToolTip : model.use_tool_tip != null ? model.use_tool_tip : false,
-            plotSize : {
-              "width" : model.init_width != null ? model.init_width : 1200,
-              "height" : model.init_height != null ? model.init_height : 350
-            },
-            nanoOffset : null,
-            timezone : model.timezone,
-            categoryNames: model.categoryNames,
-            showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
-            categoryMargin: model.category_margin,
-            categoryNamesLabelAngle: model.categoryNamesLabelAngle,
-            cumulative: model.cumulative,
-            binCount: model.bin_count,
-            normed: model.normed,
-            rangeMin: model.range_min,
-            rangeMax: model.range_max,
-            displayMode: model.displayMode != null ? model.displayMode : 'OVERLAP',
-            rightClose: model.right_close,
-            tips: model.tips ? model.tips : null
-          };
-        } else {
-          newmodel = {
-            showLegend : model.showLegend,
-            legendPosition : model.legendPosition != null ? model.legendPosition : {position: "TOP_RIGHT"},
-            legendLayout : model.legendLayout != null ? model.legendLayout : "VERTICAL",
-            orientation : model.orientation != null ? model.orientation : "VERTICAL",
-            omitCheckboxes : model.omitCheckboxes,
-            useToolTip : model.useToolTip != null ? model.useToolTip : false,
-            xAxis : model.xAxis != null ? model.xAxis : {},
-            yAxis : model.yAxis != null ? model.yAxis : {},
-            yAxisR : model.yAxisR,
-            margin : model.margin != null ? model.margin : {},
-            range : model.range != null ? model.range : null,
-            userFocus : model.focus != null ? model.focus : {},
-            xCursor : model.xCursor,
-            yCursor : model.yCursor,
-            plotSize : {
-              "width" : model.width != null ? model.width : 1200,
-              "height": model.height != null ? model.height : 350
-            },
-            timezone : model.timezone,
-            categoryNames: model.categoryNames,
-            showXGridlines: !(model.orientation !== 'HORIZONTAL' && model.type === "CategoryPlot"),
-            categoryMargin: model.categoryMargin,
-            categoryNamesLabelAngle: model.categoryNamesLabelAngle,
-            cumulative: model.cumulative,
-            binCount: model.binCount,
-            normed: model.normed,
-            rangeMin: model.range_min,
-            rangeMax: model.range_max,
-            displayMode: model.displayMode != null ? model.displayMode : 'OVERLAP',
-            rightClose: model.right_close,
-            tips: model.tips ? model.tips : null
-          };
-        }
+        var newmodel = createNewModel(model);
 
         newmodel.lodThreshold = (model.lodThreshold) ?
           model.lodThreshold : (prefs !== undefined && prefs.lodThreshold !== undefined ? prefs.lodThreshold : 4000) ;
@@ -473,82 +525,96 @@
         } else {  // DS generated directly
           _.extend(newmodel, model);
         }
-        this.formatModel(newmodel); // fill in null entries, compute y2, etc.
-        this.sortModel(newmodel);
 
-        // at this point, data is in standard format (log is applied as well)
+        if (model.type === 'TreeMap') {
+          this.formatTreeMapModel(newmodel);
+        } else {
+          this.formatModel(newmodel); // fill in null entries, compute y2, etc.
+          this.sortModel(newmodel);
 
-        var yAxisData = [], yAxisRData = [];
-        for (var i = 0; i < newmodel.data.length; i++) {
-          var item = newmodel.data[i];
-          if(newmodel.showLegend == null && item.legend){
-              newmodel.showLegend = true;
-          }
-          if(plotUtils.useYAxisR(newmodel, item)){
-            yAxisRData.push(item);
-          }else{
-            yAxisData.push(item);
-          }
-        }
+          // at this point, data is in standard format (log is applied as well)
 
-        newmodel.showLegend = newmodel.showLegend != null ? newmodel.showLegend : false;
-
-        var range = plotUtils.getDataRange(yAxisData).datarange;
-        var rangeR = _.isEmpty(yAxisRData) ? null : plotUtils.getDataRange(yAxisRData).datarange;
-
-        if (newmodel.yIncludeZero === true && range.yl > 0) {
-          range.yl = 0;
-          range.yspan = range.yr - range.yl;
-        }
-        if (rangeR && newmodel.yRIncludeZero === true && rangeR.yl > 0) {
-          rangeR.yl = 0;
-          rangeR.yspan = rangeR.yr - rangeR.yl;
-        }
-
-        var margin = newmodel.margin;
-        if (margin.bottom == null) { margin.bottom = .05; }
-        if (margin.top == null) { margin.top = .05; }
-        if (margin.left == null) { margin.left = .05; }
-        if (margin.right == null) { margin.right = .05; }
-
-        if (newmodel.vrange == null) {
-          // visible range initially is 10x larger than data range by default
-          var getModelRange = function(r){
-            return r ? {
-              xl: plotUtils.minus(r.xl, r.xspan * 10.0),
-              xr: plotUtils.plus(r.xr, r.xspan * 10.0),
-              yl: r.yl - r.yspan * 10.0,
-              yr: r.yr + r.yspan * 10.0
-            } : null;
-          };
-          newmodel.vrange = getModelRange(range);
-          newmodel.vrangeR = getModelRange(rangeR);
-
-          var vrange = newmodel.vrange;
-          var vrangeR = newmodel.vrangeR;
-
-          if (newmodel.yPreventNegative === true) {
-            vrange.yl = Math.min(0, range.yl);
-          }
-
-          var focus = newmodel.userFocus; // allow user to overide vrange
-          if (focus.xl != null) { vrange.xl = Math.min(focus.xl, vrange.xl); }
-          if (focus.xr != null) { vrange.xr = Math.max(focus.xr, vrange.xr); }
-          if (focus.yl != null) { vrange.yl = Math.min(focus.yl, vrange.yl); }
-          if (focus.yr != null) { vrange.yr = Math.max(focus.yr, vrange.yr); }
-
-          var updateRangeSpan = function(r) {
-            if (r) {
-              r.xspan = plotUtils.minus(r.xr, r.xl);
-              r.yspan = r.yr - r.yl;
+          var yAxisData = [], yAxisRData = [];
+          for (var i = 0; i < newmodel.data.length; i++) {
+            var item = newmodel.data[i];
+            if(newmodel.showLegend == null && item.legend){
+                newmodel.showLegend = true;
             }
-          };
-          updateRangeSpan(vrange);
-          updateRangeSpan(vrangeR);
+            if(plotUtils.useYAxisR(newmodel, item)){
+              yAxisRData.push(item);
+            }else{
+              yAxisData.push(item);
+            }
+          }
+
+          newmodel.showLegend = newmodel.showLegend != null ? newmodel.showLegend : false;
+
+          var range = plotUtils.getDataRange(yAxisData).datarange;
+          var rangeR = _.isEmpty(yAxisRData) ? null : plotUtils.getDataRange(yAxisRData).datarange;
+
+          if (newmodel.yIncludeZero === true && range.yl > 0) {
+            range.yl = 0;
+            range.yspan = range.yr - range.yl;
+          }
+          if (rangeR && newmodel.yRIncludeZero === true && rangeR.yl > 0) {
+            rangeR.yl = 0;
+            rangeR.yspan = rangeR.yr - rangeR.yl;
+          }
+
+          var margin = newmodel.margin;
+          if (margin.bottom == null) { margin.bottom = .05; }
+          if (margin.top == null) { margin.top = .05; }
+          if (margin.left == null) { margin.left = .05; }
+          if (margin.right == null) { margin.right = .05; }
+
+          if (newmodel.vrange == null) {
+            // visible range initially is 10x larger than data range by default
+            var getModelRange = function(r, logx, logy){
+              if (r == null) { return null; }
+              var result = {
+                xl: plotUtils.minus(r.xl, r.xspan * 10.0),
+                xr: plotUtils.plus(r.xr, r.xspan * 10.0),
+                yl: r.yl - r.yspan * 10.0,
+                yr: r.yr + r.yspan * 10.0
+              };
+              if(logx){
+                result.xl = Math.max(result.xl, r.xl - newmodel.margin.left * r.xspan);
+              }
+              if(logy){
+                result.yl = Math.max(result.yl, r.yl - newmodel.margin.left * r.yspan);
+              }
+              return result;
+            };
+            newmodel.vrange = getModelRange(range, newmodel.xAxis.type === "log", newmodel.yAxis.type === "log");
+            if(newmodel.yAxisR){
+              newmodel.vrangeR = getModelRange(rangeR, newmodel.xAxis.type === "log", newmodel.yAxisR.type === "log");
+            }
+
+            var vrange = newmodel.vrange;
+            var vrangeR = newmodel.vrangeR;
+
+            if (newmodel.yPreventNegative === true) {
+              vrange.yl = Math.min(0, range.yl);
+            }
+
+            var focus = newmodel.userFocus; // allow user to overide vrange
+            if (focus.xl != null) { vrange.xl = Math.min(focus.xl, vrange.xl); }
+            if (focus.xr != null) { vrange.xr = Math.max(focus.xr, vrange.xr); }
+            if (focus.yl != null) { vrange.yl = Math.min(focus.yl, vrange.yl); }
+            if (focus.yr != null) { vrange.yr = Math.max(focus.yr, vrange.yr); }
+
+            var updateRangeSpan = function(r) {
+              if (r) {
+                r.xspan = plotUtils.minus(r.xr, r.xl);
+                r.yspan = r.yr - r.yl;
+              }
+            };
+            updateRangeSpan(vrange);
+            updateRangeSpan(vrangeR);
+          }
+
+          this.remapModel(newmodel);
         }
-
-        this.remapModel(newmodel);
-
         newmodel.version = "complete";
         return newmodel;
       }

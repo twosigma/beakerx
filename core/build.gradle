@@ -110,6 +110,17 @@ task (copyGGVis, type: Copy) {
 	into 'src/main/web/app/vendor/ggvis/'
 }
 
+task copyPlotly << {
+  copy {
+    from 'src/main/web/vendor/plotly/'
+    into 'src/main/web/app/vendor/plotly/'
+  }
+  copy {
+    from 'src/main/web/vendor/htmlwidgets/'
+    into 'src/main/web/app/vendor/htmlwidgets/'
+  }
+}
+
 task (copyJQueryUIImages, type: Copy) {
     from 'src/main/web/vendor/jquery-ui/css/smoothness/images/'
     into 'src/main/web/app/dist/images/'
@@ -120,6 +131,7 @@ copyVendorStuff.dependsOn copyKatex
 copyVendorStuff.dependsOn copyRequireJS
 copyVendorStuff.dependsOn copyJQueryUIImages
 copyVendorStuff.dependsOn copyGGVis
+copyVendorStuff.dependsOn copyPlotly
 
 task (compileAssets, type: Exec) {
   commandLine(*(winOrUnix('npm', 'run-script', 'compile')))

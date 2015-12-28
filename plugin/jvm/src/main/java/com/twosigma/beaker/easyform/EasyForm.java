@@ -281,9 +281,6 @@ public class EasyForm extends ObservableMap<String, String> {
   }
 
   public String put(final String key, final String value) {
-    if (!isReady()) {
-      return null;
-    }
     checkComponentExists(key);
     EasyFormComponent component = getComponentMap().get(key);
     if (!component.checkValue(value)) {

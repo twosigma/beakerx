@@ -18,6 +18,26 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
+  module.directive('ngHideEx', function($animate) {
+    return {
+      scope: {
+        'ngHideEx': '=',
+        'afterShow': '&',
+        'afterHide': '&'
+      },
+      link: function(scope, element) {
+        scope.$watch('ngHideEx', function(hide, oldHide) {
+          if (hide) {
+            $animate.addClass(element, 'ng-hide', {tempClasses: 'ng-hide-animate'}).then(scope.afterHide);
+          }
+          if (!hide) {
+            $animate.removeClass(element, 'ng-hide', {tempClasses: 'ng-hide-animate'}).then(scope.afterShow);
+          }
+        });
+      }
+    }
+  });
+
   module.directive('bkCodeCell', function(
       bkUtils,
       bkEvaluatorManager,
@@ -70,21 +90,24 @@
           if ($scope.isLocked()) {
             return false;
           }
-          if ($scope.cellmodel.input.hidden === true) {
-            return false;
-          }
-          return true;
+          return $scope.cellmodel.input.hidden !== true;
         };
 
         $scope.bkNotebook = getBkNotebookWidget();
-        // ensure cm refreshes when 'unhide'
-        $scope.$watch('isShowInput()', function(newValue, oldValue) {
-          if ($scope.cm && newValue === true && newValue !== oldValue) {
+
+        //ensure cm refreshes when 'unhide'
+        $scope.afterShow = function () {
+          if ($scope.cm)
+            $scope.cm.refresh();
+        };
+        $scope.$watch('cellmodel.input.hidden', function(newValue, oldValue) {
+          if (oldValue === true && newValue !== oldValue) {
             bkUtils.fcall(function() {
-              $scope.cm.refresh();
+              $scope.afterShow();
             });
           }
         });
+
 
         $scope.isHiddenOutput = function() {
           return $scope.cellmodel.output.selectedType == 'Hidden';
@@ -369,12 +392,17 @@
           'Shift-Cmd-Enter':  function(cm) {
             scope.evaluateSelection(cm);
           }
+
         });
 
-        var initCodeMirror = function(){
-
+        var initCodeMirror = function() {
           var template = '<textarea class="bkcelltextarea" ng-model="cellmodel.input.body">' + scope.cellmodel.input.body + '</textarea>';
           $(element.find('.bkcelltextarea')[0]).replaceWith($(template));
+
+          _.extend(codeMirrorOptions, {
+            theme: bkHelper.getTheme()
+          });
+
 
           scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
@@ -401,7 +429,6 @@
             delete scope._shouldFocusCodeMirror;
             return scope.cm.focus();
           }
-
         };
 
         scope.displayOutput = false;
@@ -484,7 +511,6 @@
             }
 
             scope._shouldFocusCodeMirror = true;
-            scope.scrollTo();
           }
         });
 

@@ -39,7 +39,7 @@
    *     instead
    */
   module.factory('bkCoreManager', function(
-      $modal,
+      $uibModal,
       $rootScope,
       $document,
       $location,
@@ -265,7 +265,14 @@
     var bkCoreManager = {
 
       _prefs: {
-
+        setTheme: function (theme) {
+          bkCoreManager.colorize(theme);
+          bkHelper.setInputCellTheme(theme);
+          this.theme = theme;
+        },
+        getTheme: function () {
+          return this.theme;
+        },
         setFSOrderBy: function (fs_order_by) {
           this.fs_order_by = fs_order_by;
         },
@@ -278,6 +285,18 @@
         getFSReverse: function () {
           return this.fs_reverse;
         }
+      },
+
+      setTheme: function (theme) {
+        this._prefs.setTheme(theme);
+
+        bkUtils.httpPost('../beaker/rest/util/setPreference', {
+          preferencename: 'theme',
+          preferencevalue: theme
+        });
+      },
+      getTheme: function () {
+        return this._prefs.getTheme();
       },
 
       setFSOrderBy: function (fs_order_by) {
@@ -775,7 +794,8 @@
           matchBrackets: true,
           extraKeys: keys,
           goToNextCodeCell: goToNextCodeCell,
-          scrollbarStyle: "simple"
+          scrollbarStyle: "simple",
+          theme: bkCoreManager.getTheme()
         };
       },
 
@@ -833,7 +853,7 @@
         }
 
         modalDialogOp.setStrategy(strategy);
-        var dd = $modal.open(options);
+        var dd = $uibModal.open(options);
 
         attachSubmitListener();
 
@@ -995,7 +1015,7 @@
         } else {
           options.template = template;
         }
-        var dd = $modal.open(options);
+        var dd = $uibModal.open(options);
         return dd.result.then(function(result) {
           if (callback) {
             callback(result);
@@ -1013,7 +1033,7 @@
           template: JST['mainapp/components/pluginmanager/pluginmanager']()
         };
 
-        var dd = $modal.open(options);
+        var dd = $uibModal.open(options);
         return dd.result;
       },
       showPublishForm: function(nModel, callback) {
@@ -1028,12 +1048,30 @@
           resolve: {nModel: function() { return (nModel ? nModel : undefined); } }
         };
 
-        var dd = $modal.open(options);
+        var dd = $uibModal.open(options);
         return dd.result.then(function(result) {
           if (callback) {
             callback(result);
           }
         });
+      },
+      colorize: function (theme) {
+        var colorizedElements = $("html");
+        var ca = colorizedElements.attr('class');
+        var classes = [];
+        if (ca && ca.length && ca.split) {
+          ca = jQuery.trim(ca);
+          /* strip leading and trailing spaces */
+          classes = ca.split(' ');
+        }
+        var themeStylePrefix = "beaker-theme-";
+        var clazz = _.find(classes, function (e) {
+          return e.indexOf(themeStylePrefix) !== -1
+        });
+        if (clazz) colorizedElements.removeClass(clazz);
+        if ("default" !== theme) {
+          colorizedElements.addClass(themeStylePrefix + theme);
+        }
       }
     };
 
@@ -1055,6 +1093,15 @@
       bkCoreManager._prefs.fs_reverse = false;
     });
 
+    bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
+      preference: 'theme'
+    }).success(function (theme) {
+      bkCoreManager._prefs.setTheme(_.contains(_.values(GLOBALS.THEMES), theme) ? theme : GLOBALS.THEMES.DEFAULT);
+    }).error(function (response) {
+      console.log(response);
+      bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);
+    });
+
     return bkCoreManager;
   });
 
@@ -1070,7 +1117,7 @@
     };
   });
 
-  module.controller('modalDialogCtrl', function($scope, $rootScope, $modalInstance, modalDialogOp,
+  module.controller('modalDialogCtrl', function($scope, $rootScope, $uibModalInstance, modalDialogOp,
                                                 bkUtils) {
     $scope.getStrategy = function() {
       return modalDialogOp.getStrategy();
@@ -1082,7 +1129,7 @@
       $scope.close($scope.getStrategy().getResult());
     });
     $scope.close = function(result) {
-      $modalInstance.close(result);
+      $uibModalInstance.close(result);
     };
   });
 

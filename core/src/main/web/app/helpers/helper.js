@@ -43,6 +43,14 @@
     };
 
     var bkHelper = {
+
+      setTheme: function (theme) {
+        bkCoreManager.setTheme(theme);
+      },
+      getTheme: function () {
+        return bkCoreManager.getTheme();
+      },
+
       // enable debug
       debug: function() {
         window.bkDebug = bkDebug;
@@ -549,6 +557,18 @@
           return bkNotebook.getCMKeyMapMode();
         }
       },
+      setInputCellTheme: function(theme) {
+        var bkNotebook = getBkNotebookWidget();
+        if (bkNotebook) {
+          return bkNotebook.setCMTheme(theme);
+        }
+      },
+      getInputCellTheme: function() {
+        var bkNotebook = getBkNotebookWidget();
+        if (bkNotebook) {
+          return bkNotebook.getCMTheme();
+        }
+      },
 
       // low level utils (bkUtils)
       refreshRootScope: function() {
@@ -733,14 +753,29 @@
       sanitizeNotebookModel: function(m) {
         var notebookModelCopy = angular.copy(m);
         bkHelper.stripOutBeakerPrefs(notebookModelCopy);
-        //Save running cells as interrupted
+
         if (notebookModelCopy.cells) {
           for (var i = 0; i < notebookModelCopy.cells.length; i++) {
             var currentCell = notebookModelCopy.cells[i];
-            if (currentCell && currentCell.output && currentCell.output.result
-              && currentCell.output.result.innertype === 'Progress') {
-              currentCell.output.result.innertype = 'Error';
-              currentCell.output.result.object = 'Interrupted, saved while running.'
+            if (currentCell && currentCell.output) {
+
+              //save output height
+              var cellId = currentCell.id;
+              var output = $("[cellid=" + cellId + "] div.code-cell-output");
+              if (output && output[0]) {
+                currentCell.output.height = output[0].offsetHeight;
+              }
+
+              //Save running cells as interrupted
+              if (currentCell.output.result && currentCell.output.result.innertype === 'Progress') {
+                currentCell.output.result.innertype = 'Error';
+                currentCell.output.result.object = 'Interrupted, saved while running.'
+              }
+
+              //remove update_id to avoid subscribing to a nonexistent object
+              if (currentCell.output.result) {
+                delete currentCell.output.result.update_id;
+              }
             }
           }
         }

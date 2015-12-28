@@ -27,7 +27,8 @@
                          bkCellMenuPluginManager,
                          bkSessionManager,
                          bkUtils,
-                         GradientLegend) {
+                         GradientLegend,
+                         bkoChartExtender) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -1657,6 +1658,7 @@
         };
         scope.disableZoom = function() {
           scope.svg.call(scope.zoomObj.on("zoomstart", null).on("zoom", null).on("zoomend", null));
+          scope.svg.on("wheel.zoom", null);
         };
 
         scope.mouseleaveClear = function() {
@@ -1819,13 +1821,14 @@
             return scope.mouseDown();
           }).on("mouseup", function() {
             return scope.mouseUp();
+          }).on("mouseleave", function() {
+            return scope.disableZoom();
           });
           scope.jqsvg.mousemove(function(e) {
             return scope.renderCursor(e);
           }).mouseleave(function(e) {
             return scope.mouseleaveClear(e);
           });
-          scope.enableZoom();
           scope.calcRange();
 
           // init copies focus to defaultFocus, called only once
@@ -1884,6 +1887,9 @@
           }
         };
 
+        if (scope.model.getCellModel().type === "TreeMap"){
+          bkoChartExtender.extend(scope, element, attrs);
+        }
         scope.init(); // initialize
         scope.$watch('getDumpState()', function (result) {
           if (result !== undefined && result.plotSize === undefined) {
@@ -2082,5 +2088,6 @@
     "bkSessionManager",
     "bkUtils",
     "GradientLegend",
+    "bkoChartExtender",
     retfunc]);
 })();

@@ -148,7 +148,7 @@
     var CELL_TYPE = 'bko-tabledisplay';
     return {
       template: JST['bko-tabledisplay/output-table'],
-      controller: function($scope, $modal) {
+      controller: function($scope, $uibModal) {
 
         $scope.id = 'table_' + bkUtils.generateId(6);
 
@@ -616,7 +616,7 @@
           $scope.rowsToDisplayOld = $scope.pagination.rowsToDisplay;
           $scope.fixLeftOld       = $scope.pagination.fixLeft;
           $scope.fixRightOld      = $scope.pagination.fixRight;
-          $scope.modal = $modal.open(options);
+          $scope.modal = $uibModal.open(options);
         };
 
         $scope.closeOptionsDialog = function() {

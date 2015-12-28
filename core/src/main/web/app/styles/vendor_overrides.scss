@@ -132,3 +132,9 @@ table.DTFC_Cloned tfoot {
   background-position: right;
   background-repeat: no-repeat;
 }
+
+.easy-form-container {
+  .list-component-outer.hide-scrollbar select {
+    overflow-y: hidden;
+  }
+}

@@ -68,6 +68,21 @@ $btn-bkg-color: #505050;
     }
   }
 
+
+  .panel-primary {
+    border-color: #7b7462;
+    .panel-body{
+      background: $main-theme-panel-background !important;
+    }
+    .panel-heading{
+      background:#505050 !important;
+      border-color: #7b7462;
+      .panel-title{
+        background:#505050 !important;
+      }
+    }
+  }
+
   a {
     color: #f4c20b;
 
@@ -250,7 +265,7 @@ $btn-bkg-color: #505050;
   }
 
   .loading-state {
-    color: $dropdown-menu-color;
+    color: $std-fg-text-color;
   }
 
   .toggle-menu {
@@ -448,6 +463,10 @@ $btn-bkg-color: #505050;
 
     .navbar-inverse .navbar-text {
       background-color: #3f5264 !important;
+    }
+
+    .fa.fa-refresh {
+      color: $std-fg-text-color !important;
     }
   }
 

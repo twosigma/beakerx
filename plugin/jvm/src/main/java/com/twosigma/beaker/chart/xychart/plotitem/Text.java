@@ -30,6 +30,7 @@ public class Text {
   private Double  pointerAngle = (-0.25f) * Math.PI;
   private Color   color;
   private int size = 13;
+  private Class plotType;
 
   public Number getX() {
     return x;
@@ -86,5 +87,13 @@ public class Text {
 
   public void setSize(int size) {
     this.size = size;
+  }
+
+  public Class getPlotType() {
+    return plotType;
+  }
+
+  public void setPlotType(Class plotType) {
+    this.plotType = plotType;
   }
 }

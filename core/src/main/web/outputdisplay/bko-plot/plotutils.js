@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    var retfunc = function(bkUtils) {
+    var retfunc = function(bkUtils, bkHelper, GLOBALS) {
       var rgbaToHex = function (r, g, b, a) {
         a = 0xFF | a;
         var num = ((a & 0xFF) << 24) |
@@ -12,6 +12,23 @@
         }
         return "#" + num.toString(16);
       };
+      var defaultColors = {};
+      defaultColors[GLOBALS.THEMES.DEFAULT] = [
+        rgbaToHex(140, 29, 23),  // red
+        rgbaToHex(33, 87, 141),  // blue
+        rgbaToHex(150, 130, 54), // yellow
+        rgbaToHex(20, 30, 120),  // violet
+        rgbaToHex(54, 100, 54),  // green
+        rgbaToHex(60, 30, 50),   // dark
+      ];
+      defaultColors[GLOBALS.THEMES.AMBIANCE] = [
+        rgbaToHex(46, 119, 191),  // red
+        rgbaToHex(191, 39, 31),   // blue
+        rgbaToHex(230, 230, 65),  // yellow
+        rgbaToHex(30, 40, 190),   // violet
+        rgbaToHex(75, 160, 75),   // green
+        rgbaToHex(120, 100, 100), // dark
+      ];
     return {
       outsideScr: function(scope, x, y) {
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
@@ -786,58 +803,50 @@
         return n1 instanceof Big ? n1.div(n2) : n1 / n2;
       },
 
-      defaultColors: [
-        rgbaToHex(140, 29, 23),  // red
-        rgbaToHex(33, 87, 141),  // blue
-        rgbaToHex(150, 130, 54), // yellow
-        rgbaToHex(20, 30, 120),  // violet
-        rgbaToHex(54, 100, 54),  // green
-        rgbaToHex(60, 30, 50),   // dark
-      ],
-
-      createNiceColor: function(){
+      createNiceColor: function () {
         var hue = Math.random();
         var saturation = 0.75;
         var luminance = 0.5;
         var rgb = this.hslToRgb(hue, saturation, luminance);
         var niceColor = rgbaToHex(rgb[0], rgb[1], rgb[2]);
-        while (this.defaultColors.indexOf(niceColor) !== -1) {
+        while (defaultColors[bkHelper.getTheme()].indexOf(niceColor) !== -1) {
           niceColor = this.createNiceColor();
         }
         return niceColor;
       },
 
       //http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
-      hslToRgb: function(h, s, l){
+      hslToRgb: function (h, s, l) {
         var r, g, b;
 
-        if(s == 0){
+        if (s == 0) {
           r = g = b = l; // achromatic
-        }else{
-          var hue2rgb = function(p, q, t){
-            if(t < 0) t += 1;
-            if(t > 1) t -= 1;
-            if(t < 1/6) return p + (q - p) * 6 * t;
-            if(t < 1/2) return q;
-            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        } else {
+          var hue2rgb = function (p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1 / 6) return p + (q - p) * 6 * t;
+            if (t < 1 / 2) return q;
+            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
             return p;
-          }
+          };
 
           var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
           var p = 2 * l - q;
-          r = hue2rgb(p, q, h + 1/3);
+          r = hue2rgb(p, q, h + 1 / 3);
           g = hue2rgb(p, q, h);
-          b = hue2rgb(p, q, h - 1/3);
+          b = hue2rgb(p, q, h - 1 / 3);
         }
 
         return [r * 255, g * 255, b * 255];
       },
 
 
-      getDefaultColor: function(i) {
-        return i < this.defaultColors.length ? this.defaultColors[i] : this.createNiceColor();
+      getDefaultColor: function (i) {
+        var themeColors = defaultColors[bkHelper.getTheme()];
+        return i < themeColors.length ? themeColors[i] : this.createNiceColor();
       }
     };
   };
-  beaker.bkoFactory('plotUtils', ["bkUtils", retfunc]);
+  beaker.bkoFactory('plotUtils', ["bkUtils", "bkHelper", "GLOBALS", retfunc]);
 })();

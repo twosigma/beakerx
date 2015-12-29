@@ -1886,6 +1886,15 @@
         scope.$watch('getCellModel()', function() {
           scope.init();
         });
+        scope.getTheme = function(){
+          return bkHelper.getTheme();
+        };
+        scope.$watch('getTheme()', function(newValue, oldValue) {
+          if(newValue !== oldValue) {
+            scope.standardizeData();
+            scope.update();
+          }
+        });
 
         scope.$on('$destroy', function() {
           $(window).off('resize',scope.resizeFunction);

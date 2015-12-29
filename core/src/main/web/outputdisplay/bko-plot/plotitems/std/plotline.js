@@ -218,7 +218,9 @@
       var itemsvg = svg.select("#" + this.id);
 
       itemsvg.selectAll("path")
-        .data([props]).enter().append("path")
+        .data(props, function(d) { return d.id; }).exit().remove();
+      itemsvg.selectAll("path")
+        .data([props], function(d) { return d.id; }).enter().append("path")
         .attr("class", this.plotClass)
         .style("stroke", function(d) { return d.st; })
         .style("stroke-dasharray", function(d) { return d.st_da; })

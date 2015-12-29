@@ -16,7 +16,6 @@
 
 package com.twosigma.beaker.chart.xychart;
 
-import com.twosigma.beaker.chart.ChartUtils.ColorPalette;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.Points;

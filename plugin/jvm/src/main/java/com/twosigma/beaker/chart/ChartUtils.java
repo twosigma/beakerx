@@ -22,33 +22,6 @@ import java.util.Random;
 
 public class ChartUtils {
 
-  public static class ColorPalette {
-    private static final List<Color> colors = new ArrayList<>(Arrays.asList(new Color[]{
-      new Color(140, 29, 23), // red
-      new Color(33, 87, 141), // blue
-      new Color(150, 130, 54),// yellow
-      new Color(20, 30, 120), // violet
-      new Color(54, 100, 54), // green
-      new Color(60, 30, 50),  // dark
-    }));
-
-    public static Color getColor(int i) {
-      return i < colors.size() ? colors.get(i) : createNiceColor();
-    }
-
-    public static Color createNiceColor() {
-      Random random = new Random();
-      final float hue = random.nextFloat();
-      final float saturation = 0.75f;
-      final float luminance = 0.85f;
-      Color niceColor = new Color(java.awt.Color.getHSBColor(hue, saturation, luminance).getRGB());
-      while (colors.contains(niceColor)) {
-        niceColor = createNiceColor();
-      }
-      return niceColor;
-    }
-  }
-
   public static List<Object> convertColors(List colors, String errorMsg) {
     List<Object> clist = new ArrayList<>(colors.size());
     for(Object c : colors){

@@ -45,7 +45,7 @@ public class ColorDeserializer implements ObjectDeserializer {
                     (int)( i        & 0xFF),
                     (int)((i >> 24) & 0xFF));
     } catch (Exception e) {
-      logger.log(Level.SEVERE, "exception deserializing Date ", e);
+      logger.log(Level.SEVERE, "exception deserializing Color ", e);
     }
     return o;
   }

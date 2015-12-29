@@ -653,6 +653,8 @@
               "type": "constline",
               "width": line.width != null ? line.width : 1,
               "color": "black",
+              "yAxis": line.yAxis,
+              "showLabel": line.showLabel,
               "elements": []
             };
             if (line.color != null) {
@@ -663,14 +665,28 @@
             if (style == null) { style = ""; }
             item.style = lineStyleMap[style];
 
-            if (line.x != null) {
-              var ele = {"type": "x", "x": line.x};
-            } else if(line.y != null) {
-              var y = line.y;
-              var ele = {"type": "y", "y": y};
+            var addElement = function (line, type, log) {
+              if (line[type] == null || log && plotUtils.lte(line[type], 0)) {
+                return false;
+              }
+              var ele = {"type": type};
+              ele[type] = line[type];
+              item.elements.push(ele);
+            };
+
+            if (model.type === "NanoPlot") {
+              if (!_.isEmpty(line.x)) {
+                line.x = new Big(line.x);
+                addElement(line, "x", logx)
+              }
+            } else {
+              addElement(line, "x", logx)
             }
-            item.elements.push(ele);
-            newmodel.data.push(item);
+            addElement(line, "y", yAxisSettings.logy)
+
+            if (!_.isEmpty(item.elements)) {
+              newmodel.data.push(item);
+            }
           }
         }
         if (model.constant_bands != null) {
@@ -687,18 +703,20 @@
             if (band.x != null) {
               var ele = {
                 "type" : "x",
-                "x" : band.x[0],
-                "x2" : band.x[1]
+                "x" : plotUtils.convertInfinityValue(band.x[0]),
+                "x2" : plotUtils.convertInfinityValue(band.x[1])
               };
-            } else if (band.y != null) {
+              item.elements.push(ele);
+            }
+            if (band.y != null) {
               var ele = {
                 "type" : "y"
               };
               var y1 = band.y[0], y2 = band.y[1];
-              ele.y = y1;
-              ele.y2 = y2;
+              ele.y = plotUtils.convertInfinityValue(y1);
+              ele.y2 = plotUtils.convertInfinityValue(y2);
+              item.elements.push(ele);
             }
-            item.elements.push(ele);
             newmodel.data.push(item);
           }
         }
@@ -707,7 +725,13 @@
             var mtext = model.texts[i];
             var item = {
               "type" : "text",
-              "color" : mtext.color != null ? mtext.color : "black",
+
+              "color" : mtext.color != null ? "#" + mtext.color.substr(3) : "black",
+              "color_opacity" : mtext.color != null ? parseInt(mtext.color.substr(1,2), 16) / 255 : 1,
+              "show_pointer" : mtext.show_pointer,
+              "pointer_angle" : mtext.pointer_angle,
+              "size" : mtext.size,
+
               "elements" : []
             };
             var x = mtext.x;

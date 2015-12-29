@@ -17,14 +17,16 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.twosigma.beaker.shared.module.util.ControlCharacterUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.JsonParser.Feature;
 import java.io.IOException;
+
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
@@ -63,10 +65,14 @@ public class NamespaceRest {
       return("name is illegal for notebook namespace: \'" + name + "\'");
     }
     if (null != value) {
+      if (ControlCharacterUtils.containsControlCharacters(value)) {
+        value = ControlCharacterUtils.escapeControlCharacters(value);
+      }
       parsedValue = mapper.readValue(value, Object.class);
       unset = false;
     }
     this.namespaceService.set(session, name, parsedValue, unset, sync);
     return "ok";
   }
+
 }

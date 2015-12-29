@@ -1,6 +1,17 @@
 (function() {
     'use strict';
     var retfunc = function(bkUtils) {
+      var rgbaToHex = function (r, g, b, a) {
+        a = 0xFF | a;
+        var num = ((a & 0xFF) << 24) |
+                  ((r & 0xFF) << 16) |
+                  ((g & 0xFF) << 8)  |
+                  ((b & 0xFF));
+        if(num < 0) {
+          num = 0xFFFFFFFF + num + 1;
+        }
+        return "#" + num.toString(16);
+      };
     return {
       outsideScr: function(scope, x, y) {
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
@@ -773,6 +784,19 @@
       },
       div: function(n1, n2){
         return n1 instanceof Big ? n1.div(n2) : n1 / n2;
+      },
+
+      defaultColors: [
+        rgbaToHex(140, 29, 23),  // red
+        rgbaToHex(33, 87, 141),  // blue
+        rgbaToHex(150, 130, 54), // yellow
+        rgbaToHex(20, 30, 120),  // violet
+        rgbaToHex(54, 100, 54),  // green
+        rgbaToHex(60, 30, 50),   // dark
+      ],
+
+      getDefaultColor: function(i) {
+        return this.defaultColors[i];
       }
     };
   };

@@ -102,13 +102,18 @@
       };
     };
 
-    var processItem = function(item, newmodel, yAxisRSettings, yAxisSettings) {
+    var  processItem = function(item, index, newmodel, yAxisRSettings, yAxisSettings) {
       item.legend = item.display_name;
       delete item.display_name;
 
       if (item.use_tool_tip != null) {
         item.useToolTip = item.use_tool_tip;
         delete item.use_tool_tip;
+      }
+
+      if(item.color == null && item.colors == null) {
+        //set default colors
+        item.color = plotUtils.getDefaultColor(index);
       }
 
       if (item.color != null) {
@@ -511,7 +516,7 @@
                   item.x.push(elementsxs[i][j]);
                 }
 
-                processItem(item, newmodel, yAxisRSettings, yAxisSettings, logx);
+                processItem(item, i, newmodel, yAxisRSettings, yAxisSettings, logx);
 
                 var elements = [];
                 for (var j = 0; j < item.x.length; j++) {
@@ -591,7 +596,7 @@
                 item.width = histvalue.dx;
               }
 
-              processItem(item, newmodel, yAxisRSettings, yAxisSettings, logx);
+              processItem(item, i, newmodel, yAxisRSettings, yAxisSettings, logx);
 
               var elements = [];
               for (var j = 0; j < item.x.length; j++) {
@@ -618,7 +623,7 @@
             for (var i = 0; i < numLines; i++) {
               var item = list[i];
 
-              processItem(item, newmodel, yAxisRSettings, yAxisSettings);
+              processItem(item, i, newmodel, yAxisRSettings, yAxisSettings);
 
               var elements = [];
               for (var j = 0; j < item.x.length; j++) {

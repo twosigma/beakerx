@@ -16,9 +16,7 @@
 
 package com.twosigma.beaker.chart.serializer;
 
-import com.twosigma.beaker.chart.ChartUtils.ColorPalette;
 import com.twosigma.beaker.chart.xychart.XYChart;
-import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
 import java.io.IOException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
@@ -38,12 +36,6 @@ public class XYChartSerializer extends AbstractChartSerializer<XYChart> {
 
     serialize(xychart, jgen);
 
-    int i = 0;
-    for (XYGraphics g : xychart.getGraphics()) {
-      if (g.getColor() == null) {
-        g.setColori(ColorPalette.getColor(i++));
-      }
-    }
     jgen.writeObjectField("graphics_list", xychart.getGraphics());
     jgen.writeObjectField("constant_lines", xychart.getConstantLines());
     jgen.writeObjectField("constant_bands", xychart.getConstantBands());

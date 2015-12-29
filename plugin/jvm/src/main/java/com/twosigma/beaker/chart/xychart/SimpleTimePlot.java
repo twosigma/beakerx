@@ -71,33 +71,15 @@ public class SimpleTimePlot extends TimePlot {
   }
 
   private List<Color> getChartColors() {
+    List<Color> chartColors = new ArrayList<>();
     if (colors != null) {
-
-      List<Color> chartColors = new ArrayList<>();
       for (int i = 0; i < columns.size(); i++) {
-        Color color = null;
         if (i < colors.size()) {
-          color = createChartColor(colors.get(i));
+          chartColors.add(createChartColor(colors.get(i)));
         }
-        if (color == null) {
-          color = ColorPalette.createNiceColor();
-          while (chartColors.contains(color)) {
-            color = ColorPalette.createNiceColor();
-          }
-        }
-        chartColors.add(color);
       }
-      return chartColors;
     }
-    return getNiceColors(columns.size());
-  }
-
-  private List<Color> getNiceColors(int n) {
-    List<Color> colors = new ArrayList<>();
-    for (int i = 0; i < n; i++){
-      colors.add(ColorPalette.getColor(i));
-    }
-    return colors;
+    return chartColors;
   }
 
   private Color createChartColor(Object color) {
@@ -168,7 +150,9 @@ public class SimpleTimePlot extends TimePlot {
           } else {
             line.setDisplayName(columns.get(i));
           }
-          line.setColor(colors.get(i));
+          if(i < colors.size()){
+            line.setColor(colors.get(i));
+          }
 
           add(line);
         }
@@ -183,7 +167,9 @@ public class SimpleTimePlot extends TimePlot {
           } else {
             points.setDisplayName(columns.get(i));
           }
-          points.setColor(colors.get(i));
+          if(i < colors.size()){
+            points.setColor(colors.get(i));
+          }
 
           add(points);
         }

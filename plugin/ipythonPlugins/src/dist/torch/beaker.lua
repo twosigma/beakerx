@@ -14,7 +14,7 @@
 
 local beaker = {}
 
-curl = require 'curl'
+curle = require 'curle'
 json = require 'json'
 
 local sessionId
@@ -31,8 +31,8 @@ function beaker.getSession ()
 end
 
 function beaker.get (var)
-  reply = curl.get({url = 'http://' .. coreUrl .. '/rest/namespace/get',
-                    auth = coreAuth, query = {name = var, session = beaker.sessionId}})
+  reply = curle.get({url = 'http://' .. coreUrl .. '/rest/namespace/get',
+                     auth = coreAuth, query = {name = var, session = beaker.sessionId}})
   reply = json.decode(reply)
   if not reply.defined then
     error('name \'' .. var .. '\' is not defined in notebook namespace')
@@ -40,15 +40,13 @@ function beaker.get (var)
   return reply.value
 end
 
-# this does not work because this curl interface uses -F (multipart/form-data)
-# but our server needs -d (application/x-www-form-urlencoded).  use a different one.
 function beaker.set4 (var, val, unset, sync)
   args = {name = var, session = beaker.sessionId, sync = sync}
   if not unset then
     args.value = json.encode(val)
   end
-  reply = curl.post({url = 'http://' .. coreUrl .. '/rest/namespace/set',
-                     auth = coreAuth, form = args})
+  reply = curle.post({url = 'http://' .. coreUrl .. '/rest/namespace/set',
+                      auth = coreAuth, form = args})
   return reply
 end
 

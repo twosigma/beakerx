@@ -102,6 +102,7 @@ import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.serialization.BufferedImageDeserializer;
 import com.twosigma.beaker.jvm.serialization.BufferedImageSerializer;
 import com.twosigma.beaker.jvm.serialization.CollectionDeserializer;
+import com.twosigma.beaker.jvm.serialization.ColorDeserializer;
 import com.twosigma.beaker.jvm.serialization.DateDeserializer;
 import com.twosigma.beaker.jvm.serialization.DateSerializer;
 import com.twosigma.beaker.jvm.serialization.ImageIconSerializer;
@@ -169,6 +170,7 @@ public class SerializerModule extends AbstractModule {
       serializer.addTypeDeserializer(new ResultsDeserializer(serializer));
       serializer.addTypeDeserializer(new CollectionDeserializer(serializer));
       serializer.addTypeDeserializer(new MapDeserializer(serializer));
+      serializer.addTypeDeserializer(new ColorDeserializer(serializer));
       } catch(Exception e) {
       logger.log(Level.SEVERE, "exception while creating ObjectSerializer", e);
     }

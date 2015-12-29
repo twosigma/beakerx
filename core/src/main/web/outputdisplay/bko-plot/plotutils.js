@@ -1,34 +1,6 @@
 (function() {
     'use strict';
     var retfunc = function(bkUtils, bkHelper, GLOBALS) {
-      var rgbaToHex = function (r, g, b, a) {
-        a = 0xFF | a;
-        var num = ((a & 0xFF) << 24) |
-                  ((r & 0xFF) << 16) |
-                  ((g & 0xFF) << 8)  |
-                  ((b & 0xFF));
-        if(num < 0) {
-          num = 0xFFFFFFFF + num + 1;
-        }
-        return "#" + num.toString(16);
-      };
-      var defaultColors = {};
-      defaultColors[GLOBALS.THEMES.DEFAULT] = [
-        rgbaToHex(140, 29, 23),  // red
-        rgbaToHex(33, 87, 141),  // blue
-        rgbaToHex(150, 130, 54), // yellow
-        rgbaToHex(20, 30, 120),  // violet
-        rgbaToHex(54, 100, 54),  // green
-        rgbaToHex(60, 30, 50),   // dark
-      ];
-      defaultColors[GLOBALS.THEMES.AMBIANCE] = [
-        rgbaToHex(46, 119, 191),  // red
-        rgbaToHex(191, 39, 31),   // blue
-        rgbaToHex(230, 230, 65),  // yellow
-        rgbaToHex(30, 40, 190),   // violet
-        rgbaToHex(75, 160, 75),   // green
-        rgbaToHex(120, 100, 100), // dark
-      ];
     return {
       outsideScr: function(scope, x, y) {
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
@@ -808,8 +780,8 @@
         var saturation = 0.75;
         var luminance = 0.5;
         var rgb = this.hslToRgb(hue, saturation, luminance);
-        var niceColor = rgbaToHex(rgb[0], rgb[1], rgb[2]);
-        while (defaultColors[bkHelper.getTheme()].indexOf(niceColor) !== -1) {
+        var niceColor = bkHelper.rgbaToHex(rgb[0], rgb[1], rgb[2]);
+        while (bkHelper.defaultPlotColors[bkHelper.getTheme()].indexOf(niceColor) !== -1) {
           niceColor = this.createNiceColor();
         }
         return niceColor;
@@ -843,7 +815,7 @@
 
 
       getDefaultColor: function (i) {
-        var themeColors = defaultColors[bkHelper.getTheme()];
+        var themeColors = bkHelper.defaultPlotColors[bkHelper.getTheme()];
         return i < themeColors.length ? themeColors[i] : this.createNiceColor();
       }
     };

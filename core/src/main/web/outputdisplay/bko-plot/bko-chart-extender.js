@@ -70,7 +70,7 @@
 
 					scope.plotSize = {};
 
-					_(scope.plotSize).extend(scope.stdmodel.plotSize);
+					_.extend(scope.plotSize, scope.stdmodel.plotSize);
 					var savedstate = scope.model.getDumpState();
 					if (savedstate !== undefined && savedstate.plotSize !== undefined) {
 						scope.loadState(savedstate);

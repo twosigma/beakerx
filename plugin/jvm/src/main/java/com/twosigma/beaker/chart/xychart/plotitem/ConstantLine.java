@@ -16,10 +16,97 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
+import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.Graphics;
+
+import java.util.Date;
+
 /**
  * ConstantLine
  *
  */
-public class ConstantLine {
+public class ConstantLine extends Graphics{
+  private Number      x;
+  private Number      y;
+  private Color       baseColor;
+  private Float       width       = 1.5f;
+  private StrokeType  style;
+  private Class       plotType;
+  private boolean     showLabel;
 
+
+  public Number getX() {
+    return x;
+  }
+
+  public void setX(Object x) {
+    if (x instanceof Number) {
+      this.x = (Number)x;
+    } else if (x instanceof Date) {
+      this.x = ((Date)x).getTime();
+    } else {
+      throw new IllegalArgumentException("x takes Number or Date");
+    }
+  }
+
+  public Number getY() {
+    return y;
+  }
+
+  public void setY(Number y) {
+    this.y = y;
+  }
+
+  public void setColor(Object color) {
+    if (color instanceof Color) {
+      this.baseColor = (Color) color;
+    } else if (color instanceof java.awt.Color) {
+      this.baseColor = new Color((java.awt.Color) color);
+    } else {
+      throw new IllegalArgumentException(
+        "setColor takes Color or java.awt.Color");
+    }
+  }
+
+  @Override
+  public void setColori(Color color) {
+    this.baseColor = color;
+  }
+
+  @Override
+  public Color getColor() {
+    return baseColor;
+  }
+
+  public Float getWidth() {
+    return width;
+  }
+
+  public void setWidth(Float width) {
+    this.width = width;
+  }
+
+  public StrokeType getStyle() {
+    return style;
+  }
+
+  public void setStyle(StrokeType style) {
+    this.style = style;
+  }
+
+  public Class getPlotType() {
+    return plotType;
+  }
+
+  public void setPlotType(Class plotType) {
+    this.plotType = plotType;
+  }
+
+  public Boolean getShowLabel() {
+    return showLabel;
+  }
+
+  public void setShowLabel(boolean showLabel) {
+    this.showLabel = showLabel;
+  }
 }

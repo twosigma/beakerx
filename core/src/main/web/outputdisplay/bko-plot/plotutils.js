@@ -33,13 +33,30 @@
           var itemrange = data[i].getRange();
           this.updateRange(datarange, itemrange);
         }
-        if (visibleItem === 0 || datarange.xl === Infinity) {
+        if (datarange.xl === Infinity && datarange.xr !== -Infinity) {
+          datarange.xl = datarange.xr - 1;
+        } else if (datarange.xr === -Infinity && datarange.xl !== Infinity) {
+          datarange.xr = datarange.xl + 1;
+        } else if (visibleItem === 0 || datarange.xl === Infinity) {
           datarange.xl = 0;
           datarange.xr = 1;
+        } else if (datarange.xl > datarange.xr) {
+          var temp = datarange.xl;
+          datarange.xl = datarange.xr;
+          datarange.xr = temp;
+        }
+        if (datarange.yl === Infinity && datarange.yr !== -Infinity) {
+          datarange.yl = datarange.yr - 1;
+        } else if (datarange.yr === -Infinity && datarange.yl !== Infinity) {
+          datarange.yr = datarange.yl + 1;
         }
         if (visibleItem === 0 || datarange.yl === Infinity) {
           datarange.yl = 0;
           datarange.yr = 1;
+        } else if (datarange.yl > datarange.yr) {
+          var temp = datarange.yl;
+          datarange.yl = datarange.yr;
+          datarange.yr = temp;
         }
 
         var self = this;
@@ -773,6 +790,15 @@
       },
       div: function(n1, n2){
         return n1 instanceof Big ? n1.div(n2) : n1 / n2;
+      },
+      convertInfinityValue: function (value) {
+        if(value === "Infinity"){
+          return Infinity;
+        }
+        if(value === "-Infinity"){
+          return -Infinity;
+        }
+        return value;
       },
 
       createNiceColor: function () {

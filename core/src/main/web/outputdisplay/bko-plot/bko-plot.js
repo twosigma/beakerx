@@ -38,6 +38,9 @@
           "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
           "<svg id='svgg'>"  +
           "<defs>" +
+            "<marker id='Triangle' viewBox='0 0 10 10' refX='1' refY='5' markerWidth='6' markerHeight='6' orient='auto'>" +
+            "<path d='M 0 0 L 10 5 L 0 10 z' />" +
+            "</marker>" +
             "<filter id='svgfilter'>" +
               "<feGaussianBlur result='blurOut' in='SourceGraphic' stdDeviation='1' />" +
               "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
@@ -237,7 +240,21 @@
           if (scope.model.updateWidth != null) {
             scope.model.updateWidth(scope.width);
           } // not stdmodel here
+
+          scope.$emit('plotSizeChanged', {
+            width: scope.width,
+            height: scope.height
+          });
         };
+        scope.$on('plotSizeChanged', function (event, data) {
+          //if (scope.width !== data.width
+          //  //|| scope.height !== data.height
+          //) {
+          //  scope.model.width = data.width;
+          //  //scope.model.height = data.height;
+          //}
+        });
+
         scope.calcRange = function() {
           var ret = plotUtils.getDefaultFocus(scope.stdmodel);
           scope.visibleItem = ret.visibleItem;

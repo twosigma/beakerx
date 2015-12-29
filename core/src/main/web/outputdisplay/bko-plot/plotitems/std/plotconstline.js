@@ -30,7 +30,8 @@
         "st" : this.color,
         "st_op": this.color_opacity,
         "st_w" : this.width,
-        "st_da" : this.stroke_dasharray
+        "st_da" : this.stroke_dasharray,
+        "st_label" : this.showLabel,
       };
 
       this.elementProps = [];
@@ -126,12 +127,7 @@
 
         // does not need range assert, clipped directly
         if (ele.type === "x") {
-          if (ele.x < focus.xl || ele.x > focus.xr) {
-            this.rmlabelpipe.push(eleprops[i]);
-            continue;
-          } else {
-            this.labelpipe.push(eleprops[i]);
-          }
+
           var x = mapX(ele.x);
           _.extend(prop, {
             "x1" : x,
@@ -140,21 +136,21 @@
             "y2" : mapY(focus.yr),
           });
 
-          var text = plotUtils.getTipString(ele._x, scope.stdmodel.xAxis);
-
-          _.extend(prop, {
-            "left" : function(w, h, x) { return x - w / 2; },
-            "top" : function(w, h, y) { return H - bMargin - h - scope.labelPadding.y; },
-            "lb_txt" : text
-          });
-
-        } else if (ele.type === "y") {
-          if (ele.y < focus.yl || ele.y > focus.yr) {
-            this.rmlabelpipe.push(eleprops[i]);
-            continue;
-          } else {
-            this.labelpipe.push(eleprops[i]);
+          if (this.itemProps.st_label) {
+            if (ele.x < focus.xl || ele.x > focus.xr) {
+              this.rmlabelpipe.push(eleprops[i]);
+              continue;
+            } else {
+              this.labelpipe.push(eleprops[i]);
+            }
+            var text = plotUtils.getTipString(ele._x, scope.stdmodel.xAxis);
+            _.extend(prop, {
+              "left" : function(w, h, x) { return x - w / 2; },
+              "top" : function(w, h, y) { return H - bMargin - h - scope.labelPadding.y; },
+              "lb_txt" : text
+            });
           }
+        } else if (ele.type === "y") {
           var y = mapY(ele.y);
           _.extend(prop, {
             "x1" : mapX(focus.xl),
@@ -162,13 +158,21 @@
             "y1" : y,
             "y2" : y,
           });
-          var text = plotUtils.getTipString(ele._y, scope.stdmodel.yAxis);
+          if (this.itemProps.st_label) {
+            if (ele.y < focus.yl || ele.y > focus.yr) {
+              this.rmlabelpipe.push(eleprops[i]);
+              continue;
+            } else {
+              this.labelpipe.push(eleprops[i]);
+            }
+            var text = plotUtils.getTipString(ele._y, scope.stdmodel.yAxis);
 
-          _.extend(prop, {
-            "left" : function(w, h, x) { return lMargin + scope.labelPadding.x; },
-            "top" : function(w, h, y) { return y - h / 2; },
-            "lb_txt" : text
-          });
+            _.extend(prop, {
+              "left" : function(w, h, x) { return lMargin + scope.labelPadding.x; },
+              "top" : function(w, h, y) { return y - h / 2; },
+              "lb_txt" : text
+            });
+          }
         }
       }
     };

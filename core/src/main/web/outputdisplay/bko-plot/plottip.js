@@ -45,8 +45,70 @@
           clear(scope, d);
           scope.interactMode = "remove";
           $(this).parent('.plot-tooltip').remove();
+          impl.renderTips(scope);
         });
       tip.prepend(closeIcon);
+    };
+
+    var drawLine = function (scope, d, tipdiv) {
+      var svg = scope.maing;
+      var diameter = 10;
+
+      var x2 = d.cx;
+      var y2 = d.cy;
+
+      var position = tipdiv.position();
+
+      var x1_1 = position.left;
+      var y1_1 = position.top;
+
+      var x1_2 = x1_1 + tipdiv.outerWidth();
+      var y1_2 = y1_1;
+
+      var x1_3 = x1_2;
+      var y1_3 = y1_1 + tipdiv.outerHeight();
+
+      var x1_4 = x1_1;
+      var y1_4 = y1_3;
+
+      var dist1 = Math.sqrt(Math.pow(x1_1 - x2, 2) + Math.pow(y1_1 - y2, 2));
+      var dist2 = Math.sqrt(Math.pow(x1_2 - x2, 2) + Math.pow(y1_2 - y2, 2));
+      var dist3 = Math.sqrt(Math.pow(x1_3 - x2, 2) + Math.pow(y1_3 - y2, 2));
+      var dist4 = Math.sqrt(Math.pow(x1_4 - x2, 2) + Math.pow(y1_4 - y2, 2));
+
+      var dist, x1, y1;
+
+      if (dist1 <= dist2 && dist1 <= dist3 && dist1 <= dist4) {
+        x1 = x1_1;
+        y1 = y1_1;
+        dist = dist1;
+      } else if (dist2 <= dist1 && dist2 <= dist3 && dist2 <= dist4) {
+        x1 = x1_2;
+        y1 = y1_2;
+        dist = dist2;
+      } else if (dist3 <= dist1 && dist3 <= dist2 && dist3 <= dist4) {
+        x1 = x1_3;
+        y1 = y1_3;
+        dist = dist3;
+      } else {
+        x1 = x1_4;
+        y1 = y1_4;
+        dist = dist4;
+      }
+
+      if (dist > diameter / 2) {
+        var x2_ = x2 - diameter * (x2 - x1) / dist;
+        var y2_ = y2 - diameter * (y2 - y1) / dist;
+
+        svg.append("line")
+          .style("stroke", "black")
+          .attr("x2", x2_)
+          .attr("y2", y2_)
+          .attr("x1", x1)
+          .attr("y1", y1)
+          .attr("marker-end", "url(/beaker/#Triangle)")
+        ;
+      }
     };
 
     var impl = {
@@ -79,8 +141,9 @@
         _.extend(scope.tips[d.id], d);
         var d = scope.tips[d.id];
         d.sticking = false;
-        d.datax = scope.scr2dataX(mousePos[0] + 2);
-        d.datay = scope.scr2dataY(mousePos[1] + 2);
+
+        d.datax = scope.scr2dataX(mousePos[0] + 10);
+        d.datay = scope.scr2dataY(mousePos[1] + 10);
 
         impl.renderTips(scope);
       },
@@ -108,6 +171,9 @@
       renderTips: function (scope) {
 
         var data = scope.stdmodel.data;
+        var svg = scope.maing;
+
+        svg.selectAll("line").remove();
 
         _.each(scope.tips, function (d) {
           var x = scope.data2scrX(d.datax),
@@ -127,12 +193,7 @@
               .append(tiptext)
               .on('mouseup', function (e) {
                 if (e.which == 3) {
-                  delete scope.tips[d.id];
-                  if (d.isresp === true) {  // is interaction responsive element
-                    scope.jqsvg.find("#" + d.id).css("opacity", 0);
-                  } else {
-                    scope.jqsvg.find("#" + d.id).removeAttr("filter");
-                  }
+                  clear(scope, d);
                   scope.interactMode = "remove";
                   $(this).remove();
                 }
@@ -143,16 +204,25 @@
           }
           var w = tipdiv.outerWidth(), h = tipdiv.outerHeight();
           if (plotUtils.outsideScrBox(scope, x, y, w, h)) {
+            clear(scope, d);
+            scope.interactMode = "remove";
             tipdiv.remove();
             return;
           }
+          var drag = function (e, ui) {
+            d.scrx = ui.position.left - plotUtils.fonts.tooltipWidth;
+            d.scry = ui.position.top;
+            d.datax = scope.scr2dataX(d.scrx);
+            d.datay = scope.scr2dataY(d.scry);
+            impl.renderTips(scope);
+          };
           tipdiv
             .draggable({
-              stop: function (event, ui) {
-                d.scrx = ui.position.left - plotUtils.fonts.tooltipWidth;
-                d.scry = ui.position.top;
-                d.datax = scope.scr2dataX(d.scrx);
-                d.datay = scope.scr2dataY(d.scry);
+              drag: function (e, ui) {
+                drag(e, ui)
+              },
+              stop: function (e, ui) {
+                drag(e, ui)
               }
             });
 
@@ -169,6 +239,8 @@
           if (d.sticking == true) {
             pinCloseIcon(scope, d);
           }
+
+          drawLine(scope, d, tipdiv);
         });
       }
     };

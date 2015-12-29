@@ -259,8 +259,9 @@
 
   module.directive('bkEnter', function() {
     return function(scope, element, attrs) {
+      var skiptag = attrs.skipfortag;
       element.bind('keydown keypress', function(event) {
-        if (event.which === 13) {
+        if (event.which === 13 && event.target.tagName !== skiptag) {
           scope.$apply(function() {
             scope.$eval(attrs.bkEnter, {event: event});
           });

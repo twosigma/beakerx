@@ -29,5 +29,6 @@
     'bk.menuPluginManager',
     'bk.recentMenu',
     'bk.evaluatePluginManager',
-    'bk.electron']);
+    'bk.electron',
+    'bk.connectionManager']);
 })();

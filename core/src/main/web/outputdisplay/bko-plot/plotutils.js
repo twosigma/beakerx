@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    var retfunc = function(bkUtils, bkHelper, GLOBALS) {
+    var retfunc = function(bkUtils, bkHelper) {
     return {
       outsideScr: function(scope, x, y) {
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
@@ -820,5 +820,5 @@
       }
     };
   };
-  beaker.bkoFactory('plotUtils', ["bkUtils", "bkHelper", "GLOBALS", retfunc]);
+  beaker.bkoFactory('plotUtils', ["bkUtils", "bkHelper", retfunc]);
 })();

@@ -82,6 +82,12 @@ public class SimpleTimePlot extends TimePlot {
   }
 
   private Color createChartColor(Object color) {
+    if (color instanceof Color) {
+      return (Color) color;
+    }
+    if (color instanceof java.awt.Color) {
+      return new Color((java.awt.Color) color);
+    }
     if (color instanceof List) {
       try {
         return new Color((int) ((List) color).get(0),

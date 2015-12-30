@@ -176,6 +176,7 @@ define(function(require, exports, module) {
                         "net.sf.jtreemap.swing.*",
                         "com.twosigma.beaker.chart.histogram.*",
                         "com.twosigma.beaker.chart.heatmap.HeatMap",
+                        "com.twosigma.beaker.jvm.object.*",
                         "com.twosigma.beaker.easyform.*",
                         "com.twosigma.beaker.easyform.formitem.*"];
   var shellReadyDeferred = bkHelper.newDeferred();

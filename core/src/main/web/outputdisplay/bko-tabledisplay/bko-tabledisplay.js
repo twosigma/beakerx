@@ -321,8 +321,8 @@
         $scope.pagination = {
           'use' : true,
           'rowsToDisplay' : 50,
-          'fixLeft' : false,
-          'fixRight' : false
+          'fixLeft' : 0,
+          'fixRight' : 0
         };
 
         $scope.getCellDispOptsF = function(i) {
@@ -701,6 +701,29 @@
             delete scope.data;
           }
           unregisterOutputExpandEventListener();
+
+          scope.$on(GLOBALS.EVENTS.CELL_OUTPUT_LM_SHOWED, function() {
+            if (scope.table !== undefined && tableChanged) {
+              var parents = element.parents();
+
+              var cyclingContainer =  _.find(parents, function (parent) {
+                return parent.id.indexOf("lm-cycling-panel") !== -1;
+              });
+              if (cyclingContainer && cyclingContainer.style.display !== 'none'){
+                _.defer(function () {scope.table.draw(false);});
+                tableChanged = false;
+              }
+
+              var tabContainer =  _.find(parents, function (parent) {
+                return parent.id.indexOf("lm-tab-panel") !== -1;
+              });
+              if (tabContainer && tabContainer.classList.contains("active")){
+                _.defer(function () {scope.table.draw(false);});
+                tableChanged = false;
+              }
+            }
+          });
+
         };
         scope.init = function(model) {
           scope.doDestroy(true);
@@ -767,6 +790,13 @@
             scope.colorder    = scope.savedstate.colorder;
             scope.getCellSho  = scope.savedstate.getCellSho;
             scope.pagination  = scope.savedstate.pagination;
+            //fix saved pagination values to be numbers
+            if (typeof scope.pagination.fixLeft === 'boolean') {
+              scope.pagination.fixLeft = 0;
+            }
+            if (typeof scope.pagination.fixRight === 'boolean') {
+              scope.pagination.fixRight = 0;
+            }
             scope.savedstate  = undefined;
           }
           // auto compute types

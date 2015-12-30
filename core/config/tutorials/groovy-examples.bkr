@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -39,7 +39,7 @@
                     "mode": "groovy"
                 }
             },
-            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*"
+            "imports": "static Math.*\ngraxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*"
         }
     ],
     "cells": [
@@ -74,10 +74,12 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 595,
+                "elapsedTime": 604,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff"
+                "shellId": "83c25701-8752-4c5d-93c2-633874320032",
+                "result": 2,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -93,10 +95,21 @@
             },
             "output": {
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 616,
+                "elapsedTime": 598,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff"
+                "shellId": "83c25701-8752-4c5d-93c2-633874320032",
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Error",
+                    "object": [
+                        "groovy.lang.MissingPropertyException: No such property: a for class: Script18<br/>",
+                        "\tat Script18.run(Script18.groovy:1)",
+                        "\tat com.twosigma.beaker.groovy.utils.GroovyEvaluator$workerThread$MyRunnable.run(GroovyEvaluator.java:282)",
+                        ""
+                    ]
+                },
+                "height": 84
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -112,10 +125,12 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 622,
+                "elapsedTime": 598,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff"
+                "shellId": "83c25701-8752-4c5d-93c2-633874320032",
+                "result": 2,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -132,10 +147,12 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 627,
+                "elapsedTime": 597,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff"
+                "shellId": "83c25701-8752-4c5d-93c2-633874320032",
+                "result": "Script20$_run_closure1@4db975cd",
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -151,10 +168,12 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 623,
+                "elapsedTime": 594,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff"
+                "shellId": "83c25701-8752-4c5d-93c2-633874320032",
+                "result": 8,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -170,33 +189,39 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 625,
+                "elapsedTime": 598,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff"
+                "shellId": "83c25701-8752-4c5d-93c2-633874320032",
+                "result": "Multiplying Strings!Multiplying Strings!",
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
         },
         {
-            "id": "code77FYkc",
+            "id": "code8ND55A",
             "type": "code",
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "l = [1,2,3,4] //list",
-                    "m = [a:1, b:2] //map"
+                    "// You can add a static import of Math.*",
+                    "// in the Language Manager, it is not the default but this",
+                    "// notebook has it set so this works:",
+                    "sin(3.1415)"
                 ]
             },
             "output": {
-                "selectedType": "Table",
-                "elapsedTime": 618,
                 "state": {},
+                "result": 0.00009265358966049026,
+                "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff"
+                "shellId": "83c25701-8752-4c5d-93c2-633874320032",
+                "elapsedTime": 591,
+                "height": 36
             },
             "evaluatorReader": true,
-            "lineCount": 2
+            "lineCount": 4
         },
         {
             "id": "codeKIMiDC",
@@ -213,8 +238,18 @@
                 "state": {},
                 "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "776c4f0d-b824-4c75-879b-7370357a50ff",
-                "elapsedTime": 589
+                "shellId": "83c25701-8752-4c5d-93c2-633874320032",
+                "elapsedTime": 1617,
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "standard output\n"
+                        }
+                    ]
+                },
+                "height": 35
             },
             "evaluatorReader": true,
             "lineCount": 3

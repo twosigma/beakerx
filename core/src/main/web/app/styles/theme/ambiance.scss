@@ -185,12 +185,6 @@ $btn-bkg-color:           #505050;
     color: $std-err-color !important;
   }
 
-  /*
-  .cm-tab:before {
-    content: "";
-  }
-  */
-
   bk-markdown-editable, .code-cell-output {
     background: $main-theme-panel-background !important;
     color: $std-fg-text-color;
@@ -497,8 +491,11 @@ $btn-bkg-color:           #505050;
       content: "";
       width: 13px;
       height: 13px;
+      margin-top: 2px;
       position: absolute;
       background-color: $btn-bkg-color;
+      border: 1px solid $cell-border-color;
+      opacity: 0.7;
     }
     .radio-button-item-label:before {
       border-radius: 50%;
@@ -506,7 +503,9 @@ $btn-bkg-color:           #505050;
     .check-box-group-item-label:before {
       border-radius: 2px;
     }
-
+    .radio-button-item-label:hover::before, .check-box-group-item-label:hover::before {
+      opacity: 0.9;
+    }
   }
 
   //CodeMirror

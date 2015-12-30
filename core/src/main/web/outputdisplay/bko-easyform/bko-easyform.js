@@ -856,7 +856,7 @@
         function ($compile, bkUtils, bkEvaluatorManager, bkSessionManager, EasyFormConstants,
                   EasyFormService) {
           return {
-            template: "<div class='easy-form-container' bk-enter='clickRunButton()'></div>",
+            template: "<div class='easy-form-container' bk-enter='clickRunButton()' skipfortag='TEXTAREA'></div>",
 
             controller: function ($scope) {
               $scope.evaluatorExist = $scope.model.getEvaluatorId && $scope.model.getEvaluatorId();

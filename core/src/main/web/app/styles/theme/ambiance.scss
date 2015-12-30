@@ -487,12 +487,13 @@ $btn-bkg-color:           #505050;
       visibility: hidden;
     }
 
-    .radio-button-item-label:before, .check-box-group-item-label:before {
+    .radio-button-item-label:before, .check-box-group-item-label:before,
+    input[type="checkbox"] + label:before {
       content: "";
       width: 13px;
       height: 13px;
-      margin-top: 2px;
       position: absolute;
+      left: 0;
       background-color: $btn-bkg-color;
       border: 1px solid $cell-border-color;
       opacity: 0.7;
@@ -505,6 +506,10 @@ $btn-bkg-color:           #505050;
     }
     .radio-button-item-label:hover::before, .check-box-group-item-label:hover::before {
       opacity: 0.9;
+    }
+
+    input.check-box:checked + label:before {
+
     }
   }
 

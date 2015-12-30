@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    var retfunc = function(bkUtils) {
+    var retfunc = function(bkUtils, bkHelper) {
     return {
       outsideScr: function(scope, x, y) {
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
@@ -799,8 +799,52 @@
           return -Infinity;
         }
         return value;
+      },
+
+      createNiceColor: function () {
+        var hue = Math.random();
+        var saturation = 0.75;
+        var luminance = 0.5;
+        var rgb = this.hslToRgb(hue, saturation, luminance);
+        var niceColor = bkHelper.rgbaToHex(rgb[0], rgb[1], rgb[2]);
+        while (bkHelper.defaultPlotColors[bkHelper.getTheme()].indexOf(niceColor) !== -1) {
+          niceColor = this.createNiceColor();
+        }
+        return niceColor;
+      },
+
+      //http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+      hslToRgb: function (h, s, l) {
+        var r, g, b;
+
+        if (s == 0) {
+          r = g = b = l; // achromatic
+        } else {
+          var hue2rgb = function (p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1 / 6) return p + (q - p) * 6 * t;
+            if (t < 1 / 2) return q;
+            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+            return p;
+          };
+
+          var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+          var p = 2 * l - q;
+          r = hue2rgb(p, q, h + 1 / 3);
+          g = hue2rgb(p, q, h);
+          b = hue2rgb(p, q, h - 1 / 3);
+        }
+
+        return [r * 255, g * 255, b * 255];
+      },
+
+
+      getDefaultColor: function (i) {
+        var themeColors = bkHelper.defaultPlotColors[bkHelper.getTheme()];
+        return i < themeColors.length ? themeColors[i] : this.createNiceColor();
       }
     };
   };
-  beaker.bkoFactory('plotUtils', ["bkUtils", retfunc]);
+  beaker.bkoFactory('plotUtils', ["bkUtils", "bkHelper", retfunc]);
 })();

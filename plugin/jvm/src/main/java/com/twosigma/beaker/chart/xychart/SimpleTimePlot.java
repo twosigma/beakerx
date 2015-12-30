@@ -36,17 +36,6 @@ public class SimpleTimePlot extends TimePlot {
   private boolean displayPoints = false;
 
 
-  //saturation 75%
-  //brightness 85%
-  private static final Color[] NICE_COLORS = {
-    new Color(33, 87, 141), // blue
-    new Color(140, 29, 23), // red
-    new Color(150, 130, 54),// yellow
-    new Color(20, 30, 120), // violet
-    new Color(54, 100, 54), // green
-    new Color(60, 30, 50),  // dark
-  };
-
   public SimpleTimePlot(List<Map<String, Object>> data, List<String> columns) {
     this(null, data, columns);
   }
@@ -81,40 +70,15 @@ public class SimpleTimePlot extends TimePlot {
   }
 
   private List<Color> getChartColors() {
+    List<Color> chartColors = new ArrayList<>();
     if (colors != null) {
-
-      List<Color> chartColors = new ArrayList<>();
       for (int i = 0; i < columns.size(); i++) {
-        Color color = null;
         if (i < colors.size()) {
-          color = createChartColor(colors.get(i));
+          chartColors.add(createChartColor(colors.get(i)));
         }
-        if (color == null) {
-          color = createNiceColor();
-          while (chartColors.contains(color)) {
-            color = createNiceColor();
-          }
-        }
-        chartColors.add(color);
       }
-      return chartColors;
     }
-    return getNiceColors(columns.size());
-  }
-
-  private List<Color> getNiceColors(int n) {
-    List<Color> colors = new ArrayList<>();
-    for (int i = 0; i < n; i++)
-      if (i < NICE_COLORS.length)
-        colors.add(NICE_COLORS[i]);
-      else {
-        Color color = createNiceColor();
-        while (colors.contains(color)) {
-          color = createNiceColor();
-        }
-        colors.add(color);
-      }
-    return colors;
+    return chartColors;
   }
 
   private Color createChartColor(Object color) {
@@ -142,14 +106,6 @@ public class SimpleTimePlot extends TimePlot {
     } catch (ClassNotFoundException | IllegalAccessException | NoSuchFieldException x) {
       throw new RuntimeException(String.format("Can not parse color '%s'", color), x);
     }
-  }
-
-  private Color createNiceColor() {
-    Random random = new Random();
-    final float hue = random.nextFloat();
-    final float saturation = 0.75f;
-    final float luminance = 0.85f;
-    return new Color(java.awt.Color.getHSBColor(hue, saturation, luminance).getRGB());
   }
 
   private void reinitialize() {
@@ -193,7 +149,9 @@ public class SimpleTimePlot extends TimePlot {
           } else {
             line.setDisplayName(columns.get(i));
           }
-          line.setColor(colors.get(i));
+          if(i < colors.size()){
+            line.setColor(colors.get(i));
+          }
 
           add(line);
         }
@@ -208,7 +166,9 @@ public class SimpleTimePlot extends TimePlot {
           } else {
             points.setDisplayName(columns.get(i));
           }
-          points.setColor(colors.get(i));
+          if(i < colors.size()){
+            points.setColor(colors.get(i));
+          }
 
           add(points);
         }

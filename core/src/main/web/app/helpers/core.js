@@ -269,6 +269,7 @@
           bkCoreManager.colorize(theme);
           bkHelper.setInputCellTheme(theme);
           this.theme = theme;
+          bkHelper.setThemeToBeakerObject();
         },
         getTheme: function () {
           return this.theme;

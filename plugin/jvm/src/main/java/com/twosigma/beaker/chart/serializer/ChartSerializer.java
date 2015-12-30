@@ -19,28 +19,12 @@ package com.twosigma.beaker.chart.serializer;
 
 
 import com.twosigma.beaker.Chart;
-import com.twosigma.beaker.chart.Color;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.JsonSerializer;
 
 import java.io.IOException;
 
 public abstract class ChartSerializer<T extends Chart> extends JsonSerializer<T> {
-
-  protected static class ColorPalette {
-    static final Color[] colors = new Color[]{
-            new Color(192, 80, 77),
-            new Color(79, 129, 189),
-            new Color(155, 187, 89),
-            new Color(247, 150, 70),
-            new Color(128, 100, 162),
-            new Color(75, 172, 198)
-    };
-
-    static Color getColor(int i) {
-      return colors[i % colors.length];
-    }
-  }
 
   protected void serialize(T chart, JsonGenerator jgen) throws IOException {
 

@@ -115,6 +115,7 @@ import com.twosigma.beaker.jvm.serialization.CollectionDeserializer;
 import com.twosigma.beaker.jvm.serialization.CyclingOutputContainerLayoutManagerDeserializer;
 import com.twosigma.beaker.jvm.serialization.CyclingOutputContainerLayoutManagerSerializer;
 import com.twosigma.beaker.jvm.serialization.DashboardLayoutManagerDeserializer;
+import com.twosigma.beaker.jvm.serialization.ColorDeserializer;
 import com.twosigma.beaker.jvm.serialization.DateDeserializer;
 import com.twosigma.beaker.jvm.serialization.DateSerializer;
 import com.twosigma.beaker.jvm.serialization.GridOutputContainerLayoutManagerDeserializer;
@@ -192,6 +193,7 @@ public class SerializerModule extends AbstractModule {
       serializer.addTypeDeserializer(new ResultsDeserializer(serializer));
       serializer.addTypeDeserializer(new CollectionDeserializer(serializer));
       serializer.addTypeDeserializer(new MapDeserializer(serializer));
+      serializer.addTypeDeserializer(new ColorDeserializer(serializer));
 
       serializer.addTypeDeserializer(new OutputContainerDeserializer(serializer));
       serializer.addTypeDeserializer(new OutputContainerCellDeserializer(serializer));

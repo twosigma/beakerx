@@ -17,6 +17,7 @@ package com.twosigma.beaker.jvm.serialization;
 
 import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.BeakerProgressUpdate;
+import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.easyform.EasyForm;
 import com.twosigma.beaker.jvm.object.BeakerDashboard;
 import com.twosigma.beaker.jvm.object.CyclingOutputContainerLayoutManager;
@@ -190,7 +191,8 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         (obj instanceof OutputContainerCell) ||
         (obj instanceof OutputContainer) ||
         (obj instanceof BeakerProgressUpdate) ||
-        (obj instanceof EasyForm)) {
+        (obj instanceof EasyForm) ||
+        (obj instanceof Color)) {
         logger.fine("basic object");
         jgen.writeObject(obj);
       } else

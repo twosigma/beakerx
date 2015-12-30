@@ -1908,8 +1908,12 @@
         };
         scope.$watch('getTheme()', function(newValue, oldValue) {
           if(newValue !== oldValue) {
-            scope.standardizeData();
-            scope.update();
+            //scope.standardizeData();
+            //scope.calcRange();
+            //scope.update();
+            scope.setDumpState(scope.dumpState());
+            scope.legendDone = false;
+            scope.init();
           }
         });
 

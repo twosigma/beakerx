@@ -45,10 +45,8 @@
         <a href="#" role="button" class="dropdown-toggle {{m.id}}" data-toggle="dropdown">{{m.name}}</a>
         <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
       </li>
-      <p ng-if="disconnected" class="navbar-text text-danger right">
-        offline
-      </p>
     </ul>
+    <p ng-if="disconnected" class="navbar-text text-danger pull-right">offline</p>
   </div>
 </header>
 

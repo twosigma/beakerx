@@ -113,7 +113,7 @@
                     "    </li><li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fclojure-examples.bkr&readOnly=true\">Clojure</a>",
                     "    </li><li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fcpp-examples.bkr&readOnly=true\">C++</a>",
                     "    </li><li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Ftorch-examples.bkr&readOnly=true\">Torch/Lua</a>",
-                    "    </ul>",
+                    "    </li></ul>",
                     "    ",
                     "    <h3>Basics and Fundamentals of</h3>",
                     "    <ul><li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fipython.bkr&readOnly=true\">IPython</a>",
@@ -180,7 +180,7 @@
                 "height": 735
             },
             "evaluatorReader": true,
-            "lineCount": 106
+            "lineCount": 107
         },
         {
             "id": "Section8EWbZ9",

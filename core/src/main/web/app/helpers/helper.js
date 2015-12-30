@@ -300,6 +300,11 @@
         if (model && model.namespace && model.namespace.prefs)
           delete model.namespace.prefs;
       },
+      removeBeakerTheme: function(model) {
+        if (model && model.namespace) {
+          delete model.namespace.theme;
+        }
+      },
       getNotebookElement: function(currentScope) {
         return bkCoreManager.getNotebookElement(currentScope);
       },
@@ -803,7 +808,7 @@
       sanitizeNotebookModel: function(m) {
         var notebookModelCopy = angular.copy(m);
         bkHelper.stripOutBeakerPrefs(notebookModelCopy);
-
+        bkHelper.removeBeakerTheme(notebookModelCopy);
         if (notebookModelCopy.cells) {
           for (var i = 0; i < notebookModelCopy.cells.length; i++) {
             var currentCell = notebookModelCopy.cells[i];

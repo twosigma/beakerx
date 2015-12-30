@@ -200,6 +200,7 @@
     this.init = function() {
       component = scope.component;
       scope.componentId = component.label;
+      scope.id = scope.componentId.toLowerCase().replace(/\s/g, '');
       scope.ngModelAttr = utils.getValidNgModelString(component.label);
 
       this.buildUI();
@@ -350,9 +351,10 @@
                   scope, element, EasyFormConstants, EasyFormService, bkUtils);
 
               efc.buildUI = function() {
-                element.find('.easyform-label').text(efc.getComponent().label);
+                element.find('.easyform-label').text(efc.getComponent().label).attr('for', scope.id);
                 var checkBox = element.find('.check-box');
                 checkBox.attr('ng-model', scope.ngModelAttr);
+                checkBox.attr('id', scope.id);
                 if ('true' === efc.getComponent().value) {
                   efc.getComponent().value = true;
                   checkBox.attr('checked', 'true');
@@ -392,9 +394,9 @@
                     "<div class='check-box-group-item'" +
                     " ng-repeat='value in values track by $index' " +
                     " ng-class='{horizontal : !!horizontal}'>" +
-                    " <input type='checkbox' ng-model='value.selected' name='selectedValues[]' " +
+                    " <input type='checkbox' id='{{value.id}}' ng-model='value.selected' name='selectedValues[]' " +
                     " ng-disabled='!component.enabled'/>" +
-                    " <label class='check-box-group-item-label' ng-bind='value.name'/>" +
+                    " <label for='{{value.id}}' class='check-box-group-item-label' ng-bind='value.name'/>" +
                     "</div>" +
                   "</div>" +
                 "</div>",
@@ -407,9 +409,11 @@
                 scope.values = [];
                 if (efc.getComponent().values && efc.getComponent().values.length > 0) {
                   efc.getComponent().values.forEach(function (value) {
+                    var valuePostfix = value.toLowerCase().replace(/\s+/g, '');
                     var obj = {
                       name: value,
-                      selected: false
+                      selected: false,
+                      id: scope.id + valuePostfix
                     };
                     scope.values.push(obj);
                   });
@@ -668,6 +672,7 @@
                       = angular.element('<div class="radio-button-items-container"></div>');
 
                   efc.getComponent().values.forEach(function (value) {
+                    var valuePostfix = value.toLowerCase().replace(/\s+/g, '');
                     var outerRadioButtonWrap
                         = angular.element('<div class="radio-button-item"></div>');
                     var outerRadioButtonLabel
@@ -677,8 +682,9 @@
                         = angular.element('<input type="radio" class="radio-button-component-item"'
                         + ' ng-disabled="!component.enabled"/>')
                         .attr('ng-model', scope.ngModelAttr)
-                        .attr('value', value);
-                    outerRadioButtonLabel.text(value);
+                        .attr('value', value)
+                        .attr('id', scope.id + valuePostfix);
+                    outerRadioButtonLabel.attr('for', scope.id + valuePostfix).text(value);
                     var divSpacer = angular.element('<div class="radio-button-item-spacer"/>');
                     outerRadioButtonWrap.append(radioButton).append(outerRadioButtonLabel).append(divSpacer);
                     radioButtonItemsContainer.append(outerRadioButtonWrap);

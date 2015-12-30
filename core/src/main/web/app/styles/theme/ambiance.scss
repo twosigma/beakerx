@@ -488,15 +488,20 @@ $btn-bkg-color:           #505050;
     }
 
     .radio-button-item-label:before, .check-box-group-item-label:before,
-    input[type="checkbox"] + label:before {
+    input.check-box + label:after {
       content: "";
       width: 13px;
       height: 13px;
       position: absolute;
-      left: 0;
       background-color: $btn-bkg-color;
       border: 1px solid $cell-border-color;
       opacity: 0.7;
+    }
+    .radio-button-item-label:before, .check-box-group-item-label:before {
+      left: 0;
+    }
+    input.check-box + label:after {
+      right: -18px;
     }
     .radio-button-item-label:before {
       border-radius: 50%;
@@ -508,8 +513,34 @@ $btn-bkg-color:           #505050;
       opacity: 0.9;
     }
 
-    input.check-box:checked + label:before {
+    input[type="checkbox"] + label, input[type="radio"] + label {
+      display: inline-block;
+      margin: 0 10px 0 5px;
+    }
 
+    easy-form-check-box label {
+      position: relative;
+    }
+
+    input[type="radio"]:checked + label:before {
+      content: "\2022";
+      color: $std-fg-text-color;
+      font-size: 20px;
+      font-weight: normal;
+      text-align: center;
+      line-height: 16px;
+      background-color: #3B99FC;
+    }
+
+    easy-form-check-box input[type="checkbox"]:checked + label:after,
+    .check-box-group-item input[type="checkbox"]:checked + label:before {
+      content: "\2713";
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+      font-size: 15px;
+      color: $std-fg-text-color;
+      text-align: center;
+      line-height: 14px;
+      background-color: #3B99FC;
     }
   }
 

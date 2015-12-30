@@ -19,7 +19,7 @@
   var module = angular.module('bk.controlPanel');
 
   module.directive('bkControlPanel', function(
-        bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack, bkElectron, $location) {
+        bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack, bkElectron, connectionManager, $location) {
     return {
       restrict: 'E',
       template: JST['controlpanel/controlpanel'](),
@@ -81,7 +81,7 @@
 
         $scope.getElectronMode = function() {
           return bkUtils.isElectron;
-        }
+        };
 
         // ask for tracking permission
         $scope.isAllowAnonymousTracking = false;
@@ -164,12 +164,12 @@
               bkElectron.toggleDevTools();
             }
           }
-        }
+        };
         $(document).bind('keydown', keydownHandler);
 
         var onDestroy = function() {
           $(document).unbind('keydown', keydownHandler);
-        }
+        };
         $scope.$on('$destroy', onDestroy);
 
         // sessions list UI
@@ -193,6 +193,21 @@
         $scope.isSessionsListEmpty = function() {
           return _.isEmpty($scope.sessions);
         };
+
+        var isDisconnected = function() {
+          return connectionManager.isDisconnected();
+        };
+
+        bkUtils.addConnectedStatusListener(function(msg) {
+          if (isDisconnected() && msg.successful) {
+            connectionManager.onReconnected();
+          }
+          if (msg.failure) {
+            connectionManager.onDisconnected();
+          }
+          $scope.disconnected = isDisconnected();
+          return $scope.$digest();
+        });
       }
     };
   });

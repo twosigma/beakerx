@@ -50,53 +50,50 @@
       tip.prepend(closeIcon);
     };
 
+    var addAttachment = function (x, y, x2, y2, attachments) {
+      attachments.push({
+        x: x,
+        y: y,
+        dist: Math.sqrt(Math.pow(x - x2, 2) + Math.pow(y - y2, 2))
+      });
+    };
+
     var drawLine = function (scope, d, tipdiv) {
       var svg = scope.maing;
       var diameter = 10;
+      var deviation = 2;
 
-      var x2 = d.cx;
-      var y2 = d.cy;
+      var x2 = scope.data2scrX(d.targetx),
+        y2 = scope.data2scrY(d.targety);
 
       var position = tipdiv.position();
 
-      var x1_1 = position.left;
-      var y1_1 = position.top;
+      var attachments = [];
 
-      var x1_2 = x1_1 + tipdiv.outerWidth();
-      var y1_2 = y1_1;
+      var left = position.left;
+      var top = position.top;
+      var height = tipdiv.outerHeight();
+      var width = tipdiv.outerWidth();
 
-      var x1_3 = x1_2;
-      var y1_3 = y1_1 + tipdiv.outerHeight();
-
-      var x1_4 = x1_1;
-      var y1_4 = y1_3;
-
-      var dist1 = Math.sqrt(Math.pow(x1_1 - x2, 2) + Math.pow(y1_1 - y2, 2));
-      var dist2 = Math.sqrt(Math.pow(x1_2 - x2, 2) + Math.pow(y1_2 - y2, 2));
-      var dist3 = Math.sqrt(Math.pow(x1_3 - x2, 2) + Math.pow(y1_3 - y2, 2));
-      var dist4 = Math.sqrt(Math.pow(x1_4 - x2, 2) + Math.pow(y1_4 - y2, 2));
-
-      var dist, x1, y1;
-
-      if (dist1 <= dist2 && dist1 <= dist3 && dist1 <= dist4) {
-        x1 = x1_1;
-        y1 = y1_1;
-        dist = dist1;
-      } else if (dist2 <= dist1 && dist2 <= dist3 && dist2 <= dist4) {
-        x1 = x1_2;
-        y1 = y1_2;
-        dist = dist2;
-      } else if (dist3 <= dist1 && dist3 <= dist2 && dist3 <= dist4) {
-        x1 = x1_3;
-        y1 = y1_3;
-        dist = dist3;
+      if (top + height / 2 >= y2 - deviation && top + height / 2 <= y2 + deviation) {
+        addAttachment(left, top + height / 2, x2, y2, attachments);
+        addAttachment(left + width, top + height / 2, x2, y2, attachments);
+      }
+      else if (left + width / 2 >= x2 - deviation && left + width / 2 <= x2 + deviation) {
+        addAttachment(left + width / 2, top, x2, y2, attachments);
+        addAttachment(left + width / 2, top + height, x2, y2, attachments);
       } else {
-        x1 = x1_4;
-        y1 = y1_4;
-        dist = dist4;
+        addAttachment(left, top, x2, y2, attachments);
+        addAttachment(left + width, top, x2, y2, attachments);
+        addAttachment(left + width, top + height, x2, y2, attachments);
+        addAttachment(left, top + height, x2, y2, attachments);
       }
 
-      if (dist > diameter / 2) {
+      var attachment = _.min(attachments, "dist");
+      var dist = attachment.dist, x1 = attachment.x, y1 = attachment.y;
+
+      if (diameter <= dist) {
+
         var x2_ = x2 - diameter * (x2 - x1) / dist;
         var y2_ = y2 - diameter * (y2 - y1) / dist;
 
@@ -127,7 +124,7 @@
             impl.untooltip(scope, d);
           }
         }
-        pinCloseIcon(scope, d);
+        impl.renderTips(scope);
       },
 
       tooltip: function (scope, d, mousePos) {
@@ -142,8 +139,11 @@
         var d = scope.tips[d.id];
         d.sticking = false;
 
-        d.datax = scope.scr2dataX(mousePos[0] + 10);
-        d.datay = scope.scr2dataY(mousePos[1] + 10);
+        d.targetx = scope.scr2dataX(d.cx);
+        d.targety = scope.scr2dataY(d.cy);
+
+        d.datax = scope.scr2dataX(mousePos[0] + 5);
+        d.datay = scope.scr2dataY(mousePos[1] + 5);
 
         impl.renderTips(scope);
       },
@@ -238,9 +238,8 @@
 
           if (d.sticking == true) {
             pinCloseIcon(scope, d);
+            drawLine(scope, d, tipdiv);
           }
-
-          drawLine(scope, d, tipdiv);
         });
       }
     };

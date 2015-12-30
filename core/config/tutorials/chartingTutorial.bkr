@@ -40,7 +40,7 @@
                     "background": "#E0FFE0"
                 }
             },
-            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*"
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.jvm.object.*"
         }
     ],
     "cells": [
@@ -2152,8 +2152,8 @@
                         "pagination": {
                             "use": true,
                             "rowsToDisplay": 50,
-                            "fixLeft": false,
-                            "fixRight": false
+                            "fixLeft": 0,
+                            "fixRight": 0
                         },
                         "columnNames": [
                             "time",
@@ -6191,7 +6191,6 @@
                             "display_name": "low",
                             "yAxis": null,
                             "type": "Line",
-                            "color": "#FF21578D",
                             "width": 1.5
                         },
                         {
@@ -6709,7 +6708,6 @@
                             "display_name": "high",
                             "yAxis": null,
                             "type": "Line",
-                            "color": "#FF8C1D17",
                             "width": 1.5
                         }
                     ],
@@ -7350,7 +7348,6 @@
                             "display_name": "",
                             "yAxis": null,
                             "type": "Line",
-                            "color": "#FFC0504D",
                             "width": 1.5
                         }
                     ],
@@ -7500,7 +7497,6 @@
                             "display_name": "",
                             "yAxis": null,
                             "type": "Line",
-                            "color": "#FFC0504D",
                             "width": 15
                         },
                         {
@@ -8273,7 +8269,7 @@
                             "size": 6,
                             "shape": "DEFAULT",
                             "fill": null,
-                            "color": "#FFC0504D",
+                            "color": null,
                             "outline_color": null
                         },
                         {
@@ -8300,7 +8296,7 @@
                             "size": 6,
                             "shape": "CIRCLE",
                             "fill": null,
-                            "color": "#FF4F81BD",
+                            "color": null,
                             "outline_color": null
                         },
                         {
@@ -8327,7 +8323,7 @@
                             "size": 8,
                             "shape": "DIAMOND",
                             "fill": null,
-                            "color": "#FF9BBB59",
+                            "color": null,
                             "outline_color": null
                         },
                         {
@@ -9009,7 +9005,6 @@
                             "display_name": "Line 1",
                             "yAxis": null,
                             "type": "Line",
-                            "color": "#FFC0504D",
                             "width": 1.5
                         },
                         {
@@ -9232,7 +9227,6 @@
                             "display_name": "",
                             "yAxis": null,
                             "type": "Line",
-                            "color": "#FFC0504D",
                             "width": 1.5
                         }
                     ],
@@ -9410,7 +9404,6 @@
                             "display_name": "",
                             "yAxis": null,
                             "type": "Line",
-                            "color": "#FFC0504D",
                             "width": 1.5
                         }
                     ],
@@ -9850,7 +9843,6 @@
                             "display_name": "Line",
                             "yAxis": null,
                             "type": "Line",
-                            "color": "#FFC0504D",
                             "width": 2
                         },
                         {
@@ -9885,7 +9877,7 @@
                             "size": 6,
                             "shape": "DEFAULT",
                             "fill": null,
-                            "color": "#FF4F81BD",
+                            "color": null,
                             "outline_color": null
                         }
                     ],
@@ -10181,7 +10173,6 @@
                             "display_name": "Line",
                             "yAxis": null,
                             "type": "Line",
-                            "color": "#FFC0504D",
                             "width": 3
                         },
                         {
@@ -12668,7 +12659,6 @@
                             "display_name": "Volume",
                             "yAxis": "Volume",
                             "type": "Line",
-                            "color": "#FFC0504D",
                             "width": 1.5
                         }
                     ],
@@ -13097,7 +13087,6 @@
                                     "display_name": "f(x) = exp(x)",
                                     "yAxis": null,
                                     "type": "Line",
-                                    "color": "#FFC0504D",
                                     "width": 1.5
                                 },
                                 {
@@ -13309,7 +13298,6 @@
                                     "display_name": "g(x) = x",
                                     "yAxis": null,
                                     "type": "Line",
-                                    "color": "#FF4F81BD",
                                     "width": 1.5
                                 }
                             ],
@@ -13573,7 +13561,6 @@
                                     "display_name": "f(x) = exp(x)",
                                     "yAxis": null,
                                     "type": "Line",
-                                    "color": "#FFC0504D",
                                     "width": 1.5
                                 },
                                 {
@@ -13785,7 +13772,6 @@
                                     "display_name": "g(x) = x",
                                     "yAxis": null,
                                     "type": "Line",
-                                    "color": "#FF4F81BD",
                                     "width": 1.5
                                 }
                             ],
@@ -14135,7 +14121,6 @@
                             "display_name": "f(x) = exp(x)",
                             "yAxis": null,
                             "type": "Line",
-                            "color": "#FFC0504D",
                             "width": 1.5
                         },
                         {
@@ -14347,7 +14332,6 @@
                             "display_name": "f(x) = x",
                             "yAxis": null,
                             "type": "Line",
-                            "color": "#FF4F81BD",
                             "width": 1.5
                         }
                     ],
@@ -14531,7 +14515,7 @@
                             "size": 6,
                             "shape": "DEFAULT",
                             "fill": null,
-                            "color": "#FFC0504D",
+                            "color": null,
                             "outline_color": null
                         },
                         {
@@ -14568,7 +14552,7 @@
                             "size": 6,
                             "shape": "DEFAULT",
                             "fill": null,
-                            "color": "#FF4F81BD",
+                            "color": null,
                             "outline_color": null
                         }
                     ],
@@ -14728,7 +14712,7 @@
                             "size": 6,
                             "shape": "DEFAULT",
                             "fill": null,
-                            "color": "#FFC0504D",
+                            "color": null,
                             "outline_color": null
                         }
                     ],

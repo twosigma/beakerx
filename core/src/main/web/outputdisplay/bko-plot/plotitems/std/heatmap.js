@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils) {
+  var retfunc = function(plotUtils, plotTip) {
 
     var HeatMap = function(data) {
       _.extend(this, data); // copy properties to itself
@@ -186,14 +186,7 @@
     };
 
     HeatMap.prototype.clearTips = function(scope) {
-      var eleprops = this.elementProps;
-      var itemid = this.id;
-      _.each(scope.tips, function(value, key) {
-        if (key.search("" + itemid) === 0) {
-          scope.jqcontainer.find("#tip_" + key).remove();
-          delete scope.tips[key];
-        }
-      });
+      plotTip.clearTips(scope, this.id);
     };
 
     HeatMap.prototype.createTip = function(ele, g, model) {
@@ -202,5 +195,5 @@
 
     return HeatMap;
   };
-  beaker.bkoFactory('HeatMap', ['plotUtils', retfunc]);
+  beaker.bkoFactory('HeatMap', ['plotUtils', 'plotTip', retfunc]);
 })();

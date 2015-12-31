@@ -22,6 +22,7 @@
 ( function() {
   'use strict';
   var retfunc = function(plotUtils,
+                         plotTip,
                          plotFormatter,
                          plotFactory,
                          bkCellMenuPluginManager,
@@ -38,9 +39,6 @@
           "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
           "<svg id='svgg'>"  +
           "<defs>" +
-            "<marker id='Triangle' viewBox='0 0 10 10' refX='1' refY='5' markerWidth='6' markerHeight='6' orient='auto'>" +
-            "<path d='M 0 0 L 10 5 L 0 10 z' />" +
-            "</marker>" +
             "<filter id='svgfilter'>" +
               "<feGaussianBlur result='blurOut' in='SourceGraphic' stdDeviation='1' />" +
               "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
@@ -370,19 +368,19 @@
           scope.svg.selectAll(".plot-resp")
             .on('mouseenter', function(d) {
               scope.drawLegendPointer(d);
-              return scope.tooltip(d, d3.mouse(scope.svg[0][0]));
+              return plotTip.tooltip(scope, d, d3.mouse(scope.svg[0][0]));
             })
             .on("mouseleave", function(d) {
               scope.removeLegendPointer();
-              return scope.untooltip(d);
+              return plotTip.untooltip(scope, d);
             })
             .on("click", function(d) {
-              return scope.toggleTooltip(d);
+              return plotTip.toggleTooltip(scope, d);
             });
         };
 
         scope.drawLegendPointer = function(d) {
-          if(scope.gradientLegend){
+          if (scope.gradientLegend) {
             scope.gradientLegend.drawPointer(d.ele.value);
           }
         };
@@ -393,112 +391,6 @@
           }
         };
 
-        scope.toggleTooltip = function(d) {
-          if (scope.zoomed === true) { return; } // prevent dragging and toggling at the same time
-
-          var id = d.id, nv = !scope.tips[id];
-          if (nv === true) {
-            scope.tooltip(d, d3.mouse(scope.svg[0][0]));
-          } else {
-            scope.tips[id].sticking = !scope.tips[id].sticking;
-            if (scope.tips[id].sticking === false) {
-              scope.untooltip(d);
-            }
-          }
-        };
-        scope.tooltip = function(d, mousePos) {
-
-          if (scope.tips[d.id] != null) {
-            return;
-          }
-          if (d.isresp === true) {
-            scope.jqsvg.find("#" + d.id).css("opacity", 1);
-          }
-          scope.tips[d.id] = {};
-          _.extend(scope.tips[d.id], d);
-          var d = scope.tips[d.id];
-          d.sticking = false;
-          d.datax = scope.scr2dataX(mousePos[0] + 2);
-          d.datay = scope.scr2dataY(mousePos[1] + 2);
-
-          scope.renderTips();
-        };
-
-        scope.untooltip = function(d) {
-          if (scope.tips[d.id] == null) { return; }
-          if (scope.tips[d.id].sticking === false){
-            delete scope.tips[d.id];
-            scope.jqcontainer.find("#tip_" + d.id).remove();
-            if (d.isresp === true) {
-              scope.jqsvg.find("#" + d.id).css("opacity", 0);
-            } else {
-              scope.jqsvg.find("#" + d.id).removeAttr("filter");
-            }
-            scope.renderTips();
-          }
-        };
-
-        scope.renderTips = function() {
-          var data = scope.stdmodel.data;
-          var focus = scope.focus;
-          _.each(scope.tips, function(d) {
-            var x = scope.data2scrX(d.datax),
-                y = scope.data2scrY(d.datay);
-            d.scrx = x;
-            d.scry = y;
-            var tipid = "tip_" + d.id;
-            var tipdiv = scope.jqcontainer.find("#" + tipid);
-
-            if (tipdiv.length === 0) {
-              var tiptext = data[d.idx].createTip(d.ele, d.g, scope.stdmodel);
-
-              tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
-                .attr("id", tipid)
-                .attr("class", "plot-tooltip")
-                .css("border-color", data[d.idx].tip_color)
-                .append(tiptext)
-                .on('mouseup', function(e) {
-                  if (e.which == 3) {
-                    delete scope.tips[d.id];
-                    if (d.isresp === true) {  // is interaction responsive element
-                      scope.jqsvg.find("#" + d.id).css("opacity", 0);
-                    } else {
-                      scope.jqsvg.find("#" + d.id).removeAttr("filter");
-                    }
-                    scope.interactMode = "remove";
-                    $(this).remove();
-                  }
-                });
-              if (data[d.idx].tip_class) {
-                tipdiv.addClass(data[d.idx].tip_class);
-              }
-            }
-            var w = tipdiv.outerWidth(), h = tipdiv.outerHeight();
-            if (plotUtils.outsideScrBox(scope, x, y, w, h)) {
-              tipdiv.remove();
-              return;
-            }
-            tipdiv
-              .draggable({
-                stop : function(event, ui) {
-                  d.scrx = ui.position.left - plotUtils.fonts.tooltipWidth;
-                  d.scry = ui.position.top;
-                  d.datax = scope.scr2dataX(d.scrx);
-                  d.datay = scope.scr2dataY(d.scry);
-                }
-              });
-
-            tipdiv
-              .css("left", x + plotUtils.fonts.tooltipWidth)
-              .css("top", y);
-            if (d.isresp === true) {
-              scope.jqsvg.find("#" + d.id).attr("opacity", 1);
-            } else {
-              scope.jqsvg.find("#" + d.id)
-                .attr("filter", "url(#svgfilter)");
-            }
-          });
-        };
 
         scope.renderGridlineLabels = function() {
           var _size_ = function (s, clazz) {
@@ -1723,6 +1615,11 @@
           state.visibleItem = scope.visibleItem;
           state.legendableItem = scope.legendableItem;
           state.defaultFocus = scope.defaultFocus;
+
+
+          state.tips = {};
+          $.extend(true, state.tips, scope.tips);
+
           return state;
         };
 
@@ -1749,6 +1646,8 @@
           if(scope.defaultFocus) {
             scope.fixFocus(scope.defaultFocus);
           }
+
+          $.extend(true, scope.tips, state.tips);
         };
 
         scope.initFlags = function() {
@@ -1775,7 +1674,12 @@
 
           // see if previous state can be applied
           scope.focus = {};
-          scope.tips = {};
+
+          if (!scope.model.getCellModel().tips) {
+            scope.model.getCellModel().tips = {};
+          }
+
+          scope.tips = scope.model.getCellModel().tips;
           scope.plotSize = {};
 
           _.extend(scope.plotSize, scope.stdmodel.plotSize);
@@ -1836,7 +1740,7 @@
           plotUtils.plotLabels(scope); // redraw
           plotUtils.plotTicks(scope); // redraw
 
-          scope.renderTips();
+          plotTip.renderTips(scope);
           scope.renderLocateBox(); // redraw
           scope.renderLegends(); // redraw
           scope.updateMargin(); //update plot margins
@@ -2071,6 +1975,7 @@
   };
   beaker.bkoDirective("Plot", [
     "plotUtils",
+    "plotTip",
     "plotFormatter",
     "plotFactory",
     "bkCellMenuPluginManager",

@@ -213,6 +213,11 @@
   padding: 0.8em;
 }
 
+.marker-style {
+  fill: black;
+  stroke: black
+}
+
 .fa.fa-times {
   float: right;
   cursor: pointer;

@@ -39,7 +39,7 @@
           "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
           "<svg id='svgg'>"  +
           "<defs>" +
-            "<marker id='Triangle' viewBox='0 0 10 10' refX='1' refY='5' markerWidth='6' markerHeight='6' orient='auto'>" +
+            "<marker id='Triangle' class='marker-style' viewBox='0 0 10 10' refX='1' refY='5' markerWidth='6' markerHeight='6' orient='auto'>" +
             "<path d='M 0 0 L 10 5 L 0 10 z' />" +
             "</marker>" +
             "<filter id='svgfilter'>" +

@@ -59,9 +59,9 @@
     };
 
     var drawLine = function (scope, d, tipdiv) {
+      var data = scope.stdmodel.data;
       var svg = scope.maing;
       var diameter = 10;
-      var deviation = 2;
 
       var x2 = scope.data2scrX(d.targetx),
         y2 = scope.data2scrY(d.targety);
@@ -75,19 +75,14 @@
       var height = tipdiv.outerHeight();
       var width = tipdiv.outerWidth();
 
-      if (top + height / 2 >= y2 - deviation && top + height / 2 <= y2 + deviation) {
-        addAttachment(left, top + height / 2, x2, y2, attachments);
-        addAttachment(left + width, top + height / 2, x2, y2, attachments);
-      }
-      else if (left + width / 2 >= x2 - deviation && left + width / 2 <= x2 + deviation) {
-        addAttachment(left + width / 2, top, x2, y2, attachments);
-        addAttachment(left + width / 2, top + height, x2, y2, attachments);
-      } else {
-        addAttachment(left, top, x2, y2, attachments);
-        addAttachment(left + width, top, x2, y2, attachments);
-        addAttachment(left + width, top + height, x2, y2, attachments);
-        addAttachment(left, top + height, x2, y2, attachments);
-      }
+      addAttachment(left, top + height / 2, x2, y2, attachments);
+      addAttachment(left + width, top + height / 2, x2, y2, attachments);
+      addAttachment(left + width / 2, top, x2, y2, attachments);
+      addAttachment(left + width / 2, top + height, x2, y2, attachments);
+      addAttachment(left, top, x2, y2, attachments);
+      addAttachment(left + width, top, x2, y2, attachments);
+      addAttachment(left + width, top + height, x2, y2, attachments);
+      addAttachment(left, top + height, x2, y2, attachments);
 
       var attachment = _.min(attachments, "dist");
       var dist = attachment.dist, x1 = attachment.x, y1 = attachment.y;
@@ -98,7 +93,7 @@
         var y2_ = y2 - diameter * (y2 - y1) / dist;
 
         svg.append("line")
-          .style("stroke", "black")
+          .style("stroke", data[d.idx].tip_color)
           .attr("x2", x2_)
           .attr("y2", y2_)
           .attr("x1", x1)

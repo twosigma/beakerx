@@ -30,7 +30,7 @@
 }
 
 .check-box-group-item-label {
-  margin: 0 5px 0 0;
+  margin: 0;
 }
 
 .check-box-group-item-label input[type="checkbox"] {
@@ -38,24 +38,26 @@
   margin: 0;
 }
 
-.check-box-group-item-label.vertical {
-  display: table-row;
+.check-box-group-item.horizontal {
+  float: left;
+  margin-right: 10px;
 }
 
-.check-box-group-item-label.horizontal {
+.check-box-group-item, .radio-button-item {
+    position: relative;
 }
 
-.radio-button-item-text {
+.radio-button-item-label {
   width: 10%;
   margin: 0 10px 0 5px;
 }
 
-.radio-button-item-label {
-  margin-top: 5px;
+.radio-button-item.vertical {
+  margin-bottom: 5px;
 }
 
-.radio-button-item-label.vertical {
-  display: inline;
+.radio-button-item.horizontal {
+  float: left;
 }
 
 input[type="radio"].radio-button-component-item {
@@ -66,6 +68,16 @@ input[type="radio"].radio-button-component-item {
 input.check-box {
   vertical-align: middle;
   margin: 0;
+}
+
+input.check-box + label {
+  float: left;
+  margin-right: 5px;
+}
+
+easy-form-check-box .easyform-component-container {
+  margin: 0;
+  position: relative;
 }
 
 input.date-picker {

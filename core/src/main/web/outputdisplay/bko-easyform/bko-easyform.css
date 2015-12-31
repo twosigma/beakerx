@@ -53,11 +53,11 @@
 }
 
 .radio-button-item.vertical {
-  float: left;
+  margin-bottom: 5px;
 }
 
 .radio-button-item.horizontal {
-  margin-bottom: 5px;
+  float: left;
 }
 
 input[type="radio"].radio-button-component-item {

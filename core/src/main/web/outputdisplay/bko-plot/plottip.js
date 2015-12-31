@@ -61,10 +61,9 @@
     var drawLine = function (scope, d, tipdiv) {
       var data = scope.stdmodel.data;
       var svg = scope.maing;
-      var diameter = 10;
 
-      var x2 = scope.data2scrX(d.targetx),
-        y2 = scope.data2scrY(d.targety);
+      var x2 = scope.data2scrX(d.targetx);
+      var y2 = scope.data2scrY(d.targety);
 
       var position = tipdiv.position();
 
@@ -87,20 +86,14 @@
       var attachment = _.min(attachments, "dist");
       var dist = attachment.dist, x1 = attachment.x, y1 = attachment.y;
 
-      if (diameter <= dist) {
 
-        var x2_ = x2 - diameter * (x2 - x1) / dist;
-        var y2_ = y2 - diameter * (y2 - y1) / dist;
 
-        svg.append("line")
-          .style("stroke", data[d.idx].tip_color)
-          .attr("x2", x2_)
-          .attr("y2", y2_)
-          .attr("x1", x1)
-          .attr("y1", y1)
-          .attr("marker-end", "url(/beaker/#Triangle)")
-        ;
-      }
+      svg.append("line")
+        .style("stroke", data[d.idx].tip_color)
+        .attr("x2", x2)
+        .attr("y2", y2)
+        .attr("x1", x1)
+        .attr("y1", y1);
     };
 
     var impl = {

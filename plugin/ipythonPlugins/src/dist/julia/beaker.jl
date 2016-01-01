@@ -23,7 +23,6 @@ function setsession(id)
   global sessionid = id
 end
 
-
 function get(var)
   reply = Requests.json(Requests.get(string(core_url, "/rest/namespace/get"); query = Dict("name" => var, "session" => sessionid)))
   if !reply["defined"]
@@ -32,8 +31,19 @@ function get(var)
   return reply["value"]
 end
 
+function set4(var, val, unset, sync)
+  args = Dict("name" => var, "session" => sessionid, "sync" => sync)
+  if !unset
+    args["value"] = JSON.json(val)
+  end
+  reply = readall(Requests.post(string(core_url, "/rest/namespace/set"); data = args))
+  if reply != "ok"
+    error(reply)
+  end
+end
+
 function set(var, val)
-  return 35
+  return set4(var, val, false, true)
 end
 
 end

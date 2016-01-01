@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -76,8 +76,9 @@
                 "result": "<div class=\"output_subarea output_text\"><pre>-1 + 0im</pre></div>",
                 "selectedType": "Html",
                 "pluginName": "Julia",
-                "shellId": "E231C950EB5442D6B2BEE2EFB1BE1B0D",
-                "elapsedTime": 300
+                "shellId": "05A959BC92E341E78BEEBE55C0450AD9",
+                "elapsedTime": 308,
+                "height": 35
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -98,19 +99,20 @@
                     "outputdata": [
                         {
                             "type": "out",
-                            "value": "elapsed time: 15"
+                            "value": " 11"
                         },
                         {
                             "type": "out",
-                            "value": ".024777807 seconds (6400000600 bytes allocated, 22.54% gc time)\n"
+                            "value": ".568330 seconds (200.00 M allocations: 6.706 GB, 3.62% gc time)\n"
                         }
                     ],
-                    "payload": "<div class=\"output_subarea output_text\"><pre>(-6.0:0.5:6.5,[1,30,302,2827,20258,112103,486505,1653412,4407195,9191740  …  4401904,1653739,485924,112197,20154,2783,330,32,2,1])</pre></div>"
+                    "payload": "<div class=\"output_subarea output_text\"><pre>(-6.0:0.5:6.0,[1,27,325,2900,19958,111413,486590,1653399,4405891,9186040  …  9188798,4406001,1654930,486025,111721,20074,2808,326,24,1])</pre></div>"
                 },
                 "selectedType": "Results",
                 "pluginName": "Julia",
-                "shellId": "F7477F62FE544473A46AD7A9E3B426B9",
-                "elapsedTime": 15183
+                "shellId": "05A959BC92E341E78BEEBE55C0450AD9",
+                "elapsedTime": 11724,
+                "height": 84
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -132,7 +134,8 @@
                 "selectedType": "Html",
                 "pluginName": "Julia",
                 "shellId": "E231C950EB5442D6B2BEE2EFB1BE1B0D",
-                "elapsedTime": 330
+                "elapsedTime": 330,
+                "height": 401
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -154,13 +157,113 @@
                 "selectedType": "Html",
                 "pluginName": "Julia",
                 "shellId": "E231C950EB5442D6B2BEE2EFB1BE1B0D",
-                "elapsedTime": 15296
+                "elapsedTime": 15296,
+                "height": 401
             },
             "evaluatorReader": true,
             "lineCount": 3
+        },
+        {
+            "id": "sectionLPw9rj",
+            "type": "section",
+            "title": "Autotranslation",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "coderguB14",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.x = \"autotranslation of basic types\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "autotranslation of basic types",
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 36,
+                "height": 36
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeDcAKEC",
+            "type": "code",
+            "evaluator": "Julia",
+            "input": {
+                "body": [
+                    "Beaker.get(\"x\")"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "<div class=\"output_subarea output_text\"><pre>\"autotranslation of basic types\"</pre></div>",
+                "selectedType": "Html",
+                "pluginName": "Julia",
+                "shellId": "05A959BC92E341E78BEEBE55C0450AD9",
+                "elapsedTime": 222,
+                "height": 35
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeHyp4jg",
+            "type": "code",
+            "evaluator": "Julia",
+            "input": {
+                "body": [
+                    "Beaker.set(\"y\", [1, 2, 3])"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Hidden",
+                "pluginName": "Julia",
+                "shellId": "05A959BC92E341E78BEEBE55C0450AD9",
+                "elapsedTime": 713
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeqhF3rC",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.y"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": [
+                    1,
+                    2,
+                    3
+                ],
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 28,
+                "height": 36
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         }
     ],
-    "namespace": {},
+    "namespace": {
+        "x": "autotranslation of basic types",
+        "y": [
+            1,
+            2,
+            3
+        ]
+    },
     "metadata": {
         "publication-id": "560b4c5e-ace8-459d-aaf7-1e78b22dce12"
     }

@@ -398,7 +398,9 @@ define(function(require, exports, module) {
         }
       },
       initCode: function() {
-        return this.settings.setup + "\n";
+        return 'include(string(ENV["beaker_julia_init"], "/beaker.jl"))\n' +
+	       'Beaker.setsession("' + bkHelper.getSessionId() + '")\n' +
+	       this.settings.setup + "\n";
       },
       reset: function() {
         var kernel = kernels[this.settings.shellID];

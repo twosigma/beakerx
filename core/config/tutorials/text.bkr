@@ -151,7 +151,7 @@
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
                 "elapsedTime": 28,
-                "height": 34
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -205,7 +205,7 @@
                     "<p>",
                     "  But you can also create interactive elements:<br/>",
                     "  <button class=\"btn btn-default\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">",
-                    "  \tWhat is a beaker?",
+                    "    What is a beaker?",
                     "  </button>",
                     "</p>",
                     "<p>",

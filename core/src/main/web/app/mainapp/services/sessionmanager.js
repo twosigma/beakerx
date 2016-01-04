@@ -696,20 +696,21 @@
           }
         }
         obj = {
-            type: 'OutputContainer',
-            items: its,
-            names: nms
+          type: 'OutputContainer',
+          items: its,
+          labels: nms,
+          layout: {"type": "SimpleLayoutManager", "borderDisplayed": false}
         };
       }
       return transform(obj);
-    }
+    };
     
     BeakerObject.prototype.isCircularObject = function(node, parents) {
       if (node === this.beakerObj)
         return true;
       
       return this.isCircularObject2(node, parents);
-    }
+    };
 
     BeakerObject.prototype.isCircularObject2 = function(node, parents) {
       parents = parents || [];

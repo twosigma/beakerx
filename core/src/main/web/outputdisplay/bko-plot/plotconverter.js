@@ -539,7 +539,15 @@
             }
             break;
           case "Histogram":
+            if (!list || !list.length || !list[0] || !list[0].length) {
+              break;
+            }
             var datasets = [];
+            var rangeMin = list[0][0], rangeMax = rangeMin;
+            for (var i = 0; i < list.length; i++) {
+              rangeMin = Math.min(rangeMin, d3.min(list[i]));
+              rangeMax = Math.max(rangeMax, d3.max(list[i]));
+            }
             for (var i = 0; i < list.length; i++) {
               var dataset = list[i];
               var item = {
@@ -560,8 +568,8 @@
               var histvalues = plotUtils.histogram().
                 rightClose(newmodel.rightClose).
                 binCount(newmodel.binCount).
-                rangeMin(newmodel.rangeMin).
-                rangeMax(newmodel.rangeMax)(dataset);
+                rangeMin(newmodel.rangeMin != null ? newmodel.rangeMin : rangeMin).
+                rangeMax(newmodel.rangeMax != null  ? newmodel.rangeMax : rangeMax)(dataset);
 
               datasets.push(histvalues);
 

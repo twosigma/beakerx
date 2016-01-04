@@ -110,18 +110,63 @@
 
 		PlotTreeMapNode.prototype.draw = function (scope) {
 
+			var zoomed = function () {
+				svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+				setTextStyles();
+			};
+
+			var setTextStyles = function () {
+				svg.selectAll("text")
+					.style('font-size', function (d) {
+						var scale = d3.event && d3.event.scale ? d3.event.scale : 1;
+						var size = Math.min(18 / scale, Math.floor(d.dx));
+						return size + "px"
+					})
+					.attr("textLength", function (d) {
+						return this.getComputedTextLength() < d.dx ? this.getComputedTextLength() : d.dx;
+					})
+					.style("opacity", function (d) {
+						d.w = this.getComputedTextLength();
+						return d.dx > d.w && d.showItem === true ? 1 : 0;
+					})
+				;
+			};
+
 			if (!this.isRoot())
 				return;
 
 			this.prepare(scope);
-			var zoom = d3.behavior.zoom()
-				.scaleExtent([1, 10])
-				.on("zoom", zoomed);
 
-			scope.maing.call(zoom).on("dblclick.zoom", function(){
-				svg.attr("transform", "translate(" + [0,0] + ")scale(" + 1 + ")");
-				setTextStyles();
+			var zoom = d3.behavior.zoom().scaleExtent([1, 10]);
+
+			var enableZoom = function () {
+				scope.maing.call(zoom.on("zoom", zoomed));
+				scope.maing.call(zoom)
+					.on("dblclick.zoom", function () {
+						svg.attr("transform", "translate(" + [0, 0] + ")scale(" + 1 + ")");
+						setTextStyles();
+					});
+			};
+
+			var disableZoom = function () {
+				scope.maing.call(zoom.on("zoom", null));
+				scope.maing.on("wheel.zoom", null);
+			};
+
+			// set zoom object
+			scope.maing.on("focusin", function() {
+				enableZoom();
+			}).on("focusout", function() {
+				disableZoom();
 			});
+
+      scope.maing.call(zoom)
+        .on("dblclick.zoom", function () {
+          svg.attr("transform", "translate(" + [0, 0] + ")scale(" + 1 + ")");
+          setTextStyles();
+        });
+
+
 
 			var svg = scope.maing.append("svg:g");
 			var cell = svg.selectAll("g")
@@ -184,29 +229,7 @@
 					return d.children ? null : d.label;
 				});
 			setTextStyles();
-
-			function zoomed() {
-				svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-				setTextStyles();
-			}
-
-			function setTextStyles() {
-				svg.selectAll("text")
-					.style('font-size', function (d) {
-						var scale = d3.event && d3.event.scale ? d3.event.scale : 1;
-						var size = Math.min(18 / scale, Math.floor(d.dx));
-						return size + "px"
-					})
-					.attr("textLength", function (d) {
-						return this.getComputedTextLength() < d.dx ? this.getComputedTextLength() : d.dx;
-					})
-					.style("opacity", function (d) {
-						d.w = this.getComputedTextLength();
-						return d.dx > d.w && d.showItem === true ? 1 : 0;
-					})
-
-				;
-			}
+			disableZoom();
 		};
 
 

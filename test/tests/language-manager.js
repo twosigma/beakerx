@@ -43,6 +43,14 @@ describe('language manager', function () {
     expect(beakerPO.languageManagerButtonActive('Groovy').isPresent()).toBe(true);
   });
 
+  it('can load IPython', function () {
+    expect(beakerPO.languageManagerButtonKnown('IPython').isPresent()).toBe(true);
+    expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(false);
+    beakerPO.languageManagerButton('IPython').click();
+    beakerPO.waitForPlugin('IPython');
+    expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(true);
+  }, 60000);
+
   it('can be closed', function () {
     beakerPO.languageManagerButton('Groovy').click();
     beakerPO.languageManagerCloseButton.click();

@@ -90,6 +90,7 @@
 
       svg.append("line")
         .style("stroke", data[d.idx].tip_color)
+        .attr("class", "plot-tooltip-line")
         .attr("x2", x2)
         .attr("y2", y2)
         .attr("x1", x1)
@@ -161,7 +162,7 @@
         var data = scope.stdmodel.data;
         var svg = scope.maing;
 
-        svg.selectAll("line").remove();
+        svg.selectAll(".plot-tooltip-line").remove();
 
         _.each(scope.tips, function (d) {
           var x = scope.data2scrX(d.datax),

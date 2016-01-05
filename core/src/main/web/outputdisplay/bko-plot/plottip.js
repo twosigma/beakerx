@@ -97,6 +97,14 @@
     };
 
 
+    /**
+     * This code checks that tip is in the grid area
+     * @param x - x coordinate of the tip
+     * @param y - y coordinate of the tip
+     * @param w - width of the tip
+     * @param h - height of the tip
+     * @returns {boolean} true if the tip is outside grid area, otherwise - false
+     */
     var outsideGrid = function (scope, x, y, w, h) {
       var xPadding = 10;
       var bBox = scope.jqgridg.get(0).getBBox();

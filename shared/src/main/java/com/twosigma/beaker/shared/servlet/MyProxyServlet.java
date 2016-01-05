@@ -19,8 +19,12 @@ import org.eclipse.jetty.proxy.ProxyServlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MyProxyServlet extends ProxyServlet.Transparent {
+
+  private static Map<String, Integer> plugins = new ConcurrentHashMap<>();
 
   private String _hash = "";
 
@@ -32,6 +36,7 @@ public class MyProxyServlet extends ProxyServlet.Transparent {
 
   @Override
   protected String rewriteTarget(final HttpServletRequest request) {
+    //XXX TODO rewrite completely
     String result = super.rewriteTarget(request);
     if (result != null) {
       String path = request.getPathInfo();
@@ -39,22 +44,34 @@ public class MyProxyServlet extends ProxyServlet.Transparent {
         result = result.replace(path, "").concat("/beaker/");
       } else if ("/beaker/".equals(path)) {
         result = result.replace(path, "").concat("/rest/util/getMainPage");
-      } else if (existsHashInPath(path)) {
-        result = result.replace("/" + this._hash + "/beaker", "");
+      } else {
+        String[] parts = path.split("/");
+        for (int i = 0; i < parts.length; i++) {
+          if (this._hash.equals(parts[i])) {
+            if (i < parts.length - 1) {
+              if ("beaker".equals(parts[i + 1])) {
+                result = result.replace("/" + this._hash + "/beaker", "");
+                break;
+              } else {
+                for (String pluginId : plugins.keySet()) {
+                  if (parts[i + 1].startsWith(pluginId.toLowerCase())) {
+                    //TODO pass port here
+                    result = result.replace("8802", String.valueOf(plugins.get(pluginId)));
+                    result = result.replace("/" + this._hash + "/" + parts[i + 1], "");
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
     return result;
   }
 
-  private boolean existsHashInPath(String path) {
-    if (path != null) {
-      for (String part : path.split("/")) {
-        if (this._hash.equals(part)) {
-          return true;
-        }
-      }
-    }
-    return false;
+  public static void addPlugin(String pluginId, int port) {
+    plugins.put(pluginId, port);
   }
 
 }

@@ -29,9 +29,9 @@ import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
@@ -70,15 +70,15 @@ public class WebServerModule extends AbstractModule {
 
   @Provides
   @Singleton
-  public Server getServer(final Injector injector, Connector connector) {
+  public Server getServer(final Injector injector) {
     WebServerConfig webServerConfig = injector.getInstance(WebServerConfig.class);
     String staticDir = webServerConfig.getStaticDirectory();
     Server server = new Server();
-    final ServerConnector conn = new ServerConnector(server, new HttpConnectionFactory());
-    WebServerConfig webAppConfig = injector.getInstance(WebServerConfig.class);
-    conn.setPort(webAppConfig.getPort());
+    final ServerConnector conn = new ServerConnector(server);
+    conn.setPort(webServerConfig.getPort());
     conn.setHost("127.0.0.1");
-    ServletContextHandler servletHandler = new ServletContextHandler();
+    server.setConnectors(new Connector[] { conn });
+    ServletContextHandler servletHandler = new ServletContextHandler(server, "/");
     servletHandler.addEventListener(new GuiceServletContextListener() {
       @Override
       protected Injector getInjector() {
@@ -86,9 +86,9 @@ public class WebServerModule extends AbstractModule {
       }
     });
 
-    servletHandler.setSecurityHandler(makeSecurityHandler(System.getenv("beaker_plugin_password")));
+//    servletHandler.setSecurityHandler(makeSecurityHandler(System.getenv("beaker_plugin_password")));
     servletHandler.addFilter(GuiceFilter.class, "/*", null);
-    servletHandler.addServlet(org.eclipse.jetty.proxy.AsyncProxyServlet.class, "/*");
+    servletHandler.addServlet(DefaultServlet.class, "/*");
     servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", staticDir);
     servletHandler.setInitParameter("maxCacheSize", "0");
     servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");

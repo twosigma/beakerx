@@ -20,13 +20,13 @@ repositories {
 }
 
 dependencies {
+  compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
   compile group: 'org.cometd.java', name: 'cometd-java-annotations', version: '3.0.7'
-  compile group: 'org.cometd.java', name: 'bayeux-api', version: '3.0.7'
+  compile group: 'org.cometd.java', name: 'cometd-java', version: '3.0.7'
   compile group: 'org.codehaus.jackson', name: 'jackson-jaxrs', version: '1.9.13'
-  compile group: 'org.apache.cxf', name: 'cxf-bundle-jaxrs', version: '2.7.7'
   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
-  compile group: 'com.sun.jersey.contribs', name: 'jersey-guice', version: '1.17.1'
-  compile group: 'org.cometd.java', name: 'cometd-java-websocket-jetty-server', version: '3.0.7'
+  compile group: 'com.sun.jersey.contribs', name: 'jersey-guice', version: '1.19'
+  compile group: 'org.eclipse.jetty', name: 'jetty-proxy', version: '9.3.6.v20151106'
 }
 
 compileJava {

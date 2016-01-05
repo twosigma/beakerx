@@ -1538,6 +1538,8 @@
         };
         scope.disableZoom = function() {
           scope.svg.call(scope.zoomObj.on("zoomstart", null).on("zoom", null).on("zoomend", null));
+        };
+        scope.disableWheelZoom = function() {
           scope.svg.on("wheel.zoom", null);
         };
 
@@ -1702,13 +1704,15 @@
           }).on("mouseup", function() {
             return scope.mouseUp();
           }).on("mouseleave", function() {
-            return scope.disableZoom();
+            return scope.disableWheelZoom();
           });
           scope.jqsvg.mousemove(function(e) {
             return scope.renderCursor(e);
           }).mouseleave(function(e) {
             return scope.mouseleaveClear(e);
           });
+          scope.enableZoom();
+          scope.disableWheelZoom();
           scope.calcRange();
 
           // init copies focus to defaultFocus, called only once

@@ -141,6 +141,8 @@
           scope.gridg = d3.select(element[0]).select("#gridg");
           scope.labelg = d3.select(element[0]).select("#labelg");
 
+          scope.jqgridg = element.find("#gridg");
+
           // set some constants
 
           scope.renderFixed = 1;

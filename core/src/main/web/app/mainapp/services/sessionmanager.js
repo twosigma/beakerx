@@ -756,7 +756,6 @@
           //if (_v.namespace === undefined)
           //  _v.namespace = { };
           _bo = new BeakerObject(_v);
-          bkHelper.setThemeToBeakerObject();
           if (this.isEmpty()) {
             bkNotebookCellModelManager.reset([]);
           } else {

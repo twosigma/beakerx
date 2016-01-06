@@ -158,7 +158,9 @@
           "fi_op" : ele.color_opacity,
           "st" : ele.stroke,
           "st_w" : ele.stroke_width,
-          "st_op" : ele.stroke_opacity
+          "st_op" : ele.stroke_opacity,
+          "tooltip_cx": x + sw / 2,
+          "tooltip_cy": y2 + (y - y2) / 2
         };
 
         eleprops.push(prop);

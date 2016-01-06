@@ -159,10 +159,11 @@
             "id" : id,
             "idx" : this.index,
             "ele" : ele,
-            "isresp" : true,
             "cx" : x,
             "cy" : y,
-            "op" : scope.tips[id] == null ? 0 : 1,
+            "tooltip_cx": x,
+            "tooltip_cy": y,
+            "tooltip_r": 5
           };
           eleprops.push(prop);
         }
@@ -239,10 +240,10 @@
           .style("stroke", this.tip_color);
         itemsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id; })
-          .attr("cx", function(d) { return d.cx; })
-          .attr("cy", function(d) { return d.cy; })
-          .attr("r", this.respR)
-          .style("opacity", function(d) { return d.op; });
+          .attr("cx", function(d) { return d.tooltip_cx; })
+          .attr("cy", function(d) { return d.tooltip_cy; })
+          .attr("r", this.respR )
+          .style("opacity", 0);
       }
       itemsvg.selectAll("text").remove();
       itemsvg.selectAll("text")

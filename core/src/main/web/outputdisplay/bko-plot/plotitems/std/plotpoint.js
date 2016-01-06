@@ -202,7 +202,9 @@
           "st" : ele.stroke,
           "st_op" : ele.stroke_opacity,
           "st_w" : ele.stroke_width,
-          "st_da" : ele.stroke_dasharray
+          "st_da" : ele.stroke_dasharray,
+          "tooltip_cx" : x,
+          "tooltip_cy" : y
         };
         var shape = ele.shape == null ? this.shape : ele.shape;
         switch (shape) {
@@ -213,24 +215,25 @@
             pstr += (x + s) + "," + (y    ) + " ";
             pstr += (x    ) + "," + (y + s) + " ";
             _.extend(prop, {
-              "pts" : pstr
+              "pts" : pstr,
+              "tooltip_cx" : x
             });
             labely = y - s;
             break;
           case "circle":
             _.extend(prop, {
-              "cx" : x,
-              "cy" : y,
-              "r" : s
+              "cx": x,
+              "cy": y,
+              "r": s
             });
             labely = y - s;
             break;
           default:    // rects
             _.extend(prop, {
-              "x" : x - s / 2,
-              "y" : y - s / 2,
-              "w" : s,
-              "h" : s
+              "x": x - s / 2,
+              "y": y - s / 2,
+              "w": s,
+              "h": s
             });
             labely = y - s / 2;
         }
@@ -326,9 +329,7 @@
           .attr("text-anchor", "middle")
           .style("fill", "black")
           .style("stroke", "none")
-          .text(function(d) {
-            return d.text;
-          });
+          .text(function(d) {return d.text;});
       }
     };
 

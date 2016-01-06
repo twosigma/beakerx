@@ -31,8 +31,9 @@
       scope.jqcontainer.find("#tip_" + d.id).remove();
       if (d.isresp === true) {
         scope.jqsvg.find("#" + d.id).css("opacity", 0);
-      } else {
+      } else if (d.noresp !== true){
         scope.jqsvg.find("#" + d.id).removeAttr("filter");
+        scope.jqsvg.find("#" + d.id.substr(0, d.id.indexOf("_")) + " .plot-line").removeAttr("filter");
       }
     };
 
@@ -128,8 +129,8 @@
         var d = scope.tips[d.id];
         d.sticking = false;
 
-        d.targetx = scope.scr2dataX(d.cx);
-        d.targety = scope.scr2dataY(d.cy);
+        d.targetx = d.tooltip_cx ? scope.scr2dataX(d.tooltip_cx) : scope.scr2dataX(mousePos[0]);
+        d.targety = d.tooltip_cy ? scope.scr2dataY(d.tooltip_cy) : scope.scr2dataY(mousePos[1]);
 
         d.datax = scope.scr2dataX(mousePos[0] + 5);
         d.datay = scope.scr2dataY(mousePos[1] + 5);
@@ -220,9 +221,9 @@
             .css("top", y);
           if (d.isresp === true) {
             scope.jqsvg.find("#" + d.id).attr("opacity", 1);
-          } else {
-            scope.jqsvg.find("#" + d.id)
-              .attr("filter", "url(#svgfilter)");
+          } else if (d.noresp !== true){
+            scope.jqsvg.find("#" + d.id).attr("filter", "url(/beaker/#svgfilter)");
+            scope.jqsvg.find("#" + d.id.substr(0, d.id.indexOf("_"))+" .plot-line").attr("filter", "url(/beaker/#svgfilter)");
           }
 
           if (d.sticking == true) {

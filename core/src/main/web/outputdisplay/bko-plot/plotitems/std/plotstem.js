@@ -146,6 +146,8 @@
           "st_op": ele.color_opacity,
           "st_w" : ele.width,
           "st_da": ele.stroke_dasharray,
+          //TODO: temporary solution
+          "noresp" : true,
           "x1" : x,
           "y1" : y,
           "x2" : x2,

@@ -98,6 +98,25 @@
         .attr("y1", y1);
     };
 
+
+    /**
+     * This code checks that tip is in the grid area
+     * @param x - x coordinate of the tip
+     * @param y - y coordinate of the tip
+     * @param w - width of the tip
+     * @param h - height of the tip
+     * @returns {boolean} true if the tip is outside grid area, otherwise - false
+     */
+    var outsideGrid = function (scope, x, y, w, h) {
+      var xPadding = 10;
+      var bBox = scope.jqgridg.get(0).getBBox();
+      var W = bBox.width;
+      var H = bBox.height;
+      var X = bBox.x;
+      var Y = bBox.y;
+      return x > W + X - xPadding || x + w - X + xPadding < 0 || y > H + Y || y + h - Y < 0;
+    };
+
     var impl = {
 
       toggleTooltip: function (scope, d) {
@@ -193,7 +212,7 @@
             }
           }
           var w = tipdiv.outerWidth(), h = tipdiv.outerHeight();
-          if (plotUtils.outsideScrBox(scope, x, y, w, h)) {
+          if (outsideGrid(scope, x, y, w, h)) {
             clear(scope, d);
             scope.interactMode = "remove";
             tipdiv.remove();

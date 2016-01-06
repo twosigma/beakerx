@@ -141,6 +141,8 @@
           scope.gridg = d3.select(element[0]).select("#gridg");
           scope.labelg = d3.select(element[0]).select("#labelg");
 
+          scope.jqgridg = element.find("#gridg");
+
           // set some constants
 
           scope.renderFixed = 1;
@@ -1538,6 +1540,8 @@
         };
         scope.disableZoom = function() {
           scope.svg.call(scope.zoomObj.on("zoomstart", null).on("zoom", null).on("zoomend", null));
+        };
+        scope.disableWheelZoom = function() {
           scope.svg.on("wheel.zoom", null);
         };
 
@@ -1702,13 +1706,15 @@
           }).on("mouseup", function() {
             return scope.mouseUp();
           }).on("mouseleave", function() {
-            return scope.disableZoom();
+            return scope.disableWheelZoom();
           });
           scope.jqsvg.mousemove(function(e) {
             return scope.renderCursor(e);
           }).mouseleave(function(e) {
             return scope.mouseleaveClear(e);
           });
+          scope.enableZoom();
+          scope.disableWheelZoom();
           scope.calcRange();
 
           // init copies focus to defaultFocus, called only once

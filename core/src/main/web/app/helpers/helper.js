@@ -92,12 +92,12 @@
       defaultPlotColors: defaultPlotColors,
       rgbaToHex: rgbaToHex,
       setThemeToBeakerObject: function () {
-        var beakerObject = this.getBeakerObject();
-        if (beakerObject && beakerObject.beakerSetter) {
-          beakerObject.beakerSetter("theme", {
+        var beakerObject = this.getBeakerObject().beakerObj;
+        if (beakerObject && beakerObject.prefs) {
+          beakerObject.prefs.theme = {
             name: this.getTheme(),
             plotColors: defaultPlotColors[this.getTheme()]
-          });
+          };
         }
       },
 
@@ -294,16 +294,12 @@
         beakerObj.notebookToBeakerObject();
         var beaker = beakerObj.beakerObj;
         beaker.prefs = {useOutputPanel: false, outputLineLimit: 1000};
+        this.setThemeToBeakerObject();
         beakerObj.beakerObjectToNotebook();
       },
       stripOutBeakerPrefs: function(model) {
         if (model && model.namespace && model.namespace.prefs)
           delete model.namespace.prefs;
-      },
-      removeBeakerTheme: function(model) {
-        if (model && model.namespace) {
-          delete model.namespace.theme;
-        }
       },
       getNotebookElement: function(currentScope) {
         return bkCoreManager.getNotebookElement(currentScope);
@@ -808,7 +804,6 @@
       sanitizeNotebookModel: function(m) {
         var notebookModelCopy = angular.copy(m);
         bkHelper.stripOutBeakerPrefs(notebookModelCopy);
-        bkHelper.removeBeakerTheme(notebookModelCopy);
         if (notebookModelCopy.cells) {
           for (var i = 0; i < notebookModelCopy.cells.length; i++) {
             var currentCell = notebookModelCopy.cells[i];

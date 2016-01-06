@@ -128,7 +128,15 @@ public class SimpleTimePlot extends TimePlot {
     if (data != null && columns != null) {
       for (Map<String, Object> row : data) {
 
-        xs.add((Number) row.get(timeColumn));
+        Object x = row.get(timeColumn);
+        if(x instanceof Number){
+          xs.add(x);
+        } else if (x instanceof Date) {
+          Date date = (Date)x;
+          xs.add(date.getTime());
+        } else {
+          throw new IllegalArgumentException("time column accepts numbers or java.util.Date objects");
+        }
 
         for (int i = 0; i < columns.size(); i++) {
           String column = columns.get(i);

@@ -25,7 +25,6 @@ public class NamespaceBinding {
   private String session;
   private Object value;
   private Boolean defined;
-  private String error;
 
   public String getName() {
     return this.name;
@@ -39,7 +38,6 @@ public class NamespaceBinding {
   public Boolean getDefined() {
     return this.defined;
   }
-  public String getError() { return error; }
   public void setName(String s) {
     this.name = s;
   }
@@ -52,8 +50,6 @@ public class NamespaceBinding {
   public void setDefined(Boolean b) {
     this.defined = b;
   }
-  public void setError(String error) { this.error = error; }
-
   public NamespaceBinding() {
   }
   public NamespaceBinding(String session, String name, Object value, Boolean defined) {
@@ -61,9 +57,5 @@ public class NamespaceBinding {
     this.name = name;
     this.value = value;
     this.defined = defined;
-  }
-  public NamespaceBinding(String session, String error) {
-    this.session = session;
-    this.error = error;
   }
 }

@@ -169,7 +169,7 @@ module.exports = (function() {
 
     window.webContents.on('will-navigate', function(event, url) {
       event.preventDefault();
-      shell.openExternal(url, type);
+      shell.openExternal(url);
     });
 
     return window;

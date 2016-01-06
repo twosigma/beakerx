@@ -1232,17 +1232,19 @@
         bkCellMenuPluginManager.reset();
         bkEvaluateJobManager.reset();
 
-        if ($scope.newSession === "new") {
-          loadNotebook.defaultNotebook($scope.sessionId);
-        } else if ($scope.newSession === "empty") {
-          loadNotebook.emptyNotebook($scope.sessionId);
-        } else if ($scope.isImport === 'true') {
-          loadNotebook.fromImport($scope.sessionId);
-        } else if ($scope.isOpen === 'true') {
-          loadNotebook.openUri($scope.notebook, $scope.sessionId, true);
-        } else {
-          loadNotebook.fromSession($scope.sessionId);
-        }
+        setTimeout(function () {
+          if ($scope.newSession === "new") {
+            loadNotebook.defaultNotebook($scope.sessionId);
+          } else if ($scope.newSession === "empty") {
+            loadNotebook.emptyNotebook($scope.sessionId);
+          } else if ($scope.isImport === 'true') {
+            loadNotebook.fromImport($scope.sessionId);
+          } else if ($scope.isOpen === 'true') {
+            loadNotebook.openUri($scope.notebook, $scope.sessionId, true);
+          } else {
+            loadNotebook.fromSession($scope.sessionId);
+          }
+        }, 0);
       }
     };
   });

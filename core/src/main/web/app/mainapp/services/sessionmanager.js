@@ -698,8 +698,7 @@
         obj = {
           type: 'OutputContainer',
           items: its,
-          labels: nms,
-          layout: {"type": "SimpleLayoutManager", "borderDisplayed": false}
+          labels: nms
         };
       }
       return transform(obj);

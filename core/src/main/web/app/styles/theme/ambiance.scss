@@ -55,6 +55,8 @@ $std-out-color:           #42A2D2;
 $std-err-color:           #e48d71;
 $btn-bkg-color:           #505050;
 
+$scrollbar_width: 8px;
+
 .beaker-theme-ambiance {
 
   body, html, .well, .languages, .code-cell-input, .modal-header, .modal-body, .modal-footer, .row {
@@ -398,6 +400,20 @@ $btn-bkg-color:           #505050;
     background-color: $btn-bkg-color;
   }
 
+  .dataTables_scrollBody::-webkit-scrollbar {
+    width: $scrollbar_width;
+  }
+
+  .dataTables_scrollBody::-webkit-scrollbar-track-piece {
+    background-color: $btn_bkg-color;
+  }
+
+  .dataTables_scrollBody::-webkit-scrollbar-thumb {
+    border: 1px solid #bbb;
+    border-radius: 2px;
+    background-color: #ccc;
+  }
+
   //dropdown menu
 
   .dropdown-menu {
@@ -564,6 +580,38 @@ $btn-bkg-color:           #505050;
       text-align: center;
       line-height: 14px;
       background-color: #3B99FC;
+    }
+
+    select::-webkit-scrollbar {
+      width: $scrollbar_width;
+    }
+
+    select::-webkit-scrollbar-track-piece {
+      background-color: $btn_bkg-color;
+    }
+
+    select::-webkit-scrollbar-thumb {
+      border: 1px solid #bbb;
+      border-radius: 2px;
+      background-color: #ccc;
+    }
+
+    textarea::-webkit-scrollbar {
+      width: $scrollbar_width;
+    }
+
+    textarea::-webkit-scrollbar-track-piece {
+      background-color: $btn_bkg-color;
+    }
+
+    textarea::-webkit-resizer {
+      background-color: $btn_bkg-color;
+    }
+
+    textarea::-webkit-scrollbar-thumb {
+      border: 1px solid #bbb;
+      border-radius: 2px;
+      background-color: #ccc;
     }
   }
 

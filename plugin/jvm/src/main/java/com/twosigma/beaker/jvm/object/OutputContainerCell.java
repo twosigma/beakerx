@@ -29,9 +29,4 @@ public class OutputContainerCell extends OutputContainer {
   public OutputContainerCell(List<Object> items, List<String> labels) {
     super(items, labels);
   }
-
-  public OutputContainer leftShift(Object item) {
-    addItem(item);
-    return this;
-  }
 }

@@ -71,6 +71,11 @@ public class OutputContainer {
     labels.remove(index);
   }
 
+  public OutputContainer leftShift(Object item) {
+    addItem(item);
+    return this;
+  }
+
   public void removeItem(Object itemToRemove) {
     removeItem(items.indexOf(itemToRemove));
   }

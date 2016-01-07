@@ -55,12 +55,6 @@
             }
           };
         });
-        $scope.getName = function (idx) {
-          return $scope.model.getCellModel().labels[idx] || '';
-        };
-        $scope.hasName = function (idx) {
-          return $scope.model.getCellModel().labels !== undefined;
-        };
         $scope.isShowMenu = function () {
           return false;
         };

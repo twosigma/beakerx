@@ -21,7 +21,7 @@
   module.directive('simpleLayout', ['bkHelper', function (bkHelper) {
     return {
       restrict: 'E',
-      template: '<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b ng-if="hasName($index)">{{getName($index)}}<br/></b><bk-code-cell-output model="i" >' +
+      template: '<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b>{{model.getCellModel().labels[$index]}}<br/></b><bk-code-cell-output model="i" >' +
       '</ bk-code-cell-output><br/>></li></ul>',
       scope: {
         model: '='
@@ -43,12 +43,6 @@
             }
           };
         });
-        $scope.getName = function (idx) {
-          return $scope.model.getCellModel().labels[idx] || '';
-        };
-        $scope.hasName = function (idx) {
-          return $scope.model.getCellModel().labels !== undefined;
-        };
         $scope.isShowMenu = function () {
           return false;
         };

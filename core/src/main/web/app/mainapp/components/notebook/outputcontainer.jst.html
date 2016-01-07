@@ -16,12 +16,12 @@
 -->
 <div ng-switch on="layout.type">
     <tabbed-output-container-layout class="outputcontainer" model='model'
-                                    ng-switch-when="layout.type=='TabbedOutputContainerLayoutManager'"></tabbed-output-container-layout>
+                                    ng-switch-when="TabbedOutputContainerLayoutManager"></tabbed-output-container-layout>
     <grid-output-container-layout class="outputcontainer" model='model'
-                                  ng-switch-when="layout.type=='GridOutputContainerLayoutManager'"></grid-output-container-layout>
+                                  ng-switch-when="GridOutputContainerLayoutManager"></grid-output-container-layout>
     <cycling-output-container-layout class="outputcontainer" model='model'
-                                     ng-switch-when="layout.type=='CyclingOutputContainerLayoutManager'"></cycling-output-container-layout>
+                                     ng-switch-when="CyclingOutputContainerLayoutManager"></cycling-output-container-layout>
     <dashboard-layout class="outputcontainer" model='model'
-                      ng-switch-when="layout.type=='DashboardLayoutManager'"></dashboard-layout>
+                      ng-switch-when="DashboardLayoutManager"></dashboard-layout>
     <simple-layout class="outputcontainer" model='model' ng-switch-default></simple-layout>
 </div>

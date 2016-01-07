@@ -16,5 +16,6 @@
 -->
 
 <div id="lm-cycling-panel-{{guid}}-{{$index}}" ng-style='borderStyle' ng-repeat="i in items track by $index">
+  <b>{{model.getCellModel().labels[$index]}}</b><br/>
   <bk-code-cell-output model="i"></bk-code-cell-output>
 </div>

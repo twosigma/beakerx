@@ -115,7 +115,7 @@
             "id": "markdown188oO3",
             "type": "markdown",
             "body": [
-                "Beaker supports many languages. To add another language to a notebook, first [install that language](beakernotebook.com/getting-started),",
+                "Beaker supports many languages. To add another language to a notebook, first [install that language](http://beakernotebook.com/getting-started) if it is not built-in,",
                 "then in Beaker, select **Notebook → Language manager** from the menu on top of the screen.",
                 "",
                 "For general help and documentation, see the tutorial notebook under **Help → Tutorial** notebook."

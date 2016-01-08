@@ -200,7 +200,7 @@
           .attr("y2", 0)
           .attr("class", "text-line-style")
           .attr("stroke-width", 1)
-          .attr("marker-end", "url(/beaker/#Triangle)");
+          .attr("marker-end", "url("+window.location.pathname+"#Triangle)");
 
 
         itemsvg.selectAll("line")

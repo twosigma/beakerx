@@ -39,7 +39,7 @@ Say `cd test; ./runner` to run the end-to-end tests with Protractor.
 
 Say `cd test; ./perftest` to run performance tests with Protractor. Performance tests are pretty demanding and will lock up the browser performing the tests. Any interaction with the browser while the tests are running will affect the tests and skew the results.
 
-[![Build Status](https://travis-ci.org/twosigma/beaker-notebook.svg?branch=master)](https://travis-ci.org/twosigma/beaker-notebook)
+[![Build Status](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/buildStatus/icon?job=Beaker master)](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/job/Beaker master)
 
 To enable the debug menu, add the following to your `beaker.pref.json` file:
 

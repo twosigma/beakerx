@@ -168,8 +168,10 @@ module.exports = (function() {
     window.loadUrl(url);
 
     window.webContents.on('will-navigate', function(event, url) {
-      event.preventDefault();
-      shell.openExternal(url);
+      if (window.webContents.getUrl() !== url) {
+        event.preventDefault();
+        shell.openExternal(url);
+      }
     });
 
     return window;

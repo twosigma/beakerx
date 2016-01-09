@@ -37,6 +37,7 @@ RUN su -m beaker -c "cd /home/beaker/src  && gradle build"
 ###################
 
 RUN su -m beaker -c "julia --eval 'Pkg.add(\"IJulia\")'" && \
+    su -m beaker -c "julia --eval 'Pkg.add(\"Requests\")'" && \
     su -m beaker -c "julia --eval 'Pkg.add(\"Gadfly\")'"
 
 RUN mkdir -p /home/beaker/.beaker/v1/config && \

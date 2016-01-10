@@ -44,6 +44,10 @@ launcher/electron/app/main-menu-template.js
 tags
 launcher/electron/BeakerOSX
 launcher/electron/_MACOSX
+launcher/electron/beaker
+launcher/electron/osxdmg
+launcher/electron/Beaker.dmg
+launcher/electron/electron-v0.32.1-darwin-x64.zip
 launcher/windows/python
 
 core/src/main/web/vendor/bower_components/jquery/test

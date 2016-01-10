@@ -22,6 +22,7 @@ module.exports = (function() {
   // Do not rename to 'screen', because window.screen exists
   var electronScreen = require('screen');
   var request = require('request');
+  var shell = require('shell');
 
   var _windows = {};
   var _windowToSession = {};
@@ -165,6 +166,13 @@ module.exports = (function() {
       window.show();
     });
     window.loadUrl(url);
+
+    window.webContents.on('will-navigate', function(event, url) {
+      if (window.webContents.getUrl() !== url) {
+        event.preventDefault();
+        shell.openExternal(url);
+      }
+    });
 
     return window;
   }

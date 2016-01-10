@@ -1046,14 +1046,17 @@
 
               if (e.which === 123) { // F12
                 bkElectron.toggleDevTools();
+                return false;
               } else if (ctrlXORCmd && ((e.which === 187) || (e.which === 107))) { // Ctrl + '+'
                 bkElectron.increaseZoom();
+                return false;
               } else if (ctrlXORCmd && ((e.which === 189) || (e.which === 109))) { // Ctrl + '-'
                 bkElectron.decreaseZoom();
+                return false;
               } else if (ctrlXORCmd && ((e.which === 48) || (e.which === 13))) {
                 bkElectron.resetZoom();
+                return false;
               }
-              return false;
             }
           }
         };

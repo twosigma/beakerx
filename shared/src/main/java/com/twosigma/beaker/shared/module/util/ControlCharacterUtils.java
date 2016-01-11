@@ -41,7 +41,8 @@ public class ControlCharacterUtils {
   public static boolean containsControlCharacters(final String value) {
     if (StringUtils.isNotEmpty(value)) {
       for (int i = 0; i < value.length(); i++) {
-        if (Character.isISOControl(value.charAt(i))) {
+        char c = value.charAt(i);
+        if (!Character.isWhitespace(c) && Character.isISOControl(c)) {
           return true;
         }
       }

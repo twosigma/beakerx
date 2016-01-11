@@ -269,6 +269,15 @@ bk-cell .section > .toggle-menu {
   }
 }
 
+@mixin advanced-mode-cell-menu-item {
+  height: 24px;
+  width: 30px;
+  padding-top: 2px;
+  top: -1px;
+  display: inline-block;
+  text-align: center;
+}
+
 .advanced-mode {
   .bkcelltextarea {
     min-height: 18px;
@@ -287,15 +296,14 @@ bk-cell .section > .toggle-menu {
     top: 5px;
 
     bk-language-logo {
-      height: 24px;
-      width: 30px;
-      padding-top: 2px;
-      top: -1px;
-      display: inline-block;
-      text-align: center;
+      @include advanced-mode-cell-menu-item;
       &:hover {
         background-color: $highlight-blue;
       }
+    }
+
+    .loading-state {
+      @include advanced-mode-cell-menu-item;
     }
   }
 }

@@ -173,6 +173,12 @@ module.exports = (function() {
         shell.openExternal(url);
       }
     });
+    window.webContents.on('new-window', function(event, url) {
+      if (window.webContents.getUrl() !== url) {
+        event.preventDefault();
+        shell.openExternal(url);
+      }
+    });
 
     return window;
   }

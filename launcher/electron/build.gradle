@@ -32,6 +32,8 @@ if (osName.startsWith('Mac')) {
 def electronName = ''
 electronName = 'electron-v' + version + '-' + platform + '-' + arch
 
+println 'productVersion: '+productVersion
+
 task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG']) {
   if (mac) {
     commandLine './create-dmg/create-dmg', '--volname', 'Beaker', '--window-pos', '200', '120', '--window-size', '800', '400', '--icon-size', '100', '--icon', 'Beaker.app', '200', '190', '--hide-extension', 'Beaker.app', '--app-drop-link', '600', '185', 'Beaker.dmg', 'osxdmg/'
@@ -288,7 +290,7 @@ task winChangeLegalCopyright(type: Exec, dependsOn: ['winRename']) {
 }
 winChangeLegalCopyright.onlyIf{ win }
 task winChangeProductVersion(type: Exec, dependsOn: ['winRename']) {
-        commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-version-string', "ProductVersion", "1.4"
+        commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-version-string', "ProductVersion", productVersion
 }
 winChangeProductVersion.onlyIf{ win }
 

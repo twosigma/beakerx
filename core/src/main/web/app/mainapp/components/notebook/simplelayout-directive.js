@@ -21,7 +21,7 @@
   module.directive('simpleLayout', ['bkHelper', function (bkHelper) {
     return {
       restrict: 'E',
-      template: '<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b>{{model.getCellModel().labels[$index]}}<br/></b><bk-code-cell-output model="i" >' +
+      template: '<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b class="bk-object-label">{{model.getCellModel().labels[$index]}}<br/></b><bk-code-cell-output model="i" >' +
       '</ bk-code-cell-output><br/>></li></ul>',
       scope: {
         model: '='

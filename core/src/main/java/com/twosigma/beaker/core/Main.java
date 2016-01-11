@@ -95,6 +95,7 @@ public class Main {
     opts.addOption(null, "use-ssl-key", true, "Enable SSL - requires path to key file (both SSL options should be used)");
     opts.addOption(null, "require-password", false, "Ask for password when connecting");
     opts.addOption(null, "listen-interface", true, "Interface to listen on - requires ip address or '*'");
+    opts.addOption(null, "portable", false, "is portable application");
     
     CommandLine line = parser.parse(opts, args);
     if (line.hasOption("help")) {
@@ -176,7 +177,7 @@ public class Main {
     final Boolean requirePassword = options.hasOption("require-password");
     final String listenInterface = options.hasOption("listen-interface") ?
         options.getOptionValue("listen-interface") : null;
-    
+    final Boolean portable = options.hasOption("portable");
     
     
     // create preferences for beaker core from cli options and others
@@ -191,7 +192,8 @@ public class Main {
         useHttpsCert,
         useHttpsKey,
         requirePassword,
-        listenInterface);
+        listenInterface,
+        portable);
 
     WebAppConfigPref webAppPref = createWebAppConfigPref(
         portBase + BEAKER_SERVER_PORT_OFFSET,
@@ -241,7 +243,8 @@ public class Main {
       final String useHttpsCert,
       final String useHttpsKey,
       final Boolean requirePassword,
-      final String listenInterface) {
+      final String listenInterface,
+      final Boolean portable) {
     return new BeakerConfigPref() {
 
       @Override
@@ -287,6 +290,11 @@ public class Main {
       @Override
       public Map<String, List<String>> getPluginOptions() {
         return pluginOptions;
+      }
+
+      @Override
+      public Boolean getPortable() {
+        return portable;
       }
     };
   }

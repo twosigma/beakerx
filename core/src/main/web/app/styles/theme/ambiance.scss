@@ -57,7 +57,31 @@ $btn-bkg-color:           #505050;
 
 $markdown-heading-color: #aac6e3;
 
+$scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
+
 .beaker-theme-ambiance {
+  ::-webkit-scrollbar {
+    width: $scrollbar-width;
+    height: $scrollbar-width;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar-track-piece {
+    background-color: $btn_bkg_color;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 1px solid #bbb;
+    background-color: #ccc;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+
   .cm-header {
     color: $markdown-heading-color;
   }

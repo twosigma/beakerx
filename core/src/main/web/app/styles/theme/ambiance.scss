@@ -55,7 +55,12 @@ $std-out-color:           #42A2D2;
 $std-err-color:           #e48d71;
 $btn-bkg-color:           #505050;
 
+$markdown-heading-color: #aac6e3;
+
 .beaker-theme-ambiance {
+  .cm-header {
+    color: $markdown-heading-color;
+  }
 
   body, html, .well, .languages, .code-cell-input, .modal-header, .modal-body, .modal-footer, .row {
     background: $main-theme-panel-background !important;

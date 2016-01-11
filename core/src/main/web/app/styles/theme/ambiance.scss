@@ -629,8 +629,9 @@ $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
     background: $btn-bkg-color;
   }
 
-  .CodeMirror-hints {
+  .CodeMirror-hints, .bkcelltooltip {
     background-color: $input-background-color;
+    color: $std-fg-text-color;
     border-color: #7e7a78;
   }
 

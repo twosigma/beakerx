@@ -146,16 +146,18 @@
       },
       getEvaluatorStatuses: function(name) {
         var knownPlugins = bkEvaluatePluginManager.getKnownEvaluatorPlugins();
+        var knownPluginsNamesSorted = Object.keys(knownPlugins).sort();
         var activePlugins = bkEvaluatorManager.getLoadedEvaluators();
         var loadingPlugins = bkEvaluatorManager.getLoadingEvaluators();
         var result = {};
-        for (var p in knownPlugins) {
+        for (var index = 0; index < knownPluginsNamesSorted.length; index++) {
           var status = false;
-          if (activePlugins[p]) {
+          var pluginName = knownPluginsNamesSorted[index];
+          if (activePlugins[pluginName]) {
             status = "active";
           } else {
             for (var l in loadingPlugins) {
-              if (loadingPlugins[l].plugin == p) {
+              if (loadingPlugins[l].plugin == pluginName) {
                 status = "loading";
                 break;
               }
@@ -164,7 +166,7 @@
               status = "known";
             }
           }
-          result[p] = status;
+          result[pluginName] = status;
         }
         return result;
       },

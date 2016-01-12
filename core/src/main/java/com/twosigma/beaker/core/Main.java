@@ -95,7 +95,7 @@ public class Main {
     opts.addOption(null, "use-ssl-key", true, "Enable SSL - requires path to key file (both SSL options should be used)");
     opts.addOption(null, "require-password", false, "Ask for password when connecting");
     opts.addOption(null, "listen-interface", true, "Interface to listen on - requires ip address or '*'");
-    opts.addOption(null, "portable", false, "is portable application");
+    opts.addOption(null, "portable", false, "Configuration and runtime files located in application instead of user home directory.");
     
     CommandLine line = parser.parse(opts, args);
     if (line.hasOption("help")) {

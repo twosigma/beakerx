@@ -145,13 +145,16 @@
         };
 
         $scope.isShowOutput = function() {
-          if ($scope.cellmodel.output.hidden === true) {
-            return false;
-          }
+
           var result = $scope.cellmodel.output.result;
           if (result && result.hidden === true) {
             return false;
           }
+
+          if (result.status !== "RUNNING" && $scope.cellmodel.output.hidden === true) {
+            return false;
+          }
+
           return !(result === undefined || result === null);
         };
 

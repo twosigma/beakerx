@@ -223,9 +223,15 @@ task copyPList(type: Copy, dependsOn: ['macCopyElectron', 'removePList']) {
 }
 copyPList.onlyIf { mac }
 
-task copyIcons(type: Copy, dependsOn: 'macCopyElectron') {
-  from 'beaker.icns'
-  into 'Beaker.app/Contents/Resources'
+task copyIcons (dependsOn: 'macCopyElectron') << {
+  copy {
+    from 'beaker.icns'
+    into 'Beaker.app/Contents/Resources'
+  }
+  copy {
+    from 'bkrfiles.icns'
+    into 'Beaker.app/Contents/Resources'
+  }
 }
 copyIcons.onlyIf { mac }
 

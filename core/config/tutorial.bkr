@@ -90,11 +90,10 @@
                     "  <ul>",
                     "    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true\">Interactive Time Series</a></li>",
                     "    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FlevelsOfDetail.bkr&readOnly=true\">Levels of Detail</a></li>",
-                    "    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FCategoryPlot.bkr&readOnly=true\">Category Plots</a></li>",
+                    "    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FCategoryPlot.bkr&readOnly=true\">Category Plots (Bar Charts)</a></li>",
                     "    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fhistogram.bkr&readOnly=true\">Histograms</a></li>",
                     "    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&readOnly=true\">Heatmaps</a></li>",
                     "    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Ftreemap.bkr&readOnly=true\">Treemaps</a></li>",
-                    "    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Foutput_container_cell.bkr&readOnly=true\">Output Containers</a></li>",
                     "  </ul>",
                     "</div>",
                     "<div class=\"col-md-3\">",
@@ -106,6 +105,7 @@
                     "    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fautotranslation.bkr&readOnly=true\">Autotranslation: Communicating among Languages</a></li>",
                     "    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fpython23.bkr&readOnly=true\">Simultaneous Python2 and Python3</a></li>",
                     "    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fweb-content.bkr&readOnly=true\">Generating and accessing web content</a></li>",
+                    "    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Foutput_container_cell.bkr&readOnly=true\">Output Containers and Layout Managers</a></li>",
                     "  </ul>",
                     "",
                     "  <h2>Forms and Widgets</h2>",
@@ -144,31 +144,36 @@
                     "  <div class=\"col-md-5\">",
                     "",
                     "    <h2>Navigation</h2>",
-                    "",
-                    "    <p>Clicking one of the links to the tutorials on the right navigates",
+                    "    <p>",
+                    "      Clicking one of the links to the tutorials on the right navigates",
                     "      your web browser to the that notebook.",
                     "      You can use the browser's \"Back\" button to return to this page, or use ",
-                    "      the <strong>Help → Tutorial</strong> menu again.</p>",
-                    "    <p>This tutorial is itself a notebook.  For example, this section is an",
+                    "      the <strong>Help → Tutorial</strong> menu again.",
+                    "    </p>",
+                    "    <p>",
+                    "      This tutorial is itself a notebook.  For example, this section is an",
                     "      HTML cell, and you can show its input code by clicking the expanding arrows",
-                    "      icon in the row in the upper-right corner of the cell. </p>",
-                    "  </div>  ",
-                    "",
+                    "      icon in the row in the upper-right corner of the cell. ",
+                    "    </p>",
+                    "  </div>",
                     "  <div class=\"col-md-6\">",
                     "",
+                    "    <h2>Learn More</h2>",
+                    "    <p>",
+                    "      On the web at the homepage <a href=\"http://beakernotebook.com\">BeakerNotebook.com</a>,",
+                    "      and on the <a href=\"http://pub.beakernotebook.com\">publication server</a>",
+                    "      for more tutorials and community contributions.",
+                    "    </p>",
+                    "    ",
                     "    <h2>Open Source</h2>",
-                    "",
-                    "    <p>Beaker's full source code and documentation are available on",
-                    "      <a href=\"https://github.com/twosigma/beaker-notebook\">GitHub</a> under the Apache 2.0 license.</p>",
+                    "    <p>",
+                    "      Beaker's full source code and documentation are available on",
+                    "      <a href=\"https://github.com/twosigma/beaker-notebook\">GitHub</a> under the Apache 2.0 license.",
+                    "    </p>",
                     "    <p>",
                     "      We welcome your feedback, as it guides development and helps us improve.",
                     "      Please feel free use the <strong>Help → Report a bug or feature request</strong> menu item.",
                     "    </p>",
-                    "",
-                    "    <h2>Learn More</h2>",
-                    "    <p>On the web at the homepage <a href=\"http://beakernotebook.com\">BeakerNotebook.com</a>,",
-                    "      and on the <a href=\"http://pub.beakernotebook.com\">publication server</a>",
-                    "      for more tutorials and community contributions.</p>",
                     "  </div>",
                     "</div>"
                 ],
@@ -180,13 +185,13 @@
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<div class=\"col-md-2\">\n  <h2>Language Demos</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fipython-examples.bkr&amp;readOnly=true\">Python</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fr-examples.bkr&amp;readOnly=true\">R</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fsql-examples.bkr&amp;readOnly=true\">SQL</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fjs-examples.bkr&amp;readOnly=true\">JavaScript</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fscala-spark.bkr&amp;readOnly=true\">Scala/Spark</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fnode-examples.bkr&amp;readOnly=true\">Node</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Ftorch-examples.bkr&amp;readOnly=true\">Lua/Torch</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fjulia-examples.bkr&amp;readOnly=true\">Julia</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FjavaTutorial.bkr&amp;readOnly=true\">Java</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fkdb-examples.bkr&amp;readOnly=true\">Kdb</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fclojure-examples.bkr&amp;readOnly=true\">Clojure</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fcpp-examples.bkr&amp;readOnly=true\">C++</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy-examples.bkr&amp;readOnly=true\">Groovy</a></li>\n  </ul>\n</div>\n<div class=\"col-md-3\">\n  <h2>Standard Visualization APIs</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fd3.bkr&amp;readOnly=true\">Working with d3.js</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fp5.bkr&amp;readOnly=true\">Processing with p5.js</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fbokeh.bkr&amp;readOnly=true\">Visualizing with Bokeh</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fggvis.bkr&amp;readOnly=true\">ggvis in R</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fplotly.bkr&amp;readOnly=true\">Plotly</a></li>\n  </ul>\n\n  <h2>Groovy Plotting and Charting</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&amp;readOnly=true\">Interactive Time Series</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FlevelsOfDetail.bkr&amp;readOnly=true\">Levels of Detail</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FCategoryPlot.bkr&amp;readOnly=true\">Category Plots</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fhistogram.bkr&amp;readOnly=true\">Histograms</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&amp;readOnly=true\">Heatmaps</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Ftreemap.bkr&amp;readOnly=true\">Treemaps</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Foutput_container_cell.bkr&amp;readOnly=true\">Output Containers</a></li>\n  </ul>\n</div>\n<div class=\"col-md-3\">\n  <h2>Feature Overview</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Ftext.bkr&amp;readOnly=true\">Text, Formatting, and Equations</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fbeaker.bkr&amp;readOnly=true\">The Beaker Object</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fauto-arima.bkr&amp;readOnly=true\">Combining Python and R</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fautotranslation.bkr&amp;readOnly=true\">Autotranslation: Communicating among Languages</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fpython23.bkr&amp;readOnly=true\">Simultaneous Python2 and Python3</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fweb-content.bkr&amp;readOnly=true\">Generating and accessing web content</a></li>\n  </ul>\n\n  <h2>Forms and Widgets</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fform.bkr&amp;readOnly=true\">Forms with HTML and JavaScript</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Feasyform.bkr&amp;readOnly=true\">EasyForm</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fwidgets.bkr&amp;readOnly=true\">IPython Widgets</a></li>\n  </ul>\n</div>\n<div class=\"col-md-3\">\n  <h2>Spark Cluster Access</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fpyspark.bkr&amp;readOnly=true\">PySpark</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fsparkr.bkr&amp;readOnly=true\">SparkR</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fscala-spark.bkr&amp;readOnly=true\">Native Scala</a></li>\n  </ul>\n  <h2>Automation</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FprogressUpdate.bkr&amp;readOnly=true\">Progress Reporting API</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FnotebookControl.bkr&amp;readOnly=true\">Notebook Control API</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FnotebookReflection.bkr&amp;readOnly=true\">Notebook Reflection API</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fdashboards.bkr&amp;readOnly=true\">Dashboard API</a></li>\n  </ul>\n  <h2>Fundamentals of</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fipython.bkr&amp;readOnly=true\">IPython</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fr.bkr&amp;readOnly=true\">R</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr&amp;readOnly=true\">Groovy</a></li>\n  </ul>\n</div>\n<div class=\"row\">\n  <div class=\"col-md-12\" style=\"border-top: solid 1px #888; margin-top: 20px;\">\n  </div>\n</div>\n<div class=\"row\">\n  <div class=\"col-md-5\">\n\n    <h2>Navigation</h2>\n\n    <p>Clicking one of the links to the tutorials on the right navigates\n      your web browser to the that notebook.\n      You can use the browser's \"Back\" button to return to this page, or use \n      the <strong>Help&nbsp;→&nbsp;Tutorial</strong> menu again.</p>\n    <p>This tutorial is itself a notebook.  For example, this section is an\n      HTML cell, and you can show its input code by clicking the expanding arrows\n      icon in the row in the upper-right corner of the cell. </p>\n  </div>  \n\n  <div class=\"col-md-6\">\n\n    <h2>Open Source</h2>\n\n    <p>Beaker's full source code and documentation are available on\n      <a href=\"https://github.com/twosigma/beaker-notebook\">GitHub</a> under the Apache 2.0 license.</p>\n    <p>\n      We welcome your feedback, as it guides development and helps us improve.\n      Please feel free use the <strong>Help → Report a bug or feature request</strong> menu item.\n    </p>\n\n    <h2>Learn More</h2>\n    <p>On the web at the homepage <a href=\"http://beakernotebook.com\">BeakerNotebook.com</a>,\n      and on the <a href=\"http://pub.beakernotebook.com\">publication server</a>\n      for more tutorials and community contributions.</p>\n  </div>\n</div>"
+                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<div class=\"col-md-2\">\n  <h2>Language Demos</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fipython-examples.bkr&amp;readOnly=true\">Python</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fr-examples.bkr&amp;readOnly=true\">R</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fsql-examples.bkr&amp;readOnly=true\">SQL</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fjs-examples.bkr&amp;readOnly=true\">JavaScript</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fscala-spark.bkr&amp;readOnly=true\">Scala/Spark</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fnode-examples.bkr&amp;readOnly=true\">Node</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Ftorch-examples.bkr&amp;readOnly=true\">Lua/Torch</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fjulia-examples.bkr&amp;readOnly=true\">Julia</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FjavaTutorial.bkr&amp;readOnly=true\">Java</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fkdb-examples.bkr&amp;readOnly=true\">Kdb</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fclojure-examples.bkr&amp;readOnly=true\">Clojure</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fcpp-examples.bkr&amp;readOnly=true\">C++</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy-examples.bkr&amp;readOnly=true\">Groovy</a></li>\n  </ul>\n</div>\n<div class=\"col-md-3\">\n  <h2>Standard Visualization APIs</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fd3.bkr&amp;readOnly=true\">Working with d3.js</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fp5.bkr&amp;readOnly=true\">Processing with p5.js</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fbokeh.bkr&amp;readOnly=true\">Visualizing with Bokeh</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fggvis.bkr&amp;readOnly=true\">ggvis in R</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fplotly.bkr&amp;readOnly=true\">Plotly</a></li>\n  </ul>\n\n  <h2>Groovy Plotting and Charting</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&amp;readOnly=true\">Interactive Time Series</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FlevelsOfDetail.bkr&amp;readOnly=true\">Levels of Detail</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FCategoryPlot.bkr&amp;readOnly=true\">Category Plots (Bar Charts)</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fhistogram.bkr&amp;readOnly=true\">Histograms</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&amp;readOnly=true\">Heatmaps</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Ftreemap.bkr&amp;readOnly=true\">Treemaps</a></li>\n  </ul>\n</div>\n<div class=\"col-md-3\">\n  <h2>Feature Overview</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Ftext.bkr&amp;readOnly=true\">Text, Formatting, and Equations</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fbeaker.bkr&amp;readOnly=true\">The Beaker Object</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fauto-arima.bkr&amp;readOnly=true\">Combining Python and R</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fautotranslation.bkr&amp;readOnly=true\">Autotranslation: Communicating among Languages</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fpython23.bkr&amp;readOnly=true\">Simultaneous Python2 and Python3</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fweb-content.bkr&amp;readOnly=true\">Generating and accessing web content</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Foutput_container_cell.bkr&amp;readOnly=true\">Output Containers and Layout Managers</a></li>\n  </ul>\n\n  <h2>Forms and Widgets</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fform.bkr&amp;readOnly=true\">Forms with HTML and JavaScript</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Feasyform.bkr&amp;readOnly=true\">EasyForm</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fwidgets.bkr&amp;readOnly=true\">IPython Widgets</a></li>\n  </ul>\n</div>\n<div class=\"col-md-3\">\n  <h2>Spark Cluster Access</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fpyspark.bkr&amp;readOnly=true\">PySpark</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fsparkr.bkr&amp;readOnly=true\">SparkR</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fscala-spark.bkr&amp;readOnly=true\">Native Scala</a></li>\n  </ul>\n  <h2>Automation</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FprogressUpdate.bkr&amp;readOnly=true\">Progress Reporting API</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FnotebookControl.bkr&amp;readOnly=true\">Notebook Control API</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FnotebookReflection.bkr&amp;readOnly=true\">Notebook Reflection API</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fdashboards.bkr&amp;readOnly=true\">Dashboard API</a></li>\n  </ul>\n  <h2>Fundamentals of</h2>\n  <ul>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fipython.bkr&amp;readOnly=true\">IPython</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fr.bkr&amp;readOnly=true\">R</a></li>\n    <li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr&amp;readOnly=true\">Groovy</a></li>\n  </ul>\n</div>\n<div class=\"row\">\n  <div class=\"col-md-12\" style=\"border-top: solid 1px #888; margin-top: 20px;\">\n  </div>\n</div>\n<div class=\"row\">\n  <div class=\"col-md-5\">\n\n    <h2>Navigation</h2>\n    <p>\n      Clicking one of the links to the tutorials on the right navigates\n      your web browser to the that notebook.\n      You can use the browser's \"Back\" button to return to this page, or use \n      the <strong>Help&nbsp;→&nbsp;Tutorial</strong> menu again.\n    </p>\n    <p>\n      This tutorial is itself a notebook.  For example, this section is an\n      HTML cell, and you can show its input code by clicking the expanding arrows\n      icon in the row in the upper-right corner of the cell. \n    </p>\n  </div>\n  <div class=\"col-md-6\">\n\n    <h2>Learn More</h2>\n    <p>\n      On the web at the homepage <a href=\"http://beakernotebook.com\">BeakerNotebook.com</a>,\n      and on the <a href=\"http://pub.beakernotebook.com\">publication server</a>\n      for more tutorials and community contributions.\n    </p>\n    \n    <h2>Open Source</h2>\n    <p>\n      Beaker's full source code and documentation are available on\n      <a href=\"https://github.com/twosigma/beaker-notebook\">GitHub</a> under the Apache 2.0 license.\n    </p>\n    <p>\n      We welcome your feedback, as it guides development and helps us improve.\n      Please feel free use the <strong>Help → Report a bug or feature request</strong> menu item.\n    </p>\n  </div>\n</div>"
                 },
                 "state": {},
-                "height": 617
+                "height": 552
             },
             "evaluatorReader": true,
-            "lineCount": 113
+            "lineCount": 118
         },
         {
             "id": "Section8EWbZ9",
@@ -227,7 +232,8 @@
                 "outputArrived": true,
                 "elapsedTime": 39,
                 "state": {},
-                "pluginName": "JavaScript"
+                "pluginName": "JavaScript",
+                "height": 34
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -260,7 +266,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 20
+                "elapsedTime": 20,
+                "height": 34
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -556,8 +563,9 @@
             "body": [
                 "Notice that all the headings have +/- toggles on them.",
                 "These are 'section cells' in Beaker, and they can contain any number of cells including other sections.",
-                "There are four levels of heading, so you can organize your notebook in a tree and hide the parts you don't need.",
-                "Try clicking the +/- buttons to get a feel for how the hierarchy works. The **View → Show Hierarchy** menu makes the hierarchy visible, including auto-numbering the sections.",
+                "There are four levels of headings, so you can organize your notebook in a tree and hide the parts you don't need.",
+                "Try clicking the +/- buttons to get a feel for how the hierarchy works.",
+                "The **View → Show Hierarchy** menu makes the hierarchy visible, including auto-numbering the sections.",
                 "",
                 "Each section has a three-dot menu on the right side of the screen with operations that pertain to it, including publishing, running all the cells in it, and changing its header level."
             ],
@@ -576,8 +584,9 @@
             "id": "markdownqWgOly",
             "type": "markdown",
             "body": [
-                "Beaker has few ways to publish your work with [publication server](https://pub.beakernotebook.com).",
+                "Beaker has a built-in to publish your work to a [publication server](https://pub.beakernotebook.com).",
                 "Published notebooks are accessible as ordinary web pages with a URL that you can easily share and view almost anywhere.",
+                "You can also \"publish\" unlisted notebooks that can only be read by those with the link.",
                 "",
                 "The **File → Publish** menu command opens a dialog where you can log into the publication server, and then publish your notebook,",
                 "including adding a preview image, meta-data, and a preview image.",
@@ -622,7 +631,7 @@
         {
             "id": "sectionrzdNgE",
             "type": "section",
-            "title": "Experimental Native Electron Version",
+            "title": "Experimental native Electron version",
             "level": 1,
             "evaluatorReader": false,
             "collapsed": false
@@ -635,9 +644,8 @@
                 "Native access improves the UI and allows tighter integration with your operating system.",
                 "",
                 "Pure web applications run inside a sandbox in your web browser.",
-                "For security reasons they cannot access files, windows, or the keyboard.",
+                "For security reasons they cannot directly access files, windows, or the keyboard.",
                 "Native applications are installed with a regular icon, and get full access to your computer.",
-                "This avoids problems like losing a browser tab connected to your server, and dealing with the command line.",
                 "",
                 "The native UI can still communicate with a remote backend for server-based or cloud computing, combining the best of native and web applications.",
                 "There is an experimental release of an Electron version of Beaker [available for download](http://beakernotebook.com/downloads).",

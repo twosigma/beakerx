@@ -100,8 +100,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
     if (pref.getPortable()){
       //get parent for the 'core' folder
-      Path path = Paths.get("").toAbsolutePath();
-      this.dotDir =  "/"+ path.subpath(0, path.getNameCount()-1).toString() + "/.beaker/v1";
+      this.dotDir =  Paths.get("").toAbsolutePath().getParent().toString() + "/.beaker/v1";
     }else {
       this.dotDir = System.getProperty("user.home") + "/.beaker/v1";
     }

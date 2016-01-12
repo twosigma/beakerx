@@ -104,7 +104,6 @@ public class DefaultBeakerConfig implements BeakerConfig {
     }else {
       this.dotDir = System.getProperty("user.home") + "/.beaker/v1";
     }
-    System.out.println("this.dotDir: "+this.dotDir);
     this.pluginDir = this.installDir + "/config/plugins/eval";
     utils.ensureDirectoryExists(this.dotDir);
     this.nginxDir = this.installDir + "/nginx";

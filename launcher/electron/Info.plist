@@ -17,6 +17,8 @@
 			<string>DocumentType</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>bkrfiles.icns</string>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>

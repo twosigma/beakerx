@@ -99,15 +99,13 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
 
     if (pref.getPortable()){
-      String path = Paths.get("").toAbsolutePath().toString();
-      boolean endsWithSlash = path.endsWith(File.separator);
-      path = path.substring(0,
-                      path.lastIndexOf(File.separatorChar,
-                                    endsWithSlash ? path.length() - 2 : path.length() - 1));
-      this.dotDir = path + "/.beaker/v1";
+      //get parent for the 'core' folder
+      Path path = Paths.get("").toAbsolutePath();
+      this.dotDir =  "/"+ path.subpath(0, path.getNameCount()-1).toString() + "/.beaker/v1";
     }else {
       this.dotDir = System.getProperty("user.home") + "/.beaker/v1";
     }
+    System.out.println("this.dotDir: "+this.dotDir);
     this.pluginDir = this.installDir + "/config/plugins/eval";
     utils.ensureDirectoryExists(this.dotDir);
     this.nginxDir = this.installDir + "/nginx";

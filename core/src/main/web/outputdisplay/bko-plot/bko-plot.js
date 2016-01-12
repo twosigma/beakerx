@@ -355,12 +355,7 @@
 
           if (scope.hasUnorderedItem === true && scope.showUnorderedHint === true) {
             scope.showUnorderedHint = false;
-            scope.renderMessage("Unordered line / area detected",
-              [ "The plot requires line and area elements to have x-monotonicity in order to apply " +
-              "truncation for performance optimization.",
-              "Line or area items are found with unordered x coordinates.",
-              "Truncation has been disabled to display correct result.",
-              "To enable truncation for better performance, please render x-monotonic line and area items." ]);
+            console.warn("unordered area/line detected, truncation disabled");
           }
 
         };

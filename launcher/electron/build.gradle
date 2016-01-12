@@ -30,9 +30,11 @@ if (osName.startsWith('Mac')) {
   platform = 'linux'
 }
 
-def gitProductVersion() {
-  def name = "git describe --long".execute().text.trim()
-  name = name.substring(0, name.indexOf('-'))
+def gitDescribe() {
+  def name = "git describe --all --long".execute().text.trim()
+  if (name.startsWith('heads/')) {
+    name = name.substring(6)
+  }
   return name
 }
 
@@ -295,7 +297,7 @@ task winChangeLegalCopyright(type: Exec, dependsOn: ['winRename']) {
 }
 winChangeLegalCopyright.onlyIf{ win }
 task winChangeProductVersion(type: Exec, dependsOn: ['winRename']) {
-        commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-version-string', "ProductVersion", gitProductVersion()
+        commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-version-string', "ProductVersion", gitDescribe()
 }
 winChangeProductVersion.onlyIf{ win }
 

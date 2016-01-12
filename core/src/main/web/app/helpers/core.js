@@ -70,7 +70,7 @@
         }
       };
       newStrategy.manualEntry = function() {
-        newStrategy.manualName = this.input.split('/').pop();
+        newStrategy.manualName = this.input ? this.input.split('/').pop() : "";
       };
       newStrategy.treeViewfs = { // file service
         getChildren: function(basePath, openFolders) {
@@ -396,11 +396,11 @@
           var fileChooserStrategy = self.getFileSystemFileChooserStrategy();
           fileChooserStrategy.localDrives = localDrives;
           fileChooserStrategy.input = initPath;
-          fileChooserStrategy.getResult = function () {
-            if (_.isEmpty(this.input)) {
-              return "";
+          fileChooserStrategy.convertRelativePath = function (path) {
+            if (path == null) {
+              return path;
             }
-            var result = this.input;
+            var result = path;
             if (result === '~') {
               result = homeDir + "/"
             } else if (_.startsWith(result, '~/')) {
@@ -408,6 +408,13 @@
             } else if (!_.startsWith(result, '/') && !result.match(/^\w+:\\/)) {
               result = homeDir + "/" + result;
             }
+            return result;
+          };
+          fileChooserStrategy.getResult = function () {
+            if (_.isEmpty(this.input)) {
+              return "";
+            }
+            var result = this.convertRelativePath(this.input);
             if (!_.endsWith(result, '.bkr')
                 && !_.endsWith(result, '/')) {
               result = result + ".bkr";
@@ -417,6 +424,7 @@
           fileChooserStrategy.newFolder = function(path) {
             var self = this;
             this.showSpinner = true;
+            path = this.convertRelativePath(path);
             bkUtils.httpPost("../beaker/rest/file-io/createDirectory", {path: path})
               .success(function (list) {
 

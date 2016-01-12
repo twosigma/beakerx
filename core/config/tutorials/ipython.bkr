@@ -77,11 +77,11 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Html",
-                "elapsedTime": 218,
+                "elapsedTime": 224,
                 "state": {},
                 "result": "<div class=\"output_subarea output_text\"><pre>1.0019995175722287</pre></div>",
                 "pluginName": "IPython",
-                "shellId": "275FB1AD163F4D849E4D962783D27FDF",
+                "shellId": "6CD2912EDCAB49BA880160CEE77AAA88",
                 "dataresult": 1.0019995175722287,
                 "height": 34
             },
@@ -101,11 +101,11 @@
             "output": {
                 "selectedType": "Html",
                 "outputArrived": false,
-                "elapsedTime": 313,
+                "elapsedTime": 482,
                 "state": {},
                 "result": "<pre><span  class=\"ansired\">Type:            </span>ufunc\n<span  class=\"ansired\">String form:     </span>&lt;ufunc &apos;cos&apos;&gt;\n<span  class=\"ansired\">File:            </span>~/anaconda/lib/python2.7/site-packages/numpy/__init__.py\n<span  class=\"ansired\">Docstring:</span>\ncos(x[, out])\n\nCosine element-wise.\n\nParameters\n----------\nx : array_like\n    Input array in radians.\nout : ndarray, optional\n    Output array of same shape as &#96;x&#96;.\n\nReturns\n-------\ny : ndarray\n    The corresponding cosine values.\n\nRaises\n------\nValueError: invalid return array shape\n    if &#96;out&#96; is provided and &#96;out.shape&#96; != &#96;x.shape&#96; (See Examples)\n\nNotes\n-----\nIf &#96;out&#96; is provided, the function writes the result into it,\nand returns a reference to &#96;out&#96;.  (See Examples)\n\nReferences\n----------\nM. Abramowitz and I. A. Stegun, Handbook of Mathematical Functions.\nNew York, NY: Dover, 1972.\n\nExamples\n--------\n&gt;&gt;&gt; np.cos(np.array([0, np.pi/2, np.pi]))\narray([  1.00000000e+00,   6.12303177e-17,  -1.00000000e+00])\n&gt;&gt;&gt;\n&gt;&gt;&gt; # Example of providing the optional output parameter\n&gt;&gt;&gt; out2 = np.cos([0.1], out1)\n&gt;&gt;&gt; out2 is out1\nTrue\n&gt;&gt;&gt;\n&gt;&gt;&gt; # Example of ValueError due to provision of shape mis-matched &#96;out&#96;\n&gt;&gt;&gt; np.cos(np.zeros((3,3)),np.zeros((2,2)))\nTraceback (most recent call last):\n  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;\nValueError: invalid return array shape\n<span  class=\"ansired\">Class docstring:</span>\nFunctions that operate element by element on whole arrays.\n\nTo see the documentation for a specific ufunc, use np.info().  For\nexample, np.info(np.sin).  Because ufuncs are written in C\n(for speed) and linked into Python with NumPy&apos;s ufunc facility,\nPython&apos;s help() function finds this page whenever help() is called\non a ufunc.\n\nA detailed explanation of ufuncs can be found in the &quot;ufuncs.rst&quot;\nfile in the NumPy reference guide.\n\nUnary ufuncs:\n=============\n\nop(X, out=None)\nApply op to X elementwise\n\nParameters\n----------\nX : array_like\n    Input array.\nout : array_like\n    An array to store the output. Must be the same shape as &#96;X&#96;.\n\nReturns\n-------\nr : array_like\n    &#96;r&#96; will have the same shape as &#96;X&#96;; if out is provided, &#96;r&#96;\n    will be equal to out.\n\nBinary ufuncs:\n==============\n\nop(X, Y, out=None)\nApply &#96;op&#96; to &#96;X&#96; and &#96;Y&#96; elementwise. May &quot;broadcast&quot; to make\nthe shapes of &#96;X&#96; and &#96;Y&#96; congruent.\n\nThe broadcasting rules are:\n\n* Dimensions of length 1 may be prepended to either array.\n* Arrays may be repeated along dimensions of length 1.\n\nParameters\n----------\nX : array_like\n    First input array.\nY : array_like\n    Second input array.\nout : array_like\n    An array to store the output. Must be the same shape as the\n    output would have.\n\nReturns\n-------\nr : array_like\n    The return value; if out is provided, &#96;r&#96; will be equal to out.</pre>",
                 "pluginName": "IPython",
-                "shellId": "275FB1AD163F4D849E4D962783D27FDF",
+                "shellId": "6CD2912EDCAB49BA880160CEE77AAA88",
                 "height": 1729
             },
             "evaluatorReader": true,
@@ -125,19 +125,19 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Results",
-                "elapsedTime": 3043,
+                "elapsedTime": 3019,
                 "state": {},
                 "result": {
                     "type": "Results",
                     "outputdata": [
                         {
                             "type": "out",
-                            "value": "10000 loops, best of 3: 68.4 µs per loop\n"
+                            "value": "10000 loops, best of 3: 64.5 µs per loop\n"
                         }
                     ]
                 },
                 "pluginName": "IPython",
-                "shellId": "275FB1AD163F4D849E4D962783D27FDF",
+                "shellId": "6CD2912EDCAB49BA880160CEE77AAA88",
                 "height": 35
             },
             "evaluatorReader": true,
@@ -157,11 +157,11 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Html",
-                "elapsedTime": 230,
+                "elapsedTime": 229,
                 "state": {},
                 "result": "<div class=\"output_subarea output_html rendered_html\">generating <em>HTML</em> with <font size=\"+2\">IPython</font></div>",
                 "pluginName": "IPython",
-                "shellId": "275FB1AD163F4D849E4D962783D27FDF",
+                "shellId": "6CD2912EDCAB49BA880160CEE77AAA88",
                 "height": 50
             },
             "evaluatorReader": true,
@@ -182,8 +182,8 @@
                 "result": "<div class=\"output_subarea output_latex\">$$F(k) = \\int_{-\\infty}^{\\infty} f(x) e^{2\\pi i k} dx$$</div>",
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "275FB1AD163F4D849E4D962783D27FDF",
-                "elapsedTime": 219,
+                "shellId": "6CD2912EDCAB49BA880160CEE77AAA88",
+                "elapsedTime": 226,
                 "height": 79
             },
             "evaluatorReader": true,
@@ -220,8 +220,8 @@
                 },
                 "selectedType": "Results",
                 "pluginName": "IPython",
-                "shellId": "275FB1AD163F4D849E4D962783D27FDF",
-                "elapsedTime": 222,
+                "shellId": "6CD2912EDCAB49BA880160CEE77AAA88",
+                "elapsedTime": 245,
                 "dataresult": "final result is black",
                 "height": 131
             },
@@ -243,9 +243,9 @@
                 "result": "<div class=\"output_subarea output_html rendered_html\"><img src=\"http://python.org/images/python-logo.gif\"></div>",
                 "selectedType": "Html",
                 "outputArrived": true,
-                "elapsedTime": 211,
+                "elapsedTime": 233,
                 "pluginName": "IPython",
-                "shellId": "275FB1AD163F4D849E4D962783D27FDF",
+                "shellId": "6CD2912EDCAB49BA880160CEE77AAA88",
                 "height": 88
             },
             "evaluatorReader": true,

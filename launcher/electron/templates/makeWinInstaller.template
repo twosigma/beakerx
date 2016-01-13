@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Beaker"
-#define MyAppVersion @MyAppVersion@
+#define MyAppVersion "@MyAppVersion@"
 #define MyAppPublisher "Two Sigma Open Source LLC."
 #define MyAppURL "http://beakernotebook.com/"
 #define MyAppExeName "beaker.exe"

@@ -58,10 +58,9 @@ task processTemplates(type: Copy) {
 
 //use xcopy to avoid problem: https://discuss.gradle.org/t/under-windows-gradle-1-11-build-fails-trying-to-generate-file-hashes-related-to-gradle-2967/1752
 task copyIss(type: Exec, dependsOn: ['processTemplates']) {
-  if (win) {
-    commandLine 'xcopy', "/Y", '.\\templates\\makeWinInstaller.iss', '.'
-  }
+  commandLine 'xcopy', "/Y", '.\\templates\\makeWinInstaller.iss', '.'
 }
+copyIss.onlyIf { win }
 
 task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG', 'copyIss']) {
   if (mac) {
@@ -125,7 +124,7 @@ task makeDist (dependsOn:[':beaker:build', 'unzipPython']) << {
 }
 
 task cleanElectron(type: Delete) {
-  delete 'dist', 'Beaker.app', '__MACOSX', 'jre', 'beaker', 'osxdmg', 'Beaker.dmg', 'python', setupName + '.exe'
+  delete 'dist', 'Beaker.app', '__MACOSX', 'jre', 'beaker', 'osxdmg', fileTree(dir: './', include: "beaker-notebook-*-electron-mac.dmg"), 'python', setupName + '.exe'
 }
 
 task realCleanElectron(type: Delete, dependsOn: 'cleanElectron') {

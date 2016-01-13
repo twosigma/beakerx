@@ -34,7 +34,6 @@ def gitDescribe() {
 }
 def electronName = ''
 electronName = 'electron-v' + version + '-' + platform + '-' + arch
-println gitDescribe()
 def dmgName = 'beaker-notebook-' + gitDescribe() + '-electron-mac.dmg'
 
 task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG']) {

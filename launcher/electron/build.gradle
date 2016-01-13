@@ -35,7 +35,6 @@ def gitDescribe() {
   if (name.startsWith('heads/')) {
     name = name.substring(6)
   }
-  name = name.replace("/", "-")
   return name
 }
 
@@ -47,26 +46,16 @@ electronName = 'electron-v' + version + '-' + platform + '-' + arch
 
 import org.apache.tools.ant.filters.ReplaceTokens
 task processTemplates(type: Copy) {
-  from 'templates/makeWinInstaller.template'
-  into 'templates'
-  rename { String fileName ->
-    "makeWinInstaller.iss"
-  }
-  filter(ReplaceTokens, tokens: [MyAppVersion: gitDescribe()])
+    from 'templates'
+    into 'install'
+    filter(ReplaceTokens, tokens: [MyAppVersion: gitDescribe()])
 }
 
-//use xcopy to avoid problem: https://discuss.gradle.org/t/under-windows-gradle-1-11-build-fails-trying-to-generate-file-hashes-related-to-gradle-2967/1752
-task copyIss(type: Exec) {
-  if (win) {
-    commandLine 'xcopy', "/Y", '.\\templates\\makeWinInstaller.iss', 'makeWinInstaller.iss'
-  }
-}
-
-task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG', 'copyIss']) {
+task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG', 'processTemplates']) {
   if (mac) {
     commandLine './create-dmg/create-dmg', '--volname', 'Beaker', '--window-pos', '200', '120', '--window-size', '800', '400', '--icon-size', '100', '--icon', 'Beaker.app', '200', '190', '--hide-extension', 'Beaker.app', '--app-drop-link', '600', '185', 'Beaker.dmg', 'osxdmg/'
   } else if (win) {
-    commandLine 'iscc', '/o./', '/f'+setupName, 'makeWinInstaller.iss'
+    commandLine 'iscc', '/o./', '/f'+setupName, 'install/makeWinInstaller.iss'
   }
 }
 

@@ -40,7 +40,7 @@ def gitDescribe() {
 }
 
 
-def setupName = 'beaker-notebook-' + gitDescribe() + '-electron-windows.exe'
+def setupName = 'beaker-notebook-' + gitDescribe() + '-electron-windows'
 
 def electronName = ''
 electronName = 'electron-v' + version + '-' + platform + '-' + arch
@@ -124,7 +124,7 @@ task makeDist (dependsOn:[':beaker:build', 'unzipPython']) << {
 }
 
 task cleanElectron(type: Delete) {
-  delete 'dist', 'Beaker.app', '__MACOSX', 'jre', 'beaker', 'osxdmg', 'Beaker.dmg', 'python', setupName
+  delete 'dist', 'Beaker.app', '__MACOSX', 'jre', 'beaker', 'osxdmg', 'Beaker.dmg', 'python', setupName + '.exe'
 }
 
 task realCleanElectron(type: Delete, dependsOn: 'cleanElectron') {

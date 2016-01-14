@@ -147,6 +147,18 @@ $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
     }
   }
 
+  button.close {
+    background:   transparent;
+    border:       0;
+    text-shadow:  0 1px 0 #000;
+    opacity:      0.8;
+    &:hover {
+      background: transparent;
+      border:     0;
+      opacity:    0.2;
+    }
+  }
+
   .notebook-link {
     color: #d6bb6d;
   }

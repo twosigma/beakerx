@@ -509,14 +509,14 @@ $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
   .nav-tabs {
     border-bottom-color: $cell-border-color;
 
-    > li > a:hover {
+    > li > a:hover, .uib-tab > div:hover {
       border-color: #117dbe;
       border-bottom-color: transparent;
       background-color: $navbar-default-link-active-bg;
       color: $std-fg-text-color;
     }
 
-    > li.active > a {
+    > li.active > a, .uib-tab.active > div {
       border-color: $cell-border-color;
       border-bottom-color: transparent;
       background-color: $main-theme-panel-background;

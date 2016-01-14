@@ -55,6 +55,12 @@ ul {
   margin-bottom: 20px;
 }
 
+.nav-tabs {
+  .uib-tab > div {
+    cursor: pointer;
+  }
+}
+
 .plugin-active {
   color: limegreen;
 }

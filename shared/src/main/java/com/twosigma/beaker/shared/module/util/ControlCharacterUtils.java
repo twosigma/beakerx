@@ -25,10 +25,7 @@ public class ControlCharacterUtils {
       StringBuilder sb = new StringBuilder();
       for (int i = 0; i < value.length(); i++) {
         if (Character.isISOControl(value.charAt(i))) {
-          sb.append(
-              StringEscapeUtils.escapeJava(
-                  StringEscapeUtils.escapeJson(
-                      value.substring(i, i + 1))));
+          sb.append(StringEscapeUtils.escapeJson(value.substring(i, i + 1)));
         } else {
           sb.append(value.charAt(i));
         }

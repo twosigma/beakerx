@@ -33,13 +33,6 @@
         scope.jqsvg.find("#" + d.id).css("opacity", 0);
       } else if (d.noresp !== true){
         scope.jqsvg.find("#" + d.id).removeAttr("filter");
-
-        var groupTip = d.id.substr(0, d.id.indexOf("_"));
-        if (!_.find(scope.tips, function (tip) {
-            return tip.id.indexOf(groupTip) >= 0;
-          })) {
-          scope.jqsvg.find("#" + groupTip + " .plot-line").removeAttr("filter");
-        }
       }
     };
 
@@ -248,7 +241,6 @@
             scope.jqsvg.find("#" + d.id).attr("opacity", 1);
           } else if (d.noresp !== true){
             scope.jqsvg.find("#" + d.id).attr("filter", "url(/beaker/#svgfilter)");
-            scope.jqsvg.find("#" + d.id.substr(0, d.id.indexOf("_"))+" .plot-line").attr("filter", "url(/beaker/#svgfilter)");
           }
 
           if (d.sticking == true) {

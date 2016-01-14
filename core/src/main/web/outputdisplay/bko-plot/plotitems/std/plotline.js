@@ -1,4 +1,4 @@
-/*
+  /*
 *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
 *
 *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -159,11 +159,13 @@
             "id" : id,
             "idx" : this.index,
             "ele" : ele,
+            "isresp" : true,
             "cx" : x,
             "cy" : y,
             "tooltip_cx": x,
             "tooltip_cy": y,
-            "tooltip_r": 5
+            "tooltip_r": 5,
+            "op" : scope.tips[id] == null ? 0 : 1
           };
           eleprops.push(prop);
         }
@@ -243,7 +245,7 @@
           .attr("cx", function(d) { return d.tooltip_cx; })
           .attr("cy", function(d) { return d.tooltip_cy; })
           .attr("r", this.respR )
-          .style("opacity", 0);
+          .style("opacity", function(d) { return d.op; });
       }
       itemsvg.selectAll("text").remove();
       itemsvg.selectAll("text")

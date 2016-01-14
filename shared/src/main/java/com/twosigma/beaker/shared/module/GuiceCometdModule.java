@@ -111,7 +111,7 @@ public class GuiceCometdModule extends AbstractModule {
   public final BayeuxServerImpl getBayeuxServer(final ObjectMapper om) {
     BayeuxServerImpl server = new BayeuxServerImpl();
     
-    server.addTransport(new WebSocketTransport(server));
+    server.addTransport(new BkWebSocketTransport(server));
 
     server.setOption(BayeuxServerImpl.JSON_CONTEXT, new JacksonJSONContextServer() {
       @Override

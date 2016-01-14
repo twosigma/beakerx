@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -69,7 +69,8 @@
             "evaluator": "C++",
             "input": {
                 "body": [
-                    "/* A basic C++ cell - you must define a beaker_main function with an optional parameter that is the return value */",
+                    "// A basic C++ cell",
+                    "// define a beaker_main function with an optional parameter for the return value",
                     "#include <iostream>",
                     "void beaker_main(){",
                     "  std::cout << \"Hello world!\" << std::endl;",
@@ -90,11 +91,12 @@
                 },
                 "selectedType": "Results",
                 "pluginName": "C++",
-                "shellId": "a517b9a4-4873-4cff-b85b-602a8ed9c389",
-                "elapsedTime": 2126
+                "shellId": "2ac634d1-1e39-4d90-9510-bc4975ab27e5",
+                "elapsedTime": 1731,
+                "height": 35
             },
             "evaluatorReader": true,
-            "lineCount": 6
+            "lineCount": 7
         },
         {
             "id": "codey0EVnd",
@@ -102,7 +104,7 @@
             "evaluator": "C++",
             "input": {
                 "body": [
-                    "/* You can define functions */",
+                    "// You can define functions",
                     "#include <string>",
                     "std::string distant;",
                     "void setDistant(){",
@@ -114,8 +116,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "C++",
-                "shellId": "a517b9a4-4873-4cff-b85b-602a8ed9c389",
-                "elapsedTime": 738
+                "shellId": "2ac634d1-1e39-4d90-9510-bc4975ab27e5",
+                "elapsedTime": 945
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -126,7 +128,7 @@
             "evaluator": "C++",
             "input": {
                 "body": [
-                    "/* You can call functions defined in other C++ cells */",
+                    "// and call functions defined in other C++ cells",
                     "#include <string>",
                     "#include <iostream>",
                     "extern std::string distant;",
@@ -143,8 +145,9 @@
                 "result": "This is far away",
                 "selectedType": "Text",
                 "pluginName": "C++",
-                "shellId": "a517b9a4-4873-4cff-b85b-602a8ed9c389",
-                "elapsedTime": 1654
+                "shellId": "2ac634d1-1e39-4d90-9510-bc4975ab27e5",
+                "elapsedTime": 1751,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 10
@@ -155,14 +158,14 @@
             "evaluator": "C++",
             "input": {
                 "body": [
-                    "/* You can store data in side beaker namespace */",
+                    "// You can store data in the Beaker Object",
                     "#include <string>",
                     "#include <vector>",
                     "void beaker_main(int &ret){",
                     "  std::map<std::string, std::vector<int> > test;",
                     "  test[\"a\"] = std::vector<int>(1,1);",
                     "  test[\"b\"] = std::vector<int>(2,2);",
-                    "  test[\"c\"] = std::vector<int>(3,3);",
+                    "  test[\"c\"] = std::vector<int>(4,3);",
                     "  ",
                     "  ret = Beaker::set(\"x\", test);",
                     "}"
@@ -173,8 +176,9 @@
                 "result": 1,
                 "selectedType": "Text",
                 "pluginName": "C++",
-                "elapsedTime": 2441,
-                "shellId": "a517b9a4-4873-4cff-b85b-602a8ed9c389"
+                "elapsedTime": 2526,
+                "shellId": "2ac634d1-1e39-4d90-9510-bc4975ab27e5",
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 11
@@ -185,7 +189,8 @@
             "evaluator": "C++",
             "input": {
                 "body": [
-                    "/* You can read objects from the beaker namespace but, beinc C++, you must specify the type */",
+                    "// You can read objects from the beaker namespace but,",
+                    "// beinc C++, you must specify the type",
                     "#include <vector>",
                     "#include <string>",
                     "void beaker_main(std::map<std::string, std::vector<int> > &ret){",
@@ -206,16 +211,18 @@
                     "c": [
                         3,
                         3,
+                        3,
                         3
                     ]
                 },
                 "selectedType": "Text",
                 "pluginName": "C++",
-                "shellId": "a517b9a4-4873-4cff-b85b-602a8ed9c389",
-                "elapsedTime": 2542
+                "shellId": "2ac634d1-1e39-4d90-9510-bc4975ab27e5",
+                "elapsedTime": 2611,
+                "height": 36
             },
             "evaluatorReader": true,
-            "lineCount": 6
+            "lineCount": 7
         },
         {
             "id": "codeqDLV1T",
@@ -223,7 +230,7 @@
             "evaluator": "C++",
             "input": {
                 "body": [
-                    "/* You can return hash tables and these are properly displayed */",
+                    "// You can return hash tables and these are properly displayed",
                     "#include <vector>",
                     "#include <string>",
                     "void beaker_main(std::map<std::string, std::string > &ret){",
@@ -239,8 +246,8 @@
                         "pagination": {
                             "use": true,
                             "rowsToDisplay": 50,
-                            "fixLeft": false,
-                            "fixRight": false
+                            "fixLeft": 0,
+                            "fixRight": 0
                         },
                         "columnNames": [
                             "Key",
@@ -285,8 +292,9 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "C++",
-                "shellId": "a517b9a4-4873-4cff-b85b-602a8ed9c389",
-                "elapsedTime": 1704
+                "shellId": "2ac634d1-1e39-4d90-9510-bc4975ab27e5",
+                "elapsedTime": 1535,
+                "height": 136
             },
             "evaluatorReader": true,
             "lineCount": 8
@@ -314,12 +322,14 @@
                     "c": [
                         3,
                         3,
+                        3,
                         3
                     ]
                 },
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 25
+                "elapsedTime": 29,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -336,6 +346,7 @@
                 2
             ],
             "c": [
+                3,
                 3,
                 3,
                 3

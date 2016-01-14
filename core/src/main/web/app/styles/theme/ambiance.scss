@@ -522,6 +522,10 @@ $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
       background-color: $main-theme-panel-background;
       color: $std-fg-text-color;
     }
+
+    .uib-tab > div {
+      color: #f4c20b;
+    }
   }
 
   header {

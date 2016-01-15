@@ -310,7 +310,7 @@ $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
     border-color: $cell-border-color;
   }
 
-  .plot-legend-histogram {
+  .plot-legend-histogram, .plot-legend-axis, .plot-legend-tick {
     stroke: $std-fg-text-color;
   }
 

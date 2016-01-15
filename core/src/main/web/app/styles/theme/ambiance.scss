@@ -289,10 +289,6 @@ $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
     fill: $main-theme-panel-background;
   }
 
-  .plot-label, .plot-xylabel {
-    fill: $std-fg-text-color;
-  }
-
   .plot-gridline {
     stroke: #787878;
   }
@@ -306,7 +302,7 @@ $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
     background-color: $input-background-color;
   }
 
-  .plot-text, .plot-legend text, #maing text {
+  .plot-label, .plot-xylabel, .plot-text, .plot-legend text, #maing text, .plot-legend-histogram, .legend-pointer {
     fill: $std-fg-text-color !important;
   }
 
@@ -315,12 +311,10 @@ $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
   }
 
   .plot-legend-histogram {
-    fill: $std-fg-text-color;
     stroke: $std-fg-text-color;
   }
 
   .legend-pointer {
-    fill: $std-fg-text-color;
     stroke: $cell-border-color;
   }
 

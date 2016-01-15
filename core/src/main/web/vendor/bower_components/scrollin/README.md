@@ -16,6 +16,19 @@
 Scrollin.track(document.querySelector('#hi'), () => alert('hi!'))
 ```
 
+#### Options
+
+You can specify optional offset params to control when an elements is considered in the "viewport".
+
+```js
+Scrollin.track(document.querySelector('#hi'), () => alert('hi!'), {
+  top: 10,
+  right: -10,
+  bottom: 10,
+  left: 10
+})
+```
+
 ## API
 
 * `Scrollin.track(document.querySelector('#hi'), () => alert('hi!'))`

@@ -124,7 +124,12 @@ task makeDist (dependsOn:[':beaker:build', 'unzipPython']) << {
 }
 
 task cleanElectron(type: Delete) {
-  delete 'dist', 'Beaker.app', '__MACOSX', 'jre', 'beaker', 'osxdmg', fileTree(dir: './', include: "beaker-notebook-*-electron-mac.dmg"), 'python', setupName + '.exe'
+  delete 'dist', 'Beaker.app', '__MACOSX', 'jre', 'beaker', 'osxdmg',
+    fileTree(dir: './', include: "beaker-notebook-*-electron-mac.dmg"),
+    fileTree(dir: './', include: "beaker-notebook-*-electron-windows.exe"),
+    'python',
+    setupName + '.exe',
+    "./templates/makeWinInstaller.iss"
 }
 
 task realCleanElectron(type: Delete, dependsOn: 'cleanElectron') {

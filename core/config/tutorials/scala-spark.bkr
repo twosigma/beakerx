@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -34,7 +34,7 @@
         {
             "name": "Scala",
             "plugin": "Scala",
-            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap",
             "view": {
                 "cm": {
                     "mode": "text/x-scala"
@@ -79,11 +79,12 @@
             },
             "output": {
                 "state": {},
-                "result": "org.apache.spark.SparkContext@17e11a86",
+                "result": "org.apache.spark.SparkContext@4eda83d",
                 "selectedType": "Text",
                 "pluginName": "Scala",
-                "shellId": "ece85df1-3add-4b6f-839b-ec4e65955117",
-                "elapsedTime": 5441
+                "shellId": "dfb34acc-d0f8-4de0-bbf2-cf98f659610f",
+                "elapsedTime": 8736,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -113,8 +114,8 @@
                 "state": {},
                 "selectedType": "Results",
                 "pluginName": "Scala",
-                "shellId": "ece85df1-3add-4b6f-839b-ec4e65955117",
-                "elapsedTime": 2875,
+                "shellId": "dfb34acc-d0f8-4de0-bbf2-cf98f659610f",
+                "elapsedTime": 4262,
                 "result": {
                     "type": "Results",
                     "outputdata": [
@@ -124,7 +125,8 @@
                         }
                     ],
                     "payload": "()"
-                }
+                },
+                "height": 54
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -159,15 +161,16 @@
                     "outputdata": [
                         {
                             "type": "out",
-                            "value": "Pi is roughly 3.1414468\n"
+                            "value": "Pi is roughly 3.1412092\n"
                         }
                     ],
                     "payload": "()"
                 },
                 "selectedType": "Results",
                 "pluginName": "Scala",
-                "shellId": "ece85df1-3add-4b6f-839b-ec4e65955117",
-                "elapsedTime": 4103
+                "shellId": "dfb34acc-d0f8-4de0-bbf2-cf98f659610f",
+                "elapsedTime": 3067,
+                "height": 54
             },
             "evaluatorReader": true,
             "lineCount": 7

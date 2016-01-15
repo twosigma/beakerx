@@ -584,6 +584,12 @@
         }
       },
       // bk-notebook
+      refreshBkNotebook: function () {
+        var bkNotebook = getBkNotebookWidget();
+        if (bkNotebook) {
+          return bkNotebook.refreshScope();
+        }
+      },
       deleteAllOutputCells: function() {
         var bkNotebook = getBkNotebookWidget();
         if (bkNotebook) {

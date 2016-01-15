@@ -75,6 +75,7 @@ public final class KdbProcess extends Thread {
       // Get OS-specific candidates.
       List<String> binaries = new ArrayList<>();
       if (SystemUtils.IS_OS_WINDOWS) {
+        binaries.add("w64/q.exe");
         binaries.add("w32/q.exe");
       } else if (SystemUtils.IS_OS_MAC_OSX) {
         binaries.add("m64/q");

@@ -310,8 +310,18 @@ $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
     fill: $std-fg-text-color !important;
   }
 
-    .plot-legendscrollablecontainer {
+  .plot-legendscrollablecontainer {
     border-color: $cell-border-color;
+  }
+
+  .plot-legend-histogram {
+    fill: $std-fg-text-color;
+    stroke: $std-fg-text-color;
+  }
+
+  .legend-pointer {
+    fill: $std-fg-text-color;
+    stroke: $cell-border-color;
   }
 
   #combplotContainer, #plotLegend, #plotLegendContainer {

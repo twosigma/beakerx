@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -34,7 +34,7 @@
         {
             "name": "Java",
             "plugin": "Java",
-            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*",
             "view": {
                 "cm": {
                     "mode": "text/x-java"
@@ -45,7 +45,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -85,30 +85,33 @@
                     "import java.util.Date;",
                     "",
                     "public class BeakerTest {",
-                    "\tprivate Date _date;",
-                    "  ",
+                    "  private Date _date;",
+                    "",
                     "  public BeakerTest() {",
                     "    _date = new Date();",
                     "  }",
-                    "  ",
+                    "",
                     "  public String getDateTxt() {",
                     "    return _date.toString();",
                     "  }",
-                    "  ",
+                    "",
                     "  public String getDateUpperCaseTxt() {",
                     "    return _date.toString().toUpperCase();",
                     "  }",
-                    "  ",
+                    "",
                     "}",
                     ""
                 ]
             },
             "output": {
                 "state": {},
-                "result": "null",
+                "result": "test.beaker.BeakerTest",
                 "selectedType": "Text",
-                "elapsedTime": 623,
-                "hidden": true
+                "elapsedTime": 1852,
+                "hidden": true,
+                "pluginName": "Java",
+                "shellId": "98b2af38-7ec4-4749-91fb-7e4eaccc1817",
+                "height": 34
             },
             "evaluatorReader": true,
             "lineCount": 21
@@ -137,9 +140,12 @@
             },
             "output": {
                 "state": {},
-                "result": "Wed Nov 19 14:30:06 EST 2014",
+                "result": "Thu Jan 14 21:39:32 EST 2016",
                 "selectedType": "Text",
-                "elapsedTime": 84
+                "elapsedTime": 592,
+                "pluginName": "Java",
+                "shellId": "98b2af38-7ec4-4749-91fb-7e4eaccc1817",
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -168,9 +174,12 @@
             },
             "output": {
                 "state": {},
-                "result": "WED NOV 19 14:31:55 EST 2014",
+                "result": "THU JAN 14 21:39:36 EST 2016",
                 "selectedType": "Text",
-                "elapsedTime": 72
+                "elapsedTime": 1660,
+                "pluginName": "Groovy",
+                "shellId": "62f69e82-7503-4495-80c1-be0bc7945ff6",
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -198,7 +207,10 @@
                 "state": {},
                 "result": "test for autotranslation",
                 "selectedType": "Text",
-                "hidden": true
+                "hidden": true,
+                "pluginName": "JavaScript",
+                "elapsedTime": 20,
+                "height": 34
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -219,7 +231,10 @@
                 "state": {},
                 "result": "test for autotranslation",
                 "selectedType": "Text",
-                "elapsedTime": 1464
+                "elapsedTime": 580,
+                "pluginName": "Java",
+                "shellId": "98b2af38-7ec4-4749-91fb-7e4eaccc1817",
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -303,20 +318,51 @@
                         "yr": 0.5261904761904762,
                         "xspan": 0.05238095238095242,
                         "yspan": 0.05238095238095242
-                    }
+                    },
+                    "tips": {}
                 },
                 "result": {
                     "type": "Plot",
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "this is a Java plot",
+                    "show_legend": null,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
                     "domain_axis_label": null,
                     "y_label": "",
-                    "show_legend": false,
-                    "use_tool_tip": true,
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": "",
+                            "auto_range": true,
+                            "auto_range_includes_zero": false,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "use_log": false,
+                            "log_base": 10
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": false,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_y": false,
+                    "timezone": null,
+                    "crosshair": null,
+                    "omit_checkboxes": false,
                     "graphics_list": [
                         {
-                            "type": "Bars",
                             "x": [
                                 0,
                                 1,
@@ -331,6 +377,8 @@
                             ],
                             "visible": true,
                             "display_name": "",
+                            "yAxis": null,
+                            "type": "Bars",
                             "base": 0,
                             "width": 0.5,
                             "color": "#FFFFC800",
@@ -340,36 +388,18 @@
                     "constant_lines": [],
                     "constant_bands": [],
                     "texts": [],
-                    "rangeAxes": [
-                        {
-                            "type": "YAxis",
-                            "auto_range": true,
-                            "auto_range_includes_zero": true,
-                            "lower_margin": 0.05,
-                            "upper_margin": 0.05,
-                            "lower_bound": 0,
-                            "upper_bound": 0,
-                            "log": false
-                        }
-                    ],
                     "x_auto_range": true,
-                    "x_lower_margin": 0.05,
-                    "x_upper_margin": 0.05,
                     "x_lower_bound": 0,
                     "x_upper_bound": 0,
-                    "y_auto_range": true,
-                    "y_auto_range_includes_zero": true,
-                    "y_lower_margin": 0.05,
-                    "y_upper_margin": 0.05,
-                    "y_lower_bound": 0,
-                    "y_upper_bound": 0,
                     "log_x": false,
-                    "log_y": false,
-                    "time_zone": null,
-                    "crosshair": null
+                    "x_log_base": 10,
+                    "tips": {}
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 104
+                "elapsedTime": 620,
+                "pluginName": "Java",
+                "shellId": "98b2af38-7ec4-4749-91fb-7e4eaccc1817",
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 22

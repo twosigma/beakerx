@@ -98,7 +98,6 @@ $text-cursor: url('../images/ambiance/ambiance-i-beam.png') 5 9, text;
     }
   }
 
-
   .panel-primary {
     border-color: #7b7462;
     .panel-body{
@@ -119,6 +118,10 @@ $text-cursor: url('../images/ambiance/ambiance-i-beam.png') 5 9, text;
     &:hover {
       color: #1492df;
     }
+  }
+
+  blockquote {
+    border-left-color: $btn-bkg-color;
   }
 
   textarea, .publish input.field, .publish select, .publish textarea {

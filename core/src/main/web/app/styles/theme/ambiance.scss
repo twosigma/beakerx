@@ -58,6 +58,7 @@ $btn-bkg-color:           #505050;
 $markdown-heading-color: #aac6e3;
 
 $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
+$text-cursor: url('../images/ambiance/ambiance-i-beam.png') 5 9, text;
 
 .beaker-theme-ambiance {
   ::-webkit-scrollbar {
@@ -320,6 +321,7 @@ $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
 
   .mini-cell-stats {
     z-index: 1;
+    cursor: $text-cursor;
   }
 
   .loading-state {
@@ -364,6 +366,10 @@ $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
 
   .dataTable, table.dataTable thead th {
     color: $std-fg-text-color;
+  }
+
+  .dataTable, td {
+    cursor: $text-cursor;
   }
 
   .dataTables_wrapper .dataTables_paginate .paginate_button {
@@ -654,6 +660,32 @@ $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
   .CodeMirror-hint {
     color: $std-fg-text-color;
   }
+
+  .CodeMirror-lines {
+    cursor: $text-cursor;
+  }
+
+  .markup p {
+    cursor: $text-cursor;
+  }
+
+  text {
+    cursor: $text-cursor;
+  }
+
+  #plotTitle {
+    cursor: $text-cursor;
+  }
+
+  bk-output-display[type="Text"] {
+      cursor: $text-cursor;
+  }
+  bk-output-display[type="Html"] {
+    p, span, li, h1, h2, h3, h4, h5, h6 {
+      cursor: $text-cursor;
+    }
+  }
+
 
   li.CodeMirror-hint-active {
     background: $navbar-default-link-active-bg;

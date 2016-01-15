@@ -97,7 +97,6 @@ $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
     }
   }
 
-
   .panel-primary {
     border-color: #7b7462;
     .panel-body{
@@ -118,6 +117,10 @@ $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
     &:hover {
       color: #1492df;
     }
+  }
+
+  blockquote {
+    border-left-color: $btn-bkg-color;
   }
 
   textarea, .publish input.field, .publish select, .publish textarea {

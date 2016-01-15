@@ -156,7 +156,13 @@
                 label: bkItem.name
               }
               if (bkItem.action !== undefined) {
-                newItem.click = bkItem.action.bind({});
+                var item = {
+                  action: function(itemAction, refreshBkNotebook){
+                    itemAction();
+                    refreshBkNotebook();
+                  }.bind(this, bkItem.action, bkHelper.refreshBkNotebook)
+                };
+                newItem.click = item.action;
               }
               if ((bkItem.isRadio !== true) && (bkItem.isChecked !== undefined)) {
                 newItem.type = 'checkbox';

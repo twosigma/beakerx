@@ -94,6 +94,11 @@
                this._lodThreshold = lodThreshold;
             }
           },
+          refreshScope: function () {
+            if(!($scope.$$phase || $scope.$root.$$phase)){
+              $scope.$apply();
+            }
+          },
           getViewModel: function () {
             return this._viewModel;
           },

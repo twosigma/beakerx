@@ -55,7 +55,36 @@ $std-out-color:           #42A2D2;
 $std-err-color:           #e48d71;
 $btn-bkg-color:           #505050;
 
+$markdown-heading-color: #aac6e3;
+
+$scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
+
 .beaker-theme-ambiance {
+  ::-webkit-scrollbar {
+    width: $scrollbar-width;
+    height: $scrollbar-width;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar-track-piece {
+    background-color: $btn_bkg_color;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 1px solid #bbb;
+    background-color: #ccc;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+
+  .cm-header {
+    color: $markdown-heading-color;
+  }
 
   body, html, .well, .languages, .code-cell-input, .modal-header, .modal-body, .modal-footer, .row {
     background: $main-theme-panel-background !important;
@@ -115,6 +144,18 @@ $btn-bkg-color:           #505050;
     &:hover {
       background: #1492df;
       border-color: #117dbe;
+    }
+  }
+
+  button.close {
+    background:   transparent;
+    border:       0;
+    text-shadow:  0 1px 0 #000;
+    opacity:      0.5;
+    &:hover {
+      background: transparent;
+      border:     0;
+      opacity:    0.7;
     }
   }
 
@@ -254,6 +295,11 @@ $btn-bkg-color:           #505050;
 
   .plot-gridline {
     stroke: #787878;
+  }
+
+  .text-line-style {
+    fill: white;
+    stroke: white
   }
 
   .plot-tooltip {
@@ -463,18 +509,22 @@ $btn-bkg-color:           #505050;
   .nav-tabs {
     border-bottom-color: $cell-border-color;
 
-    > li > a:hover {
+    > li > a:hover, .uib-tab > div:hover {
       border-color: #117dbe;
       border-bottom-color: transparent;
       background-color: $navbar-default-link-active-bg;
       color: $std-fg-text-color;
     }
 
-    > li.active > a {
+    > li.active > a, .uib-tab.active > div {
       border-color: $cell-border-color;
       border-bottom-color: transparent;
       background-color: $main-theme-panel-background;
       color: $std-fg-text-color;
+    }
+
+    .uib-tab > div {
+      color: #f4c20b;
     }
   }
 
@@ -595,8 +645,9 @@ $btn-bkg-color:           #505050;
     background: $btn-bkg-color;
   }
 
-  .CodeMirror-hints {
+  .CodeMirror-hints, .bkcelltooltip {
     background-color: $input-background-color;
+    color: $std-fg-text-color;
     border-color: #7e7a78;
   }
 

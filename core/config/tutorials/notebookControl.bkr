@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -34,7 +34,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -75,29 +75,34 @@
                     "",
                     "// this function is executed every 500 mSeconds",
                     "var operation = function() {",
-                    "  count+=5;",
+                    "  count += 5;",
                     "  beaker.showProgressUpdate(count);",
-                    "  if(count>=100) {",
+                    "  if(count >= 100) {",
                     "    // once we reach 100 stop execution and resolve the deferred",
-                    "     d.resolve(\"FINISHED finally\");",
+                    "    d.resolve(\"FINISHED finally\");",
                     "  }",
                     "  else {",
-                    "    beaker.timeout(operation,500);",
+                    "    beaker.timeout(operation, 500);",
                     "  }",
                     "}",
                     "",
                     "// start the async computation",
-                    "beaker.timeout(operation,500);",
+                    "beaker.timeout(operation, 500);",
+                    "",
                     "// return the deferred object",
                     "d"
                 ]
             },
             "output": {
                 "state": {},
-                "selectedType": "Text"
+                "selectedType": "Text",
+                "result": "FINISHED finally",
+                "pluginName": "JavaScript",
+                "elapsedTime": 10049,
+                "height": 36
             },
             "evaluatorReader": true,
-            "lineCount": 21
+            "lineCount": 22
         },
         {
             "id": "markdownQGj4kS",
@@ -127,11 +132,12 @@
                 "body": [
                     "// ask the groovy plugin to evaluate an expression",
                     "var d = beaker.newDeferred();",
+                    "",
                     "// this operation is async and returns a promise",
-                    "beaker.evaluateCode(\"Groovy\",\"1+3\").then(",
+                    "beaker.evaluateCode(\"Groovy\",\"2 + 3\").then(",
                     "  function (r) {",
                     "    // when we receive the result to more computation on it and resolve the deferred",
-                    "    d.resolve(r*5);",
+                    "    d.resolve(r * 6);",
                     "  }",
                     ")",
                     "// return a deferred object - it will be resolved (with the result) once we get it back from groovy",
@@ -141,10 +147,13 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "elapsedTime": 7189
+                "elapsedTime": 651,
+                "result": 30,
+                "pluginName": "JavaScript",
+                "height": 36
             },
             "evaluatorReader": true,
-            "lineCount": 11
+            "lineCount": 12
         },
         {
             "id": "markdownApqMJ6",
@@ -167,15 +176,19 @@
                     "// ask the system to evaluate every cell with the tag 'mytag'",
                     "// this is an async call that returns a promise",
                     "beaker.evaluate(\"mytag\").then(function(x) {",
-                    "     ",
-                    "\treturn \"got \" + x.length + \" results: \" + x",
+                    "",
+                    "  return \"got \" + x.length + \" results: \" + x",
                     "})",
                     "// scroll below to see the evaluated cells"
                 ]
             },
             "output": {
                 "state": {},
-                "selectedType": "Text"
+                "selectedType": "Text",
+                "result": "got 2 results: AAA this cell is also evaluated,CCC this cell is evaluated",
+                "pluginName": "JavaScript",
+                "elapsedTime": 786,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -196,13 +209,17 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "beaker.evaluateCode(\"JavaScript\",\"123*123\")"
+                    "beaker.evaluateCode(\"JavaScript\", \"123 * 123\")"
                 ]
             },
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "elapsedTime": 1083
+                "elapsedTime": 590,
+                "result": 15129,
+                "pluginName": "Groovy",
+                "shellId": "56225682-151a-49c7-9568-ca5d06137bf1",
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -224,12 +241,16 @@
             "evaluator": "JavaScript",
             "input": {
                 "body": [
-                    "\"this cell is also evaluated\""
+                    "\"AAA this cell is also evaluated\""
                 ]
             },
             "output": {
                 "selectedType": "Text",
-                "state": {}
+                "state": {},
+                "result": "AAA this cell is also evaluated",
+                "pluginName": "JavaScript",
+                "elapsedTime": 16,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1,
@@ -241,7 +262,7 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "\"this cell is NOT evaluated - it is not tagged 'mytag'\""
+                    "\"BBB this cell is NOT evaluated - it is not tagged 'mytag'\""
                 ]
             },
             "output": {
@@ -256,15 +277,17 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "\"this cell is evaluated\""
+                    "\"CCC this cell is evaluated\""
                 ]
             },
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "elapsedTime": 62,
+                "elapsedTime": 628,
                 "pluginName": "Groovy",
-                "shellId": "188b1a03-8f15-4967-8397-01c9b6801422"
+                "shellId": "56225682-151a-49c7-9568-ca5d06137bf1",
+                "result": "CCC this cell is evaluated",
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1,

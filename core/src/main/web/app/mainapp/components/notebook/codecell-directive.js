@@ -145,14 +145,18 @@
         };
 
         $scope.isShowOutput = function() {
-          if ($scope.cellmodel.output.hidden === true) {
-            return false;
-          }
+
           var result = $scope.cellmodel.output.result;
-          if (result && result.hidden === true) {
+
+          if (!result || result.hidden) {
             return false;
           }
-          return !(result === undefined || result === null);
+
+          if (result.status !== "RUNNING" && $scope.cellmodel.output.hidden === true) {
+            return false;
+          }
+
+          return true;
         };
 
         $scope.outputTitle = function() {

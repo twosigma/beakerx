@@ -213,6 +213,11 @@
   padding: 0.8em;
 }
 
+.text-line-style {
+  fill: black;
+  stroke: black
+}
+
 .fa.fa-times {
   float: right;
   cursor: pointer;

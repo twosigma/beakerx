@@ -91,8 +91,9 @@ RUN apt-get install -y r-base r-base-dev libxml2-dev libssl-dev libcurl4-gnutls-
 #  Julia  #
 ###########
 
-RUN apt-get install -y julia && \
+RUN apt-get install -y julia cmake && \
     julia --eval 'Pkg.add("IJulia")' && \
+    julia --eval 'Pkg.add("Requests")' && \
     julia --eval 'Pkg.add("Gadfly")'
 
 ##########

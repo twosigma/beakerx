@@ -162,6 +162,10 @@
     ]);
 
 
+    beaker.config(function($compileProvider) {
+      $compileProvider.debugInfoEnabled(false);
+    });
+
     // setup routing. the template is going to replace ng-view
     beaker.config(function($routeProvider) {
       var _newSession, _import, _open, _target;

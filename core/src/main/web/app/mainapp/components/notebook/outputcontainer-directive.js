@@ -26,7 +26,7 @@
         model: '='
       },
       controller: function ($scope) {
-        $scope.layout = $scope.model.getCellModel().layout;
+        $scope.layout = $scope.model.getCellModel().layout || {};
         $scope.isShowOutput = function () {
           return $scope.model.isShowOutput();
         };

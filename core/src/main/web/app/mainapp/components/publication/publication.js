@@ -20,8 +20,8 @@
   var module = angular.module('bk.core');
 
   module.controller('publicationCtrl',
-    ['$scope', 'bkHelper', 'bkPublicationApi', 'bkPublicationAuth', 'bkSessionManager', '$modalInstance', '$location', '$window', 'nModel',
-    function($scope, bkHelper, bkPublicationApi, bkPublicationAuth, bkSessionManager, $modalInstance, $location, $window, nModel) {
+    ['$scope', 'bkHelper', 'bkPublicationApi', 'bkPublicationAuth', 'bkSessionManager', '$uibModalInstance', '$location', '$window', 'nModel',
+    function($scope, bkHelper, bkPublicationApi, bkPublicationAuth, bkSessionManager, $uibModalInstance, $location, $window, nModel) {
 
       var notebook = nModel || bkSessionManager.getRawNotebookModel();
 
@@ -222,7 +222,7 @@
       });
 
       $scope.close = function(publicationId) {
-        $modalInstance.close(publicationId || 'done');
+        $uibModalInstance.close(publicationId || 'done');
       };
 
       $scope.signupUrl = function() {

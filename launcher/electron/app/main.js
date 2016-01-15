@@ -77,9 +77,18 @@ app.on('before-quit', function() {
 });
 
 // When all windows have closed
-app.on('will-quit', function() {
-  console.log('Killing backend at ' + backendRunner.getUrl());
-  backendRunner.kill();
+app.on('will-quit', function(event) {
+  if (backendRunner.isRunning()) {
+    console.log('Killing backend at ' + backendRunner.getUrl());
+    if (osName.startsWith('Darwin')) {
+      event.preventDefault();
+      backendRunner.kill().on('killed', function(){
+        app.quit();
+      });
+    } else {
+      backendRunner.kill();
+    }
+  }
 });
 
 // Fired when OS opens file with application

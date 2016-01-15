@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -81,7 +81,9 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text"
+                "selectedType": "Text",
+                "result": "server started",
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 10
@@ -89,7 +91,7 @@
         {
             "id": "codeYLvzUk",
             "type": "code",
-            "evaluator": "Html",
+            "evaluator": "HTML",
             "input": {
                 "body": [
                     "<div id=\"message\"></div>"
@@ -98,7 +100,13 @@
             "output": {
                 "state": {},
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 0
+                "elapsedTime": 0,
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<div id=\"message\">Hello from Node 1000</div>"
+                },
+                "height": 35
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -131,7 +139,10 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "result": "6.796ms per HTTP call"
+                "result": "12.775ms per HTTP call",
+                "pluginName": "JavaScript",
+                "elapsedTime": 12793,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 17

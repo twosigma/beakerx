@@ -2,24 +2,6 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
-            "view": {
-                "cm": {
-                    "mode": "htmlmixed"
-                }
-            }
-        },
-        {
-            "name": "Latex",
-            "plugin": "Latex",
-            "view": {
-                "cm": {
-                    "mode": "stex"
-                }
-            }
-        },
-        {
             "name": "JavaScript",
             "plugin": "JavaScript",
             "jsSetting2": "",
@@ -63,10 +45,16 @@
                 "Beaker has first-class support for SQL, including syntax highlighting, autocompletion, and autotranslation.",
                 "Most of the languages in Beaker have their own SQL APIs, and you can use them as well.",
                 "",
-                "In order to be completely self-contained, this demo notebook uses an in-memory database, and it's built from scratch",
+                "In order to be completely self-contained, this demo notebook uses an in-memory [H2](www.h2database.com) database, and it's built from scratch",
                 "automatically when the notebook is opened (see the last section).",
                 "Normally you would connect to an existing database by putting its",
-                "JDBC configuration in the Language Manager."
+                "JDBC configuration in the \"Default data source\" field in the Language Manager.",
+                "For example, if you want to connect to a [MySQL](https://www.mysql.com/) running locally then use:",
+                "'jdbc:mysql://localhost/dbName', where dbName would be replaced.",
+                "",
+                "To connect to other datases, include the JAR with its API in the Class path, and enter an appropriate JDBC configuration.",
+                "",
+                "To connect to multiple databases, see the section below."
             ],
             "evaluatorReader": false
         },
@@ -93,8 +81,8 @@
                         "pagination": {
                             "use": true,
                             "rowsToDisplay": 50,
-                            "fixLeft": false,
-                            "fixRight": false
+                            "fixLeft": 0,
+                            "fixRight": 0
                         },
                         "columnNames": [
                             "ID",
@@ -121,8 +109,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "SQL",
-                "shellId": "51efc26a-5ef0-4129-a1b0-3a5e818545bd",
-                "elapsedTime": 102,
+                "shellId": "49279164-af94-4460-871b-555d8f2443d6",
+                "elapsedTime": 107,
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -163,7 +151,8 @@
                         "java.lang.String"
                     ],
                     "subtype": "TableDisplay"
-                }
+                },
+                "height": 190
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -198,7 +187,8 @@
                 "result": 1003,
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 21
+                "elapsedTime": 29,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -218,8 +208,8 @@
                         "pagination": {
                             "use": true,
                             "rowsToDisplay": 50,
-                            "fixLeft": false,
-                            "fixRight": false
+                            "fixLeft": 0,
+                            "fixRight": 0
                         },
                         "columnNames": [
                             "Key",
@@ -264,8 +254,9 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "SQL",
-                "shellId": "215685d1-fac0-4eac-a1ef-1fef405f0a1a",
-                "elapsedTime": 587
+                "shellId": "49279164-af94-4460-871b-555d8f2443d6",
+                "elapsedTime": 596,
+                "height": 136
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -291,8 +282,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "215685d1-fac0-4eac-a1ef-1fef405f0a1a",
-                "elapsedTime": 585
+                "shellId": "49279164-af94-4460-871b-555d8f2443d6",
+                "elapsedTime": 592
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -312,27 +303,23 @@
                         "pagination": {
                             "use": true,
                             "rowsToDisplay": 50,
-                            "fixLeft": false,
-                            "fixRight": false
+                            "fixLeft": 0,
+                            "fixRight": 0
                         },
                         "columnNames": [
-                            "ID",
                             "NAME",
                             "CODE"
                         ],
                         "actualalign": [
-                            "L",
                             "L",
                             "L"
                         ],
                         "colorder": [
                             0,
                             1,
-                            2,
-                            3
+                            2
                         ],
                         "getCellSho": [
-                            true,
                             true,
                             true
                         ]
@@ -340,11 +327,11 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 23,
+                "elapsedTime": 21,
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "TableDisplay",
-                    "hasIndex": "false",
+                    "hasIndex": "true",
                     "values": [
                         [
                             1001,
@@ -397,10 +384,33 @@
                         "NAME",
                         "CODE"
                     ]
-                }
+                },
+                "height": 271
             },
             "evaluatorReader": true,
             "lineCount": 1
+        },
+        {
+            "id": "sectionydyDbr",
+            "type": "section",
+            "title": "Multiple Databases",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "code506tI8",
+            "type": "code",
+            "evaluator": "SQL",
+            "input": {
+                "body": [
+                    ""
+                ]
+            },
+            "output": {
+                "state": {}
+            },
+            "evaluatorReader": true
         },
         {
             "id": "section5arlN2",
@@ -408,7 +418,7 @@
             "title": "Initialize the Database",
             "level": 2,
             "evaluatorReader": false,
-            "collapsed": false
+            "collapsed": true
         },
         {
             "id": "markdownLWlLbm",
@@ -440,7 +450,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 29,
+                "elapsedTime": 17,
                 "hidden": true,
                 "result": [
                     1001,
@@ -451,7 +461,8 @@
                     1006,
                     1007,
                     1008
-                ]
+                ],
+                "height": 0
             },
             "evaluatorReader": true,
             "lineCount": 10,
@@ -478,8 +489,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "51efc26a-5ef0-4129-a1b0-3a5e818545bd",
-                "elapsedTime": 730
+                "shellId": "49279164-af94-4460-871b-555d8f2443d6",
+                "elapsedTime": 715
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -745,7 +756,7 @@
         "colorTable": {
             "type": "TableDisplay",
             "subtype": "TableDisplay",
-            "hasIndex": "false",
+            "hasIndex": "true",
             "values": [
                 [
                     1001,

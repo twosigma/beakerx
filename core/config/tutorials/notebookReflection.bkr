@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -34,7 +34,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -88,12 +88,21 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "result": "[{\"cellId\":\"code8FSM5W\",\"evaluatorId\":\"Groovy\",\"code\":\"// change the following cell type\\nbeaker.setCodeCellEvaluator('celltochange','Html')\\n// set a new body\\nbeaker.setCodeCellBody('celltochange','<h1>This is the new content</h1>')\\n// execute it\\nbeaker.evaluate('celltochange')\\n\",\"tags\":\"mytag\",\"output\":\"pending\",\"type\":\"BeakerCodeCell\"},{\"cellId\":\"celltochange\",\"evaluatorId\":\"Latex\",\"code\":\"\",\"tags\":\"mytag\",\"output\":\"pending\",\"type\":\"BeakerCodeCell\"}]",
+                "result": "[{\"cellId\":\"code8FSM5W\",\"evaluatorId\":\"Groovy\",\"code\":\"// change the cell type\\nbeaker.setCodeCellEvaluator('celltochange', 'HTML')\\n// set a new body\\nbeaker.setCodeCellBody('celltochange', '<h2>This is the new content</h2>')\\n// execute it\\nbeaker.evaluate('celltochange')\",\"tags\":\"mytag\",\"type\":\"BeakerCodeCell\"},{\"cellId\":\"celltochange\",\"evaluatorId\":\"JavaScript\",\"code\":\"\\\"This is the old content\\\"\",\"tags\":\"mytag\",\"output\":\"This is the old content\",\"type\":\"BeakerCodeCell\"}]",
                 "pluginName": "JavaScript",
-                "elapsedTime": 32
+                "elapsedTime": 24,
+                "height": 84
             },
             "evaluatorReader": true,
             "lineCount": 2
+        },
+        {
+            "id": "sectioncdyLZB",
+            "type": "section",
+            "title": "Settings the code and running other cells",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
         },
         {
             "id": "code8FSM5W",
@@ -101,44 +110,62 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "// change the following cell type",
-                    "beaker.setCodeCellEvaluator('celltochange','Html')",
+                    "// change the cell type",
+                    "beaker.setCodeCellEvaluator('celltochange', 'HTML')",
                     "// set a new body",
-                    "beaker.setCodeCellBody('celltochange','<h1>This is the new content</h1>')",
+                    "beaker.setCodeCellBody('celltochange', '<h2>This is the new content</h2>')",
                     "// execute it",
-                    "beaker.evaluate('celltochange')",
-                    ""
+                    "beaker.evaluate('celltochange')"
                 ]
             },
             "output": {
                 "state": {},
                 "selectedType": "Hidden",
-                "elapsedTime": 612,
+                "elapsedTime": 676,
                 "pluginName": "Groovy",
-                "shellId": "dffee301-33b6-4899-be7a-94102b9797e8"
+                "shellId": "d809ff02-5603-4328-88c7-439f2e55fed4"
             },
             "evaluatorReader": true,
-            "lineCount": 7,
+            "lineCount": 6,
             "tags": "mytag"
         },
         {
-            "id": "celltochange",
+            "id": "codehkOSaq",
             "type": "code",
-            "evaluator": "Html",
+            "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "<h1>This is the new content</h1>"
+                    "beaker.setCodeCellEvaluator('celltochange', 'JavaScript')",
+                    "beaker.setCodeCellBody('celltochange', '\"This is the old content\"')",
+                    "beaker.evaluate('celltochange')"
                 ]
             },
             "output": {
                 "state": {},
-                "selectedType": "BeakerDisplay",
-                "elapsedTime": 34,
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Latex",
-                    "object": ""
-                }
+                "selectedType": "Hidden",
+                "pluginName": "Groovy",
+                "shellId": "d809ff02-5603-4328-88c7-439f2e55fed4",
+                "elapsedTime": 588
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "celltochange",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "\"This is the old content\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "elapsedTime": 21,
+                "result": "This is the old content",
+                "pluginName": "JavaScript",
+                "height": 36
             },
             "evaluatorReader": true,
             "tags": "mytag",

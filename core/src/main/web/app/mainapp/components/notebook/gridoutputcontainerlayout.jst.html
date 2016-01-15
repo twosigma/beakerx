@@ -17,6 +17,7 @@
 <table>
   <tr ng-repeat="row in rows">
     <td ng-style="cellStyle" ng-repeat="col in row">
+      <b>{{col.label}}</b><br/>
       <bk-code-cell-output model="col"></bk-code-cell-output>
     </td>
   </tr>

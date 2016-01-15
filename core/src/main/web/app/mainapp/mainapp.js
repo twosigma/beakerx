@@ -1046,14 +1046,17 @@
 
               if (e.which === 123) { // F12
                 bkElectron.toggleDevTools();
+                return false;
               } else if (ctrlXORCmd && ((e.which === 187) || (e.which === 107))) { // Ctrl + '+'
                 bkElectron.increaseZoom();
+                return false;
               } else if (ctrlXORCmd && ((e.which === 189) || (e.which === 109))) { // Ctrl + '-'
                 bkElectron.decreaseZoom();
+                return false;
               } else if (ctrlXORCmd && ((e.which === 48) || (e.which === 13))) {
                 bkElectron.resetZoom();
+                return false;
               }
-              return false;
             }
           }
         };
@@ -1232,17 +1235,19 @@
         bkCellMenuPluginManager.reset();
         bkEvaluateJobManager.reset();
 
-        if ($scope.newSession === "new") {
-          loadNotebook.defaultNotebook($scope.sessionId);
-        } else if ($scope.newSession === "empty") {
-          loadNotebook.emptyNotebook($scope.sessionId);
-        } else if ($scope.isImport === 'true') {
-          loadNotebook.fromImport($scope.sessionId);
-        } else if ($scope.isOpen === 'true') {
-          loadNotebook.openUri($scope.notebook, $scope.sessionId, true);
-        } else {
-          loadNotebook.fromSession($scope.sessionId);
-        }
+        setTimeout(function () {
+          if ($scope.newSession === "new") {
+            loadNotebook.defaultNotebook($scope.sessionId);
+          } else if ($scope.newSession === "empty") {
+            loadNotebook.emptyNotebook($scope.sessionId);
+          } else if ($scope.isImport === 'true') {
+            loadNotebook.fromImport($scope.sessionId);
+          } else if ($scope.isOpen === 'true') {
+            loadNotebook.openUri($scope.notebook, $scope.sessionId, true);
+          } else {
+            loadNotebook.fromSession($scope.sessionId);
+          }
+        }, 0);
       }
     };
   });

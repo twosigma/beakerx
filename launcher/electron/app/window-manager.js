@@ -22,12 +22,13 @@ module.exports = (function() {
   // Do not rename to 'screen', because window.screen exists
   var electronScreen = require('screen');
   var request = require('request');
+  var shell = require('shell');
 
   var _windows = {};
   var _windowToSession = {};
   var _sessionToWindow = {};
 
-  var windowRelativeWidth = 0.4;
+  var windowRelativeWidth = 0.6;
   var windowRelativeHeight = 0.8;
 
   var client;
@@ -165,6 +166,19 @@ module.exports = (function() {
       window.show();
     });
     window.loadUrl(url);
+
+    window.webContents.on('will-navigate', function(event, url) {
+      if (window.webContents.getUrl() !== url) {
+        event.preventDefault();
+        shell.openExternal(url);
+      }
+    });
+    window.webContents.on('new-window', function(event, url) {
+      if (window.webContents.getUrl() !== url) {
+        event.preventDefault();
+        shell.openExternal(url);
+      }
+    });
 
     return window;
   }

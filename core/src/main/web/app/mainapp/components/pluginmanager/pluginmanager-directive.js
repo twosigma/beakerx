@@ -146,16 +146,18 @@
       },
       getEvaluatorStatuses: function(name) {
         var knownPlugins = bkEvaluatePluginManager.getKnownEvaluatorPlugins();
+        var knownPluginsNamesSorted = Object.keys(knownPlugins).sort();
         var activePlugins = bkEvaluatorManager.getLoadedEvaluators();
         var loadingPlugins = bkEvaluatorManager.getLoadingEvaluators();
         var result = {};
-        for (var p in knownPlugins) {
+        for (var index = 0; index < knownPluginsNamesSorted.length; index++) {
           var status = false;
-          if (activePlugins[p]) {
+          var pluginName = knownPluginsNamesSorted[index];
+          if (activePlugins[pluginName]) {
             status = "active";
           } else {
             for (var l in loadingPlugins) {
-              if (loadingPlugins[l].plugin == p) {
+              if (loadingPlugins[l].plugin == pluginName) {
                 status = "loading";
                 break;
               }
@@ -164,7 +166,7 @@
               status = "known";
             }
           }
-          result[p] = status;
+          result[pluginName] = status;
         }
         return result;
       },
@@ -227,14 +229,14 @@
     $rootScope.$on(GLOBALS.EVENTS.LANGUAGE_MANAGER_SHOW_SPINNER, function(event, data) {
       $scope.showSpinner = true;
       $scope.showMessage = true;
-      $scope.loadingMessage = 'Restarting ' + data.pluginName + '...';
+      $scope.loadingMessage = 'Starting ' + data.pluginName + '...';
     });
 
     $rootScope.$on(GLOBALS.EVENTS.LANGUAGE_MANAGER_HIDE_SPINNER, function(event, data) {
       if (data.error) {
-        $scope.loadingMessage += 'failed';
+        $scope.loadingMessage += ' failed';
       } else {
-        $scope.loadingMessage += 'done';
+        $scope.loadingMessage += ' done';
       }
       $scope.showSpinner = false;
       bkUtils.timeout(function() {

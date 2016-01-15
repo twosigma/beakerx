@@ -228,11 +228,11 @@
 
     PlotStem.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.clearTips(scope);
+      this.hideTips(scope);
     };
 
-    PlotStem.prototype.clearTips = function(scope) {
-      plotTip.clearTips(scope, this.id);
+    PlotStem.prototype.hideTips = function(scope, hidden) {
+      plotTip.hideTips(scope, this.id, hidden);
     };
 
     PlotStem.prototype.createTip = function(ele, g, model) {

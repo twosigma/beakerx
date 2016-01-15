@@ -335,11 +335,11 @@
 
     PlotPoint.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.clearTips(scope);
+      this.hideTips(scope);
     };
 
-    PlotPoint.prototype.clearTips = function(scope) {
-      plotTip.clearTips(scope, this.id);
+    PlotPoint.prototype.hideTips = function(scope, hidden) {
+      plotTip.hideTips(scope, this.id,  hidden);
     };
 
     PlotPoint.prototype.createTip = function(ele) {

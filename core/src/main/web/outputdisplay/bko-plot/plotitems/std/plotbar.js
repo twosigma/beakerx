@@ -258,11 +258,11 @@
 
     PlotBar.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.clearTips(scope);
+      this.hideTips(scope);
     };
 
-    PlotBar.prototype.clearTips = function(scope) {
-      plotTip.clearTips(scope, this.id);
+    PlotBar.prototype.hideTips = function(scope, hidden) {
+      plotTip.hideTips(scope, this.id,  hidden);
     };
 
     PlotBar.prototype.createTip = function(ele, g, model) {

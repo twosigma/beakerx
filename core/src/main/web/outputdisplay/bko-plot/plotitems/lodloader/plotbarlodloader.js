@@ -66,12 +66,12 @@
       if (this.lodOn === false) { return; }
       if (this.lodType === "bar") {
         this.lodplotter.setZoomHash(this.zoomHash);
-        this.lodplotter.clearTips(scope);
+        this.lodplotter.hideTips(scope);
       } else if (this.lodType === "box") {
         this.lodplotter.setZoomHash(this.zoomHash);
         this.lodplotter2.setZoomHash(this.zoomHash);
-        this.lodplotter.clearTips(scope);
-        this.lodplotter2.clearTips(scope);
+        this.lodplotter.hideTips(scope);
+        this.lodplotter2.hideTips(scope);
       }
     };
 
@@ -278,19 +278,19 @@
 
     PlotBarLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.clearTips(scope);
+      this.hideTips(scope);
     };
 
-    PlotBarLodLoader.prototype.clearTips = function(scope) {
+    PlotBarLodLoader.prototype.hideTips = function(scope, hidden) {
       if (this.lodOn === false) {
-        this.plotter.clearTips(scope);
+        this.plotter.hideTips(scope, hidden);
         return;
       }
       if (this.lodType === "bar") {
-        this.lodplotter.clearTips(scope);
+        this.lodplotter.hideTips(scope, hidden);
       } else if (this.lodType === "box") {
-        this.lodplotter.clearTips(scope);
-        this.lodplotter2.clearTips(scope);
+        this.lodplotter.hideTips(scope, hidden);
+        this.lodplotter2.hideTips(scope, hidden);
       }
     };
 

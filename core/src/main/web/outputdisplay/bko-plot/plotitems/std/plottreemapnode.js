@@ -27,7 +27,7 @@
       return this.root === true;
     };
 
-    PlotTreeMapNode.prototype.clearTips = function (scope) {
+    PlotTreeMapNode.prototype.hideTips = function (scope, hidden) {
       //dummy function
     };
 

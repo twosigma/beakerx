@@ -1162,10 +1162,12 @@
                   var dat = data[line.dataIds[i]];
                   dat.showItem = scope.showAllItems;
                   if (dat.showItem === false) {
-                    dat.clearTips(scope);
+                    dat.hideTips(scope, true);
                     if (dat.isLodItem === true) {
                       dat.lodOn = false;
                     }
+                  }else{
+                    dat.hideTips(scope, false);
                   }
                 }
                 if (line.showItem === false) {
@@ -1188,11 +1190,13 @@
             var dat = data[line.dataIds[j]];
             dat.showItem = !dat.showItem;
             if (dat.showItem === false) {
-              dat.clearTips(scope);
+              dat.hideTips(scope, true);
               if (dat.isLodItem === true) {
                 dat.lodOn = false;
+              }
+            } else {
+              dat.hideTips(scope, false);
             }
-          }
           }
           if (line.showItem === false) {
             if (line.isLodItem === true) {

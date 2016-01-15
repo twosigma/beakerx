@@ -1064,8 +1064,8 @@
       showLanguageManagerSpinner: function(pluginName) {
         bkUtils.showLanguageManagerSpinner(pluginName);
       },
-      hideLanguageManagerSpinner: function() {
-        bkUtils.hideLanguageManagerSpinner();
+      hideLanguageManagerSpinner: function(error) {
+        bkUtils.hideLanguageManagerSpinner(error);
       },
       isElectron: bkUtils.isElectron
     };

@@ -321,6 +321,7 @@ $text-cursor: url('../images/ambiance/ambiance-i-beam.png') 5 9, text;
 
   .mini-cell-stats {
     z-index: 1;
+    cursor: $text-cursor;
   }
 
   .loading-state {
@@ -365,6 +366,10 @@ $text-cursor: url('../images/ambiance/ambiance-i-beam.png') 5 9, text;
 
   .dataTable, table.dataTable thead th {
     color: $std-fg-text-color;
+  }
+
+  .dataTable, td {
+    cursor: $text-cursor;
   }
 
   .dataTables_wrapper .dataTables_paginate .paginate_button {
@@ -664,12 +669,22 @@ $text-cursor: url('../images/ambiance/ambiance-i-beam.png') 5 9, text;
     cursor: $text-cursor;
   }
 
+  text {
+    cursor: $text-cursor;
+  }
+
+  #plotTitle {
+    cursor: $text-cursor;
+  }
+
+  bk-output-display[type="Text"] {
+      cursor: $text-cursor;
+  }
   bk-output-display[type="Html"] {
     p, span, li, h1, h2, h3, h4, h5, h6 {
       cursor: $text-cursor;
     }
   }
-
 
 
   li.CodeMirror-hint-active {

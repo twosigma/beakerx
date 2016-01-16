@@ -76,6 +76,10 @@ iruby register
 sudo add-apt-repository --yes ppa:staticfloat/juliareleases
 sudo add-apt-repository --yes ppa:staticfloat/julia-deps
 sudo apt-get update
-sudo apt-get install -y julia
+sudo apt-get install -y julia cmake
 julia --eval 'Pkg.add("IJulia")'
+julia --eval 'Pkg.add("Requests")'
 julia --eval 'Pkg.add("Gadfly")'
+# workaround bug in julia
+julia --eval 'Pkg.rm("IJulia")'
+julia --eval 'Pkg.add("IJulia")'

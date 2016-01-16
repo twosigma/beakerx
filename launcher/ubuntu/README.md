@@ -6,4 +6,4 @@ to be added to the zip file.
 
 After making dist.zip, just run this command:
 
-    zip dist.zip install-dependencies.sh
+    zip dist.zip install-*dependencies.sh

@@ -12,25 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+. install-runtime-core-dependencies.sh
+
 # install beaker dependencies on ubuntu 14.04
 sudo apt-get install -y python g++ make
 sudo apt-get install -y python-software-properties
 sudo apt-get install -y git
 
-# java
-sudo add-apt-repository --yes ppa:webupd8team/java
-sudo apt-get update
-sudo apt-get install -y oracle-java8-installer # javac -v = 1.8.XXX
 
 # gradle
 sudo add-apt-repository --yes ppa:cwchien/gradle
 sudo apt-get update
 sudo apt-get install -y gradle-2.4
-
-# nginx
-sudo add-apt-repository --yes ppa:nginx/stable
-sudo apt-get update
-sudo apt-get install -y nginx # nginx -v = 1.6.0
 
 # npm
 # Note the new setup script name for Node.js v0.12

@@ -821,8 +821,8 @@
           var me = $('#' + scope.id);
           // this is dataTables_scrollBody
           var pp = me.parent();
-          if (pp.width() > me.width() + 16) {
-            pp.width(me.width() + 16);
+          if (pp.width() > me.width()) {
+            pp.width(me.width());
           }
           if (scope.fixcols)
             scope.fixcols.fnRedrawLayout();

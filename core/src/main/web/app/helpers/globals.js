@@ -23,6 +23,7 @@
       DEFAULT_EVALUATOR: 'JavaScript',
       REQUIREJS_TIMEOUT: 30,
       RECONNECT_TIMEOUT: 30 * 1000, // 30 seconds
+      CELL_INSTANTIATION_DISTANCE: 500, // in pixels - if the cell is closer than from the viewport it gets instantiated
       EVENTS: {
       	RECONNECT_FAILED: 'reconnect-failed',
         LANGUAGE_MANAGER_SHOW_SPINNER: 'language-manager-show-spinner',

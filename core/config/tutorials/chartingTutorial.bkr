@@ -85,8 +85,8 @@
                 "result": "ok",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "aa32f2c1-e85c-4515-8617-eb237b62180a",
-                "elapsedTime": 1412,
+                "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
+                "elapsedTime": 1427,
                 "height": 0
             },
             "evaluatorReader": true,
@@ -109,8 +109,8 @@
                 "result": "ok",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "aa32f2c1-e85c-4515-8617-eb237b62180a",
-                "elapsedTime": 674,
+                "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
+                "elapsedTime": 645,
                 "height": 0
             },
             "evaluatorReader": true,
@@ -136,8 +136,8 @@
                 "result": "ok",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "aa32f2c1-e85c-4515-8617-eb237b62180a",
-                "elapsedTime": 769,
+                "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
+                "elapsedTime": 653,
                 "height": 0
             },
             "evaluatorReader": true,
@@ -194,11 +194,11 @@
                     "",
                     "// Add notation and line for Lehman Bankruptcy.",
                     "p1 << new Text(x: lehmanDate.getTime(), y: 7.5, text: \"Lehman Brothers Bankruptcy\")",
-                    "def l1 = new ConstantLine(x:lehmanDate, style:StrokeType.DOT, color:Color.gray)",
+                    "def l1 = new ConstantLine(x: lehmanDate, style: StrokeType.DOT, color: Color.gray)",
                     "",
                     "// Add notation and line for Stocks Nadir.",
                     "p1 << new Text(x: bubbleBottomDate.getTime(), y: 5.75, text: \"Stocks Hit Bottom\")",
-                    "def l2 = new ConstantLine(x:bubbleBottomDate, style:StrokeType.DOT, color:Color.gray)",
+                    "def l2 = new ConstantLine(x: bubbleBottomDate, style: StrokeType.DOT, color: Color.gray)",
                     "",
                     "// add the notations and highlight bands to both plots",
                     "p1 << l1 << l2 << b1 << b2",
@@ -3934,10 +3934,10 @@
             "input": {
                 "body": [
                     "def c = new Color(120, 120, 120, 100)",
-                    "new Plot() << new Points(x:rates.y1, y:rates.y30, displayName:\"y1 vs y30\") \\",
-                    "           << new Points(x:rates.m3, y:rates.y5, displayName:\"m3 vs y5\") \\",
-                    "           << new Line(x:rates.m3, y:rates.y5, color: c) \\",
-                    "           << new Line(x:rates.y1, y:rates.y30, color: c)"
+                    "new Plot() << new Points(x: rates.y1, y: rates.y30, displayName: \"y1 vs y30\") \\",
+                    "           << new Points(x: rates.m3, y: rates.y5, displayName: \"m3 vs y5\") \\",
+                    "           << new Line(x: rates.m3, y: rates.y5, color: c) \\",
+                    "           << new Line(x: rates.y1, y: rates.y30, color: c)"
                 ]
             },
             "output": {
@@ -6908,95 +6908,14 @@
             "id": "markdownjRJwpd",
             "type": "markdown",
             "body": [
-                "This section goes over",
-                "the steps required to create a plot. It also shows you how to change the",
-                "rendering properties"
+                "This section goes over the steps required to create a plot, configure it, and add data and graphics to it."
             ],
             "evaluatorReader": false
         },
         {
-            "id": "section2Fjl8q",
-            "type": "section",
-            "title": "Creating an empty plot",
-            "level": 2,
-            "evaluatorReader": false,
-            "collapsed": false
-        },
-        {
-            "id": "codeN7UHYQ",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": [
-                    "new Plot()"
-                ]
-            },
-            "output": {
-                "result": {
-                    "type": "Plot",
-                    "init_width": 640,
-                    "init_height": 480,
-                    "chart_title": null,
-                    "show_legend": null,
-                    "use_tool_tip": true,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
-                    "legend_layout": "VERTICAL",
-                    "domain_axis_label": null,
-                    "y_label": "",
-                    "rangeAxes": [
-                        {
-                            "type": "YAxis",
-                            "label": "",
-                            "auto_range": true,
-                            "auto_range_includes_zero": false,
-                            "lower_margin": 0.05,
-                            "upper_margin": 0.05,
-                            "lower_bound": 0,
-                            "upper_bound": 0,
-                            "use_log": false,
-                            "log_base": 10
-                        }
-                    ],
-                    "x_lower_margin": 0.05,
-                    "x_upper_margin": 0.05,
-                    "y_auto_range": true,
-                    "y_auto_range_includes_zero": false,
-                    "y_lower_margin": 0.05,
-                    "y_upper_margin": 0.05,
-                    "y_lower_bound": 0,
-                    "y_upper_bound": 0,
-                    "log_y": false,
-                    "timezone": null,
-                    "crosshair": null,
-                    "omit_checkboxes": false,
-                    "graphics_list": [],
-                    "constant_lines": [],
-                    "constant_bands": [],
-                    "texts": [],
-                    "x_auto_range": true,
-                    "x_lower_bound": 0,
-                    "x_upper_bound": 0,
-                    "log_x": false,
-                    "x_log_base": 10,
-                    "tips": {}
-                },
-                "selectedType": "Plot",
-                "elapsedTime": 769,
-                "state": {},
-                "pluginName": "Groovy",
-                "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "height": 519
-            },
-            "evaluatorReader": true,
-            "lineCount": 1
-        },
-        {
             "id": "sectionHRkjOo",
             "type": "section",
-            "title": "Adding title and axis labels",
+            "title": "Title and Axis Labels",
             "level": 2,
             "evaluatorReader": false,
             "collapsed": false
@@ -7007,7 +6926,7 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "new Plot(title: \"My Chart\", xLabel: \"X Label\", yLabel: \"Y Label\")"
+                    "new Plot(title: \"Title and Labels Only\", xLabel: \"Horizontal\", yLabel: \"Vertical\")"
                 ]
             },
             "output": {
@@ -7015,7 +6934,7 @@
                     "type": "Plot",
                     "init_width": 640,
                     "init_height": 480,
-                    "chart_title": "My Chart",
+                    "chart_title": "Title and Labels Only",
                     "show_legend": null,
                     "use_tool_tip": true,
                     "legend_position": {
@@ -7023,12 +6942,12 @@
                         "position": "TOP_RIGHT"
                     },
                     "legend_layout": "VERTICAL",
-                    "domain_axis_label": "X Label",
-                    "y_label": "Y Label",
+                    "domain_axis_label": "Horizontal",
+                    "y_label": "Vertical",
                     "rangeAxes": [
                         {
                             "type": "YAxis",
-                            "label": "Y Label",
+                            "label": "Vertical",
                             "auto_range": true,
                             "auto_range_includes_zero": false,
                             "lower_margin": 0.05,
@@ -7063,7 +6982,7 @@
                     "tips": {}
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 776,
+                "elapsedTime": 753,
                 "state": {
                     "showAllItems": true,
                     "plotSize": {
@@ -7096,25 +7015,17 @@
                     "tips": {}
                 },
                 "pluginName": "Groovy",
-                "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
+                "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
                 "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 1
         },
         {
-            "id": "sectionNMpFLc",
-            "type": "section",
-            "title": "Adding data",
-            "level": 2,
-            "evaluatorReader": false,
-            "collapsed": false
-        },
-        {
             "id": "sectionv6czjY",
             "type": "section",
-            "title": "Adding a line",
-            "level": 3,
+            "title": "Lines",
+            "level": 2,
             "evaluatorReader": false,
             "collapsed": false
         },
@@ -7228,7 +7139,7 @@
                     "tips": {}
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 822,
+                "elapsedTime": 745,
                 "state": {
                     "showAllItems": true,
                     "plotSize": {
@@ -7271,7 +7182,7 @@
                     "tips": {}
                 },
                 "pluginName": "Groovy",
-                "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
+                "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
                 "height": 502
             },
             "evaluatorReader": true,
@@ -7296,10 +7207,12 @@
                     "def plot = new Plot(title: \"Setting line properties\")",
                     "def ys = [0, 1, 6, 5, 2, 8]",
                     "def ys2 = [0, 2, 7, 6, 3, 8]",
-                    "plot << new Line(y: ys, width: 15.0) // thick line behind the orange line",
-                    "plot << new Line(y: ys, width: 5.0, color: Color.orange)",
-                    "plot << new Line(y: ys, width: 2, color: new Color(33, 87, 141), style: StrokeType.DASH, interpolation: 0)",
-                    "plot << new Line(y: ys2, width: 2, color: new Color(212, 57, 59), style: StrokeType.DOT)"
+                    "plot << new Line(y: ys, width: 10, color: Color.red)",
+                    "plot << new Line(y: ys, width: 3, color: Color.yellow)",
+                    "plot << new Line(y: ys, width: 4, color: new Color(33, 87, 141), style: StrokeType.DASH, interpolation: 0)",
+                    "plot << new Line(y: ys2, width: 2, color: new Color(212, 57, 59), style: StrokeType.DOT)",
+                    "plot << new Line(y: [5, 0], x: [0, 5], style: StrokeType.LONGDASH)",
+                    "plot << new Line(y: [4, 0], x: [0, 5], style: StrokeType.DASHDOT)"
                 ]
             },
             "output": {
@@ -7365,7 +7278,8 @@
                             "display_name": "",
                             "yAxis": null,
                             "type": "Line",
-                            "width": 15
+                            "color": "#FFFF0000",
+                            "width": 10
                         },
                         {
                             "x": [
@@ -7388,8 +7302,8 @@
                             "display_name": "",
                             "yAxis": null,
                             "type": "Line",
-                            "color": "#FFFFC800",
-                            "width": 5
+                            "color": "#FFFFFF00",
+                            "width": 3
                         },
                         {
                             "x": [
@@ -7413,7 +7327,7 @@
                             "yAxis": null,
                             "type": "Line",
                             "color": "#FF21578D",
-                            "width": 2,
+                            "width": 4,
                             "style": "DASH",
                             "interpolation": 0
                         },
@@ -7441,6 +7355,38 @@
                             "color": "#FFD4393B",
                             "width": 2,
                             "style": "DOT"
+                        },
+                        {
+                            "x": [
+                                0,
+                                5
+                            ],
+                            "y": [
+                                5,
+                                0
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
+                            "width": 1.5,
+                            "style": "LONGDASH"
+                        },
+                        {
+                            "x": [
+                                0,
+                                5
+                            ],
+                            "y": [
+                                4,
+                                0
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "yAxis": null,
+                            "type": "Line",
+                            "width": 1.5,
+                            "style": "DASHDOT"
                         }
                     ],
                     "constant_lines": [],
@@ -7454,7 +7400,7 @@
                     "tips": {}
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 790,
+                "elapsedTime": 744,
                 "state": {
                     "showAllItems": true,
                     "plotSize": {
@@ -7473,9 +7419,13 @@
                         null,
                         null,
                         null,
+                        null,
+                        null,
                         null
                     ],
                     "lodType": [
+                        null,
+                        null,
                         null,
                         null,
                         null,
@@ -7485,9 +7435,13 @@
                         null,
                         null,
                         null,
+                        null,
+                        null,
                         null
                     ],
                     "zoomHash": [
+                        null,
+                        null,
                         null,
                         null,
                         null,
@@ -7497,9 +7451,11 @@
                         true,
                         true,
                         true,
+                        true,
+                        true,
                         true
                     ],
-                    "visibleItem": 4,
+                    "visibleItem": 6,
                     "legendableItem": 0,
                     "defaultFocus": {
                         "xl": 0.4738095238095238,
@@ -7512,17 +7468,17 @@
                     "tips": {}
                 },
                 "pluginName": "Groovy",
-                "shellId": "dc0d4dc2-7d92-47dd-a035-21545410fec9",
+                "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
                 "height": 529
             },
             "evaluatorReader": true,
-            "lineCount": 7
+            "lineCount": 9
         },
         {
             "id": "sectionOkgmqA",
             "type": "section",
-            "title": "Adding Stems",
-            "level": 3,
+            "title": "Stems",
+            "level": 2,
             "evaluatorReader": false,
             "collapsed": false
         },
@@ -7531,7 +7487,7 @@
             "type": "markdown",
             "body": [
                 "Stems are vertical line",
-                "segments. All the rendering properties you set for lines apply to stems."
+                "segments. All the rendering properties for lines apply to stems."
             ],
             "evaluatorReader": false
         },
@@ -7543,9 +7499,8 @@
                 "body": [
                     "def plot = new Plot();",
                     "def y1 = [1.5, 1, 6, 5, 2, 8]",
-                    "def cs = [Color.black, Color.red, Color.orange, Color.green, Color.blue, Color.pink]",
-                    "def ss = [StrokeType.SOLID, StrokeType.SOLID, StrokeType.DASH, StrokeType.DOT, StrokeType.DASHDOT, StrokeType.LONGDASH]",
-                    "plot << new Stems(y: y1, color: cs, style: ss, width: 3.5f)"
+                    "def cs = [Color.black, Color.red, Color.gray, Color.green, Color.blue, Color.pink]",
+                    "plot << new Stems(y: y1, color: cs, width: 5)"
                 ]
             },
             "output": {
@@ -7615,20 +7570,13 @@
                             "colors": [
                                 "#FF000000",
                                 "#FFFF0000",
-                                "#FFFFC800",
+                                "#FF808080",
                                 "#FF00FF00",
                                 "#FF0000FF",
                                 "#FFFFAFAF"
                             ],
-                            "width": 3.5,
-                            "styles": [
-                                "SOLID",
-                                "SOLID",
-                                "DASH",
-                                "DOT",
-                                "DASHDOT",
-                                "LONGDASH"
-                            ]
+                            "width": 5,
+                            "style": "SOLID"
                         }
                     ],
                     "constant_lines": [],
@@ -7642,7 +7590,7 @@
                     "tips": {}
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 760,
+                "elapsedTime": 741,
                 "state": {
                     "showAllItems": true,
                     "plotSize": {
@@ -7685,11 +7633,11 @@
                     "tips": {}
                 },
                 "pluginName": "Groovy",
-                "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
+                "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
                 "height": 502
             },
             "evaluatorReader": true,
-            "lineCount": 5
+            "lineCount": 4
         },
         {
             "id": "markdownsVrthj",
@@ -7710,7 +7658,7 @@
                     "def ys = [3, 5, 2, 3, 7]",
                     "def y2s = [2.5, -1.0, 3.5, 2.0, 3.0]",
                     "plot << new Points(y: ys, color: Color.red)",
-                    "plot << new Stems(y: ys, color: Color.red, width: 1.5f, base: y2s)"
+                    "plot << new Stems(y: ys, color: Color.red, width: 2, base: y2s)"
                 ]
             },
             "output": {
@@ -7807,7 +7755,7 @@
                                 3
                             ],
                             "color": "#FFFF0000",
-                            "width": 1.5,
+                            "width": 2,
                             "style": "SOLID"
                         }
                     ],
@@ -7822,11 +7770,56 @@
                     "tips": {}
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 767,
-                "state": {},
+                "elapsedTime": 1075,
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "pluginName": "Groovy",
-                "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "height": 546
+                "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -7834,8 +7827,8 @@
         {
             "id": "sectionGUyfdA",
             "type": "section",
-            "title": "Adding Bars",
-            "level": 3,
+            "title": "Bars",
+            "level": 2,
             "evaluatorReader": false,
             "collapsed": false
         },
@@ -7843,15 +7836,11 @@
             "id": "markdownrhP4fi",
             "type": "markdown",
             "body": [
-                "You can set the width",
-                "and color of the bars. You can set the color property for each single bar element",
-                "using a list",
+                "You can set the width and color of the bars. You can set the color property for each single bar element using a list",
+                "Bar colors are fill colors, To change the outline color, use *outlineColor*.",
+                "Bar width is in terms of the data domain.",
                 "",
-                "Bar colors are fill",
-                "colors, To change the outline color, use *outlineColor*.",
-                "",
-                "Bar width is in terms of",
-                "the data domain."
+                "For Bar Charts, see the other tutorial on Category Plots."
             ],
             "evaluatorReader": false
         },
@@ -7952,10 +7941,50 @@
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 768,
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null
+                    ],
+                    "lodType": [
+                        null
+                    ],
+                    "lodAuto": [
+                        null
+                    ],
+                    "zoomHash": [
+                        null
+                    ],
+                    "showItem": [
+                        true
+                    ],
+                    "visibleItem": 1,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "height": 546
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -7963,8 +7992,8 @@
         {
             "id": "sectionI3JDTC",
             "type": "section",
-            "title": "Adding Points",
-            "level": 3,
+            "title": "Points",
+            "level": 2,
             "evaluatorReader": false,
             "collapsed": false
         },
@@ -7972,8 +8001,7 @@
             "id": "markdown8M37bu",
             "type": "markdown",
             "body": [
-                "You can change the size",
-                "and shape of points. Points also support *outlineColor*."
+                "You can change the size and shape of points. Points also support *outlineColor*."
             ],
             "evaluatorReader": false
         },
@@ -8157,10 +8185,65 @@
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 774,
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 4,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "height": 546
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -8169,8 +8252,7 @@
             "id": "markdownBiikVc",
             "type": "markdown",
             "body": [
-                "You can also set point",
-                "properties using lists."
+                "You can also set point properties using lists."
             ],
             "evaluatorReader": false
         },
@@ -8185,9 +8267,9 @@
                     "def ss = [6.0, 9.0, 12.0, 15.0, 18.0, 21.0]",
                     "def fs = [false, false, false, true, false, false]",
                     "plot << [new Points(y: [5] * 6, size: 12.0, color: cs),",
-                    "\t\t new Points(y: [4] * 6, size: 12.0, color: Color.gray, outlineColor: cs),",
-                    "\t\t new Points(y: [3] * 6, size: ss, color: Color.red),",
-                    "\t\t new Points(y: [2] * 6, size: 12.0, color: Color.black, fill: fs, outlineColor: Color.black)]"
+                    "         new Points(y: [4] * 6, size: 12.0, color: Color.gray, outlineColor: cs),",
+                    "         new Points(y: [3] * 6, size: ss, color: Color.red),",
+                    "         new Points(y: [2] * 6, size: 12.0, color: Color.black, fill: fs, outlineColor: Color.black)]"
                 ]
             },
             "output": {
@@ -8447,8 +8529,8 @@
         {
             "id": "sectionwfn6YU",
             "type": "section",
-            "title": "Adding Areas",
-            "level": 3,
+            "title": "Areas",
+            "level": 2,
             "evaluatorReader": false,
             "collapsed": false
         },
@@ -8461,7 +8543,7 @@
                     "def plot = new Plot()",
                     "def y = [3, 5, 2, 3]",
                     "def x0 = [0, 1, 2, 3]",
-                    "def x1 = [3, 4, 5, 6]",
+                    "def x1 = [3, 4, 5, 8]",
                     "plot << new Area(x: x0, y: y, color: new Color(128, 0, 128, 128))",
                     "plot << new Line(x: x0, y: y, color: new Color(128, 0, 255), width: 3.0)",
                     "plot << new Area(x: x1, y: y, color: new Color(255, 255, 0, 128), interpolation: 0)",
@@ -8555,7 +8637,7 @@
                                 3,
                                 4,
                                 5,
-                                6
+                                8
                             ],
                             "y": [
                                 3,
@@ -8576,7 +8658,7 @@
                                 3,
                                 4,
                                 5,
-                                6
+                                8
                             ],
                             "y": [
                                 3,
@@ -8604,7 +8686,7 @@
                     "tips": {}
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 750,
+                "elapsedTime": 734,
                 "state": {
                     "showAllItems": true,
                     "plotSize": {
@@ -8662,7 +8744,7 @@
                     "tips": {}
                 },
                 "pluginName": "Groovy",
-                "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
+                "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
                 "height": 502
             },
             "evaluatorReader": true,
@@ -8672,8 +8754,7 @@
             "id": "markdownPZ5eJ3",
             "type": "markdown",
             "body": [
-                "You can also set bases",
-                "for the areas. This can be used to, for example show the err. (see below)"
+                "You can also set bases for the areas."
             ],
             "evaluatorReader": false
         },
@@ -8684,8 +8765,9 @@
             "input": {
                 "body": [
                     "def p = new Plot()",
-                    "p << new Line(y: [3, 6, 12, 24], displayName: \"Line 1\")",
-                    "p << new Area(y: [4, 8, 16, 32], base: [2, 4, 8, 16], color: new Color(255, 0, 0, 50), displayName: \"error\") // setting 'base'"
+                    "p << new Line(y: [3, 6, 12, 24], displayName: \"Median\")",
+                    "p << new Area(y: [4, 8, 16, 32], base: [2, 4, 8, 16],",
+                    "              color: new Color(255, 0, 0, 50), displayName: \"Q1 to Q3\")"
                 ]
             },
             "output": {
@@ -8744,7 +8826,7 @@
                                 24
                             ],
                             "visible": true,
-                            "display_name": "Line 1",
+                            "display_name": "Median",
                             "yAxis": null,
                             "type": "Line",
                             "width": 1.5
@@ -8763,7 +8845,7 @@
                                 32
                             ],
                             "visible": true,
-                            "display_name": "error",
+                            "display_name": "Q1 to Q3",
                             "yAxis": null,
                             "type": "Area",
                             "color": "#32FF0000",
@@ -8786,20 +8868,65 @@
                     "tips": {}
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 781,
-                "state": {},
+                "elapsedTime": 754,
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "pluginName": "Groovy",
-                "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "height": 519
+                "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
+                "height": 502
             },
             "evaluatorReader": true,
-            "lineCount": 3
+            "lineCount": 4
         },
         {
             "id": "sectionfjRouj",
             "type": "section",
-            "title": "Adding constant lines",
-            "level": 3,
+            "title": "ConstantLines",
+            "level": 2,
             "evaluatorReader": false,
             "collapsed": false
         },
@@ -8810,10 +8937,10 @@
             "input": {
                 "body": [
                     "def p = new Plot ()",
-                    "p << new Line(y:[-1, 1])",
-                    "p << new ConstantLine(x:0.5, style:StrokeType.DOT, color:Color.blue)",
-                    "p << new ConstantLine(y:0, style:StrokeType.DOT)",
-                    "p << new ConstantLine(x: 0.3, y:0.4, color:Color.magenta, width:5, showLabel: true)"
+                    "p << new Line(y: [-1, 1])",
+                    "p << new ConstantLine(x: 0.5, style: StrokeType.DOT, color: Color.blue)",
+                    "p << new ConstantLine(y: 0, style: StrokeType.DOT)",
+                    "p << new ConstantLine(x: 0.3, y: 0.4, color: Color.magenta, width: 5, showLabel: true)"
                 ]
             },
             "output": {
@@ -8984,8 +9111,8 @@
         {
             "id": "sectionabbKV6",
             "type": "section",
-            "title": "Adding ConstantBands",
-            "level": 3,
+            "title": "ConstantBands",
+            "level": 2,
             "evaluatorReader": false,
             "collapsed": false
         },
@@ -8995,8 +9122,7 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "p = new Plot() << new Line(y:[-3, 1,2,4,5].reverse(), x:[-3, 1,2,4,5])",
-                    "p << new ConstantBand(x:[1,2], y:[2,3])"
+                    "new Plot() << new Line(y: [-3, 1, 3, 4, 5]) << new ConstantBand(x: [1, 2], y: [1, 3])"
                 ]
             },
             "output": {
@@ -9089,18 +9215,18 @@
                     "graphics_list": [
                         {
                             "x": [
-                                -3,
+                                0,
                                 1,
                                 2,
-                                4,
-                                5
+                                3,
+                                4
                             ],
                             "y": [
-                                5,
-                                4,
-                                2,
+                                -3,
                                 1,
-                                -3
+                                3,
+                                4,
+                                5
                             ],
                             "visible": true,
                             "display_name": "",
@@ -9118,7 +9244,7 @@
                                 2
                             ],
                             "y": [
-                                2,
+                                1,
                                 3
                             ],
                             "visible": true,
@@ -9136,12 +9262,12 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "elapsedTime": 744,
+                "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
+                "elapsedTime": 717,
                 "height": 502
             },
             "evaluatorReader": true,
-            "lineCount": 2
+            "lineCount": 1
         },
         {
             "id": "markdowndutw3L",
@@ -9158,15 +9284,69 @@
             "input": {
                 "body": [
                     "def p = new Plot() ",
-                    "p << new Line(x:[-3, 1,2,4,5], y:[4, 2, 6, 1, 5], color: Color.RED)",
-                    "p << new ConstantBand(x:[Double.NEGATIVE_INFINITY,1], color: new Color(192, 192, 192, 127))",
-                    "p << new ConstantBand(x:[1,2])",
-                    "p << new ConstantBand(x:[2,4], color: new Color(192, 192, 192, 127))",
-                    "p << new ConstantBand(x:[4, Double.POSITIVE_INFINITY])"
+                    "p << new Line(x: [-3, 1, 2, 4, 5], y: [4, 2, 6, 1, 5])",
+                    "p << new ConstantBand(x: [Double.NEGATIVE_INFINITY, 1], color: new Color(0, 0, 0, 30))",
+                    "p << new ConstantBand(x: [1, 2])",
+                    "p << new ConstantBand(x: [4, Double.POSITIVE_INFINITY])"
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 4,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "result": {
                     "type": "Plot",
                     "init_width": 640,
@@ -9227,7 +9407,6 @@
                             "display_name": "",
                             "yAxis": null,
                             "type": "Line",
-                            "color": "#FFFF0000",
                             "width": 1.5
                         }
                     ],
@@ -9242,7 +9421,7 @@
                             "y": null,
                             "visible": true,
                             "yAxis": null,
-                            "color": "#7FC0C0C0"
+                            "color": "#1E000000"
                         },
                         {
                             "type": "ConstantBand",
@@ -9254,17 +9433,6 @@
                             "visible": true,
                             "yAxis": null,
                             "color": "#7F007FFF"
-                        },
-                        {
-                            "type": "ConstantBand",
-                            "x": [
-                                2,
-                                4
-                            ],
-                            "y": null,
-                            "visible": true,
-                            "yAxis": null,
-                            "color": "#7FC0C0C0"
                         },
                         {
                             "type": "ConstantBand",
@@ -9288,18 +9456,18 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "elapsedTime": 738,
-                "height": 519
+                "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
+                "elapsedTime": 744,
+                "height": 502
             },
             "evaluatorReader": true,
-            "lineCount": 6
+            "lineCount": 5
         },
         {
             "id": "sectionRsx3xB",
             "type": "section",
-            "title": "Adding text",
-            "level": 3,
+            "title": "Text",
+            "level": 2,
             "evaluatorReader": false,
             "collapsed": false
         },
@@ -9311,17 +9479,118 @@
                 "body": [
                     "def plot = new Plot()",
                     "def xs = (1..10)",
-                    "def ys = [8.6, 6.1, 7.4, 2.5, 0.4, 3.0, 0.5, 1.7, 8.4, 1]",
-                    "for(int i = 0; i < xs.size(); i++){",
-                    "  plot << new Text(x: xs[i], y: ys[i], text: ys[i],  pointerAngle:0)",
+                    "def ys = [8.6, 6.1, 7.4, 2.5, 0.4, 0.0, 0.5, 1.7, 8.4, 1]",
+                    "def label = { i ->",
+                    "  if (ys[i] > ys[i+1] && ys[i] > ys[i-1]) return \"max\"",
+                    "  if (ys[i] < ys[i+1] && ys[i] < ys[i-1]) return \"min\"",
+                    "  if (ys[i] > ys[i-1]) return \"rising\"",
+                    "  if (ys[i] < ys[i-1]) return \"falling\"",
+                    "  return \"\"",
                     "}",
-                    "plot << new Line(displayName: \"Line\", x: xs, y: ys, width: 2)",
-                    "plot << new Points(displayName: \"\", x: xs, y: ys, size: 6)",
-                    ""
+                    "for (i = 0; i < xs.size(); i++) {",
+                    "  plot << new Text(x: xs[i], y: ys[i], text: label(i),  pointerAngle: -i/3.0)",
+                    "}",
+                    "plot << new Line(x: xs, y: ys)",
+                    "plot << new Points(x: xs, y: ys)"
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.47380952380952385,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095236
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 12,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.47380952380952385,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095236
+                    },
+                    "tips": {}
+                },
                 "result": {
                     "type": "Plot",
                     "init_width": 640,
@@ -9382,17 +9651,17 @@
                                 7.4,
                                 2.5,
                                 0.4,
-                                3,
+                                0,
                                 0.5,
                                 1.7,
                                 8.4,
                                 1
                             ],
                             "visible": true,
-                            "display_name": "Line",
+                            "display_name": "",
                             "yAxis": null,
                             "type": "Line",
-                            "width": 2
+                            "width": 1.5
                         },
                         {
                             "x": [
@@ -9413,7 +9682,7 @@
                                 7.4,
                                 2.5,
                                 0.4,
-                                3,
+                                0,
                                 0.5,
                                 1.7,
                                 8.4,
@@ -9438,7 +9707,7 @@
                             "x": 1,
                             "y": 8.6,
                             "show_pointer": true,
-                            "text": "8.6",
+                            "text": "max",
                             "pointer_angle": 0,
                             "color": null,
                             "size": 13
@@ -9448,8 +9717,8 @@
                             "x": 2,
                             "y": 6.1,
                             "show_pointer": true,
-                            "text": "6.1",
-                            "pointer_angle": 0,
+                            "text": "min",
+                            "pointer_angle": -0.3333333333,
                             "color": null,
                             "size": 13
                         },
@@ -9458,8 +9727,8 @@
                             "x": 3,
                             "y": 7.4,
                             "show_pointer": true,
-                            "text": "7.4",
-                            "pointer_angle": 0,
+                            "text": "max",
+                            "pointer_angle": -0.6666666667,
                             "color": null,
                             "size": 13
                         },
@@ -9468,8 +9737,8 @@
                             "x": 4,
                             "y": 2.5,
                             "show_pointer": true,
-                            "text": "2.5",
-                            "pointer_angle": 0,
+                            "text": "falling",
+                            "pointer_angle": -1,
                             "color": null,
                             "size": 13
                         },
@@ -9478,18 +9747,18 @@
                             "x": 5,
                             "y": 0.4,
                             "show_pointer": true,
-                            "text": "0.4",
-                            "pointer_angle": 0,
+                            "text": "falling",
+                            "pointer_angle": -1.3333333333,
                             "color": null,
                             "size": 13
                         },
                         {
                             "type": "Text",
                             "x": 6,
-                            "y": 3,
+                            "y": 0,
                             "show_pointer": true,
-                            "text": "3.0",
-                            "pointer_angle": 0,
+                            "text": "min",
+                            "pointer_angle": -1.6666666667,
                             "color": null,
                             "size": 13
                         },
@@ -9498,8 +9767,8 @@
                             "x": 7,
                             "y": 0.5,
                             "show_pointer": true,
-                            "text": "0.5",
-                            "pointer_angle": 0,
+                            "text": "rising",
+                            "pointer_angle": -2,
                             "color": null,
                             "size": 13
                         },
@@ -9508,8 +9777,8 @@
                             "x": 8,
                             "y": 1.7,
                             "show_pointer": true,
-                            "text": "1.7",
-                            "pointer_angle": 0,
+                            "text": "rising",
+                            "pointer_angle": -2.3333333333,
                             "color": null,
                             "size": 13
                         },
@@ -9518,8 +9787,8 @@
                             "x": 9,
                             "y": 8.4,
                             "show_pointer": true,
-                            "text": "8.4",
-                            "pointer_angle": 0,
+                            "text": "max",
+                            "pointer_angle": -2.6666666667,
                             "color": null,
                             "size": 13
                         },
@@ -9528,8 +9797,8 @@
                             "x": 10,
                             "y": 1,
                             "show_pointer": true,
-                            "text": "1",
-                            "pointer_angle": 0,
+                            "text": "falling",
+                            "pointer_angle": -3,
                             "color": null,
                             "size": 13
                         }
@@ -9543,17 +9812,17 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "elapsedTime": 756,
-                "height": 519
+                "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
+                "elapsedTime": 742,
+                "height": 502
             },
             "evaluatorReader": true,
-            "lineCount": 9
+            "lineCount": 15
         },
         {
             "id": "section3cKrLr",
             "type": "section",
-            "title": "Adding tooltips, legend box, cursor hint",
+            "title": "Legend",
             "level": 2,
             "evaluatorReader": false,
             "collapsed": false
@@ -9568,7 +9837,7 @@
                 "plot below.",
                 "",
                 "You can interact with the tooltips:",
-                "* Stick a tooltip: Click while a tooltip is visible, and it will remain until y ou close it by clicking the X.",
+                "* Stick a tooltip: Click while a tooltip is visible, and it will remain until you close it by clicking the X.",
                 "* Click and drag a tooltip to increase its visibility.",
                 "* When you zoom and pan, the tooltip will try to keep its place within the plot when you later navigate.",
                 "",
@@ -9626,8 +9895,7 @@
                     "pp << new Bars(displayName: \"Bar\", x: (1..10), y: [1, 2, 3, 4, 3, 2, 1, 2, 3, 4],",
                     "               color: new Color(0, 0, 128, 160), outlineColor: Color.black, width: 0.5)",
                     "pp << new Points(displayName: \"\", x: [1, 4, 6, 8, 10], y: [3, 6, 4, 5, 9],",
-                    "                 color: new Color(128, 0, 0, 160), outlineColor: Color.black, size: 10) // not show in the legend box",
-                    ""
+                    "                 color: new Color(128, 0, 0, 160), outlineColor: Color.black, size: 10) // not show in the legend box"
                 ]
             },
             "output": {
@@ -9770,13 +10038,63 @@
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 744,
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 3,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "height": 545
+                "height": 528
             },
             "evaluatorReader": true,
-            "lineCount": 9
+            "lineCount": 8
         },
         {
             "id": "sectionQvRHqT",
@@ -9819,7 +10137,52 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "result": {
                     "type": "TimePlot",
                     "init_width": 640,
@@ -11158,7 +11521,7 @@
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
                 "elapsedTime": 749,
-                "height": 519
+                "height": 502
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -11166,7 +11529,7 @@
         {
             "id": "sectionptca1E",
             "type": "section",
-            "title": "Adding Second Y Axis",
+            "title": "Second Y Axis",
             "level": 2,
             "evaluatorReader": false,
             "collapsed": false
@@ -11197,7 +11560,57 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.47380952380952374,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095247
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 3,
+                    "legendableItem": 3,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.47380952380952374,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095247
+                    },
+                    "tips": {}
+                },
                 "result": {
                     "type": "TimePlot",
                     "init_width": 640,
@@ -13183,7 +13596,7 @@
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
                 "elapsedTime": 764,
-                "height": 519
+                "height": 502
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -13222,7 +13635,7 @@
                     "}",
                     "",
                     "def cplot = new CombinedPlot(xLabel: \"Linear\");",
-                    "def logYPlot = new Plot(title: \"Linear x, Log y\", yLabel: \"Log\", showLegend: true, logY: true, yLogBase: logBase);",
+                    "def logYPlot = new Plot(title: \"Linear x, Log y\", yLabel: \"Log\", logY: true, yLogBase: logBase);",
                     "logYPlot << new Line(x: xs, y: expys, displayName: \"f(x) = exp(x)\");",
                     "logYPlot << new Line(x: xs, y: xs, displayName: \"g(x) = x\");",
                     "cplot.add(logYPlot, 3);",
@@ -13230,7 +13643,7 @@
                     "//to create right y-axis use the following sintax",
                     "//logYPlot << new YAxis(label: \"Right Log Y-Axis\", log: true, logBase: logBase);",
                     "",
-                    "def linearYPlot = new Plot(title: \"Linear x, Linear y\", yLabel: \"Linear\", showLegend: true);",
+                    "def linearYPlot = new Plot(title: \"Linear x, Linear y\", yLabel: \"Linear\");",
                     "linearYPlot << new Line(x: xs, y: expys, displayName: \"f(x) = exp(x)\");",
                     "linearYPlot << new Line(x: xs, y: xs, displayName: \"g(x) = x\");",
                     "cplot.add(linearYPlot, 3);",
@@ -13239,7 +13652,106 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "focus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762
+                    },
+                    "subplots": [
+                        {
+                            "showAllItems": true,
+                            "plotSize": {
+                                "width": 640,
+                                "height": 228
+                            },
+                            "focus": {
+                                "xl": 0.47380952380952385,
+                                "xr": 0.5261904761904762,
+                                "yl": 2.6020852139652106e-18,
+                                "yr": 0.09954751131221717,
+                                "xspan": 0.05238095238095236,
+                                "yspan": 0.09954751131221717
+                            },
+                            "lodOn": [
+                                null,
+                                null
+                            ],
+                            "lodType": [
+                                null,
+                                null
+                            ],
+                            "lodAuto": [
+                                null,
+                                null
+                            ],
+                            "zoomHash": [
+                                null,
+                                null
+                            ],
+                            "showItem": [
+                                true,
+                                true
+                            ],
+                            "visibleItem": 2,
+                            "legendableItem": 2,
+                            "defaultFocus": {
+                                "xl": 0.47380952380952385,
+                                "xr": 0.5261904761904762,
+                                "yl": 2.6020852139652106e-18,
+                                "yr": 0.09954751131221717,
+                                "xspan": 0.05238095238095236,
+                                "yspan": 0.09954751131221717
+                            },
+                            "tips": {}
+                        },
+                        {
+                            "showAllItems": true,
+                            "plotSize": {
+                                "width": 640,
+                                "height": 252
+                            },
+                            "focus": {
+                                "xl": 0.47380952380952385,
+                                "xr": 0.5261904761904762,
+                                "yl": 0.47380952380952385,
+                                "yr": 0.5261904761904762,
+                                "xspan": 0.05238095238095236,
+                                "yspan": 0.05238095238095236
+                            },
+                            "lodOn": [
+                                null,
+                                null
+                            ],
+                            "lodType": [
+                                null,
+                                null
+                            ],
+                            "lodAuto": [
+                                null,
+                                null
+                            ],
+                            "zoomHash": [
+                                null,
+                                null
+                            ],
+                            "showItem": [
+                                true,
+                                true
+                            ],
+                            "visibleItem": 2,
+                            "legendableItem": 2,
+                            "defaultFocus": {
+                                "xl": 0.47380952380952385,
+                                "xr": 0.5261904761904762,
+                                "yl": 0.47380952380952385,
+                                "yr": 0.5261904761904762,
+                                "xspan": 0.05238095238095236,
+                                "yspan": 0.05238095238095236
+                            },
+                            "tips": {}
+                        }
+                    ]
+                },
                 "result": {
                     "type": "CombinedPlot",
                     "init_width": 640,
@@ -13253,7 +13765,7 @@
                             "init_width": 640,
                             "init_height": 480,
                             "chart_title": "Linear x, Log y",
-                            "show_legend": true,
+                            "show_legend": null,
                             "use_tool_tip": true,
                             "legend_position": {
                                 "type": "LegendPosition",
@@ -13727,7 +14239,7 @@
                             "init_width": 640,
                             "init_height": 480,
                             "chart_title": "Linear x, Linear y",
-                            "show_legend": true,
+                            "show_legend": null,
                             "use_tool_tip": true,
                             "legend_position": {
                                 "type": "LegendPosition",
@@ -14205,9 +14717,9 @@
                 },
                 "selectedType": "CombinedPlot",
                 "pluginName": "Groovy",
-                "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "elapsedTime": 804,
-                "height": 578
+                "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
+                "elapsedTime": 750,
+                "height": 561
             },
             "evaluatorReader": true,
             "lineCount": 24
@@ -14227,17 +14739,62 @@
                     "  expys[i] = Math.exp(xs[i]);",
                     "}",
                     "",
-                    "def plot = new Plot(title: \"Log x, Log y\", xLabel: \"Log\", yLabel: \"Log\", showLegend: true, logX: true, xLogBase: logBase, logY: true, yLogBase: logBase);",
+                    "def plot = new Plot(title: \"Log x, Log y\", xLabel: \"Log\", yLabel: \"Log\",",
+                    "                    logX: true, xLogBase: logBase, logY: true, yLogBase: logBase);",
                     "",
                     "plot << new Line(x: xs, y: expys, displayName: \"f(x) = exp(x)\");",
                     "plot << new Line(x: xs, y: xs, displayName: \"f(x) = x\");",
                     "",
-                    "plot",
-                    ""
+                    "plot"
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0,
+                        "xr": 0.0995475113122172,
+                        "yl": 2.6020852139652106e-18,
+                        "yr": 0.09954751131221717,
+                        "xspan": 0.0995475113122172,
+                        "yspan": 0.09954751131221717
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0,
+                        "xr": 0.0995475113122172,
+                        "yl": 2.6020852139652106e-18,
+                        "yr": 0.09954751131221717,
+                        "xspan": 0.0995475113122172,
+                        "yspan": 0.09954751131221717
+                    },
+                    "tips": {}
+                },
                 "result": {
                     "type": "Plot",
                     "init_width": 640,
@@ -14716,7 +15273,7 @@
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
                 "elapsedTime": 750,
-                "height": 546
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 16
@@ -14763,7 +15320,52 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "result": {
                     "type": "TimePlot",
                     "init_width": 640,
@@ -14894,7 +15496,7 @@
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
                 "elapsedTime": 748,
-                "height": 519
+                "height": 502
             },
             "evaluatorReader": true,
             "lineCount": 14
@@ -14922,7 +15524,47 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null
+                    ],
+                    "lodType": [
+                        null
+                    ],
+                    "lodAuto": [
+                        null
+                    ],
+                    "zoomHash": [
+                        null
+                    ],
+                    "showItem": [
+                        true
+                    ],
+                    "visibleItem": 1,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "result": {
                     "type": "NanoPlot",
                     "init_width": 640,
@@ -15016,7 +15658,7 @@
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
                 "elapsedTime": 740,
-                "height": 519
+                "height": 502
             },
             "evaluatorReader": true,
             "lineCount": 6

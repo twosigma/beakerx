@@ -86,6 +86,10 @@ bk-new-cell-menu {
   float:      right;
   height:     24px;
   padding:    0 15px;
+
+  .fa.fa-refresh {
+    margin: 0 7px;
+  }
 }
 
 .cell-menu-item.disabled {

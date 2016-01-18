@@ -211,6 +211,16 @@
   padding: 0.8em;
 }
 
+.text-line-style {
+  fill: black;
+  stroke: black
+}
+
+.fa.fa-times {
+  float: right;
+  cursor: pointer;
+}
+
 .plot-message-content {
   vertical-align: middle;
 }
@@ -234,7 +244,7 @@
 }
 
 .plot-lodavg,
-.plot-lodavgline, {
+.plot-lodavgline {
   pointer-events: none;
 }
 

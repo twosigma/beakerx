@@ -23,19 +23,61 @@
 
   var module = angular.module('bk.core');
 
-  module.controller('pluginManagerCtrl', ['$scope', '$rootScope', '$modalInstance', 'bkCoreManager', 'bkSessionManager', 'bkMenuPluginManager', 'bkEvaluatePluginManager',
-                                          'bkEvaluatorManager', 'GLOBALS', 'bkUtils', function($scope, $rootScope, $modalInstance, bkCoreManager, bkSessionManager, bkMenuPluginManager, bkEvaluatePluginManager,
+  module.controller('pluginManagerCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'bkCoreManager', 'bkSessionManager', 'bkMenuPluginManager', 'bkEvaluatePluginManager',
+                                          'bkEvaluatorManager', 'GLOBALS', 'bkUtils', function($scope, $rootScope, $uibModalInstance, bkCoreManager, bkSessionManager, bkMenuPluginManager, bkEvaluatePluginManager,
                                               bkEvaluatorManager, GLOBALS, bkUtils) {
 
 
+    $scope.$on(GLOBALS.EVENTS.SET_LANGUAGE_SETTINGS_EDITED, function(event, data) {
+      $scope.edited = data.edited;
+      $scope.editedEvalutor = data.editedEvalutor;
+    });
+
+    $scope.edited = false;
+    $scope.editedEvalutor = "";
+
+    $scope.discardChanges = function() {
+      $scope.$broadcast(GLOBALS.EVENTS.DISCARD_LANGUAGE_SETTINGS);
+    };
+
+    $scope.navigateToModifiedTab = function() {
+      $scope.$broadcast(GLOBALS.EVENTS.HIGHLIGHT_EDITED_LANGUAGE_SETTINGS);
+      $scope.evalTabOp.setActiveTab($scope.editedEvalutor);
+    };
+
     $scope.doClose = function() {
+      $uibModalInstance.close("ok");
+    }
+
+    $scope.performOnClosingCleanup = function() {
       $scope.evalTabOp.showURL = false;
       $scope.evalTabOp.showWarning = false;
       $scope.evalTabOp.showSecurityWarning = false;
       $scope.evalTabOp.forceLoad = false;
       $scope.evalTabOp.newPluginNameOrUrl = "";
-      $modalInstance.close("ok");
     };
+
+    $scope.closePermitted = false;
+    $scope.$on('modal.closing', function(event, reason, closed) {
+      if ($scope.edited) {
+        if (!$scope.closePermitted) {
+          event.preventDefault();
+          bkHelper.show2ButtonModal('Discard your changes to the settings?', 'Discard changes',
+              function() {
+                $scope.discardChanges();
+                $scope.performOnClosingCleanup();
+                $scope.closePermitted = true;
+                $scope.doClose();
+              },
+              function() {
+                $scope.navigateToModifiedTab();
+              },
+              "Ok", "Cancel", "", "");
+        }
+      } else {
+        $scope.performOnClosingCleanup();
+      }
+    });
 
     $scope.getEvaluatorDetails = function(name) {
       return bkEvaluatorManager.getVisualParams(name);
@@ -51,8 +93,43 @@
       showWarning: false,
       showSecurityWarning: false,
       forceLoad: false,
+      tabs: [],
+      activateThisTab: null,
       getLoadedEvaluators: function() {
         return bkEvaluatorManager.getLoadedEvaluators();
+      },
+      isTabActive: function(name) {
+        for (var i = 0; i < this.tabs.length; i++) {
+          if (this.tabs[i].evaluatorName === name) {
+            return this.tabs[i].active;
+          }
+        }
+        return false;
+      },
+      setActiveTab: function(name) {
+        for (var i = 0; i < this.tabs.length; i++) {
+          this.tabs[i].active = (this.tabs[i].evaluatorName === name);
+        }
+      },
+      getActiveTab: function() {
+        for (var i = 0; i < this.tabs.length; i++) {
+          if (this.tabs[i].evaluatorName === name) {
+            return this.tabs[i].active;
+          }
+        }
+      },
+      initTabs: function() {
+        $scope.evalTabOp.tabs = [];
+        var evaluators = $scope.evalTabOp.getEvaluatorsWithSpec();
+        Object.keys(evaluators).forEach(function(evaluatorName) {
+          var evaluator = evaluators[evaluatorName];
+          evaluator.evaluatorName = evaluator.settings.name;
+          $scope.evalTabOp.tabs.push(evaluator);
+        });
+        if ($scope.evalTabOp.activateThisTab && $scope.evalTabOp.tabs.length > 0) {
+          $scope.evalTabOp.setActiveTab($scope.evalTabOp.activateThisTab);
+          $scope.evalTabOp.activateThisTab = null;
+        }
       },
       getEvaluatorsWithSpec: function() {
         var activePlugins = bkEvaluatorManager.getLoadedEvaluators();
@@ -69,16 +146,18 @@
       },
       getEvaluatorStatuses: function(name) {
         var knownPlugins = bkEvaluatePluginManager.getKnownEvaluatorPlugins();
+        var knownPluginsNamesSorted = Object.keys(knownPlugins).sort();
         var activePlugins = bkEvaluatorManager.getLoadedEvaluators();
         var loadingPlugins = bkEvaluatorManager.getLoadingEvaluators();
         var result = {};
-        for (var p in knownPlugins) {
+        for (var index = 0; index < knownPluginsNamesSorted.length; index++) {
           var status = false;
-          if (activePlugins[p]) {
+          var pluginName = knownPluginsNamesSorted[index];
+          if (activePlugins[pluginName]) {
             status = "active";
           } else {
             for (var l in loadingPlugins) {
-              if (loadingPlugins[l].plugin == p) {
+              if (loadingPlugins[l].plugin == pluginName) {
                 status = "loading";
                 break;
               }
@@ -87,7 +166,7 @@
               status = "known";
             }
           }
-          result[p] = status;
+          result[pluginName] = status;
         }
         return result;
       },
@@ -123,7 +202,7 @@
             $scope.evalTabOp.forceLoad = false;
             $scope.evalTabOp.newPluginNameOrUrl = "";
           }
-
+          $scope.evalTabOp.activateThisTab = plugin;
           var newEval = { name: '', plugin: plugin };
           bkSessionManager.addEvaluator(newEval);
           bkCoreManager.getBkApp().addEvaluator(newEval);
@@ -131,6 +210,8 @@
         }
       }
     };
+
+    $scope.$watchCollection('evalTabOp.getEvaluatorsWithSpec()', $scope.evalTabOp.initTabs);
 
     $scope.menuTabOp = {
       newMenuPluginUrl: "./plugin/menu/debug.js",
@@ -148,14 +229,14 @@
     $rootScope.$on(GLOBALS.EVENTS.LANGUAGE_MANAGER_SHOW_SPINNER, function(event, data) {
       $scope.showSpinner = true;
       $scope.showMessage = true;
-      $scope.loadingMessage = 'Restarting ' + data.pluginName + '...';
+      $scope.loadingMessage = 'Starting ' + data.pluginName + '...';
     });
 
     $rootScope.$on(GLOBALS.EVENTS.LANGUAGE_MANAGER_HIDE_SPINNER, function(event, data) {
       if (data.error) {
-        $scope.loadingMessage += 'failed';
+        $scope.loadingMessage += ' failed';
       } else {
-        $scope.loadingMessage += 'done';
+        $scope.loadingMessage += ' done';
       }
       $scope.showSpinner = false;
       bkUtils.timeout(function() {

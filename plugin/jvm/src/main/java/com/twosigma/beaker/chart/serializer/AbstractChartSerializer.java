@@ -18,61 +18,21 @@
 package com.twosigma.beaker.chart.serializer;
 
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.Singleton;
 import com.twosigma.beaker.AbstractChart;
 import com.twosigma.beaker.chart.Color;
-import com.twosigma.beaker.chart.actions.ChartObjectManager;
-import com.twosigma.beaker.jvm.updater.UpdateManager;
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.JsonSerializer;
 
 import java.io.IOException;
 
-@Singleton
-public abstract class AbstractChartSerializer<T extends AbstractChart> extends JsonSerializer<T> {
+public abstract class AbstractChartSerializer<T extends AbstractChart> extends ChartSerializer<T> {
 
-  protected static class ColorPalette {
-    static final Color[] colors = new Color[]{
-            new Color(192, 80, 77),
-            new Color(79, 129, 189),
-            new Color(155, 187, 89),
-            new Color(247, 150, 70),
-            new Color(128, 100, 162),
-            new Color(75, 172, 198)
-    };
-
-    static Color getColor(int i) {
-      return colors[i % colors.length];
-    }
-  }
-
-  @Inject
-  private Provider<ChartObjectManager> chartObjectManagerProvider;
-  @Inject
-  private Provider<UpdateManager> updateManagerProvider;
 
   protected void serialize(T chart, JsonGenerator jgen) throws IOException {
 
-    String id = updateManagerProvider.get().register(chart);
-    chartObjectManagerProvider.get().registerChart(id, chart);
-    jgen.writeStringField("update_id", id);
+    super.serialize(chart, jgen);
 
-    String type = chart.getClass().getSimpleName();
-    if ("SimpleTimePlot".equals(type)){
-      jgen.writeObjectField("type", "TimePlot");
-    }else {
-      jgen.writeObjectField("type", type);
-    }
-
-    jgen.writeObjectField("init_width", chart.getInitWidth());
-    jgen.writeObjectField("init_height", chart.getInitHeight());
-    jgen.writeObjectField("chart_title", chart.getTitle());
     jgen.writeObjectField("domain_axis_label", chart.getXLabel());
     jgen.writeObjectField("y_label", chart.getYLabel());
-    jgen.writeObjectField("show_legend", chart.getShowLegend());
-    jgen.writeObjectField("use_tool_tip", chart.getUseToolTip());
     jgen.writeObjectField("rangeAxes", chart.getYAxes());
     jgen.writeObjectField("x_lower_margin", chart.getXLowerMargin());
     jgen.writeObjectField("x_upper_margin", chart.getXUpperMargin());
@@ -85,8 +45,6 @@ public abstract class AbstractChartSerializer<T extends AbstractChart> extends J
     jgen.writeObjectField("log_y", chart.getLogY());
     jgen.writeObjectField("timezone", chart.getTimeZone());
     jgen.writeObjectField("crosshair", chart.getCrosshair());
-    jgen.writeObjectField("legend_position", chart.getLegendPosition());
     jgen.writeObjectField("omit_checkboxes", chart.getOmitCheckboxes());
-    jgen.writeObjectField("legend_layout", chart.getLegendLayout());
   }
 }

@@ -29,8 +29,8 @@ import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryBars;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryLines;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryPoints;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryStems;
-import com.twosigma.beaker.chart.histogram.Histogram;
 import com.twosigma.beaker.chart.heatmap.HeatMap;
+import com.twosigma.beaker.chart.histogram.Histogram;
 import com.twosigma.beaker.chart.legend.LegendPosition;
 import com.twosigma.beaker.chart.serializer.AreaSerializer;
 import com.twosigma.beaker.chart.serializer.BarsSerializer;
@@ -41,21 +41,28 @@ import com.twosigma.beaker.chart.serializer.CategoryPointsSerializer;
 import com.twosigma.beaker.chart.serializer.CategoryStemsSerializer;
 import com.twosigma.beaker.chart.serializer.ColorSerializer;
 import com.twosigma.beaker.chart.serializer.CombinedPlotSerializer;
+import com.twosigma.beaker.chart.serializer.ConstantLineSerializer;
+import com.twosigma.beaker.chart.serializer.ConstantBandSerializer;
 import com.twosigma.beaker.chart.serializer.CrosshairSerializer;
 import com.twosigma.beaker.chart.serializer.GradientColorSerializer;
-import com.twosigma.beaker.chart.serializer.HistogramSerializer;
 import com.twosigma.beaker.chart.serializer.HeatMapSerializer;
+import com.twosigma.beaker.chart.serializer.HistogramSerializer;
 import com.twosigma.beaker.chart.serializer.LegendPositionSerializer;
 import com.twosigma.beaker.chart.serializer.LineSerializer;
 import com.twosigma.beaker.chart.serializer.PointsSerializer;
 import com.twosigma.beaker.chart.serializer.StemsSerializer;
 import com.twosigma.beaker.chart.serializer.TextSerializer;
+import com.twosigma.beaker.chart.serializer.TreeMapNodeSerializer;
+import com.twosigma.beaker.chart.serializer.TreeMapSerializer;
 import com.twosigma.beaker.chart.serializer.XYChartSerializer;
 import com.twosigma.beaker.chart.serializer.YAxisSerializer;
+import com.twosigma.beaker.chart.treemap.TreeMap;
 import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.chart.xychart.plotitem.Area;
 import com.twosigma.beaker.chart.xychart.plotitem.Bars;
+import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
+import com.twosigma.beaker.chart.xychart.plotitem.ConstantBand;
 import com.twosigma.beaker.chart.xychart.plotitem.Crosshair;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.Points;
@@ -88,28 +95,50 @@ import com.twosigma.beaker.easyform.serializer.SaveValuesButtonSerializer;
 import com.twosigma.beaker.easyform.serializer.TextAreaSerializer;
 import com.twosigma.beaker.easyform.serializer.TextFieldSerializer;
 import com.twosigma.beaker.jvm.object.BeakerDashboard;
+import com.twosigma.beaker.jvm.object.CyclingOutputContainerLayoutManager;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
+import com.twosigma.beaker.jvm.object.GridOutputContainerLayoutManager;
 import com.twosigma.beaker.jvm.object.OutputContainer;
+import com.twosigma.beaker.jvm.object.OutputContainerCell;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.jvm.object.SimpleLayoutManager;
+import com.twosigma.beaker.jvm.object.TabbedOutputContainerLayoutManager;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.object.UpdatableEvaluationResult;
+import com.twosigma.beaker.jvm.object.DashboardLayoutManager;
 import com.twosigma.beaker.jvm.serialization.BeakerCodeCellList;
 import com.twosigma.beaker.jvm.serialization.BeakerCodeCellListDeserializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.serialization.BufferedImageDeserializer;
 import com.twosigma.beaker.jvm.serialization.BufferedImageSerializer;
 import com.twosigma.beaker.jvm.serialization.CollectionDeserializer;
+import com.twosigma.beaker.jvm.serialization.CyclingOutputContainerLayoutManagerDeserializer;
+import com.twosigma.beaker.jvm.serialization.CyclingOutputContainerLayoutManagerSerializer;
+import com.twosigma.beaker.jvm.serialization.DashboardLayoutManagerDeserializer;
+import com.twosigma.beaker.jvm.serialization.ColorDeserializer;
 import com.twosigma.beaker.jvm.serialization.DateDeserializer;
 import com.twosigma.beaker.jvm.serialization.DateSerializer;
+import com.twosigma.beaker.jvm.serialization.GridOutputContainerLayoutManagerDeserializer;
+import com.twosigma.beaker.jvm.serialization.GridOutputContainerLayoutManagerSerializer;
 import com.twosigma.beaker.jvm.serialization.ImageIconSerializer;
 import com.twosigma.beaker.jvm.serialization.MapDeserializer;
 import com.twosigma.beaker.jvm.serialization.NamespaceBindingDeserializer;
+import com.twosigma.beaker.jvm.serialization.OutputContainerCellDeserializer;
+import com.twosigma.beaker.jvm.serialization.OutputContainerCellSerializer;
+import com.twosigma.beaker.jvm.serialization.OutputContainerDeserializer;
+import com.twosigma.beaker.jvm.serialization.OutputContainerSerializer;
 import com.twosigma.beaker.jvm.serialization.PlotObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.ResultsDeserializer;
+import com.twosigma.beaker.jvm.serialization.SimpleLayoutManagerDeserializer;
+import com.twosigma.beaker.jvm.serialization.SimpleLayoutManagerSerializer;
+import com.twosigma.beaker.jvm.serialization.TabbedOutputContainerLayoutManagerDeserializer;
+import com.twosigma.beaker.jvm.serialization.TabbedOutputContainerLayoutManagerSerializer;
+import com.twosigma.beaker.jvm.serialization.DashboardLayoutManagerSerializer;
 import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
 import com.twosigma.beaker.shared.NamespaceBinding;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
+import net.sf.jtreemap.swing.TreeMapNode;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -117,7 +146,7 @@ import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.module.SimpleModule;
 import org.cometd.bayeux.server.BayeuxServer;
 
-import javax.swing.ImageIcon;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.util.Date;
 import java.util.logging.Level;
@@ -134,7 +163,7 @@ public class SerializerModule extends AbstractModule {
     bind(SimpleEvaluationObject.Serializer.class);
     bind(EvaluationResult.Serializer.class);
     bind(UpdatableEvaluationResult.Serializer.class);
-    bind(OutputContainer.Serializer.class);
+    bind(OutputContainerSerializer.class);
     bind(BeakerProgressUpdate.Serializer.class);
     bind(EasyFormObjectManager.class);
     bind(EasyFormSerializer.class);
@@ -155,7 +184,6 @@ public class SerializerModule extends AbstractModule {
     BeakerObjectConverter serializer = injector.getInstance(PlotObjectSerializer.class);
     try {
       serializer.addTypeDeserializer(new TableDisplay.DeSerializer(serializer));
-      serializer.addTypeDeserializer(new OutputContainer.DeSerializer(serializer));
       serializer.addTypeDeserializer(new BeakerCodeCell.DeSerializer(serializer));
       serializer.addTypeDeserializer(new BeakerProgressUpdate.DeSerializer(serializer));
       serializer.addTypeDeserializer(new SimpleEvaluationObject.DeSerializer(serializer));
@@ -165,6 +193,16 @@ public class SerializerModule extends AbstractModule {
       serializer.addTypeDeserializer(new ResultsDeserializer(serializer));
       serializer.addTypeDeserializer(new CollectionDeserializer(serializer));
       serializer.addTypeDeserializer(new MapDeserializer(serializer));
+      serializer.addTypeDeserializer(new ColorDeserializer(serializer));
+
+      serializer.addTypeDeserializer(new OutputContainerDeserializer(serializer));
+      serializer.addTypeDeserializer(new OutputContainerCellDeserializer(serializer));
+      serializer.addTypeDeserializer(new SimpleLayoutManagerDeserializer(serializer));
+      serializer.addTypeDeserializer(new TabbedOutputContainerLayoutManagerDeserializer(serializer));
+      serializer.addTypeDeserializer(new CyclingOutputContainerLayoutManagerDeserializer(serializer));
+      serializer.addTypeDeserializer(new GridOutputContainerLayoutManagerDeserializer(serializer));
+      serializer.addTypeDeserializer(new DashboardLayoutManagerDeserializer(serializer));
+
       } catch(Exception e) {
       logger.log(Level.SEVERE, "exception while creating ObjectSerializer", e);
     }
@@ -191,7 +229,13 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(BeakerCodeCell.class, injector.getInstance(BeakerCodeCell.Serializer.class));
 
       module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplay.Serializer.class));
-      module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainer.Serializer.class));
+      module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainerSerializer.class));
+      module.addSerializer(OutputContainerCell.class, injector.getInstance(OutputContainerCellSerializer.class));
+      module.addSerializer(SimpleLayoutManager.class, injector.getInstance(SimpleLayoutManagerSerializer.class));
+      module.addSerializer(TabbedOutputContainerLayoutManager.class, injector.getInstance(TabbedOutputContainerLayoutManagerSerializer.class));
+      module.addSerializer(GridOutputContainerLayoutManager.class, injector.getInstance(GridOutputContainerLayoutManagerSerializer.class));
+      module.addSerializer(CyclingOutputContainerLayoutManager.class, injector.getInstance(CyclingOutputContainerLayoutManagerSerializer.class));
+      module.addSerializer(DashboardLayoutManager.class, injector.getInstance(DashboardLayoutManagerSerializer.class));
       module.addSerializer(StringObject.class, injector.getInstance(StringObject.Serializer.class));
       module.addSerializer(BufferedImage.class, new BufferedImageSerializer());
       module.addSerializer(ImageIcon.class, new ImageIconSerializer());
@@ -211,6 +255,8 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(Crosshair.class, injector.getInstance(CrosshairSerializer.class));
       module.addSerializer(LegendPosition.class, injector.getInstance(LegendPositionSerializer.class));
       module.addSerializer(Text.class, injector.getInstance(TextSerializer.class));
+      module.addSerializer(ConstantLine.class, injector.getInstance(ConstantLineSerializer.class));
+      module.addSerializer(ConstantBand.class, injector.getInstance(ConstantBandSerializer.class));
 
       module.addSerializer(EasyForm.class, injector.getInstance(EasyFormSerializer.class));
       module.addSerializer(TextField.class, injector.getInstance(TextFieldSerializer.class));
@@ -230,6 +276,9 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(CategoryPoints.class, injector.getInstance(CategoryPointsSerializer.class));
       module.addSerializer(CategoryLines.class, injector.getInstance(CategoryLinesSerializer.class));
       module.addSerializer(CategoryPlot.class, injector.getInstance(CategoryPlotSerializer.class));
+
+      module.addSerializer(TreeMap.class, injector.getInstance(TreeMapSerializer.class));
+      module.addSerializer(TreeMapNode.class, injector.getInstance(TreeMapNodeSerializer.class));
 
       module.addSerializer(Histogram.class, injector.getInstance(HistogramSerializer.class));
 

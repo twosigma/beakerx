@@ -22,16 +22,25 @@
     return {
       DEFAULT_EVALUATOR: 'JavaScript',
       REQUIREJS_TIMEOUT: 30,
-      RECONNECT_TIMEOUT: 90000, // 90 seconds
+      RECONNECT_TIMEOUT: 30 * 1000, // 30 seconds
       EVENTS: {
       	RECONNECT_FAILED: 'reconnect-failed',
         LANGUAGE_MANAGER_SHOW_SPINNER: 'language-manager-show-spinner',
-        LANGUAGE_MANAGER_HIDE_SPINNER: 'language-manager-hide-spinner'
+        LANGUAGE_MANAGER_HIDE_SPINNER: 'language-manager-hide-spinner',
+        DISCARD_LANGUAGE_SETTINGS: 'discard-language-settings',
+        HIGHLIGHT_EDITED_LANGUAGE_SETTINGS: 'highlight-edited-language-settings',
+        SET_LANGUAGE_SETTINGS_EDITED: 'set-language-settings-edited',
+        CELL_OUTPUT_EXPANDED: 'cell-output-expanded',
+        CELL_OUTPUT_LM_SHOWED: 'cell-output-lm-showed'
       },
       FILE_LOCATION: {
         FILESYS: "file",
         HTTP: "http",
         AJAX: "ajax"
+      },
+      THEMES: {
+        DEFAULT: 'default',
+        AMBIANCE: 'ambiance'
       }
     };
   });

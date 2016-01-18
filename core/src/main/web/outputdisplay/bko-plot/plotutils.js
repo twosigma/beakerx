@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    var retfunc = function(bkUtils, bkCoreManager, bkSessionManager) {
+    var retfunc = function(bkUtils, bkHelper, bkCoreManager, bkSessionManager) {
     return {
       outsideScr: function(scope, x, y) {
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
@@ -33,13 +33,30 @@
           var itemrange = data[i].getRange();
           this.updateRange(datarange, itemrange);
         }
-        if (visibleItem === 0 || datarange.xl === Infinity) {
+        if (datarange.xl === Infinity && datarange.xr !== -Infinity) {
+          datarange.xl = datarange.xr - 1;
+        } else if (datarange.xr === -Infinity && datarange.xl !== Infinity) {
+          datarange.xr = datarange.xl + 1;
+        } else if (visibleItem === 0 || datarange.xl === Infinity) {
           datarange.xl = 0;
           datarange.xr = 1;
+        } else if (datarange.xl > datarange.xr) {
+          var temp = datarange.xl;
+          datarange.xl = datarange.xr;
+          datarange.xr = temp;
+        }
+        if (datarange.yl === Infinity && datarange.yr !== -Infinity) {
+          datarange.yl = datarange.yr - 1;
+        } else if (datarange.yr === -Infinity && datarange.yl !== Infinity) {
+          datarange.yr = datarange.yl + 1;
         }
         if (visibleItem === 0 || datarange.yl === Infinity) {
           datarange.yl = 0;
           datarange.yr = 1;
+        } else if (datarange.yl > datarange.yr) {
+          var temp = datarange.yl;
+          datarange.yl = datarange.yr;
+          datarange.yr = temp;
         }
 
         var self = this;
@@ -774,6 +791,59 @@
       div: function(n1, n2){
         return n1 instanceof Big ? n1.div(n2) : n1 / n2;
       },
+      convertInfinityValue: function (value) {
+        if(value === "Infinity"){
+          return Infinity;
+        }
+        if(value === "-Infinity"){
+          return -Infinity;
+        }
+        return value;
+      },
+
+      createNiceColor: function () {
+        var hue = Math.random();
+        var saturation = 0.75;
+        var luminance = 0.5;
+        var rgb = this.hslToRgb(hue, saturation, luminance);
+        var niceColor = bkHelper.rgbaToHex(rgb[0], rgb[1], rgb[2]);
+        while (bkHelper.defaultPlotColors[bkHelper.getTheme()].indexOf(niceColor) !== -1) {
+          niceColor = this.createNiceColor();
+        }
+        return niceColor;
+      },
+
+      //http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+      hslToRgb: function (h, s, l) {
+        var r, g, b;
+
+        if (s == 0) {
+          r = g = b = l; // achromatic
+        } else {
+          var hue2rgb = function (p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1 / 6) return p + (q - p) * 6 * t;
+            if (t < 1 / 2) return q;
+            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+            return p;
+          };
+
+          var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+          var p = 2 * l - q;
+          r = hue2rgb(p, q, h + 1 / 3);
+          g = hue2rgb(p, q, h);
+          b = hue2rgb(p, q, h - 1 / 3);
+        }
+
+        return [r * 255, g * 255, b * 255];
+      },
+
+
+      getDefaultColor: function (i) {
+        var themeColors = bkHelper.defaultPlotColors[bkHelper.getTheme()];
+        return i < themeColors.length ? themeColors[i] : this.createNiceColor();
+      },
       evaluateTagCell: function (tag) {
         var cellOp = bkSessionManager.getNotebookCellOp();
         var result;
@@ -787,5 +857,5 @@
       }
     };
   };
-  beaker.bkoFactory('plotUtils', ["bkUtils", "bkCoreManager", "bkSessionManager", retfunc]);
+  beaker.bkoFactory('plotUtils', ["bkUtils", "bkHelper", "bkCoreManager", "bkSessionManager", retfunc]);
 })();

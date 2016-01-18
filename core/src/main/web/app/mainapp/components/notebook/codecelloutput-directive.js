@@ -24,7 +24,7 @@
   var module = angular.module('bk.notebook');
 
   module.directive('bkCodeCellOutput', function(
-      $rootScope, bkUtils, bkOutputDisplayFactory, bkEvaluatorManager, bkEvaluateJobManager) {
+      $rootScope, bkUtils, bkOutputDisplayFactory, bkEvaluatorManager, bkEvaluateJobManager, GLOBALS) {
     return {
       restrict: "E",
       template: JST["mainapp/components/notebook/codecelloutput"](),
@@ -160,7 +160,7 @@
           if ($scope.$parent.cellmodel !== undefined && $scope.$parent.cellmodel.output !== undefined) {
             if ($scope.$parent.cellmodel.output.hidden) {
               delete $scope.$parent.cellmodel.output.hidden;
-              $scope.$broadcast('expand');
+              $scope.$broadcast(GLOBALS.EVENTS.CELL_OUTPUT_EXPANDED);
             } else {
               $scope.$parent.cellmodel.output.hidden = true;
             }

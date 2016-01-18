@@ -24,6 +24,8 @@ import java.io.PrintWriter;
 import java.lang.Exception;
 import java.net.UnknownHostException;
 import java.net.InetAddress;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -94,7 +96,14 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.useKerberos = pref.getUseKerberos();
     this.portBase = pref.getPortBase();
     this.reservedPortCount = 4;
-    this.dotDir = System.getProperty("user.home") + "/.beaker/v1";
+
+
+    if (pref.getPortable()){
+      //get parent for the 'core' folder
+      this.dotDir =  Paths.get("").toAbsolutePath().getParent().toString() + "/.beaker/v1";
+    }else {
+      this.dotDir = System.getProperty("user.home") + "/.beaker/v1";
+    }
     this.pluginDir = this.installDir + "/config/plugins/eval";
     utils.ensureDirectoryExists(this.dotDir);
     this.nginxDir = this.installDir + "/nginx";

@@ -17,12 +17,9 @@
 package com.twosigma.beaker.chart.serializer;
 
 import com.twosigma.beaker.chart.xychart.XYChart;
-import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
-import com.twosigma.beaker.chart.Color;
 import java.io.IOException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 /**
@@ -39,12 +36,6 @@ public class XYChartSerializer extends AbstractChartSerializer<XYChart> {
 
     serialize(xychart, jgen);
 
-    int i = 0;
-    for (XYGraphics g : xychart.getGraphics()) {
-      if (g.getColor() == null) {
-        g.setColori(ColorPalette.getColor(i++));
-      }
-    }
     jgen.writeObjectField("graphics_list", xychart.getGraphics());
     jgen.writeObjectField("constant_lines", xychart.getConstantLines());
     jgen.writeObjectField("constant_bands", xychart.getConstantBands());

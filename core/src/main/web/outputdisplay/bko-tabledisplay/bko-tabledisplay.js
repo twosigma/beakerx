@@ -143,12 +143,12 @@
                   'Etc/GMT-13|GMT-13:00',
                   'Etc/GMT-14|GMT-14:00']);
   //jscs:disable
-  beaker.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval) {
+  beaker.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS) {
   //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
     return {
       template: JST['bko-tabledisplay/output-table'],
-      controller: function($scope, $modal) {
+      controller: function($scope, $uibModal) {
 
         $scope.id = 'table_' + bkUtils.generateId(6);
 
@@ -321,8 +321,8 @@
         $scope.pagination = {
           'use' : true,
           'rowsToDisplay' : 50,
-          'fixLeft' : false,
-          'fixRight' : false
+          'fixLeft' : 0,
+          'fixRight' : 0
         };
 
         $scope.getCellDispOptsF = function(i) {
@@ -616,7 +616,7 @@
           $scope.rowsToDisplayOld = $scope.pagination.rowsToDisplay;
           $scope.fixLeftOld       = $scope.pagination.fixLeft;
           $scope.fixRightOld      = $scope.pagination.fixRight;
-          $scope.modal = $modal.open(options);
+          $scope.modal = $uibModal.open(options);
         };
 
         $scope.closeOptionsDialog = function() {
@@ -670,6 +670,8 @@
       },
       link: function(scope, element, attrs) {
 
+        var unregisterOutputExpandEventListener = angular.noop; // used for deregistering listener
+
         scope.doDestroy = function(all) {
           if (scope.table) {
             //jscs:disable
@@ -698,9 +700,40 @@
             delete scope.actualalign;
             delete scope.data;
           }
+          unregisterOutputExpandEventListener();
+
+          scope.$on(GLOBALS.EVENTS.CELL_OUTPUT_LM_SHOWED, function() {
+            if (scope.table !== undefined && tableChanged) {
+              var parents = element.parents();
+
+              var cyclingContainer =  _.find(parents, function (parent) {
+                return parent.id.indexOf("lm-cycling-panel") !== -1;
+              });
+              if (cyclingContainer && cyclingContainer.style.display !== 'none'){
+                _.defer(function () {scope.table.draw(false);});
+                tableChanged = false;
+              }
+
+              var tabContainer =  _.find(parents, function (parent) {
+                return parent.id.indexOf("lm-tab-panel") !== -1;
+              });
+              if (tabContainer && tabContainer.classList.contains("active")){
+                _.defer(function () {scope.table.draw(false);});
+                tableChanged = false;
+              }
+            }
+          });
+
         };
         scope.init = function(model) {
           scope.doDestroy(true);
+
+          unregisterOutputExpandEventListener = scope.$on(GLOBALS.EVENTS.CELL_OUTPUT_EXPANDED, function() {
+            if (scope.table !== undefined && tableChanged) {
+              _.defer(function() {scope.table.draw(false);});
+              tableChanged = false;
+            }
+          });
 
           var i;
 
@@ -757,6 +790,13 @@
             scope.colorder    = scope.savedstate.colorder;
             scope.getCellSho  = scope.savedstate.getCellSho;
             scope.pagination  = scope.savedstate.pagination;
+            //fix saved pagination values to be numbers
+            if (typeof scope.pagination.fixLeft === 'boolean') {
+              scope.pagination.fixLeft = 0;
+            }
+            if (typeof scope.pagination.fixRight === 'boolean') {
+              scope.pagination.fixRight = 0;
+            }
             scope.savedstate  = undefined;
           }
           // auto compute types
@@ -1066,13 +1106,12 @@
         scope.isShowOutput = function() {
           return scope.model.isShowOutput();
         };
+
+        var tableChanged = false;
+
         scope.$watch('getCellModel()', function(m) {
           scope.init(m);
-        });
-        scope.$watch('isShowOutput()', function(oldval, newval) {
-          if (scope.table !== undefined && !newval) {
-            scope.table.draw(false);
-          }
+          tableChanged = true;
         });
 
         scope.$on('beaker.section.toggled', function(e, isCollapsed) {

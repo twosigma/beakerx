@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils) {
+  var retfunc = function(plotUtils, plotTip) {
 
     var PlotBar = function(data) {
       _.extend(this, data); // copy properties to itself
@@ -230,6 +230,7 @@
         .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
         .attr("class", respClass + " " + this.actionClass)
+        .attr("shape-rendering", "crispEdges")
         .style("fill", function(d) { return d.fi; })
         .style("fill-opacity", function(d) { return d.fi_op; })
         .style("stroke", function(d) { return d.st; })
@@ -260,14 +261,7 @@
     };
 
     PlotBar.prototype.clearTips = function(scope) {
-      var eleprops = this.elementProps;
-      var itemid = this.id;
-      _.each(scope.tips, function(value, key){
-        if (key.search("" + itemid) === 0) {
-          scope.jqcontainer.find("#tip_" + key).remove();
-          delete scope.tips[key];
-        }
-      });
+      plotTip.clearTips(scope, this.id);
     };
 
     PlotBar.prototype.createTip = function(ele, g, model) {
@@ -289,5 +283,5 @@
 
     return PlotBar;
   };
-  beaker.bkoFactory('PlotBar', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotBar', ['plotUtils', 'plotTip', retfunc]);
 })();

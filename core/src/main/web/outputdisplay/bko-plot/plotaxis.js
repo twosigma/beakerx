@@ -53,17 +53,19 @@
       this.MONTH = 1000 * 60 * 60 * 24 * 30 * this.UNIT;
       this.YEAR = 1000 * 60 * 60 * 24 * 365 * this.UNIT;
 
+      var numFixs = [];
+      var min = this.axisType === "log" ? 1 : 0;
+      for (var i = 0; i < 18; i++) {
+        var f = Math.max(6 - i, min);
+        numFixs = numFixs.concat([f, i <= 6 ? f + 1 : f, f]);
+      }
+      this.numFixs = numFixs;
     };
 
-    var dateIntws = [], numIntws = [], numFixs = [];
-    for (var i = 0; i < 18; i++) {
-      var f = Math.max(6 - i, 0);
-      numFixs = numFixs.concat([f, i <= 6 ? f + 1 : f, f]);
-    }
+    var dateIntws = [], numIntws = [];
 
     PlotAxis.prototype.dateIntws = dateIntws;
     PlotAxis.prototype.numIntws = numIntws;
-    PlotAxis.prototype.numFixs = numFixs;
 
     PlotAxis.prototype.axisPow = function(pct) {
       return Math.pow(this.axisBase, pct * this.axisValSpan + this.axisValL);
@@ -168,7 +170,7 @@
               } else if (prev < self.MONTH) {
                 intws.push(prev + self.DAY);
               } else if (prev < self.YEAR) {
-                intws.push(prev + self.DAY * 5);
+                intws.push(prev + self.DAY * 10);
               } else {
                 intws.push(prev + self.YEAR);
               }
@@ -233,6 +235,30 @@
     };
 
     PlotAxis.prototype.calcLines = function (pl, pr, w) {
+
+      var self = this;
+
+      var selectStartOrEndInterval = function(value, interval) {
+        var nextIntervalStart = moment(value).tz(self.axisTimezone).endOf(interval).add(1, "ms");
+        var intervalStart = moment(value).tz(self.axisTimezone).startOf(interval);
+        return  ((nextIntervalStart - value) > (value - intervalStart)) ? intervalStart : nextIntervalStart;
+      };
+
+      var normalize = function (value) {
+        if (self.axisType === "time") {
+          if (plotUtils.gt(w, self.DAY)) {
+            if (plotUtils.lte(w, self.MONTH)) {
+              value = selectStartOrEndInterval(value, "day");
+            } else if (plotUtils.lte(w, self.YEAR)) {
+              value = selectStartOrEndInterval(value, "month");
+            } else {
+              value = selectStartOrEndInterval(value, "year");
+            }
+          }
+        }
+        return value;
+      };
+
       var val = this.getValue(pl);
       if(val instanceof Big){
         if(val.gte(0)){
@@ -241,7 +267,7 @@
           val = val.div(w).round(0, 0).times(w);
         }
       }else{
-        val = Math.ceil(val / w) * w
+        val = normalize(Math.ceil(val / w) * w);
       }
       var valr = this.getValue(pr);
       var lines = [];
@@ -257,7 +283,7 @@
         while (plotUtils.lt(val, valr)) {
           var pct = this.getPercent(val);
           lines.push(pct);
-          val = plotUtils.plus(val, w);
+          val = normalize(plotUtils.plus(val, w));
         }
       }
 
@@ -424,9 +450,9 @@
           ret = moment(d).tz(this.axisTimezone).format("HH:mm:ss");
         }
       } else if (plotUtils.lte(span, this.DAY)) {
-        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD ddd, HH:mm");
+        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD, HH:mm");
       } else if (plotUtils.lte(span, this.MONTH)) {
-        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD ddd");
+        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD");
       } else if (plotUtils.lte(span, this.YEAR)) {
         ret = moment(d).tz(this.axisTimezone).format("YYYY MMM");
       } else {

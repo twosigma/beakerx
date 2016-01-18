@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -34,7 +34,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -74,6 +74,7 @@
                 "body": [
                     "f = new EasyForm(\"Form and Run\")",
                     "f.addTextField(\"first\", 15)",
+                    "f['first'] = \"Beaker\"",
                     "f.addTextField(\"last\", 15)",
                     "f.addButton(\"Go!\", \"run\")",
                     "f"
@@ -83,11 +84,10 @@
                 "state": {},
                 "selectedType": "EasyForm",
                 "pluginName": "Groovy",
-                "shellId": "89a44022-5f45-43bc-90f4-3c0c585cfcfb",
-                "elapsedTime": 594,
+                "shellId": "1fda0fd9-1d8b-4a2c-82bf-ac58cbd74084",
+                "elapsedTime": 621,
                 "result": {
-                    "update_id": "ace9d52f-f694-460d-974c-cd33bb90fedf",
-                    "update_time": 1443669914315,
+                    "update_time": 1450849372664,
                     "type": "EasyForm",
                     "caption": "Form and Run",
                     "components": [
@@ -95,17 +95,16 @@
                             "type": "TextField",
                             "label": "first",
                             "enabled": true,
-                            "value": "",
-                            "width": "15",
-                            "currentValue": "Berzeius"
+                            "value": "Beaker",
+                            "width": "15"
                         },
                         {
                             "type": "TextField",
                             "label": "last",
                             "enabled": true,
-                            "value": "",
+                            "value": "Berzelius",
                             "width": "15",
-                            "currentValue": "Beaker"
+                            "currentValue": "Berzelius"
                         },
                         {
                             "type": "ButtonComponent",
@@ -115,10 +114,12 @@
                             "tag": "run"
                         }
                     ]
-                }
+                },
+                "height": 211
             },
             "evaluatorReader": true,
-            "lineCount": 5
+            "lineCount": 6,
+            "initialization": true
         },
         {
             "id": "markdownvnogak",
@@ -140,10 +141,11 @@
             "output": {
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "89a44022-5f45-43bc-90f4-3c0c585cfcfb",
-                "elapsedTime": 723,
+                "shellId": "1fda0fd9-1d8b-4a2c-82bf-ac58cbd74084",
+                "elapsedTime": 592,
                 "state": {},
-                "result": "rekaeB...Berzeius"
+                "result": "suilezreB...Beaker",
+                "height": 36
             },
             "evaluatorReader": true,
             "tags": "run",
@@ -194,16 +196,15 @@
                     "f1 = new EasyForm(\"Form and Run\")",
                     "f1.addTextField(\"first\", 15)",
                     "f1.addTextField(\"last\", 15).onInit({f1['last'] = \"setinit\"}).onChange({text -> f1['first'] = text})",
-                    "button = f1.addButton(\"actionPerformed button\")",
-                    "button.actionPerformed = {println(\"action performed\")}    ",
+                    "button = f1.addButton(\"action button\")",
+                    "button.actionPerformed = {f1['last'] = 'action done'}    ",
                     "f1"
                 ]
             },
             "output": {
                 "state": {},
                 "result": {
-                    "update_id": "d178101b-1f54-4d22-b363-8f4a04193f62",
-                    "update_time": 1445352766774,
+                    "update_time": 1450849629586,
                     "type": "EasyForm",
                     "caption": "Form and Run",
                     "components": [
@@ -211,27 +212,35 @@
                             "type": "TextField",
                             "label": "first",
                             "enabled": true,
-                            "value": "setinit12",
+                            "value": "action done",
                             "width": "15",
-                            "currentValue": "setinit12"
+                            "currentValue": "action done"
                         },
                         {
                             "type": "TextField",
                             "label": "last",
                             "enabled": true,
-                            "value": "setinit12",
+                            "value": "action done",
                             "width": "15",
-                            "currentValue": "setinit12"
+                            "currentValue": "action done"
+                        },
+                        {
+                            "type": "ButtonComponent",
+                            "label": "action button",
+                            "enabled": "Groovy",
+                            "value": ""
                         }
                     ]
                 },
                 "selectedType": "EasyForm",
                 "pluginName": "Groovy",
-                "shellId": "eb32b49f-268c-4b26-ad75-6e796456796e",
-                "elapsedTime": 600
+                "shellId": "1fda0fd9-1d8b-4a2c-82bf-ac58cbd74084",
+                "elapsedTime": 630,
+                "height": 211
             },
             "evaluatorReader": true,
-            "lineCount": 4
+            "lineCount": 6,
+            "initialization": true
         },
         {
             "id": "sectionWzbYct",
@@ -276,11 +285,10 @@
                 "state": {},
                 "selectedType": "EasyForm",
                 "pluginName": "Groovy",
-                "shellId": "89a44022-5f45-43bc-90f4-3c0c585cfcfb",
-                "elapsedTime": 607,
+                "shellId": "1fda0fd9-1d8b-4a2c-82bf-ac58cbd74084",
+                "elapsedTime": 932,
                 "result": {
-                    "update_id": "b726ad08-7102-4c81-a810-cc278de23319",
-                    "update_time": 1443669952409,
+                    "update_time": 1450849286030,
                     "type": "EasyForm",
                     "caption": "Field Types",
                     "components": [
@@ -289,16 +297,14 @@
                             "label": "Short Text Field",
                             "enabled": true,
                             "value": "",
-                            "width": "10",
-                            "currentValue": ""
+                            "width": "10"
                         },
                         {
                             "type": "TextField",
                             "label": "Text Field",
                             "enabled": true,
                             "value": "",
-                            "width": 1,
-                            "currentValue": ""
+                            "width": 1
                         },
                         {
                             "type": "TextArea",
@@ -326,8 +332,7 @@
                                 "b",
                                 "c",
                                 "d"
-                            ],
-                            "currentValue": "a"
+                            ]
                         },
                         {
                             "type": "ComboBox",
@@ -341,8 +346,7 @@
                                 "b",
                                 "c",
                                 "d"
-                            ],
-                            "currentValue": "a"
+                            ]
                         },
                         {
                             "type": "ListComponent",
@@ -371,8 +375,7 @@
                                 "b",
                                 "c",
                                 "d"
-                            ],
-                            "currentValue": "a"
+                            ]
                         },
                         {
                             "type": "ListComponent",
@@ -414,8 +417,7 @@
                                 "b",
                                 "c",
                                 "d"
-                            ],
-                            "currentValue": ""
+                            ]
                         },
                         {
                             "type": "RadioButtonComponent",
@@ -428,8 +430,7 @@
                                 "b",
                                 "c",
                                 "d"
-                            ],
-                            "currentValue": ""
+                            ]
                         },
                         {
                             "type": "RadioButtonComponent",
@@ -442,16 +443,14 @@
                                 "b",
                                 "c",
                                 "d"
-                            ],
-                            "currentValue": ""
+                            ]
                         },
                         {
                             "type": "DatePickerComponent",
                             "label": "Date",
                             "enabled": true,
                             "value": "",
-                            "showTime": "false",
-                            "currentValue": ""
+                            "showTime": false
                         },
                         {
                             "type": "ButtonComponent",
@@ -461,10 +460,12 @@
                             "tag": "run2"
                         }
                     ]
-                }
+                },
+                "height": 1015
             },
             "evaluatorReader": true,
-            "lineCount": 23
+            "lineCount": 23,
+            "initialization": true
         },
         {
             "id": "code0x21x8",
@@ -576,7 +577,8 @@
                         ]
                     ],
                     "subtype": "Dictionary"
-                }
+                },
+                "height": 406
             },
             "evaluatorReader": true,
             "tags": "run2",

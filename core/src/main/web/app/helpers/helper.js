@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkDebug, bkElectron, bkPublicationAuth) {
+  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -42,7 +42,65 @@
       }
     };
 
+    var rgbaToHex = function (r, g, b, a) {
+      a = 0xFF | a;
+      var num = ((a & 0xFF) << 24) |
+        ((r & 0xFF) << 16) |
+        ((g & 0xFF) << 8)  |
+        ((b & 0xFF));
+      if(num < 0) {
+        num = 0xFFFFFFFF + num + 1;
+      }
+      return "#" + num.toString(16);
+    };
+    var defaultPlotColors = {};
+    defaultPlotColors[GLOBALS.THEMES.DEFAULT] = [
+      rgbaToHex(140, 29, 23),  // red
+      rgbaToHex(33, 87, 141),  // blue
+      rgbaToHex(150, 130, 54), // yellow
+      rgbaToHex(20, 30, 120),  // violet
+      rgbaToHex(54, 100, 54),  // green
+      rgbaToHex(60, 30, 50),   // dark
+    ];
+    defaultPlotColors[GLOBALS.THEMES.AMBIANCE] = [
+      rgbaToHex(191, 39, 31),   // red
+      rgbaToHex(46, 119, 191),  // blue
+      rgbaToHex(230, 230, 65),  // yellow
+      rgbaToHex(30, 40, 190),   // violet
+      rgbaToHex(75, 160, 75),   // green
+      rgbaToHex(120, 100, 100), // dark
+    ];
+
     var bkHelper = {
+
+      guid: function () {
+        function s4() {
+          return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+          s4() + '-' + s4() + s4() + s4();
+      },
+
+      setTheme: function (theme) {
+        bkCoreManager.setTheme(theme);
+      },
+      getTheme: function () {
+        return bkCoreManager.getTheme();
+      },
+      defaultPlotColors: defaultPlotColors,
+      rgbaToHex: rgbaToHex,
+      setThemeToBeakerObject: function () {
+        var beakerObject = this.getBeakerObject().beakerObj;
+        if (beakerObject && beakerObject.prefs) {
+          beakerObject.prefs.theme = {
+            name: this.getTheme(),
+            plotColors: defaultPlotColors[this.getTheme()]
+          };
+        }
+      },
+
       // enable debug
       debug: function() {
         window.bkDebug = bkDebug;
@@ -236,6 +294,7 @@
         beakerObj.notebookToBeakerObject();
         var beaker = beakerObj.beakerObj;
         beaker.prefs = {useOutputPanel: false, outputLineLimit: 1000};
+        this.setThemeToBeakerObject();
         beakerObj.beakerObjectToNotebook();
       },
       stripOutBeakerPrefs: function(model) {
@@ -549,6 +608,18 @@
           return bkNotebook.getCMKeyMapMode();
         }
       },
+      setInputCellTheme: function(theme) {
+        var bkNotebook = getBkNotebookWidget();
+        if (bkNotebook) {
+          return bkNotebook.setCMTheme(theme);
+        }
+      },
+      getInputCellTheme: function() {
+        var bkNotebook = getBkNotebookWidget();
+        if (bkNotebook) {
+          return bkNotebook.getCMTheme();
+        }
+      },
 
       // low level utils (bkUtils)
       refreshRootScope: function() {
@@ -733,14 +804,28 @@
       sanitizeNotebookModel: function(m) {
         var notebookModelCopy = angular.copy(m);
         bkHelper.stripOutBeakerPrefs(notebookModelCopy);
-        //Save running cells as interrupted
         if (notebookModelCopy.cells) {
           for (var i = 0; i < notebookModelCopy.cells.length; i++) {
             var currentCell = notebookModelCopy.cells[i];
-            if (currentCell && currentCell.output && currentCell.output.result
-              && currentCell.output.result.innertype === 'Progress') {
-              currentCell.output.result.innertype = 'Error';
-              currentCell.output.result.object = 'Interrupted, saved while running.'
+            if (currentCell && currentCell.output) {
+
+              //save output height
+              var cellId = currentCell.id;
+              var output = $("[cellid=" + cellId + "] div.code-cell-output");
+              if (output && output[0]) {
+                currentCell.output.height = output[0].offsetHeight;
+              }
+
+              //Save running cells as interrupted
+              if (currentCell.output.result && currentCell.output.result.innertype === 'Progress') {
+                currentCell.output.result.innertype = 'Error';
+                currentCell.output.result.object = 'Interrupted, saved while running.'
+              }
+
+              //remove update_id to avoid subscribing to a nonexistent object
+              if (currentCell.output.result) {
+                delete currentCell.output.result.update_id;
+              }
             }
           }
         }

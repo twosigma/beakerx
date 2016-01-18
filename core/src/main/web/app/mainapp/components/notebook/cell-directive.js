@@ -128,11 +128,17 @@
           if ($event) {
             $event.stopPropagation();
           }
+          var toEval;
 
-          $scope.cellmodel.output.state = {};
+          if ($scope.cellmodel.type === 'section') {
+            toEval = $scope.cellmodel.id;
+          } else {
+            $scope.cellmodel.output.state = {};
+            toEval = $scope.cellmodel;
+          }
 
           bkCoreManager.getBkApp()
-            .evaluateRoot($scope.cellmodel)
+            .evaluateRoot(toEval)
             .catch(function(data) {
               console.error(data);
             });

@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils) {
+  var retfunc = function(plotUtils, plotTip) {
     var PlotPoint = function(data){
       _.extend(this, data); // copy properties to itself
       this.format();
@@ -124,7 +124,7 @@
         xl : Infinity,
         xr : -Infinity,
         yl : Infinity,
-        yr : -Infinity,
+        yr : -Infinity
       };
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
@@ -339,14 +339,7 @@
     };
 
     PlotPoint.prototype.clearTips = function(scope) {
-      var eleprops = this.elementProps;
-      var itemid = this.id;
-      _.each(scope.tips, function(value, key){
-        if (key.search("" + itemid) === 0) {
-          scope.jqcontainer.find("#tip_" + key).remove();
-          delete scope.tips[key];
-        }
-      });
+      plotTip.clearTips(scope, this.id);
     };
 
     PlotPoint.prototype.createTip = function(ele) {
@@ -363,5 +356,5 @@
 
     return PlotPoint;
   };
-  beaker.bkoFactory('PlotPoint', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotPoint', ['plotUtils', 'plotTip', retfunc]);
 })();

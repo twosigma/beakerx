@@ -115,9 +115,17 @@
         scope.cm.setValue(scope.cellmodel[contentAttribute]);
         preview();
 
-        scope.cm.on("blur", function(cm){
+        scope.cm.on("mousedown", function(cm) {
+          scope.mousedown = true;
+        });
+
+        $(scope.cm.getWrapperElement()).on("mouseup", function(cm) {
+          scope.mousedown = false;
+        });
+
+        scope.cm.on("blur", function(cm) {
           setTimeout(function() {
-            if(!cm.state.focused){
+            if (!scope.mousedown) {
               scope.$apply(function() {
                 syncContentAndPreview();
               });

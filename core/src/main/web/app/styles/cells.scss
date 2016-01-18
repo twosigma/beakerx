@@ -183,8 +183,8 @@ bk-section-cell {
     z-index:      1;
 
     &:not(.input-hidden) {
-      bottom:     10px;
-      right:      20px;
+      bottom:     6px;
+      right:      0;
     }
 
     &.input-hidden {
@@ -196,7 +196,7 @@ bk-section-cell {
     }
   }
   .cell-power-button {
-    color:        #d8d8d8;
+    color:        #a0a0a0;
     cursor:       pointer;
     height:       24px;
 
@@ -218,12 +218,12 @@ bk-code-cell .locked .code-cell-output {
 
 bk-output-display {
   pre {
-    border:     none;
-    margin:     0;
-    padding:    0;
-    overflow:   visible;
-    line-height: 1;
-    background: transparent;
+    border:       none;
+    margin:       0;
+    padding:      0;
+    overflow:     visible;
+    line-height:  inherit;
+    background:   transparent;
   }
 
   &[type="Results"] {
@@ -269,6 +269,15 @@ bk-cell .section > .toggle-menu {
   }
 }
 
+@mixin advanced-mode-cell-menu-item {
+  height: 24px;
+  width: 30px;
+  padding-top: 2px;
+  top: -1px;
+  display: inline-block;
+  text-align: center;
+}
+
 .advanced-mode {
   .bkcelltextarea {
     min-height: 18px;
@@ -287,15 +296,14 @@ bk-cell .section > .toggle-menu {
     top: 5px;
 
     bk-language-logo {
-      height: 24px;
-      width: 30px;
-      padding-top: 2px;
-      top: -1px;
-      display: inline-block;
-      text-align: center;
+      @include advanced-mode-cell-menu-item;
       &:hover {
         background-color: $highlight-blue;
       }
+    }
+
+    .loading-state {
+      @include advanced-mode-cell-menu-item;
     }
   }
 }

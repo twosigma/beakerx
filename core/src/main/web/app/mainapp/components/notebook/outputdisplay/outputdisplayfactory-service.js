@@ -23,7 +23,7 @@
 
   var module = angular.module('bk.outputDisplay');
 
-  module.factory("bkOutputDisplayFactory", function($rootScope, bkHelper) {
+  module.factory("bkOutputDisplayFactory", function($rootScope, bkHelper, $sce) {
 
     var impls = {
         "Text": {
@@ -80,30 +80,18 @@
       "Error": {
         template: "<pre class='out_error'>" +
         "<span ng-show='canExpand' class='toggle-error' ng-click='expanded = !expanded'>{{expanded ? '-' : '+'}}</span>" +
-        "<span>{{shortError}}</span></pre>" +
-        "<pre ng-show='expanded'><span>{{longError}}</span>" +
+        "<span ng-bind-html='shortError'></span></pre>" +
+        "<pre ng-show='expanded'><span ng-bind-html='longError'></span>" +
         "</pre>",
         controller: function($scope, $element) {
           $scope.expanded = false;
 
           $scope.$watch('model.getCellModel()', function(cellModel) {
             var errors  = Array.prototype.concat(cellModel);
-            var shortError = "";
-            var longErrorIndex;
-            for (var i = 0; i < errors.length; i++) {
-              if (errors[i].indexOf("	at") === 0) {
-                longErrorIndex = i;
-                break;
-              }
-              shortError += errors[i] + "\n";
-              if(i === 0){
-                shortError += "\n";
-              }
-            }
 
-            $scope.shortError   = shortError;
-            $scope.canExpand    = longErrorIndex > 0;
-            $scope.longError    = errors.slice(longErrorIndex).join("\n");
+            $scope.shortError   = $sce.trustAsHtml(errors[0]);
+            $scope.canExpand    = errors.length > 1;
+            $scope.longError    = $sce.trustAsHtml(errors.slice(1).join("\n"));
           });
         }
       },
@@ -153,37 +141,7 @@
         }
       },
       "OutputContainer": {
-        template: '<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b ng-if="hasName($index)">{{getName($index)}}<br/></b><bk-code-cell-output model="i" >' +
-            '</ bk-code-cell-output><br/>></li></ul>',
-        scope: {
-          model: "="
-        },
-        controller: function($scope) {
-          $scope.isShowOutput = function() {
-            return $scope.model.isShowOutput();
-          };
-
-          $scope.showoutput = $scope.model.isShowOutput();
-          $scope.items = _.map($scope.model.getCellModel().items, function(it) {
-            return {
-              result: it,
-              isShowOutput: function() {
-                return $scope.showoutput;
-              }
-            };
-          });
-          $scope.getName = function(idx) {
-            return $scope.model.getCellModel().names[idx] || '';
-          }
-          $scope.hasName = function(idx) {
-            return $scope.model.getCellModel().names !== undefined;
-          }
-          $scope.isShowMenu = function() { return false; };
-          $scope.$watch('isShowOutput()', function(oldval, newval) {
-            $scope.showoutput = newval;
-          });
-
-        }
+        template: "<output-container model='model'></output-container>"
       }
     };
 
@@ -223,7 +181,9 @@
       "OutputContainer": ["OutputContainer", "Text"],
       "CategoryPlot": ["Plot", "Text"],
       "Histogram": ["Plot", "Text"],
-      "HeatMap": ["Plot", "Text"]
+      "HeatMap": ["Plot", "Text"],
+      "TreeMap": ["Plot", "Text"],
+      "Plotly": ["Plotly", "Text"]
     };
     var factory = {
       add: function(type, impl) {

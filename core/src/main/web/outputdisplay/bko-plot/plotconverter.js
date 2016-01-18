@@ -102,13 +102,18 @@
       };
     };
 
-    var processItem = function(item, newmodel, yAxisRSettings, yAxisSettings) {
+    var  processItem = function(item, index, newmodel, yAxisRSettings, yAxisSettings) {
       item.legend = item.display_name;
       delete item.display_name;
 
       if (item.use_tool_tip != null) {
         item.useToolTip = item.use_tool_tip;
         delete item.use_tool_tip;
+      }
+
+      if(item.color == null && item.colors == null) {
+        //set default colors
+        item.color = plotUtils.getDefaultColor(index);
       }
 
       if (item.color != null) {
@@ -225,6 +230,7 @@
       "CategoryArea" : "area",
       "CategoryText" : "text",
       "CategoryPoints" : "point",
+      "TreeMapNode" : "treemapnode",
       "" : ""
     };
     var lineStyleMap = {
@@ -255,7 +261,98 @@
       pointShapeMap : pointShapeMap,
       interpolationMap : interpolationMap,
 
+      convertTreeMapGroovyData: function (newmodel, model) {
+
+        newmodel.process = process;
+
+        function findParent(node) {
+          var data = model.children;
+          for (var i = 0; i < data.length; i++) {
+            var _node_ = data[i];
+            var _parent_ = _findParent_(_node_, node);
+            if (_parent_)
+              return _parent_;
+          }
+
+          return null;
+        }
+
+        function _findParent_(parent, node) {
+          if (parent.children) {
+            for (var i = 0; i < parent.children.length; i++) {
+              var child = parent.children[i];
+              if (child == node)
+                return parent;
+
+              var _parent_ = _findParent_(parent.children[i], node);
+              if (_parent_)
+                return _parent_;
+            }
+          }
+
+          return null;
+        }
+
+        function _treatNode_(node, visitor) {
+          visitor.visit(node);
+          if (node.children) {
+            for (var i = 0; i < node.children.length; i++) {
+              _treatNode_(node.children[i], visitor);
+            }
+          }
+        }
+
+        var visitor = {
+          i: 0,
+          visit: function (node) {
+            node.showItem = true;
+            node.setShowItem = setShowItem;
+            node.type = dataTypeMap[node.type];
+
+            node.index = this.i;
+            node.id = "i" + this.i;
+
+            this.i = this.i + 1;
+            node.showItem = true;
+
+            if (!node.children){
+              node.legend = node.label;
+            }
+
+            newmodel.data.push(node)
+          }
+        };
+
+        function setShowItem(showItem, skipChildren) {
+          this.showItem = showItem;
+
+          if (!skipChildren && this.children) {
+            for (var i = 0; i < this.children.length; i++) {
+              this.children[i].setShowItem(showItem);
+            }
+          }
+
+          if (showItem === true) {
+            var _parent_ = findParent(this);
+            if (_parent_) {
+              _parent_.setShowItem(true, true);
+            }
+          }
+        }
+
+        var item = model.graphics_list;
+        function process(visitor) {
+          _treatNode_(item, visitor);
+        }
+        item.root = true;
+        process(visitor);
+      },
+
       convertGroovyData : function(newmodel, model) {
+        if ( model.type === 'TreeMap'){
+          this.convertTreeMapGroovyData(newmodel, model);
+          return;
+        }
         var logx = false, logxb;
         var yAxisSettings = {yIncludeZero: false, logy: false, logyb: null};
         var yAxisRSettings = _.clone(yAxisSettings);
@@ -419,7 +516,7 @@
                   item.x.push(elementsxs[i][j]);
                 }
 
-                processItem(item, newmodel, yAxisRSettings, yAxisSettings, logx);
+                processItem(item, i, newmodel, yAxisRSettings, yAxisSettings, logx);
 
                 var elements = [];
                 for (var j = 0; j < item.x.length; j++) {
@@ -442,7 +539,15 @@
             }
             break;
           case "Histogram":
+            if (!list || !list.length || !list[0] || !list[0].length) {
+              break;
+            }
             var datasets = [];
+            var rangeMin = list[0][0], rangeMax = rangeMin;
+            for (var i = 0; i < list.length; i++) {
+              rangeMin = Math.min(rangeMin, d3.min(list[i]));
+              rangeMax = Math.max(rangeMax, d3.max(list[i]));
+            }
             for (var i = 0; i < list.length; i++) {
               var dataset = list[i];
               var item = {
@@ -463,8 +568,8 @@
               var histvalues = plotUtils.histogram().
                 rightClose(newmodel.rightClose).
                 binCount(newmodel.binCount).
-                rangeMin(newmodel.rangeMin).
-                rangeMax(newmodel.rangeMax)(dataset);
+                rangeMin(newmodel.rangeMin != null ? newmodel.rangeMin : rangeMin).
+                rangeMax(newmodel.rangeMax != null  ? newmodel.rangeMax : rangeMax)(dataset);
 
               datasets.push(histvalues);
 
@@ -499,7 +604,7 @@
                 item.width = histvalue.dx;
               }
 
-              processItem(item, newmodel, yAxisRSettings, yAxisSettings, logx);
+              processItem(item, i, newmodel, yAxisRSettings, yAxisSettings, logx);
 
               var elements = [];
               for (var j = 0; j < item.x.length; j++) {
@@ -519,7 +624,7 @@
 
             }
             if(newmodel.displayMode === 'STACK' && list.length > 1){
-              _.reverse(newmodel.data);
+              newmodel.data.reverse();
             }
             break;
           default:
@@ -527,7 +632,7 @@
               var item = list[i];
               item.chartId = newmodel.plotId;
 
-              processItem(item, newmodel, yAxisRSettings, yAxisSettings);
+              processItem(item, i, newmodel, yAxisRSettings, yAxisSettings);
 
               var elements = [];
               for (var j = 0; j < item.x.length; j++) {
@@ -563,6 +668,8 @@
               "type": "constline",
               "width": line.width != null ? line.width : 1,
               "color": "black",
+              "yAxis": line.yAxis,
+              "showLabel": line.showLabel,
               "elements": []
             };
             if (line.color != null) {
@@ -573,14 +680,28 @@
             if (style == null) { style = ""; }
             item.style = lineStyleMap[style];
 
-            if (line.x != null) {
-              var ele = {"type": "x", "x": line.x};
-            } else if(line.y != null) {
-              var y = line.y;
-              var ele = {"type": "y", "y": y};
+            var addElement = function (line, type, log) {
+              if (line[type] == null || log && plotUtils.lte(line[type], 0)) {
+                return false;
+              }
+              var ele = {"type": type};
+              ele[type] = line[type];
+              item.elements.push(ele);
+            };
+
+            if (model.type === "NanoPlot") {
+              if (!_.isEmpty(line.x)) {
+                line.x = new Big(line.x);
+                addElement(line, "x", logx)
+              }
+            } else {
+              addElement(line, "x", logx)
             }
-            item.elements.push(ele);
-            newmodel.data.push(item);
+            addElement(line, "y", yAxisSettings.logy)
+
+            if (!_.isEmpty(item.elements)) {
+              newmodel.data.push(item);
+            }
           }
         }
         if (model.constant_bands != null) {
@@ -597,18 +718,20 @@
             if (band.x != null) {
               var ele = {
                 "type" : "x",
-                "x" : band.x[0],
-                "x2" : band.x[1]
+                "x" : plotUtils.convertInfinityValue(band.x[0]),
+                "x2" : plotUtils.convertInfinityValue(band.x[1])
               };
-            } else if (band.y != null) {
+              item.elements.push(ele);
+            }
+            if (band.y != null) {
               var ele = {
                 "type" : "y"
               };
               var y1 = band.y[0], y2 = band.y[1];
-              ele.y = y1;
-              ele.y2 = y2;
+              ele.y = plotUtils.convertInfinityValue(y1);
+              ele.y2 = plotUtils.convertInfinityValue(y2);
+              item.elements.push(ele);
             }
-            item.elements.push(ele);
             newmodel.data.push(item);
           }
         }
@@ -617,7 +740,13 @@
             var mtext = model.texts[i];
             var item = {
               "type" : "text",
-              "color" : mtext.color != null ? mtext.color : "black",
+
+              "color" : mtext.color != null ? "#" + mtext.color.substr(3) : "black",
+              "color_opacity" : mtext.color != null ? parseInt(mtext.color.substr(1,2), 16) / 255 : 1,
+              "show_pointer" : mtext.show_pointer,
+              "pointer_angle" : mtext.pointer_angle,
+              "size" : mtext.size,
+
               "elements" : []
             };
             var x = mtext.x;

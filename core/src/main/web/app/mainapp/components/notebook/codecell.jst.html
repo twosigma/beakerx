@@ -20,7 +20,7 @@
     'empty': isEmpty()
   }">
   <div class="bkcell code-cell-area">
-    <div class="code-cell-input" ng-mousedown="backgroundClick($event)" ng-hide="isLocked()" ng-class="{'input-hidden': cellmodel.input.hidden}">
+    <div class="code-cell-input" ng-mousedown="backgroundClick($event)" ng-hide-ex="isLocked()" after-hide="afterHide()" after-show="afterShow()" ng-class="{'input-hidden': cellmodel.input.hidden}">
       <div class="code-cell-input-content">
         <bk-code-cell-input-menu class="advanced-hide"></bk-code-cell-input-menu>
         <div ng-mousedown="$event.stopPropagation()">
@@ -34,13 +34,16 @@
           {{ isJobCancellable() ? 'Stop' : 'Run' }}
         </a>
       </div>
-      <div class="power-menu" data-ng-class="{'input-hidden': cellmodel.input.hidden}">
-        <div class="dropdown dropdown-promoted" data-toggle="dropdown" data-ng-show="cellmodel.initialization">
+      <div class="power-menu" ng-class="{'input-hidden': cellmodel.input.hidden}">
+        <div class="dropdown dropdown-promoted" data-toggle="dropdown" ng-show="cellmodel.initialization">
           <div class="cell-power-button dropdown-toggle" title="initialization cell is on"><i class="fa fa-power-off"></i></div>
           <bk-dropdown-menu menu-items="power.menu.items" submenu-classes="drop-left"></bk-dropdown-menu>
         </div>
       </div>
     </div>
+    <div ng-if="!displayOutput"
+         ng-style="{'min-height': (cellmodel.output && cellmodel.output.height) + 'px'}"
+         class="code-cell-output"></div>
     <div ng-if ="displayOutput && hasOutput()" class="code-cell-output" ng-class="{
       'no-output': isHiddenOutput(),
       'input-hidden': cellmodel.input.hidden,

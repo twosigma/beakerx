@@ -457,20 +457,21 @@
           var saveStart = function() {
             showLoadingStatusMessage("Saving");
           };
-          var updateSessionStore = function(uri, uriType) {
+          var updateSessionStore = function(uri, uriType, readOnly) {
             return bkSession.getSessions().then(function(sessions){
               var sessionID = bkSessionManager.getSessionId();
               var currentSession = sessions[sessionID];
               currentSession.uriType = uriType;
               currentSession.notebookModelJson = JSON.stringify(bkHelper.getNotebookModel());
               currentSession.notebookUri = uri;
+              currentSession.readOnly = readOnly;
               return bkSession.backup(sessionID, currentSession);
             });
           };
           var saveDone = function(ret) {
             bkSessionManager.setNotebookModelEdited(false);
             bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
-            updateSessionStore(ret.uri, ret.uriType);
+            updateSessionStore(ret.uri, ret.uriType, false);
             showTransientStatusMessage("Saved");
           };
 
@@ -485,7 +486,7 @@
 
           var renameDone = function(ret) {
             bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
-            updateSessionStore(ret.uri, ret.uriType);
+            updateSessionStore(ret.uri, ret.uriType, false);
             showTransientStatusMessage("Renamed");
           };
 
@@ -1002,10 +1003,12 @@
           if (e.ctrlKey && !e.altKey && (e.which === 83)) { // Ctrl + s
             e.preventDefault();
             _impl.saveNotebook();
+            $scope.$apply();
             return false;
           } else if (e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83)) { // Cmd + s
             e.preventDefault();
             _impl.saveNotebook();
+            $scope.$apply();
             return false;
           } else if (e.target.nodeName !== "TEXTAREA") {
             if (e.ctrlKey && e.which === 90) { // Ctrl + z
@@ -1043,14 +1046,17 @@
 
               if (e.which === 123) { // F12
                 bkElectron.toggleDevTools();
+                return false;
               } else if (ctrlXORCmd && ((e.which === 187) || (e.which === 107))) { // Ctrl + '+'
                 bkElectron.increaseZoom();
+                return false;
               } else if (ctrlXORCmd && ((e.which === 189) || (e.which === 109))) { // Ctrl + '-'
                 bkElectron.decreaseZoom();
+                return false;
               } else if (ctrlXORCmd && ((e.which === 48) || (e.which === 13))) {
                 bkElectron.resetZoom();
+                return false;
               }
-              return false;
             }
           }
         };
@@ -1161,27 +1167,23 @@
             }
             prompted = true;
             bkCoreManager.show2ButtonModal(
-                "Beaker server disconnected. Further edits will not be saved.<br>" +
-                "Save current notebook as a file?",
-                "Disconnected",
-                function() {
-                  // "Save", save the notebook as a file on the client side
-                  bkSessionManager.dumpDisplayStatus();
-                  var timeoutPromise = $timeout(function() {
-                    bkUtils.saveAsClientFile(
-                        bkSessionManager.getSaveData().notebookModelAsString,
-                    "notebook.bkr");
-                  }, 1);
-                  timeoutPromise.then(function() {
-                    prompted = false;
-                  })
-                },
-                function() {
-                  // "Not now", hijack all keypress events to prompt again
-                  window.addEventListener('keypress', $scope.promptToSave, true);
+              "Beaker server disconnected. Further edits will not be saved.<br>" +
+              "Save current notebook as a file?",
+              "Disconnected", function() {
+                // "Save", save the notebook as a file on the client side
+                bkSessionManager.dumpDisplayStatus();
+                var timeoutPromise = $timeout(function() {
+                  bkUtils.saveAsClientFile(
+                      bkSessionManager.getSaveData().notebookModelAsString,
+                  "notebook.bkr");
+                }, 1);
+                timeoutPromise.then(function() {
                   prompted = false;
-                },
-                "Save", "Not now", "btn-primary", ""
+                })
+              }, function() {
+                prompted = false;
+              },
+              "Save", "Not now", "btn-primary", ""
             );
           };
         })();
@@ -1195,14 +1197,13 @@
         };
 
         bkUtils.addConnectedStatusListener(function(msg) {
-          if (msg.successful === $scope.isDisconnected()) {
-            var disconnected = !msg.successful;
-            if (disconnected) {
-              connectionManager.onDisconnected();
-            } else {
-              connectionManager.onReconnected();
-            }
-            $scope.$digest();
+          if ($scope.isDisconnected() && msg.successful) {
+            connectionManager.onReconnected();
+            return $scope.$digest();
+          }
+          if (msg.failure) {
+            connectionManager.onDisconnected();
+            return $scope.$digest();
           }
         });
         $scope.$watch('isDisconnected()', function(disconnected) {
@@ -1234,17 +1235,19 @@
         bkCellMenuPluginManager.reset();
         bkEvaluateJobManager.reset();
 
-        if ($scope.newSession === "new") {
-          loadNotebook.defaultNotebook($scope.sessionId);
-        } else if ($scope.newSession === "empty") {
-          loadNotebook.emptyNotebook($scope.sessionId);
-        } else if ($scope.isImport === 'true') {
-          loadNotebook.fromImport($scope.sessionId);
-        } else if ($scope.isOpen === 'true') {
-          loadNotebook.openUri($scope.notebook, $scope.sessionId, true);
-        } else {
-          loadNotebook.fromSession($scope.sessionId);
-        }
+        setTimeout(function () {
+          if ($scope.newSession === "new") {
+            loadNotebook.defaultNotebook($scope.sessionId);
+          } else if ($scope.newSession === "empty") {
+            loadNotebook.emptyNotebook($scope.sessionId);
+          } else if ($scope.isImport === 'true') {
+            loadNotebook.fromImport($scope.sessionId);
+          } else if ($scope.isOpen === 'true') {
+            loadNotebook.openUri($scope.notebook, $scope.sessionId, true);
+          } else {
+            loadNotebook.fromSession($scope.sessionId);
+          }
+        }, 0);
       }
     };
   });

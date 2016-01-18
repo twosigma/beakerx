@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils, plotService) {
+  var retfunc = function(plotUtils, plotTip, plotService) {
     var PlotLine = function(data){
       _.extend(this, data); // copy properties to itself
       this.format();
@@ -219,7 +219,9 @@
       var itemsvg = svg.select("#" + this.id);
 
       itemsvg.selectAll("path")
-        .data([props]).enter().append("path")
+        .data(props, function(d) { return d.id; }).exit().remove();
+      itemsvg.selectAll("path")
+        .data([props], function(d) { return d.id; }).enter().append("path")
         .attr("class", this.plotClass + " " + this.actionClass)
         .style("stroke", function(d) { return d.st; })
         .style("stroke-dasharray", function(d) { return d.st_da; })
@@ -263,14 +265,7 @@
     };
 
     PlotLine.prototype.clearTips = function(scope) {
-      var eleprops = this.elementProps;
-      var itemid = this.id;
-      _.each(scope.tips, function(value, key){
-        if (key.search("" + itemid) === 0) {
-          scope.jqcontainer.find("#tip_" + key).remove();
-          delete scope.tips[key];
-        }
-      });
+      plotTip.clearTips(scope, this.id);
     };
 
     PlotLine.prototype.createTip = function(ele) {
@@ -289,6 +284,6 @@
 
     return PlotLine;
   };
-  beaker.bkoFactory('PlotLine', ['plotUtils', 'plotService', retfunc]);
+  beaker.bkoFactory('PlotLine', ['plotUtils', 'plotTip', 'plotService', retfunc]);
 })();
 

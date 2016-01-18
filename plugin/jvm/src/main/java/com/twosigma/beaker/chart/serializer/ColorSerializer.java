@@ -28,8 +28,9 @@ public class ColorSerializer extends JsonSerializer<Color> {
   @Override
   public void serialize(Color color, JsonGenerator jgen, SerializerProvider sp)
       throws IOException, JsonProcessingException {
-
-    jgen.writeString(String.format("#%x", color.getRGB()).toUpperCase());
+    synchronized(color) {
+      jgen.writeString(String.format("#%x", color.getRGB()).toUpperCase());
+    }
   }
 
 }

@@ -2,24 +2,6 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
-            "view": {
-                "cm": {
-                    "mode": "htmlmixed"
-                }
-            }
-        },
-        {
-            "name": "Latex",
-            "plugin": "Latex",
-            "view": {
-                "cm": {
-                    "mode": "stex"
-                }
-            }
-        },
-        {
             "name": "JavaScript",
             "plugin": "JavaScript",
             "jsSetting2": "",
@@ -44,7 +26,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -104,8 +86,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "IPython",
-                "elapsedTime": 374,
-                "shellId": "6F42D3E0E4A6419E81F4119BEFFF70F6"
+                "elapsedTime": 369,
+                "shellId": "BFD34B3E6D5A4CCD848905327557F7E9"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -132,7 +114,8 @@
                 "result": 11,
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 25
+                "elapsedTime": 15,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -159,8 +142,9 @@
                 "result": 12,
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "91dc7ee8-fd5c-4689-8913-31c4b93fb94c",
-                "elapsedTime": 1329
+                "shellId": "ee9a6fff-4e6e-46d3-8ccc-5b220bc169e2",
+                "elapsedTime": 637,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -231,7 +215,8 @@
                 ],
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 33
+                "elapsedTime": 15,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -276,14 +261,15 @@
                         ],
                         11
                     ],
-                    "names": [
+                    "labels": [
                         "y",
                         "x"
                     ]
                 },
                 "selectedType": "OutputContainer",
                 "pluginName": "JavaScript",
-                "elapsedTime": 28
+                "elapsedTime": 15,
+                "height": 111
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -312,7 +298,8 @@
                 "result": true,
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 44
+                "elapsedTime": 13,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -382,7 +369,8 @@
                 },
                 "selectedType": "Results",
                 "pluginName": "JavaScript",
-                "elapsedTime": 177
+                "elapsedTime": 159,
+                "height": 86
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -396,8 +384,7 @@
             3,
             5,
             8
-        ],
-        "x": 11
+        ]
     },
     "metadata": {
         "publication-id": "560b5680-9a96-4fc1-a7f2-a4916c8de7e3"

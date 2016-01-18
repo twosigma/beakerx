@@ -71,6 +71,15 @@ define(function(require, exports, module) {
           bkHelper.setupCancellingOutput(modelOutput);
         }
         var onEvalStatusUpdate = function(evaluation) {
+          if (evaluation.status === "ERROR" && evaluation.payload != null){
+            evaluation.payload = _.escape(evaluation.payload);
+            var stacktraceInd = evaluation.payload.indexOf("\n	at");
+            if (stacktraceInd < 0) { stacktraceInd = evaluation.payload.length; }
+            var shortError = evaluation.payload.substring(0, stacktraceInd + 1);
+            shortError = shortError.replace(/\n/g, "<br/>");
+            evaluation.payload = shortError +
+              (stacktraceInd < evaluation.payload.length ? evaluation.payload.substring(stacktraceInd) : "");
+          }
           if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
             cometdUtil.unsubscribe(evaluation.update_id);
             GroovyCancelFunction = null;
@@ -181,7 +190,11 @@ define(function(require, exports, module) {
     "com.twosigma.beaker.chart.categoryplot.*",
     "com.twosigma.beaker.chart.categoryplot.plotitem.*",
     "com.twosigma.beaker.chart.histogram.*",
+    "com.twosigma.beaker.chart.treemap.*",
+    "com.twosigma.beaker.chart.treemap.util.*",
+    "net.sf.jtreemap.swing.*",
     "com.twosigma.beaker.chart.heatmap.HeatMap",
+    "com.twosigma.beaker.jvm.object.*",
     "com.twosigma.beaker.easyform.*",
     "com.twosigma.beaker.easyform.formitem.*"];
   var shellReadyDeferred = bkHelper.newDeferred();

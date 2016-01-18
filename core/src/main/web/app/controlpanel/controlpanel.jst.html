@@ -45,22 +45,21 @@
         <a href="#" role="button" class="dropdown-toggle {{m.id}}" data-toggle="dropdown">{{m.name}}</a>
         <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
       </li>
-      <p ng-if="disconnected" class="navbar-text text-danger right">
-        offline
-      </p>
     </ul>
+    <p ng-if="disconnected" class="navbar-text text-danger pull-right">offline</p>
   </div>
 </header>
 
 <div ng-class="{'electron-mode': getElectronMode()}" class="dashboard container-fluid">
   <div class="row">
     <div class="col-md-12">
-
+      <br/>
       <h1>Beaker <small>The data scientist's laboratory</small></h1>
-
       <div ng-if='isSessionsListEmpty()' class="empty-session-prompt">
-          <p>Click below to get started coding in Python, R, JavaScript, Julia, Scala, Java, Groovy, and Ruby. <br/>
-            Beginners should check out the <strong>Help &#8594; Tutorial</strong>.</p>
+        <p> 
+          <br/>
+          Beginners should start with <strong>Help &#8594; Tutorial</strong>.
+	</p>
       </div>
 
       <div ng-hide='isSessionsListEmpty()'>

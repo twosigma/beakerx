@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -28,7 +28,8 @@
                 "cm": {
                     "mode": "python"
                 }
-            }
+            },
+            "setup": "%matplotlib inline\nimport numpy\nimport matplotlib\nfrom matplotlib import pylab, mlab, pyplot\nnp = numpy\nplt = pyplot\nfrom IPython.display import display\nfrom IPython.core.pylabtools import figsize, getfigs\nfrom pylab import *\nfrom numpy import *\n"
         },
         {
             "name": "JavaScript",
@@ -62,11 +63,26 @@
             "evaluatorReader": false
         },
         {
+            "id": "markdown9dHd5C",
+            "type": "markdown",
+            "body": [
+                "Notebooks are made of code cells, text, and graphics.  The two cells below are in Python and R.",
+                "In order to run each of these cells you need to have installed that language on your computer, ideally following the [guidelines](http://beakernotebook.com/getting-started).",
+                "",
+                "When you first open a notebook, there will be a spinner while each language is started."
+            ],
+            "evaluatorReader": false
+        },
+        {
             "id": "code001",
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "# This is a code cell.\n# Click below, on the 3rd line, then type some Python code (eg \"1+2\"), then click \"Run\".\n"
+                "body": [
+                    "# This is a code cell.",
+                    "# Click below, on the 3rd line, then type some Python code (eg \"1+2\"), then click \"Run\".",
+                    ""
+                ]
             },
             "output": {
                 "selectedType": "BeakerDisplay",
@@ -82,7 +98,10 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "# This cell is for the R language.  Try running \"hist(rnorm(100))\".\n"
+                "body": [
+                    "# This cell is for the R language.  Try running \"hist(rnorm(100))\".",
+                    ""
+                ]
             },
             "output": {
                 "selectedType": "Html",
@@ -95,10 +114,15 @@
         {
             "id": "markdown188oO3",
             "type": "markdown",
-            "body": 
-                "Beaker also supports JavaScript, Julia, Groovy, Ruby, Scala, Python3, Java, and Node. To add another language to this notebook, select **Notebook → Language manager** from the menu on top of the screen.\n\nFor general help, see the tutorial notebook under **Help → Tutorial** notebook.",
+            "body": [
+                "Beaker supports many languages. To add another language to a notebook, first [install that language](http://beakernotebook.com/getting-started) if it is not built-in,",
+                "then in Beaker, select **Notebook → Language manager** from the menu on top of the screen.",
+                "",
+                "For general help and documentation, see the tutorial notebook under **Help → Tutorial** notebook."
+            ],
             "evaluatorReader": false,
             "mode": "preview"
         }
-    ]
+    ],
+    "namespace": {}
 }

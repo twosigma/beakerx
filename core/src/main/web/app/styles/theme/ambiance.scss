@@ -55,6 +55,8 @@ $std-out-color:           #42A2D2;
 $std-err-color:           #e48d71;
 $btn-bkg-color:           #505050;
 
+$btn-danger-bkg:          #d9534f;
+
 $markdown-heading-color: #aac6e3;
 
 $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
@@ -161,6 +163,11 @@ $text-cursor: url('../images/ambiance/ambiance-i-beam.png') 5 9, text;
       border:     0;
       opacity:    0.7;
     }
+  }
+
+  .btn-danger {
+    background-color: $btn-danger-bkg;
+    border-color:     $btn-danger-bkg;
   }
 
   .notebook-link {

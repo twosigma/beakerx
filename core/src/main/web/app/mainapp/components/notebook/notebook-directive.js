@@ -33,7 +33,9 @@
       bkCellMenuPluginManager,
       bkSessionManager,
       bkCoreManager,
-      bkOutputLog) {
+      bkOutputLog,
+      bkElectron,
+      bkMenuPluginManager) {
     var CELL_TYPE = 'notebook';
     return {
       restrict: 'E',
@@ -175,6 +177,9 @@
         };
         $scope.hideOutput = function () {
           _impl._viewModel.hideOutput();
+          if (bkUtils.isElectron){
+            bkElectron.updateMenus(bkMenuPluginManager.getMenus());
+          }
         };
 
         $scope.isAdvancedMode = function () {

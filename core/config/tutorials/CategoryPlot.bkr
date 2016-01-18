@@ -4592,52 +4592,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "showAllItems": true,
-                    "plotSize": {
-                        "width": 640,
-                        "height": 480
-                    },
-                    "focus": {
-                        "xl": 0.47380952380952385,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095236,
-                        "yspan": 0.05238095238095242
-                    },
-                    "lodOn": [
-                        null,
-                        null
-                    ],
-                    "lodType": [
-                        null,
-                        null
-                    ],
-                    "lodAuto": [
-                        null,
-                        null
-                    ],
-                    "zoomHash": [
-                        null,
-                        null
-                    ],
-                    "showItem": [
-                        true,
-                        true
-                    ],
-                    "visibleItem": 2,
-                    "legendableItem": 0,
-                    "defaultFocus": {
-                        "xl": 0.47380952380952385,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095236,
-                        "yspan": 0.05238095238095242
-                    },
-                    "tips": {}
-                },
+                "state": {},
                 "result": {
                     "type": "CategoryPlot",
                     "init_width": 640,
@@ -4714,7 +4669,7 @@
                 "pluginName": "Groovy",
                 "shellId": "e3fface1-233a-4db9-b1d9-eff34bb4825a",
                 "elapsedTime": 1106,
-                "height": 502
+                "height": 519
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -4739,52 +4694,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "showAllItems": true,
-                    "plotSize": {
-                        "width": 640,
-                        "height": 480
-                    },
-                    "focus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095242,
-                        "yspan": 0.05238095238095242
-                    },
-                    "lodOn": [
-                        null,
-                        null
-                    ],
-                    "lodType": [
-                        null,
-                        null
-                    ],
-                    "lodAuto": [
-                        null,
-                        null
-                    ],
-                    "zoomHash": [
-                        null,
-                        null
-                    ],
-                    "showItem": [
-                        true,
-                        true
-                    ],
-                    "visibleItem": 2,
-                    "legendableItem": 0,
-                    "defaultFocus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095242,
-                        "yspan": 0.05238095238095242
-                    },
-                    "tips": {}
-                },
+                "state": {},
                 "result": {
                     "type": "CategoryPlot",
                     "init_width": 640,
@@ -4864,7 +4774,7 @@
                 "pluginName": "Groovy",
                 "shellId": "e3fface1-233a-4db9-b1d9-eff34bb4825a",
                 "elapsedTime": 796,
-                "height": 502
+                "height": 519
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -4890,52 +4800,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "showAllItems": true,
-                    "plotSize": {
-                        "width": 640,
-                        "height": 480
-                    },
-                    "focus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095242,
-                        "yspan": 0.05238095238095242
-                    },
-                    "lodOn": [
-                        null,
-                        null
-                    ],
-                    "lodType": [
-                        null,
-                        null
-                    ],
-                    "lodAuto": [
-                        null,
-                        null
-                    ],
-                    "zoomHash": [
-                        null,
-                        null
-                    ],
-                    "showItem": [
-                        true,
-                        true
-                    ],
-                    "visibleItem": 2,
-                    "legendableItem": 0,
-                    "defaultFocus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095242,
-                        "yspan": 0.05238095238095242
-                    },
-                    "tips": {}
-                },
+                "state": {},
                 "result": {
                     "type": "CategoryPlot",
                     "init_width": 640,
@@ -5015,7 +4880,7 @@
                 "pluginName": "Groovy",
                 "shellId": "e3fface1-233a-4db9-b1d9-eff34bb4825a",
                 "elapsedTime": 770,
-                "height": 502
+                "height": 519
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -5048,52 +4913,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "showAllItems": true,
-                    "plotSize": {
-                        "width": 640,
-                        "height": 480
-                    },
-                    "focus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095242,
-                        "yspan": 0.05238095238095242
-                    },
-                    "lodOn": [
-                        null,
-                        null
-                    ],
-                    "lodType": [
-                        null,
-                        null
-                    ],
-                    "lodAuto": [
-                        null,
-                        null
-                    ],
-                    "zoomHash": [
-                        null,
-                        null
-                    ],
-                    "showItem": [
-                        true,
-                        true
-                    ],
-                    "visibleItem": 2,
-                    "legendableItem": 0,
-                    "defaultFocus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095242,
-                        "yspan": 0.05238095238095242
-                    },
-                    "tips": {}
-                },
+                "state": {},
                 "result": {
                     "type": "CategoryPlot",
                     "init_width": 640,
@@ -5173,7 +4993,7 @@
                 "pluginName": "Groovy",
                 "shellId": "e3fface1-233a-4db9-b1d9-eff34bb4825a",
                 "elapsedTime": 778,
-                "height": 529
+                "height": 546
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -5219,57 +5039,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "showAllItems": true,
-                    "plotSize": {
-                        "width": 640,
-                        "height": 480
-                    },
-                    "focus": {
-                        "xl": 0.47380952380952385,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095236,
-                        "yspan": 0.05238095238095242
-                    },
-                    "lodOn": [
-                        null,
-                        null,
-                        null
-                    ],
-                    "lodType": [
-                        null,
-                        null,
-                        null
-                    ],
-                    "lodAuto": [
-                        null,
-                        null,
-                        null
-                    ],
-                    "zoomHash": [
-                        null,
-                        null,
-                        null
-                    ],
-                    "showItem": [
-                        true,
-                        true,
-                        true
-                    ],
-                    "visibleItem": 3,
-                    "legendableItem": 0,
-                    "defaultFocus": {
-                        "xl": 0.47380952380952385,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095236,
-                        "yspan": 0.05238095238095242
-                    },
-                    "tips": {}
-                },
+                "state": {},
                 "result": {
                     "type": "CategoryPlot",
                     "init_width": 640,
@@ -5351,7 +5121,7 @@
                 "pluginName": "Groovy",
                 "shellId": "e3fface1-233a-4db9-b1d9-eff34bb4825a",
                 "elapsedTime": 740,
-                "height": 502
+                "height": 519
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -5376,41 +5146,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "closePrice_mean",
-                            "highPrice_mean",
-                            "lowPrice_mean",
-                            "openPrice_mean"
-                        ],
-                        "actualalign": [
-                            "R",
-                            "R",
-                            "R",
-                            "R"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
-                        "getCellSho": [
-                            true,
-                            true,
-                            true,
-                            true
-                        ]
-                    }
-                },
+                "state": {},
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -5451,7 +5187,7 @@
                 "pluginName": "Groovy",
                 "shellId": "e3fface1-233a-4db9-b1d9-eff34bb4825a",
                 "elapsedTime": 734,
-                "height": 136
+                "height": 153
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -5468,57 +5204,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "showAllItems": true,
-                    "plotSize": {
-                        "width": 640,
-                        "height": 480
-                    },
-                    "focus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904761,
-                        "yl": 0.47380952380952385,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.052380952380952306,
-                        "yspan": 0.05238095238095236
-                    },
-                    "lodOn": [
-                        null,
-                        null,
-                        null
-                    ],
-                    "lodType": [
-                        null,
-                        null,
-                        null
-                    ],
-                    "lodAuto": [
-                        null,
-                        null,
-                        null
-                    ],
-                    "zoomHash": [
-                        null,
-                        null,
-                        null
-                    ],
-                    "showItem": [
-                        true,
-                        true,
-                        true
-                    ],
-                    "visibleItem": 3,
-                    "legendableItem": 3,
-                    "defaultFocus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904761,
-                        "yl": 0.47380952380952385,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.052380952380952306,
-                        "yspan": 0.05238095238095236
-                    },
-                    "tips": {}
-                },
+                "state": {},
                 "result": {
                     "type": "CategoryPlot",
                     "init_width": 640,
@@ -5616,11 +5302,14 @@
                 "pluginName": "Groovy",
                 "shellId": "e3fface1-233a-4db9-b1d9-eff34bb4825a",
                 "elapsedTime": 745,
-                "height": 502
+                "height": 519
             },
             "evaluatorReader": true,
             "lineCount": 3
         }
     ],
-    "namespace": {}
+    "namespace": {},
+    "metadata": {
+        "publication-id": "569d744e-a456-44cd-a1e4-5e3744db1869"
+    }
 }

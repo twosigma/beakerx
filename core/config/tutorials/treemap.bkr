@@ -1,4 +1,3 @@
-
 {
     "beaker": "2",
     "evaluators": [
@@ -86,7 +85,7 @@
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "elapsedTime": 620,
                 "hidden": true,
-                "height": 51
+                "height": 34
             },
             "evaluatorReader": true,
             "lineCount": 21
@@ -440,7 +439,7 @@
                 "pluginName": "Groovy",
                 "elapsedTime": 734,
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
-                "height": 549
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -688,7 +687,7 @@
                 "pluginName": "Groovy",
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "elapsedTime": 675,
-                "height": 549
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -708,7 +707,33 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "legendableItem": 13
+                },
                 "result": {
                     "type": "TreeMap",
                     "init_width": 640,
@@ -869,7 +894,7 @@
                 "pluginName": "Groovy",
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "elapsedTime": 883,
-                "height": 549
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -889,7 +914,33 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "legendableItem": 13
+                },
                 "result": {
                     "type": "TreeMap",
                     "init_width": 640,
@@ -1050,7 +1101,7 @@
                 "pluginName": "Groovy",
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "elapsedTime": 615,
-                "height": 549
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -1257,7 +1308,7 @@
                 "pluginName": "Groovy",
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "elapsedTime": 629,
-                "height": 549
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -1517,7 +1568,7 @@
                 "pluginName": "Groovy",
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "elapsedTime": 659,
-                "height": 549
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -1733,7 +1784,7 @@
                 "pluginName": "Groovy",
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "elapsedTime": 807,
-                "height": 549
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 8
@@ -1755,7 +1806,33 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "legendableItem": 13
+                },
                 "result": {
                     "type": "TreeMap",
                     "init_width": 640,
@@ -1915,7 +1992,7 @@
                 "pluginName": "Groovy",
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "elapsedTime": 631,
-                "height": 549
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 8
@@ -1944,7 +2021,33 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "legendableItem": 13
+                },
                 "result": {
                     "type": "TreeMap",
                     "init_width": 640,
@@ -2104,7 +2207,7 @@
                 "pluginName": "Groovy",
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "elapsedTime": 608,
-                "height": 549
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -2340,7 +2443,7 @@
                 "pluginName": "Groovy",
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "elapsedTime": 625,
-                "height": 549
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -2563,7 +2666,7 @@
                 "pluginName": "Groovy",
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "elapsedTime": 676,
-                "height": 549
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 23
@@ -2778,7 +2881,7 @@
                 "pluginName": "Groovy",
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "elapsedTime": 659,
-                "height": 549
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -2985,7 +3088,7 @@
                 "pluginName": "Groovy",
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "elapsedTime": 734,
-                "height": 549
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -18118,7 +18221,7 @@
                 "pluginName": "Groovy",
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "elapsedTime": 703,
-                "height": 549
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 8
@@ -20634,7 +20737,7 @@
                 "pluginName": "Groovy",
                 "shellId": "68d2f7e1-a078-4b82-8912-f2204e7e1dea",
                 "elapsedTime": 743,
-                "height": 669
+                "height": 649
             },
             "evaluatorReader": true,
             "lineCount": 35
@@ -20642,5 +20745,8 @@
     ],
     "namespace": {
         "x": 1
+    },
+    "metadata": {
+        "publication-id": "569d77a7-ad09-4958-ad97-eca4316695a9"
     }
 }

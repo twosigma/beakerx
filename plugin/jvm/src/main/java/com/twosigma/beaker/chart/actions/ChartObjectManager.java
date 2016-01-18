@@ -17,7 +17,7 @@
 package com.twosigma.beaker.chart.actions;
 
 import com.google.inject.Singleton;
-import com.twosigma.beaker.AbstractChart;
+import com.twosigma.beaker.Chart;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,13 +25,13 @@ import java.util.Map;
 @Singleton
 public class ChartObjectManager {
   /* plot id -> plot object */
-  private final Map<String, AbstractChart> charts = new HashMap<>();
+  private final Map<String, Chart> charts = new HashMap<>();
 
-  public void registerChart(final String id, final AbstractChart chart) {
+  public void registerChart(final String id, final Chart chart) {
     charts.put(id, chart);
   }
 
-  public AbstractChart getChart(final String id) {
+  public Chart getChart(final String id) {
     return charts.get(id);
   }
 

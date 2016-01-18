@@ -18,8 +18,9 @@ package com.twosigma.beaker;
 
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
+import java.util.Observable;
 
-public class Chart {
+public class Chart extends Observable {
   protected int initWidth  = 640;
   protected int initHeight = 480;
   protected String  title;
@@ -89,5 +90,10 @@ public class Chart {
   public Chart setLegendLayout(LegendLayout legendLayout) {
     this.legendLayout = legendLayout;
     return this;
+  }
+
+  @Override
+  public synchronized void setChanged() {
+    super.setChanged();
   }
 }

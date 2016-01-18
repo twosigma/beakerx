@@ -17,7 +17,7 @@ package com.twosigma.beaker.groovy.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.twosigma.beaker.AbstractChart;
+import com.twosigma.beaker.Chart;
 import com.twosigma.beaker.chart.Graphics;
 import com.twosigma.beaker.chart.actions.ChartObjectManager;
 import com.twosigma.beaker.chart.actions.GraphicsClickActionObject;
@@ -46,7 +46,7 @@ public class ChartRest {
   public void onClick(@PathParam("chartId") String chartId,
                       @PathParam("graphicsId") String graphicsId,
                       GraphicsClickActionObject info) throws IOException, InterruptedException {
-    AbstractChart chart = chartObjectManager.getChart(chartId);
+    Chart chart = chartObjectManager.getChart(chartId);
     if(chart instanceof XYChart){
       for(Graphics g: ((XYChart)chart).getGraphics()){
         if(StringUtils.equals(g.getUid(), graphicsId)){

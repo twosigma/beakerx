@@ -13,12 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * Module bk.core
- * Holds the core of beaker utilities. It wraps of lower level utilities that come from other
- * modules.
- * The user facing directives also use the core as a communication/exchange layer.
- */
+
 (function() {
   'use strict';
   angular.module('bk.core').factory('autocompleteService', function(codeMirrorExtension, bkEvaluatorManager, $q) {

@@ -7445,7 +7445,8 @@
                     "def plot = new Plot();",
                     "def y1 = [1.5, 1, 6, 5, 2, 8]",
                     "def cs = [Color.black, Color.red, Color.gray, Color.green, Color.blue, Color.pink]",
-                    "plot << new Stems(y: y1, color: cs, width: 5)"
+                    "def ss = [StrokeType.SOLID, StrokeType.SOLID, StrokeType.DASH, StrokeType.DOT, StrokeType.DASHDOT, StrokeType.LONGDASH]",
+                    "plot << new Stems(y: y1, color: cs, style: ss, width: 5)"
                 ]
             },
             "output": {
@@ -7521,7 +7522,14 @@
                                 "#FFFFAFAF"
                             ],
                             "width": 5,
-                            "style": "SOLID"
+                            "styles": [
+                                "SOLID",
+                                "SOLID",
+                                "DASH",
+                                "DOT",
+                                "DASHDOT",
+                                "LONGDASH"
+                            ]
                         }
                     ],
                     "constant_lines": [],
@@ -7535,21 +7543,20 @@
                     "tips": {}
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 741,
+                "elapsedTime": 700,
                 "state": {
                     "showAllItems": true,
                     "plotSize": {
                         "width": 640,
                         "height": 480
                     },
-                    "zoomed": false,
                     "focus": {
                         "xl": 0.4738095238095238,
                         "xr": 0.5261904761904762,
-                        "yl": 0.4428407413458641,
-                        "yr": 0.555438770739488,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
                         "xspan": 0.05238095238095242,
-                        "yspan": 0.1125980293936239
+                        "yspan": 0.05238095238095242
                     },
                     "lodOn": [
                         null

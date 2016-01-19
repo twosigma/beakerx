@@ -21,7 +21,7 @@
  */
 (function() {
   'use strict';
-  angular.module('bk.core').factory('autocompleteService', function(codeMirrorExtension, bkEvaluatorManager) {
+  angular.module('bk.core').factory('autocompleteService', function(codeMirrorExtension, bkEvaluatorManager, $q) {
 
   var showAutocomplete = function(cm, scope) {
     var getToken = function(editor, cur) {
@@ -32,13 +32,11 @@
       var token = getToken(editor, cur);
       var cursorPos = editor.indexFromPos(cur);
 
-      var waitfor = [];
-      for(var i in codeMirrorExtension.autocomplete) {
-        var t = codeMirrorExtension.autocomplete[i];
-        if (t.type === token.type || t.type === '*') {
-          waitfor.push(t.hint(token, editor));
-        }
-      }
+      var waitfor = _(codeMirrorExtension.autocomplete).filter(function(t) {
+        return t.type === token.type || t.type === '*';
+      }).map(function(t) {
+        return t.hint(token, editor);
+      }).value();
 
       var onResults = function(results, matched_text, dotFix) {
         var start = token.start;

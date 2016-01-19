@@ -496,6 +496,10 @@
                       item[seriesproperty] = seriesPropertyValue;
                       delete item[property];
                     }
+
+                    if(property === 'styles' && item.type === "CategoryLines") {
+                      item.style = lineStyleMap[item.style];
+                    }
                   }
                 };
                 processSeriesProperty(i, 'colors', 'color');

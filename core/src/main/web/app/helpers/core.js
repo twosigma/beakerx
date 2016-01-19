@@ -450,6 +450,10 @@
           autocompleteService.showAutocomplete(cm, scope);
         };
 
+        var maybeShowAutocomplete = function(cm) {
+          autocompleteService.maybeShowAutocomplete(cm, scope);
+        }
+
         var goCharRightOrMoveFocusDown = function(cm) {
           if ($('.CodeMirror-hint').length > 0) {
             //codecomplete is up, skip
@@ -666,7 +670,7 @@
             "Ctrl-Enter": evaluate,
             "Cmd-Enter": evaluate,
             "Shift-Enter": evaluateAndGoDown,
-            "Ctrl-Space": autocompleteService.maybeShowAutocomplete,
+            "Ctrl-Space": maybeShowAutocomplete,
             "Cmd-Space": showAutocomplete,
             "Shift-Tab": shiftTab,
             "Shift-Ctrl-Space": showDocs,

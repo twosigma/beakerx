@@ -673,6 +673,7 @@ $text-cursor: url('../images/ambiance/ambiance-i-beam.png') 5 9, text;
     background-color: $input-background-color;
     color: $std-fg-text-color;
     border-color: #7e7a78;
+    color: $std-fg-text-color;
   }
 
   .CodeMirror-hint {

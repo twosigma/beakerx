@@ -21,7 +21,7 @@
  */
 (function() {
   'use strict';
-  angular.module('bk.core').factory('autocompleteService', function(codeMirrorExtension) {
+  angular.module('bk.core').factory('autocompleteService', function(codeMirrorExtension, bkEvaluatorManager) {
 
   var showAutocomplete = function(cm, scope) {
     var getToken = function(editor, cur) {
@@ -50,29 +50,28 @@
           start += (cur.ch - token.start - matched_text.length);
           end = start + matched_text.length;
         }
+        var hintData = {
+          from: CodeMirror.Pos(cur.line, start),
+          to: CodeMirror.Pos(cur.line, end),
+          list: _.uniq(results)
+        };
+
+        var evaluator = bkEvaluatorManager.getEvaluator(scope.cellmodel.evaluator);
+        if (_.isFunction(evaluator.showDocs)) {
+          attachAutocompleteListeners(hintData, evaluator, scope, cm);
+        }
+
         if (waitfor.length > 0) {
           $q.all(waitfor).then(function (res) {
             for (var i in res) {
-              results = results.concat(res[i]);
+              hintData.results = _.uniq(results.concat(res[i]));
             }
-            showHintCB({
-              list: _.uniq(results),
-              from: CodeMirror.Pos(cur.line, start),
-              to: CodeMirror.Pos(cur.line, end)
-            });
+            showHintCB(hintData);
           }, function(err) {
-            showHintCB({
-              list: _.uniq(results),
-              from: CodeMirror.Pos(cur.line, start),
-              to: CodeMirror.Pos(cur.line, end)
-            });
+            showHintCB(hintData);
           })
         } else {
-          showHintCB({
-            list: _.uniq(results),
-            from: CodeMirror.Pos(cur.line, start),
-            to: CodeMirror.Pos(cur.line, end)
-          });
+          showHintCB(hintData);
         }
       };
       scope.autocomplete(cursorPos, onResults);
@@ -91,7 +90,7 @@
     }
   };
 
-  var maybeShowAutocomplete = function(cm) {
+  var maybeShowAutocomplete = function(cm, scope) {
     if (scope.bkNotebook.getCMKeyMapMode() === "emacs") {
       cm.setCursor(cm.getCursor());
       cm.setExtending(!cm.getExtending());
@@ -99,8 +98,18 @@
         cm.setExtending(false);
       });
     } else {
-      showAutocomplete(cm);
+      showAutocomplete(cm, scope);
     }
+  };
+  var attachAutocompleteListeners = function(hintData, evaluator, scope, cm) {
+    CodeMirror.on(hintData, 'select', function(a1, a2) {
+      evaluator.showDocs(a1, a1.length - 1, function(documentation) {
+        scope.$broadcast('showDocumentationForAutocomplete', documentation, true);
+      });
+    });
+    CodeMirror.on(cm, 'endCompletion', function() {
+      scope.$broadcast('hideDocumentationForAutocomplete');
+    });
   };
 
   return {

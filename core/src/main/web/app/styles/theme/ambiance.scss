@@ -562,6 +562,10 @@ $text-cursor: url('../images/ambiance/ambiance-i-beam.png') 5 9, text;
     }
   }
 
+  header .navbar-brand-fill {
+    fill: $markdown-text-color;
+  }
+
   //easy-form
   .easy-form-container {
     legend, label, input {

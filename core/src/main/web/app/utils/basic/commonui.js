@@ -346,4 +346,23 @@
     };
   });
 
+  module.directive('bkBrandLogo', function () {
+    return {
+      restrict: 'E',
+      template: JST['template/brand_logo'](),
+      replace: true,
+      scope: {
+        reference: "@",
+        onClick: "&"
+      },
+      link: function(scope) {
+        scope.clickAction = function(event) {
+          if (typeof scope.onClick == 'function') {
+              scope.onClick({ event: event });
+          }
+        };
+      }
+    };
+  });
+
 })();

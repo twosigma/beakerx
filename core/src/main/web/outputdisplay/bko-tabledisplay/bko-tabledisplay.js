@@ -298,7 +298,7 @@
               }
               var out = $scope.exportTo(data, 'tabs');
               return out;
-            }
+            };
             var executeCopy = function (text) {
               var input = document.createElement('textarea');
               document.body.appendChild(input);
@@ -306,7 +306,7 @@
               input.select();
               document.execCommand('Copy');
               input.remove();
-            }
+            };
             var data = getTableData();
             executeCopy(data);
           }
@@ -376,7 +376,7 @@
           }
         };
 
-        $scope.renderMenu     = false;
+        $scope.renderMenu = false;
 
         var chr = {
           '"': '&quot;', '&': '&amp;', '\'': '&#39;',
@@ -667,8 +667,13 @@
           $scope.modal.close();
           $scope.refreshCells();
         };
+
+        $scope.showSearch = function() {
+          var sField = $('.dataTables_filter');
+          sField.toggleClass('show');
+        };
       },
-      link: function(scope, element, attrs) {
+      link: function(scope) {
 
         scope.doDestroy = function(all) {
           if (scope.table) {
@@ -934,8 +939,9 @@
               }
             }
             cols.push({'title' : scope.indexName+'&nbsp;&nbsp;', 'className': 'dtright', 'render': converter});
-          } else
-            cols.push({'title' : '    ', 'className': 'dtright', 'render': converter});
+          } else {
+            cols.push({'title': '    ', 'className': 'dtright', 'render': converter});
+          }
 
           for (i = 0; i < scope.columnNames.length; i++) {
             var type = scope.actualtype[i];
@@ -969,7 +975,7 @@
             'autoWidth': true,
             'order': [[0, 'asc']],
             'scrollX': '10%',
-            'searching': false,
+            'searching': true,
             'deferRender': true,
             'language': {
               'emptyTable': 'empty table'
@@ -986,9 +992,9 @@
             init.paging = false;
             init.scrollY = scope.pagination.rowsToDisplay * 27 + 2;
             init.scrollCollapse = true;
-            init.dom = '<"bko-table"rt>';
+            init.dom = '<"bko-table"rtf>';
           } else {
-            init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p>>S>';
+            init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p>>Sf>';
             if (scope.data.length > 25) {
               init.pagingType = 'simple_numbers';
               init.pageLength = 25;
@@ -1023,6 +1029,14 @@
             }
             new $.fn.dataTable.KeyTable($(id));
             scope.refreshCells();
+
+            var sField = $('.dataTables_filter');
+            $('<i/>', {class: 'fa fa-times'})
+              .bind('click', function(e) {
+                scope.showSearch();
+                e.stopPropagation();
+              })
+              .appendTo(sField);
 
             /*
             $(id + ' tbody').off('click');

@@ -21,11 +21,13 @@ module.exports = (function() {
   var spawnSync = require('child_process').spawnSync;
   var events = require('events');
   var os = require('os');
+  var killTree = require('tree-kill');
 
   var _url;
   var _hash;
   var _local;
   var _backend;
+  var _running = false;
 
   var _osName = os.type();
 
@@ -56,6 +58,7 @@ module.exports = (function() {
         } else if (line.startsWith('Beaker listening on')) {
           _url = line.split(' ')[3];
           _local = true;
+          _running = true;
           eventEmitter.emit('ready', {
             url: _url,
             hash: _hash,
@@ -66,18 +69,26 @@ module.exports = (function() {
       return eventEmitter;
     },
     kill: function() {
+      var eventEmitter = new events.EventEmitter();
       if (_local && (_osName.startsWith('Windows'))) {
         spawnSync("taskkill", ["/pid", _backend.pid, '/f', '/t']);
+        _running = false;
+        eventEmitter.emit('killed');
       } else if (_local) {
-        _backend.kill('SIGTERM');
+        killTree(_backend.pid, 'SIGTERM', function (){
+          _running = false;
+          eventEmitter.emit('killed');
+        });
       }
       _backend = {};
+      return eventEmitter;
     },
     getInfo: function() {
       return {
         url: _url,
         hash: _hash,
-        local: _local
+        local: _local,
+        running: _running
       };
     },
     getUrl: function() {
@@ -97,6 +108,9 @@ module.exports = (function() {
     },
     setLocal: function(local) {
       _local = local;
+    },
+    isRunning: function() {
+      return _running;
     }
   }
 })();

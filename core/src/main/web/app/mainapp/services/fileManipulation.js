@@ -52,11 +52,11 @@
                 "File " + uri + " exists. Overwrite?",
             "File exists",
             function () {
-              deferred.reject();
+              deferred.resolve();
             },
             function () {
-              deferred.resolve();
-            }, "Cancel", "Overwrite", "", "btn-danger");
+              deferred.reject();
+            }, "Overwrite", "Cancel", "btn-danger", "");
         return deferred.promise;
       };
 

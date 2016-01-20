@@ -60,6 +60,10 @@
     }
   }
 
+  header .navbar-brand-fill {
+    fill: $std-fg-color;
+  }
+
   .panel-primary {
     border-color:   $std-border;
     .panel-body{
@@ -88,7 +92,7 @@
   }
 
   button, .btn, .btn-default {
-    background:   $primary-btn-bg;
+    background:   $std-btn-bg;
     color:        $std-fg-color;
     border-color: $std-border;
     &:hover {
@@ -104,6 +108,23 @@
       background:   $std-hover-bg;
       border-color: $std-hover-border;
     }
+  }
+
+  button.close {
+    background:   transparent;
+    border:       0;
+    text-shadow:  0 1px 0 #000;
+    opacity:      0.5;
+    &:hover {
+      background: transparent;
+      border:     0;
+      opacity:    0.7;
+    }
+  }
+
+  .btn-danger {
+    background-color: $btn-danger-bkg;
+    border-color:     $btn-danger-bkg;
   }
 
   .notebook-link {
@@ -130,7 +151,7 @@
 
   .ui-icon,
   .ui-widget-content .ui-icon {
-    background-image: url("images/ui-icons_222222_256x240.png");
+    background-image: url("images/ui-icons_888888_256x240.png");
   }
 
   .ui-widget-content {
@@ -227,6 +248,27 @@
     color:            $std-fg-color;
   }
 
+  .markup p {
+    cursor: $text-cursor;
+  }
+
+  text {
+    cursor: $text-cursor;
+  }
+
+  #plotTitle {
+    cursor: $text-cursor;
+  }
+
+  bk-output-display[type="Text"] {
+    cursor: $text-cursor;
+  }
+  bk-output-display[type="Html"] {
+    p, span, li, h1, h2, h3, h4, h5, h6 {
+      cursor: $text-cursor;
+    }
+  }
+
   #plotContainer {
     background: #1a1a1a;
   }
@@ -235,8 +277,8 @@
     fill: $main-theme-panel-background;
   }
 
-  .plot-label, .plot-xylabel {
-    fill: $std-fg-color;
+  .plot-label, .plot-xylabel, .plot-text, .plot-legend text, #maing text, .plot-legend-histogram, .legend-pointer {
+    fill: $std-fg-color !important;
   }
 
   .plot-gridline {
@@ -252,12 +294,16 @@
     background-color: $std-bg-color;
   }
 
-  .plot-text, .plot-legend text, #maing text {
-    fill: $std-fg-color !important;
-  }
-
   .plot-legendscrollablecontainer {
     border-color: $cell-border;
+  }
+
+  .plot-legend-histogram, .plot-legend-axis, .plot-legend-tick {
+    stroke: $std-fg-color;
+  }
+
+  .legend-pointer {
+    stroke: $cell-border;
   }
 
   #combplotContainer, #plotLegend, #plotLegendContainer {
@@ -266,6 +312,7 @@
 
   .mini-cell-stats {
     z-index: 1;
+    cursor: $text-cursor;
   }
 
   .loading-state {
@@ -309,6 +356,10 @@
 
   .dataTable, table.dataTable thead th {
     color: $std-fg-color;
+  }
+
+  .dataTable, td {
+    cursor: $text-cursor;
   }
 
   .dataTables_wrapper .dataTables_paginate .paginate_button {
@@ -453,18 +504,22 @@
   .nav-tabs {
     border-bottom-color: $cell-border;
 
-    > li > a:hover {
+    > li > a:hover, .uib-tab > div:hover {
       border-color:         $std-hover-border;
       border-bottom-color:  transparent;
       background-color:     $navbar-default-link-active-bg;
       color:                $std-fg-color;
     }
 
-    > li.active > a {
+    > li.active > a, .uib-tab.active > div {
       border-color: $cell-border;
       border-bottom-color: transparent;
       background-color: $main-theme-panel-background;
       color: $std-fg-color;
+    }
+
+    .uib-tab > div {
+      color: $std-link-color;
     }
   }
 
@@ -580,6 +635,10 @@
 
   .CodeMirror-hint {
     color: $std-fg-color;
+  }
+
+  .CodeMirror-lines {
+    cursor: $text-cursor;
   }
 
   li.CodeMirror-hint-active {

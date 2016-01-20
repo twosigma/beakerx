@@ -50,11 +50,11 @@
                 "Normally you would connect to an existing database by putting its",
                 "JDBC configuration in the \"Default data source\" field in the Language Manager.",
                 "For example, if you want to connect to a [MySQL](https://www.mysql.com/) running locally then use:",
-                "'jdbc:mysql://localhost/dbName', where dbName would be replaced.",
+                "`jdbc:mysql://localhost/dbName`, where dbName would be replaced as appropriate.",
                 "",
-                "To connect to other datases, include the JAR with its API in the Class path, and enter an appropriate JDBC configuration.",
+                "To connect to other datases, put the path to a JAR with its JDBC driver in the Class path, and enter an appropriate JDBC configuration as the data source.",
                 "",
-                "To connect to multiple databases, see the section below."
+                "To connect to multiple databases in one notebook, see the section below."
             ],
             "evaluatorReader": false
         },
@@ -282,8 +282,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "49279164-af94-4460-871b-555d8f2443d6",
-                "elapsedTime": 592
+                "shellId": "de721528-3c4b-4364-91fc-5b8eff538567",
+                "elapsedTime": 596
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -307,19 +307,23 @@
                             "fixRight": 0
                         },
                         "columnNames": [
+                            "ID",
                             "NAME",
                             "CODE"
                         ],
                         "actualalign": [
+                            "L",
                             "L",
                             "L"
                         ],
                         "colorder": [
                             0,
                             1,
-                            2
+                            2,
+                            3
                         ],
                         "getCellSho": [
+                            true,
                             true,
                             true
                         ]
@@ -327,11 +331,11 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 21,
+                "elapsedTime": 22,
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "TableDisplay",
-                    "hasIndex": "true",
+                    "hasIndex": "false",
                     "values": [
                         [
                             1001,
@@ -399,23 +403,94 @@
             "collapsed": false
         },
         {
+            "id": "markdownt4b9jx",
+            "type": "markdown",
+            "body": [
+                "You can specify a different database for a cell to connect to by putting `%%beakerDB=\"....\"` on the first line."
+            ],
+            "evaluatorReader": false
+        },
+        {
             "id": "code506tI8",
             "type": "code",
             "evaluator": "SQL",
             "input": {
                 "body": [
-                    ""
+                    "%%beakerDB=\"jdbc:h2:mem:people\"",
+                    "SELECT * FROM people;"
                 ]
             },
             "output": {
-                "state": {}
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "NAME",
+                            "BORN"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "getCellSho": [
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "NAME",
+                        "BORN"
+                    ],
+                    "values": [
+                        [
+                            "Jacob Berzelius",
+                            1779
+                        ],
+                        [
+                            "Robert Boyle",
+                            1627
+                        ],
+                        [
+                            "John Dalton",
+                            1766
+                        ],
+                        [
+                            "Antoine Lavoisier",
+                            1743
+                        ]
+                    ],
+                    "types": [
+                        "java.lang.String",
+                        "java.lang.Integer"
+                    ],
+                    "subtype": "TableDisplay"
+                },
+                "selectedType": "Table",
+                "pluginName": "SQL",
+                "shellId": "de721528-3c4b-4364-91fc-5b8eff538567",
+                "elapsedTime": 108,
+                "height": 163
             },
-            "evaluatorReader": true
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "section5arlN2",
             "type": "section",
-            "title": "Initialize the Database",
+            "title": "Initialize the Databases",
             "level": 2,
             "evaluatorReader": false,
             "collapsed": true
@@ -434,23 +509,23 @@
             "evaluator": "JavaScript",
             "input": {
                 "body": [
-                    "beaker.colorsArray=[",
-                    "  {name:'AliceBlue',  \tcode:'#F0F8FF'},",
-                    "  {name:'AntiqueWhite',  \tcode:'#FAEBD7' },",
-                    "  {name:'Aqua',  \tcode:'#00FFFF'},",
-                    "  {name:'Aquamarine',  \tcode:'#7FFFD4'},",
-                    "  {name:'Azure',  \tcode:'#F0FFFF'},",
-                    "  {name:'Beige' , \tcode:'#F5F5DC'},",
-                    "  {name:'Bisque',  \tcode:'#FFE4C4'},",
-                    "  {name:'Black' , \tcode:'#000000'}]",
-                    "beaker.idArray=[1001,1002,1003,1004,1005,1006,1007,1008]"
+                    "beaker.colorsArray = [",
+                    "  {name: 'AliceBlue', code: '#F0F8FF'},",
+                    "  {name: 'AntiqueWhite', code: '#FAEBD7' },",
+                    "  {name: 'Aqua', code: '#00FFFF'},",
+                    "  {name: 'Aquamarine', code: '#7FFFD4'},",
+                    "  {name: 'Azure', code: '#F0FFFF'},",
+                    "  {name: 'Beige', code: '#F5F5DC'},",
+                    "  {name: 'Bisque', code: '#FFE4C4'},",
+                    "  {name: 'Black', code: '#000000'}];",
+                    "beaker.idArray = [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008];"
                 ]
             },
             "output": {
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 17,
+                "elapsedTime": 24,
                 "hidden": true,
                 "result": [
                     1001,
@@ -489,8 +564,116 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "49279164-af94-4460-871b-555d8f2443d6",
-                "elapsedTime": 715
+                "shellId": "de721528-3c4b-4364-91fc-5b8eff538567",
+                "elapsedTime": 677
+            },
+            "evaluatorReader": true,
+            "lineCount": 9,
+            "initialization": true
+        },
+        {
+            "id": "codesr78kX",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.peopleArray = [",
+                    "  {name: 'Jacob Berzelius', born: 1779},",
+                    "  {name: 'Robert Boyle', born: 1627},",
+                    "  {name: 'John Dalton', born: 1766},",
+                    "  {name: 'Antoine Lavoisier', born: 1743}];"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "name",
+                            "born"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "getCellSho": [
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "subtype": "ListOfMaps",
+                    "columnNames": [
+                        "name",
+                        "born"
+                    ],
+                    "values": [
+                        [
+                            "Jacob Berzelius",
+                            1779
+                        ],
+                        [
+                            "Robert Boyle",
+                            1627
+                        ],
+                        [
+                            "John Dalton",
+                            1766
+                        ],
+                        [
+                            "Antoine Lavoisier",
+                            1743
+                        ]
+                    ],
+                    "types": [
+                        "string",
+                        "double"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 23,
+                "height": 0
+            },
+            "evaluatorReader": true,
+            "lineCount": 5,
+            "initialization": true
+        },
+        {
+            "id": "codekSoDPZ",
+            "type": "code",
+            "evaluator": "SQL",
+            "input": {
+                "body": [
+                    "%%beakerDB=\"jdbc:h2:mem:people\"",
+                    "drop table if exists people;",
+                    "CREATE TABLE people (",
+                    "  name varchar(45) NOT NULL,",
+                    "  born int(4),",
+                    "  PRIMARY KEY (name)",
+                    ");",
+                    "",
+                    "INSERT INTO people VALUES (${peopleArray[*].name}, ${peopleArray[*].born});"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Hidden",
+                "pluginName": "SQL",
+                "shellId": "de721528-3c4b-4364-91fc-5b8eff538567",
+                "elapsedTime": 618
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -756,7 +939,7 @@
         "colorTable": {
             "type": "TableDisplay",
             "subtype": "TableDisplay",
-            "hasIndex": "true",
+            "hasIndex": "false",
             "values": [
                 [
                     1001,
@@ -816,7 +999,37 @@
             145,
             277
         ],
-        "id": 1003
+        "id": 1003,
+        "peopleArray": {
+            "type": "TableDisplay",
+            "subtype": "ListOfMaps",
+            "columnNames": [
+                "name",
+                "born"
+            ],
+            "values": [
+                [
+                    "Jacob Berzelius",
+                    1779
+                ],
+                [
+                    "Robert Boyle",
+                    1627
+                ],
+                [
+                    "John Dalton",
+                    1766
+                ],
+                [
+                    "Antoine Lavoisier",
+                    1743
+                ]
+            ],
+            "types": [
+                "string",
+                "double"
+            ]
+        }
     },
     "metadata": {
         "publication-id": "560b4a2f-546b-4929-acd7-0d47365b896e"

@@ -58,6 +58,7 @@ $std-err-color:         #e48d71;
 
 $std-btn-bg:            #505050;
 $primary-btn-bg:        #39a9ed;
+$btn-danger-bkg:        #d9534f;
 
 $std-link-color:        #f4c20b;
 $notebook-link-color:   #d6bb6d;
@@ -71,6 +72,7 @@ $ef-active-control-bg:  #3B99FC;
 $markdown-heading-color: #aac6e3;
 
 $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
+$text-cursor: url('../images/ambiance/ambiance-i-beam.png') 5 9, text;
 
 @import "base-theme";
 

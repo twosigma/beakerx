@@ -190,3 +190,9 @@ html {
     top: 3px;
   }
 }
+
+// Fix for modal flash on open - https://github.com/angular-ui/bootstrap/issues/5183
+// If/when that issue is fixed, we can remove this
+body > [uib-modal-window]:not([modal-render]) {
+  display: none;
+}

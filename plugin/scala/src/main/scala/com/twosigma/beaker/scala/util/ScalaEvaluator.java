@@ -22,7 +22,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +48,6 @@ import scala.collection.Iterable;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.twosigma.beaker.scala.util.ScalaEvaluatorGlue;
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
@@ -321,13 +319,14 @@ public class ScalaEvaluator {
       loader_cp += outDir;
       DynamicClassLoaderSimple cl = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
       cl.addJars(classPath);
+      cl.addDynamicDir(outDir);
       return cl;
     }
 
     protected void newEvaluator() throws MalformedURLException
     {
       logger.fine("creating new evaluator");
-      shell = new ScalaEvaluatorGlue(newClassLoader(), loader_cp+System.getProperty("java.class.path"));
+      shell = new ScalaEvaluatorGlue(newClassLoader(), loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"));
 
       if (!imports.isEmpty()) {
         for (int i = 0; i < imports.size(); i++) {
@@ -385,13 +384,14 @@ public class ScalaEvaluator {
         
     DynamicClassLoaderSimple cl = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
     cl.addJars(classPath);
+    cl.addDynamicDir(outDir);
     return cl;
   }
 
   protected void newAutoCompleteEvaluator() throws MalformedURLException
   {
     logger.fine("creating new autocomplete evaluator");
-    acshell = new ScalaEvaluatorGlue(newAutoCompleteClassLoader(), acloader_cp+System.getProperty("java.class.path"));
+    acshell = new ScalaEvaluatorGlue(newAutoCompleteClassLoader(), acloader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"));
 
     if (!imports.isEmpty()) {
       for (int i = 0; i < imports.size(); i++) {

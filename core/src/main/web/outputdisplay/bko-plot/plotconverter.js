@@ -193,7 +193,10 @@
           if (style == null) {
             style = "";
           }
-          item.style = lineStyleMap[style];
+          if (item.type === "line")
+            item.style = lineStyleMap[style];
+          else
+            ele.style = lineStyleMap[style];
         }
       }
 

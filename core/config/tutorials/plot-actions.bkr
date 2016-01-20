@@ -1,0 +1,567 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "HTML",
+            "plugin": "HTML",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.jvm.object.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectionmJxw0P",
+            "type": "section",
+            "title": "Beaker Plots Actions Tutorial",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdown0uENfg",
+            "type": "markdown",
+            "body": [
+                "Beaker allows you to program plots interactions by your own. You can attach the actions to plot items like Lines, Point, Bars, etc.",
+                "",
+                "Let's see which actions are accessible for plot items."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "sectionGDkfHu",
+            "type": "section",
+            "title": "OnClick action",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdowndYTnmp",
+            "type": "markdown",
+            "body": [
+                "You can attach \"onClick\" action to various elements in the plots.",
+                "",
+                "Action can take **closure** that will be called or **a cell tag** that will be executed when you click on the plot item.",
+                ""
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "sectionAyQOuF",
+            "type": "section",
+            "title": "Closure",
+            "level": 4,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownkiTgy1",
+            "type": "markdown",
+            "body": [
+                "The closure takes the following parameters:",
+                "",
+                "* **graphics** - clicked item (line, points,etc)",
+                "* **x** - list of xs coordinates of a clicked item",
+                "* **y** - list of ys coordinates of a clicked item",
+                "* **index** - index of a clicked element (empty for lines)"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "code6YRkpO",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def random = new Random()",
+                    "def p = new Plot(showLegend: true);",
+                    "p << new Line(x: [1, 2, 3], y: [2, 3, 4], width: 4, displayName: \"line 1\").onClick({info -> info.graphics.displayName = \"new name\"})",
+                    "p << new Line(x: [1, 2, 3], y: [5, 6, 7,], width: 4, displayName: \"line 2\").onClick({info -> info.graphics.y[1] = random.nextInt(10)})"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "type": "Plot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": null,
+                    "show_legend": true,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": "",
+                            "auto_range": true,
+                            "auto_range_includes_zero": false,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "use_log": false,
+                            "log_base": 10
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": false,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_y": false,
+                    "timezone": null,
+                    "crosshair": null,
+                    "omit_checkboxes": false,
+                    "graphics_list": [
+                        {
+                            "type": "Line",
+                            "uid": "1469ebb4-55d1-44d6-b65f-76891fb40543",
+                            "visible": true,
+                            "yAxis": null,
+                            "x": [
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                2,
+                                3,
+                                4
+                            ],
+                            "display_name": "line 1",
+                            "width": 4
+                        },
+                        {
+                            "type": "Line",
+                            "uid": "3bf169f1-03cf-4178-8e74-cceed4bd41d7",
+                            "visible": true,
+                            "yAxis": null,
+                            "x": [
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                5,
+                                6,
+                                7
+                            ],
+                            "display_name": "line 2",
+                            "width": 4
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "Groovy",
+                "shellId": "59a36086-7030-4bec-a8f9-4161cbeee2e1",
+                "elapsedTime": 582,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 4,
+            "initialization": true
+        },
+        {
+            "id": "codepCGwVI",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def plot = new Plot(title: \"Bars\")",
+                    "def cs = [Color.red] * 5",
+                    "plot << new Bars(x: (1..5), y: [3, 5, 2, 3, 7], color: cs, outlineColor: Color.black, width: 0.3)",
+                    "        .onClick({info -> info.graphics.colors[info.index]= new Color(255, 0, 0, 128)})"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "zoomed": false,
+                    "focus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null
+                    ],
+                    "lodType": [
+                        null
+                    ],
+                    "lodAuto": [
+                        null
+                    ],
+                    "zoomHash": [
+                        null
+                    ],
+                    "showItem": [
+                        true
+                    ],
+                    "visibleItem": 1,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "type": "Plot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": "Bars",
+                    "show_legend": null,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": "",
+                            "auto_range": true,
+                            "auto_range_includes_zero": false,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "use_log": false,
+                            "log_base": 10
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": false,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_y": false,
+                    "timezone": null,
+                    "crosshair": null,
+                    "omit_checkboxes": false,
+                    "graphics_list": [
+                        {
+                            "type": "Bars",
+                            "uid": "37c9a099-cf69-48aa-b1e3-10870b25f111",
+                            "visible": true,
+                            "yAxis": null,
+                            "x": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5
+                            ],
+                            "y": [
+                                3,
+                                5,
+                                2,
+                                3,
+                                7
+                            ],
+                            "display_name": "",
+                            "base": 0,
+                            "width": 0.3,
+                            "colors": [
+                                "#FFFF0000",
+                                "#80FF0000",
+                                "#FFFF0000",
+                                "#FFFF0000",
+                                "#FFFF0000"
+                            ],
+                            "outline_color": "#FF000000"
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "Groovy",
+                "shellId": "59a36086-7030-4bec-a8f9-4161cbeee2e1",
+                "elapsedTime": 580,
+                "height": 549
+            },
+            "evaluatorReader": true,
+            "lineCount": 4,
+            "initialization": true
+        },
+        {
+            "id": "section9RUYkO",
+            "type": "section",
+            "title": "Run tag on click",
+            "level": 4,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codemgwFTf",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def p = new Plot();",
+                    "p << new Area(x: [1,4], y: [1,2]).onClick(\"run_tag\")"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null
+                    ],
+                    "lodType": [
+                        null
+                    ],
+                    "lodAuto": [
+                        null
+                    ],
+                    "zoomHash": [
+                        null
+                    ],
+                    "showItem": [
+                        true
+                    ],
+                    "visibleItem": 1,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "type": "Plot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": null,
+                    "show_legend": null,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": "",
+                            "auto_range": true,
+                            "auto_range_includes_zero": false,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "use_log": false,
+                            "log_base": 10
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": false,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_y": false,
+                    "timezone": null,
+                    "crosshair": null,
+                    "omit_checkboxes": false,
+                    "graphics_list": [
+                        {
+                            "type": "Area",
+                            "uid": "507718c9-42f3-45fa-b10a-400b9c0f4a8d",
+                            "visible": true,
+                            "yAxis": null,
+                            "tag": "run_tag",
+                            "x": [
+                                1,
+                                4
+                            ],
+                            "y": [
+                                1,
+                                2
+                            ],
+                            "display_name": "",
+                            "base": 0
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "Groovy",
+                "shellId": "59a36086-7030-4bec-a8f9-4161cbeee2e1",
+                "elapsedTime": 572,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "initialization": true
+        },
+        {
+            "id": "markdownOXVCbX",
+            "type": "markdown",
+            "body": [
+                "Tagged cell"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codexI1Q85",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "print (\"executed on area click\")"
+                ]
+            },
+            "output": {
+                "state": {},
+                "pluginName": "Groovy",
+                "shellId": "59a36086-7030-4bec-a8f9-4161cbeee2e1",
+                "elapsedTime": 585,
+                "selectedType": "Results"
+            },
+            "evaluatorReader": true,
+            "lineCount": 1,
+            "tags": "run_tag"
+        }
+    ],
+    "namespace": {}
+}

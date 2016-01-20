@@ -91,16 +91,16 @@ task makePortableBundle(dependsOn: ['makeBundle']) {
     }
   }
   doLast{
-    zipPortable.execute()
+    zipElectron.execute()
   }
 }
 makePortableBundle.onlyIf { win }
 
-task zipPortable(type: Zip) {
-  from fileTree('dist')
+task zipElectron (type: Zip) {
+  from fileTree('beaker')
   archiveName = setupName + ".zip"
 }
-zipPortable.onlyIf { win }
+zipElectron.onlyIf { win }
 
 
 task runElectron(type: Exec, dependsOn: ['unzipJRE', 'unzipPython', 'nodeInstall', 'makeDist']) {

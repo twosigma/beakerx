@@ -50,6 +50,10 @@
             _.defer(function() {
               tooltip.addClass('CodeMirror-hints');
               setTooltipPosition(_.merge(calculateTooltipPosition(), {left: autocompleteList.position().left + autocompleteList.outerWidth() - $('.bkcell').offset().left}));
+
+              if (autocompleteListAboveCursor(autocompleteList)) {
+                moveTooltipAboveCursor();
+              }
             });
           }
         });
@@ -66,6 +70,10 @@
           if (doc.text) {
             return doc.text
           }
+        }
+
+        function autocompleteListAboveCursor(list) {
+          return list.offset().top < scope.editor.cursorCoords(true).top;
         }
 
         function displayTooltip(htmlContent) {
@@ -88,6 +96,13 @@
           var left = (cmPosition.left + position.left + hMargins);
           var top = (cmPosition.top + position.bottom + vMargins);
           return {top: top, left: left};
+        }
+
+        function moveTooltipAboveCursor() {
+          var c = scope.editor.cursorCoords(true, 'local');
+          var currentTooltipTop = parseInt(tooltip.css('top'), 10);
+          var newTopPosition = currentTooltipTop - tooltip.outerHeight() - (c.bottom - c.top);
+          tooltip.css('top', newTopPosition + 'px');
         }
 
         function setTooltipPosition(position) {

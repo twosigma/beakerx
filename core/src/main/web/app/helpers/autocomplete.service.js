@@ -95,8 +95,8 @@
     }
   };
   var attachAutocompleteListeners = function(hintData, evaluator, scope, cm) {
-    CodeMirror.on(hintData, 'select', function(a1, a2) {
-      evaluator.showDocs(a1, a1.length - 1, function(documentation) {
+    CodeMirror.on(hintData, 'select', function(selectedWord, selectedListItem) {
+      evaluator.showDocs(selectedWord, selectedWord.length - 1, function(documentation) {
         scope.$broadcast('showDocumentationForAutocomplete', documentation, true);
       });
     });

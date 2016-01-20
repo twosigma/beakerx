@@ -40978,9 +40978,9 @@
                     "def bases = [0,[1,2,3], [4,5,8]]",
                     "def bars = new CategoryBars(",
                     "value:values,",
-                    "base:bases,",
+                    "base:[],",
                     "width:0.7,",
-                    "centerSeries:true)",
+                    "centerSeries:false)",
                     ".onClick({info -> info.graphics.centerSeries = !info.graphics.centerSeries; info.graphics.base = info.graphics.centerSeries ? bases : []})",
                     "def plot = new CategoryPlot(initWidth:600, initHeight:400)",
                     "plot << bars"
@@ -41036,7 +41036,7 @@
                             "visible": true,
                             "yAxis": null,
                             "showItemLabel": false,
-                            "center_series": true,
+                            "center_series": false,
                             "use_tool_tip": true,
                             "value": [
                                 [
@@ -41056,19 +41056,7 @@
                                 ]
                             ],
                             "color": null,
-                            "bases": [
-                                0,
-                                [
-                                    1,
-                                    2,
-                                    3
-                                ],
-                                [
-                                    4,
-                                    5,
-                                    8
-                                ]
-                            ],
+                            "bases": [],
                             "width": 0.7,
                             "outline_color": null,
                             "fill": null,

@@ -18,7 +18,7 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('bkCellTooltip', function(bkUtils, $rootScope) {
+  module.directive('bkCellTooltip', function(bkUtils) {
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/celltooltip"](),

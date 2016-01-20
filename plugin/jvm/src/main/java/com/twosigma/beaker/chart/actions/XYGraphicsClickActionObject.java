@@ -16,21 +16,14 @@
 
 package com.twosigma.beaker.chart.actions;
 
-import com.twosigma.beaker.chart.Graphics;
+public class XYGraphicsClickActionObject extends GraphicsClickActionObject{
+  private int index;
 
-import java.io.Serializable;
-import java.util.List;
-
-public abstract class GraphicsClickActionObject implements Serializable{
-
-  private Graphics graphics;
-
-  public Graphics getGraphics() {
-    return graphics;
+  public int getIndex() {
+    return index;
   }
 
-  public void setGraphics(Graphics graphics) {
-    this.graphics = graphics;
+  public void setIndex(int index) {
+    this.index = index;
   }
-
 }

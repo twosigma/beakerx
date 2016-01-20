@@ -103,6 +103,7 @@
     };
 
     var  processItem = function(item, index, newmodel, yAxisRSettings, yAxisSettings) {
+      item.chartId = newmodel.plotId;
       item.legend = item.display_name;
       delete item.display_name;
 

@@ -16,21 +16,23 @@
 
 package com.twosigma.beaker.chart.actions;
 
-import com.twosigma.beaker.chart.Graphics;
+public class CategoryGraphicsClickActionObject extends GraphicsClickActionObject{
+  private int category;
+  private int series;
 
-import java.io.Serializable;
-import java.util.List;
-
-public abstract class GraphicsClickActionObject implements Serializable{
-
-  private Graphics graphics;
-
-  public Graphics getGraphics() {
-    return graphics;
+  public int getCategory() {
+    return category;
   }
 
-  public void setGraphics(Graphics graphics) {
-    this.graphics = graphics;
+  public void setCategory(int category) {
+    this.category = category;
   }
 
+  public int getSeries() {
+    return series;
+  }
+
+  public void setSeries(int series) {
+    this.series = series;
+  }
 }

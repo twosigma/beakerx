@@ -19,8 +19,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.Chart;
 import com.twosigma.beaker.chart.Graphics;
+import com.twosigma.beaker.chart.actions.CategoryGraphicsClickActionObject;
 import com.twosigma.beaker.chart.actions.ChartObjectManager;
 import com.twosigma.beaker.chart.actions.GraphicsClickActionObject;
+import com.twosigma.beaker.chart.actions.XYGraphicsClickActionObject;
+import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.xychart.XYChart;
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,6 +34,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.util.List;
 
 @Path("groovysh/chart")
 @Produces(MediaType.APPLICATION_JSON)
@@ -42,13 +46,29 @@ public class ChartRest {
   private ChartObjectManager chartObjectManager;
 
   @POST
-  @Path("click/{chartId}/{graphicsId}")
-  public void onClick(@PathParam("chartId") String chartId,
+  @Path("xy/click/{chartId}/{graphicsId}")
+  public void onXYClick(@PathParam("chartId") String chartId,
                       @PathParam("graphicsId") String graphicsId,
-                      GraphicsClickActionObject info) throws IOException, InterruptedException {
+                      XYGraphicsClickActionObject info) throws IOException, InterruptedException {
     Chart chart = chartObjectManager.getChart(chartId);
-    if(chart instanceof XYChart){
-      for(Graphics g: ((XYChart)chart).getGraphics()){
+    onClick(chart, graphicsId, info, ((XYChart)chart).getGraphics());
+  }
+
+  @POST
+  @Path("category/click/{chartId}/{graphicsId}")
+  public void onCategoryClick(@PathParam("chartId") String chartId,
+                      @PathParam("graphicsId") String graphicsId,
+                      CategoryGraphicsClickActionObject info) throws IOException, InterruptedException {
+    Chart chart = chartObjectManager.getChart(chartId);
+    onClick(chart, graphicsId, info, ((CategoryPlot)chart).getGraphics());
+  }
+
+  private void onClick(Chart chart,
+                       String graphicsId,
+                       GraphicsClickActionObject info,
+                       List<? extends Graphics> graphics) {
+    if(graphics != null){
+      for(Graphics g: graphics){
         if(StringUtils.equals(g.getUid(), graphicsId)){
           g.fireClick(info);
           chart.setChanged();

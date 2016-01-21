@@ -19,10 +19,17 @@ var config = {
   framework: 'jasmine2',
   restartBrowserBetweenTests: true,
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 100000
+    defaultTimeoutInterval: 100000,
+    print: function() {}
   },
   capabilities: {
     browserName: 'firefox'
+  },
+  onPrepare: function() {
+    var SpecReporter = require('jasmine-spec-reporter');
+    jasmine.getEnv().addReporter(new SpecReporter({
+        displayStacktrace: 'specs'
+    }));
   },
   specs: [
           'tests/landing-page.js',

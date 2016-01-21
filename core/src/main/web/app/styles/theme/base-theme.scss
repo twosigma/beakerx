@@ -85,6 +85,10 @@
     }
   }
 
+  blockquote {
+    border-left-color: $std-btn-bg;
+  }
+
   textarea, .publish input.field, .publish select, .publish textarea {
     border-color: $cell-border;
     background:   $std-bg-color !important;

@@ -151,7 +151,8 @@
           "x1" : x,
           "y1" : y,
           "x2" : x2,
-          "y2" : y2
+          "y2" : y2,
+          "op" : scope.tips[this.id + "_" + i] == null ? 0 : 1
         };
         eleprops.push(prop);
 
@@ -223,7 +224,7 @@
           .style("stroke", function(d) { return d.st; })
           .style("stroke-dasharray", function(d) { return d.st_da; })
           .style("stroke-width", function(d) { return plotUtils.getHighlightedSize(self.itemProps.st_w, true); })
-          .style("opacity", function(d) { return scope.tips[self.id] == null ? 0 : 1; });
+          .style("opacity", function(d) { return d.op; });
         itemsvg.selectAll("line.highlighted")
           .data(eleprops, function(d) { return d.id; })
           .attr("x1", function(d) { return d.x1; })

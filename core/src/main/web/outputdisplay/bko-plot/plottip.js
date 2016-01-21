@@ -33,7 +33,7 @@
       scope.jqcontainer.find("#tip_" + d.id).remove();
       if (d.isresp === true) {
         scope.jqsvg.find("#" + d.id).css("opacity", 0);
-      } else if (d.noresp !== true){
+      } else {
         scope.jqsvg.find("#" + d.id).removeAttr("filter");
       }
     };
@@ -238,10 +238,9 @@
             .css("top", y);
           if (d.isresp === true) {
             scope.jqsvg.find("#" + d.id).attr("opacity", 1);
-          } else if (d.noresp !== true){
-            scope.jqsvg.find("#" + d.id).attr("filter", "url(/beaker/#svgfilter)");
+          } else {
+            scope.jqsvg.find("#" + d.id).attr("filter", "url(" + window.location.pathname + "#svgfilter)");
           }
-
           if (d.sticking == true) {
             pinCloseIcon(scope, d);
             drawLine(scope, d, tipdiv);

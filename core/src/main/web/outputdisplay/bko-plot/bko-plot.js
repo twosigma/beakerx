@@ -370,6 +370,14 @@
               scope.drawLegendPointer(d);
               return plotTip.tooltip(scope, d, d3.mouse(scope.svg[0][0]));
             })
+            .on('mousemove', function(d) {
+
+              scope.removeLegendPointer();
+              plotTip.untooltip(scope, d);
+
+              scope.drawLegendPointer(d);
+              return plotTip.tooltip(scope, d, d3.mouse(scope.svg[0][0]));
+            })
             .on("mouseleave", function(d) {
               scope.removeLegendPointer();
               return plotTip.untooltip(scope, d);

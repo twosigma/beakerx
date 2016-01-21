@@ -142,9 +142,7 @@
           "y": y2,
           "w": sw,
           "h": y - y2,
-          "fi": this.colorScale(ele.value),
-          "tooltip_cx": x + sw / 2,
-          "tooltip_cy": y2 + (y - y2) / 2
+          "fi": this.colorScale(ele.value)
         };
         eleprops.push(prop);
       }

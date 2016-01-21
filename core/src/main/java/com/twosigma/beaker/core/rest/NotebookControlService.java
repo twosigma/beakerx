@@ -83,7 +83,7 @@ public class NotebookControlService {
     data.put("arg0", filter);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      System.err.println("channel not found for session " + session);
+      System.err.println("NotebookControlService.evaluate(): channel not found for session " + session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -99,7 +99,7 @@ public class NotebookControlService {
     data.put("arg1", code);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      System.err.println("channel not found for session " + session);
+      System.err.println("NotebookControlService.evaluateCode(): channel not found for session " + session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -114,7 +114,7 @@ public class NotebookControlService {
     data.put("arg0", msg);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      System.err.println("channel not found for session " + session);
+      System.err.println("NotebookControlService.showStatus(): channel not found for session " + session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -129,7 +129,7 @@ public class NotebookControlService {
     data.put("arg0", msg);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      System.err.println("channel not found for session " + session);
+      System.err.println("NotebookControlService.clearStatus(): channel not found for session " + session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -144,7 +144,7 @@ public class NotebookControlService {
     data.put("arg0", msg);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      System.err.println("channel not found for session " + session);
+      System.err.println("NotebookControlService.showTransientStatus(): channel not found for session " + session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -158,7 +158,7 @@ public class NotebookControlService {
     data.put("numargs", 0);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      System.err.println("channel not found for session " + session);
+      System.err.println("NotebookControlService.getEvaluators(): channel not found for session " + session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -173,7 +173,7 @@ public class NotebookControlService {
     data.put("arg0", filter);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      System.err.println("channel not found for session " + session);
+      System.err.println("NotebookControlService.getCodeCells(): channel not found for session " + session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -189,7 +189,7 @@ public class NotebookControlService {
     data.put("arg1", body);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      System.err.println("channel not found for session " + session);
+      System.err.println("NotebookControlService.setCodeCellBody(): channel not found for session " + session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -205,7 +205,7 @@ public class NotebookControlService {
     data.put("arg1", evaluator);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      System.err.println("channel not found for session " + session);
+      System.err.println("NotebookControlService.setCodeCellEvaluator(): channel not found for session " + session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -221,7 +221,7 @@ public class NotebookControlService {
     data.put("arg1", tags);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      System.err.println("channel not found for session " + session);
+      System.err.println("NotebookControlService.setCodeCellTags(): channel not found for session " + session);
       return null;
     }
     channel.publish(this.localSession, data, null);

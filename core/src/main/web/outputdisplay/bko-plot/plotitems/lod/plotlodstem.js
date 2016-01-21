@@ -16,9 +16,9 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils) {
+  var retfunc = function(plotUtils, plotTip) {
     var PlotLodStem = function(data){
-      _(this).extend(data); // copy properties to itself
+      _.extend(this, data); // copy properties to itself
       this.format();
     };
 
@@ -181,17 +181,10 @@
     };
 
     PlotLodStem.prototype.clearTips = function(scope) {
-      var eleprops = this.elementProps;
-      var itemid = this.id;
-      _(scope.tips).each(function(value, key){
-        if (key.search("" + itemid) === 0) {
-          scope.jqcontainer.find("#tip_" + key).remove();
-          delete scope.tips[key];
-        }
-      });
+      plotTip.clearTips(scope, this.id);
     };
 
     return PlotLodStem;
   };
-  beaker.bkoFactory('PlotLodStem', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotLodStem', ['plotUtils', 'plotTip', retfunc]);
 })();

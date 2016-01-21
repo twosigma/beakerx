@@ -35,9 +35,6 @@ public class CategoryLinesSerializer extends CategoryGraphicsSerializer<Category
 
     serialize(categoryLines, jgen);
 
-    if (categoryLines.getColor() != null)
-      jgen.writeObjectField("color", categoryLines.getColor());
-
     if (categoryLines.getWidth() != null) {
       jgen.writeObjectField("width", categoryLines.getWidth());
     }

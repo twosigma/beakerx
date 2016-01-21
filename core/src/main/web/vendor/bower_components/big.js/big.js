@@ -1008,19 +1008,21 @@
     // EXPORT
 
 
-    // Node and other CommonJS-like environments that support module.exports.
-    if ( typeof module !== 'undefined' && module.exports ) {
-        module.exports = Big
-
-    //AMD.
-    } else if ( typeof define == 'function' && define.amd ) {
-        define( function () {
-            return Big
-        })
-
-    //Browser.
-    } else {
-        global['Big'] = Big
-    }
+    global['Big'] = Big
+    //commented out to enable static loading for native beaker
+    //// Node and other CommonJS-like environments that support module.exports.
+    //if ( typeof module !== 'undefined' && module.exports ) {
+    //    module.exports = Big
+    //
+    ////AMD.
+    //} else if ( typeof define == 'function' && define.amd ) {
+    //    define( function () {
+    //        return Big
+    //    })
+    //
+    ////Browser.
+    //} else {
+    //    global['Big'] = Big
+    //}
 
 })( this );

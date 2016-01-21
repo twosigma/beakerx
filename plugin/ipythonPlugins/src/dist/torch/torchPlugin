@@ -1,0 +1,46 @@
+#!/usr/bin/python
+#
+# Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import os
+import sys
+import subprocess
+import shutil
+
+if len(sys.argv) > 1:
+    arg1 = sys.argv[1]
+    if arg1 == "--version":
+        os.execlp("ipython", "ipython", "--version")
+    elif arg1 == "--hash":
+        os.execlp("ipython", "ipython", "-c", "\"from IPython.lib import passwd;print (passwd('" + sys.argv[2] + "'))\"")
+    elif arg1 == "--profile":
+        ver = subprocess.check_output(["ipython", "ipython", "--version"])
+        if (ver.startswith("2.") or ver.startswith("1.")):
+            profile = subprocess.check_output(["ipython","locate","profile","torch"])
+            profile = profile.strip()
+            dest = sys.argv[2] +"/"+"profile_beaker_backend_" + sys.argv[3]
+            shutil.copytree(profile,dest)
+            sys.exit(0)
+        os.execlp("ipython", "ipython", "profile",
+                  "create", "beaker_backend_" + sys.argv[3],
+                  "--ipython-dir=" + sys.argv[2])
+
+plugin_dir = os.path.dirname(sys.argv[0])
+os.environ['beaker_torch_init'] = plugin_dir
+if os.name == 'nt':
+    subprocess.call(["python", plugin_dir+"/torchPluginStart.py"], shell=True)
+else:
+    os.execlp("python", "python", plugin_dir+"/torchPluginStart.py")
+

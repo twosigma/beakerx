@@ -18,6 +18,10 @@ bk-code-cell-output {
   .ui-state-default {
     background: rgb(235, 235, 235);
   }
+
+  .bk-object-label {
+    color: #31708f;
+  }
 }
 
 .markup, .dataTables_scrollBody {
@@ -61,7 +65,11 @@ bk-code-cell-output {
   }
 }
 
-.outputcontainer-li {
+.outputcontainer {
 	display: block;
-	margin-bottom: 10px
+}
+
+.outputcontainer-li {
+  display: block;
+  margin-bottom: 10px
 }

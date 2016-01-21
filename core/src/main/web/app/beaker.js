@@ -162,6 +162,10 @@
     ]);
 
 
+    beaker.config(function($compileProvider) {
+      $compileProvider.debugInfoEnabled(false);
+    });
+
     // setup routing. the template is going to replace ng-view
     beaker.config(function($routeProvider) {
       var _newSession, _import, _open, _target;
@@ -397,16 +401,16 @@
         "JavaScript": { url: "./plugin/evaluator/javaScript.js", bgColor: "#EFDB52", fgColor: "#4A4A4A", borderColor: "",        shortName: "Js" }
       };
 
-      _.chain(defaultEvaluatorUrlMap).each(function(value, key) {
+      _.each(defaultEvaluatorUrlMap, function(value, key) {
         bkEvaluatePluginManager.addNameToUrlEntry(key, value);
       });
 
       if (window.bkInit && window.bkInit.getEvaluatorUrlMap) {
         var evaluatorsUrlMap = window.bkInit.getEvaluatorUrlMap();
-        _.chain(evaluatorsUrlMap).keys().each(function(key) {
+        _(evaluatorsUrlMap).keys().each(function(key) {
           var value = evaluatorsUrlMap[key];
           bkEvaluatePluginManager.addNameToUrlEntry(key, value);
-        });
+        }).value();
       }
     });
 

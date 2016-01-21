@@ -53,7 +53,7 @@
     stack.peek = function() {
       return this[this.length - 1];
     };
-    _(decoratedCells).each(function(cell) {
+    _.each(decoratedCells, function(cell) {
       if (cell.id === 'root') {
         return;
       }
@@ -72,7 +72,7 @@
 
   var generateTagMap = function(cellMap) {
     // initialization cells
-    var initializationCells = _(cellMap).chain()
+    var initializationCells = _.chain(cellMap)
         .filter(function(cell) {
           return cell.raw && cell.raw.initialization;
         })
@@ -80,7 +80,7 @@
           if (cell.raw.type === 'code') {
             return cell;
           } else {
-            return _(cell.allDescendants).chain()
+            return _.chain(cell.allDescendants)
                 .map(function(childId) {
                   return cellMap[childId];
                 })
@@ -108,13 +108,13 @@
       }
       this[key].push(value);
     };
-    _(cellMap).chain()
-        .filter(function(cell) {
-          return cell.raw && cell.raw.type === 'code';
-        })
-        .each(function(codeCell) {
-          evaluatorMap.add(codeCell.raw.evaluator, codeCell.raw);
-        });
+    _.chain(cellMap)
+      .filter(function(cell) {
+        return cell.raw && cell.raw.type === 'code';
+      })
+      .each(function(codeCell) {
+        evaluatorMap.add(codeCell.raw.evaluator, codeCell.raw);
+      }).value();
 
     // user tags
     var userTagsMap = {};
@@ -124,7 +124,7 @@
       }
       this[key].push(value);
     };
-    _(cellMap).chain()
+    _.chain(cellMap)
     .filter(function(cell) {
       return cell.raw && cell.raw.type === 'code' && cell.raw.tags !== undefined && cell.raw.tags !== '';
     })
@@ -135,7 +135,7 @@
       for (i = 0; i < tags.length; i++) {
         userTagsMap.add(tags[i], codeCell.raw);
       }
-    });
+    }).value();
 
     return {
       initialization: initializationCells,
@@ -149,7 +149,7 @@
     oldArray.splice.apply(oldArray, args);
   };
 
-  module.factory('bkNotebookCellModelManager', function($timeout, $rootScope) {
+  module.factory('bkNotebookCellModelManager', function($timeout, $rootScope, bkEvaluateJobManager) {
     var cells = [];
     var cellMap = {};
     var tagMap = {};
@@ -439,8 +439,12 @@
         if (cells) {
           _.each(cells, function(cell) {
             if (cell.output) {
-              cell.output.result = undefined;
-              cell.output.elapsedTime = undefined;
+              var runningJob = bkEvaluateJobManager.getCurrentJob();
+              if (!runningJob || runningJob.cellId !== cell.id) {
+                cell.output.result = undefined;
+                cell.output.elapsedTime = undefined;
+                bkEvaluateJobManager.remove(cell);
+              }              
             }
           });
         }

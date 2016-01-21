@@ -21,27 +21,23 @@ import com.twosigma.beaker.chart.Color;
 import java.io.IOException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 /**
  * AreaSerializer
  *
  */
-public class AreaSerializer extends JsonSerializer<Area> {
+public class AreaSerializer extends XYGraphicsSerializer<Area> {
 
   @Override
   public void serialize(Area area, JsonGenerator jgen, SerializerProvider sp)
       throws IOException, JsonProcessingException {
 
     jgen.writeStartObject();
+
+    super.serialize(area, jgen, sp);
+
     jgen.writeObjectField("type", area.getClass().getSimpleName());
-    jgen.writeObjectField("x", area.getX());
-    jgen.writeObjectField("y", area.getY());
-    jgen.writeObjectField("visible", area.getVisible());
-    jgen.writeObjectField("display_name", area.getDisplayName());
-    if (area.getLodFilter() != null)
-      jgen.writeObjectField("lod_filter", area.getLodFilter().getText());
     if (area.getColor() instanceof Color) {
       jgen.writeObjectField("color", area.getColor());
     }
@@ -53,7 +49,6 @@ public class AreaSerializer extends JsonSerializer<Area> {
     if (area.getInterpolation() != null) {
       jgen.writeObjectField("interpolation", area.getInterpolation());
     }
-    jgen.writeObjectField("yAxis", area.getYAxis());
     jgen.writeEndObject();
   }
 

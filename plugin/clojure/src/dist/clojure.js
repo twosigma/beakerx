@@ -96,23 +96,33 @@ define(function(require, exports, module) {
         }
       },
       resetEnvironment: function () {
+        bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
         $.ajax({
           type: "POST",
           datatype: "json",
           url: bkHelper.serverUrl(serviceBase + "/rest/clojuresh/resetEnvironment"),
           data: {shellId: this.settings.shellID}
         }).done(function (ret) {
-          console.log("done resetEnvironment",ret);
+          bkHelper.hideLanguageManagerSpinner();
+          console.log("done resetEnvironment", ret);
+        }).fail(function(jqXHR, textStatus) {
+          bkHelper.hideLanguageManagerSpinner(textStatus);
+          console.error("Request failed: " + textStatus);
         });
       },
       killAllThreads: function () {
+        bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
         $.ajax({
           type: "POST",
           datatype: "json",
           url: bkHelper.serverUrl(serviceBase + "/rest/clojuresh/killAllThreads"),
           data: {shellId: this.settings.shellID}
         }).done(function (ret) {
-          console.log("done killAllThreads",ret);
+          bkHelper.hideLanguageManagerSpinner();
+          console.log("done killAllThreads", ret);
+        }).fail(function(jqXHR, textStatus) {
+          bkHelper.hideLanguageManagerSpinner(textStatus);
+          console.error("Request failed: " + textStatus);
         });
       },
       autocomplete: function(code, cpos, cb) {
@@ -136,16 +146,22 @@ define(function(require, exports, module) {
         }).done(cb);
       },
       updateShell: function (cb) {
-        var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/setShellOptions"), {
+        bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
+        bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/setShellOptions"), {
           shellId: this.settings.shellID,
           classPath: this.settings.classPath,
           imports: this.settings.imports,
           outdir: this.settings.outdir,
           requirements: this.settings.requirements
+        }).success(function() {
+          if (cb && _.isFunction(cb)) {
+            cb();
+          }
+          bkHelper.hideLanguageManagerSpinner();
+        }).error(function(err) {
+          bkHelper.hideLanguageManagerSpinner(err);
+          bkHelper.show1ButtonModal('ERROR: ' + err, PLUGIN_NAME + ' restart failed');
         });
-        if (cb) {
-          p.success(cb);
-        }
       },
       spec: {
         classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},

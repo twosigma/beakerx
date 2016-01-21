@@ -215,6 +215,14 @@
         },
         tick: function() {
           bkUtils.fcall(doNext);
+        },
+        remove: function(cellId) {
+          for (var idx=0; idx<_queue.length; idx++) {
+            if(_queue[idx].cellId === cellId){
+              delete running[_queue[idx].cellId];
+              _queue.splice(idx, 1);
+            }
+          }
         }
       };
     })();
@@ -293,7 +301,7 @@
       // evaluate a cell (as a subcell of currently running cell)
       evaluateAll: function(cells) {
         var self = this;
-        var promises = _(cells).map(function(cell) {
+        var promises = _.map(cells, function(cell) {
           return self.evaluate(cell, true);
         });
         jobQueue.tick();
@@ -302,7 +310,7 @@
       // evaluate all cells in top level context
       evaluateRootAll: function(cells, parent) {
         var self = this;
-        var promises = _(cells).map(function(cell) {
+        var promises = _.map(cells, function(cell) {
           return self.evaluateRoot(cell, true);
         });
         jobQueue.tick();
@@ -357,6 +365,12 @@
       getOutputCell: function(id) {
         return outputMap[id];
       },
+      remove: function (cell) {
+        jobQueue.remove(cell.id);
+      },
+      getCurrentJob: function(){
+        return jobQueue.getCurrentJob();
+      }
 
     };
   });

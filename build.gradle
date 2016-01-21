@@ -36,9 +36,9 @@ task check (type: GradleBuild) {
   tasks = ['check']
 }
 
-task installApp (type: GradleBuild) {
+task installDist (type: GradleBuild) {
   buildFile = mainGradle
-  tasks = ['installApp']
+  tasks = ['installDist']
 }
 
 task clean (type: GradleBuild) {

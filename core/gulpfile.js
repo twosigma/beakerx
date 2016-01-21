@@ -37,7 +37,6 @@ var plugins = require('gulp-load-plugins');
 var htmlbuild = require('gulp-htmlbuild');
 var es = require('event-stream');
 var fs = require('fs');
-var sourcemaps = require('gulp-sourcemaps');
 
 var srcPath  = Path.join(__dirname, "/src/main/web/");
 var pluginPath  = Path.join(__dirname, "/src/main/web/plugin/");
@@ -45,7 +44,7 @@ var rootPath  = Path.join(__dirname, "/src/main/web/app/");
 var IPythonCssPath  = Path.join(__dirname, "/src/main/web/app/styles/ipython/style");
 var root2Path  = Path.join(__dirname, "/src/main/web/outputdisplay/");
 var buildPath = Path.join(__dirname, "/src/main/web/app/dist/");
-var tempPath = Path.join(__dirname, "/src/main/web/app/temp/");
+var tempPath = Path.join(__dirname, "/src/main/web/app/genweb/");
 
 var banner = ['/*',
               ' *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC',
@@ -140,11 +139,10 @@ gulp.task("namespaceIPythonCss", function() {
 
 gulp.task("compileBeakerScss", function() {
   return sass([].concat(Path.join(rootPath, "app.scss"),
-                        Path.join(rootPath, "vendor.scss")), { sourcemap: true })
+                        Path.join(rootPath, "vendor.scss")))
   .on('error', handleError)
   .pipe(importCss())
   .pipe(stripCssComments())
-  .pipe(sourcemaps.write())
   .pipe(gulp.dest(tempPath));
 });
 
@@ -289,9 +287,7 @@ gulp.task('buildIndexTemplate', function () {
         }
 
         block.pipe(gulpSrc())
-          .pipe(sourcemaps.init({loadMaps: true}))
           .pipe(concat('beakerVendor.js'))
-          .pipe(sourcemaps.write('./'))
           .pipe(gulp.dest(buildPath));
         block.end('app/dist/beakerVendor.js');
       }),
@@ -302,11 +298,8 @@ gulp.task('buildIndexTemplate', function () {
           block.pipe(block);
         } else {
           block.pipe(gulpSrc())
-            .pipe(sourcemaps.init({loadMaps: true}))
-//            .pipe(stripJsComments())
             .pipe(concat('beakerApp.js'))
             .pipe(header(banner ))
-            .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest(buildPath));
           block.end('app/dist/beakerApp.js');
         }

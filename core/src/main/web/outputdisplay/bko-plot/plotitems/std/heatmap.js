@@ -16,10 +16,10 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils) {
+  var retfunc = function(plotUtils, plotTip) {
 
     var HeatMap = function(data) {
-      _(this).extend(data); // copy properties to itself
+      _.extend(this, data); // copy properties to itself
       this.format();
     };
     HeatMap.prototype.plotClass = "heatmap";
@@ -70,8 +70,8 @@
       };
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
-        range.xl = Math.min(range.xl, ele.x);
-        range.xr = Math.max(range.xr, ele.x2);
+        range.xl = plotUtils.min(range.xl, ele.x);
+        range.xr = plotUtils.max(range.xr, ele.x2);
         range.yl = Math.min(range.yl, ele.y);
         range.yr = Math.max(range.yr, ele.y2);
       }
@@ -169,6 +169,7 @@
         .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
         .attr("class", respClass)
+        .attr("shape-rendering", "crispEdges")
         .style("fill", function(d) {
           return d.fi;
         });
@@ -186,14 +187,7 @@
     };
 
     HeatMap.prototype.clearTips = function(scope) {
-      var eleprops = this.elementProps;
-      var itemid = this.id;
-      _(scope.tips).each(function(value, key) {
-        if (key.search("" + itemid) === 0) {
-          scope.jqcontainer.find("#tip_" + key).remove();
-          delete scope.tips[key];
-        }
-      });
+      plotTip.clearTips(scope, this.id);
     };
 
     HeatMap.prototype.createTip = function(ele, g, model) {
@@ -202,5 +196,5 @@
 
     return HeatMap;
   };
-  beaker.bkoFactory('HeatMap', ['plotUtils', retfunc]);
+  beaker.bkoFactory('HeatMap', ['plotUtils', 'plotTip', retfunc]);
 })();

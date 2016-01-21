@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    var retfunc = function(bkUtils) {
+    var retfunc = function(bkUtils, bkHelper) {
     return {
       outsideScr: function(scope, x, y) {
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
@@ -11,8 +11,8 @@
         return x > W || x + w < 0 || y > H || y + h < 0;
       },
       updateRange : function(datarange, itemrange) {
-        if (itemrange.xl != null) { datarange.xl = Math.min(datarange.xl, itemrange.xl); }
-        if (itemrange.xr != null) { datarange.xr = Math.max(datarange.xr, itemrange.xr); }
+        if (itemrange.xl != null) { datarange.xl = this.min(datarange.xl, itemrange.xl); }
+        if (itemrange.xr != null) { datarange.xr = this.max(datarange.xr, itemrange.xr); }
         if (itemrange.yl != null) { datarange.yl = Math.min(datarange.yl, itemrange.yl); }
         if (itemrange.yr != null) { datarange.yr = Math.max(datarange.yr, itemrange.yr); }
       },
@@ -33,32 +33,50 @@
           var itemrange = data[i].getRange();
           this.updateRange(datarange, itemrange);
         }
-        if (visibleItem === 0 || datarange.xl === Infinity) {
+        if (datarange.xl === Infinity && datarange.xr !== -Infinity) {
+          datarange.xl = datarange.xr - 1;
+        } else if (datarange.xr === -Infinity && datarange.xl !== Infinity) {
+          datarange.xr = datarange.xl + 1;
+        } else if (visibleItem === 0 || datarange.xl === Infinity) {
           datarange.xl = 0;
           datarange.xr = 1;
+        } else if (datarange.xl > datarange.xr) {
+          var temp = datarange.xl;
+          datarange.xl = datarange.xr;
+          datarange.xr = temp;
+        }
+        if (datarange.yl === Infinity && datarange.yr !== -Infinity) {
+          datarange.yl = datarange.yr - 1;
+        } else if (datarange.yr === -Infinity && datarange.yl !== Infinity) {
+          datarange.yr = datarange.yl + 1;
         }
         if (visibleItem === 0 || datarange.yl === Infinity) {
           datarange.yl = 0;
           datarange.yr = 1;
+        } else if (datarange.yl > datarange.yr) {
+          var temp = datarange.yl;
+          datarange.yl = datarange.yr;
+          datarange.yr = temp;
         }
 
-        var increaseRange = function(value){
-          return value + (value || 1) / 10;
+        var self = this;
+        var increaseRange = function(value) {
+          return self.plus(value, self.div((value || 1), 10));
         };
         var decreaseRange = function(value){
-          return value - (value || 1) / 10;
+          return self.minus(value, self.div((value || 1), 10));
         };
 
-        if(datarange.xl === datarange.xr){
+        if (this.eq(datarange.xl, datarange.xr)) {
           datarange.xl = decreaseRange(datarange.xl);
           datarange.xr = increaseRange(datarange.xr);
         }
-        if(datarange.yl === datarange.yr) {
+        if (datarange.yl === datarange.yr) {
           datarange.yl = decreaseRange(datarange.yl);
           datarange.yr = increaseRange(datarange.yr);
         }
 
-        datarange.xspan = datarange.xr - datarange.xl;
+        datarange.xspan = this.minus(datarange.xr, datarange.xl);
         datarange.yspan = datarange.yr - datarange.yl;
         return {
           "datarange" : datarange,
@@ -75,12 +93,20 @@
           yl : model.userFocus.yl,
           yr : model.userFocus.yr
         };
+
         if (focus.xl == null) {
-          focus.xl = range.xl - range.xspan * margin.left;
+          focus.xl = this.minus(range.xl, this.mult(range.xspan, margin.left));
         }
         if (focus.xr == null) {
-          focus.xr = range.xr + range.xspan * margin.right;
+          focus.xr = this.plus(range.xr, this.mult(range.xspan, margin.right));
         }
+        if (focus.xl instanceof Big) {
+          focus.xl = parseFloat(focus.xl.toString());
+        }
+        if (focus.xr instanceof Big) {
+          focus.xr = parseFloat(focus.xr.toString());
+        }
+
         if (focus.yl == null) {
           if (model.yIncludeZero === true) {
             var yl = model.vrange.yspan * range.yl + model.vrange.yl;
@@ -98,7 +124,7 @@
         focus.yspan = focus.yr - focus.yl;
         var result = {};
         result.defaultFocus = focus;
-        _(result).extend(_.omit(ret, "datarange"));
+        _.extend(result, _.omit(ret, "datarange"));
         return result;
       },
 
@@ -365,6 +391,11 @@
         if (axis.axisType === "time") {
           return moment(val).tz(axis.axisTimezone).format("YYYY MMM DD ddd, HH:mm:ss .SSS");
         }
+        if (axis.axisType === "nanotime") {
+          var d = parseFloat(val.div(1000000).toFixed(0));
+          var nanosec = val.mod(1000000000).toFixed(0);
+          return moment(d).tz(axis.axisTimezone).format("YYYY MMM DD ddd, HH:mm:ss") + "." + this.padStr(nanosec, 9);
+        }
         if (typeof(val) === "number") {
           if (fixed === true) {
             // do nothing, keep full val
@@ -388,7 +419,7 @@
 
       createTipString : function(obj) {
         var txt = "";
-        _(obj).each(function(value, key) {
+        _.each(obj, function(value, key) {
           if (key == "title") {
             txt += "<div style='font-weight:bold'>";
           } else {
@@ -402,7 +433,7 @@
       },
 
       rangeAssert : function(list) {
-        _(list).each(function(e, i){
+        _.each(list, function(e, i){
           if (Math.abs(e) > 1E6) {
             console.error("data not shown due to too large coordinate");
             return true;
@@ -693,9 +724,127 @@
         labelWidth : 6,
         labelHeight : 12,
         tooltipWidth : 10
-      }
+      },
 
+      padStr: function(val, len) {
+        var str = "" + Math.abs(val);
+        while (str.length < len) str = "0" + str;
+        return str;
+      },
+
+      max: function(n1, n2){
+        if (n1 instanceof Big || n2 instanceof Big) {
+          if(n1 == -Infinity){
+            return n2;
+          }
+          if(n2 == -Infinity){
+            return n1;
+          }
+          return n1.gt(n2) ? n1 : n2;
+        } else {
+          return Math.max(n1, n2);
+        }
+      },
+      min: function(n1, n2){
+        if (n1 instanceof Big || n2 instanceof Big) {
+          if(n1 == Infinity){
+            return n2;
+          }
+          if(n2 == Infinity){
+            return n1;
+          }
+          return n1.lt(n2) ? n1 : n2;
+        } else {
+          return Math.min(n1, n2);
+        }
+      },
+
+      eq: function(n1, n2){
+        return n1 instanceof Big ? n1.eq(n2) : n1 === n2;
+      },
+
+      lt: function(n1, n2){
+        return n1 instanceof Big ? n1.lt(n2) : n1 < n2;
+      },
+
+      lte: function(n1, n2){
+        return n1 instanceof Big ? n1.lte(n2) : n1 <= n2;
+      },
+
+      gt: function(n1, n2){
+        return n1 instanceof Big ? n1.gt(n2) : n1 > n2;
+      },
+
+      gte: function(n1, n2){
+        return n1 instanceof Big ? n1.gte(n2) : n1 >= n2;
+      },
+
+      plus: function(n1, n2){
+        return n1 instanceof Big ? n1.plus(n2) : n1 + n2;
+      },
+      minus: function(n1, n2){
+        return n1 instanceof Big ? n1.minus(n2) : n1 - n2;
+      },
+      mult: function(n1, n2){
+        return n1 instanceof Big ? n1.times(n2) : n1 * n2;
+      },
+      div: function(n1, n2){
+        return n1 instanceof Big ? n1.div(n2) : n1 / n2;
+      },
+      convertInfinityValue: function (value) {
+        if(value === "Infinity"){
+          return Infinity;
+        }
+        if(value === "-Infinity"){
+          return -Infinity;
+        }
+        return value;
+      },
+
+      createNiceColor: function () {
+        var hue = Math.random();
+        var saturation = 0.75;
+        var luminance = 0.5;
+        var rgb = this.hslToRgb(hue, saturation, luminance);
+        var niceColor = bkHelper.rgbaToHex(rgb[0], rgb[1], rgb[2]);
+        while (bkHelper.defaultPlotColors[bkHelper.getTheme()].indexOf(niceColor) !== -1) {
+          niceColor = this.createNiceColor();
+        }
+        return niceColor;
+      },
+
+      //http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+      hslToRgb: function (h, s, l) {
+        var r, g, b;
+
+        if (s == 0) {
+          r = g = b = l; // achromatic
+        } else {
+          var hue2rgb = function (p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1 / 6) return p + (q - p) * 6 * t;
+            if (t < 1 / 2) return q;
+            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+            return p;
+          };
+
+          var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+          var p = 2 * l - q;
+          r = hue2rgb(p, q, h + 1 / 3);
+          g = hue2rgb(p, q, h);
+          b = hue2rgb(p, q, h - 1 / 3);
+        }
+
+        return [r * 255, g * 255, b * 255];
+      },
+
+
+      getDefaultColor: function (i) {
+        var themeColors = bkHelper.defaultPlotColors[bkHelper.getTheme()];
+        return i < themeColors.length ? themeColors[i] : this.createNiceColor();
+      }
     };
   };
-  beaker.bkoFactory('plotUtils', ["bkUtils", retfunc]);
+  beaker.bkoFactory('plotUtils', ["bkUtils", "bkHelper", retfunc]);
 })();

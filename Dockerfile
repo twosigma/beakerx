@@ -37,7 +37,10 @@ RUN su -m beaker -c "cd /home/beaker/src  && gradle build"
 ###################
 
 RUN su -m beaker -c "julia --eval 'Pkg.add(\"IJulia\")'" && \
+    su -m beaker -c "julia --eval 'Pkg.add(\"Requests\")'" && \
     su -m beaker -c "julia --eval 'Pkg.add(\"Gadfly\")'"
+RUN su -m beaker -c "julia --eval 'Pkg.rm(\"IJulia\")'" && \
+    su -m beaker -c "julia --eval 'Pkg.add(\"IJulia\")'"
 
 RUN mkdir -p /home/beaker/.beaker/v1/config && \
     echo '{"pref-format" : "1", "languages" : {"Python3" : {"path": "/home/beaker/py3k/bin"}}}' > /home/beaker/.beaker/v1/config/beaker.pref.json

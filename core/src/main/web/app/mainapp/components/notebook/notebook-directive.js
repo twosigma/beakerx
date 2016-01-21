@@ -33,7 +33,9 @@
       bkCellMenuPluginManager,
       bkSessionManager,
       bkCoreManager,
-      bkOutputLog) {
+      bkOutputLog,
+      bkElectron,
+      bkMenuPluginManager) {
     var CELL_TYPE = 'notebook';
     return {
       restrict: 'E',
@@ -94,6 +96,11 @@
                this._lodThreshold = lodThreshold;
             }
           },
+          refreshScope: function () {
+            if(!($scope.$$phase || $scope.$root.$$phase)){
+              $scope.$apply();
+            }
+          },
           getViewModel: function () {
             return this._viewModel;
           },
@@ -134,6 +141,11 @@
           },
           getCMKeyMapMode: function () {
             return this._cmKeyMapMode;
+          },
+          setCMTheme: function (theme) {
+            _.each(this._codeMirrors, function (cm) {
+              cm.setOption("theme", theme);
+            });
           }
         };
         $scope.setBkNotebook({bkNotebook: _impl});
@@ -165,6 +177,9 @@
         };
         $scope.hideOutput = function () {
           _impl._viewModel.hideOutput();
+          if (bkUtils.isElectron){
+            bkElectron.updateMenus(bkMenuPluginManager.getMenus());
+          }
         };
 
         $scope.isAdvancedMode = function () {
@@ -344,7 +359,7 @@
         scope.$on('$destroy', function() {
           scope.setBkNotebook({bkNotebook: undefined});
           bkOutputLog.unsubscribe();
-          _(scope.unregisters).each(function(unregister) {
+          _.each(scope.unregisters, function(unregister) {
             unregister();
           });
         });

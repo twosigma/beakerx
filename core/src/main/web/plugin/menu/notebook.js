@@ -143,6 +143,24 @@ define(function(require, exports, module) {
               preferencevalue: 'emacs'
             });
           }
+        },
+        {
+          name: 'Sublime',
+          sortorder: 120,
+          id: 'sublime-edit-mode-menuitem',
+          isRadio: true,
+          isChecked: function() {
+            var notebookViewModel = bkHelper.getBkNotebookViewModel();
+            return notebookViewModel.getEditMode() == 'sublime';
+          },
+          action: function() {
+            var notebookViewModel = bkHelper.getBkNotebookViewModel();
+            notebookViewModel.setEditMode('sublime');
+            bkHelper.httpPost('../beaker/rest/util/setPreference', {
+              preferencename: 'edit-mode',
+              preferencevalue: 'sublime'
+            });
+          }
         }
       ]
     }

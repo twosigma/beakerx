@@ -37,6 +37,7 @@ abstract public class XYChart extends AbstractChart{
   private Integer lodThreshold = null;
 
   public XYChart add(XYGraphics graphics) {
+    graphics.setPlotType(this.getClass());
     this.xyGraphics.add(graphics);
     return this;
   }
@@ -50,6 +51,7 @@ abstract public class XYChart extends AbstractChart{
   }
 
   public XYChart add(ConstantLine constantLine) {
+    constantLine.setPlotType(this.getClass());
     this.constantLines.add(constantLine);
     return this;
   }
@@ -76,6 +78,7 @@ abstract public class XYChart extends AbstractChart{
   }
 
   public XYChart add(Text text) {
+    text.setPlotType(this.getClass());
     this.texts.add(text);
     return this;
   }

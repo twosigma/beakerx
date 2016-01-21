@@ -20,7 +20,8 @@
   (function ($) {
     $.widget("custom.combobox", {
       options: {
-        change: null
+        change: null,
+        disabled: false
       },
       _create: function () {
         this.editable = this.element.attr('easyform-editable') === 'true';
@@ -70,6 +71,10 @@
               });
         }
 
+        if(this.options.disabled){
+          this.input.attr('disabled', 'disabled');
+        }
+
         this._on(this.input, {
           autocompleteselect: function (event, ui) {
             ui.item.option.selected = true;
@@ -91,6 +96,7 @@
         //reverts to jquery button fn
         var bootstrapButtonFn = $.fn.button.noConflict();
 
+        var self = this;
         var showAllButton = $("<a>")
             .attr("tabIndex", -1)
             .attr("title", "Show All Items")
@@ -104,15 +110,25 @@
             .removeClass("ui-corner-all")
             .addClass("custom-combobox-toggle ui-corner-right")
             .mousedown(function () {
-              wasOpen = input.autocomplete("widget").is(":visible");
+              if (!self.options.disabled) {
+                wasOpen = input.autocomplete("widget").is(":visible");
+              }
             })
             .click(function () {
-              input.focus();
-              if (wasOpen) {
-                return;
+              if (!self.options.disabled) {
+                input.focus();
+                if (wasOpen) {
+                  return;
+                }
+                input.autocomplete("search", "");
               }
-              input.autocomplete("search", "");
             });
+
+        if (self.options.disabled) {
+          showAllButton.attr("disabled", "disabled");
+        } else {
+          showAllButton.removeAttr("disabled");
+        }
 
         //return to bootstrap button fn
         $.fn.button = bootstrapButtonFn;
@@ -184,6 +200,7 @@
     this.init = function() {
       component = scope.component;
       scope.componentId = component.label;
+      scope.id = scope.componentId.toLowerCase().replace(/\s/g, '');
       scope.ngModelAttr = utils.getValidNgModelString(component.label);
 
       this.buildUI();
@@ -323,9 +340,9 @@
             restrict: "E",
             template:
                 "<div class='easyform-container'>" +
-                  "<label class='easyform-label'/>" +
                   "<div class='easyform-component-container'>" +
                     "<input type='checkbox' ng-disabled='!component.enabled' class='check-box'/>" +
+                    "<label class='easyform-label'/>" +
                   "</div>" +
                 "</div>",
             link: function (scope, element, attrs) {
@@ -334,9 +351,10 @@
                   scope, element, EasyFormConstants, EasyFormService, bkUtils);
 
               efc.buildUI = function() {
-                element.find('.easyform-label').text(efc.getComponent().label);
+                element.find('.easyform-label').text(efc.getComponent().label).attr('for', scope.id);
                 var checkBox = element.find('.check-box');
                 checkBox.attr('ng-model', scope.ngModelAttr);
+                checkBox.attr('id', scope.id);
                 if ('true' === efc.getComponent().value) {
                   efc.getComponent().value = true;
                   checkBox.attr('checked', 'true');
@@ -373,12 +391,13 @@
                 "<div class='easyform-container'>" +
                   "<label class='easyform-label'/>" +
                   "<div class='easyform-component-container'>" +
-                    "<label class='check-box-group-item-label'" +
+                    "<div class='check-box-group-item'" +
                     " ng-repeat='value in values track by $index' " +
-                    " ng-class='{vertical : !horizontal}'>" +
-                    " <input type='checkbox' ng-model='value.selected' name='selectedValues[]' " +
-                    " ng-disabled='!component.enabled'/> {{value.name}}" +
-                    "</label>" +
+                    " ng-class='{horizontal : !!horizontal}'>" +
+                    " <input type='checkbox' id='{{value.id}}' ng-model='value.selected' name='selectedValues[]' " +
+                    " ng-disabled='!component.enabled'/>" +
+                    " <label for='{{value.id}}' class='check-box-group-item-label' ng-bind='value.name'/>" +
+                    "</div>" +
                   "</div>" +
                 "</div>",
             link: function (scope, element, attrs) {
@@ -390,9 +409,11 @@
                 scope.values = [];
                 if (efc.getComponent().values && efc.getComponent().values.length > 0) {
                   efc.getComponent().values.forEach(function (value) {
+                    var valuePostfix = value.toLowerCase().replace(/\s+/g, '');
                     var obj = {
                       name: value,
-                      selected: false
+                      selected: false,
+                      id: scope.id + valuePostfix
                     };
                     scope.values.push(obj);
                   });
@@ -484,12 +505,10 @@
                 var comboBox = element.find('.combo-box');
                 comboBox.attr('ng-model', scope.ngModelAttr);
 
-                scope.component.enabled = true;
-
                 var editable = efc.getComponent().editable
                     && efc.getComponent().editable === 'true';
                 comboBox.attr('easyform-editable', editable);
-                comboBox.combobox({change : efc.valueChangeHandler});
+                comboBox.combobox({change : efc.valueChangeHandler, disabled: !scope.component.enabled});
                 if (editable && efc.getComponent().width
                     && parseInt(efc.getComponent().width)
                         > efc.constants.Components.ComboBox.MIN_WIDTH) {
@@ -653,21 +672,22 @@
                       = angular.element('<div class="radio-button-items-container"></div>');
 
                   efc.getComponent().values.forEach(function (value) {
+                    var valuePostfix = value.toLowerCase().replace(/\s+/g, '');
+                    var outerRadioButtonWrap
+                        = angular.element('<div class="radio-button-item"></div>');
                     var outerRadioButtonLabel
                         = angular.element('<label class="radio-button-item-label"></label>');
-                    outerRadioButtonLabel.addClass(horizontal ? 'horizontal' : 'vertical');
+                    outerRadioButtonWrap.addClass(horizontal ? 'horizontal' : 'vertical');
                     var radioButton
                         = angular.element('<input type="radio" class="radio-button-component-item"'
                         + ' ng-disabled="!component.enabled"/>')
                         .attr('ng-model', scope.ngModelAttr)
-                        .attr('value', value);
-                    var textSpanElement =
-                        angular.element('<span class="radio-button-item-text"></span>');
-                    textSpanElement.text(value);
+                        .attr('value', value)
+                        .attr('id', scope.id + valuePostfix);
+                    outerRadioButtonLabel.attr('for', scope.id + valuePostfix).text(value);
                     var divSpacer = angular.element('<div class="radio-button-item-spacer"/>');
-                    outerRadioButtonLabel.append(radioButton).append(textSpanElement)
-                        .append(divSpacer);
-                    radioButtonItemsContainer.append(outerRadioButtonLabel);
+                    outerRadioButtonWrap.append(radioButton).append(outerRadioButtonLabel).append(divSpacer);
+                    radioButtonItemsContainer.append(outerRadioButtonWrap);
                   });
 
                   container.append(radioButtonItemsContainer);
@@ -741,9 +761,16 @@
                   event.preventDefault();
                 });
                 datePickerButton.click(function() {
-                  datePickerButtonClicked = true;
-                  datePicker.datetimepicker("toggle");
+                  if (scope.component.enabled) {
+                    datePickerButtonClicked = true;
+                    datePicker.datetimepicker("toggle");
+                  }
                 });
+                if (scope.component.enabled) {
+                  datePickerButton.removeAttr("disabled");
+                } else {
+                  datePickerButton.attr("disabled", "disabled");
+                }
               };
 
               efc.init();
@@ -835,7 +862,7 @@
         function ($compile, bkUtils, bkEvaluatorManager, bkSessionManager, EasyFormConstants,
                   EasyFormService) {
           return {
-            template: "<div class='easy-form-container' bk-enter='clickRunButton()'></div>",
+            template: "<div class='easy-form-container' bk-enter='clickRunButton()' skipfortag='TEXTAREA'></div>",
 
             controller: function ($scope) {
               $scope.evaluatorExist = $scope.model.getEvaluatorId && $scope.model.getEvaluatorId();
@@ -922,7 +949,7 @@
 
                 if (model.components) {
                   model.components.forEach(function (component) {
-
+                    component.enabled = !_.isEmpty(model.update_id);
                     var childScope = $scope.$new();
                     childScope.component = component;
                     childScope.formId = $scope.update_id;

@@ -61,67 +61,106 @@ define(function(require, exports, module) {
             document.cookie = theCookie[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/";
           }
         }
-        
-        bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"),
-                         {pluginId: PLUGIN_NAME}).success(function(result) {
-                           bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/login")).then(function () {
-            bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2F"),
-                              {password: result}).success(function(result) {
-              var baseurl = bkHelper.serverUrl(serviceBase);
-              var t = baseurl.indexOf('//');
-              if (t >= 0) {
-                baseurl = baseurl.substring(t+2);
-                t = baseurl.indexOf('/');
-                if (t >= 0) {
-                  baseurl = baseurl.substring(t);
+
+        var loadKernel = function(baseurl, kernelName){
+            if (ipyVersion == '1') {
+              self.kernel = new myPython.Kernel(baseurl + "/kernels/");
+              kernels[shellID] = self.kernel;
+              self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
+            } else {
+              // Required by ipython backend, but not used.
+              var model = (ipyVersion == '2') ?
+              {
+                notebook: {
+                  name: "fakename" + shellID,
+                  path: "/some/path" + shellID
                 }
-              }
-              if (ipyVersion == '1') {
-                self.kernel = new myPython.Kernel(baseurl + "/kernels/");
-                kernels[shellID] = self.kernel;
-                self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
-              } else {
-                // Required by ipython backend, but not used.
-                var model = (ipyVersion == '2') ?
-                  {notebook : {name : "fakename" + shellID,
-                               path : "/some/path" + shellID}} :
-                {kernel: {id: shellID,
-                          name: "julia-0.3"},
-                 notebook: {path: "/fake/path" + shellID}
-                };
-                var fakeNotebook = {
-                  events: {on: function (){},
-                           trigger: function (){}}
-                };
-                var ajaxsettings = {
-                  processData : false,
-                  cache: false,
-                  type: "POST",
-                  data: JSON.stringify(model),
-                  dataType: "json",
-                  success: function (data, status, xhr) {                   
-                    self.kernel = (ipyVersion == '2') ?
-                      (new myPython.Kernel(baseurl+ "/api/kernels")) :
-                      (new myPython.Kernel(baseurl+ "/api/kernels",
-                                           undefined,
-                                           fakeNotebook,
-                                           "fakename"));
-                    kernels[shellID] = self.kernel;
-                    // the data.id is the session id but it is not used yet
-                    if (ipyVersion == '2') {
-                      self.kernel._kernel_started({id: data.kernel.id});
-                    } else {
-                      self.kernel._kernel_created({id: data.kernel.id});
-                      self.kernel.running = true;
+              } :
+              {
+                kernel: {
+                  id: shellID,
+                  name: kernelName
+                },
+                notebook: {path: "/fake/path" + shellID}
+              };
+              var fakeNotebook = {
+                events: {
+                  on: function () {
+                  },
+                  trigger: function () {
+                  }
+                }
+              };
+              var ajaxsettings = {
+                processData: false,
+                cache: false,
+                type: "POST",
+                data: JSON.stringify(model),
+                dataType: "json",
+                success: function (data, status, xhr) {
+                  self.kernel = (ipyVersion == '2') ?
+                    (new myPython.Kernel(baseurl + "/api/kernels")) :
+                    (new myPython.Kernel(baseurl + "/api/kernels",
+                      undefined,
+                      fakeNotebook,
+                      "fakename"));
+                  kernels[shellID] = self.kernel;
+                  // the data.id is the session id but it is not used yet
+                  if (ipyVersion == '2') {
+                    self.kernel._kernel_started({id: data.kernel.id});
+                  } else {
+                    self.kernel._kernel_created({id: data.kernel.id});
+                    self.kernel.running = true;
+                  }
+                }
+              };
+
+              var url = myPython.utils.url_join_encode(baseurl, 'api/sessions/');
+              $.ajax(url, ajaxsettings);
+            }
+        };
+
+        bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"),
+          {pluginId: PLUGIN_NAME}).success(function(result) {
+            bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/login")).then(function () {
+              bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2F"),
+                {password: result}).success(function(result) {
+                  var baseurl = bkHelper.serverUrl(serviceBase);
+                  var t = baseurl.indexOf('//');
+                  if (t >= 0) {
+                    baseurl = baseurl.substring(t+2);
+                    t = baseurl.indexOf('/');
+                    if (t >= 0) {
+                      baseurl = baseurl.substring(t);
                     }
                   }
-                };
-                var url = myPython.utils.url_join_encode(baseurl, 'api/sessions/');
-                $.ajax(url, ajaxsettings);
-              }
+                  if (ipyVersion == '2') {
+                    loadKernel(baseurl);
+                  } else {
+                    var juliaDefaultKernel = 'julia-0.4';
+                    var url = myPython.utils.url_join_encode(baseurl, 'api/kernelspecs');
+                    $.ajax(url, {
+                      type: "GET",
+                      dataType: "json",
+                      success: function (kernelspecs, status, xhr) {
+                        var kernelNames = Object.keys(kernelspecs['kernelspecs']);
+                        var kernelsCount = kernelNames.length;
+                        for (var i = 0; i < kernelsCount; i++) {
+                          if (kernelNames[i].indexOf('julia') !== -1) {
+                            loadKernel(baseurl, kernelNames[i]);
+                            return;
+                          }
+                        }
+                        loadKernel(baseurl, juliaDefaultKernel);
+                      },
+                      error: function () {
+                        loadKernel(baseurl, juliaDefaultKernel);
+                      }
+                    });
+                  }
+                });
             });
           });
-        });
 
         // keepalive for the websockets
         var nil = function() {
@@ -359,11 +398,14 @@ define(function(require, exports, module) {
         }
       },
       initCode: function() {
-        return this.settings.setup + "\n";
+        return 'include(string(ENV["beaker_julia_init"], "/beaker.jl"))\n' +
+	       'Beaker.setsession("' + bkHelper.getSessionId() + '")\n' +
+	       this.settings.setup + "\n";
       },
       reset: function() {
         var kernel = kernels[this.settings.shellID];
         var self = this;
+        bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
         kernel.restart(function () {
           var waitForKernel = function() {
             if ((ipyVersion == '3' || ipyVersion == '4') ?
@@ -371,7 +413,12 @@ define(function(require, exports, module) {
                   (kernel.shell_channel.readyState == 1 &&
                       kernel.stdin_channel.readyState == 1 &&
                       kernel.iopub_channel.readyState == 1)) {
-              self.evaluate(self.initCode(), {});
+              self.evaluate(self.initCode(), {}).then(function() {
+                bkHelper.hideLanguageManagerSpinner();
+              }, function(err) {
+                bkHelper.hideLanguageManagerSpinner(err);
+                bkHelper.show1ButtonModal('ERROR: ' + err[0], PLUGIN_NAME + ' kernel restart failed');
+              });
             } else {
               setTimeout(waitForKernel, 50);
             }

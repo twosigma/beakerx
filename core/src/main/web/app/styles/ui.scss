@@ -48,11 +48,17 @@ pre {
 }
 
 ul {
-  padding: 0;
+  padding: 0 0 0 15px;
 }
 
 .nav-tabs.nav {
   margin-bottom: 20px;
+}
+
+.nav-tabs {
+  .uib-tab > div {
+    cursor: pointer;
+  }
 }
 
 .plugin-active {

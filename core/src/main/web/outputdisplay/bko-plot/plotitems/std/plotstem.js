@@ -16,9 +16,9 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils) {
+  var retfunc = function(plotUtils, plotTip) {
     var PlotStem = function(data) {
-      _(this).extend(data);
+      _.extend(this, data);
       this.format();
     };
 
@@ -45,8 +45,7 @@
         "id" : this.id,
         "st" : this.color,
         "st_op": this.color_opacity,
-        "st_w": this.width,
-        "st_da": this.stroke_dasharray
+        "st_w": this.width
       };
       this.elementProps = [];
       this.elementLabels = [];
@@ -76,8 +75,8 @@
       };
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
-        range.xl = Math.min(range.xl, ele.x);
-        range.xr = Math.max(range.xr, ele.x2 ? ele.x2 : ele.x);
+        range.xl = plotUtils.min(range.xl, ele.x);
+        range.xr = plotUtils.max(range.xr, ele.x2 ? ele.x2 : ele.x);
         range.yl = Math.min(range.yl, ele.y);
         range.yr = Math.max(range.yr, ele.y2);
       }
@@ -230,14 +229,7 @@
     };
 
     PlotStem.prototype.clearTips = function(scope) {
-      var eleprops = this.elementProps;
-      var itemid = this.id;
-      _(scope.tips).each(function(value, key){
-        if (key.search("" + itemid) === 0) {
-          scope.jqcontainer.find("#tip_" + key).remove();
-          delete scope.tips[key];
-        }
-      });
+      plotTip.clearTips(scope, this.id);
     };
 
     PlotStem.prototype.createTip = function(ele, g, model) {
@@ -248,7 +240,7 @@
         tip.title = this.legend;
       }
       if (model.orientation === 'HORIZONTAL'){
-        tip.value = plotUtils.getTipString(ele._x2 - ele._x, xAxis, true);
+        tip.value = plotUtils.getTipString(plotUtils.minus(ele._x2, ele._x), xAxis, true);
       }else {
         tip.x = plotUtils.getTipString(ele._x, xAxis, true);
         tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
@@ -259,5 +251,5 @@
 
     return PlotStem;
   };
-  beaker.bkoFactory('PlotStem', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotStem', ['plotUtils', 'plotTip',  retfunc]);
 })();

@@ -371,7 +371,11 @@
           if (v.subtype === "Dictionary") {
             var o = {}
             for (var r in v.values) {
-              o[v.values[r][0]] = transformBack(v.values[r][1]);
+              if (typeof(v.values[r][0]) === 'object') {
+                o[transformBack(v.values[r][0])] = transformBack(v.values[r][1]);
+              } else {
+                o[v.values[r][0]] = transformBack(v.values[r][1]);
+              }
             }
             return o;
           }
@@ -692,20 +696,20 @@
           }
         }
         obj = {
-            type: 'OutputContainer',
-            items: its,
-            names: nms
+          type: 'OutputContainer',
+          items: its,
+          labels: nms
         };
       }
       return transform(obj);
-    }
+    };
     
     BeakerObject.prototype.isCircularObject = function(node, parents) {
       if (node === this.beakerObj)
         return true;
       
       return this.isCircularObject2(node, parents);
-    }
+    };
 
     BeakerObject.prototype.isCircularObject2 = function(node, parents) {
       parents = parents || [];
@@ -1015,7 +1019,7 @@
           return bkUtils.newPromise("false");
         } else {
           return bkSession.getSessions().then(function(sessions) {
-            return _(sessions).chain().keys().contains(_sessionId).value();
+            return _(sessions).keys().contains(_sessionId);
           });
         }
       },

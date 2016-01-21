@@ -45,7 +45,7 @@
 <div class="modal-footer fixed" style="height: 106px"> <!-- height linked with modal-body padding-bottom -->
   <p>
     <input id="saveAsFileInput" class="left" ng-model="getStrategy().input" ng-keyup="getStrategy().manualEntry()" ng-keypress="getStrategy().close($event, close)" focus-start />
-    <i class="new-folder bk-icon" data-toggle="tooltip" title="Make new directory ({{getStrategy().input}})" ng-click="getStrategy().newFolder(getStrategy().input)"></i>
+    <i class="new-folder bk-icon" data-toggle="tooltip" title="Make new directory ({{getStrategy().convertRelativePath(getStrategy().input)}})" ng-click="getStrategy().newFolder(getStrategy().input)"></i>
   </p>
   <span style="float:left;">{{getStrategy().getResult()}}</span>
   <button ng-click="close()" class="btn btn-default">Cancel</button>

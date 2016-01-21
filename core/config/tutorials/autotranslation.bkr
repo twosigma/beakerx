@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -60,7 +60,7 @@
                     "mode": "groovy"
                 }
             },
-            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*"
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*"
         }
     ],
     "cells": [
@@ -76,13 +76,14 @@
             "id": "markdownDHSZsp",
             "type": "markdown",
             "body": [
-                "Beaker can autotranslate variables in one language to another.  You can access this feature with the notebook namespace: a collection of variables and their values stored in the notebook. ",
-                "",
+                "Beaker can *autotranslate* variables in one language to another.",
+                "You can access this feature with the notebook namespace: a collection of variables and their values stored in the notebook. ",
                 "You can use this to produce data in one language, and consume or process it in another.",
                 "",
                 "Because the namespace is in the notebook, the variable's values are preserved when you save a notebook to disk, or share it on the web.  The format for data interchange is JSON.",
                 "",
-                "The languages that are supported include IPython, Python3, R, Java, Groovy, Scala, KDB and JavaScript."
+                "The languages show in this notebook (JavaScript, IPython, Python3, Groovy, and R) have a more complete implementation of autotranslation, including dataframes.",
+                "The other languages (Java, Clojure, Julia, Lua, Scala, and Kdb) support autotranslation of simpler types including arrays, dictionaries, numbers, and strings."
             ],
             "evaluatorReader": false
         },
@@ -104,12 +105,12 @@
                 ]
             },
             "output": {
-                "selectedType": "BeakerDisplay",
+                "selectedType": "Hidden",
                 "outputArrived": false,
-                "elapsedTime": 486,
+                "elapsedTime": 491,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "13BE1E064DAD4452882E0E235EE77005"
+                "shellId": "39B6DFE1C3064807BBD84F2776A4E841"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -128,7 +129,8 @@
                 "state": {},
                 "result": "Strings work fine",
                 "pluginName": "JavaScript",
-                "elapsedTime": 26
+                "elapsedTime": 32,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -152,14 +154,15 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 729,
+                "elapsedTime": 708,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "93269344-8759-4ef0-85a4-f4e08e8b28b4",
+                "shellId": "d1cd407a-c651-4259-874a-d9a5cadcacc1",
                 "dataresult": [
                     "Strings work fine"
                 ],
-                "result": "[1] \"Strings work fine\""
+                "result": "[1] \"Strings work fine\"",
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -183,11 +186,12 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 776,
+                "elapsedTime": 1582,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "3a933b32-452c-4b76-8b54-111eeae6ba23",
-                "result": "Strings work fineStrings work fine"
+                "shellId": "0e227975-f530-406c-b1ca-d97b3690d67e",
+                "result": "Strings work fineStrings work fine",
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -223,7 +227,8 @@
                     ]
                 },
                 "pluginName": "JavaScript",
-                "elapsedTime": 29
+                "elapsedTime": 29,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -239,10 +244,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 770,
+                "elapsedTime": 677,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "3a933b32-452c-4b76-8b54-111eeae6ba23",
+                "shellId": "0e227975-f530-406c-b1ca-d97b3690d67e",
                 "result": {
                     "a": 1,
                     "b": 2.2,
@@ -252,7 +257,8 @@
                         5,
                         6
                     ]
-                }
+                },
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -286,14 +292,15 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 671,
+                "elapsedTime": 641,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "93269344-8759-4ef0-85a4-f4e08e8b28b4",
+                "shellId": "d1cd407a-c651-4259-874a-d9a5cadcacc1",
                 "dataresult": [
                     12
                 ],
-                "result": "[1] 12"
+                "result": "[1] 12",
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -310,14 +317,15 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Html",
-                "elapsedTime": 215,
+                "elapsedTime": 327,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "177760DEB3404CB6B4633A5792EDBCFE",
+                "shellId": "39B6DFE1C3064807BBD84F2776A4E841",
                 "dataresult": [
                     12
                 ],
-                "result": "<div class=\"output_subarea output_text\"><pre>[12]</pre></div>"
+                "result": "<div class=\"output_subarea output_text\"><pre>[12]</pre></div>",
+                "height": 34
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -334,11 +342,12 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Text",
-                "elapsedTime": 588,
+                "elapsedTime": 720,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "0bb454cc-d2a5-41d0-be3b-949f987ae8d2",
-                "result": 24
+                "shellId": "0e227975-f530-406c-b1ca-d97b3690d67e",
+                "result": 24,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -362,11 +371,12 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 573,
+                "elapsedTime": 687,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "0bb454cc-d2a5-41d0-be3b-949f987ae8d2",
-                "result": 13
+                "shellId": "0e227975-f530-406c-b1ca-d97b3690d67e",
+                "result": 13,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -382,14 +392,15 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 568,
+                "elapsedTime": 612,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "c58cdf2d-e020-43e0-ad8e-13b8712528a9",
+                "shellId": "d1cd407a-c651-4259-874a-d9a5cadcacc1",
                 "dataresult": [
                     13
                 ],
-                "result": "[1] 13"
+                "result": "[1] 13",
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -423,10 +434,10 @@
             "output": {
                 "outputArrived": false,
                 "selectedType": "Hidden",
-                "elapsedTime": 472,
+                "elapsedTime": 452,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "13BE1E064DAD4452882E0E235EE77005"
+                "shellId": "39B6DFE1C3064807BBD84F2776A4E841"
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -452,10 +463,10 @@
             },
             "output": {
                 "selectedType": "Results",
-                "elapsedTime": 688,
+                "elapsedTime": 740,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "3a933b32-452c-4b76-8b54-111eeae6ba23",
+                "shellId": "0e227975-f530-406c-b1ca-d97b3690d67e",
                 "result": {
                     "type": "Results",
                     "outputdata": [
@@ -474,40 +485,40 @@
                         ],
                         "values": [
                             [
-                                0.7072993647273229,
-                                -0.00878859773469719,
-                                -0.23775748968154622,
-                                -0.46420701161420164
+                                0.04973465636212718,
+                                1.3403737949108694,
+                                -1.8093038308317297,
+                                0.7314949257860343
                             ],
                             [
-                                -0.41579799600867945,
-                                0.033680604164924126,
-                                -0.717272456732219,
-                                1.1879372640759602
+                                -0.3047349060278277,
+                                -0.15316644779749056,
+                                0.07518116294565699,
+                                0.8394534684592403
                             ],
                             [
-                                -0.4971195225546703,
-                                2.3619243064906383,
-                                -0.2577153097839779,
-                                -2.156595669734426
+                                -0.5914956802217759,
+                                0.4486777038888142,
+                                -0.8731502422498962,
+                                -0.8805117226587005
                             ],
                             [
-                                -0.09541759856694453,
-                                0.1962939033518576,
-                                -2.112203915039125,
-                                0.6611234805357671
+                                -0.13299582635725601,
+                                0.31358544968028784,
+                                -0.6876577604225309,
+                                -0.2944982344402664
                             ],
                             [
-                                1.423842174320983,
-                                0.8025992461682266,
-                                0.0216607385547771,
-                                1.0142392828171571
+                                -1.0456975485230586,
+                                -0.7158716195012167,
+                                0.9761187323490753,
+                                -0.00456341627450638
                             ],
                             [
-                                0.22354545058745098,
-                                0.26393930825873696,
-                                0.7597429720366727,
-                                0.813852638313162
+                                0.6193539120900288,
+                                0.3302452527273567,
+                                -0.1368218260762554,
+                                -0.4690409789772111
                             ]
                         ],
                         "types": [
@@ -518,7 +529,8 @@
                         ],
                         "subtype": "TableDisplay"
                     }
-                }
+                },
+                "height": 235
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -542,14 +554,14 @@
             },
             "output": {
                 "selectedType": "Table",
-                "elapsedTime": 673,
+                "elapsedTime": 659,
                 "state": {
                     "datatablestate": {
                         "pagination": {
                             "use": true,
                             "rowsToDisplay": 50,
-                            "fixLeft": false,
-                            "fixRight": false
+                            "fixLeft": 0,
+                            "fixRight": 0
                         },
                         "columnNames": [
                             "A",
@@ -579,7 +591,7 @@
                     }
                 },
                 "pluginName": "R",
-                "shellId": "93269344-8759-4ef0-85a4-f4e08e8b28b4",
+                "shellId": "d1cd407a-c651-4259-874a-d9a5cadcacc1",
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "TableDisplay",
@@ -594,45 +606,45 @@
                     "values": [
                         [
                             0,
-                            0.7073,
-                            -0.0087886,
-                            -0.23776,
-                            -0.46421
+                            0.049735,
+                            1.3404,
+                            -1.8093,
+                            0.73149
                         ],
                         [
                             1,
-                            -0.4158,
-                            0.033681,
-                            -0.71727,
-                            1.1879
+                            -0.30473,
+                            -0.15317,
+                            0.075181,
+                            0.83945
                         ],
                         [
                             2,
-                            -0.49712,
-                            2.3619,
-                            -0.25772,
-                            -2.1566
+                            -0.5915,
+                            0.44868,
+                            -0.87315,
+                            -0.88051
                         ],
                         [
                             3,
-                            -0.095418,
-                            0.19629,
-                            -2.1122,
-                            0.66112
+                            -0.133,
+                            0.31359,
+                            -0.68766,
+                            -0.2945
                         ],
                         [
                             4,
-                            1.4238,
-                            0.8026,
-                            0.021661,
-                            1.0142
+                            -1.0457,
+                            -0.71587,
+                            0.97612,
+                            -0.0045634
                         ],
                         [
                             5,
-                            0.22355,
-                            0.26394,
-                            0.75974,
-                            0.81385
+                            0.61935,
+                            0.33025,
+                            -0.13682,
+                            -0.46904
                         ]
                     ],
                     "types": [
@@ -642,7 +654,8 @@
                         "double",
                         "double"
                     ]
-                }
+                },
+                "height": 217
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -658,14 +671,14 @@
             },
             "output": {
                 "selectedType": "Table",
-                "elapsedTime": 689,
+                "elapsedTime": 652,
                 "state": {
                     "datatablestate": {
                         "pagination": {
                             "use": true,
                             "rowsToDisplay": 50,
-                            "fixLeft": false,
-                            "fixRight": false
+                            "fixLeft": 0,
+                            "fixRight": 0
                         },
                         "columnNames": [
                             "X1",
@@ -687,7 +700,7 @@
                     }
                 },
                 "pluginName": "R",
-                "shellId": "93269344-8759-4ef0-85a4-f4e08e8b28b4",
+                "shellId": "d1cd407a-c651-4259-874a-d9a5cadcacc1",
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "TableDisplay",
@@ -700,53 +713,53 @@
                     "values": [
                         [
                             1,
-                            0.4842,
-                            0.5998
+                            -0.53066,
+                            -0.0062287
                         ],
                         [
                             2,
-                            1.0363,
-                            -0.15445
+                            0.26655,
+                            0.038745
                         ],
                         [
                             3,
-                            -0.90953,
-                            -1.9543
+                            -0.2889,
+                            1.3025
                         ],
                         [
                             4,
-                            1.5058,
-                            1.6769
+                            0.38542,
+                            2.2709
                         ],
                         [
                             5,
-                            -0.076586,
-                            -1.3805
+                            -1.0327,
+                            -0.37186
                         ],
                         [
                             6,
-                            -1.3823,
-                            -2.1607
+                            0.71203,
+                            0.12086
                         ],
                         [
                             7,
-                            -0.65148,
-                            0.067134
+                            1.0846,
+                            -0.36633
                         ],
                         [
                             8,
-                            -1.4989,
-                            -1.7136
+                            0.33363,
+                            -0.52884
                         ],
                         [
                             9,
-                            0.47959,
-                            -1.2507
+                            -0.37493,
+                            0.16625
                         ],
                         [
                             10,
-                            0.11028,
-                            -0.42351
+                            0.34106,
+                            1.3117
                         ]
                     ],
                     "types": [
@@ -754,7 +767,8 @@
                         "double",
                         "double"
                     ]
-                }
+                },
+                "height": 325
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -772,10 +786,10 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Results",
-                "elapsedTime": 400,
+                "elapsedTime": 325,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "13BE1E064DAD4452882E0E235EE77005",
+                "shellId": "39B6DFE1C3064807BBD84F2776A4E841",
                 "result": {
                     "type": "Results",
                     "outputdata": [
@@ -794,53 +808,53 @@
                         "values": [
                             [
                                 1,
-                                0.4842,
-                                0.5998
+                                -0.53066,
+                                -0.0062287
                             ],
                             [
                                 2,
-                                1.0363,
-                                -0.15445
+                                0.26655,
+                                0.038745
                             ],
                             [
                                 3,
-                                -0.90953,
-                                -1.9543
+                                -0.2889,
+                                1.3025
                             ],
                             [
                                 4,
-                                1.5058,
-                                1.6769
+                                0.38542,
+                                2.2709
                             ],
                             [
                                 5,
-                                -0.076586,
-                                -1.3805
+                                -1.0327,
+                                -0.37186
                             ],
                             [
                                 6,
-                                -1.3823,
-                                -2.1607
+                                0.71203,
+                                0.12086
                             ],
                             [
                                 7,
-                                -0.65148,
-                                0.067134
+                                1.0846,
+                                -0.36633
                             ],
                             [
                                 8,
-                                -1.4989,
-                                -1.7136
+                                0.33363,
+                                -0.52884
                             ],
                             [
                                 9,
-                                0.47959,
-                                -1.2507
+                                -0.37493,
+                                0.16625
                             ],
                             [
                                 10,
-                                0.11028,
-                                -0.42351
+                                0.34106,
+                                1.3117
                             ]
                         ],
                         "hasIndex": "true",
@@ -851,7 +865,8 @@
                             "double"
                         ]
                     }
-                }
+                },
+                "height": 343
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -878,7 +893,8 @@
                 "selectedType": "Text",
                 "result": "DataFrame:  Rows: 10\n  Data columns (total 3 columns):\n    Index   integer *Index*\n    X1   double\n    X2   double\n",
                 "pluginName": "JavaScript",
-                "elapsedTime": 30
+                "elapsedTime": 26,
+                "height": 100
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -939,8 +955,9 @@
                 "result": "",
                 "selectedType": "Hidden",
                 "pluginName": "Groovy",
-                "shellId": "3a933b32-452c-4b76-8b54-111eeae6ba23",
-                "elapsedTime": 1583
+                "shellId": "0e227975-f530-406c-b1ca-d97b3690d67e",
+                "elapsedTime": 3336,
+                "height": 34
             },
             "evaluatorReader": true,
             "lineCount": 10
@@ -961,8 +978,8 @@
                         "pagination": {
                             "use": true,
                             "rowsToDisplay": 50,
-                            "fixLeft": false,
-                            "fixRight": false
+                            "fixLeft": 0,
+                            "fixRight": 0
                         },
                         "columnNames": [
                             "a",
@@ -1008,7 +1025,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 25
+                "elapsedTime": 30,
+                "height": 109
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -1033,7 +1051,8 @@
                 },
                 "selectedType": "Image",
                 "pluginName": "JavaScript",
-                "elapsedTime": 20
+                "elapsedTime": 20,
+                "height": 117
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -1054,8 +1073,8 @@
                         "pagination": {
                             "use": true,
                             "rowsToDisplay": 50,
-                            "fixLeft": false,
-                            "fixRight": false
+                            "fixLeft": 0,
+                            "fixRight": 0
                         },
                         "columnNames": [
                             "c0",
@@ -1122,7 +1141,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 26
+                "elapsedTime": 24,
+                "height": 136
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -1156,45 +1176,45 @@
             "values": [
                 [
                     0,
-                    0.7072993647273229,
-                    -0.00878859773469719,
-                    -0.23775748968154622,
-                    -0.46420701161420164
+                    0.04973465636212718,
+                    1.3403737949108694,
+                    -1.8093038308317297,
+                    0.7314949257860343
                 ],
                 [
                     1,
-                    -0.41579799600867945,
-                    0.033680604164924126,
-                    -0.717272456732219,
-                    1.1879372640759602
+                    -0.3047349060278277,
+                    -0.15316644779749056,
+                    0.07518116294565699,
+                    0.8394534684592403
                 ],
                 [
                     2,
-                    -0.4971195225546703,
-                    2.3619243064906383,
-                    -0.2577153097839779,
-                    -2.156595669734426
+                    -0.5914956802217759,
+                    0.4486777038888142,
+                    -0.8731502422498962,
+                    -0.8805117226587005
                 ],
                 [
                     3,
-                    -0.09541759856694453,
-                    0.1962939033518576,
-                    -2.112203915039125,
-                    0.6611234805357671
+                    -0.13299582635725601,
+                    0.31358544968028784,
+                    -0.6876577604225309,
+                    -0.2944982344402664
                 ],
                 [
                     4,
-                    1.423842174320983,
-                    0.8025992461682266,
-                    0.0216607385547771,
-                    1.0142392828171571
+                    -1.0456975485230586,
+                    -0.7158716195012167,
+                    0.9761187323490753,
+                    -0.00456341627450638
                 ],
                 [
                     5,
-                    0.22354545058745098,
-                    0.26393930825873696,
-                    0.7597429720366727,
-                    0.813852638313162
+                    0.6193539120900288,
+                    0.3302452527273567,
+                    -0.1368218260762554,
+                    -0.4690409789772111
                 ]
             ],
             "hasIndex": "true",
@@ -1214,53 +1234,53 @@
             "values": [
                 [
                     1,
-                    0.4842,
-                    0.5998
+                    -0.53066,
+                    -0.0062287
                 ],
                 [
                     2,
-                    1.0363,
-                    -0.15445
+                    0.26655,
+                    0.038745
                 ],
                 [
                     3,
-                    -0.90953,
-                    -1.9543
+                    -0.2889,
+                    1.3025
                 ],
                 [
                     4,
-                    1.5058,
-                    1.6769
+                    0.38542,
+                    2.2709
                 ],
                 [
                     5,
-                    -0.076586,
-                    -1.3805
+                    -1.0327,
+                    -0.37186
                 ],
                 [
                     6,
-                    -1.3823,
-                    -2.1607
+                    0.71203,
+                    0.12086
                 ],
                 [
                     7,
-                    -0.65148,
-                    0.067134
+                    1.0846,
+                    -0.36633
                 ],
                 [
                     8,
-                    -1.4989,
-                    -1.7136
+                    0.33363,
+                    -0.52884
                 ],
                 [
                     9,
-                    0.47959,
-                    -1.2507
+                    -0.37493,
+                    0.16625
                 ],
                 [
                     10,
-                    0.11028,
-                    -0.42351
+                    0.34106,
+                    1.3117
                 ]
             ],
             "types": [

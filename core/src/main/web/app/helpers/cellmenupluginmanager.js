@@ -51,7 +51,7 @@
             var i;      
             for(i=0; i<ml.length; i++) {
               if (_.isArray(ml[i].cellType)) {
-                _(ml[i].cellType).each(function(cType) {
+                _.each(ml[i].cellType, function(cType) {
                   addPlugin(cType, ml[i].plugin);
                 });
               } else {
@@ -64,7 +64,7 @@
       loadPlugin: function(url) {
         return bkUtils.loadModule(url).then(function(ex) {
           if (_.isArray(ex.cellType)) {
-            _(ex.cellType).each(function(cType) {
+            _.each(ex.cellType, function(cType) {
               addPlugin(cType, ex.plugin);
             });
           } else {
@@ -79,9 +79,9 @@
       getMenuItems: function(cellType, scope) {
         var menuItemGetters = _cellMenuPlugins[cellType];
         var newItems = [];
-        _(menuItemGetters).each(function(getter) {
+        _.each(menuItemGetters, function(getter) {
           var items = getter(scope);
-          _(items).each(function(it) {
+          _.each(items, function(it) {
             newItems.push(it);
           });
         });

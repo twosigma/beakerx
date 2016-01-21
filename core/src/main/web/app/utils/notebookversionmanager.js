@@ -26,8 +26,8 @@
     var getSectionCellLevel = function(cell, tagMap) {
       var getParentId = function(cId) {
         var pId = null;
-        _(tagMap).find(function(v, k) {
-          if (_(v).contains(cId)) {
+        _.find(tagMap, function(v, k) {
+          if (_.contains(v, cId)) {
             pId = k;
             return true;
           }
@@ -91,7 +91,7 @@
           retCell = convertMarkdownCell(cell);
           break;
       }
-      if (tagMap2 && _(tagMap2.initialization).contains(cell.id)) {
+      if (tagMap2 && _.contains(tagMap2.initialization, cell.id)) {
         retCell.initialization = true;
       }
       return retCell;
@@ -104,8 +104,8 @@
         cId = stack.pop();
         cellIds.push(cId);
         if (tagMap.hasOwnProperty(cId)) {
-          children = _(tagMap[cId]).clone();
-          if (!_(children).isEmpty()) {
+          children = _.clone(tagMap[cId]);
+          if (!_.isEmpty(children)) {
             stack = stack.concat(children.reverse());
           }
         }
@@ -122,7 +122,7 @@
     var convertCells = function(cells, tagMap, tagMap2) {
       var cellIds = getCellIds(cells, tagMap);
       var cellMap = generateCellMap(cells);
-      var v2Cells = _(cellIds).chain()
+      var v2Cells = _(cellIds)
           .filter(function(id) {
             return id !== "root";
           })

@@ -16,10 +16,10 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils) {
+  var retfunc = function(plotUtils, plotTip) {
 
     var PlotBar = function(data) {
-      _(this).extend(data); // copy properties to itself
+      _.extend(this, data); // copy properties to itself
       this.format();
     };
     PlotBar.prototype.plotClass = "plot-bar";
@@ -80,8 +80,8 @@
       };
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
-        range.xl = Math.min(range.xl, ele.x);
-        range.xr = Math.max(range.xr, ele.x2);
+        range.xl = plotUtils.min(range.xl, ele.x);
+        range.xr = plotUtils.max(range.xr, ele.x2);
         range.yl = Math.min(range.yl, ele.y);
         range.yr = Math.max(range.yr, ele.y2);
       }
@@ -229,6 +229,7 @@
         .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
         .attr("class", respClass)
+        .attr("shape-rendering", "crispEdges")
         .style("fill", function(d) { return d.fi; })
         .style("fill-opacity", function(d) { return d.fi_op; })
         .style("stroke", function(d) { return d.st; })
@@ -259,14 +260,7 @@
     };
 
     PlotBar.prototype.clearTips = function(scope) {
-      var eleprops = this.elementProps;
-      var itemid = this.id;
-      _(scope.tips).each(function(value, key){
-        if (key.search("" + itemid) === 0) {
-          scope.jqcontainer.find("#tip_" + key).remove();
-          delete scope.tips[key];
-        }
-      });
+      plotTip.clearTips(scope, this.id);
     };
 
     PlotBar.prototype.createTip = function(ele, g, model) {
@@ -277,9 +271,9 @@
         tip.title = this.legend;
       }
       if (model.orientation === 'HORIZONTAL'){
-        tip.value = plotUtils.getTipString(ele._x2 - ele._x, xAxis, true);
+        tip.value = plotUtils.getTipString(plotUtils.minus(ele._x2, ele._x), xAxis, true);
       }else{
-        tip.x = plotUtils.getTipString((ele._x + ele._x2) / 2, xAxis, true);
+        tip.x = plotUtils.getTipString(plotUtils.div(plotUtils.plus(ele._x, ele._x2), 2), xAxis, true);
         tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
         tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
       }
@@ -288,5 +282,5 @@
 
     return PlotBar;
   };
-  beaker.bkoFactory('PlotBar', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotBar', ['plotUtils', 'plotTip', retfunc]);
 })();

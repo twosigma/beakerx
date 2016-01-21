@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -34,7 +34,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -44,7 +44,7 @@
         {
             "name": "Java",
             "plugin": "Java",
-            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*",
             "view": {
                 "cm": {
                     "mode": "text/x-java"
@@ -67,9 +67,10 @@
             "body": [
                 "Beaker supports sending asynchronous status updates from code cells to keep the user informed about the computation progress.",
                 "",
-                "These updates can contain a text message and/or a completion percentage and/or a partial output object, such as a plot or a table. The language that support this feature so far are JavaScript and all JVM based languages.",
+                "These updates can contain a text message and/or a completion percentage and/or a partial output object, such as a plot or a table. ",
+                "The languages that support this feature so far are JavaScript and all JVM based languages.",
                 "",
-                "To output a progress report you can use the showProgressUpdate function, available through the beaker object; for example in groovy you can write:",
+                "To output a progress report you can use the showProgressUpdate function, available through the beaker object; for example in Groovy you can write:",
                 ""
             ],
             "evaluatorReader": false,
@@ -88,8 +89,8 @@
                     "                \"about to finish\"];",
                     "",
                     "for ( int i = 0 ; i<5; i++) {",
-                    "\tbeaker.showProgressUpdate(messages[i], i*20)",
-                    "\tsleep(1500)",
+                    "  beaker.showProgressUpdate(messages[i], i*20)",
+                    "  sleep(1500)",
                     "}",
                     "sleep(1500)",
                     "\"finished\""
@@ -98,10 +99,11 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "elapsedTime": 9623,
+                "elapsedTime": 10640,
                 "result": "finished",
                 "pluginName": "Groovy",
-                "shellId": "2ccf532f-fdad-4023-bc6d-2b1d0cbb6312"
+                "shellId": "af93786d-81ab-408c-9901-2d33fd75d1b1",
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 12
@@ -127,15 +129,14 @@
                     "var count = 0;",
                     "",
                     "var operation = function() {",
-                    "  count+=10;",
-                    "  if (count<50)",
-                    "\t  beaker.showProgressUpdate(\"working\",count);",
+                    "  count += 10;",
+                    "  if (count < 50)",
+                    "    beaker.showProgressUpdate(\"working\",count);",
                     "  else",
-                    "\t  beaker.showProgressUpdate(\"still working\",count);",
-                    "\tif(count>=100) {",
-                    "      d.resolve(\"FINISHED (finally)\");",
-                    "    }",
-                    "  else {",
+                    "    beaker.showProgressUpdate(\"still working\",count);",
+                    "  if (count >= 100) {",
+                    "    d.resolve(\"FINISHED (finally)\");",
+                    "  } else {",
                     "    beaker.timeout(operation,1500);",
                     "  }",
                     "}",
@@ -150,10 +151,11 @@
                 "selectedType": "Text",
                 "result": "FINISHED (finally)",
                 "pluginName": "JavaScript",
-                "elapsedTime": 15048
+                "elapsedTime": 15037,
+                "height": 36
             },
             "evaluatorReader": true,
-            "lineCount": 20
+            "lineCount": 19
         },
         {
             "id": "markdownzCBhZP",
@@ -283,162 +285,31 @@
                         "yr": 0.5261904761904762,
                         "xspan": 0.05238095238095242,
                         "yspan": 0.05238095238095242
-                    }
+                    },
+                    "tips": {}
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 13931,
+                "elapsedTime": 14258,
                 "result": {
                     "type": "Plot",
                     "init_width": 640,
                     "init_height": 480,
                     "chart_title": "this is a Java plot",
+                    "show_legend": null,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
                     "domain_axis_label": null,
                     "y_label": "",
-                    "show_legend": false,
-                    "use_tool_tip": true,
-                    "graphics_list": [
-                        {
-                            "type": "Bars",
-                            "x": [
-                                0,
-                                1,
-                                2,
-                                3
-                            ],
-                            "y": [
-                                10,
-                                2,
-                                20,
-                                8
-                            ],
-                            "visible": true,
-                            "display_name": "",
-                            "base": 0,
-                            "width": 0.5,
-                            "color": "#FFC0504D",
-                            "outline_color": null,
-                            "yAxis": null
-                        },
-                        {
-                            "type": "Bars",
-                            "x": [
-                                0,
-                                1,
-                                2,
-                                3
-                            ],
-                            "y": [
-                                10,
-                                2,
-                                20,
-                                8
-                            ],
-                            "visible": true,
-                            "display_name": "",
-                            "base": 0,
-                            "width": 0.5,
-                            "color": "#FFC0504D",
-                            "outline_color": null,
-                            "yAxis": null
-                        },
-                        {
-                            "type": "Bars",
-                            "x": [
-                                0,
-                                1,
-                                2,
-                                3
-                            ],
-                            "y": [
-                                10,
-                                2,
-                                20,
-                                8
-                            ],
-                            "visible": true,
-                            "display_name": "",
-                            "base": 0,
-                            "width": 0.5,
-                            "color": "#FFC0504D",
-                            "outline_color": null,
-                            "yAxis": null
-                        },
-                        {
-                            "type": "Bars",
-                            "x": [
-                                0,
-                                1,
-                                2,
-                                3
-                            ],
-                            "y": [
-                                10,
-                                2,
-                                20,
-                                8
-                            ],
-                            "visible": true,
-                            "display_name": "",
-                            "base": 0,
-                            "width": 0.5,
-                            "color": "#FFC0504D",
-                            "outline_color": null,
-                            "yAxis": null
-                        },
-                        {
-                            "type": "Bars",
-                            "x": [
-                                0,
-                                1,
-                                2,
-                                3
-                            ],
-                            "y": [
-                                10,
-                                2,
-                                20,
-                                8
-                            ],
-                            "visible": true,
-                            "display_name": "",
-                            "base": 0,
-                            "width": 0.5,
-                            "color": "#FFC0504D",
-                            "outline_color": null,
-                            "yAxis": null
-                        },
-                        {
-                            "type": "Bars",
-                            "x": [
-                                0,
-                                1,
-                                2,
-                                3
-                            ],
-                            "y": [
-                                10,
-                                2,
-                                20,
-                                8
-                            ],
-                            "visible": true,
-                            "display_name": "",
-                            "base": 0,
-                            "width": 0.5,
-                            "color": "#FFC0504D",
-                            "outline_color": null,
-                            "yAxis": null
-                        }
-                    ],
-                    "constant_lines": [],
-                    "constant_bands": [],
-                    "texts": [],
                     "rangeAxes": [
                         {
                             "type": "YAxis",
                             "label": "",
                             "auto_range": true,
-                            "auto_range_includes_zero": true,
+                            "auto_range_includes_zero": false,
                             "lower_margin": 0.05,
                             "upper_margin": 0.05,
                             "lower_bound": 0,
@@ -447,31 +318,165 @@
                             "log_base": 10
                         }
                     ],
-                    "x_auto_range": true,
                     "x_lower_margin": 0.05,
                     "x_upper_margin": 0.05,
-                    "x_lower_bound": 0,
-                    "x_upper_bound": 0,
                     "y_auto_range": true,
-                    "y_auto_range_includes_zero": true,
+                    "y_auto_range_includes_zero": false,
                     "y_lower_margin": 0.05,
                     "y_upper_margin": 0.05,
                     "y_lower_bound": 0,
                     "y_upper_bound": 0,
-                    "log_x": false,
-                    "x_log_base": 10,
                     "log_y": false,
                     "timezone": null,
                     "crosshair": null,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
                     "omit_checkboxes": false,
-                    "legend_layout": "VERTICAL"
+                    "graphics_list": [
+                        {
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "yAxis": null,
+                            "type": "Bars",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": null,
+                            "outline_color": null
+                        },
+                        {
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "yAxis": null,
+                            "type": "Bars",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": null,
+                            "outline_color": null
+                        },
+                        {
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "yAxis": null,
+                            "type": "Bars",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": null,
+                            "outline_color": null
+                        },
+                        {
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "yAxis": null,
+                            "type": "Bars",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": null,
+                            "outline_color": null
+                        },
+                        {
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "yAxis": null,
+                            "type": "Bars",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": null,
+                            "outline_color": null
+                        },
+                        {
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "yAxis": null,
+                            "type": "Bars",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": null,
+                            "outline_color": null
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10,
+                    "tips": {}
                 },
                 "pluginName": "Java",
-                "shellId": "e9524614-bf1f-45d6-bad9-317e0604b734"
+                "shellId": "e3c3c480-bfd0-4a68-8841-3ca59de90092",
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 45
@@ -505,25 +510,25 @@
                     "var count = 0;",
                     "",
                     "var operation = function() {",
-                    "  if (count<50)",
-                    "\t  beaker.clearStatus(\"working at \"+count);",
+                    "  if (count < 50)",
+                    "    beaker.clearStatus(\"working at \" + count);",
                     "  else",
-                    "\t  beaker.clearStatus(\"still working at \"+count);",
-                    "  count+=10;",
-                    "  if (count<50)",
-                    "\t  beaker.showStatus(\"working at \"+count);",
+                    "    beaker.clearStatus(\"still working at \" + count);",
+                    "  count += 10;",
+                    "  if (count < 50)",
+                    "    beaker.showStatus(\"working at \"+count);",
                     "  else",
-                    "\t  beaker.showStatus(\"still working at \"+count);",
-                    "\tif(count>=100) {",
-                    "      beaker.clearStatus(\"still working at \"+count);",
-                    "      d.resolve(\"FINISHED (finally)\");",
-                    "    }",
+                    "    beaker.showStatus(\"still working at \" + count);",
+                    "  if(count >= 100) {",
+                    "    beaker.clearStatus(\"still working at \" + count);",
+                    "    d.resolve(\"FINISHED (finally)\");",
+                    "  }",
                     "  else {",
-                    "    beaker.timeout(operation,1500);",
+                    "    beaker.timeout(operation, 1500);",
                     "  }",
                     "}",
                     "",
-                    "beaker.timeout(operation,1500);",
+                    "beaker.timeout(operation, 1500);",
                     "",
                     "d"
                 ]
@@ -531,9 +536,10 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "elapsedTime": 15292,
+                "elapsedTime": 15269,
                 "result": "FINISHED (finally)",
-                "pluginName": "JavaScript"
+                "pluginName": "JavaScript",
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 25

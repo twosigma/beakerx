@@ -22,12 +22,14 @@
 ( function() {
   'use strict';
   var retfunc = function(plotUtils,
+                         plotTip,
                          plotFormatter,
                          plotFactory,
                          bkCellMenuPluginManager,
                          bkSessionManager,
                          bkUtils,
-                         GradientLegend) {
+                         GradientLegend,
+                         bkoChartExtender) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -37,6 +39,9 @@
           "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
           "<svg id='svgg'>"  +
           "<defs>" +
+            "<marker id='Triangle' class='text-line-style' viewBox='0 0 10 10' refX='1' refY='5' markerWidth='6' markerHeight='6' orient='auto'>" +
+            "<path d='M 0 0 L 10 5 L 0 10 z' />" +
+            "</marker>" +
             "<filter id='svgfilter'>" +
               "<feGaussianBlur result='blurOut' in='SourceGraphic' stdDeviation='1' />" +
               "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
@@ -80,7 +85,8 @@
           resize : function(event, ui) {
             scope.width = ui.size.width;
             scope.height = ui.size.height;
-            _(scope.plotSize).extend(ui.size);
+            _.extend(scope.plotSize, ui.size);
+            scope.setDumpState(scope.dumpState());
 
             scope.jqsvg.css({"width": scope.width, "height": scope.height});
             scope.jqplottitle.css({"width": scope.width });
@@ -138,6 +144,8 @@
           scope.gridg = d3.select(element[0]).select("#gridg");
           scope.labelg = d3.select(element[0]).select("#labelg");
 
+          scope.jqgridg = element.find("#gridg");
+
           // set some constants
 
           scope.renderFixed = 1;
@@ -160,9 +168,14 @@
             y : 10
           };
           scope.intervalStepHint = {
-            x : scope.stdmodel.orientation === 'HORIZONTAL' ? 30 : 75,
-            y : scope.stdmodel.orientation === 'HORIZONTAL' ? 75 : 30
+            x : scope.model.getCellModel().type === 'NanoPlot' ? 130 : 75,
+            y : 30
           };
+          if(scope.stdmodel.orientation === 'HORIZONTAL'){
+            var tempx = scope.intervalStepHint.x;
+            scope.intervalStepHint.x = scope.intervalStepHint.y;
+            scope.intervalStepHint.y = tempx;
+          }
           scope.numIntervals = {
             x: parseInt(plotSize.width) / scope.intervalStepHint.x,
             y: parseInt(plotSize.height) / scope.intervalStepHint.y
@@ -230,7 +243,21 @@
           if (scope.model.updateWidth != null) {
             scope.model.updateWidth(scope.width);
           } // not stdmodel here
+
+          scope.$emit('plotSizeChanged', {
+            width: scope.width,
+            height: scope.height
+          });
         };
+        scope.$on('plotSizeChanged', function (event, data) {
+          //if (scope.width !== data.width
+          //  //|| scope.height !== data.height
+          //) {
+          //  scope.model.width = data.width;
+          //  //scope.model.height = data.height;
+          //}
+        });
+
         scope.calcRange = function() {
           var ret = plotUtils.getDefaultFocus(scope.stdmodel);
           scope.visibleItem = ret.visibleItem;
@@ -328,12 +355,7 @@
 
           if (scope.hasUnorderedItem === true && scope.showUnorderedHint === true) {
             scope.showUnorderedHint = false;
-            scope.renderMessage("Unordered line / area detected",
-              [ "The plot requires line and area elements to have x-monotonicity in order to apply " +
-              "truncation for performance optimization.",
-              "Line or area items are found with unordered x coordinates.",
-              "Truncation has been disabled to display correct result.",
-              "To enable truncation for better performance, please render x-monotonic line and area items." ]);
+            console.warn("unordered area/line detected, truncation disabled");
           }
 
         };
@@ -346,19 +368,19 @@
           scope.svg.selectAll(".plot-resp")
             .on('mouseenter', function(d) {
               scope.drawLegendPointer(d);
-              return scope.tooltip(d, d3.mouse(scope.svg[0][0]));
+              return plotTip.tooltip(scope, d, d3.mouse(scope.svg[0][0]));
             })
             .on("mouseleave", function(d) {
               scope.removeLegendPointer();
-              return scope.untooltip(d);
+              return plotTip.untooltip(scope, d);
             })
             .on("click", function(d) {
-              return scope.toggleTooltip(d);
+              return plotTip.toggleTooltip(scope, d);
             });
         };
 
         scope.drawLegendPointer = function(d) {
-          if(scope.gradientLegend){
+          if (scope.gradientLegend) {
             scope.gradientLegend.drawPointer(d.ele.value);
           }
         };
@@ -369,112 +391,6 @@
           }
         };
 
-        scope.toggleTooltip = function(d) {
-          if (scope.zoomed === true) { return; } // prevent dragging and toggling at the same time
-
-          var id = d.id, nv = !scope.tips[id];
-          if (nv === true) {
-            scope.tooltip(d, d3.mouse(scope.svg[0][0]));
-          } else {
-            scope.tips[id].sticking = !scope.tips[id].sticking;
-            if (scope.tips[id].sticking === false) {
-              scope.untooltip(d);
-            }
-          }
-        };
-        scope.tooltip = function(d, mousePos) {
-
-          if (scope.tips[d.id] != null) {
-            return;
-          }
-          if (d.isresp === true) {
-            scope.jqsvg.find("#" + d.id).css("opacity", 1);
-          }
-          scope.tips[d.id] = {};
-          _.extend(scope.tips[d.id], d);
-          var d = scope.tips[d.id];
-          d.sticking = false;
-          d.datax = scope.scr2dataX(mousePos[0] + 2);
-          d.datay = scope.scr2dataY(mousePos[1] + 2);
-
-          scope.renderTips();
-        };
-
-        scope.untooltip = function(d) {
-          if (scope.tips[d.id] == null) { return; }
-          if (scope.tips[d.id].sticking === false){
-            delete scope.tips[d.id];
-            scope.jqcontainer.find("#tip_" + d.id).remove();
-            if (d.isresp === true) {
-              scope.jqsvg.find("#" + d.id).css("opacity", 0);
-            } else {
-              scope.jqsvg.find("#" + d.id).removeAttr("filter");
-            }
-            scope.renderTips();
-          }
-        };
-
-        scope.renderTips = function() {
-          var data = scope.stdmodel.data;
-          var focus = scope.focus;
-          _.each(scope.tips, function(d) {
-            var x = scope.data2scrX(d.datax),
-                y = scope.data2scrY(d.datay);
-            d.scrx = x;
-            d.scry = y;
-            var tipid = "tip_" + d.id;
-            var tipdiv = scope.jqcontainer.find("#" + tipid);
-
-            if (tipdiv.length === 0) {
-              var tiptext = data[d.idx].createTip(d.ele, d.g, scope.stdmodel);
-
-              tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
-                .attr("id", tipid)
-                .attr("class", "plot-tooltip")
-                .css("border-color", data[d.idx].tip_color)
-                .append(tiptext)
-                .on('mouseup', function(e) {
-                  if (e.which == 3) {
-                    delete scope.tips[d.id];
-                    if (d.isresp === true) {  // is interaction responsive element
-                      scope.jqsvg.find("#" + d.id).css("opacity", 0);
-                    } else {
-                      scope.jqsvg.find("#" + d.id).removeAttr("filter");
-                    }
-                    scope.interactMode = "remove";
-                    $(this).remove();
-                  }
-                });
-              if (data[d.idx].tip_class) {
-                tipdiv.addClass(data[d.idx].tip_class);
-              }
-            }
-            var w = tipdiv.outerWidth(), h = tipdiv.outerHeight();
-            if (plotUtils.outsideScrBox(scope, x, y, w, h)) {
-              tipdiv.remove();
-              return;
-            }
-            tipdiv
-              .draggable({
-                stop : function(event, ui) {
-                  d.scrx = ui.position.left - plotUtils.fonts.tooltipWidth;
-                  d.scry = ui.position.top;
-                  d.datax = scope.scr2dataX(d.scrx);
-                  d.datay = scope.scr2dataY(d.scry);
-                }
-              });
-
-            tipdiv
-              .css("left", x + plotUtils.fonts.tooltipWidth)
-              .css("top", y);
-            if (d.isresp === true) {
-              scope.jqsvg.find("#" + d.id).attr("opacity", 1);
-            } else {
-              scope.jqsvg.find("#" + d.id)
-                .attr("filter", "url(#svgfilter)");
-            }
-          });
-        };
 
         scope.renderGridlineLabels = function() {
           var _size_ = function (s, clazz) {
@@ -1623,6 +1539,9 @@
         scope.disableZoom = function() {
           scope.svg.call(scope.zoomObj.on("zoomstart", null).on("zoom", null).on("zoomend", null));
         };
+        scope.disableWheelZoom = function() {
+          scope.svg.on("wheel.zoom", null);
+        };
 
         scope.mouseleaveClear = function() {
           scope.svg.selectAll(".plot-cursor").remove();
@@ -1674,6 +1593,64 @@
           scope.stdmodel = plotFormatter.standardizeModel(model, scope.prefs);
         };
 
+        scope.dumpState = function() {
+          var state = {};
+
+          state.showAllItems = scope.showAllItems;
+          state.plotSize = scope.plotSize;
+          state.zoomed = scope.zoomed;
+          state.focus = scope.focus;
+
+          state.lodOn = [];
+          state.lodType = [];
+          state.lodAuto = [];
+          state.zoomHash = [];
+          state.showItem = [];
+          var data = scope.stdmodel.data;
+          for (var i = 0; i < data.length; i++) {
+            state.lodOn[i] = data[i].lodOn;
+            state.lodType[i] = data[i].lodType;
+            state.lodAuto[i] = data[i].lodAuto;
+            state.zoomHash[i] = data[i].zoomHash;
+            state.showItem[i] = data[i].showItem;
+          }
+          state.visibleItem = scope.visibleItem;
+          state.legendableItem = scope.legendableItem;
+          state.defaultFocus = scope.defaultFocus;
+
+
+          state.tips = {};
+          $.extend(true, state.tips, scope.tips);
+
+          return state;
+        };
+
+        scope.loadState = function(state) {
+          scope.showAllItems = state.showAllItems;
+          scope.plotSize = state.plotSize;
+          scope.zoomed = state.zoomed;
+          scope.focus = state.focus;
+          var data = scope.stdmodel.data;
+          for (var i = 0; i < data.length; i++) {
+            if(data[i].isLodItem === true){
+              data[i].lodOn = state.lodOn[i];
+              if (state.lodOn[i]) {
+                data[i].applyLodType(state.lodType[i]);
+                data[i].applyLodAuto(state.lodAuto[i]);
+                data[i].applyZoomHash(state.zoomHash[i]);
+              }
+            }
+            data[i].showItem = state.showItem[i];
+          }
+          scope.visibleItem = state.visibleItem;
+          scope.legendableItem = state.legendableItem;
+          scope.defaultFocus = state.defaultFocus;
+          if(scope.defaultFocus) {
+            scope.fixFocus(scope.defaultFocus);
+          }
+
+          $.extend(true, scope.tips, state.tips);
+        };
 
         scope.initFlags = function() {
           scope.showAllItems = true;
@@ -1697,11 +1674,23 @@
           // init flags
           scope.initFlags();
 
+          // see if previous state can be applied
           scope.focus = {};
-          scope.tips = {};
+
+          if (!scope.model.getCellModel().tips) {
+            scope.model.getCellModel().tips = {};
+          }
+
+          scope.tips = scope.model.getCellModel().tips;
           scope.plotSize = {};
 
-          _(scope.plotSize).extend(scope.stdmodel.plotSize);
+          _.extend(scope.plotSize, scope.stdmodel.plotSize);
+          var savedstate = scope.model.getDumpState();
+          if (savedstate !== undefined && savedstate.plotSize !== undefined) {
+            scope.loadState(savedstate);
+          } else {
+            scope.setDumpState(scope.dumpState());
+          }
 
           // create layout elements
           scope.initLayout();
@@ -1714,6 +1703,8 @@
             return scope.mouseDown();
           }).on("mouseup", function() {
             return scope.mouseUp();
+          }).on("mouseleave", function() {
+            return scope.disableWheelZoom();
           });
           scope.jqsvg.mousemove(function(e) {
             return scope.renderCursor(e);
@@ -1721,10 +1712,13 @@
             return scope.mouseleaveClear(e);
           });
           scope.enableZoom();
+          scope.disableWheelZoom();
           scope.calcRange();
 
           // init copies focus to defaultFocus, called only once
-          _(scope.focus).extend(scope.defaultFocus);
+          if(_.isEmpty(scope.focus)){
+            _.extend(scope.focus, scope.defaultFocus);
+          }
 
           // init remove pipe
           scope.removePipe = [];
@@ -1750,7 +1744,7 @@
           plotUtils.plotLabels(scope); // redraw
           plotUtils.plotTicks(scope); // redraw
 
-          scope.renderTips();
+          plotTip.renderTips(scope);
           scope.renderLocateBox(); // redraw
           scope.renderLegends(); // redraw
           scope.updateMargin(); //update plot margins
@@ -1761,7 +1755,31 @@
         };
 
 
+        scope.getDumpState = function () {
+          if (scope.model.getDumpState !== undefined) {
+            return scope.model.getDumpState();
+          }
+        };
+
+
+        scope.setDumpState = function (state) {
+          if (scope.model.setDumpState !== undefined) {
+              scope.model.setDumpState(state);
+
+              bkSessionManager.setNotebookModelEdited(true);
+              bkUtils.refreshRootScope();
+          }
+        };
+
+        if (scope.model.getCellModel().type === "TreeMap"){
+          bkoChartExtender.extend(scope, element, attrs);
+        }
         scope.init(); // initialize
+        scope.$watch('getDumpState()', function (result) {
+          if (result !== undefined && result.plotSize === undefined) {
+            scope.setDumpState(scope.dumpState());
+          }
+        });
 
         scope.getCellWidth = function () {
           return scope.jqcontainer.width();
@@ -1771,13 +1789,41 @@
           return scope.jqcontainer.height();
         };
 
+        var watchCellSize = function () {
+          if (!scope.model.isShowOutput || (scope.model.isShowOutput && scope.model.isShowOutput() === true)) {
+            scope.plotSize.width = scope.getCellWidth();
+            scope.plotSize.height = scope.getCellHeight();
+            scope.setDumpState(scope.dumpState());
+          }
+        };
 
+        scope.$watch('getCellWidth()', function (newValue, oldValue) {
+          if(newValue !== oldValue){
+            watchCellSize();
+          }
+        });
+
+        scope.$watch('getCellHeight()', function (newValue, oldValue) {
+          if(newValue !== oldValue){
+            watchCellSize();
+          }
+        });
 
         scope.getCellModel = function() {
           return scope.model.getCellModel();
         };
         scope.$watch('getCellModel()', function() {
           scope.init();
+        });
+        scope.getTheme = function(){
+          return bkHelper.getTheme();
+        };
+        scope.$watch('getTheme()', function(newValue, oldValue) {
+          if(newValue !== oldValue) {
+            scope.model.setDumpState(scope.dumpState());
+            scope.legendDone = false;
+            scope.init();
+          }
         });
 
         scope.$on('$destroy', function() {
@@ -1934,11 +1980,13 @@
   };
   beaker.bkoDirective("Plot", [
     "plotUtils",
+    "plotTip",
     "plotFormatter",
     "plotFactory",
     "bkCellMenuPluginManager",
     "bkSessionManager",
     "bkUtils",
     "GradientLegend",
+    "bkoChartExtender",
     retfunc]);
 })();

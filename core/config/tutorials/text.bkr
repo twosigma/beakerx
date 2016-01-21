@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -37,7 +37,7 @@
             "id": "section001",
             "type": "section",
             "level": 1,
-            "title": "Text, Formatting, and Equations",
+            "title": "Text, Formatting, Equations, and Images",
             "collapsed": false,
             "evaluatorReader": false
         },
@@ -46,14 +46,15 @@
             "type": "markdown",
             "body": [
                 "Beaker's text cells (insert one by clicking 'text' in the blue button bar) are based primarily on markdown,",
-                "but have a number of more advanced features as described below.  There are also HTML and LaTeX cells,",
+                "but have a number of more advanced features as described below.  There are also HTML and TeX cells,",
                 "which you can insert with the 'code' menu in the blue button bar, and are also explained in their own",
-                "sections below.",
+                "sections below.  Images can be included 'inline' in both HTML and text cells. ",
                 "",
                 "In addition, there are menu commands to control how the notebook is displayed:",
                 "* **Notebook → Lock**: hides the all the code, and removes the boxes from around the cells.",
                 "* **View → Show Hierarchy**: indents sections and adds numbering and lines to show hierarchy.",
-                "* **View → Advanced Mode**: reduces vertical space and hides the big run button (you can still run cells with the little run button in the upper-right of each cell."
+                "* **View → Advanced Mode**: reduces vertical space and hides the big run button (you can still run cells with the little run button in the upper-right of each cell.",
+                "* **View → Theme**: switch from the default black-on-white color theme to the light-on-dark ambience theme."
             ],
             "evaluatorReader": false
         },
@@ -86,7 +87,8 @@
                 "Click away on the background of the notebook to reformat and display.",
                 "You can also use the {{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"&#x2318;\":\"Control\"}}-Enter keyboard shortcut to format a markdown cell.",
                 "",
-                "You can embed LaTeX into a markdown cell by enclosing it with dollar characters: $e^{i\\pi}+1=0$.",
+                "You can embed TeX ([Donald Knuth's](https://en.wikipedia.org/wiki/Donald_Knuth) mathematical typesetting system)",
+                "into a markdown cell by enclosing it with dollar characters: $e^{i\\pi}+1=0$.",
                 "",
                 "You can just copy-and-paste unicode characters in: 玻璃, or you can enter HTML entities like &amp;dagger; for &dagger;.",
                 "In fact, many basic HTML elements work, like super&lt;sup&gt;scripts&lt;/sup&gt; for super<sup>scripts</sup>."
@@ -109,7 +111,7 @@
                 "You can change the size, color, and face of text with familar HTML &lt;font&gt; tags.",
                 "For example, you can make the text <font size=\"+2\">larger</font> or <font size=\"-2\">smaller</font> compared to its normal size.",
                 "Or make it  <font color=\"green\">green</font>, or change face to font to <font face=\"Times\">Times</font> or <font face=\"Courier\">Courier</font>.",
-                "You can even change the background color like this: <font style=\"background-color: yellow\">yellow highlight</font>.",
+                "You can even change the background color like this: <font style=\"background-color: chocolate\">chocolate highlight</font>.",
                 "",
                 "These tags work with the math and markdown modes, for example: <font color=\"#00d5ff \">$\\lambda = 480$</font>, or **<font face=\"Times\">bold times</font>**."
             ],
@@ -128,7 +130,7 @@
             "type": "markdown",
             "body": [
                 "In the prose part of a notebook that you can write it is sometimes useful to refer to values computed previously in the notebook.",
-                "Beaker makes it easy to do this by supporting a form a template expansion.  Let's start out by defining some values on the `beaker` object:"
+                "Beaker makes it easy to do this by supporting a form of template expansion.  To see this, start out by defining some values on the `beaker` object:"
             ],
             "evaluatorReader": false
         },
@@ -140,15 +142,16 @@
                 "body": [
                     "// some values to be inserted below",
                     "beaker.name = 'Berzelius';",
-                    "beaker.logTen = Math.log(10);"
+                    "beaker.e = Math.exp(1);"
                 ]
             },
             "output": {
                 "state": {},
-                "result": 2.302585092994046,
+                "result": 2.718281828459045,
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 27
+                "elapsedTime": 28,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -163,8 +166,8 @@
                 "on this cell to see the markdown source).",
                 "",
                 "Since you have full access to JavaScript you can call functions to do things like",
-                "format numbers and call out results computed elsewhere in your notebook.  For example, the natural logarithm of ten is about",
-                "{{beaker.logTen.toFixed(3)}}.",
+                "format numbers and call out results computed elsewhere in your notebook.  For example, $e$ the base of the natural logarithm, is about",
+                "{{beaker.e.toFixed(3)}}.",
                 "",
                 "You can also customize content according to the reader's operating sytem.  For example, you are on a",
                 "{{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"Mac, so &#x2318;-O\":\"PC, so Control-O\"}} opens a file.",
@@ -193,7 +196,7 @@
         {
             "id": "codeB8fmAw",
             "type": "code",
-            "evaluator": "Html",
+            "evaluator": "HTML",
             "input": {
                 "body": [
                     "<p>",
@@ -202,7 +205,7 @@
                     "<p>",
                     "  But you can also create interactive elements:<br/>",
                     "  <button class=\"btn btn-default\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">",
-                    "  \tWhat is a beaker?",
+                    "    What is a beaker?",
                     "  </button>",
                     "</p>",
                     "<p>",
@@ -222,10 +225,219 @@
                 },
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 0,
-                "state": {}
+                "state": {},
+                "height": 161
             },
             "evaluatorReader": true,
             "lineCount": 16
+        },
+        {
+            "id": "section2ybGYh",
+            "type": "section",
+            "title": "Images",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownNOEwwT",
+            "type": "markdown",
+            "body": [
+                "You can include literal images in text cells: ",
+                "",
+                "<img width=\"30\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAABSCAYAAADpaaIJAAABfGlDQ1BJQ0MgUHJvZmlsZQAAKJFj",
+                "YGAqSSwoyGFhYGDIzSspCnJ3UoiIjFJgv8PAzcDDIMRgxSCemFxc4BgQ4MOAE3y7xsAIoi/rgsxK",
+                "8/x506a1fP4WNq+ZclYlOrj1gQF3SmpxMgMDIweQnZxSnJwLZOcA2TrJBUUlQPYMIFu3vKQAxD4B",
+                "ZIsUAR0IZN8BsdMh7A8gdhKYzcQCVhMS5AxkSwDZAkkQtgaInQ5hW4DYyRmJKUC2B8guiBvAgNPD",
+                "RcHcwFLXkYC7SQa5OaUwO0ChxZOaFxoMcgcQyzB4MLgwKDCYMxgwWDLoMjiWpFaUgBQ65xdUFmWm",
+                "Z5QoOAJDNlXBOT+3oLQktUhHwTMvWU9HwcjA0ACkDhRnEKM/B4FNZxQ7jxDLX8jAYKnMwMDcgxBL",
+                "msbAsH0PA4PEKYSYyjwGBn5rBoZt5woSixLhDmf8xkKIX5xmbARh8zgxMLDe+///sxoDA/skBoa/",
+                "E////73o//+/i4H2A+PsQA4AJHdp4IxrEg8AAAAJcEhZcwAAFiUAABYlAUlSJPAAAAIEaVRYdFhN",
+                "TDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4",
+                "OnhtcHRrPSJYTVAgQ29yZSA1LjQuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3",
+                "dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRp",
+                "b24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5j",
+                "b20vZXhpZi8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29t",
+                "L3RpZmYvMS4wLyI+CiAgICAgICAgIDxleGlmOlBpeGVsWURpbWVuc2lvbj4xNjY8L2V4aWY6UGl4",
+                "ZWxZRGltZW5zaW9uPgogICAgICAgICA8ZXhpZjpQaXhlbFhEaW1lbnNpb24+MTQyPC9leGlmOlBp",
+                "eGVsWERpbWVuc2lvbj4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRh",
+                "dGlvbj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+",
+                "Cg4ML+8AAA4pSURBVHgB7VxpcJXVGX6S3ORmu7nZ2BMIFKSAFkVFixQUpK2VqYOWarWO1jpTdTrT",
+                "H+2fzvRHx860f9o/dhvpMlYr1QHrQlkcKoIoLqC4sUsgmDSBkJCQPTdLn+d89+R+5C5wk+/CZcwZ",
+                "8n3nO+v7Puddzvfd95Cx9M6HBzGWohDIjCoZKzAIjAETRxDGgEkHYAYHB8F/kFEz+ThEpUOx72IQ",
+                "ISAy+Jfj8yGDGfvc1z+A/oEBlqk2vVLKgZFkZGZm8i8DHd096OgJYYBledk+FOb54cvKQl9/f9qB",
+                "k1IbY0GRjJxqaUc7QamaVI450ybBR+mpaz6L3r4+A47aplNKqcRIUqQkDa0duOnKWbhr5XLMqJpq",
+                "gGg83YQtr7+F9VvfRnEBkO3LQn//oFG1dAAoZcBo/XOyMlHT2IJbrp2Lnz32IGZOnzrE84yqSsyZ",
+                "PQulxUX4/b82oqKsiOomozzU5JJmUqJKUoscSkBLexfGFRXgvlW3DYEyQGOr+n4a3qJAAVbdvgJL",
+                "5s82AObQ7rhVSvmhv4sMU2qAIRMyqnVUoTnTKzBzxjTDVh/tiTyQ44Uc0RhfXoar581CdWevcVeq",
+                "s+BIvQSW/rJovC+mNKVElRznS6kgJ3n0PFkESSkjgzYn7Jplf5QyqW6BwgIU8FnSpCRA1K67N0Tj",
+                "3I9M5nNzfPBnZyFESVM7O47pkIJLyiRGtBaSmZONzWjv6DCkDw46TIkxSY9SL5mvqz+FDpYJwCwC",
+                "1UXvdfTkGZw620lXPoDO3j5UN7ai/kwbQYJpY6XKDJKCS2okhivcE+pDRWkRPqquw5vvvO94I7po",
+                "m6zE7DtwGNvf/QgLygKUAuBsRzdCBGnVkmtx3fy5KC0pNiAeP1GH13btwYGaBkwoLqRqZaZ0cxih",
+                "1FLswV2qJOMq2xDIzcbf129GMFiEbyxbjFy/38wge/HRvgN48pn1OHayGbMmlaGxtR0FVL1H7r0D",
+                "t926BMGiwDnULFtyI9Y8vQ4bd32ISuPFMofs0TkNPXjISOX3GIm7XgPOtHfKwOCOWxZi3uyZZnNX",
+                "+78GbNr+Lo7UnULV+BJjT7Tf+dWP78d3V33LYU3oSYzsnaXHT9TiN0/8Fds/OIhp44vR06tdswdI",
+                "DBtixBJjaDEUybs4xDt+JjKDDKR2tsGCPIRoRP/04jY0hLaihMb1DJ+vHxdERXmQjGXgEG3K/bfe",
+                "iOVLF5kBZIOM0RYoTINhg1s1tQLfWbkCu/dVo62zBwW5fo7teDvT0HVxDHR8+lxNo7IjBkbTZZEh",
+                "Te5MnUGdHzTvQe4FVD3/IT83B9dUTaRHGTSMyMYor78+9KODu97rr5mHstJiQ6TZNatjOGmcfr5T",
+                "CazZM6fjqpmV2PHxEcwpFOi2VeQuG6Tu3EubbYA8ZDJpRMDIfbZ1dWPv6TYE6CbayVxlXg4qSwPm",
+                "hdHtMdS2vasHNWfaDYFTSwoRyPebF0fRqnpJUzFdcXlJ0NCu/pl07cOTIwHgFiAPZWwr1+2ey7YX",
+                "IJ83teJYRw8KSV8bpe1q2qRAfm7M9raf+54UMCJMrraLS3QD330eumIGmQpx3+FDA93ya/QuEnlJ",
+                "knYkPoHW1Ys8SsvDt38N/pxs7PpgPxqaW1FSmI++gX5jQ/Tm3ct+3T3c5DFpHjFMWTPP9mIXXZLT",
+                "3dNjii1Yto3u3XTvq5ctxJSJ4x0po+oeOHIc7x+o5sYz03i0WIC6x0gKGHXUwCea21A5eSJ+8P3V",
+                "9DI5ZrzTTWfQ0taBl3d+gCvoYSS6Xd29yKYkPHrfHfj2N5cbo7tt59v43Zq1dMtdxgP19Q2YzVsL",
+                "7weOHMOypTeZMcW83sBtEiOWmYaTp3D0RD3KC/xGFW0bbQzr+cY+f9ZUPPrQvaggjUohLuQTa57G",
+                "xnc+QRVtmtL5FCtaXk232BdJi3S8hGqzgR5l78f7hhqWl5Xg60u/ilp6iRCZyqWrrm46i6/MqsKK",
+                "mxdT/HMJkg83L74Bi6+9Eu/WNsFPxsmusUvzSgvx6s490L5GSaBoPvsnUHxkvIcbwtfffA/7axsx",
+                "LlhojLuMiZWyfS2dWLl88RAoGmv/oc+w5Y3dKPJnmzH0cex8KSlgNHkv0S/ji+FhepGNW3egrd3Z",
+                "1WqiBfPn4YeL5/OFsNXYmgIC0RMKob2T7jqcOju70dHVhSCJ1AcrKUtvqB/lHPPYySY89dxLOHSk",
+                "2rSWAXb/CZSXNm7Fc5t2oIK2St5Qxltj6F1K33zuXnAFFi1cYPrrIvXc9N8d+IRAlhVRfWnPjFUe",
+                "ahE7k1U1Z8EvY1fFLtXKSWSzSU0dGZn/5RmonDLJNNY7Twa3/f/e/h5KaGADtC019U3I82VgEvW9",
+                "kwZ7y7adeH7zG5gczB+agHgbj1ZKD7P70AkcPVqNfK1ulo/q2I2zbe04xv3Lupc3449rN9CGwRhS",
+                "66bVX15o98kW/GT1bViy6DoDqCb49OBhPPnsy8iklBTR+MrQx7JLQ8SEMxElHl6T4LmPk4jwRr7L",
+                "fF7XYFoKME04Y1olKoIFxhPJC+jl78l1W7Dr/U/NTvjjz07wO02WefvWexB5cvrzKqKrxhVj7+Ea",
+                "vPH4H3DNjCmYPK6MEtWLfUdrcfh0K+ZyU5dLI95DAytAnCRXPoBxlNCJ48ud/U+4pqGhEY0tbcgj",
+                "HZLQC00jAkb0GJ2XhSeTSpZGA5CeSbWIFTABbvOraxvohUg87YJ9z8mB09cM4LpMn0jjzb6n6b1q",
+                "6htN+2BBLm760mQjWbIRPp9eBxwwbVdqk9kG2GfdRZ8kPAlMTPcRAWMnluGMTpFS44Zpk1r5Yijg",
+                "srg3OcXVs3YhVm87nmyGAPRTCsSUxmhu6zILIkmhaUE26wvoCMS4SNF40WoS9mZCLYk0KmBizxMh",
+                "QKKrFSsP+qnzzoemSG3s3rZUTCrZ9u5nBwCCQ3TkDBwptS2dfvZq+9nnC717CEyEMBGjN+szXOG5",
+                "tBMPrF6JyTS+Xfz5RACNNgkIf04OGrl3evaFTdjDjdtEeqlYIIx0Nu+AcVEgwrNpf5rpmoP8rnvd",
+                "1Vfxu4qzsRotKO7+bXxr3/zam5ynB1O45Y+JjLtDEnnvgJEhCLsJYSRwfLQBMqJyuUDQfHCS3Yi1",
+                "sknQbFRImz2N28/XCr16jHbM4fN7B8zwkfksYoWVNYi6ZxAYl3A5vSxXURUxBjVFzs7VGdd7UDRF",
+                "SoBx+IxwGRYkThcpM/zZS5xiW30p7km9EiQkMMJ9PPYTdk+3Su+AkY0Jp0guXoFtmb5374BJpA6J",
+                "6tIUG++AiRITF8eJ6lzN0inrHTAurqIEJKrA1ThNs94Bk4j5L7TEuJh3ZdNUHs5PVkokJpHwnJ+k",
+                "9GjhHTCJdi+XIVIeApNAgRJUpYd8RFPhHTCXIfPRcERKvAMmMmb0m+4XW5Ui3EdyLrQus6yHEhPR",
+                "pUgujEZUQfqj5CEw6c9sMhSmBJgoVYoqSIbES9M2JcBEaU5UwaVhNplZvQPGJRWurENLVEEyJF6a",
+                "tt4BcxlKRSLIvQMm0SyXIWjeAeP65huF0RdalaL3uxF8LkOJ8e7nEzF/jmQ4AT36Rm7DLxQdlUiw",
+                "IkgmzmkcJ+pTvy8585ge58yfeIzz1XoHjGsmgxERUOi7zgbkM8xMSaFmXiSBopSfn2eCBkLhqCrX",
+                "DxWjnsYbSoeRoRBVBQUp5k1RVJ8dq2FM3CR0MW+ZcrpEidmwkWI/DjBqS6H3JxtPo52/XytsTTHG",
+                "irTyKqUAGB0OdYBRXF1tQxN+++dnkMMoKKNK1Dc3HO68myl3uTuvNorAURywQs2aGG9Tztg6BRPp",
+                "RJ1+M/cijRoYGyZkiVfMSj3PBFTwhEguI6l05uhgTb2JDTY/vntBNyVD8/j5w34J4/YUP6z44uMN",
+                "rUP2zIIz0ulGBYwkd7j0VlZMxmN3rcDPn9qAhRVlJvI7yFi8Eg/iYiyz9i6jroNeOgL0HgMTf3r3",
+                "ch7lmWeqJTnuYAIjprbjBdxHBYzR63AMnuaSqhTz+M3D968mYBl4ZuN2TGDMncTcEXEXjMomu5zn",
+                "9JE6ZZgzCgpj/cWdy/DIg/eYACXNZYHREURJVxYNkGv280KTNDBaBTHqxMYNYu8nB7F00UITGCRg",
+                "lMpLSxiZ/T3cefutTgQV+5BS1rg5G543XXmJgZbtb++mKfuHh1CMzLjycpTwRK6SYnIUP9PJeOI9",
+                "H+5DF9W5uCRgHIKVItMwwSVpYDSWViCDKzCRdmTtq2/xiHAAP3rgHhP9rVB3TV4UKDR/Ceb2vEoL",
+                "I9oEisLk167/D/7+yjae5M03NCXzPwIkHQAtbsS4CFC0ZA7DSrfs3o9A9iCunDOL3sc5W6DFZENd",
+                "L2rSvkmg/HPdK/j139ajjOcN8nnewcQUJ0HPiIARp1alNGkBY3lffOtDlDBcfM7smcY1XwpQRJPC",
+                "6te+sAGPr3keEygpRTxEpshO1SWTRqRKdgJDCCfVIa1pVKu/rNuM5pazPBhayVULGYlJjhw7cvJ3",
+                "Gdvs7GwTqb7+1Z3mZIoi0wVUsqBo9lEBowHsKulwllznPzZsxyDRkMcwnkGNmKzpdZ6c64WWufvE",
+                "z2vj6HijCQzZ92fnhMPqR7Y0owZGhAocnTbTWaYpPOWmMwHyGJYkC4C9q8/wvMqU1MfW2bupuICL",
+                "HJ/snqUnSe05ZwZPgNGIYkj7GkmKnzZHTF3sJBrkFHRmwS7KSGnwDBgRYFabyxbiabXI2g8nzU1y",
+                "LPjMKOFONu/uoyorS7a/rXd2u/Zp+MzJPHsKjJ04YuzOR2K8ene5Oz80QzgzvG74s22f/N27T5vJ",
+                "z53WPcaAibM8Y8CMARMHgTjFYxIzBkwcBOIUj0nMGDBxEIhTPCYxcYD5P4YFVTXvFj0aAAAAAElF",
+                "TkSuQmCC",
+                "\">"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeS7gkvn",
+            "type": "code",
+            "evaluator": "HTML",
+            "input": {
+                "body": [
+                    "and HTML cells like this one.<br>",
+                    "<img width=\"30\" ",
+                    "     src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAABSCAYAAADpaaIJAAABfGlDQ1BJQ0MgUHJvZmlsZQAAKJFj",
+                    "YGAqSSwoyGFhYGDIzSspCnJ3UoiIjFJgv8PAzcDDIMRgxSCemFxc4BgQ4MOAE3y7xsAIoi/rgsxK",
+                    "8/x506a1fP4WNq+ZclYlOrj1gQF3SmpxMgMDIweQnZxSnJwLZOcA2TrJBUUlQPYMIFu3vKQAxD4B",
+                    "ZIsUAR0IZN8BsdMh7A8gdhKYzcQCVhMS5AxkSwDZAkkQtgaInQ5hW4DYyRmJKUC2B8guiBvAgNPD",
+                    "RcHcwFLXkYC7SQa5OaUwO0ChxZOaFxoMcgcQyzB4MLgwKDCYMxgwWDLoMjiWpFaUgBQ65xdUFmWm",
+                    "Z5QoOAJDNlXBOT+3oLQktUhHwTMvWU9HwcjA0ACkDhRnEKM/B4FNZxQ7jxDLX8jAYKnMwMDcgxBL",
+                    "msbAsH0PA4PEKYSYyjwGBn5rBoZt5woSixLhDmf8xkKIX5xmbARh8zgxMLDe+///sxoDA/skBoa/",
+                    "E////73o//+/i4H2A+PsQA4AJHdp4IxrEg8AAAAJcEhZcwAAFiUAABYlAUlSJPAAAAIEaVRYdFhN",
+                    "TDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4",
+                    "OnhtcHRrPSJYTVAgQ29yZSA1LjQuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3",
+                    "dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRp",
+                    "b24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5j",
+                    "b20vZXhpZi8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29t",
+                    "L3RpZmYvMS4wLyI+CiAgICAgICAgIDxleGlmOlBpeGVsWURpbWVuc2lvbj4xNjY8L2V4aWY6UGl4",
+                    "ZWxZRGltZW5zaW9uPgogICAgICAgICA8ZXhpZjpQaXhlbFhEaW1lbnNpb24+MTQyPC9leGlmOlBp",
+                    "eGVsWERpbWVuc2lvbj4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRh",
+                    "dGlvbj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+",
+                    "Cg4ML+8AAA4pSURBVHgB7VxpcJXVGX6S3ORmu7nZ2BMIFKSAFkVFixQUpK2VqYOWarWO1jpTdTrT",
+                    "H+2fzvRHx860f9o/dhvpMlYr1QHrQlkcKoIoLqC4sUsgmDSBkJCQPTdLn+d89+R+5C5wk+/CZcwZ",
+                    "8n3nO+v7Puddzvfd95Cx9M6HBzGWohDIjCoZKzAIjAETRxDGgEkHYAYHB8F/kFEz+ThEpUOx72IQ",
+                    "ISAy+Jfj8yGDGfvc1z+A/oEBlqk2vVLKgZFkZGZm8i8DHd096OgJYYBledk+FOb54cvKQl9/f9qB",
+                    "k1IbY0GRjJxqaUc7QamaVI450ybBR+mpaz6L3r4+A47aplNKqcRIUqQkDa0duOnKWbhr5XLMqJpq",
+                    "gGg83YQtr7+F9VvfRnEBkO3LQn//oFG1dAAoZcBo/XOyMlHT2IJbrp2Lnz32IGZOnzrE84yqSsyZ",
+                    "PQulxUX4/b82oqKsiOomozzU5JJmUqJKUoscSkBLexfGFRXgvlW3DYEyQGOr+n4a3qJAAVbdvgJL",
+                    "5s82AObQ7rhVSvmhv4sMU2qAIRMyqnVUoTnTKzBzxjTDVh/tiTyQ44Uc0RhfXoar581CdWevcVeq",
+                    "s+BIvQSW/rJovC+mNKVElRznS6kgJ3n0PFkESSkjgzYn7Jplf5QyqW6BwgIU8FnSpCRA1K67N0Tj",
+                    "3I9M5nNzfPBnZyFESVM7O47pkIJLyiRGtBaSmZONzWjv6DCkDw46TIkxSY9SL5mvqz+FDpYJwCwC",
+                    "1UXvdfTkGZw620lXPoDO3j5UN7ai/kwbQYJpY6XKDJKCS2okhivcE+pDRWkRPqquw5vvvO94I7po",
+                    "m6zE7DtwGNvf/QgLygKUAuBsRzdCBGnVkmtx3fy5KC0pNiAeP1GH13btwYGaBkwoLqRqZaZ0cxih",
+                    "1FLswV2qJOMq2xDIzcbf129GMFiEbyxbjFy/38wge/HRvgN48pn1OHayGbMmlaGxtR0FVL1H7r0D",
+                    "t926BMGiwDnULFtyI9Y8vQ4bd32ISuPFMofs0TkNPXjISOX3GIm7XgPOtHfKwOCOWxZi3uyZZnNX",
+                    "+78GbNr+Lo7UnULV+BJjT7Tf+dWP78d3V33LYU3oSYzsnaXHT9TiN0/8Fds/OIhp44vR06tdswdI",
+                    "DBtixBJjaDEUybs4xDt+JjKDDKR2tsGCPIRoRP/04jY0hLaihMb1DJ+vHxdERXmQjGXgEG3K/bfe",
+                    "iOVLF5kBZIOM0RYoTINhg1s1tQLfWbkCu/dVo62zBwW5fo7teDvT0HVxDHR8+lxNo7IjBkbTZZEh",
+                    "Te5MnUGdHzTvQe4FVD3/IT83B9dUTaRHGTSMyMYor78+9KODu97rr5mHstJiQ6TZNatjOGmcfr5T",
+                    "CazZM6fjqpmV2PHxEcwpFOi2VeQuG6Tu3EubbYA8ZDJpRMDIfbZ1dWPv6TYE6CbayVxlXg4qSwPm",
+                    "hdHtMdS2vasHNWfaDYFTSwoRyPebF0fRqnpJUzFdcXlJ0NCu/pl07cOTIwHgFiAPZWwr1+2ey7YX",
+                    "IJ83teJYRw8KSV8bpe1q2qRAfm7M9raf+54UMCJMrraLS3QD330eumIGmQpx3+FDA93ya/QuEnlJ",
+                    "knYkPoHW1Ys8SsvDt38N/pxs7PpgPxqaW1FSmI++gX5jQ/Tm3ct+3T3c5DFpHjFMWTPP9mIXXZLT",
+                    "3dNjii1Yto3u3XTvq5ctxJSJ4x0po+oeOHIc7x+o5sYz03i0WIC6x0gKGHXUwCea21A5eSJ+8P3V",
+                    "9DI5ZrzTTWfQ0taBl3d+gCvoYSS6Xd29yKYkPHrfHfj2N5cbo7tt59v43Zq1dMtdxgP19Q2YzVsL",
+                    "7weOHMOypTeZMcW83sBtEiOWmYaTp3D0RD3KC/xGFW0bbQzr+cY+f9ZUPPrQvaggjUohLuQTa57G",
+                    "xnc+QRVtmtL5FCtaXk232BdJi3S8hGqzgR5l78f7hhqWl5Xg60u/ilp6iRCZyqWrrm46i6/MqsKK",
+                    "mxdT/HMJkg83L74Bi6+9Eu/WNsFPxsmusUvzSgvx6s490L5GSaBoPvsnUHxkvIcbwtfffA/7axsx",
+                    "LlhojLuMiZWyfS2dWLl88RAoGmv/oc+w5Y3dKPJnmzH0cex8KSlgNHkv0S/ji+FhepGNW3egrd3Z",
+                    "1WqiBfPn4YeL5/OFsNXYmgIC0RMKob2T7jqcOju70dHVhSCJ1AcrKUtvqB/lHPPYySY89dxLOHSk",
+                    "2rSWAXb/CZSXNm7Fc5t2oIK2St5Qxltj6F1K33zuXnAFFi1cYPrrIvXc9N8d+IRAlhVRfWnPjFUe",
+                    "ahE7k1U1Z8EvY1fFLtXKSWSzSU0dGZn/5RmonDLJNNY7Twa3/f/e/h5KaGADtC019U3I82VgEvW9",
+                    "kwZ7y7adeH7zG5gczB+agHgbj1ZKD7P70AkcPVqNfK1ulo/q2I2zbe04xv3Lupc3449rN9CGwRhS",
+                    "66bVX15o98kW/GT1bViy6DoDqCb49OBhPPnsy8iklBTR+MrQx7JLQ8SEMxElHl6T4LmPk4jwRr7L",
+                    "fF7XYFoKME04Y1olKoIFxhPJC+jl78l1W7Dr/U/NTvjjz07wO02WefvWexB5cvrzKqKrxhVj7+Ea",
+                    "vPH4H3DNjCmYPK6MEtWLfUdrcfh0K+ZyU5dLI95DAytAnCRXPoBxlNCJ48ud/U+4pqGhEY0tbcgj",
+                    "HZLQC00jAkb0GJ2XhSeTSpZGA5CeSbWIFTABbvOraxvohUg87YJ9z8mB09cM4LpMn0jjzb6n6b1q",
+                    "6htN+2BBLm760mQjWbIRPp9eBxwwbVdqk9kG2GfdRZ8kPAlMTPcRAWMnluGMTpFS44Zpk1r5Yijg",
+                    "srg3OcXVs3YhVm87nmyGAPRTCsSUxmhu6zILIkmhaUE26wvoCMS4SNF40WoS9mZCLYk0KmBizxMh",
+                    "QKKrFSsP+qnzzoemSG3s3rZUTCrZ9u5nBwCCQ3TkDBwptS2dfvZq+9nnC717CEyEMBGjN+szXOG5",
+                    "tBMPrF6JyTS+Xfz5RACNNgkIf04OGrl3evaFTdjDjdtEeqlYIIx0Nu+AcVEgwrNpf5rpmoP8rnvd",
+                    "1Vfxu4qzsRotKO7+bXxr3/zam5ynB1O45Y+JjLtDEnnvgJEhCLsJYSRwfLQBMqJyuUDQfHCS3Yi1",
+                    "sknQbFRImz2N28/XCr16jHbM4fN7B8zwkfksYoWVNYi6ZxAYl3A5vSxXURUxBjVFzs7VGdd7UDRF",
+                    "SoBx+IxwGRYkThcpM/zZS5xiW30p7km9EiQkMMJ9PPYTdk+3Su+AkY0Jp0guXoFtmb5374BJpA6J",
+                    "6tIUG++AiRITF8eJ6lzN0inrHTAurqIEJKrA1ThNs94Bk4j5L7TEuJh3ZdNUHs5PVkokJpHwnJ+k",
+                    "9GjhHTCJdi+XIVIeApNAgRJUpYd8RFPhHTCXIfPRcERKvAMmMmb0m+4XW5Ui3EdyLrQus6yHEhPR",
+                    "pUgujEZUQfqj5CEw6c9sMhSmBJgoVYoqSIbES9M2JcBEaU5UwaVhNplZvQPGJRWurENLVEEyJF6a",
+                    "tt4BcxlKRSLIvQMm0SyXIWjeAeP65huF0RdalaL3uxF8LkOJ8e7nEzF/jmQ4AT36Rm7DLxQdlUiw",
+                    "IkgmzmkcJ+pTvy8585ge58yfeIzz1XoHjGsmgxERUOi7zgbkM8xMSaFmXiSBopSfn2eCBkLhqCrX",
+                    "DxWjnsYbSoeRoRBVBQUp5k1RVJ8dq2FM3CR0MW+ZcrpEidmwkWI/DjBqS6H3JxtPo52/XytsTTHG",
+                    "irTyKqUAGB0OdYBRXF1tQxN+++dnkMMoKKNK1Dc3HO68myl3uTuvNorAURywQs2aGG9Tztg6BRPp",
+                    "RJ1+M/cijRoYGyZkiVfMSj3PBFTwhEguI6l05uhgTb2JDTY/vntBNyVD8/j5w34J4/YUP6z44uMN",
+                    "rUP2zIIz0ulGBYwkd7j0VlZMxmN3rcDPn9qAhRVlJvI7yFi8Eg/iYiyz9i6jroNeOgL0HgMTf3r3",
+                    "ch7lmWeqJTnuYAIjprbjBdxHBYzR63AMnuaSqhTz+M3D968mYBl4ZuN2TGDMncTcEXEXjMomu5zn",
+                    "9JE6ZZgzCgpj/cWdy/DIg/eYACXNZYHREURJVxYNkGv280KTNDBaBTHqxMYNYu8nB7F00UITGCRg",
+                    "lMpLSxiZ/T3cefutTgQV+5BS1rg5G543XXmJgZbtb++mKfuHh1CMzLjycpTwRK6SYnIUP9PJeOI9",
+                    "H+5DF9W5uCRgHIKVItMwwSVpYDSWViCDKzCRdmTtq2/xiHAAP3rgHhP9rVB3TV4UKDR/Ceb2vEoL",
+                    "I9oEisLk167/D/7+yjae5M03NCXzPwIkHQAtbsS4CFC0ZA7DSrfs3o9A9iCunDOL3sc5W6DFZENd",
+                    "L2rSvkmg/HPdK/j139ajjOcN8nnewcQUJ0HPiIARp1alNGkBY3lffOtDlDBcfM7smcY1XwpQRJPC",
+                    "6te+sAGPr3keEygpRTxEpshO1SWTRqRKdgJDCCfVIa1pVKu/rNuM5pazPBhayVULGYlJjhw7cvJ3",
+                    "Gdvs7GwTqb7+1Z3mZIoi0wVUsqBo9lEBowHsKulwllznPzZsxyDRkMcwnkGNmKzpdZ6c64WWufvE",
+                    "z2vj6HijCQzZ92fnhMPqR7Y0owZGhAocnTbTWaYpPOWmMwHyGJYkC4C9q8/wvMqU1MfW2bupuICL",
+                    "HJ/snqUnSe05ZwZPgNGIYkj7GkmKnzZHTF3sJBrkFHRmwS7KSGnwDBgRYFabyxbiabXI2g8nzU1y",
+                    "LPjMKOFONu/uoyorS7a/rXd2u/Zp+MzJPHsKjJ04YuzOR2K8ene5Oz80QzgzvG74s22f/N27T5vJ",
+                    "z53WPcaAibM8Y8CMARMHgTjFYxIzBkwcBOIUj0nMGDBxEIhTPCYxcYD5P4YFVTXvFj0aAAAAAElF",
+                    "TkSuQmCC",
+                    "\">"
+                ],
+                "hidden": true
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\nand HTML cells like this one.<br>\n<img width=\"30\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAABSCAYAAADpaaIJAAABfGlDQ1BJQ0MgUHJvZmlsZQAAKJFj\nYGAqSSwoyGFhYGDIzSspCnJ3UoiIjFJgv8PAzcDDIMRgxSCemFxc4BgQ4MOAE3y7xsAIoi/rgsxK\n8/x506a1fP4WNq+ZclYlOrj1gQF3SmpxMgMDIweQnZxSnJwLZOcA2TrJBUUlQPYMIFu3vKQAxD4B\nZIsUAR0IZN8BsdMh7A8gdhKYzcQCVhMS5AxkSwDZAkkQtgaInQ5hW4DYyRmJKUC2B8guiBvAgNPD\nRcHcwFLXkYC7SQa5OaUwO0ChxZOaFxoMcgcQyzB4MLgwKDCYMxgwWDLoMjiWpFaUgBQ65xdUFmWm\nZ5QoOAJDNlXBOT+3oLQktUhHwTMvWU9HwcjA0ACkDhRnEKM/B4FNZxQ7jxDLX8jAYKnMwMDcgxBL\nmsbAsH0PA4PEKYSYyjwGBn5rBoZt5woSixLhDmf8xkKIX5xmbARh8zgxMLDe+///sxoDA/skBoa/\nE////73o//+/i4H2A+PsQA4AJHdp4IxrEg8AAAAJcEhZcwAAFiUAABYlAUlSJPAAAAIEaVRYdFhN\nTDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4\nOnhtcHRrPSJYTVAgQ29yZSA1LjQuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3\ndy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRp\nb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5j\nb20vZXhpZi8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29t\nL3RpZmYvMS4wLyI+CiAgICAgICAgIDxleGlmOlBpeGVsWURpbWVuc2lvbj4xNjY8L2V4aWY6UGl4\nZWxZRGltZW5zaW9uPgogICAgICAgICA8ZXhpZjpQaXhlbFhEaW1lbnNpb24+MTQyPC9leGlmOlBp\neGVsWERpbWVuc2lvbj4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRh\n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\nTkSuQmCC\n\">"
+                },
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 0,
+                "height": 70
+            },
+            "evaluatorReader": true,
+            "lineCount": 85
         },
         {
             "id": "section94sNHm",
@@ -236,9 +448,18 @@
             "collapsed": false
         },
         {
+            "id": "markdownLK3kcy",
+            "type": "markdown",
+            "body": [
+                "Math typesetting support comes from Khan Academy's lightning fast [KaTeX](http://khan.github.io/KaTeX/) implementation of TeX.",
+                "It works in both text cells, as demonstrated above, and in its own cell type, like this one:"
+            ],
+            "evaluatorReader": false
+        },
+        {
             "id": "codegJITkE",
             "type": "code",
-            "evaluator": "Latex",
+            "evaluator": "TeX",
             "input": {
                 "body": [
                     "1 +  \\frac{q^2}{(1-q)}+\\frac{q^6}{(1-q)(1-q^2)}+\\cdots =",
@@ -254,7 +475,8 @@
                 },
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 8,
-                "state": {}
+                "state": {},
+                "height": 41
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -262,7 +484,8 @@
     ],
     "namespace": {
         "x": 2.302585092994046,
-        "logTen": 2.302585092994046,
-        "name": "Berzelius"
+        "logTen": 2.718281828459045,
+        "name": "Berzelius",
+        "e": 2.718281828459045
     }
 }

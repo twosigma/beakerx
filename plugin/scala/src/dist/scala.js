@@ -96,23 +96,33 @@ define(function(require, exports, module) {
         }
       },
       resetEnvironment: function () {
+        bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
         $.ajax({
           type: "POST",
           datatype: "json",
           url: bkHelper.serverUrl(serviceBase + "/rest/scalash/resetEnvironment"),
           data: {shellId: this.settings.shellID}
         }).done(function (ret) {
+          bkHelper.hideLanguageManagerSpinner();
           console.log("done resetEnvironment",ret);
+        }).fail(function(jqXHR, textStatus) {
+          bkHelper.hideLanguageManagerSpinner(textStatus);
+          console.error("Request failed: " + textStatus);
         });
       },
       killAllThreads: function () {
+        bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
         $.ajax({
           type: "POST",
           datatype: "json",
           url: bkHelper.serverUrl(serviceBase + "/rest/scalash/killAllThreads"),
           data: {shellId: this.settings.shellID}
         }).done(function (ret) {
+          bkHelper.hideLanguageManagerSpinner();
           console.log("done killAllThreads",ret);
+        }).fail(function(jqXHR, textStatus) {
+          bkHelper.hideLanguageManagerSpinner(textStatus);
+          console.error("Request failed: " + textStatus);
         });
       },
       autocomplete: function(code, cpos, cb) {
@@ -136,14 +146,20 @@ define(function(require, exports, module) {
         }).done(cb);
       },
       updateShell: function (cb) {
-        var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/scalash/setShellOptions"), {
+        bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
+        bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/scalash/setShellOptions"), {
           shellId: this.settings.shellID,
           classPath: this.settings.classPath,
           imports: this.settings.imports,
-          outdir: this.settings.outdir});
-        if (cb) {
-          p.success(cb);
-        }
+          outdir: this.settings.outdir}).success(function() {
+          if (cb && _.isFunction(cb)) {
+            cb();
+          }
+          bkHelper.hideLanguageManagerSpinner();
+        }).error(function(err) {
+          bkHelper.hideLanguageManagerSpinner(err);
+          bkHelper.show1ButtonModal('ERROR: ' + err, PLUGIN_NAME + ' restart failed');
+        });
       },
       spec: {
         outdir:      {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
@@ -155,7 +171,6 @@ define(function(require, exports, module) {
       cometdUtil: cometdUtil
   };
   var defaultImports = [
-                        "java.time.*",
                         "com.twosigma.beaker.NamespaceClient",
                         "com.twosigma.beaker.BeakerProgressUpdate",
                         "com.twosigma.beaker.chart.Color",
@@ -166,6 +181,9 @@ define(function(require, exports, module) {
                         "com.twosigma.beaker.chart.xychart.plotitem.*",
                         "com.twosigma.beaker.chart.categoryplot.*",
                         "com.twosigma.beaker.chart.categoryplot.plotitem.*",
+                        "com.twosigma.beaker.chart.treemap.*",
+                        "com.twosigma.beaker.chart.treemap.util.*",
+                        "net.sf.jtreemap.swing.*",
                         "com.twosigma.beaker.chart.histogram.*",
                         "com.twosigma.beaker.chart.heatmap.HeatMap",
                         "com.twosigma.beaker.easyform.*",

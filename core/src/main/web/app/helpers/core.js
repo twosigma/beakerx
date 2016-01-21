@@ -28,7 +28,8 @@
     'bk.recentMenu',
     'bk.notebookCellModelManager',
     'bk.treeView',
-    'bk.electron'
+    'bk.electron',
+    'ngAnimate'
   ]);
 
   /**
@@ -38,7 +39,7 @@
    *     instead
    */
   module.factory('bkCoreManager', function(
-      $modal,
+      $uibModal,
       $rootScope,
       $document,
       $location,
@@ -69,7 +70,7 @@
         }
       };
       newStrategy.manualEntry = function() {
-        newStrategy.manualName = this.input.split('/').pop();
+        newStrategy.manualName = this.input ? this.input.split('/').pop() : "";
       };
       newStrategy.treeViewfs = { // file service
         getChildren: function(basePath, openFolders) {
@@ -130,8 +131,8 @@
           if (!fs.applyExtFilter || _.isEmpty(fs.extFilter) || child.type === "directory") {
             return true;
           } else {
-            return _(fs.extFilter).any(function(ext) {
-              return _.string.endsWith(child.uri, ext);
+            return _.any(fs.extFilter, function(ext) {
+              return _.endsWith(child.uri, ext);
             });
           }
         }
@@ -264,7 +265,15 @@
     var bkCoreManager = {
 
       _prefs: {
-
+        setTheme: function (theme) {
+          bkCoreManager.colorize(theme);
+          bkHelper.setInputCellTheme(theme);
+          this.theme = theme;
+          bkHelper.setThemeToBeakerObject();
+        },
+        getTheme: function () {
+          return this.theme;
+        },
         setFSOrderBy: function (fs_order_by) {
           this.fs_order_by = fs_order_by;
         },
@@ -277,6 +286,19 @@
         getFSReverse: function () {
           return this.fs_reverse;
         }
+      },
+
+      setTheme: function (theme) {
+        this._prefs.setTheme(theme);
+
+        bkUtils.httpPost('../beaker/rest/util/setPreference', {
+          preferencename: 'theme',
+          preferencevalue: theme
+        });
+        $rootScope.$broadcast('beaker.theme.set', theme);
+      },
+      getTheme: function () {
+        return this._prefs.getTheme();
       },
 
       setFSOrderBy: function (fs_order_by) {
@@ -375,20 +397,27 @@
           var fileChooserStrategy = self.getFileSystemFileChooserStrategy();
           fileChooserStrategy.localDrives = localDrives;
           fileChooserStrategy.input = initPath;
+          fileChooserStrategy.convertRelativePath = function (path) {
+            if (path == null) {
+              return path;
+            }
+            var result = path;
+            if (result === '~') {
+              result = homeDir + "/"
+            } else if (_.startsWith(result, '~/')) {
+              result = result.replace('~', homeDir);
+            } else if (!_.startsWith(result, '/') && !result.match(/^\w+:\\/)) {
+              result = homeDir + "/" + result;
+            }
+            return result;
+          };
           fileChooserStrategy.getResult = function () {
             if (_.isEmpty(this.input)) {
               return "";
             }
-            var result = this.input;
-            if (result === '~') {
-              result = homeDir + "/"
-            } else if (_.string.startsWith(result, '~/')) {
-              result = result.replace('~', homeDir);
-            } else if (!_.string.startsWith(result, '/') && !result.match(/^\w+:\\/)) {
-              result = homeDir + "/" + result;
-            }
-            if (!_.string.endsWith(result, '.bkr')
-                && !_.string.endsWith(result, '/')) {
+            var result = this.convertRelativePath(this.input);
+            if (!_.endsWith(result, '.bkr')
+                && !_.endsWith(result, '/')) {
               result = result + ".bkr";
             }
             return result;
@@ -396,6 +425,7 @@
           fileChooserStrategy.newFolder = function(path) {
             var self = this;
             this.showSpinner = true;
+            path = this.convertRelativePath(path);
             bkUtils.httpPost("../beaker/rest/file-io/createDirectory", {path: path})
               .success(function (list) {
 
@@ -412,7 +442,7 @@
               });
           };
           fileChooserStrategy.getSaveBtnDisabled = function() {
-            return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');
+            return _.isEmpty(this.input) || _.endsWith(this.input, '/');
           };
           fileChooserStrategy.treeViewfs.applyExtFilter = false;
           saveButtonTitle = saveButtonTitle || "Save";
@@ -641,6 +671,15 @@
           }
         };
 
+        var reformat = function (cm) {
+          var start = cm.getCursor(true).line;
+          var end = cm.getCursor(false).line;
+          do {
+            cm.indentLine(start);
+            start += 1;
+          } while (start <= end)
+        };
+
         var shiftTab = function(cm) {
           var cursor = cm.getCursor();
           var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
@@ -740,7 +779,9 @@
             "Ctrl-/": "toggleComment",
             "Cmd-/": "toggleComment",
             'Right': goCharRightOrMoveFocusDown,
-            'Left': goCharLeftOrMoveFocusDown
+            'Left': goCharLeftOrMoveFocusDown,
+            "Shift-Ctrl-F": reformat,
+            "Shift-Cmd-F": reformat
         };
 
 
@@ -763,7 +804,8 @@
           matchBrackets: true,
           extraKeys: keys,
           goToNextCodeCell: goToNextCodeCell,
-          scrollbarStyle: "simple"
+          scrollbarStyle: "simple",
+          theme: bkCoreManager.getTheme()
         };
       },
 
@@ -821,7 +863,7 @@
         }
 
         modalDialogOp.setStrategy(strategy);
-        var dd = $modal.open(options);
+        var dd = $uibModal.open(options);
 
         attachSubmitListener();
 
@@ -983,7 +1025,7 @@
         } else {
           options.template = template;
         }
-        var dd = $modal.open(options);
+        var dd = $uibModal.open(options);
         return dd.result.then(function(result) {
           if (callback) {
             callback(result);
@@ -1001,7 +1043,7 @@
           template: JST['mainapp/components/pluginmanager/pluginmanager']()
         };
 
-        var dd = $modal.open(options);
+        var dd = $uibModal.open(options);
         return dd.result;
       },
       showPublishForm: function(nModel, callback) {
@@ -1016,12 +1058,30 @@
           resolve: {nModel: function() { return (nModel ? nModel : undefined); } }
         };
 
-        var dd = $modal.open(options);
+        var dd = $uibModal.open(options);
         return dd.result.then(function(result) {
           if (callback) {
             callback(result);
           }
         });
+      },
+      colorize: function (theme) {
+        var colorizedElements = $("html");
+        var ca = colorizedElements.attr('class');
+        var classes = [];
+        if (ca && ca.length && ca.split) {
+          ca = jQuery.trim(ca);
+          /* strip leading and trailing spaces */
+          classes = ca.split(' ');
+        }
+        var themeStylePrefix = "beaker-theme-";
+        var clazz = _.find(classes, function (e) {
+          return e.indexOf(themeStylePrefix) !== -1
+        });
+        if (clazz) colorizedElements.removeClass(clazz);
+        if ("default" !== theme) {
+          colorizedElements.addClass(themeStylePrefix + theme);
+        }
       }
     };
 
@@ -1043,6 +1103,16 @@
       bkCoreManager._prefs.fs_reverse = false;
     });
 
+    bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
+      preference: 'theme'
+    }).success(function (theme) {
+      bkCoreManager._prefs.setTheme(_.contains(_.values(GLOBALS.THEMES), theme) ? theme : GLOBALS.THEMES.DEFAULT);
+      $rootScope.$broadcast('beaker.theme.set', theme);
+    }).error(function (response) {
+      console.log(response);
+      bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);
+    });
+
     return bkCoreManager;
   });
 
@@ -1058,7 +1128,7 @@
     };
   });
 
-  module.controller('modalDialogCtrl', function($scope, $rootScope, $modalInstance, modalDialogOp,
+  module.controller('modalDialogCtrl', function($scope, $rootScope, $uibModalInstance, modalDialogOp,
                                                 bkUtils) {
     $scope.getStrategy = function() {
       return modalDialogOp.getStrategy();
@@ -1070,7 +1140,7 @@
       $scope.close($scope.getStrategy().getResult());
     });
     $scope.close = function(result) {
-      $modalInstance.close(result);
+      $uibModalInstance.close(result);
     };
   });
 

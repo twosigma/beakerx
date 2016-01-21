@@ -1,7 +1,7 @@
 {
   "name": "scrollin",
   "main": "dist/index.js",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "homepage": "https://github.com/samccone/scrollin",
   "authors": [
     "Sam Saccone <samccone@gmail.com>"
@@ -27,13 +27,13 @@
     "test",
     "tests"
   ],
-  "_release": "0.2.2",
+  "_release": "0.3.0",
   "_resolution": {
     "type": "version",
-    "tag": "v0.2.2",
-    "commit": "aa954c0e69e405ac408c85862db278889148eada"
+    "tag": "v0.3.0",
+    "commit": "19d5f74231a96a8aa10f97d057aa9d2ab0f93db1"
   },
   "_source": "git://github.com/samccone/scrollin.git",
-  "_target": "~0.2.2",
+  "_target": "~0.3.0",
   "_originalSource": "scrollin"
 }

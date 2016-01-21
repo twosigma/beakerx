@@ -16,10 +16,10 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils) {
+  var retfunc = function(plotUtils, plotTip) {
 
     var PlotArea = function(data){
-      _(this).extend(data); // copy properties to itself
+      _.extend(this, data); // copy properties to itself
       this.format();
     };
 
@@ -132,8 +132,8 @@
       };
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
-        range.xl = Math.min(range.xl, ele.x);
-        range.xr = Math.max(range.xr, ele.x);
+        range.xl = plotUtils.min(range.xl, ele.x);
+        range.xr = plotUtils.max(range.xr, ele.x);
         range.yl = Math.min(range.yl, ele.y);
         range.yr = Math.max(range.yr, ele.y2);
       }
@@ -201,7 +201,6 @@
           var ele2 = eles[i + 1];
           var x2 = mapX(ele2.x);
           if (Math.abs(x2) > 1E6) {
-            skipped = true;
             break;
           }
           pstr += x + "," + y + " " + x2 + "," + y + " ";
@@ -295,14 +294,7 @@
     };
 
     PlotArea.prototype.clearTips = function(scope) {
-      var eleprops = this.elementProps;
-      var itemid = this.id;
-      _(scope.tips).each(function(value, key){
-        if (key.search("" + itemid) === 0) {
-          scope.jqcontainer.find("#tip_" + key).remove();
-          delete scope.tips[key];
-        }
-      });
+      plotTip.clearTips(scope, this.id);
     };
 
     PlotArea.prototype.createTip = function(ele) {
@@ -320,5 +312,5 @@
 
     return PlotArea;
   };
-  beaker.bkoFactory('PlotArea', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotArea', ['plotUtils', 'plotTip', retfunc]);
 })();

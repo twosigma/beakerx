@@ -16,9 +16,9 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils) {
+  var retfunc = function(plotUtils, plotTip) {
     var PlotText = function(data){
-      _(this).extend(data);
+      _.extend(this, data);
       this.format();
     };
 
@@ -32,9 +32,12 @@
         this.tip_color = "gray";
       }
       this.itemProps = {
-        "id" : this.id,
-        "fi" : this.color,
-        "fi_op" : this.color_opacity
+        "id": this.id,
+        "fi": this.color,
+        "fi_op": this.color_opacity,
+        "show_pointer": this.show_pointer,
+        "pointer_angle": this.pointer_angle,
+        "size": this.size
       };
       this.elementProps = [];
     };
@@ -59,12 +62,12 @@
         xl : Infinity,
         xr : -Infinity,
         yl : Infinity,
-        yr : -Infinity,
+        yr : -Infinity
       };
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
-        range.xl = Math.min(range.xl, ele.x);
-        range.xr = Math.max(range.xr, ele.x);
+        range.xl = plotUtils.min(range.xl, ele.x);
+        range.xr = plotUtils.max(range.xr, ele.x);
         range.yl = Math.min(range.yl, ele.y);
         range.yr = Math.max(range.yr, ele.y);
       }
@@ -99,6 +102,25 @@
       this.vlength = r - l + 1;
     };
 
+
+    /**
+     * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
+     *
+     * @param {String} text The text to be rendered.
+     * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold 14px verdana").
+     *
+     * @see http://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
+     */
+    var getTextWidth = function (text, font) {
+      // re-use canvas object for better performance
+      var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+      var context = canvas.getContext("2d");
+      context.font = font;
+      var metrics = context.measureText(text);
+      return metrics.width;
+    };
+
+
     PlotText.prototype.prepare = function(scope) {
       var focus = scope.focus;
       var eles = this.elements,
@@ -117,59 +139,159 @@
           return;
         }
 
-        var tf = "", rot = null;
-        if (ele.rotate != null) {
-          rot = ele.rotate;
-        } else if (this.rotate != null) {
-          rot = this.rotate;
-        }
-        if (rot != null) {
-          tf = "rotate(" + rot + " " + x + " " + y + ")";
-        }
-        tf += "translate(" + x + "," + y + ")";
-
         var prop = {
           "id" : this.id + "_" + i,
           "idx" : this.index,
           "ele" : ele,
-          "tf" : tf,
           "txt" : ele.text,
-          "fi" : ele.color,
-          "fi_op" : ele.opacity
+          "x" : x,
+          "y" : y
         };
         eleprops.push(prop);
       }
     };
 
-    PlotText.prototype.draw = function(scope) {
+    PlotText.prototype.draw = function (scope) {
+
+      var pointerSize = 20;
+      var pointerIndent = 10;
+
+      var self = this;
       var svg = scope.maing;
       var props = this.itemProps,
-          eleprops = this.elementProps;
+        eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
-          .data([props], function(d) { return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; });
+          .data([props], function (d) {
+            return d.id;
+          }).enter().append("g")
+          .attr("id", function (d) {
+            return d.id;
+          });
       }
       svg.select("#" + this.id)
-        .attr("class", this.plotClass)
-        .style("fill", props.fi)
-        .style("fill-opacity", props.fi_op);
+        .attr("class", this.plotClass);
 
       var respClass = this.useToolTip === true ? this.respClass : null;
       var itemsvg = svg.select("#" + this.id);
+
       itemsvg.selectAll("text")
-        .data(eleprops, function(d) { return d.id; }).exit().remove();
+        .data(eleprops, function (d) {
+          return d.id;
+        }).exit().remove();
+      itemsvg.selectAll("line")
+        .data(eleprops, function (d) {
+          return "line_" + d.id;
+        }).exit().remove();
+
+      if (self.itemProps.show_pointer === true) {
+
+        itemsvg.selectAll("line")
+          .data(eleprops, function (d) {
+            return d.id;
+          }).enter().append("line")
+          .attr("id", function (d) {
+            return "line_" + d.id;
+          })
+          .attr("x1", pointerSize)
+          .attr("x2", pointerIndent)
+          .attr("y1", 0)
+          .attr("y2", 0)
+          .attr("class", "text-line-style")
+          .attr("stroke-width", 1)
+          .attr("marker-end", "url("+window.location.pathname+"#Triangle)");
+
+
+        itemsvg.selectAll("line")
+          .data(eleprops, function (d) {
+            return "line_" + d.id;
+          })
+          .attr("transform", function (d) {
+            var x = d.x;
+            var y = d.y;
+            var transform = "rotate(" + self.itemProps.pointer_angle * (180 / Math.PI) + " " + x + " " + y + ")";
+            transform += "translate(" + x + "," + y + ")";
+            return transform;
+          });
+      }
+
       itemsvg.selectAll("text")
-        .data(eleprops, function(d) { return d.id; }).enter().append("text")
-        .attr("id", function(d) { return d.id; })
+        .data(eleprops, function (d) {
+          return d.id;
+        }).enter().append("text")
+        .attr("id", function (d) {
+          return d.id;
+        })
         .attr("class", respClass)
-        .style("fill", function(d) { return d.fi; })
-        .style("fill_opacity", function(d) { return d.fi_op; })
-        .text(function(d) { return d.txt; });
+        .attr("fill", self.itemProps.fi)
+        .style("opacity", self.itemProps.fi_op)
+        .style('font-size', self.itemProps.size)
+        .text(function (d) {
+          return d.txt;
+        });
       itemsvg.selectAll("text")
-        .data(eleprops, function(d) { return d.id; })
-        .attr("transform", function(d) { return d.tf; });
+        .data(eleprops, function (d) {
+          return d.id;
+        })
+        .attr("transform", function (d) {
+
+          var x = d.x;
+          var y = d.y;
+
+          if (self.itemProps.show_pointer) {
+            var size = self.itemProps.size;
+
+            var width = getTextWidth(d.txt, size + "px pt-sans, Helvetica, sans-serif");
+            var height = size;
+
+            var angle = self.itemProps.pointer_angle;
+            if (angle < 0) {
+              angle = 2 * Math.PI + angle;
+            }
+            x += Math.cos(angle) * pointerSize;
+            y += Math.sin(angle) * pointerSize;
+
+            if (angle === 0) {
+              y += Math.floor(height / 2);
+            }
+            else if (angle === 0.5 * Math.PI) {
+              x -= Math.round(width / 2);
+              y += height;
+            }
+            else if (angle === 1.5 * Math.PI) {
+              x -= Math.round(width / 2);
+            }
+            else if (angle === Math.PI) {
+              y += Math.floor(height / 2);
+              x -= width;
+            }
+            else if (angle > 0 && angle < 0.5 * Math.PI) {
+              y += height;
+            }
+            else if (angle > 0.5 * Math.PI && angle < Math.PI) {
+              y += height;
+              x -= width;
+            }
+            else if (angle > Math.PI && angle < 1.5 * Math.PI) {
+              x -= width;
+            }
+            else if (angle > 1.5 * Math.PI && angle < 2 * Math.PI) {
+
+            }
+          }
+
+          var tf = "", rot = null;
+          if (d.ele.rotate != null) {
+            rot = d.ele.rotate;
+          }
+          if (rot != null) {
+            tf = "rotate(" + rot + " " + x + " " + y + ")";
+          }
+          tf += "translate(" + x + "," + y + ")";
+
+          return tf;
+        });
     };
 
     PlotText.prototype.clear = function(scope) {
@@ -178,14 +300,7 @@
     };
 
     PlotText.prototype.clearTips = function(scope) {
-      var eleprops = this.elementProps;
-      var itemid = this.id;
-      _(scope.tips).each(function(value, key){
-        if (key.search("" + itemid) === 0) {
-          scope.jqcontainer.find("#tip_" + key).remove();
-          delete scope.tips[key];
-        }
-      });
+      plotTip.clearTips(scope, this.id);
     };
 
     PlotText.prototype.createTip = function(ele) {
@@ -202,5 +317,5 @@
 
     return PlotText;
   };
-  beaker.bkoFactory('PlotText', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotText', ['plotUtils', 'plotTip',  retfunc]);
 })();

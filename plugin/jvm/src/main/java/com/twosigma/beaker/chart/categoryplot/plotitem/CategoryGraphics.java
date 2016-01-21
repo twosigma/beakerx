@@ -17,11 +17,11 @@
 
 package com.twosigma.beaker.chart.categoryplot.plotitem;
 
+import com.twosigma.beaker.chart.ChartUtils;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Graphics;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,7 +29,7 @@ public abstract class CategoryGraphics extends Graphics {
   protected Number[][]   value;
   protected List<String> seriesNames;
   protected Color        baseColor;
-  private   List<Color>  colors;
+  private   List<Object>  colors;
   private boolean           showItemLabel = false;
   private boolean           centerSeries  = false;
   private boolean           useToolTip    = true;
@@ -51,23 +51,14 @@ public abstract class CategoryGraphics extends Graphics {
 
   private void setColors(List<Object> colors) {
     if (colors != null) {
-      this.colors = new ArrayList<>(colors.size());
-      for (Object c : colors) {
-        if (c instanceof Color) {
-          this.colors.add((Color)c);
-        } else if (c instanceof java.awt.Color) {
-          this.colors.add(new Color((java.awt.Color) c));
-        } else {
-          throw new IllegalArgumentException("setColor takes Color or List of Color");
-        }
-      }
+      this.colors = ChartUtils.convertColors(colors, "setColor takes Color or List of Color");
     } else {
       this.colors = null;
     }
 
   }
 
-  public List<Color> getColors() {
+  public List<Object> getColors() {
     return this.colors;
   }
 

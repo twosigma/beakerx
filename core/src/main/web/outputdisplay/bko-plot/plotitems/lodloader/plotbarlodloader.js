@@ -19,8 +19,8 @@
   var retfunc = function(plotUtils, PlotSampler, PlotBar, PlotLodBox, PlotAuxBox) {
     var PlotBarLodLoader = function(data, lodthresh){
       this.datacopy = {};
-      _(this.datacopy).extend(data);  // save for later use
-      _(this).extend(data); // copy properties to itself
+      _.extend(this.datacopy, data);  // save for later use
+      _.extend(this, data); // copy properties to itself
       this.lodthresh = lodthresh;
       this.format(lodthresh);
     };
@@ -105,7 +105,7 @@
 
     PlotBarLodLoader.prototype.createLodPlotter = function() {
       var data = {};
-      _(data).extend(this.datacopy);
+      _.extend(data, this.datacopy);
       if (this.lodType === "bar") {
         this.lodplotter = new PlotLodBox(data);
         this.lodplotter.setWidthShrink(1);
@@ -122,7 +122,7 @@
         this.lodplotter.setZoomHash(this.zoomHash);
         this.lodplotter2.setZoomHash(this.zoomHash);
 
-        _(data).extend(this.datacopy); // normal color for aux box
+        _.extend(data, this.datacopy); // normal color for aux box
         this.auxplotter = new PlotAuxBox(data);
         this.auxplotter.setWidthShrink(1);  // reduce box width by 1px (left and right)
       }

@@ -16,9 +16,9 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils) {
+  var retfunc = function(plotUtils, plotTip) {
     var PlotPoint = function(data){
-      _(this).extend(data); // copy properties to itself
+      _.extend(this, data); // copy properties to itself
       this.format();
     };
 
@@ -123,12 +123,12 @@
         xl : Infinity,
         xr : -Infinity,
         yl : Infinity,
-        yr : -Infinity,
+        yr : -Infinity
       };
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
-        range.xl = Math.min(range.xl, ele.x);
-        range.xr = Math.max(range.xr, ele.x);
+        range.xl = plotUtils.min(range.xl, ele.x);
+        range.xr = plotUtils.max(range.xr, ele.x);
         range.yl = Math.min(range.yl, ele.y);
         range.yr = Math.max(range.yr, ele.y);
       }
@@ -169,11 +169,11 @@
       var mapX = scope.data2scrXi,
           mapY = scope.data2scrYi;
 
-      _(this.elementProps).each(function(val) {
+      _.each(this.elementProps, function(val) {
         val.length = 0;
       });
 
-      _(this.elementLabels).each(function(val) {
+      _.each(this.elementLabels, function(val) {
         val.length = 0;
       });
 
@@ -184,10 +184,10 @@
         var labely;
 
         if (plotUtils.rangeAssert([x, y])) {
-          _(this.elementProps).each(function(val) {
+          _.each(this.elementProps, function(val) {
             val.length = 0;
           });
-          _(this.elementLabels).each(function(val) {
+          _.each(this.elementLabels, function(val) {
             val.length = 0;
           });
           return;
@@ -212,13 +212,13 @@
             pstr += (x    ) + "," + (y - s) + " ";
             pstr += (x + s) + "," + (y    ) + " ";
             pstr += (x    ) + "," + (y + s) + " ";
-            _(prop).extend({
+            _.extend(prop, {
               "pts" : pstr
             });
             labely = y - s;
             break;
           case "circle":
-            _(prop).extend({
+            _.extend(prop, {
               "cx" : x,
               "cy" : y,
               "r" : s
@@ -226,7 +226,7 @@
             labely = y - s;
             break;
           default:    // rects
-            _(prop).extend({
+            _.extend(prop, {
               "x" : x - s / 2,
               "y" : y - s / 2,
               "w" : s,
@@ -338,14 +338,7 @@
     };
 
     PlotPoint.prototype.clearTips = function(scope) {
-      var eleprops = this.elementProps;
-      var itemid = this.id;
-      _(scope.tips).each(function(value, key){
-        if (key.search("" + itemid) === 0) {
-          scope.jqcontainer.find("#tip_" + key).remove();
-          delete scope.tips[key];
-        }
-      });
+      plotTip.clearTips(scope, this.id);
     };
 
     PlotPoint.prototype.createTip = function(ele) {
@@ -362,5 +355,5 @@
 
     return PlotPoint;
   };
-  beaker.bkoFactory('PlotPoint', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotPoint', ['plotUtils', 'plotTip', retfunc]);
 })();

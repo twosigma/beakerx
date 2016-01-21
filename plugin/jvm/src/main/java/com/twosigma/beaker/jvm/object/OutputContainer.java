@@ -15,99 +15,96 @@
  */
 package com.twosigma.beaker.jvm.object;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializerProvider;
-
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
-import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
-
 public class OutputContainer {
-  private final static Logger logger = Logger.getLogger(OutputContainer.class.getName());
+  public final static Logger LOGGER = Logger.getLogger(OutputContainer.class.getName());
+
   private final List<Object> items;
+  private final List<String>                 labels        = new ArrayList<>();
+  private       OutputContainerLayoutManager layoutManager = new SimpleLayoutManager();
+
+  public OutputContainer() {
+    this(new ArrayList<>());
+  }
 
   public OutputContainer(List<Object> items) {
+    this(items, null);
+  }
+
+  public OutputContainer(List<Object> items, List<String> labels) {
+    if (items == null || (labels != null && labels.size() != items.size()))
+      throw new RuntimeException();
     this.items = items;
-  }
-
-  public static class Serializer extends JsonSerializer<OutputContainer> {
-
-    private final Provider<BeakerObjectConverter> objectSerializerProvider;
-
-    @Inject
-    public Serializer(Provider<BeakerObjectConverter> osp) {
-      objectSerializerProvider = osp;
-    }
-
-    private BeakerObjectConverter getObjectSerializer() {
-      return objectSerializerProvider.get();
-    }
-
-    @Override
-    public void serialize(OutputContainer value,
-        JsonGenerator jgen,
-        SerializerProvider provider)
-        throws IOException, JsonProcessingException {
-
-      synchronized (value) {
-        jgen.writeStartObject();
-        jgen.writeObjectField("type", "OutputContainer");
-        jgen.writeArrayFieldStart("items");
-        if (value.items != null) {
-          for (Object obj : value.items)
-            if (!getObjectSerializer().writeObject(obj, jgen, true))
-              jgen.writeObject(obj.toString());
-        }
-        jgen.writeEndArray();
-        jgen.writeEndObject();
+    this.labels.clear();
+    if (labels != null) {
+      this.labels.addAll(labels);
+    } else {
+      for (int i = 0; i < items.size(); i++) {
+        this.labels.add("");
       }
     }
   }
-  
-  public static class DeSerializer implements ObjectDeserializer {
-    private final BeakerObjectConverter parent;
 
-    public DeSerializer(BeakerObjectConverter p) {
-      parent = p;
-      parent.addKnownBeakerType("OutputContainer");
-    }
 
-    @Override
-    public Object deserialize(JsonNode n, ObjectMapper mapper) {
-      Object o = null;
-      try {
-        List<Object> vals = null;
-        
-        if (n.has("items")) {
-          JsonNode nn = n.get("items");
-          if (nn.isArray()) {
-            vals = new ArrayList<Object>();
-            for (JsonNode no : nn) {
-              vals.add(parent.deserialize(no, mapper));
-            }
-          }
-        }
-        o = new OutputContainer(vals);
-      } catch (Exception e) {
-        logger.log(Level.SEVERE, "exception deserializing OutputContainer ", e);
-      }
-      return o;
-    }
+  public void addItem(java.lang.Object item) {
+    addItem(item, items.size(), null);
+  }
 
-    @Override
-    public boolean canBeUsed(JsonNode n) {
-      return n.has("type") && n.get("type").asText().equals("OutputContainer");
+  public void addItem(java.lang.Object item, int index) {
+    addItem(item, index, null);
+  }
+
+  public void addItem(java.lang.Object item, int index, java.lang.String label) {
+    items.add(index, item);
+    labels.add(index, label);
+  }
+
+  public void addItem(Object item, String label) {
+    addItem(item, items.size(), label);
+  }
+
+  public void removeItem(int index) {
+    items.remove(index);
+    labels.remove(index);
+  }
+
+  public OutputContainer leftShift(Object item) {
+    addItem(item);
+    return this;
+  }
+
+  public void removeItem(Object itemToRemove) {
+    removeItem(items.indexOf(itemToRemove));
+  }
+
+  public List<Object> getItems() {
+    return items;
+  }
+
+  public List<String> getLabels() {
+    return labels;
+  }
+
+  public void visit(CellVisitor visitor) {
+    for (Object item : items) {
+      visitor.visit(item);
     }
-  }     
+  }
+
+  public OutputContainerLayoutManager getLayoutManager() {
+    return layoutManager;
+  }
+
+  public void setLayoutManager(OutputContainerLayoutManager layoutManager) {
+    if (layoutManager != null)
+      this.layoutManager = layoutManager;
+  }
+
+
+  public static interface CellVisitor {
+    void visit(Object item);
+  }
 }

@@ -18,8 +18,7 @@
 package com.twosigma.beaker.chart.serializer;
 
 
-import com.twosigma.beaker.AbstractChart;
-import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.AbstractChart;
 import org.codehaus.jackson.JsonGenerator;
 
 import java.io.IOException;

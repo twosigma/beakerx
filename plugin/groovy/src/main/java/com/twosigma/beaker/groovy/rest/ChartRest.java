@@ -17,7 +17,7 @@ package com.twosigma.beaker.groovy.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.twosigma.beaker.Chart;
+import com.twosigma.beaker.chart.Chart;
 import com.twosigma.beaker.chart.Graphics;
 import com.twosigma.beaker.chart.actions.CategoryGraphicsClickActionObject;
 import com.twosigma.beaker.chart.actions.ChartObjectManager;

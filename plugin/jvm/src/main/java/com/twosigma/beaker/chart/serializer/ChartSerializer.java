@@ -18,7 +18,7 @@
 package com.twosigma.beaker.chart.serializer;
 
 
-import com.twosigma.beaker.Chart;
+import com.twosigma.beaker.chart.Chart;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.JsonSerializer;
 

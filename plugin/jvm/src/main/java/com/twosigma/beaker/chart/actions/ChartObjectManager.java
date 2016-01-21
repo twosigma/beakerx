@@ -17,7 +17,7 @@
 package com.twosigma.beaker.chart.actions;
 
 import com.google.inject.Singleton;
-import com.twosigma.beaker.Chart;
+import com.twosigma.beaker.chart.Chart;
 
 import java.util.HashMap;
 import java.util.Map;

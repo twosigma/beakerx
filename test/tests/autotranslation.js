@@ -3,6 +3,7 @@ var path = require('path');
 
 describe('autotranslation', function() {
   beforeEach(function() {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = jasmine.DEFAULT_TIMEOUT_INTERVAL * 2;
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();

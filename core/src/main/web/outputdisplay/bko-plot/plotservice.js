@@ -1,46 +1,22 @@
 (function () {
   'use strict';
   var retfunc = function (bkUtils) {
-    var onClick = function(item, params, evaluatorId, type){
+    var onAction = function(action, plotId, itemId, evaluatorId, params){
       if (window.languageServiceBase && window.languageServiceBase[evaluatorId]) {
         bkUtils.httpPostJson(
-          window.languageServiceBase[evaluatorId] + '/chart/click/' +  type + '/' + item.chartId + '/' +  item.uid,
+          window.languageServiceBase[evaluatorId] + '/chart/' +
+          action + '/' +
+          plotId + '/' +
+          itemId,
           params
         ).then(
           function () {},
-          function () { console.error('send onclick event error'); });
+          function () { console.error('send ' + action + ' event error'); });
       }
     };
     return {
-      onXYClick: function(item, e, evaluatorId) {
-        var params = {};
-        if(e.ele != null){
-          params.index = e.ele.index;
-        }
-        onClick(item, params, evaluatorId, 'xy');
-      },
-      onCategoryClick: function(item, e, evaluatorId) {
-        var params = {};
-        if(e.ele != null){
-          params.category = e.ele.category;
-          params.series = e.ele.series;
-        }
-        onClick(item, params, evaluatorId, 'category');
-      },
-      onCombinedClick: function(item, e, evaluatorId, plotId, subplotIndex) {
-        var params = {};
-        if(e.ele != null){
-          params.index = e.ele.index;
-        }
-        if (window.languageServiceBase && window.languageServiceBase[evaluatorId]) {
-          bkUtils.httpPostJson(
-            window.languageServiceBase[evaluatorId] +
-            '/chart/click/combined/' + plotId + '/' + subplotIndex + '/' +  item.uid,
-            params
-          ).then(
-            function () {},
-            function () { console.error('send onclick event error'); });
-        }
+      onClick: function (plotId, itemId, evaluatorId, params) {
+        onAction('click', plotId, itemId, evaluatorId, params)
       }
     };
   };

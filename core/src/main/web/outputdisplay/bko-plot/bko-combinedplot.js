@@ -137,12 +137,21 @@
               getWidth : function() {
                 return scope.width;
               },
-              onClick: function(item, e) {
+              onClick: function(subplotId, item, e) {
                 for (var i = 0; i < scope.stdmodel.plots.length; i++) {
                   var subplot = scope.stdmodel.plots[i];
-                  if (item.chartId === subplot.plotId) {
-                    plotService.onCombinedClick(item, e, scope.model.getEvaluatorId(),
-                                                scope.model.getCellModel().update_id, i);
+                  if (subplotId === subplot.plotId) {
+                    var params = {
+                      subplotIndex: i,
+                      '@type': "combinedActionObject"
+                    };
+                    if(e.ele != null){
+                      params.index = e.ele.index;
+                    }
+                    plotService.onClick(scope.model.getCellModel().update_id,
+                                                item.uid,
+                                                scope.model.getEvaluatorId(),
+                                                params);
                   }
                 }
               }

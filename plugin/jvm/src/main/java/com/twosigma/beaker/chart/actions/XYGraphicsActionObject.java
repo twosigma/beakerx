@@ -16,23 +16,14 @@
 
 package com.twosigma.beaker.chart.actions;
 
-public class CategoryGraphicsClickActionObject extends GraphicsClickActionObject{
-  private int category;
-  private int series;
+public class XYGraphicsActionObject extends GraphicsActionObject {
+  private int index;
 
-  public int getCategory() {
-    return category;
+  public int getIndex() {
+    return index;
   }
 
-  public void setCategory(int category) {
-    this.category = category;
-  }
-
-  public int getSeries() {
-    return series;
-  }
-
-  public void setSeries(int series) {
-    this.series = series;
+  public void setIndex(int index) {
+    this.index = index;
   }
 }

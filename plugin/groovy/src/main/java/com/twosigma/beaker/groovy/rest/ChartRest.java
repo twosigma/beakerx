@@ -19,10 +19,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.chart.Graphics;
 import com.twosigma.beaker.chart.ObservableChart;
-import com.twosigma.beaker.chart.actions.CategoryGraphicsClickActionObject;
 import com.twosigma.beaker.chart.actions.ChartObjectManager;
-import com.twosigma.beaker.chart.actions.GraphicsClickActionObject;
-import com.twosigma.beaker.chart.actions.XYGraphicsClickActionObject;
+import com.twosigma.beaker.chart.actions.CombinedPlotActionObject;
+import com.twosigma.beaker.chart.actions.GraphicsActionObject;
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.XYChart;
@@ -47,39 +46,26 @@ public class ChartRest {
   private ChartObjectManager chartObjectManager;
 
   @POST
-  @Path("click/xy/{chartId}/{graphicsId}")
-  public void onXYClick(@PathParam("chartId") String chartId,
+  @Path("click/{chartId}/{graphicsId}")
+  public void onClick(@PathParam("chartId") String chartId,
                       @PathParam("graphicsId") String graphicsId,
-                      XYGraphicsClickActionObject info) throws IOException, InterruptedException {
+                      GraphicsActionObject info) throws IOException, InterruptedException {
     ObservableChart chart = chartObjectManager.getChart(chartId);
-    onClick(chart, graphicsId, info, ((XYChart)chart).getGraphics());
-  }
-
-  @POST
-  @Path("click/category/{chartId}/{graphicsId}")
-  public void onCategoryClick(@PathParam("chartId") String chartId,
-                      @PathParam("graphicsId") String graphicsId,
-                      CategoryGraphicsClickActionObject info) throws IOException, InterruptedException {
-    ObservableChart chart = chartObjectManager.getChart(chartId);
-    onClick(chart, graphicsId, info, ((CategoryPlot)chart).getGraphics());
-  }
-
-  @POST
-  @Path("click/combined/{chartId}/{subplotIndex}/{graphicsId}")
-  public void onCombinedClick(@PathParam("chartId") String chartId,
-                              @PathParam("subplotIndex") Integer subplotIndex,
-                              @PathParam("graphicsId") String graphicsId,
-                              XYGraphicsClickActionObject info) throws IOException, InterruptedException {
-    ObservableChart chart = chartObjectManager.getChart(chartId);
-    if(chart instanceof CombinedPlot) {
-      XYChart subplot = ((CombinedPlot) chart).getSubplots().get(subplotIndex);
-      onClick(chart, graphicsId, info, subplot.getGraphics());
+    List<? extends Graphics> graphics = null;
+    if(chart instanceof XYChart) {
+      graphics = ((XYChart)chart).getGraphics();
+    } else if (chart instanceof CategoryPlot) {
+      graphics = ((CategoryPlot)chart).getGraphics();
+    } else if (chart instanceof CombinedPlot){
+      XYChart subplot = ((CombinedPlot) chart).getSubplots().get(((CombinedPlotActionObject)info).getSubplotIndex());
+      graphics = subplot.getGraphics();
     }
+    onClick(chart, graphicsId, info, graphics);
   }
 
   private void onClick(ObservableChart chart,
                        String graphicsId,
-                       GraphicsClickActionObject info,
+                       GraphicsActionObject info,
                        List<? extends Graphics> graphics) {
     if(graphics != null){
       for(Graphics g: graphics){

@@ -13,11 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.twosigma.beaker.chart.actions;
 
-/*
- *  Interface for Chart graphics interactions
- */
-public interface GraphicsActionListener {
-  void execute(GraphicsActionObject actionObject);
+public class CategoryGraphicsActionObject extends GraphicsActionObject {
+  private int category;
+  private int series;
+
+  public int getCategory() {
+    return category;
+  }
+
+  public void setCategory(int category) {
+    this.category = category;
+  }
+
+  public int getSeries() {
+    return series;
+  }
+
+  public void setSeries(int series) {
+    this.series = series;
+  }
 }

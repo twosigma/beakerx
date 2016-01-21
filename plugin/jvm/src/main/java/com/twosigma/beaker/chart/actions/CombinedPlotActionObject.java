@@ -13,17 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.chart.actions;
 
-public class XYGraphicsClickActionObject extends GraphicsClickActionObject{
-  private int index;
+public class CombinedPlotActionObject extends XYGraphicsActionObject {
+  private int subplotIndex;
 
-  public int getIndex() {
-    return index;
+  public int getSubplotIndex() {
+    return subplotIndex;
   }
 
-  public void setIndex(int index) {
-    this.index = index;
+  public void setSubplotIndex(int subplotIndex) {
+    this.subplotIndex = subplotIndex;
   }
 }

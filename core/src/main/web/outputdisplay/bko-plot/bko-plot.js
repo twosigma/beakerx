@@ -376,13 +376,24 @@
                     scope.legendDone = false;
                     scope.legendResetPosition = true;
                     scope.doNotLoadState = true;
+                    var params = {};
+                    var plotId = scope.stdmodel.plotId;
                     if (scope.model.onClick) {
-                      scope.model.onClick(item, e);
+                      scope.model.onClick(plotId, item, e);
+                      return;
                     } else if (scope.model.getCellModel().type === "CategoryPlot") {
-                      plotService.onCategoryClick(item, e, scope.model.getEvaluatorId());
+                      if(e.ele != null){
+                        params.category = e.ele.category;
+                        params.series = e.ele.series;
+                        params['@type'] = "categoryActionObject";
+                      }
                     } else {
-                      plotService.onXYClick(item, e, scope.model.getEvaluatorId());
+                      params['@type'] = "xyActionObject";
+                      if(e.ele != null){
+                        params.index = e.ele.index;
+                      }
                     }
+                    plotService.onClick(plotId, item.uid, scope.model.getEvaluatorId(), params);
                   }
                 }
               }

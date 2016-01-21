@@ -17,11 +17,18 @@
 package com.twosigma.beaker.chart.actions;
 
 import com.twosigma.beaker.chart.Graphics;
+import org.codehaus.jackson.annotate.JsonSubTypes;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 import java.io.Serializable;
-import java.util.List;
 
-public abstract class GraphicsClickActionObject implements Serializable{
+@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="@type")
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = CategoryGraphicsActionObject.class, name = "categoryActionObject"),
+  @JsonSubTypes.Type(value = XYGraphicsActionObject.class, name = "xyActionObject"),
+  @JsonSubTypes.Type(value = CombinedPlotActionObject.class, name = "combinedActionObject")
+})
+public abstract class GraphicsActionObject implements Serializable{
 
   private Graphics graphics;
 

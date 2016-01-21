@@ -103,7 +103,6 @@
     };
 
     var  processItem = function(item, index, newmodel, yAxisRSettings, yAxisSettings) {
-      item.chartId = newmodel.plotId;
       item.legend = item.display_name;
       delete item.display_name;
 
@@ -631,7 +630,6 @@
           default:
             for (var i = 0; i < numLines; i++) {
               var item = list[i];
-              item.chartId = newmodel.plotId;
 
               processItem(item, i, newmodel, yAxisRSettings, yAxisSettings);
 

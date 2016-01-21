@@ -1,9 +1,9 @@
 var BeakerPageObject = require('./beaker.po.js');
 var path = require('path');
 
-describe('autotranslation', function() {
+fdescribe('autotranslation', function() {
   beforeEach(function() {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = jasmine.DEFAULT_TIMEOUT_INTERVAL * 2;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000; // Slow initialization cells, CI box might need a long time to initialize these
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();

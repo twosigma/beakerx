@@ -1,5 +1,5 @@
 /*
- *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,25 +14,13 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.chart.actions;
+package com.twosigma.beaker.chart;
 
-import com.google.inject.Singleton;
-import com.twosigma.beaker.chart.ObservableChart;
+import java.util.Observable;
 
-import java.util.HashMap;
-import java.util.Map;
-
-@Singleton
-public class ChartObjectManager {
-  /* plot id -> plot object */
-  private final Map<String, ObservableChart> charts = new HashMap<>();
-
-  public void registerChart(final String id, final ObservableChart chart) {
-    charts.put(id, chart);
+public class ObservableChart extends Observable {
+  @Override
+  public synchronized void setChanged() {
+    super.setChanged();
   }
-
-  public ObservableChart getChart(final String id) {
-    return charts.get(id);
-  }
-
 }

@@ -21,7 +21,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils, combinedplotFormatter, bkCellMenuPluginManager) {
+  var retfunc = function(plotUtils, combinedplotFormatter, bkCellMenuPluginManager, plotService) {
     var CELL_TYPE = "bko-combinedplot";
     return {
       template :
@@ -136,6 +136,15 @@
               },
               getWidth : function() {
                 return scope.width;
+              },
+              onClick: function(item, e) {
+                for (var i = 0; i < scope.stdmodel.plots.length; i++) {
+                  var subplot = scope.stdmodel.plots[i];
+                  if (item.chartId === subplot.plotId) {
+                    plotService.onCombinedClick(item, e, scope.model.getEvaluatorId(),
+                                                scope.model.getCellModel().update_id, i);
+                  }
+                }
               }
             };
             models.push(pl);
@@ -267,5 +276,5 @@
     };
   };
   beaker.bkoDirective("CombinedPlot",
-      ["plotUtils", "combinedplotFormatter", "bkCellMenuPluginManager", retfunc]);
+      ["plotUtils", "combinedplotFormatter", "bkCellMenuPluginManager", "plotService", retfunc]);
 })();

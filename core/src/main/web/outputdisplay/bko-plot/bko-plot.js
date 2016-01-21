@@ -376,9 +376,11 @@
                     scope.legendDone = false;
                     scope.legendResetPosition = true;
                     scope.doNotLoadState = true;
-                    if(scope.model.getCellModel().type === "CategoryPlot"){
+                    if (scope.model.onClick) {
+                      scope.model.onClick(item, e);
+                    } else if (scope.model.getCellModel().type === "CategoryPlot") {
                       plotService.onCategoryClick(item, e, scope.model.getEvaluatorId());
-                    }else {
+                    } else {
                       plotService.onXYClick(item, e, scope.model.getEvaluatorId());
                     }
                   }

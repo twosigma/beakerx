@@ -26,7 +26,7 @@ public abstract class Graphics {
   private boolean visible     = true;
   private String  yAxisName   = null;
   private GraphicsActionListener onClickListener = null;
-  private String tag;
+  private String clickTag;
 
   public Graphics() {
     this.uid = UUID.randomUUID().toString();
@@ -56,8 +56,8 @@ public abstract class Graphics {
     return uid;
   }
 
-  public String getTag() {
-    return tag;
+  public String getClickTag() {
+    return clickTag;
   }
 
   public Graphics onClick(GraphicsActionListener onClickListener) {
@@ -66,7 +66,7 @@ public abstract class Graphics {
   }
 
   public Graphics onClick(String tag) {
-    this.tag = tag;
+    this.clickTag = tag;
     return this;
   }
 

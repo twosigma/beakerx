@@ -370,8 +370,8 @@
               for (var i = 0; i < model.data.length; i++) {
                 var item = model.data[i];
                 if(item.id === e.id || e.id.indexOf(item.id + "_") === 0) {
-                  if(!_.isEmpty(item.tag)){
-                    plotUtils.evaluateTagCell(item.tag);
+                  if(!_.isEmpty(item.clickTag)){
+                    plotUtils.evaluateTagCell(item.clickTag);
                   }else{
                     scope.legendDone = false;
                     scope.legendResetPosition = true;

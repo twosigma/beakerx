@@ -364,21 +364,6 @@
 
         scope.prepareInteraction = function() {
           var model = scope.stdmodel;
-          if (model.useToolTip === false) {
-            return;
-          }
-          scope.svg.selectAll(".plot-resp")
-            .on('mouseenter', function(d) {
-              scope.drawLegendPointer(d);
-              return plotTip.tooltip(scope, d, d3.mouse(scope.svg[0][0]));
-            })
-            .on("mouseleave", function(d) {
-              scope.removeLegendPointer();
-              return plotTip.untooltip(scope, d);
-            })
-            .on("click.resp", function(d) {
-              return plotTip.toggleTooltip(scope, d);
-            });
 
           scope.svg.selectAll(".item-clickable")
             .on('click.action', function (e) {
@@ -399,7 +384,23 @@
                   }
                 }
               }
+            });
+
+          if (model.useToolTip === false) {
+            return;
+          }
+          scope.svg.selectAll(".plot-resp")
+            .on('mouseenter', function(d) {
+              scope.drawLegendPointer(d);
+              return plotTip.tooltip(scope, d, d3.mouse(scope.svg[0][0]));
             })
+            .on("mouseleave", function(d) {
+              scope.removeLegendPointer();
+              return plotTip.untooltip(scope, d);
+            })
+            .on("click.resp", function(d) {
+              return plotTip.toggleTooltip(scope, d);
+            });
         };
 
         scope.drawLegendPointer = function(d) {

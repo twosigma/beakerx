@@ -1801,12 +1801,16 @@
           }
         };
 
-        scope.$watch('getCellWidth()', function () {
-          watchCellSize();
+        scope.$watch('getCellWidth()', function (newValue, oldValue) {
+          if(newValue !== oldValue){
+            watchCellSize();
+          }
         });
 
-        scope.$watch('getCellHeight()', function () {
-          watchCellSize();
+        scope.$watch('getCellHeight()', function (newValue, oldValue) {
+          if(newValue !== oldValue){
+            watchCellSize();
+          }
         });
 
         scope.getCellModel = function() {
@@ -1820,10 +1824,7 @@
         };
         scope.$watch('getTheme()', function(newValue, oldValue) {
           if(newValue !== oldValue) {
-            //scope.standardizeData();
-            //scope.calcRange();
-            //scope.update();
-            scope.setDumpState(scope.dumpState());
+            scope.model.setDumpState(scope.dumpState());
             scope.legendDone = false;
             scope.init();
           }

@@ -87,6 +87,3 @@ we need for you to fill out and email back to us a scan of a signed copy of the
 
 We're also looking to expand our full-time, NYC-based engineering team
 with a [full-stack web developer](http://www.twosigma.com/careers/position/936.html).
-
-
-

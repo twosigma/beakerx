@@ -14,7 +14,7 @@
   },
   "name": "scrollin",
   "description": "Do something great when an element enters the viewport.",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "main": "dist/index.js",
   "directories": {
     "test": "test"
@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/samccone/scrollin",
   "dependencies": {
-    "lodash.throttle": "^3.0.2"
+    "lodash.throttle": "^3.0.2",
+    "lodash.defaults": "^4.0.0"
   }
 }

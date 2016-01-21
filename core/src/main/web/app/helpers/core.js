@@ -295,6 +295,7 @@
           preferencename: 'theme',
           preferencevalue: theme
         });
+        $rootScope.$broadcast('beaker.theme.set', theme);
       },
       getTheme: function () {
         return this._prefs.getTheme();
@@ -1106,6 +1107,7 @@
       preference: 'theme'
     }).success(function (theme) {
       bkCoreManager._prefs.setTheme(_.contains(_.values(GLOBALS.THEMES), theme) ? theme : GLOBALS.THEMES.DEFAULT);
+      $rootScope.$broadcast('beaker.theme.set', theme);
     }).error(function (response) {
       console.log(response);
       bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);

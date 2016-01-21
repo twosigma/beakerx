@@ -45,8 +45,7 @@
         "id" : this.id,
         "st" : this.color,
         "st_op": this.color_opacity,
-        "st_w": this.width,
-        "st_da": this.stroke_dasharray
+        "st_w": this.width
       };
       this.elementProps = [];
       this.elementLabels = [];

@@ -47,7 +47,7 @@
               "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
             "</filter>" +
             "<filter id='svgAreaFilter'>" +
-              "<feGaussianBlur result='blurOut' in='SourceGraphic' stdDeviation='3' />" +
+              "<feMorphology operator='dilate' result='blurOut' in='SourceGraphic' radius='2' />" +
               "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
             "</filter>" +
           "</defs>" +

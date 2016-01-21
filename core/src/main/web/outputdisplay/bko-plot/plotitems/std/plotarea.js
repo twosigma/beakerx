@@ -31,7 +31,7 @@
     PlotArea.prototype.setHighlighted = function(scope, highlighted) {
 
       if(highlighted === true){
-        scope.jqsvg.find("#" + this.id+ " polygon").attr("filter", "url(/beaker/#svgAreaFilter)");
+        scope.jqsvg.find("#" + this.id+ " polygon").attr("filter", "url("+window.location.pathname+"#svgAreaFilter)");
       }else{
          scope.jqsvg.find("#" + this.id+ " polygon").removeAttr("filter");
       }

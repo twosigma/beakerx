@@ -89,6 +89,13 @@ task makePortableBundle(dependsOn: ['makeBundle']) {
         "beaker.command.bat"
       }
     }
+    copy {
+      from '../../core/beaker.portable.command.bat'
+      into './beaker/resources/dist/'
+      rename { String fileName ->
+        "beaker.command.bat"
+      }
+    }
   }
   doLast{
     zipElectron.execute()

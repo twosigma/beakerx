@@ -23,6 +23,8 @@ var config = {
     print: function() {}
   },
   capabilities: {
+    shardTestFiles: true,
+    maxInstances: 3,
     browserName: 'firefox'
   },
   onPrepare: function() {

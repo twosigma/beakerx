@@ -26,7 +26,7 @@
     PlotLodRiver.prototype.plotClass = "";
     PlotLodRiver.prototype.respClass = "plot-resp plot-respstem";
     PlotLodRiver.prototype.plotClassAvgLine = "plot-lodavgline";
-    PlotLodRiver.prototype.actionClass = "item-clickable item-keypressable";
+    PlotLodRiver.prototype.actionClass = "item-clickable item-onkey";
 
     PlotLodRiver.prototype.format = function() {
       if (this.color != null) {

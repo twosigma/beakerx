@@ -26,7 +26,7 @@
     PlotLodPoint.prototype.respClass = "plot-resp";
     PlotLodPoint.prototype.shapes = ["rect", "diamond", "circle"];
     PlotLodPoint.prototype.svgtags = ["rect", "polygon", "circle"];
-    PlotLodPoint.prototype.actionClass = "item-clickable item-keypressable";
+    PlotLodPoint.prototype.actionClass = "item-clickable item-onkey";
 
     PlotLodPoint.prototype.format = function() {
       if (this.color != null) {

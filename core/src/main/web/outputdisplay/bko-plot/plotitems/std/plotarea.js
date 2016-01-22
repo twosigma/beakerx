@@ -27,7 +27,7 @@
     PlotArea.prototype.respMinHeight = 5;
     PlotArea.prototype.plotClass = "plot-area";
     PlotArea.prototype.respClass = "plot-resp plot-respstem";
-    PlotArea.prototype.actionClass = "item-clickable item-keypressable";
+    PlotArea.prototype.actionClass = "item-clickable item-onkey";
 
     PlotArea.prototype.setHighlighted = function(scope, highlighted) {
 

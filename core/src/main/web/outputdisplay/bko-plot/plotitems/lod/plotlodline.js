@@ -24,7 +24,7 @@
     PlotLodLine.prototype.respR = 5;
     PlotLodLine.prototype.plotClass = "plot-line";
     PlotLodLine.prototype.respClass = "plot-resp plot-respdot";
-    PlotLodLine.prototype.actionClass = "item-clickable item-keypressable";
+    PlotLodLine.prototype.actionClass = "item-clickable item-onkey";
 
     PlotLodLine.prototype.render = function(scope, samples, gid){
       if (gid == null) { gid = ""; }

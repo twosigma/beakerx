@@ -362,8 +362,8 @@
 
         };
 
-        scope.keypressActionFunction = function (item, keypressEvent) {
-          var key = plotUtils.getKeyCodeConstant(keypressEvent.keyCode);
+        scope.onKeyAction = function (item, onKeyEvent) {
+          var key = plotUtils.getKeyCodeConstant(onKeyEvent.keyCode);
           for (var i = 0; i < scope.stdmodel.data.length; i++) {
             var data = scope.stdmodel.data[i];
             if (data.id === item.id || item.id.indexOf(data.id + "_") === 0) {
@@ -387,14 +387,14 @@
           }
         };
 
-        scope.keypressFunctions = {}; //map: item.id -> listener function
-        scope.removeKeyListeners = function () {
-          for (var f in scope.keypressFunctions){
-            if(scope.keypressFunctions.hasOwnProperty(f)){
-              document.removeEventListener("keydown", scope.keypressFunctions[f]);
+        scope.onKeyListeners = {}; //map: item.id -> listener function
+        scope.removeOnKeyListeners = function () {
+          for (var f in scope.onKeyListeners){
+            if(scope.onKeyListeners.hasOwnProperty(f)){
+              document.removeEventListener("keydown", scope.onKeyListeners[f]);
             }
           }
-          scope.keypressFunctions = {};
+          scope.onKeyListeners = {};
         };
 
         scope.prepareInteraction = function() {
@@ -424,19 +424,19 @@
               }
             });
 
-          scope.removeKeyListeners();
+          scope.removeOnKeyListeners();
 
-          var keyPressables = scope.svg.selectAll(".item-keypressable");
+          var onKeyElements = scope.svg.selectAll(".item-onkey");
           //TODO add listeners only for elements that have keys or keyTags
-          keyPressables
+          onKeyElements
             .on("mouseenter.action", function(item){
-              scope.keypressFunctions[item.id] = function(keypressEvent){
-                scope.keypressActionFunction(item, keypressEvent);
+              scope.onKeyListeners[item.id] = function(onKeyEvent){
+                scope.onKeyAction(item, onKeyEvent);
               };
-              document.addEventListener("keydown", scope.keypressFunctions[item.id]);
+              document.addEventListener("keydown", scope.onKeyListeners[item.id]);
             })
             .on("mouseleave.action", function(item){
-              document.removeEventListener("keydown", scope.keypressFunctions[item.id]);
+              document.removeEventListener("keydown", scope.onKeyListeners[item.id]);
             });
 
           if (model.useToolTip === false) {
@@ -1907,7 +1907,7 @@
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
           scope.jqlegendcontainer.find("#plotLegend").remove();
-          scope.removeKeyListeners();
+          scope.removeOnKeyListeners();
         });
 
         scope.getSvgToSave = function() {

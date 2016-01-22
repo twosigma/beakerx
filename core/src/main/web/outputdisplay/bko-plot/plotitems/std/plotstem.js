@@ -24,7 +24,7 @@
 
     PlotStem.prototype.plotClass = "plot-stem";
     PlotStem.prototype.respClass = "plot-resp";
-    PlotStem.prototype.actionClass = "item-clickable item-keypressable";
+    PlotStem.prototype.actionClass = "item-clickable item-onkey";
 
     PlotStem.prototype.setHighlighted = function(scope, highlighted) {
       var svg = scope.maing;

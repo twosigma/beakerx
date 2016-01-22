@@ -48,21 +48,6 @@ describe('notebook', function() {
     browser.waitForAngular();
   });
 
-  describe('autotranslation', function() {
-    it('handles JVM notebook', function(done) {
-      beakerPO.openFile(path.join(__dirname, '../', 'notebooks/jvm-autotranslation-test.bkr'));
-      beakerPO.waitForInstantiationCells();
-
-      beakerPO.waitForCellOutput();
-
-      return beakerPO.getCellOutput().getText()
-      .then(function(output) {
-        expect(output).toEqual('OK');
-        done();
-      });
-    });
-  });
-
   describe('graphs', function() {
     beforeEach(function() {
       beakerPO.newEmptyNotebook.click();

@@ -23,7 +23,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.jvm.object.*",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.chart.KeyboardCodes",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -239,8 +239,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "ccd70503-26af-4a47-b020-ecde1b51ff41",
-                "elapsedTime": 561,
+                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
+                "elapsedTime": 589,
                 "height": 522
             },
             "evaluatorReader": true,
@@ -344,7 +344,7 @@
                     "graphics_list": [
                         {
                             "type": "Bars",
-                            "uid": "f9fd5475-6202-465d-bcea-35f98c679325",
+                            "uid": "ab876755-5dc1-4469-968d-c714b13375d1",
                             "visible": true,
                             "yAxis": null,
                             "hasClickAction": true,
@@ -387,8 +387,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "ccd70503-26af-4a47-b020-ecde1b51ff41",
-                "elapsedTime": 551,
+                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
+                "elapsedTime": 559,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -20430,8 +20430,8 @@
                 },
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ccd70503-26af-4a47-b020-ecde1b51ff41",
-                "elapsedTime": 592,
+                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
+                "elapsedTime": 579,
                 "hidden": true,
                 "height": 51
             },
@@ -20536,7 +20536,7 @@
                     "graphics_list": [
                         {
                             "type": "Line",
-                            "uid": "9a86f46d-7c66-430b-a47c-0b9e928b2394",
+                            "uid": "f3f0025e-1169-406c-b39f-f7612b3108a2",
                             "visible": true,
                             "yAxis": null,
                             "hasClickAction": true,
@@ -40562,8 +40562,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "ccd70503-26af-4a47-b020-ecde1b51ff41",
-                "elapsedTime": 564,
+                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
+                "elapsedTime": 565,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -40673,7 +40673,7 @@
                     "graphics_list": [
                         {
                             "type": "Area",
-                            "uid": "9a117601-12ce-4920-8534-b08c9183c9bb",
+                            "uid": "1a3f2355-e87d-4530-8e51-d146144ed7ae",
                             "visible": true,
                             "yAxis": null,
                             "hasClickAction": true,
@@ -40702,8 +40702,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "ccd70503-26af-4a47-b020-ecde1b51ff41",
-                "elapsedTime": 554,
+                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
+                "elapsedTime": 585,
                 "height": 522
             },
             "evaluatorReader": true,
@@ -40730,10 +40730,10 @@
             "output": {
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "15291d2d-22fd-487c-bbcd-57a8282064b3",
-                "elapsedTime": 612,
+                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
+                "elapsedTime": 875,
                 "selectedType": "Results",
-                "height": 125
+                "height": 0
             },
             "evaluatorReader": true,
             "lineCount": 1,
@@ -40860,7 +40860,7 @@
                     "graphics_list": [
                         {
                             "type": "CategoryBars",
-                            "uid": "9e73f3bf-8ee3-44ce-b9f2-6f93d0c8638e",
+                            "uid": "4400a541-3fbb-49b2-9f54-4cd8429363f2",
                             "visible": true,
                             "yAxis": null,
                             "hasClickAction": true,
@@ -40895,8 +40895,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "ccd70503-26af-4a47-b020-ecde1b51ff41",
-                "elapsedTime": 545,
+                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
+                "elapsedTime": 568,
                 "height": 442
             },
             "evaluatorReader": true,
@@ -41014,7 +41014,7 @@
                     "graphics_list": [
                         {
                             "type": "CategoryBars",
-                            "uid": "d013a0d1-6a25-4cd7-9ebb-af78175f3d09",
+                            "uid": "f98c42df-fbcd-4680-a91e-96d1b4b1a9a6",
                             "visible": true,
                             "yAxis": null,
                             "hasClickAction": true,
@@ -41049,8 +41049,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "ccd70503-26af-4a47-b020-ecde1b51ff41",
-                "elapsedTime": 546,
+                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
+                "elapsedTime": 555,
                 "height": 522
             },
             "evaluatorReader": true,
@@ -41180,7 +41180,7 @@
                     "graphics_list": [
                         {
                             "type": "CategoryBars",
-                            "uid": "d649e127-41a2-4775-b5e4-f0adde8caab2",
+                            "uid": "b67bc28e-f2ef-41f6-b44d-0cbe9a302f6a",
                             "visible": true,
                             "yAxis": null,
                             "hasClickAction": true,
@@ -41220,8 +41220,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "ccd70503-26af-4a47-b020-ecde1b51ff41",
-                "elapsedTime": 550,
+                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
+                "elapsedTime": 555,
                 "height": 442
             },
             "evaluatorReader": true,
@@ -41359,7 +41359,7 @@
                     "plot_type": "Plot",
                     "plots": [
                         {
-                            "update_id": "44f3b855-874b-4ea9-8ea7-c9fae65a43c7",
+                            "update_id": "7fc8d7b4-49f5-46a5-a6af-a7c009d9fb00",
                             "type": "Plot",
                             "init_width": 640,
                             "init_height": 480,
@@ -41402,7 +41402,7 @@
                             "graphics_list": [
                                 {
                                     "type": "Line",
-                                    "uid": "871d6ca0-5ef4-4c14-9e3a-d3d4fa567d40",
+                                    "uid": "ff9c865d-cd03-4dfa-8bd5-9f818f135bf2",
                                     "visible": true,
                                     "yAxis": null,
                                     "hasClickAction": true,
@@ -41435,7 +41435,7 @@
                             "version": "groovy"
                         },
                         {
-                            "update_id": "61d1d166-a8a1-45d6-8a8d-8a370a9ca9b8",
+                            "update_id": "00ee7a37-2e57-49bb-aa68-19a074b395b0",
                             "type": "Plot",
                             "init_width": 640,
                             "init_height": 480,
@@ -41478,7 +41478,7 @@
                             "graphics_list": [
                                 {
                                     "type": "Bars",
-                                    "uid": "9ace398f-72bf-4184-8414-70014f7349c9",
+                                    "uid": "5d9b4d0d-8d13-4107-8101-b9baaac75a66",
                                     "visible": true,
                                     "yAxis": null,
                                     "hasClickAction": true,
@@ -41528,8 +41528,8 @@
                 },
                 "selectedType": "CombinedPlot",
                 "pluginName": "Groovy",
-                "shellId": "ccd70503-26af-4a47-b020-ecde1b51ff41",
-                "elapsedTime": 711,
+                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
+                "elapsedTime": 556,
                 "height": 554
             },
             "evaluatorReader": true,
@@ -41551,7 +41551,7 @@
                 "OnKey action available when you hover the plot item",
                 "",
                 "Action accept the following parameters:",
-                "* **key name**",
+                "* **key**: String value for alphanumeric characters ([A-a, 1-9]) or KeyboardCodes enum values",
                 "* **closure** or **tag to run**",
                 "",
                 "Closure parameters are the same as for OnClick action",
@@ -41567,8 +41567,9 @@
                 "body": [
                     "def p = new Plot(useToolTip: false);",
                     "p << new Bars(x: (1..5), y: [5, 2, 4, 3, 7], color: beaker.prefs.theme.plotColors[2], outlineColor: Color.black, width: 0.3)",
-                    "        .onKey(\"z\", {info -> info.graphics.y[info.index]++})",
-                    "        .onKey(\"x\", {info -> info.graphics.y[info.index]--})"
+                    "        .onKey(KeyboardCodes.UP_ARROW, {info -> info.graphics.y[info.index]++})",
+                    "        .onKey(KeyboardCodes.DOWN_ARROW, {info -> info.graphics.y[info.index]--})",
+                    "        .onKey(\"T\", \"run_tag\")"
                 ]
             },
             "output": {
@@ -41656,13 +41657,16 @@
                     "graphics_list": [
                         {
                             "type": "Bars",
-                            "uid": "fec4427e-396b-4a3c-a1a4-6768e0723941",
+                            "uid": "237ede6f-ca8e-488f-a67d-929ab0ff1481",
                             "visible": true,
                             "yAxis": null,
                             "hasClickAction": false,
+                            "keyTags": {
+                                "T": "run_tag"
+                            },
                             "keys": [
-                                "x",
-                                "z"
+                                "UP_ARROW",
+                                "DOWN_ARROW"
                             ],
                             "x": [
                                 1,
@@ -41697,12 +41701,12 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "b6a3888d-e761-433d-8ec0-1d904560c742",
-                "elapsedTime": 560,
-                "height": 559
+                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
+                "elapsedTime": 743,
+                "height": 522
             },
             "evaluatorReader": true,
-            "lineCount": 4,
+            "lineCount": 5,
             "initialization": true
         }
     ],

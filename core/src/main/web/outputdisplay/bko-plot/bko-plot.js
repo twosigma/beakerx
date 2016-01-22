@@ -363,8 +363,7 @@
         };
 
         scope.keypressActionFunction = function (item, keypressEvent) {
-          //FIXME!!!!
-          var key = String.fromCharCode(keypressEvent.charCode);
+          var key = plotUtils.getKeyCodeConstant(keypressEvent.keyCode);
           for (var i = 0; i < scope.stdmodel.data.length; i++) {
             var data = scope.stdmodel.data[i];
             if (data.id === item.id || item.id.indexOf(data.id + "_") === 0) {
@@ -392,7 +391,7 @@
         scope.removeKeyListeners = function () {
           for (var f in scope.keypressFunctions){
             if(scope.keypressFunctions.hasOwnProperty(f)){
-              document.removeEventListener("keypress", scope.keypressFunctions[f]);
+              document.removeEventListener("keydown", scope.keypressFunctions[f]);
             }
           }
           scope.keypressFunctions = {};
@@ -434,10 +433,10 @@
               scope.keypressFunctions[item.id] = function(keypressEvent){
                 scope.keypressActionFunction(item, keypressEvent);
               };
-              document.addEventListener("keypress", scope.keypressFunctions[item.id]);
+              document.addEventListener("keydown", scope.keypressFunctions[item.id]);
             })
             .on("mouseleave.action", function(item){
-              document.removeEventListener("keypress", scope.keypressFunctions[item.id]);
+              document.removeEventListener("keydown", scope.keypressFunctions[item.id]);
             });
 
           if (model.useToolTip === false) {

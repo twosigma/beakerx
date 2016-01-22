@@ -99,8 +99,18 @@ public abstract class Graphics {
     return this;
   }
 
+  public Graphics onKey(KeyboardCodes key, GraphicsActionListener listener) {
+    this.onKeyListeners.put(key.name(), listener);
+    return this;
+  }
+
   public Graphics onKey(String key, String tag) {
     this.keyTags.put(key, tag);
+    return this;
+  }
+
+  public Graphics onKey(KeyboardCodes key, String tag) {
+    this.keyTags.put(key.name(), tag);
     return this;
   }
 

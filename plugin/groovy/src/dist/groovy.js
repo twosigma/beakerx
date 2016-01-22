@@ -194,6 +194,7 @@ define(function(require, exports, module) {
     "com.twosigma.beaker.chart.treemap.util.*",
     "net.sf.jtreemap.swing.*",
     "com.twosigma.beaker.chart.heatmap.HeatMap",
+    "com.twosigma.beaker.chart.KeyboardCodes",
     "com.twosigma.beaker.jvm.object.*",
     "com.twosigma.beaker.easyform.*",
     "com.twosigma.beaker.easyform.formitem.*"];

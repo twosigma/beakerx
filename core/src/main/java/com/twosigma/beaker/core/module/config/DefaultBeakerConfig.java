@@ -485,7 +485,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
         Map<String, String> m = (Map<String, String>) env;
         List<String> envL = new ArrayList<String>();
         for(Map.Entry<String, String> e : m.entrySet() ) {
-          envL.add(e.getKey() + "=\"" + e.getValue().replace("\"", "\\\"") + "\"");
+          envL.add(e.getKey() + "=" + e.getValue());
         }
         pluginEnvps.put(plugin, envL.toArray(new String[envL.size()]));
       }
@@ -493,4 +493,5 @@ public class DefaultBeakerConfig implements BeakerConfig {
         // ignore
     }
   }
+  
 }

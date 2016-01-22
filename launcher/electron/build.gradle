@@ -80,15 +80,8 @@ task createBundle(dependsOn: ['nodeInstall', 'copyBeakerApp', 'copyDist', 'copyJ
 task makeBundle(dependsOn: ['createBundle', 'checkIdentity', 'signBundle']) {
 }
 
-task makePortableBundle(dependsOn: ['makeBundle']) {
-  doFirst{
-    copy {
-      from '../../core/beaker.portable.command.bat'
-      into './dist/'
-      rename { String fileName ->
-        "beaker.command.bat"
-      }
-    }
+task makePortableZip(dependsOn: ['makeBundle']) {
+  doFirst {
     copy {
       from '../../core/beaker.portable.command.bat'
       into './beaker/resources/dist/'
@@ -97,11 +90,11 @@ task makePortableBundle(dependsOn: ['makeBundle']) {
       }
     }
   }
-  doLast{
+  doLast {
     zipElectron.execute()
   }
 }
-makePortableBundle.onlyIf { win }
+makePortableZip.onlyIf { win }
 
 task zipElectron (type: Zip) {
   from fileTree('beaker')

@@ -336,6 +336,19 @@
           }
         };
 
+        $scope.toggleColumnsVisibility = function(visible) {
+          if (!$scope.table) {
+            return;
+          }
+
+          var table = $scope.table;
+          var cLength = [];
+          for (var i = 1; i <= $scope.columns.length; i++) {
+            cLength.push(i);
+          }
+          table.columns(cLength).visible(visible);
+        };
+
         $scope.refreshCells = function() {
           $scope.getCellIdx      =  [];
           $scope.getCellNam      =  [];
@@ -619,6 +632,14 @@
           $scope.modal = $uibModal.open(options);
         };
 
+        $scope.applyChanges = function() {
+          $scope.doDestroy(false);
+          // reorder the table data
+          var model = $scope.model.getCellModel();
+          $scope.doCreateData(model);
+          $scope.doCreateTable(model);
+        };
+
         $scope.closeOptionsDialog = function() {
           $scope.modal.close();
           var i;
@@ -657,9 +678,7 @@
               $scope.actualalign[$scope.colorder[i + 1] - 1] = $scope.getCellAlign[i];
             }
             // reorder the table data
-            var model = $scope.model.getCellModel();
-            $scope.doCreateData(model);
-            $scope.doCreateTable(model);
+            $scope.applyChanges();
           }
         };
 
@@ -936,37 +955,66 @@
 
                   column.visible(!column.visible());
                 }
-              }
+              },
               /*
+              {
+                title: 'Format',
+                action: null,
+                items: [
+                ]
+              },
+              */
               {
                 title: 'Alignment',
                 action: null,
-                //move to plugin
+                //@todo: refactor here, move to plugin
                 items: [
                   {
                     title: 'Left',
-                    isChecked: function() {
-                      return false;
+                    isChecked: function(container) {
+                      return menuHelper.checkAlignment(container, 'L');
                     },
-                    action: function() {}
+                    action: function(el) {
+                      menuHelper.doAlignment(el, 'L');
+                    }
                   },
                   {
                     title: 'Center',
-                    isChecked: function() {
-                      return false;
+                    isChecked: function(container) {
+                      return menuHelper.checkAlignment(container, 'C');
                     },
-                    action: function() {}
+                    action: function(el) {
+                      menuHelper.doAlignment(el, 'C');
+                    }
                   },
                   {
                     title: 'Right',
-                    isChecked: function() {
-                      return false;
+                    isChecked: function(container) {
+                      return menuHelper.checkAlignment(container, 'R');
                     },
-                    action: function() {}
+                    action: function(el) {
+                      menuHelper.doAlignment(el, 'R');
+                    }
                   }
                 ]
-              }*/
+                //
+              }
             ]
+          };
+
+          var menuHelper = {
+            doAlignment: function(el, key) {
+              var container = el.closest('.bko-header-menu');
+              var colIdx = container.data('columnIndex');
+
+              scope.getCellAlign[colIdx - 1] = key;
+              scope.actualalign[colIdx - 1] = key;
+              scope.applyChanges();
+            },
+            checkAlignment: function(container, key) {
+              var colIdx = container.data('columnIndex');
+              return scope.actualalign[colIdx - 1] === key;
+            }
           };
 
           // build configuration
@@ -1070,7 +1118,7 @@
             new $.fn.dataTable.KeyTable($(id));
             scope.refreshCells();
 
-            var sField = $('.dataTables_filter');
+            var sField = $('#' + scope.id + '_filter');
             $('<i/>', {class: 'fa fa-times'})
               .bind('click', function(e) {
                 scope.showSearch();

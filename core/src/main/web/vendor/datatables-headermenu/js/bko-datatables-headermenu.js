@@ -172,7 +172,7 @@ HeaderMenu.prototype = {
         .attr('href', '#')
         .attr('tabindex', '-1')
         .attr('id', 'dt-select-all')
-        .text((oItem.title || altTitle))
+        .text(oItem.title)
         .data('action', oItem.action || '')
         .bind('click', function(e) {
           that._handleItemClick($(this));

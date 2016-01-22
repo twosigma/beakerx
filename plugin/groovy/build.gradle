@@ -70,7 +70,23 @@ compileJava {
 task pathingJar(type: Jar) {
   appendix = 'pathing'
   manifest {
-    attributes("Class-Path": configurations.runtime.collect { it.getName() }.join(' ') + ' ' + jar.archiveName )
+	//skip groovy jars, let it be picked during runtime, using env GROOVY_JAR_PATH
+    attributes("Class-Path": {
+		
+		def cp = ""
+		
+		configurations.runtime.each {
+			if( it.getName().matches("groovy-.+\\.jar") ) {
+				return
+			}
+			if(cp.length() > 0) cp += ' '
+			cp += it.getName()
+		}
+		
+		cp += ( ' ' + jar.archiveName )
+		
+		return cp
+	}.call() )
   }
 }
 
@@ -79,15 +95,86 @@ applicationDistribution.from(pathingJar) {
 }
 
 startScripts {
+	
+  def builtInGroovyJars = []
+	
+  doFirst {
+	
+    def inputClasspath = getClasspath()
+	  
+    def filteredClasspath = inputClasspath.filter {
+      if( it.getName().matches("groovy-.+\\.jar") ) {
+        builtInGroovyJars.add( it.getName() )
+		return false	  
+      } else {
+        return true
+      }
+    }
+	
+	
+	setClasspath(filteredClasspath)
+	  	    
+  }
+  
   doLast {
+	  
     def winScriptFile  = file getWindowsScript()
     def winFileText = winScriptFile.text
+	
+	def winGroovyJars = ''
+	for(String groovyJar : builtInGroovyJars) {
+		
+		if(winGroovyJars.length() > 0) {
+			winGroovyJars += ';'
+		}
 
+		winGroovyJars += "%APP_HOME%\\\\lib\\\\${groovyJar}"
+				
+	}
+	
+	//prepare the class path based on GROOVY_JAR_PATH variable
+	def winFileGroovyPath = """\
+if defined GROOVY_JAR_PATH (
+    echo Using GROOVY_JAR_PATH = %GROOVY_JAR_PATH%
+) else (
+  set GROOVY_JAR_PATH="${winGroovyJars}"
+)
+"""
     // Remove too-long-classpath and use pathing jar instead
-    winFileText = winFileText.replaceAll('set CLASSPATH=.*', 'rem CLASSPATH declaration removed.')
-    winFileText = winFileText.replaceAll('("%JAVA_EXE%" .* -classpath ")%CLASSPATH%(" .*)', '$1%APP_HOME%\\\\lib\\\\' + pathingJar.archiveName + '$2')
+    winFileText = winFileText.replaceAll('set CLASSPATH=.*', 'rem CLASSPATH declaration removed.\n' + winFileGroovyPath)
+    winFileText = winFileText.replaceAll('("%JAVA_EXE%" .* -classpath ")%CLASSPATH%(" .*)', '$1%GROOVY_JAR_PATH%;%APP_HOME%\\\\lib\\\\' + pathingJar.archiveName + '$2')
 
     winScriptFile.text = winFileText
+	
+	
+	
+	def unixScriptFile = file getUnixScript()
+	def unixFileText = unixScriptFile.text
+	
+	def unixGroovyJars = ''
+	for(String groovyJar : builtInGroovyJars) {
+		
+		if(unixGroovyJars.length() > 0) {
+			unixGroovyJars += ':'
+		} 
+		
+		unixGroovyJars += "\\\$APP_HOME/lib/${groovyJar}"
+	}
+	
+	def unixFileGroovyPath = """\
+if [ -n "\\\$GROOVY_JAR_PATH" ] ; then
+  echo Using GROOVY_JAR_PATH = \\\$GROOVY_JAR_PATH
+else 
+  GROOVY_JAR_PATH="${unixGroovyJars}"
+fi
+
+"""
+	
+	unixFileText = unixFileText.replaceAll('(exec "\\$JAVACMD" "\\$\\{JVM_OPTS\\[@\\]\\}" -classpath ")(\\$CLASSPATH" .*)',
+			unixFileGroovyPath +
+			'$1\\$GROOVY_JAR_PATH:$2')
+	unixScriptFile.text = unixFileText
+	
   }
 }
 

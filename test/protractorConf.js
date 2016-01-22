@@ -38,6 +38,7 @@ var config = {
           'tests/notebook.js',
           'tests/autotranslation.js',
           'tests/code-cell.js',
+          'tests/text-cell.js',
           'tests/cell-menu.js',
           'tests/language-manager.js',
           'tests/bugs.js'

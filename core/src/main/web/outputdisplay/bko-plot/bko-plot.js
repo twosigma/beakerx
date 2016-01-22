@@ -362,6 +362,42 @@
 
         };
 
+        scope.keypressActionFunction = function (item, keypressEvent) {
+          //FIXME!!!!
+          var key = String.fromCharCode(keypressEvent.charCode);
+          for (var i = 0; i < scope.stdmodel.data.length; i++) {
+            var data = scope.stdmodel.data[i];
+            if (data.id === item.id || item.id.indexOf(data.id + "_") === 0) {
+              if (data.keyTags != null && !_.isEmpty(data.keyTags[key])) {
+                plotUtils.evaluateTagCell(data.keyTags[key]);
+              } else if (data.keys != null && data.keys.indexOf(key) > -1) {
+                scope.legendDone = false;
+                scope.legendResetPosition = true;
+                scope.doNotLoadState = true;
+                var plotId = scope.stdmodel.plotId;
+                if (scope.model.onKey) {
+                  scope.model.onKey(key, plotId, data, item);
+                } else {
+                  plotService.onKey(plotId, data.uid, scope.model.getEvaluatorId(), {
+                    key: key,
+                    actionObject: plotUtils.getActionObject(scope.model.getCellModel().type, item)
+                  });
+                }
+              }
+            }
+          }
+        };
+
+        scope.keypressFunctions = {}; //map: item.id -> listener function
+        scope.removeKeyListeners = function () {
+          for (var f in scope.keypressFunctions){
+            if(scope.keypressFunctions.hasOwnProperty(f)){
+              document.removeEventListener("keypress", scope.keypressFunctions[f]);
+            }
+          }
+          scope.keypressFunctions = {};
+        };
+
         scope.prepareInteraction = function() {
           var model = scope.stdmodel;
 
@@ -376,27 +412,32 @@
                     scope.legendDone = false;
                     scope.legendResetPosition = true;
                     scope.doNotLoadState = true;
-                    var params = {};
                     var plotId = scope.stdmodel.plotId;
                     if (scope.model.onClick) {
                       scope.model.onClick(plotId, item, e);
                       return;
-                    } else if (scope.model.getCellModel().type === "CategoryPlot") {
-                      if(e.ele != null){
-                        params.category = e.ele.category;
-                        params.series = e.ele.series;
-                        params['@type'] = "categoryActionObject";
-                      }
                     } else {
-                      params['@type'] = "xyActionObject";
-                      if(e.ele != null){
-                        params.index = e.ele.index;
-                      }
+                      plotService.onClick(plotId, item.uid, scope.model.getEvaluatorId(),
+                                          plotUtils.getActionObject(scope.model.getCellModel().type, e));
                     }
-                    plotService.onClick(plotId, item.uid, scope.model.getEvaluatorId(), params);
                   }
                 }
               }
+            });
+
+          scope.removeKeyListeners();
+
+          var keyPressables = scope.svg.selectAll(".item-keypressable");
+          //TODO add listeners only for elements that have keys or keyTags
+          keyPressables
+            .on("mouseenter.action", function(item){
+              scope.keypressFunctions[item.id] = function(keypressEvent){
+                scope.keypressActionFunction(item, keypressEvent);
+              };
+              document.addEventListener("keypress", scope.keypressFunctions[item.id]);
+            })
+            .on("mouseleave.action", function(item){
+              document.removeEventListener("keypress", scope.keypressFunctions[item.id]);
             });
 
           if (model.useToolTip === false) {
@@ -1867,6 +1908,7 @@
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
           scope.jqlegendcontainer.find("#plotLegend").remove();
+          scope.removeKeyListeners();
         });
 
         scope.getSvgToSave = function() {

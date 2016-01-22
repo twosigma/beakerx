@@ -17,16 +17,20 @@
 package com.twosigma.beaker.chart;
 
 import com.twosigma.beaker.chart.actions.GraphicsActionListener;
-import com.twosigma.beaker.chart.actions.GraphicsClickActionObject;
+import com.twosigma.beaker.chart.actions.GraphicsActionObject;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public abstract class Graphics {
   private final String uid;
   private boolean visible     = true;
   private String  yAxisName   = null;
-  private GraphicsActionListener onClickListener = null;
+  private GraphicsActionListener onClickListener;
   private String clickTag;
+  private Map<String, GraphicsActionListener> onKeyListeners = new HashMap<String, GraphicsActionListener>();
+  private Map<String, String> keyTags = new HashMap<String, String>();
 
   public Graphics() {
     this.uid = UUID.randomUUID().toString();
@@ -60,6 +64,14 @@ public abstract class Graphics {
     return clickTag;
   }
 
+  public Map<String, String> getKeyTags (){
+    return this.keyTags;
+  }
+
+  public Object[] getKeys () {
+    return this.onKeyListeners.keySet().toArray();
+  }
+
   public Graphics onClick(GraphicsActionListener onClickListener) {
     this.onClickListener = onClickListener;
     return this;
@@ -70,10 +82,28 @@ public abstract class Graphics {
     return this;
   }
 
-  public void fireClick(GraphicsClickActionObject actionObject) {
+  public void fireClick(GraphicsActionObject actionObject) {
     if (onClickListener != null) {
       actionObject.setGraphics(this);
       onClickListener.execute(actionObject);
+    }
+  }
+
+  public Graphics onKey(String key, GraphicsActionListener listener) {
+    this.onKeyListeners.put(key, listener);
+    return this;
+  }
+
+  public Graphics onKey(String key, String tag) {
+    this.keyTags.put(key, tag);
+    return this;
+  }
+
+  public void fireOnKey(String key, GraphicsActionObject actionObject) {
+    GraphicsActionListener listener = onKeyListeners.get(key);
+    if (listener != null) {
+      actionObject.setGraphics(this);
+      listener.execute(actionObject);
     }
   }
 

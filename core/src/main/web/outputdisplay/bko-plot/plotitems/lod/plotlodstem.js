@@ -26,7 +26,7 @@
     PlotLodStem.prototype.respClass = "plot-resp";
     PlotLodStem.prototype.plotClassAvgCircle = "plot-lodavg";
     PlotLodStem.prototype.plotAvgCircleR = 2;
-    PlotLodStem.prototype.actionClass = "item-clickable";
+    PlotLodStem.prototype.actionClass = "item-clickable item-keypressable";
 
     PlotLodStem.prototype.format = function() {
       if (this.color != null) {

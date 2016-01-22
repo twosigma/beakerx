@@ -24,7 +24,7 @@
     };
     PlotBar.prototype.plotClass = "plot-bar";
     PlotBar.prototype.respClass = "plot-resp";
-    PlotBar.prototype.actionClass = "item-clickable";
+    PlotBar.prototype.actionClass = "item-clickable item-keypressable";
 
     PlotBar.prototype.setHighlighted = function(scope, highlighted) {
       var itemsvg = scope.maing.select("#" + this.id);

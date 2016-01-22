@@ -141,17 +141,23 @@
                 for (var i = 0; i < scope.stdmodel.plots.length; i++) {
                   var subplot = scope.stdmodel.plots[i];
                   if (subplotId === subplot.plotId) {
-                    var params = {
-                      subplotIndex: i,
-                      '@type': "combinedActionObject"
-                    };
-                    if(e.ele != null){
-                      params.index = e.ele.index;
-                    }
+                    var params = plotUtils.getActionObject(scope.model.getCellModel().type, e, i);
                     plotService.onClick(scope.model.getCellModel().update_id,
-                                                item.uid,
-                                                scope.model.getEvaluatorId(),
-                                                params);
+                                        item.uid,
+                                        scope.model.getEvaluatorId(),
+                                        params);
+                  }
+                }
+              },
+              onKey: function(key, subplotId, item, e) {
+                for (var i = 0; i < scope.stdmodel.plots.length; i++) {
+                  var subplot = scope.stdmodel.plots[i];
+                  if (subplotId === subplot.plotId) {
+                    var actionObject = plotUtils.getActionObject(scope.model.getCellModel().type, e, i);
+                    plotService.onKey(scope.model.getCellModel().update_id,
+                                      item.uid,
+                                      scope.model.getEvaluatorId(),
+                                      { key: key, actionObject: actionObject });
                   }
                 }
               }

@@ -25,7 +25,7 @@
     PlotLodBox.prototype.plotClass = "plot-lodbox";
     PlotLodBox.prototype.respClass = "plot-resp";
     PlotLodBox.prototype.plotClassAvgLine = "plot-lodavgline";
-    PlotLodBox.prototype.actionClass = "item-clickable";
+    PlotLodBox.prototype.actionClass = "item-clickable item-keypressable";
 
     PlotLodBox.prototype.format = function() {
       if (this.color != null) {

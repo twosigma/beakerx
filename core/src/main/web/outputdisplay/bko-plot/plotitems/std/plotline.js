@@ -26,7 +26,7 @@
     PlotLine.prototype.respR = 5;
     PlotLine.prototype.plotClass = "plot-line";
     PlotLine.prototype.respClass = "plot-resp plot-respdot";
-    PlotLine.prototype.actionClass = "item-clickable";
+    PlotLine.prototype.actionClass = "item-clickable item-keypressable";
 
     PlotLine.prototype.setHighlighted = function(scope, highlighted) {
       var svg = scope.maing;

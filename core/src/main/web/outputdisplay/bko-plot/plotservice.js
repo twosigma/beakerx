@@ -17,6 +17,9 @@
     return {
       onClick: function (plotId, itemId, evaluatorId, params) {
         onAction('click', plotId, itemId, evaluatorId, params)
+      },
+      onKey: function (plotId, itemId, evaluatorId, params) {
+        onAction('keypress', plotId, itemId, evaluatorId, params)
       }
     };
   };

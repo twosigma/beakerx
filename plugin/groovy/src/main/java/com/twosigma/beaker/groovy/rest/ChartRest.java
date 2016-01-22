@@ -22,6 +22,7 @@ import com.twosigma.beaker.chart.ObservableChart;
 import com.twosigma.beaker.chart.actions.ChartObjectManager;
 import com.twosigma.beaker.chart.actions.CombinedPlotActionObject;
 import com.twosigma.beaker.chart.actions.GraphicsActionObject;
+import com.twosigma.beaker.chart.actions.GraphicsKeyActionObject;
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.XYChart;
@@ -51,6 +52,29 @@ public class ChartRest {
                       @PathParam("graphicsId") String graphicsId,
                       GraphicsActionObject info) throws IOException, InterruptedException {
     ObservableChart chart = chartObjectManager.getChart(chartId);
+    Graphics g = getGraphicsById(getGraphics(info, chart), graphicsId);
+    if(g != null){
+      g.fireClick(info);
+      chart.setChanged();
+      chart.notifyObservers();
+    }
+  }
+
+  @POST
+  @Path("keypress/{chartId}/{graphicsId}")
+  public void onKey(@PathParam("chartId") String chartId,
+                    @PathParam("graphicsId") String graphicsId,
+                    GraphicsKeyActionObject info) throws IOException, InterruptedException {
+    ObservableChart chart = chartObjectManager.getChart(chartId);
+    Graphics g = getGraphicsById(getGraphics(info.getActionObject(), chart), graphicsId);
+    if(g != null){
+      g.fireOnKey(info.getKey(), info.getActionObject());
+      chart.setChanged();
+      chart.notifyObservers();
+    }
+  }
+
+  private List<? extends Graphics> getGraphics(GraphicsActionObject info, ObservableChart chart) {
     List<? extends Graphics> graphics = null;
     if(chart instanceof XYChart) {
       graphics = ((XYChart)chart).getGraphics();
@@ -60,22 +84,18 @@ public class ChartRest {
       XYChart subplot = ((CombinedPlot) chart).getSubplots().get(((CombinedPlotActionObject)info).getSubplotIndex());
       graphics = subplot.getGraphics();
     }
-    onClick(chart, graphicsId, info, graphics);
+    return graphics;
   }
 
-  private void onClick(ObservableChart chart,
-                       String graphicsId,
-                       GraphicsActionObject info,
-                       List<? extends Graphics> graphics) {
-    if(graphics != null){
-      for(Graphics g: graphics){
+  private Graphics getGraphicsById(List<? extends Graphics> graphicsList, String graphicsId) {
+    if(graphicsList != null){
+      for(Graphics g: graphicsList){
         if(StringUtils.equals(g.getUid(), graphicsId)){
-          g.fireClick(info);
-          chart.setChanged();
-          chart.notifyObservers();
+          return g;
         }
       }
     }
+    return null;
   }
 
 }

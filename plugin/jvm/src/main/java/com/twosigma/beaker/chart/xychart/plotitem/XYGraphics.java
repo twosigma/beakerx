@@ -19,8 +19,10 @@ package com.twosigma.beaker.chart.xychart.plotitem;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Filter;
 import com.twosigma.beaker.chart.Graphics;
+import com.twosigma.beaker.chart.ToolTipBuilder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
@@ -34,6 +36,23 @@ abstract public class XYGraphics extends Graphics {
   private Class plotType;
 
   private Filter lodFilter;
+  private ToolTipBuilder toolTipBuilder;
+
+  public List<String> getToolTips() {
+    if (toolTipBuilder == null)
+      return null;
+    List<String> toolTip = new ArrayList<>();
+    for (int i = 0; i < xs.size(); i++) {
+      Number x = xs.get(i);
+      Number y = ys.get(i);
+      toolTip.add(toolTipBuilder.process(Arrays.asList(x, y)));
+    }
+    return toolTip;
+  }
+
+  public void setToolTip(ToolTipBuilder toolTip) {
+    toolTipBuilder = toolTip;
+  }
 
   public void setX(List<Object> xs) {
     this.xs = new ArrayList<>();

@@ -20,7 +20,6 @@ import com.twosigma.beaker.chart.xychart.NanoPlot;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
@@ -44,6 +43,9 @@ public class XYGraphicsSerializer<T extends XYGraphics> extends JsonSerializer<T
     jgen.writeObjectField("yAxis", xyGraphics.getYAxis());
     if (xyGraphics.getLodFilter() != null){
       jgen.writeObjectField("lod_filter", xyGraphics.getLodFilter().getText());
+    }
+    if (xyGraphics.getToolTips() != null) {
+      jgen.writeObjectField("tooltips", xyGraphics.getToolTips());
     }
   }
 

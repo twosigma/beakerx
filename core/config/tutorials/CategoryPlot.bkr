@@ -3429,7 +3429,9 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "new CategoryPlot() << new CategoryStems(value: [[1, 2, 4], [4, 5, 8]])"
+                    "def ss = [StrokeType.DASH, StrokeType.LONGDASH]",
+                    "def cs = [Color.black, Color.red]",
+                    "new CategoryPlot() << new CategoryStems(value: [[1, 2, 4], [4, 5, 8]], color: cs, style: ss)"
                 ]
             },
             "output": {
@@ -3540,10 +3542,16 @@
                                     8
                                 ]
                             ],
-                            "color": null,
+                            "colors": [
+                                "#FF000000",
+                                "#FFFF0000"
+                            ],
                             "base": null,
                             "width": 1.5,
-                            "style": "SOLID"
+                            "styles": [
+                                "DASH",
+                                "LONGDASH"
+                            ]
                         }
                     ],
                     "orientation": "VERTICAL",
@@ -3558,7 +3566,7 @@
                 "height": 502
             },
             "evaluatorReader": true,
-            "lineCount": 1
+            "lineCount": 3
         },
         {
             "id": "sectionv5WYtF",
@@ -3720,7 +3728,8 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "new CategoryPlot() << new CategoryLines(value: [[1, 2, 4], [4, 5, 8]],",
+                    "def ss = [StrokeType.DASH, StrokeType.DOT]",
+                    "new CategoryPlot() << new CategoryLines(value: [[1, 2, 4], [4, 5, 8]], style: ss,",
                     "                                        seriesNames:[\"Lanthanide\", \"Actinide\"])"
                 ]
             },
@@ -3838,7 +3847,10 @@
                             ],
                             "color": null,
                             "width": 1.5,
-                            "style": "SOLID"
+                            "styles": [
+                                "DASH",
+                                "DOT"
+                            ]
                         }
                     ],
                     "orientation": "VERTICAL",
@@ -3853,7 +3865,7 @@
                 "height": 502
             },
             "evaluatorReader": true,
-            "lineCount": 2
+            "lineCount": 3
         },
         {
             "id": "sectionk0iCkW",

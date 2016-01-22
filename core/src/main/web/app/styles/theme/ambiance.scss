@@ -55,6 +55,8 @@ $std-out-color:           #42A2D2;
 $std-err-color:           #e48d71;
 $btn-bkg-color:           #505050;
 
+$btn-danger-bkg:          #d9534f;
+
 $markdown-heading-color: #aac6e3;
 
 $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
@@ -163,6 +165,11 @@ $text-cursor: url('../images/ambiance/ambiance-i-beam.png') 5 9, text;
     }
   }
 
+  .btn-danger {
+    background-color: $btn-danger-bkg;
+    border-color:     $btn-danger-bkg;
+  }
+
   .notebook-link {
     color: #d6bb6d;
   }
@@ -187,7 +194,7 @@ $text-cursor: url('../images/ambiance/ambiance-i-beam.png') 5 9, text;
 
   .ui-icon,
   .ui-widget-content .ui-icon {
-    background-image: url("images/ui-icons_222222_256x240.png");
+    background-image: url("images/ui-icons_888888_256x240.png");
   }
 
   .ui-widget-content {
@@ -553,6 +560,10 @@ $text-cursor: url('../images/ambiance/ambiance-i-beam.png') 5 9, text;
     .fa.fa-refresh {
       color: $std-fg-text-color !important;
     }
+  }
+
+  header .navbar-brand-fill {
+    fill: $std-fg-text-color;
   }
 
   //easy-form

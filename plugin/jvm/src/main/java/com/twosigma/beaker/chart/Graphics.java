@@ -18,6 +18,7 @@ package com.twosigma.beaker.chart;
 
 import com.twosigma.beaker.chart.actions.GraphicsActionListener;
 import com.twosigma.beaker.chart.actions.GraphicsActionObject;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +59,10 @@ public abstract class Graphics {
 
   public String getUid() {
     return uid;
+  }
+
+  public boolean hasClickAction() {
+    return onClickListener != null || StringUtils.isNotEmpty(clickTag);
   }
 
   public String getClickTag() {

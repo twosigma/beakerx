@@ -212,6 +212,7 @@
                             "uid": "b9b7d55d-16f5-4b2c-bb60-5e5178d8ba37",
                             "visible": true,
                             "yAxis": null,
+                            "hasClickAction": true,
                             "x": [
                                 1,
                                 2,
@@ -346,6 +347,7 @@
                             "uid": "f9fd5475-6202-465d-bcea-35f98c679325",
                             "visible": true,
                             "yAxis": null,
+                            "hasClickAction": true,
                             "x": [
                                 1,
                                 2,
@@ -20537,6 +20539,7 @@
                             "uid": "9a86f46d-7c66-430b-a47c-0b9e928b2394",
                             "visible": true,
                             "yAxis": null,
+                            "hasClickAction": true,
                             "x": [
                                 0,
                                 1,
@@ -40673,6 +40676,7 @@
                             "uid": "9a117601-12ce-4920-8534-b08c9183c9bb",
                             "visible": true,
                             "yAxis": null,
+                            "hasClickAction": true,
                             "clickTag": "run_tag",
                             "x": [
                                 1,
@@ -40859,6 +40863,7 @@
                             "uid": "9e73f3bf-8ee3-44ce-b9f2-6f93d0c8638e",
                             "visible": true,
                             "yAxis": null,
+                            "hasClickAction": true,
                             "showItemLabel": false,
                             "center_series": false,
                             "use_tool_tip": true,
@@ -41012,6 +41017,7 @@
                             "uid": "d013a0d1-6a25-4cd7-9ebb-af78175f3d09",
                             "visible": true,
                             "yAxis": null,
+                            "hasClickAction": true,
                             "showItemLabel": false,
                             "center_series": false,
                             "use_tool_tip": true,
@@ -41177,6 +41183,7 @@
                             "uid": "d649e127-41a2-4775-b5e4-f0adde8caab2",
                             "visible": true,
                             "yAxis": null,
+                            "hasClickAction": true,
                             "showItemLabel": false,
                             "center_series": false,
                             "use_tool_tip": false,
@@ -41398,6 +41405,7 @@
                                     "uid": "871d6ca0-5ef4-4c14-9e3a-d3d4fa567d40",
                                     "visible": true,
                                     "yAxis": null,
+                                    "hasClickAction": true,
                                     "x": [
                                         1,
                                         2,
@@ -41473,6 +41481,7 @@
                                     "uid": "9ace398f-72bf-4184-8414-70014f7349c9",
                                     "visible": true,
                                     "yAxis": null,
+                                    "hasClickAction": true,
                                     "x": [
                                         1,
                                         2,
@@ -41563,7 +41572,47 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null
+                    ],
+                    "lodType": [
+                        null
+                    ],
+                    "lodAuto": [
+                        null
+                    ],
+                    "zoomHash": [
+                        null
+                    ],
+                    "showItem": [
+                        true
+                    ],
+                    "visibleItem": 1,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "result": {
                     "type": "Plot",
                     "init_width": 640,
@@ -41643,7 +41692,8 @@
                     "x_lower_bound": 0,
                     "x_upper_bound": 0,
                     "log_x": false,
-                    "x_log_base": 10
+                    "x_log_base": 10,
+                    "tips": {}
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",

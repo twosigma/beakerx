@@ -39,6 +39,7 @@ public class GraphicsSerializer <T extends Graphics> extends JsonSerializer<T> {
         jgen.writeObjectField("uid", graphics.getUid());
         jgen.writeObjectField("visible", graphics.getVisible());
         jgen.writeObjectField("yAxis", graphics.getYAxis());
+        jgen.writeObjectField("hasClickAction", graphics.hasClickAction());
         if(StringUtils.isNotEmpty(graphics.getClickTag())) {
             jgen.writeObjectField("clickTag", graphics.getClickTag());
         }

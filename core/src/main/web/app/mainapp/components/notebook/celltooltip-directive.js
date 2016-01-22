@@ -47,14 +47,12 @@
           if (html) {
             displayTooltip(html);
             var autocompleteList = $('ul.CodeMirror-hints');
-            _.defer(function() {
-              tooltip.addClass('CodeMirror-hints');
-              setTooltipPosition(_.merge(calculateTooltipPosition(), {left: autocompleteList.position().left + autocompleteList.outerWidth() - $('.bkcell').offset().left}));
+            tooltip.addClass('CodeMirror-hints');
+            setTooltipPosition(_.merge(calculateTooltipPosition(), {left: autocompleteList.position().left + autocompleteList.outerWidth() - $('.bkcell').offset().left}));
 
-              if (autocompleteListAboveCursor(autocompleteList)) {
-                moveTooltipAboveCursor();
-              }
-            });
+            if (autocompleteListAboveCursor(autocompleteList)) {
+              moveTooltipAboveCursor();
+            }
           }
         });
 

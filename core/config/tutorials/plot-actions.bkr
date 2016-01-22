@@ -193,6 +193,7 @@
                             "uid": "6ce6268b-09e2-4f94-9e00-eb6e7f86cd62",
                             "visible": true,
                             "yAxis": null,
+                            "hasClickAction": true,
                             "x": [
                                 1,
                                 2,
@@ -40737,7 +40738,7 @@
         {
             "id": "section61l9eK",
             "type": "section",
-            "title": "OnClick event for CategoryPlot",
+            "title": "OnClick action for CategoryPlot",
             "level": 4,
             "evaluatorReader": false,
             "collapsed": false
@@ -41523,7 +41524,136 @@
                 "height": 554
             },
             "evaluatorReader": true,
-            "lineCount": 15
+            "lineCount": 15,
+            "initialization": true
+        },
+        {
+            "id": "sectionBIhorV",
+            "type": "section",
+            "title": "OnKey action",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownKfh34O",
+            "type": "markdown",
+            "body": [
+                "OnKey action available when you hover the plot item",
+                "",
+                "Action accept the following parameters:",
+                "* **key name**",
+                "* **closure** or **tag to run**",
+                "",
+                "Closure parameters are the same as for OnClick action",
+                ""
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeDdKmZN",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def p = new Plot(useToolTip: false);",
+                    "p << new Bars(x: (1..5), y: [5, 2, 4, 3, 7], color: beaker.prefs.theme.plotColors[2], outlineColor: Color.black, width: 0.3)",
+                    "        .onKey(\"z\", {info -> info.graphics.y[info.index]++})",
+                    "        .onKey(\"x\", {info -> info.graphics.y[info.index]--})"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Plot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": null,
+                    "show_legend": null,
+                    "use_tool_tip": false,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": "",
+                            "auto_range": true,
+                            "auto_range_includes_zero": false,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "use_log": false,
+                            "log_base": 10
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": false,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_y": false,
+                    "timezone": null,
+                    "crosshair": null,
+                    "omit_checkboxes": false,
+                    "graphics_list": [
+                        {
+                            "type": "Bars",
+                            "uid": "fec4427e-396b-4a3c-a1a4-6768e0723941",
+                            "visible": true,
+                            "yAxis": null,
+                            "hasClickAction": false,
+                            "keys": [
+                                "x",
+                                "z"
+                            ],
+                            "x": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5
+                            ],
+                            "y": [
+                                5,
+                                2,
+                                4,
+                                3,
+                                7
+                            ],
+                            "display_name": "",
+                            "base": 0,
+                            "width": 0.3,
+                            "color": "#FF968236",
+                            "outline_color": "#FF000000"
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10
+                },
+                "selectedType": "Plot",
+                "pluginName": "Groovy",
+                "shellId": "b6a3888d-e761-433d-8ec0-1d904560c742",
+                "elapsedTime": 560,
+                "height": 559
+            },
+            "evaluatorReader": true,
+            "lineCount": 4,
+            "initialization": true
         }
     ],
     "namespace": {}

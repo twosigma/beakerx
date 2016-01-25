@@ -374,6 +374,14 @@
               scope.drawLegendPointer(d);
               return plotTip.tooltip(scope, d, d3.mouse(scope.svg[0][0]));
             })
+            .on('mousemove', function(d) {
+
+              scope.removeLegendPointer();
+              plotTip.untooltip(scope, d);
+
+              scope.drawLegendPointer(d);
+              return plotTip.tooltip(scope, d, d3.mouse(scope.svg[0][0]));
+            })
             .on("mouseleave", function(d) {
               scope.removeLegendPointer();
               return plotTip.untooltip(scope, d);
@@ -1164,10 +1172,12 @@
                   var dat = data[line.dataIds[i]];
                   dat.showItem = scope.showAllItems;
                   if (dat.showItem === false) {
-                    dat.clearTips(scope);
+                    dat.hideTips(scope, true);
                     if (dat.isLodItem === true) {
                       dat.lodOn = false;
                     }
+                  }else{
+                    dat.hideTips(scope, false);
                   }
                 }
                 if (line.showItem === false) {
@@ -1190,11 +1200,13 @@
             var dat = data[line.dataIds[j]];
             dat.showItem = !dat.showItem;
             if (dat.showItem === false) {
-              dat.clearTips(scope);
+              dat.hideTips(scope, true);
               if (dat.isLodItem === true) {
                 dat.lodOn = false;
+              }
+            } else {
+              dat.hideTips(scope, false);
             }
-          }
           }
           if (line.showItem === false) {
             if (line.isLodItem === true) {

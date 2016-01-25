@@ -238,11 +238,11 @@
 
     PlotArea.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.clearTips(scope);
+      this.hideTips(scope);
     };
 
-    PlotArea.prototype.clearTips = function(scope) {
-      plotTip.clearTips(scope, this.id);
+    PlotArea.prototype.hideTips = function(scope, hidden) {
+      plotTip.hideTips(scope, this.id,  hidden);
     };
 
     PlotArea.prototype.createTip = function(ele) {

@@ -15,8 +15,28 @@
  */
 package com.twosigma.beaker.chart;
 
-import java.util.List;
+public abstract class ToolTipBuilder {
+  public Object call(Object x) {
+    return null;
+  }
 
-public interface ToolTipBuilder {
-  String process(List<Object> parameters);
+  public Object call(Object x, Object y) {
+    return null;
+  }
+
+  public Object call(Object x, Object y, Object base) {
+    return null;
+  }
+
+  public Object call(Object x, Object y, Object base, Object index) {
+    return null;
+  }
+
+  public Object call(Object x, Object y, Object base, Object index, Object displayName) {
+    return null;
+  }
+
+  public abstract int getMaximumNumberOfParameters();
 }
+
+

@@ -233,6 +233,8 @@
     };
 
     PlotStem.prototype.createTip = function(ele, g, model) {
+      if (ele.tooltip)
+        return ele.tooltip;
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};

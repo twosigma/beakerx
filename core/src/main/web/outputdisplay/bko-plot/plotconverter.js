@@ -170,6 +170,11 @@
     };
 
     var processElement = function(item, j, ele, yAxisSettings, logx) {
+
+      if (item.tooltips){
+        ele.tooltip = item.tooltips[j];
+      }
+
       // discard NaN entries
       if (ele.x === "NaN" || ele.y === "NaN" ||
         logx && ele.x <= 0 || yAxisSettings.logy && ele.y <= 0 )

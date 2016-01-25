@@ -191,6 +191,8 @@
     };
 
     HeatMap.prototype.createTip = function(ele, g, model) {
+      if (ele.tooltip)
+        return ele.tooltip;
       return "<div>" + ele.value.toFixed(5) * 1 + "</div>";
     };
 

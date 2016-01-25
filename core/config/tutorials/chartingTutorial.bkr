@@ -8823,6 +8823,192 @@
             "lineCount": 4
         },
         {
+            "id": "sectionwW4zfy",
+            "type": "section",
+            "title": "XYStacker",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdowngpUmGs",
+            "type": "markdown",
+            "body": [
+                "You can combine plot items that have base (Bars, Stems, Area)"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "code9bXcXt",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def y1 = [1,5,3,2,3]",
+                    "def y2 = [7,2,4,1,3]",
+                    "def p = new Plot(title: 'Plot with XYStacker')",
+                    "def a1 = new Area(y: y1, displayName: 'y1')",
+                    "def a2 = new Area(y: y2, displayName: 'y2')",
+                    "p << XYStacker.stack([a1, a2])"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "type": "Plot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": "Plot with XYStacker",
+                    "show_legend": null,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "type": "LegendPosition",
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": "",
+                            "auto_range": true,
+                            "auto_range_includes_zero": false,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "use_log": false,
+                            "log_base": 10
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": false,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_y": false,
+                    "timezone": null,
+                    "crosshair": null,
+                    "omit_checkboxes": false,
+                    "graphics_list": [
+                        {
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4
+                            ],
+                            "y": [
+                                1,
+                                5,
+                                3,
+                                2,
+                                3
+                            ],
+                            "visible": true,
+                            "display_name": "y1",
+                            "yAxis": null,
+                            "base": 0,
+                            "type": "Area"
+                        },
+                        {
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4
+                            ],
+                            "y": [
+                                8,
+                                7,
+                                7,
+                                3,
+                                6
+                            ],
+                            "visible": true,
+                            "display_name": "y2",
+                            "yAxis": null,
+                            "bases": [
+                                1,
+                                5,
+                                3,
+                                2,
+                                3
+                            ],
+                            "type": "Area"
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "Groovy",
+                "shellId": "a44c0b7c-344b-4e08-a501-71cb183f3367",
+                "elapsedTime": 718,
+                "height": 549
+            },
+            "evaluatorReader": true,
+            "lineCount": 6
+        },
+        {
             "id": "sectionfjRouj",
             "type": "section",
             "title": "Constant Lines",

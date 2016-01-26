@@ -16,13 +16,12 @@
 package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
-import com.twosigma.beaker.shared.servlet.MyProxyServlet;
+import com.twosigma.beaker.shared.servlet.BeakerProxyWebSocketServlet;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
@@ -434,7 +433,7 @@ public class PluginServiceLocatorRest {
 //      Process restartproc = Runtime.getRuntime().exec(this.nginxRestartCommand, this.nginxEnv);
 //      startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
 //      restartproc.waitFor();
-      MyProxyServlet.addPlugin(pluginId, port);
+      BeakerProxyWebSocketServlet.addPlugin(pluginId, port);
 
       ArrayList<String> fullCommand =
         new ArrayList<String>(Arrays.asList(command.split("\\s+")));

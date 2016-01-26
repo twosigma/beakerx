@@ -22,11 +22,18 @@ repositories {
 dependencies {
   compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
   compile group: 'org.cometd.java', name: 'cometd-java-annotations', version: '3.0.7'
+  compile group: 'org.cometd.java', name: 'cometd-java-websocket-jetty-client', version: '3.0.7'
+  compile group: 'org.cometd.java', name: 'cometd-java-websocket-jetty-server', version: '3.0.7'
+  compile group: 'org.cometd.java', name: 'cometd-java-websocket-javax-client', version: '3.0.7'
+  compile group: 'org.cometd.java', name: 'cometd-java-websocket-javax-server', version: '3.0.7'
+  compile group: 'javax.websocket', name: 'javax.websocket-api', version: '1.0'
   compile group: 'org.cometd.java', name: 'cometd-java', version: '3.0.7'
   compile group: 'org.codehaus.jackson', name: 'jackson-jaxrs', version: '1.9.13'
   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
   compile group: 'com.sun.jersey.contribs', name: 'jersey-guice', version: '1.19'
   compile group: 'org.eclipse.jetty', name: 'jetty-proxy', version: '9.3.6.v20151106'
+  compile group: 'org.eclipse.jetty.websocket', name: 'websocket-servlet', version: '9.3.6.v20151106'
+  compile group: 'org.eclipse.jetty.websocket', name: 'websocket-api', version: '9.3.6.v20151106'
 }
 
 compileJava {

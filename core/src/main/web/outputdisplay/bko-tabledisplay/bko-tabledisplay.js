@@ -955,39 +955,61 @@
             checkAlignment: function(container, key) {
               var colIdx = container.data('columnIndex');
               return scope.actualalign[colIdx - 1] === key;
+            },
+            doSorting: function(el, direction) {
+              var container = el.closest('.bko-header-menu');
+              var colIdx = container.data('columnIndex');
+
+              if (_.contains(['asc', 'desc'], direction)) {
+                scope.table.order([colIdx, direction]).draw();
+              }
+            },
+            checkSorting: function(container, direction) {
+              var order = scope.table.order();
+              var colIdx = container.data('columnIndex');
+
+              if (_.contains(['asc', 'desc'], direction)) {
+                return (order[0][0] == colIdx && order[0][1] == direction);
+              } else {
+                return (order[0][0] !== colIdx);
+              }
             }
           };
 
           var headerMenuItems = {
             items: [
               {
-                title: 'Sort Ascending',
-                isChecked: function(container) {
-                  var order = scope.table.order();
-                  var colIdx = container.data('columnIndex');
-
-                  return (order[0][0] == colIdx && order[0][1] == 'asc');
-                },
-                action: function(el) {
-                  var container = el.closest('.bko-header-menu');
-                  var colIdx = container.data('columnIndex');
-                  scope.table.order([colIdx, "asc"]).draw();
-                }
-              },
-              {
-                title: 'Sort Descending',
-                isChecked: function(container) {
-                  var order = scope.table.order();
-                  var colIdx = container.data('columnIndex');
-
-                  return (order[0][0] == colIdx && order[0][1] == 'desc');
-                },
-                action: function(el) {
-                  var container = el.closest('.bko-header-menu');
-                  var colIdx = container.data('columnIndex');
-
-                  scope.table.order([colIdx, 'desc']).draw();
-                }
+                title: 'Sorting',
+                action: null,
+                items: [
+                  {
+                    title: 'Ascending',
+                    isChecked: function(container) {
+                      return menuHelper.checkSorting(container, 'asc');
+                    },
+                    action: function(el) {
+                      menuHelper.doSorting(el, 'asc');
+                    }
+                  },
+                  {
+                    title: 'Descending',
+                    isChecked: function(container) {
+                      return menuHelper.checkSorting(container, 'desc');
+                    },
+                    action: function(el) {
+                      menuHelper.doSorting(el, 'desc');
+                    }
+                  },
+                  {
+                    title: 'No sort',
+                    isChecked: function(container) {
+                      return menuHelper.checkSorting(container);
+                    },
+                    action: function() {
+                      scope.table.order([0, 'asc']).draw();
+                    }
+                  }
+                ]
               },
               {
                 title: 'Hide column',

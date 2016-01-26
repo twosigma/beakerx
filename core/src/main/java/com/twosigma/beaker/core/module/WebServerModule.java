@@ -24,7 +24,7 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
-import com.twosigma.beaker.shared.servlet.MyProxyServlet;
+import com.twosigma.beaker.shared.servlet.BeakerProxyWebSocketServlet;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
@@ -81,7 +81,7 @@ public class WebServerModule extends AbstractModule {
     ServletContextHandler servletHandler = new ServletContextHandler(server, "/");
 
     String hash = bkConfig.getHash();
-    ServletHolder sh = servletHandler.addServlet(MyProxyServlet.class, "/*");
+    ServletHolder sh = servletHandler.addServlet(BeakerProxyWebSocketServlet.class, "/*");
     sh.setInitParameter("proxyTo", "http://127.0.0.1:" + webServerConfig.getPort());
     sh.setInitParameter("hash", hash);
 

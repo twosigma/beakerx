@@ -46,7 +46,6 @@ dependencies {
   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
   compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.3.1'
   compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.3.6.v20151106'
-  compile group: 'org.eclipse.jetty.websocket', name: 'websocket-servlet', version: '9.3.6.v20151106'
   compile group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: '9.3.6.v20151106'
   compile group: 'org.eclipse.jetty', name: 'jetty-util', version: '9.3.6.v20151106'
   compile group: 'org.eclipse.jetty', name: 'jetty-util-ajax', version: '9.3.6.v20151106'

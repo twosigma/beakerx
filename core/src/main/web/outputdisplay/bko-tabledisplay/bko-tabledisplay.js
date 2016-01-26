@@ -914,6 +914,50 @@
         scope.doCreateTable = function(model) {
           var cols = [];
           var i;
+
+          var getFormatSubitems = function(container) {
+            var colIdx = container.data('columnIndex');
+            var types = scope.getCellDispOptsF(colIdx - 1);
+            var items = [];
+
+            _.each(types, function(obj) {
+              var item = {
+                title: obj.name,
+                isChecked: function(container) {
+                  var colIdx = container.data('columnIndex');
+                  return scope.actualtype[colIdx - 1] === obj.type;
+                },
+                action: function(el) {
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex');
+
+                  scope.getCellDisp[colIdx - 1] = obj.type;
+                  scope.actualtype[colIdx - 1] = obj.type;
+                  scope.applyChanges();
+                }
+              };
+
+              items.push(item);
+            });
+
+            return items;
+          };
+
+          var menuHelper = {
+            doAlignment: function(el, key) {
+              var container = el.closest('.bko-header-menu');
+              var colIdx = container.data('columnIndex');
+
+              scope.getCellAlign[colIdx - 1] = key;
+              scope.actualalign[colIdx - 1] = key;
+              scope.applyChanges();
+            },
+            checkAlignment: function(container, key) {
+              var colIdx = container.data('columnIndex');
+              return scope.actualalign[colIdx - 1] === key;
+            }
+          };
+
           var headerMenuItems = {
             items: [
               {
@@ -956,18 +1000,14 @@
                   column.visible(!column.visible());
                 }
               },
-              /*
               {
                 title: 'Format',
                 action: null,
-                items: [
-                ]
+                items: getFormatSubitems
               },
-              */
               {
                 title: 'Alignment',
                 action: null,
-                //@todo: refactor here, move to plugin
                 items: [
                   {
                     title: 'Left',
@@ -997,24 +1037,8 @@
                     }
                   }
                 ]
-                //
               }
             ]
-          };
-
-          var menuHelper = {
-            doAlignment: function(el, key) {
-              var container = el.closest('.bko-header-menu');
-              var colIdx = container.data('columnIndex');
-
-              scope.getCellAlign[colIdx - 1] = key;
-              scope.actualalign[colIdx - 1] = key;
-              scope.applyChanges();
-            },
-            checkAlignment: function(container, key) {
-              var colIdx = container.data('columnIndex');
-              return scope.actualalign[colIdx - 1] === key;
-            }
           };
 
           // build configuration

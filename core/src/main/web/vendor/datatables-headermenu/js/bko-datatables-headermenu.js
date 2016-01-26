@@ -165,7 +165,9 @@ HeaderMenu.prototype = {
 
     for (var i = 0, ien = oItems.length; i < ien; i++) {
       var oItem = oItems[i];
-      var hasSubitems = $.isArray(oItem.items) && oItem.items.length;
+
+      var subitems = (typeof oItem.items == 'function') ? oItem.items(that.dom.container) : oItem.items;
+      var hasSubitems = $.isArray(subitems) && subitems.length;
 
       var $li = $('<li/>', {'class': hasSubitems ? 'dropdown-submenu' : ''});
       var $item = $('<a/>')
@@ -190,7 +192,7 @@ HeaderMenu.prototype = {
       if (hasSubitems) {
         var $subContainer = $('<ul/>', { 'class': 'dropdown-menu' });
         $subContainer.appendTo($li);
-        this._buildMenuItems(oItem.items, $subContainer);
+        this._buildMenuItems(subitems, $subContainer);
       }
 
       $li.appendTo(container);

@@ -36,6 +36,14 @@ abstract public class XYGraphics extends Graphics {
   private   Filter      lodFilter;
   private   Object      toolTipBuilder;
 
+  protected List<Number> getBases(){
+    return null;
+  }
+
+  protected Number getBase(){
+    return null;
+  }
+
   public List<String> getToolTips() {
     if (toolTipBuilder == null)
       return null;
@@ -54,7 +62,7 @@ abstract public class XYGraphics extends Graphics {
         Method call;
         if (numberOfParameters == 1) {
           call = clazz.getMethod("call", Object.class);
-        call.setAccessible(true);
+          call.setAccessible(true);
           toolTip.add((String) call.invoke(toolTipBuilder, x));
         } else if (numberOfParameters == 2) {
           call = clazz.getMethod("call", Object.class, Object.class);
@@ -63,11 +71,15 @@ abstract public class XYGraphics extends Graphics {
         } else if (numberOfParameters == 3) {
           call = clazz.getMethod("call", Object.class, Object.class, Object.class);
           call.setAccessible(true);
-          toolTip.add((String) call.invoke(toolTipBuilder, x, y, null));
+          toolTip.add((String) call.invoke(toolTipBuilder, x, y, i));
         } else if (numberOfParameters == 4) {
           call = clazz.getMethod("call", Object.class, Object.class, Object.class, Object.class);
           call.setAccessible(true);
-          toolTip.add((String) call.invoke(toolTipBuilder, x, y, null, null));
+          toolTip.add((String) call.invoke(toolTipBuilder,
+                                           x,
+                                           y,
+                                           i,
+                                           getBases() != null ? getBases().get(i) : getBase()));
         } else if (numberOfParameters == 5) {
           call = clazz.getMethod("call",
                                  Object.class,
@@ -76,7 +88,12 @@ abstract public class XYGraphics extends Graphics {
                                  Object.class,
                                  Object.class);
           call.setAccessible(true);
-          toolTip.add((String) call.invoke(toolTipBuilder, x, y, null, null, null));
+          toolTip.add((String) call.invoke(toolTipBuilder,
+                                           x,
+                                           y,
+                                           i,
+                                           getBases() != null ? getBases().get(i) : getBase(),
+                                           displayName));
         }
       }
     } catch (Throwable x) {

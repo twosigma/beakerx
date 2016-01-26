@@ -537,7 +537,11 @@
                     category: j,
                     x: item.x[j],
                     y: item.y[j]
+
                   };
+                  if(categoryItem.itemLabels){
+                    ele.tooltip =  categoryItem.itemLabels[j][i];
+                  }
 
                   if(processElement(item, j, ele, yAxisSettings)){
                     elements.push(ele);

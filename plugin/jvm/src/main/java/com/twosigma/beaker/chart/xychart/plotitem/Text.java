@@ -17,11 +17,14 @@
 package com.twosigma.beaker.chart.xychart.plotitem;
 
 import com.twosigma.beaker.chart.Color;
+import org.apache.commons.lang3.SerializationUtils;
+
+import java.io.Serializable;
 
 /**
  * Text
  */
-public class Text {
+public class Text implements Serializable, Cloneable{
 
   private Number  x            = 0.0d;
   private Number  y            = 0.0d;
@@ -95,5 +98,10 @@ public class Text {
 
   public void setPlotType(Class plotType) {
     this.plotType = plotType;
+  }
+
+  @Override
+  public Object clone() throws CloneNotSupportedException {
+    return SerializationUtils.clone(this);
   }
 }

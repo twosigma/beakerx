@@ -66,15 +66,6 @@ describe('Code Cell', function() {
     done();
   });
 
-  it('can handle escaping $ in markdown', function(done) {
-    beakerPO.createMarkdownCell('hello world \\$').then(function() {
-      return beakerPO.readMarkdownCell();
-    }.bind(this))
-    .then(function(txt) {
-      expect(txt).toEqual('hello world $');
-    }).then(done);
-  });
-
   it('can open a cells language menu in advanced mode', function(done) {
     beakerPO.insertCellButton.click()
     .then(beakerPO.toggleAdvancedMode)

@@ -169,6 +169,7 @@
         .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
         .attr("class", respClass)
+        .attr("shape-rendering", "crispEdges")
         .style("fill", function(d) {
           return d.fi;
         });
@@ -182,11 +183,11 @@
 
     HeatMap.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.clearTips(scope);
+      this.hideTips(scope);
     };
 
-    HeatMap.prototype.clearTips = function(scope) {
-      plotTip.clearTips(scope, this.id);
+    HeatMap.prototype.hideTips = function(scope, hidden) {
+      plotTip.hideTips(scope, this.id, hidden);
     };
 
     HeatMap.prototype.createTip = function(ele, g, model) {

@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -82,11 +82,12 @@
                 "state": {},
                 "selectedType": "Html",
                 "outputArrived": true,
-                "elapsedTime": 315,
-                "result": "<div class=\"output_subarea output_text\"><pre>u'&lt;!DOCTYPE html&gt;\\n&lt;html class=\"google\" lang=\"en\"&gt;\\n  &lt;head&gt;\\n\\n    &lt;script&gt;\\n    (function(H){H.className=H.className.replace(/\\\\bgoogle\\\\b/,\\'google-js\\')})(document.documentElement)\\n    &lt;/script&gt;\\n    &lt;meta ch'</pre></div>",
+                "elapsedTime": 348,
+                "result": "<div class=\"output_subarea output_text\"><pre>u'&lt;!DOCTYPE html&gt;\\n&lt;html class=\"google mmfb\" lang=\"en\"&gt;\\n  &lt;head&gt;\\n\\n    &lt;script&gt;\\n    (function(H){H.className=H.className.replace(/\\\\bgoogle\\\\b/,\\'google-js\\')})(document.documentElement)\\n    &lt;/script&gt;\\n    &lt;me'</pre></div>",
                 "pluginName": "IPython",
-                "shellId": "88282893099A46C3AC0A05E266E124CF",
-                "dataresult": "<!DOCTYPE html>\n<html class=\"google\" lang=\"en\">\n  <head>\n\n    <script>\n    (function(H){H.className=H.className.replace(/\\bgoogle\\b/,'google-js')})(document.documentElement)\n    </script>\n    <meta ch"
+                "shellId": "AED81B0D835B4E758A24090CC95FCC87",
+                "dataresult": "<!DOCTYPE html>\n<html class=\"google mmfb\" lang=\"en\">\n  <head>\n\n    <script>\n    (function(H){H.className=H.className.replace(/\\bgoogle\\b/,'google-js')})(document.documentElement)\n    </script>\n    <me",
+                "height": 49
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -120,8 +121,8 @@
                         "pagination": {
                             "use": true,
                             "rowsToDisplay": 50,
-                            "fixLeft": false,
-                            "fixRight": false
+                            "fixLeft": 0,
+                            "fixRight": 0
                         },
                         "columnNames": [
                             "value",
@@ -144,7 +145,7 @@
                 },
                 "selectedType": "Table",
                 "outputArrived": true,
-                "elapsedTime": 251,
+                "elapsedTime": 261,
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -153,44 +154,24 @@
                     ],
                     "values": [
                         [
-                            14,
-                            "li"
+                            3,
+                            "br"
                         ],
                         [
                             1,
-                            "head"
+                            "title"
                         ],
                         [
                             1,
                             "body"
                         ],
                         [
-                            6,
-                            "figure"
-                        ],
-                        [
-                            47,
-                            "div"
-                        ],
-                        [
-                            1,
-                            "html"
-                        ],
-                        [
                             3,
                             "ul"
                         ],
                         [
-                            1,
-                            "h4"
-                        ],
-                        [
-                            2,
-                            "h1"
-                        ],
-                        [
-                            2,
-                            "h2"
+                            6,
+                            "figcaption"
                         ],
                         [
                             1,
@@ -205,32 +186,24 @@
                             "strong"
                         ],
                         [
-                            6,
-                            "figcaption"
-                        ],
-                        [
-                            23,
-                            "a"
-                        ],
-                        [
-                            11,
-                            "script"
-                        ],
-                        [
                             8,
                             "img"
+                        ],
+                        [
+                            3,
+                            "link"
                         ],
                         [
                             3,
                             "meta"
                         ],
                         [
-                            3,
-                            "br"
+                            1,
+                            "h4"
                         ],
                         [
-                            1,
-                            "title"
+                            11,
+                            "script"
                         ],
                         [
                             2,
@@ -241,18 +214,47 @@
                             "style"
                         ],
                         [
+                            2,
+                            "h1"
+                        ],
+                        [
+                            2,
+                            "h2"
+                        ],
+                        [
                             3,
                             "p"
                         ],
                         [
-                            3,
-                            "link"
+                            6,
+                            "figure"
+                        ],
+                        [
+                            47,
+                            "div"
+                        ],
+                        [
+                            14,
+                            "li"
+                        ],
+                        [
+                            1,
+                            "head"
+                        ],
+                        [
+                            23,
+                            "a"
+                        ],
+                        [
+                            1,
+                            "html"
                         ]
                     ],
                     "subtype": "ListOfMaps"
                 },
                 "pluginName": "Python3",
-                "shellId": "EC2581DB83B44DEAA04C91B0EE33954E"
+                "shellId": "88FB55CA53DF43B3835BF222F4413254",
+                "height": 406
             },
             "evaluatorReader": true,
             "lineCount": 15
@@ -260,7 +262,7 @@
         {
             "id": "codePwwWMS",
             "type": "code",
-            "evaluator": "Html",
+            "evaluator": "HTML",
             "input": {
                 "body": [
                     "<style>",
@@ -279,8 +281,9 @@
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<style>\ntext {\n  font: 20px sans-serif;\n}\n\n</style>\n<div id=\"bubblediv\"><svg width=\"500\" height=\"500\" class=\"bubble\"><g class=\"node\" transform=\"translate(250,250)\"><title>undefined: 154</title><circle r=\"250.00000000000003\" style=\"fill: rgb(49, 130, 189);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\"></text></g><g class=\"node\" transform=\"translate(286.20261508344515,373.98042310727266)\"><title>li: 14</title><circle r=\"60.55329744401628\" style=\"fill: rgb(107, 174, 214);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">li</text></g><g class=\"node\" transform=\"translate(364.4009605500977,373.98042310727266)\"><title>head: 1</title><circle r=\"16.18354947678022\" style=\"fill: rgb(158, 202, 225);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">head</text></g><g class=\"node\" transform=\"translate(357.0838363708813,340.95265142156165)\"><title>body: 1</title><circle r=\"16.18354947678022\" style=\"fill: rgb(198, 219, 239);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">body</text></g><g class=\"node\" transform=\"translate(338.45325662244613,286.78030580069645)\"><title>figure: 6</title><circle r=\"39.641438445197224\" style=\"fill: rgb(230, 85, 13);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">figure</text></g><g class=\"node\" transform=\"translate(199.93814459451707,224.06426166050142)\"><title>div: 47</title><circle r=\"110.94882542130625\" style=\"fill: rgb(253, 141, 60);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">div</text></g><g class=\"node\" transform=\"translate(211.10679002092468,352.1722069514001)\"><title>html: 1</title><circle r=\"16.18354947678022\" style=\"fill: rgb(253, 174, 107);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">html</text></g><g class=\"node\" transform=\"translate(198.94108225235144,396.19802036847904)\"><title>ul: 3</title><circle r=\"28.03072994058807\" style=\"fill: rgb(253, 208, 162);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">ul</text></g><g class=\"node\" transform=\"translate(230.67943279180315,429.04545249917464)\"><title>h4: 1</title><circle r=\"16.18354947678022\" style=\"fill: rgb(49, 163, 84);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">h4</text></g><g class=\"node\" transform=\"translate(261.60824652272584,455.24192183277194)\"><title>h1: 2</title><circle r=\"22.8869951573986\" style=\"fill: rgb(116, 196, 118);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">h1</text></g><g class=\"node\" transform=\"translate(308.840336284371,455.8085828008889)\"><title>h2: 2</title><circle r=\"22.8869951573986\" style=\"fill: rgb(161, 217, 155);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">h2</text></g><g class=\"node\" transform=\"translate(340.3887348304406,430.3616758468687)\"><title>h3: 1</title><circle r=\"16.18354947678022\" style=\"fill: rgb(199, 233, 192);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">h3</text></g><g class=\"node\" transform=\"translate(388.76078850504337,417.65894903448486)\"><title>section: 4</title><circle r=\"32.36709895356045\" style=\"fill: rgb(117, 107, 177);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">section</text></g><g class=\"node\" transform=\"translate(416.1947983804715,349.50308880326384)\"><title>strong: 6</title><circle r=\"39.641438445197224\" style=\"fill: rgb(158, 154, 200);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">strong</text></g><g class=\"node\" transform=\"translate(417.16212009426334,268.76450785653054)\"><title>figcaption: 6</title><circle r=\"39.641438445197224\" style=\"fill: rgb(188, 189, 220);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">figcaption</text></g><g class=\"node\" transform=\"translate(377.6631295278411,156.8116589573196)\"><title>a: 23</title><circle r=\"77.61357673983366\" style=\"fill: rgb(218, 218, 235);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">a</text></g><g class=\"node\" transform=\"translate(273.13578819054015,74.97918343234491)\"><title>script: 11</title><circle r=\"53.674761390632455\" style=\"fill: rgb(99, 99, 99);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">script</text></g><g class=\"node\" transform=\"translate(172.44768848810384,68.28701008661113)\"><title>img: 8</title><circle r=\"45.7739903147972\" style=\"fill: rgb(150, 150, 150);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">img</text></g><g class=\"node\" transform=\"translate(112.67319686391139,114.0255479262238)\"><title>meta: 3</title><circle r=\"28.03072994058807\" style=\"fill: rgb(189, 189, 189);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">meta</text></g><g class=\"node\" transform=\"translate(75.87781703957594,158.24082548705064)\"><title>br: 3</title><circle r=\"28.03072994058807\" style=\"fill: rgb(217, 217, 217);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">br</text></g><g class=\"node\" transform=\"translate(72.9473754799059,203.82250168276693)\"><title>title: 1</title><circle r=\"16.18354947678022\" style=\"fill: rgb(49, 130, 189);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">title</text></g><g class=\"node\" transform=\"translate(66.08343661793808,243.76912691753958)\"><title>span: 2</title><circle r=\"22.8869951573986\" style=\"fill: rgb(107, 174, 214);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">span</text></g><g class=\"node\" transform=\"translate(81.01483932082968,288.5825693341736)\"><title>style: 2</title><circle r=\"22.8869951573986\" style=\"fill: rgb(158, 202, 225);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">style</text></g><g class=\"node\" transform=\"translate(110.18799585634855,332.08555782100984)\"><title>p: 3</title><circle r=\"28.03072994058807\" style=\"fill: rgb(198, 219, 239);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">p</text></g><g class=\"node\" transform=\"translate(144.2211488655203,378.46049978811504)\"><title>link: 3</title><circle r=\"28.03072994058807\" style=\"fill: rgb(230, 85, 13);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">link</text></g></svg></div>"
-                }
+                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<style>\ntext {\n  font: 20px sans-serif;\n}\n\n</style>\n<div id=\"bubblediv\"><svg width=\"500\" height=\"500\" class=\"bubble\"><g class=\"node\" transform=\"translate(250,250)\"><title>undefined: 154</title><circle r=\"250\" style=\"fill: rgb(49, 130, 189);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\"></text></g><g class=\"node\" transform=\"translate(186.41853734656559,250.3223779639163)\"><title>br: 3</title><circle r=\"23.803417205111373\" style=\"fill: rgb(107, 174, 214);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">br</text></g><g class=\"node\" transform=\"translate(225.44015751817142,250.3223779639163)\"><title>title: 1</title><circle r=\"13.74290933100402\" style=\"fill: rgb(158, 202, 225);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">title</text></g><g class=\"node\" transform=\"translate(214.69296119700695,223.42918557731656)\"><title>body: 1</title><circle r=\"13.74290933100402\" style=\"fill: rgb(198, 219, 239);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">body</text></g><g class=\"node\" transform=\"translate(182.48555157526954,201.39808015169862)\"><title>ul: 3</title><circle r=\"23.803417205111373\" style=\"fill: rgb(230, 85, 13);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">ul</text></g><g class=\"node\" transform=\"translate(131.03449162055128,230.15442406219952)\"><title>figcaption: 6</title><circle r=\"33.663115442293574\" style=\"fill: rgb(253, 141, 60);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">figcaption</text></g><g class=\"node\" transform=\"translate(154.6351319654572,272.9608846107163)\"><title>h3: 1</title><circle r=\"13.74290933100402\" style=\"fill: rgb(253, 174, 107);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">h3</text></g><g class=\"node\" transform=\"translate(184.92264801103357,303.0656987612232)\"><title>section: 4</title><circle r=\"27.485818662008043\" style=\"fill: rgb(253, 208, 162);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">section</text></g><g class=\"node\" transform=\"translate(246.92057974495685,294.2310872405546)\"><title>strong: 6</title><circle r=\"33.663115442293574\" style=\"fill: rgb(49, 163, 84);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">strong</text></g><g class=\"node\" transform=\"translate(273.27408626298995,225.07287502748744)\"><title>img: 8</title><circle r=\"38.870817524739294\" style=\"fill: rgb(116, 196, 118);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">img</text></g><g class=\"node\" transform=\"translate(226.97589536432818,180.6697275151007)\"><title>link: 3</title><circle r=\"23.803417205111373\" style=\"fill: rgb(161, 217, 155);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">link</text></g><g class=\"node\" transform=\"translate(186.7794435079029,152.50413588897163)\"><title>meta: 3</title><circle r=\"23.803417205111373\" style=\"fill: rgb(199, 233, 192);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">meta</text></g><g class=\"node\" transform=\"translate(154.41034283589565,174.29698247913822)\"><title>h4: 1</title><circle r=\"13.74290933100402\" style=\"fill: rgb(117, 107, 177);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">h4</text></g><g class=\"node\" transform=\"translate(95.99652987634263,157.43706223242492)\"><title>script: 11</title><circle r=\"45.58007377881448\" style=\"fill: rgb(158, 154, 200);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">script</text></g><g class=\"node\" transform=\"translate(77.19780239958192,221.2150455952682)\"><title>span: 2</title><circle r=\"19.435408762369647\" style=\"fill: rgb(188, 189, 220);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">span</text></g><g class=\"node\" transform=\"translate(85.76944347236855,260.6401093881517)\"><title>style: 2</title><circle r=\"19.435408762369647\" style=\"fill: rgb(218, 218, 235);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">style</text></g><g class=\"node\" transform=\"translate(119.08096941569983,283.4030381338202)\"><title>h1: 2</title><circle r=\"19.435408762369647\" style=\"fill: rgb(99, 99, 99);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">h1</text></g><g class=\"node\" transform=\"translate(139.04163375187238,318.46556178817605)\"><title>h2: 2</title><circle r=\"19.435408762369647\" style=\"fill: rgb(150, 150, 150);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">h2</text></g><g class=\"node\" transform=\"translate(167.5710297906695,352.8955785399917)\"><title>p: 3</title><circle r=\"23.803417205111373\" style=\"fill: rgb(189, 189, 189);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">p</text></g><g class=\"node\" transform=\"translate(226.10605791637553,359.8085639938908)\"><title>figure: 6</title><circle r=\"33.663115442293574\" style=\"fill: rgb(217, 217, 217);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">figure</text></g><g class=\"node\" transform=\"translate(355.3669043244797,364.74437178985784)\"><title>div: 47</title><circle r=\"94.21663957799215\" style=\"fill: rgb(49, 130, 189);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">div</text></g><g class=\"node\" transform=\"translate(364.7631660402319,217.9315611847125)\"><title>li: 14</title><circle r=\"51.421258214115724\" style=\"fill: rgb(107, 174, 214);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">li</text></g><g class=\"node\" transform=\"translate(307.7643003027057,183.40697442284795)\"><title>head: 1</title><circle r=\"13.74290933100402\" style=\"fill: rgb(158, 202, 225);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">head</text></g><g class=\"node\" transform=\"translate(280.6433673936903,106.94766642380762)\"><title>a: 23</title><circle r=\"65.9086777916576\" style=\"fill: rgb(198, 219, 239);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">a</text></g><g class=\"node\" transform=\"translate(199.99983589986786,115.79026840242716)\"><title>html: 1</title><circle r=\"13.74290933100402\" style=\"fill: rgb(230, 85, 13);\"></circle><text dy=\".3em\" style=\"text-anchor: middle;\">html</text></g></svg></div>"
+                },
+                "height": 523
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -336,14 +339,15 @@
                 "selectedType": "Text",
                 "result": "ok",
                 "pluginName": "JavaScript",
-                "elapsedTime": 45
+                "elapsedTime": 63,
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 38
         }
     ],
     "namespace": {
-        "url_text": "<!DOCTYPE html>\n<html class=\"google\" lang=\"en\">\n  <head>\n\n    <script>\n    (function(H){H.className=H.className.replace(/\\bgoogle\\b/,'google-js')})(document.documentElement)\n    </script>\n    <meta charset=\"utf-8\">\n    <meta content=\"initial-scale=1, minimum-scale=1, width=device-width\" name=\"viewport\">\n    <meta content=\n    \"Nonprofits are changing the world and we're proud to support them. At Google, we drive impact by providing technology and grants, as well as opportunities for Googlers to give back.\"\n    name=\"description\">\n    <title>\n      Google Dot Org\n    </title>\n    <script src=\"//www.google.com/js/google.js\">\n    </script>\n    <script>\n    new gweb.analytics.AutoTrack({profile:\"UA-36218279-1\"});\n    </script>\n    <link href=\"//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en\" rel=\n    \"stylesheet\">\n    <link href=\"/css/default-new.css\" rel=\"stylesheet\">\n    <style>\n    .hero-home {\n      background-image: url('/images/hero/home.jpg');\n    }\n    </style>\n    <link href=\"https://plus.google.com/+googleorg\" rel=\"publisher\">\n    <script>\n    function d(a,c,b){return a.call.apply(a.bind,arguments)}function e(a,c,b){if(!a)throw Error();if(2<arguments.length){var g=Array.prototype.slice.call(arguments,2);return function(){var b=Array.prototype.slice.call(arguments);Array.prototype.unshift.apply(b,g);return a.apply(c,b)}}return function(){return a.apply(c,arguments)}}function f(a,c,b){f=Function.prototype.bind&&-1!=Function.prototype.bind.toString().indexOf(\"native code\")?d:e;return f.apply(null,arguments)}\nFunction.prototype.bind=Function.prototype.bind||function(a,c){if(1<arguments.length){var b=Array.prototype.slice.call(arguments,1);b.unshift(this,a);return f.apply(null,b)}return f(this,a)};window.navigator.appVersion.match(/MSIE [678]/);\n    </script>\n  </head>\n  <body>\n    <div class=\"maia-header\" id=\"maia-header\" role=\"banner\">\n      <div class=\"maia-aux\">\n        <h1>\n          <a href=\"./\"><img alt=\"Google\" src=\n          \"//www.google.com/images/logos/google_logo_41.png\">.org</a>\n        </h1><a class=\"maia-teleport\" href=\"#content\">Skip to content</a>\n        <div class=\"maia-util\">\n          <div class=\"maia-plusone\">\n            <style>\n            a.plus_badge{color:#333;display:inline-block;font:13px/16px arial,sans-serif;text-align:center;text-decoration:none;white-space:nowrap}a.plus_badge span{display:inline-block;vertical-align:top}a.plus_badge img{border:0;height:16px;width:16px}a.plus_badge.small span{margin-right:13px;margin-top:0}a.plus_badge.small img{height:16px;width:16px}a.plus_badge.medium span{margin-right:15px;margin-top:8px}a.plus_badge.medium img{height:32px;width:32px}a.plus_badge.large img{height:64px;margin-bottom:7px;width:64px}\n            </style><a class=\"plus_badge medium\" href=\n            \"https://plus.google.com/+googleorg?prsrc=3\"><span>Follow us on</span><img alt=\"\" src=\n            \"https://ssl.gstatic.com/images/icons/gplus-32.png\"></a> <a class=\"btn-twitter\" href=\n            \"https://www.twitter.com/Googleorg\" title=\"Follow us on Twitter\"></a>\n          </div>\n        </div>\n      </div>\n    </div>\n    <div class=\"maia-nav\" id=\"maia-nav-x\" role=\"navigation\">\n      <div class=\"maia-aux\">\n        <ul>\n          <li>Home\n          </li>\n          <li>\n            <a href=\"./global-giving/\">Global Giving</a>\n          </li>\n          <li>\n            <a href=\"./local-giving/\">Local Giving</a>\n          </li>\n          <li>\n            <a href=\"./special-programs/\">Special Programs</a>\n          </li>\n          <li>\n            <a href=\"./products/\">Products</a>\n          </li>\n        </ul>\n      </div>\n    </div>\n    <div role=\"main\">\n      <div class=\"maia-teleport\" id=\"content\"></div>\n      <section class=\"hero-wrapper scroll-effect full-width-container container\"\n      data-scroll-effect-type=\"parallax\">\n        <div class=\"scroll-effect-layer hero-area hero-home\" data-parallax-effect=\"vertical\"\n        data-parallax-offset-x=\"0\" data-parallax-offset-y=\"-80\" data-parallax-speed=\"2\">\n          <div class=\"hero-inner-shadow\"></div>\n          <p class=\"hero-photo-credit\">\n            Grantee SolarAid is bringing solar lighting to rural communities.\n          </p>\n        </div>\n        <div class=\"maia-aux\">\n          <div class=\"maia-cols\"></div>\n        </div>\n      </section>\n      <section>\n        <div class=\"maia-aux\">\n          <div class=\"maia-cols\">\n            <div class=\"maia-col-6 hero-content\">\n              <div class=\"hero-content-wrapper\">\n                <h1>\n                  A better world, faster.\n                </h1>\n                <p class=\"hero-introduction\">\n                  Tech entrepreneurs are using innovation to tackle some of the world’s biggest\n                  challenges. We invest in teams with bold ideas that create lasting global impact.\n                </p>\n              </div>\n            </div>\n          </div>\n        </div>\n      </section>\n      <section class=\"spotlight-area\">\n        <div class=\"maia-aux\">\n          <h2>\n            Spot<strong>lights</strong>\n          </h2>\n          <div class=\"maia-cols\">\n            <div class=\"maia-col-4\">\n              <a class=\"shadow curved-shadow\" href=\n              \"http://get.google.com/disabilitiesimpactchallenge\">\n              <figure>\n                <div class=\"spotlight-img-wrapper\">\n                  <img alt=\"Designing a world that works for everyone\" src=\n                  \"/images/special-programs/gia-disabilities.jpg\">\n                </div>\n                <div class=\"caption-wrapper\">\n                  <figcaption>\n                    Designing a world that works for everyone\n                  </figcaption>\n                </div>\n              </figure></a>\n            </div>\n            <div class=\"maia-col-4\">\n              <a class=\"shadow curved-shadow\" href=\"./special-programs#content-fighting-ebola\">\n              <figure>\n                <div class=\"spotlight-img-wrapper\">\n                  <img alt=\"Fighting Ebola\" src=\"/images/special-programs/home-fighting-ebola.jpg\">\n                </div>\n                <div class=\"caption-wrapper\">\n                  <figcaption>\n                    Fighting Ebola\n                  </figcaption>\n                </div>\n              </figure></a>\n            </div>\n            <div class=\"maia-col-4\">\n              <a class=\"shadow curved-shadow\" href=\n              \"./local-giving/impact-challenge#content-bay-area\">\n              <figure>\n                <div class=\"spotlight-img-wrapper\">\n                  <img alt=\"Launching Impact Challenge in Bay Area\" src=\n                  \"/images/special-programs/home-impact-challenge-bayarea.jpg\">\n                </div>\n                <div class=\"caption-wrapper\">\n                  <figcaption>\n                    Launching Impact Challenge in Bay Area\n                  </figcaption>\n                </div>\n              </figure></a>\n            </div>\n            <div class=\"maia-col-4\">\n              <a class=\"shadow curved-shadow\" href=\"./local-giving/bay-area/\">\n              <figure>\n                <div class=\"spotlight-img-wrapper\">\n                  <img alt=\"Supporting Bay Area Nonprofits\" src=\n                  \"/images/special-programs/home-supporting-bay-area-nonprofits.jpg\">\n                </div>\n                <div class=\"caption-wrapper\">\n                  <figcaption>\n                    Supporting Bay Area Nonprofits\n                  </figcaption>\n                </div>\n              </figure></a>\n            </div>\n            <div class=\"maia-col-4\">\n              <a class=\"shadow curved-shadow\" href=\n              \"./special-programs#content-improving-computer-science-education\">\n              <figure>\n                <div class=\"spotlight-img-wrapper\">\n                  <img alt=\"Improving Computer Science Education\" src=\n                  \"/images/special-programs/home-computer-science.jpg\">\n                </div>\n                <div class=\"caption-wrapper\">\n                  <figcaption>\n                    Improving Computer Science Education\n                  </figcaption>\n                </div>\n              </figure></a>\n            </div>\n            <div class=\"maia-col-4\">\n              <a class=\"shadow curved-shadow\" href=\n              \"./special-programs#content-fighting-human-trafficking-and-child-abuse\">\n              <figure>\n                <div class=\"spotlight-img-wrapper\">\n                  <img alt=\"Fighting Trafficking and Child Abuse\" src=\n                  \"/images/special-programs/home-trafficking-slavery.jpg\">\n                </div>\n                <div class=\"caption-wrapper\">\n                  <figcaption>\n                    Fighting Trafficking and Child Abuse\n                  </figcaption>\n                </div>\n              </figure></a>\n            </div>\n          </div>\n        </div>\n      </section>\n      <section class=\"full-width-container container news-area\">\n        <div class=\"maia-aux\">\n          <div class=\"maia-cols\">\n            <div class=\"maia-col-7\">\n              <h2>\n                Latest <strong>News</strong>\n              </h2>\n              <div id=\"feed-list-wrapper\">\n                <p>\n                  <span class=\"loading\">Loading...</span>\n                </p>\n              </div>\n            </div>\n            <div class=\"maia-col-5 quote\">\n              <h3>\n                <strong>Each year</strong>, we donate<br>\n                <strong>$100,000,000</strong> in grants,<br>\n                <strong>80,000</strong> hours,<br>\n                <strong>$1 billion</strong> in products\n              </h3>\n            </div>\n          </div>\n        </div>\n      </section>\n    </div>\n    <div id=\"maia-signature\"></div>\n    <div class=\"maia-footer\" id=\"maia-footer\">\n      <div id=\"maia-footer-local\">\n        <div class=\"maia-aux\">\n          <h4>\n            Related initiatives\n          </h4>\n          <ul class=\"related-initiatives\">\n            <li>\n              <a href=\"http://www.google.com/ideas/\">Google Ideas</a>\n            </li>\n            <li>\n              <a href=\"http://www.google.com/culturalinstitute/\">Cultural Institute</a>\n            </li>\n            <li>\n              <a href=\"//www.google.com/edu/\">Google for Education</a>\n            </li>\n            <li>\n              <a href=\"http://www.google.com/green/\">Google Green</a>\n            </li>\n            <li>\n              <a href=\"http://www.google.com/elections/\">Google Politics &amp; Elections</a>\n            </li>\n          </ul>\n        </div>\n      </div>\n      <div id=\"maia-footer-global\">\n        <div class=\"maia-aux\">\n          <ul>\n            <li>\n              <a href=\"//www.google.com/\">Google</a>\n            </li>\n            <li>\n              <a href=\"//www.google.com/intl/en/about/\">About Google</a>\n            </li>\n            <li>\n              <a href=\"//www.google.com/intl/en/policies/privacy/\">Privacy</a>\n            </li>\n            <li>\n              <a href=\"//www.google.com/intl/en/policies/terms/\">Terms</a>\n            </li>\n          </ul>\n        </div>\n      </div>\n    </div>\n    <script src=\"//www.google.com/js/gweb/analytics/doubletrack.js\">\n    </script> \n    <script>\n    gweb.analytics.DoubleTrack.track('floodlight', {\n        src: 2542116,\n        type: 'dotor145',\n        cat: 'googl0'\n    });\n    </script> \n    <script src=\"/js/view.min.js\">\n    </script> \n    <script>\n    if(!window.navigator.appVersion.match(/MSIE [6789]/)&&!window.navigator.appVersion.match(/MSIE\\s([\\d]+)/))var scrollHandler=new chrm.ui.ScrollHandler;\n    </script> \n    <script>\n    var feed=new org.GPlusFeed(false,3,3,100);feedCallback=function(){feed.init()};\n    </script> \n    <script src=\"//apis.google.com/js/client.js?onload=feedCallback\">\n    </script> \n    <script src=\"//www.google.com/js/maia.js\">\n    </script>\n  </body>\n</html>",
+        "url_text": "<!DOCTYPE html>\n<html class=\"google mmfb\" lang=\"en\">\n  <head>\n\n    <script>\n    (function(H){H.className=H.className.replace(/\\bgoogle\\b/,'google-js')})(document.documentElement)\n    </script>\n    <meta charset=\"utf-8\">\n    <meta content=\"initial-scale=1, minimum-scale=1, width=device-width\" name=\"viewport\">\n    <meta content=\n    \"Nonprofits are changing the world and we're proud to support them. At Google, we drive impact by providing technology and grants, as well as opportunities for Googlers to give back.\"\n    name=\"description\">\n    <title>\n      Google Dot Org\n    </title>\n    <script src=\"//www.google.com/js/google.js\">\n    </script>\n    <script>\n    new gweb.analytics.AutoTrack({profile:\"UA-36218279-1\"});\n    </script>\n    <link href=\n    \"//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Product+Sans:400&amp;lang=en\" rel=\n    \"stylesheet\">\n    <link href=\"/css/default-new.css\" rel=\"stylesheet\">\n    <style>\n    .hero-home {\n      background-image: url('/images/hero/home.jpg');\n    }\n    </style>\n    <link href=\"https://plus.google.com/+googleorg\" rel=\"publisher\">\n    <script>\n    window.navigator.appVersion.match(/MSIE [678]/);\n    </script>\n  </head>\n  <body>\n    <div class=\"maia-header\" id=\"maia-header\" role=\"banner\">\n      <div class=\"maia-aux\">\n        <h1>\n          <a href=\"./\"><img alt=\"Google\" src=\n          \"//www.google.com/images/branding/googlelogo/1x/googlelogo_color_116x41dp.png\">.org</a>\n        </h1><a class=\"maia-teleport\" href=\"#content\">Skip to content</a>\n        <div class=\"maia-util\">\n          <div class=\"maia-plusone\">\n            <style>\n            a.plus_badge{color:#333;display:inline-block;font:13px/16px arial,sans-serif;text-align:center;text-decoration:none;white-space:nowrap}a.plus_badge span{display:inline-block;vertical-align:top}a.plus_badge img{border:0;height:16px;width:16px}a.plus_badge.small span{margin-right:13px;margin-top:0}a.plus_badge.small img{height:16px;width:16px}a.plus_badge.medium span{margin-right:15px;margin-top:8px}a.plus_badge.medium img{height:32px;width:32px}a.plus_badge.large img{height:64px;margin-bottom:7px;width:64px}\n            </style><a class=\"plus_badge medium\" href=\n            \"https://plus.google.com/+googleorg?prsrc=3\"><span>Follow us on</span><img alt=\"\" src=\n            \"https://www.google.com/images/branding/google_plus/2x/gplus_icon_flatsq_32dp.png\"></a>\n            <a class=\"btn-twitter\" href=\"https://www.twitter.com/Googleorg\" title=\n            \"Follow us on Twitter\"></a>\n          </div>\n        </div>\n      </div>\n    </div>\n    <div class=\"maia-nav\" id=\"maia-nav-x\" role=\"navigation\">\n      <div class=\"maia-aux\">\n        <ul>\n          <li>Home\n          </li>\n          <li>\n            <a href=\"./global-giving/\">Global Giving</a>\n          </li>\n          <li>\n            <a href=\"./local-giving/\">Local Giving</a>\n          </li>\n          <li>\n            <a href=\"./special-programs/\">Special Programs</a>\n          </li>\n          <li>\n            <a href=\"./products/\">Products</a>\n          </li>\n        </ul>\n      </div>\n    </div>\n    <div role=\"main\">\n      <div class=\"maia-teleport\" id=\"content\"></div>\n      <section class=\"hero-wrapper scroll-effect full-width-container container\"\n      data-scroll-effect-type=\"parallax\">\n        <div class=\"scroll-effect-layer hero-area hero-home\" data-parallax-effect=\"vertical\"\n        data-parallax-offset-x=\"0\" data-parallax-offset-y=\"-80\" data-parallax-speed=\"2\">\n          <div class=\"hero-inner-shadow\"></div>\n          <p class=\"hero-photo-credit\">\n            Grantee SolarAid is bringing solar lighting to rural communities.\n          </p>\n        </div>\n        <div class=\"maia-aux\">\n          <div class=\"maia-cols\"></div>\n        </div>\n      </section>\n      <section>\n        <div class=\"maia-aux\">\n          <div class=\"maia-cols\">\n            <div class=\"maia-col-6 hero-content\">\n              <div class=\"hero-content-wrapper\">\n                <h1>\n                  A better world, faster.\n                </h1>\n                <p class=\"hero-introduction\">\n                  Tech entrepreneurs are using innovation to tackle some of the world’s biggest\n                  challenges. We invest in teams with bold ideas that create lasting global impact.\n                </p>\n              </div>\n            </div>\n          </div>\n        </div>\n      </section>\n      <section class=\"spotlight-area\">\n        <div class=\"maia-aux\">\n          <h2>\n            Spot<strong>lights</strong>\n          </h2>\n          <div class=\"maia-cols\">\n            <div class=\"maia-col-4\">\n              <a class=\"shadow curved-shadow\" href=\n              \"http://get.google.com/disabilitiesimpactchallenge\">\n              <figure>\n                <div class=\"spotlight-img-wrapper\">\n                  <img alt=\"Designing a world that works for everyone\" src=\n                  \"/images/special-programs/gia-disabilities.jpg\">\n                </div>\n                <div class=\"caption-wrapper\">\n                  <figcaption>\n                    Designing a world that works for everyone\n                  </figcaption>\n                </div>\n              </figure></a>\n            </div>\n            <div class=\"maia-col-4\">\n              <a class=\"shadow curved-shadow\" href=\n              \".//special-programs/#content-refugee-and-migrant-crisis\">\n              <figure>\n                <div class=\"spotlight-img-wrapper\">\n                  <img alt=\"Supporting the refugee and migrant crisis\" src=\n                  \"/images/special-programs/home-refugee-crisis.jpg\">\n                </div>\n                <div class=\"caption-wrapper\">\n                  <figcaption>\n                    Supporting the refugee and migrant crisis\n                  </figcaption>\n                </div>\n              </figure></a>\n            </div>\n            <div class=\"maia-col-4\">\n              <a class=\"shadow curved-shadow\" href=\n              \"./local-giving/impact-challenge#content-germany\">\n              <figure>\n                <div class=\"spotlight-img-wrapper\">\n                  <img alt=\"Launching Impact Challenge in Germany\" src=\n                  \"/images/special-programs/home-impact-challenge-germany.jpg\">\n                </div>\n                <div class=\"caption-wrapper\">\n                  <figcaption>\n                    Launching Impact Challenge in Germany\n                  </figcaption>\n                </div>\n              </figure></a>\n            </div>\n            <div class=\"maia-col-4\">\n              <a class=\"shadow curved-shadow\" href=\"./local-giving/bay-area/\">\n              <figure>\n                <div class=\"spotlight-img-wrapper\">\n                  <img alt=\"Supporting Bay Area Nonprofits\" src=\n                  \"/images/special-programs/home-supporting-bay-area-nonprofits.jpg\">\n                </div>\n                <div class=\"caption-wrapper\">\n                  <figcaption>\n                    Supporting Bay Area Nonprofits\n                  </figcaption>\n                </div>\n              </figure></a>\n            </div>\n            <div class=\"maia-col-4\">\n              <a class=\"shadow curved-shadow\" href=\n              \"./special-programs#content-improving-computer-science-education\">\n              <figure>\n                <div class=\"spotlight-img-wrapper\">\n                  <img alt=\"Improving Computer Science Education\" src=\n                  \"/images/special-programs/home-computer-science.jpg\">\n                </div>\n                <div class=\"caption-wrapper\">\n                  <figcaption>\n                    Improving Computer Science Education\n                  </figcaption>\n                </div>\n              </figure></a>\n            </div>\n            <div class=\"maia-col-4\">\n              <a class=\"shadow curved-shadow\" href=\n              \"./special-programs#content-fighting-human-trafficking-and-child-abuse\">\n              <figure>\n                <div class=\"spotlight-img-wrapper\">\n                  <img alt=\"Fighting Trafficking and Child Abuse\" src=\n                  \"/images/special-programs/home-trafficking-slavery.jpg\">\n                </div>\n                <div class=\"caption-wrapper\">\n                  <figcaption>\n                    Fighting Trafficking and Child Abuse\n                  </figcaption>\n                </div>\n              </figure></a>\n            </div>\n          </div>\n        </div>\n      </section>\n      <section class=\"full-width-container container news-area\">\n        <div class=\"maia-aux\">\n          <div class=\"maia-cols\">\n            <div class=\"maia-col-7\">\n              <h2>\n                Latest <strong>News</strong>\n              </h2>\n              <div id=\"feed-list-wrapper\">\n                <p>\n                  <span class=\"loading\">Loading...</span>\n                </p>\n              </div>\n            </div>\n            <div class=\"maia-col-5 quote\">\n              <h3>\n                <strong>Each year</strong>, we donate<br>\n                <strong>$100,000,000</strong> in grants,<br>\n                <strong>80,000</strong> hours,<br>\n                <strong>$1 billion</strong> in products\n              </h3>\n            </div>\n          </div>\n        </div>\n      </section>\n    </div>\n    <div id=\"maia-signature\"></div>\n    <div class=\"maia-footer\" id=\"maia-footer\">\n      <div id=\"maia-footer-local\">\n        <div class=\"maia-aux\">\n          <h4>\n            Related initiatives\n          </h4>\n          <ul class=\"related-initiatives\">\n            <li>\n              <a href=\"http://www.google.com/ideas/\">Google Ideas</a>\n            </li>\n            <li>\n              <a href=\"http://www.google.com/culturalinstitute/\">Cultural Institute</a>\n            </li>\n            <li>\n              <a href=\"//www.google.com/edu/\">Google for Education</a>\n            </li>\n            <li>\n              <a href=\"http://www.google.com/green/\">Google Green</a>\n            </li>\n            <li>\n              <a href=\"http://www.google.com/elections/\">Google Politics &amp; Elections</a>\n            </li>\n          </ul>\n        </div>\n      </div>\n      <div id=\"maia-footer-global\">\n        <div class=\"maia-aux\">\n          <ul>\n            <li>\n              <a href=\"//www.google.com/\">Google</a>\n            </li>\n            <li>\n              <a href=\"//www.google.com/intl/en/about/\">About Google</a>\n            </li>\n            <li>\n              <a href=\"//www.google.com/intl/en/policies/privacy/\">Privacy</a>\n            </li>\n            <li>\n              <a href=\"//www.google.com/intl/en/policies/terms/\">Terms</a>\n            </li>\n          </ul>\n        </div>\n      </div>\n    </div>\n    <script src=\"//www.google.com/js/gweb/analytics/doubletrack.js\">\n    </script> \n    <script>\n    gweb.analytics.DoubleTrack.track('floodlight', {\n        src: 2542116,\n        type: 'dotor145',\n        cat: 'googl0'\n    });\n    </script> \n    <script src=\"/js/view.min.js\">\n    </script> \n    <script>\n    if(!window.navigator.appVersion.match(/MSIE [6789]/)&&!window.navigator.appVersion.match(/MSIE\\s([\\d]+)/))var scrollHandler=new chrm.ui.ScrollHandler;\n    </script> \n    <script>\n    var feed=new org.GPlusFeed(false,3,3,100);feedCallback=function(){feed.init()};\n    </script> \n    <script src=\"//apis.google.com/js/client.js?onload=feedCallback\">\n    </script> \n    <script src=\"//www.google.com/js/maia.js\">\n    </script>\n  </body>\n</html>\n",
         "hist": "ERROR: circular objects are not supported"
     },
     "metadata": {

@@ -46,8 +46,7 @@
         "id" : this.id,
         "st" : this.color,
         "st_op": this.color_opacity,
-        "st_w": this.width,
-        "st_da": this.stroke_dasharray
+        "st_w": this.width
       };
       this.elementProps = [];
       this.elementLabels = [];
@@ -116,6 +115,8 @@
       this.vlength = r - l + 1;
     };
 
+
+
     PlotStem.prototype.prepare = function(scope) {
       var focus = scope.focus;
       var eles = this.elements,
@@ -147,10 +148,12 @@
           "st_op": ele.color_opacity,
           "st_w" : ele.width,
           "st_da": ele.stroke_dasharray,
+          "isresp" : true,
           "x1" : x,
           "y1" : y,
           "x2" : x2,
-          "y2" : y2
+          "y2" : y2,
+          "op" : scope.tips[this.id + "_" + i] == null ? 0 : 1
         };
         eleprops.push(prop);
 
@@ -176,6 +179,7 @@
     };
 
     PlotStem.prototype.draw = function(scope) {
+      var self = this;
       var svg = scope.maing;
       var props = this.itemProps,
           eleprops = this.elementProps,
@@ -195,22 +199,41 @@
 
       var respClass = this.useToolTip === true ? this.respClass : null;
       var itemsvg = svg.select("#" + this.id);
-      itemsvg.selectAll("line")
+      itemsvg.selectAll("line.normal")
         .data(eleprops, function(d) { return d.id; }).exit().remove();
-      itemsvg.selectAll("line")
+      itemsvg.selectAll("line.normal")
         .data(eleprops, function(d) { return d.id; }).enter().append("line")
-        .attr("id", function(d) { return d.id; })
-        .attr("class", respClass + " " + this.actionClass)
+        .attr("class", respClass + " " + this.actionClass + " normal")
         .style("stroke", function(d) { return d.st; })
         .style("stroke-opacity", function(d) { return d.st_op; })
         .style("stroke-dasharray", function(d) { return d.st_da; })
-        .style("stroke-width", function(d) { return d.st_da; });
-      itemsvg.selectAll("line")
+        .style("stroke-width", function(d) { return d.st_w; });
+      itemsvg.selectAll("line.normal")
         .data(eleprops, function(d) { return d.id; })
         .attr("x1", function(d) { return d.x1; })
         .attr("x2", function(d) { return d.x2; })
         .attr("y1", function(d) { return d.y1; })
         .attr("y2", function(d) { return d.y2; });
+
+      if (this.useToolTip === true) {
+        itemsvg.selectAll("line.highlighted")
+          .data(eleprops, function(d) { return d.id; }).exit().remove();
+        itemsvg.selectAll("line.highlighted")
+          .data(eleprops, function(d) { return d.id; }).enter().append("line")
+          .attr("id", function(d) { return d.id; })
+          .attr("class", respClass+" highlighted")
+          .style("stroke", function(d) { return d.st; })
+          .style("stroke-dasharray", function(d) { return d.st_da; })
+          .style("stroke-width", function(d) { return plotUtils.getHighlightedSize(self.itemProps.st_w, true); })
+          .style("opacity", function(d) { return d.op; });
+        itemsvg.selectAll("line.highlighted")
+          .data(eleprops, function(d) { return d.id; })
+          .attr("x1", function(d) { return d.x1; })
+          .attr("x2", function(d) { return d.x2; })
+          .attr("y1", function(d) { return d.y1; })
+          .attr("y2", function(d) { return d.y2; });
+      }
+
       itemsvg.selectAll("text").remove();
       itemsvg.selectAll("text")
         .data(elelabels, function(d) { return d.id; }).enter().append("text")
@@ -227,11 +250,11 @@
 
     PlotStem.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.clearTips(scope);
+      this.hideTips(scope);
     };
 
-    PlotStem.prototype.clearTips = function(scope) {
-      plotTip.clearTips(scope, this.id);
+    PlotStem.prototype.hideTips = function(scope, hidden) {
+      plotTip.hideTips(scope, this.id, hidden);
     };
 
     PlotStem.prototype.createTip = function(ele, g, model) {

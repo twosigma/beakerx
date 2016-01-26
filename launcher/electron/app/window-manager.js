@@ -28,7 +28,7 @@ module.exports = (function() {
   var _windowToSession = {};
   var _sessionToWindow = {};
 
-  var windowRelativeWidth = 0.4;
+  var windowRelativeWidth = 0.6;
   var windowRelativeHeight = 0.8;
 
   var client;

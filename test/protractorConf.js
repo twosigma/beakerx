@@ -19,15 +19,26 @@ var config = {
   framework: 'jasmine2',
   restartBrowserBetweenTests: true,
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 100000
+    defaultTimeoutInterval: 100000,
+    print: function() {}
   },
   capabilities: {
+    shardTestFiles: true,
+    maxInstances: 3,
     browserName: 'firefox'
+  },
+  onPrepare: function() {
+    var SpecReporter = require('jasmine-spec-reporter');
+    jasmine.getEnv().addReporter(new SpecReporter({
+        displayStacktrace: 'specs'
+    }));
   },
   specs: [
           'tests/landing-page.js',
           'tests/notebook.js',
+          'tests/autotranslation.js',
           'tests/code-cell.js',
+          'tests/text-cell.js',
           'tests/cell-menu.js',
           'tests/language-manager.js',
           'tests/bugs.js'

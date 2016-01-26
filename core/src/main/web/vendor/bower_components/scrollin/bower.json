@@ -1,7 +1,7 @@
 {
   "name": "scrollin",
   "main": "dist/index.js",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "homepage": "https://github.com/samccone/scrollin",
   "authors": [
     "Sam Saccone <samccone@gmail.com>"

@@ -227,7 +227,7 @@
       scope.maing.select("#" + this.id).selectAll("*").remove();
     };
 
-    PlotConstband.prototype.clearTips = function(scope) {
+    PlotConstband.prototype.hideTips = function(scope, hidden) {
       // do nothing, no tip for this type
     };
 

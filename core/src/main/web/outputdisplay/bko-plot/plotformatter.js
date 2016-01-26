@@ -265,7 +265,7 @@
             //newmodel.yPreventNegative = true; // prevent move to y < 0
           }
 
-          if(item.type === "line" || item.type === "stem" || item.type === "constline") {
+          if(item.type === "line" || item.type === "constline") {
             if (item.color == null) {
               item.color = "black";
             }
@@ -337,6 +337,10 @@
 
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
+
+            if(item.type === "stem") {
+              ele.stroke_dasharray = this.lineDasharrayMap[ele.style];
+            }
 
             if (ele.outlineColor != null) {
               ele.stroke = ele.outlineColor;

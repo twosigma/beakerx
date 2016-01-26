@@ -15,29 +15,7 @@
 -->
 <header ng-class="{'electron-hide': getElectronMode()}" class="navbar-fixed-top">
   <div class="navbar navbar-inverse">
-    <a class="navbar-brand" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click>
-      <svg width="16px" height="22px" viewbox="0 0 600 790" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;">
-        <g transform="matrix(1,0,0,1,-219.244,-106.439)">
-        <path d="M239.89,289.249L293.584,289.249L318.661,341.533L318.661,799.236L346.819,825.996L693.232,825.996L721.762,799.432L721.762,341.475L746.707,289.228L799.576,289.228L773.717,340.36L773.717,826.224L722.48,879.53L317.616,879.53L266.714,826.457L266.714,341.03L239.89,289.249Z" style="fill:white;"></path>
-        </g>
-        <g transform="matrix(1,0,0,1,-219.244,-106.439)">
-        <path d="M373.419,396.178L666.524,396.178L666.524,772.449L373.627,772.449L373.419,396.178Z" style="fill:white;"></path>
-        </g>
-        <g transform="matrix(1.0164,0,0,1.0164,-224.968,-108.995)">
-        <circle cx="425.264" cy="181.637" r="52.944" style="fill:white;"></circle>
-        </g>
-        <g transform="matrix(2.40784,0,0,2.40784,-755.394,-522.242)">
-        <circle cx="388.783" cy="303.979" r="11.274" style="fill:white;"></circle>
-        </g>
-        <g transform="matrix(1.68901,0,0,1.68901,-607.657,-297.223)">
-        <circle cx="569.535" cy="276.282" r="39.853" style="fill:white;"></circle>
-        </g>
-      </svg>
-
-    </a>
-    <a class="navbar-left" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click>
-      Beaker
-    </a>
+    <bk-brand-logo reference="/beaker/#/control" on-click="gotoControlPanel(event)"></bk-brand-logo>
   </div>
   <div class="navbar navbar-default">
     <ul class="nav navbar-nav">

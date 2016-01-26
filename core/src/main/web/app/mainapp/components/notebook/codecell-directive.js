@@ -45,6 +45,7 @@
       bkSessionManager,
       bkCoreManager,
       bkPublicationHelper,
+      GLOBALS,
       $timeout) {
 
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
@@ -147,7 +148,8 @@
         $scope.isShowOutput = function() {
 
           var result = $scope.cellmodel.output.result;
-          if (result && result.hidden === true) {
+
+          if (!result || result.hidden) {
             return false;
           }
 
@@ -155,7 +157,7 @@
             return false;
           }
 
-          return !(result === undefined || result === null);
+          return true;
         };
 
         $scope.outputTitle = function() {
@@ -435,13 +437,12 @@
         };
 
         scope.displayOutput = false;
-
         Scrollin.track(element[0], function() {
           $timeout(function() {
             initCodeMirror();
             scope.displayOutput = true;
           }, 1);
-        });
+        }, {top: -GLOBALS.CELL_INSTANTIATION_DISTANCE});
 
         scope.focus = function() {
           scope.cm.focus();

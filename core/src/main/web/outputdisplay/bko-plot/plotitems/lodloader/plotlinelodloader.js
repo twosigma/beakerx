@@ -65,7 +65,7 @@
       this.zoomHash = plotUtils.randomString(3);
       if (this.lodOn === false) { return; }
       this.lodplotter.setZoomHash(this.zoomHash);
-      this.lodplotter.clearTips(scope);
+      this.lodplotter.hideTips(scope);
     };
 
     PlotLineLodLoader.prototype.applyZoomHash = function(hash) {
@@ -221,15 +221,15 @@
 
     PlotLineLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.clearTips(scope);
+      this.hideTips(scope);
     };
 
-    PlotLineLodLoader.prototype.clearTips = function(scope) {
+    PlotLineLodLoader.prototype.hideTips = function(scope, hidden) {
       if (this.lodOn === false) {
-        this.plotter.clearTips(scope);
+        this.plotter.hideTips(scope, hidden);
         return;
       }
-      this.lodplotter.clearTips(scope);
+      this.lodplotter.hideTips(scope, hidden);
     };
 
     PlotLineLodLoader.prototype.createTip = function(ele) {

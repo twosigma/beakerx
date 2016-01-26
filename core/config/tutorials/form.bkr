@@ -2,8 +2,8 @@
     "beaker": "2",
     "evaluators": [
         {
-            "name": "Html",
-            "plugin": "Html",
+            "name": "HTML",
+            "plugin": "HTML",
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -11,8 +11,8 @@
             }
         },
         {
-            "name": "Latex",
-            "plugin": "Latex",
+            "name": "TeX",
+            "plugin": "TeX",
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -78,7 +78,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 28
+                "elapsedTime": 24,
+                "height": 33
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -87,7 +88,7 @@
         {
             "id": "code001",
             "type": "code",
-            "evaluator": "Html",
+            "evaluator": "HTML",
             "input": {
                 "body": [
                     "<p>",
@@ -106,7 +107,8 @@
                     "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<p>\n  <input type=\"text\" id=\"query\" value=\"Berzelius\" onkeydown=\"if (event.keyCode == 13) beaker.process_form()\">\n</p><p></p>\n\n<button onclick=\"beaker.process_form()\">Define</button>"
                 },
                 "elapsedTime": 0,
-                "state": {}
+                "state": {},
+                "height": 76
             },
             "initialization": true,
             "evaluatorReader": true,
@@ -128,12 +130,13 @@
             "output": {
                 "selectedType": "Html",
                 "outputArrived": true,
-                "elapsedTime": 635,
+                "elapsedTime": 1480,
                 "state": {},
-                "result": "<div class=\"output_subarea output_html rendered_html\"><p>Baron <b>Jöns Jacob Berzelius</b> (<small>Swedish:&nbsp;</small><span title=\"Representation in the International Phonetic Alphabet (IPA)\" class=\"IPA\"><a href=\"/wiki/Help:IPA_for_Swedish\" title=\"Help:IPA for Swedish\">[jœns ˌjɑːkɔb bæɹˈseːliɵs]</a></span>; 20 August 1779 – 7 August 1848) was a Swedish chemist. Berzelius is considered, along with <a href=\"/wiki/Robert_Boyle\" title=\"Robert Boyle\">Robert Boyle</a>, <a href=\"/wiki/John_Dalton\" title=\"John Dalton\">John Dalton</a>, and <a href=\"/wiki/Antoine_Lavoisier\" title=\"Antoine Lavoisier\">Antoine Lavoisier</a>, to be one of the founders of modern <a href=\"/wiki/Chemistry\" title=\"Chemistry\">chemistry</a>.<sup id=\"cite_ref-1\" class=\"reference\"><a href=\"#cite_note-1\"><span>[</span>1<span>]</span></a></sup></p></div>",
+                "result": "<div class=\"output_subarea output_html rendered_html\"><p>Baron <b>Jöns Jacob Berzelius</b> (<small>Swedish:&nbsp;</small><span title=\"Representation in the International Phonetic Alphabet (IPA)\" class=\"IPA\"><a href=\"/wiki/Help:IPA_for_Swedish\" title=\"Help:IPA for Swedish\">[jœns ˌjɑːkɔb bæɹˈseːliɵs]</a></span>; 20 August 1779 – 7 August 1848), named by himself and contemporary society as <b>Jacob Berzelius</b>, was a Swedish chemist. Berzelius is considered, along with <a href=\"/wiki/Robert_Boyle\" title=\"Robert Boyle\">Robert Boyle</a>, <a href=\"/wiki/John_Dalton\" title=\"John Dalton\">John Dalton</a>, and <a href=\"/wiki/Antoine_Lavoisier\" title=\"Antoine Lavoisier\">Antoine Lavoisier</a>, to be one of the founders of modern <a href=\"/wiki/Chemistry\" title=\"Chemistry\">chemistry</a>.<sup id=\"cite_ref-1\" class=\"reference\"><a href=\"#cite_note-1\"><span>[</span>1<span>]</span></a></sup></p></div>",
                 "pluginName": "IPython",
-                "shellId": "6D5C30A1C31542199DA68EC8CA59527A",
-                "dataresult": "<p><b>Scott Draves</b> is the inventor of <a href=\"/wiki/Fractal_Flames\" title=\"Fractal Flames\" class=\"mw-redirect\">Fractal Flames</a><sup id=\"cite_ref-1\" class=\"reference\"><a href=\"#cite_note-1\"><span>[</span>1<span>]</span></a></sup> and the leader of the <a href=\"/wiki/Distributed_computing\" title=\"Distributed computing\">distributed computing</a> project <a href=\"/wiki/Electric_Sheep\" title=\"Electric Sheep\">Electric Sheep</a>.<sup id=\"cite_ref-2\" class=\"reference\"><a href=\"#cite_note-2\"><span>[</span>2<span>]</span></a></sup><sup id=\"cite_ref-3\" class=\"reference\"><a href=\"#cite_note-3\"><span>[</span>3<span>]</span></a></sup> He also invented patch-based <a href=\"/wiki/Texture_synthesis\" title=\"Texture synthesis\">texture synthesis</a> and published the first implementation of this class of algorithms. He is also a <a href=\"/wiki/Video_artist\" title=\"Video artist\" class=\"mw-redirect\">video artist</a><sup id=\"cite_ref-4\" class=\"reference\"><a href=\"#cite_note-4\"><span>[</span>4<span>]</span></a></sup><sup id=\"cite_ref-5\" class=\"reference\"><a href=\"#cite_note-5\"><span>[</span>5<span>]</span></a></sup> and accomplished <a href=\"/wiki/VJ_(video_performance_artist)\" title=\"VJ (video performance artist)\" class=\"mw-redirect\">VJ</a>.<sup id=\"cite_ref-6\" class=\"reference\"><a href=\"#cite_note-6\"><span>[</span>6<span>]</span></a></sup></p>"
+                "shellId": "C7FE75A6EDF449DD8E04A1304EAE9148",
+                "dataresult": "<p><b>Scott Draves</b> is the inventor of <a href=\"/wiki/Fractal_Flames\" title=\"Fractal Flames\" class=\"mw-redirect\">Fractal Flames</a><sup id=\"cite_ref-1\" class=\"reference\"><a href=\"#cite_note-1\"><span>[</span>1<span>]</span></a></sup> and the leader of the <a href=\"/wiki/Distributed_computing\" title=\"Distributed computing\">distributed computing</a> project <a href=\"/wiki/Electric_Sheep\" title=\"Electric Sheep\">Electric Sheep</a>.<sup id=\"cite_ref-2\" class=\"reference\"><a href=\"#cite_note-2\"><span>[</span>2<span>]</span></a></sup><sup id=\"cite_ref-3\" class=\"reference\"><a href=\"#cite_note-3\"><span>[</span>3<span>]</span></a></sup> He also invented patch-based <a href=\"/wiki/Texture_synthesis\" title=\"Texture synthesis\">texture synthesis</a> and published the first implementation of this class of algorithms. He is also a <a href=\"/wiki/Video_artist\" title=\"Video artist\" class=\"mw-redirect\">video artist</a><sup id=\"cite_ref-4\" class=\"reference\"><a href=\"#cite_note-4\"><span>[</span>4<span>]</span></a></sup><sup id=\"cite_ref-5\" class=\"reference\"><a href=\"#cite_note-5\"><span>[</span>5<span>]</span></a></sup> and accomplished <a href=\"/wiki/VJ_(video_performance_artist)\" title=\"VJ (video performance artist)\" class=\"mw-redirect\">VJ</a>.<sup id=\"cite_ref-6\" class=\"reference\"><a href=\"#cite_note-6\"><span>[</span>6<span>]</span></a></sup></p>",
+                "height": 61
             },
             "evaluatorReader": true,
             "lineCount": 5

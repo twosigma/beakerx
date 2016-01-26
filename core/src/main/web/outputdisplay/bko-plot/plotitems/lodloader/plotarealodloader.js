@@ -67,12 +67,12 @@
       if (this.lodOn === false) { return; }
       if (this.lodType === "area") {
         this.lodplotter.setZoomHash(this.zoomHash);
-        this.lodplotter.clearTips(scope);
+        this.lodplotter.hideTips(scope);
       } else if (this.lodType === "river"){
         this.lodplotter.setZoomHash(this.zoomHash);
         this.lodplotter2.setZoomHash(this.zoomHash);
-        this.lodplotter.clearTips(scope);
-        this.lodplotter2.clearTips(scope);
+        this.lodplotter.hideTips(scope);
+        this.lodplotter2.hideTips(scope);
       }
     };
 
@@ -274,19 +274,19 @@
 
     PlotAreaLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.clearTips(scope);
+      this.hideTips(scope);
     };
 
-    PlotAreaLodLoader.prototype.clearTips = function(scope) {
+    PlotAreaLodLoader.prototype.hideTips = function(scope, hidden) {
       if (this.lodOn === false) {
-        this.plotter.clearTips(scope);
+        this.plotter.hideTips(scope);
         return;
       }
       if (this.lodType === "area") {
-        this.lodplotter.clearTips(scope);
+        this.lodplotter.hideTips(scope, hidden);
       } else if (this.lodType === "river") {
-        this.lodplotter.clearTips(scope);
-        this.lodplotter2.clearTips(scope);
+        this.lodplotter.hideTips(scope, hidden);
+        this.lodplotter2.hideTips(scope, hidden);
       }
     };
 

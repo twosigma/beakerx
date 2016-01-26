@@ -412,8 +412,8 @@
     showLanguageManagerSpinner: function(pluginName) {
       angularUtils.showLanguageManagerSpinner(pluginName);
     },
-    hideLanguageManagerSpinner: function() {
-      angularUtils.hideLanguageManagerSpinner();
+    hideLanguageManagerSpinner: function(error) {
+      angularUtils.hideLanguageManagerSpinner(error);
     },
     // Electron: require('remote')
     isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,

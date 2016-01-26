@@ -14,5 +14,5 @@ REM See the License for the specific language governing permissions and
 REM limitations under the License.
 
 @echo off
-set JAVA_HOME=%CD%\jre1.8.0_45
+set JAVA_HOME=%CD%\jre1.8.0_65
 build\install\core\bin\core %*

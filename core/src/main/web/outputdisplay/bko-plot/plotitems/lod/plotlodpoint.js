@@ -238,8 +238,8 @@
       }
     };
 
-    PlotLodPoint.prototype.clearTips = function(scope) {
-      plotTip.clearTips(scope, this.id);
+    PlotLodPoint.prototype.hideTips = function(scope, hidden) {
+      plotTip.hideTips(scope, this.id, hidden);
     };
 
     return PlotLodPoint;

@@ -1,4 +1,4 @@
-/*
+  /*
 *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
 *
 *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -163,7 +163,10 @@
             "isresp" : true,
             "cx" : x,
             "cy" : y,
-            "op" : scope.tips[id] == null ? 0 : 1,
+            "tooltip_cx": x,
+            "tooltip_cy": y,
+            "tooltip_r": 5,
+            "op" : scope.tips[id] == null ? 0 : 1
           };
           eleprops.push(prop);
         }
@@ -240,9 +243,9 @@
           .style("stroke", this.tip_color);
         itemsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id; })
-          .attr("cx", function(d) { return d.cx; })
-          .attr("cy", function(d) { return d.cy; })
-          .attr("r", this.respR)
+          .attr("cx", function(d) { return d.tooltip_cx; })
+          .attr("cy", function(d) { return d.tooltip_cy; })
+          .attr("r", this.respR )
           .style("opacity", function(d) { return d.op; });
       }
       itemsvg.selectAll("text").remove();
@@ -261,11 +264,11 @@
 
     PlotLine.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.clearTips(scope);
+      this.hideTips(scope);
     };
 
-    PlotLine.prototype.clearTips = function(scope) {
-      plotTip.clearTips(scope, this.id);
+    PlotLine.prototype.hideTips = function(scope, hidden) {
+      plotTip.hideTips(scope, this.id, hidden);
     };
 
     PlotLine.prototype.createTip = function(ele) {

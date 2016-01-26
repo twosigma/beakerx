@@ -46,6 +46,7 @@
       bkCoreManager,
       bkPublicationHelper,
       GLOBALS,
+      $rootScope,
       $timeout) {
 
     var notebookCellOp = bkSessionManager.getNotebookCellOp();

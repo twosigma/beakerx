@@ -499,6 +499,10 @@
                       item[seriesproperty] = seriesPropertyValue;
                       delete item[property];
                     }
+
+                    if(property === 'styles' && item.type === "CategoryLines") {
+                      item.style = lineStyleMap[item.style];
+                    }
                   }
                 };
                 processSeriesProperty(i, 'colors', 'color');
@@ -584,12 +588,12 @@
               }
 
               for(var j = 0; j < histvalues.length; j++){
-                if (newmodel.cumulative && j != 0) {
-                  histvalues[j].y = histvalues[j - 1].y + histvalues[j].y;
-                }
-
                 if(newmodel.normed === true){
                   histvalues[j].y = histvalues[j].y / sumy;
+                }
+
+                if (newmodel.cumulative && j != 0) {
+                  histvalues[j].y = histvalues[j - 1].y + histvalues[j].y;
                 }
 
                 if(newmodel.displayMode === 'STACK' && i != 0){

@@ -49,7 +49,7 @@ public abstract class CategoryGraphics extends Graphics {
   }
 
   public void createItemLabels(CategoryPlot plot) {
-    if (itemLabelBuilder == null) {
+    if (itemLabelBuilder == null || value == null) {
       this.itemLabels = null;
       return;
     }
@@ -67,80 +67,86 @@ public abstract class CategoryGraphics extends Graphics {
 
 
       for (int column = 0; column < itemCategoriesNumber; column++) {
-        String category = plot.getCategoryNames().get(column);
+        List<String> categoryNames = plot.getCategoryNames();
+        String category = categoryNames != null && categoryNames.size() > column ?
+          categoryNames.get(column) : null;
 
         for (int row = 0; row < itemSeriesNumber; row++) {
 
           Number _value = value[row][column];
-          String series = seriesNames.get(row);
+          String series = seriesNames != null && seriesNames.size() > row ? seriesNames.get(row) : null;
 
           Method call;
           if (numberOfParameters == 1) {
             call = clazz.getMethod("call", Object.class);
             call.setAccessible(true);
-            itemLabels[column][row] = (String) call.invoke(itemLabelBuilder, _value);
-          } else if (numberOfParameters == 2) {
-            call = clazz.getMethod("call", Object.class, Object.class);
-            call.setAccessible(true);
-            itemLabels[column][row] = (String) call.invoke(itemLabelBuilder,
-                                                           _value,
-                                                           getBases() != null ?
-                                                             getBases().get(column) : getBase());
-          } else if (numberOfParameters == 3) {
-            call = clazz.getMethod("call", Object.class, Object.class, Object.class);
-            call.setAccessible(true);
-            itemLabels[column][row] = (String) call.invoke(itemLabelBuilder,
-                                                           _value,
-                                                           getBases() != null ?
-                                                             getBases().get(column) : getBase(),
-                                                           series);
-          } else if (numberOfParameters == 4) {
-            call = clazz.getMethod("call", Object.class, Object.class, Object.class, Object.class);
-            call.setAccessible(true);
-            itemLabels[column][row] = (String) call.invoke(itemLabelBuilder,
-                                                           _value,
-                                                           getBases() != null ?
-                                                             getBases().get(column) : getBase(),
-                                                           series,
-                                                           category);
-          } else if (numberOfParameters == 5) {
-            call = clazz.getMethod("call",
-                                   Object.class,
-                                   Object.class,
-                                   Object.class,
-                                   Object.class,
-                                   Object.class);
-            call.setAccessible(true);
-            itemLabels[column][row] = (String) call.invoke(itemLabelBuilder,
-                                                           _value,
-                                                           getBases() != null ?
-                                                             getBases().get(column) : getBase(),
-                                                           series,
-                                                           category,
-                                                           row);
-          } else if (numberOfParameters == 6) {
-            call = clazz.getMethod("call",
-                                   Object.class,
-                                   Object.class,
-                                   Object.class,
-                                   Object.class,
-                                   Object.class,
-                                   Object.class);
-            call.setAccessible(true);
-            itemLabels[column][row] = (String) call.invoke(itemLabelBuilder,
-                                                           _value,
-                                                           getBases() != null ?
-                                                             getBases().get(column) : getBase(),
-                                                           series,
-                                                           category,
-                                                           row,
-                                                           column);
+            itemLabels[column][row] = String.valueOf(call.invoke(itemLabelBuilder, _value));
+          } else {
+            Object base = getBases() != null ?
+              getBases().get(row) instanceof List ?
+                ((List) getBases().get(row)).get(column) : getBases().get(row) : getBase();
+            if (numberOfParameters == 2) {
+              call = clazz.getMethod("call", Object.class, Object.class);
+              call.setAccessible(true);
+              itemLabels[column][row] = String.valueOf(call.invoke(itemLabelBuilder,
+                                                                   _value,
+                                                                   base));
+            } else if (numberOfParameters == 3) {
+              call = clazz.getMethod("call", Object.class, Object.class, Object.class);
+              call.setAccessible(true);
+              itemLabels[column][row] = String.valueOf(call.invoke(itemLabelBuilder,
+                                                                   _value,
+                                                                   base,
+                                                                   series));
+            } else if (numberOfParameters == 4) {
+              call = clazz.getMethod("call",
+                                     Object.class,
+                                     Object.class,
+                                     Object.class,
+                                     Object.class);
+              call.setAccessible(true);
+              itemLabels[column][row] = String.valueOf(call.invoke(itemLabelBuilder,
+                                                                   _value,
+                                                                   base,
+                                                                   series,
+                                                                   category));
+            } else if (numberOfParameters == 5) {
+              call = clazz.getMethod("call",
+                                     Object.class,
+                                     Object.class,
+                                     Object.class,
+                                     Object.class,
+                                     Object.class);
+              call.setAccessible(true);
+              itemLabels[column][row] = String.valueOf(call.invoke(itemLabelBuilder,
+                                                                   _value,
+                                                                   base,
+                                                                   series,
+                                                                   category,
+                                                                   row));
+            } else if (numberOfParameters == 6) {
+              call = clazz.getMethod("call",
+                                     Object.class,
+                                     Object.class,
+                                     Object.class,
+                                     Object.class,
+                                     Object.class,
+                                     Object.class);
+              call.setAccessible(true);
+              itemLabels[column][row] = String.valueOf(call.invoke(itemLabelBuilder,
+                                                                   _value,
+                                                                   base,
+                                                                   series,
+                                                                   category,
+                                                                   row,
+                                                                   column));
+            }
           }
 
         }
       }
     } catch (Throwable x) {
-      throw new RuntimeException("Can not create tooltips.", x);
+      throw new RuntimeException("Can not create item labels.", x);
     }
 
     this.itemLabels = itemLabels;

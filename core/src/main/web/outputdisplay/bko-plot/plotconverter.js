@@ -540,7 +540,7 @@
 
                   };
                   if(categoryItem.itemLabels){
-                    ele.tooltip =  categoryItem.itemLabels[j][i];
+                    ele.itemLabel =  categoryItem.itemLabels[j][i];
                   }
 
                   if(processElement(item, j, ele, yAxisSettings)){

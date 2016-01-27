@@ -163,17 +163,17 @@
 
         eleprops.push(prop);
 
-        if(this.showItemLabel){
+        if(ele.itemLabel || this.showItemLabel){
           var labely;
           var labelMargin = 3;
           var labelHeight = plotUtils.fonts.labelHeight;
           var isBarPositive = ele._y2 != this.base;
 
-          var labelText = isBarPositive ? ele._y2 : ele._y;
+          var labelText = ele.itemLabel ? ele.itemLabel : isBarPositive ? ele._y2 : ele._y;
 
           switch(this.labelPosition){
             case "VALUE_OUTSIDE":
-              labely = isBarPositive ? y2 - labelMargin : y + labelHeight + labelMargin;
+              labely =  isBarPositive ? y2 - labelMargin : y + labelHeight + labelMargin;
               break;
             case "VALUE_INSIDE":
               labely = isBarPositive ? y2 + labelHeight + labelMargin : y - labelMargin;

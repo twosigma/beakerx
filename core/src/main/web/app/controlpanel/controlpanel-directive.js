@@ -129,16 +129,6 @@
         };
 
         var keydownHandler = function(e) {
-          // Command H
-          if (e.metaKey && e.which === 72 && bkUtils.isElectron) {
-            bkElectron.minimize();
-          }
-
-          // Command W
-          if (e.metaKey && e.which === 87 && bkUtils.isElectron) {
-            bkElectron.closeWindow();
-          }
-
           if (e.ctrlKey && e.shiftKey && (e.which === 78)) { // Ctrl + Shift + n
             bkUtils.fcall(function() {
               $scope.newNotebook();
@@ -159,9 +149,30 @@
               $scope.newEmptyNotebook();
             });
             return false;
-          } else if ((e.which === 123) && bkUtils.isElectron) { // F12
-            if (bkUtils.isElectron) {
+          } else if (bkUtils.isElectron) {
+            var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
+            // Command H
+            if (ctrlXORCmd && e.which === 72) {
+              bkElectron.minimize();
+            }
+
+            // Command W
+            if (ctrlXORCmd && e.which === 87) {
+              bkElectron.closeWindow();
+            }
+
+            if (e.which === 123) { // F12
               bkElectron.toggleDevTools();
+              return false;
+            } else if (ctrlXORCmd && ((e.which === 187) || (e.which === 107))) { // Ctrl + '+'
+              bkElectron.increaseZoom();
+              return false;
+            } else if (ctrlXORCmd && ((e.which === 189) || (e.which === 109))) { // Ctrl + '-'
+              bkElectron.decreaseZoom();
+              return false;
+            } else if (ctrlXORCmd && ((e.which === 48) || (e.which === 13))) {
+              bkElectron.resetZoom();
+              return false;
             }
           }
         };

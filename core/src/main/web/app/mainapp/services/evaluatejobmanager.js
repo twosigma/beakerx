@@ -281,6 +281,10 @@
         if (!cell.output) {
           cell.output = {};
         }
+        if (!cell.output.evaluationSequenceNumber) {
+          cell.output.evaluationSequenceNumber = 0;
+        }
+        cell.output.evaluationSequenceNumber++;
         var evalJob = {
           parent: parent,
           cellId: cell.id,

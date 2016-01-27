@@ -832,6 +832,9 @@
               if (currentCell.output.result) {
                 delete currentCell.output.result.update_id;
               }
+
+              //remove evaluation counter
+              delete currentCell.output.evaluationSequenceNumber;
             }
           }
         }

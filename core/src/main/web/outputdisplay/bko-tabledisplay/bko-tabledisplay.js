@@ -690,8 +690,13 @@
         };
 
         $scope.showSearch = function() {
-          var sField = $('.dataTables_filter');
+          var sField = $('#' + $scope.id + '_filter');
           sField.toggleClass('show');
+
+          if (sField.hasClass('show')) {
+            var input = sField.find("input[type='search']");
+            input.focus();
+          }
         };
       },
       link: function(scope) {

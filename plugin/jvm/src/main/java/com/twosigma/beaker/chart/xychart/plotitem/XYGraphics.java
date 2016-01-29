@@ -46,7 +46,7 @@ abstract public class XYGraphics extends Graphics {
           this.xs.add(date.getTime());
         } else {
           throw new IllegalArgumentException("x coordinates should be the list of numbers or java.util.Date objects");
-  }
+        }
 //        remove Java8 feature LocalDateTime, that has to wait
 //        else if (x instanceof LocalDateTime) {
 //          LocalDateTime date = (LocalDateTime)x;

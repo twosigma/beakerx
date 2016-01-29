@@ -146,7 +146,7 @@
 
         var getEvaluationSequenceNumber = function() {
           if ($scope.model.evaluationSequenceNumber) {
-            return "Evaluation Sequence: " + $scope.model.evaluationSequenceNumber;
+            return "Run Sequence: " + $scope.model.evaluationSequenceNumber;
           }
           return null;
         };

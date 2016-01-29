@@ -16,51 +16,22 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
-import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Filter;
 
 import java.util.EnumSet;
 import java.util.List;
 
 
-public class Stems extends XYGraphics {
+public class Stems extends BasedXYGraphics {
 
   private final static EnumSet<Filter> POSSIBLE_LOD_FILTERS = EnumSet.of(Filter.STEAM,
                                                                          Filter.STEAM_PLUS,
                                                                          Filter.BOX);
 
 
-  private Number baseBase;
-  private List<Number> bases;
   private Float width = 1.5f;
   private StrokeType baseStyle = StrokeType.SOLID;
   private List<StrokeType> styles;
-
-
-  public void setBase(Object base) {
-    if (base instanceof Number) {
-      this.baseBase = ((Number) base).floatValue();
-    } else if (base instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<Number> ss = (List<Number>) base;
-      setBases(ss);
-    } else {
-      throw new IllegalArgumentException(
-        "setBase takes Number or List of Number");
-    }
-  }
-
-  private void setBases(List<Number> bases) {
-    this.bases = bases;
-  }
-
-  public Number getBase() {
-    return this.baseBase;
-  }
-
-  public List<Number> getBases() {
-    return this.bases;
-  }
 
   public void setWidth(Float width) {
     this.width = width;

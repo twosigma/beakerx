@@ -329,15 +329,6 @@
           return $scope.getCellDispOpts[i];
         };
 
-        //@todo remove
-        $scope.displayAll = function() {
-          var i;
-          for (i = 0; i < $scope.getCellSho.length; i++) {
-            $scope.getCellSho[i] = true;
-          }
-        };
-        //
-
         $scope.toggleColumnsVisibility = function(visible) {
           if (!$scope.table) {
             return;
@@ -754,7 +745,6 @@
               }
             }
           });
-
         };
         scope.init = function(model) {
           scope.doDestroy(true);

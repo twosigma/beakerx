@@ -173,13 +173,13 @@
               return 'folder-icon';
             }
             if ($scope.data.type === 'application/prs.twosigma.beaker.notebook+json') {
-              return 'glyphicon glyphicon-book';
+              return 'glyphicon glyphicon-book file-icon';
             } else if ($scope.fs && $scope.fs.getIcon && $scope.fs.getIcon($scope.data.type)) {
               return $scope.fs.getIcon($scope.data.type);
             }
           }
 
-          return 'glyphicon glyphicon-th';
+          return 'glyphicon glyphicon-th file-icon';
         };
 
         $scope.getDisplayName = function() {

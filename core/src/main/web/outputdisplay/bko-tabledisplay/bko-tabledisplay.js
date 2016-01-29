@@ -711,6 +711,8 @@
             $(window).unbind('resize.' + scope.id);
             $('#' + scope.id + ' tbody').off('click');
             scope.removeOnKeyListeners();
+            $('#' + scope.id + ' tbody').off('mouseleave.bko-datatable');
+            $('#' + scope.id + ' tbody').off('mouseenter.bko-datatable');
             $('#' + scope.id).html('');
             scope.table.destroy();
             delete scope.table;
@@ -1228,7 +1230,7 @@
 
             scope.removeOnKeyListeners();
             $(id + ' tbody')
-              .on("mouseenter.action", 'td', function (e) {
+              .on("mouseenter.bko-datatable", 'td', function (e) {
                 var cellPos = scope.table.cell(this).index();
                 if(cellPos) {
                   var column = cellPos.column;
@@ -1238,7 +1240,7 @@
                   $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
                 }
               })
-              .on("mouseleave.action", 'td', function (e) {
+              .on("mouseleave.bko-datatable", 'td', function (e) {
                 var cellPos = scope.table.cell(this).index();
                 if(cellPos) {
                   var listener = scope.onKeyListeners[cellPos.column];

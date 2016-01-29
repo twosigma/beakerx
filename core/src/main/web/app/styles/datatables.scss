@@ -38,6 +38,22 @@ td.dtcenter {
   border-color: $border-color;
 }
 
+.dataTables_wrapper .dataTables_filter {
+  float:      left;
+  text-align: left;
+  margin-top: 10px;
+  display:    none;
+
+  .fa.fa-times {
+    cursor:       pointer;
+    padding: 5px;
+    color:        #999999;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
 div.dtmenu {
   float: right;
   color: #73BE3B;

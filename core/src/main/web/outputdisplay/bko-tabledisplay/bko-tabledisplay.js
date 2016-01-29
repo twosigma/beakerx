@@ -710,6 +710,7 @@
             //jscs:enable
             $(window).unbind('resize.' + scope.id);
             $('#' + scope.id + ' tbody').off('click');
+            scope.removeOnKeyListeners();
             $('#' + scope.id).html('');
             scope.table.destroy();
             delete scope.table;
@@ -1208,6 +1209,45 @@
               }
               event.stopPropagation();
             });
+
+
+            scope.onKeyAction = function (column, onKeyEvent) {
+              var key = onKeyEvent.keyCode;
+              //FIXME for test only, delete
+              //console.log("column: " + column + ", key: " + key);
+            };
+
+            scope.removeOnKeyListeners = function () {
+              for (var f in scope.onKeyListeners) {
+                if (scope.onKeyListeners.hasOwnProperty(f)) {
+                  $(document).off("keydown.bko-datatable", scope.onKeyListeners[f]);
+                }
+              }
+              scope.onKeyListeners = {};//map: col index -> listener function
+            };
+
+            scope.removeOnKeyListeners();
+            $(id + ' tbody')
+              .on("mouseenter.action", 'td', function (e) {
+                var cellPos = scope.table.cell(this).index();
+                if(cellPos) {
+                  var column = cellPos.column;
+                  scope.onKeyListeners[column] = function (onKeyEvent) {
+                    scope.onKeyAction(column, onKeyEvent);
+                  };
+                  $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
+                }
+              })
+              .on("mouseleave.action", 'td', function (e) {
+                var cellPos = scope.table.cell(this).index();
+                if(cellPos) {
+                  var listener = scope.onKeyListeners[cellPos.column];
+                  if(listener) {
+                    delete scope.onKeyListeners[cellPos.column];
+                    $(document).off("keydown.bko-datatable", listener);
+                  }
+                }
+              });
 
             $(window).bind('resize.' + scope.id, function() {
               //jscs:disable

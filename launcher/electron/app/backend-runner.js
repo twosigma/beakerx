@@ -19,6 +19,7 @@ module.exports = (function() {
   var ReadLine = require('readline');
   var spawn = require('child_process').spawn;
   var spawnSync = require('child_process').spawnSync;
+  var exec = require('child_process').exec;
   var events = require('events');
   var os = require('os');
   var killTree = require('tree-kill');
@@ -30,6 +31,7 @@ module.exports = (function() {
   var _running = false;
 
   var _osName = os.type();
+  var temporary = [];
 
   return {
     startNew: function() {
@@ -64,6 +66,9 @@ module.exports = (function() {
             hash: _hash,
             local: _local
           });
+        }else if (_osName.startsWith('Windows') && line.startsWith('FOR DELETE: ')) {
+          var s = line.substring(14);
+          temporary.push(s);
         }
       });
       return eventEmitter;
@@ -72,6 +77,9 @@ module.exports = (function() {
       var eventEmitter = new events.EventEmitter();
       if (_local && (_osName.startsWith('Windows'))) {
         spawnSync("taskkill", ["/pid", _backend.pid, '/f', '/t']);
+        for (var i = 0; i < temporary.length; i++) {
+          exec("rmdir " + temporary +  " /Q /S");
+        }
         _running = false;
         eventEmitter.emit('killed');
       } else if (_local) {

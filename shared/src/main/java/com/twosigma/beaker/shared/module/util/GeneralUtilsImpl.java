@@ -219,6 +219,7 @@ public class GeneralUtilsImpl implements GeneralUtils {
 						       PosixFilePermission.OWNER_EXECUTE);
 	tempDir = Files.createTempDirectory(dir, prefix, PosixFilePermissions.asFileAttribute(userOnly));
     }
+    System.out.println("FOR DELETE: " + tempDir);
     recursiveDeleteOnShutdownHook(tempDir);
     return tempDir.toString();
   }

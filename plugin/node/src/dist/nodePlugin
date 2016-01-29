@@ -24,7 +24,6 @@ self_path = sys.argv.pop()
 os.chdir(os.path.dirname(self_path))
 
 if os.name == 'nt':
-    os.chdir("app")
-    subprocess.call(["node", "app.js", port, "127.0.0.1"], shell=True)
+    subprocess.call([bin, "app/app.js", port, "127.0.0.1"], shell=True)
 else:
     os.execlp("node", "node", "app/app.js", port, "127.0.0.1")

@@ -16,7 +16,11 @@
 
 package com.twosigma.beaker.chart;
 
-public abstract class Graphics {
+import org.apache.commons.lang3.SerializationUtils;
+
+import java.io.Serializable;
+
+public abstract class Graphics implements Serializable, Cloneable{
   private boolean visible     = true;
   private String  yAxisName   = null;
 
@@ -38,6 +42,11 @@ public abstract class Graphics {
 
   public String getYAxis() {
     return yAxisName;
+  }
+
+  @Override
+  public Object clone() throws CloneNotSupportedException {
+    return SerializationUtils.clone(this);
   }
 
   abstract public void setColori(Color color);

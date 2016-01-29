@@ -65,7 +65,7 @@ abstract public class XYGraphics extends Graphics {
   }
 
   public void setY(List<Number> ys) {
-    this.ys = ys;
+    this.ys = new ArrayList<Number>(ys);//to make it serializable
   }
 
   public List<Number> getY() {

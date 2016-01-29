@@ -38,6 +38,9 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
+import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
+
+import javax.servlet.ServletException;
 
 /**
  * The WebServer Module that sets up the server singleton to be started in Init
@@ -67,9 +70,7 @@ public class WebServerModule extends AbstractModule {
     return csh;
   }
 
-  @Provides
-  @Singleton
-  public Server getServer(final Injector injector) {
+  public static void startProxyServer(final Injector injector) throws Exception {
     WebServerConfig webServerConfig = injector.getInstance(WebServerConfig.class);
     BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
 
@@ -90,16 +91,13 @@ public class WebServerModule extends AbstractModule {
 
     server.setHandler(servletHandler);
 
-    try {
-      startCoreServer(injector);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    return server;
+    server.start();
+    WebSocketServerContainerInitializer.configureContext(servletHandler);
   }
 
-  private void startCoreServer(final Injector injector) throws Exception {
+  @Provides
+  @Singleton
+  public Server getServer(final Injector injector) throws Exception {
     WebServerConfig webServerConfig = injector.getInstance(WebServerConfig.class);
     String staticDir = webServerConfig.getStaticDirectory();
     Server server = new Server();
@@ -127,6 +125,13 @@ public class WebServerModule extends AbstractModule {
 
     server.setHandler(servletHandler);
 
-    server.start();
+    try {
+      startProxyServer(injector);
+    } catch (ServletException e) {
+      e.printStackTrace();
+    }
+
+    WebSocketServerContainerInitializer.configureContext(servletHandler);
+    return server;
   }
 }

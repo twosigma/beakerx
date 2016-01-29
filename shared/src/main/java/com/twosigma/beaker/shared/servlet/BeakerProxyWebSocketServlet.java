@@ -109,15 +109,15 @@ public class BeakerProxyWebSocketServlet extends ProxyServlet.Transparent {
 
   @Override
   protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    if(this.factory.isUpgradeRequest(request, response)) {
-      if(this.factory.acceptWebSocket(request, response)) {
-        return;
-      }
-
-      if(response.isCommitted()) {
-        return;
-      }
-    }
+//    if(this.factory.isUpgradeRequest(request, response)) {
+//      if(this.factory.acceptWebSocket(request, response)) {
+//        return;
+//      }
+//
+//      if(response.isCommitted()) {
+//        return;
+//      }
+//    }
     super.service(request, response);
   }
 

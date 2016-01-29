@@ -25,14 +25,16 @@ import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.annotation.ServerAnnotationProcessor;
 import org.cometd.annotation.Service;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.server.BayeuxServerImpl;
 import org.cometd.server.Jackson1JSONContextServer;
-import org.cometd.websocket.server.WebSocketTransport;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+
+import javax.servlet.ServletContext;
 
 // Should load from cometd-contrib
 public class GuiceCometdModule extends AbstractModule {
@@ -108,10 +110,11 @@ public class GuiceCometdModule extends AbstractModule {
 
   @Singleton
   @Provides
-  public final BayeuxServerImpl getBayeuxServer(final ObjectMapper om) {
+  public final BayeuxServerImpl getBayeuxServer(final ObjectMapper om, final Server jetty) {
     BayeuxServerImpl server = new BayeuxServerImpl();
-    
-    server.addTransport(new BkWebSocketTransport(server));
+    ServletContext servletContext;
+    servletContext = ((ServletContextHandler) jetty.getHandler()).getServletContext();
+//    server.addTransport(new BkWebSocketTransport(server));
 
     server.setOption("jsonContext", new Jackson1JSONContextServer() {
       @Override
@@ -121,6 +124,8 @@ public class GuiceCometdModule extends AbstractModule {
     });
     server.setOption("ws.bufferSize", new Integer(1024*1024));
     server.setOption("ws.maxMessageSize", new Integer(1024*1024*16));
+    server.setOption(ServletContext.class.getName(), servletContext);
+    server.setOption("cometdURLMapping", "/cometd/*");
     configure(server);
     try {
       server.start();

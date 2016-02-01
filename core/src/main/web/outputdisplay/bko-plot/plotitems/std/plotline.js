@@ -188,12 +188,12 @@
         }
         pstr += nxtp;
 
-        if(this.showItemLabel){
+        if(ele.itemLabel || this.showItemLabel){
           var labelMargin = 3;
 
           var label = {
             "id": "label_" + id,
-            "text": ele._y,
+            "text": ele.itemLabel ? ele.itemLabel : ele._y,
             "x": x,
             "y": y - labelMargin
           };
@@ -271,6 +271,8 @@
     };
 
     PlotLine.prototype.createTip = function(ele) {
+      if (ele.tooltip)
+        return ele.tooltip;
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var valx = plotUtils.getTipString(ele._x, xAxis, true),

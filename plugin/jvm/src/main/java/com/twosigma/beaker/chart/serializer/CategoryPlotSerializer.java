@@ -17,11 +17,13 @@
 package com.twosigma.beaker.chart.serializer;
 
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
+import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
+import java.util.List;
 
 public class CategoryPlotSerializer extends AbstractChartSerializer<CategoryPlot> {
 
@@ -33,13 +35,17 @@ public class CategoryPlotSerializer extends AbstractChartSerializer<CategoryPlot
 
     serialize(categoryPlot, jgen);
 
-    if (categoryPlot.getCategoryNames() != null) {
-      jgen.writeObjectField("categoryNames", categoryPlot.getCategoryNames());
+    List<String> categoryNames = categoryPlot.getCategoryNames();
+    if (categoryNames != null) {
+      jgen.writeObjectField("categoryNames", categoryNames);
     }
-    if (categoryPlot.getGraphics() != null) {
-      jgen.writeObjectField("graphics_list", categoryPlot.getGraphics());
+    List<CategoryGraphics> categoryGraphicsList = categoryPlot.getGraphics();
+    if (categoryGraphicsList != null) {
+      for (CategoryGraphics categoryGraphics : categoryGraphicsList) {
+        categoryGraphics.createItemLabels(categoryPlot);
+      }
+      jgen.writeObjectField("graphics_list", categoryGraphicsList);
     }
-
 
     jgen.writeObjectField("orientation", categoryPlot.getOrientation());
     jgen.writeObjectField("category_margin", categoryPlot.getCategoryMargin());

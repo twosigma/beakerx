@@ -46,6 +46,7 @@
       bkCoreManager,
       bkPublicationHelper,
       GLOBALS,
+      $rootScope,
       $timeout) {
 
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
@@ -401,8 +402,8 @@
         });
 
         var initCodeMirror = function() {
-          var template = '<textarea class="bkcelltextarea" ng-model="cellmodel.input.body">' + scope.cellmodel.input.body + '</textarea>';
-          $(element.find('.bkcelltextarea')[0]).replaceWith($(template));
+          var template = '<textarea class="bkcelltextarea" ng-model="cellmodel.input.body"/>';
+          $(element.find('.bkcelltextarea')[0]).replaceWith($(template).text(scope.cellmodel.input.body));
 
           _.extend(codeMirrorOptions, {
             theme: bkHelper.getTheme()

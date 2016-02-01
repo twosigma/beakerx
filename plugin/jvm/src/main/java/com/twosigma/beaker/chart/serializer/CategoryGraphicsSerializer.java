@@ -22,6 +22,7 @@ import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
+import java.util.List;
 
 public abstract class CategoryGraphicsSerializer<T extends CategoryGraphics> extends GraphicsSerializer<T> {
 
@@ -45,6 +46,11 @@ public abstract class CategoryGraphicsSerializer<T extends CategoryGraphics> ext
       jgen.writeObjectField("colors", graphics.getColors());
     } else {
       jgen.writeObjectField("color", graphics.getColor());
+    }
+
+    String[][] itemLabels = graphics.getItemLabels();
+    if (itemLabels != null){
+      jgen.writeObjectField("itemLabels", itemLabels);
     }
   }
 }

@@ -157,13 +157,13 @@
         };
         eleprops.push(prop);
 
-        if(this.showItemLabel){
+        if(ele.itemLabel || this.showItemLabel){
           var labelMargin = 3;
           var labelHeight = plotUtils.fonts.labelHeight;
           var base = this.base != null ? this.base : 0;
           var isPositiveStem = ele._y2 != base;
 
-          var labelText = isPositiveStem ? ele._y2 : ele._y;
+          var labelText = ele.itemLabel ? ele.itemLabel : isPositiveStem ? ele._y2 : ele._y;
           var labely = isPositiveStem ? y2 - labelMargin : y + labelHeight + labelMargin;
 
           var label = {
@@ -258,6 +258,8 @@
     };
 
     PlotStem.prototype.createTip = function(ele, g, model) {
+      if (ele.tooltip)
+        return ele.tooltip;
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};

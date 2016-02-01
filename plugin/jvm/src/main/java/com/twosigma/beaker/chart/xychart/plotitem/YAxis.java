@@ -16,11 +16,15 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
+import org.apache.commons.lang3.SerializationUtils;
+
+import java.io.Serializable;
+
 /**
  * YAxis
  *
  */
-public class YAxis {
+public class YAxis implements Serializable, Cloneable{
 
   private String label;
   private boolean autoRange;
@@ -122,5 +126,10 @@ public class YAxis {
 
   public Double getLogBase() {
     return this.logBase;
+  }
+
+  @Override
+  public Object clone() throws CloneNotSupportedException {
+    return SerializationUtils.clone(this);
   }
 }

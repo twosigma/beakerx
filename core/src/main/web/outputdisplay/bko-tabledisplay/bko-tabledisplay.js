@@ -298,7 +298,7 @@
               }
               var out = $scope.exportTo(data, 'tabs');
               return out;
-            }
+            };
             var executeCopy = function (text) {
               var input = document.createElement('textarea');
               document.body.appendChild(input);
@@ -306,7 +306,7 @@
               input.select();
               document.execCommand('Copy');
               input.remove();
-            }
+            };
             var data = getTableData();
             executeCopy(data);
           }
@@ -329,11 +329,17 @@
           return $scope.getCellDispOpts[i];
         };
 
-        $scope.displayAll = function() {
-          var i;
-          for (i = 0; i < $scope.getCellSho.length; i++) {
-            $scope.getCellSho[i] = true;
+        $scope.toggleColumnsVisibility = function(visible) {
+          if (!$scope.table) {
+            return;
           }
+
+          var table = $scope.table;
+          var cLength = [];
+          for (var i = 1; i <= $scope.columns.length; i++) {
+            cLength.push(i);
+          }
+          table.columns(cLength).visible(visible);
         };
 
         $scope.refreshCells = function() {
@@ -376,7 +382,7 @@
           }
         };
 
-        $scope.renderMenu     = false;
+        $scope.renderMenu = false;
 
         var chr = {
           '"': '&quot;', '&': '&amp;', '\'': '&#39;',
@@ -619,6 +625,14 @@
           $scope.modal = $uibModal.open(options);
         };
 
+        $scope.applyChanges = function() {
+          $scope.doDestroy(false);
+          // reorder the table data
+          var model = $scope.model.getCellModel();
+          $scope.doCreateData(model);
+          $scope.doCreateTable(model);
+        };
+
         $scope.closeOptionsDialog = function() {
           $scope.modal.close();
           var i;
@@ -657,9 +671,7 @@
               $scope.actualalign[$scope.colorder[i + 1] - 1] = $scope.getCellAlign[i];
             }
             // reorder the table data
-            var model = $scope.model.getCellModel();
-            $scope.doCreateData(model);
-            $scope.doCreateTable(model);
+            $scope.applyChanges();
           }
         };
 
@@ -667,8 +679,18 @@
           $scope.modal.close();
           $scope.refreshCells();
         };
+
+        $scope.showSearch = function() {
+          var sField = $('#' + $scope.id + '_filter');
+          sField.toggleClass('show');
+
+          if (sField.hasClass('show')) {
+            var input = sField.find("input[type='search']");
+            input.focus();
+          }
+        };
       },
-      link: function(scope, element, attrs) {
+      link: function(scope) {
 
         var unregisterOutputExpandEventListener = angular.noop; // used for deregistering listener
 
@@ -723,7 +745,6 @@
               }
             }
           });
-
         };
         scope.init = function(model) {
           scope.doDestroy(true);
@@ -861,8 +882,8 @@
           var me = $('#' + scope.id);
           // this is dataTables_scrollBody
           var pp = me.parent();
-          if (pp.width() > me.width() + 16) {
-            pp.width(me.width() + 16);
+          if (pp.width() > me.width()) {
+            pp.width(me.width());
           }
           if (scope.fixcols)
             scope.fixcols.fnRedrawLayout();
@@ -891,6 +912,154 @@
           var cols = [];
           var i;
 
+          var getFormatSubitems = function(container) {
+            var colIdx = container.data('columnIndex');
+            var types = scope.getCellDispOptsF(colIdx - 1);
+            var items = [];
+
+            _.each(types, function(obj) {
+              var item = {
+                title: obj.name,
+                isChecked: function(container) {
+                  var colIdx = container.data('columnIndex');
+                  return scope.actualtype[colIdx - 1] === obj.type;
+                },
+                action: function(el) {
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex');
+
+                  scope.getCellDisp[colIdx - 1] = obj.type;
+                  scope.actualtype[colIdx - 1] = obj.type;
+                  scope.applyChanges();
+                }
+              };
+
+              items.push(item);
+            });
+
+            return items;
+          };
+
+          var menuHelper = {
+            doAlignment: function(el, key) {
+              var container = el.closest('.bko-header-menu');
+              var colIdx = container.data('columnIndex');
+
+              scope.getCellAlign[colIdx - 1] = key;
+              scope.actualalign[colIdx - 1] = key;
+              scope.applyChanges();
+            },
+            checkAlignment: function(container, key) {
+              var colIdx = container.data('columnIndex');
+              return scope.actualalign[colIdx - 1] === key;
+            },
+            doSorting: function(el, direction) {
+              var container = el.closest('.bko-header-menu');
+              var colIdx = container.data('columnIndex');
+
+              if (_.contains(['asc', 'desc'], direction)) {
+                scope.table.order([colIdx, direction]).draw();
+              }
+            },
+            checkSorting: function(container, direction) {
+              var order = scope.table.order();
+              var colIdx = container.data('columnIndex');
+
+              if (_.contains(['asc', 'desc'], direction)) {
+                return (order[0][0] == colIdx && order[0][1] == direction);
+              } else {
+                return (order[0][0] !== colIdx);
+              }
+            }
+          };
+
+          var headerMenuItems = {
+            items: [
+              {
+                title: 'Sorting',
+                action: null,
+                items: [
+                  {
+                    title: 'Ascending',
+                    isChecked: function(container) {
+                      return menuHelper.checkSorting(container, 'asc');
+                    },
+                    action: function(el) {
+                      menuHelper.doSorting(el, 'asc');
+                    }
+                  },
+                  {
+                    title: 'Descending',
+                    isChecked: function(container) {
+                      return menuHelper.checkSorting(container, 'desc');
+                    },
+                    action: function(el) {
+                      menuHelper.doSorting(el, 'desc');
+                    }
+                  },
+                  {
+                    title: 'No sort',
+                    isChecked: function(container) {
+                      return menuHelper.checkSorting(container);
+                    },
+                    action: function() {
+                      scope.table.order([0, 'asc']).draw();
+                    }
+                  }
+                ]
+              },
+              {
+                title: 'Hide column',
+                action: function(el) {
+                  var table = scope.table;
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex');
+                  var column = table.column(colIdx);
+
+                  column.visible(!column.visible());
+                }
+              },
+              {
+                title: 'Format',
+                action: null,
+                items: getFormatSubitems
+              },
+              {
+                title: 'Alignment',
+                action: null,
+                items: [
+                  {
+                    title: 'Left',
+                    isChecked: function(container) {
+                      return menuHelper.checkAlignment(container, 'L');
+                    },
+                    action: function(el) {
+                      menuHelper.doAlignment(el, 'L');
+                    }
+                  },
+                  {
+                    title: 'Center',
+                    isChecked: function(container) {
+                      return menuHelper.checkAlignment(container, 'C');
+                    },
+                    action: function(el) {
+                      menuHelper.doAlignment(el, 'C');
+                    }
+                  },
+                  {
+                    title: 'Right',
+                    isChecked: function(container) {
+                      return menuHelper.checkAlignment(container, 'R');
+                    },
+                    action: function(el) {
+                      menuHelper.doAlignment(el, 'R');
+                    }
+                  }
+                ]
+              }
+            ]
+          };
+
           // build configuration
           var converter = scope.allConverters[1];
           if (scope.hasIndex) {
@@ -901,14 +1070,16 @@
               }
             }
             cols.push({'title' : scope.indexName+'&nbsp;&nbsp;', 'className': 'dtright', 'render': converter});
-          } else
-            cols.push({'title' : '    ', 'className': 'dtright', 'render': converter});
+          } else {
+            cols.push({'title': '    ', 'className': 'dtright', 'render': converter});
+          }
 
           for (i = 0; i < scope.columnNames.length; i++) {
             var type = scope.actualtype[i];
             var al = scope.actualalign[i];
             var col = {
-              'title' : scope.columnNames[i]
+              'title' : scope.columnNames[i],
+              'header': { 'menu': headerMenuItems }
             };
             if (al === 'R') {
               col.className = 'dtright';
@@ -935,7 +1106,7 @@
             'autoWidth': true,
             'order': [[0, 'asc']],
             'scrollX': '10%',
-            'searching': false,
+            'searching': true,
             'deferRender': true,
             'language': {
               'emptyTable': 'empty table'
@@ -952,9 +1123,9 @@
             init.paging = false;
             init.scrollY = scope.pagination.rowsToDisplay * 27 + 2;
             init.scrollCollapse = true;
-            init.dom = '<"bko-table"rt>';
+            init.dom = '<"bko-table"rtf>';
           } else {
-            init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p>>S>';
+            init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p>>Sf>';
             if (scope.data.length > 25) {
               init.pagingType = 'simple_numbers';
               init.pageLength = 25;
@@ -987,9 +1158,35 @@
             } else {
               scope.colorder = scope.colreorg.fnOrder().slice(0);
             }
+            new $.fn.dataTable.KeyTable($(id));
             scope.refreshCells();
 
+            var sField = $('#' + scope.id + '_filter');
+            $('<i/>', {class: 'fa fa-times'})
+              .bind('click', function(e) {
+                scope.showSearch();
+                e.stopPropagation();
+              })
+              .appendTo(sField);
+
+            /*
             $(id + ' tbody').off('click');
+            */
+            $(id + ' tbody').on('dblclick', 'td', function(e) {
+              var cellPos = scope.table.cell(this).index();
+              var rowIdx = cellPos && cellPos.row;
+
+              if (scope.selected[rowIdx]) {
+                scope.selected[rowIdx] = false;
+                $(scope.table.row(rowIdx).node()).removeClass('selected');
+              }
+
+              $(scope.table.cells().nodes()).removeClass('selected');
+              $(scope.table.cell(this).node()).addClass('selected');
+
+              e.stopPropagation();
+            });
+
             $(id + ' tbody').on('click', 'tr', function(event) {
               var iPos = scope.table.row(this).index();
               if (scope.selected[iPos]) {
@@ -1038,7 +1235,7 @@
             }
             var out = scope.exportTo(data, 'tabs');
             return out;
-          }
+          };
 
           var queryCommandEnabled = true;
           try {
@@ -1121,6 +1318,7 @@
             });
           }
         });
+
       }
     };
   }]);

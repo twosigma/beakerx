@@ -20,11 +20,15 @@ import com.twosigma.beaker.chart.actions.GraphicsActionListener;
 import com.twosigma.beaker.chart.actions.GraphicsActionObject;
 import org.apache.commons.lang3.StringUtils;
 
+import org.apache.commons.lang3.SerializationUtils;
+
+import java.io.Serializable;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class Graphics {
+public abstract class Graphics implements Serializable, Cloneable{
   private final String uid;
   private boolean visible     = true;
   private String  yAxisName   = null;
@@ -120,6 +124,11 @@ public abstract class Graphics {
       actionObject.setGraphics(this);
       listener.execute(actionObject);
     }
+  }
+
+  @Override
+  public Object clone() throws CloneNotSupportedException {
+    return SerializationUtils.clone(this);
   }
 
   abstract public void setColori(Color color);

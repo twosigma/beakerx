@@ -209,8 +209,8 @@
       }
     };
 
-    PlotLodRiver.prototype.clearTips = function(scope) {
-      plotTip.clearTips(scope, this.id);
+    PlotLodRiver.prototype.hideTips = function(scope, hidden) {
+      plotTip.hideTips(scope, this.id, hidden);
     };
 
     return PlotLodRiver;

@@ -19,7 +19,6 @@ var sass      = require('gulp-ruby-sass');
 var cssWrap  = require('gulp-css-wrap');
 var template  = require('gulp-template-compile');
 var concat    = require('gulp-concat');
-var minifyCSS = require('gulp-minify-css');
 var minifyJS  = require('gulp-uglify');
 var htmlmin   = require('gulp-htmlmin');
 var htmlClass = require('html-classer-gulp');

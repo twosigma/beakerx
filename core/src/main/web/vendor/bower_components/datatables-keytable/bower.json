@@ -1,0 +1,12 @@
+{
+	"name": "datatables-keytable",
+	"version": "2.0.0",
+	"main": [
+		"js/dataTables.keyTable.js",
+		"css/keyTable.dataTables.scss"
+	],
+	"dependencies": {
+		"jquery": ">=1.7.0",
+		"datatables": ">=1.10.8"
+	}
+}

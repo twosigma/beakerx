@@ -47,13 +47,17 @@ electronName = 'electron-v' + version + '-' + platform + '-' + arch
 def dmgName = 'beaker-notebook-' + gitDescribe() + '-electron-mac.dmg'
 
 import org.apache.tools.ant.filters.ReplaceTokens
-task processTemplates(type: Copy) {
+task processTemplates(type: Copy, dependsOn: ['cleanIss']) {
   from 'templates/makeWinInstaller.template'
   into 'templates'
   rename { String fileName ->
     "makeWinInstaller.iss"
   }
   filter(ReplaceTokens, tokens: [MyAppVersion: gitDescribe()])
+}
+
+task cleanIss(type: Delete) {
+  delete  "./templates/makeWinInstaller.iss"
 }
 
 //use xcopy to avoid problem: https://discuss.gradle.org/t/under-windows-gradle-1-11-build-fails-trying-to-generate-file-hashes-related-to-gradle-2967/1752
@@ -75,6 +79,29 @@ task createBundle(dependsOn: ['nodeInstall', 'copyBeakerApp', 'copyDist', 'copyJ
 
 task makeBundle(dependsOn: ['createBundle', 'checkIdentity', 'signBundle']) {
 }
+
+task makePortableZip(dependsOn: ['makeBundle']) {
+  doFirst {
+    copy {
+      from '../../core/beaker.portable.command.bat'
+      into './beaker/resources/dist/'
+      rename { String fileName ->
+        "beaker.command.bat"
+      }
+    }
+  }
+  doLast {
+    zipElectron.execute()
+  }
+}
+makePortableZip.onlyIf { win }
+
+task zipElectron (type: Zip) {
+  from fileTree('beaker')
+  archiveName = setupName + ".zip"
+}
+zipElectron.onlyIf { win }
+
 
 task runElectron(type: Exec, dependsOn: ['unzipJRE', 'unzipPython', 'nodeInstall', 'makeDist']) {
   if (win) {
@@ -127,6 +154,7 @@ task cleanElectron(type: Delete) {
   delete 'dist', 'Beaker.app', '__MACOSX', 'jre', 'beaker', 'osxdmg',
     fileTree(dir: './', include: "beaker-notebook-*-electron-mac.dmg"),
     fileTree(dir: './', include: "beaker-notebook-*-electron-windows.exe"),
+    fileTree(dir: './', include: "beaker-notebook-*-electron-windows.zip"),
     'python',
     setupName + '.exe',
     "./templates/makeWinInstaller.iss"

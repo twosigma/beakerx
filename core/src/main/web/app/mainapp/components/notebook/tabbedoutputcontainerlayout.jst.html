@@ -25,7 +25,6 @@
   <div id="lm-tab-panel-{{guid}}-{{$index}}" ng-style='borderStyle'
        class="{{$index==0 ? 'tab-pane fade in active' : 'tab-pane fade'}}"
        ng-repeat="i in items track by $index">
-    <b>{{model.getCellModel().labels[$index]}}<br/></b>
     <bk-code-cell-output model="i"></bk-code-cell-output>
   </div>
 </div>

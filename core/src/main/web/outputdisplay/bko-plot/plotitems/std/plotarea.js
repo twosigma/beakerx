@@ -30,63 +30,11 @@
 
     PlotArea.prototype.setHighlighted = function(scope, highlighted) {
 
-      var getHighlightedSize = function(size) {
-        return highlighted ? size - 2 : size;
-      };
-
-      var mapX = scope.data2scrXi,
-        mapY = scope.data2scrYi;
-      var eles = this.elements,
-          eleprops = this.elementProps;
-      var pstr = "";
-
-      for (var i = this.vindexL; i <= this.vindexR; i++) {
-        var ele = eles[i];
-        var x = mapX(ele.x), y = mapY(ele.y), y2 = mapY(ele.y2);
-
-        if (plotUtils.rangeAssert([x, y, y2])) {
-          eleprops.length = 0;
-          return;
-        }
-
-        if (this.interpolation === "linear") {
-          pstr += x + "," + y + " ";
-        } else if (this.interpolation === "none" && i < this.vindexR) {
-          var ele2 = eles[i + 1];
-          var x2 = mapX(ele2.x);
-          if (Math.abs(x2) > 1E6) {
-            break;
-          }
-          pstr += x + "," + y + " " + x2 + "," + y + " ";
-        }
+      if(highlighted === true){
+        scope.jqsvg.find("#" + this.id+ " polygon").attr("filter", "url("+window.location.pathname+"#svgAreaFilter)");
+      }else{
+         scope.jqsvg.find("#" + this.id+ " polygon").removeAttr("filter");
       }
-
-      for (var i = this.vindexR; i >= this.vindexL; i--) {
-        var ele = eles[i];
-        var x = mapX(ele.x), y2 = mapY(ele.y2);
-
-        if (this.interpolation === "linear") {
-          pstr += x + "," + getHighlightedSize(y2) + " ";
-        } else if (this.interpolation === "none" && i < this.vindexR) {
-          var ele2 = eles[i + 1];
-          var x2 = mapX(ele2.x);
-
-          if (plotUtils.rangeAssert([x2])) {
-            eleprops.length = 0;
-            return;
-          }
-
-          pstr += x2 + "," + getHighlightedSize(y2) + " " + x + "," + getHighlightedSize(y2) + " ";
-        }
-      }
-
-      var svg = scope.maing;
-      var itemsvg = svg.select("#" + this.id);
-      itemsvg.select("polygon")
-        .transition()
-        .duration(plotUtils.getHighlightDuration())
-        .attr("points", pstr);
-
     };
 
     PlotArea.prototype.format = function(){
@@ -290,11 +238,11 @@
 
     PlotArea.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.clearTips(scope);
+      this.hideTips(scope);
     };
 
-    PlotArea.prototype.clearTips = function(scope) {
-      plotTip.clearTips(scope, this.id);
+    PlotArea.prototype.hideTips = function(scope, hidden) {
+      plotTip.hideTips(scope, this.id,  hidden);
     };
 
     PlotArea.prototype.createTip = function(ele) {

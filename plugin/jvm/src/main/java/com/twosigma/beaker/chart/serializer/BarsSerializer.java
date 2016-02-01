@@ -26,7 +26,7 @@ import org.codehaus.jackson.map.SerializerProvider;
  * PointsSerializer
  *
  */
-public class BarsSerializer extends XYGraphicsSerializer<Bars> {
+public class BarsSerializer extends BasedXYGraphicsSerializer<Bars> {
 
   @Override
   public void serialize(Bars bars, JsonGenerator jgen, SerializerProvider sp)
@@ -37,11 +37,6 @@ public class BarsSerializer extends XYGraphicsSerializer<Bars> {
     super.serialize(bars, jgen, sp);
 
     jgen.writeObjectField("type", bars.getClass().getSimpleName());
-    if (bars.getBases() != null) {
-      jgen.writeObjectField("bases", bars.getBases());
-    } else {
-      jgen.writeObjectField("base", bars.getBase());
-    }
     if (bars.getWidths() != null) {
       jgen.writeObjectField("widths", bars.getWidths());
     } else {

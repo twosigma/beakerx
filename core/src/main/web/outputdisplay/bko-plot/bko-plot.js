@@ -46,6 +46,10 @@
               "<feGaussianBlur result='blurOut' in='SourceGraphic' stdDeviation='1' />" +
               "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
             "</filter>" +
+            "<filter id='svgAreaFilter'>" +
+              "<feMorphology operator='dilate' result='blurOut' in='SourceGraphic' radius='2' />" +
+              "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
+            "</filter>" +
           "</defs>" +
           "<g id='gridg'></g>" +
           "<g id='maing'></g>" +
@@ -367,6 +371,14 @@
           }
           scope.svg.selectAll(".plot-resp")
             .on('mouseenter', function(d) {
+              scope.drawLegendPointer(d);
+              return plotTip.tooltip(scope, d, d3.mouse(scope.svg[0][0]));
+            })
+            .on('mousemove', function(d) {
+
+              scope.removeLegendPointer();
+              plotTip.untooltip(scope, d);
+
               scope.drawLegendPointer(d);
               return plotTip.tooltip(scope, d, d3.mouse(scope.svg[0][0]));
             })
@@ -1160,10 +1172,12 @@
                   var dat = data[line.dataIds[i]];
                   dat.showItem = scope.showAllItems;
                   if (dat.showItem === false) {
-                    dat.clearTips(scope);
+                    dat.hideTips(scope, true);
                     if (dat.isLodItem === true) {
                       dat.lodOn = false;
                     }
+                  }else{
+                    dat.hideTips(scope, false);
                   }
                 }
                 if (line.showItem === false) {
@@ -1186,11 +1200,13 @@
             var dat = data[line.dataIds[j]];
             dat.showItem = !dat.showItem;
             if (dat.showItem === false) {
-              dat.clearTips(scope);
+              dat.hideTips(scope, true);
               if (dat.isLodItem === true) {
                 dat.lodOn = false;
+              }
+            } else {
+              dat.hideTips(scope, false);
             }
-          }
           }
           if (line.showItem === false) {
             if (line.isLodItem === true) {

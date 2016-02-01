@@ -16,11 +16,18 @@
 
 package com.twosigma.beaker.chart;
 
+import org.apache.commons.lang3.SerializationUtils;
+
+import java.io.Serializable;
 import java.util.Observable;
 
-public class ObservableChart extends Observable {
+public class ObservableChart extends Observable implements Cloneable, Serializable{
   @Override
   public synchronized void setChanged() {
     super.setChanged();
+  }
+  @Override
+  public Object clone() throws CloneNotSupportedException {
+    return SerializationUtils.clone(this);
   }
 }

@@ -80,14 +80,10 @@ app.on('before-quit', function() {
 app.on('will-quit', function(event) {
   if (backendRunner.isRunning()) {
     console.log('Killing backend at ' + backendRunner.getUrl());
-    if (osName.startsWith('Darwin') || osName.startsWith('Windows')) {
-      event.preventDefault();
-      backendRunner.kill().on('killed', function(){
-        app.quit();
-      });
-    } else {
-      backendRunner.kill();
-    }
+    event.preventDefault();
+    backendRunner.kill().on('killed', function(){
+      app.quit();
+    });
   }
 });
 
@@ -103,7 +99,7 @@ app.on('open-file', function(event, path) {
 
 // When all windows die
 app.on('window-all-closed', function() {
-  if (!willQuit && (osName.startsWith('Darwin') || osName.startsWith('Windows'))) {
+  if (!willQuit) {
     willQuit = true;
     mainMenu.show();
   } else {

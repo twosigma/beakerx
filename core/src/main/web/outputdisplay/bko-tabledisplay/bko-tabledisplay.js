@@ -45,6 +45,14 @@
   $.fn.dataTable.moment('YYYYMMDD');
   $.fn.dataTable.moment('DD/MM/YYYY');
 
+  $.fn.dataTable.Api.register( 'column().data().max()', function () {
+    return this.reduce( function (a, b) {
+      var x = parseFloat( a ) || 0;
+      var y = parseFloat( b ) || 0;
+      return Math.max(x, y);
+    } );
+  } );
+
   // detect and sort by file size
   jQuery.extend(jQuery.fn.dataTableExt.oSort, {
     'file-size-pre': function(a) {
@@ -786,7 +794,7 @@
               }
             }
           }
-          
+
           scope.hasIndex = model.hasIndex === 'true';
 
           // copy basic data
@@ -800,7 +808,7 @@
             scope.types = model.types.slice(0);
           else
             scope.types = undefined;
-          
+
           if (scope.hasIndex) {
             if (scope.columnNames !== undefined) {
               scope.indexName = scope.columnNames[0];
@@ -858,6 +866,7 @@
               }
             }
           }
+          scope.barsOnColumn = {};//map: col index -> show bars
           scope.doCreateData(model);
           scope.doCreateTable(model);
         };
@@ -919,6 +928,41 @@
               }
             }
           });
+        };
+
+        scope.updateBackground = function () {
+          if (scope.table === undefined) {
+            return;
+          }
+          for (var colInd = 0; colInd < scope.columns.length; colInd++) {
+            var max = scope.table.column(colInd).data().max();
+            scope.table.column(colInd).nodes().each(function (td) {
+              var value = $(td).text();
+              if($.isNumeric(value)){
+                $(td).empty();
+                if(scope.barsOnColumn[colInd]){
+                  var cellDiv = $("<div></div>", {
+                    "class": "dt-cell-div"
+                  });
+                  var textSpan = $("<span></span>", {
+                    "class": "dt-cell-text"
+                  }).text(value);
+
+                  var percent = (parseFloat(value) / max) * 100;
+                  var barsBkg = $("<div></div>", {
+                    "class": "dt-bar-data "
+                  }).css({
+                    "width": percent + "%"
+                  });
+                  cellDiv.append(barsBkg);
+                  cellDiv.append(textSpan);
+                  $(td).append(cellDiv);
+                }else{
+                  $(td).text(value);
+                }
+              }
+            });
+          }
         };
 
         scope.doCreateTable = function(model) {
@@ -1128,6 +1172,7 @@
               //jscs:disable
               scope.update_size();
               scope.update_selected();
+              scope.updateBackground();
               //jscs:enable
             }
           };
@@ -1215,8 +1260,15 @@
 
             scope.onKeyAction = function (column, onKeyEvent) {
               var key = onKeyEvent.keyCode;
-              //FIXME for test only, delete
-              //console.log("column: " + column + ", key: " + key);
+              var charCode = String.fromCharCode(key);
+              if (charCode) {
+                switch(charCode.toUpperCase()){
+                  case 'B':
+                    scope.barsOnColumn[column] = !!!scope.barsOnColumn[column];
+                    _.defer(function () { scope.table.draw(false); });
+                    break;
+                }
+              }
             };
 
             scope.removeOnKeyListeners = function () {
@@ -1301,7 +1353,7 @@
             var d = document.getElementById(scope.id + '_dt_copy');
             scope.clipclient.clip(d);
             scope.clipclient.on('copy', function(event) {
-              var clipboard = event.clipboardData;	
+              var clipboard = event.clipboardData;
               clipboard.setData('text/plain', getTableData());
             });
           } else if (bkUtils.isElectron) {

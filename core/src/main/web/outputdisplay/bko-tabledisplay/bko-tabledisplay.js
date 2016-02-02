@@ -612,6 +612,18 @@
             return time.format('HH:mm:ss.SSS ZZ');
           }
         ];
+        $scope.doubleWithPrecisionConverters = {}; //map: precision -> convert function
+        for (var precision = 1; precision < 10; precision++) {
+          $scope.doubleWithPrecisionConverters[precision] = function(precision, value, type, full, meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
+              return parseFloat(value).toFixed(precision);
+            }
+            if (type === 'sort') {
+              return NaN;
+            }
+            return value;
+          }.bind({}, precision);
+        }
         $scope.allStringTypes = [{type: 0, name: 'string'}, {type: 10, name: 'html'}];
         $scope.allTimeTypes   = [{type: 8, name: 'datetime'},
                                  {type: 0, name: 'string'},
@@ -876,6 +888,7 @@
           }
           scope.barsOnColumn = {}; //map: col index -> show bars
           scope.heatmapOnColumn = {}; //map: col index -> show heatmap
+          scope.renderers = {}; //map: col index -> render function
           scope.doCreateData(model);
           scope.doCreateTable(model);
         };
@@ -1009,6 +1022,7 @@
 
                   scope.getCellDisp[colIdx - 1] = obj.type;
                   scope.actualtype[colIdx - 1] = obj.type;
+                  delete scope.renderers[colIdx];
                   scope.applyChanges();
                 }
               };
@@ -1165,7 +1179,10 @@
             } else if (al === 'C') {
               col.className = 'dtcenter';
             }
-            if (scope.allConverters[type] !== undefined) {
+
+            if (scope.renderers[i + 1] != null) {
+              col.render = scope.renderers[i + 1]
+            } else if (scope.allConverters[type] !== undefined) {
               col.render = scope.allConverters[type];
             }
             if (scope.getCellSho) {
@@ -1293,6 +1310,12 @@
                     scope.heatmapOnColumn[column] = !!!scope.heatmapOnColumn[column];
                     _.defer(function () { scope.table.draw(false); });
                     break;
+                }
+                if (key >= 48 && key <= 57){ //numbers 1..9
+                  //change precision to parseInt(charCode)
+                  scope.renderers[column] = scope.doubleWithPrecisionConverters[parseInt(charCode)];
+                  scope.actualtype[column - 1] = 3; //TODO change to an appropriate format (for now just double)
+                  scope.applyChanges();
                 }
               }
             };

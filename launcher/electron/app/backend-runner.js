@@ -23,6 +23,7 @@ module.exports = (function() {
   var events = require('events');
   var os = require('os');
   var killTree = require('tree-kill');
+  var request = require('request');
 
   var _url;
   var _hash;
@@ -76,14 +77,12 @@ module.exports = (function() {
     kill: function() {
       var eventEmitter = new events.EventEmitter();
       if (_local && (_osName.startsWith('Windows'))) {
-        spawnSync("taskkill", ["/pid", _backend.pid, '/f', '/t']);
-        for (var i = 0; i < temporary.length; i++) {
-          exec("rmdir " + temporary +  " /Q /S");
-        }
-        _running = false;
-        eventEmitter.emit('killed');
+        request(this.getUrl() + this.getHash() + '/beaker/rest/util/exit', function (error, response, body) {
+          _running = false;
+          eventEmitter.emit('killed');
+        });
       } else if (_local) {
-        killTree(_backend.pid, 'SIGTERM', function (){
+        killTree(_backend.pid, 'SIGTERM', function () {
           _running = false;
           eventEmitter.emit('killed');
         });

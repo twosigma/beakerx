@@ -409,7 +409,6 @@
             theme: bkHelper.getTheme()
           });
 
-
           scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
           scope.cm.on('change', changeHandler);
@@ -426,6 +425,12 @@
               return;
             }
             CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
+          });
+
+          scope.cm.on('gutterClick', function (cm, line, gutter) {
+            if (gutter === 'CodeMirror-linenumbers') {
+              return cm.setSelection(CodeMirror.Pos(line, 0), CodeMirror.Pos(line + 1, 0));
+            }
           });
 
           scope.updateUI(scope.getEvaluator());

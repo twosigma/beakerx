@@ -53,6 +53,14 @@
     } );
   } );
 
+  $.fn.dataTable.Api.register( 'column().data().min()', function () {
+    return this.reduce( function (a, b) {
+      var x = parseFloat( a ) || 0;
+      var y = parseFloat( b ) || 0;
+      return Math.min(x, y);
+    } );
+  } );
+
   // detect and sort by file size
   jQuery.extend(jQuery.fn.dataTableExt.oSort, {
     'file-size-pre': function(a) {
@@ -866,7 +874,8 @@
               }
             }
           }
-          scope.barsOnColumn = {};//map: col index -> show bars
+          scope.barsOnColumn = {}; //map: col index -> show bars
+          scope.heatmapOnColumn = {}; //map: col index -> show heatmap
           scope.doCreateData(model);
           scope.doCreateTable(model);
         };
@@ -936,6 +945,10 @@
           }
           for (var colInd = 0; colInd < scope.columns.length; colInd++) {
             var max = scope.table.column(colInd).data().max();
+            var min = scope.table.column(colInd).data().min();
+            var colorScale = d3.scale.linear()
+              .domain([min, (min + max) / 2, max])
+              .range(['#f76a6a', '#efda52', '#64bd7a']);
             scope.table.column(colInd).nodes().each(function (td) {
               var value = $(td).text();
               if($.isNumeric(value)){
@@ -960,6 +973,15 @@
                 }else{
                   $(td).text(value);
                 }
+              }
+            });
+            scope.table.column(colInd).nodes().each(function (td) {
+              var value = $(td).text();
+              if($.isNumeric(value)){
+                var color = scope.heatmapOnColumn[colInd] ? colorScale(value) : "";
+                $(td).css({
+                  "background-color": color
+                });
               }
             });
           }
@@ -1265,6 +1287,10 @@
                 switch(charCode.toUpperCase()){
                   case 'B':
                     scope.barsOnColumn[column] = !!!scope.barsOnColumn[column];
+                    _.defer(function () { scope.table.draw(false); });
+                    break;
+                  case 'H':
+                    scope.heatmapOnColumn[column] = !!!scope.heatmapOnColumn[column];
                     _.defer(function () { scope.table.draw(false); });
                     break;
                 }

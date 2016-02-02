@@ -19,16 +19,6 @@ task syncFiles (type: Sync) {
   into installDir
 }
 
-task clearDotBin(type: Delete) {
-  doLast {
-    def path = installDir.getAbsolutePath() + "/app/node_modules/.bin"
-    println path
-    delete fileTree(dir: path)
-    delete path
-  }
-}
-
-
 def windows() {
   return System.getProperty('os.name').contains('Windows')
 }
@@ -45,6 +35,5 @@ task installNodePackages (type: Exec) {
 
 task installDist
 
-syncFiles.dependsOn clearDotBin
 installNodePackages.dependsOn syncFiles
 installDist.dependsOn installNodePackages

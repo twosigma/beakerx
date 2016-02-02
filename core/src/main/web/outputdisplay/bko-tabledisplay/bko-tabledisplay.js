@@ -1335,10 +1335,12 @@
                 var cellPos = scope.table.cell(this).index();
                 if(cellPos) {
                   var column = cellPos.column;
-                  scope.onKeyListeners[column] = function (onKeyEvent) {
-                    scope.onKeyAction(column, onKeyEvent);
-                  };
-                  $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
+                  if (!scope.onKeyListeners[column]) {
+                    scope.onKeyListeners[column] = function (onKeyEvent) {
+                      scope.onKeyAction(column, onKeyEvent);
+                    };
+                    $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
+                  }
                 }
               })
               .on("mouseleave.bko-datatable", 'td', function (e) {

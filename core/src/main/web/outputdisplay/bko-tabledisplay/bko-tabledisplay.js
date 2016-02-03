@@ -727,7 +727,7 @@
           }
         };
       },
-      link: function(scope) {
+      link: function(scope, element) {
 
         var unregisterOutputExpandEventListener = angular.noop; // used for deregistering listener
 
@@ -1033,6 +1033,29 @@
             return items;
           };
 
+          var getPrecisionSubitems = function(container) {
+            var items = [];
+
+            _.each(scope.doubleWithPrecisionConverters, function(func, precision) {
+              var item = {
+                title: precision,
+                isChecked: function(container) {
+                  var colIdx = container.data('columnIndex');
+                  return scope.doubleWithPrecisionConverters[precision] === scope.renderers[colIdx];
+                },
+                action: function(el) {
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex');
+                  scope.changePrecision(colIdx, precision);
+                }
+              };
+
+              items.push(item);
+            });
+
+            return items;
+          };
+
           var menuHelper = {
             doAlignment: function(el, key) {
               var container = el.closest('.bko-header-menu');
@@ -1147,6 +1170,42 @@
                     action: function(el) {
                       menuHelper.doAlignment(el, 'R');
                     }
+                  }
+                ]
+              },
+              {
+                title: 'Style',
+                action: null,
+                items: [
+                  {
+                    title: 'Data Bars',
+                    isChecked: function(container) {
+                      return scope.barsOnColumn[container.data('columnIndex')] === true;
+                    },
+                    action: function(el) {
+                      var container = el.closest('.bko-header-menu');
+                      var colIdx = container.data('columnIndex');
+                      scope.showHideBars(colIdx);
+                    }
+                  },
+                  {
+                    title: 'Heatmap',
+                    isChecked: function(container) {
+                      return scope.heatmapOnColumn[container.data('columnIndex')] === true;
+                    },
+                    action: function(el) {
+                      var container = el.closest('.bko-header-menu');
+                      var colIdx = container.data('columnIndex');
+                      scope.showHideHeatmap(colIdx);
+                    }
+                  },
+                  {
+                    title: 'Precision',
+                    isChecked: function(container) {
+                      return !_.isEmpty(scope.renderers);
+                    },
+                    action: null,
+                    items: getPrecisionSubitems
                   }
                 ]
               }
@@ -1296,6 +1355,19 @@
               event.stopPropagation();
             });
 
+            scope.showHideBars = function (column) {
+              scope.barsOnColumn[column] = !!!scope.barsOnColumn[column];
+              _.defer(function () { scope.table.draw(false);  });
+            };
+            scope.showHideHeatmap = function (column) {
+              scope.heatmapOnColumn[column] = !!!scope.heatmapOnColumn[column];
+              _.defer(function () { scope.table.draw(false);  });
+            };
+            scope.changePrecision = function (column, precision) {
+              scope.renderers[column] = scope.doubleWithPrecisionConverters[precision];
+              scope.actualtype[column - 1] = 3; //TODO change to an appropriate format (for now just double)
+              scope.applyChanges();
+            };
 
             scope.onKeyAction = function (column, onKeyEvent) {
               var key = onKeyEvent.keyCode;
@@ -1303,19 +1375,14 @@
               if (charCode) {
                 switch(charCode.toUpperCase()){
                   case 'B':
-                    scope.barsOnColumn[column] = !!!scope.barsOnColumn[column];
-                    _.defer(function () { scope.table.draw(false); });
+                    scope.showHideBars(column);
                     break;
                   case 'H':
-                    scope.heatmapOnColumn[column] = !!!scope.heatmapOnColumn[column];
-                    _.defer(function () { scope.table.draw(false); });
+                    scope.showHideHeatmap(column);
                     break;
                 }
                 if (key >= 48 && key <= 57){ //numbers 1..9
-                  //change precision to parseInt(charCode)
-                  scope.renderers[column] = scope.doubleWithPrecisionConverters[parseInt(charCode)];
-                  scope.actualtype[column - 1] = 3; //TODO change to an appropriate format (for now just double)
-                  scope.applyChanges();
+                  scope.changePrecision(column, parseInt(charCode));
                 }
               }
             };

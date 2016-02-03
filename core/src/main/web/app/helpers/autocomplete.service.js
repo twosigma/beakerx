@@ -35,15 +35,15 @@
         return t.hint(token, editor);
       }).value();
 
-      var onResults = function(results, matched_text, dotFix) {
+      var onResults = function(results, matchedText, dotFix) {
         var start = token.start;
         var end = token.end;
         if (dotFix && token.string === ".") {
           start += 1;
         }
-        if (matched_text) {
-          start += (cur.ch - token.start - matched_text.length);
-          end = start + matched_text.length;
+        if (matchedText) {
+          start += (cur.ch - token.start - matchedText.length);
+          end = start + matchedText.length;
         }
         var hintData = {
           from: CodeMirror.Pos(cur.line, start),
@@ -52,8 +52,8 @@
         };
 
         var evaluator = bkEvaluatorManager.getEvaluator(scope.cellmodel.evaluator);
-        if (_.isFunction(evaluator.showDocs)) {
-          attachAutocompleteListeners(hintData, evaluator, scope, cm, matched_text);
+        if (_.isFunction(evaluator.getAutocompleteDocumentation)) {
+          attachAutocompleteListeners(hintData, evaluator, scope, cm, matchedText);
         }
 
         if (waitfor.length > 0) {
@@ -97,18 +97,17 @@
     }
   };
 
-  var attachAutocompleteListeners = function(hintData, evaluator, scope, cm, matched_text) {
+  var attachAutocompleteListeners = function(hintData, evaluator, scope, cm, matchedText) {
     CodeMirror.on(hintData, 'select', function(selectedWord, selectedListItem) {
       completionActive = true;
 
-      evaluator.showDocs(selectedWord, selectedWord.length - 1, function(documentation) {
-        scope.$broadcast('showDocumentationForAutocomplete', documentation, true);
+      evaluator.getAutocompleteDocumentation(selectedWord, function(documentation) {
+        scope.$broadcast('showDocumentationForAutocomplete', documentation.description, true);
 
-        if (documentation.ansiHtml) {
-          var params = getParameters(ansi_up.ansi_to_html(documentation.ansiHtml));
-          writeCompletion(selectedWord, params, cm, matched_text);
+        if (documentation.parameters) {
+          writeCompletion(selectedWord, documentation.parameters, cm, matchedText);
         } else {
-          var index = selectedWord.indexOf(matched_text) + matched_text.length;
+          var index = selectedWord.indexOf(matchedText) + matchedText.length;
           replaceSelection(selectedWord.substring(index), cm);
         }
       });
@@ -119,34 +118,19 @@
     });
     CodeMirror.on(hintData, 'pick', function(completion) {
       // Removing duplicate completion since we already have it from when we wrote the parameters
-      var lengthToRemove = completion.length - matched_text.length;
+      var lengthToRemove = completion.length - matchedText.length;
       var cursorPos = cm.getCursor('from');
       cm.doc.replaceRange('', {line: cursorPos.line, ch: cursorPos.ch - lengthToRemove}, cursorPos);
       cm.setCursor(cm.getCursor());
     })
   };
 
-  function getParameters(documentation) {
-    // Parsing parameters from documentation
-    debugger;
-    var start = documentation.indexOf('Parameters\n');
-    if (start === -1) {
-      return [];
-    }
-    documentation = documentation.substring(start);
-    documentation = documentation.substring(documentation.indexOf('-\n') + 2, documentation.indexOf('\n\n'));
-    return _.map(documentation.split(/\n(?=\S)/), function(param) {
-      var s = param.split(':');
-      return {name: s[0].trim(), description: s[1].trim()};
-    });
-  }
-
-  function writeCompletion(funcName, params, cm, matched_text) {
+  function writeCompletion(funcName, params, cm, matchedText) {
     // writes the selected completion with parameters
     var str = _.map(params, function(p) {
       return p.name;
     });
-    var index = funcName.indexOf(matched_text) + matched_text.length;
+    var index = funcName.indexOf(matchedText) + matchedText.length;
 
     replaceSelection(funcName.substring(index) + '(' + str.join(', ') + ')', cm);
   }

@@ -44,15 +44,14 @@
         scope.$on('showDocumentationForAutocomplete', function(event, doc) {
           tooltip.empty();
           var html = getDocContent(doc);
-          if (html) {
-            displayTooltip(html);
-            var autocompleteList = $('ul.CodeMirror-hints');
-            tooltip.addClass('CodeMirror-hints');
-            setTooltipPosition(_.merge(calculateTooltipPosition(), {left: autocompleteList.position().left + autocompleteList.outerWidth() - $('.bkcell').offset().left}));
 
-            if (autocompleteListAboveCursor(autocompleteList)) {
-              moveTooltipAboveCursor();
-            }
+          displayTooltip(doc);
+          var autocompleteList = $('ul.CodeMirror-hints');
+          tooltip.addClass('CodeMirror-hints');
+          setTooltipPosition(_.merge(calculateTooltipPosition(), {left: autocompleteList.position().left + autocompleteList.outerWidth() - $('.bkcell').offset().left}));
+
+          if (autocompleteListAboveCursor(autocompleteList)) {
+            moveTooltipAboveCursor();
           }
         });
 

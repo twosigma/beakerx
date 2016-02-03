@@ -416,8 +416,6 @@
         {type: 1, name: 'integer'},
         {type: 2, name: 'formatted integer'},
         {type: 3, name: 'double'},
-        {type: 4, name: 'double 2 decimals'},
-        {type: 5, name: 'double 4 decimals'},
         {type: 6, name: 'exponential 5'},
         {type: 7, name: 'exponential 15'},
         {type: 8, name: 'datetime'},
@@ -464,26 +462,6 @@
           3: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               return parseFloat(value);
-            }
-            if (type === 'sort') {
-              return NaN;
-            }
-            return value;
-          },
-          // double 2 decimals
-          4: function(value, type, full, meta) {
-            if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
-              return parseFloat(value).toFixed(2);
-            }
-            if (type === 'sort') {
-              return NaN;
-            }
-            return value;
-          },
-          // double 4 decimals
-          5: function(value, type, full, meta) {
-            if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
-              return parseFloat(value).toFixed(4);
             }
             if (type === 'sort') {
               return NaN;
@@ -626,8 +604,6 @@
         {type: 8, name: 'time'}];
         $scope.allDoubleTypes = [{type: 0, name: 'string'},
         {type: 3, name: 'double'},
-        {type: 4, name: 'double 2 decimals'},
-        {type: 5, name: 'double 4 decimals'},
         {type: 6, name: 'exponential 5'},
         {type: 7, name: 'exponential 15'}];
         $scope.allBoolTypes = [{type: 0, name: 'string'},

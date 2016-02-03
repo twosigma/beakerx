@@ -416,6 +416,7 @@
         {type: 1, name: 'integer'},
         {type: 2, name: 'formatted integer'},
         {type: 3, name: 'double'},
+        {type: 4, name: 'double with precision'},
         {type: 6, name: 'exponential 5'},
         {type: 7, name: 'exponential 15'},
         {type: 8, name: 'datetime'},
@@ -604,6 +605,7 @@
         {type: 8, name: 'time'}];
         $scope.allDoubleTypes = [{type: 0, name: 'string'},
         {type: 3, name: 'double'},
+        {type: 4, name: 'double with precision'},
         {type: 6, name: 'exponential 5'},
         {type: 7, name: 'exponential 15'}];
         $scope.allBoolTypes = [{type: 0, name: 'string'},
@@ -981,18 +983,21 @@
                 isChecked: function(container) {
                   var colIdx = container.data('columnIndex');
                   return scope.actualtype[colIdx - 1] === obj.type;
-                },
-                action: function(el) {
-                  var container = el.closest('.bko-header-menu');
-                  var colIdx = container.data('columnIndex');
-
-                  scope.getCellDisp[colIdx - 1] = obj.type;
-                  scope.actualtype[colIdx - 1] = obj.type;
-                  delete scope.renderers[colIdx];
-                  scope.applyChanges();
                 }
               };
+              if (obj.type === 4) { //double with precision
+                item.items = getPrecisionSubitems;
+              } else {
+                item.action = function(el) {
+                    var container = el.closest('.bko-header-menu');
+                    var colIdx = container.data('columnIndex');
 
+                    scope.getCellDisp[colIdx - 1] = obj.type;
+                    scope.actualtype[colIdx - 1] = obj.type;
+                    delete scope.renderers[colIdx];
+                    scope.applyChanges();
+                  }
+                };
               items.push(item);
             });
 
@@ -1164,14 +1169,6 @@
                       var colIdx = container.data('columnIndex');
                       scope.showHideHeatmap(colIdx);
                     }
-                  },
-                  {
-                    title: 'Precision',
-                    isChecked: function(container) {
-                      return !_.isEmpty(scope.renderers);
-                    },
-                    action: null,
-                    items: getPrecisionSubitems
                   }
                 ]
               }
@@ -1331,7 +1328,7 @@
             };
             scope.changePrecision = function (column, precision) {
               scope.renderers[column] = scope.doubleWithPrecisionConverters[precision];
-              scope.actualtype[column - 1] = 3; //TODO change to an appropriate format (for now just double)
+              scope.actualtype[column - 1] = 4; //double with precision
               scope.applyChanges();
             };
 

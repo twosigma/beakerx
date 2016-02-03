@@ -427,10 +427,44 @@
             CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
           });
 
-          scope.cm.on('gutterClick', function (cm, line, gutter) {
-            if (gutter === 'CodeMirror-linenumbers') {
-              return cm.setSelection(CodeMirror.Pos(line, 0), CodeMirror.Pos(line + 1, 0));
+          scope.cm.on('gutterClick', function (cm, line, gutter, e) {
+
+            if (gutter !== 'CodeMirror-linenumbers') return;
+
+            var prev = (e.ctrlKey || e.shiftKey) || e.metaKey ? cm.listSelections() : [];
+            var anchor = line;
+            var head = line + 1;
+
+            function update() {
+              var curr = {
+                anchor: CodeMirror.Pos(anchor, head > anchor ? 0 : null),
+                head: CodeMirror.Pos(head, 0)
+              };
+              if (e.shiftKey) {
+                if (prev[0].anchor.line >= head) {
+                  cm.extendSelection(curr.anchor, prev[0].head, {origin: "*mouse"});
+                } else {
+                  cm.extendSelection(prev[0].anchor, curr.head, {origin: "*mouse"});
+                }
+              } else {
+                cm.setSelections(prev.concat([curr]), prev.length, {origin: "*mouse"});
+              }
             }
+            function onMouseMove(e) {
+              var currLine = cm.lineAtHeight(e.clientY, "client");
+              if (currLine != head) {
+                head = currLine;
+                update();
+              }
+            }
+            function onMouseUp(e) {
+              removeEventListener("mouseup", onMouseUp);
+              removeEventListener("mousemove", onMouseMove);
+            }
+
+            update();
+            addEventListener("mousemove", onMouseMove);
+            addEventListener("mouseup", onMouseUp);
           });
 
           scope.updateUI(scope.getEvaluator());

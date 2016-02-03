@@ -20,11 +20,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -48,7 +48,7 @@ import com.twosigma.beaker.jvm.utils.BeakerPrefsUtils;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyShell;
+import groovy.lang.Script;
 
 public class GroovyEvaluator {
 
@@ -73,9 +73,9 @@ public class GroovyEvaluator {
 
   public static boolean LOCAL_DEV = false;
   
-  public static boolean GROOVY_SHELL = false;
-
   public static String GROOVY_JAR_PATH = "GROOVY_JAR_PATH"; 
+  
+  private Binding scriptBinding = null;
   
   protected class jobDescriptor {
     public String codeToBeExecuted;
@@ -251,17 +251,11 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
   }
 
   protected DynamicClassLoaderSimple loader = null;
-  protected GroovyShell shell;
 
   //an object that matches the shell in non-shell mode
   protected GroovyClassLoader groovyClassLoader;
   
   protected CompilerConfiguration compilerConfiguration;
-  protected String getInitCode(String sessionId) { 
-      if(LOCAL_DEV) return "";
-      return "import com.twosigma.beaker.NamespaceClient\n" +
-          "beaker = NamespaceClient.getBeaker('" + sessionId + "')\n";
-  }
   
   protected class workerThread extends Thread {
 
@@ -284,11 +278,11 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
           
           // check if we must create or update class loader
           if(updateLoader) {
-            shell = null;
             if(groovyClassLoader != null) {
               try { groovyClassLoader.close(); } catch(Exception ex) {}
             }
             groovyClassLoader = null;
+            scriptBinding = null;
           }
           
           // get next job descriptor
@@ -296,18 +290,9 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
           if(j==null)
             continue;
 
-          if(GROOVY_SHELL) {
-            
-            if (shell==null) {
-              updateLoader=false;
-              newEvaluator();
-            }
-          } else {
-
-            if(groovyClassLoader == null) {
-              updateLoader = false;
-              newEvaluator();
-            }
+          if(groovyClassLoader == null) {
+            updateLoader = false;
+            newEvaluator();
           }
         
           //if(loader!=null)
@@ -328,13 +313,7 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
           j.outputObject.started();
 
           
-          String code = null;
-          if(GROOVY_SHELL) {
-              code = j.codeToBeExecuted;
-          } else {
-              code = getInitCode(sessionId) + "\n\n" + j.codeToBeExecuted;
-          }
-          
+          String code = j.codeToBeExecuted;
           
           if (!executor.executeTask(new MyRunnable(code, j.outputObject, loader))) {
             j.outputObject.error("... cancelled!");
@@ -382,38 +361,41 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
         theOutput.setOutputHandler();
         
         try {
-            
-            if(GROOVY_SHELL) {
-                
-                Thread.currentThread().setContextClassLoader(_loader);
-                
-                result = shell.evaluate(theCode);
-                
-            } else {
-                
-                Thread.currentThread().setContextClassLoader(groovyClassLoader);
-                Class<?> parsedClass = groovyClassLoader.parseClass(theCode);
-                
-                Method run = null;
-                for(Method m : parsedClass.getMethods() ) {
-                    if(m.getName().equals("run") && m.getParameterTypes().length == 0) {
-                        run = m;
-                    }
-                }
-                
-                Object instance = parsedClass.newInstance();
-                result = run.invoke(instance);
-                
-            }
+          
+          Thread.currentThread().setContextClassLoader(groovyClassLoader);
+          Class<?> parsedClass = groovyClassLoader.parseClass(theCode);
+          
+          Script instance = (Script) parsedClass.newInstance();
+          
+          if(LOCAL_DEV) {
+            scriptBinding.setVariable("beaker", new HashMap<String, Object>());
+          } else {
+            scriptBinding.setVariable("beaker", NamespaceClient.getBeaker(sessionId));
+          }
+
+          instance.setBinding(scriptBinding);
+          
+          result = instance.run();
            
-            if(LOCAL_DEV) { System.out.println(result); }
-            theOutput.finished(result);
+          if(LOCAL_DEV) { 
+            System.out.println("Result: " + result); 
+            System.out.println("Variables: " + scriptBinding.getVariables());
+          }
+            
+          theOutput.finished(result);
             
         } catch(Throwable e) {
+          
           if(LOCAL_DEV) {
               System.err.println(e);
               e.printStackTrace();
           }
+          
+          //unwrap ITE
+          if(e instanceof InvocationTargetException) {
+            e = ((InvocationTargetException)e).getTargetException();
+          }
+          
           if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
             theOutput.error("... cancelled!");
           } else {
@@ -494,32 +476,12 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
 
       config.setClasspath(acloader_cp);
       
-      if(GROOVY_SHELL) {
-          
-          shell = new GroovyShell(newClassLoader(), new Binding(), config);
-          
-          // ensure object is created
-          if(!LOCAL_DEV) {
-              NamespaceClient.getBeaker(sessionId);
-          }
-
-          // initialize interpreter
-          String initCode = "import com.twosigma.beaker.NamespaceClient\n" +
-              "beaker = NamespaceClient.getBeaker('" + sessionId + "')\n";
-          try {
-            shell.evaluate(initCode);
-          } catch(Throwable e) { }
-          
-      } else {
-          
-        compilerConfiguration = config;
+      compilerConfiguration = config;
         
-        //reload classloader
-        groovyClassLoader = new GroovyClassLoader(newClassLoader(), compilerConfiguration);
+      //reload classloader
+      groovyClassLoader = new GroovyClassLoader(newClassLoader(), compilerConfiguration);
+      scriptBinding = new Binding();
           
-      }
-      
-
     }
   }
 

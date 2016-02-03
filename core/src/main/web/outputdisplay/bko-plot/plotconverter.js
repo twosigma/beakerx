@@ -170,6 +170,11 @@
     };
 
     var processElement = function(item, j, ele, yAxisSettings, logx) {
+
+      if (item.tooltips){
+        ele.tooltip = item.tooltips[j];
+      }
+
       // discard NaN entries
       if (ele.x === "NaN" || ele.y === "NaN" ||
         logx && ele.x <= 0 || yAxisSettings.logy && ele.y <= 0 )
@@ -532,7 +537,11 @@
                     category: j,
                     x: item.x[j],
                     y: item.y[j]
+
                   };
+                  if(categoryItem.itemLabels){
+                    ele.itemLabel =  categoryItem.itemLabels[j][i];
+                  }
 
                   if(processElement(item, j, ele, yAxisSettings)){
                     elements.push(ele);

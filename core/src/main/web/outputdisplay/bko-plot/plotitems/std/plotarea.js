@@ -246,6 +246,9 @@
     };
 
     PlotArea.prototype.createTip = function(ele) {
+      if (ele.tooltip)
+        return ele.tooltip;
+
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};

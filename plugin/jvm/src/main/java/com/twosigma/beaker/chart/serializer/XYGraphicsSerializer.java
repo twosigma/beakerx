@@ -45,6 +45,10 @@ public class XYGraphicsSerializer<T extends XYGraphics> extends JsonSerializer<T
     if (xyGraphics.getLodFilter() != null){
       jgen.writeObjectField("lod_filter", xyGraphics.getLodFilter().getText());
     }
+    List<String> toolTips = xyGraphics.getToolTips();
+    if (toolTips != null) {
+      jgen.writeObjectField("tooltips", toolTips);
+    }
   }
 
   private List<String> processLargeNumbers(List<Number> list){

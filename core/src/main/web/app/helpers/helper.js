@@ -810,6 +810,7 @@
       sanitizeNotebookModel: function(m) {
         var notebookModelCopy = angular.copy(m);
         bkHelper.stripOutBeakerPrefs(notebookModelCopy);
+        delete notebookModelCopy.evaluationSequenceNumber; //remove evaluation counter
         if (notebookModelCopy.cells) {
           for (var i = 0; i < notebookModelCopy.cells.length; i++) {
             var currentCell = notebookModelCopy.cells[i];
@@ -832,6 +833,9 @@
               if (currentCell.output.result) {
                 delete currentCell.output.result.update_id;
               }
+
+              //remove evaluation counter
+              delete currentCell.output.evaluationSequenceNumber;
             }
           }
         }

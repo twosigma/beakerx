@@ -13,35 +13,36 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.chart.xychart.plotitem;
 
-import com.twosigma.beaker.chart.Filter;
+import java.util.List;
 
-import java.util.EnumSet;
+public abstract class BasedXYGraphics extends XYGraphics {
+  private Number baseBase = 0.0d;
+  private List<Number> bases;
 
-
-public class Area extends BasedXYGraphics {
-
-  private final static EnumSet<Filter> POSSIBLE_LOD_FILTERS = EnumSet.of(Filter.AREA, Filter.RIVER);
-
-  private Integer interpolation;
-
-  public void setInterpolation(Integer interpolation) {
-    if (interpolation.intValue() < 0 || interpolation.intValue() > 1) {
+  public void setBase(Object base) {
+    if (base instanceof Number) {
+      this.baseBase = ((Number) base).floatValue();
+    } else if (base instanceof List) {
+      @SuppressWarnings("unchecked")
+      List<Number> ss = (List<Number>) base;
+      setBases(ss);
+    } else {
       throw new IllegalArgumentException(
-          "Area interpolation is limited to 0, 1");
+        "setBase takes Number or List of Number");
     }
-
-    this.interpolation = interpolation;
   }
 
-  public Integer getInterpolation() {
-    return this.interpolation;
+  private void setBases(List<Number> bases) {
+    this.bases = bases;
   }
 
-  @Override
-  protected EnumSet<Filter> getPossibleFilters() {
-    return POSSIBLE_LOD_FILTERS;
+  public Number getBase() {
+    return this.baseBase;
+  }
+
+  public List<Number> getBases() {
+    return this.bases;
   }
 }

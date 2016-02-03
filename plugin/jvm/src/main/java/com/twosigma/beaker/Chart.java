@@ -18,8 +18,11 @@ package com.twosigma.beaker;
 
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
+import org.apache.commons.lang3.SerializationUtils;
 
-public class Chart {
+import java.io.Serializable;
+
+public class Chart implements Cloneable, Serializable{
   protected int initWidth  = 640;
   protected int initHeight = 480;
   protected String  title;
@@ -89,5 +92,10 @@ public class Chart {
   public Chart setLegendLayout(LegendLayout legendLayout) {
     this.legendLayout = legendLayout;
     return this;
+  }
+
+  @Override
+  public Object clone() throws CloneNotSupportedException {
+    return SerializationUtils.clone(this);
   }
 }

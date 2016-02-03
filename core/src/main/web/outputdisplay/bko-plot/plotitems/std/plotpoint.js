@@ -238,12 +238,12 @@
             labely = y - s / 2;
         }
         this.elementProps[shape].push(prop);
-        if(this.showItemLabel){
+        if(ele.itemLabel || this.showItemLabel){
           var labelMargin = 3;
 
           var label = {
             "id": "label_" + prop.id,
-            "text": ele._y,
+            "text": ele.itemLabel ? ele.itemLabel : ele._y,
             "x": x,
             "y": labely - labelMargin
           };
@@ -343,6 +343,10 @@
     };
 
     PlotPoint.prototype.createTip = function(ele) {
+
+      if (ele.tooltip)
+        return ele.tooltip;
+
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};

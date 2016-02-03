@@ -52,6 +52,7 @@ import java.util.logging.Logger;
 public class BasicObjectSerializer implements BeakerObjectConverter {
 
   public static final String TYPE_INTEGER = "integer";
+  public static final String TYPE_BIG_INTEGER = "int64";
   public static final String TYPE_DOUBLE  = "double";
   public static final String TYPE_STRING  = "string";
   public static final String TYPE_BOOLEAN = "boolean";
@@ -144,7 +145,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     addTypeConversion("java.util.concurrent.atomic.AtomicInteger", TYPE_INTEGER);
     addTypeConversion("java.util.concurrent.atomic.AtomicLong", TYPE_INTEGER);
     addTypeConversion("java.math.BigDecimal", TYPE_DOUBLE);
-    addTypeConversion("java.math.BigInteger", TYPE_INTEGER);
+    addTypeConversion("java.math.BigInteger", TYPE_BIG_INTEGER);
 
     addTypeSerializer(new PrimitiveTypeSerializer());
     addTypeSerializer(new ListOfPrimitiveTypeMapsSerializer(this));

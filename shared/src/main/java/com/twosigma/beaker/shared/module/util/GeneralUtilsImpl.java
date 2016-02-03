@@ -292,7 +292,7 @@ public class GeneralUtilsImpl implements GeneralUtils {
             public FileVisitResult visitFile(Path file,
                 @SuppressWarnings("unused") BasicFileAttributes attrs)
                 throws IOException {
-              Files.delete(file);
+              FileUtils.delete(file.toFile());
               return FileVisitResult.CONTINUE;
             }
 

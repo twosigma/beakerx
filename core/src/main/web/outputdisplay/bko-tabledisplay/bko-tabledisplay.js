@@ -425,9 +425,9 @@
         {type: 10, name: 'html'},
         {type: 11, name: 'date'},
         {type: 12, name: 'time'}];
-        $scope.allConverters = [
+        $scope.allConverters = {
           // string
-          function(value, type, full, meta) {
+          0: function(value, type, full, meta) {
             if (_.isObject(value) && value.type === 'Date') {
               value = moment(value.timestamp).format('YYYYMMDD HH:mm:ss.SSS ZZ');
             }
@@ -437,7 +437,7 @@
             return value;
           },
           // integer
-          function(value, type, full, meta) {
+          1: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               return parseInt(value);
             }
@@ -447,7 +447,7 @@
             return value;
           },
           // formatted integer
-          function(value, type, full, meta) {
+          2: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               var x = parseInt(value);
               if (!isNaN(x)) {
@@ -461,7 +461,7 @@
             return value;
           },
           // double
-          function(value, type, full, meta) {
+          3: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               return parseFloat(value);
             }
@@ -471,7 +471,7 @@
             return value;
           },
           // double 2 decimals
-          function(value, type, full, meta) {
+          4: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               return parseFloat(value).toFixed(2);
             }
@@ -481,7 +481,7 @@
             return value;
           },
           // double 4 decimals
-          function(value, type, full, meta) {
+          5: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               return parseFloat(value).toFixed(4);
             }
@@ -491,7 +491,7 @@
             return value;
           },
           // exponential 5
-          function(value, type, full, meta) {
+          6: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               return parseFloat(value).toExponential(5);
             }
@@ -501,7 +501,7 @@
             return value;
           },
           // exponential 15
-          function(value, type, full, meta) {
+          7: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               return parseFloat(value).toExponential(15);
             }
@@ -511,7 +511,7 @@
             return value;
           },
           // datetime
-          function(value, type, full, meta) {
+          8: function(value, type, full, meta) {
             var time;
             var tz;
             if ($scope.timeStrings) {
@@ -539,18 +539,18 @@
             return value;
           },
           // boolean
-          function(value, type, full, meta) {
+          9: function(value, type, full, meta) {
             if (value !== undefined && value !== null && (value.toLowerCase() === 'true' || value === 1)) {
               return 'true';
             }
             return 'false';
           },
           // html
-          function(value, type, full, meta) {
+          10: function(value, type, full, meta) {
             return value;
           },
           // date
-          function(value, type, full, meta) {
+          11: function(value, type, full, meta) {
             var time;
             var tz;
             if ($scope.timeStrings) {
@@ -578,7 +578,7 @@
             return value;
           },
           // time
-          function(value, type, full, meta) {
+          12: function(value, type, full, meta) {
             var time;
             var tz;
             if ($scope.timeStrings) {
@@ -602,7 +602,7 @@
             }
             return time.format('HH:mm:ss.SSS ZZ');
           }
-        ];
+        };
         $scope.doubleWithPrecisionConverters = {}; //map: precision -> convert function
         for (var precision = 1; precision < 10; precision++) {
           $scope.doubleWithPrecisionConverters[precision] = function(precision, value, type, full, meta) {

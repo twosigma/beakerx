@@ -382,7 +382,7 @@ define(function(require, exports, module) {
           var documentation = {};
           if (docs.ansiHtml) {
             documentation.description = ansi_up.ansi_to_html(docs.ansiHtml);
-            documentation.parameters = getParametersFromDocumentation(documentation.description);
+            documentation.parameters = matchedWord[0] === '%' ? void 0 : getParametersFromDocumentation(documentation.description);
             return callback(documentation);
           }
           documentation.description = docs;

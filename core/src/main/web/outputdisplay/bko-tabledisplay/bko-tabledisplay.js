@@ -710,6 +710,7 @@
             scope.removeOnKeyListeners();
             $('#' + scope.id + ' tbody').off('mouseleave.bko-datatable');
             $('#' + scope.id + ' tbody').off('mouseenter.bko-datatable');
+            scope.table.off('key');
             $('#' + scope.id).html('');
             scope.table.destroy();
             delete scope.table;
@@ -1362,12 +1363,17 @@
             scope.removeOnKeyListeners();
             $(id + ' tbody')
               .on("mouseenter.bko-datatable", 'td', function (e) {
+                if ($(id + ' tbody tr td').hasClass("focus")) {
+                  return; //ignore mouse over for key events if there is focus on table's cell
+                }
                 var cellPos = scope.table.cell(this).index();
                 if(cellPos) {
                   var column = cellPos.column;
                   if (!scope.onKeyListeners[column]) {
                     scope.onKeyListeners[column] = function (onKeyEvent) {
-                      scope.onKeyAction(column, onKeyEvent);
+                      if (!onKeyEvent.isDefaultPrevented()) {
+                        scope.onKeyAction(column, onKeyEvent);
+                      }
                     };
                     $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
                   }
@@ -1382,6 +1388,11 @@
                     $(document).off("keydown.bko-datatable", listener);
                   }
                 }
+              });
+            scope.table
+              .on('key', function (e, datatable, key, cell, originalEvent) {
+                originalEvent.preventDefault();
+                scope.onKeyAction(cell.index().column, originalEvent);
               });
 
             $(window).bind('resize.' + scope.id, function() {

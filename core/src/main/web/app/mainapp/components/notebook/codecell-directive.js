@@ -452,10 +452,6 @@
 
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
 
-        scope.focus = function() {
-          scope.cm.focus();
-        };
-
         // cellmodel.body --> CodeMirror
         scope.$watch('cellmodel.input.body', function(newVal, oldVal) {
           if (scope.cm && newVal !== scope.cm.getValue()) {
@@ -499,6 +495,7 @@
             } else {
               cm.setSelections(prev.concat([curr]), prev.length, {origin: "*mouse"});
             }
+            scope.focus();
           }
           function onMouseMove(e) {
             var currLine = cm.lineAtHeight(e.clientY, "client");

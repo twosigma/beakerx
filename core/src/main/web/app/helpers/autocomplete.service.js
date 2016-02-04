@@ -98,31 +98,9 @@
   };
 
   var attachAutocompleteListeners = function(hintData, evaluator, scope, cm, matchedText) {
-    CodeMirror.on(hintData, 'select', function(selectedWord, selectedListItem) {
-      completionActive = true;
-
-      evaluator.getAutocompleteDocumentation(selectedWord, function(documentation) {
-        scope.$broadcast('showDocumentationForAutocomplete', documentation.description, true);
-
-        if (documentation.parameters) {
-          writeCompletion(selectedWord, documentation.parameters, cm, matchedText);
-        } else {
-          var index = selectedWord.indexOf(matchedText) + matchedText.length;
-          replaceSelection(selectedWord.substring(index), cm);
-        }
-      });
-    });
-    CodeMirror.on(cm, 'endCompletion', function() {
-      completionActive = false;
-      scope.$broadcast('hideDocumentationForAutocomplete');
-    });
-    CodeMirror.on(hintData, 'pick', function(completion) {
-      // Removing duplicate completion since we already have it from when we wrote the parameters
-      var lengthToRemove = completion.length - matchedText.length;
-      var cursorPos = cm.getCursor('from');
-      cm.doc.replaceRange('', {line: cursorPos.line, ch: cursorPos.ch - lengthToRemove}, cursorPos);
-      cm.setCursor(cm.getCursor());
-    })
+    CodeMirror.on(hintData, 'select', onSelect.bind(null, evaluator, scope, cm, matchedText));
+    CodeMirror.on(cm, 'endCompletion', onEndCompletion.bind(null, scope));
+    CodeMirror.on(hintData, 'pick', onPick.bind(null, cm, matchedText));
   };
 
   function writeCompletion(funcName, params, cm, matchedText) {
@@ -149,6 +127,34 @@
       var from = cm.findPosH(cursor, -1, 'char', false);
       cm.replaceRange('', from, cursor);
     }
+  }
+
+  function onSelect(evaluator, scope, cm, matchedText, selectedWord, selectedListItem) {
+    completionActive = true;
+
+    evaluator.getAutocompleteDocumentation(selectedWord, function(documentation) {
+      scope.$broadcast('showDocumentationForAutocomplete', documentation.description, true);
+
+      if (documentation.parameters) {
+        writeCompletion(selectedWord, documentation.parameters, cm, matchedText);
+      } else {
+        var index = selectedWord.indexOf(matchedText) + matchedText.length;
+        replaceSelection(selectedWord.substring(index), cm);
+      }
+    });
+  }
+
+  function onPick(cm, matchedText, completion) {
+    // Removing duplicate completion since we already have it from when we wrote the parameters
+    var lengthToRemove = completion.length - matchedText.length;
+    var cursorPos = cm.getCursor('from');
+    cm.doc.replaceRange('', {line: cursorPos.line, ch: cursorPos.ch - lengthToRemove}, cursorPos);
+    cm.setCursor(cm.getCursor());
+  }
+
+  function onEndCompletion(scope) {
+    completionActive = false;
+    scope.$broadcast('hideDocumentationForAutocomplete');
   }
 
   return {

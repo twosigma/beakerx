@@ -94,7 +94,11 @@ public class TableDisplay {
   private Object getValueForSerializer(Object value, BeakerObjectConverter serializer){
     if (value != null) {
       String clazz = serializer.convertType(value.getClass().getName());
-      return BasicObjectSerializer.TYPE_BIG_INTEGER.equals(clazz) ? value.toString() : value;
+      if (BasicObjectSerializer.TYPE_LONG.equals(clazz) ||
+          BasicObjectSerializer.TYPE_BIGINT.equals(clazz)){
+        return value.toString();
+      }
+      return value;
     }
     return null;
   }
@@ -135,7 +139,9 @@ public class TableDisplay {
 
     private Object getValueForDeserializer(Object value, String clazz) {
       if (clazz != null) {
-        if (BasicObjectSerializer.TYPE_BIG_INTEGER.equals(clazz)) {
+        if (BasicObjectSerializer.TYPE_LONG.equals(clazz)) {
+          value = Long.parseLong(value.toString());
+        }else if (BasicObjectSerializer.TYPE_BIGINT.equals(clazz)) {
           value = BigInteger.valueOf(Long.parseLong(value.toString()));
         }
       }

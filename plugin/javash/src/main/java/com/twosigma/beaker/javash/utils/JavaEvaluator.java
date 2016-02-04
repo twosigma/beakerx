@@ -35,7 +35,6 @@ import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
 import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
 
 import java.lang.reflect.*;
-import java.net.URL;
 import java.nio.file.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
@@ -210,6 +209,15 @@ public class JavaEvaluator {
     }
   
     return jac.doAutocomplete(sb.toString(), caretPosition);    
+  }
+
+  protected enum FilterState{
+    IN_CODE,
+    CAN_BE_COMMENT_START,
+    INSIDE_STRING,
+    IN_COMMENT_BLOCK,
+    ON_COMMENT_LINE,
+    CAN_BE_COMMENT_END
   }
 
   protected class workerThread extends Thread {
@@ -415,6 +423,64 @@ public class JavaEvaluator {
 
     };
 
+
+    private String removeComments(String javaCode) {
+      FilterState state = FilterState.IN_CODE;
+
+      StringBuilder strB = new StringBuilder();
+
+      char prevC = ' ';
+      for (int i = 0; i < javaCode.length(); i++) {
+        char c = javaCode.charAt(i);
+        switch (state) {
+          case IN_CODE:
+            if (c == '/')
+              state = FilterState.CAN_BE_COMMENT_START;
+            else {
+              if (c == '"')
+                state = FilterState.INSIDE_STRING;
+              strB.append(c);
+            }
+            break;
+          case CAN_BE_COMMENT_START:
+            if (c == '*') {
+              state = FilterState.IN_COMMENT_BLOCK;
+            } else if (c == '/') {
+              state = FilterState.ON_COMMENT_LINE;
+            } else {
+              state = FilterState.IN_CODE;
+              strB.append(prevC + c);
+            }
+            break;
+          case ON_COMMENT_LINE:
+            if (c == '\n' || c == '\r') {
+              state = FilterState.IN_CODE;
+              strB.append(c);
+            }
+            break;
+          case IN_COMMENT_BLOCK:
+            if (c == '*')
+              state = FilterState.CAN_BE_COMMENT_END;
+            break;
+          case CAN_BE_COMMENT_END:
+            if (c == '/')
+              state = FilterState.IN_CODE;
+            else if (c != '*')
+              state = FilterState.IN_COMMENT_BLOCK;
+            break;
+          case INSIDE_STRING:
+            if (c == '"' && prevC != '\\')
+              state = FilterState.IN_CODE;
+            strB.append(c);
+            break;
+          default:
+            System.out.println("unknown case");
+            return null;
+        }
+        prevC = c;
+      }
+      return strB.toString();
+    }
     
     /*
      * This function does:
@@ -425,7 +491,7 @@ public class JavaEvaluator {
   
     protected String normalizeCode(String code)
     {
-      String c1 = code.replaceAll("\r\n","\n").replaceAll("(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*)","");
+      String c1 = removeComments(code);
       StringBuilder c2 = new StringBuilder();
       boolean indq = false;
       boolean insq = false;

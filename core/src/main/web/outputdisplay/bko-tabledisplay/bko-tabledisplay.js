@@ -901,6 +901,16 @@
           if (scope.fixcols)
             scope.fixcols.fnRedrawLayout();
         };
+        scope.selectFixedColumnCell = function (row, select) {
+          if (scope.fixcols) {
+            var fixedRow = $(scope.fixcols.dom.clone.left.body.rows[row + 1]);
+            if (select) {
+              fixedRow.addClass('selected');
+            } else {
+              fixedRow.removeClass('selected');
+            }
+          }
+        };
         //jscs:disable
         scope.update_selected = function() {
         //jscs:enable
@@ -914,8 +924,10 @@
               var iPos = row.index();
               if (!scope.selected[iPos]) {
                 $(tr).removeClass('selected');
+                scope.selectFixedColumnCell(iPos, false);
               } else {
                 $(tr).addClass('selected');
+                scope.selectFixedColumnCell(iPos, true);
               }
             }
           });
@@ -1293,28 +1305,46 @@
             $(id + ' tbody').off('click');
             */
             $(id + ' tbody').on('dblclick', 'td', function(e) {
-              var cellPos = scope.table.cell(this).index();
-              var rowIdx = cellPos && cellPos.row;
+              var rowIdx = this.parentElement.rowIndex - 1;
+              var colIdx = this.cellIndex;
+              var currentCell = $(scope.table.column(colIdx).nodes()[rowIdx]);
+              var isCurrentCellSelected = currentCell.hasClass('selected');
 
               if (scope.selected[rowIdx]) {
                 scope.selected[rowIdx] = false;
                 $(scope.table.row(rowIdx).node()).removeClass('selected');
+                scope.selectFixedColumnCell(rowIdx, false);
               }
 
               $(scope.table.cells().nodes()).removeClass('selected');
-              $(scope.table.cell(this).node()).addClass('selected');
+              if (scope.fixcols) {
+                _.each(scope.fixcols.dom.clone.left.body.rows, function(row, index){
+                  if(!scope.selected[index - 1]){
+                    $(row).removeClass('selected');
+                  }
+                });
+              }
+              if (!isCurrentCellSelected) {
+                currentCell.addClass('selected');
+                if(colIdx === 0) {
+                  scope.selectFixedColumnCell(rowIdx, true);
+                }
+              }
 
               e.stopPropagation();
             });
 
             $(id + ' tbody').on('click', 'tr', function(event) {
-              var iPos = scope.table.row(this).index();
-              if (scope.selected[iPos]) {
-                scope.selected[iPos] = false;
-                $(this).removeClass('selected');
+              var rowIndex = this.rowIndex - 1;
+              var tr = scope.table.row(rowIndex).node();
+              if (scope.selected[rowIndex]) {
+                scope.selected[rowIndex] = false;
+                $(tr).removeClass('selected');
+                scope.selectFixedColumnCell(rowIndex, false);
               } else {
-                scope.selected[iPos] = true;
-                $(this).addClass('selected');
+                scope.selected[rowIndex] = true;
+                $(tr).addClass('selected');
+                scope.selectFixedColumnCell(rowIndex, true);
               }
               event.stopPropagation();
             });

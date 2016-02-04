@@ -382,7 +382,7 @@ define(function(require, exports, module) {
           var documentation = {};
           if (docs.ansiHtml) {
             documentation.description = ansi_up.ansi_to_html(docs.ansiHtml);
-            documentation.parameters = this.getParametersFromDocumentation(documentation.description);
+            documentation.parameters = getParametersFromDocumentation(documentation.description);
             return callback(documentation);
           }
           documentation.description = docs;
@@ -402,19 +402,6 @@ define(function(require, exports, module) {
             });
           });
         }
-      },
-      getParametersFromDocumentation: function(documentation) {
-        // Parsing parameters from documentation
-        var start = documentation.indexOf('Parameters\n');
-        if (start === -1) {
-          return [];
-        }
-        documentation = documentation.substring(start);
-        documentation = documentation.substring(documentation.indexOf('-\n') + 2, documentation.indexOf('\n\n'));
-        return _.map(documentation.split(/\n(?=\S)/), function(param) {
-          var s = param.split(':');
-          return {name: s[0].trim(), description: s[1].trim()};
-        });
       },
       exit: function(cb) {
         this.cancelExecution();
@@ -480,6 +467,21 @@ define(function(require, exports, module) {
     }
     callback(matches, matchedText);
   }
+
+  function getParametersFromDocumentation(documentation) {
+    // Parsing parameters from documentation
+    var start = documentation.indexOf('Parameters\n');
+    if (start === -1) {
+      return [];
+    }
+    documentation = documentation.substring(start);
+    documentation = documentation.substring(documentation.indexOf('-\n') + 2, documentation.indexOf('\n\n'));
+    return _.map(documentation.split(/\n(?=\S)/), function(param) {
+      var s = param.split(':');
+      return {name: s[0].trim(), description: s[1].trim()};
+    });
+  }
+
   var defaultSetup = ("%matplotlib inline\n" +
       "import numpy\n" +
       "import matplotlib\n" +

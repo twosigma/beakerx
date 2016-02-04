@@ -485,14 +485,43 @@ define(function(require, exports, module) {
     // Parsing parameters from documentation
     var start = documentation.indexOf('Parameters\n');
     if (start === -1) {
-      return [];
+      var div = document.createElement('div');
+      div.innerHTML = documentation;
+      return getParametersFromSection(getDocumentationSection(div.innerText, 'Signature'));
     }
+
     documentation = documentation.substring(start);
     documentation = documentation.substring(documentation.indexOf('-\n') + 2, documentation.indexOf('\n\n'));
     return _.map(documentation.split(/\n(?=\S)/), function(param) {
       var s = param.split(':');
       return {name: s[0].trim(), description: s[1].trim()};
     });
+  }
+
+  function getDocumentationSection(documentation, sectionName) {
+    var start = documentation.indexOf(sectionName);
+    if (start === -1) {
+      return '';
+    }
+    start += sectionName.length + 1;
+    stop = documentation.lastIndexOf('\n', documentation.indexOf(':', start));
+    if (stop === -1) {
+      return documentation.substr(start);
+    }
+    return documentation.substring(start, stop).trim();
+  }
+
+  function getParametersFromSection(documentationSection) {
+    if (_.isEmpty(documentationSection)) {
+      return [];
+    }
+    var paramArray = documentationSection.substring(documentationSection.indexOf('(') + 1, documentationSection.indexOf(')')).split(',');
+    return _(paramArray).filter(function(param) {
+      // filtering out *args and **kwargs parameters
+      return !_.includes(['*args', '**kwargs'], param);
+    }).map(function(param) {
+      return {name: param.trim()};
+    }).value();
   }
 
   var defaultSetup = ("%matplotlib inline\n" +

@@ -911,6 +911,16 @@
             }
           }
         };
+        scope.highlightFixedColumnCell = function (row, highlight) {
+          if (scope.fixcols) {
+            var fixedRow = $(scope.fixcols.dom.clone.left.body.rows[row + 1]);
+            if (highlight) {
+              fixedRow.addClass('hover');
+            } else {
+              fixedRow.removeClass('hover');
+            }
+          }
+        };
         //jscs:disable
         scope.update_selected = function() {
         //jscs:enable
@@ -1348,6 +1358,18 @@
               }
               event.stopPropagation();
             });
+
+            $(id + ' tbody')
+              .on('mouseenter.bko-datatable', 'tr', function () {
+                var rowIndex = this.rowIndex - 1;
+                $(scope.table.row(rowIndex).node()).addClass('hover');
+                scope.highlightFixedColumnCell (rowIndex, true);
+              })
+              .on('mouseleave.bko-datatable', 'tr', function () {
+                var rowIndex = this.rowIndex - 1;
+                $(scope.table.row(rowIndex).node()).removeClass('hover');
+                scope.highlightFixedColumnCell (rowIndex, false);
+              });
 
             scope.showHideBars = function (column) {
               scope.barsOnColumn[column] = !!!scope.barsOnColumn[column];

@@ -498,7 +498,10 @@
             scope.focus();
           }
           function onMouseMove(e) {
-            var currLine = cm.lineAtHeight(e.clientY, "client") + 1;
+            var currLine = cm.lineAtHeight(e.clientY, "client");
+            if (head > anchor) {
+              currLine++;
+            }
             if (currLine != head) {
               head = currLine;
               update();

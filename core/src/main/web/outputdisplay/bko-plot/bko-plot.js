@@ -939,7 +939,7 @@
               .attr("class", "plot-legendbox")
               .css("background-color", "none")
               .appendTo($(legendLineItemUnit).appendTo(unit));
-            $("<span></span>")
+            $("<label></label>")
               .attr("id", "legendtext_all")
               .attr("class", "plot-label")
               .text("All")

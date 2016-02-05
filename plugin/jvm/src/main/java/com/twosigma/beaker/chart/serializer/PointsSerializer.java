@@ -36,7 +36,6 @@ public class PointsSerializer extends XYGraphicsSerializer<Points> {
 
     super.serialize(points, jgen, sp);
 
-    jgen.writeObjectField("type", points.getClass().getSimpleName());
     if (points.getSizes() != null) {
       jgen.writeObjectField("sizes", points.getSizes());
     } else {

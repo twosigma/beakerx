@@ -25,6 +25,7 @@
       if (model.version === "groovy") {  // model returned from serializer
 
         newmodel = {
+          plotId: model.update_id,
           type: "plot",
           title: model.chart_title != null ? model.chart_title : model.title,
           margin: {},

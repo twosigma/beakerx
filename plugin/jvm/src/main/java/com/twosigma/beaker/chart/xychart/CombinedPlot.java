@@ -16,9 +16,8 @@
 
 package com.twosigma.beaker.chart.xychart;
 
-import org.apache.commons.lang3.SerializationUtils;
+import com.twosigma.beaker.chart.ObservableChart;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,7 @@ import java.util.List;
  * CombinedPlot
  *
  */
-public class CombinedPlot implements Cloneable, Serializable {
+public class CombinedPlot extends ObservableChart{
   private int initWidth = 640;
   private int initHeight = 480;
   private String title;
@@ -94,7 +93,6 @@ public class CombinedPlot implements Cloneable, Serializable {
       List list = (List) obj;
       XYChart plot = (XYChart) list.get(0);
       int weight = ((Number) list.get(1)).intValue();
-
       this.add(plot, weight);
     } else {
       throw new IllegalArgumentException(
@@ -109,10 +107,5 @@ public class CombinedPlot implements Cloneable, Serializable {
 
   public List<Integer> getWeights() {
     return this.weights;
-  }
-
-  @Override
-  public Object clone() throws CloneNotSupportedException {
-    return SerializationUtils.clone(this);
   }
 }

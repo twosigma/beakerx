@@ -33,7 +33,7 @@ public class CategoryBarsSerializer extends CategoryGraphicsSerializer<CategoryB
                                                      JsonProcessingException {
     jgen.writeStartObject();
 
-    serialize(categoryBars, jgen);
+    super.serialize(categoryBars, jgen, provider);
 
     if (categoryBars.getBases() != null) {
       jgen.writeObjectField("bases", categoryBars.getBases());

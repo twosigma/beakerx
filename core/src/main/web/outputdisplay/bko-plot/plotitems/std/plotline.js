@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils, plotTip) {
+  var retfunc = function(plotUtils, plotTip, plotService) {
     var PlotLine = function(data){
       _.extend(this, data); // copy properties to itself
       this.format();
@@ -26,6 +26,7 @@
     PlotLine.prototype.respR = 5;
     PlotLine.prototype.plotClass = "plot-line";
     PlotLine.prototype.respClass = "plot-resp plot-respdot";
+    PlotLine.prototype.actionClass = "item-clickable item-onkey";
 
     PlotLine.prototype.setHighlighted = function(scope, highlighted) {
       var svg = scope.maing;
@@ -224,7 +225,7 @@
         .data(props, function(d) { return d.id; }).exit().remove();
       itemsvg.selectAll("path")
         .data([props], function(d) { return d.id; }).enter().append("path")
-        .attr("class", this.plotClass)
+        .attr("class", this.plotClass + " " + this.actionClass)
         .style("stroke", function(d) { return d.st; })
         .style("stroke-dasharray", function(d) { return d.st_da; })
         .style("stroke-width", function(d) { return d.st_w; })
@@ -238,7 +239,7 @@
         itemsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id; }).enter().append("circle")
           .attr("id", function(d) { return d.id; })
-          .attr("class", this.respClass)
+          .attr("class", this.respClass + " " + this.actionClass)
           .style("stroke", this.tip_color);
         itemsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id; })
@@ -288,6 +289,6 @@
 
     return PlotLine;
   };
-  beaker.bkoFactory('PlotLine', ['plotUtils', 'plotTip', retfunc]);
+  beaker.bkoFactory('PlotLine', ['plotUtils', 'plotTip', 'plotService', retfunc]);
 })();
 

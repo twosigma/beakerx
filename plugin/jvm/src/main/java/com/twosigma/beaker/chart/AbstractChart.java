@@ -14,10 +14,8 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker;
+package com.twosigma.beaker.chart;
 
-import com.twosigma.beaker.chart.legend.LegendLayout;
-import com.twosigma.beaker.chart.legend.LegendPosition;
 import com.twosigma.beaker.chart.xychart.plotitem.Crosshair;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 

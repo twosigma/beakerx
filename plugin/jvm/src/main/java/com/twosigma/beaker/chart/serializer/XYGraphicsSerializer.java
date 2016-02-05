@@ -30,18 +30,18 @@ import java.util.List;
 /**
  * XYGraphicsSerializer
  */
-public class XYGraphicsSerializer<T extends XYGraphics> extends JsonSerializer<T> {
+public class XYGraphicsSerializer<T extends XYGraphics> extends GraphicsSerializer<T> {
 
   @Override
   public void serialize(T xyGraphics, JsonGenerator jgen, SerializerProvider sp)
     throws IOException, JsonProcessingException {
 
+    super.serialize(xyGraphics, jgen, sp);
+
     boolean isNanoPlot = NanoPlot.class.equals(xyGraphics.getPlotType());
     jgen.writeObjectField("x", isNanoPlot ? processLargeNumbers(xyGraphics.getX()) : xyGraphics.getX());
     jgen.writeObjectField("y", xyGraphics.getY());
-    jgen.writeObjectField("visible", xyGraphics.getVisible());
     jgen.writeObjectField("display_name", xyGraphics.getDisplayName());
-    jgen.writeObjectField("yAxis", xyGraphics.getYAxis());
     if (xyGraphics.getLodFilter() != null){
       jgen.writeObjectField("lod_filter", xyGraphics.getLodFilter().getText());
     }

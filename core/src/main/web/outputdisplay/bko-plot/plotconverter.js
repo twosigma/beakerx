@@ -678,6 +678,7 @@
                 var ele = {};
                 ele.x = item.x[j];
                 ele.y = item.y[j];
+                ele.index = j;
 
                 if(processElement(item, j, ele, yAxisSettings, logx)){
                   elements.push(ele);

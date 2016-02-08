@@ -26,6 +26,7 @@
     PlotLodPoint.prototype.respClass = "plot-resp";
     PlotLodPoint.prototype.shapes = ["rect", "diamond", "circle"];
     PlotLodPoint.prototype.svgtags = ["rect", "polygon", "circle"];
+    PlotLodPoint.prototype.actionClass = "item-clickable item-onkey";
 
     PlotLodPoint.prototype.format = function() {
       if (this.color != null) {
@@ -212,7 +213,7 @@
       groupsvg.selectAll(tag)
         .data(eleprops, function(d) { return d.id; }).enter().append(tag)
         .attr("id", function(d) { return d.id; })
-        .attr("class", this.respClass);
+        .attr("class", this.respClass + " " + this.actionClass);
 
       switch (shape) {
         case "circle":

@@ -14,15 +14,12 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker;
+package com.twosigma.beaker.chart;
 
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
-import org.apache.commons.lang3.SerializationUtils;
 
-import java.io.Serializable;
-
-public class Chart implements Cloneable, Serializable{
+public class Chart extends ObservableChart{
   protected int initWidth  = 640;
   protected int initHeight = 480;
   protected String  title;
@@ -92,10 +89,5 @@ public class Chart implements Cloneable, Serializable{
   public Chart setLegendLayout(LegendLayout legendLayout) {
     this.legendLayout = legendLayout;
     return this;
-  }
-
-  @Override
-  public Object clone() throws CloneNotSupportedException {
-    return SerializationUtils.clone(this);
   }
 }

@@ -36,7 +36,6 @@ public class StemsSerializer extends BasedXYGraphicsSerializer<Stems> {
 
     super.serialize(stems, jgen, sp);
 
-    jgen.writeObjectField("type", stems.getClass().getSimpleName());
     if (stems.getColors() != null) {
       jgen.writeObjectField("colors", stems.getColors());
     } else {

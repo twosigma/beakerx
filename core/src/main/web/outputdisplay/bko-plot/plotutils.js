@@ -1,6 +1,58 @@
 (function() {
     'use strict';
-    var retfunc = function(bkUtils, bkHelper) {
+    var retfunc = function(bkUtils, bkHelper, bkCoreManager, bkSessionManager) {
+      var keyCodeMap = {
+        8	  : "BACKSPACE",
+        9	  : "TAB",
+        13	: "ENTER",
+        16	: "SHIFT",
+        17	: "CTRL",
+        18	: "ALT",
+        19	: "PAUSE_BREAK",
+        20	: "CAPS_LOCK",
+        27	: "ESCAPE",
+        32	: "SPACE",
+        33	: "PAGE_UP",
+        34	: "PAGE_DOWN",
+        35	: "END",
+        36	: "HOME",
+        37	: "LEFT_ARROW",
+        38	: "UP_ARROW",
+        39	: "RIGHT_ARROW",
+        40	: "DOWN_ARROW",
+        45	: "INSERT",
+        46	: "DELETE",
+        106	: "MULTIPLY",
+        107	: "ADD",
+        109	: "SUBTRACT",
+        110	: "DECIMAL_POINT",
+        111	: "DIVIDE",
+        112	: "F1",
+        113	: "F2",
+        114	: "F3",
+        115	: "F4",
+        116	: "F5",
+        117	: "F6",
+        118	: "F7",
+        119	: "F8",
+        120	: "F9",
+        121	: "F10",
+        122	: "F11",
+        123	: "F12",
+        144	: "NUM_LOCK",
+        145	: "SCROLL_LOCK",
+        186	: "SEMICOLON",
+        187	: "EQUAL_SIGN",
+        188	: "COMMA",
+        189	: "DASH",
+        190	: "PERIOD",
+        191	: "FORWARD_SLASH",
+        192	: "GRAVE_ACCENT",
+        219	: "OPEN_BRACKET",
+        220	: "BACK_SLASH",
+        221	: "CLOSE_BRAKET",
+        222	: "SINGLE_QUOTE"
+      };
     return {
       outsideScr: function(scope, x, y) {
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
@@ -843,8 +895,47 @@
       getDefaultColor: function (i) {
         var themeColors = bkHelper.defaultPlotColors[bkHelper.getTheme()];
         return i < themeColors.length ? themeColors[i] : this.createNiceColor();
+      },
+      evaluateTagCell: function (tag) {
+        var cellOp = bkSessionManager.getNotebookCellOp();
+        var result;
+        if (cellOp.hasUserTag(tag)) {
+          result = cellOp.getCellsWithUserTag(tag);
+          bkCoreManager.getBkApp().evaluateRoot(result)
+            .catch(function () {
+              console.log('Evaluation failed: ' + tag);
+            });
+        }
+      },
+      getActionObject: function (plotType, e, subplotIndex) {
+        var actionObject = {};
+        if (plotType === "CategoryPlot") {
+          if(e.ele != null){
+            actionObject.category = e.ele.category;
+            actionObject.series = e.ele.series;
+            actionObject["@type"] = "categoryActionObject";
+          }
+        } else {
+          if(plotType === "CombinedPlot") {
+            actionObject.subplotIndex = subplotIndex;
+            actionObject["@type"] =  "combinedActionObject";
+          } else {
+            actionObject["@type"] = "xyActionObject";
+          }
+          if(e.ele != null){
+            actionObject.index = e.ele.index;
+          }
+        }
+        return actionObject;
+      },
+      getKeyCodeConstant: function(keyCode){
+        if(keyCode > 46 && keyCode < 90) {
+          return String.fromCharCode(keyCode).toUpperCase();
+        } else {
+          return keyCodeMap[keyCode];
+        }
       }
     };
   };
-  beaker.bkoFactory('plotUtils', ["bkUtils", "bkHelper", retfunc]);
+  beaker.bkoFactory('plotUtils', ["bkUtils", "bkHelper", "bkCoreManager", "bkSessionManager", retfunc]);
 })();

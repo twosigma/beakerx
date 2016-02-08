@@ -24,6 +24,7 @@
 
     PlotStem.prototype.plotClass = "plot-stem";
     PlotStem.prototype.respClass = "plot-resp";
+    PlotStem.prototype.actionClass = "item-clickable item-onkey";
 
     PlotStem.prototype.setHighlighted = function(scope, highlighted) {
       var svg = scope.maing;
@@ -202,7 +203,7 @@
         .data(eleprops, function(d) { return d.id; }).exit().remove();
       itemsvg.selectAll("line.normal")
         .data(eleprops, function(d) { return d.id; }).enter().append("line")
-        .attr("class", respClass+" normal")
+        .attr("class", respClass + " " + this.actionClass + " normal")
         .style("stroke", function(d) { return d.st; })
         .style("stroke-opacity", function(d) { return d.st_op; })
         .style("stroke-dasharray", function(d) { return d.st_da; })

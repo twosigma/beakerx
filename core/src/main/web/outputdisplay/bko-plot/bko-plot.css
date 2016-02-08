@@ -190,6 +190,12 @@
 .plot-legenditeminline{
   display: inline-block;
   margin-right: 10px;
+  position: relative;
+}
+
+.plot-legenditeminrow {
+  display: block;
+  position: relative;
 }
 
 .plot-coverbox {

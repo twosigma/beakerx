@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils, plotTip, plotService) {
+  var retfunc = function(plotUtils, plotTip) {
     var PlotLine = function(data){
       _.extend(this, data); // copy properties to itself
       this.format();
@@ -289,6 +289,6 @@
 
     return PlotLine;
   };
-  beaker.bkoFactory('PlotLine', ['plotUtils', 'plotTip', 'plotService', retfunc]);
+  beaker.bkoFactory('PlotLine', ['plotUtils', 'plotTip', retfunc]);
 })();
 

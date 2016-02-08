@@ -47,6 +47,21 @@ public class ChartRest {
   private ChartObjectManager chartObjectManager;
 
   @POST
+  @Path("actiondetails/{chartId}/{graphicsId}")
+  public void setActionDetails(@PathParam("chartId") String chartId,
+                               @PathParam("graphicsId") String graphicsId,
+                               GraphicsActionObject info) throws IOException, InterruptedException {
+    ObservableChart chart = chartObjectManager.getChart(chartId);
+    if(chart != null){
+      Graphics g = getGraphicsById(getGraphics(info, chart), graphicsId);
+      if(g != null){
+        info.setGraphics(g);
+        chart.setDetails(info);
+      }
+    }
+  }
+
+  @POST
   @Path("onclick/{chartId}/{graphicsId}")
   public void onClick(@PathParam("chartId") String chartId,
                       @PathParam("graphicsId") String graphicsId,

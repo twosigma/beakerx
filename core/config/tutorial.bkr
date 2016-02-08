@@ -588,7 +588,7 @@
                 "Published notebooks are accessible as ordinary web pages with a URL that you can easily share and view almost anywhere.",
                 "You can also \"publish\" unlisted notebooks that can only be read by those with the link.",
                 "",
-                "The **File → Publish** menu command opens a dialog where you can log into the publication server, and then publish your notebook,",
+                "The **File → Publish...** menu command opens a dialog where you can log into the publication server, and then publish your notebook,",
                 "including adding a preview image, meta-data, and a preview image.",
                 "Later on you can update, edit, or delete your publication.",
                 "",
@@ -597,7 +597,7 @@
                 "The notebook is not shown in any category or search on the publication site.",
                 "Note that \"unlisted\" publications do not have password protection; anyone who gets that URL can read it.",
                 "",
-                "In the same way, you can also use **Publish** in the three-dot menu for cells and sections to publish just parts of the notebook."
+                "In the same way, you can also use **Publish...** in the three-dot menu for cells and sections to publish just parts of the notebook."
             ],
             "evaluatorReader": false,
             "mode": "preview"

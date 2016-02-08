@@ -121,7 +121,7 @@
     function publicationHelper(type, $scope) {
       function addPublishMenuItem() {
         var item = {
-          name: 'Publish',
+          name: 'Publish...',
           action: function() {
             var notebook = $scope.getPublishData();
             var cb = function(r) {

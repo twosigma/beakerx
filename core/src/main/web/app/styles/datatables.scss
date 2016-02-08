@@ -76,3 +76,20 @@ a.dtmenu {
   margin-left: 10px;
   margin-right: 10px;
 }
+
+.dt-cell-div {
+  width: 100%;
+  height: 18px;
+  position:relative;
+}
+
+.dt-cell-text {
+  position: relative;
+  width: 100%;
+}
+
+.dt-bar-data {
+  background-color: #6ba2c7;
+  height: 100%;
+  position: absolute;
+}

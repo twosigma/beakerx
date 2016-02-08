@@ -45,6 +45,22 @@
   $.fn.dataTable.moment('YYYYMMDD');
   $.fn.dataTable.moment('DD/MM/YYYY');
 
+  $.fn.dataTable.Api.register( 'column().data().max()', function () {
+    return this.reduce( function (a, b) {
+      var x = parseFloat( a ) || 0;
+      var y = parseFloat( b ) || 0;
+      return Math.max(x, y);
+    } );
+  } );
+
+  $.fn.dataTable.Api.register( 'column().data().min()', function () {
+    return this.reduce( function (a, b) {
+      var x = parseFloat( a ) || 0;
+      var y = parseFloat( b ) || 0;
+      return Math.min(x, y);
+    } );
+  } );
+
   // detect and sort by file size
   jQuery.extend(jQuery.fn.dataTableExt.oSort, {
     'file-size-pre': function(a) {
@@ -400,8 +416,7 @@
         {type: 1, name: 'integer'},
         {type: 2, name: 'formatted integer'},
         {type: 3, name: 'double'},
-        {type: 4, name: 'double 2 decimals'},
-        {type: 5, name: 'double 4 decimals'},
+        {type: 4, name: 'double with precision'},
         {type: 6, name: 'exponential 5'},
         {type: 7, name: 'exponential 15'},
         {type: 8, name: 'datetime'},
@@ -409,9 +424,9 @@
         {type: 10, name: 'html'},
         {type: 11, name: 'date'},
         {type: 12, name: 'time'}];
-        $scope.allConverters = [
+        $scope.allConverters = {
           // string
-          function(value, type, full, meta) {
+          0: function(value, type, full, meta) {
             if (_.isObject(value) && value.type === 'Date') {
               value = moment(value.timestamp).format('YYYYMMDD HH:mm:ss.SSS ZZ');
             }
@@ -421,7 +436,7 @@
             return value;
           },
           // integer
-          function(value, type, full, meta) {
+          1: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               return parseInt(value);
             }
@@ -431,7 +446,7 @@
             return value;
           },
           // formatted integer
-          function(value, type, full, meta) {
+          2: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               var x = parseInt(value);
               if (!isNaN(x)) {
@@ -445,7 +460,7 @@
             return value;
           },
           // double
-          function(value, type, full, meta) {
+          3: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               return parseFloat(value);
             }
@@ -454,28 +469,8 @@
             }
             return value;
           },
-          // double 2 decimals
-          function(value, type, full, meta) {
-            if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
-              return parseFloat(value).toFixed(2);
-            }
-            if (type === 'sort') {
-              return NaN;
-            }
-            return value;
-          },
-          // double 4 decimals
-          function(value, type, full, meta) {
-            if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
-              return parseFloat(value).toFixed(4);
-            }
-            if (type === 'sort') {
-              return NaN;
-            }
-            return value;
-          },
           // exponential 5
-          function(value, type, full, meta) {
+          6: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               return parseFloat(value).toExponential(5);
             }
@@ -485,7 +480,7 @@
             return value;
           },
           // exponential 15
-          function(value, type, full, meta) {
+          7: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               return parseFloat(value).toExponential(15);
             }
@@ -495,7 +490,7 @@
             return value;
           },
           // datetime
-          function(value, type, full, meta) {
+          8: function(value, type, full, meta) {
             var time;
             var tz;
             if ($scope.timeStrings) {
@@ -523,18 +518,18 @@
             return value;
           },
           // boolean
-          function(value, type, full, meta) {
+          9: function(value, type, full, meta) {
             if (value !== undefined && value !== null && (value.toLowerCase() === 'true' || value === 1)) {
               return 'true';
             }
             return 'false';
           },
           // html
-          function(value, type, full, meta) {
+          10: function(value, type, full, meta) {
             return value;
           },
           // date
-          function(value, type, full, meta) {
+          11: function(value, type, full, meta) {
             var time;
             var tz;
             if ($scope.timeStrings) {
@@ -562,7 +557,7 @@
             return value;
           },
           // time
-          function(value, type, full, meta) {
+          12: function(value, type, full, meta) {
             var time;
             var tz;
             if ($scope.timeStrings) {
@@ -586,7 +581,19 @@
             }
             return time.format('HH:mm:ss.SSS ZZ');
           }
-        ];
+        };
+        $scope.doubleWithPrecisionConverters = {}; //map: precision -> convert function
+        for (var precision = 1; precision < 10; precision++) {
+          $scope.doubleWithPrecisionConverters[precision] = function(precision, value, type, full, meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
+              return parseFloat(value).toFixed(precision);
+            }
+            if (type === 'sort') {
+              return NaN;
+            }
+            return value;
+          }.bind({}, precision);
+        }
         $scope.allStringTypes = [{type: 0, name: 'string'}, {type: 10, name: 'html'}];
         $scope.allTimeTypes   = [{type: 8, name: 'datetime'},
                                  {type: 0, name: 'string'},
@@ -598,8 +605,7 @@
         {type: 8, name: 'time'}];
         $scope.allDoubleTypes = [{type: 0, name: 'string'},
         {type: 3, name: 'double'},
-        {type: 4, name: 'double 2 decimals'},
-        {type: 5, name: 'double 4 decimals'},
+        {type: 4, name: 'double with precision'},
         {type: 6, name: 'exponential 5'},
         {type: 7, name: 'exponential 15'}];
         $scope.allBoolTypes = [{type: 0, name: 'string'},
@@ -690,7 +696,7 @@
           }
         };
       },
-      link: function(scope) {
+      link: function(scope, element) {
 
         var unregisterOutputExpandEventListener = angular.noop; // used for deregistering listener
 
@@ -701,6 +707,10 @@
             //jscs:enable
             $(window).unbind('resize.' + scope.id);
             $('#' + scope.id + ' tbody').off('click');
+            scope.removeOnKeyListeners();
+            $('#' + scope.id + ' tbody').off('mouseleave.bko-datatable');
+            $('#' + scope.id + ' tbody').off('mouseenter.bko-datatable');
+            scope.table.off('key');
             $('#' + scope.id).html('');
             scope.table.destroy();
             delete scope.table;
@@ -773,7 +783,7 @@
               }
             }
           }
-          
+
           scope.hasIndex = model.hasIndex === 'true';
 
           // copy basic data
@@ -787,7 +797,7 @@
             scope.types = model.types.slice(0);
           else
             scope.types = undefined;
-          
+
           if (scope.hasIndex) {
             if (scope.columnNames !== undefined) {
               scope.indexName = scope.columnNames[0];
@@ -845,6 +855,9 @@
               }
             }
           }
+          scope.barsOnColumn = {}; //map: col index -> show bars
+          scope.heatmapOnColumn = {}; //map: col index -> show heatmap
+          scope.renderers = {}; //map: col index -> render function
           scope.doCreateData(model);
           scope.doCreateTable(model);
         };
@@ -888,6 +901,26 @@
           if (scope.fixcols)
             scope.fixcols.fnRedrawLayout();
         };
+        scope.selectFixedColumnCell = function (row, select) {
+          if (scope.fixcols) {
+            var fixedRow = $(scope.fixcols.dom.clone.left.body.rows[row + 1]);
+            if (select) {
+              fixedRow.addClass('selected');
+            } else {
+              fixedRow.removeClass('selected');
+            }
+          }
+        };
+        scope.highlightFixedColumnCell = function (row, highlight) {
+          if (scope.fixcols) {
+            var fixedRow = $(scope.fixcols.dom.clone.left.body.rows[row + 1]);
+            if (highlight) {
+              fixedRow.addClass('hover');
+            } else {
+              fixedRow.removeClass('hover');
+            }
+          }
+        };
         //jscs:disable
         scope.update_selected = function() {
         //jscs:enable
@@ -901,11 +934,61 @@
               var iPos = row.index();
               if (!scope.selected[iPos]) {
                 $(tr).removeClass('selected');
+                scope.selectFixedColumnCell(iPos, false);
               } else {
                 $(tr).addClass('selected');
+                scope.selectFixedColumnCell(iPos, true);
               }
             }
           });
+        };
+
+        scope.updateBackground = function () {
+          if (scope.table === undefined) {
+            return;
+          }
+          for (var colInd = 0; colInd < scope.columns.length; colInd++) {
+            var max = scope.table.column(colInd).data().max();
+            var min = scope.table.column(colInd).data().min();
+            var colorScale = d3.scale.linear()
+              .domain([min, (min + max) / 2, max])
+              .range(['#f76a6a', '#efda52', '#64bd7a']);
+            scope.table.column(colInd).nodes().each(function (td) {
+              var value = $(td).text();
+              if($.isNumeric(value)){
+                $(td).empty();
+                if(scope.barsOnColumn[colInd]){
+                  var cellDiv = $("<div></div>", {
+                    "class": "dt-cell-div"
+                  });
+                  var textSpan = $("<span></span>", {
+                    "class": "dt-cell-text"
+                  }).text(value);
+
+                  var percent = (parseFloat(value) / max) * 100;
+                  var barsBkg = $("<div></div>", {
+                    "class": "dt-bar-data "
+                  }).css({
+                    "width": percent + "%"
+                  });
+                  cellDiv.append(barsBkg);
+                  cellDiv.append(textSpan);
+                  $(td).append(cellDiv);
+                }else{
+                  $(td).text(value);
+                }
+              }
+            });
+            scope.table.column(colInd).nodes().each(function (td) {
+              var value = $(td).text();
+              if($.isNumeric(value)){
+                var color = scope.heatmapOnColumn[colInd] ? colorScale(value) : "";
+                $(td).css({
+                  "background-color": color
+                });
+              }
+            });
+          }
         };
 
         scope.doCreateTable = function(model) {
@@ -923,14 +1006,41 @@
                 isChecked: function(container) {
                   var colIdx = container.data('columnIndex');
                   return scope.actualtype[colIdx - 1] === obj.type;
+                }
+              };
+              if (obj.type === 4) { //double with precision
+                item.items = getPrecisionSubitems;
+              } else {
+                item.action = function(el) {
+                    var container = el.closest('.bko-header-menu');
+                    var colIdx = container.data('columnIndex');
+
+                    scope.getCellDisp[colIdx - 1] = obj.type;
+                    scope.actualtype[colIdx - 1] = obj.type;
+                    delete scope.renderers[colIdx];
+                    scope.applyChanges();
+                  }
+                };
+              items.push(item);
+            });
+
+            return items;
+          };
+
+          var getPrecisionSubitems = function(container) {
+            var items = [];
+
+            _.each(scope.doubleWithPrecisionConverters, function(func, precision) {
+              var item = {
+                title: precision,
+                isChecked: function(container) {
+                  var colIdx = container.data('columnIndex');
+                  return scope.doubleWithPrecisionConverters[precision] === scope.renderers[colIdx];
                 },
                 action: function(el) {
                   var container = el.closest('.bko-header-menu');
                   var colIdx = container.data('columnIndex');
-
-                  scope.getCellDisp[colIdx - 1] = obj.type;
-                  scope.actualtype[colIdx - 1] = obj.type;
-                  scope.applyChanges();
+                  scope.changePrecision(colIdx, precision);
                 }
               };
 
@@ -1056,6 +1166,34 @@
                     }
                   }
                 ]
+              },
+              {
+                title: 'Style',
+                action: null,
+                items: [
+                  {
+                    title: 'Data Bars',
+                    isChecked: function(container) {
+                      return scope.barsOnColumn[container.data('columnIndex')] === true;
+                    },
+                    action: function(el) {
+                      var container = el.closest('.bko-header-menu');
+                      var colIdx = container.data('columnIndex');
+                      scope.showHideBars(colIdx);
+                    }
+                  },
+                  {
+                    title: 'Heatmap',
+                    isChecked: function(container) {
+                      return scope.heatmapOnColumn[container.data('columnIndex')] === true;
+                    },
+                    action: function(el) {
+                      var container = el.closest('.bko-header-menu');
+                      var colIdx = container.data('columnIndex');
+                      scope.showHideHeatmap(colIdx);
+                    }
+                  }
+                ]
               }
             ]
           };
@@ -1086,7 +1224,10 @@
             } else if (al === 'C') {
               col.className = 'dtcenter';
             }
-            if (scope.allConverters[type] !== undefined) {
+
+            if (scope.renderers[i + 1] != null) {
+              col.render = scope.renderers[i + 1]
+            } else if (scope.allConverters[type] !== undefined) {
               col.render = scope.allConverters[type];
             }
             if (scope.getCellSho) {
@@ -1115,6 +1256,7 @@
               //jscs:disable
               scope.update_size();
               scope.update_selected();
+              scope.updateBackground();
               //jscs:enable
             }
           };
@@ -1173,31 +1315,137 @@
             $(id + ' tbody').off('click');
             */
             $(id + ' tbody').on('dblclick', 'td', function(e) {
-              var cellPos = scope.table.cell(this).index();
-              var rowIdx = cellPos && cellPos.row;
+              var rowIdx = this.parentElement.rowIndex - 1;
+              var colIdx = this.cellIndex;
+              var currentCell = $(scope.table.column(colIdx).nodes()[rowIdx]);
+              var isCurrentCellSelected = currentCell.hasClass('selected');
 
               if (scope.selected[rowIdx]) {
                 scope.selected[rowIdx] = false;
                 $(scope.table.row(rowIdx).node()).removeClass('selected');
+                scope.selectFixedColumnCell(rowIdx, false);
               }
 
               $(scope.table.cells().nodes()).removeClass('selected');
-              $(scope.table.cell(this).node()).addClass('selected');
+              if (scope.fixcols) {
+                _.each(scope.fixcols.dom.clone.left.body.rows, function(row, index){
+                  if(!scope.selected[index - 1]){
+                    $(row).removeClass('selected');
+                  }
+                });
+              }
+              if (!isCurrentCellSelected) {
+                currentCell.addClass('selected');
+                if(colIdx === 0) {
+                  scope.selectFixedColumnCell(rowIdx, true);
+                }
+              }
 
               e.stopPropagation();
             });
 
             $(id + ' tbody').on('click', 'tr', function(event) {
-              var iPos = scope.table.row(this).index();
-              if (scope.selected[iPos]) {
-                scope.selected[iPos] = false;
-                $(this).removeClass('selected');
+              var rowIndex = this.rowIndex - 1;
+              var tr = scope.table.row(rowIndex).node();
+              if (scope.selected[rowIndex]) {
+                scope.selected[rowIndex] = false;
+                $(tr).removeClass('selected');
+                scope.selectFixedColumnCell(rowIndex, false);
               } else {
-                scope.selected[iPos] = true;
-                $(this).addClass('selected');
+                scope.selected[rowIndex] = true;
+                $(tr).addClass('selected');
+                scope.selectFixedColumnCell(rowIndex, true);
               }
               event.stopPropagation();
             });
+
+            $(id + ' tbody')
+              .on('mouseenter.bko-datatable', 'tr', function () {
+                var rowIndex = this.rowIndex - 1;
+                $(scope.table.row(rowIndex).node()).addClass('hover');
+                scope.highlightFixedColumnCell (rowIndex, true);
+              })
+              .on('mouseleave.bko-datatable', 'tr', function () {
+                var rowIndex = this.rowIndex - 1;
+                $(scope.table.row(rowIndex).node()).removeClass('hover');
+                scope.highlightFixedColumnCell (rowIndex, false);
+              });
+
+            scope.showHideBars = function (column) {
+              scope.barsOnColumn[column] = !!!scope.barsOnColumn[column];
+              _.defer(function () { scope.table.draw(false);  });
+            };
+            scope.showHideHeatmap = function (column) {
+              scope.heatmapOnColumn[column] = !!!scope.heatmapOnColumn[column];
+              _.defer(function () { scope.table.draw(false);  });
+            };
+            scope.changePrecision = function (column, precision) {
+              scope.renderers[column] = scope.doubleWithPrecisionConverters[precision];
+              scope.actualtype[column - 1] = 4; //double with precision
+              scope.applyChanges();
+            };
+
+            scope.onKeyAction = function (column, onKeyEvent) {
+              var key = onKeyEvent.keyCode;
+              var charCode = String.fromCharCode(key);
+              if (charCode) {
+                switch(charCode.toUpperCase()){
+                  case 'B':
+                    scope.showHideBars(column);
+                    break;
+                  case 'H':
+                    scope.showHideHeatmap(column);
+                    break;
+                }
+                if (key >= 48 && key <= 57){ //numbers 1..9
+                  scope.changePrecision(column, parseInt(charCode));
+                }
+              }
+            };
+
+            scope.removeOnKeyListeners = function () {
+              for (var f in scope.onKeyListeners) {
+                if (scope.onKeyListeners.hasOwnProperty(f)) {
+                  $(document).off("keydown.bko-datatable", scope.onKeyListeners[f]);
+                }
+              }
+              scope.onKeyListeners = {};//map: col index -> listener function
+            };
+
+            scope.removeOnKeyListeners();
+            $(id + ' tbody')
+              .on("mouseenter.bko-datatable", 'td', function (e) {
+                if ($(id + ' tbody tr td').hasClass("focus")) {
+                  return; //ignore mouse over for key events if there is focus on table's cell
+                }
+                var cellPos = scope.table.cell(this).index();
+                if(cellPos) {
+                  var column = cellPos.column;
+                  if (!scope.onKeyListeners[column]) {
+                    scope.onKeyListeners[column] = function (onKeyEvent) {
+                      if (!onKeyEvent.isDefaultPrevented()) {
+                        scope.onKeyAction(column, onKeyEvent);
+                      }
+                    };
+                    $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
+                  }
+                }
+              })
+              .on("mouseleave.bko-datatable", 'td', function (e) {
+                var cellPos = scope.table.cell(this).index();
+                if(cellPos) {
+                  var listener = scope.onKeyListeners[cellPos.column];
+                  if(listener) {
+                    delete scope.onKeyListeners[cellPos.column];
+                    $(document).off("keydown.bko-datatable", listener);
+                  }
+                }
+              });
+            scope.table
+              .on('key', function (e, datatable, key, cell, originalEvent) {
+                originalEvent.preventDefault();
+                scope.onKeyAction(cell.index().column, originalEvent);
+              });
 
             $(window).bind('resize.' + scope.id, function() {
               //jscs:disable
@@ -1249,7 +1497,7 @@
             var d = document.getElementById(scope.id + '_dt_copy');
             scope.clipclient.clip(d);
             scope.clipclient.on('copy', function(event) {
-              var clipboard = event.clipboardData;	
+              var clipboard = event.clipboardData;
               clipboard.setData('text/plain', getTableData());
             });
           } else if (bkUtils.isElectron) {

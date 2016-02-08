@@ -136,9 +136,11 @@ html {
     input {
       width: auto;
       display: inline-block;
+      margin-top: 2px;
     }
     label {
-      margin-right: 2px;
+      float: left;
+      margin-right: 5px;
       display: inline-block;
     }
   }

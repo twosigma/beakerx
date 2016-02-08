@@ -409,7 +409,6 @@
             theme: bkHelper.getTheme()
           });
 
-
           scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
           scope.cm.on('change', changeHandler);
@@ -427,6 +426,8 @@
             }
             CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
           });
+
+          scope.cm.on('gutterClick', onGutterClick);
 
           scope.updateUI(scope.getEvaluator());
           // Since the instantiation of codemirror instances is now lazy,
@@ -451,10 +452,6 @@
 
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
 
-        scope.focus = function() {
-          scope.cm.focus();
-        };
-
         // cellmodel.body --> CodeMirror
         scope.$watch('cellmodel.input.body', function(newVal, oldVal) {
           if (scope.cm && newVal !== scope.cm.getValue()) {
@@ -475,6 +472,49 @@
               bkUtils.refreshRootScope();
             }
           }
+        };
+
+        var onGutterClick = function(cm, line, gutter, e) {
+          if (gutter !== 'CodeMirror-linenumbers') return;
+
+          var prev = (e.ctrlKey || e.shiftKey) || e.metaKey ? cm.listSelections() : [];
+          var anchor = line;
+          var head = line + 1;
+
+          function update() {
+            var curr = {
+              anchor: CodeMirror.Pos(anchor, head > anchor ? 0 : null),
+              head: CodeMirror.Pos(head, 0)
+            };
+            if (e.shiftKey) {
+              if (prev[0].anchor.line >= head) {
+                cm.extendSelection(curr.anchor, prev[0].head, {origin: "*mouse"});
+              } else {
+                cm.extendSelection(prev[0].anchor, curr.head, {origin: "*mouse"});
+              }
+            } else {
+              cm.setSelections(prev.concat([curr]), prev.length, {origin: "*mouse"});
+            }
+            scope.focus();
+          }
+          function onMouseMove(e) {
+            var currLine = cm.lineAtHeight(e.clientY, "client");
+            if (head > anchor) {
+              currLine++;
+            }
+            if (currLine != head) {
+              head = currLine;
+              update();
+            }
+          }
+          function onMouseUp(e) {
+            removeEventListener("mouseup", onMouseUp);
+            removeEventListener("mousemove", onMouseMove);
+          }
+
+          update();
+          addEventListener("mousemove", onMouseMove);
+          addEventListener("mouseup", onMouseUp);
         };
 
         var inputMenuDiv = element.find('.bkcell').first();
@@ -564,6 +604,7 @@
           if (scope.cm) {
             scope.cm.off();
           }
+          CodeMirror.off('gutterClick', onGutterClick);
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id);
           scope.bkNotebook = null;

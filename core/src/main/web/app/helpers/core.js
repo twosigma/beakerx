@@ -625,7 +625,7 @@
           var lineLen = cm.getLine(cursor.line).length;
           var rightLine = cm.getRange(cursor, {line: cursor.line, ch: lineLen});
           var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
-          if (leftLine.match(/^\s*$/)) {
+          if (leftLine.match(/^\s*$/) || leftLine.match(/\s+$/)) {
             cm.execCommand("indentMore");
           } else {
             if (rightLine.match(/^\s*$/)) {
@@ -656,6 +656,7 @@
           _.each(toKill, function(i) {
             cm.replaceRange("", i.from, i.to);
           });
+          autocompleteService.backspace(cursor, cm);
         };
 
         var keys = {

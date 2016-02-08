@@ -376,19 +376,30 @@ define(function(require, exports, module) {
       autocomplete: function(code, cpos, cb) {
         var kernel = kernels[this.settings.shellID];
         if (ipyVersion == '1') {
-          kernel.complete(code, cpos, {'complete_reply': function(reply) {
-            cb(reply.matches, reply.matched_text);
+          return kernel.complete(code, cpos, {'complete_reply': function(reply) {
+            autocompleteCallback(reply.matches, reply.matched_text, cb);
           }});
-        } else if (ipyVersion == '2')  {
-          kernel.complete(code, cpos, function(reply) {
-            cb(reply.content.matches, reply.content.matched_text);
-          });
-        } else {
-          kernel.complete(code, cpos, function(reply) {
-            cb(reply.content.matches, code.substring(reply.content.cursor_start,
-                reply.content.cursor_end));
+        }
+        if (ipyVersion == '2') {
+          return kernel.complete(code, cpos, function(reply) {
+            autocompleteCallback(reply.content.matches, reply.content.matched_text, cb);
           });
         }
+        kernel.complete(code, cpos, function(reply) {
+          autocompleteCallback(reply.content.matches, code.substring(reply.content.cursor_start, reply.content.cursor_end), cb);
+        });
+      },
+      getAutocompleteDocumentation: function(matchedWord, callback) {
+        this.showDocs(matchedWord, matchedWord.length - 1, function(docs) {
+          var documentation = {};
+          if (docs.ansiHtml) {
+            documentation.description = ansi_up.ansi_to_html(docs.ansiHtml);
+            documentation.parameters = matchedWord[0] === '%' ? void 0 : getParametersFromDocumentation(documentation.description);
+            return callback(documentation);
+          }
+          documentation.description = docs;
+          return callback(documentation);
+        }.bind(this));
       },
       showDocs: function(code, cpos, cb) {
         var kernel = kernels[this.settings.shellID];
@@ -462,6 +473,59 @@ define(function(require, exports, module) {
         setup: {type: "settableString", action: "updateShell", name: "Setup Code"}
       }
   };
+
+  function autocompleteCallback(matches, matchedText, callback) {
+    if (_.isEmpty(matchedText)) {
+      return;
+    }
+    callback(_.filter(matches, function(match) {
+      return _.startsWith(match, matchedText);
+    }), matchedText);
+  }
+
+  function getParametersFromDocumentation(documentation) {
+    // Parsing parameters from documentation
+    var start = documentation.indexOf('Parameters\n');
+    if (start === -1) {
+      var div = document.createElement('div');
+      div.innerHTML = documentation;
+      return getParametersFromSection(getDocumentationSection(div.innerText, 'Signature'));
+    }
+
+    documentation = documentation.substring(start);
+    documentation = documentation.substring(documentation.indexOf('-\n') + 2, documentation.indexOf('\n\n'));
+    return _.map(documentation.split(/\n(?=\S)/), function(param) {
+      var s = param.split(':');
+      return {name: s[0].trim(), description: s[1].trim()};
+    });
+  }
+
+  function getDocumentationSection(documentation, sectionName) {
+    var start = documentation.indexOf(sectionName);
+    if (start === -1) {
+      return '';
+    }
+    start += sectionName.length + 1;
+    stop = documentation.lastIndexOf('\n', documentation.indexOf(':', start));
+    if (stop === -1) {
+      return documentation.substr(start);
+    }
+    return documentation.substring(start, stop).trim();
+  }
+
+  function getParametersFromSection(documentationSection) {
+    if (_.isEmpty(documentationSection)) {
+      return [];
+    }
+    var paramArray = documentationSection.substring(documentationSection.indexOf('(') + 1, documentationSection.indexOf(')')).split(',');
+    return _(paramArray).filter(function(param) {
+      // filtering out *args and **kwargs parameters
+      return !_.includes(['*args', '**kwargs'], param);
+    }).map(function(param) {
+      return {name: param.trim()};
+    }).value();
+  }
+
   var defaultSetup = ("%matplotlib inline\n" +
       "import numpy\n" +
       "import matplotlib\n" +

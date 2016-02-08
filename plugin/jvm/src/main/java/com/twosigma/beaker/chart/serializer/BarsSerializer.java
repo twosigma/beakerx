@@ -36,7 +36,6 @@ public class BarsSerializer extends BasedXYGraphicsSerializer<Bars> {
 
     super.serialize(bars, jgen, sp);
 
-    jgen.writeObjectField("type", bars.getClass().getSimpleName());
     if (bars.getWidths() != null) {
       jgen.writeObjectField("widths", bars.getWidths());
     } else {

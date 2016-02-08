@@ -21,7 +21,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils, combinedplotFormatter, bkCellMenuPluginManager) {
+  var retfunc = function(plotUtils, combinedplotFormatter, bkCellMenuPluginManager, plotService) {
     var CELL_TYPE = "bko-combinedplot";
     return {
       template :
@@ -136,6 +136,30 @@
               },
               getWidth : function() {
                 return scope.width;
+              },
+              onClick: function(subplotId, item, e) {
+                for (var i = 0; i < scope.stdmodel.plots.length; i++) {
+                  var subplot = scope.stdmodel.plots[i];
+                  if (subplotId === subplot.plotId) {
+                    var params = plotUtils.getActionObject(scope.model.getCellModel().type, e, i);
+                    plotService.onClick(scope.model.getCellModel().update_id,
+                                        item.uid,
+                                        scope.model.getEvaluatorId(),
+                                        params);
+                  }
+                }
+              },
+              onKey: function(key, subplotId, item, e) {
+                for (var i = 0; i < scope.stdmodel.plots.length; i++) {
+                  var subplot = scope.stdmodel.plots[i];
+                  if (subplotId === subplot.plotId) {
+                    var actionObject = plotUtils.getActionObject(scope.model.getCellModel().type, e, i);
+                    plotService.onKey(scope.model.getCellModel().update_id,
+                                      item.uid,
+                                      scope.model.getEvaluatorId(),
+                                      { key: key, actionObject: actionObject });
+                  }
+                }
               }
             };
             models.push(pl);
@@ -267,5 +291,5 @@
     };
   };
   beaker.bkoDirective("CombinedPlot",
-      ["plotUtils", "combinedplotFormatter", "bkCellMenuPluginManager", retfunc]);
+      ["plotUtils", "combinedplotFormatter", "bkCellMenuPluginManager", "plotService", retfunc]);
 })();

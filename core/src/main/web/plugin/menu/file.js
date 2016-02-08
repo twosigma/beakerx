@@ -74,7 +74,7 @@ define(function(require, exports, module) {
       items: []
     },
     {
-      name: "Publish",
+      name: "Publish...",
       sortorder: 145,
       id: "publish-menuitem",
       action: function () {

@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.chart.heatmap;
 
-import com.twosigma.beaker.AbstractChart;
+import com.twosigma.beaker.chart.AbstractChart;
 import com.twosigma.beaker.chart.GradientColor;
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;

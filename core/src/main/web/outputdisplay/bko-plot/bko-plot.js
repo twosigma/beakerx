@@ -29,7 +29,8 @@
                          bkSessionManager,
                          bkUtils,
                          GradientLegend,
-                         bkoChartExtender) {
+                         bkoChartExtender,
+                         plotService) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -78,6 +79,7 @@
         model.updateLegendPosition = function(){
           return $scope.updateLegendPosition();
         };
+
       },
       link : function(scope, element, attrs) {
         // rendering code
@@ -364,8 +366,83 @@
 
         };
 
+        scope.onKeyAction = function (item, onKeyEvent) {
+          var key = plotUtils.getKeyCodeConstant(onKeyEvent.keyCode);
+          for (var i = 0; i < scope.stdmodel.data.length; i++) {
+            var data = scope.stdmodel.data[i];
+            if (data.id === item.id || item.id.indexOf(data.id + "_") === 0) {
+              if (data.keyTags != null && !_.isEmpty(data.keyTags[key])) {
+                plotUtils.evaluateTagCell(data.keyTags[key]);
+              } else if (data.keys != null && data.keys.indexOf(key) > -1) {
+                scope.legendDone = false;
+                scope.legendResetPosition = true;
+                scope.doNotLoadState = true;
+                var plotId = scope.stdmodel.plotId;
+                if (scope.model.onKey) {
+                  scope.model.onKey(key, plotId, data, item);
+                } else {
+                  plotService.onKey(plotId, data.uid, scope.model.getEvaluatorId(), {
+                    key: key,
+                    actionObject: plotUtils.getActionObject(scope.model.getCellModel().type, item)
+                  });
+                }
+              }
+            }
+          }
+        };
+
+        scope.onKeyListeners = {}; //map: item.id -> listener function
+        scope.removeOnKeyListeners = function () {
+          for (var f in scope.onKeyListeners){
+            if(scope.onKeyListeners.hasOwnProperty(f)){
+              document.removeEventListener("keydown", scope.onKeyListeners[f]);
+            }
+          }
+          scope.onKeyListeners = {};
+        };
+
         scope.prepareInteraction = function() {
           var model = scope.stdmodel;
+
+          scope.svg.selectAll(".item-clickable")
+            .on('click.action', function (e) {
+              for (var i = 0; i < model.data.length; i++) {
+                var item = model.data[i];
+                if(item.hasClickAction === true && (item.id === e.id || e.id.indexOf(item.id + "_") === 0)) {
+                  if(!_.isEmpty(item.clickTag)){
+                    plotUtils.evaluateTagCell(item.clickTag);
+                  }else{
+                    scope.legendDone = false;
+                    scope.legendResetPosition = true;
+                    scope.doNotLoadState = true;
+                    var plotId = scope.stdmodel.plotId;
+                    if (scope.model.onClick) {
+                      scope.model.onClick(plotId, item, e);
+                      return;
+                    } else {
+                      plotService.onClick(plotId, item.uid, scope.model.getEvaluatorId(),
+                                          plotUtils.getActionObject(scope.model.getCellModel().type, e));
+                    }
+                  }
+                }
+              }
+            });
+
+          scope.removeOnKeyListeners();
+
+          var onKeyElements = scope.svg.selectAll(".item-onkey");
+          //TODO add listeners only for elements that have keys or keyTags
+          onKeyElements
+            .on("mouseenter.action", function(item){
+              scope.onKeyListeners[item.id] = function(onKeyEvent){
+                scope.onKeyAction(item, onKeyEvent);
+              };
+              document.addEventListener("keydown", scope.onKeyListeners[item.id]);
+            })
+            .on("mouseleave.action", function(item){
+              document.removeEventListener("keydown", scope.onKeyListeners[item.id]);
+            });
+
           if (model.useToolTip === false) {
             return;
           }
@@ -386,7 +463,7 @@
               scope.removeLegendPointer();
               return plotTip.untooltip(scope, d);
             })
-            .on("click", function(d) {
+            .on("click.resp", function(d) {
               return plotTip.toggleTooltip(scope, d);
             });
         };
@@ -913,9 +990,8 @@
             .attr("id", "legendDraggableContainer")
             .attr("class", "plot-legenddraggable");
 
-          var legendUnit = isHorizontal ? "<div></div>" : "<table></table>",
-              legendLineUnit = isHorizontal ? "<div class='plot-legenditeminline'></div>" : "<tr></tr>",
-              legendLineItemUnit = isHorizontal ? "<span></span>" : "<td></td>";
+          var legendUnit = "<div></div>",
+              legendLineUnit = isHorizontal ? "<div class='plot-legenditeminline'></div>" : "<div class='plot-legenditeminrow'></div>";
           var legend = $(legendUnit).appendTo(legendDraggableContainer)
             .attr("id", "legends");
 
@@ -923,28 +999,29 @@
 
           if (!scope.stdmodel.omitCheckboxes &&
             Object.keys(scope.legendMergedLines).length > 1) {  // skip "All" check when there is only one line
+            var allLegendId = plotUtils.randomString(32);
             var unit = $(legendLineUnit).appendTo(legend)
               .attr("id", "legend_all")
               .addClass("plot-legendline");
             $("<input type='checkbox'></input>")
-              .attr("id", "legendcheck_all")
-              .attr("class", "plot-legendcheckbox")
+              .attr("id", "legendcheck_all_" + allLegendId)
+              .attr("class", "plot-legendcheckbox beforeCheckbox")
               .prop("checked", scope.showAllItems)
               .click(function(e) {
                 return scope.toggleVisibility(e);
               })
-              .appendTo($(legendLineItemUnit).appendTo(unit));
+              .appendTo($(unit));
             $("<span></span>")
               .attr("id", "legendbox_all")
               .attr("class", "plot-legendbox")
               .css("background-color", "none")
-              .appendTo($(legendLineItemUnit).appendTo(unit));
-            $("<span></span>")
+              .appendTo($(unit));
+            $("<label></label>")
               .attr("id", "legendtext_all")
+              .attr("for", "legendcheck_all_" + allLegendId)
               .attr("class", "plot-label")
               .text("All")
-              .appendTo($(legendLineItemUnit).appendTo(unit));
-            $(legendLineItemUnit).appendTo(unit);
+              .appendTo($(unit));
           }
 
           for (var id in scope.legendMergedLines) {
@@ -969,12 +1046,12 @@
               // checkbox
               $("<input type='checkbox'></input>")
                 .attr("id", "legendcheck_" + id)
-                .attr("class", "plot-legendcheckbox")
+                .attr("class", "plot-legendcheckbox beforeCheckbox")
                 .prop("checked", line.showItem)
                 .click(function(e) {
                   return scope.toggleVisibility(e);
                 })
-                .appendTo($(legendLineItemUnit).appendTo(unit));
+                .appendTo(unit);
             }
 
             var clr = plotUtils.createColor(line.color, line.color_opacity),
@@ -990,13 +1067,14 @@
               .css("border",
                 line.stroke != null ? "1px " + sty + st_clr :
                 (line.color != null ? "1px " + sty + clr : "1px dotted gray"))
-              .appendTo($(legendLineItemUnit).appendTo(unit));
+              .appendTo(unit);
             // legend text
-            $(legendLineItemUnit).appendTo(unit)
+            $("<label></label>").appendTo(unit)
               .attr("id", "legendtext_" + id)
+              .attr("for", "legendcheck_" + id)
               .attr("class", "plot-label")
               .text(line.legend);
-            var lodhint = $(legendLineItemUnit).appendTo(unit)
+            var lodhint = $("<span></span>").appendTo(unit)
                 .attr("id", "hint_" + id);
 
             if (line.isLodItem === true) {
@@ -1058,8 +1136,6 @@
                 scope.update();
                 scope.setMergedLodHint(dataIds, e.data.id);
               });
-            } else {
-              $(legendLineItemUnit).appendTo(unit);
             }
           }
 
@@ -1702,11 +1778,12 @@
 
           _.extend(scope.plotSize, scope.stdmodel.plotSize);
           var savedstate = scope.model.getDumpState();
-          if (savedstate !== undefined && savedstate.plotSize !== undefined) {
+          if (scope.doNotLoadState !== true && savedstate !== undefined && savedstate.plotSize !== undefined) {
             scope.loadState(savedstate);
           } else {
             scope.setDumpState(scope.dumpState());
           }
+          scope.doNotLoadState = false;
 
           // create layout elements
           scope.initLayout();
@@ -1846,6 +1923,7 @@
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
           scope.jqlegendcontainer.find("#plotLegend").remove();
+          scope.removeOnKeyListeners();
         });
 
         scope.getSvgToSave = function() {
@@ -2004,5 +2082,6 @@
     "bkUtils",
     "GradientLegend",
     "bkoChartExtender",
+    "plotService",
     retfunc]);
 })();

@@ -61,6 +61,7 @@
   padding-left: 0;
   padding-right: 5px;
   min-width: $grid-gutter-width - 3px;
+  cursor: pointer;
 }
 
 .CodeMirror-scroll {
@@ -78,7 +79,7 @@ div.CodeMirror {
 /* This is for datatables customization */
 tbody tr {
   &, &.odd, &.even {
-    &:hover {
+    &:hover, &.hover {
       table.dataTable.hover &, table.dataTable.display & {
         background-color: #99CCFF;
 

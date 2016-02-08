@@ -18,12 +18,8 @@
 </div>
 <div class="modal-body fixed modal-large" style="padding-top: 69px; padding-bottom: 68px;"><!-- padding linked to modal-header/-footer heights  -->
     <div class="row">
-        <div class="col-xs-4">
-            Use pagination:
-        </div>
-        <div class="col-xs-4">
-            <input type="checkbox" ng-model="pagination.use"/>
-        </div>
+        <input class="paginationOption" id="paginationOption" type="checkbox" ng-model="pagination.use" style="margin-left: 10px"/>
+        <label for="paginationOption" class="col-xs-4">Use pagination:</label>
     </div>
     <div class="row">
         <div class="col-xs-4">

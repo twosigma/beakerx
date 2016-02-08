@@ -41,8 +41,8 @@
    <div class=text-left>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>
    <p><input class="form-control" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start /></p>
    <span style="float:left;" ng-if="getStrategy().ext === undefined">
-     <input type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter">
-     <span ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show ${ extension } files only</span>
+     <input class="beforeCheckbox" id="extensionFilter"type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter">
+     <label ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show ${ extension } files only</label>
    </span>
    <button ng-click="close()" class="btn btn-default">Cancel</button>
    <button ng-click="close(getStrategy().getResult())" class="btn btn-primary modal-submit">{{ getStrategy().closebtn || 'Open'}}</button>

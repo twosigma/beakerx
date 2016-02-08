@@ -478,7 +478,9 @@ define(function(require, exports, module) {
     if (_.isEmpty(matchedText)) {
       return;
     }
-    callback(matches, matchedText);
+    callback(_.filter(matches, function(match) {
+      return _.startsWith(match, matchedText);
+    }), matchedText);
   }
 
   function getParametersFromDocumentation(documentation) {

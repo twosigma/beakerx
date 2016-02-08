@@ -371,13 +371,22 @@
           for (var i = 0; i < scope.stdmodel.data.length; i++) {
             var data = scope.stdmodel.data[i];
             if (data.id === item.id || item.id.indexOf(data.id + "_") === 0) {
+              var plotId = scope.stdmodel.plotId;
               if (data.keyTags != null && !_.isEmpty(data.keyTags[key])) {
-                plotUtils.evaluateTagCell(data.keyTags[key]);
+                if (scope.model.setActionDetails) {
+                  scope.model.setActionDetails(plotId, data, item).then(
+                    function () { plotUtils.evaluateTagCell(data.keyTags[key]); },
+                    function () { console.error('set action details error'); } );
+                } else {
+                  plotService.setActionDetails(plotId, data.uid, scope.model.getEvaluatorId(),
+                    plotUtils.getActionObject(scope.model.getCellModel().type, item)).then(
+                    function () { plotUtils.evaluateTagCell(data.keyTags[key]); },
+                    function () { console.error('set action details error'); });
+                }
               } else if (data.keys != null && data.keys.indexOf(key) > -1) {
                 scope.legendDone = false;
                 scope.legendResetPosition = true;
                 scope.doNotLoadState = true;
-                var plotId = scope.stdmodel.plotId;
                 if (scope.model.onKey) {
                   scope.model.onKey(key, plotId, data, item);
                 } else {
@@ -409,13 +418,26 @@
               for (var i = 0; i < model.data.length; i++) {
                 var item = model.data[i];
                 if(item.hasClickAction === true && (item.id === e.id || e.id.indexOf(item.id + "_") === 0)) {
+                  var plotId = scope.stdmodel.plotId;
                   if(!_.isEmpty(item.clickTag)){
-                    plotUtils.evaluateTagCell(item.clickTag);
+                    if (scope.model.setActionDetails) {
+                      scope.model.setActionDetails(plotId, item, e).then(
+                        function () { plotUtils.evaluateTagCell(item.clickTag); },
+                        function () { console.error('set action details error'); }
+                      );
+                    } else {
+                      plotService.setActionDetails( plotId,
+                                                    item.uid,
+                                                    scope.model.getEvaluatorId(),
+                                                    plotUtils.getActionObject(scope.model.getCellModel().type, e)).then(
+                        function () { plotUtils.evaluateTagCell(item.clickTag); },
+                        function () { console.error('set action details error'); }
+                      );
+                    }
                   }else{
                     scope.legendDone = false;
                     scope.legendResetPosition = true;
                     scope.doNotLoadState = true;
-                    var plotId = scope.stdmodel.plotId;
                     if (scope.model.onClick) {
                       scope.model.onClick(plotId, item, e);
                       return;

@@ -160,6 +160,19 @@
                                       { key: key, actionObject: actionObject });
                   }
                 }
+              },
+              setActionDetails: function(subplotId, item, e) {
+                var actionObject;
+                for (var i = 0; i < scope.stdmodel.plots.length; i++) {
+                  var subplot = scope.stdmodel.plots[i];
+                  if (subplotId === subplot.plotId) {
+                    actionObject = plotUtils.getActionObject(scope.model.getCellModel().type, e, i);
+                  }
+                }
+                return plotService.setActionDetails(scope.model.getCellModel().update_id,
+                                                    item.uid,
+                                                    scope.model.getEvaluatorId(),
+                                                    actionObject);
               }
             };
             models.push(pl);

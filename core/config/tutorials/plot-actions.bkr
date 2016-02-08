@@ -20430,8 +20430,8 @@
                 },
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
-                "elapsedTime": 579,
+                "shellId": "133cab79-17ee-4bfb-8e48-e83e306b3ce0",
+                "elapsedTime": 601,
                 "hidden": true,
                 "height": 51
             },
@@ -40562,8 +40562,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
-                "elapsedTime": 565,
+                "shellId": "133cab79-17ee-4bfb-8e48-e83e306b3ce0",
+                "elapsedTime": 594,
                 "height": 549
             },
             "evaluatorReader": true,
@@ -40584,8 +40584,9 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "def p = new Plot(useToolTip: false);",
-                    "p << new Area(x: [1,4], y: [1,2]).onClick(\"run_tag\")"
+                    "plot = new Plot(useToolTip: false);",
+                    "plot << new Points(x: (1..5), y: (1..5), size: 12.0, color: Color.orange, outlineColor: Color.black, displayName: \"orange\").onClick(\"run_tag\")",
+                    "plot << new Points(x: (1..5), y: (3..8), size: 12.0, color: Color.green, outlineColor: Color.black, displayName: \"green\").onClick(\"run_tag\")"
                 ]
             },
             "output": {
@@ -40618,8 +40619,8 @@
                     "showItem": [
                         true
                     ],
-                    "visibleItem": 1,
-                    "legendableItem": 0,
+                    "visibleItem": 2,
+                    "legendableItem": 2,
                     "defaultFocus": {
                         "xl": 0.4738095238095238,
                         "xr": 0.5261904761904762,
@@ -40672,22 +40673,61 @@
                     "omit_checkboxes": false,
                     "graphics_list": [
                         {
-                            "type": "Area",
-                            "uid": "1a3f2355-e87d-4530-8e51-d146144ed7ae",
+                            "type": "Points",
+                            "uid": "a59a6551-351a-4895-8f80-42ec3b2d567b",
                             "visible": true,
                             "yAxis": null,
                             "hasClickAction": true,
                             "clickTag": "run_tag",
                             "x": [
                                 1,
-                                4
+                                2,
+                                3,
+                                4,
+                                5
                             ],
                             "y": [
                                 1,
-                                2
+                                2,
+                                3,
+                                4,
+                                5
                             ],
-                            "display_name": "",
-                            "base": 0
+                            "display_name": "orange",
+                            "size": 12,
+                            "shape": "DEFAULT",
+                            "fill": null,
+                            "color": "#FFFFC800",
+                            "outline_color": "#FF000000"
+                        },
+                        {
+                            "type": "Points",
+                            "uid": "6c0d97e7-78ee-426e-bbef-cb23a82369bb",
+                            "visible": true,
+                            "yAxis": null,
+                            "hasClickAction": true,
+                            "clickTag": "run_tag",
+                            "x": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5
+                            ],
+                            "y": [
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8
+                            ],
+                            "display_name": "green",
+                            "size": 12,
+                            "shape": "DEFAULT",
+                            "fill": null,
+                            "color": "#FF00FF00",
+                            "outline_color": "#FF000000"
                         }
                     ],
                     "constant_lines": [],
@@ -40702,19 +40742,24 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
-                "elapsedTime": 585,
+                "shellId": "133cab79-17ee-4bfb-8e48-e83e306b3ce0",
+                "elapsedTime": 780,
                 "height": 522
             },
             "evaluatorReader": true,
-            "lineCount": 2,
+            "lineCount": 4,
             "initialization": true
         },
         {
             "id": "markdownOXVCbX",
             "type": "markdown",
             "body": [
-                "Tagged cell"
+                "Tagged cell. ",
+                "",
+                "You can access clicked object via Plot's property 'details'. Format is the same as closure has:",
+                "",
+                "* **graphics** - clicked item (line, points,etc)",
+                "* **index** - index of a clicked element (empty for lines)"
             ],
             "evaluatorReader": false
         },
@@ -40724,19 +40769,22 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "print (\"executed on area click\")"
+                    "def details = plot.details",
+                    "def item = details.graphics",
+                    "def index = details.index",
+                    "print (\"You clicked on \" + item.displayName + \" \" + item.class.simpleName + \" (element with coordinates [\" + item.x[index] + \",\" + item.y[index] + \"])\")"
                 ]
             },
             "output": {
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
-                "elapsedTime": 875,
+                "shellId": "133cab79-17ee-4bfb-8e48-e83e306b3ce0",
+                "elapsedTime": 747,
                 "selectedType": "Results",
                 "height": 0
             },
             "evaluatorReader": true,
-            "lineCount": 1,
+            "lineCount": 4,
             "tags": "run_tag"
         },
         {
@@ -40884,7 +40932,7 @@
                             "width": null,
                             "outline_color": null,
                             "fill": null,
-                            "outline": null,
+                            "outline": false,
                             "labelPosition": "CENTER"
                         }
                     ],
@@ -41014,7 +41062,7 @@
                     "graphics_list": [
                         {
                             "type": "CategoryBars",
-                            "uid": "f98c42df-fbcd-4680-a91e-96d1b4b1a9a6",
+                            "uid": "6f71cb47-c37b-45de-8ec4-ec130e84a309",
                             "visible": true,
                             "yAxis": null,
                             "hasClickAction": true,
@@ -41038,7 +41086,7 @@
                             "width": null,
                             "outline_color": null,
                             "fill": null,
-                            "outline": null,
+                            "outline": false,
                             "labelPosition": "CENTER"
                         }
                     ],
@@ -41209,7 +41257,7 @@
                             "width": 0.7,
                             "outline_color": null,
                             "fill": null,
-                            "outline": null,
+                            "outline": false,
                             "labelPosition": "CENTER"
                         }
                     ],
@@ -41528,8 +41576,8 @@
                 },
                 "selectedType": "CombinedPlot",
                 "pluginName": "Groovy",
-                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
-                "elapsedTime": 556,
+                "shellId": "133cab79-17ee-4bfb-8e48-e83e306b3ce0",
+                "elapsedTime": 568,
                 "height": 554
             },
             "evaluatorReader": true,
@@ -41565,11 +41613,11 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "def p = new Plot(useToolTip: false);",
-                    "p << new Bars(x: (1..5), y: [5, 2, 4, 3, 7], color: beaker.prefs.theme.plotColors[2], outlineColor: Color.black, width: 0.3)",
+                    "barsPlot = new Plot(useToolTip: false);",
+                    "barsPlot << new Bars(x: (1..5), y: [5, 2, 4, 3, 7], color: beaker.prefs.theme.plotColors[2], outlineColor: Color.black, width: 0.3)",
                     "        .onKey(KeyboardCodes.UP_ARROW, {info -> info.graphics.y[info.index]++})",
                     "        .onKey(KeyboardCodes.DOWN_ARROW, {info -> info.graphics.y[info.index]--})",
-                    "        .onKey(\"T\", \"run_tag\")"
+                    "        .onKey(\"T\", \"run_tag2\")"
                 ]
             },
             "output": {
@@ -41657,12 +41705,12 @@
                     "graphics_list": [
                         {
                             "type": "Bars",
-                            "uid": "237ede6f-ca8e-488f-a67d-929ab0ff1481",
+                            "uid": "e7c18e11-8043-43e1-ba61-afbad3b0a235",
                             "visible": true,
                             "yAxis": null,
                             "hasClickAction": false,
                             "keyTags": {
-                                "T": "run_tag"
+                                "T": "run_tag2"
                             },
                             "keys": [
                                 "UP_ARROW",
@@ -41701,13 +41749,36 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "138dbbf2-1bb6-4795-8a7a-f074c55b981f",
-                "elapsedTime": 743,
+                "shellId": "133cab79-17ee-4bfb-8e48-e83e306b3ce0",
+                "elapsedTime": 783,
                 "height": 522
             },
             "evaluatorReader": true,
             "lineCount": 5,
             "initialization": true
+        },
+        {
+            "id": "codeZjj3Kf",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def details = barsPlot.details",
+                    "def item = details.graphics",
+                    "def index = details.index",
+                    "print (\"Key action on \" + item.class.simpleName + \" (element with coordinates [\" + item.x[index] + \",\" + item.y[index] + \"])\")"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "Groovy",
+                "shellId": "133cab79-17ee-4bfb-8e48-e83e306b3ce0",
+                "elapsedTime": 785
+            },
+            "evaluatorReader": true,
+            "lineCount": 4,
+            "tags": "run_tag2"
         }
     ],
     "namespace": {}

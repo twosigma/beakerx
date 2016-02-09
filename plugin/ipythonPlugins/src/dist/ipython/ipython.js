@@ -520,7 +520,7 @@ define(function(require, exports, module) {
     var paramArray = documentationSection.substring(documentationSection.indexOf('(') + 1, documentationSection.indexOf(')')).split(',');
     return _(paramArray).filter(function(param) {
       // filtering out *args and **kwargs parameters
-      return !_.includes(['*args', '**kwargs'], param);
+      return !_.includes(['*args', '**kwargs'], param.trim());
     }).map(function(param) {
       return {name: param.trim()};
     }).value();

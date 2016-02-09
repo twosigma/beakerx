@@ -50,7 +50,6 @@ public class TableDisplay {
   public static final String MATRIX_SUBTYPE = "Matrix";
   public static final String DICTIONARY_SUBTYPE = "Dictionary";
   
-
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
     columns = co;

@@ -52,6 +52,7 @@
       modalDialogOp,
       Upload,
       autocompleteService,
+      autocompleteParametersService,
       codeMirrorExtension,
       GLOBALS) {
 
@@ -621,6 +622,9 @@
         };
 
         var tab = function(cm) {
+          if (autocompleteParametersService.isActive()) {
+            return autocompleteParametersService.nextParameter();
+          }
           var cursor = cm.getCursor();
           var lineLen = cm.getLine(cursor.line).length;
           var rightLine = cm.getRange(cursor, {line: cursor.line, ch: lineLen});

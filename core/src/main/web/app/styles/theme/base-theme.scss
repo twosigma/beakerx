@@ -682,3 +682,7 @@
     color: $markdown-heading-color;
   }
 }
+
+.marked-argument {
+  box-shadow: $marked-argument-border;
+}

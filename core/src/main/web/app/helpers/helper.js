@@ -105,34 +105,41 @@
         var beaker = beakerObj.beakerObj;
         if (beaker) {
           beaker.language = {};
+          beakerObj.beakerObjectToNotebook();
         }
       },
       setLanguageManagerSettingsToBeakerObject: function (plugin) {
-        var beakerObject = this.getBeakerObject().beakerObj;
-        if (beakerObject && beakerObject.language) {
+        var beakerObject = this.getBeakerObject();
+        var beaker = beakerObject.beakerObj;
+        if (beaker && beaker.language) {
           var spec = plugin.spec;
           var beakerLanguageSettings = {};
-          for (var property in spec){
-            if(spec.hasOwnProperty(property) && spec[property].type === 'settableString'){
+          _.forOwn(spec, function(value, property){
+            if(value.type === 'settableString'){
               beakerLanguageSettings[property] = plugin.settings[property] || '';
             }
-          }
-          beakerObject.language[plugin.pluginName] = beakerLanguageSettings;
+          });
+          beaker.language[plugin.pluginName] = beakerLanguageSettings;
+          beakerObject.beakerObjectToNotebook();
         }
       },
       updateLanguageManagerSettingsInBeakerObject: function (pluginName, propertyName, propertyValue) {
-        var beakerObject = this.getBeakerObject().beakerObj;
-        if (beakerObject && beakerObject.language) {
-          var settings = beakerObject.language[pluginName];
+        var beakerObject = this.getBeakerObject();
+        var beaker = beakerObject.beakerObj;
+        if (beaker && beaker.language) {
+          var settings = beaker.language[pluginName];
           if (settings) {
             settings[propertyName] = propertyValue;
           }
+          beakerObject.beakerObjectToNotebook();
         }
       },
       removeLanguageManagerSettingsFromBeakerObject: function (pluginName) {
-        var beakerObject = this.getBeakerObject().beakerObj;
-        if (beakerObject && beakerObject.language && pluginName) {
-          delete beakerObject.language[pluginName];
+        var beakerObject = this.getBeakerObject();
+        var beaker = beakerObject.beakerObj;
+        if (beaker && beaker.language && pluginName) {
+          delete beaker.language[pluginName];
+          beakerObject.beakerObjectToNotebook();
         }
       },
 

@@ -57,6 +57,7 @@
 
       currentParam = params.shift();
       selectNextParameter();
+      showParameterDocumentation(currentParam);
     }
 
     function previousParameter() {
@@ -71,6 +72,7 @@
 
       currentParam = completedParams.pop();
       selectPreviousParameter();
+      showParameterDocumentation(currentParam);
     }
 
     function isActive() {
@@ -78,6 +80,7 @@
     }
 
     function endParameterCompletion() {
+      hideParameterDocumentation();
       var lastArg = _.last(args).find();
       cm.setCursor(_.merge({}, lastArg.to, {ch: lastArg.to.ch + 1}));
       clearMarks()
@@ -103,6 +106,14 @@
       _.forEach(args, function(arg) {
         arg.clear();
       });
+    }
+
+    function showParameterDocumentation(param) {
+      scope.$broadcast('showParameterDocumentation', param.description);
+    }
+
+    function hideParameterDocumentation() {
+      scope.$broadcast('hideParameterDocumentation');
     }
 
     return {

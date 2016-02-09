@@ -161,7 +161,9 @@
     if (_.isEmpty(currentDocumentation) || _.isEmpty(currentDocumentation.parameters)) {
       return;
     }
-    autocompleteParametersService.startParameterCompletion(cm, currentDocumentation, cursorPosBegin, cursorPosEnd, scope);
+    _.defer(function() {
+      autocompleteParametersService.startParameterCompletion(cm, currentDocumentation, cursorPosBegin, cursorPosEnd, scope);
+    });
   }
 
   function onEndCompletion(scope) {

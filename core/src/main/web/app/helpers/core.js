@@ -589,6 +589,9 @@
         };
 
         var shiftTab = function(cm) {
+          if (autocompleteParametersService.isActive()) {
+            return autocompleteParametersService.previousParameter();
+          }
           var cursor = cm.getCursor();
           var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
           if (leftLine.match(/^\s*$/)) {
@@ -640,6 +643,13 @@
           }
         };
 
+        var enter = function(cm) {
+          if (autocompleteParametersService.isActive()) {
+            return autocompleteParametersService.endCompletion();
+          }
+          cm.execCommand("newlineAndIndent");
+        }
+
         var backspace = function(cm) {
           var cursor, anchor,
               toKill = [],
@@ -672,6 +682,7 @@
             "Alt-J": moveFocusDown,
             "Alt-Up": moveFocusUp,
             "Alt-K": moveFocusUp,
+            "Enter": enter,
             "Ctrl-Enter": evaluate,
             "Cmd-Enter": evaluate,
             "Shift-Enter": evaluateAndGoDown,

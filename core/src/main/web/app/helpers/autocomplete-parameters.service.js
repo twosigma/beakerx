@@ -41,7 +41,7 @@
       }).map(function(p) {
         var start = _.merge({}, from, {ch: from.ch + p[0]});
         var end = _.merge({}, from, {ch: from.ch + p[1] + 1});
-        return cm.markText(start, end, {className: 'marked-parameter', clearWhenEmpty: false, inclusiveLeft: true, inclusiveRight: true});
+        return cm.markText(start, end, {className: 'marked-argument', clearWhenEmpty: false, inclusiveLeft: true, inclusiveRight: true});
       }).value();
     }
 
@@ -59,22 +59,42 @@
       selectNextParameter();
     }
 
+    function previousParameter() {
+      if (_.isEmpty(completedParams)) {
+        return endParameterCompletion();
+      }
+
+      if (! _.isUndefined(currentParam)) {
+        currentParam.argument = args[completedParams.length].find();
+        params.unshift(currentParam);
+      }
+
+      currentParam = completedParams.pop();
+      selectPreviousParameter();
+    }
+
     function isActive() {
       return !(_.isEmpty(params) && _.isEmpty(completedParams));
     }
 
     function endParameterCompletion() {
-      console.log(args);
-      cm.setCursor(_.last(args).find().to);
+      var lastArg = _.last(args).find();
+      cm.setCursor(_.merge({}, lastArg.to, {ch: lastArg.to.ch + 1}));
       clearMarks()
       cm = void 0;
       currentParam = void 0;
       scope = void 0;
       completedParams = [];
+      params = [];
       args = [];
     }
 
     function selectNextParameter() {
+      var arg = args[completedParams.length].find();
+      cm.setSelection(arg.from, arg.to);
+    }
+
+    function selectPreviousParameter() {
       var arg = args[completedParams.length].find();
       cm.setSelection(arg.from, arg.to);
     }
@@ -88,7 +108,9 @@
     return {
       startParameterCompletion: startParameterCompletion,
       isActive: isActive,
-      nextParameter: nextParameter
+      nextParameter: nextParameter,
+      previousParameter: previousParameter,
+      endCompletion: endParameterCompletion
     };
 
   });

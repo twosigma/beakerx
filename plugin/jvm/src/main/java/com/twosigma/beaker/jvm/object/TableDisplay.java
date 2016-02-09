@@ -16,6 +16,7 @@
 package com.twosigma.beaker.jvm.object;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Set;
 
+import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
@@ -80,13 +82,26 @@ public class TableDisplay {
     for(Map<?,?> m : v) {
       List<Object> vals = new ArrayList<Object>();
       for (String cn : columns) {
-        if (m.containsKey(cn))
-          vals.add(m.get(cn));
+        if (m.containsKey(cn)){
+          vals.add(getValueForSerializer( m.get(cn), serializer));
+        }
         else
           vals.add(null);
       }
       values.add(vals);
     }
+  }
+
+  private Object getValueForSerializer(Object value, BeakerObjectConverter serializer){
+    if (value != null) {
+      String clazz = serializer.convertType(value.getClass().getName());
+      if (BasicObjectSerializer.TYPE_LONG.equals(clazz) ||
+          BasicObjectSerializer.TYPE_BIGINT.equals(clazz)){
+        return value.toString();
+      }
+      return value;
+    }
+    return null;
   }
   
   
@@ -122,7 +137,18 @@ public class TableDisplay {
       parent = p;
       parent.addKnownBeakerType("TableDisplay");
     }
-    
+
+    private Object getValueForDeserializer(Object value, String clazz) {
+      if (clazz != null) {
+        if (BasicObjectSerializer.TYPE_LONG.equals(clazz)) {
+          value = Long.parseLong(value.toString());
+        }else if (BasicObjectSerializer.TYPE_BIGINT.equals(clazz)) {
+          value = BigInteger.valueOf(Long.parseLong(value.toString()));
+        }
+      }
+      return value;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public Object deserialize(JsonNode n, ObjectMapper mapper) {
@@ -144,11 +170,12 @@ public class TableDisplay {
             for (JsonNode nno : nn) {
               if (nno.isArray()) {
                 ArrayList<Object> val = new ArrayList<Object>();
-                for (JsonNode nnoo : nno) {
+                for (int i = 0; i < nno.size(); i++) {
+                  JsonNode nnoo = nno.get(i);
                   Object obj = parent.deserialize(nnoo, mapper);
-                  val.add(obj);
+                  val.add(getValueForDeserializer(obj, clas != null ? clas.get(i) : null));
                 }
-                vals.add(val);              
+                vals.add(val);
               }
             }
           }
@@ -167,9 +194,9 @@ public class TableDisplay {
           }
           o = m;
         } else if(subtype!=null && subtype.equals(TableDisplay.LIST_OF_MAPS_SUBTYPE) && cols!=null && vals!=null) {
-          List<Map<String,Object>>  oo = new ArrayList<Map<String,Object>>();
+          List<Map<String,Object>>  oo = new ArrayList<>();
           for(int r=0; r<vals.size(); r++) {
-            Map<String,Object> m = new HashMap<String,Object>();
+            Map<String,Object> m = new HashMap<>();
             List<?> row = vals.get(r);
             for(int c=0; c<cols.size(); c++) {
               if(row.size()>c)

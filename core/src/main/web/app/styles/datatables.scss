@@ -1,5 +1,9 @@
 $border-color: #D4D0D0;
 
+.dtcontainer {
+  position: relative;
+}
+
 table.dataTable {
   margin : 0;
   thead th, tbody td {
@@ -55,11 +59,10 @@ td.dtcenter {
 }
 
 div.dtmenu {
-  float: right;
+  position: absolute;
+  top: 0.8px;
   color: #73BE3B;
   cursor: pointer;
-  display: inline-block;
-  margin-bottom: -19px;
   &:hover {
     color: #FFF;
     background-color: #39A9ED;
@@ -75,6 +78,10 @@ a.dtmenu {
   padding-right: 13px;
   margin-left: 10px;
   margin-right: 10px;
+}
+
+.dtmenu .bko-menu{
+  display: block;
 }
 
 .dt-cell-div {

@@ -25,7 +25,6 @@
     };
 
     var params = [];
-    var completedParams = [];
     var cm;
     var scope;
     var currentParam;
@@ -44,13 +43,30 @@
       if (!isActive()) {
         return;
       }
-      if (!cursorInCompletionRange(cm.getCursor('anchor'))) {
-        endCompletion();
+      if (!cursorInRange(getCompletionRange())) {
+        return endCompletion();
       }
+
+      if (cursorInRange(args[currentParam].find())) {
+        return showParameterDocumentation(params[currentParam]);
+      }
+
+      var activeArgumentIndex = getArgumentIndexUnderCursor();
+      if (activeArgumentIndex === -1 || _.isUndefined(activeArgumentIndex)) {
+        return hideParameterDocumentation();
+      }
+      toParam(activeArgumentIndex);
+
     }
 
-    function cursorInCompletionRange(cursor) {
-      var range = getCompletionRange();
+    function getArgumentIndexUnderCursor() {
+      return _.findIndex(args, function(arg) {
+        return cursorInRange(arg.find());
+      });
+    }
+
+    function cursorInRange(range) {
+      var cursor = cm.getCursor('anchor');
       return cursor.line >= range.from.line &&
         cursor.line <= range.to.line &&
         cursor.ch >= range.from.ch &&
@@ -78,46 +94,40 @@
     }
 
     function nextParameter() {
-      if (_.isEmpty(params)) {
+      if (currentParam === params.length - 1) {
         return endCompletionAndMoveCursor();
       }
-
-      if (! _.isUndefined(currentParam)) {
-        currentParam.argument = args[completedParams.length].find();
-        markParameterIfChanged();
-        completedParams.push(currentParam);
-      }
-
-      currentParam = params.shift();
-      selectNextParameter();
-      showParameterDocumentation(currentParam);
+      toParam(_.isUndefined(currentParam) ? 0 : currentParam + 1);
     }
 
     function previousParameter() {
-      if (_.isEmpty(completedParams)) {
+      if (currentParam === 0) {
         return endCompletionAndMoveCursor();
       }
 
-      if (! _.isUndefined(currentParam)) {
-        currentParam.argument = args[completedParams.length].find();
-        markParameterIfChanged();
-        params.unshift(currentParam);
-      }
-
-      currentParam = completedParams.pop();
-      selectPreviousParameter();
-      showParameterDocumentation(currentParam);
+      toParam(_.isUndefined(currentParam) ? params.length - 1 : currentParam - 1);
     }
 
-    function markParameterIfChanged() {
-      if (cm.getRange(currentParam.argument.from, currentParam.argument.to) !== currentParam.name) {
-        args[completedParams.length].clear();
-        args[completedParams.length] = markWithClass(currentParam.argument.from, currentParam.argument.to, 'marked-argument-changed');
+    function toParam(index) {
+      if (! _.isUndefined(currentParam)) {
+        params[currentParam].argument = args[currentParam].find();
+        markArgumentIfChanged();
+      }
+      currentParam = index;
+      selectArgument(currentParam);
+      showParameterDocumentation(params[currentParam]);
+    }
+
+    function markArgumentIfChanged() {
+      var p = params[currentParam]
+      if (cm.getRange(p.argument.from, p.argument.to) !== p.name) {
+        args[currentParam].clear();
+        args[currentParam] = markWithClass(p.argument.from, p.argument.to, 'marked-argument-changed');
       }
     }
 
     function isActive() {
-      return !(_.isEmpty(params) && _.isEmpty(completedParams));
+      return !(_.isEmpty(params));
     }
 
     function endCompletion() {
@@ -127,7 +137,6 @@
       cm = void 0;
       currentParam = void 0;
       scope = void 0;
-      completedParams = [];
       params = [];
       args = [];
     }
@@ -138,13 +147,8 @@
       endCompletion();
     }
 
-    function selectNextParameter() {
-      var arg = args[completedParams.length].find();
-      cm.setSelection(arg.from, arg.to);
-    }
-
-    function selectPreviousParameter() {
-      var arg = args[completedParams.length].find();
+    function selectArgument(i) {
+      var arg = args[i].find();
       cm.setSelection(arg.from, arg.to);
     }
 

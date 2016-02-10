@@ -172,7 +172,7 @@ public class TableDisplay {
                 for (int i = 0; i < nno.size(); i++) {
                   JsonNode nnoo = nno.get(i);
                   Object obj = parent.deserialize(nnoo, mapper);
-                  val.add(getValueForDeserializer(obj, clas != null ? clas.get(i) : null));
+                  val.add(getValueForDeserializer(obj, clas != null && clas.size() > i ? clas.get(i) : null));
                 }
                 vals.add(val);
               }

@@ -138,6 +138,12 @@ tbody tr {
   }
 }
 
+.DTFC_LeftHeadWrapper table {
+  thead .sorting, .sorting_asc, .sorting_desc {
+    background-image: none !important;
+  }
+}
+
 // Bootstrap wants to keep focus styling on dropdowns
 // after they are closed *shrug*
 .navbar-default .navbar-nav > li > a {

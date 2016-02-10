@@ -10,7 +10,7 @@ $border-color: #D4D0D0;
 table.dataTable {
   margin : 0;
   thead th, tbody td {
-    padding: 4px 10px;
+    padding: 4px 10px 4px 20px;
     white-space: nowrap;
     border: 1px solid $border-color;
     border-width: 0 1px 0 0;

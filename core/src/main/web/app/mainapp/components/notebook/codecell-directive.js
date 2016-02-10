@@ -420,7 +420,7 @@
             CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
           });
           scope.cm.on('focus', function () {
-            if ($('.CodeMirror-hint').length > 0) {
+            if (!scope.cm.curOp || $('.CodeMirror-hint').length > 0) {
               //codecomplete is up, skip
               return;
             }

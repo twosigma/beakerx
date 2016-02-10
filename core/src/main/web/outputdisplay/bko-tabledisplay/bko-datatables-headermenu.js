@@ -118,7 +118,6 @@ HeaderMenu.prototype = {
           }
 
           e.preventDefault();
-          e.stopPropagation();
         });
 
       $(cell).append($el);

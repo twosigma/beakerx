@@ -110,6 +110,9 @@ HeaderMenu.prototype = {
         .bind('click', function(e) {
           if (that.dom.menu) {
             that._hide();
+            if($(this).parent().data('columnIndex') !== that.dom.container.data('columnIndex')){
+              that._show($(this));
+            }
           } else {
             that._show($(this));
           }

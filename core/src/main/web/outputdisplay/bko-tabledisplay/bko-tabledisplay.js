@@ -1356,7 +1356,6 @@
                 $(tr).addClass('selected');
                 scope.selectFixedColumnCell(rowIndex, true);
               }
-              event.stopPropagation();
             });
 
             $(id + ' tbody')

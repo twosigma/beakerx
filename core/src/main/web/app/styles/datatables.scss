@@ -2,6 +2,9 @@ $border-color: #D4D0D0;
 
 .dtcontainer {
   position: relative;
+  .dropdown-menu {
+    margin-top: 1px;
+  }
 }
 
 table.dataTable {
@@ -60,7 +63,7 @@ td.dtcenter {
 
 div.dtmenu {
   position: absolute;
-  top: 0.8px;
+  top: 1px;
   color: #73BE3B;
   cursor: pointer;
   &:hover {

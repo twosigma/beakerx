@@ -430,6 +430,7 @@ public class JavaEvaluator {
       StringBuilder strB = new StringBuilder();
 
       char prevC = ' ';
+      char prevPrevC = ' ';
       for (int i = 0; i < javaCode.length(); i++) {
         char c = javaCode.charAt(i);
         switch (state) {
@@ -469,14 +470,22 @@ public class JavaEvaluator {
               state = FilterState.IN_COMMENT_BLOCK;
             break;
           case INSIDE_STRING:
-            if (c == '"' && prevC != '\\')
-              state = FilterState.IN_CODE;
+            if (c == '"') {
+              if (prevC != '\\') {
+                state = FilterState.IN_CODE;
+              } else {
+                if (prevPrevC == '\\') {
+                  state = FilterState.IN_CODE;
+                }
+              }
+            }
             strB.append(c);
             break;
           default:
             System.out.println("unknown case");
             return null;
         }
+        prevPrevC = prevC;
         prevC = c;
       }
       return strB.toString();

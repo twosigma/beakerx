@@ -622,17 +622,11 @@
 
         var tab = function(cm) {
           var cursor = cm.getCursor();
-          var lineLen = cm.getLine(cursor.line).length;
-          var rightLine = cm.getRange(cursor, {line: cursor.line, ch: lineLen});
           var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
-          if (leftLine.match(/^\s*$/) || leftLine.match(/\s+$/)) {
+          if (leftLine.match(/^\s*$/)) {
             cm.execCommand("indentMore");
           } else {
-            if (rightLine.match(/^\s*$/)) {
-              showAutocomplete(cm);
-            } else {
-              cm.execCommand("indentMore");
-            }
+            showAutocomplete(cm);
           }
         };
 

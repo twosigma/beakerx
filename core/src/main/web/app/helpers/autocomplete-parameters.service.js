@@ -18,6 +18,12 @@
   'use strict';
   angular.module('bk.core').factory('autocompleteParametersService', function() {
 
+    var markConfig = {
+      clearWhenEmpty: false,
+      inclusiveLeft: true,
+      inclusiveRight: true
+    };
+
     var params = [];
     var completedParams = [];
     var cm;
@@ -41,8 +47,12 @@
       }).map(function(p) {
         var start = _.merge({}, from, {ch: from.ch + p[0]});
         var end = _.merge({}, from, {ch: from.ch + p[1] + 1});
-        return cm.markText(start, end, {className: 'marked-argument', clearWhenEmpty: false, inclusiveLeft: true, inclusiveRight: true});
+        return markWithClass(start, end, 'marked-argument-unchanged');
       }).value();
+    }
+
+    function markWithClass(start, end, className) {
+      return cm.markText(start, end, _.merge({}, {className: className}, markConfig));
     }
 
     function nextParameter() {
@@ -52,6 +62,7 @@
 
       if (! _.isUndefined(currentParam)) {
         currentParam.argument = args[completedParams.length].find();
+        markParameterIfChanged();
         completedParams.push(currentParam);
       }
 
@@ -67,12 +78,20 @@
 
       if (! _.isUndefined(currentParam)) {
         currentParam.argument = args[completedParams.length].find();
+        markParameterIfChanged();
         params.unshift(currentParam);
       }
 
       currentParam = completedParams.pop();
       selectPreviousParameter();
       showParameterDocumentation(currentParam);
+    }
+
+    function markParameterIfChanged() {
+      if (cm.getRange(currentParam.argument.from, currentParam.argument.to) !== currentParam.name) {
+        args[completedParams.length].clear();
+        args[completedParams.length] = markWithClass(currentParam.argument.from, currentParam.argument.to, 'marked-argument-changed');
+      }
     }
 
     function isActive() {

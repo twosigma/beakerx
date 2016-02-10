@@ -70,7 +70,7 @@ s: {[name;val]
     j:.j.j raze 4_"\n" vs bc_post["/rest/namespace/set"; (
         "sync=true";
         "&name="; string name;
-        "&value="; .j.j val
+        "&value="; ssr/[.j.j val;"+-";("%2B";"%2D")]
     )];
     $[j~"\"ok\"";`ok;`$j]
     }

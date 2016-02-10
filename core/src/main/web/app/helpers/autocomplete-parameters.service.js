@@ -36,7 +36,29 @@
       params = documentation.parameters;
       scope = $scope;
       markParameters(selectionStart, selectionEnd);
+      cm.on('cursorActivity', endCompletionIfCursorOutOfRange);
       nextParameter();
+    }
+
+    function endCompletionIfCursorOutOfRange(cm) {
+      if (!isActive()) {
+        return;
+      }
+      if (!cursorInCompletionRange(cm.getCursor('anchor'))) {
+        endCompletion();
+      }
+    }
+
+    function cursorInCompletionRange(cursor) {
+      var range = getCompletionRange();
+      return cursor.line >= range.from.line &&
+        cursor.line <= range.to.line &&
+        cursor.ch >= range.from.ch &&
+        cursor.ch <= range.to.ch;
+    }
+
+    function getCompletionRange() {
+      return {from: args[0].find().from, to: _.last(args).find().to};
     }
 
     function markParameters(from, to) {
@@ -57,7 +79,7 @@
 
     function nextParameter() {
       if (_.isEmpty(params)) {
-        return endParameterCompletion();
+        return endCompletionAndMoveCursor();
       }
 
       if (! _.isUndefined(currentParam)) {
@@ -73,7 +95,7 @@
 
     function previousParameter() {
       if (_.isEmpty(completedParams)) {
-        return endParameterCompletion();
+        return endCompletionAndMoveCursor();
       }
 
       if (! _.isUndefined(currentParam)) {
@@ -98,10 +120,9 @@
       return !(_.isEmpty(params) && _.isEmpty(completedParams));
     }
 
-    function endParameterCompletion() {
+    function endCompletion() {
+      cm.off('cursorActivity', endCompletionIfCursorOutOfRange);
       hideParameterDocumentation();
-      var lastArg = _.last(args).find();
-      cm.setCursor(_.merge({}, lastArg.to, {ch: lastArg.to.ch + 1}));
       clearMarks()
       cm = void 0;
       currentParam = void 0;
@@ -109,6 +130,12 @@
       completedParams = [];
       params = [];
       args = [];
+    }
+
+    function endCompletionAndMoveCursor() {
+      var lastArg = _.last(args).find();
+      cm.setCursor(_.merge({}, lastArg.to, {ch: lastArg.to.ch + 1}));
+      endCompletion();
     }
 
     function selectNextParameter() {
@@ -140,7 +167,7 @@
       isActive: isActive,
       nextParameter: nextParameter,
       previousParameter: previousParameter,
-      endCompletion: endParameterCompletion
+      endCompletion: endCompletionAndMoveCursor
     };
 
   });

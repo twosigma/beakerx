@@ -118,14 +118,11 @@ var BeakerPageObject = function() {
   };
 
   this.createMarkdownCell = function(text) {
-    return element(by.css('bk-new-cell-menu .dropdown-toggle'))
+    return element(by.css('.insert-text'))
     .click()
-    .then(function() {
-      return element(by.css('.insert-text'));
-    })
-    .then(function(el) {
-      return el.click();
-    })
+    //.then(function() {
+    //  return element(by.css('bk-markdown-editable div.markup')).click();
+    //})
     .then(function() {
       return this.setCellInput(text);
     }.bind(this));
@@ -167,7 +164,7 @@ var BeakerPageObject = function() {
 
   this.readMarkdownCell = function() {
     element(by.css('body')).click();
-
+    browser.sleep(1000);
     return element(by.css('.markup p')).getText();
   };
 

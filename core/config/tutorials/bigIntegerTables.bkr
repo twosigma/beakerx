@@ -119,18 +119,18 @@
                     ],
                     "values": [
                         [
-                            "1455161749456000007",
-                            "1455161749456000077",
+                            "1455202409202000007",
+                            "1455202409202000077",
                             14.6
                         ],
                         [
-                            "1455161749456000014",
-                            "2910323498912000176",
+                            "1455202409202000014",
+                            "2910404818404000176",
                             18.1
                         ],
                         [
-                            "1455161749456000021",
-                            "4365485248368000297",
+                            "1455202409202000021",
+                            "4365607227606000297",
                             23.6
                         ]
                     ],
@@ -143,8 +143,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "c79a772a-60a0-43e1-9d03-f8e6fc88a40a",
-                "elapsedTime": 595,
+                "shellId": "9d6b48cf-c110-4b9b-972a-d3955ea63bb0",
+                "elapsedTime": 1290,
                 "height": 136
             },
             "evaluatorReader": true,
@@ -186,18 +186,18 @@
                     ],
                     "values": [
                         [
-                            "1455161751966000007",
-                            "1130660681277582059829",
+                            "1455202411796000007",
+                            "1130692273965492059829",
                             3.351
                         ],
                         [
-                            "1455161751966000014",
-                            "1292183635745808078144",
+                            "1455202411796000014",
+                            "1292219741674848078144",
                             2.355
                         ],
                         [
-                            "1455161751966000021",
-                            "1453706590214034098901",
+                            "1455202411796000021",
+                            "1453747209384204098901",
                             2.728
                         ]
                     ],
@@ -210,8 +210,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "c79a772a-60a0-43e1-9d03-f8e6fc88a40a",
-                "elapsedTime": 590,
+                "shellId": "9d6b48cf-c110-4b9b-972a-d3955ea63bb0",
+                "elapsedTime": 575,
                 "state": {
                     "datatablestate": {
                         "pagination": {
@@ -307,18 +307,18 @@
                     "values": [
                         [
                             14.6,
-                            "1455161749456000077",
-                            "1455161749456000007"
+                            "1455202409202000077",
+                            "1455202409202000007"
                         ],
                         [
                             18.1,
-                            "2910323498912000176",
-                            "1455161749456000014"
+                            "2910404818404000176",
+                            "1455202409202000014"
                         ],
                         [
                             23.6,
-                            "4365485248368000297",
-                            "1455161749456000021"
+                            "4365607227606000297",
+                            "1455202409202000021"
                         ]
                     ],
                     "types": [
@@ -330,8 +330,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "c79a772a-60a0-43e1-9d03-f8e6fc88a40a",
-                "elapsedTime": 599,
+                "shellId": "9d6b48cf-c110-4b9b-972a-d3955ea63bb0",
+                "elapsedTime": 584,
                 "height": 136
             },
             "evaluatorReader": true,
@@ -355,52 +355,73 @@
                 ]
             },
             "output": {
-                "state": {},
-                "result": {
-                    "type": "Results",
-                    "outputdata": [
-                        {
-                            "type": "err",
-                            "value": "Feb 10, 2016 10:39:46 PM com.twosigma.beaker.jvm.object.TableDisplay$DeSerializer deserialize\nSEVERE: exception deserializing TableDisplay \njava.lang.NumberFormatException: For input string: \"1130660681277582059829\"\n\tat java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)\n\tat java.lang.Long.parseLong(Long.java:592)\n\tat java.lang.Long.parseLong(Long.java:631)\n\tat com.twosigma.beaker.jvm.object.TableDisplay$DeSerializer.getValueForDeserializer(TableDisplay.java:145)\n\tat com.twosigma.beaker.jvm.object.TableDisplay$DeSerializer.deserialize(TableDisplay.java:175)\n\tat com.twosigma.beaker.jvm.serialization.BasicObjectSerializer.deserialize(BasicObjectSerializer.java:267)\n\tat com.twosigma.beaker.jvm.serialization.NamespaceBindingDeserializer.deserialize(NamespaceBindingDeserializer.java:53)\n\tat com.twosigma.beaker.jvm.serialization.NamespaceBindingDeserializer.deserialize(NamespaceBindingDeserializer.java:34)\n\tat org.codehaus.jackson.map.ObjectMapper._readMapAndClose(ObjectMapper.java:2732)\n\tat org.codehaus.jackson.map.ObjectMapper.readValue(ObjectMapper.java:1863)\n\tat com.twosigma.beaker.NamespaceClient.get(NamespaceClient.java:181)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:497)\n\tat org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:90)\n\tat groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:324)\n\tat org.codehaus.groovy.runtime.metaclass.MethodMetaProperty$GetMethodMetaProperty.getProperty(MethodMetaProperty.java:59)\n\tat org.codehaus.groovy.runtime.callsite.GetEffectivePojoPropertySite.getProperty(GetEffectivePojoPropertySite.java:61)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callGetProperty(AbstractCallSite.java:293)\n\tat Script32.run(Script32.groovy:1)\n\tat groovy.lang.GroovyShell.evaluate(GroovyShell.java:589)\n\tat groovy.lang.GroovyShell.evaluate(GroovyShell.java:627)\n\tat groovy.lang.GroovyShell.evaluate(GroovyShell.java:598)\n\tat com.twosigma.beaker.groovy.utils.GroovyEvaluator$workerThread$MyRunnable.run(GroovyEvaluator.java:282)\n\tat java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)\n\tat java.util.concurrent.FutureTask.run(FutureTask.java:266)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)\n\tat java.lang.Thread.run(Thread.java:745)\n"
-                        }
-                    ],
-                    "payload": {
-                        "type": "TableDisplay",
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
                         "columnNames": [
-                            "time",
+                            "temp",
                             "next_time",
-                            "temp"
+                            "time"
                         ],
-                        "values": [
-                            [
-                                "1455161751966000007",
-                                "1130660681277582059829",
-                                3.351
-                            ],
-                            [
-                                "1455161751966000014",
-                                "1292183635745808078144",
-                                2.355
-                            ],
-                            [
-                                "1455161751966000021",
-                                "1453706590214034098901",
-                                2.728
-                            ]
+                        "actualalign": [
+                            "R",
+                            "L",
+                            "L"
                         ],
-                        "types": [
-                            "bigint",
-                            "bigint",
-                            "double"
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
                         ],
-                        "subtype": "ListOfMaps"
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ]
                     }
                 },
-                "selectedType": "Results",
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "temp",
+                        "next_time",
+                        "time"
+                    ],
+                    "values": [
+                        [
+                            3.351,
+                            "1130692273965492059829",
+                            "1455202411796000007"
+                        ],
+                        [
+                            2.355,
+                            "1292219741674848078144",
+                            "1455202411796000014"
+                        ],
+                        [
+                            2.728,
+                            "1453747209384204098901",
+                            "1455202411796000021"
+                        ]
+                    ],
+                    "types": [
+                        "double",
+                        "bigint",
+                        "bigint"
+                    ],
+                    "subtype": "ListOfMaps"
+                },
+                "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "c79a772a-60a0-43e1-9d03-f8e6fc88a40a",
-                "elapsedTime": 587,
-                "height": 730
+                "shellId": "9d6b48cf-c110-4b9b-972a-d3955ea63bb0",
+                "elapsedTime": 574,
+                "height": 136
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -457,18 +478,18 @@
             ],
             "values": [
                 [
-                    "1455161749456000007",
-                    "1455161749456000077",
+                    "1455202409202000007",
+                    "1455202409202000077",
                     14.6
                 ],
                 [
-                    "1455161749456000014",
-                    "2910323498912000176",
+                    "1455202409202000014",
+                    "2910404818404000176",
                     18.1
                 ],
                 [
-                    "1455161749456000021",
-                    "4365485248368000297",
+                    "1455202409202000021",
+                    "4365607227606000297",
                     23.6
                 ]
             ],
@@ -488,18 +509,18 @@
             ],
             "values": [
                 [
-                    "1455161751966000007",
-                    "1130660681277582059829",
+                    "1455202411796000007",
+                    "1130692273965492059829",
                     3.351
                 ],
                 [
-                    "1455161751966000014",
-                    "1292183635745808078144",
+                    "1455202411796000014",
+                    "1292219741674848078144",
                     2.355
                 ],
                 [
-                    "1455161751966000021",
-                    "1453706590214034098901",
+                    "1455202411796000021",
+                    "1453747209384204098901",
                     2.728
                 ]
             ],

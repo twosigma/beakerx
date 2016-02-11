@@ -20,7 +20,7 @@
 (function() {
   'use strict';
   var module = angular.module('bk.angularUtils', ['bk.globals']);
-  module.factory('angularUtils', function($rootScope, $location, $http, $q, $timeout, GLOBALS) {
+  module.factory('angularUtils', function($rootScope, $location, $http, $q, $timeout, GLOBALS, $sce) {
     return {
       setLocation: function(newLocation) {
         $location.path(newLocation);
@@ -151,6 +151,9 @@
       },
       hideLanguageManagerSpinner: function(err) {
         $rootScope.$emit(GLOBALS.EVENTS.LANGUAGE_MANAGER_HIDE_SPINNER, {error: err});
+      },
+      trustAsHtml: function(piece) {
+        return $sce.trustAsHtml(piece);
       }
     };
   });

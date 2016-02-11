@@ -679,6 +679,9 @@
       cancelTimeout: function(promise) {
         return bkUtils.cancelTimeout(promise);
       },
+      trustAsHtml: function(piece) {
+        return bkUtils.trustAsHtml(piece);
+      },
       getHomeDirectory: function() {
         return bkUtils.getHomeDirectory();
       },

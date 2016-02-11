@@ -915,9 +915,10 @@
             }
           }
         };
-        scope.highlightFixedColumnCell = function (row, highlight) {
+        scope.highlightFixedColumnCell = function (dtRowIndex, highlight) {
           if (scope.fixcols) {
-            var fixedRow = $(scope.fixcols.dom.clone.left.body.rows[row + 1]);
+            var fixRowIndex = scope.table.row(dtRowIndex).node().rowIndex;
+            var fixedRow = $(scope.fixcols.dom.clone.left.body.rows[fixRowIndex]);
             if (highlight) {
               fixedRow.addClass('hover');
             } else {
@@ -1370,13 +1371,15 @@
 
             $(id + ' tbody')
               .on('mouseenter.bko-datatable', 'tr', function () {
-                var rowIndex = this.rowIndex - 1;
-                $(scope.table.row(rowIndex).node()).addClass('hover');
+                var dtTR = scope.getDtRow(this);
+                var rowIndex = scope.table.row(dtTR).index();
+                $(dtTR).addClass('hover');
                 scope.highlightFixedColumnCell (rowIndex, true);
               })
               .on('mouseleave.bko-datatable', 'tr', function () {
-                var rowIndex = this.rowIndex - 1;
-                $(scope.table.row(rowIndex).node()).removeClass('hover');
+                var dtTR = scope.getDtRow(this);
+                var rowIndex = scope.table.row(dtTR).index();
+                $(dtTR).removeClass('hover');
                 scope.highlightFixedColumnCell (rowIndex, false);
               });
 

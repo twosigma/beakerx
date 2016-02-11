@@ -16,6 +16,13 @@
 
 /* Our typeface makes vertical alignment... well, not so good,
 so let's help it along a little bit by adjusting padding. */
+
+
+$marked-argument-unchanged-border: inset 0 0 5px #285d95;
+$marked-argument-unchanged-color: #a1a1a1;
+
+$marked-argument-changed-border: inset 0 0 5px #7f7f7f;
+
 .btn-xs {
   padding-top: $padding-xs-vertical + 1;
   padding-bottom: $padding-xs-vertical - 1;
@@ -116,3 +123,14 @@ ul {
   margin-left: 1.5px;
   margin-right: 12.5px;
 }
+
+.marked-argument-unchanged {
+  box-shadow: $marked-argument-unchanged-border;
+  color: $marked-argument-unchanged-color;
+  font-style: italic;
+}
+
+.marked-argument-changed {
+  box-shadow: $marked-argument-changed-border;
+}
+

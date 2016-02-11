@@ -60,6 +60,17 @@
           tooltip.removeClass('CodeMirror-hints');
         });
 
+        scope.$on('showParameterDocumentation', function(event, doc) {
+          tooltip.empty();
+          unbindEvents();
+          displayTooltip(doc);
+          setTooltipPosition(calculateTooltipPosition());
+        });
+
+        scope.$on('hideParameterDocumentation', function() {
+          hideTooltip();
+        });
+
         function getDocContent(doc) {
           if (doc.ansiHtml) {
             return ansi_up.ansi_to_html(doc.ansiHtml, {use_classes: true});

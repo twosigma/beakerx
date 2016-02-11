@@ -52,6 +52,7 @@
       modalDialogOp,
       Upload,
       autocompleteService,
+      autocompleteParametersService,
       codeMirrorExtension,
       GLOBALS) {
 
@@ -588,6 +589,9 @@
         };
 
         var shiftTab = function(cm) {
+          if (autocompleteParametersService.isActive()) {
+            return autocompleteParametersService.previousParameter();
+          }
           var cursor = cm.getCursor();
           var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
           if (leftLine.match(/^\s*$/)) {
@@ -621,6 +625,9 @@
         };
 
         var tab = function(cm) {
+          if (autocompleteParametersService.isActive()) {
+            return autocompleteParametersService.nextParameter();
+          }
           var cursor = cm.getCursor();
           var lineLen = cm.getLine(cursor.line).length;
           var rightLine = cm.getRange(cursor, {line: cursor.line, ch: lineLen});
@@ -635,6 +642,13 @@
             }
           }
         };
+
+        var enter = function(cm) {
+          if (autocompleteParametersService.isActive()) {
+            return autocompleteParametersService.endCompletionAndMoveCursor();
+          }
+          cm.execCommand("newlineAndIndent");
+        }
 
         var backspace = function(cm) {
           var cursor, anchor,
@@ -668,6 +682,7 @@
             "Alt-J": moveFocusDown,
             "Alt-Up": moveFocusUp,
             "Alt-K": moveFocusUp,
+            "Enter": enter,
             "Ctrl-Enter": evaluate,
             "Cmd-Enter": evaluate,
             "Shift-Enter": evaluateAndGoDown,

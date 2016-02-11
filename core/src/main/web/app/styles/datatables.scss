@@ -85,6 +85,11 @@ a.dtmenu {
 
 .dtmenu .bko-menu{
   display: block;
+  &.sorting_desc {
+    background-image: url("../images/sort_desc.png");
+    background-size: 20px;
+    opacity: 1;
+  }
 }
 
 .dt-cell-div {

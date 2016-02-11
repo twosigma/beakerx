@@ -1257,6 +1257,7 @@
               scope.update_size();
               scope.update_selected();
               scope.updateBackground();
+              scope.updateDTMenu();
               //jscs:enable
             }
           };
@@ -1566,6 +1567,14 @@
             });
           }
         });
+
+        scope.updateDTMenu = function(){
+          if(scope.table){
+            var orderInfo = scope.table.order()[0];
+            scope.isIndexColumnDesc = orderInfo[0] === 0 && orderInfo[1] === 'desc';
+            scope.$apply();
+          }
+        }
 
       }
     };

@@ -645,7 +645,7 @@
 
         var enter = function(cm) {
           if (autocompleteParametersService.isActive()) {
-            return autocompleteParametersService.endCompletion();
+            return autocompleteParametersService.endCompletionAndMoveCursor();
           }
           cm.execCommand("newlineAndIndent");
         }

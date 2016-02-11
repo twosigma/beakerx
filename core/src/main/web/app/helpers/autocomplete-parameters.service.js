@@ -171,7 +171,8 @@
       isActive: isActive,
       nextParameter: nextParameter,
       previousParameter: previousParameter,
-      endCompletion: endCompletionAndMoveCursor
+      endCompletion: endCompletion,
+      endCompletionAndMoveCursor: endCompletionAndMoveCursor
     };
 
   });

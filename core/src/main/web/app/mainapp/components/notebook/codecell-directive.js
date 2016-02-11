@@ -47,7 +47,8 @@
       bkPublicationHelper,
       GLOBALS,
       $rootScope,
-      $timeout) {
+      $timeout,
+      autocompleteParametersService) {
 
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {
@@ -358,6 +359,9 @@
         var codeMirrorOptions = bkCoreManager.codeMirrorOptions(scope, notebookCellOp);
         _.extend(codeMirrorOptions.extraKeys, {
           'Esc' : function(cm) {
+            if (autocompleteParametersService.isActive()) {
+              return autocompleteParametersService.endCompletion();
+            }
             cm.execCommand('singleSelection');
             if (cm.state.vim && cm.state.vim.insertMode) {
               return;

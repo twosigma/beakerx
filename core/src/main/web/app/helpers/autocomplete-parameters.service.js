@@ -94,18 +94,11 @@
     }
 
     function nextParameter() {
-      if (currentParam === params.length - 1) {
-        return endCompletionAndMoveCursor();
-      }
-      toParam(_.isUndefined(currentParam) ? 0 : currentParam + 1);
+      toParam(_.isUndefined(currentParam) || currentParam === params.length - 1? 0 : currentParam + 1);
     }
 
     function previousParameter() {
-      if (currentParam === 0) {
-        return endCompletionAndMoveCursor();
-      }
-
-      toParam(_.isUndefined(currentParam) ? params.length - 1 : currentParam - 1);
+      toParam(_.isUndefined(currentParam) || currentParam === 0 ? params.length - 1 : currentParam - 1);
     }
 
     function toParam(index) {

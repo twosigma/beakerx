@@ -1579,18 +1579,6 @@
           }
         });
 
-        scope.getDtCell = function (node) {
-          var cell;
-          var iPos = scope.table.cell(node).index();
-          if (iPos === undefined) { //node is fixed column
-            iPos = scope.fixcols.fnGetPosition(node.parentNode);
-            cell = scope.table.cell(iPos).node();
-          } else { //regular node
-            cell = node;
-          }
-          return cell;
-        };
-
         scope.getDtRow = function (node) {
           var dtRow;
           var iPos = scope.table.row(node).index();

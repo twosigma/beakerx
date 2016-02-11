@@ -901,13 +901,17 @@
           if (scope.fixcols)
             scope.fixcols.fnRedrawLayout();
         };
-        scope.selectFixedColumnCell = function (row, select) {
+        scope.selectFixedColumnCell = function (dtRowIndex, select) {
           if (scope.fixcols) {
-            var fixedRow = $(scope.fixcols.dom.clone.left.body.rows[row + 1]);
+            var fixRowIndex = scope.table.row(dtRowIndex).node().rowIndex;
+            var fixedRow = $(scope.fixcols.dom.clone.left.body.rows[fixRowIndex]);
+            var fixedCell = fixedRow.find('td');
             if (select) {
               fixedRow.addClass('selected');
+              fixedCell.addClass('selected');
             } else {
               fixedRow.removeClass('selected');
+              fixedCell.removeClass('selected');
             }
           }
         };
@@ -1315,9 +1319,14 @@
             $(id + ' tbody').off('click');
             */
             $(id + ' tbody').on('dblclick', 'td', function(e) {
-              var rowIdx = this.parentElement.rowIndex - 1;
-              var colIdx = this.cellIndex;
-              var currentCell = $(scope.table.column(colIdx).nodes()[rowIdx]);
+              var iPos = scope.table.cell(this).index();
+              var rowIdx = iPos ? iPos.row : scope.fixcols.fnGetPosition(this.parentNode);
+              var colIdx = iPos ? iPos.column : 0;
+
+              var currentCell = $(scope.table.cells(function (idx, data, node) {
+                return idx.column === colIdx && idx.row ===  rowIdx;
+              }).nodes());
+
               var isCurrentCellSelected = currentCell.hasClass('selected');
 
               if (scope.selected[rowIdx]) {
@@ -1328,9 +1337,9 @@
 
               $(scope.table.cells().nodes()).removeClass('selected');
               if (scope.fixcols) {
-                _.each(scope.fixcols.dom.clone.left.body.rows, function(row, index){
-                  if(!scope.selected[index - 1]){
-                    $(row).removeClass('selected');
+                _.each(scope.selected, function(selected, index){
+                  if(!selected){
+                    scope.selectFixedColumnCell(index, false);
                   }
                 });
               }
@@ -1345,16 +1354,16 @@
             });
 
             $(id + ' tbody').on('click', 'tr', function(event) {
-              var rowIndex = this.rowIndex - 1;
-              var tr = scope.table.row(rowIndex).node();
-              if (scope.selected[rowIndex]) {
-                scope.selected[rowIndex] = false;
-                $(tr).removeClass('selected');
-                scope.selectFixedColumnCell(rowIndex, false);
+              var dtTR = scope.getDtRow(this);
+              var iPos = scope.table.row(dtTR).index();
+              if (scope.selected[iPos]) {
+                scope.selected[iPos] = false;
+                $(dtTR).removeClass('selected');
+                scope.selectFixedColumnCell(iPos, false);
               } else {
-                scope.selected[rowIndex] = true;
-                $(tr).addClass('selected');
-                scope.selectFixedColumnCell(rowIndex, true);
+                scope.selected[iPos] = true;
+                $(dtTR).addClass('selected');
+                scope.selectFixedColumnCell(iPos, true);
               }
               event.stopPropagation();
             });
@@ -1566,6 +1575,30 @@
             });
           }
         });
+
+        scope.getDtCell = function (node) {
+          var cell;
+          var iPos = scope.table.cell(node).index();
+          if (iPos === undefined) { //node is fixed column
+            iPos = scope.fixcols.fnGetPosition(node.parentNode);
+            cell = scope.table.cell(iPos).node();
+          } else { //regular node
+            cell = node;
+          }
+          return cell;
+        };
+
+        scope.getDtRow = function (node) {
+          var dtRow;
+          var iPos = scope.table.row(node).index();
+          if (iPos === undefined) { //node is fixed column
+            iPos = scope.fixcols.fnGetPosition(node);
+            dtRow = scope.table.row(iPos).node();
+          } else { //regular node
+            dtRow = node;
+          }
+          return dtRow;
+        };
 
       }
     };

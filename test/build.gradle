@@ -14,6 +14,12 @@
  *  limitations under the License.
  */
 
+import org.apache.tools.ant.taskdefs.condition.Os
+
 task check (type: Exec) {
-  commandLine './runner'
+  if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+    commandLine 'python', 'nt_runner.py'
+  } else {
+    commandLine './runner'
+  }
 }

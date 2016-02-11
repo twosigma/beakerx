@@ -120,10 +120,8 @@ var BeakerPageObject = function() {
   this.createMarkdownCell = function(text) {
     return element(by.css('.insert-text'))
     .click()
-    //.then(function() {
-    //  return element(by.css('bk-markdown-editable div.markup')).click();
-    //})
     .then(function() {
+      browser.sleep(1000);
       return this.setCellInput(text);
     }.bind(this));
   }.bind(this);

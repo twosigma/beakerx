@@ -23,6 +23,7 @@ define(function(require, exports, module) {
   var fileMenuItems = [
     {
       name: "New Notebook",
+      shortcut: bkHelper.isWindows ? "Ctrl-N" : "&#x2318;-N",
       sortorder: 100,
       id: "new-notebook-menuitem",
       action: function() {
@@ -68,6 +69,7 @@ define(function(require, exports, module) {
     },
     {
       name: "Save As",
+      shortcut: bkHelper.isWindows ? "Ctrl-S" : "&#x2318;-S",
       id: "save-as-menuitem",
       sortorder: 140,
       autoReduce: true,

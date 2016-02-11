@@ -1077,7 +1077,8 @@
       hideLanguageManagerSpinner: function(error) {
         bkUtils.hideLanguageManagerSpinner(error);
       },
-      isElectron: bkUtils.isElectron
+      isElectron: bkUtils.isElectron,
+      isWindows: bkUtils.isWindows
     };
 
     return bkHelper;

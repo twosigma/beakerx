@@ -903,7 +903,9 @@
         };
         scope.selectFixedColumnCell = function (dtRowIndex, select) {
           if (scope.fixcols) {
-            var fixRowIndex = scope.table.row(dtRowIndex).node().rowIndex;
+            var row = scope.table.row(dtRowIndex).node();
+            if (!row) { return; }
+            var fixRowIndex = row.rowIndex;
             var fixedRow = $(scope.fixcols.dom.clone.left.body.rows[fixRowIndex]);
             var fixedCell = fixedRow.find('td');
             if (select) {
@@ -917,6 +919,8 @@
         };
         scope.highlightFixedColumnCell = function (dtRowIndex, highlight) {
           if (scope.fixcols) {
+            var row = scope.table.row(dtRowIndex).node();
+            if (!row) { return; }
             var fixRowIndex = scope.table.row(dtRowIndex).node().rowIndex;
             var fixedRow = $(scope.fixcols.dom.clone.left.body.rows[fixRowIndex]);
             if (highlight) {

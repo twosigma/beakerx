@@ -58,6 +58,9 @@
             });
           }
           $scope.savedSettings[property.key] = $scope.evaluator.settings[property.key];
+          bkHelper.updateLanguageManagerSettingsInBeakerObject( $scope.evaluatorName,
+                                                                property.key,
+                                                                $scope.evaluator.settings[property.key])
         };
       },
       link: function(scope, element, attrs) {

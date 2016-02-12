@@ -1356,7 +1356,6 @@
                 $(tr).addClass('selected');
                 scope.selectFixedColumnCell(rowIndex, true);
               }
-              event.stopPropagation();
             });
 
             $(id + ' tbody')
@@ -1446,6 +1445,17 @@
                 originalEvent.preventDefault();
                 scope.onKeyAction(cell.index().column, originalEvent);
               });
+
+            $(scope.table.header()).find("th").each(function(i){
+              var events = jQuery._data(this, 'events');
+              var click = events.click[0].handler;
+              $(this).unbind('click.DT');
+              $(this).bind('click.DT', function(e){
+                if(!e.isDefaultPrevented()){
+                  click(e);
+                }
+              });
+            });
 
             $(window).bind('resize.' + scope.id, function() {
               //jscs:disable

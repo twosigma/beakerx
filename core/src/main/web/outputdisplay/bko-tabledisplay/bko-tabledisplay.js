@@ -1275,6 +1275,7 @@
               scope.update_size();
               scope.update_selected();
               scope.updateBackground();
+              scope.updateDTMenu();
               //jscs:enable
             }
           };
@@ -1374,7 +1375,6 @@
                 $(tr).addClass('selected');
                 scope.selectFixedColumnCell(rowIndex, true);
               }
-              event.stopPropagation();
             });
 
             $(id + ' tbody')
@@ -1464,6 +1464,17 @@
                 originalEvent.preventDefault();
                 scope.onKeyAction(cell.index().column, originalEvent);
               });
+
+            $(scope.table.header()).find("th").each(function(i){
+              var events = jQuery._data(this, 'events');
+              var click = events.click[0].handler;
+              $(this).unbind('click.DT');
+              $(this).bind('click.DT', function(e){
+                if(!e.isDefaultPrevented()){
+                  click(e);
+                }
+              });
+            });
 
             $(window).bind('resize.' + scope.id, function() {
               //jscs:disable
@@ -1584,6 +1595,14 @@
             });
           }
         });
+
+        scope.updateDTMenu = function(){
+          if(scope.table){
+            var orderInfo = scope.table.order()[0];
+            scope.isIndexColumnDesc = orderInfo[0] === 0 && orderInfo[1] === 'desc';
+            scope.$apply();
+          }
+        }
 
       }
     };

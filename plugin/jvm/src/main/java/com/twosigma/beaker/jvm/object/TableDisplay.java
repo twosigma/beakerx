@@ -142,7 +142,7 @@ public class TableDisplay {
         if (BasicObjectSerializer.TYPE_LONG.equals(clazz)) {
           value = Long.parseLong(value.toString());
         }else if (BasicObjectSerializer.TYPE_BIGINT.equals(clazz)) {
-          value = BigInteger.valueOf(Long.parseLong(value.toString()));
+          value = new BigInteger(value.toString());
         }
       }
       return value;

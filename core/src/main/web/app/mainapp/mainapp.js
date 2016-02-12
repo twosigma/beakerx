@@ -135,6 +135,7 @@
           return bkEvaluatorManager.newEvaluator(settings)
           .then(function(evaluator) {
             if (!_.isEmpty(evaluator.spec)) {
+              bkHelper.setLanguageManagerSettingsToBeakerObject(evaluator);
               var actionItems = [];
               _.each(evaluator.spec, function(value, key) {
                 if (value.type === "action") {
@@ -760,6 +761,7 @@
               evaluatorMenuItems = _.reject(evaluatorMenuItems, function(item) {
                 return item.name == plugin;
               });
+              bkHelper.removeLanguageManagerSettingsFromBeakerObject(plugin);
             },
             getEvaluatorMenuItems: function() {
               return evaluatorMenuItems;

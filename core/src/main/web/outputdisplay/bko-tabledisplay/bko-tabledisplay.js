@@ -358,6 +358,24 @@
           table.columns(cLength).visible(visible);
         };
 
+        $scope.getColumnByInitialIndex = function(index){
+          var order = $scope.table.colReorder.order;
+          if (order){
+            index = order().indexOf(index);
+          }
+          return $scope.table.column(index);
+        };
+
+        $scope.showColumn = function (initialIndex, event) {
+          var column = $scope.getColumnByInitialIndex(initialIndex);
+          column.visible(!column.visible());
+          if(event){
+            event.stopPropagation();
+          }
+        };
+        $scope.isColumnVisible = function (initialIndex) {
+          return $scope.getColumnByInitialIndex(initialIndex).visible();
+        };
         $scope.refreshCells = function() {
           $scope.getCellIdx      =  [];
           $scope.getCellNam      =  [];

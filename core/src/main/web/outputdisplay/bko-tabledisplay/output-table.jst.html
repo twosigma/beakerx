@@ -28,6 +28,17 @@
        <li><a tabindex="-1" href="#" ng-click="doCSVExport(true)" id="dt-save-selected" eat-click>Save Selected as CSV</a></li>
        <li>&nbsp;</li>
        <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(true)" id="dt-show-all" eat-click>Show All Columns</a></li>
+       <li class="dropdown-submenu">
+         <a tabindex="-1" href="#" id="dt-show-columns" eat-click>Show Column</a>
+         <ul class="dropdown-menu" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
+           <li ng-repeat="column in columns" ng-if="!$first">
+             <a tabindex="-1" href="" ng-click="showColumn($index, $event)">
+               <input type="checkbox" ng-click="showColumn($index, $event)" ng-checked="isColumnVisible($index)">
+               {{column.title}}
+             </a>
+           </li>
+         </ul>
+       </li>
        <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(false)" id="dt-hide-all" eat-click>Hide All Columns</a></li>
        <li>&nbsp;</li>
        <li><a tabindex="-1" href="#" ng-click="openOptionsDialog()" id="dt-options" eat-click>Options...</a></li>

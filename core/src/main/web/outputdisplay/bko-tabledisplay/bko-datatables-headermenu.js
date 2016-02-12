@@ -146,7 +146,7 @@ HeaderMenu.prototype = {
       that._buildMenuItems(menuItems, $menu);
 
       $menu.offset({
-          top: el.height() + 2,
+          top: el.height() + 1,
           left: el.offset().left - 51
         })
         .css('display', 'block')

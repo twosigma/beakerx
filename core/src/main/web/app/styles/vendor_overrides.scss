@@ -106,7 +106,7 @@ tbody tr {
     cursor:       pointer;
     .bko-menu {
       float:      left;
-      margin: -5px 0 0 -10px;
+      margin: -4px 0 0 -20px;
       opacity:    0;
       transition: opacity 0.5s;
     }
@@ -133,6 +133,12 @@ tbody tr {
     }
   }
 
+  thead .sorting, .sorting_asc, .sorting_desc {
+    background-image: none !important;
+  }
+}
+
+.DTFC_LeftHeadWrapper table {
   thead .sorting, .sorting_asc, .sorting_desc {
     background-image: none !important;
   }

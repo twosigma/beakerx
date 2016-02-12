@@ -187,9 +187,6 @@
       cancelTimeout: function(promise) {
         return angularUtils.cancelTimeout(promise);  
       },
-      trustAsHtml: function(piece) {
-        return angularUtils.trustAsHtml(piece);
-      },
       setServerRoot: function(url) {
         serverRoot = url;
       },

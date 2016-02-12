@@ -179,20 +179,20 @@
 
         $scope.cellview.menu.addItem({
           name: 'Delete cell',
-          shortcut: bkUtils.isWindows ? bkUtils.trustAsHtml('Ctrl-Alt-D') : bkUtils.trustAsHtml('&#x2318;-Alt-D'),
+          shortcut: ['Ctrl-Alt-D', 'Cmd-Alt-D'],
           action: $scope.deleteCell
         });
 
         $scope.cellview.menu.addItem({
           name: 'Move up',
-          shortcut: bkUtils.isWindows ? bkUtils.trustAsHtml('Ctrl-Alt-Up') : bkUtils.trustAsHtml('&#x2318;-Alt-Up'),
+          shortcut: ['Ctrl-Alt-Up', 'Cmd-Alt-Up'],
           action: $scope.moveCellUp,
           disabled: $scope.moveCellUpDisabled
         });
 
         $scope.cellview.menu.addItem({
           name: 'Move down',
-          shortcut: bkUtils.isWindows ? bkUtils.trustAsHtml('Ctrl-Alt-Down') : bkUtils.trustAsHtml('&#x2318;-Alt-Down'),
+          shortcut: ['Ctrl-Alt-Down', 'Cmd-Alt-Down'],
           action: $scope.moveCellDown,
           disabled: $scope.moveCellDownDisabled
         });

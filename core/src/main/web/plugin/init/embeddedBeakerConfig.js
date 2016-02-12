@@ -175,7 +175,7 @@
                    items: [
                            {
                              name: "New Notebook",
-                             shortcut: bkHelper.isWindows ? bkHelper.trustAsHtml("Ctrl-N") : bkHelper.trustAsHtml("&#x2318;-N"),
+                             shortcut: ["Ctrl-N", "Cmd-N"],
                              tooltip: "Open a new empty notebook, add the languages of your choice",
                              sortorder: 100,
                              action: function() {

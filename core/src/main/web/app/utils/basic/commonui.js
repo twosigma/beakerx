@@ -201,11 +201,34 @@
         };
         $scope.hasCustomMarkup = function(item) {
           return typeof _.result(item, 'markup') !== 'undefined';
-        }
+        };
 
         $scope.getCustomMarkup = function(item) {
           return $sce.trustAsHtml(_.result(item, 'markup') || '');
-        }
+        };
+
+        $scope.getShortcut = function(itemShortcut) {
+         function replace(str) {
+            if (!bkHelper.isWindows) {
+              var mapObj = {
+                Cmd: "&#x2318;",
+                Alt: "&#x2325;"
+              };
+              str = str.replace(/Cmd|Alt/gi, function(matched){
+                return mapObj[matched];
+              });
+            }
+
+            return $sce.trustAsHtml(str);
+         }
+
+          if (_.isArray(itemShortcut)) {
+            var shortcut = bkHelper.isWindows ? itemShortcut[0] : itemShortcut[1];
+            return replace(shortcut);
+          } else {
+            return replace(itemShortcut);
+          }
+        };
 
         $scope.getName = function(item) {
           var name = '';

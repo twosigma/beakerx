@@ -41,7 +41,7 @@ define(function(require, exports, module) {
       parent: "File",
       id: "file-menu",
       submenu: "Save As",
-      shortcut: bkHelper.isWindows ? bkHelper.trustAsHtml("Ctrl-S") : bkHelper.trustAsHtml("&#x2318;-S"),
+      shortcut: ["Ctrl-S", "Cmd-S"],
       items: [
         {
           name: "Save as... (file)",

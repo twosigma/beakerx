@@ -648,7 +648,7 @@
   }
 
   .CodeMirror-fullscreen {
-    background: $main-theme-panel-background;
+    background: $main-theme-panel-background !important;
   }
 
   .CodeMirror .cm-comment {
@@ -681,4 +681,15 @@
   .cm-header {
     color: $markdown-heading-color;
   }
+
+  .marked-argument-unchanged {
+    box-shadow: $marked-argument-unchanged-border;
+    color: $marked-argument-unchanged-color;
+    font-style: italic;
+  }
+
+  .marked-argument-changed {
+    box-shadow: $marked-argument-changed-border;
+  }
 }
+

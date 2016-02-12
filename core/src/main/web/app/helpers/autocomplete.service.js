@@ -16,11 +16,16 @@
 
 (function() {
   'use strict';
-  angular.module('bk.core').factory('autocompleteService', function(codeMirrorExtension, bkEvaluatorManager, $q) {
+  angular.module('bk.core').factory('autocompleteService', function(codeMirrorExtension, autocompleteParametersService, bkEvaluatorManager, $q) {
 
   var completionActive = false;
+  var currentDocumentation = {};
 
   var showAutocomplete = function(cm, scope) {
+    if (autocompleteParametersService.isActive()) {
+      autocompleteParametersService.nextParameter();
+    }
+
     var getToken = function(editor, cur) {
       return editor.getTokenAt(cur);
     };
@@ -100,7 +105,7 @@
   var attachAutocompleteListeners = function(hintData, evaluator, scope, cm, matchedText) {
     CodeMirror.on(hintData, 'select', onSelect.bind(null, evaluator, scope, cm, matchedText));
     CodeMirror.on(cm, 'endCompletion', onEndCompletion.bind(null, scope));
-    CodeMirror.on(hintData, 'pick', onPick.bind(null, cm, matchedText));
+    CodeMirror.on(hintData, 'pick', onPick.bind(null, cm, matchedText, scope));
   };
 
   function writeCompletion(funcName, params, cm, matchedText) {
@@ -131,11 +136,13 @@
 
   function onSelect(evaluator, scope, cm, matchedText, selectedWord, selectedListItem) {
     completionActive = true;
+    currentDocumentation = {};
 
     evaluator.getAutocompleteDocumentation(selectedWord, function(documentation) {
       scope.$broadcast('showDocumentationForAutocomplete', documentation.description, true);
 
       if (documentation.parameters) {
+        currentDocumentation = documentation;
         writeCompletion(selectedWord, documentation.parameters, cm, matchedText);
       } else {
         var index = selectedWord.indexOf(matchedText) + matchedText.length;
@@ -144,12 +151,19 @@
     });
   }
 
-  function onPick(cm, matchedText, completion) {
+  function onPick(cm, matchedText, scope, completion) {
     // Removing duplicate completion since we already have it from when we wrote the parameters
     var lengthToRemove = completion.length - matchedText.length;
-    var cursorPos = cm.getCursor('from');
-    cm.doc.replaceRange('', {line: cursorPos.line, ch: cursorPos.ch - lengthToRemove}, cursorPos);
+    var cursorPosBegin = cm.getCursor('from');
+    var cursorPosEnd = cm.getCursor('to');
+    cm.doc.replaceRange('', {line: cursorPosBegin.line, ch: cursorPosBegin.ch - lengthToRemove}, cursorPosBegin);
     cm.setCursor(cm.getCursor());
+    if (_.isEmpty(currentDocumentation) || _.isEmpty(currentDocumentation.parameters)) {
+      return;
+    }
+    _.defer(function() {
+      autocompleteParametersService.startParameterCompletion(cm, currentDocumentation, cursorPosBegin, cursorPosEnd, scope);
+    });
   }
 
   function onEndCompletion(scope) {

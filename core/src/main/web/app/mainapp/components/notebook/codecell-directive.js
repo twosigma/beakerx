@@ -47,7 +47,8 @@
       bkPublicationHelper,
       GLOBALS,
       $rootScope,
-      $timeout) {
+      $timeout,
+      autocompleteParametersService) {
 
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {
@@ -292,7 +293,7 @@
         });
 
         $scope.cellmenu.addItem({
-          name: 'Options',
+          name: 'Options...',
           action: function() {
             bkCoreManager.showFullModalDialog(function cb(r) { } ,
                 'app/mainapp/dialogs/codecelloptions.jst.html', 'CodeCellOptionsController', $scope.cellmodel);
@@ -358,9 +359,12 @@
         var codeMirrorOptions = bkCoreManager.codeMirrorOptions(scope, notebookCellOp);
         _.extend(codeMirrorOptions.extraKeys, {
           'Esc' : function(cm) {
+            if (autocompleteParametersService.isActive()) {
+              return autocompleteParametersService.endCompletion();
+            }
             cm.execCommand('singleSelection');
             if (cm.state.vim && cm.state.vim.insertMode) {
-              return;
+              CodeMirror.Vim.exitInsertMode(cm);
             } else {
               if (isFullScreen(cm)) {
                 setFullScreen(cm, false);
@@ -413,14 +417,14 @@
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
           scope.cm.on('change', changeHandler);
           scope.cm.on('blur', function () {
-            if ($('.CodeMirror-hint').length > 0) {
+            if (!scope.cm.curOp || $('.CodeMirror-hint').length > 0) {
               //codecomplete is up, skip
               return;
             }
             CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
           });
           scope.cm.on('focus', function () {
-            if ($('.CodeMirror-hint').length > 0) {
+            if (!scope.cm.curOp || $('.CodeMirror-hint').length > 0) {
               //codecomplete is up, skip
               return;
             }

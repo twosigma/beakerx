@@ -689,7 +689,7 @@
         var its = [];
         var nms = [];
         for (var p in this.nbmodel.namespace) {
-          if (this.predefined.indexOf(p)<0 && p != 'prefs') {
+          if (this.predefined.indexOf(p)<0 && p != 'prefs' && p != 'language') {
             var t = this.nbmodel.namespace[p];
             its.push(t);
             nms.push(p);

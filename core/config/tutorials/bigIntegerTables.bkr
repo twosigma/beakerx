@@ -23,7 +23,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.KeyboardCodes",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -35,15 +35,28 @@
         {
             "id": "sectionsQuXKB",
             "type": "section",
-            "title": "Support 64 bit integers in tables and autotranslation",
+            "title": "Large Integers in Tables and Autotranslation",
             "level": 1,
             "evaluatorReader": false,
             "collapsed": false
         },
         {
+            "id": "markdownuOPnF0",
+            "type": "markdown",
+            "body": [
+                "JSON has a problem when integers get larger than 10<sup>16</sup>",
+                "because JavaScript uses floating point for all its numbers.",
+                "Most languages, including Python, R, and the JVM languages like Groovy can easily handle integers up to 10<sup>19</sup>,",
+                "and sometimes larger.",
+                "",
+                "Numbers this large are useful for measuring time in nanoseconds, for example."
+            ],
+            "evaluatorReader": false
+        },
+        {
             "id": "section4yu5xE",
             "type": "section",
-            "title": "Table that contains long values",
+            "title": "64-bit Longs",
             "level": 2,
             "evaluatorReader": false,
             "collapsed": false
@@ -54,14 +67,12 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
+                    "def millis = new Date().time",
+                    "def nanos = millis * 1000 * 1000L",
                     "",
-                    "def today  = new Date()",
-                    "def millis = today.time",
-                    "def nanos  = millis * 1000 * 1000L ",
-                    "",
-                    "table = [[time: nanos + 7 * 1, closePrice_mean:88.59, highPrice_mean:88.91, lowPrice_mean:88.20, openPrice_mean:78.55],",
-                    "         [time: nanos + 7 * 2, closePrice_mean:58.96, highPrice_mean:59.79, lowPrice_mean:58.11, openPrice_mean:58.93],",
-                    "         [time: nanos + 7 * 3, closePrice_mean:39.09, highPrice_mean:39.96, lowPrice_mean:27.99, openPrice_mean:18.86]]",
+                    "table = [[time: nanos + 7 * 1, next_time:(nanos + 77) * 1, temp:14.6],",
+                    "         [time: nanos + 7 * 2, next_time:(nanos + 88) * 2, temp:18.1],",
+                    "         [time: nanos + 7 * 3, next_time:(nanos + 99) * 3, temp:23.6]]",
                     "",
                     "beaker.table_with_longs = table",
                     "table"
@@ -78,29 +89,21 @@
                         },
                         "columnNames": [
                             "time",
-                            "closePrice_mean",
-                            "highPrice_mean",
-                            "lowPrice_mean",
-                            "openPrice_mean"
+                            "next_time",
+                            "temp"
                         ],
                         "actualalign": [
                             "L",
-                            "R",
-                            "R",
-                            "R",
+                            "L",
                             "R"
                         ],
                         "colorder": [
                             0,
                             1,
                             2,
-                            3,
-                            4,
-                            5
+                            3
                         ],
                         "getCellSho": [
-                            true,
-                            true,
                             true,
                             true,
                             true
@@ -111,56 +114,46 @@
                     "type": "TableDisplay",
                     "columnNames": [
                         "time",
-                        "closePrice_mean",
-                        "highPrice_mean",
-                        "lowPrice_mean",
-                        "openPrice_mean"
+                        "next_time",
+                        "temp"
                     ],
                     "values": [
                         [
-                            "1454587950582000007",
-                            88.59,
-                            88.91,
-                            88.2,
-                            78.55
+                            "1455202409202000007",
+                            "1455202409202000077",
+                            14.6
                         ],
                         [
-                            "1454587950582000014",
-                            58.96,
-                            59.79,
-                            58.11,
-                            58.93
+                            "1455202409202000014",
+                            "2910404818404000176",
+                            18.1
                         ],
                         [
-                            "1454587950582000021",
-                            39.09,
-                            39.96,
-                            27.99,
-                            18.86
+                            "1455202409202000021",
+                            "4365607227606000297",
+                            23.6
                         ]
                     ],
                     "types": [
                         "int64",
-                        "double",
-                        "double",
-                        "double",
+                        "int64",
                         "double"
                     ],
                     "subtype": "ListOfMaps"
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "3cee54cc-1bb5-49a8-aeba-0a139edb5db2",
-                "elapsedTime": 565,
-                "height": 156
+                "shellId": "9d6b48cf-c110-4b9b-972a-d3955ea63bb0",
+                "elapsedTime": 1290,
+                "height": 136
             },
             "evaluatorReader": true,
-            "lineCount": 11
+            "lineCount": 9
         },
         {
             "id": "sectionfr3bA6",
             "type": "section",
-            "title": "Table that contains big integer values",
+            "title": "BigNums",
             "level": 2,
             "evaluatorReader": false,
             "collapsed": false
@@ -175,9 +168,9 @@
                     "def millis = today.time",
                     "def nanos  = millis * 1000 * 1000g ",
                     "",
-                    "table = [[time: nanos + 7 * 1, closePrice_mean:88.59, highPrice_mean:88.91, lowPrice_mean:88.20, openPrice_mean:78.55],",
-                    "         [time: nanos + 7 * 2, closePrice_mean:58.96, highPrice_mean:59.79, lowPrice_mean:58.11, openPrice_mean:58.93],",
-                    "         [time: nanos + 7 * 3, closePrice_mean:39.09, highPrice_mean:39.96, lowPrice_mean:27.99, openPrice_mean:18.86]]",
+                    "table = [[time: nanos + 7 * 1, next_time:(nanos + 77) * 777, temp:3.351],",
+                    "         [time: nanos + 7 * 2, next_time:(nanos + 88) * 888, temp:2.355],",
+                    "         [time: nanos + 7 * 3, next_time:(nanos + 99) * 999, temp:2.728]]",
                     "",
                     "beaker.table_with_big_integers = table",
                     "table"
@@ -188,47 +181,37 @@
                     "type": "TableDisplay",
                     "columnNames": [
                         "time",
-                        "closePrice_mean",
-                        "highPrice_mean",
-                        "lowPrice_mean",
-                        "openPrice_mean"
+                        "next_time",
+                        "temp"
                     ],
                     "values": [
                         [
-                            "1454587951265000007",
-                            88.59,
-                            88.91,
-                            88.2,
-                            78.55
+                            "1455202411796000007",
+                            "1130692273965492059829",
+                            3.351
                         ],
                         [
-                            "1454587951265000014",
-                            58.96,
-                            59.79,
-                            58.11,
-                            58.93
+                            "1455202411796000014",
+                            "1292219741674848078144",
+                            2.355
                         ],
                         [
-                            "1454587951265000021",
-                            39.09,
-                            39.96,
-                            27.99,
-                            18.86
+                            "1455202411796000021",
+                            "1453747209384204098901",
+                            2.728
                         ]
                     ],
                     "types": [
                         "bigint",
-                        "double",
-                        "double",
-                        "double",
+                        "bigint",
                         "double"
                     ],
                     "subtype": "ListOfMaps"
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "3cee54cc-1bb5-49a8-aeba-0a139edb5db2",
-                "elapsedTime": 564,
+                "shellId": "9d6b48cf-c110-4b9b-972a-d3955ea63bb0",
+                "elapsedTime": 575,
                 "state": {
                     "datatablestate": {
                         "pagination": {
@@ -239,36 +222,28 @@
                         },
                         "columnNames": [
                             "time",
-                            "closePrice_mean",
-                            "highPrice_mean",
-                            "lowPrice_mean",
-                            "openPrice_mean"
+                            "next_time",
+                            "temp"
                         ],
                         "actualalign": [
                             "L",
-                            "R",
-                            "R",
-                            "R",
+                            "L",
                             "R"
                         ],
                         "colorder": [
                             0,
                             1,
                             2,
-                            3,
-                            4,
-                            5
+                            3
                         ],
                         "getCellSho": [
-                            true,
-                            true,
                             true,
                             true,
                             true
                         ]
                     }
                 },
-                "height": 156
+                "height": 136
             },
             "evaluatorReader": true,
             "lineCount": 10
@@ -276,7 +251,7 @@
         {
             "id": "section9SaxlV",
             "type": "section",
-            "title": "Autotranslation for a table that contains long values",
+            "title": "Autotranslation of 64-bit Longs",
             "level": 2,
             "evaluatorReader": false,
             "collapsed": false
@@ -300,30 +275,22 @@
                             "fixRight": 0
                         },
                         "columnNames": [
-                            "openPrice_mean",
-                            "closePrice_mean",
-                            "time",
-                            "lowPrice_mean",
-                            "highPrice_mean"
+                            "temp",
+                            "next_time",
+                            "time"
                         ],
                         "actualalign": [
                             "R",
-                            "R",
                             "L",
-                            "R",
-                            "R"
+                            "L"
                         ],
                         "colorder": [
                             0,
                             1,
                             2,
-                            3,
-                            4,
-                            5
+                            3
                         ],
                         "getCellSho": [
-                            true,
-                            true,
                             true,
                             true,
                             true
@@ -333,49 +300,39 @@
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
-                        "openPrice_mean",
-                        "closePrice_mean",
-                        "time",
-                        "lowPrice_mean",
-                        "highPrice_mean"
+                        "temp",
+                        "next_time",
+                        "time"
                     ],
                     "values": [
                         [
-                            78.55,
-                            88.59,
-                            "1454587950582000007",
-                            88.2,
-                            88.91
+                            14.6,
+                            "1455202409202000077",
+                            "1455202409202000007"
                         ],
                         [
-                            58.93,
-                            58.96,
-                            "1454587950582000014",
-                            58.11,
-                            59.79
+                            18.1,
+                            "2910404818404000176",
+                            "1455202409202000014"
                         ],
                         [
-                            18.86,
-                            39.09,
-                            "1454587950582000021",
-                            27.99,
-                            39.96
+                            23.6,
+                            "4365607227606000297",
+                            "1455202409202000021"
                         ]
                     ],
                     "types": [
                         "double",
-                        "double",
                         "int64",
-                        "double",
-                        "double"
+                        "int64"
                     ],
                     "subtype": "ListOfMaps"
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "3cee54cc-1bb5-49a8-aeba-0a139edb5db2",
-                "elapsedTime": 572,
-                "height": 156
+                "shellId": "9d6b48cf-c110-4b9b-972a-d3955ea63bb0",
+                "elapsedTime": 584,
+                "height": 136
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -383,7 +340,7 @@
         {
             "id": "section7EMhEc",
             "type": "section",
-            "title": "Autotranslation for a table that contains big integer values",
+            "title": "Autotranslation of BigNums",
             "level": 2,
             "evaluatorReader": false,
             "collapsed": false
@@ -407,30 +364,22 @@
                             "fixRight": 0
                         },
                         "columnNames": [
-                            "openPrice_mean",
-                            "closePrice_mean",
-                            "time",
-                            "lowPrice_mean",
-                            "highPrice_mean"
+                            "temp",
+                            "next_time",
+                            "time"
                         ],
                         "actualalign": [
                             "R",
-                            "R",
                             "L",
-                            "R",
-                            "R"
+                            "L"
                         ],
                         "colorder": [
                             0,
                             1,
                             2,
-                            3,
-                            4,
-                            5
+                            3
                         ],
                         "getCellSho": [
-                            true,
-                            true,
                             true,
                             true,
                             true
@@ -440,49 +389,39 @@
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
-                        "openPrice_mean",
-                        "closePrice_mean",
-                        "time",
-                        "lowPrice_mean",
-                        "highPrice_mean"
+                        "temp",
+                        "next_time",
+                        "time"
                     ],
                     "values": [
                         [
-                            78.55,
-                            88.59,
-                            "1454587951265000007",
-                            88.2,
-                            88.91
+                            3.351,
+                            "1130692273965492059829",
+                            "1455202411796000007"
                         ],
                         [
-                            58.93,
-                            58.96,
-                            "1454587951265000014",
-                            58.11,
-                            59.79
+                            2.355,
+                            "1292219741674848078144",
+                            "1455202411796000014"
                         ],
                         [
-                            18.86,
-                            39.09,
-                            "1454587951265000021",
-                            27.99,
-                            39.96
+                            2.728,
+                            "1453747209384204098901",
+                            "1455202411796000021"
                         ]
                     ],
                     "types": [
                         "double",
-                        "double",
                         "bigint",
-                        "double",
-                        "double"
+                        "bigint"
                     ],
                     "subtype": "ListOfMaps"
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "3cee54cc-1bb5-49a8-aeba-0a139edb5db2",
-                "elapsedTime": 603,
-                "height": 156
+                "shellId": "9d6b48cf-c110-4b9b-972a-d3955ea63bb0",
+                "elapsedTime": 574,
+                "height": 136
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -493,8 +432,8 @@
             "type": "TableDisplay",
             "columnNames": [
                 "time",
-                "closePrice_mean",
-                "highPrice_mean",
+                "next_time",
+                "temp",
                 "lowPrice_mean",
                 "openPrice_mean"
             ],
@@ -534,39 +473,29 @@
             "type": "TableDisplay",
             "columnNames": [
                 "time",
-                "closePrice_mean",
-                "highPrice_mean",
-                "lowPrice_mean",
-                "openPrice_mean"
+                "next_time",
+                "temp"
             ],
             "values": [
                 [
-                    "1454587950582000007",
-                    88.59,
-                    88.91,
-                    88.2,
-                    78.55
+                    "1455202409202000007",
+                    "1455202409202000077",
+                    14.6
                 ],
                 [
-                    "1454587950582000014",
-                    58.96,
-                    59.79,
-                    58.11,
-                    58.93
+                    "1455202409202000014",
+                    "2910404818404000176",
+                    18.1
                 ],
                 [
-                    "1454587950582000021",
-                    39.09,
-                    39.96,
-                    27.99,
-                    18.86
+                    "1455202409202000021",
+                    "4365607227606000297",
+                    23.6
                 ]
             ],
             "types": [
                 "int64",
-                "double",
-                "double",
-                "double",
+                "int64",
                 "double"
             ],
             "subtype": "ListOfMaps"
@@ -575,39 +504,29 @@
             "type": "TableDisplay",
             "columnNames": [
                 "time",
-                "closePrice_mean",
-                "highPrice_mean",
-                "lowPrice_mean",
-                "openPrice_mean"
+                "next_time",
+                "temp"
             ],
             "values": [
                 [
-                    "1454587951265000007",
-                    88.59,
-                    88.91,
-                    88.2,
-                    78.55
+                    "1455202411796000007",
+                    "1130692273965492059829",
+                    3.351
                 ],
                 [
-                    "1454587951265000014",
-                    58.96,
-                    59.79,
-                    58.11,
-                    58.93
+                    "1455202411796000014",
+                    "1292219741674848078144",
+                    2.355
                 ],
                 [
-                    "1454587951265000021",
-                    39.09,
-                    39.96,
-                    27.99,
-                    18.86
+                    "1455202411796000021",
+                    "1453747209384204098901",
+                    2.728
                 ]
             ],
             "types": [
                 "bigint",
-                "double",
-                "double",
-                "double",
+                "bigint",
                 "double"
             ],
             "subtype": "ListOfMaps"

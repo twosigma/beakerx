@@ -121,7 +121,10 @@ var BeakerPageObject = function() {
     return element(by.css('.insert-text'))
     .click()
     .then(function() {
-      browser.sleep(1000);
+      //ensure CM focus
+      browser.executeScript('$(".CodeMirror")[0].CodeMirror.focus();');
+    })
+    .then(function() {
       return this.setCellInput(text);
     }.bind(this));
   }.bind(this);
@@ -162,7 +165,6 @@ var BeakerPageObject = function() {
 
   this.readMarkdownCell = function() {
     element(by.css('body')).click();
-    browser.sleep(1000);
     return element(by.css('.markup p')).getText();
   };
 

@@ -214,8 +214,8 @@
                 Cmd: "&#x2318;",
                 Alt: "&#x2325;",
                 Shift: "&#x21E7;",
-                Up: "&#2191;",
-                Down: "&#2193;"
+                Up: "&#x2191;",
+                Down: "&#x2193;"
               };
               var regexp = new RegExp(Object.keys(mapObj).join("|"),"gi");
               str = str.replace(regexp, function(matched) {

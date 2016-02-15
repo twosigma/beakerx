@@ -1078,7 +1078,7 @@
         bkUtils.hideLanguageManagerSpinner(error);
       },
       isElectron: bkUtils.isElectron,
-      isWindows: bkUtils.isWindows
+      isMacOS: bkUtils.isMacOS
     };
 
     return bkHelper;

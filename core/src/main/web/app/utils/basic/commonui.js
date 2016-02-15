@@ -209,7 +209,7 @@
 
         $scope.getShortcut = function(itemShortcut) {
          function replace(str) {
-            if (!bkHelper.isWindows) {
+            if (bkHelper.isMacOS) {
               var mapObj = {
                 Cmd: "&#x2318;",
                 Alt: "&#x2325;",
@@ -227,7 +227,7 @@
          }
 
           if (_.isArray(itemShortcut)) {
-            var shortcut = bkHelper.isWindows ? itemShortcut[0] : itemShortcut[1];
+            var shortcut = bkHelper.isMacOS ? itemShortcut[1] : itemShortcut[0];
             return replace(shortcut);
           } else {
             return replace(itemShortcut);

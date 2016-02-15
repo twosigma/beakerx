@@ -364,7 +364,7 @@
             }
             cm.execCommand('singleSelection');
             if (cm.state.vim && cm.state.vim.insertMode) {
-              return;
+              CodeMirror.Vim.exitInsertMode(cm);
             } else {
               if (isFullScreen(cm)) {
                 setFullScreen(cm, false);
@@ -417,14 +417,14 @@
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
           scope.cm.on('change', changeHandler);
           scope.cm.on('blur', function () {
-            if ($('.CodeMirror-hint').length > 0) {
+            if (!scope.cm.curOp || $('.CodeMirror-hint').length > 0) {
               //codecomplete is up, skip
               return;
             }
             CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
           });
           scope.cm.on('focus', function () {
-            if ($('.CodeMirror-hint').length > 0) {
+            if (!scope.cm.curOp || $('.CodeMirror-hint').length > 0) {
               //codecomplete is up, skip
               return;
             }

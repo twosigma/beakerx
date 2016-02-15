@@ -46,7 +46,7 @@ var BeakerPageObject = function() {
         return true;
       });
     }, 100000);
-  }
+  };
 
   this.openFile = function(path) {
     this.openMenuAtIndex(0);
@@ -63,7 +63,7 @@ var BeakerPageObject = function() {
         .thenCatch(function() {
           return false;
         });
-    }, 5000)
+    }, 5000);
 
     return element(by.css('.modal-submit')).click();
   };
@@ -103,6 +103,28 @@ var BeakerPageObject = function() {
     return element(by.css('.view-menu'))
     .click()
     .then(element(by.partialLinkText('Advanced Mode')).click);
+  };
+
+  this.setNormalEditMode = function() {
+    this.setEditMode('Normal');
+  };
+
+  this.setEmacsEditMode = function() {
+    this.setEditMode('Emacs');
+  };
+
+  this.setVimEditMode = function () {
+    this.setEditMode('Vim');
+  };
+
+  this.setSublimeEditMode = function() {
+    this.setEditMode('Sublime');
+  };
+
+  this.setEditMode = function(mode) {
+    element(by.css('.notebook-menu')).click();
+    browser.actions().mouseMove(element(by.css('.edit-mode-menuitem'))).perform();
+    element(by.partialLinkText(mode)).click();
   };
 
   this.isCellMenuOpen = function(opts) {
@@ -211,6 +233,18 @@ var BeakerPageObject = function() {
     browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
   };
 
+  this.sendKeysCellInput = function(keys) {
+
+    browser.executeScript('$.event.trigger({ type : "keypress", which : "\u0069" })');
+
+    //var code = '{type: "keydown", keyCode: '+ keys +', ctrlKey: false, shiftKey: false, altKey: false, preventDefault: function(){}, stopPropagation: function(){}}';
+
+    //browser.executeScript('$(".CodeMirror")[0].CodeMirror.triggerOnKeyDown("' + code +'")');
+    //
+    //browser.executeScript('$(".CodeMirror")[0].CodeMirror.triggerOnKeyDown({type: "keydown", keyCode: "\u0069", ctrlKey: false, shiftKey: false, altKey: false, preventDefault: function(){}, stopPropagation: function(){}})');
+  };
+
+
   this.toggleOutputCellExpansion = function() {
     return element(by.css('.toggle-menu .expand-contract')).click();
   };
@@ -236,7 +270,7 @@ var BeakerPageObject = function() {
 
   this.openSection = function() {
     return element(by.css('.bksectiontoggleplus')).click();
-  }
+  };
 
   this.getCellOutput = function() {
     return element(by.css('bk-output-display > div'));
@@ -244,7 +278,7 @@ var BeakerPageObject = function() {
 
   this.getLoadingIndicator = function() {
     return element(by.css('.navbar-text > i'));
-  }
+  };
 
   this.waitForCellOutput = function(plugin) {
     var self = this;

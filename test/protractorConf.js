@@ -41,7 +41,8 @@ var config = {
           'tests/text-cell.js',
           'tests/cell-menu.js',
           'tests/language-manager.js',
-          'tests/bugs.js'
+          'tests/bugs.js',
+          'tests/edit-mode.js'
   ]
 };
 

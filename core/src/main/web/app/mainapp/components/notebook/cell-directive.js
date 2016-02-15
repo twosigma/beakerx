@@ -179,20 +179,20 @@
 
         $scope.cellview.menu.addItem({
           name: 'Delete cell',
-          shortcut: ['Ctrl-Alt-D', 'Cmd-Alt-D'],
+          shortcut: ['Ctrl-Alt-D', 'AltCmdD'],
           action: $scope.deleteCell
         });
 
         $scope.cellview.menu.addItem({
           name: 'Move up',
-          shortcut: ['Ctrl-Alt-Up', 'Cmd-Alt-Up'],
+          shortcut: ['Ctrl-Alt-Up', 'AltCmdUp'],
           action: $scope.moveCellUp,
           disabled: $scope.moveCellUpDisabled
         });
 
         $scope.cellview.menu.addItem({
           name: 'Move down',
-          shortcut: ['Ctrl-Alt-Down', 'Cmd-Alt-Down'],
+          shortcut: ['Ctrl-Alt-Down', 'AltCmdDown'],
           action: $scope.moveCellDown,
           disabled: $scope.moveCellDownDisabled
         });

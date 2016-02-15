@@ -23,7 +23,7 @@ define(function(require, exports, module) {
   var fileMenuItems = [
     {
       name: "New Notebook",
-      shortcut: ["Ctrl-N", "Cmd-N"],
+      shortcut: ["Ctrl-N", "CmdN"],
       sortorder: 100,
       id: "new-notebook-menuitem",
       action: function() {
@@ -61,6 +61,7 @@ define(function(require, exports, module) {
     },
     {
       name: "Save",
+      shortcut: ["Ctrl-S", "CmdS"],
       id: "save-menuitem",
       sortorder: 130,
       action: function() {
@@ -69,7 +70,7 @@ define(function(require, exports, module) {
     },
     {
       name: "Save As",
-      shortcut: ["Ctrl-S", "Cmd-S"],
+      shortcut: ["Ctrl-Shift-S", "ShiftCmdS"],
       id: "save-as-menuitem",
       sortorder: 140,
       autoReduce: true,

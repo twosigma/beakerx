@@ -212,9 +212,13 @@
             if (!bkHelper.isWindows) {
               var mapObj = {
                 Cmd: "&#x2318;",
-                Alt: "&#x2325;"
+                Alt: "&#x2325;",
+                Shift: "&#x21E7;",
+                Up: "&#2191;",
+                Down: "&#2193;"
               };
-              str = str.replace(/Cmd|Alt/gi, function(matched){
+              var regexp = new RegExp(Object.keys(mapObj).join("|"),"gi");
+              str = str.replace(regexp, function(matched) {
                 return mapObj[matched];
               });
             }

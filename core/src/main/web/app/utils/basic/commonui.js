@@ -217,6 +217,7 @@
                 Up: "&#x2191;",
                 Down: "&#x2193;"
               };
+              str = str.replace(/-/g, "");
               var regexp = new RegExp(Object.keys(mapObj).join("|"),"gi");
               str = str.replace(regexp, function(matched) {
                 return mapObj[matched];

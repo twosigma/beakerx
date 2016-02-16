@@ -41,7 +41,7 @@ define(function(require, exports, module) {
       parent: "File",
       id: "file-menu",
       submenu: "Save As",
-      shortcut: ["Ctrl-Shift-S", "ShiftCmdS"],
+      shortcut: ["Ctrl-Shift-S", "Shift-Cmd-S"],
       items: [
         {
           name: "Save as... (file)",

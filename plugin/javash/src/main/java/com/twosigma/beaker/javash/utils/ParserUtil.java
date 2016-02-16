@@ -22,11 +22,11 @@
 package com.twosigma.beaker.javash.utils;
 
 
-import java.io.*;
-import java.util.*;
+import java.util.Deque;
+import java.util.LinkedList;
 
 /**
- * I got idea from https://github.com/javaparser/javaparser
+ * Idea from https://github.com/javaparser/javaparser
  */
 public class ParserUtil {
 
@@ -99,7 +99,7 @@ public class ParserUtil {
           } else if (c == '\'') {
             state = State.IN_CHAR;
             builder.append(c);
-          }else{
+          } else {
             builder.append(c);
           }
           break;
@@ -112,7 +112,7 @@ public class ParserUtil {
           }
           break;
         case IN_LINE_COMMENT:
-          if (c=='\n' || c=='\r'){
+          if (c == '\n' || c == '\r') {
             state = State.CODE;
           }
           break;
@@ -123,10 +123,11 @@ public class ParserUtil {
           // /* blah blah /*/
           // At the previous line we had a valid block comment
           assert inBlock != null;
-          if (parserState.isLastChar('*') && c=='/' && (!parserState.isSecondToLastChar('/') || inBlock.length() > 0)){
+          if (parserState.isLastChar('*') && c == '/' && (!parserState.isSecondToLastChar('/')
+            || inBlock.length() > 0)) {
             state = State.CODE;
           } else {
-            inBlock.append(c=='\r'?'\n':c);
+            inBlock.append(c == '\r' ? '\n' : c);
           }
           break;
         case IN_STRING:
@@ -149,7 +150,7 @@ public class ParserUtil {
       // ok we have two slashes in a row inside a string
       // we want to replace them with... anything else, to not confuse
       // the parser
-      if (state==State.IN_STRING && parserState.isLastChar('\\') && c == '\\') {
+      if (state == State.IN_STRING && parserState.isLastChar('\\') && c == '\\') {
         parserState.reset();
       } else {
         parserState.update(c);
@@ -158,6 +159,41 @@ public class ParserUtil {
 
 
     return builder.toString();
+  }
+
+  /*
+     * This function does:
+     * 1) remove comments
+     * 2) ensure we have a cr after each ';' (if not inside double quotes or single quotes)
+     * 3) remove empty lines
+     */
+  public static String normalizeCode(String code) {
+    String c1 = ParserUtil.removeComments(code);
+    StringBuilder c2 = new StringBuilder();
+    boolean indq = false;
+    boolean insq = false;
+    for (int i = 0; i < c1.length(); i++) {
+      char c = c1.charAt(i);
+      switch (c) {
+        case '"':
+          if (!insq && i > 0 && c1.charAt(i - 1) != '\\')
+            indq = !indq;
+          break;
+        case '\'':
+          if (!indq && i > 0 && c1.charAt(i - 1) != '\\')
+            insq = !insq;
+          break;
+        case ';':
+          if (!indq && !insq) {
+            c2.append(c);
+            c = '\n';
+          }
+          break;
+      }
+      c2.append(c);
+    }
+
+    return c2.toString().replaceAll("\n\n+", "\n").trim();
   }
 
 }

@@ -274,7 +274,7 @@ public class JavaEvaluator {
           compilationUnit.addClassPathEntry(outDir);
         
           // normalize and analyze code
-          String code = normalizeCode(j.codeToBeExecuted);
+          String code = ParserUtil.normalizeCode(j.codeToBeExecuted);
         
           String [] codev = code.split("\n");
           int ci = 0;
@@ -413,45 +413,5 @@ public class JavaEvaluator {
       }
 
     };
-
-
-
-    /*
-     * This function does:
-     * 1) remove comments
-     * 2) ensure we have a cr after each ';' (if not inside double quotes or single quotes)
-     * 3) remove empty lines
-     */
-  
-    protected String normalizeCode(String code)
-    {
-      String c1 =  ParserUtil.removeComments(code);
-      StringBuilder c2 = new StringBuilder();
-      boolean indq = false;
-      boolean insq = false;
-      for(int i=0; i<c1.length(); i++)
-      {
-        char c = c1.charAt(i);
-        switch(c) {
-        case '"':
-          if (!insq && i>0 && c1.charAt(i-1)!='\\')
-            indq = !indq;
-          break;
-        case '\'':
-          if (!indq && i>0 && c1.charAt(i-1)!='\\')
-            insq = !insq;
-          break;
-        case ';':
-          if (!indq && !insq) {
-            c2.append(c);
-            c = '\n';
-          }
-          break;
-        }
-        c2.append(c);
-      }
-
-      return c2.toString().replaceAll("\n\n+", "\n").trim();
-    }
   }
 }

@@ -1359,6 +1359,7 @@
                 }
                 scope.colorder = scope.colreorg.fnOrder().slice(0);
                 scope.refreshCells();
+                scope.applyFilters();
                 scope.$digest();
               },
               'iFixedColumns': 1
@@ -1541,17 +1542,21 @@
               });
 
             // Apply filter
-            scope.table.columns().every(function () {
-              var column = this;
-              var columnFilterHeader = $(scope.table.table().header())
-                                      .find('.filterRow th:eq(' + this.header().cellIndex + ')');
-              $('input', columnFilterHeader)
-                .on('keyup change', function () {
-                  if (column.search() !== this.value) {
-                    column.search(this.value).draw();
-                  }
-                });
-            });
+            scope.applyFilters = function (){
+              scope.table.columns().every(function () {
+                var column = this;
+                var columnFilterHeader = $(scope.table.table().header())
+                  .find('.filterRow th:eq(' + this.header().cellIndex + ')');
+                $('input', columnFilterHeader).off('keyup change');
+                $('input', columnFilterHeader)
+                  .on('keyup change', function () {
+                    if (column.search() !== this.value) {
+                      column.search(this.value).draw();
+                    }
+                  });
+              });
+            };
+            scope.applyFilters();
 
             $(scope.table.header()).find("th").each(function(i){
               var events = jQuery._data(this, 'events');

@@ -1245,6 +1245,17 @@
                     }
                   }
                 ]
+              },
+              {
+                title: 'Filter...',
+                action: function(el) {
+                  var table = scope.table;
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex');
+                  var column = table.column(colIdx);
+
+                  scope.showFilter(column);
+                }
               }
             ]
           };
@@ -1456,6 +1467,10 @@
               scope.renderers[column] = scope.doubleWithPrecisionConverters[precision];
               scope.actualtype[column - 1] = 4; //double with precision
               scope.applyChanges();
+            };
+
+            scope.showFilter = function () {
+              //TODO show filter logic
             };
 
             scope.onKeyAction = function (column, onKeyEvent) {

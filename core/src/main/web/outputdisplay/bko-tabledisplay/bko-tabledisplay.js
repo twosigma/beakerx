@@ -1269,7 +1269,7 @@
                 break;
               }
             }
-            cols.push({'title' : scope.indexName+'&nbsp;&nbsp;', 'className': 'dtright', 'render': converter});
+            cols.push({'title' : scope.indexName, 'className': 'dtright', 'render': converter});
           } else {
             cols.push({'title': '    ', 'className': 'dtright', 'render': converter});
           }
@@ -1297,13 +1297,17 @@
             }
             cols.push(col);
           }
-          scope.columns = cols;
+          scope.columns = [];
+          for (var i = 0; i < cols.length; i++) {
+            scope.columns.push(_.clone(cols[i]));
+            delete cols[i].title
+          }
 
           var id = '#' + scope.id;
           var init = {
             'destroy' : true,
             'data': scope.data,
-            'columns': scope.columns,
+            'columns': cols,
             'stateSave': true,
             'processing': true,
             'autoWidth': true,
@@ -1321,7 +1325,8 @@
               scope.updateBackground();
               scope.updateDTMenu();
               //jscs:enable
-            }
+            },
+            'bSortCellsTop': true
           };
 
           if (!scope.pagination.use) {
@@ -1535,15 +1540,30 @@
                 scope.onKeyAction(cell.index().column, originalEvent);
               });
 
+            // Apply filter
+            scope.table.columns().every(function () {
+              var column = this;
+              var columnFilterHeader = $(scope.table.table().header())
+                                      .find('.filterRow th:eq(' + this.header().cellIndex + ')');
+              $('input', columnFilterHeader)
+                .on('keyup change', function () {
+                  if (column.search() !== this.value) {
+                    column.search(this.value).draw();
+                  }
+                });
+            });
+
             $(scope.table.header()).find("th").each(function(i){
               var events = jQuery._data(this, 'events');
-              var click = events.click[0].handler;
-              $(this).unbind('click.DT');
-              $(this).bind('click.DT', function(e){
-                if(!e.isDefaultPrevented()){
-                  click(e);
-                }
-              });
+              if (events && events.click){
+                var click = events.click[0].handler;
+                $(this).unbind('click.DT');
+                $(this).bind('click.DT', function(e){
+                  if(!e.isDefaultPrevented()){
+                    click(e);
+                  }
+                });
+              }
             });
 
             $(window).bind('resize.' + scope.id, function() {

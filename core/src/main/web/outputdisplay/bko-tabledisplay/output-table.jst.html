@@ -46,5 +46,15 @@
      </ul>
    </div>
 
-  <table cellpadding="0" class="display" border="0" cellspacing="0" width="10%" id="{{id}}"></table>
+  <table cellpadding="0" class="display" border="0" cellspacing="0" width="10%" id="{{id}}">
+    <thead>
+      <tr><th ng-repeat="c in columns">{{c.title}}</th></tr>
+      <tr class="filterRow"><th ng-repeat="c in columns">
+        <div class="input-clear" ng-if="!$first">
+          <input type="text">
+          <span class="glyphicon glyphicon-remove-circle"></span>
+        </div>
+      </th></tr>
+    </thead>
+  </table>
 </div>

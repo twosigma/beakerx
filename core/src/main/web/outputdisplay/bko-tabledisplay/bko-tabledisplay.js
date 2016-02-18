@@ -414,6 +414,24 @@
               $scope.getCellDispOpts.push($scope.allTypes);
             }
           }
+          $scope.applyFilters();
+        };
+
+        // Apply filter
+        $scope.applyFilters = function (){
+          if (!$scope.table) { return; }
+          $scope.table.columns().every(function () {
+            var column = this;
+            var columnFilterHeader = $($scope.table.table().header())
+              .find('.filterRow th:eq(' + this.header().cellIndex + ')');
+            $('input', columnFilterHeader).off('keyup change');
+            $('input', columnFilterHeader)
+              .on('keyup change', function () {
+                if (column.search() !== this.value) {
+                  column.search(this.value).draw();
+                }
+              });
+          });
         };
 
         $scope.renderMenu = false;
@@ -1297,7 +1315,11 @@
             }
             cols.push(col);
           }
-          scope.columns = [];
+          if (!scope.columns) {
+            scope.columns = [];
+          } else {
+            scope.columns.splice(0, scope.columns.length);
+          }
           for (var i = 0; i < cols.length; i++) {
             scope.columns.push(_.clone(cols[i]));
             delete cols[i].title
@@ -1324,6 +1346,7 @@
               scope.update_selected();
               scope.updateBackground();
               scope.updateDTMenu();
+              scope.applyFilters();
               //jscs:enable
             },
             'bSortCellsTop': true
@@ -1359,7 +1382,6 @@
                 }
                 scope.colorder = scope.colreorg.fnOrder().slice(0);
                 scope.refreshCells();
-                scope.applyFilters();
                 scope.$digest();
               },
               'iFixedColumns': 1
@@ -1540,23 +1562,6 @@
                 originalEvent.preventDefault();
                 scope.onKeyAction(cell.index().column, originalEvent);
               });
-
-            // Apply filter
-            scope.applyFilters = function (){
-              scope.table.columns().every(function () {
-                var column = this;
-                var columnFilterHeader = $(scope.table.table().header())
-                  .find('.filterRow th:eq(' + this.header().cellIndex + ')');
-                $('input', columnFilterHeader).off('keyup change');
-                $('input', columnFilterHeader)
-                  .on('keyup change', function () {
-                    if (column.search() !== this.value) {
-                      column.search(this.value).draw();
-                    }
-                  });
-              });
-            };
-            scope.applyFilters();
 
             $(scope.table.header()).find("th").each(function(i){
               var events = jQuery._data(this, 'events');

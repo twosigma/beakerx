@@ -404,7 +404,7 @@
         scope.removeOnKeyListeners = function () {
           for (var f in scope.onKeyListeners){
             if(scope.onKeyListeners.hasOwnProperty(f)){
-              document.removeEventListener("keydown", scope.onKeyListeners[f]);
+              $(document).off("keydown.plot-action", scope.onKeyListeners[f]);
             }
           }
           scope.onKeyListeners = {};
@@ -450,19 +450,23 @@
               }
             });
 
-          scope.removeOnKeyListeners();
-
           var onKeyElements = scope.svg.selectAll(".item-onkey");
           //TODO add listeners only for elements that have keys or keyTags
           onKeyElements
-            .on("mouseenter.action", function(item){
-              scope.onKeyListeners[item.id] = function(onKeyEvent){
-                scope.onKeyAction(item, onKeyEvent);
-              };
-              document.addEventListener("keydown", scope.onKeyListeners[item.id]);
+            .on("mouseenter.plot-click", function(item){
+              if(!scope.onKeyListeners[item.id]) {
+                scope.onKeyListeners[item.id] = function(onKeyEvent){
+                  scope.onKeyAction(item, onKeyEvent);
+                };
+                $(document).on("keydown.plot-action", scope.onKeyListeners[item.id]);
+              }
             })
-            .on("mouseleave.action", function(item){
-              document.removeEventListener("keydown", scope.onKeyListeners[item.id]);
+            .on("mouseleave.plot-click", function(item){
+              var keyListener = scope.onKeyListeners[item.id]
+              if (keyListener) {
+                delete scope.onKeyListeners[item.id];
+                $(document).off("keydown.plot-action", keyListener);
+              }
             });
 
           if (model.useToolTip === false) {

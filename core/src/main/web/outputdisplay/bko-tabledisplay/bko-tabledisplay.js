@@ -358,6 +358,24 @@
           table.columns(cLength).visible(visible);
         };
 
+        $scope.getColumnByInitialIndex = function(index){
+          var order = $scope.table.colReorder.order;
+          if (order){
+            index = order().indexOf(index);
+          }
+          return $scope.table.column(index);
+        };
+
+        $scope.showColumn = function (initialIndex, event) {
+          var column = $scope.getColumnByInitialIndex(initialIndex);
+          column.visible(!column.visible());
+          if(event){
+            event.stopPropagation();
+          }
+        };
+        $scope.isColumnVisible = function (initialIndex) {
+          return $scope.getColumnByInitialIndex(initialIndex).visible();
+        };
         $scope.refreshCells = function() {
           $scope.getCellIdx      =  [];
           $scope.getCellNam      =  [];
@@ -901,23 +919,56 @@
           if (scope.fixcols)
             scope.fixcols.fnRedrawLayout();
         };
-        scope.selectFixedColumnCell = function (row, select) {
+        scope.selectFixedColumnRow = function (dtRowIndex, select) {
           if (scope.fixcols) {
-            var fixedRow = $(scope.fixcols.dom.clone.left.body.rows[row + 1]);
-            if (select) {
-              fixedRow.addClass('selected');
-            } else {
-              fixedRow.removeClass('selected');
+            var doSelect = function(row){
+              var cells = row.find('td');
+              if (select) {
+                row.addClass('selected');
+              } else {
+                row.removeClass('selected');
+                cells.removeClass('selected');
+              }
+            };
+            var row = scope.table.row(dtRowIndex).node();
+            if (!row) { return; }
+            var fixRowIndex = row.rowIndex;
+            var fixedColumns = scope.fixcols.dom.clone;
+            if(fixedColumns.left.body){
+              doSelect($(fixedColumns.left.body.rows[fixRowIndex]));
+            }
+            if(fixedColumns.right.body){
+              doSelect($(fixedColumns.right.body.rows[fixRowIndex]));
             }
           }
         };
-        scope.highlightFixedColumnCell = function (row, highlight) {
-          if (scope.fixcols) {
-            var fixedRow = $(scope.fixcols.dom.clone.left.body.rows[row + 1]);
-            if (highlight) {
-              fixedRow.addClass('hover');
+        scope.selectFixedColumnCell = function (jqFixedCell, select) {
+          if (jqFixedCell) {
+            if (select) {
+              jqFixedCell.addClass('selected');
             } else {
-              fixedRow.removeClass('hover');
+              jqFixedCell.removeClass('selected');
+            }
+          }
+        };
+        scope.highlightFixedColumnRow = function (dtRowIndex, highlight) {
+          if (scope.fixcols) {
+            var doHighlight = function(row){
+              if (highlight) {
+                row.addClass('hover');
+              } else {
+                row.removeClass('hover');
+              }
+            };
+            var row = scope.table.row(dtRowIndex).node();
+            if (!row) { return; }
+            var fixRowIndex = scope.table.row(dtRowIndex).node().rowIndex;
+            var fixedColumns = scope.fixcols.dom.clone;
+            if(fixedColumns.left.body){
+              doHighlight($(fixedColumns.left.body.rows[fixRowIndex]));
+            }
+            if(fixedColumns.right.body){
+              doHighlight($(fixedColumns.right.body.rows[fixRowIndex]));
             }
           }
         };
@@ -934,10 +985,10 @@
               var iPos = row.index();
               if (!scope.selected[iPos]) {
                 $(tr).removeClass('selected');
-                scope.selectFixedColumnCell(iPos, false);
+                scope.selectFixedColumnRow(iPos, false);
               } else {
                 $(tr).addClass('selected');
-                scope.selectFixedColumnCell(iPos, true);
+                scope.selectFixedColumnRow(iPos, true);
               }
             }
           });
@@ -1257,6 +1308,7 @@
               scope.update_size();
               scope.update_selected();
               scope.updateBackground();
+              scope.updateDTMenu();
               //jscs:enable
             }
           };
@@ -1315,29 +1367,49 @@
             $(id + ' tbody').off('click');
             */
             $(id + ' tbody').on('dblclick', 'td', function(e) {
-              var rowIdx = this.parentElement.rowIndex - 1;
-              var colIdx = this.cellIndex;
-              var currentCell = $(scope.table.column(colIdx).nodes()[rowIdx]);
+              var rowIdx;
+              var colIdx;
+              var iPos = scope.table.cell(this).index();
+              if (iPos) { //selected regular cell
+                rowIdx = iPos.row;
+                colIdx = iPos.column;
+              } else { //selected fixed column or index cell
+                var position = scope.fixcols.fnGetPosition(this);
+                rowIdx = position[0];
+                if ($(this).parents().hasClass('DTFC_RightWrapper')) {
+                  var order = scope.table.colReorder.order();
+                  var fixRight = scope.pagination.fixRight;
+                  var colIdxInRight = position[1];
+                  colIdx = order[order.length - fixRight + colIdxInRight];
+                } else {
+                  colIdx = position[1];
+                }
+              }
+
+              var currentCell = $(scope.table.cells(function (idx, data, node) {
+                return idx.column === colIdx && idx.row ===  rowIdx;
+              }).nodes());
+
               var isCurrentCellSelected = currentCell.hasClass('selected');
 
               if (scope.selected[rowIdx]) {
                 scope.selected[rowIdx] = false;
                 $(scope.table.row(rowIdx).node()).removeClass('selected');
-                scope.selectFixedColumnCell(rowIdx, false);
+                scope.selectFixedColumnRow(rowIdx, false);
               }
 
               $(scope.table.cells().nodes()).removeClass('selected');
               if (scope.fixcols) {
-                _.each(scope.fixcols.dom.clone.left.body.rows, function(row, index){
-                  if(!scope.selected[index - 1]){
-                    $(row).removeClass('selected');
+                _.each(scope.selected, function(selected, index){
+                  if(!selected){
+                    scope.selectFixedColumnRow(index, false);
                   }
                 });
               }
               if (!isCurrentCellSelected) {
                 currentCell.addClass('selected');
-                if(colIdx === 0) {
-                  scope.selectFixedColumnCell(rowIdx, true);
+                if(iPos === undefined) {
+                  scope.selectFixedColumnCell($(this), true);
                 }
               }
 
@@ -1345,30 +1417,31 @@
             });
 
             $(id + ' tbody').on('click', 'tr', function(event) {
-              var rowIndex = this.rowIndex - 1;
-              var tr = scope.table.row(rowIndex).node();
-              if (scope.selected[rowIndex]) {
-                scope.selected[rowIndex] = false;
-                $(tr).removeClass('selected');
-                scope.selectFixedColumnCell(rowIndex, false);
+              var dtTR = scope.getDtRow(this);
+              var iPos = scope.table.row(dtTR).index();
+              if (scope.selected[iPos]) {
+                scope.selected[iPos] = false;
+                $(dtTR).removeClass('selected');
+                scope.selectFixedColumnRow(iPos, false);
               } else {
-                scope.selected[rowIndex] = true;
-                $(tr).addClass('selected');
-                scope.selectFixedColumnCell(rowIndex, true);
+                scope.selected[iPos] = true;
+                $(dtTR).addClass('selected');
+                scope.selectFixedColumnRow(iPos, true);
               }
-              event.stopPropagation();
             });
 
             $(id + ' tbody')
               .on('mouseenter.bko-datatable', 'tr', function () {
-                var rowIndex = this.rowIndex - 1;
-                $(scope.table.row(rowIndex).node()).addClass('hover');
-                scope.highlightFixedColumnCell (rowIndex, true);
+                var dtTR = scope.getDtRow(this);
+                var rowIndex = scope.table.row(dtTR).index();
+                $(dtTR).addClass('hover');
+                scope.highlightFixedColumnRow (rowIndex, true);
               })
               .on('mouseleave.bko-datatable', 'tr', function () {
-                var rowIndex = this.rowIndex - 1;
-                $(scope.table.row(rowIndex).node()).removeClass('hover');
-                scope.highlightFixedColumnCell (rowIndex, false);
+                var dtTR = scope.getDtRow(this);
+                var rowIndex = scope.table.row(dtTR).index();
+                $(dtTR).removeClass('hover');
+                scope.highlightFixedColumnRow (rowIndex, false);
               });
 
             scope.showHideBars = function (column) {
@@ -1446,6 +1519,17 @@
                 originalEvent.preventDefault();
                 scope.onKeyAction(cell.index().column, originalEvent);
               });
+
+            $(scope.table.header()).find("th").each(function(i){
+              var events = jQuery._data(this, 'events');
+              var click = events.click[0].handler;
+              $(this).unbind('click.DT');
+              $(this).bind('click.DT', function(e){
+                if(!e.isDefaultPrevented()){
+                  click(e);
+                }
+              });
+            });
 
             $(window).bind('resize.' + scope.id, function() {
               //jscs:disable
@@ -1566,6 +1650,26 @@
             });
           }
         });
+
+        scope.updateDTMenu = function(){
+          if(scope.table){
+            var orderInfo = scope.table.order()[0];
+            scope.isIndexColumnDesc = orderInfo[0] === 0 && orderInfo[1] === 'desc';
+            scope.$apply();
+          }
+        }
+
+        scope.getDtRow = function (node) {
+          var dtRow;
+          var iPos = scope.table.row(node).index();
+          if (iPos === undefined) { //node is fixed column
+            iPos = scope.fixcols.fnGetPosition(node);
+            dtRow = scope.table.row(iPos).node();
+          } else { //regular node
+            dtRow = node;
+          }
+          return dtRow;
+        };
 
       }
     };

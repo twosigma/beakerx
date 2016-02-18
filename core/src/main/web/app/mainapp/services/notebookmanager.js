@@ -41,6 +41,7 @@
             registrations.push($.cometd.subscribe('/sessionChange', function(reply){}));
           }
         }));
+        bkHelper.initBeakerLanguageSettings();
       },
       reset: function() {
         _.each(registrations, function(v) {

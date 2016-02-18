@@ -648,7 +648,7 @@
   }
 
   .CodeMirror-fullscreen {
-    background: $main-theme-panel-background;
+    background: $main-theme-panel-background !important;
   }
 
   .CodeMirror .cm-comment {

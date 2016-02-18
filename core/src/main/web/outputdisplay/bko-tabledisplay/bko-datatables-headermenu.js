@@ -47,7 +47,7 @@ HeaderMenu.prototype = {
     this._appendMenuContainer();
     this._buildMenuData(headerLayout);
 
-    $(document.body).bind('mousedown', function(e) {
+    var clickHandler = function(e) {
       var $container = that.dom.container;
       var targetClass = $(e.target).attr('class');
       var toggleClass = 'bko-menu';
@@ -55,10 +55,11 @@ HeaderMenu.prototype = {
       if ($container[0] != e.target && !$.contains($container[0], e.target) && targetClass != toggleClass) {
         that._hide();
       }
-    });
+    };
 
+    $(document.body).on('click.table-headermenu', clickHandler);
     dt.on('destroy', function () {
-      //$(document.body).unbind('mousedown', function() {});
+      $(document.body).off('click.table-headermenu', clickHandler);
       //that.destroy();
     });
   },
@@ -109,12 +110,14 @@ HeaderMenu.prototype = {
         .bind('click', function(e) {
           if (that.dom.menu) {
             that._hide();
+            if($(this).parent().data('columnIndex') !== that.dom.container.data('columnIndex')){
+              that._show($(this));
+            }
           } else {
             that._show($(this));
           }
 
           e.preventDefault();
-          e.stopPropagation();
         });
 
       $(cell).append($el);
@@ -143,7 +146,7 @@ HeaderMenu.prototype = {
       that._buildMenuItems(menuItems, $menu);
 
       $menu.offset({
-          top: el.height() + 2,
+          top: el.height() + 1,
           left: el.offset().left - 51
         })
         .css('display', 'block')

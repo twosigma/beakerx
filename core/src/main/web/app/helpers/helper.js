@@ -100,6 +100,48 @@
           };
         }
       },
+      initBeakerLanguageSettings: function () {
+        var beakerObj = this.getBeakerObject();
+        var beaker = beakerObj.beakerObj;
+        if (beaker) {
+          beaker.language = {};
+          beakerObj.beakerObjectToNotebook();
+        }
+      },
+      setLanguageManagerSettingsToBeakerObject: function (plugin) {
+        var beakerObject = this.getBeakerObject();
+        var beaker = beakerObject.beakerObj;
+        if (beaker && beaker.language) {
+          var spec = plugin.spec;
+          var beakerLanguageSettings = {};
+          _.forOwn(spec, function(value, property){
+            if(value.type === 'settableString'){
+              beakerLanguageSettings[property] = plugin.settings[property] || '';
+            }
+          });
+          beaker.language[plugin.pluginName] = beakerLanguageSettings;
+          beakerObject.beakerObjectToNotebook();
+        }
+      },
+      updateLanguageManagerSettingsInBeakerObject: function (pluginName, propertyName, propertyValue) {
+        var beakerObject = this.getBeakerObject();
+        var beaker = beakerObject.beakerObj;
+        if (beaker && beaker.language) {
+          var settings = beaker.language[pluginName];
+          if (settings) {
+            settings[propertyName] = propertyValue;
+          }
+          beakerObject.beakerObjectToNotebook();
+        }
+      },
+      removeLanguageManagerSettingsFromBeakerObject: function (pluginName) {
+        var beakerObject = this.getBeakerObject();
+        var beaker = beakerObject.beakerObj;
+        if (beaker && beaker.language && pluginName) {
+          delete beaker.language[pluginName];
+          beakerObject.beakerObjectToNotebook();
+        }
+      },
 
       // enable debug
       debug: function() {
@@ -300,6 +342,10 @@
       stripOutBeakerPrefs: function(model) {
         if (model && model.namespace && model.namespace.prefs)
           delete model.namespace.prefs;
+      },
+      stripOutBeakerLanguageManagerSettings: function(model) {
+        if (model && model.namespace && model.namespace.language)
+          delete model.namespace.language;
       },
       getNotebookElement: function(currentScope) {
         return bkCoreManager.getNotebookElement(currentScope);
@@ -810,6 +856,7 @@
       sanitizeNotebookModel: function(m) {
         var notebookModelCopy = angular.copy(m);
         bkHelper.stripOutBeakerPrefs(notebookModelCopy);
+        bkHelper.stripOutBeakerLanguageManagerSettings(notebookModelCopy);
         delete notebookModelCopy.evaluationSequenceNumber; //remove evaluation counter
         if (notebookModelCopy.cells) {
           for (var i = 0; i < notebookModelCopy.cells.length; i++) {

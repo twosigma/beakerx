@@ -293,7 +293,7 @@
         });
 
         $scope.cellmenu.addItem({
-          name: 'Options',
+          name: 'Options...',
           action: function() {
             bkCoreManager.showFullModalDialog(function cb(r) { } ,
                 'app/mainapp/dialogs/codecelloptions.jst.html', 'CodeCellOptionsController', $scope.cellmodel);

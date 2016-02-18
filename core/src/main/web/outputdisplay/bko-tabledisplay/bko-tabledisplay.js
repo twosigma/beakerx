@@ -1497,8 +1497,21 @@
               scope.applyChanges();
             };
 
-            scope.showFilter = function () {
-              //TODO show filter logic
+            scope.showFilter = function (column) {
+              scope.filter = true;
+              scope.$apply();
+              if(scope.fixcols){
+                scope.fixcols.fnRedrawLayout();
+              }
+              var columnFilterHeader = $(scope.table.table().header())
+                  .find('.filterRow th:eq(' + column.header().cellIndex + ')');
+              $('input', columnFilterHeader).focus();
+            };
+            scope.hideFilter = function () {
+              scope.filter = false;
+              setTimeout(function(){
+                scope.update_size()
+              }, 0);
             };
 
             scope.onKeyAction = function (column, onKeyEvent) {

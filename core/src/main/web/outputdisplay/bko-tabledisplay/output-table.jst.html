@@ -43,6 +43,7 @@
        <li>&nbsp;</li>
        <li><a tabindex="-1" href="#" ng-click="openOptionsDialog()" id="dt-options" eat-click>Options...</a></li>
        <li><a tabindex="-1" href="#" ng-click="showSearch()" id="dt-search" eat-click>Search...</a></li>
+       <li><a tabindex="-1" href="#" ng-click="hideFilter()" id="dt-hide-filter" eat-click>Hide Filter</a></li>
      </ul>
    </div>
 
@@ -52,7 +53,7 @@
         <th>{{hasIndex ? indexName : '     '}}</th>
         <th ng-repeat="c in columns" ng-if="!$first">{{c.title}}</th>
       </tr>
-      <tr class="filterRow">
+      <tr class="filterRow" ng-show="filter">
         <th></th>
         <th ng-repeat="c in columns" ng-if="!$first">
           <div class="input-clear">

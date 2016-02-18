@@ -46,7 +46,7 @@ var BeakerPageObject = function() {
         return true;
       });
     }, 100000);
-  }
+  };
 
   this.openFile = function(path) {
     this.openMenuAtIndex(0);
@@ -63,7 +63,7 @@ var BeakerPageObject = function() {
         .thenCatch(function() {
           return false;
         });
-    }, 5000)
+    }, 5000);
 
     return element(by.css('.modal-submit')).click();
   };
@@ -103,6 +103,28 @@ var BeakerPageObject = function() {
     return element(by.css('.view-menu'))
     .click()
     .then(element(by.partialLinkText('Advanced Mode')).click);
+  };
+
+  this.setNormalEditMode = function() {
+    this.setEditMode('Normal');
+  };
+
+  this.setEmacsEditMode = function() {
+    this.setEditMode('Emacs');
+  };
+
+  this.setVimEditMode = function () {
+    this.setEditMode('Vim');
+  };
+
+  this.setSublimeEditMode = function() {
+    this.setEditMode('Sublime');
+  };
+
+  this.setEditMode = function(mode) {
+    element(by.css('.notebook-menu')).click();
+    browser.actions().mouseMove(element(by.css('.edit-mode-menuitem'))).perform();
+    element(by.partialLinkText(mode)).click();
   };
 
   this.isCellMenuOpen = function(opts) {
@@ -207,9 +229,36 @@ var BeakerPageObject = function() {
     return element(by.css('.code-cell-area .' + language + '-menuitem'));
   };
   this.cellEvaluatorDisplay = element(by.css('.code-cell-area .cell-evaluator-menu b'));
+
+  //CodeMirror API. See for information https://sharpkit.net/help/SharpKit.CodeMirror/SharpKit.CodeMirror/CodeMirror/
+
   this.setCellInput = function(code) {
-    browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
+    return browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
   };
+
+  this.getCellInput = function() {
+    return browser.executeScript('return $(".CodeMirror")[0].CodeMirror.getValue()');
+  };
+
+  //Set the selection range. start and end should be {line, ch} objects.
+  this.setCellInputSelection = function(start, end) {
+    return browser.executeScript('$(".CodeMirror")[0].CodeMirror.setSelection({' + start.line + ', ' + start.ch + '}, {' + start.line + ', ' + start.ch + '})');
+  };
+
+  //Set the cursor position. You can either pass a single {line, ch} object, or the line and the
+  // character as two separate parameters.
+  this.setCellInputCursor = function(pos) {
+    return browser.executeScript('$(".CodeMirror")[0].CodeMirror.setCursor({' + pos.line + ', ' + pos.ch + '})');
+  };
+
+  //start is a boolean indicating whether the start or the end of the selection must be retrieved.
+  //If it is not given, the current cursor pos, i.e. the side of the selection that would move if
+  //you pressed an arrow key, is chosen. A {line, ch} object will be returned.
+  this.getCellInputCursor = function() {
+    return browser.executeScript('return $(".CodeMirror")[0].CodeMirror.getCursor()');
+  };
+
+  //end CodeMirror API
 
   this.toggleOutputCellExpansion = function() {
     return element(by.css('.toggle-menu .expand-contract')).click();
@@ -236,7 +285,7 @@ var BeakerPageObject = function() {
 
   this.openSection = function() {
     return element(by.css('.bksectiontoggleplus')).click();
-  }
+  };
 
   this.getCellOutput = function() {
     return element(by.css('bk-output-display > div'));
@@ -244,7 +293,7 @@ var BeakerPageObject = function() {
 
   this.getLoadingIndicator = function() {
     return element(by.css('.navbar-text > i'));
-  }
+  };
 
   this.waitForCellOutput = function(plugin) {
     var self = this;

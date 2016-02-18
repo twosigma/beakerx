@@ -175,6 +175,7 @@
                    items: [
                            {
                              name: "New Notebook",
+                             shortcut: ["Ctrl-N", "Cmd-N"],
                              tooltip: "Open a new empty notebook, add the languages of your choice",
                              sortorder: 100,
                              action: function() {

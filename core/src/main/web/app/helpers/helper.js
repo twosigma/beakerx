@@ -1124,7 +1124,8 @@
       hideLanguageManagerSpinner: function(error) {
         bkUtils.hideLanguageManagerSpinner(error);
       },
-      isElectron: bkUtils.isElectron
+      isElectron: bkUtils.isElectron,
+      isMacOS: bkUtils.isMacOS
     };
 
     return bkHelper;

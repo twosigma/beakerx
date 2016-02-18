@@ -24,5 +24,6 @@
      title="{{item.tooltip}}"
      eat-click>
     {{getName(item)}}
+    <span ng-if="item.shortcut" class="menu-shortcut" ng-bind-html="getShortcut(item.shortcut)"></span>
   </a>
 </li>

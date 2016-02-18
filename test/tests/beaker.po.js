@@ -229,21 +229,36 @@ var BeakerPageObject = function() {
     return element(by.css('.code-cell-area .' + language + '-menuitem'));
   };
   this.cellEvaluatorDisplay = element(by.css('.code-cell-area .cell-evaluator-menu b'));
+
+  //CodeMirror API. See for information https://sharpkit.net/help/SharpKit.CodeMirror/SharpKit.CodeMirror/CodeMirror/
+
   this.setCellInput = function(code) {
-    browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
+    return browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
   };
 
-  this.sendKeysCellInput = function(keys) {
-
-    browser.executeScript('$.event.trigger({ type : "keypress", which : "\u0069" })');
-
-    //var code = '{type: "keydown", keyCode: '+ keys +', ctrlKey: false, shiftKey: false, altKey: false, preventDefault: function(){}, stopPropagation: function(){}}';
-
-    //browser.executeScript('$(".CodeMirror")[0].CodeMirror.triggerOnKeyDown("' + code +'")');
-    //
-    //browser.executeScript('$(".CodeMirror")[0].CodeMirror.triggerOnKeyDown({type: "keydown", keyCode: "\u0069", ctrlKey: false, shiftKey: false, altKey: false, preventDefault: function(){}, stopPropagation: function(){}})');
+  this.getCellInput = function() {
+    return browser.executeScript('return $(".CodeMirror")[0].CodeMirror.getValue()');
   };
 
+  //Set the selection range. start and end should be {line, ch} objects.
+  this.setCellInputSelection = function(start, end) {
+    return browser.executeScript('$(".CodeMirror")[0].CodeMirror.setSelection({' + start.line + ', ' + start.ch + '}, {' + start.line + ', ' + start.ch + '})');
+  };
+
+  //Set the cursor position. You can either pass a single {line, ch} object, or the line and the
+  // character as two separate parameters.
+  this.setCellInputCursor = function(pos) {
+    return browser.executeScript('$(".CodeMirror")[0].CodeMirror.setCursor({' + pos.line + ', ' + pos.ch + '})');
+  };
+
+  //start is a boolean indicating whether the start or the end of the selection must be retrieved.
+  //If it is not given, the current cursor pos, i.e. the side of the selection that would move if
+  //you pressed an arrow key, is chosen. A {line, ch} object will be returned.
+  this.getCellInputCursor = function() {
+    return browser.executeScript('return $(".CodeMirror")[0].CodeMirror.getCursor()');
+  };
+
+  //end CodeMirror API
 
   this.toggleOutputCellExpansion = function() {
     return element(by.css('.toggle-menu .expand-contract')).click();

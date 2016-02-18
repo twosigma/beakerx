@@ -50,4 +50,72 @@ describe('Edit Mode', function() {
     expect(element(by.css('.CodeMirror.cm-fat-cursor div.CodeMirror-cursors')).isPresent()).toBe(false);
   });
 
+  it('test Vim insert and delete.', function() {
+    beakerPO.setVimEditMode();
+    beakerPO.insertNewCell();
+    //click 'i' character - switch to insert mode
+    browser.actions().sendKeys('i').perform();
+
+    browser.actions().sendKeys('test').perform();
+    beakerPO.getCellInput().then(function (result) {
+      expect(result).toBe('test')
+    });
+
+    beakerPO.setNormalEditMode();
+  });
+
+  it('test Vim overwrite mode.', function() {
+    beakerPO.setVimEditMode();
+    beakerPO.insertNewCell();
+
+    beakerPO.setCellInput("meeting");
+
+    //click 'R' character - switch to overwrite mode
+    browser.actions().sendKeys('R').perform();
+    browser.actions().sendKeys('session').perform();
+
+
+    beakerPO.getCellInput().then(function (result) {
+      expect(result).toBe('session')
+    });
+
+    beakerPO.setNormalEditMode();
+  });
+
+
+  it('test Vim uppercase.', function() {
+    beakerPO.setVimEditMode();
+    beakerPO.insertNewCell();
+
+    beakerPO.setCellInput("meeting");
+
+    browser.actions().sendKeys('~~~~~~~').perform();
+
+    beakerPO.getCellInput().then(function (result) {
+      expect(result).toBe('MEETING');
+    });
+
+    beakerPO.setNormalEditMode();
+  });
+
+  it('test Vim cursor commands.', function() {
+    beakerPO.setVimEditMode();
+    beakerPO.insertNewCell();
+
+    beakerPO.setCellInput("meeting");
+
+    browser.actions().sendKeys('$').perform();
+    beakerPO.getCellInputCursor().then(function (pos) {
+      expect(pos.ch).toBe(6);
+    });
+
+    browser.actions().sendKeys('0').perform();
+    beakerPO.getCellInputCursor().then(function (pos) {
+      expect(pos.ch).toBe(0);
+    });
+
+    beakerPO.setNormalEditMode();
+  });
+
+
 });

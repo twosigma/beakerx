@@ -19,7 +19,7 @@ var BeakerPageObject = require('./beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Edit Mode', function() {
+describe('Vim mode', function() {
 
   beforeEach(function() {
     beakerPO = new BeakerPageObject();
@@ -33,7 +33,7 @@ describe('Edit Mode', function() {
     beakerPO.closeNotebook();
   });
 
-  it('test Vim toggle between insert and movement modes.', function() {
+  it('Toggles between normal and insert modes', function() {
     beakerPO.setVimEditMode();
     beakerPO.insertNewCell();
     expect(element(by.css('.CodeMirror.cm-fat-cursor div.CodeMirror-cursors')).isPresent()).toBe(true);
@@ -50,7 +50,7 @@ describe('Edit Mode', function() {
     expect(element(by.css('.CodeMirror.cm-fat-cursor div.CodeMirror-cursors')).isPresent()).toBe(false);
   });
 
-  it('test Vim insert and delete.', function() {
+  it('Insert', function() {
     beakerPO.setVimEditMode();
     beakerPO.insertNewCell();
     //click 'i' character - switch to insert mode
@@ -64,7 +64,7 @@ describe('Edit Mode', function() {
     beakerPO.setNormalEditMode();
   });
 
-  it('test Vim overwrite mode.', function() {
+  it('R command replaces characters', function() {
     beakerPO.setVimEditMode();
     beakerPO.insertNewCell();
 
@@ -83,7 +83,7 @@ describe('Edit Mode', function() {
   });
 
 
-  it('test Vim uppercase.', function() {
+  it('~ command switches character case', function() {
     beakerPO.setVimEditMode();
     beakerPO.insertNewCell();
 
@@ -98,7 +98,7 @@ describe('Edit Mode', function() {
     beakerPO.setNormalEditMode();
   });
 
-  it('test Vim cursor commands.', function() {
+  it('$ and 0 commands go to the beginning and end of line', function() {
     beakerPO.setVimEditMode();
     beakerPO.insertNewCell();
 

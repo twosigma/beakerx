@@ -42,7 +42,7 @@ var config = {
           'tests/cell-menu.js',
           'tests/language-manager.js',
           'tests/bugs.js',
-          'tests/edit-mode.js'
+          'tests/vim-mode.js'
   ]
 };
 

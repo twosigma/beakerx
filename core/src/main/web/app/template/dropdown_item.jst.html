@@ -15,6 +15,7 @@
 -->
 <li ng-class="getItemClass(item)">
   <i class="glyphicon glyphicon-ok" ng-show="isMenuItemChecked(item)"></i>
+  <i class="fa fa-caret-right" ng-show="isLastUsedItem(item)"></i>
   <span ng-if="hasCustomMarkup(item)" ng-bind-html="getCustomMarkup(item)"></span>
   <a href="#"
      tabindex="-1"

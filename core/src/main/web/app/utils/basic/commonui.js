@@ -201,11 +201,11 @@
         };
         $scope.hasCustomMarkup = function(item) {
           return typeof _.result(item, 'markup') !== 'undefined';
-        }
+        };
 
         $scope.getCustomMarkup = function(item) {
           return $sce.trustAsHtml(_.result(item, 'markup') || '');
-        }
+        };
 
         $scope.getName = function(item) {
           var name = '';
@@ -230,6 +230,17 @@
               return item.isChecked();
             } else {
               return item.isChecked;
+            }
+          }
+          return false;
+        };
+
+        $scope.isLastUsedItem = function(item) {
+          if (item.isLastUsed) {
+            if (_.isFunction(item.isLastUsed)) {
+              return item.isLastUsed();
+            } else {
+              return item.isLastUsed;
             }
           }
           return false;

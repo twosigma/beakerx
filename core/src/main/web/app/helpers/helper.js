@@ -20,7 +20,7 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.debug', 'bk.electron', 'bk.publication']);
+  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.debug', 'bk.electron', 'bk.publication', 'bk.lastUsedMenu']);
   /**
    * bkHelper
    * - should be the only thing plugins depend on to interact with general beaker stuffs (other than
@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
+  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkDebug, bkElectron, bkPublicationAuth, bkLastUsedMenu, GLOBALS) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -787,6 +787,15 @@
               JST['template/opennotebook']({homedir: values[0], extension: extension}),
               strategy);
         });
+      },
+      getLastUsedSubMenu: function(supermenuId) {
+        return bkLastUsedMenu.getItem(supermenuId);
+      },
+      setLastUsedSubMenu: function(supermenuId, id) {
+        bkLastUsedMenu.setItem(supermenuId, id);
+      },
+      resetLastUsed: function() {
+        bkLastUsedMenu.reset();
       },
 
       // eval utils

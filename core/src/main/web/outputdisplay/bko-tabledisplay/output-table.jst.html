@@ -57,8 +57,8 @@
         <th></th>
         <th ng-repeat="c in columns" ng-if="!$first">
           <div class="input-clear">
-            <input type="text">
-            <span class="glyphicon glyphicon-remove-circle"></span>
+            <input type="text" ng-model="filter[$index]" ng-blur="onFilterBlur($event)">
+            <span class="glyphicon glyphicon-remove-circle" ng-click="clearFilter($index)"></span>
           </div>
         </th>
       </tr>

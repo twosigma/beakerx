@@ -159,7 +159,8 @@
                   'Etc/GMT-13|GMT-13:00',
                   'Etc/GMT-14|GMT-14:00']);
   //jscs:disable
-  beaker.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS) {
+  beaker.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', '$rootScope',
+    function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS, $rootScope) {
   //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
     return {
@@ -1498,7 +1499,7 @@
             };
 
             scope.showFilter = function (column) {
-              scope.filter = true;
+              scope.filter = {};
               scope.$apply();
               if(scope.fixcols){
                 scope.fixcols.fnRedrawLayout();
@@ -1507,11 +1508,43 @@
                   .find('.filterRow th:eq(' + column.header().cellIndex + ')');
               $('input', columnFilterHeader).focus();
             };
+
             scope.hideFilter = function () {
-              scope.filter = false;
+              scope.filter = null;
+              scope.table.columns().every(function () {
+                this.search('');
+              });
+              scope.table.draw();
               setTimeout(function(){
                 scope.update_size()
               }, 0);
+            };
+
+            scope.clearFilter = function (columnIndex) {
+              if(columnIndex) {
+                scope.filter[columnIndex] = '';
+                scope.table.columns(scope.colorder[columnIndex]).search('').draw();
+                scope.checkFilter();
+              }
+            };
+
+            scope.onFilterBlur = function (event){
+              if(!$(element).find(".filterRow").has(event.relatedTarget).length){
+                scope.checkFilter();
+              }
+            };
+
+            scope.checkFilter = function () {
+              var hasNotEmptyFilter = false;
+              _.forOwn(scope.filter, function(value){
+                if(!_.isEmpty(value)){
+                  hasNotEmptyFilter = true;
+                }
+              });
+
+              if(!hasNotEmptyFilter){
+                scope.hideFilter();
+              }
             };
 
             scope.onKeyAction = function (column, onKeyEvent) {
@@ -1713,9 +1746,11 @@
           if(scope.table){
             var orderInfo = scope.table.order()[0];
             scope.isIndexColumnDesc = orderInfo[0] === 0 && orderInfo[1] === 'desc';
-            scope.$apply();
+            if (!(scope.$$phase || $rootScope.$$phase)) {
+              scope.$apply();
+            }
           }
-        }
+        };
 
         scope.getDtRow = function (node) {
           var dtRow;

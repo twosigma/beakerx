@@ -149,6 +149,16 @@ define(function(require, exports, module) {
         cb(x, undefined, true);
       });
     },
+    getAutocompleteDocumentation: function(matchedWord, callback) {
+      $.ajax({
+        type: "POST",
+        datatype: "json",
+        url: bkHelper.serverUrl(serviceBase + "/rest/groovysh/autocompleteDocumentation"),
+        data: {match: matchedWord}
+      }).done(function(documentation) {
+        callback(documentation);
+      });
+    },
     exit: function(cb) {
       var self = this;
       this.cancelExecution();

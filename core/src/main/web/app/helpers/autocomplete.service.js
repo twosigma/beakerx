@@ -41,15 +41,19 @@
       }).value();
 
       var onResults = function(results, matchedText, dotFix) {
-        var start = token.start;
-        var end = token.end;
+        if (_.isEmpty(results)) {
+          return;
+        }
+
+        if (_.isUndefined(matchedText)) {
+          matchedText = token.string;
+        }
+        var start = cur.ch - matchedText.length;
+        var end = start + matchedText.length;
         if (dotFix && token.string === ".") {
           start += 1;
         }
-        if (matchedText) {
-          start += (cur.ch - token.start - matchedText.length);
-          end = start + matchedText.length;
-        }
+
         var hintData = {
           from: CodeMirror.Pos(cur.line, start),
           to: CodeMirror.Pos(cur.line, end),
@@ -139,9 +143,11 @@
     currentDocumentation = {};
 
     evaluator.getAutocompleteDocumentation(selectedWord, function(documentation) {
-      scope.$broadcast('showDocumentationForAutocomplete', documentation.description, true);
+      if (!_.isEmpty(documentation)) {
+        scope.$broadcast('showDocumentationForAutocomplete', documentation.description, true);
+      }
 
-      if (documentation.parameters) {
+      if (documentation.parameters && !_.isEmpty(documentation.parameters)) {
         currentDocumentation = documentation;
         writeCompletion(selectedWord, documentation.parameters, cm, matchedText);
       } else {

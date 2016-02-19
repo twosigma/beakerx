@@ -20,10 +20,7 @@ import com.twosigma.beaker.groovy.utils.GroovyEvaluator;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.GET;
@@ -94,6 +91,12 @@ public class GroovyShellRest {
 	        return null;
 	      }
 	      return this.shells.get(shellId).autocomplete(code, caretPosition);
+  }
+
+  @POST
+  @Path("autocompleteDocumentation")
+  public String autocompleteDocumentation(@FormParam("match") String match) {
+    return "{}";
   }
 
   @POST

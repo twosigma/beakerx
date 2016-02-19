@@ -22,6 +22,9 @@
 package com.twosigma.beaker.javash.utils;
 
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.text.translate.*;
+
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -29,6 +32,8 @@ import java.util.LinkedList;
  * Idea from https://github.com/javaparser/javaparser
  */
 public class ParserUtil {
+
+  public static final CharSequenceTranslator UNICODE_UNESCAPER = new AggregateTranslator(new UnicodeUnescaper());
 
   private enum State {
     CODE,
@@ -168,7 +173,7 @@ public class ParserUtil {
      * 3) remove empty lines
      */
   public static String normalizeCode(String code) {
-    String c1 = ParserUtil.removeComments(code);
+    String c1 = ParserUtil.removeComments(UNICODE_UNESCAPER.translate(code));
     StringBuilder c2 = new StringBuilder();
     boolean indq = false;
     boolean insq = false;

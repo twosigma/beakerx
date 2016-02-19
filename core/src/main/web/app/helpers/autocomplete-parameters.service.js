@@ -152,6 +152,9 @@
     }
 
     function showParameterDocumentation(param) {
+      if (!param.description || _.isEmpty(param.description)) {
+        return;
+      }
       scope.$broadcast('showParameterDocumentation', param.description);
     }
 

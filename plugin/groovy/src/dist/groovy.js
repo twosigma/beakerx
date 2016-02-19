@@ -149,6 +149,12 @@ define(function(require, exports, module) {
         cb(x, undefined, true);
       });
     },
+    getAutocompleteDocumentation: function(matchedWord, callback) {
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/groovysh/autocompleteDocumentation"), {match: matchedWord})
+        .success(function(documentation) {
+          callback(documentation);
+      });
+    },
     exit: function(cb) {
       var self = this;
       this.cancelExecution();

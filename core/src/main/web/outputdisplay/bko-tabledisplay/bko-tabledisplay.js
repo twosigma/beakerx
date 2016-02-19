@@ -424,13 +424,32 @@
           $scope.table.columns().every(function () {
             var column = this;
             var columnFilterHeader = $($scope.table.table().header())
-              .find('.filterRow th:eq(' + this.header().cellIndex + ')');
+              .find('.filterRow th:eq(' + column.header().cellIndex + ')');
             $('input', columnFilterHeader).off('keyup change');
             $('input', columnFilterHeader)
               .on('keyup change', function () {
                 if (column.search() !== this.value) {
                   column.search(this.value).draw();
+                  $scope.updateFilterWidth($(this), column);
                 }
+              });
+
+            $('.clear-filter', columnFilterHeader).off('click');
+            $('.clear-filter', columnFilterHeader)
+              .on('click', function () {
+                $scope.clearFilter(column);
+              });
+
+            $('input', columnFilterHeader).off('blur');
+            $('input', columnFilterHeader)
+              .on('blur', function (event) {
+                $scope.onFilterBlur($(this), event);
+              });
+
+            $('input', columnFilterHeader).off('keydown');
+            $('input', columnFilterHeader)
+              .on('keydown', function (event) {
+                $scope.onFilterEditing($(this), column);
               });
           });
         };
@@ -1347,7 +1366,6 @@
               scope.update_selected();
               scope.updateBackground();
               scope.updateDTMenu();
-              scope.applyFilters();
               //jscs:enable
             },
             'bSortCellsTop': true
@@ -1392,7 +1410,7 @@
             } else {
               scope.colorder = scope.colreorg.fnOrder().slice(0);
             }
-            new $.fn.dataTable.KeyTable($(id));
+            scope.keyTable = new $.fn.dataTable.KeyTable($(id));
             scope.refreshCells();
 
             var sField = $('#' + scope.id + '_filter');
@@ -1506,6 +1524,9 @@
               }
               var columnFilterHeader = $(scope.table.table().header())
                   .find('.filterRow th:eq(' + column.header().cellIndex + ')');
+              if(scope.keyTable){
+                scope.keyTable.blur();
+              }
               $('input', columnFilterHeader).focus();
             };
 
@@ -1520,17 +1541,21 @@
               }, 0);
             };
 
-            scope.clearFilter = function (columnIndex) {
-              if(columnIndex) {
-                scope.filter[columnIndex] = '';
-                scope.table.columns(scope.colorder[columnIndex]).search('').draw();
+            scope.clearFilter = function (column) {
+              if(column) {
+                scope.filter[column.index()] = '';
+                column.search('').draw();
                 scope.checkFilter();
               }
             };
 
-            scope.onFilterBlur = function (event){
+            scope.onFilterBlur = function (jqInputEl, event){
+              jqInputEl.css('width', '');
               if(!$(element).find(".filterRow").has(event.relatedTarget).length){
+                // focus wasn't moved to another filter input
                 scope.checkFilter();
+                jqInputEl.parent().removeClass('editing');
+                jqInputEl.parent().siblings('.hidden-filter').addClass('hidden-filter-input');
               }
             };
 
@@ -1544,6 +1569,22 @@
 
               if(!hasNotEmptyFilter){
                 scope.hideFilter();
+              }
+            };
+
+            scope.onFilterEditing = function(jqInputEl, column){
+              scope.updateFilterWidth(jqInputEl, column);
+              jqInputEl.parent().addClass('editing');
+              jqInputEl.parent().siblings('.hidden-filter').removeClass('hidden-filter-input');
+            };
+
+            scope.updateFilterWidth = function(jqInput, column){
+              var textWidth = jqInput.parent().siblings('.hidden-length').width() + 30;
+              var headerWidth = $(column.header()).width();
+              if(textWidth > headerWidth){
+                jqInput.css('width', textWidth);
+              } else {
+                jqInput.css('width', '');
               }
             };
 
@@ -1577,7 +1618,7 @@
             scope.removeOnKeyListeners();
             $(id + ' tbody')
               .on("mouseenter.bko-datatable", 'td', function (e) {
-                if ($(id + ' tbody tr td').hasClass("focus")) {
+                if ($(id + ' tbody tr td').hasClass("focus") || $(scope.table.header()).has(':focus').length) {
                   return; //ignore mouse over for key events if there is focus on table's cell
                 }
                 var cellPos = scope.table.cell(this).index();
@@ -1645,6 +1686,9 @@
               inits.rightColumns = 0;
             }
             scope.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
+
+            scope.applyFilters();
+
           }, 0);
         };
 

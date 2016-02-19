@@ -56,9 +56,13 @@
       <tr class="filterRow" ng-show="filter">
         <th></th>
         <th ng-repeat="c in columns" ng-if="!$first">
-          <div class="input-clear">
-            <input type="text" ng-model="filter[$index]" ng-blur="onFilterBlur($event)">
-            <span class="glyphicon glyphicon-remove-circle" ng-click="clearFilter($index)"></span>
+          <div class="input-clear-growing">
+            <div class="input-clear">
+              <input type="text" ng-model="filter[$index]">
+              <span class="glyphicon glyphicon-remove-circle clear-filter"></span>
+            </div>
+            <input class="hidden-filter hidden-filter-input">
+            <span class="hidden-length">{{filter[$index]}}</span>
           </div>
         </th>
       </tr>

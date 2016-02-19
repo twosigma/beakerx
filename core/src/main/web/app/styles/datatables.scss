@@ -64,11 +64,28 @@ td.dtcenter {
   }
 }
 
-.input-clear {
+.input-clear-growing {
   position: relative;
   input {
+    border: 1px solid #ccc;
+    padding-right: 20px;
     width: 100%;
-    border: 1px solid #ccc
+  }
+  .hidden-length, .hidden-filter-input {
+    display: none;
+  }
+}
+.input-clear {
+  position: relative;
+  &.editing {
+    position: absolute;
+    left: 0px;
+    z-index: 10;
+  }
+  input {
+    border: 1px solid #ccc;
+    padding-right: 20px;
+    width: 100%;
   }
   span {
     position: absolute;

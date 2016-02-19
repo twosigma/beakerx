@@ -182,7 +182,7 @@ define(function(require, exports, module) {
             beakerObj.clearOutput();
             return deferred.reject();
           }
-          var output = eval(code);
+          var output = (0, eval)(code);
           beakerObj.beakerObjectToNotebook();
           if ( typeof output === 'object' ) {
             if(typeof output.promise === 'object' && typeof output.promise.then === 'function') {

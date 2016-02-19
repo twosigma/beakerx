@@ -182,6 +182,8 @@ define(function(require, exports, module) {
             beakerObj.clearOutput();
             return deferred.reject();
           }
+          // (0, eval) is an indirect eval call to evaluate in non-strict mode
+          // more info: http://stackoverflow.com/questions/19357978/indirect-eval-call-in-strict-mode
           var output = (0, eval)(code);
           beakerObj.beakerObjectToNotebook();
           if ( typeof output === 'object' ) {

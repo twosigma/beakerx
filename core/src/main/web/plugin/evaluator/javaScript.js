@@ -173,6 +173,7 @@ define(function(require, exports, module) {
           beakerObj.notebookToBeakerObject();
           window.beaker = beakerObj.beakerObj;
           try {
+            code = Babel.transform(code, { presets: ['es2015'] }).code;
             acorn.parse(code);
           } catch (e) {
             showErrorState({

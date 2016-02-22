@@ -90,3 +90,8 @@ task publishAssets (type: GradleBuild) {
   buildFile = mainGradle
   tasks = ['publishAssets']
 }
+
+task generateJavadoc (type: GradleBuild) {
+  buildFile = mainGradle
+  tasks = ['generateJavadoc']
+}

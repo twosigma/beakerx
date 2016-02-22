@@ -126,12 +126,18 @@ task (copyJQueryUIImages, type: Copy) {
     into 'src/main/web/app/dist/images/'
 }
 
+task (copyJavadocs, type: Copy) {
+  from '../plugin/jvm/build/docs/javadoc/'
+  into 'src/main/web/app/dist/docs/jvm/'
+}
+
 task copyVendorStuff
 copyVendorStuff.dependsOn copyKatex
 copyVendorStuff.dependsOn copyRequireJS
 copyVendorStuff.dependsOn copyJQueryUIImages
 copyVendorStuff.dependsOn copyGGVis
 copyVendorStuff.dependsOn copyPlotly
+copyVendorStuff.dependsOn copyJavadocs
 
 task (compileAssets, type: Exec) {
   commandLine(*(winOrUnix('npm', 'run-script', 'compile')))

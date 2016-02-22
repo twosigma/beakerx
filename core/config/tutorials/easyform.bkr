@@ -58,7 +58,7 @@
                 "Beaker has a Groovy API for creating forms that the user can fill in and trigger execution.",
                 "It's easy to create a form with it, and easy to access the values entered.",
                 "Just create a form object, add fields to it, and then return it so it's displayed for the",
-                "user to interact with.",
+                "user to interact with. See [documentation](../beaker/app/dist/docs/jvm/index.html)",
                 "",
                 "The 2nd parameter to the addButton method specifies a tag.",
                 "All cells with that tag are executed when the button is pressed.",

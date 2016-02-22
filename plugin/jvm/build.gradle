@@ -35,6 +35,12 @@ dependencies {
   provided project(':shared')
 }
 
+
+task generateJavadoc(type: Javadoc) {
+  source = sourceSets.main.allJava
+  failOnError = false
+}
+
 compileJava {
   options.compilerArgs << '-Xlint:deprecation'
   options.compilerArgs << '-Xlint:unchecked'
@@ -57,6 +63,8 @@ if (hasProperty('includeDepsInJar')) {
     }
   }
 }
+
+installDist.dependsOn(generateJavadoc)
 
 task realclean
 realclean.dependsOn(clean)

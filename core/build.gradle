@@ -127,8 +127,18 @@ task (copyJQueryUIImages, type: Copy) {
 }
 
 task (copyJavadocs, type: Copy) {
-  from '../plugin/jvm/build/docs/javadoc/'
-  into 'src/main/web/app/dist/docs/jvm/'
+  copy {
+    from '../plugin/jvm/build/docs/plot/'
+    into 'src/main/web/app/dist/docs/plot/'
+  }
+  copy {
+    from '../plugin/jvm/build/docs/easyform/'
+    into 'src/main/web/app/dist/docs/easyform/'
+  }
+  copy {
+    from '../plugin/jvm/build/docs/outputcontainer/'
+    into 'src/main/web/app/dist/docs/outputcontainer/'
+  }
 }
 
 task copyVendorStuff

@@ -45,7 +45,7 @@
             "type": "markdown",
             "body": [
                 "Output containers are objects that hold a collection of other objects, and displays all its contents, even when they are complex interactive objects.",
-                "By default the contents are just stacked up on the page, but you can configure them to get tabs, grid, cycling, or other layout methods. See [documentation](../beaker/app/dist/docs/jvm/index.html)"
+                "By default the contents are just stacked up on the page, but you can configure them to get tabs, grid, cycling, or other layout methods. See [documentation](../beaker/app/dist/docs/outputcontainer/index.html)"
             ],
             "evaluatorReader": false
         },

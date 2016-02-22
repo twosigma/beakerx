@@ -36,9 +36,50 @@ dependencies {
 }
 
 
-task generateJavadoc(type: Javadoc) {
+
+task generatePlotJavadoc(type: Javadoc) {
   source = sourceSets.main.allJava
   failOnError = false
+  destinationDir = file("./build/docs/plot")
+
+  exclude '**/BeakerCodeCell.java'
+  exclude '**/BeakerProgressUpdate.java'
+  exclude '**/NamespaceClient.java'
+
+  exclude 'com/twosigma/beaker/autocomplete'
+  exclude 'com/twosigma/beaker/easyform'
+  exclude 'com/twosigma/beaker/jvm'
+}
+
+task generateEasyformJavadoc(type: Javadoc) {
+  source = sourceSets.main.allJava
+  failOnError = false
+  destinationDir = file("./build/docs/easyform")
+
+  exclude 'net/sf/jtreemap/swing'
+
+  exclude '**/BeakerCodeCell.java'
+  exclude '**/BeakerProgressUpdate.java'
+  exclude '**/NamespaceClient.java'
+
+  exclude 'com/twosigma/beaker/autocomplete'
+  exclude 'com/twosigma/beaker/chart'
+  exclude 'com/twosigma/beaker/jvm'
+}
+
+task generateOutputContaunerJavadoc(type: Javadoc) {
+  source = sourceSets.main.allJava
+  failOnError = false
+  destinationDir = file("./build/docs/outputcontainer")
+
+  include "com/twosigma/beaker/jvm/object/OutputContainer.java"
+  include "com/twosigma/beaker/jvm/object/DashboardLayoutManager.java"
+  include "com/twosigma/beaker/jvm/object/GridOutputContainerLayoutManager.java"
+  include "com/twosigma/beaker/jvm/object/OutputContainerCell.java"
+  include "com/twosigma/beaker/jvm/object/OutputContainerLayoutManager.java"
+  include "com/twosigma/beaker/jvm/object/SimpleLayoutManager.java"
+  include "com/twosigma/beaker/jvm/object/TabbedOutputContainerLayoutManager.java"
+  include "com/twosigma/beaker/jvm/object/CyclingOutputContainerLayoutManager.java"
 }
 
 compileJava {
@@ -63,6 +104,11 @@ if (hasProperty('includeDepsInJar')) {
     }
   }
 }
+
+task generateJavadoc
+generateJavadoc.dependsOn(generatePlotJavadoc)
+generateJavadoc.dependsOn(generateEasyformJavadoc)
+generateJavadoc.dependsOn(generateOutputContaunerJavadoc)
 
 installDist.dependsOn(generateJavadoc)
 

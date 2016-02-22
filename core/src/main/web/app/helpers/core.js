@@ -900,17 +900,56 @@
           yesBtnClass = yesBtnClass ? _.isArray(yesBtnClass) ? okBtnClass.join(' ') : yesBtnClass : 'btn-default';
           noBtnClass = noBtnClass ? _.isArray(noBtnClass) ? noBtnClass.join(' ') : noBtnClass : 'btn-default';
           cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : 'btn-default';
-          var template = "<div class='modal-header'>" +
-              "<h1>" + msgHeader + "</h1>" +
-              "</div>" +
-              "<div class='modal-body'><p>" + msgBody + "</p></div>" +
-              '<div class="modal-footer">' +
+          var template = this.getDialogTemplateOpening(msgHeader, msgBody) +
               "   <button class='yes btn " + yesBtnClass +"' ng-click='close(0)'>" + yesBtnTxt + "</button>" +
               "   <button class='no btn " + noBtnClass +"' ng-click='close(1)'>" + noBtnTxt + "</button>" +
               "   <button class='cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
-              "</div>";
+              this.getDialogTemplateClosing();
           return this.showModalDialog(callback, template);
         }
+      },
+      showMultipleButtonsModal: function(params) {
+        var buttons = params.buttons;
+
+        var callback = function(result) {
+          buttons[result].action();
+        };
+
+        if (bkUtils.isElectron) {
+          var buttonTexts = [];
+          for (var i = 0; i < buttons.length; i++) {
+            buttonTexts.push(buttons[i].text);
+          }
+          var options = {
+            type: 'none',
+            buttons: buttonTexts,
+            title: params.msgHeader,
+            message: params.msgBody
+          };
+          return bkElectron.Dialog.showMessageBox(options, callback);
+        } else {
+          var template = this.getDialogTemplateOpening(params.msgHeader, params.msgBody);
+          for (var i = 0; i < buttons.length; i++) {
+            var buttonSettings = buttons[i];
+            var newTemplatePart = "   <button class='btn btn-default' ng-click='close(" + i + ")'>" + buttonSettings.text + "</button>"
+            template = template + newTemplatePart;
+          }
+          template = template + this.getDialogTemplateClosing();
+
+          return this.showModalDialog(callback, template);
+        }
+
+
+      },
+      getDialogTemplateOpening: function(msgHeader, msgBody) {
+        return "<div class='modal-header'>" +
+            "<h1>" + msgHeader + "</h1>" +
+            "</div>" +
+            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
+            '<div class="modal-footer">';
+      },
+      getDialogTemplateClosing: function() {
+        return "</div>";
       },
       getFileSystemFileChooserStrategy: function() {
         return new FileSystemFileChooserStrategy();

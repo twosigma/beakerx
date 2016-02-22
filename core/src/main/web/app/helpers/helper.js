@@ -769,6 +769,9 @@
         return bkCoreManager.show3ButtonModal(
             msgBody, msgHeader, yesCB, noCB, cancelCB, yesBtnTxt, noBtnTxt, cancelBtnTxt);
       },
+      showMultipleButtonsModal: function(params) {
+        return bkCoreManager.showMultipleButtonsModal(params);
+      },
       getFileSystemFileChooserStrategy: function() {
         return bkCoreManager.getFileSystemFileChooserStrategy();
       },

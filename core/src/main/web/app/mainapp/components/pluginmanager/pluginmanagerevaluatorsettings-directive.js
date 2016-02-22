@@ -41,7 +41,9 @@
         });
 
         $scope.set = function(property) {
-          $scope.evaluator.perform(property.key);
+          if (property.action) {
+            $scope.evaluator.perform(property.key);
+          }
           bkSessionManager.setNotebookModelEdited(true);
           property.edited = false;
           var noMoreUnsavedProperties = true;

@@ -41,7 +41,8 @@
       },
       EVALUATOR_SPEC: {
         PROPERTIES: {
-          STRING: "settableString"
+          STRING: "settableString",
+          BOOLEAN: "settableBoolean"
         },
         ACTION: "action"
       },

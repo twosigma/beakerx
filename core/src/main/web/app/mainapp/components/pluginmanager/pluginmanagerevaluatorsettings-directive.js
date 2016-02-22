@@ -64,6 +64,8 @@
         };
       },
       link: function(scope, element, attrs) {
+        scope.availableProperties = GLOBALS.EVALUATOR_SPEC.PROPERTIES;
+
         var spec = _.map(scope.evaluator.spec, function(value, key) {
           return _.extend({ name: key, key: key }, value);
         });

@@ -87,6 +87,7 @@ td.dtcenter {
     padding-right: 20px;
     width: 100%;
   }
+
   span {
     position: absolute;
     right: 5px;
@@ -94,9 +95,11 @@ td.dtcenter {
     bottom: 0;
     height: 14px;
     margin: auto;
-    font-size: 14px;
     cursor: pointer;
-    color: #ccc;
+    color: #999999;
+    &:hover {
+      opacity: 0.8;
+    }
   }
 }
 

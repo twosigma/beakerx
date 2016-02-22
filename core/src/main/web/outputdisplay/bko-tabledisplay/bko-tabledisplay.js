@@ -425,7 +425,7 @@
             var column = this;
             var columnFilterHeader = $($scope.table.table().header())
               .find('.filterRow th:eq(' + column.header().cellIndex + ')');
-            $('.filter-input', columnFilterHeader).off('keyup change keydown');
+            $('.filter-input', columnFilterHeader).off('keyup change keydown blur focus');
             $('.filter-input', columnFilterHeader)
               .on('keyup change', function () {
                 if (column.search() !== this.value) {

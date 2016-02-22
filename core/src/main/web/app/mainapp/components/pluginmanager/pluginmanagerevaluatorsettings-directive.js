@@ -69,7 +69,9 @@
         });
 
         scope.properties = _.filter(spec, function(option) {
-          return option.type === "settableString";
+          return _(GLOBALS.EVALUATOR_SPEC.PROPERTIES)
+            .values()
+            .contains(option.type);
         });
 
         var getEditedListener = function (property) {

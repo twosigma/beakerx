@@ -39,6 +39,12 @@
         HTTP: "http",
         AJAX: "ajax"
       },
+      EVALUATOR_SPEC: {
+        PROPERTIES: {
+          STRING: "settableString"
+        },
+        ACTION: "action"
+      },
       THEMES: {
         DEFAULT: 'default',
         AMBIANCE: 'ambiance'

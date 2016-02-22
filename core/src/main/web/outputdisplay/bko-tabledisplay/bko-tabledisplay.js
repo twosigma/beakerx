@@ -439,10 +439,15 @@
                 }
               })
               .on('blur', function (event) {
-                $scope.onFilterBlur($(this), event);
+                $scope.onFilterBlur($(this), event.relatedTarget);
               })
               .on('keydown', function (event) {
-                $scope.onFilterEditing($(this), column);
+                var key = event.which;
+                if (key == 13) { //enter key
+                  $scope.onFilterBlur($(this), this);
+                } else {
+                  $scope.onFilterEditing($(this), column);
+                }
               });
 
             $('.clear-filter', columnFilterHeader).off('mousedown');
@@ -1550,11 +1555,11 @@
               }
             };
 
-            scope.onFilterBlur = function (jqInputEl, event){
+            scope.onFilterBlur = function (jqInputEl, relatedTarget){
               jqInputEl.css('width', '');
               jqInputEl.parent().removeClass('editing');
               jqInputEl.parent().siblings('.hidden-filter').addClass('hidden-filter-input');
-              if(!$(element).find(".filterRow").has(event.relatedTarget).length){
+              if(!$(element).find(".filterRow").has(relatedTarget).length){
                 // focus wasn't moved to another filter input
                 scope.checkFilter();
               }

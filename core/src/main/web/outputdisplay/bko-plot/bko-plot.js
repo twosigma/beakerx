@@ -2098,7 +2098,7 @@
       }
     };
   };
-  beaker.bkoDirective("Plot", [
+  beakerRegister.bkoDirective("Plot", [
     "plotUtils",
     "plotTip",
     "plotFormatter",

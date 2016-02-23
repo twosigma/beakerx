@@ -16,7 +16,7 @@
 
 (function () {
   'use strict';
-  beaker.bkoDirective("BeakerDashboard", [ "$timeout", "bkEvaluatorManager", function ($timeout, bkEvaluatorManager) {
+  beakerRegister.bkoDirective("BeakerDashboard", [ "$timeout", "bkEvaluatorManager", function ($timeout, bkEvaluatorManager) {
     return {
       template:
         '<script type="text/ng-template" id="rowrender.html">' +
@@ -165,5 +165,5 @@
       }
     };
   }]);
-  beaker.registerOutputDisplay("BeakerDashboard", ["BeakerDashboard", "Text"]);
+  beakerRegister.registerOutputDisplay("BeakerDashboard", ["BeakerDashboard", "Text"]);
 })();

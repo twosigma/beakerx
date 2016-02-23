@@ -180,5 +180,5 @@
 
     return PlotLodLine;
   };
-  beaker.bkoFactory('PlotLodLine', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('PlotLodLine', ['plotUtils', 'plotTip', retfunc]);
 })();

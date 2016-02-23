@@ -149,5 +149,5 @@
 
     return PlotAuxBox;
   };
-  beaker.bkoFactory('PlotAuxBox', ['plotUtils', retfunc]);
+  beakerRegister.bkoFactory('PlotAuxBox', ['plotUtils', retfunc]);
 })();

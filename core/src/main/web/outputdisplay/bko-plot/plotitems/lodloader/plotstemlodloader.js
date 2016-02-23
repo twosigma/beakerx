@@ -339,7 +339,7 @@
 
     return PlotStemLodLoader;
   };
-  beaker.bkoFactory('PlotStemLodLoader',
+  beakerRegister.bkoFactory('PlotStemLodLoader',
     ['plotUtils', 'PlotSampler', 'PlotStem',
     'PlotLodStem', 'PlotAuxStem', 'PlotLodBox', 'PlotAuxBox', retfunc]);
 })();

@@ -198,5 +198,5 @@
 
     return HeatMap;
   };
-  beaker.bkoFactory('HeatMap', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('HeatMap', ['plotUtils', 'plotTip', retfunc]);
 })();

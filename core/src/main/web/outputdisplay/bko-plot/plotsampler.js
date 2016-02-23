@@ -216,5 +216,5 @@
 
     return PlotSampler;
   };
-  beaker.bkoFactory('PlotSampler', ['plotUtils', retfunc]);
+  beakerRegister.bkoFactory('PlotSampler', ['plotUtils', retfunc]);
 })();

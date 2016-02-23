@@ -233,5 +233,5 @@
 
     return PlotConstband;
   };
-  beaker.bkoFactory('PlotConstband', ['plotUtils', retfunc]);
+  beakerRegister.bkoFactory('PlotConstband', ['plotUtils', retfunc]);
 })();

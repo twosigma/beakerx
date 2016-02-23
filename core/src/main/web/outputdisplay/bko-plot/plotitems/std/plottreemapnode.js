@@ -241,5 +241,5 @@
 
     return PlotTreeMapNode;
   };
-  beaker.bkoFactory('PlotTreeMapNode', ['plotUtils', retfunc]);
+  beakerRegister.bkoFactory('PlotTreeMapNode', ['plotUtils', retfunc]);
 })();

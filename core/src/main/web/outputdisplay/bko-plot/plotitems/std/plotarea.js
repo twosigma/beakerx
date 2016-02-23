@@ -264,5 +264,5 @@
 
     return PlotArea;
   };
-  beaker.bkoFactory('PlotArea', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('PlotArea', ['plotUtils', 'plotTip', retfunc]);
 })();

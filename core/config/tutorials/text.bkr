@@ -180,7 +180,7 @@
         {
             "id": "sectionIpgyB6",
             "type": "section",
-            "title": "Section headings may include Markdown and LaTeX: **bold**, `mono`, $\\Omega / \\infty$",
+            "title": "Section headings may include Markdown and TeX: **bold**, `mono`, $\\Omega / \\infty$",
             "level": 2,
             "evaluatorReader": false,
             "collapsed": false

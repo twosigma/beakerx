@@ -83,7 +83,20 @@ task generateOutputContaunerJavadoc(type: Javadoc) {
 }
 
 task addFavicon2Javadoc << {
-  def tree = fileTree('./build/docs').include('**/*.html')
+  def tree  = fileTree(dir: './build/docs',
+    includes: [
+      '**/allclasses-frame.html',
+      '**/allclasses-noframe.html',
+      '**/constant-values.html',
+      '**/deprecated-list.html',
+      '**/help-doc.html',
+      '**/index.html',
+      '**/index-all.html',
+      '**/overview-frame.html',
+      '**/overview-summary.html',
+      '**/overview-tree.html'
+    ])
+
   tree.visit { details ->
     if (!details.file.isDirectory()) {
       def updatedContent = new File(details.file.path).getText('UTF-8').replaceAll("<html lang=\"en\">\n<head>",

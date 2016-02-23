@@ -52,7 +52,7 @@
       }
     };
   };
-  beaker.bkoDirective("Plotly", [
+  beakerRegister.bkoDirective("Plotly", [
     '$sce',
     retfunc]);
 })();

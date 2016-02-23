@@ -317,7 +317,7 @@
 
     return PlotAreaLodLoader;
   };
-  beaker.bkoFactory('PlotAreaLodLoader',
+  beakerRegister.bkoFactory('PlotAreaLodLoader',
     ['plotUtils', 'PlotSampler', 'PlotArea', 'PlotLodLine', 'PlotLodRiver', 'PlotAuxRiver',
     retfunc]);
 })();

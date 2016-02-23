@@ -856,7 +856,7 @@
           };
         }]);
 
-  beaker.bkoDirective("EasyForm",
+  beakerRegister.bkoDirective("EasyForm",
       ['$compile', 'bkUtils', 'bkEvaluatorManager', 'bkSessionManager', 'EasyFormConstants',
         'EasyFormService',
         function ($compile, bkUtils, bkEvaluatorManager, bkSessionManager, EasyFormConstants,

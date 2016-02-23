@@ -32,7 +32,7 @@
     });
   };
 
-  window.beaker.getEvaluatorUrlMap = function() {
+  window.beakerRegister.getEvaluatorUrlMap = function() {
     return {
       "IPython": { url : "./plugins/eval/ipythonPlugins/ipython/ipython.js", bgColor: "#EEBD48", fgColor: "#FFFFFF", borderColor: "", shortName: "Py" },
       "Python3": { url : "./plugins/eval/ipythonPlugins/python3/python3.js", bgColor: "#EEBD48", fgColor: "#FFFFFF", borderColor: "", shortName: "Py" },
@@ -47,7 +47,7 @@
     };
   };
 
-  window.beaker.getCellMenuList = function () {
+  window.beakerRegister.getCellMenuList = function () {
     return [
             {
               cellType: ["notebook", "section", "code"],
@@ -65,7 +65,7 @@
             ];
   };
 
-  window.beaker.getMenuItems = function() {
+  window.beakerRegister.getMenuItems = function() {
     var toAdd = [
                  {
                    parent: "Notebook",
@@ -167,7 +167,7 @@
     return toAdd;
   };
 
-  window.beaker.getControlMenuItems = function() {
+  window.beakerRegister.getControlMenuItems = function() {
     var toAdd = [
                  {
                    parent: "File",
@@ -175,6 +175,7 @@
                    items: [
                            {
                              name: "New Notebook",
+                             shortcut: ["Ctrl-N", "Cmd-N"],
                              tooltip: "Open a new empty notebook, add the languages of your choice",
                              sortorder: 100,
                              action: function() {

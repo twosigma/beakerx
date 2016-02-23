@@ -289,6 +289,6 @@
 
     return PlotLine;
   };
-  beaker.bkoFactory('PlotLine', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('PlotLine', ['plotUtils', 'plotTip', retfunc]);
 })();
 

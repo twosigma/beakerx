@@ -60,12 +60,12 @@
       }
     };
 
-    for (var key in beaker.toBeAddedToOutputDisplayService) {
-      var impl = beaker.toBeAddedToOutputDisplayService[key];
+    for (var key in beakerRegister.toBeAddedToOutputDisplayService) {
+      var impl = beakerRegister.toBeAddedToOutputDisplayService[key];
       factory.addService(key, impl);
     }
-    beaker.toBeAddedToOutputDisplayService = null;
-    beaker.outputDisplayService = factory;
+    beakerRegister.toBeAddedToOutputDisplayService = null;
+    beakerRegister.outputDisplayService = factory;
     return factory;
   });
 

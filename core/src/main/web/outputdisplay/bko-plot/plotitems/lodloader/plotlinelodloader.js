@@ -253,7 +253,7 @@
 
     return PlotLineLodLoader;
   };
-  beaker.bkoFactory('PlotLineLodLoader',
+  beakerRegister.bkoFactory('PlotLineLodLoader',
     ['plotUtils', 'PlotSampler', 'PlotLine', 'PlotLodLine', 'PlotLodBox', 'PlotLodRiver',
     retfunc]);
 })();

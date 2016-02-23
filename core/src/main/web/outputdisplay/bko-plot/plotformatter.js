@@ -632,6 +632,6 @@
       }
     };
   };
-  beaker.bkoFactory('plotFormatter',
+  beakerRegister.bkoFactory('plotFormatter',
     ["bkUtils", 'plotConverter', 'heatmapConverter', 'PlotAxis', 'plotFactory', 'plotUtils', 'bkHelper', retfunc]);
 })();

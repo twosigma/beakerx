@@ -244,5 +244,5 @@
 
     return PlotLodPoint;
   };
-  beaker.bkoFactory('PlotLodPoint', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('PlotLodPoint', ['plotUtils', 'plotTip', retfunc]);
 })();

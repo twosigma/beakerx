@@ -171,7 +171,7 @@ define(function(require, exports, module) {
 
           beakerObj.setupBeakerObject(modelOutput);
           beakerObj.notebookToBeakerObject();
-          var beaker = beakerObj.beakerObj;
+          window.beaker = beakerObj.beakerObj;
           try {
             acorn.parse(code);
           } catch (e) {
@@ -182,7 +182,9 @@ define(function(require, exports, module) {
             beakerObj.clearOutput();
             return deferred.reject();
           }
-          var output = eval(code);
+          // (0, eval) is an indirect eval call to evaluate in non-strict mode
+          // more info: http://stackoverflow.com/questions/19357978/indirect-eval-call-in-strict-mode
+          var output = (0, eval)(code);
           beakerObj.beakerObjectToNotebook();
           if ( typeof output === 'object' ) {
             if(typeof output.promise === 'object' && typeof output.promise.then === 'function') {

@@ -128,7 +128,7 @@
       }
     };
   };
-  beaker.bkoFactory('plotFactory',
+  beakerRegister.bkoFactory('plotFactory',
     ['PlotAxis', 'PlotLine', 'PlotBar', 'PlotStem', 'PlotArea', 'PlotPoint',
       'PlotConstline', 'PlotConstband', 'PlotText', 'PlotTreeMapNode',
       'PlotLineLodLoader', 'PlotBarLodLoader', 'PlotStemLodLoader', 'PlotAreaLodLoader',

@@ -303,6 +303,6 @@
       }
     };
   };
-  beaker.bkoDirective("CombinedPlot",
+  beakerRegister.bkoDirective("CombinedPlot",
       ["plotUtils", "combinedplotFormatter", "bkCellMenuPluginManager", "plotService", retfunc]);
 })();

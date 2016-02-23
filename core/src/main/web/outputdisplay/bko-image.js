@@ -19,7 +19,7 @@
  */
 (function() {
   'use strict';
-  beaker.bkoDirective("Image", function() {
+  beakerRegister.bkoDirective("Image", function() {
     return {
       template: "<img />",
       link: function(scope, element, attrs) {

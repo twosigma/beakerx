@@ -320,6 +320,6 @@
 
     return PlotBarLodLoader;
   };
-  beaker.bkoFactory('PlotBarLodLoader',
+  beakerRegister.bkoFactory('PlotBarLodLoader',
     ['plotUtils', 'PlotSampler', 'PlotBar', 'PlotLodBox', 'PlotAuxBox', retfunc]);
 })();

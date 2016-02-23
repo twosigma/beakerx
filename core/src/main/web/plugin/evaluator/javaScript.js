@@ -171,7 +171,7 @@ define(function(require, exports, module) {
 
           beakerObj.setupBeakerObject(modelOutput);
           beakerObj.notebookToBeakerObject();
-          var beaker = beakerObj.beakerObj;
+          window.beaker = beakerObj.beakerObj;
           try {
             acorn.parse(code);
           } catch (e) {

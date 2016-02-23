@@ -127,5 +127,5 @@
 
     return PlotAuxRiver;
   };
-  beaker.bkoFactory('PlotAuxRiver', ['plotUtils', retfunc]);
+  beakerRegister.bkoFactory('PlotAuxRiver', ['plotUtils', retfunc]);
 })();

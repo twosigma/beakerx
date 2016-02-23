@@ -210,6 +210,6 @@
 			}
 		};
 	};
-	beaker.bkoFactory('bkoChartExtender',
+	beakerRegister.bkoFactory('bkoChartExtender',
 		[retfunc]);
 })();

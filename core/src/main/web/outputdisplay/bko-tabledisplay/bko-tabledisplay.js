@@ -77,6 +77,39 @@
     }
   });
 
+  $.fn.dataTable.ext.search.push(
+    function (settings, row, rowIndex) {
+      var match = true;
+      for (var colInd = 0; colInd < row.length; colInd++) {
+        var searchString = $(settings.aoHeader[1][colInd].cell).find('.filter-input').val();
+        if (_.isEmpty(searchString)) { continue; }
+
+        var cellValue = row[colInd];
+        if (settings.aoColumns[colInd].sType === 'num' &&
+          (_.startsWith(searchString, '>') ||
+          _.startsWith(searchString, '<') ||
+          _.startsWith(searchString, '='))) {
+
+          var numValue = parseFloat(cellValue);
+          searchString = searchString.replace(/=/g, '==');
+          searchString = searchString.replace(/&&/g, '&& numValue');
+
+          try {
+            match = eval("numValue" + searchString);
+            if (!match) {
+              break;
+            }
+          } catch (e) {
+          }
+        } else if (cellValue.toUpperCase().indexOf(searchString.toUpperCase()) < 0) {
+          match = false;
+          break;
+        }
+      }
+      return match;
+    }
+  );
+
   jQuery.fn.dataTableExt.aTypes.unshift(function(sData) {
     if (typeof sData !== 'string') {
       return;
@@ -428,10 +461,8 @@
             $('.filter-input', columnFilterHeader).off('keyup change keydown blur focus');
             $('.filter-input', columnFilterHeader)
               .on('keyup change', function () {
-                if (column.search() !== this.value) {
-                  column.search(this.value).draw();
-                  $scope.updateFilterWidth($(this), column);
-                }
+                column.draw();
+                $scope.updateFilterWidth($(this), column);
               })
               .on('focus', function (event) {
                 if($scope.keyTable){

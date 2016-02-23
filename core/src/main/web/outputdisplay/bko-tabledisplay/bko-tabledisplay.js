@@ -451,28 +451,38 @@
           $scope.applyFilters();
         };
 
-        // Apply filter
+       $scope.removeFilterListeners = function () {
+         $scope.table.columns().every(function () {
+           var column = this;
+           var columnFilterHeader = $($scope.table.table().header())
+                                    .find('.filterRow th:eq(' + column.header().cellIndex + ')');
+           $('.filter-input', columnFilterHeader).off('keyup.column-filter change.column-filter keydown.column-filter ' +
+                                                      'blur.column-filter focus.column-filter');
+           $('.clear-filter', columnFilterHeader).off('mousedown.column-filter');
+         });
+        };
+        // Apply filters
         $scope.applyFilters = function (){
           if (!$scope.table) { return; }
+          $scope.removeFilterListeners();
           $scope.table.columns().every(function () {
             var column = this;
             var columnFilterHeader = $($scope.table.table().header())
               .find('.filterRow th:eq(' + column.header().cellIndex + ')');
-            $('.filter-input', columnFilterHeader).off('keyup change keydown blur focus');
             $('.filter-input', columnFilterHeader)
-              .on('keyup change', function () {
+              .on('keyup.column-filter change.column-filter', function () {
                 column.draw();
                 $scope.updateFilterWidth($(this), column);
               })
-              .on('focus', function (event) {
+              .on('focus.column-filter', function (event) {
                 if($scope.keyTable){
                   $scope.keyTable.blur();
                 }
               })
-              .on('blur', function (event) {
+              .on('blur.column-filter', function (event) {
                 $scope.onFilterBlur($(this), event.relatedTarget);
               })
-              .on('keydown', function (event) {
+              .on('keydown.column-filter', function (event) {
                 var key = event.which;
                 if (key == 13) { //enter key
                   $scope.onFilterBlur($(this), this);
@@ -481,9 +491,8 @@
                 }
               });
 
-            $('.clear-filter', columnFilterHeader).off('mousedown');
             $('.clear-filter', columnFilterHeader)
-              .on('mousedown', function (event) {
+              .on('mousedown.column-filter', function (event) {
                 var jqFilterInput = $(this).siblings('.filter-input');
                 if(jqFilterInput.is(':focus')){
                   event.preventDefault();
@@ -807,6 +816,7 @@
             $('#' + scope.id + ' tbody').off('mouseleave.bko-datatable');
             $('#' + scope.id + ' tbody').off('mouseenter.bko-datatable');
             scope.table.off('key');
+            scope.removeFilterListeners();
             $('#' + scope.id).html('');
             scope.table.destroy();
             delete scope.table;

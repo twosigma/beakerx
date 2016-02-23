@@ -82,6 +82,19 @@ task generateOutputContaunerJavadoc(type: Javadoc) {
   include "com/twosigma/beaker/jvm/object/CyclingOutputContainerLayoutManager.java"
 }
 
+task addFavicon2Javadoc << {
+  def tree = fileTree('./build/docs').include('**/*.html')
+  tree.visit { details ->
+    if (!details.file.isDirectory()) {
+      def updatedContent = new File(details.file.path).getText('UTF-8').replaceAll("<html lang=\"en\">\n<head>",
+        "<html lang=\"en\">\n<link href=\"../../../../static/favicon.png\" rel=\"shortcut icon\" type=\"image/x-icon\" />\n<head>")
+      new File(details.file.path).write(updatedContent, 'UTF-8')
+    }
+  }
+}
+
+
+
 compileJava {
   options.compilerArgs << '-Xlint:deprecation'
   options.compilerArgs << '-Xlint:unchecked'
@@ -105,12 +118,17 @@ if (hasProperty('includeDepsInJar')) {
   }
 }
 
+addFavicon2Javadoc.dependsOn(generatePlotJavadoc)
+addFavicon2Javadoc.dependsOn(generateEasyformJavadoc)
+addFavicon2Javadoc.dependsOn(generateOutputContaunerJavadoc)
+
 task generateJavadoc
 generateJavadoc.dependsOn(generatePlotJavadoc)
 generateJavadoc.dependsOn(generateEasyformJavadoc)
 generateJavadoc.dependsOn(generateOutputContaunerJavadoc)
 
 installDist.dependsOn(generateJavadoc)
+installDist.dependsOn(addFavicon2Javadoc)
 
 task realclean
 realclean.dependsOn(clean)

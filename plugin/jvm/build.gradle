@@ -49,6 +49,12 @@ task generatePlotJavadoc(type: Javadoc) {
   exclude 'com/twosigma/beaker/autocomplete'
   exclude 'com/twosigma/beaker/easyform'
   exclude 'com/twosigma/beaker/jvm'
+
+  configure(options) {
+    windowTitle = 'Plot API Documentation'
+    docTitle = "Plot API Documentation"
+    bottom = "Copyright 2014 TWO SIGMA OPEN SOURCE, LLC"
+  }
 }
 
 task generateEasyformJavadoc(type: Javadoc) {
@@ -65,6 +71,12 @@ task generateEasyformJavadoc(type: Javadoc) {
   exclude 'com/twosigma/beaker/autocomplete'
   exclude 'com/twosigma/beaker/chart'
   exclude 'com/twosigma/beaker/jvm'
+
+  configure(options) {
+    windowTitle = 'EasyForm API Documentation'
+    docTitle = "EasyForm API Documentation"
+    bottom = "Copyright 2014 TWO SIGMA OPEN SOURCE, LLC"
+  }
 }
 
 task generateOutputContaunerJavadoc(type: Javadoc) {
@@ -80,6 +92,12 @@ task generateOutputContaunerJavadoc(type: Javadoc) {
   include "com/twosigma/beaker/jvm/object/SimpleLayoutManager.java"
   include "com/twosigma/beaker/jvm/object/TabbedOutputContainerLayoutManager.java"
   include "com/twosigma/beaker/jvm/object/CyclingOutputContainerLayoutManager.java"
+
+  configure(options) {
+    windowTitle = 'Output Container API Documentation'
+    docTitle = "Output Container API Documentation"
+    bottom = "Copyright 2014 TWO SIGMA OPEN SOURCE, LLC"
+  }
 }
 
 task addFavicon2Javadoc << {

@@ -319,5 +319,5 @@
 
     return PlotText;
   };
-  beaker.bkoFactory('PlotText', ['plotUtils', 'plotTip',  retfunc]);
+  beakerRegister.bkoFactory('PlotText', ['plotUtils', 'plotTip',  retfunc]);
 })();

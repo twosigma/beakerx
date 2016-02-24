@@ -192,5 +192,5 @@
 
     return PlotLodBox;
   };
-  beaker.bkoFactory('PlotLodBox', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('PlotLodBox', ['plotUtils', 'plotTip', retfunc]);
 })();

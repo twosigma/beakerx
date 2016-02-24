@@ -18,7 +18,7 @@
  */
 (function() {
   'use strict';
-  beaker.bkoDirective("Results", ["$interval", "$compile", "bkOutputDisplayFactory", function(
+  beakerRegister.bkoDirective("Results", ["$interval", "$compile", "bkOutputDisplayFactory", function(
       $interval, $compile, bkOutputDisplayFactory) {
     return {
       template: JST['mainapp/components/notebook/output-results'],
@@ -70,5 +70,5 @@
       }
     };
   }]);
-  beaker.registerOutputDisplay("Results", ["Results", "Text"]);
+  beakerRegister.registerOutputDisplay("Results", ["Results", "Text"]);
 })();

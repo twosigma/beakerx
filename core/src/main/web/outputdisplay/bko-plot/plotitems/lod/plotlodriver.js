@@ -216,5 +216,5 @@
 
     return PlotLodRiver;
   };
-  beaker.bkoFactory('PlotLodRiver', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('PlotLodRiver', ['plotUtils', 'plotTip', retfunc]);
 })();

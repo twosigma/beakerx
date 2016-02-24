@@ -36,6 +36,7 @@
 .dropdown-menu .glyphicon {
   position: absolute;
   padding: 3px 4px;
+  z-index: 1;
   &.glyphicon-home {
     color: #CCC;
   }

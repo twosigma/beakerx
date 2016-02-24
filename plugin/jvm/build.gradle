@@ -75,7 +75,6 @@ task addFavicon2Javadoc {
 
     def collection = files('./build/docs/index.html')
     collection.each {File file ->
-      println file.path
       def updatedContent = new File(file.path).getText('UTF-8').replaceAll("<html lang=\"en\">\n<head>",
         "<html lang=\"en\">\n<link href=\"../../../static/favicon.png\" rel=\"shortcut icon\" type=\"image/x-icon\" />\n<head>")
       new File(file.path).write(updatedContent, 'UTF-8')

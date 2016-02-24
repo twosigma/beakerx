@@ -40,7 +40,7 @@
                     "background": "#E0FFE0"
                 }
             },
-            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.jvm.object.*"
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.chart.KeyboardCodes"
         }
     ],
     "cells": [
@@ -56,93 +56,11 @@
             "id": "markdownyljfKo",
             "type": "markdown",
             "body": [
-                "Beaker comes with its own charting library for creating interactive plots. ",
+                "Beaker comes with its own charting library for creating interactive plots that you can click on, drag, zoom, and annotate.",
                 "It is implemented in JavaScript and takes the specification for the plot to make and the data to plot in JSON.",
                 "You can access it from any language, but it's easiest with Groovy, and this tutorial shows you how."
             ],
             "evaluatorReader": false
-        },
-        {
-            "id": "sectionjcPjoi",
-            "type": "section",
-            "title": "Initialize Demo Data",
-            "level": 3,
-            "evaluatorReader": false,
-            "collapsed": true
-        },
-        {
-            "id": "codeldwu25",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": [
-                    "rates = beaker.rates",
-                    "\"ok\""
-                ]
-            },
-            "output": {
-                "state": {},
-                "result": "ok",
-                "selectedType": "Text",
-                "pluginName": "Groovy",
-                "shellId": "471160dc-ff2b-4b9d-8643-35df1ab3fdf0",
-                "elapsedTime": 1379,
-                "height": 0
-            },
-            "evaluatorReader": true,
-            "lineCount": 2,
-            "initialization": true
-        },
-        {
-            "id": "codeMV78ar",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": [
-                    "def size = rates.size()",
-                    "(0 ..< size).each{row = rates[it]; row.spread = row.y10 - row.m3}",
-                    "\"ok\""
-                ]
-            },
-            "output": {
-                "state": {},
-                "result": "ok",
-                "selectedType": "Text",
-                "pluginName": "Groovy",
-                "shellId": "471160dc-ff2b-4b9d-8643-35df1ab3fdf0",
-                "elapsedTime": 663,
-                "height": 0
-            },
-            "evaluatorReader": true,
-            "lineCount": 3,
-            "initialization": true
-        },
-        {
-            "id": "code0s2jfv",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": [
-                    "def f = new java.text.SimpleDateFormat(\"yyyy MMM dd\")",
-                    "lehmanDate = f.parse(\"2008 Sep 15\")",
-                    "bubbleBottomDate = f.parse(\"2002 Oct 09\")",
-                    "inversion1 = [f.parse(\"2000 Jul 22\"), f.parse(\"2001 Feb 16\")]",
-                    "inversion2 = [f.parse(\"2006 Aug 01\"), f.parse(\"2007 Jun 07\")]",
-                    "\"ok\""
-                ]
-            },
-            "output": {
-                "state": {},
-                "result": "ok",
-                "selectedType": "Text",
-                "pluginName": "Groovy",
-                "shellId": "471160dc-ff2b-4b9d-8643-35df1ab3fdf0",
-                "elapsedTime": 656,
-                "height": 0
-            },
-            "evaluatorReader": true,
-            "lineCount": 6,
-            "initialization": true
         },
         {
             "id": "sectionTfcZid",
@@ -2518,6 +2436,80 @@
             },
             "evaluatorReader": true,
             "lineCount": 32
+        },
+        {
+            "id": "codeldwu25",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "rates = beaker.rates",
+                    "\"ok\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "ok",
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "66acefc1-1949-4406-98a7-d99e52dc839c",
+                "elapsedTime": 1791,
+                "height": 36
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "initialization": true
+        },
+        {
+            "id": "codeMV78ar",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def size = rates.size()",
+                    "(0 ..< size).each{row = rates[it]; row.spread = row.y10 - row.m3}",
+                    "\"ok\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "ok",
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "66acefc1-1949-4406-98a7-d99e52dc839c",
+                "elapsedTime": 689,
+                "height": 36
+            },
+            "evaluatorReader": true,
+            "lineCount": 3,
+            "initialization": true
+        },
+        {
+            "id": "code0s2jfv",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def f = new java.text.SimpleDateFormat(\"yyyy MMM dd\")",
+                    "lehmanDate = f.parse(\"2008 Sep 15\")",
+                    "bubbleBottomDate = f.parse(\"2002 Oct 09\")",
+                    "inversion1 = [f.parse(\"2000 Jul 22\"), f.parse(\"2001 Feb 16\")]",
+                    "inversion2 = [f.parse(\"2006 Aug 01\"), f.parse(\"2007 Jun 07\")]",
+                    "\"ok\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "ok",
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "66acefc1-1949-4406-98a7-d99e52dc839c",
+                "elapsedTime": 707,
+                "height": 36
+            },
+            "evaluatorReader": true,
+            "lineCount": 6,
+            "initialization": true
         },
         {
             "id": "sectionHHnhXQ",
@@ -6611,7 +6603,7 @@
                 "pluginName": "Groovy",
                 "shellId": "aa32f2c1-e85c-4515-8617-eb237b62180a",
                 "elapsedTime": 775,
-                "height": 519
+                "height": 502
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -7401,10 +7393,75 @@
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 744,
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 6,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "pluginName": "Groovy",
                 "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
-                "height": 546
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -7534,10 +7591,50 @@
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 700,
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null
+                    ],
+                    "lodType": [
+                        null
+                    ],
+                    "lodAuto": [
+                        null
+                    ],
+                    "zoomHash": [
+                        null
+                    ],
+                    "showItem": [
+                        true
+                    ],
+                    "visibleItem": 1,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "pluginName": "Groovy",
                 "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
-                "height": 519
+                "height": 502
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -7675,10 +7772,55 @@
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 749,
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
-                "height": 546
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -7800,10 +7942,50 @@
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 768,
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null
+                    ],
+                    "lodType": [
+                        null
+                    ],
+                    "lodAuto": [
+                        null
+                    ],
+                    "zoomHash": [
+                        null
+                    ],
+                    "showItem": [
+                        true
+                    ],
+                    "visibleItem": 1,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "height": 546
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -8004,10 +8186,65 @@
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 774,
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 4,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "height": 546
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -8227,10 +8464,65 @@
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 793,
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 4,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "height": 546
+                "height": 529
             },
             "evaluatorReader": true,
             "lineCount": 8
@@ -8352,10 +8644,55 @@
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 729,
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
-                "height": 519
+                "height": 502
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -8711,55 +9048,9 @@
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 783,
-                "state": {
-                    "showAllItems": true,
-                    "plotSize": {
-                        "width": 640,
-                        "height": 480
-                    },
-                    "focus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095242,
-                        "yspan": 0.05238095238095242
-                    },
-                    "lodOn": [
-                        null,
-                        null
-                    ],
-                    "lodType": [
-                        null,
-                        null
-                    ],
-                    "lodAuto": [
-                        null,
-                        null
-                    ],
-                    "zoomHash": [
-                        null,
-                        null
-                    ],
-                    "showItem": [
-                        true,
-                        true
-                    ],
-                    "visibleItem": 2,
-                    "legendableItem": 2,
-                    "defaultFocus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095242,
-                        "yspan": 0.05238095238095242
-                    },
-                    "tips": {}
-                },
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
-                "height": 502
+                "height": 249
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -9912,7 +10203,7 @@
                 },
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
-                "height": 548
+                "height": 533
             },
             "evaluatorReader": true,
             "lineCount": 8
@@ -9958,7 +10249,52 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
                 "result": {
                     "type": "TimePlot",
                     "init_width": 640,
@@ -15439,6 +15775,14 @@
             },
             "evaluatorReader": true,
             "lineCount": 5
+        },
+        {
+            "id": "sectionjcPjoi",
+            "type": "section",
+            "title": "Initialize Demo Data",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": true
         }
     ],
     "namespace": {

@@ -37,52 +37,17 @@ dependencies {
 
 
 
-task generatePlotJavadoc(type: Javadoc) {
+task generateJavadoc(type: Javadoc) {
   source = sourceSets.main.allJava
   failOnError = false
-  destinationDir = file("./build/docs/plot")
+  destinationDir = file("./build/docs/")
 
-  exclude '**/BeakerCodeCell.java'
-  exclude '**/BeakerProgressUpdate.java'
-  exclude '**/NamespaceClient.java'
+  include "com/twosigma/beaker/easyform/formitem/**.java"
+  include "com/twosigma/beaker/easyform/EasyForm.java"
+  include "com/twosigma/beaker/easyform/EasyFormComponent.java"
+  include "com/twosigma/beaker/easyform/EasyFormObjectManager.java"
 
-  exclude 'com/twosigma/beaker/autocomplete'
-  exclude 'com/twosigma/beaker/easyform'
-  exclude 'com/twosigma/beaker/jvm'
-
-  configure(options) {
-    windowTitle = 'Plot API Documentation'
-    docTitle = "Plot API Documentation"
-    bottom = "Copyright 2014 TWO SIGMA OPEN SOURCE, LLC"
-  }
-}
-
-task generateEasyformJavadoc(type: Javadoc) {
-  source = sourceSets.main.allJava
-  failOnError = false
-  destinationDir = file("./build/docs/easyform")
-
-  exclude 'net/sf/jtreemap/swing'
-
-  exclude '**/BeakerCodeCell.java'
-  exclude '**/BeakerProgressUpdate.java'
-  exclude '**/NamespaceClient.java'
-
-  exclude 'com/twosigma/beaker/autocomplete'
-  exclude 'com/twosigma/beaker/chart'
-  exclude 'com/twosigma/beaker/jvm'
-
-  configure(options) {
-    windowTitle = 'EasyForm API Documentation'
-    docTitle = "EasyForm API Documentation"
-    bottom = "Copyright 2014 TWO SIGMA OPEN SOURCE, LLC"
-  }
-}
-
-task generateOutputContaunerJavadoc(type: Javadoc) {
-  source = sourceSets.main.allJava
-  failOnError = false
-  destinationDir = file("./build/docs/outputcontainer")
+  include "com/twosigma/beaker/chart/**/**.java"
 
   include "com/twosigma/beaker/jvm/object/OutputContainer.java"
   include "com/twosigma/beaker/jvm/object/DashboardLayoutManager.java"
@@ -93,33 +58,32 @@ task generateOutputContaunerJavadoc(type: Javadoc) {
   include "com/twosigma/beaker/jvm/object/TabbedOutputContainerLayoutManager.java"
   include "com/twosigma/beaker/jvm/object/CyclingOutputContainerLayoutManager.java"
 
+  include "net/sf/jtreemap/swing/**.java"
+
   configure(options) {
-    windowTitle = 'Output Container API Documentation'
-    docTitle = "Output Container API Documentation"
+    windowTitle = 'API Documentation'
+    docTitle = "API Documentation"
     bottom = "Copyright 2014 TWO SIGMA OPEN SOURCE, LLC"
   }
 }
 
-task addFavicon2Javadoc << {
-  def tree  = fileTree(dir: './build/docs',
-    includes: [
-      '**/allclasses-frame.html',
-      '**/allclasses-noframe.html',
-      '**/constant-values.html',
-      '**/deprecated-list.html',
-      '**/help-doc.html',
-      '**/index.html',
-      '**/index-all.html',
-      '**/overview-frame.html',
-      '**/overview-summary.html',
-      '**/overview-tree.html'
-    ])
 
-  tree.visit { details ->
-    if (!details.file.isDirectory()) {
-      def updatedContent = new File(details.file.path).getText('UTF-8').replaceAll("<html lang=\"en\">\n<head>",
-        "<html lang=\"en\">\n<link href=\"../../../../static/favicon.png\" rel=\"shortcut icon\" type=\"image/x-icon\" />\n<head>")
-      new File(details.file.path).write(updatedContent, 'UTF-8')
+
+task addFavicon2Javadoc {
+
+  doLast{
+
+    def collection = files('./build/docs/index.html')
+    collection.each {File file ->
+      println file.path
+      def updatedContent = new File(file.path).getText('UTF-8').replaceAll("<html lang=\"en\">\n<head>",
+        "<html lang=\"en\">\n<link href=\"../../../static/favicon.png\" rel=\"shortcut icon\" type=\"image/x-icon\" />\n<head>")
+      new File(file.path).write(updatedContent, 'UTF-8')
+    }
+
+    copy {
+      from './build/docs/'
+      into '../../core/src/main/web/app/dist/docs/'
     }
   }
 }
@@ -149,16 +113,8 @@ if (hasProperty('includeDepsInJar')) {
   }
 }
 
-addFavicon2Javadoc.dependsOn(generatePlotJavadoc)
-addFavicon2Javadoc.dependsOn(generateEasyformJavadoc)
-addFavicon2Javadoc.dependsOn(generateOutputContaunerJavadoc)
+addFavicon2Javadoc.dependsOn(generateJavadoc)
 
-task generateJavadoc
-generateJavadoc.dependsOn(generatePlotJavadoc)
-generateJavadoc.dependsOn(generateEasyformJavadoc)
-generateJavadoc.dependsOn(generateOutputContaunerJavadoc)
-
-installDist.dependsOn(generateJavadoc)
 installDist.dependsOn(addFavicon2Javadoc)
 
 task realclean

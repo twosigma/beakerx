@@ -237,15 +237,13 @@ define(function(require, exports, module) {
       {
         parent: "File",
         id: "file-menu",
-        submenu: "Open",
-        submenusortorder: 110,
         items: [
           {
             name: "Open... IPython (.ipynb)",
             id: "open-ipython-menuitem",
             reducedName: "Open...",
             tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
-            sortorder: 110,
+            sortorder: 115,
             action: function() {
               bkHelper.openWithDialog('ipynb', 'file', true, IPYNB_PATH_PREFIX);
             }

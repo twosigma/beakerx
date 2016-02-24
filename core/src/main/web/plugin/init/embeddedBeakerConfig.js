@@ -190,11 +190,6 @@
                              }
                            },
                            {
-                             name: "Open",
-                             id: "open-menuitem",
-                             sortorder: 110
-                           },
-                           {
                              name: "Import",
                              id: "import-menuitem",
                              sortorder: 130,
@@ -205,25 +200,23 @@
                  {
                    parent: "File",
                    id: "file-menu",
-                   submenu: "Open",
-                   submenusortorder: 110,
                    items: [
-                           {
-                             name: "Open... (.bkr)",
-                             id: "open-menuitem",
-                             tooltip: "Open a bkr notebook file",
-                             sortorder: 100,
-                             action: function() {
-                                 bkHelper.showModalDialog(
-                                     function(originalUrl) {
-                                       bkHelper.openNotebook(originalUrl);
-                                     },
-                                     JST['template/opennotebook']({homedir: homeDir, extension: '.bkr'}),
-                                     bkHelper.getFileSystemFileChooserStrategy()
-                                 );
-                             }
-                           }
-                           ]
+                     {
+                       name: "Open... (.bkr)",
+                       id: "open-menuitem",
+                       tooltip: "Open a bkr notebook file",
+                       sortorder: 110,
+                       action: function() {
+                           bkHelper.showModalDialog(
+                               function(originalUrl) {
+                                 bkHelper.openNotebook(originalUrl);
+                               },
+                               JST['template/opennotebook']({homedir: homeDir, extension: '.bkr'}),
+                               bkHelper.getFileSystemFileChooserStrategy()
+                           );
+                       }
+                     }
+                   ]
                  }
                  ];
     return toAdd;

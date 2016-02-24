@@ -328,7 +328,7 @@ define(function(require, exports, module) {
       JavascriptCancelFunction = null;
     },
     spec: {
-      es6: {type: "settableBoolean", name: "ES 6 (via Babel)"}
+      es6: {type: "settableBoolean", name: "ES2015 (via Babel) -"}
     }
   };
   var JavaScript0 = function(settings) {

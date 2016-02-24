@@ -249,5 +249,5 @@
 
     return PlotConstline;
   };
-  beaker.bkoFactory('PlotConstline', ['plotUtils', retfunc]);
+  beakerRegister.bkoFactory('PlotConstline', ['plotUtils', retfunc]);
 })();

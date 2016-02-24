@@ -1223,7 +1223,7 @@
         bkSessionManager.clear();
 
         bkMenuPluginManager.clear();
-        if (window.beaker === undefined || window.beaker.isEmbedded === undefined) {
+        if (window.beaker === undefined || window.beakerRegister.isEmbedded === undefined) {
           bkUtils.httpGet('../beaker/rest/util/getMenuPlugins')
           .success(function(menuUrls) {
             menuUrls.forEach(function(url) {
@@ -1231,7 +1231,7 @@
             });
           });
         } else {
-          var menues = window.beaker.getMenuItems();
+          var menues = window.beakerRegister.getMenuItems();
           bkMenuPluginManager.attachMenus(menues);
         }
         bkCellMenuPluginManager.reset();

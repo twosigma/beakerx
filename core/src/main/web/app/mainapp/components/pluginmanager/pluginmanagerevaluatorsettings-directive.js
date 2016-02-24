@@ -41,7 +41,9 @@
         });
 
         $scope.set = function(property) {
-          $scope.evaluator.perform(property.key);
+          if (property.action) {
+            $scope.evaluator.perform(property.key);
+          }
           bkSessionManager.setNotebookModelEdited(true);
           property.edited = false;
           var noMoreUnsavedProperties = true;
@@ -64,12 +66,16 @@
         };
       },
       link: function(scope, element, attrs) {
+        scope.availableProperties = GLOBALS.EVALUATOR_SPEC.PROPERTIES;
+
         var spec = _.map(scope.evaluator.spec, function(value, key) {
           return _.extend({ name: key, key: key }, value);
         });
 
         scope.properties = _.filter(spec, function(option) {
-          return option.type === "settableString";
+          return _(GLOBALS.EVALUATOR_SPEC.PROPERTIES)
+            .values()
+            .contains(option.type);
         });
 
         var getEditedListener = function (property) {

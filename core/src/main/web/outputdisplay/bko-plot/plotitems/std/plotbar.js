@@ -286,5 +286,5 @@
 
     return PlotBar;
   };
-  beaker.bkoFactory('PlotBar', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('PlotBar', ['plotUtils', 'plotTip', retfunc]);
 })();

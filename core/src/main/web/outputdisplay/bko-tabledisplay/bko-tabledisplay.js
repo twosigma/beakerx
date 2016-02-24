@@ -410,6 +410,16 @@
         $scope.isColumnVisible = function (initialIndex) {
           return $scope.getColumnByInitialIndex(initialIndex).visible();
         };
+
+        $scope.doUsePagination = function () {
+          $scope.pagination.use = !$scope.pagination.use;
+          if(!$scope.pagination.use){
+            $scope.pagination.rowsToDisplay = $scope.table.settings()[0].fnDisplayEnd();
+          }
+          // reorder the table data
+          $scope.applyChanges();
+        };
+
         $scope.refreshCells = function() {
           $scope.getCellIdx      =  [];
           $scope.getCellNam      =  [];

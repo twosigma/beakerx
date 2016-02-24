@@ -23,11 +23,12 @@
   <input class="afterCheckbox hidden" id="{{property.name}}-checkbox" ng-if="property.type === availableProperties.BOOLEAN" type="checkbox" ng-model="evaluator.settings[property.key]" ng-change="set(property)"/>
   <label ng-if="property.type === availableProperties.BOOLEAN" for="{{property.name}}-checkbox">{{property.name}}</label>
 
-  <label ng-if="property.type === availableProperties.ENUM">{{ property.name }}</label>
-  <div>
-    <!-- We need to generalize ambiance radio button that is specialized only for EasyForm and use it here -->
-    <input style="visibility: visible;" ng-if="property.type === availableProperties.ENUM" ng-repeat-start="value in property.values" id="{{property.name}}-{{value}}-radio" name="{{property.name}}" value="{{value}}" type="radio" ng-model="evaluator.settings[property.key]" ng-change="set(property)" />
-    <label ng-if="property.type === availableProperties.ENUM" ng-repeat-end for="{{property.name}}-{{value}}-radio">{{value}}</label>
+  <div class="radio" ng-if="property.type === availableProperties.ENUM">
+    <h6>{{ property.name }}</h6>
+    <label class="radio-inline" ng-repeat="value in property.values">
+      <!-- We need to generalize ambiance radio button that is specialized only for EasyForm and use it here -->
+      <input style="visibility: visible; margin-top: 0px;" name="{{::property.name}}" value="{{::value}}" type="radio" ng-model="evaluator.settings[property.key]" ng-change="set(property)" />{{value}}
+    </label>
   </div>
 
 </div>

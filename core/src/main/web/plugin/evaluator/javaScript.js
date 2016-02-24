@@ -150,6 +150,7 @@ define(function(require, exports, module) {
     shortName: "Js",
     evaluate: function(code, modelOutput, refreshObj) {
       var deferred = bkHelper.newDeferred();
+      var self = this;
       bkHelper.timeout(function () {
         // this is visible to JS code in cell
         var beakerObj = bkHelper.getBeakerObject();
@@ -173,8 +174,11 @@ define(function(require, exports, module) {
           beakerObj.notebookToBeakerObject();
           window.beaker = beakerObj.beakerObj;
           try {
-            code = Babel.transform(code, { presets: ['es2015'] }).code;
-            acorn.parse(code);
+            if (self.settings.es6 === true) {
+              code = Babel.transform(code, { presets: ['es2015'] }).code;
+            } else {
+              acorn.parse(code);
+            }
           } catch (e) {
             showErrorState({
               modelOutput: modelOutput,
@@ -324,6 +328,7 @@ define(function(require, exports, module) {
       JavascriptCancelFunction = null;
     },
     spec: {
+      es6: {type: "settableBoolean", name: "ES 6 (via Babel)"}
     }
   };
   var JavaScript0 = function(settings) {
@@ -336,6 +341,7 @@ define(function(require, exports, module) {
     settings.view.cm.mode = JavaScript_0.cmMode;
     settings.view.cm.background = JavaScript_0.background;
     this.settings = settings;
+    this.settings.es6 = true;
     this.perform = function(what) {
       var action = this.spec[what].action;
       this[action]();

@@ -323,8 +323,6 @@ define(function(require, exports, module) {
       JavascriptCancelFunction = null;
     },
     spec: {
-      someButtons: {type: "settableEnum", name: "These are the radio buttons", values: ["Something One", "Something Other", "And Three"]},
-      someCheckbox: {type: "settableBoolean", name: "This is a checkbox"}
     }
   };
   var JavaScript0 = function(settings) {

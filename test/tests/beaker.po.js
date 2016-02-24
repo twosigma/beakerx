@@ -188,9 +188,7 @@ var BeakerPageObject = function() {
   };
 
   this.readMarkdownCell = function() {
-    element(by.css('body')).click();
-
-    return element(by.css('.markup p')).getText();
+    return this.getCellInput();
   };
 
   this.activateLanguageInManager = function(language) {

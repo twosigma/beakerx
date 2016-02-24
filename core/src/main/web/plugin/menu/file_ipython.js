@@ -244,14 +244,9 @@ define(function(require, exports, module) {
             name: "Open... IPython (.ipynb)",
             id: "open-ipython-menuitem",
             reducedName: "Open...",
-            isLastUsed: function() {
-              var lastUsed = bkHelper.getLastUsedSubMenu("open-menuitem");
-              return lastUsed === this.id;
-            },
             tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
             sortorder: 110,
             action: function() {
-              bkHelper.setLastUsedSubMenu("open-menuitem", this.id);
               bkHelper.openWithDialog('ipynb', 'file', true, IPYNB_PATH_PREFIX);
             }
           }

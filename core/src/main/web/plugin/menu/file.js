@@ -41,18 +41,8 @@ define(function(require, exports, module) {
     },
     {
       name: "Open",
-      sortorder: 110,
       id: "open-menuitem",
-      action: function() {
-        var that = this;
-        if (!_.isArray(that.items)) return;
-
-        var lastUsedId = bkHelper.getLastUsedSubMenu('open-menuitem');
-        var lastUsedChild = _.findWhere(that.items, {id: lastUsedId});
-        if (lastUsedChild && _.isFunction(lastUsedChild.action)) {
-          lastUsedChild.action();
-        }
-      }
+      sortorder: 110
     },
     {
       name: "Open recent",

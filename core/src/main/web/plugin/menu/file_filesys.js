@@ -29,14 +29,9 @@ define(function(require, exports, module) {
           name: "Open... (.bkr)",
           id: "open-menuitem",
           reducedName: "Open...",
-          isLastUsed: function() {
-            var lastUsed = bkHelper.getLastUsedSubMenu("open-menuitem");
-            return lastUsed === this.id;
-          },
           tooltip: "Open a bkr notebook file",
           sortorder: 100,
           action: function() {
-            bkHelper.setLastUsedSubMenu("open-menuitem", this.id);
             bkHelper.openWithDialog('bkr');
           }
         }

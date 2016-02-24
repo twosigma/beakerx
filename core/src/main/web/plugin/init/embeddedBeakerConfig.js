@@ -192,17 +192,7 @@
                            {
                              name: "Open",
                              id: "open-menuitem",
-                             sortorder: 110,
-                             action: function() {
-                               var that = this;
-                               if (!_.isArray(that.items)) return;
-
-                               var lastUsedId = bkHelper.getLastUsedSubMenu('open-menuitem');
-                               var lastUsedChild = _.findWhere(that.items, {id: lastUsedId});
-                               if (lastUsedChild && _.isFunction(lastUsedChild.action)) {
-                                 lastUsedChild.action();
-                               }
-                             }
+                             sortorder: 110
                            },
                            {
                              name: "Import",
@@ -223,12 +213,7 @@
                              id: "open-menuitem",
                              tooltip: "Open a bkr notebook file",
                              sortorder: 100,
-                             isLastUsed: function() {
-                               var lastUsed = bkHelper.getLastUsedSubMenu("open-menuitem");
-                               return lastUsed === this.id;
-                             },
                              action: function() {
-                                 bkHelper.setLastUsedSubMenu("open-menuitem", this.id);
                                  bkHelper.showModalDialog(
                                      function(originalUrl) {
                                        bkHelper.openNotebook(originalUrl);

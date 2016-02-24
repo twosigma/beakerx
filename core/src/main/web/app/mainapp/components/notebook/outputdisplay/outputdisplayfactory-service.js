@@ -264,17 +264,17 @@
         };
       })()
     };
-    beaker.outputDisplayFactory = factory;
-    for (var key in beaker.toBeAddedToOutputDisplayFactory) {
-      beaker.outputDisplayFactory.add(key, beaker.toBeAddedToOutputDisplayFactory[key]);
+    beakerRegister.outputDisplayFactory = factory;
+    for (var key in beakerRegister.toBeAddedToOutputDisplayFactory) {
+      beakerRegister.outputDisplayFactory.add(key, beakerRegister.toBeAddedToOutputDisplayFactory[key]);
     }
-    beaker.toBeAddedToOutputDisplayFactory = null;
+    beakerRegister.toBeAddedToOutputDisplayFactory = null;
 
-    for (var key in beaker.toBeAddedToOutputDisplayType) {
-      var displays = beaker.toBeAddedToOutputDisplayType[key];
+    for (var key in beakerRegister.toBeAddedToOutputDisplayType) {
+      var displays = beakerRegister.toBeAddedToOutputDisplayType[key];
       factory.addOutputDisplayType(key, displays);
     }
-    beaker.toBeAddedToOutputDisplayType = null;
+    beakerRegister.toBeAddedToOutputDisplayType = null;
 
     return factory;
   });

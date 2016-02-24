@@ -361,5 +361,5 @@
 
     return PlotPoint;
   };
-  beaker.bkoFactory('PlotPoint', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('PlotPoint', ['plotUtils', 'plotTip', retfunc]);
 })();

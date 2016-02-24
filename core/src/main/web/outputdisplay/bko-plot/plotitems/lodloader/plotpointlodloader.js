@@ -260,6 +260,6 @@
 
     return PlotPointLodLoader;
   };
-  beaker.bkoFactory('PlotPointLodLoader',
+  beakerRegister.bkoFactory('PlotPointLodLoader',
     ['plotUtils', 'PlotSampler', 'PlotPoint', 'PlotLodPoint', 'PlotLodBox', retfunc]);
 })();

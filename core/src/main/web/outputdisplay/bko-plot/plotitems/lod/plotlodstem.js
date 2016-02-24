@@ -187,5 +187,5 @@
 
     return PlotLodStem;
   };
-  beaker.bkoFactory('PlotLodStem', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('PlotLodStem', ['plotUtils', 'plotTip', retfunc]);
 })();

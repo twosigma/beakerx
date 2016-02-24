@@ -250,5 +250,5 @@
     };
     return impl;
   };
-  beaker.bkoFactory('plotTip', ['plotUtils', retfunc]);
+  beakerRegister.bkoFactory('plotTip', ['plotUtils', retfunc]);
 })();

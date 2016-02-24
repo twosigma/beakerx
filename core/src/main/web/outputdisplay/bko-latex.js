@@ -19,7 +19,7 @@
  */
 (function() {
   'use strict';
-  beaker.bkoDirective('Latex', ["bkUtils", function(bkUtils) {
+  beakerRegister.bkoDirective('Latex', ["bkUtils", function(bkUtils) {
 
     return {
       link: function(scope, element, attrs) {

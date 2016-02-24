@@ -39,5 +39,5 @@
       }
     };
   };
-  beaker.bkoFactory('plotService', ['bkUtils', retfunc]);
+  beakerRegister.bkoFactory('plotService', ['bkUtils', retfunc]);
 })();

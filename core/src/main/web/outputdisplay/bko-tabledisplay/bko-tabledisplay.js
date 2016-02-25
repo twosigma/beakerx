@@ -1437,7 +1437,7 @@
             init.scrollCollapse = true;
             init.dom = '<"bko-table"rtf>';
           } else {
-            init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p>>Sf>';
+            init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf>';
             if (scope.data.length > 25) {
               init.pagingType = 'simple_numbers';
               init.pageLength = 25;
@@ -1480,6 +1480,17 @@
                 e.stopPropagation();
               })
               .appendTo(sField);
+
+            if(init.paging !== false){
+              var pagination = $(element).find(".bko-table-use-pagination");
+              $('<label eat-click><input type="checkbox" checked="true"> use pagination</label>')
+                .bind('click', function(e) {
+                  if (e.target.tagName === 'INPUT') {
+                    scope.doUsePagination();
+                  }
+                })
+                .appendTo(pagination);
+            }
 
             /*
             $(id + ' tbody').off('click');

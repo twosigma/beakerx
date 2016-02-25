@@ -156,3 +156,12 @@ a.dtmenu {
   height: 100%;
   position: absolute;
 }
+
+.bko-table-use-pagination {
+  padding-top: 10px;
+  padding-left: 30px;
+  float: left;
+  label {
+    cursor: pointer;
+  }
+}

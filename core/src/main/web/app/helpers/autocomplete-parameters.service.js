@@ -158,7 +158,7 @@
       if (!param.description || _.isEmpty(param.description)) {
         return;
       }
-      scope.$broadcast('showParameterDocumentation', param.description);
+      _.defer(function() {scope.$broadcast('showParameterDocumentation', param.description, cm.getScrollInfo().left);});
     }
 
     function hideParameterDocumentation() {

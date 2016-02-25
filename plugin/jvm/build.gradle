@@ -48,6 +48,7 @@ task generateJavadoc(type: Javadoc) {
   include "com/twosigma/beaker/easyform/EasyFormObjectManager.java"
 
   include "com/twosigma/beaker/chart/**/**.java"
+  exclude "com/twosigma/beaker/chart/serializer/*"
 
   include "com/twosigma/beaker/jvm/object/OutputContainer.java"
   include "com/twosigma/beaker/jvm/object/DashboardLayoutManager.java"

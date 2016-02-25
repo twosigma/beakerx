@@ -59,7 +59,7 @@
                 "Beaker comes with its own charting library for creating interactive plots. ",
                 "It is implemented in JavaScript and takes the specification for the plot to make and the data to plot in JSON.",
                 "You can access it from any language, but it's easiest with Groovy, and this tutorial shows you how.",
-                "See [documentation](../beaker/app/dist/docs/index.html)"
+                "See <a href=\"../beaker/app/dist/docs/index.html?com/twosigma/beaker/chart/Chart.html\" target=\"_blank\">documentation</a>"
             ],
             "evaluatorReader": false
         },

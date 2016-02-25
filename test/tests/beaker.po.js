@@ -140,13 +140,11 @@ var BeakerPageObject = function() {
   };
 
   this.createMarkdownCell = function(text) {
-    return element(by.css('bk-new-cell-menu .dropdown-toggle'))
+    return element(by.css('.insert-text'))
     .click()
     .then(function() {
-      return element(by.css('.insert-text'));
-    })
-    .then(function(el) {
-      return el.click();
+      //ensure CM focus
+      browser.executeScript('$(".CodeMirror")[0].CodeMirror.focus();');
     })
     .then(function() {
       return this.setCellInput(text);
@@ -189,7 +187,6 @@ var BeakerPageObject = function() {
 
   this.readMarkdownCell = function() {
     element(by.css('body')).click();
-
     return element(by.css('.markup p')).getText();
   };
 

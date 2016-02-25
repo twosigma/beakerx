@@ -414,7 +414,7 @@
         $scope.doUsePagination = function () {
           $scope.pagination.use = !$scope.pagination.use;
           if(!$scope.pagination.use){
-            $scope.pagination.rowsToDisplay = $scope.table.settings()[0].fnDisplayEnd();
+            $scope.pagination.rowsToDisplay = $scope.table.settings()[0]._iDisplayLength;
           }
           // reorder the table data
           $scope.applyChanges();
@@ -1753,8 +1753,24 @@
             } else {
               inits.rightColumns = 0;
             }
-            scope.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
+            scope.fixcols = new $ .fn.dataTable.FixedColumns($(id), inits);
 
+            if (init.paging === false && init.scrollCollapse) {
+              var scrollWrapper = element.find('.DTFC_ScrollWrapper');
+              var scrollBody = element.find('.dataTables_scrollBody');
+              var scrollHeader = element.find('.dataTables_scrollHead');
+              scrollWrapper.resizable({
+                handles: 's',
+                resize: function (event, ui) {
+                  var newHeight = ui.size.height;
+                  var headerHeight = scrollHeader.height();
+                  scrollBody.css('max-height', newHeight - headerHeight);
+                }
+              });
+              element.find('.ui-resizable-s')
+                .css('width', scrollBody.width())
+                .append('<span class="glyphicon glyphicon-resize-vertical"></span>');
+            }
             scope.applyFilters();
 
           }, 0);

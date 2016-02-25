@@ -11,6 +11,10 @@ $border-color: #D4D0D0;
     left: 5px;
     padding: 3px 4px;
   }
+  .ui-resizable-s span {
+    font-size: 13px;
+    float: right;
+  }
 }
 
 table.dataTable {
@@ -165,3 +169,4 @@ a.dtmenu {
     cursor: pointer;
   }
 }
+

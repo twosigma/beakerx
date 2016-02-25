@@ -827,6 +827,8 @@
             scope.removeOnKeyListeners();
             $('#' + scope.id + ' tbody').off('mouseleave.bko-datatable');
             $('#' + scope.id + ' tbody').off('mouseenter.bko-datatable');
+            $(scope.table.table().container()).off('mouseleave.bko-datatable');
+            $(scope.table.table().container()).off('mouseenter.bko-datatable');
             scope.table.off('key');
             scope.removeFilterListeners();
             $('#' + scope.id).html('');

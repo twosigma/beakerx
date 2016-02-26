@@ -106,6 +106,10 @@
     }
   }
 
+  .modal-body.error-title {
+    background-color: $btn-danger-bkg !important;
+  }
+
   .modal-content .btn-primary {
     background:     $primary-btn-bg;
     &:hover {

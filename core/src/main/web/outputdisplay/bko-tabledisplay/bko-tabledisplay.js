@@ -459,6 +459,18 @@
             }
           }
           $scope.applyFilters();
+          $($scope.table.header()).find("th").each(function(i){
+            var events = jQuery._data(this, 'events');
+            if (events && events.click){
+              var click = events.click[0].handler;
+              $(this).unbind('click.DT');
+              $(this).bind('click.DT', function(e){
+                if(!e.isDefaultPrevented()){
+                  click(e);
+                }
+              });
+            }
+          });
         };
 
        $scope.removeFilterListeners = function () {
@@ -825,6 +837,8 @@
             scope.removeOnKeyListeners();
             $('#' + scope.id + ' tbody').off('mouseleave.bko-datatable');
             $('#' + scope.id + ' tbody').off('mouseenter.bko-datatable');
+            $(scope.table.table().container()).off('mouseleave.bko-datatable');
+            $(scope.table.table().container()).off('mouseenter.bko-datatable');
             scope.table.off('key');
             scope.removeFilterListeners();
             $('#' + scope.id).html('');
@@ -1674,6 +1688,17 @@
               }
             };
 
+            scope.getColumnIndexByCellNode = function (cellNode) {
+              var columnIndex;
+              var cellIndex = scope.table.cell(cellNode).index();
+              if (cellIndex !== undefined) { //TD
+                columnIndex = cellIndex.column;
+              } else { //TH
+                columnIndex = scope.table.column(cellNode).index();
+              }
+              return columnIndex;
+            };
+
             scope.removeOnKeyListeners = function () {
               for (var f in scope.onKeyListeners) {
                 if (scope.onKeyListeners.hasOwnProperty(f)) {
@@ -1684,32 +1709,27 @@
             };
 
             scope.removeOnKeyListeners();
-            $(id + ' tbody')
-              .on("mouseenter.bko-datatable", 'td', function (e) {
+            $(scope.table.table().container())
+              .on("mouseenter.bko-datatable", 'td, th', function (e) {
                 if ($(id + ' tbody tr td').hasClass("focus") || $(scope.table.header()).has(':focus').length) {
                   return; //ignore mouse over for key events if there is focus on table's cell
                 }
-                var cellPos = scope.table.cell(this).index();
-                if(cellPos) {
-                  var column = cellPos.column;
-                  if (!scope.onKeyListeners[column]) {
-                    scope.onKeyListeners[column] = function (onKeyEvent) {
-                      if (!onKeyEvent.isDefaultPrevented()) {
-                        scope.onKeyAction(column, onKeyEvent);
-                      }
-                    };
-                    $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
-                  }
+                var column = scope.getColumnIndexByCellNode(this);
+                if (!scope.onKeyListeners[column]) {
+                  scope.onKeyListeners[column] = function (onKeyEvent) {
+                    if (!onKeyEvent.isDefaultPrevented()) {
+                      scope.onKeyAction(column, onKeyEvent);
+                    }
+                  };
+                  $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
                 }
               })
-              .on("mouseleave.bko-datatable", 'td', function (e) {
-                var cellPos = scope.table.cell(this).index();
-                if(cellPos) {
-                  var listener = scope.onKeyListeners[cellPos.column];
-                  if(listener) {
-                    delete scope.onKeyListeners[cellPos.column];
-                    $(document).off("keydown.bko-datatable", listener);
-                  }
+              .on("mouseleave.bko-datatable", 'td, th', function (e) {
+                var column = scope.getColumnIndexByCellNode(this);
+                var listener = scope.onKeyListeners[column];
+                if(listener) {
+                  delete scope.onKeyListeners[column];
+                  $(document).off("keydown.bko-datatable", listener);
                 }
               });
             scope.table
@@ -1717,19 +1737,6 @@
                 originalEvent.preventDefault();
                 scope.onKeyAction(cell.index().column, originalEvent);
               });
-
-            $(scope.table.header()).find("th").each(function(i){
-              var events = jQuery._data(this, 'events');
-              if (events && events.click){
-                var click = events.click[0].handler;
-                $(this).unbind('click.DT');
-                $(this).bind('click.DT', function(e){
-                  if(!e.isDefaultPrevented()){
-                    click(e);
-                  }
-                });
-              }
-            });
 
             $(window).bind('resize.' + scope.id, function() {
               //jscs:disable

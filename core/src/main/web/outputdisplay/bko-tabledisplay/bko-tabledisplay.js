@@ -1243,6 +1243,24 @@
               } else {
                 return (order[0][0] !== colIdx);
               }
+            },
+            doFixColumn: function (el, right) {
+              var container = el.closest('.bko-header-menu');
+              var colIdx = container.data('columnIndex');
+              if(right){
+                scope.pagination.fixRight = scope.columns.length - colIdx;
+              }else{
+                scope.pagination.fixLeft = colIdx;
+              }
+              scope.applyChanges();
+            },
+            isFixedRight: function (container) {
+              var colIdx = container.data('columnIndex');
+              return scope.columns.length - colIdx <= scope.pagination.fixRight;
+            },
+            isFixedLeft: function (container) {
+              var colIdx = container.data('columnIndex');
+              return scope.pagination.fixLeft >= colIdx;
             }
           };
 
@@ -1368,6 +1386,30 @@
 
                   scope.showFilter(column);
                 }
+              },
+              {
+                title: 'Fix Column',
+                action: null,
+                items: [
+                  {
+                    title: 'Left',
+                    isChecked: function(container) {
+                      return menuHelper.isFixedLeft(container);
+                    },
+                    action: function(el) {
+                      menuHelper.doFixColumn(el);
+                    }
+                  },
+                  {
+                    title: 'Right',
+                    isChecked: function(container) {
+                      return menuHelper.isFixedRight(container);
+                    },
+                    action: function(el) {
+                      menuHelper.doFixColumn(el, true);
+                    }
+                  }
+                ]
               }
             ]
           };
@@ -1756,7 +1798,7 @@
               inits.leftColumns = 1;
             }
             if (scope.pagination.fixRight) {
-              inits.rightColumns = 1;
+              inits.rightColumns = scope.pagination.fixRight;
             } else {
               inits.rightColumns = 0;
             }

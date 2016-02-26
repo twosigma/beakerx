@@ -178,7 +178,6 @@ define(function(require, exports, module) {
       {
         parent: "File",
         id: "file-menu",
-        submenu: "Open",
         items: [
           {
             name: "Open... IRuby (.ipynb)",

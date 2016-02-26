@@ -52,7 +52,7 @@ HeaderMenu.prototype = {
       var targetClass = $(e.target).attr('class');
       var toggleClass = 'bko-menu';
 
-      if ($container[0] != e.target && !$.contains($container[0], e.target) && targetClass != toggleClass) {
+      if ($container[0] != e.target && !$.contains($container[0], e.target) && targetClass.indexOf(toggleClass) < 0) {
         that._hide();
       }
     };
@@ -60,7 +60,7 @@ HeaderMenu.prototype = {
     $(document.body).on('click.table-headermenu', clickHandler);
     dt.on('destroy', function () {
       $(document.body).off('click.table-headermenu', clickHandler);
-      //that.destroy();
+      that._destroy();
     });
   },
 
@@ -103,7 +103,7 @@ HeaderMenu.prototype = {
     var that = this;
     var menu = col.header && col.header.menu;
     var cell = oCell.cell;
-    var $el = $("<span/>", { 'class': 'bko-menu' });
+    var $el = $("<span/>", { 'class': 'bko-menu bko-column-header-menu' });
 
     if (cell && menu && $.isArray(menu.items)) {
       $el.data('menu', menu.items)
@@ -211,6 +211,11 @@ HeaderMenu.prototype = {
     }
 
     this._hide();
+  },
+
+  _destroy: function(){
+    this.dom.container.remove();
+    $(this.s.dt.table().container()).find('.bko-column-header-menu').remove();
   }
 };
 

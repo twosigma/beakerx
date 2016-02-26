@@ -773,6 +773,7 @@
             $(scope.table.table().container()).off('mouseleave.bko-datatable');
             $(scope.table.table().container()).off('mouseenter.bko-datatable');
             scope.table.off('key');
+            scope.table.off('column-visibility.dt');
             scope.removeFilterListeners();
             $('#' + scope.id).html('');
             scope.table.destroy();
@@ -952,6 +953,11 @@
             scope.selected = selected;
           }
         };
+        scope.updateResizeHandleWidth = function () {
+          if (scope.jqTableResizeHandle) {
+            scope.jqTableResizeHandle.css('max-width', $('#' + scope.id).width());
+          }
+        };
         //jscs:disable
         scope.update_size = function() {
         //jscs:enable
@@ -961,6 +967,7 @@
           if (pp.width() > me.width()) {
             pp.width(me.width());
           }
+          scope.updateResizeHandleWidth();
           if (scope.fixcols)
             scope.fixcols.fnRedrawLayout();
         };
@@ -1711,6 +1718,9 @@
               .on('key', function (e, datatable, key, cell, originalEvent) {
                 originalEvent.preventDefault();
                 scope.onKeyAction(cell.index().column, originalEvent);
+              })
+              .on('column-visibility.dt', function () {
+                scope.updateResizeHandleWidth();
               });
 
             $(window).bind('resize.' + scope.id, function() {
@@ -1737,21 +1747,21 @@
             }
             scope.fixcols = new $ .fn.dataTable.FixedColumns($(id), inits);
 
-            if (init.paging === false && init.scrollCollapse) {
-              var scrollWrapper = element.find('.DTFC_ScrollWrapper');
-              var scrollBody = element.find('.dataTables_scrollBody');
-              var scrollHeader = element.find('.dataTables_scrollHead');
-              scrollWrapper.resizable({
+            if (!scope.pagination.use) {
+              var table = $('#' + scope.id);
+              var scrollWrapper = table.closest('.DTFC_ScrollWrapper');
+              var scrollBody = table.parent();
+              var scrollHeader = table.closest('.dataTables_scrollHead');
+              scope.jqTableResizeHandle = scrollWrapper.resizable({
                 handles: 's',
                 resize: function (event, ui) {
                   var newHeight = ui.size.height;
                   var headerHeight = scrollHeader.height();
                   scrollBody.css('max-height', newHeight - headerHeight);
                 }
-              });
-              element.find('.ui-resizable-s')
-                .css('width', scrollBody.width())
-                .append('<span class="glyphicon glyphicon-resize-vertical"></span>');
+              }).find('.ui-resizable-handle');
+              scope.jqTableResizeHandle.append('<span class="glyphicon glyphicon-resize-vertical"></span>');
+              scope.updateResizeHandleWidth();
             }
             scope.applyFilters();
 

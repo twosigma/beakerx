@@ -738,79 +738,12 @@
         $scope.allBoolTypes = [{type: 0, name: 'string'},
         {type: 9, name: 'boolean'}];
 
-        $scope.openOptionsDialog = function() {
-          var options = {
-            backdrop: true,
-            keyboard: true,
-            backdropClick: true,
-            scope: $scope,
-            windowClass: 'output-table-options beaker-sandbox',
-            backdropClass: 'beaker-sandbox',
-            template: JST['bko-tabledisplay/output-table-options']()
-          };
-          $scope.getCellShoOld    = $scope.getCellSho.slice(0);
-          $scope.getCellDispOld   = $scope.getCellDisp.slice(0);
-          $scope.getCellAlignOld  = $scope.getCellAlign.slice(0);
-          $scope.usePaginationOld = $scope.pagination.use;
-          $scope.rowsToDisplayOld = $scope.pagination.rowsToDisplay;
-          $scope.fixLeftOld       = $scope.pagination.fixLeft;
-          $scope.fixRightOld      = $scope.pagination.fixRight;
-          $scope.modal = $uibModal.open(options);
-        };
-
         $scope.applyChanges = function() {
           $scope.doDestroy(false);
           // reorder the table data
           var model = $scope.model.getCellModel();
           $scope.doCreateData(model);
           $scope.doCreateTable(model);
-        };
-
-        $scope.closeOptionsDialog = function() {
-          $scope.modal.close();
-          var i;
-          var doit = 0;
-
-          for (i = 0; i < $scope.getCellDisp.length; i++) {
-            if ($scope.getCellSho[i] !== $scope.getCellShoOld[i]) {
-              // refresh only visibility
-              doit = 1;
-            }
-          }
-          //jscs:disable
-          if (($scope.usePaginationOld !== $scope.pagination.use) || ($scope.rowsToDisplayOld !== $scope.pagination.rowsToDisplay) ||
-              ($scope.fixLeftOld !== $scope.pagination.fixLeft) || ($scope.fixRightOld !== $scope.pagination.fixRight)) {
-          //jscs:enable
-            doit = 2;
-          } else {
-            for (i = 0; i < $scope.getCellDisp.length; i++) {
-              //jscs:disable
-              if (($scope.getCellDisp[i] !== $scope.getCellDispOld[i]) || ($scope.getCellAlign[i] !== $scope.getCellAlignOld[i])) {
-              //jscs:enable
-                doit = 2;
-              }
-            }
-          }
-          if (doit == 1) {
-            for (i = 0; i < $scope.getCellDisp.length; i++) {
-              $scope.table.column(i + 1).visible($scope.getCellSho[i], false);
-            }
-            $scope.table.columns.adjust().draw(false);
-          } else if (doit == 2) {
-            $scope.doDestroy(false);
-            // update table display
-            for (i = 0; i < $scope.getCellDisp.length; i++) {
-              $scope.actualtype[$scope.colorder[i + 1] - 1] = $scope.getCellDisp[i];
-              $scope.actualalign[$scope.colorder[i + 1] - 1] = $scope.getCellAlign[i];
-            }
-            // reorder the table data
-            $scope.applyChanges();
-          }
-        };
-
-        $scope.cancelOptionsDialog = function() {
-          $scope.modal.close();
-          $scope.refreshCells();
         };
 
         $scope.showSearch = function() {

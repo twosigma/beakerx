@@ -25,6 +25,9 @@ table.dataTable {
       color: #515A5A;
       font-weight: normal;
     }
+    .filterRow th {
+      border-top-width: 0px;
+    }
   }
 }
 
@@ -55,6 +58,45 @@ td.dtcenter {
     cursor:       pointer;
     padding: 5px;
     color:        #999999;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.input-clear-growing {
+  position: relative;
+  input {
+    border: 1px solid #ccc;
+    padding-right: 20px;
+    width: 100%;
+  }
+  .hidden-length, .hidden-filter-input {
+    display: none;
+  }
+}
+.input-clear {
+  position: relative;
+  &.editing {
+    position: absolute;
+    left: 0px;
+    z-index: 10;
+  }
+  input {
+    border: 1px solid #ccc;
+    padding-right: 20px;
+    width: 100%;
+  }
+
+  span {
+    position: absolute;
+    right: 5px;
+    top: 0;
+    bottom: 0;
+    height: 14px;
+    margin: auto;
+    cursor: pointer;
+    color: #999999;
     &:hover {
       opacity: 0.8;
     }

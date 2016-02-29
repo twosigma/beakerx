@@ -35,8 +35,9 @@ describe('Text Cell', function() {
     beakerPO.newEmptyNotebook.click();
   });
 
-  afterEach(function() {
-    beakerPO.closeNotebook();
+  afterEach(function(done) {
+    beakerPO.closeNotebook()
+      .then(done);
   });
 
   it('can handle escaping $ in markdown', function(done) {

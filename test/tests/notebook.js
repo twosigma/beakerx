@@ -111,7 +111,7 @@ describe('notebook', function() {
       beakerPO.evaluateCell();
       beakerPO.waitForCellOutput();
       beakerPO.getCellOutput().getText().then(function(txt) {
-        expect(txt).toEqual('Unexpected token (1:0)', txt);
+        expect(txt).toContain('Unexpected token (1:0)', txt);
         done();
       });
     });

@@ -29,6 +29,7 @@
     var scope;
     var currentParam;
     var args = [];
+    var DOCUMENTATION_WIDTH = 500;
 
     function startParameterCompletion(codeMirror, documentation, selectionStart, selectionEnd, $scope) {
       cm = codeMirror;
@@ -158,7 +159,7 @@
       if (!param.description || _.isEmpty(param.description)) {
         return;
       }
-      scope.$broadcast('showParameterDocumentation', param.description);
+      _.defer(function() {scope.$broadcast('showParameterDocumentation', param.description, cm.getScrollInfo().left, DOCUMENTATION_WIDTH);});
     }
 
     function hideParameterDocumentation() {

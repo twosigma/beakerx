@@ -1682,14 +1682,11 @@
             };
 
             scope.getColumnIndexByCellNode = function (cellNode) {
-              var columnIndex;
-              var cellIndex = scope.table.cell(cellNode).index();
-              if (cellIndex !== undefined) { //TD
-                columnIndex = cellIndex.column;
+              if (cellNode.tagName === 'TD') {
+                return scope.fixcols.fnGetPosition(cellNode)[2];
               } else { //TH
-                columnIndex = scope.table.column(cellNode).index();
+                return $(cellNode).data('columnIndex');
               }
-              return columnIndex;
             };
 
             scope.removeOnKeyListeners = function () {

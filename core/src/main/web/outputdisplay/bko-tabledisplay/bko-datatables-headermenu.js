@@ -46,11 +46,11 @@ HeaderMenu.prototype = {
 
     this._appendMenuContainer();
     this._buildMenuData(headerLayout);
-    var toggleClass = 'bko-column-header-menu';
 
     var clickHandler = function(e) {
       var $container = that.dom.container;
       var targetClass = $(e.target).attr('class');
+      var toggleClass = 'bko-column-header-menu';
 
       if ($container[0] != e.target && !$.contains($container[0], e.target) && targetClass.indexOf(toggleClass) < 0) {
         that._hide();
@@ -58,20 +58,6 @@ HeaderMenu.prototype = {
     };
 
     $(document.body).on('click.table-headermenu', clickHandler);
-
-    $(dt.header()).find("th").each(function(i){
-      var events = jQuery._data(this, 'events');
-      if (events && events.click){
-        var click = events.click[0].handler;
-        $(this).unbind('click.DT');
-        $(this).bind('click.DT', function(e){
-          if(!$(e.target).hasClass(toggleClass)){
-            click(e);
-          }
-        });
-      }
-    });
-
     dt.on('destroy', function () {
       $(document.body).off('click.table-headermenu', clickHandler);
       that._destroy();

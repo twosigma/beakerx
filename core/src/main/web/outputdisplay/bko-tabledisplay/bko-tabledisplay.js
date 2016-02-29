@@ -371,7 +371,7 @@
         $scope.pagination = {
           'use' : true,
           'rowsToDisplay' : 50,
-          'fixLeft' : 1,
+          'fixLeft' : 0,
           'fixRight' : 0
         };
 
@@ -458,6 +458,18 @@
               $scope.getCellDispOpts.push($scope.allTypes);
             }
           }
+          $($scope.table.table().header()).find("th").each(function(i){
+            var events = jQuery._data(this, 'events');
+            if (events && events.click) {
+              var click = events.click[0].handler;
+              $(this).unbind('click.DT');
+              $(this).bind('click.DT', function (e) {
+                if(!$(e.target).hasClass('bko-column-header-menu')){
+                  click(e);
+                }
+              });
+            }
+          });
           $scope.applyFilters();
         };
 

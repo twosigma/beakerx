@@ -110,11 +110,6 @@ public class GuiceCometdModule extends AbstractModule {
   @Provides
   public final BayeuxServerImpl getBayeuxServer(final ObjectMapper om) {
     BayeuxServerImpl server = new BayeuxServerImpl();
-    /*
-     * Set the max idle time.
-     * @param timeMs the max idle time in MS. Timeout <= 0 implies an infinite timeout
-     */
-    server.setOption(WebSocketTransport.IDLE_TIMEOUT_OPTION, -1);
     
     server.addTransport(new BkWebSocketTransport(server));
 

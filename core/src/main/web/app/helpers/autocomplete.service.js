@@ -119,7 +119,9 @@
     });
     var index = funcName.indexOf(matchedText) + matchedText.length;
 
+    var currentScrollInfo = cm.getScrollInfo();
     replaceSelection(funcName.substring(index) + '(' + str.join(', ') + ')', cm);
+    cm.scrollTo(currentScrollInfo.left, currentScrollInfo.top);
   }
 
   function replaceSelection(s, cm) {

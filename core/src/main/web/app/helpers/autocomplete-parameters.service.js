@@ -29,6 +29,7 @@
     var scope;
     var currentParam;
     var args = [];
+    var DOCUMENTATION_WIDTH = 500;
 
     function startParameterCompletion(codeMirror, documentation, selectionStart, selectionEnd, $scope) {
       cm = codeMirror;
@@ -79,14 +80,17 @@
 
     function markParameters(from, to) {
       var paramsString = cm.getRange(from, to);
-      args = _(params).map(function(p) {
-        var position = paramsString.indexOf(p.name);
-        return [position, position + p.name.length - 1];
-      }).map(function(p) {
+      var positions = [];
+      _.reduce(params, function(positionAccumulator, p) {
+        var position = paramsString.indexOf(p.name, positionAccumulator);
+        positions.push([position, position + p.name.length - 1]);
+        return positionAccumulator + p.name.length + 2; // including comma and a space after comma
+      }, 0);
+      args = _.map(positions, function(p) {
         var start = _.merge({}, from, {ch: from.ch + p[0]});
         var end = _.merge({}, from, {ch: from.ch + p[1] + 1});
         return markWithClass(start, end, 'marked-argument-unchanged');
-      }).value();
+      });
     }
 
     function markWithClass(start, end, className) {
@@ -155,7 +159,7 @@
       if (!param.description || _.isEmpty(param.description)) {
         return;
       }
-      scope.$broadcast('showParameterDocumentation', param.description);
+      _.defer(function() {scope.$broadcast('showParameterDocumentation', param.description, cm.getScrollInfo().left, DOCUMENTATION_WIDTH);});
     }
 
     function hideParameterDocumentation() {

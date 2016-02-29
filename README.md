@@ -27,6 +27,11 @@ This page is for developers.  If you want to use or learn more about Beaker, see
 
 ![screenshots](http://twosigma.github.io/beaker-notebook/images/bk6.png)
 
+#Publication Server
+Notebooks can published and converted into web pages that anyone can access with an ordinary web browser, even on a mobile device.
+This free service is integrated into the application, and can be applied with just one click to any cell, section, or a whole notebook.
+Plots and tables remain interactive in published version.  Learn more, and explore a variety of notebooks from the user community on the [publication server](http://pub.beakernotebook.com/).
+
 #Build, test, and run instructions
 
 See the page for your platform for how to build from source:
@@ -74,9 +79,9 @@ plugins](https://github.com/twosigma/beaker-notebook/wiki/Menu-plugin-spec),
 plugins](https://github.com/twosigma/beaker-notebook/wiki/OutputDisplay-spec)
 
 ##Open source
+
 Beaker's full source code and documentation is available under the
-Apache 2.0 license.  Beaker's sharing feature uses a server with its
-own [repository](https://github.com/twosigma/beaker-sharing-server).
+Apache 2.0 license.
 
 ##Contributing
 

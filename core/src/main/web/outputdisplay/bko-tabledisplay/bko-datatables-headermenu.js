@@ -46,11 +46,11 @@ HeaderMenu.prototype = {
 
     this._appendMenuContainer();
     this._buildMenuData(headerLayout);
+    var toggleClass = 'bko-column-header-menu';
 
     var clickHandler = function(e) {
       var $container = that.dom.container;
       var targetClass = $(e.target).attr('class');
-      var toggleClass = 'bko-menu';
 
       if ($container[0] != e.target && !$.contains($container[0], e.target) && targetClass.indexOf(toggleClass) < 0) {
         that._hide();
@@ -58,6 +58,20 @@ HeaderMenu.prototype = {
     };
 
     $(document.body).on('click.table-headermenu', clickHandler);
+
+    $(dt.header()).find("th").each(function(i){
+      var events = jQuery._data(this, 'events');
+      if (events && events.click){
+        var click = events.click[0].handler;
+        $(this).unbind('click.DT');
+        $(this).bind('click.DT', function(e){
+          if(!$(e.target).hasClass(toggleClass)){
+            click(e);
+          }
+        });
+      }
+    });
+
     dt.on('destroy', function () {
       $(document.body).off('click.table-headermenu', clickHandler);
       that._destroy();
@@ -92,6 +106,23 @@ HeaderMenu.prototype = {
         this._buildCellMenu(cell, cols[i]);
       }
     }
+
+    var that = this;
+
+    $(this.s.dt.table().container()).on('click.headermenu', '.bko-column-header-menu', function(e) {
+      var colIdx = $(this).parent().data('columnIndex');
+      var jqHeaderMenu = $(that.s.dt.column(colIdx).header()).find(".bko-column-header-menu");
+      if (that.dom.menu) {
+        that._hide();
+        if(colIdx !== that.dom.container.data('columnIndex')){
+          that._show($(jqHeaderMenu));
+        }
+      } else {
+        that._show($(jqHeaderMenu));
+      }
+
+      e.preventDefault();
+    });
   },
 
   /**
@@ -100,26 +131,12 @@ HeaderMenu.prototype = {
    */
   _buildCellMenu: function (oCell, col)
   {
-    var that = this;
     var menu = col.header && col.header.menu;
     var cell = oCell.cell;
     var $el = $("<span/>", { 'class': 'bko-menu bko-column-header-menu' });
 
     if (cell && menu && $.isArray(menu.items)) {
       $el.data('menu', menu.items)
-        .bind('click', function(e) {
-          if (that.dom.menu) {
-            that._hide();
-            if($(this).parent().data('columnIndex') !== that.dom.container.data('columnIndex')){
-              that._show($(this));
-            }
-          } else {
-            that._show($(this));
-          }
-
-          e.preventDefault();
-        });
-
       $(cell).append($el);
     }
   },
@@ -216,6 +233,7 @@ HeaderMenu.prototype = {
   _destroy: function(){
     this.dom.container.remove();
     $(this.s.dt.table().container()).find('.bko-column-header-menu').remove();
+    $(this.s.dt.table().container()).off('click.headermenu');
   }
 };
 

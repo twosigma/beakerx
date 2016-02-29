@@ -101,8 +101,8 @@ tbody tr {
   }
 }
 
-.dataTables_scrollHead  table, .DTFC_LeftHeadWrapper  table {
-  thead th {
+.dataTables_scrollHead, .DTFC_LeftHeadWrapper, .DTFC_RightHeadWrapper {
+  table thead th {
     cursor:       pointer;
     .bko-menu {
       float:      left;
@@ -133,7 +133,7 @@ tbody tr {
     }
   }
 
-  thead .sorting, .sorting_asc, .sorting_desc {
+  table thead .sorting, .sorting_asc, .sorting_desc {
     background-image: none !important;
   }
 }

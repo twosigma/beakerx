@@ -371,7 +371,7 @@
         $scope.pagination = {
           'use' : true,
           'rowsToDisplay' : 50,
-          'fixLeft' : 0,
+          'fixLeft' : 1,
           'fixRight' : 0
         };
 
@@ -459,18 +459,6 @@
             }
           }
           $scope.applyFilters();
-          $($scope.table.header()).find("th").each(function(i){
-            var events = jQuery._data(this, 'events');
-            if (events && events.click){
-              var click = events.click[0].handler;
-              $(this).unbind('click.DT');
-              $(this).bind('click.DT', function(e){
-                if(!e.isDefaultPrevented()){
-                  click(e);
-                }
-              });
-            }
-          });
         };
 
        $scope.removeFilterListeners = function () {

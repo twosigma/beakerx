@@ -77,6 +77,39 @@
     }
   });
 
+  $.fn.dataTable.ext.search.push(
+    function (settings, row, rowIndex) {
+      var match = true;
+      for (var colInd = 0; colInd < row.length; colInd++) {
+        var searchString = $(settings.aoHeader[1][colInd].cell).find('.filter-input').val();
+        if (_.isEmpty(searchString)) { continue; }
+
+        var cellValue = row[colInd];
+        if (settings.aoColumns[colInd].sType === 'num' &&
+          (_.startsWith(searchString, '>') ||
+          _.startsWith(searchString, '<') ||
+          _.startsWith(searchString, '='))) {
+
+          var numValue = parseFloat(cellValue);
+          searchString = searchString.replace(/=/g, '==');
+          searchString = searchString.replace(/&&/g, '&& numValue');
+
+          try {
+            match = eval("numValue" + searchString);
+            if (!match) {
+              break;
+            }
+          } catch (e) {
+          }
+        } else if (cellValue.toUpperCase().indexOf(searchString.toUpperCase()) < 0) {
+          match = false;
+          break;
+        }
+      }
+      return match;
+    }
+  );
+
   jQuery.fn.dataTableExt.aTypes.unshift(function(sData) {
     if (typeof sData !== 'string') {
       return;
@@ -159,7 +192,8 @@
                   'Etc/GMT-13|GMT-13:00',
                   'Etc/GMT-14|GMT-14:00']);
   //jscs:disable
-  beakerRegister.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS) {
+  beakerRegister.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', '$rootScope',
+    function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS, $rootScope) {
   //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
     return {
@@ -414,6 +448,71 @@
               $scope.getCellDispOpts.push($scope.allTypes);
             }
           }
+          $scope.applyFilters();
+          $($scope.table.header()).find("th").each(function(i){
+            var events = jQuery._data(this, 'events');
+            if (events && events.click){
+              var click = events.click[0].handler;
+              $(this).unbind('click.DT');
+              $(this).bind('click.DT', function(e){
+                if(!e.isDefaultPrevented()){
+                  click(e);
+                }
+              });
+            }
+          });
+        };
+
+       $scope.removeFilterListeners = function () {
+         $scope.table.columns().every(function () {
+           var column = this;
+           var columnFilterHeader = $($scope.table.table().header())
+                                    .find('.filterRow th:eq(' + column.header().cellIndex + ')');
+           $('.filter-input', columnFilterHeader).off('keyup.column-filter change.column-filter keydown.column-filter ' +
+                                                      'blur.column-filter focus.column-filter');
+           $('.clear-filter', columnFilterHeader).off('mousedown.column-filter');
+         });
+        };
+        // Apply filters
+        $scope.applyFilters = function (){
+          if (!$scope.table) { return; }
+          $scope.removeFilterListeners();
+          $scope.table.columns().every(function () {
+            var column = this;
+            var columnFilterHeader = $($scope.table.table().header())
+              .find('.filterRow th:eq(' + column.header().cellIndex + ')');
+            $('.filter-input', columnFilterHeader)
+              .on('keyup.column-filter change.column-filter', function () {
+                column.draw();
+                $scope.updateFilterWidth($(this), column);
+              })
+              .on('focus.column-filter', function (event) {
+                if($scope.keyTable){
+                  $scope.keyTable.blur();
+                }
+              })
+              .on('blur.column-filter', function (event) {
+                $scope.onFilterBlur($(this), event.relatedTarget);
+              })
+              .on('keydown.column-filter', function (event) {
+                var key = event.which;
+                if (key == 13) { //enter key
+                  $scope.onFilterBlur($(this), this);
+                } else {
+                  $scope.onFilterEditing($(this), column);
+                }
+              });
+
+            $('.clear-filter', columnFilterHeader)
+              .on('mousedown.column-filter', function (event) {
+                var jqFilterInput = $(this).siblings('.filter-input');
+                if(jqFilterInput.is(':focus')){
+                  event.preventDefault();
+                }
+                $scope.clearFilter(column);
+                $scope.updateFilterWidth(jqFilterInput, column);
+              });
+          });
         };
 
         $scope.renderMenu = false;
@@ -728,7 +827,10 @@
             scope.removeOnKeyListeners();
             $('#' + scope.id + ' tbody').off('mouseleave.bko-datatable');
             $('#' + scope.id + ' tbody').off('mouseenter.bko-datatable');
+            $(scope.table.table().container()).off('mouseleave.bko-datatable');
+            $(scope.table.table().container()).off('mouseenter.bko-datatable');
             scope.table.off('key');
+            scope.removeFilterListeners();
             $('#' + scope.id).html('');
             scope.table.destroy();
             delete scope.table;
@@ -1245,6 +1347,17 @@
                     }
                   }
                 ]
+              },
+              {
+                title: 'Filter...',
+                action: function(el) {
+                  var table = scope.table;
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex');
+                  var column = table.column(colIdx);
+
+                  scope.showFilter(column);
+                }
               }
             ]
           };
@@ -1258,7 +1371,7 @@
                 break;
               }
             }
-            cols.push({'title' : scope.indexName+'&nbsp;&nbsp;', 'className': 'dtright', 'render': converter});
+            cols.push({'title' : scope.indexName, 'className': 'dtright', 'render': converter});
           } else {
             cols.push({'title': '    ', 'className': 'dtright', 'render': converter});
           }
@@ -1286,13 +1399,21 @@
             }
             cols.push(col);
           }
-          scope.columns = cols;
+          if (!scope.columns) {
+            scope.columns = [];
+          } else {
+            scope.columns.splice(0, scope.columns.length);
+          }
+          for (var i = 0; i < cols.length; i++) {
+            scope.columns.push(_.clone(cols[i]));
+            delete cols[i].title
+          }
 
           var id = '#' + scope.id;
           var init = {
             'destroy' : true,
             'data': scope.data,
-            'columns': scope.columns,
+            'columns': cols,
             'stateSave': true,
             'processing': true,
             'autoWidth': true,
@@ -1310,7 +1431,8 @@
               scope.updateBackground();
               scope.updateDTMenu();
               //jscs:enable
-            }
+            },
+            'bSortCellsTop': true
           };
 
           if (!scope.pagination.use) {
@@ -1352,7 +1474,7 @@
             } else {
               scope.colorder = scope.colreorg.fnOrder().slice(0);
             }
-            new $.fn.dataTable.KeyTable($(id));
+            scope.keyTable = new $.fn.dataTable.KeyTable($(id));
             scope.refreshCells();
 
             var sField = $('#' + scope.id + '_filter');
@@ -1458,6 +1580,75 @@
               scope.applyChanges();
             };
 
+            scope.showFilter = function (column) {
+              scope.filter = {};
+              scope.$apply();
+              if(scope.fixcols){
+                scope.fixcols.fnRedrawLayout();
+              }
+              var columnFilterHeader = $(scope.table.table().header())
+                  .find('.filterRow th:eq(' + column.header().cellIndex + ')');
+              $('.filter-input', columnFilterHeader).focus();
+            };
+
+            scope.hideFilter = function () {
+              scope.filter = null;
+              scope.table.columns().every(function () {
+                this.search('');
+              });
+              scope.table.draw();
+              setTimeout(function(){
+                scope.update_size()
+              }, 0);
+            };
+
+            scope.clearFilter = function (column) {
+              if(column) {
+                scope.filter[column.index()] = '';
+                column.search('').draw();
+                scope.checkFilter();
+              }
+            };
+
+            scope.onFilterBlur = function (jqInputEl, relatedTarget){
+              jqInputEl.css('width', '');
+              jqInputEl.parent().removeClass('editing');
+              jqInputEl.parent().siblings('.hidden-filter').addClass('hidden-filter-input');
+              if(!$(element).find(".filterRow").has(relatedTarget).length){
+                // focus wasn't moved to another filter input
+                scope.checkFilter();
+              }
+            };
+
+            scope.checkFilter = function () {
+              var hasNotEmptyFilter = false;
+              _.forOwn(scope.filter, function(value){
+                if(!_.isEmpty(value)){
+                  hasNotEmptyFilter = true;
+                }
+              });
+
+              if(!hasNotEmptyFilter){
+                scope.hideFilter();
+              }
+            };
+
+            scope.onFilterEditing = function(jqInputEl, column){
+              scope.updateFilterWidth(jqInputEl, column);
+              jqInputEl.parent().addClass('editing');
+              jqInputEl.parent().siblings('.hidden-filter').removeClass('hidden-filter-input');
+            };
+
+            scope.updateFilterWidth = function(jqInput, column){
+              var textWidth = jqInput.parent().siblings('.hidden-length').width() + 30;
+              var headerWidth = $(column.header()).width();
+              if(textWidth > headerWidth){
+                jqInput.css('width', textWidth);
+              } else {
+                jqInput.css('width', '');
+              }
+            };
+
             scope.onKeyAction = function (column, onKeyEvent) {
               var key = onKeyEvent.keyCode;
               var charCode = String.fromCharCode(key);
@@ -1476,6 +1667,17 @@
               }
             };
 
+            scope.getColumnIndexByCellNode = function (cellNode) {
+              var columnIndex;
+              var cellIndex = scope.table.cell(cellNode).index();
+              if (cellIndex !== undefined) { //TD
+                columnIndex = cellIndex.column;
+              } else { //TH
+                columnIndex = scope.table.column(cellNode).index();
+              }
+              return columnIndex;
+            };
+
             scope.removeOnKeyListeners = function () {
               for (var f in scope.onKeyListeners) {
                 if (scope.onKeyListeners.hasOwnProperty(f)) {
@@ -1486,32 +1688,27 @@
             };
 
             scope.removeOnKeyListeners();
-            $(id + ' tbody')
-              .on("mouseenter.bko-datatable", 'td', function (e) {
-                if ($(id + ' tbody tr td').hasClass("focus")) {
+            $(scope.table.table().container())
+              .on("mouseenter.bko-datatable", 'td, th', function (e) {
+                if ($(id + ' tbody tr td').hasClass("focus") || $(scope.table.header()).has(':focus').length) {
                   return; //ignore mouse over for key events if there is focus on table's cell
                 }
-                var cellPos = scope.table.cell(this).index();
-                if(cellPos) {
-                  var column = cellPos.column;
-                  if (!scope.onKeyListeners[column]) {
-                    scope.onKeyListeners[column] = function (onKeyEvent) {
-                      if (!onKeyEvent.isDefaultPrevented()) {
-                        scope.onKeyAction(column, onKeyEvent);
-                      }
-                    };
-                    $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
-                  }
+                var column = scope.getColumnIndexByCellNode(this);
+                if (!scope.onKeyListeners[column]) {
+                  scope.onKeyListeners[column] = function (onKeyEvent) {
+                    if (!onKeyEvent.isDefaultPrevented()) {
+                      scope.onKeyAction(column, onKeyEvent);
+                    }
+                  };
+                  $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
                 }
               })
-              .on("mouseleave.bko-datatable", 'td', function (e) {
-                var cellPos = scope.table.cell(this).index();
-                if(cellPos) {
-                  var listener = scope.onKeyListeners[cellPos.column];
-                  if(listener) {
-                    delete scope.onKeyListeners[cellPos.column];
-                    $(document).off("keydown.bko-datatable", listener);
-                  }
+              .on("mouseleave.bko-datatable", 'td, th', function (e) {
+                var column = scope.getColumnIndexByCellNode(this);
+                var listener = scope.onKeyListeners[column];
+                if(listener) {
+                  delete scope.onKeyListeners[column];
+                  $(document).off("keydown.bko-datatable", listener);
                 }
               });
             scope.table
@@ -1519,17 +1716,6 @@
                 originalEvent.preventDefault();
                 scope.onKeyAction(cell.index().column, originalEvent);
               });
-
-            $(scope.table.header()).find("th").each(function(i){
-              var events = jQuery._data(this, 'events');
-              var click = events.click[0].handler;
-              $(this).unbind('click.DT');
-              $(this).bind('click.DT', function(e){
-                if(!e.isDefaultPrevented()){
-                  click(e);
-                }
-              });
-            });
 
             $(window).bind('resize.' + scope.id, function() {
               //jscs:disable
@@ -1554,6 +1740,9 @@
               inits.rightColumns = 0;
             }
             scope.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
+
+            scope.applyFilters();
+
           }, 0);
         };
 
@@ -1655,9 +1844,11 @@
           if(scope.table){
             var orderInfo = scope.table.order()[0];
             scope.isIndexColumnDesc = orderInfo[0] === 0 && orderInfo[1] === 'desc';
-            scope.$apply();
+            if (!(scope.$$phase || $rootScope.$$phase)) {
+              scope.$apply();
+            }
           }
-        }
+        };
 
         scope.getDtRow = function (node) {
           var dtRow;

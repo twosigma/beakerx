@@ -41,11 +41,6 @@ define(function(require, exports, module) {
       tooltip: "Open a new browser tab or window to work on more than one notebook at the same time"
     },
     {
-      name: "Open",
-      id: "open-menuitem",
-      sortorder: 110
-    },
-    {
       name: "Open recent",
       sortorder: 120,
       id: "open-recent-menuitem",

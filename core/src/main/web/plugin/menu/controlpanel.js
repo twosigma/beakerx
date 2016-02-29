@@ -30,17 +30,21 @@ define(function(require, exports, module) {
       }
     },
     {
+      name: "Open... (.bkr)",
+      id: "open-menuitem",
+      tooltip: "Open a bkr notebook file",
+      sortorder: 110,
+      action: function() {
+        bkHelper.openWithDialog('bkr');
+      }
+    },
+    {
       name: "Open recent",
       sortorder: 120,
       id: "open-recent-menuitem",
       items: function() {
         return bkHelper.getRecentMenuItems();
       }
-    },
-    {
-      name: "Open",
-      id: "open-menuitem",
-      sortorder: 110
     },
     {
       name: "Upload (.bkr)",
@@ -57,23 +61,6 @@ define(function(require, exports, module) {
         parent: "File",
         id: "file-menu",
         items: fileMenuItems
-      },
-      {
-        parent: "File",
-        id: "file-menu",
-        submenu: "Open",
-        submenusortorder: 110,
-        items: [
-          {
-            name: "Open... (.bkr)",
-            id: "open-menuitem",
-            tooltip: "Open a bkr notebook file",
-            sortorder: 100,
-            action: function() {
-              bkHelper.openWithDialog('bkr');
-            }
-          }
-        ]
       }
     ];
     menuItemsDeferred.resolve(toAdd);

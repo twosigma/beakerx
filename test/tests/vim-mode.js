@@ -29,8 +29,9 @@ describe('Vim mode', function() {
     beakerPO.newEmptyNotebook.click();
   });
 
-  afterEach(function() {
-    beakerPO.closeNotebook();
+  afterEach(function(done) {
+    beakerPO.closeNotebook()
+      .then(done);
   });
 
   it('Toggles between normal and insert modes', function() {

@@ -14,21 +14,28 @@
  *  limitations under the License.
  */
 
-import org.apache.tools.ant.taskdefs.condition.Os
+var config = {
+  seleniumAddress: 'http://localhost:4444/wd/hub',
+  framework: 'jasmine2',
+  restartBrowserBetweenTests: true,
+  jasmineNodeOpts: {
+    defaultTimeoutInterval: 100000,
+    print: function() {}
+  },
+  capabilities: {
+    shardTestFiles: true,
+    maxInstances: 3,
+    browserName: 'firefox'
+  },
+  onPrepare: function() {
+    var SpecReporter = require('jasmine-spec-reporter');
+    jasmine.getEnv().addReporter(new SpecReporter({
+        displayStacktrace: 'specs'
+    }));
+  },
+  specs: [
+    'tests/embed-mode.js'
+  ]
+};
 
-task check (type: Exec) {
-  if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-    commandLine 'python', 'nt_runner.py'
-  } else {
-    commandLine './runner'
-  }
-}
-
-task checkembed (type: Exec) {
-  if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-    commandLine 'python', 'nt_runner_embed.py'
-  } else {
-    commandLine './runner_embed'
-  }
-}
-
+exports.config = config;

@@ -36,6 +36,17 @@ task check (type: GradleBuild) {
   tasks = ['check']
 }
 
+task checkregular (type: GradleBuild) {
+  buildFile = mainGradle
+  tasks = ['checkregular']
+}
+
+task checkembed (type: GradleBuild) {
+  buildFile = mainGradle
+  tasks = ['checkembed']
+}
+
+
 task installDist (type: GradleBuild) {
   buildFile = mainGradle
   tasks = ['installDist']

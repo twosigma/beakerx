@@ -1459,7 +1459,8 @@
                 scope.refreshCells();
                 scope.$digest();
               },
-              'iFixedColumns': 1
+              'iFixedColumns': scope.pagination.fixLeft + 1,
+              'iFixedColumnsRight': scope.pagination.fixRight
             });
             if (scope.colorder !== undefined) {
               scope.colreorg.fnOrder(scope.colorder);

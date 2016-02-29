@@ -1184,13 +1184,23 @@
                 return (order[0][0] !== colIdx);
               }
             },
-            doFixColumn: function (el, right) {
+            doFixColumnLeft: function (el) {
               var container = el.closest('.bko-header-menu');
               var colIdx = container.data('columnIndex');
-              if(right){
-                scope.pagination.fixRight = scope.columns.length - colIdx;
-              }else{
-                scope.pagination.fixLeft = colIdx;
+              var fixed = this.isFixedLeft(container);
+              scope.pagination.fixLeft = colIdx;
+              if (fixed) {
+                scope.pagination.fixLeft--;
+              }
+              scope.applyChanges();
+            },
+            doFixColumnRight: function (el) {
+              var container = el.closest('.bko-header-menu');
+              var colIdx = container.data('columnIndex');
+              var fixed = this.isFixedRight(container);
+              scope.pagination.fixRight = scope.columns.length - colIdx;
+              if (fixed) {
+                scope.pagination.fixRight--;
               }
               scope.applyChanges();
             },
@@ -1337,7 +1347,7 @@
                       return menuHelper.isFixedLeft(container);
                     },
                     action: function(el) {
-                      menuHelper.doFixColumn(el);
+                      menuHelper.doFixColumnLeft(el);
                     }
                   },
                   {
@@ -1346,7 +1356,7 @@
                       return menuHelper.isFixedRight(container);
                     },
                     action: function(el) {
-                      menuHelper.doFixColumn(el, true);
+                      menuHelper.doFixColumnRight(el);
                     }
                   }
                 ]

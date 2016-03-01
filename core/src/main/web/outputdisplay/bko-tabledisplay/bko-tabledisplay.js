@@ -1652,7 +1652,8 @@
             };
 
             scope.updateFilterWidth = function(jqInput, column){
-              var textWidth = jqInput.parent().siblings('.hidden-length').width() + 30;
+              var iconsWidth = 45;
+              var textWidth = jqInput.parent().siblings('.hidden-length').width() + iconsWidth;
               var headerWidth = $(column.header()).width();
               if(textWidth > headerWidth){
                 jqInput.css('width', textWidth);

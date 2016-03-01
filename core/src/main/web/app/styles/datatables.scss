@@ -37,6 +37,7 @@ table.dataTable {
     }
     .filterRow th {
       border-top-width: 0px;
+      padding-left: 5px;
     }
   }
 }
@@ -94,21 +95,28 @@ td.dtcenter {
   }
   input {
     border: 1px solid #ccc;
-    padding-right: 20px;
+    padding: 0 20px 0 15px;
     width: 100%;
   }
 
   span {
     position: absolute;
-    right: 5px;
     top: 0;
     bottom: 0;
     height: 14px;
     margin: auto;
-    cursor: pointer;
     color: #999999;
-    &:hover {
-      opacity: 0.8;
+
+    &.clear-filter {
+      right: 5px;
+      cursor: pointer;
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+    &.filter-icon {
+      cursor: auto;
+      left: 3px;
     }
   }
 }

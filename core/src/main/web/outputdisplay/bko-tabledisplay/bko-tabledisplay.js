@@ -1616,10 +1616,9 @@
             scope.clearFilter = function (column) {
               if(column) {
                 scope.filter[column.index()] = '';
-                setTimeout(function(){
-                  column.draw();
-                  scope.checkFilter();
-                }, 0);
+                scope.$apply();
+                column.draw();
+                scope.checkFilter();
               }
             };
 

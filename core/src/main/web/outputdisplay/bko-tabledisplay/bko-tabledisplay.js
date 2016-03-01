@@ -473,15 +473,26 @@
           $scope.applyFilters();
         };
 
-       $scope.removeFilterListeners = function () {
-         $scope.table.columns().every(function () {
-           var column = this;
-           var columnFilterHeader = $($scope.table.table().header())
-                                    .find('.filterRow th:eq(' + column.header().cellIndex + ')');
-           $('.filter-input', columnFilterHeader).off('keyup.column-filter change.column-filter keydown.column-filter ' +
-                                                      'blur.column-filter focus.column-filter');
-           $('.clear-filter', columnFilterHeader).off('mousedown.column-filter');
-         });
+        $scope.getFilterRow = function(){
+          return $($scope.table.table().header()).find('.filterRow');
+        };
+        $scope.getColumnFilterHeader = function(column){
+          return $scope.getFilterRow().find('th:eq(' + column.index() + ')');
+        };
+        $scope.getColumnFilter = function(column){
+          return $scope.getColumnFilterHeader(column).find('.filter-input');
+        };
+        $scope.getColumnFilterClearIcon = function(column){
+          return $scope.getColumnFilterHeader(column).find('.clear-filter');
+        };
+
+        $scope.removeFilterListeners = function () {
+          $scope.table.columns().every(function () {
+            var column = this;
+            $scope.getColumnFilter(column).off('keyup.column-filter change.column-filter keydown.column-filter ' +
+              'blur.column-filter focus.column-filter');
+            $scope.getColumnFilterClearIcon(column).off('mousedown.column-filter');
+          });
         };
         // Apply filters
         $scope.applyFilters = function (){
@@ -489,9 +500,7 @@
           $scope.removeFilterListeners();
           $scope.table.columns().every(function () {
             var column = this;
-            var columnFilterHeader = $($scope.table.table().header())
-              .find('.filterRow th:eq(' + column.header().cellIndex + ')');
-            $('.filter-input', columnFilterHeader)
+            $scope.getColumnFilter(column)
               .on('keyup.column-filter change.column-filter', function () {
                 column.draw();
                 $scope.updateFilterWidth($(this), column);
@@ -513,9 +522,9 @@
                 }
               });
 
-            $('.clear-filter', columnFilterHeader)
+            $scope.getColumnFilterClearIcon(column)
               .on('mousedown.column-filter', function (event) {
-                var jqFilterInput = $(this).siblings('.filter-input');
+                var jqFilterInput = $scope.getColumnFilter(column);
                 if(jqFilterInput.is(':focus')){
                   event.preventDefault();
                 }
@@ -1334,7 +1343,7 @@
                   var colIdx = container.data('columnIndex');
                   var column = table.column(colIdx);
 
-                  scope.showFilter(column);
+                  scope.doShowFilter(column);
                 }
               },
               {
@@ -1594,31 +1603,33 @@
               scope.applyChanges();
             };
 
-            scope.showFilter = function (column) {
-              scope.filter = {};
+            scope.doShowFilter = function (column) {
+              scope.showFilter = true;
               scope.$apply();
               if(scope.fixcols){
                 scope.fixcols.fnRedrawLayout();
               }
-              var columnFilterHeader = $(scope.table.table().header())
-                  .find('.filterRow th:eq(' + column.header().cellIndex + ')');
-              $('.filter-input', columnFilterHeader).focus();
+              scope.getColumnFilter(column).focus();
             };
 
             scope.hideFilter = function () {
-              scope.filter = null;
+              $(scope.table.table().header()).find('.filter-input').each(function(i, filterInput){
+                $(filterInput).val('');
+              });
+              scope.showFilter = false;
+              scope.table.draw();
               setTimeout(function(){
-                scope.table.draw();
                 scope.update_size()
               }, 0);
             };
 
             scope.clearFilter = function (column) {
               if(column) {
-                scope.filter[column.index()] = '';
-                scope.$apply();
+                var jqInput = scope.getColumnFilter(column);
+                jqInput.val('');
                 column.draw();
                 scope.checkFilter();
+                scope.onFilterBlur(jqInput, jqInput[0]);
               }
             };
 
@@ -1626,7 +1637,7 @@
               jqInputEl.css('width', '');
               jqInputEl.parent().removeClass('editing');
               jqInputEl.parent().siblings('.hidden-filter').addClass('hidden-filter-input');
-              if(!$(element).find(".filterRow").has(relatedTarget).length){
+              if(!scope.getFilterRow().has(relatedTarget).length){
                 // focus wasn't moved to another filter input
                 scope.checkFilter();
               }
@@ -1634,8 +1645,9 @@
 
             scope.checkFilter = function () {
               var hasNotEmptyFilter = false;
-              _.forOwn(scope.filter, function(value){
-                if(!_.isEmpty(value)){
+
+              $(scope.table.table().header()).find('.filter-input').each(function(i, filterInput){
+                if(!_.isEmpty(filterInput.value)){
                   hasNotEmptyFilter = true;
                 }
               });
@@ -1652,11 +1664,12 @@
             };
 
             scope.updateFilterWidth = function(jqInput, column){
-              var iconsWidth = 45;
-              var textWidth = jqInput.parent().siblings('.hidden-length').width() + iconsWidth;
+              var iconsWidth = 30;
+              var padding = 15;
+              var textWidth = jqInput.parent().siblings('.hidden-length').text(jqInput.val()).width() + iconsWidth;
               var headerWidth = $(column.header()).width();
               if(textWidth > headerWidth){
-                jqInput.css('width', textWidth);
+                jqInput.css('width', textWidth + padding);
               } else {
                 jqInput.css('width', '');
               }

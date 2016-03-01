@@ -52,7 +52,8 @@ HeaderMenu.prototype = {
       var targetClass = $(e.target).attr('class');
       var toggleClass = 'bko-column-header-menu';
 
-      if ($container[0] != e.target && !$.contains($container[0], e.target) && targetClass.indexOf(toggleClass) < 0) {
+      if ($container[0] != e.target && !$.contains($container[0], e.target) &&
+         (!targetClass || targetClass.indexOf(toggleClass) < 0)) {
         that._hide();
       }
     };

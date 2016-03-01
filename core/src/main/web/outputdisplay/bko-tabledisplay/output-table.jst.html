@@ -56,17 +56,17 @@
         <th>{{hasIndex ? indexName : '     '}}</th>
         <th ng-repeat="c in columns" ng-if="!$first">{{c.title}}</th>
       </tr>
-      <tr class="filterRow" ng-show="filter">
+      <tr class="filterRow" ng-show="showFilter">
         <th></th>
         <th ng-repeat="c in columns" ng-if="!$first">
           <div class="input-clear-growing">
             <div class="input-clear">
               <span class="fa fa-filter filter-icon"></span>
-              <input class="filter-input" type="text" ng-model="filter[$index]">
+              <input class="filter-input" type="text">
               <span class="fa fa-times clear-filter"></span>
             </div>
             <input tabindex="-1" class="hidden-filter hidden-filter-input">
-            <span class="hidden-length">{{filter[$index]}}</span>
+            <span class="hidden-length"></span>
           </div>
         </th>
       </tr>

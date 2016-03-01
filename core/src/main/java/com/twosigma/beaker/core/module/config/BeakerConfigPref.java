@@ -60,4 +60,9 @@ public interface BeakerConfigPref {
    */
   public Boolean getPortable();
 
+  /**
+   * Switchs off logging unsuccessfull requests from outdated beaker pages
+   */
+  public Boolean getNginxBogusLogging();
+
 }

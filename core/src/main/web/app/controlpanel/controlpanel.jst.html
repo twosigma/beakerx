@@ -31,13 +31,12 @@
 <div ng-class="{'electron-mode': getElectronMode()}" class="dashboard container-fluid">
   <div class="row">
     <div class="col-md-12">
-      <br/>
-      <h1>Beaker <small>The data scientist's laboratory</small></h1>
       <div ng-if='isSessionsListEmpty()' class="empty-session-prompt">
-        <p> 
-          <br/>
+        <br/>
+        <h1>Beaker <small>The data scientist's laboratory</small></h1>
+        <p><br/>
           Beginners should start with <strong>Help &#8594; Tutorial</strong>.
-	</p>
+	    </p>
       </div>
 
       <div ng-hide='isSessionsListEmpty()'>

@@ -1685,7 +1685,7 @@
               if (cellNode.tagName === 'TD') {
                 return scope.fixcols.fnGetPosition(cellNode)[2];
               } else { //TH
-                return $(cellNode).data('columnIndex');
+                return scope.table.column($(cellNode).index() + ':visible').index();
               }
             };
 

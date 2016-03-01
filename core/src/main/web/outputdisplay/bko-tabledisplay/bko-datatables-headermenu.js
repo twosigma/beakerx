@@ -96,8 +96,8 @@ HeaderMenu.prototype = {
     var that = this;
 
     $(this.s.dt.table().container()).on('click.headermenu', '.bko-column-header-menu', function(e) {
-      var colIdx = $(this).parent().data('columnIndex');
-      var jqHeaderMenu = $(that.s.dt.column(colIdx).header()).find(".bko-column-header-menu");
+      var colIdx = $(this).parent().index();
+      var jqHeaderMenu = $(that.s.dt.column(colIdx + ':visible').header()).find(".bko-column-header-menu");
       if (that.dom.menu) {
         that._hide();
         if(colIdx !== that.dom.container.data('columnIndex')){
@@ -139,7 +139,7 @@ HeaderMenu.prototype = {
   {
     var that = this;
     var menuItems = el.data('menu');
-    var colIdx = el.parent().data('columnIndex');
+    var colIdx = that.s.dt.column(el.parent().index() + ':visible').index();
 
     if ($.isArray(menuItems)) {
       var $menu = $("<ul/>", { 'class': 'dropdown-menu' });

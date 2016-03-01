@@ -308,6 +308,9 @@
       getNotebookImporter: function(format) {
         return _importers[format];
       },
+      getNotebookImporterNames: function() {
+        return Object.keys(_importers);
+      },
       setFileLoader: function(uriType, fileLoader) {
         _fileLoaders[uriType] = fileLoader;
       },

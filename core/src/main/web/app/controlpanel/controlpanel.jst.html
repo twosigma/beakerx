@@ -66,7 +66,7 @@
         </div>
       </div>
 
-      <div class="recent-notebook" ng-hide='!recents.length'>
+      <div class="recent-notebook" ng-hide='isRecentEmpty()'>
         <h4 class="open-notebook-headline">Recent Notebooks</h4>
           <ul class="notebook-dashboard-list">
             <li class='session clearfix' ng-repeat='item in recents'>

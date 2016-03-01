@@ -212,6 +212,16 @@
         $scope.getRecentMenuItems = function() {
           $scope.recents = bkCoreManager.getRecentMenuItems();
         };
+
+        $scope.isRecentEmpty = function() {
+          var isEmpty = _.isEmpty($scope.recents);
+          if ($scope.recents && $scope.recents.length) {
+            isEmpty = $scope.recents[0] && $scope.recents[0].disabled;
+          }
+
+          return isEmpty;
+        };
+
         $scope.getRecentMenuItems();
 
         $scope.openRecent = function(item) {

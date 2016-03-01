@@ -84,26 +84,16 @@
         var searchString = $(settings.aoHeader[1][colInd].cell).find('.filter-input').val();
         if (_.isEmpty(searchString)) { continue; }
 
-        var cellValue = row[colInd];
-        if (settings.aoColumns[colInd].sType === 'num' &&
-          (_.startsWith(searchString, '>') ||
-          _.startsWith(searchString, '<') ||
-          _.startsWith(searchString, '='))) {
-
-          var numValue = parseFloat(cellValue);
-          searchString = searchString.replace(/=/g, '==');
-          searchString = searchString.replace(/&&/g, '&& numValue');
-
-          try {
-            match = eval("numValue" + searchString);
-            if (!match) {
-              break;
-            }
-          } catch (e) {
+        var x = row[colInd]; //variable for expression evaluation
+        try {
+          match = eval(searchString);
+          if (!match) {
+            break;
           }
-        } else if (cellValue.toUpperCase().indexOf(searchString.toUpperCase()) < 0) {
-          match = false;
-          break;
+        } catch (e) {
+          if (!(e instanceof SyntaxError && e.message === 'Unexpected end of input')) {
+            throw e;
+          }
         }
       }
       return match;

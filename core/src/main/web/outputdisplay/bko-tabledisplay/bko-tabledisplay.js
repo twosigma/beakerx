@@ -1607,11 +1607,8 @@
 
             scope.hideFilter = function () {
               scope.filter = null;
-              scope.table.columns().every(function () {
-                this.search('');
-              });
-              scope.table.draw();
               setTimeout(function(){
+                scope.table.draw();
                 scope.update_size()
               }, 0);
             };
@@ -1619,8 +1616,10 @@
             scope.clearFilter = function (column) {
               if(column) {
                 scope.filter[column.index()] = '';
-                column.search('').draw();
-                scope.checkFilter();
+                setTimeout(function(){
+                  column.draw();
+                  scope.checkFilter();
+                }, 0);
               }
             };
 

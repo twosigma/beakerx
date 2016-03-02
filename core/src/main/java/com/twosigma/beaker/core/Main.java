@@ -179,8 +179,7 @@ public class Main {
     final String listenInterface = options.hasOption("listen-interface") ?
         options.getOptionValue("listen-interface") : null;
     final Boolean portable = options.hasOption("portable");
-    final Boolean nginxBogusLogging = options.hasOption("hide-zombie-logging");
-    
+    final Boolean hideZombieLogging = options.hasOption("hide-zombie-logging");
     
     // create preferences for beaker core from cli options and others
     // to be used by BeakerCoreConfigModule to initialize its config
@@ -196,7 +195,7 @@ public class Main {
         requirePassword,
         listenInterface,
         portable,
-        nginxBogusLogging);
+        hideZombieLogging);
 
     WebAppConfigPref webAppPref = createWebAppConfigPref(
         portBase + BEAKER_SERVER_PORT_OFFSET,
@@ -248,7 +247,7 @@ public class Main {
       final Boolean requirePassword,
       final String listenInterface,
       final Boolean portable,
-      final Boolean nginxBogusLogging) {
+      final Boolean hideZombieLogging) {
     return new BeakerConfigPref() {
 
       @Override
@@ -302,7 +301,7 @@ public class Main {
       }
 
       @Override
-      public Boolean getNginxBogusLogging() { return nginxBogusLogging; }
+      public Boolean getHideZombieLogging() { return hideZombieLogging; }
     };
   }
 

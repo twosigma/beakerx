@@ -74,7 +74,7 @@ public class PluginServiceLocatorRest {
   private static final int RESTART_ENSURE_RETRY_MAX_INTERVAL = 2500;
 
   private static final String REST_RULES =
-    "location %(base_url)s/ {\n" +
+    "location ^~ %(base_url)s/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/;\n" +
     "  proxy_set_header Authorization \"Basic %(auth)s\";\n" +
     "  proxy_http_version 1.1;\n" +
@@ -129,7 +129,7 @@ public class PluginServiceLocatorRest {
     IPYTHON_RULES_BASE;
 
   private static final String CATCH_OUTDATED_REQUESTS_RULE =
-      "location ~/%(urlhash)s.*/cometd/ {\n" +
+      "location ~ /%(urlhash)s[a-z0-9]+\\.\\d+/cometd/ {\n" +
       "  return 404;\n" +
       "}";
 
@@ -143,7 +143,7 @@ public class PluginServiceLocatorRest {
   private final String pluginDir;
   private final String [] nginxCommand;
   private final String [] nginxRestartCommand;
-  private final Boolean nginxBogusLogging;
+  private final Boolean hideZombieLogging;
   private String[] nginxEnv = null;
   private final Boolean publicServer;
   private final Integer portBase;
@@ -241,7 +241,7 @@ public class PluginServiceLocatorRest {
     this.nginxRestartCommand[8] = "reload";
     
     this.corePassword = webServerConfig.getPassword();
-    this.nginxBogusLogging = bkConfigPref.getNginxBogusLogging();
+    this.hideZombieLogging = bkConfigPref.getHideZombieLogging();
 
     // record plugin options from cli and to pass through to individual plugins
     for (Map.Entry<String, List<String>> e: bkConfig.getPluginOptions().entrySet()) {
@@ -737,7 +737,7 @@ public class PluginServiceLocatorRest {
     }
     nginxConfig = nginxConfig.replace("%(plugin_section)s", pluginSection.toString());
     nginxConfig = nginxConfig.replace("%(extra_rules)s", this.nginxExtraRules);
-    if (this.nginxBogusLogging) {
+    if (this.hideZombieLogging) {
       nginxConfig = nginxConfig.replace("%(catch_outdated_requests_rule)s",
           this.CATCH_OUTDATED_REQUESTS_RULE);
     } else {

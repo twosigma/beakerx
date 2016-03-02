@@ -63,6 +63,6 @@ public interface BeakerConfigPref {
   /**
    * Switchs off logging unsuccessfull requests from outdated beaker pages
    */
-  public Boolean getNginxBogusLogging();
+  public Boolean getHideZombieLogging();
 
 }

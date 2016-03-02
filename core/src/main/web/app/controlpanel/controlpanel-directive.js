@@ -46,7 +46,7 @@
 
         // setup menus
         bkMenuPluginManager.clear();
-        if (window.beaker === undefined || window.beaker.isEmbedded === undefined) {
+        if (window.beaker === undefined || window.beakerRegister.isEmbedded === undefined) {
           bkUtils.httpGet('../beaker/rest/util/getControlPanelMenuPlugins')
             .success(function(menuUrls) {
               menuUrls.forEach(function(url) {
@@ -54,7 +54,7 @@
               });
             });
         } else {
-          var menues = window.beaker.getControlMenuItems();
+          var menues = window.beakerRegister.getControlMenuItems();
           bkMenuPluginManager.attachMenus(menues);
         }
 
@@ -85,7 +85,7 @@
 
         // ask for tracking permission
         $scope.isAllowAnonymousTracking = false;
-        if ((window.beaker === undefined || window.beaker.isEmbedded === undefined) && bkTrack.isNeedPermission()) {
+        if ((window.beaker === undefined || window.beakerRegister.isEmbedded === undefined) && bkTrack.isNeedPermission()) {
           bkUtils.httpGet('../beaker/rest/util/getPreference', {
             'preference': 'allow-anonymous-usage-tracking'
           }).then(function(allow) {
@@ -103,7 +103,7 @@
         } else {
           $scope.isAllowAnonymousTracking = true;
         }
-        if (window.beaker === undefined || window.beaker.isEmbedded === undefined) {
+        if (window.beaker === undefined || window.beakerRegister.isEmbedded === undefined) {
           $scope.$watch('isAllowAnonymousTracking', function(newValue, oldValue) {
             if (newValue !== oldValue) {
               var allow = null;
@@ -129,16 +129,6 @@
         };
 
         var keydownHandler = function(e) {
-          // Command H
-          if (e.metaKey && e.which === 72 && bkUtils.isElectron) {
-            bkElectron.minimize();
-          }
-
-          // Command W
-          if (e.metaKey && e.which === 87 && bkUtils.isElectron) {
-            bkElectron.closeWindow();
-          }
-
           if (e.ctrlKey && e.shiftKey && (e.which === 78)) { // Ctrl + Shift + n
             bkUtils.fcall(function() {
               $scope.newNotebook();
@@ -159,9 +149,30 @@
               $scope.newEmptyNotebook();
             });
             return false;
-          } else if ((e.which === 123) && bkUtils.isElectron) { // F12
-            if (bkUtils.isElectron) {
+          } else if (bkUtils.isElectron) {
+            var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
+            // Command H
+            if (ctrlXORCmd && e.which === 72) {
+              bkElectron.minimize();
+            }
+
+            // Command W
+            if (ctrlXORCmd && e.which === 87) {
+              bkElectron.closeWindow();
+            }
+
+            if (e.which === 123) { // F12
               bkElectron.toggleDevTools();
+              return false;
+            } else if (ctrlXORCmd && ((e.which === 187) || (e.which === 107))) { // Ctrl + '+'
+              bkElectron.increaseZoom();
+              return false;
+            } else if (ctrlXORCmd && ((e.which === 189) || (e.which === 109))) { // Ctrl + '-'
+              bkElectron.decreaseZoom();
+              return false;
+            } else if (ctrlXORCmd && ((e.which === 48) || (e.which === 13))) {
+              bkElectron.resetZoom();
+              return false;
             }
           }
         };

@@ -15,11 +15,6 @@
  */
 package com.twosigma.beaker.groovy.utils;
 
-import com.twosigma.beaker.jvm.utils.BeakerPrefsUtils;
-
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -29,14 +24,18 @@ import java.net.MalformedURLException;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
+import org.codehaus.groovy.runtime.StackTraceUtils;
 
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.groovy.autocomplete.GroovyAutocomplete;
@@ -45,16 +44,23 @@ import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
-import org.codehaus.groovy.runtime.StackTraceUtils;
+import com.twosigma.beaker.jvm.utils.BeakerPrefsUtils;
+
+import groovy.lang.Binding;
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.Script;
 
 public class GroovyEvaluator {
 
   private static final String STATIC_WORD_WITH_SPACE = "static ";
   private static final String DOT_STAR_POSTFIX = ".*";
+  
   protected final String shellId;
   protected final String sessionId;
   protected List<String> classPath;
   protected List<String> imports;
+  //user entered source value
+  protected String outDirInput;
   protected String outDir;
   protected GroovyClasspathScanner cps;
   protected boolean exit;
@@ -65,6 +71,12 @@ public class GroovyEvaluator {
   protected String currentClassPath;
   protected String currentImports;
 
+  public static boolean LOCAL_DEV = false;
+  
+  public static String GROOVY_JAR_PATH = "GROOVY_JAR_PATH"; 
+  
+  private Binding scriptBinding = null;
+  
   protected class jobDescriptor {
     public String codeToBeExecuted;
     public SimpleEvaluationObject outputObject;
@@ -78,6 +90,11 @@ public class GroovyEvaluator {
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
+  protected static Pattern[] envVariablePatterns = {
+    Pattern.compile("\\$\\{([a-z_][a-z0-9_]*)\\}", Pattern.CASE_INSENSITIVE),
+    Pattern.compile("\\$([a-z_][a-z0-9_]*)", Pattern.CASE_INSENSITIVE)
+  };
+  
   public GroovyEvaluator(String id, String sId) {
     shellId = id;
     sessionId = sId;
@@ -90,6 +107,8 @@ public class GroovyEvaluator {
     currentClassPath = "";
     currentImports = "";
     outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
+    outDir = envVariablesFilter(outDir, System.getenv());
+    outDirInput = outDir;
     try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
     executor = new BeakerCellExecutor("groovy");
     startWorker();
@@ -102,7 +121,7 @@ public class GroovyEvaluator {
 
   protected GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c)
   {
-	return new GroovyAutocomplete(c);
+    return new GroovyAutocomplete(c);
   }
 
   public String getShellId() { return shellId; }
@@ -149,20 +168,27 @@ public class GroovyEvaluator {
     }
     
     // check if we are not changing anything
-    if (currentClassPath.equals(cp) && currentImports.equals(in) && outDir.equals(od))
+    if (currentClassPath.equals(cp) && currentImports.equals(in) && outDirInput.equals(od))
       return;
   
     currentClassPath = cp;
     currentImports = in;
-    outDir = od;
+    Map<String, String> env = System.getenv();
+    outDirInput = od;
+    outDir = envVariablesFilter(od, env);
     
-    if(cp.isEmpty()) {
+    if(cp.isEmpty())
       classPath = new ArrayList<String>();
-    } else {
-      classPath = Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"));
-    }
+    else {
+      List<String> cpList = new ArrayList<String>();
+      for(String p : Arrays.asList(cp.split("[\\s"+File.pathSeparatorChar+"]+"))) {
 
-    imports = new LinkedList<>();
+        p = envVariablesFilter(p, env);
+
+        cpList.add(p);
+      }
+      classPath = cpList;
+    }
 
     if (!in.isEmpty()) {
       String[] importLines = in.split("\\n+");
@@ -178,7 +204,43 @@ public class GroovyEvaluator {
     resetEnvironment();
   }
   
-  public void evaluate(SimpleEvaluationObject seo, String code) {
+  static String envVariablesFilter(String p, Map<String, String> env) {
+
+    if(p == null) return p;
+
+    for(Pattern pattern : envVariablePatterns) {
+
+      Matcher matcher = pattern.matcher(p);
+
+      String r = "";
+
+      int lastIndex = 0;
+
+      while(matcher.find()) {
+
+        String var = matcher.group(1);
+
+        String substitute = env.get(var);
+
+        if(substitute == null) substitute = "";
+
+        r += p.substring(lastIndex, matcher.start());
+
+        r += substitute;
+
+        lastIndex = matcher.end();
+      }
+
+      r += p.substring(lastIndex, p.length());
+
+      p = r;
+
+    }
+    
+    return p;
+  }
+
+public void evaluate(SimpleEvaluationObject seo, String code) {
     // send job to thread
     jobQueue.add(new jobDescriptor(code,seo));
     syncObject.release();
@@ -189,8 +251,12 @@ public class GroovyEvaluator {
   }
 
   protected DynamicClassLoaderSimple loader = null;
-  protected GroovyShell shell;
 
+  //an object that matches the shell in non-shell mode
+  protected GroovyClassLoader groovyClassLoader;
+  
+  protected CompilerConfiguration compilerConfiguration;
+  
   protected class workerThread extends Thread {
 
     public workerThread() {
@@ -212,7 +278,11 @@ public class GroovyEvaluator {
           
           // check if we must create or update class loader
           if(updateLoader) {
-            shell = null;
+            if(groovyClassLoader != null) {
+              try { groovyClassLoader.close(); } catch(Exception ex) {}
+            }
+            groovyClassLoader = null;
+            scriptBinding = null;
           }
           
           // get next job descriptor
@@ -220,27 +290,32 @@ public class GroovyEvaluator {
           if(j==null)
             continue;
 
-          if (shell==null) {
-            updateLoader=false;
+          if(groovyClassLoader == null) {
+            updateLoader = false;
             newEvaluator();
           }
         
           //if(loader!=null)
           //  loader.resetDynamicLoader();
-          
-          nc = NamespaceClient.getBeaker(sessionId);
-          nc.setOutputObj(j.outputObject);
 
-          Boolean useOutputPanel = BeakerPrefsUtils.isUseOutputPanel(nc);
+          if(!LOCAL_DEV) {
+              nc = NamespaceClient.getBeaker(sessionId);
+              nc.setOutputObj(j.outputObject);
+          }
+
+          Boolean useOutputPanel = nc != null ? BeakerPrefsUtils.isUseOutputPanel(nc) : false;
           if (useOutputPanel) {
             j.outputObject.clrOutputHandler();
             BeakerStdOutErrHandler.fini();
           } else {
-            BeakerStdOutErrHandler.init();
+            if(!LOCAL_DEV) BeakerStdOutErrHandler.init();
           }
           j.outputObject.started();
 
-          if (!executor.executeTask(new MyRunnable(j.codeToBeExecuted, j.outputObject, loader))) {
+          
+          String code = j.codeToBeExecuted;
+          
+          if (!executor.executeTask(new MyRunnable(code, j.outputObject, loader))) {
             j.outputObject.error("... cancelled!");
           }
           
@@ -249,7 +324,14 @@ public class GroovyEvaluator {
             nc = null;
           }
         } catch(Throwable e) {
-          e.printStackTrace();
+          if(e instanceof GroovyNotFoundException) {
+            System.err.println(e.getLocalizedMessage());
+            if(j != null) {
+              j.outputObject.error(e.getLocalizedMessage());
+            }
+          } else {
+            e.printStackTrace();
+          }
         } finally {
           if(nc!=null) {
             nc.setOutputObj(null);
@@ -264,24 +346,56 @@ public class GroovyEvaluator {
 
       protected final String theCode;
       protected final SimpleEvaluationObject theOutput;
-      protected final DynamicClassLoaderSimple loader;
+      protected final DynamicClassLoaderSimple _loader;
 
       public MyRunnable(String code, SimpleEvaluationObject out, DynamicClassLoaderSimple ld) {
         theCode = code;
         theOutput = out;
-        loader = ld;
+        _loader = ld;
       }
       
       @Override
       public void run() {
         Object result;
         ClassLoader oldld = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(loader);
         theOutput.setOutputHandler();
+        
         try {
-          result = shell.evaluate(theCode);
+          
+          Thread.currentThread().setContextClassLoader(groovyClassLoader);
+          Class<?> parsedClass = groovyClassLoader.parseClass(theCode);
+          
+          Script instance = (Script) parsedClass.newInstance();
+          
+          if(LOCAL_DEV) {
+            scriptBinding.setVariable("beaker", new HashMap<String, Object>());
+          } else {
+            scriptBinding.setVariable("beaker", NamespaceClient.getBeaker(sessionId));
+          }
+
+          instance.setBinding(scriptBinding);
+          
+          result = instance.run();
+           
+          if(LOCAL_DEV) { 
+            System.out.println("Result: " + result); 
+            System.out.println("Variables: " + scriptBinding.getVariables());
+          }
+            
           theOutput.finished(result);
+            
         } catch(Throwable e) {
+          
+          if(LOCAL_DEV) {
+              System.err.println(e);
+              e.printStackTrace();
+          }
+          
+          //unwrap ITE
+          if(e instanceof InvocationTargetException) {
+            e = ((InvocationTargetException)e).getTargetException();
+          }
+          
           if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
             theOutput.error("... cancelled!");
           } else {
@@ -306,6 +420,20 @@ public class GroovyEvaluator {
 
     protected void newEvaluator() throws MalformedURLException
     {
+    
+      try {
+        Class.forName("org.codehaus.groovy.control.customizers.ImportCustomizer");
+      } catch (ClassNotFoundException e1) {
+        String gjp = System.getenv(GROOVY_JAR_PATH);
+        String errorMsg = null;
+        if(gjp != null && !gjp.isEmpty()) {
+          errorMsg = "Groovy libary not found, GROOVY_JAR_PATH = " + gjp;
+        } else {
+          errorMsg = "Default groovy libary not found. No GROOVY_JAR_PATH variable set.";
+        }
+        throw new GroovyNotFoundException(errorMsg);
+      }
+      
       ImportCustomizer icz = new ImportCustomizer();
 
       if (!imports.isEmpty()) {
@@ -347,19 +475,24 @@ public class GroovyEvaluator {
       acloader_cp += outDir;
 
       config.setClasspath(acloader_cp);
-      shell = new GroovyShell(newClassLoader(), new Binding(), config);
       
-      // ensure object is created
-      NamespaceClient.getBeaker(sessionId);
-
-      // initialize interpreter
-      String initCode = "import com.twosigma.beaker.NamespaceClient\n" +
-          "beaker = NamespaceClient.getBeaker('" + sessionId + "')\n";
-      try {
-        shell.evaluate(initCode);
-      } catch(Throwable e) { }
+      compilerConfiguration = config;
+        
+      //reload classloader
+      groovyClassLoader = new GroovyClassLoader(newClassLoader(), compilerConfiguration);
+      scriptBinding = new Binding();
+          
     }
   }
 
-}
+  static class GroovyNotFoundException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
+    public GroovyNotFoundException(String message) {
+      super(message);
+    }
+
+  }
+  
+}

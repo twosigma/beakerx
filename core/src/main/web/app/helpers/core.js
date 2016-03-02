@@ -52,6 +52,7 @@
       modalDialogOp,
       Upload,
       autocompleteService,
+      autocompleteParametersService,
       codeMirrorExtension,
       GLOBALS) {
 
@@ -306,6 +307,9 @@
       },
       getNotebookImporter: function(format) {
         return _importers[format];
+      },
+      getNotebookImporterNames: function() {
+        return Object.keys(_importers);
       },
       setFileLoader: function(uriType, fileLoader) {
         _fileLoaders[uriType] = fileLoader;
@@ -588,6 +592,9 @@
         };
 
         var shiftTab = function(cm) {
+          if (autocompleteParametersService.isActive()) {
+            return autocompleteParametersService.previousParameter();
+          }
           var cursor = cm.getCursor();
           var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
           if (leftLine.match(/^\s*$/)) {
@@ -621,20 +628,24 @@
         };
 
         var tab = function(cm) {
+          if (autocompleteParametersService.isActive()) {
+            return autocompleteParametersService.nextParameter();
+          }
           var cursor = cm.getCursor();
-          var lineLen = cm.getLine(cursor.line).length;
-          var rightLine = cm.getRange(cursor, {line: cursor.line, ch: lineLen});
           var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
           if (leftLine.match(/^\s*$/)) {
             cm.execCommand("indentMore");
           } else {
-            if (rightLine.match(/^\s*$/)) {
-              showAutocomplete(cm);
-            } else {
-              cm.execCommand("indentMore");
-            }
+            showAutocomplete(cm);
           }
         };
+
+        var enter = function(cm) {
+          if (autocompleteParametersService.isActive()) {
+            return autocompleteParametersService.endCompletionAndMoveCursor();
+          }
+          cm.execCommand("newlineAndIndent");
+        }
 
         var backspace = function(cm) {
           var cursor, anchor,
@@ -656,6 +667,7 @@
           _.each(toKill, function(i) {
             cm.replaceRange("", i.from, i.to);
           });
+          autocompleteService.backspace(cursor, cm);
         };
 
         var keys = {
@@ -667,6 +679,7 @@
             "Alt-J": moveFocusDown,
             "Alt-Up": moveFocusUp,
             "Alt-K": moveFocusUp,
+            "Enter": enter,
             "Ctrl-Enter": evaluate,
             "Cmd-Enter": evaluate,
             "Shift-Enter": evaluateAndGoDown,
@@ -890,17 +903,56 @@
           yesBtnClass = yesBtnClass ? _.isArray(yesBtnClass) ? okBtnClass.join(' ') : yesBtnClass : 'btn-default';
           noBtnClass = noBtnClass ? _.isArray(noBtnClass) ? noBtnClass.join(' ') : noBtnClass : 'btn-default';
           cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : 'btn-default';
-          var template = "<div class='modal-header'>" +
-              "<h1>" + msgHeader + "</h1>" +
-              "</div>" +
-              "<div class='modal-body'><p>" + msgBody + "</p></div>" +
-              '<div class="modal-footer">' +
+          var template = this.getDialogTemplateOpening(msgHeader, msgBody) +
               "   <button class='yes btn " + yesBtnClass +"' ng-click='close(0)'>" + yesBtnTxt + "</button>" +
               "   <button class='no btn " + noBtnClass +"' ng-click='close(1)'>" + noBtnTxt + "</button>" +
               "   <button class='cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
-              "</div>";
+              this.getDialogTemplateClosing();
           return this.showModalDialog(callback, template);
         }
+      },
+      showMultipleButtonsModal: function(params) {
+        var buttons = params.buttons;
+
+        var callback = function(result) {
+          buttons[result].action();
+        };
+
+        if (bkUtils.isElectron) {
+          var buttonTexts = [];
+          for (var i = 0; i < buttons.length; i++) {
+            buttonTexts.push(buttons[i].text);
+          }
+          var options = {
+            type: 'none',
+            buttons: buttonTexts,
+            title: params.msgHeader,
+            message: params.msgBody
+          };
+          return bkElectron.Dialog.showMessageBox(options, callback);
+        } else {
+          var template = this.getDialogTemplateOpening(params.msgHeader, params.msgBody);
+          for (var i = 0; i < buttons.length; i++) {
+            var buttonSettings = buttons[i];
+            var newTemplatePart = "   <button class='btn btn-default' ng-click='close(" + i + ")'>" + buttonSettings.text + "</button>"
+            template = template + newTemplatePart;
+          }
+          template = template + this.getDialogTemplateClosing();
+
+          return this.showModalDialog(callback, template);
+        }
+
+
+      },
+      getDialogTemplateOpening: function(msgHeader, msgBody) {
+        return "<div class='modal-header'>" +
+            "<h1>" + msgHeader + "</h1>" +
+            "</div>" +
+            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
+            '<div class="modal-footer">';
+      },
+      getDialogTemplateClosing: function() {
+        return "</div>";
       },
       getFileSystemFileChooserStrategy: function() {
         return new FileSystemFileChooserStrategy();

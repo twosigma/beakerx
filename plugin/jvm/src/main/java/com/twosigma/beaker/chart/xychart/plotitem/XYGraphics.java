@@ -20,6 +20,7 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Filter;
 import com.twosigma.beaker.chart.Graphics;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
@@ -28,12 +29,83 @@ import java.util.List;
 abstract public class XYGraphics extends Graphics {
   private List<Number> xs;
   private List<Number> ys;
-  private String  displayName = "";
-  protected Color baseColor;
-  private   List<Color>  colors;
-  private Class plotType;
+  private String displayName = "";
+  protected Color       baseColor;
+  private   List<Color> colors;
+  private   Class       plotType;
+  private   Filter      lodFilter;
+  private   Object      toolTipBuilder;
 
-  private Filter lodFilter;
+  protected List<Number> getBases(){
+    return null;
+  }
+
+  protected Number getBase(){
+    return null;
+  }
+
+  public List<String> getToolTips() {
+    if (toolTipBuilder == null)
+      return null;
+    List<String> toolTip = new ArrayList<>();
+
+    try {
+      Class<?> clazz = toolTipBuilder.getClass();
+      Method getMaximumNumberOfParameters = clazz.getMethod("getMaximumNumberOfParameters");
+      getMaximumNumberOfParameters.setAccessible(true);
+      int numberOfParameters = (int) getMaximumNumberOfParameters.invoke(toolTipBuilder);
+
+      for (int i = 0; i < xs.size(); i++) {
+        Number x = xs.get(i);
+        Number y = ys.get(i);
+
+        Method call;
+        if (numberOfParameters == 1) {
+          call = clazz.getMethod("call", Object.class);
+          call.setAccessible(true);
+          toolTip.add((String) call.invoke(toolTipBuilder, x));
+        } else if (numberOfParameters == 2) {
+          call = clazz.getMethod("call", Object.class, Object.class);
+          call.setAccessible(true);
+          toolTip.add((String) call.invoke(toolTipBuilder, x, y));
+        } else if (numberOfParameters == 3) {
+          call = clazz.getMethod("call", Object.class, Object.class, Object.class);
+          call.setAccessible(true);
+          toolTip.add((String) call.invoke(toolTipBuilder, x, y, i));
+        } else if (numberOfParameters == 4) {
+          call = clazz.getMethod("call", Object.class, Object.class, Object.class, Object.class);
+          call.setAccessible(true);
+          toolTip.add((String) call.invoke(toolTipBuilder,
+                                           x,
+                                           y,
+                                           i,
+                                           getBases() != null ? getBases().get(i) : getBase()));
+        } else if (numberOfParameters == 5) {
+          call = clazz.getMethod("call",
+                                 Object.class,
+                                 Object.class,
+                                 Object.class,
+                                 Object.class,
+                                 Object.class);
+          call.setAccessible(true);
+          toolTip.add((String) call.invoke(toolTipBuilder,
+                                           x,
+                                           y,
+                                           i,
+                                           getBases() != null ? getBases().get(i) : getBase(),
+                                           displayName));
+        }
+      }
+    } catch (Throwable x) {
+      throw new RuntimeException("Can not create tooltips.", x);
+    }
+    return toolTip;
+  }
+
+  public void setToolTip(Object toolTip) {
+    toolTipBuilder = toolTip;
+  }
+
 
   public void setX(List<Object> xs) {
     this.xs = new ArrayList<>();
@@ -46,7 +118,7 @@ abstract public class XYGraphics extends Graphics {
           this.xs.add(date.getTime());
         } else {
           throw new IllegalArgumentException("x coordinates should be the list of numbers or java.util.Date objects");
-  }
+        }
 //        remove Java8 feature LocalDateTime, that has to wait
 //        else if (x instanceof LocalDateTime) {
 //          LocalDateTime date = (LocalDateTime)x;
@@ -65,7 +137,7 @@ abstract public class XYGraphics extends Graphics {
   }
 
   public void setY(List<Number> ys) {
-    this.ys = ys;
+    this.ys = new ArrayList<Number>(ys);//to make it serializable
   }
 
   public List<Number> getY() {

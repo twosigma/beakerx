@@ -304,6 +304,8 @@
     };
 
     PlotText.prototype.createTip = function(ele) {
+      if (ele.tooltip)
+        return ele.tooltip;
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
@@ -317,5 +319,5 @@
 
     return PlotText;
   };
-  beaker.bkoFactory('PlotText', ['plotUtils', 'plotTip',  retfunc]);
+  beakerRegister.bkoFactory('PlotText', ['plotUtils', 'plotTip',  retfunc]);
 })();

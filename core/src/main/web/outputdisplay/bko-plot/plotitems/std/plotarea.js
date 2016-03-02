@@ -27,6 +27,7 @@
     PlotArea.prototype.respMinHeight = 5;
     PlotArea.prototype.plotClass = "plot-area";
     PlotArea.prototype.respClass = "plot-resp plot-respstem";
+    PlotArea.prototype.actionClass = "item-clickable item-onkey";
 
     PlotArea.prototype.setHighlighted = function(scope, highlighted) {
 
@@ -208,7 +209,7 @@
 
       itemsvg.selectAll("polygon")
         .data([props]).enter().append("polygon")
-        .attr("class", this.plotClass)
+        .attr("class", this.plotClass + " " + this.actionClass)
         .style("fill", function(d) { return d.fi; })
         .style("fill-opacity", function(d) { return d.fi_op; })
         .style("stroke", function(d) { return d.st; })
@@ -223,7 +224,7 @@
         itemsvg.selectAll("rect")
           .data(eleprops, function(d) { return d.id; }).enter().append("rect")
           .attr("id", function(d) { return d.id; })
-          .attr("class", this.respClass)
+          .attr("class", this.respClass + " " + this.actionClass)
           .attr("width", this.respWidth)
           .style("stroke", this.tip_color);
 
@@ -246,6 +247,9 @@
     };
 
     PlotArea.prototype.createTip = function(ele) {
+      if (ele.tooltip)
+        return ele.tooltip;
+
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
@@ -260,5 +264,5 @@
 
     return PlotArea;
   };
-  beaker.bkoFactory('PlotArea', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('PlotArea', ['plotUtils', 'plotTip', retfunc]);
 })();

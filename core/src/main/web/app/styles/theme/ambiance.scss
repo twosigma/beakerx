@@ -74,6 +74,11 @@ $markdown-heading-color: #aac6e3;
 $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
 $text-cursor: url('../images/ambiance/ambiance-i-beam.png') 5 9, text;
 
+$marked-argument-unchanged-border: inset 0 0 5px #158d76;
+$marked-argument-unchanged-color: #1c96be;
+
+$marked-argument-changed-border: inset 0 0 5px #285d95;
+
 @import "base-theme";
 
 .beaker-theme-ambiance { @extend .base-theme; }

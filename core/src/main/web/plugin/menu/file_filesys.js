@@ -23,14 +23,13 @@ define(function(require, exports, module) {
     {
       parent: "File",
       id: "file-menu",
-      submenu: "Open",
       items: [
         {
           name: "Open... (.bkr)",
           id: "open-menuitem",
           reducedName: "Open...",
           tooltip: "Open a bkr notebook file",
-          sortorder: 100,
+          sortorder: 110,
           action: function() {
             bkHelper.openWithDialog('bkr');
           }
@@ -41,6 +40,7 @@ define(function(require, exports, module) {
       parent: "File",
       id: "file-menu",
       submenu: "Save As",
+      shortcut: ["Ctrl-Shift-S", "Shift-Cmd-S"],
       items: [
         {
           name: "Save as... (file)",

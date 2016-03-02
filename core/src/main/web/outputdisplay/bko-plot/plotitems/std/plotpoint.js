@@ -24,6 +24,7 @@
 
     PlotPoint.prototype.plotClass = "plot-point";
     PlotPoint.prototype.respClass = "plot-resp";
+    PlotPoint.prototype.actionClass = "item-clickable item-onkey";
     PlotPoint.prototype.shapes = ["rect", "diamond", "circle"];
     PlotPoint.prototype.svgtags = ["rect", "polygon", "circle"];
 
@@ -238,12 +239,12 @@
             labely = y - s / 2;
         }
         this.elementProps[shape].push(prop);
-        if(this.showItemLabel){
+        if(ele.itemLabel || this.showItemLabel){
           var labelMargin = 3;
 
           var label = {
             "id": "label_" + prop.id,
-            "text": ele._y,
+            "text": ele.itemLabel ? ele.itemLabel : ele._y,
             "x": x,
             "y": labely - labelMargin
           };
@@ -291,7 +292,7 @@
         shapesvg.selectAll(tag)
           .data(eleprops, function(d) { return d.id; }).enter().append(tag)
           .attr("id", function(d) { return d.id; })
-          .attr("class", respClass)
+          .attr("class", respClass + " " + this.actionClass)
           .style("fill", function(d) { return d.fi; })
           .style("fill-opacity", function(d) { return d.fi_op; })
           .style("stroke", function(d) { return d.st; })
@@ -343,6 +344,10 @@
     };
 
     PlotPoint.prototype.createTip = function(ele) {
+
+      if (ele.tooltip)
+        return ele.tooltip;
+
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
@@ -356,5 +361,5 @@
 
     return PlotPoint;
   };
-  beaker.bkoFactory('PlotPoint', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('PlotPoint', ['plotUtils', 'plotTip', retfunc]);
 })();

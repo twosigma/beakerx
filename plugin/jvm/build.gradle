@@ -37,6 +37,61 @@ dependencies {
   provided project(':shared')
 }
 
+
+
+task generateJavadoc(type: Javadoc) {
+  source = sourceSets.main.allJava
+  failOnError = false
+  destinationDir = file("./build/docs/")
+
+  include "com/twosigma/beaker/easyform/formitem/**.java"
+  include "com/twosigma/beaker/easyform/EasyForm.java"
+  include "com/twosigma/beaker/easyform/EasyFormComponent.java"
+  include "com/twosigma/beaker/easyform/EasyFormObjectManager.java"
+
+  include "com/twosigma/beaker/chart/**/**.java"
+  exclude "com/twosigma/beaker/chart/serializer/*"
+
+  include "com/twosigma/beaker/jvm/object/OutputContainer.java"
+  include "com/twosigma/beaker/jvm/object/DashboardLayoutManager.java"
+  include "com/twosigma/beaker/jvm/object/GridOutputContainerLayoutManager.java"
+  include "com/twosigma/beaker/jvm/object/OutputContainerCell.java"
+  include "com/twosigma/beaker/jvm/object/OutputContainerLayoutManager.java"
+  include "com/twosigma/beaker/jvm/object/SimpleLayoutManager.java"
+  include "com/twosigma/beaker/jvm/object/TabbedOutputContainerLayoutManager.java"
+  include "com/twosigma/beaker/jvm/object/CyclingOutputContainerLayoutManager.java"
+
+  include "net/sf/jtreemap/swing/**.java"
+
+  configure(options) {
+    windowTitle = 'API Documentation'
+    docTitle = "API Documentation"
+    bottom = "Copyright 2014 TWO SIGMA OPEN SOURCE, LLC"
+  }
+}
+
+
+
+task addFavicon2Javadoc {
+
+  doLast{
+
+    def collection = files('./build/docs/index.html')
+    collection.each {File file ->
+      def updatedContent = new File(file.path).getText('UTF-8').replaceAll("<html lang=\"en\">\n<head>",
+        "<html lang=\"en\">\n<link href=\"../../../static/favicon.png\" rel=\"shortcut icon\" type=\"image/x-icon\" />\n<head>")
+      new File(file.path).write(updatedContent, 'UTF-8')
+    }
+
+    copy {
+      from './build/docs/'
+      into '../../core/src/main/web/app/dist/docs/'
+    }
+  }
+}
+
+
+
 compileJava {
   options.compilerArgs << '-Xlint:deprecation'
   options.compilerArgs << '-Xlint:unchecked'
@@ -59,6 +114,10 @@ if (hasProperty('includeDepsInJar')) {
     }
   }
 }
+
+addFavicon2Javadoc.dependsOn(generateJavadoc)
+
+installDist.dependsOn(addFavicon2Javadoc)
 
 task realclean
 realclean.dependsOn(clean)

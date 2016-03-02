@@ -463,5 +463,5 @@
     };
     return PlotAxis;
   };
-  beaker.bkoFactory('PlotAxis', ['plotUtils', retfunc]);
+  beakerRegister.bkoFactory('PlotAxis', ['plotUtils', retfunc]);
 })();

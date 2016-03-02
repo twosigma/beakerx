@@ -18,7 +18,7 @@
  */
 (function() {
   'use strict';
-  beaker.bkoDirective("Progress", ["$interval", "$compile", "$rootScope", "bkEvaluateJobManager", "bkUtils", "bkOutputDisplayFactory", function(
+  beakerRegister.bkoDirective("Progress", ["$interval", "$compile", "$rootScope", "bkEvaluateJobManager", "bkUtils", "bkOutputDisplayFactory", function(
       $interval, $compile, $rootScope, bkEvaluateJobManager, bkUtils, bkOutputDisplayFactory) {
     return {
       template: JST['mainapp/components/notebook/output-progress'],

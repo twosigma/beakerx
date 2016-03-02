@@ -18,7 +18,7 @@
  */
 (function() {
   'use strict';
-  beaker.bkoDirective("GGVis", ["$interval", "$compile", "$sce", "bkOutputDisplayFactory", function(
+  beakerRegister.bkoDirective("GGVis", ["$interval", "$compile", "$sce", "bkOutputDisplayFactory", function(
       $interval, $compile, $sce, bkOutputDisplayFactory) {
     return {
       template: '<div><iframe srcdoc="{{getStuff()}}" style="height: 450px; width: 650px; resize: both; overflow: auto; border: 0;"></iframe></div>',
@@ -70,5 +70,5 @@
       }
     };
   }]);
-  beaker.registerOutputDisplay("GGVis", ["GGVis", "Text"]);
+  beakerRegister.registerOutputDisplay("GGVis", ["GGVis", "Text"]);
 })();

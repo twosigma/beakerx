@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker;
+package com.twosigma.beaker.chart;
 
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
 
-public class Chart {
+public class Chart extends ObservableChart{
   protected int initWidth  = 640;
   protected int initHeight = 480;
   protected String  title;

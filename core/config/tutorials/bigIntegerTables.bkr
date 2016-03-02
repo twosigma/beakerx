@@ -1,0 +1,535 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "HTML",
+            "plugin": "HTML",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.KeyboardCodes",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectionsQuXKB",
+            "type": "section",
+            "title": "Large Integers in Tables and Autotranslation",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownuOPnF0",
+            "type": "markdown",
+            "body": [
+                "JSON has a problem when integers get larger than 10<sup>16</sup>",
+                "because JavaScript uses floating point for all its numbers.",
+                "Most languages, including Python, R, and the JVM languages like Groovy can easily handle integers up to 10<sup>19</sup>,",
+                "and sometimes larger.",
+                "",
+                "Numbers this large are useful for measuring time in nanoseconds, for example."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "section4yu5xE",
+            "type": "section",
+            "title": "64-bit Longs",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeaOmhaj",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def millis = new Date().time",
+                    "def nanos = millis * 1000 * 1000L",
+                    "",
+                    "table = [[time: nanos + 7 * 1, next_time:(nanos + 77) * 1, temp:14.6],",
+                    "         [time: nanos + 7 * 2, next_time:(nanos + 88) * 2, temp:18.1],",
+                    "         [time: nanos + 7 * 3, next_time:(nanos + 99) * 3, temp:23.6]]",
+                    "",
+                    "beaker.table_with_longs = table",
+                    "table"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "time",
+                            "next_time",
+                            "temp"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "time",
+                        "next_time",
+                        "temp"
+                    ],
+                    "values": [
+                        [
+                            "1455202409202000007",
+                            "1455202409202000077",
+                            14.6
+                        ],
+                        [
+                            "1455202409202000014",
+                            "2910404818404000176",
+                            18.1
+                        ],
+                        [
+                            "1455202409202000021",
+                            "4365607227606000297",
+                            23.6
+                        ]
+                    ],
+                    "types": [
+                        "int64",
+                        "int64",
+                        "double"
+                    ],
+                    "subtype": "ListOfMaps"
+                },
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "9d6b48cf-c110-4b9b-972a-d3955ea63bb0",
+                "elapsedTime": 1290,
+                "height": 136
+            },
+            "evaluatorReader": true,
+            "lineCount": 9
+        },
+        {
+            "id": "sectionfr3bA6",
+            "type": "section",
+            "title": "BigNums",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeoVvVNi",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def today  = new Date()",
+                    "def millis = today.time",
+                    "def nanos  = millis * 1000 * 1000g ",
+                    "",
+                    "table = [[time: nanos + 7 * 1, next_time:(nanos + 77) * 777, temp:3.351],",
+                    "         [time: nanos + 7 * 2, next_time:(nanos + 88) * 888, temp:2.355],",
+                    "         [time: nanos + 7 * 3, next_time:(nanos + 99) * 999, temp:2.728]]",
+                    "",
+                    "beaker.table_with_big_integers = table",
+                    "table"
+                ]
+            },
+            "output": {
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "time",
+                        "next_time",
+                        "temp"
+                    ],
+                    "values": [
+                        [
+                            "1455202411796000007",
+                            "1130692273965492059829",
+                            3.351
+                        ],
+                        [
+                            "1455202411796000014",
+                            "1292219741674848078144",
+                            2.355
+                        ],
+                        [
+                            "1455202411796000021",
+                            "1453747209384204098901",
+                            2.728
+                        ]
+                    ],
+                    "types": [
+                        "bigint",
+                        "bigint",
+                        "double"
+                    ],
+                    "subtype": "ListOfMaps"
+                },
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "9d6b48cf-c110-4b9b-972a-d3955ea63bb0",
+                "elapsedTime": 575,
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "time",
+                            "next_time",
+                            "temp"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "height": 136
+            },
+            "evaluatorReader": true,
+            "lineCount": 10
+        },
+        {
+            "id": "section9SaxlV",
+            "type": "section",
+            "title": "Autotranslation of 64-bit Longs",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codelBVsT5",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "beaker.table_with_longs"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "temp",
+                            "next_time",
+                            "time"
+                        ],
+                        "actualalign": [
+                            "R",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "temp",
+                        "next_time",
+                        "time"
+                    ],
+                    "values": [
+                        [
+                            14.6,
+                            "1455202409202000077",
+                            "1455202409202000007"
+                        ],
+                        [
+                            18.1,
+                            "2910404818404000176",
+                            "1455202409202000014"
+                        ],
+                        [
+                            23.6,
+                            "4365607227606000297",
+                            "1455202409202000021"
+                        ]
+                    ],
+                    "types": [
+                        "double",
+                        "int64",
+                        "int64"
+                    ],
+                    "subtype": "ListOfMaps"
+                },
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "9d6b48cf-c110-4b9b-972a-d3955ea63bb0",
+                "elapsedTime": 584,
+                "height": 136
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "section7EMhEc",
+            "type": "section",
+            "title": "Autotranslation of BigNums",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeWmOT3I",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "beaker.table_with_big_integers"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "temp",
+                            "next_time",
+                            "time"
+                        ],
+                        "actualalign": [
+                            "R",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "temp",
+                        "next_time",
+                        "time"
+                    ],
+                    "values": [
+                        [
+                            3.351,
+                            "1130692273965492059829",
+                            "1455202411796000007"
+                        ],
+                        [
+                            2.355,
+                            "1292219741674848078144",
+                            "1455202411796000014"
+                        ],
+                        [
+                            2.728,
+                            "1453747209384204098901",
+                            "1455202411796000021"
+                        ]
+                    ],
+                    "types": [
+                        "double",
+                        "bigint",
+                        "bigint"
+                    ],
+                    "subtype": "ListOfMaps"
+                },
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "9d6b48cf-c110-4b9b-972a-d3955ea63bb0",
+                "elapsedTime": 574,
+                "height": 136
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        }
+    ],
+    "namespace": {
+        "t": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "time",
+                "next_time",
+                "temp",
+                "lowPrice_mean",
+                "openPrice_mean"
+            ],
+            "values": [
+                [
+                    "1454587855504000007",
+                    88.59,
+                    88.91,
+                    88.2,
+                    78.55
+                ],
+                [
+                    "1454587855504000014",
+                    58.96,
+                    59.79,
+                    58.11,
+                    58.93
+                ],
+                [
+                    "1454587855504000021",
+                    39.09,
+                    39.96,
+                    27.99,
+                    18.86
+                ]
+            ],
+            "types": [
+                "bigint",
+                "double",
+                "double",
+                "double",
+                "double"
+            ],
+            "subtype": "ListOfMaps"
+        },
+        "table_with_longs": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "time",
+                "next_time",
+                "temp"
+            ],
+            "values": [
+                [
+                    "1455202409202000007",
+                    "1455202409202000077",
+                    14.6
+                ],
+                [
+                    "1455202409202000014",
+                    "2910404818404000176",
+                    18.1
+                ],
+                [
+                    "1455202409202000021",
+                    "4365607227606000297",
+                    23.6
+                ]
+            ],
+            "types": [
+                "int64",
+                "int64",
+                "double"
+            ],
+            "subtype": "ListOfMaps"
+        },
+        "table_with_big_integers": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "time",
+                "next_time",
+                "temp"
+            ],
+            "values": [
+                [
+                    "1455202411796000007",
+                    "1130692273965492059829",
+                    3.351
+                ],
+                [
+                    "1455202411796000014",
+                    "1292219741674848078144",
+                    2.355
+                ],
+                [
+                    "1455202411796000021",
+                    "1453747209384204098901",
+                    2.728
+                ]
+            ],
+            "types": [
+                "bigint",
+                "bigint",
+                "double"
+            ],
+            "subtype": "ListOfMaps"
+        }
+    }
+}

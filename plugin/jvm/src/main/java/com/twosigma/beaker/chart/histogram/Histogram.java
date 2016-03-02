@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.chart.histogram;
 
-import com.twosigma.beaker.AbstractChart;
+import com.twosigma.beaker.chart.AbstractChart;
 import com.twosigma.beaker.chart.Color;
 
 import java.util.ArrayList;

@@ -24,6 +24,7 @@
     };
     PlotBar.prototype.plotClass = "plot-bar";
     PlotBar.prototype.respClass = "plot-resp";
+    PlotBar.prototype.actionClass = "item-clickable item-onkey";
 
     PlotBar.prototype.setHighlighted = function(scope, highlighted) {
       var itemsvg = scope.maing.select("#" + this.id);
@@ -163,17 +164,17 @@
 
         eleprops.push(prop);
 
-        if(this.showItemLabel){
+        if(ele.itemLabel || this.showItemLabel){
           var labely;
           var labelMargin = 3;
           var labelHeight = plotUtils.fonts.labelHeight;
           var isBarPositive = ele._y2 != this.base;
 
-          var labelText = isBarPositive ? ele._y2 : ele._y;
+          var labelText = ele.itemLabel ? ele.itemLabel : isBarPositive ? ele._y2 : ele._y;
 
           switch(this.labelPosition){
             case "VALUE_OUTSIDE":
-              labely = isBarPositive ? y2 - labelMargin : y + labelHeight + labelMargin;
+              labely =  isBarPositive ? y2 - labelMargin : y + labelHeight + labelMargin;
               break;
             case "VALUE_INSIDE":
               labely = isBarPositive ? y2 + labelHeight + labelMargin : y - labelMargin;
@@ -228,19 +229,19 @@
       itemsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
-        .attr("class", respClass)
-        .attr("shape-rendering", "crispEdges")
-        .style("fill", function(d) { return d.fi; })
-        .style("fill-opacity", function(d) { return d.fi_op; })
-        .style("stroke", function(d) { return d.st; })
-        .style("stroke-opacity", function(d) { return d.st_op; })
-        .style("stroke-width", function(d) { return d.st_w; });
+        .attr("class", respClass + " " + this.actionClass)
+        .attr("shape-rendering", "crispEdges");
       itemsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; })
         .attr("x", function(d) { return d.x; })
         .attr("y", function(d) { return d.y; })
         .attr("width", function(d) { return d.w; })
-        .attr("height", function(d) { return d.h; });
+        .attr("height", function(d) { return d.h; })
+        .style("fill", function(d) { return d.fi; })
+        .style("fill-opacity", function(d) { return d.fi_op; })
+        .style("stroke", function(d) { return d.st; })
+        .style("stroke-opacity", function(d) { return d.st_op; })
+        .style("stroke-width", function(d) { return d.st_w; });;
       itemsvg.selectAll("text").remove();
       itemsvg.selectAll("text")
         .data(elelabels, function(d) { return d.id; }).enter().append("text")
@@ -264,6 +265,9 @@
     };
 
     PlotBar.prototype.createTip = function(ele, g, model) {
+      if (ele.tooltip)
+        return ele.tooltip;
+
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
@@ -282,5 +286,5 @@
 
     return PlotBar;
   };
-  beaker.bkoFactory('PlotBar', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('PlotBar', ['plotUtils', 'plotTip', retfunc]);
 })();

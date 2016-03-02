@@ -43,6 +43,34 @@
 
       var _ctrlKey = (bkUtils.osName == 'MacOS') ? 'Command' : 'Control';
       var _zoomFactor = 1.0;
+      var increaseZoom = function() {
+        _zoomFactor += 0.1;
+        WebFrame.setZoomFactor(_zoomFactor);
+      };
+      var decreaseZoom = function() {
+        if (_zoomFactor > 0.1) {
+          _zoomFactor -= 0.1;
+        }
+        WebFrame.setZoomFactor(_zoomFactor);
+      };
+      var resetZoom = function() {
+        _zoomFactor = 1.0;
+        WebFrame.setZoomFactor(_zoomFactor);
+      };
+
+      var mergeOrAddMenu = function (template, menu, index) {
+        var hasMenu = false;
+        for (var i in template) {
+          if (template[i].label === menu.label) {
+            hasMenu = true;
+            template[i].submenu = template[i].submenu.concat(menu.submenu);
+            break;
+          }
+        }
+        if(!hasMenu){
+          template.splice(index, 0, _viewMenu);
+        }
+      };
 
       var _assignShortcut = function(name) {
         switch (name) {
@@ -100,6 +128,25 @@
           {label: 'Select All', accelerator: _ctrlKey + '+A', role: 'selectAll'}
         ]
       };
+      var _viewMenu = {
+        label: 'View',
+        submenu: [
+          {
+            label: 'Zoom In',
+            accelerator: 'CmdOrCtrl+Plus',
+            click: increaseZoom
+          },
+          {
+            label: 'Zoom Out',
+            accelerator: 'CmdOrCtrl+-',
+            click: decreaseZoom
+          },
+          {
+            label: 'Actual size',
+            click: resetZoom
+          }
+        ]
+      };
 
       var _refreshWindowTitle = function() {
         if (_status !== '') {
@@ -120,20 +167,9 @@
         app: app,
         clipboard: clipboard,
 
-        increaseZoom: function() {
-          _zoomFactor += 0.1;
-          WebFrame.setZoomFactor(_zoomFactor);
-        },
-        decreaseZoom: function() {
-          if (_zoomFactor > 0.1) {
-            _zoomFactor -= 0.1;
-          }
-          WebFrame.setZoomFactor(_zoomFactor);
-        },
-        resetZoom: function() {
-          _zoomFactor = 1.0;
-          WebFrame.setZoomFactor(_zoomFactor);
-        },
+        increaseZoom: increaseZoom,
+        decreaseZoom: decreaseZoom,
+        resetZoom: resetZoom,
 
         toggleDevTools: function() {
           BrowserWindow.getFocusedWindow().toggleDevTools();
@@ -188,6 +224,7 @@
           };
 
           var template = makeMenu(_.values(menus));
+          mergeOrAddMenu(template, _viewMenu, 1);
           template.splice(1, 0, _editMenu);
           template.splice(0, 0, _beakerMenu);
           var menu = Menu.buildFromTemplate(template);

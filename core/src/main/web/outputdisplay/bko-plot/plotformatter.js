@@ -25,6 +25,7 @@
       if (model.version === "groovy") {  // model returned from serializer
 
         newmodel = {
+          plotId: model.update_id,
           type: "plot",
           title: model.chart_title != null ? model.chart_title : model.title,
           margin: {},
@@ -75,7 +76,10 @@
             rangeMax: model.range_max,
             displayMode: model.displayMode != null ? model.displayMode : 'OVERLAP',
             rightClose: model.right_close,
-            tips: model.tips ? model.tips : null
+            tips: model.tips ? model.tips : null,
+            tooltips: model.tooltips ? model.tooltips : null,
+            itemLabels: model.itemLabels ? model.itemLabels : null
+
           });
         } else {
           newmodel = _.extend(newmodel, {
@@ -100,7 +104,9 @@
             rangeMax: model.rangeMax,
             displayMode: model.displayMode != null ? model.displayMode : 'OVERLAP',
             rightClose: model.rightClose,
-            tips: model.tips ? model.tips : null
+            tips: model.tips ? model.tips : null,
+            tooltips: model.tooltips,
+            itemLabels: model.itemLabels
           });
         }
       }else{
@@ -626,6 +632,6 @@
       }
     };
   };
-  beaker.bkoFactory('plotFormatter',
+  beakerRegister.bkoFactory('plotFormatter',
     ["bkUtils", 'plotConverter', 'heatmapConverter', 'PlotAxis', 'plotFactory', 'plotUtils', 'bkHelper', retfunc]);
 })();

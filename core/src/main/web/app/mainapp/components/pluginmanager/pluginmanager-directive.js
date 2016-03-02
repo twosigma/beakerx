@@ -84,7 +84,7 @@
     };
 
     $scope.allowFromUrl = function() {
-      return (window.beaker === undefined || window.beaker.disablePluginLoadFromUrl === undefined || !window.beaker.disablePluginLoadFromUrl);
+      return (window.beaker === undefined || window.beakerRegister.disablePluginLoadFromUrl === undefined || !window.beakerRegister.disablePluginLoadFromUrl);
     }
     
     $scope.evalTabOp = {

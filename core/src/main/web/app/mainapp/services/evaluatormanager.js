@@ -86,9 +86,11 @@
           deferred.resolve(evaluators[evaluatorId]);
         } else {
           var i;
-          for ( i = 0; i < loadingInProgressEvaluators.length; i ++ ) {
-            if (loadingInProgressEvaluators[i].name === evaluatorId) {
-              loadingInProgressEvaluators[i].deferred = deferred;
+          for (i = 0; i < loadingInProgressEvaluators.length; i++) {
+            var loadingEvaluator = loadingInProgressEvaluators[i];
+            if (loadingEvaluator.name === evaluatorId
+                || (_.isEmpty(loadingEvaluator.name) && loadingEvaluator.plugin === evaluatorId)) {
+              loadingEvaluator.deferred = deferred;
               break;
             }
           }

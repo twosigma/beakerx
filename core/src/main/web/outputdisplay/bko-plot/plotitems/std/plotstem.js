@@ -24,6 +24,7 @@
 
     PlotStem.prototype.plotClass = "plot-stem";
     PlotStem.prototype.respClass = "plot-resp";
+    PlotStem.prototype.actionClass = "item-clickable item-onkey";
 
     PlotStem.prototype.setHighlighted = function(scope, highlighted) {
       var svg = scope.maing;
@@ -156,13 +157,13 @@
         };
         eleprops.push(prop);
 
-        if(this.showItemLabel){
+        if(ele.itemLabel || this.showItemLabel){
           var labelMargin = 3;
           var labelHeight = plotUtils.fonts.labelHeight;
           var base = this.base != null ? this.base : 0;
           var isPositiveStem = ele._y2 != base;
 
-          var labelText = isPositiveStem ? ele._y2 : ele._y;
+          var labelText = ele.itemLabel ? ele.itemLabel : isPositiveStem ? ele._y2 : ele._y;
           var labely = isPositiveStem ? y2 - labelMargin : y + labelHeight + labelMargin;
 
           var label = {
@@ -202,7 +203,7 @@
         .data(eleprops, function(d) { return d.id; }).exit().remove();
       itemsvg.selectAll("line.normal")
         .data(eleprops, function(d) { return d.id; }).enter().append("line")
-        .attr("class", respClass+" normal")
+        .attr("class", respClass + " " + this.actionClass + " normal")
         .style("stroke", function(d) { return d.st; })
         .style("stroke-opacity", function(d) { return d.st_op; })
         .style("stroke-dasharray", function(d) { return d.st_da; })
@@ -257,6 +258,8 @@
     };
 
     PlotStem.prototype.createTip = function(ele, g, model) {
+      if (ele.tooltip)
+        return ele.tooltip;
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
@@ -275,5 +278,5 @@
 
     return PlotStem;
   };
-  beaker.bkoFactory('PlotStem', ['plotUtils', 'plotTip',  retfunc]);
+  beakerRegister.bkoFactory('PlotStem', ['plotUtils', 'plotTip',  retfunc]);
 })();

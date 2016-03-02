@@ -44,23 +44,31 @@
         scope.$on('showDocumentationForAutocomplete', function(event, doc) {
           tooltip.empty();
           var html = getDocContent(doc);
-          if (html) {
-            displayTooltip(html);
-            var autocompleteList = $('ul.CodeMirror-hints');
-            _.defer(function() {
-              tooltip.addClass('CodeMirror-hints');
-              setTooltipPosition(_.merge(calculateTooltipPosition(), {left: autocompleteList.position().left + autocompleteList.outerWidth() - $('.bkcell').offset().left}));
 
-              if (autocompleteListAboveCursor(autocompleteList)) {
-                moveTooltipAboveCursor();
-              }
-            });
+          displayTooltip(doc);
+          var autocompleteList = $('ul.CodeMirror-hints');
+          tooltip.addClass('CodeMirror-hints');
+          setTooltipPosition(_.merge(calculateTooltipPosition(), {left: autocompleteList.position().left + autocompleteList.outerWidth() - $('.bkcell').offset().left}));
+
+          if (autocompleteListAboveCursor(autocompleteList)) {
+            moveTooltipAboveCursor();
           }
         });
 
         scope.$on('hideDocumentationForAutocomplete', function(event) {
           tooltip.removeClass('bkcelltooltip-open');
           tooltip.removeClass('CodeMirror-hints');
+        });
+
+        scope.$on('showParameterDocumentation', function(event, doc, leftScrollPosition, tooltipMinWidth) {
+          tooltip.empty();
+          unbindEvents();
+          displayTooltip(doc);
+          setTooltipPosition(calculateTooltipPosition(leftScrollPosition, tooltipMinWidth));
+        });
+
+        scope.$on('hideParameterDocumentation', function() {
+          hideTooltip();
         });
 
         function getDocContent(doc) {
@@ -86,15 +94,26 @@
           tooltip.removeClass('bkcelltooltip-open');
         }
 
-        function calculateTooltipPosition() {
+        function calculateTooltipPosition(leftScrollPosition, tooltipMinWidth) {
+          leftScrollPosition = leftScrollPosition || 0;
+
           var jqEditor = $(scope.editor.getWrapperElement());
           var cmPosition = jqEditor.position();
           var position = scope.editor.cursorCoords(true, 'local');
-          var vMargins = jqEditor.outerHeight(true) - jqEditor.height();
-          var hMargins = jqEditor.outerWidth(true) - jqEditor.width();
 
-          var left = (cmPosition.left + position.left + hMargins);
-          var top = (cmPosition.top + position.bottom + vMargins);
+          var editorWidth = jqEditor.width();
+
+          var vMargins = jqEditor.outerHeight(true) - jqEditor.height();
+          var hMargins = jqEditor.outerWidth(true) - editorWidth;
+
+          var left = cmPosition.left + position.left + hMargins - leftScrollPosition;
+          var top = cmPosition.top + position.bottom + vMargins;
+
+          var documentationWidth = editorWidth - left;
+          if (tooltipMinWidth && documentationWidth < tooltipMinWidth) {
+            left = Math.max(0, left - (tooltipMinWidth - documentationWidth));
+          }
+
           return {top: top, left: left};
         }
 

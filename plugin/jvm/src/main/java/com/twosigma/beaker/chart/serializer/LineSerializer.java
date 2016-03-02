@@ -33,7 +33,6 @@ public class LineSerializer extends XYGraphicsSerializer<Line> {
 
     super.serialize(line, jgen, sp);
 
-    jgen.writeObjectField("type", line.getClass().getSimpleName());
     if (line.getLodFilter() != null)
       jgen.writeObjectField("lod_filter", line.getLodFilter().getText());
     if (line.getColor() instanceof Color) {

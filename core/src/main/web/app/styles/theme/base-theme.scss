@@ -106,6 +106,10 @@
     }
   }
 
+  .modal-body.error-title {
+    background-color: $btn-danger-bkg !important;
+  }
+
   .modal-content .btn-primary {
     background:     $primary-btn-bg;
     &:hover {
@@ -151,6 +155,10 @@
   .faux-drop-zone {
     border-color: $std-fg-color;
     color:        $std-fg-color;
+  }
+
+  .edited-property {
+    background-color: $btn-danger-bkg !important;
   }
 
   .ui-icon,
@@ -527,6 +535,54 @@
     }
   }
 
+  //checkbox, radio
+
+  input[type="checkbox"], input[type="radio"] {
+    visibility: hidden;
+  }
+
+  input[type="checkbox"] ~ label:after {
+    content: "";
+    width: 13px;
+    height: 13px;
+    position: absolute;
+    background-color: $std-btn-bg;
+    border: 1px solid $cell-border;
+    opacity: 1;
+    margin-left: 5px;
+  }
+  input.beforeCheckbox ~ label:after {
+    left: 5px;
+  }
+  input.plot-legendcheckbox.beforeCheckbox ~ label:after {
+    left: -3px;
+  }
+  input.beforeCheckbox#extensionFilter ~ label:after {
+    left: 20px;
+  }
+  input.paginationOption ~ label:after {
+    right: -20px;
+  }
+
+  input[type="checkbox"]:checked ~ label:after {
+    content: "\2713";
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+    font-size: 15px;
+    color: $std-fg-color;
+    text-align: center;
+    line-height: 14px;
+    background-color: $ef-active-control-bg;
+  }
+
+  input[type="checkbox"]:hover::after {
+    opacity: 0.7;
+  }
+
+  input[type="checkbox"] ~ label, input[type="radio"] + label {
+    display: inline-block;
+    margin: 0 10px 0 5px;
+  }
+
   //easy-form
 
   .easy-form-container {
@@ -542,12 +598,7 @@
       background-color: $cell-border;
     }
 
-    input[type="checkbox"], input[type="radio"] {
-      visibility: hidden;
-    }
-
-    .radio-button-item-label:before, .check-box-group-item-label:before,
-    input.check-box + label:after {
+    .radio-button-item-label:before {
       content: "";
       width: 13px;
       height: 13px;
@@ -556,7 +607,8 @@
       border: 1px solid $cell-border;
       opacity: 1;
     }
-    .radio-button-item-label:before, .check-box-group-item-label:before {
+
+    .radio-button-item-label:before, .check-box-group-item-label:after {
       left: 0;
     }
     input.check-box + label:after {
@@ -565,16 +617,11 @@
     .radio-button-item-label:before {
       border-radius: 50%;
     }
-    .check-box-group-item-label:before {
+    .check-box-group-item-label:after {
       border-radius: 2px;
     }
-    .radio-button-item-label:hover::before, .check-box-group-item-label:hover::before {
+    .radio-button-item-label:hover::before, .check-box-group-item-label:hover::after {
       opacity: 0.7;
-    }
-
-    input[type="checkbox"] + label, input[type="radio"] + label {
-      display: inline-block;
-      margin: 0 10px 0 5px;
     }
 
     easy-form-check-box label {
@@ -588,17 +635,6 @@
       font-weight: normal;
       text-align: center;
       line-height: 16px;
-      background-color: $ef-active-control-bg;
-    }
-
-    easy-form-check-box input[type="checkbox"]:checked + label:after,
-    .check-box-group-item input[type="checkbox"]:checked + label:before {
-      content: "\2713";
-      text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
-      font-size: 15px;
-      color: $std-fg-color;
-      text-align: center;
-      line-height: 14px;
       background-color: $ef-active-control-bg;
     }
   }
@@ -620,7 +656,7 @@
   }
 
   .CodeMirror-fullscreen {
-    background: $main-theme-panel-background;
+    background: $main-theme-panel-background !important;
   }
 
   .CodeMirror .cm-comment {
@@ -653,4 +689,15 @@
   .cm-header {
     color: $markdown-heading-color;
   }
+
+  .marked-argument-unchanged {
+    box-shadow: $marked-argument-unchanged-border;
+    color: $marked-argument-unchanged-color;
+    font-style: italic;
+  }
+
+  .marked-argument-changed {
+    box-shadow: $marked-argument-changed-border;
+  }
 }
+

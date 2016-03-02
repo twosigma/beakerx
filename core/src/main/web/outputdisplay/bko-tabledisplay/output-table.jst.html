@@ -61,9 +61,8 @@
         <th ng-repeat="c in columns" ng-if="!$first">
           <div class="input-clear-growing">
             <div class="input-clear">
-              <span class="fa filter-icon"
-                    ng-class="{'fa-filter' : !columnSearchActive, 'fa-search' : columnSearchActive}"></span>
-              <input class="filter-input" ng-class="{'search-active' : columnSearchActive}" type="text">
+              <span class="fa filter-icon"></span>
+              <input class="filter-input" type="text">
               <span class="fa fa-times clear-filter"></span>
             </div>
             <input tabindex="-1" class="hidden-filter hidden-filter-input">

@@ -98,6 +98,11 @@ HeaderMenu.prototype = {
 
     $(this.s.dt.table().container()).on('click.headermenu', '.bko-column-header-menu', function(e) {
       var colIdx = $(this).parent().index();
+      var fixedCols = that.s.dt.settings()[0]._oFixedColumns;
+      var rightHeader = fixedCols ? fixedCols.dom.clone.right.header : null;
+      if (rightHeader && $(rightHeader).has(this).length) {
+        colIdx = that.s.dt.columns(':visible')[0].length - fixedCols.s.rightColumns + colIdx;
+      }
       var jqHeaderMenu = $(that.s.dt.column(colIdx + ':visible').header()).find(".bko-column-header-menu");
       if (that.dom.menu) {
         that._hide();

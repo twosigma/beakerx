@@ -77,11 +77,63 @@
     }
   });
 
+  var findDTColumnIndex = function(dtSettings, dtElement){
+    var colInd;
+    var dtCellNode = $(dtElement).closest('td').length ? $(dtElement).closest('td') : $(dtElement).closest('th');
+    var fixedCols = dtSettings._oFixedColumns;
+    if (dtCellNode.is('td')) {
+      colInd = fixedCols.fnGetPosition(dtCellNode[0])[2];
+    } else if (dtCellNode.is('th')) {
+      var thInd = dtCellNode.index();
+      var rightHeader = fixedCols ? fixedCols.dom.clone.right.header : null;
+      if (rightHeader && $(rightHeader).has(dtCellNode).length) {
+        var colsLength = 0;
+        _.forOwn(dtSettings.aoColumns, function(value){
+          if(value.bVisible){
+            colsLength++;
+          }
+        });
+        colInd = colsLength - fixedCols.s.rightColumns + thInd;
+      } else {
+        colInd = thInd;
+      }
+    }
+    return colInd;
+  };
+
+  var findFilterInput = function (dtSettings, colInd) {
+    var colsLength = 0;
+    _.forOwn(dtSettings.aoColumns, function(value){
+      if(value.bVisible){
+        colsLength++;
+      }
+    });
+    var fixedCols = dtSettings._oFixedColumns;
+    var leftFixedHeader = fixedCols ? fixedCols.dom.clone.left.header : null;
+    var rightFixedHeader = fixedCols ? fixedCols.dom.clone.right.header : null;
+    var isFixedLeft = function (colInd) {
+      return leftFixedHeader && fixedCols.s.leftColumns > colInd;
+    };
+    var isFixedRight = function (colInd) {
+      return rightFixedHeader && fixedCols.s.rightColumns >= colsLength - colInd;
+    };
+    var jqInput;
+    if (isFixedLeft(colInd)) {
+      jqInput = $(leftFixedHeader).find('.filterRow th:eq(' + colInd + ') .filter-input');
+    } else if (isFixedRight(colInd)) {
+      var idxInRightClone = colInd - (colsLength - fixedCols.s.rightColumns);
+      jqInput = $(rightFixedHeader).find('.filterRow th:eq(' + idxInRightClone + ') .filter-input');
+    } else {
+      jqInput = $(dtSettings.aoHeader[1][colInd].cell).find('.filter-input');
+    }
+    return jqInput;
+  };
+
   $.fn.dataTable.ext.search.push(
     function (settings, row, rowIndex) {
       var match = true;
       for (var colInd = 0; colInd < row.length; colInd++) {
-        var jqInput =  $(settings.aoHeader[1][colInd].cell).find('.filter-input');
+        var jqInput = findFilterInput(settings, colInd);
         if (jqInput.hasClass('search-active')) {
           return true; //use expression parsing only for filtering
         }
@@ -466,71 +518,68 @@
               });
             }
           });
-          $scope.applyFilters();
         };
 
-        $scope.getFilterRow = function(){
-          return $($scope.table.table().header()).find('.filterRow');
-        };
-        $scope.getColumnFilterHeader = function(column){
-          return $scope.getFilterRow().find('th:eq(' + column.index() + ')');
-        };
         $scope.getColumnFilter = function(column){
-          return $scope.getColumnFilterHeader(column).find('.filter-input');
+          return findFilterInput($scope.table.settings()[0], column.index());
         };
-        $scope.getColumnFilterClearIcon = function(column){
-          return $scope.getColumnFilterHeader(column).find('.clear-filter');
+
+        $scope.tableHasFocus = function(){
+          var dtContainer = $($scope.table.table().container());
+          return dtContainer.hasClass("focus") || dtContainer.has(':focus').length;
         };
 
         $scope.removeFilterListeners = function () {
-          $scope.table.columns().every(function () {
-            var column = this;
-            $scope.getColumnFilter(column).off('keyup.column-filter change.column-filter keydown.column-filter ' +
-              'blur.column-filter focus.column-filter');
-            $scope.getColumnFilterClearIcon(column).off('mousedown.column-filter');
-          });
+          var filterInputSelector = '.filterRow .filter-input';
+          var clearFilterSelector = '.filterRow .clear-filter';
+          $($scope.table.table().container()).off('keyup.column-filter change.column-filter keydown.column-filter ' +
+            'blur.column-filter focus.column-filter', filterInputSelector);
+          $($scope.table.table().container()).off('mousedown.column-filter', clearFilterSelector);
         };
         // Apply filters
         $scope.applyFilters = function (){
           if (!$scope.table) { return; }
           $scope.removeFilterListeners();
-          $scope.table.columns().every(function () {
-            var column = this;
-            $scope.getColumnFilter(column)
-              .on('keyup.column-filter change.column-filter', function () {
-                if($scope.columnSearchActive){
-                  column.search(this.value);
-                }
-                column.draw();
-                $scope.updateFilterWidth($(this), column);
-              })
-              .on('focus.column-filter', function (event) {
-                if($scope.keyTable){
-                  $scope.keyTable.blur();
-                }
-              })
-              .on('blur.column-filter', function (event) {
-                $scope.onFilterBlur($(this), event.relatedTarget);
-              })
-              .on('keydown.column-filter', function (event) {
-                var key = event.which;
-                if (key == 13) { //enter key
-                  $scope.onFilterBlur($(this), this);
-                } else {
-                  $scope.onFilterEditing($(this), column);
-                }
-              });
-
-            $scope.getColumnFilterClearIcon(column)
-              .on('mousedown.column-filter', function (event) {
-                var jqFilterInput = $scope.getColumnFilter(column);
-                if(jqFilterInput.is(':focus')){
-                  event.preventDefault();
-                }
-                $scope.clearFilter(column);
-                $scope.updateFilterWidth(jqFilterInput, column);
-              });
-          });
+          var filterInputSelector = '.filterRow .filter-input';
+          var clearFilterSelector = '.filterRow .clear-filter';
+          var getColumn = function(filterNode){
+            return $scope.table.column($scope.getColumnIndexByCellNode(filterNode) + ':visible');
+          };
+          $($scope.table.table().container())
+            .on('keyup.column-filter change.column-filter', filterInputSelector, function () {
+              var column = getColumn(this);
+              if($scope.columnSearchActive){
+                column.search(this.value);
+              }
+              column.draw();
+              $scope.updateFilterWidth($(this), column);
+            })
+            .on('focus.column-filter', filterInputSelector, function (event) {
+              if($scope.keyTable){
+                $scope.keyTable.blur();
+              }
+            })
+            .on('blur.column-filter', filterInputSelector, function (event) {
+              $scope.onFilterBlur($(this), event.relatedTarget);
+            })
+            .on('keydown.column-filter', filterInputSelector, function (event) {
+              var key = event.which;
+              if (key == 13) { //enter key
+                $scope.onFilterBlur($(this), this);
+              } else {
+                var column = getColumn(this);
+                $scope.onFilterEditing($(this), column);
+              }
+            })
+            .on('mousedown.column-filter', clearFilterSelector, function (event) {
+              var column = getColumn(this);
+              var jqFilterInput = $scope.getColumnFilter(column);
+              if(jqFilterInput.is(':focus')){
+                event.preventDefault();
+              }
+              $scope.clearFilter(column);
+              $scope.updateFilterWidth(jqFilterInput, column);
+            });
         };
 
         $scope.renderMenu = false;
@@ -976,8 +1025,6 @@
             pp.width(me.width());
           }
           scope.updateResizeHandleWidth();
-          if (scope.fixcols)
-            scope.fixcols.fnRedrawLayout();
         };
         scope.selectFixedColumnRow = function (dtRowIndex, select) {
           if (scope.fixcols) {
@@ -1486,6 +1533,7 @@
                 }
                 scope.colorder = scope.colreorg.fnOrder().slice(0);
                 scope.refreshCells();
+                scope.applyFilters();
                 scope.$digest();
               },
               'iFixedColumns': scope.pagination.fixLeft + 1,
@@ -1615,6 +1663,18 @@
 
             scope.doShowFilter = function (column, isSearch) {
               scope.clearFilters();
+              var jqContainer = $(scope.table.table().container());
+              var filterInput = jqContainer.find('.filter-input');
+              var filterIcon = jqContainer.find('.filter-icon');
+              if(isSearch){
+                filterInput.addClass('search-active');
+                filterIcon.removeClass('fa-filter');
+                filterIcon.addClass('fa-search');
+              }else{
+                filterInput.removeClass('search-active');
+                filterIcon.removeClass('fa-search');
+                filterIcon.addClass('fa-filter');
+              }
               scope.showFilter = true;
               scope.columnSearchActive = isSearch;
               scope.$apply();
@@ -1627,22 +1687,30 @@
             scope.hideFilter = function () {
               scope.clearFilters();
               scope.showFilter = false;
-              scope.table.draw();
+              scope.table.search('').draw();
               setTimeout(function(){
-                scope.update_size()
+                if (scope.fixcols)
+                  scope.fixcols.fnRedrawLayout();
               }, 0);
             };
 
             scope.clearFilters = function(){
-              $(scope.table.table().header()).find('.filter-input').each(function(i, filterInput){
-                $(filterInput).val('');
+              scope.table.columns().every(function(){
+                var column = this;
+                var jqInput = scope.getColumnFilter(column);
+                jqInput.val('');
+                column.search('');
               });
+              scope.table.draw();
             };
 
             scope.clearFilter = function (column) {
               if(column) {
                 var jqInput = scope.getColumnFilter(column);
                 jqInput.val('');
+                if(scope.columnSearchActive){
+                  column.search('');
+                }
                 column.draw();
                 scope.checkFilter();
                 scope.onFilterBlur(jqInput, jqInput[0]);
@@ -1653,7 +1721,7 @@
               jqInputEl.css('width', '');
               jqInputEl.parent().removeClass('editing');
               jqInputEl.parent().siblings('.hidden-filter').addClass('hidden-filter-input');
-              if(!scope.getFilterRow().has(relatedTarget).length){
+              if(!$(scope.table.table().container()).find('.filterRow').has(relatedTarget).length){
                 // focus wasn't moved to another filter input
                 scope.checkFilter();
               }
@@ -1662,7 +1730,7 @@
             scope.checkFilter = function () {
               var hasNotEmptyFilter = false;
 
-              $(scope.table.table().header()).find('.filter-input').each(function(i, filterInput){
+              $(scope.table.table().container()).find('.filter-input').each(function(i, filterInput){
                 if(!_.isEmpty(filterInput.value)){
                   hasNotEmptyFilter = true;
                 }
@@ -1710,11 +1778,7 @@
             };
 
             scope.getColumnIndexByCellNode = function (cellNode) {
-              if (cellNode.tagName === 'TD') {
-                return scope.fixcols.fnGetPosition(cellNode)[2];
-              } else { //TH
-                return scope.table.column($(cellNode).index() + ':visible').index();
-              }
+              return findDTColumnIndex(scope.table.settings()[0], cellNode);
             };
 
             scope.removeOnKeyListeners = function () {
@@ -1729,12 +1793,15 @@
             scope.removeOnKeyListeners();
             $(scope.table.table().container())
               .on("mouseenter.bko-datatable", 'td, th', function (e) {
-                if ($(id + ' tbody tr td').hasClass("focus") || $(scope.table.header()).has(':focus').length) {
+                if (scope.tableHasFocus()) {
                   return; //ignore mouse over for key events if there is focus on table's cell
                 }
                 var column = scope.getColumnIndexByCellNode(this);
                 if (!scope.onKeyListeners[column]) {
                   scope.onKeyListeners[column] = function (onKeyEvent) {
+                    if (scope.tableHasFocus()) {
+                      return; //ignore mouse over for key events if there is focus on table's cell
+                    }
                     if (!onKeyEvent.isDefaultPrevented()) {
                       scope.onKeyAction(column, onKeyEvent);
                     }
@@ -1782,6 +1849,10 @@
               inits.rightColumns = 0;
             }
             scope.fixcols = new $ .fn.dataTable.FixedColumns($(id), inits);
+            setTimeout(function(){
+              scope.showFilter = false;
+              scope.applyFilters();
+            }, 0);
 
             if (!scope.pagination.use) {
               var table = $('#' + scope.id);
@@ -1799,7 +1870,6 @@
               scope.jqTableResizeHandle.append('<span class="glyphicon glyphicon-resize-vertical"></span>');
               scope.updateResizeHandleWidth();
             }
-            scope.applyFilters();
 
           }, 0);
         };

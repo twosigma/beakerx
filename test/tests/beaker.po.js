@@ -231,7 +231,7 @@ var BeakerPageObject = function() {
   //CodeMirror API. See for information https://sharpkit.net/help/SharpKit.CodeMirror/SharpKit.CodeMirror/CodeMirror/
 
   this.setCellInput = function(code) {
-    return browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
+    return browser.executeScript("$('.CodeMirror')[0].CodeMirror.setValue('" + code + "')");
   };
 
   this.getCellInput = function() {

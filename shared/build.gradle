@@ -36,6 +36,7 @@ dependencies {
   compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.3.6.v20151106'
   compile group: 'org.eclipse.jetty.websocket', name: 'websocket-servlet', version: '9.3.6.v20151106'
   compile group: 'org.eclipse.jetty.websocket', name: 'websocket-api', version: '9.3.6.v20151106'
+  compile group: 'org.apache.cxf', name: 'cxf-bundle-jaxrs', version: '2.7.7'
 }
 
 compileJava {

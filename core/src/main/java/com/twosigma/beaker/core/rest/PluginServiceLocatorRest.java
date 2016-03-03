@@ -143,7 +143,7 @@ public class PluginServiceLocatorRest {
   private final String pluginDir;
   private final String [] nginxCommand;
   private final String [] nginxRestartCommand;
-  private final Boolean hideZombieLogging;
+  private final Boolean showZombieLogging;
   private String[] nginxEnv = null;
   private final Boolean publicServer;
   private final Integer portBase;
@@ -241,7 +241,7 @@ public class PluginServiceLocatorRest {
     this.nginxRestartCommand[8] = "reload";
     
     this.corePassword = webServerConfig.getPassword();
-    this.hideZombieLogging = bkConfigPref.getHideZombieLogging();
+    this.showZombieLogging = bkConfigPref.getShowZombieLogging();
 
     // record plugin options from cli and to pass through to individual plugins
     for (Map.Entry<String, List<String>> e: bkConfig.getPluginOptions().entrySet()) {
@@ -737,12 +737,7 @@ public class PluginServiceLocatorRest {
     }
     nginxConfig = nginxConfig.replace("%(plugin_section)s", pluginSection.toString());
     nginxConfig = nginxConfig.replace("%(extra_rules)s", this.nginxExtraRules);
-    if (this.hideZombieLogging) {
-      nginxConfig = nginxConfig.replace("%(catch_outdated_requests_rule)s",
-          this.CATCH_OUTDATED_REQUESTS_RULE);
-    } else {
-      nginxConfig = nginxConfig.replace("%(catch_outdated_requests_rule)s", "");
-    }
+    nginxConfig = nginxConfig.replace("%(catch_outdated_requests_rule)s", this.showZombieLogging ? "" : this.CATCH_OUTDATED_REQUESTS_RULE);
     nginxConfig = nginxConfig.replace("%(user_folder)s", this.userFolder);
     nginxConfig = nginxConfig.replace("%(host)s", hostName);
     nginxConfig = nginxConfig.replace("%(port_main)s", Integer.toString(this.portBase));

@@ -573,11 +573,11 @@
             })
             .on('mousedown.column-filter', clearFilterSelector, function (event) {
               var column = getColumn(this);
-              var jqFilterInput = $scope.getColumnFilter(column);
+              var jqFilterInput = $(this).siblings('.filter-input');
               if(jqFilterInput.is(':focus')){
                 event.preventDefault();
               }
-              $scope.clearFilter(column);
+              $scope.clearFilter(column, jqFilterInput);
               $scope.updateFilterWidth(jqFilterInput, column);
             });
         };
@@ -1662,7 +1662,6 @@
             };
 
             scope.doShowFilter = function (column, isSearch) {
-              scope.clearFilters();
               var jqContainer = $(scope.table.table().container());
               var filterInput = jqContainer.find('.filter-input');
               var filterIcon = jqContainer.find('.filter-icon');
@@ -1675,7 +1674,11 @@
                 filterIcon.removeClass('fa-search');
                 filterIcon.addClass('fa-filter');
               }
-              scope.showFilter = true;
+              if (scope.showFilter) {
+                scope.clearFilters();
+              } else {
+                scope.showFilter = true;
+              }
               scope.columnSearchActive = isSearch;
               scope.$apply();
               if(scope.fixcols){
@@ -1687,33 +1690,41 @@
             scope.hideFilter = function () {
               scope.clearFilters();
               scope.showFilter = false;
-              scope.table.search('').draw();
               setTimeout(function(){
                 if (scope.fixcols)
                   scope.fixcols.fnRedrawLayout();
               }, 0);
             };
 
-            scope.clearFilters = function(){
-              scope.table.columns().every(function(){
+            scope.clearFilters = function () {
+              var hasNotEmptyFilter = false;
+              scope.table.columns().every(function () {
                 var column = this;
                 var jqInput = scope.getColumnFilter(column);
-                jqInput.val('');
-                column.search('');
-              });
-              scope.table.draw();
-            };
-
-            scope.clearFilter = function (column) {
-              if(column) {
-                var jqInput = scope.getColumnFilter(column);
-                jqInput.val('');
-                if(scope.columnSearchActive){
+                var filterValue = jqInput.val();
+                if (!_.isEmpty(filterValue)) {
+                  hasNotEmptyFilter = true;
+                  jqInput.val('');
                   column.search('');
                 }
-                column.draw();
-                scope.checkFilter();
-                scope.onFilterBlur(jqInput, jqInput[0]);
+              });
+              if (hasNotEmptyFilter) {
+                scope.table.draw();
+              }
+            };
+
+            scope.clearFilter = function (column, jqInput) {
+              if(column) {
+                var filterValue = jqInput.val();
+                if(!_.isEmpty(filterValue)){
+                  jqInput.val('');
+                  if(scope.columnSearchActive){
+                    column.search('');
+                  }
+                  column.draw();
+                  scope.checkFilter();
+                  scope.onFilterBlur(jqInput, jqInput[0]);
+                }
               }
             };
 

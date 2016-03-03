@@ -22,6 +22,7 @@ var config = {
     defaultTimeoutInterval: 100000,
     print: function() {}
   },
+
   capabilities: {
     shardTestFiles: true,
     maxInstances: 3,

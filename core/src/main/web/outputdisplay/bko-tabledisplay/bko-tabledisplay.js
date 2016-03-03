@@ -1397,21 +1397,14 @@
             }
             cols.push(col);
           }
-          if (!scope.columns) {
-            scope.columns = [];
-          } else {
-            scope.columns.splice(0, scope.columns.length);
-          }
-          for (var i = 0; i < cols.length; i++) {
-            scope.columns.push(_.clone(cols[i]));
-            delete cols[i].title
-          }
+
+          scope.columns = cols;
 
           var id = '#' + scope.id;
           var init = {
             'destroy' : true,
             'data': scope.data,
-            'columns': cols,
+            'columns': scope.columns,
             'stateSave': true,
             'processing': true,
             'autoWidth': true,

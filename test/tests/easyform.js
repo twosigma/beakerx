@@ -16,7 +16,6 @@
 
 var BeakerPageObject = require('./beaker.po.js');
 var path = require('path');
-var webdriver = require('selenium-webdriver');
 var os = require('os');
 var beakerPO;
 
@@ -43,18 +42,24 @@ describe('EasyForm', function () {
 
     //TEST UNDO
     if (os.type() === 'Darwin') {
-      e.sendKeys(webdriver.Key.COMMAND + "z");
+      webdriver.
+      //COMMAND:      '\uE03D',  // Apple command key
+      e.sendKeys("\uE03Dz");
     }
     else {
-      e.sendKeys(webdriver.Key.CONTROL + "z");
+      //CONTROL:      '\uE009',
+      e.sendKeys("\uE009z");
     }
     expect(e.getAttribute('value')).toEqual("");
 
     //TEST REDO
+    //SHIFT:        '\uE008',
     if (os.type() === 'Darwin') {
-      e.sendKeys(webdriver.Key.COMMAND + webdriver.Key.SHIFT + "z");
+      //COMMAND:      '\uE03D',  // Apple command key
+      e.sendKeys("\uE008\uE03Dz");
     } else {
-      e.sendKeys(webdriver.Key.CONTROL + webdriver.Key.SHIFT + "z");
+      //CONTROL:      '\uE009',
+      e.sendKeys("\uE008\uE009z");
     }
     expect(e.getAttribute('value')).toEqual("TEST");
   }

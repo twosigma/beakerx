@@ -1690,9 +1690,13 @@
             scope.hideFilter = function () {
               scope.clearFilters();
               scope.showFilter = false;
+              if (!(scope.$$phase || $rootScope.$$phase)) {
+                scope.$apply();
+              }
               setTimeout(function(){
-                if (scope.fixcols)
+                if (scope.fixcols){
                   scope.fixcols.fnRedrawLayout();
+                }
               }, 0);
             };
 
@@ -1714,25 +1718,31 @@
             };
 
             scope.clearFilter = function (column, jqInput) {
-              if(column) {
+              if (column) {
                 var filterValue = jqInput.val();
-                if(!_.isEmpty(filterValue)){
+                if (!_.isEmpty(filterValue)) {
                   jqInput.val('');
-                  if(scope.columnSearchActive){
+                  if (scope.columnSearchActive) {
                     column.search('');
                   }
                   column.draw();
-                  scope.checkFilter();
-                  scope.onFilterBlur(jqInput, jqInput[0]);
+                  if (!jqInput.is(':focus')) {
+                    scope.checkFilter();
+                  }
+                  scope.stopFilterEditing(jqInput);
                 }
               }
             };
 
-            scope.onFilterBlur = function (jqInputEl, relatedTarget){
+            scope.stopFilterEditing = function (jqInputEl) {
               jqInputEl.css('width', '');
               jqInputEl.parent().removeClass('editing');
               jqInputEl.parent().siblings('.hidden-filter').addClass('hidden-filter-input');
-              if(!$(scope.table.table().container()).find('.filterRow').has(relatedTarget).length){
+            };
+
+            scope.onFilterBlur = function (jqInputEl, relatedTarget) {
+              scope.stopFilterEditing(jqInputEl);
+              if (!$(scope.table.table().container()).find('.filterRow').has(relatedTarget).length) {
                 // focus wasn't moved to another filter input
                 scope.checkFilter();
               }

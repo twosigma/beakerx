@@ -14,21 +14,28 @@
  *  limitations under the License.
  */
 
-import org.apache.tools.ant.taskdefs.condition.Os
 
-task check (type: Exec) {
-  if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-    commandLine 'python', 'nt_runner.py'
-  } else {
-    commandLine './runner'
-  }
-}
+var BeakerPageObject = require('./beaker.po.js');
+var path = require('path');
+var beakerPO;
 
-task checkembed (type: Exec) {
-  if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-    commandLine 'python', 'nt_runner_embed.py'
-  } else {
-    commandLine './runner_embed'
-  }
-}
+describe('Embed mode', function() {
 
+  beforeEach(function() {
+    beakerPO = new BeakerPageObject();
+    browser.get(beakerPO.baseURL+"beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy-examples.bkr&readOnly=true");
+    browser.waitForAngular();
+  });
+
+  afterEach(function(done) {
+    beakerPO.closeNotebook()
+      .then(done);
+  });
+
+  it('ready', function() {
+    beakerPO.getCellInput().then(function (result) {
+      expect(result).toBe('Groovy Examples')
+    });
+  });
+
+});

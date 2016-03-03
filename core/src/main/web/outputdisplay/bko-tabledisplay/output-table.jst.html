@@ -19,6 +19,10 @@
       <span class="bko-menu" aria-hidden="true" ng-class="{ sorting_desc: isIndexColumnDesc }"></span>
      </a>
      <ul class="dropdown-menu" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
+       <li>
+         <a tabindex="-1" href="#" ng-click="doUsePagination()" id="dt-use-pagination" eat-click>Use pagination</a>
+         <i class="glyphicon glyphicon-ok" ng-show="pagination.use"></i>
+       </li>
        <li><a tabindex="-1" href="#" ng-click="doSelectAll()" id="dt-select-all" eat-click>Select All</a></li>
        <li><a tabindex="-1" href="#" ng-click="doDeselectAll()" id="dt-deselect-all" eat-click>Deselect All</a></li>
        <li><a tabindex="-1" href="#" ng-click="doReverseSelection()" id="dt-reverse-selection" eat-click>Reverse Selection</a></li>
@@ -33,15 +37,14 @@
          <ul class="dropdown-menu" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
            <li ng-repeat="column in columns" ng-if="!$first">
              <a tabindex="-1" href="" ng-click="showColumn($index, $event)">
-               <input type="checkbox" ng-click="showColumn($index, $event)" ng-checked="isColumnVisible($index)">
                {{column.title}}
+               <input type="checkbox" ng-click="showColumn($index, $event)" ng-checked="isColumnVisible($index)">
              </a>
            </li>
          </ul>
        </li>
        <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(false)" id="dt-hide-all" eat-click>Hide All Columns</a></li>
        <li>&nbsp;</li>
-       <li><a tabindex="-1" href="#" ng-click="openOptionsDialog()" id="dt-options" eat-click>Options...</a></li>
        <li><a tabindex="-1" href="#" ng-click="showSearch()" id="dt-search" eat-click>Search...</a></li>
        <li><a tabindex="-1" href="#" ng-click="hideFilter()" id="dt-hide-filter" eat-click>Hide Filter</a></li>
      </ul>

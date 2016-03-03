@@ -831,8 +831,6 @@
             $(scope.table.table().container()).off('mouseenter.bko-datatable');
             scope.table.off('key');
             scope.removeFilterListeners();
-            $('#' + scope.id).html('');
-            scope.table.destroy();
             delete scope.table;
             delete scope.colreorg;
             if (scope.clipclient !== undefined) {

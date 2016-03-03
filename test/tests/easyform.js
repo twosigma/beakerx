@@ -31,6 +31,33 @@ describe('EasyForm', function () {
     beakerPO.languageManagerCloseButton.click();
   }
 
+  function testUndoRedo(code, selector) {
+    beakerPO.setCellInput(code);
+    beakerPO.evaluateCell();
+    beakerPO.waitForCellOutput();
+
+    var e = element(by.css(selector));
+
+    e.sendKeys("TEST");
+    expect(e.getAttribute('value')).toEqual("TEST");
+
+    //TEST UNDO
+    if (os.type() === 'Darwin') {
+      e.sendKeys(webdriver.Key.COMMAND + "z");
+    }
+    else {
+      e.sendKeys(webdriver.Key.CONTROL + "z");
+    }
+    expect(e.getAttribute('value')).toEqual("");
+
+    //TEST REDO
+    if (os.type() === 'Darwin') {
+      e.sendKeys(webdriver.Key.COMMAND + webdriver.Key.SHIFT + "z");
+    } else {
+      e.sendKeys(webdriver.Key.CONTROL + webdriver.Key.SHIFT + "z");
+    }
+    expect(e.getAttribute('value')).toEqual("TEST");
+  }
 
   beforeEach(function () {
     beakerPO = new BeakerPageObject();
@@ -38,186 +65,106 @@ describe('EasyForm', function () {
     browser.waitForAngular();
     beakerPO.newEmptyNotebook.click();
     loadGroovy();
+    beakerPO.insertCellButton.click();
   });
-
 
   afterEach(function (done) {
     beakerPO.closeNotebook()
       .then(done);
   });
 
-
-  //it('Text Fields', function () {
-  //  beakerPO.insertCellButton.click();
-  //
-  //  var code = 'f1 = new EasyForm(\"Form\")\\n';
-  //  code += 'f1.addTextField(\"first\", 15)\\n';
-  //  code += 'f1.addTextField(\"second\", 15)\\n';
-  //  code += 'f1';
-  //
-  //  beakerPO.setCellInput(code);
-  //  beakerPO.evaluateCell();
-  //  beakerPO.waitForCellOutput();
-  //
-  //  expect(element.all(by.css('bk-output-display  .text-field')).count()).toBe(2);
-  //});
-  //
-  //it('Text Areas', function () {
-  //  beakerPO.insertCellButton.click();
-  //
-  //  var code = 'f1 = new EasyForm(\"Form\")\\n';
-  //  code += 'f1.addTextArea(\"Text Area\")\\n';
-  //  code += 'f1';
-  //
-  //  beakerPO.setCellInput(code);
-  //  beakerPO.evaluateCell();
-  //  beakerPO.waitForCellOutput();
-  //
-  //  expect(element(by.css('bk-output-display  .text-area')).isPresent()).toBe(true);
-  //});
-  //
-  //it('Dates', function () {
-  //  beakerPO.insertCellButton.click();
-  //
-  //  var code = 'f1 = new EasyForm(\"Form\")\\n';
-  //  code += 'f1.addDatePicker(\"Date\")\\n';
-  //  code += 'f1';
-  //
-  //  beakerPO.setCellInput(code);
-  //  beakerPO.evaluateCell();
-  //  beakerPO.waitForCellOutput();
-  //
-  //  expect(element(by.css('bk-output-display  .date-picker')).isPresent()).toBe(true);
-  //});
-  //
-  //it('Check Boxes', function () {
-  //  beakerPO.insertCellButton.click();
-  //
-  //  var code = 'f1 = new EasyForm(\"Form\")\\n';
-  //  code += 'options = [\"a\", \"b\", \"c\", \"d\"]\\n';
-  //  code += 'f1.addCheckBoxes(\"Check Boxes\", options)\\n';
-  //  code += 'f1';
-  //
-  //  beakerPO.setCellInput(code);
-  //
-  //  beakerPO.evaluateCell();
-  //  beakerPO.waitForCellOutput();
-  //
-  //  expect(element.all(by.css('bk-output-display input[type="checkbox"]')).count()).toBe(4);
-  //});
-  //
-  //it('Radio Buttons', function () {
-  //  beakerPO.insertCellButton.click();
-  //
-  //  var code = 'f1 = new EasyForm(\"Form\")\\n';
-  //  code += 'options = [\"a\", \"b\", \"c\", \"d\"]\\n';
-  //  code += 'f1.addRadioButtons(\"Radio Buttons\", options)\\n';
-  //  code += 'f1';
-  //
-  //  beakerPO.setCellInput(code);
-  //
-  //  beakerPO.evaluateCell();
-  //  beakerPO.waitForCellOutput();
-  //
-  //  expect(element.all(by.css('bk-output-display  .radio-button-component-item')).count()).toBe(4);
-  //});
-  //
-  //it('Combo Boxes', function () {
-  //  beakerPO.insertCellButton.click();
-  //
-  //  var code = 'f1 = new EasyForm(\"Form\")\\n';
-  //  code += 'options = [\"a\", \"b\", \"c\", \"d\"]\\n';
-  //  code += 'f1.addComboBox(\"Combo Box\", options)\\n';
-  //  code += 'f1';
-  //
-  //  beakerPO.setCellInput(code);
-  //
-  //  beakerPO.evaluateCell();
-  //  beakerPO.waitForCellOutput();
-  //
-  //  expect(element.all(by.css('bk-output-display  .combo-box')).count()).toBe(1);
-  //  expect(element.all(by.css('bk-output-display  option')).count()).toBe(4);
-  //});
-
-  it('Text Areas Undo/Redo', function () {
+  it('Text Fields', function () {
     var code = 'f1 = new EasyForm(\"Form\")\\n';
-    code += 'f1.addTextArea(\"Text Area\")\\n';
+    code += 'f1.addTextField(\"first\", 15)\\n';
+    code += 'f1.addTextField(\"second\", 15)\\n';
     code += 'f1';
-
-    beakerPO.insertCellButton.click();
 
     beakerPO.setCellInput(code);
     beakerPO.evaluateCell();
     beakerPO.waitForCellOutput();
 
-    var e = element(by.css('bk-output-display  .text-area'));
+    expect(element.all(by.css('bk-output-display  .text-field')).count()).toBe(2);
+  });
 
-    e.sendKeys("TEST");
-    expect(e.getAttribute('value')).toEqual("TEST");
+  it('Text Areas', function () {
+    var code = 'f1 = new EasyForm(\"Form\")\\n';
+    code += 'f1.addTextArea(\"Text Area\")\\n';
+    code += 'f1';
 
+    beakerPO.setCellInput(code);
+    beakerPO.evaluateCell();
+    beakerPO.waitForCellOutput();
 
-    //TEST UNDO
-    if (os.type() === 'Darwin') {
-      //COMMAND:      '\uE03D',  // Apple command key
-      e.sendKeys("\uE03Dz");
-    }
-    else {
-      //CONTROL:      '\uE009',
-      e.sendKeys("\uE009z");
-    }
-    expect(e.getAttribute('value')).toEqual("");
+    expect(element(by.css('bk-output-display  .text-area')).isPresent()).toBe(true);
+  });
 
-    //TEST REDO
-    //SHIFT:        '\uE008',
-    if (os.type() === 'Darwin') {
-      //COMMAND:      '\uE03D',  // Apple command key
-      e.sendKeys("\uE008\uE03Dz");
-    } else {
-      //CONTROL:      '\uE009',
-      e.sendKeys("\uE008\uE009z");
-    }
-    expect(e.getAttribute('value')).toEqual("TEST");
+  it('Dates', function () {
+    var code = 'f1 = new EasyForm(\"Form\")\\n';
+    code += 'f1.addDatePicker(\"Date\")\\n';
+    code += 'f1';
 
+    beakerPO.setCellInput(code);
+    beakerPO.evaluateCell();
+    beakerPO.waitForCellOutput();
+
+    expect(element(by.css('bk-output-display  .date-picker')).isPresent()).toBe(true);
+  });
+
+  it('Check Boxes', function () {
+    var code = 'f1 = new EasyForm(\"Form\")\\n';
+    code += 'options = [\"a\", \"b\", \"c\", \"d\"]\\n';
+    code += 'f1.addCheckBoxes(\"Check Boxes\", options)\\n';
+    code += 'f1';
+
+    beakerPO.setCellInput(code);
+
+    beakerPO.evaluateCell();
+    beakerPO.waitForCellOutput();
+
+    expect(element.all(by.css('bk-output-display input[type="checkbox"]')).count()).toBe(4);
+  });
+
+  it('Radio Buttons', function () {
+    var code = 'f1 = new EasyForm(\"Form\")\\n';
+    code += 'options = [\"a\", \"b\", \"c\", \"d\"]\\n';
+    code += 'f1.addRadioButtons(\"Radio Buttons\", options)\\n';
+    code += 'f1';
+
+    beakerPO.setCellInput(code);
+
+    beakerPO.evaluateCell();
+    beakerPO.waitForCellOutput();
+
+    expect(element.all(by.css('bk-output-display  .radio-button-component-item')).count()).toBe(4);
+  });
+
+  it('Combo Boxes', function () {
+    var code = 'f1 = new EasyForm(\"Form\")\\n';
+    code += 'options = [\"a\", \"b\", \"c\", \"d\"]\\n';
+    code += 'f1.addComboBox(\"Combo Box\", options)\\n';
+    code += 'f1';
+
+    beakerPO.setCellInput(code);
+
+    beakerPO.evaluateCell();
+    beakerPO.waitForCellOutput();
+
+    expect(element.all(by.css('bk-output-display  .combo-box')).count()).toBe(1);
+    expect(element.all(by.css('bk-output-display  option')).count()).toBe(4);
+  });
+
+  it('Text Areas Undo/Redo', function () {
+    var code = 'f1 = new EasyForm(\"Form\")\\n';
+    code += 'f1.addTextArea(\"Text Area\")\\n';
+    code += 'f1';
+    testUndoRedo(code, 'bk-output-display  .text-area');
   });
 
   it('Text Fields Undo/Redo', function () {
     var code = 'f1 = new EasyForm(\"Form\")\\n';
     code += 'f1.addTextField(\"first\", 15)\\n';
     code += 'f1';
-
-    beakerPO.insertCellButton.click();
-
-    beakerPO.setCellInput(code);
-    beakerPO.evaluateCell();
-    beakerPO.waitForCellOutput();
-
-    var e = element(by.css('bk-output-display  .text-field'));
-
-    e.sendKeys("TEST");
-    expect(e.getAttribute('value')).toEqual("TEST");
-
-
-    //TEST UNDO
-    if (os.type() === 'Darwin') {
-      //COMMAND:      '\uE03D',  // Apple command key
-      e.sendKeys("\uE03Dz");
-    }
-    else {
-      //CONTROL:      '\uE009',
-      e.sendKeys("\uE009z");
-    }
-    expect(e.getAttribute('value')).toEqual("");
-
-    //TEST REDO
-    //SHIFT:        '\uE008',
-    if (os.type() === 'Darwin') {
-      //COMMAND:      '\uE03D',  // Apple command key
-      e.sendKeys("\uE008\uE03Dz");
-    } else {
-      //CONTROL:      '\uE009',
-      e.sendKeys("\uE008\uE009z");
-    }
-    expect(e.getAttribute('value')).toEqual("TEST");
+    testUndoRedo(code, 'bk-output-display  .text-field');
   });
 
 })

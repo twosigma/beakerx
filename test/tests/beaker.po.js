@@ -217,6 +217,7 @@ var BeakerPageObject = function() {
 
   this.languageManagerCloseButton = element(by.className('language-manager-close-button'));
   this.insertCellButton = element(by.className('insert-cell'));
+  this.deleteCellButton = element(by.className('delete-cell'));
   this.evaluateButton = this.getEvaluateButton();
   this.modalDialogYesButton = element(by.css('.modal .yes'));
   this.modalDialogNoButton = element(by.css('.modal .no'));

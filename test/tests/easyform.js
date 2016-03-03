@@ -30,10 +30,14 @@ describe('EasyForm', function () {
     beakerPO.languageManagerCloseButton.click();
   }
 
-  function testUndoRedo(code, selector) {
+  function evaluate(code) {
     beakerPO.setCellInput(code);
     beakerPO.evaluateCell();
     beakerPO.waitForCellOutput();
+  }
+
+  function testUndoRedo(code, selector) {
+    evaluate(code);
 
     var e = element(by.css(selector));
 
@@ -82,11 +86,7 @@ describe('EasyForm', function () {
     code += 'f1.addTextField(\"first\", 15)\\n';
     code += 'f1.addTextField(\"second\", 15)\\n';
     code += 'f1';
-
-    beakerPO.setCellInput(code);
-    beakerPO.evaluateCell();
-    beakerPO.waitForCellOutput();
-
+    evaluate(code);
     expect(element.all(by.css('bk-output-display  .text-field')).count()).toBe(2);
   });
 
@@ -94,11 +94,7 @@ describe('EasyForm', function () {
     var code = 'f1 = new EasyForm(\"Form\")\\n';
     code += 'f1.addTextArea(\"Text Area\")\\n';
     code += 'f1';
-
-    beakerPO.setCellInput(code);
-    beakerPO.evaluateCell();
-    beakerPO.waitForCellOutput();
-
+    evaluate(code);
     expect(element(by.css('bk-output-display  .text-area')).isPresent()).toBe(true);
   });
 
@@ -106,11 +102,7 @@ describe('EasyForm', function () {
     var code = 'f1 = new EasyForm(\"Form\")\\n';
     code += 'f1.addDatePicker(\"Date\")\\n';
     code += 'f1';
-
-    beakerPO.setCellInput(code);
-    beakerPO.evaluateCell();
-    beakerPO.waitForCellOutput();
-
+    evaluate(code);
     expect(element(by.css('bk-output-display  .date-picker')).isPresent()).toBe(true);
   });
 
@@ -119,12 +111,7 @@ describe('EasyForm', function () {
     code += 'options = [\"a\", \"b\", \"c\", \"d\"]\\n';
     code += 'f1.addCheckBoxes(\"Check Boxes\", options)\\n';
     code += 'f1';
-
-    beakerPO.setCellInput(code);
-
-    beakerPO.evaluateCell();
-    beakerPO.waitForCellOutput();
-
+    evaluate(code);
     expect(element.all(by.css('bk-output-display input[type="checkbox"]')).count()).toBe(4);
   });
 
@@ -133,12 +120,7 @@ describe('EasyForm', function () {
     code += 'options = [\"a\", \"b\", \"c\", \"d\"]\\n';
     code += 'f1.addRadioButtons(\"Radio Buttons\", options)\\n';
     code += 'f1';
-
-    beakerPO.setCellInput(code);
-
-    beakerPO.evaluateCell();
-    beakerPO.waitForCellOutput();
-
+    evaluate(code);
     expect(element.all(by.css('bk-output-display  .radio-button-component-item')).count()).toBe(4);
   });
 
@@ -147,12 +129,7 @@ describe('EasyForm', function () {
     code += 'options = [\"a\", \"b\", \"c\", \"d\"]\\n';
     code += 'f1.addComboBox(\"Combo Box\", options)\\n';
     code += 'f1';
-
-    beakerPO.setCellInput(code);
-
-    beakerPO.evaluateCell();
-    beakerPO.waitForCellOutput();
-
+    evaluate(code);
     expect(element.all(by.css('bk-output-display  .combo-box')).count()).toBe(1);
     expect(element.all(by.css('bk-output-display  option')).count()).toBe(4);
   });

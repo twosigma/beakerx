@@ -42,7 +42,6 @@ describe('EasyForm', function () {
 
     //TEST UNDO
     if (os.type() === 'Darwin') {
-      webdriver.
       //COMMAND:      '\uE03D',  // Apple command key
       e.sendKeys("\uE03Dz");
     }

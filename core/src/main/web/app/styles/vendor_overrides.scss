@@ -116,6 +116,7 @@ tbody tr {
         opacity: 1;
         &:hover {
           background-color: $highlight-blue;
+          background-image: url("../images/menu_white@2x.png");
         }
       }
     }

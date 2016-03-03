@@ -125,8 +125,11 @@ a.dtmenu {
   margin-right: 10px;
 }
 
-.dtmenu .bko-menu{
+.dtmenu .bko-menu {
   display: block;
+  &:hover {
+    background-image: url("../images/menu_white@2x.png");
+  }
   &.sorting_desc {
     background-image: url("../images/sort_desc.png");
     background-size: 20px;

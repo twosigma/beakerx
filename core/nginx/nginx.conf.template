@@ -123,6 +123,14 @@ http {
       try_files $uri @dopass;
     }
 
+    # serve the static plugin content
+    location /%(urlhash)sbeaker/plugins/ {
+      %(auth_cookie_rule)s
+      rewrite ^/%(urlhash)sbeaker/(.*)$ /$1 break;
+      root "%(static_dir)s/../../../config/";
+      try_files $uri @dopass;
+    }
+
     # forward websockets, auth using path instead of token
     location /%(urlhash)sbeaker/cometd-%(sessionauth)s/ {
       %(auth_cookie_rule)s

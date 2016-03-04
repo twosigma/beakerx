@@ -157,8 +157,10 @@
         return result;
       };
 
+      var $$ = {};
       var variables = "var $ = undefined;";
       _.forEach(settings.aoColumns, function (column, index) {
+        $$[column.sTitle] = row[index];
         if (isValidJSIdentifier(column.sTitle)) {
           variables += ('var ' + column.sTitle + '=' + formatValue(row[index]) + ';');
         }

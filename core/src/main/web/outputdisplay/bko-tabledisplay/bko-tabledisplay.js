@@ -131,56 +131,60 @@
 
   $.fn.dataTable.ext.search.push(
     function (settings, formattedRow, rowIndex, row) {
-      var match = true;
+      var isValidJSIdentifier = function (columnTitle) {
+        try {
+          eval('var ' + columnTitle);
+        } catch (e) { return false; }
+        return true;
+      };
+      var formatValue = function (value) {
+        if (typeof value === 'string') { return "'" + value + "'"; }
+        if (value && value.type === 'Date') { return value.timestamp; }
+        return value;
+      };
+      var evalExpression = function (expression, vars) {
+        var result = true;
+        if (!_.isEmpty(expression)) {
+          try {
+            result = eval(vars + expression);
+          } catch (e) {
+            if (!(e instanceof SyntaxError && e.message === 'Unexpected end of input')) {
+              result = false;
+              console.log(e.message);
+            }
+          }
+        }
+        return result;
+      };
+
+      var variables = "var $ = undefined;";
+      _.forEach(settings.aoColumns, function (column, index) {
+        if (isValidJSIdentifier(column.sTitle)) {
+          variables += ('var ' + column.sTitle + '=' + formatValue(row[index]) + ';');
+        }
+      });
+
+      var tableFilterValue = $('#' + settings.sTableId + "_evalfilter").find('input').val();
+      if (!evalExpression(tableFilterValue, variables)) {
+        return false;
+      }
+
       for (var colInd = 0; colInd < row.length; colInd++) {
-        var jqInput = findFilterInput(settings, colInd);
-        if (jqInput.hasClass('search-active')) {
+        var columnFilter = findFilterInput(settings, colInd);
+        if (columnFilter.hasClass('search-active')) {
           return true; //use expression parsing only for filtering
         }
-        var searchString = jqInput.val();
-        if (_.isEmpty(searchString)) { continue; }
 
-        var isValidJSIdentifier = function(columnTitle){
-          try{
-            eval("var " + columnTitle);
-          }catch(e){
-            return false;
-          }
-          return true;
-        };
+        var columnFilterValue = columnFilter.val();
 
-        var formatValue = function(value){
-          if(typeof value === 'string'){
-            return  "'" + value + "'";
-          }
-          if(value && value.type === 'Date'){
-            return value.timestamp;
-          }
-          return value;
-        };
+        if (_.isEmpty(columnFilterValue)) { continue; }
 
-        var $ = row[colInd]; //variable for expression evaluation
-        var variables = "";
-        _.forEach(settings.aoColumns, function(column, index){
-          if(isValidJSIdentifier(column.sTitle)){
-            variables += ("var " + column.sTitle + "=" + formatValue(row[index]) + ";");
-          }
-        });
-
-        try {
-          match = eval(variables + searchString);
-          if (!match) {
-            break;
-          }
-        } catch (e) {
-          if (!(e instanceof SyntaxError && e.message === 'Unexpected end of input')) {
-            match = false;
-            console.log(e.message);
-            break;
-          }
+        variables += '$=' + formatValue(row[colInd]) + ';';
+        if (!evalExpression(columnFilterValue, variables)) {
+          return false;
         }
       }
-      return match;
+      return true;
     }
   );
 
@@ -829,12 +833,21 @@
           $scope.doCreateTable(model);
         };
 
-        $scope.showSearch = function() {
+        $scope.showTableSearch = function() {
           var sField = $('#' + $scope.id + '_filter');
           sField.toggleClass('show');
 
           if (sField.hasClass('show')) {
             var input = sField.find("input[type='search']");
+            input.focus();
+          }
+        };
+        $scope.showTableFilter = function() {
+          var fField = $('#' + $scope.id + '_evalfilter');
+          fField.toggleClass('show');
+
+          if (fField.hasClass('show')) {
+            var input = fField.find("input[type='search']");
             input.focus();
           }
         };
@@ -1537,7 +1550,7 @@
             init.scrollCollapse = true;
             init.dom = '<"bko-table"rtf>';
           } else {
-            init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf>';
+            init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf<"#' + scope.id + '_evalfilter">>';
             if (scope.data.length > 25) {
               init.pagingType = 'simple_numbers';
               init.pageLength = 25;
@@ -1578,10 +1591,27 @@
             var sField = $('#' + scope.id + '_filter');
             $('<i/>', {class: 'fa fa-times'})
               .bind('click', function(e) {
-                scope.showSearch();
+                scope.showTableSearch();
                 e.stopPropagation();
               })
               .appendTo(sField);
+
+            var fField = $('#' + scope.id + '_evalfilter').addClass('dataTables_evalfilter');
+            $('<input type="search">')
+              .on('keyup change', function () {
+                scope.table.draw();
+              })
+              .appendTo(
+                $('<label></label>')
+                  .text('Filter:')
+                  .appendTo(fField)
+              );
+            $('<i/>', {class: 'fa fa-times'})
+              .bind('click', function(e) {
+                scope.showTableFilter();
+                e.stopPropagation();
+              })
+              .appendTo(fField);
 
             if(init.paging !== false){
               var pagination = $(element).find(".bko-table-use-pagination");

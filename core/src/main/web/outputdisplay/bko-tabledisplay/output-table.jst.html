@@ -45,7 +45,14 @@
        </li>
        <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(false)" id="dt-hide-all" eat-click>Hide All Columns</a></li>
        <li>&nbsp;</li>
-       <li><a tabindex="-1" href="#" ng-click="showSearch()" id="dt-search" eat-click>Search...</a></li>
+       <li>
+         <a tabindex="-1" href="#" ng-click="showTableSearch()" id="dt-search" eat-click>Search...</a>
+         <i class="fa fa-search"></i>
+       </li>
+       <li>
+         <a tabindex="-1" href="#" ng-click="showTableFilter()" id="dt-filter" eat-click>Filter...</a>
+         <i class="fa fa-filter"></i>
+       </li>
        <li><a tabindex="-1" href="#" ng-click="hideFilter()" id="dt-hide-filter" eat-click>Hide Filter</a></li>
      </ul>
    </div>

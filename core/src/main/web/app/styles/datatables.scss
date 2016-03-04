@@ -59,11 +59,15 @@ td.dtcenter {
   border-color: $border-color;
 }
 
-.dataTables_wrapper .dataTables_filter {
+.dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_evalfilter {
   float:      left;
   text-align: left;
   margin-top: 10px;
   display:    none;
+
+  input {
+    margin-left: 0.5em;
+  }
 
   .fa.fa-times {
     cursor:       pointer;

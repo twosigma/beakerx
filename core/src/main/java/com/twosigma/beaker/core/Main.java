@@ -34,8 +34,10 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -206,9 +208,10 @@ public class Main {
         new WebServerModule(),
         new SerializerModule(),
         new GuiceCometdModule(),
-        new URLConfigModule());
+        new URLConfigModule(beakerCorePref));
 
     PluginServiceLocatorRest processStarter = injector.getInstance(PluginServiceLocatorRest.class);
+    processStarter.setAuthToken(beakerCorePref.getAuthToken());
     processStarter.start();
 
     BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
@@ -246,6 +249,17 @@ public class Main {
       final String listenInterface,
       final Boolean portable) {
     return new BeakerConfigPref() {
+
+      private String authToken;
+            
+      public String getAuthToken() {
+        if (null != this.authToken) {
+          return this.authToken;
+        }
+        String authEnv = System.getenv("beakerauth");
+        this.authToken = (null == authEnv) ? new BigInteger(255, new SecureRandom()).toString(32) : authEnv;
+        return this.authToken;
+      }
 
       @Override
       public Boolean getUseKerberos() {

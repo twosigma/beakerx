@@ -839,18 +839,23 @@
           var sField = $('#' + $scope.id + '_filter');
           sField.toggleClass('show');
 
+          var input = sField.find("input[type='search']");
           if (sField.hasClass('show')) {
-            var input = sField.find("input[type='search']");
             input.focus();
+          } else {
+            input.val('');
+            $scope.table.search('').draw();
           }
         };
         $scope.showTableFilter = function() {
           var fField = $('#' + $scope.id + '_evalfilter');
           fField.toggleClass('show');
 
+          var input = fField.find("input[type='search']");
           if (fField.hasClass('show')) {
-            var input = fField.find("input[type='search']");
             input.focus();
+          } else {
+            input.val('').trigger('change');
           }
         };
       },

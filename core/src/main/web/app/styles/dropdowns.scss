@@ -23,7 +23,7 @@
   }
   > li > a {
     position: relative;
-    padding: 4px 70px 2px 23px;
+    padding: 4px 80px 2px 23px;
     &:hover + .glyphicon-ok {
       color: $dropdown-link-hover-color;
     }
@@ -73,7 +73,7 @@
     width: 0;
     height: 0;
     margin-top: 5px;
-    margin-right: -60px;
+    margin-right: -70px;
     border-color: transparent;
     border-left-color: #cccccc;
     border-style: solid;

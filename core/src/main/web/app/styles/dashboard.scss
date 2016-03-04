@@ -21,15 +21,21 @@
   padding-right: 40px;
 
   .new-notebook {
-    margin-top: 40px;
-    margin-bottom: 60px;
+    margin: 40px 0;
+
+    [class*="col-"] {
+      margin: 10px 0;
+    }
 
     @media screen and (max-width: 746px) {
       [class*="col-"] {
-        margin: 10px 0;
         width: 100%
       }
     }
+  }
+
+  .recent-notebook {
+    margin-bottom: 60px;
   }
   padding-top: 60px;
 }

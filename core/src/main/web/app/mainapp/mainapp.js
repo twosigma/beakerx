@@ -1012,7 +1012,7 @@
             _impl.saveNotebook();
             $scope.$apply();
             return false;
-          } else if (e.target.nodeName !== "TEXTAREA") {
+          } else if (e.target.nodeName !== "TEXTAREA" && e.target.nodeName !== "INPUT") {
             if (e.ctrlKey && e.which === 90) { // Ctrl + z
               bkUtils.fcall(function() {
                 bkSessionManager.undo();

@@ -77,6 +77,39 @@
     }
   });
 
+  $.fn.dataTable.ext.search.push(
+    function (settings, row, rowIndex) {
+      var match = true;
+      for (var colInd = 0; colInd < row.length; colInd++) {
+        var searchString = $(settings.aoHeader[1][colInd].cell).find('.filter-input').val();
+        if (_.isEmpty(searchString)) { continue; }
+
+        var cellValue = row[colInd];
+        if (settings.aoColumns[colInd].sType === 'num' &&
+          (_.startsWith(searchString, '>') ||
+          _.startsWith(searchString, '<') ||
+          _.startsWith(searchString, '='))) {
+
+          var numValue = parseFloat(cellValue);
+          searchString = searchString.replace(/=/g, '==');
+          searchString = searchString.replace(/&&/g, '&& numValue');
+
+          try {
+            match = eval("numValue" + searchString);
+            if (!match) {
+              break;
+            }
+          } catch (e) {
+          }
+        } else if (cellValue.toUpperCase().indexOf(searchString.toUpperCase()) < 0) {
+          match = false;
+          break;
+        }
+      }
+      return match;
+    }
+  );
+
   jQuery.fn.dataTableExt.aTypes.unshift(function(sData) {
     if (typeof sData !== 'string') {
       return;
@@ -159,7 +192,8 @@
                   'Etc/GMT-13|GMT-13:00',
                   'Etc/GMT-14|GMT-14:00']);
   //jscs:disable
-  beakerRegister.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS) {
+  beakerRegister.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', '$rootScope',
+    function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS, $rootScope) {
   //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
     return {
@@ -376,6 +410,16 @@
         $scope.isColumnVisible = function (initialIndex) {
           return $scope.getColumnByInitialIndex(initialIndex).visible();
         };
+
+        $scope.doUsePagination = function () {
+          $scope.pagination.use = !$scope.pagination.use;
+          if(!$scope.pagination.use){
+            $scope.pagination.rowsToDisplay = $scope.table.settings()[0]._iDisplayLength;
+          }
+          // reorder the table data
+          $scope.applyChanges();
+        };
+
         $scope.refreshCells = function() {
           $scope.getCellIdx      =  [];
           $scope.getCellNam      =  [];
@@ -414,6 +458,71 @@
               $scope.getCellDispOpts.push($scope.allTypes);
             }
           }
+          $($scope.table.table().header()).find("th").each(function(i){
+            var events = jQuery._data(this, 'events');
+            if (events && events.click) {
+              var click = events.click[0].handler;
+              $(this).unbind('click.DT');
+              $(this).bind('click.DT', function (e) {
+                if(!$(e.target).hasClass('bko-column-header-menu')){
+                  click(e);
+                }
+              });
+            }
+          });
+          $scope.applyFilters();
+        };
+
+       $scope.removeFilterListeners = function () {
+         $scope.table.columns().every(function () {
+           var column = this;
+           var columnFilterHeader = $($scope.table.table().header())
+                                    .find('.filterRow th:eq(' + column.header().cellIndex + ')');
+           $('.filter-input', columnFilterHeader).off('keyup.column-filter change.column-filter keydown.column-filter ' +
+                                                      'blur.column-filter focus.column-filter');
+           $('.clear-filter', columnFilterHeader).off('mousedown.column-filter');
+         });
+        };
+        // Apply filters
+        $scope.applyFilters = function (){
+          if (!$scope.table) { return; }
+          $scope.removeFilterListeners();
+          $scope.table.columns().every(function () {
+            var column = this;
+            var columnFilterHeader = $($scope.table.table().header())
+              .find('.filterRow th:eq(' + column.header().cellIndex + ')');
+            $('.filter-input', columnFilterHeader)
+              .on('keyup.column-filter change.column-filter', function () {
+                column.draw();
+                $scope.updateFilterWidth($(this), column);
+              })
+              .on('focus.column-filter', function (event) {
+                if($scope.keyTable){
+                  $scope.keyTable.blur();
+                }
+              })
+              .on('blur.column-filter', function (event) {
+                $scope.onFilterBlur($(this), event.relatedTarget);
+              })
+              .on('keydown.column-filter', function (event) {
+                var key = event.which;
+                if (key == 13) { //enter key
+                  $scope.onFilterBlur($(this), this);
+                } else {
+                  $scope.onFilterEditing($(this), column);
+                }
+              });
+
+            $('.clear-filter', columnFilterHeader)
+              .on('mousedown.column-filter', function (event) {
+                var jqFilterInput = $(this).siblings('.filter-input');
+                if(jqFilterInput.is(':focus')){
+                  event.preventDefault();
+                }
+                $scope.clearFilter(column);
+                $scope.updateFilterWidth(jqFilterInput, column);
+              });
+          });
         };
 
         $scope.renderMenu = false;
@@ -629,79 +738,12 @@
         $scope.allBoolTypes = [{type: 0, name: 'string'},
         {type: 9, name: 'boolean'}];
 
-        $scope.openOptionsDialog = function() {
-          var options = {
-            backdrop: true,
-            keyboard: true,
-            backdropClick: true,
-            scope: $scope,
-            windowClass: 'output-table-options beaker-sandbox',
-            backdropClass: 'beaker-sandbox',
-            template: JST['bko-tabledisplay/output-table-options']()
-          };
-          $scope.getCellShoOld    = $scope.getCellSho.slice(0);
-          $scope.getCellDispOld   = $scope.getCellDisp.slice(0);
-          $scope.getCellAlignOld  = $scope.getCellAlign.slice(0);
-          $scope.usePaginationOld = $scope.pagination.use;
-          $scope.rowsToDisplayOld = $scope.pagination.rowsToDisplay;
-          $scope.fixLeftOld       = $scope.pagination.fixLeft;
-          $scope.fixRightOld      = $scope.pagination.fixRight;
-          $scope.modal = $uibModal.open(options);
-        };
-
         $scope.applyChanges = function() {
           $scope.doDestroy(false);
           // reorder the table data
           var model = $scope.model.getCellModel();
           $scope.doCreateData(model);
           $scope.doCreateTable(model);
-        };
-
-        $scope.closeOptionsDialog = function() {
-          $scope.modal.close();
-          var i;
-          var doit = 0;
-
-          for (i = 0; i < $scope.getCellDisp.length; i++) {
-            if ($scope.getCellSho[i] !== $scope.getCellShoOld[i]) {
-              // refresh only visibility
-              doit = 1;
-            }
-          }
-          //jscs:disable
-          if (($scope.usePaginationOld !== $scope.pagination.use) || ($scope.rowsToDisplayOld !== $scope.pagination.rowsToDisplay) ||
-              ($scope.fixLeftOld !== $scope.pagination.fixLeft) || ($scope.fixRightOld !== $scope.pagination.fixRight)) {
-          //jscs:enable
-            doit = 2;
-          } else {
-            for (i = 0; i < $scope.getCellDisp.length; i++) {
-              //jscs:disable
-              if (($scope.getCellDisp[i] !== $scope.getCellDispOld[i]) || ($scope.getCellAlign[i] !== $scope.getCellAlignOld[i])) {
-              //jscs:enable
-                doit = 2;
-              }
-            }
-          }
-          if (doit == 1) {
-            for (i = 0; i < $scope.getCellDisp.length; i++) {
-              $scope.table.column(i + 1).visible($scope.getCellSho[i], false);
-            }
-            $scope.table.columns.adjust().draw(false);
-          } else if (doit == 2) {
-            $scope.doDestroy(false);
-            // update table display
-            for (i = 0; i < $scope.getCellDisp.length; i++) {
-              $scope.actualtype[$scope.colorder[i + 1] - 1] = $scope.getCellDisp[i];
-              $scope.actualalign[$scope.colorder[i + 1] - 1] = $scope.getCellAlign[i];
-            }
-            // reorder the table data
-            $scope.applyChanges();
-          }
-        };
-
-        $scope.cancelOptionsDialog = function() {
-          $scope.modal.close();
-          $scope.refreshCells();
         };
 
         $scope.showSearch = function() {
@@ -728,9 +770,11 @@
             scope.removeOnKeyListeners();
             $('#' + scope.id + ' tbody').off('mouseleave.bko-datatable');
             $('#' + scope.id + ' tbody').off('mouseenter.bko-datatable');
+            $(scope.table.table().container()).off('mouseleave.bko-datatable');
+            $(scope.table.table().container()).off('mouseenter.bko-datatable');
             scope.table.off('key');
-            $('#' + scope.id).html('');
-            scope.table.destroy();
+            scope.table.off('column-visibility.dt');
+            scope.removeFilterListeners();
             delete scope.table;
             delete scope.colreorg;
             if (scope.clipclient !== undefined) {
@@ -907,6 +951,11 @@
             scope.selected = selected;
           }
         };
+        scope.updateResizeHandleWidth = function () {
+          if (scope.jqTableResizeHandle) {
+            scope.jqTableResizeHandle.css('max-width', $('#' + scope.id).width());
+          }
+        };
         //jscs:disable
         scope.update_size = function() {
         //jscs:enable
@@ -916,6 +965,7 @@
           if (pp.width() > me.width()) {
             pp.width(me.width());
           }
+          scope.updateResizeHandleWidth();
           if (scope.fixcols)
             scope.fixcols.fnRedrawLayout();
         };
@@ -1131,6 +1181,34 @@
               } else {
                 return (order[0][0] !== colIdx);
               }
+            },
+            doFixColumnLeft: function (el) {
+              var container = el.closest('.bko-header-menu');
+              var colIdx = container.data('columnIndex');
+              var fixed = this.isFixedLeft(container);
+              scope.pagination.fixLeft = colIdx;
+              if (fixed) {
+                scope.pagination.fixLeft--;
+              }
+              scope.applyChanges();
+            },
+            doFixColumnRight: function (el) {
+              var container = el.closest('.bko-header-menu');
+              var colIdx = container.data('columnIndex');
+              var fixed = this.isFixedRight(container);
+              scope.pagination.fixRight = scope.columns.length - colIdx;
+              if (fixed) {
+                scope.pagination.fixRight--;
+              }
+              scope.applyChanges();
+            },
+            isFixedRight: function (container) {
+              var colIdx = container.data('columnIndex');
+              return scope.columns.length - colIdx <= scope.pagination.fixRight;
+            },
+            isFixedLeft: function (container) {
+              var colIdx = container.data('columnIndex');
+              return scope.pagination.fixLeft >= colIdx;
             }
           };
 
@@ -1245,6 +1323,41 @@
                     }
                   }
                 ]
+              },
+              {
+                title: 'Filter...',
+                action: function(el) {
+                  var table = scope.table;
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex');
+                  var column = table.column(colIdx);
+
+                  scope.showFilter(column);
+                }
+              },
+              {
+                title: 'Fix Column',
+                action: null,
+                items: [
+                  {
+                    title: 'Left',
+                    isChecked: function(container) {
+                      return menuHelper.isFixedLeft(container);
+                    },
+                    action: function(el) {
+                      menuHelper.doFixColumnLeft(el);
+                    }
+                  },
+                  {
+                    title: 'Right',
+                    isChecked: function(container) {
+                      return menuHelper.isFixedRight(container);
+                    },
+                    action: function(el) {
+                      menuHelper.doFixColumnRight(el);
+                    }
+                  }
+                ]
               }
             ]
           };
@@ -1258,7 +1371,7 @@
                 break;
               }
             }
-            cols.push({'title' : scope.indexName+'&nbsp;&nbsp;', 'className': 'dtright', 'render': converter});
+            cols.push({'title' : scope.indexName, 'className': 'dtright', 'render': converter});
           } else {
             cols.push({'title': '    ', 'className': 'dtright', 'render': converter});
           }
@@ -1286,6 +1399,7 @@
             }
             cols.push(col);
           }
+
           scope.columns = cols;
 
           var id = '#' + scope.id;
@@ -1310,7 +1424,8 @@
               scope.updateBackground();
               scope.updateDTMenu();
               //jscs:enable
-            }
+            },
+            'bSortCellsTop': true
           };
 
           if (!scope.pagination.use) {
@@ -1319,7 +1434,7 @@
             init.scrollCollapse = true;
             init.dom = '<"bko-table"rtf>';
           } else {
-            init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p>>Sf>';
+            init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf>';
             if (scope.data.length > 25) {
               init.pagingType = 'simple_numbers';
               init.pageLength = 25;
@@ -1345,14 +1460,15 @@
                 scope.refreshCells();
                 scope.$digest();
               },
-              'iFixedColumns': 1
+              'iFixedColumns': scope.pagination.fixLeft + 1,
+              'iFixedColumnsRight': scope.pagination.fixRight
             });
             if (scope.colorder !== undefined) {
               scope.colreorg.fnOrder(scope.colorder);
             } else {
               scope.colorder = scope.colreorg.fnOrder().slice(0);
             }
-            new $.fn.dataTable.KeyTable($(id));
+            scope.keyTable = new $.fn.dataTable.KeyTable($(id));
             scope.refreshCells();
 
             var sField = $('#' + scope.id + '_filter');
@@ -1362,6 +1478,17 @@
                 e.stopPropagation();
               })
               .appendTo(sField);
+
+            if(init.paging !== false){
+              var pagination = $(element).find(".bko-table-use-pagination");
+              $('<label eat-click><input type="checkbox" checked="true"> use pagination</label>')
+                .bind('click', function(e) {
+                  if (e.target.tagName === 'INPUT') {
+                    scope.doUsePagination();
+                  }
+                })
+                .appendTo(pagination);
+            }
 
             /*
             $(id + ' tbody').off('click');
@@ -1458,6 +1585,73 @@
               scope.applyChanges();
             };
 
+            scope.showFilter = function (column) {
+              scope.filter = {};
+              scope.$apply();
+              if(scope.fixcols){
+                scope.fixcols.fnRedrawLayout();
+              }
+              var columnFilterHeader = $(scope.table.table().header())
+                  .find('.filterRow th:eq(' + column.header().cellIndex + ')');
+              $('.filter-input', columnFilterHeader).focus();
+            };
+
+            scope.hideFilter = function () {
+              scope.filter = null;
+              setTimeout(function(){
+                scope.table.draw();
+                scope.update_size()
+              }, 0);
+            };
+
+            scope.clearFilter = function (column) {
+              if(column) {
+                scope.filter[column.index()] = '';
+                scope.$apply();
+                column.draw();
+                scope.checkFilter();
+              }
+            };
+
+            scope.onFilterBlur = function (jqInputEl, relatedTarget){
+              jqInputEl.css('width', '');
+              jqInputEl.parent().removeClass('editing');
+              jqInputEl.parent().siblings('.hidden-filter').addClass('hidden-filter-input');
+              if(!$(element).find(".filterRow").has(relatedTarget).length){
+                // focus wasn't moved to another filter input
+                scope.checkFilter();
+              }
+            };
+
+            scope.checkFilter = function () {
+              var hasNotEmptyFilter = false;
+              _.forOwn(scope.filter, function(value){
+                if(!_.isEmpty(value)){
+                  hasNotEmptyFilter = true;
+                }
+              });
+
+              if(!hasNotEmptyFilter){
+                scope.hideFilter();
+              }
+            };
+
+            scope.onFilterEditing = function(jqInputEl, column){
+              scope.updateFilterWidth(jqInputEl, column);
+              jqInputEl.parent().addClass('editing');
+              jqInputEl.parent().siblings('.hidden-filter').removeClass('hidden-filter-input');
+            };
+
+            scope.updateFilterWidth = function(jqInput, column){
+              var textWidth = jqInput.parent().siblings('.hidden-length').width() + 30;
+              var headerWidth = $(column.header()).width();
+              if(textWidth > headerWidth){
+                jqInput.css('width', textWidth);
+              } else {
+                jqInput.css('width', '');
+              }
+            };
+
             scope.onKeyAction = function (column, onKeyEvent) {
               var key = onKeyEvent.keyCode;
               var charCode = String.fromCharCode(key);
@@ -1476,6 +1670,14 @@
               }
             };
 
+            scope.getColumnIndexByCellNode = function (cellNode) {
+              if (cellNode.tagName === 'TD') {
+                return scope.fixcols.fnGetPosition(cellNode)[2];
+              } else { //TH
+                return scope.table.column($(cellNode).index() + ':visible').index();
+              }
+            };
+
             scope.removeOnKeyListeners = function () {
               for (var f in scope.onKeyListeners) {
                 if (scope.onKeyListeners.hasOwnProperty(f)) {
@@ -1486,50 +1688,37 @@
             };
 
             scope.removeOnKeyListeners();
-            $(id + ' tbody')
-              .on("mouseenter.bko-datatable", 'td', function (e) {
-                if ($(id + ' tbody tr td').hasClass("focus")) {
+            $(scope.table.table().container())
+              .on("mouseenter.bko-datatable", 'td, th', function (e) {
+                if ($(id + ' tbody tr td').hasClass("focus") || $(scope.table.header()).has(':focus').length) {
                   return; //ignore mouse over for key events if there is focus on table's cell
                 }
-                var cellPos = scope.table.cell(this).index();
-                if(cellPos) {
-                  var column = cellPos.column;
-                  if (!scope.onKeyListeners[column]) {
-                    scope.onKeyListeners[column] = function (onKeyEvent) {
-                      if (!onKeyEvent.isDefaultPrevented()) {
-                        scope.onKeyAction(column, onKeyEvent);
-                      }
-                    };
-                    $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
-                  }
+                var column = scope.getColumnIndexByCellNode(this);
+                if (!scope.onKeyListeners[column]) {
+                  scope.onKeyListeners[column] = function (onKeyEvent) {
+                    if (!onKeyEvent.isDefaultPrevented()) {
+                      scope.onKeyAction(column, onKeyEvent);
+                    }
+                  };
+                  $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
                 }
               })
-              .on("mouseleave.bko-datatable", 'td', function (e) {
-                var cellPos = scope.table.cell(this).index();
-                if(cellPos) {
-                  var listener = scope.onKeyListeners[cellPos.column];
-                  if(listener) {
-                    delete scope.onKeyListeners[cellPos.column];
-                    $(document).off("keydown.bko-datatable", listener);
-                  }
+              .on("mouseleave.bko-datatable", 'td, th', function (e) {
+                var column = scope.getColumnIndexByCellNode(this);
+                var listener = scope.onKeyListeners[column];
+                if(listener) {
+                  delete scope.onKeyListeners[column];
+                  $(document).off("keydown.bko-datatable", listener);
                 }
               });
             scope.table
               .on('key', function (e, datatable, key, cell, originalEvent) {
                 originalEvent.preventDefault();
                 scope.onKeyAction(cell.index().column, originalEvent);
+              })
+              .on('column-visibility.dt', function () {
+                scope.updateResizeHandleWidth();
               });
-
-            $(scope.table.header()).find("th").each(function(i){
-              var events = jQuery._data(this, 'events');
-              var click = events.click[0].handler;
-              $(this).unbind('click.DT');
-              $(this).bind('click.DT', function(e){
-                if(!e.isDefaultPrevented()){
-                  click(e);
-                }
-              });
-            });
 
             $(window).bind('resize.' + scope.id, function() {
               //jscs:disable
@@ -1549,11 +1738,30 @@
               inits.leftColumns = 1;
             }
             if (scope.pagination.fixRight) {
-              inits.rightColumns = 1;
+              inits.rightColumns = scope.pagination.fixRight;
             } else {
               inits.rightColumns = 0;
             }
-            scope.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
+            scope.fixcols = new $ .fn.dataTable.FixedColumns($(id), inits);
+
+            if (!scope.pagination.use) {
+              var table = $('#' + scope.id);
+              var scrollWrapper = table.closest('.DTFC_ScrollWrapper');
+              var scrollBody = table.parent();
+              var scrollHeader = table.closest('.dataTables_scrollHead');
+              scope.jqTableResizeHandle = scrollWrapper.resizable({
+                handles: 's',
+                resize: function (event, ui) {
+                  var newHeight = ui.size.height;
+                  var headerHeight = scrollHeader.height();
+                  scrollBody.css('max-height', newHeight - headerHeight);
+                }
+              }).find('.ui-resizable-handle');
+              scope.jqTableResizeHandle.append('<span class="glyphicon glyphicon-resize-vertical"></span>');
+              scope.updateResizeHandleWidth();
+            }
+            scope.applyFilters();
+
           }, 0);
         };
 
@@ -1655,9 +1863,11 @@
           if(scope.table){
             var orderInfo = scope.table.order()[0];
             scope.isIndexColumnDesc = orderInfo[0] === 0 && orderInfo[1] === 'desc';
-            scope.$apply();
+            if (!(scope.$$phase || $rootScope.$$phase)) {
+              scope.$apply();
+            }
           }
-        }
+        };
 
         scope.getDtRow = function (node) {
           var dtRow;

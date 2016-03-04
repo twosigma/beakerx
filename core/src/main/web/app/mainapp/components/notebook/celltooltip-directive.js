@@ -60,11 +60,11 @@
           tooltip.removeClass('CodeMirror-hints');
         });
 
-        scope.$on('showParameterDocumentation', function(event, doc) {
+        scope.$on('showParameterDocumentation', function(event, doc, leftScrollPosition, tooltipMinWidth) {
           tooltip.empty();
           unbindEvents();
           displayTooltip(doc);
-          setTooltipPosition(calculateTooltipPosition());
+          setTooltipPosition(calculateTooltipPosition(leftScrollPosition, tooltipMinWidth));
         });
 
         scope.$on('hideParameterDocumentation', function() {
@@ -94,15 +94,26 @@
           tooltip.removeClass('bkcelltooltip-open');
         }
 
-        function calculateTooltipPosition() {
+        function calculateTooltipPosition(leftScrollPosition, tooltipMinWidth) {
+          leftScrollPosition = leftScrollPosition || 0;
+
           var jqEditor = $(scope.editor.getWrapperElement());
           var cmPosition = jqEditor.position();
           var position = scope.editor.cursorCoords(true, 'local');
-          var vMargins = jqEditor.outerHeight(true) - jqEditor.height();
-          var hMargins = jqEditor.outerWidth(true) - jqEditor.width();
 
-          var left = (cmPosition.left + position.left + hMargins);
-          var top = (cmPosition.top + position.bottom + vMargins);
+          var editorWidth = jqEditor.width();
+
+          var vMargins = jqEditor.outerHeight(true) - jqEditor.height();
+          var hMargins = jqEditor.outerWidth(true) - editorWidth;
+
+          var left = cmPosition.left + position.left + hMargins - leftScrollPosition;
+          var top = cmPosition.top + position.bottom + vMargins;
+
+          var documentationWidth = editorWidth - left;
+          if (tooltipMinWidth && documentationWidth < tooltipMinWidth) {
+            left = Math.max(0, left - (tooltipMinWidth - documentationWidth));
+          }
+
           return {top: top, left: left};
         }
 

@@ -18,27 +18,27 @@
 (function() {
   'use strict';
 
-  window.beaker = {
+  window.beakerRegister = {
     toBeAddedToOutputDisplayFactory: {},
     bkoDirective: function(type, impl) {
-      if (window.beaker.outputDisplayFactory) {
-        window.beaker.outputDisplayFactory.add(type, impl);
+      if (window.beakerRegister.outputDisplayFactory) {
+        window.beakerRegister.outputDisplayFactory.add(type, impl);
       } else {
         this.toBeAddedToOutputDisplayFactory[type] = impl;
       }
     },
     toBeAddedToOutputDisplayService: {},
     bkoFactory: function(name, impl) {
-      if (window.beaker.outputDisplayService) {
-        window.beaker.outputDisplayService.addService(name, impl);
+      if (window.beakerRegister.outputDisplayService) {
+        window.beakerRegister.outputDisplayService.addService(name, impl);
       } else {
         this.toBeAddedToOutputDisplayService[name] = impl;
       }
     },
     toBeAddedToOutputDisplayType: {},
     registerOutputDisplay: function(type, displays) {
-      if (window.beaker.outputDisplayFactory) {
-        window.beaker.outputDisplayFactory.addOutputDisplayType(type, displays);
+      if (window.beakerRegister.outputDisplayFactory) {
+        window.beakerRegister.outputDisplayFactory.addOutputDisplayType(type, displays);
       } else {
         this.toBeAddedToOutputDisplayType[type] = displays;
       }

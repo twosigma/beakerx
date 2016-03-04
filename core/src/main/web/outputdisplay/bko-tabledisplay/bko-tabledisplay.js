@@ -130,7 +130,7 @@
   };
 
   $.fn.dataTable.ext.search.push(
-    function (settings, row, rowIndex) {
+    function (settings, formattedRow, rowIndex, row) {
       var match = true;
       for (var colInd = 0; colInd < row.length; colInd++) {
         var jqInput = findFilterInput(settings, colInd);
@@ -140,9 +140,35 @@
         var searchString = jqInput.val();
         if (_.isEmpty(searchString)) { continue; }
 
+        var isValidJSIdentifier = function(columnTitle){
+          try{
+            eval("var " + columnTitle);
+          }catch(e){
+            return false;
+          }
+          return true;
+        };
+
+        var formatValue = function(value){
+          if(typeof value === 'string'){
+            return  "'" + value + "'";
+          }
+          if(value && value.type === 'Date'){
+            return value.timestamp;
+          }
+          return value;
+        };
+
         var $ = row[colInd]; //variable for expression evaluation
+        var variables = "";
+        _.forEach(settings.aoColumns, function(column, index){
+          if(isValidJSIdentifier(column.sTitle)){
+            variables += ("var " + column.sTitle + "=" + formatValue(row[index]) + ";");
+          }
+        });
+
         try {
-          match = eval(searchString);
+          match = eval(variables + searchString);
           if (!match) {
             break;
           }

@@ -17,6 +17,8 @@
 var _ = require('underscore');
 
 var BeakerPageObject = function() {
+
+  this.EC = protractor.ExpectedConditions;
   this.baseURL = 'http://localhost:8801/';
   this.mainmenu = element.all(by.repeater('m in getMenus()'));
   //jscs:disable
@@ -161,6 +163,7 @@ var BeakerPageObject = function() {
   this.helpMenu = element(by.className('help-menu'));
 
   this.languageManagerMenuItem = element(by.className('language-manager-menuitem'));
+  this.runAllCellsMenuItem = element(by.className('run-all-cells-menuitem'));
   this.closeMenuItem = element(by.className('close-menuitem'));
 
   this.closeNotebook = function() {
@@ -318,17 +321,22 @@ var BeakerPageObject = function() {
     }, 10000);
   };
 
+
   this.waitUntilLoadingFinished = function() {
     var self = this;
     return browser.wait(function() {
       return self.getLoadingIndicator().isPresent()
-      .then(function(present) {
+        .then(function(present) {
         return !present;
       })
       .thenCatch(function() {
         return false;
       });
     }, 10000);
+  };
+
+  this.waitUntilLoadingIndicator = function() {
+    browser.wait(this.EC.presenceOf($('.navbar-text > i')), 10000);
   }
 
 };

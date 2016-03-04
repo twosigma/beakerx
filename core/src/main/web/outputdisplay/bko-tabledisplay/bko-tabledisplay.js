@@ -140,7 +140,7 @@
         var searchString = jqInput.val();
         if (_.isEmpty(searchString)) { continue; }
 
-        var x = row[colInd]; //variable for expression evaluation
+        var $ = row[colInd]; //variable for expression evaluation
         try {
           match = eval(searchString);
           if (!match) {

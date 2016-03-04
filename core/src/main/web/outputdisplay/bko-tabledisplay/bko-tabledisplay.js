@@ -1383,6 +1383,7 @@
               },
               {
                 title: 'Filter...',
+                icon: 'fa fa-filter',
                 action: function(el) {
                   var table = scope.table;
                   var container = el.closest('.bko-header-menu');
@@ -1394,6 +1395,7 @@
               },
               {
                 title: 'Search...',
+                icon: 'fa fa-search',
                 action: function(el) {
                   var table = scope.table;
                   var container = el.closest('.bko-header-menu');

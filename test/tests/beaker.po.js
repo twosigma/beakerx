@@ -232,6 +232,70 @@ var BeakerPageObject = function() {
   };
   this.cellEvaluatorDisplay = element(by.css('.code-cell-area .cell-evaluator-menu b'));
 
+  //Functions for access to plot elements
+
+
+  this.scrollToCodeCellOutput = function (index) {
+    return browser.executeScript("$('.code-cell-output')[" + index + "].scrollIntoView();");
+  };
+
+  this.getCodeCellOutputByIndex = function (index) {
+    return element.all(by.css('.code-cell-output')).get(index);
+  };
+
+    this.getCodeCellOutputCombplotTitle = function (codeCellOutputIdx) {
+    return this.getCodeCellOutputByIndex(codeCellOutputIdx).element(by.id('combplotTitle')).getText();
+  };
+
+  this.getCodeCellOutputContainerTitle = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getCodeCellOutputByIndex(codeCellOutputIdx)
+      .all(by.id("plotTitle"))
+      .get(containerIdx).getText();
+  };
+
+  this.getCodeCellOutputContainerYLabel = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('ylabel')).getText();
+  };
+
+  this.getCodeCellOutputContainerYRLabel = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('yrlabel')).getText();
+  };
+
+  this.getCodeCellOutputContainerXLabel = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('xlabel')).getText();
+  };
+
+
+  this.getPlotLegendContainer = function (codeCellOutputIdx, containerIdx) {
+    return this.getCodeCellOutputByIndex(codeCellOutputIdx).all(By.css('.plot-plotlegendcontainer')).get(containerIdx);
+  };
+
+  this.getPlotSvg= function (codeCellOutputIdx, containerIdx) {
+    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(By.tagName('svg'));
+  };
+
+  this.getPlotMaing= function (codeCellOutputIdx, containerIdx) {
+    return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('maing'));
+  };
+
+  this.getPlotSvgElementByIndex= function (codeCellOutputIdx, containerIdx, elementIndex) {
+    return this.getPlotSvg(codeCellOutputIdx, containerIdx).all(by.css("#maing > g")).get(elementIndex);
+  };
+
+  //End Functions for access to plot elements
+
   //CodeMirror API. See for information https://sharpkit.net/help/SharpKit.CodeMirror/SharpKit.CodeMirror/CodeMirror/
 
   this.setCellInput = function(code) {

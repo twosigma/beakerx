@@ -96,7 +96,7 @@ public class Main {
     opts.addOption(null, "require-password", false, "Ask for password when connecting");
     opts.addOption(null, "listen-interface", true, "Interface to listen on - requires ip address or '*'");
     opts.addOption(null, "portable", false, "Configuration and runtime files located in application instead of user home directory.");
-    opts.addOption(null, "show-zombie-logging", false, "Prevent distracting logging by Beaker clients of previous server instances.");
+    opts.addOption(null, "show-zombie-logging", false, "Show distracting logging by clients of previous server instances.");
     
     CommandLine line = parser.parse(opts, args);
     if (line.hasOption("help")) {

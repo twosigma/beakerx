@@ -17,6 +17,7 @@ package com.twosigma.beaker.core.module;
 
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import com.twosigma.beaker.core.module.config.BeakerConfigPref;
 import com.twosigma.beaker.core.rest.FileIORest;
 import com.twosigma.beaker.core.rest.HttpProxyRest;
 import com.twosigma.beaker.core.rest.LoginRest;
@@ -40,6 +41,12 @@ import java.util.HashMap;
  */
 public class URLConfigModule extends ServletModule {
 
+  private String authToken;
+
+  public URLConfigModule(BeakerConfigPref pref) {
+    authToken = pref.getAuthToken();
+  }
+
   @SuppressWarnings("serial")
   @Override
   protected void configureServlets() {
@@ -51,7 +58,7 @@ public class URLConfigModule extends ServletModule {
     });
 
     bind(GuiceCometdServlet.class);
-    serve("/cometd/*").with(GuiceCometdServlet.class, new HashMap<String, String>() {
+    serve("/cometd-" + this.authToken + "/*").with(GuiceCometdServlet.class, new HashMap<String, String>() {
       {
         put("jsonContext", JacksonJSONContextServer.class.getCanonicalName());
       }

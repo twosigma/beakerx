@@ -51,6 +51,17 @@
     postHelperHooks: []
   };
 
+  function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0)==' ') c = c.substring(1);
+      if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+    }
+    return undefined;
+  };
+
   var initPlugins = function() {
     var deferred = Q.defer();
     var plugins;
@@ -78,8 +89,9 @@
       loadJS(url, function() {
         loadList(urls, success, failure);
       }, failure);
-    }
+    };
 
+    $.ajaxSetup({headers: { "X-XSRF-TOKEN": getCookie("XSRF-TOKEN")}});
     $.get('../beaker/rest/util/getInitPlugins')
         .done(function(list) {
           loadList(list, function() {
@@ -345,7 +357,7 @@
           }
         }
       };
-      bkUtils.initializeCometd(document.baseURI+'cometd/');
+      bkUtils.initializeCometd(document.baseURI + 'cometd-' + getCookie("XSRF-TOKEN") + '/');
       bkCoreManager.init(beakerRootOp);
       Q.delay(1000).then(function() {
         $.get("../beaker/rest/util/whoami", {}, function(data) {

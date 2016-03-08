@@ -22,8 +22,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.Exception;
+import java.math.BigInteger;
 import java.net.UnknownHostException;
 import java.net.InetAddress;
+import java.security.SecureRandom;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -80,9 +82,14 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String useHttpsKey;
   private final Boolean requirePassword;
   private final String listenInterface;
+  private SecureRandom random;
 
   private String hash(String password) {
     return DigestUtils.sha512Hex(password + getPasswordSalt());
+  }
+
+  private String randomString(int nbits) {
+    return new BigInteger(nbits, this.random).toString(32);
   }
 
   @Inject
@@ -176,9 +183,10 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.requirePassword = pref.getRequirePassword();
     this.listenInterface = pref.getListenInterface();
     
-    this.authCookie = RandomStringUtils.random(40, true, true);
-    // XXX user might provide their own hash in beaker.config.json
-    String password = RandomStringUtils.random(15, true, true);
+    this.random = new SecureRandom();
+    // protect the core server
+    this.authCookie = randomString(255);
+    String password = randomString(100);
     this.passwordHash = hash(password);
     this.password = password;
 

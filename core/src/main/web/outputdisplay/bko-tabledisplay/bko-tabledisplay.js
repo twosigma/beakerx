@@ -410,6 +410,16 @@
         $scope.isColumnVisible = function (initialIndex) {
           return $scope.getColumnByInitialIndex(initialIndex).visible();
         };
+
+        $scope.doUsePagination = function () {
+          $scope.pagination.use = !$scope.pagination.use;
+          if(!$scope.pagination.use){
+            $scope.pagination.rowsToDisplay = $scope.table.settings()[0]._iDisplayLength;
+          }
+          // reorder the table data
+          $scope.applyChanges();
+        };
+
         $scope.refreshCells = function() {
           $scope.getCellIdx      =  [];
           $scope.getCellNam      =  [];
@@ -448,19 +458,19 @@
               $scope.getCellDispOpts.push($scope.allTypes);
             }
           }
-          $scope.applyFilters();
-          $($scope.table.header()).find("th").each(function(i){
+          $($scope.table.table().header()).find("th").each(function(i){
             var events = jQuery._data(this, 'events');
-            if (events && events.click){
+            if (events && events.click) {
               var click = events.click[0].handler;
               $(this).unbind('click.DT');
-              $(this).bind('click.DT', function(e){
-                if(!e.isDefaultPrevented()){
+              $(this).bind('click.DT', function (e) {
+                if(!$(e.target).hasClass('bko-column-header-menu')){
                   click(e);
                 }
               });
             }
           });
+          $scope.applyFilters();
         };
 
        $scope.removeFilterListeners = function () {
@@ -728,79 +738,12 @@
         $scope.allBoolTypes = [{type: 0, name: 'string'},
         {type: 9, name: 'boolean'}];
 
-        $scope.openOptionsDialog = function() {
-          var options = {
-            backdrop: true,
-            keyboard: true,
-            backdropClick: true,
-            scope: $scope,
-            windowClass: 'output-table-options beaker-sandbox',
-            backdropClass: 'beaker-sandbox',
-            template: JST['bko-tabledisplay/output-table-options']()
-          };
-          $scope.getCellShoOld    = $scope.getCellSho.slice(0);
-          $scope.getCellDispOld   = $scope.getCellDisp.slice(0);
-          $scope.getCellAlignOld  = $scope.getCellAlign.slice(0);
-          $scope.usePaginationOld = $scope.pagination.use;
-          $scope.rowsToDisplayOld = $scope.pagination.rowsToDisplay;
-          $scope.fixLeftOld       = $scope.pagination.fixLeft;
-          $scope.fixRightOld      = $scope.pagination.fixRight;
-          $scope.modal = $uibModal.open(options);
-        };
-
         $scope.applyChanges = function() {
           $scope.doDestroy(false);
           // reorder the table data
           var model = $scope.model.getCellModel();
           $scope.doCreateData(model);
           $scope.doCreateTable(model);
-        };
-
-        $scope.closeOptionsDialog = function() {
-          $scope.modal.close();
-          var i;
-          var doit = 0;
-
-          for (i = 0; i < $scope.getCellDisp.length; i++) {
-            if ($scope.getCellSho[i] !== $scope.getCellShoOld[i]) {
-              // refresh only visibility
-              doit = 1;
-            }
-          }
-          //jscs:disable
-          if (($scope.usePaginationOld !== $scope.pagination.use) || ($scope.rowsToDisplayOld !== $scope.pagination.rowsToDisplay) ||
-              ($scope.fixLeftOld !== $scope.pagination.fixLeft) || ($scope.fixRightOld !== $scope.pagination.fixRight)) {
-          //jscs:enable
-            doit = 2;
-          } else {
-            for (i = 0; i < $scope.getCellDisp.length; i++) {
-              //jscs:disable
-              if (($scope.getCellDisp[i] !== $scope.getCellDispOld[i]) || ($scope.getCellAlign[i] !== $scope.getCellAlignOld[i])) {
-              //jscs:enable
-                doit = 2;
-              }
-            }
-          }
-          if (doit == 1) {
-            for (i = 0; i < $scope.getCellDisp.length; i++) {
-              $scope.table.column(i + 1).visible($scope.getCellSho[i], false);
-            }
-            $scope.table.columns.adjust().draw(false);
-          } else if (doit == 2) {
-            $scope.doDestroy(false);
-            // update table display
-            for (i = 0; i < $scope.getCellDisp.length; i++) {
-              $scope.actualtype[$scope.colorder[i + 1] - 1] = $scope.getCellDisp[i];
-              $scope.actualalign[$scope.colorder[i + 1] - 1] = $scope.getCellAlign[i];
-            }
-            // reorder the table data
-            $scope.applyChanges();
-          }
-        };
-
-        $scope.cancelOptionsDialog = function() {
-          $scope.modal.close();
-          $scope.refreshCells();
         };
 
         $scope.showSearch = function() {
@@ -830,9 +773,8 @@
             $(scope.table.table().container()).off('mouseleave.bko-datatable');
             $(scope.table.table().container()).off('mouseenter.bko-datatable');
             scope.table.off('key');
+            scope.table.off('column-visibility.dt');
             scope.removeFilterListeners();
-            $('#' + scope.id).html('');
-            scope.table.destroy();
             delete scope.table;
             delete scope.colreorg;
             if (scope.clipclient !== undefined) {
@@ -1009,6 +951,11 @@
             scope.selected = selected;
           }
         };
+        scope.updateResizeHandleWidth = function () {
+          if (scope.jqTableResizeHandle) {
+            scope.jqTableResizeHandle.css('max-width', $('#' + scope.id).width());
+          }
+        };
         //jscs:disable
         scope.update_size = function() {
         //jscs:enable
@@ -1018,6 +965,7 @@
           if (pp.width() > me.width()) {
             pp.width(me.width());
           }
+          scope.updateResizeHandleWidth();
           if (scope.fixcols)
             scope.fixcols.fnRedrawLayout();
         };
@@ -1233,6 +1181,34 @@
               } else {
                 return (order[0][0] !== colIdx);
               }
+            },
+            doFixColumnLeft: function (el) {
+              var container = el.closest('.bko-header-menu');
+              var colIdx = container.data('columnIndex');
+              var fixed = this.isFixedLeft(container);
+              scope.pagination.fixLeft = colIdx;
+              if (fixed) {
+                scope.pagination.fixLeft--;
+              }
+              scope.applyChanges();
+            },
+            doFixColumnRight: function (el) {
+              var container = el.closest('.bko-header-menu');
+              var colIdx = container.data('columnIndex');
+              var fixed = this.isFixedRight(container);
+              scope.pagination.fixRight = scope.columns.length - colIdx;
+              if (fixed) {
+                scope.pagination.fixRight--;
+              }
+              scope.applyChanges();
+            },
+            isFixedRight: function (container) {
+              var colIdx = container.data('columnIndex');
+              return scope.columns.length - colIdx <= scope.pagination.fixRight;
+            },
+            isFixedLeft: function (container) {
+              var colIdx = container.data('columnIndex');
+              return scope.pagination.fixLeft >= colIdx;
             }
           };
 
@@ -1358,6 +1334,30 @@
 
                   scope.showFilter(column);
                 }
+              },
+              {
+                title: 'Fix Column',
+                action: null,
+                items: [
+                  {
+                    title: 'Left',
+                    isChecked: function(container) {
+                      return menuHelper.isFixedLeft(container);
+                    },
+                    action: function(el) {
+                      menuHelper.doFixColumnLeft(el);
+                    }
+                  },
+                  {
+                    title: 'Right',
+                    isChecked: function(container) {
+                      return menuHelper.isFixedRight(container);
+                    },
+                    action: function(el) {
+                      menuHelper.doFixColumnRight(el);
+                    }
+                  }
+                ]
               }
             ]
           };
@@ -1399,21 +1399,14 @@
             }
             cols.push(col);
           }
-          if (!scope.columns) {
-            scope.columns = [];
-          } else {
-            scope.columns.splice(0, scope.columns.length);
-          }
-          for (var i = 0; i < cols.length; i++) {
-            scope.columns.push(_.clone(cols[i]));
-            delete cols[i].title
-          }
+
+          scope.columns = cols;
 
           var id = '#' + scope.id;
           var init = {
             'destroy' : true,
             'data': scope.data,
-            'columns': cols,
+            'columns': scope.columns,
             'stateSave': true,
             'processing': true,
             'autoWidth': true,
@@ -1441,7 +1434,7 @@
             init.scrollCollapse = true;
             init.dom = '<"bko-table"rtf>';
           } else {
-            init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p>>Sf>';
+            init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf>';
             if (scope.data.length > 25) {
               init.pagingType = 'simple_numbers';
               init.pageLength = 25;
@@ -1467,7 +1460,8 @@
                 scope.refreshCells();
                 scope.$digest();
               },
-              'iFixedColumns': 1
+              'iFixedColumns': scope.pagination.fixLeft + 1,
+              'iFixedColumnsRight': scope.pagination.fixRight
             });
             if (scope.colorder !== undefined) {
               scope.colreorg.fnOrder(scope.colorder);
@@ -1484,6 +1478,17 @@
                 e.stopPropagation();
               })
               .appendTo(sField);
+
+            if(init.paging !== false){
+              var pagination = $(element).find(".bko-table-use-pagination");
+              $('<label eat-click><input type="checkbox" checked="true"> use pagination</label>')
+                .bind('click', function(e) {
+                  if (e.target.tagName === 'INPUT') {
+                    scope.doUsePagination();
+                  }
+                })
+                .appendTo(pagination);
+            }
 
             /*
             $(id + ' tbody').off('click');
@@ -1593,11 +1598,8 @@
 
             scope.hideFilter = function () {
               scope.filter = null;
-              scope.table.columns().every(function () {
-                this.search('');
-              });
-              scope.table.draw();
               setTimeout(function(){
+                scope.table.draw();
                 scope.update_size()
               }, 0);
             };
@@ -1605,7 +1607,8 @@
             scope.clearFilter = function (column) {
               if(column) {
                 scope.filter[column.index()] = '';
-                column.search('').draw();
+                scope.$apply();
+                column.draw();
                 scope.checkFilter();
               }
             };
@@ -1668,14 +1671,11 @@
             };
 
             scope.getColumnIndexByCellNode = function (cellNode) {
-              var columnIndex;
-              var cellIndex = scope.table.cell(cellNode).index();
-              if (cellIndex !== undefined) { //TD
-                columnIndex = cellIndex.column;
+              if (cellNode.tagName === 'TD') {
+                return scope.fixcols.fnGetPosition(cellNode)[2];
               } else { //TH
-                columnIndex = scope.table.column(cellNode).index();
+                return scope.table.column($(cellNode).index() + ':visible').index();
               }
-              return columnIndex;
             };
 
             scope.removeOnKeyListeners = function () {
@@ -1715,6 +1715,9 @@
               .on('key', function (e, datatable, key, cell, originalEvent) {
                 originalEvent.preventDefault();
                 scope.onKeyAction(cell.index().column, originalEvent);
+              })
+              .on('column-visibility.dt', function () {
+                scope.updateResizeHandleWidth();
               });
 
             $(window).bind('resize.' + scope.id, function() {
@@ -1735,12 +1738,28 @@
               inits.leftColumns = 1;
             }
             if (scope.pagination.fixRight) {
-              inits.rightColumns = 1;
+              inits.rightColumns = scope.pagination.fixRight;
             } else {
               inits.rightColumns = 0;
             }
-            scope.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
+            scope.fixcols = new $ .fn.dataTable.FixedColumns($(id), inits);
 
+            if (!scope.pagination.use) {
+              var table = $('#' + scope.id);
+              var scrollWrapper = table.closest('.DTFC_ScrollWrapper');
+              var scrollBody = table.parent();
+              var scrollHeader = table.closest('.dataTables_scrollHead');
+              scope.jqTableResizeHandle = scrollWrapper.resizable({
+                handles: 's',
+                resize: function (event, ui) {
+                  var newHeight = ui.size.height;
+                  var headerHeight = scrollHeader.height();
+                  scrollBody.css('max-height', newHeight - headerHeight);
+                }
+              }).find('.ui-resizable-handle');
+              scope.jqTableResizeHandle.append('<span class="glyphicon glyphicon-resize-vertical"></span>');
+              scope.updateResizeHandleWidth();
+            }
             scope.applyFilters();
 
           }, 0);

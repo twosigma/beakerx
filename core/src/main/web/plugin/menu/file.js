@@ -32,6 +32,16 @@ define(function(require, exports, module) {
       tooltip: "Open a new empty notebook, add the languages of your choice"
     },
     {
+      name: "New Default Notebook",
+      shortcut: ["Ctrl-Shift-N", "Cmd-Shift-N"],
+      sortorder: 101,
+      id: "new-notebook-menuitem",
+      action: function() {
+        bkHelper.newSession(false);
+      },
+      tooltip: "Open a new default notebook"
+    },
+    {
       name: "New Beaker window",
       sortorder: 105,
       id: "new-beaker-window-menuitem",

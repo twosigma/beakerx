@@ -75,6 +75,9 @@
         $scope.newEmptyNotebook = function() {
           bkCoreManager.newSession(true);
         };
+        $scope.openNotebook = function() {
+          bkHelper.openWithDialog('bkr');
+        };
         $scope.openTutorial = function() {
           bkCoreManager.openNotebook('config/tutorial.bkr', undefined, true);
         };
@@ -203,6 +206,28 @@
 
         $scope.isSessionsListEmpty = function() {
           return _.isEmpty($scope.sessions);
+        };
+
+        $scope.recents = null;
+        $scope.getRecentMenuItems = function() {
+          $scope.recents = bkCoreManager.getRecentMenuItems();
+        };
+
+        $scope.isRecentEmpty = function() {
+          var isEmpty = _.isEmpty($scope.recents);
+          if ($scope.recents && $scope.recents.length) {
+            isEmpty = $scope.recents[0] && $scope.recents[0].disabled;
+          }
+
+          return isEmpty;
+        };
+
+        $scope.getRecentMenuItems();
+
+        $scope.openRecent = function(item) {
+          if (_.isFunction(item.action)) {
+            item.action();
+          }
         };
 
         var isDisconnected = function() {

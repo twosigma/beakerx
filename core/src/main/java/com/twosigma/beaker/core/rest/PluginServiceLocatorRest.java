@@ -164,6 +164,7 @@ public class PluginServiceLocatorRest {
   private Process nginxProc;
   private int portSearchStart;
   private BeakerConfig config;
+  private String authToken;
 
   private static String[] listToArray(List<String> lst) {
     return lst.toArray(new String[lst.size()]);
@@ -262,6 +263,10 @@ public class PluginServiceLocatorRest {
       this.nginxEnv = new String[envList.size()];
       envList.toArray(this.nginxEnv);
     }
+  }
+
+  public void setAuthToken(String t) {
+    this.authToken = t;
   }
 
   private List<String> pythonBaseCommand(String pluginId, String command) {
@@ -738,6 +743,7 @@ public class PluginServiceLocatorRest {
     nginxConfig = nginxConfig.replace("%(start_page)s", startPage);
     nginxConfig = nginxConfig.replace("%(port_restart)s", Integer.toString(this.restartPort));
     nginxConfig = nginxConfig.replace("%(auth)s", auth);
+    nginxConfig = nginxConfig.replace("%(sessionauth)s", this.authToken);
     nginxConfig = nginxConfig.replace("%(restart_id)s", restartId);
     nginxConfig = nginxConfig.replace("%(urlhash)s", urlHash.isEmpty() ? "" : urlHash+"/");
     nginxConfig = nginxConfig.replace("%(static_dir)s", this.nginxStaticDir.replaceAll("\\\\", "/"));

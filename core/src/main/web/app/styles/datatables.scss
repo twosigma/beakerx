@@ -204,3 +204,12 @@ table.dataTable.DTFC_Cloned.display tbody tr.even {
   background-color: $fixed-column-even;
 }
 
+.DTFC_LeftWrapper table.dataTable thead th:last-child,
+.DTFC_LeftWrapper table.dataTable tbody td:last-child {
+  border-right-width: 3px;
+}
+.DTFC_RightWrapper table.dataTable thead th:first-child,
+.DTFC_RightWrapper table.dataTable tbody td:first-child {
+  border-left-width: 3px;
+}
+

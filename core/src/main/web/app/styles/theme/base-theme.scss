@@ -357,9 +357,11 @@
     }
 
     .btn-group .btn-primary {
-      color: #f5f5f5;
+      color:            $std-fg-color;
+      background-color: $primary-btn-bg;
       &:hover {
-        color: #f5f5f5;
+        background-color:   $std-hover-bg;
+        border-color:       $std-hover-border;
       }
     }
   }

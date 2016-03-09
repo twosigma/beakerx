@@ -24,6 +24,8 @@ task buildembed
 task builddebug
 task clean
 task realclean
+task checkregular
+task checkembed
 task check
 task updatePackages
 task zipPackages
@@ -114,10 +116,18 @@ run.dependsOn(build)
 runembed.dependsOn(buildembed)
 runembed.dependsOn(clearhash)
 debug.dependsOn(builddebug)
-check.dependsOn(":core:build")
-check.dependsOn(":core:installDist")
-check.dependsOn(writeVersion)
-check.dependsOn(installPlugins)
-check.dependsOn(":core:copyVendorStuff")
-check.dependsOn(":test:check")
+
+
+check.dependsOn(checkregular)
+check.dependsOn(checkembed)
+
+checkregular.dependsOn(build)
+checkregular.dependsOn(":test:check")
+
+checkembed.dependsOn(buildembed)
+checkembed.dependsOn(clearhash)
+checkembed.dependsOn(":test:checkembed")
+
+checkembed.mustRunAfter checkregular
+
 updatePackages.dependsOn(":core:updatePackages")

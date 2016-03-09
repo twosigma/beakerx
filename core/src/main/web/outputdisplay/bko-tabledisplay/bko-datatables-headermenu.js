@@ -50,9 +50,10 @@ HeaderMenu.prototype = {
     var clickHandler = function(e) {
       var $container = that.dom.container;
       var targetClass = $(e.target).attr('class');
-      var toggleClass = 'bko-menu';
+      var toggleClass = 'bko-column-header-menu';
 
-      if ($container[0] != e.target && !$.contains($container[0], e.target) && targetClass != toggleClass) {
+      if ($container[0] != e.target && !$.contains($container[0], e.target) &&
+         (!targetClass || targetClass.indexOf(toggleClass) < 0)) {
         that._hide();
       }
     };
@@ -60,7 +61,7 @@ HeaderMenu.prototype = {
     $(document.body).on('click.table-headermenu', clickHandler);
     dt.on('destroy', function () {
       $(document.body).off('click.table-headermenu', clickHandler);
-      //that.destroy();
+      that._destroy();
     });
   },
 
@@ -92,6 +93,28 @@ HeaderMenu.prototype = {
         this._buildCellMenu(cell, cols[i]);
       }
     }
+
+    var that = this;
+
+    $(this.s.dt.table().container()).on('click.headermenu', '.bko-column-header-menu', function(e) {
+      var colIdx = $(this).parent().index();
+      var fixedCols = that.s.dt.settings()[0]._oFixedColumns;
+      var rightHeader = fixedCols ? fixedCols.dom.clone.right.header : null;
+      if (rightHeader && $(rightHeader).has(this).length) {
+        colIdx = that.s.dt.columns(':visible')[0].length - fixedCols.s.rightColumns + colIdx;
+      }
+      var jqHeaderMenu = $(that.s.dt.column(colIdx + ':visible').header()).find(".bko-column-header-menu");
+      if (that.dom.menu) {
+        that._hide();
+        if(colIdx !== that.dom.container.data('columnIndex')){
+          that._show($(jqHeaderMenu));
+        }
+      } else {
+        that._show($(jqHeaderMenu));
+      }
+
+      e.preventDefault();
+    });
   },
 
   /**
@@ -100,26 +123,12 @@ HeaderMenu.prototype = {
    */
   _buildCellMenu: function (oCell, col)
   {
-    var that = this;
     var menu = col.header && col.header.menu;
     var cell = oCell.cell;
-    var $el = $("<span/>", { 'class': 'bko-menu' });
+    var $el = $("<span/>", { 'class': 'bko-menu bko-column-header-menu' });
 
     if (cell && menu && $.isArray(menu.items)) {
       $el.data('menu', menu.items)
-        .bind('click', function(e) {
-          if (that.dom.menu) {
-            that._hide();
-            if($(this).parent().data('columnIndex') !== that.dom.container.data('columnIndex')){
-              that._show($(this));
-            }
-          } else {
-            that._show($(this));
-          }
-
-          e.preventDefault();
-        });
-
       $(cell).append($el);
     }
   },
@@ -136,7 +145,7 @@ HeaderMenu.prototype = {
   {
     var that = this;
     var menuItems = el.data('menu');
-    var colIdx = el.parent().data('columnIndex');
+    var colIdx = that.s.dt.column(el.parent().index() + ':visible').index();
 
     if ($.isArray(menuItems)) {
       var $menu = $("<ul/>", { 'class': 'dropdown-menu' });
@@ -187,6 +196,11 @@ HeaderMenu.prototype = {
 
       $li.append($item);
 
+      if (oItem.icon) {
+        var $icon = $('<i/>', {'class': oItem.icon});
+        $li.append($icon);
+      }
+
       if (typeof oItem.isChecked == 'function' && oItem.isChecked(that.dom.container)) {
         var $glyph = $('<i/>', {'class': 'glyphicon glyphicon-ok'});
         $li.append($glyph);
@@ -211,6 +225,12 @@ HeaderMenu.prototype = {
     }
 
     this._hide();
+  },
+
+  _destroy: function(){
+    this.dom.container.remove();
+    $(this.s.dt.table().container()).find('.bko-column-header-menu').remove();
+    $(this.s.dt.table().container()).off('click.headermenu');
   }
 };
 

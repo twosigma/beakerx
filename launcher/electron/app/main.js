@@ -193,7 +193,7 @@ function switchToBackend(address, hash) {
 
 function connectToBackend() {
   // Have to wait until backend is fully ready
-  spinUntilReady(backendRunner.getHash() + '/beaker/rest/util/ready', function() {
+  spinUntilReady('', function() {
     windowManager.connectToBackend();
     // Open file if launched with file
     if (filesToOpen.length > 0) {

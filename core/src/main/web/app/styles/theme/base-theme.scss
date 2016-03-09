@@ -43,8 +43,9 @@
     .close {
       color:    $std-fg-color !important;
     }
-    h1, h2, h3, h4, h5, p {
+    h1, h2, h3, h4, h5, h6, p {
       color:    $std-fg-color !important;
+      cursor:   $text-cursor;
     }
   }
 
@@ -99,6 +100,7 @@
     background:   $std-btn-bg;
     color:        $std-fg-color;
     border-color: $std-border;
+    cursor:       pointer;
     &:hover {
       color:        $std-fg-color;
       background:   $std-hover-bg;
@@ -148,6 +150,10 @@
     color: $main-theme-color;
   }
 
+  input, textarea {
+    cursor: $text-cursor;
+  }
+
   select {
     color: $std-fg-color;
   }
@@ -155,6 +161,11 @@
   .faux-drop-zone {
     border-color: $std-fg-color;
     color:        $std-fg-color;
+    cursor:       $text-cursor;
+  }
+
+  .path, .open-date, em, span.text {
+    cursor: $text-cursor;
   }
 
   .edited-property {
@@ -163,7 +174,7 @@
 
   .ui-icon,
   .ui-widget-content .ui-icon {
-    background-image: url("images/ui-icons_888888_256x240.png");
+    background-image: $ui-icons;
   }
 
   .ui-widget-content {
@@ -354,6 +365,7 @@
 
     .outputlogbox pre {
       color: $std-fg-color !important;
+      cursor: $text-cursor;
     }
 
     .btn-group .btn-primary {
@@ -460,6 +472,9 @@
 
   .dropdown-menu > li > a {
     color: $std-fg-color;
+    &:hover + .glyphicon-ok {
+      color: $std-fg-color;
+    }
   }
 
   #start-page-menu-item {

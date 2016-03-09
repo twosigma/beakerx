@@ -217,6 +217,7 @@ var BeakerPageObject = function() {
 
   this.languageManagerCloseButton = element(by.className('language-manager-close-button'));
   this.insertCellButton = element(by.className('insert-cell'));
+  this.deleteCellButton = element(by.className('delete-cell'));
   this.evaluateButton = this.getEvaluateButton();
   this.modalDialogYesButton = element(by.css('.modal .yes'));
   this.modalDialogNoButton = element(by.css('.modal .no'));
@@ -231,7 +232,7 @@ var BeakerPageObject = function() {
   //CodeMirror API. See for information https://sharpkit.net/help/SharpKit.CodeMirror/SharpKit.CodeMirror/CodeMirror/
 
   this.setCellInput = function(code) {
-    return browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
+    return browser.executeScript("$('.CodeMirror')[0].CodeMirror.setValue('" + code + "')");
   };
 
   this.getCellInput = function() {

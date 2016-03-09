@@ -38,7 +38,7 @@
   </div>
 </div>
 <div class="modal-footer fixed">
-   <div class=text-left>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>
+   <p class=text-left>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</p>
    <p><input class="form-control" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start /></p>
    <span style="float:left;" ng-if="getStrategy().ext === undefined">
      <input class="beforeCheckbox" id="extensionFilter"type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter">

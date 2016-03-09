@@ -183,6 +183,16 @@
                              }
                            },
                            {
+                             name: "New Default Notebook",
+                             shortcut: ["Ctrl-Shift-N", "Cmd-Shift-N"],
+                             sortorder: 101,
+                             id: "new-notebook-menuitem",
+                             action: function() {
+                               bkHelper.newSession(false);
+                             },
+                             tooltip: "Open a new default notebook"
+                           },
+                           {
                              name: "Open recent",
                              sortorder: 120,
                              id: "open-recent-menuitem",

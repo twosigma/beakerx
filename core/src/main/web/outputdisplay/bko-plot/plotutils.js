@@ -55,11 +55,11 @@
       };
     return {
       outsideScr: function(scope, x, y) {
-        var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+        var W = scope.jqsvg.get(0).clientWidth, H = scope.jqsvg.get(0).clientHeight;
         return x < 0 || x > W || y < 0 || y > H;
       },
       outsideScrBox: function(scope, x, y, w, h) {
-        var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+        var W = scope.jqsvg.get(0).clientWidth, H = scope.jqsvg.get(0).clientHeight;
         return x > W || x + w < 0 || y > H || y + h < 0;
       },
       updateRange : function(datarange, itemrange) {

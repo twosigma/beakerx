@@ -104,8 +104,8 @@
           mapY = scope.data2scrYi;
       var lMargin = scope.layout.leftLayoutMargin,
           bMargin = scope.layout.bottomLayoutMargin;
-      var W = scope.jqsvg.width(),
-          H = scope.jqsvg.height();
+      var W = scope.jqsvg.get(0).clientWidth,
+          H = scope.jqsvg.get(0).clientHeight;
 
       eleprops.length = 0;
       this.labelpipe.length = 0;

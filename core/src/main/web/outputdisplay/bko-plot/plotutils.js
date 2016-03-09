@@ -54,12 +54,18 @@
         222	: "SINGLE_QUOTE"
       };
     return {
+      safeWidth: function(e){
+        return e.get(0).clientWidth;
+      },
+      safeHeight: function(e){
+        return e.get(0).clientHeight;
+      },
       outsideScr: function(scope, x, y) {
-        var W = scope.jqsvg.get(0).clientWidth, H = scope.jqsvg.get(0).clientHeight;
+        var W = this.safeWidth(scope.jqsvg), H = this.safeHeight(scope.jqsvg);
         return x < 0 || x > W || y < 0 || y > H;
       },
       outsideScrBox: function(scope, x, y, w, h) {
-        var W = scope.jqsvg.get(0).clientWidth, H = scope.jqsvg.get(0).clientHeight;
+        var W = this.safeWidth(scope.jqsvg), H = this.safeHeight(scope.jqsvg);
         return x > W || x + w < 0 || y > H || y + h < 0;
       },
       updateRange : function(datarange, itemrange) {

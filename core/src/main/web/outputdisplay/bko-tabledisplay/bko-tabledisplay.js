@@ -1186,29 +1186,23 @@
               var container = el.closest('.bko-header-menu');
               var colIdx = container.data('columnIndex');
               var fixed = this.isFixedLeft(container);
-              scope.pagination.fixLeft = colIdx;
-              if (fixed) {
-                scope.pagination.fixLeft--;
-              }
+              scope.pagination.fixLeft = fixed ? 0 : colIdx;
               scope.applyChanges();
             },
             doFixColumnRight: function (el) {
               var container = el.closest('.bko-header-menu');
               var colIdx = container.data('columnIndex');
               var fixed = this.isFixedRight(container);
-              scope.pagination.fixRight = scope.columns.length - colIdx;
-              if (fixed) {
-                scope.pagination.fixRight--;
-              }
+              scope.pagination.fixRight = fixed ? 0 : scope.columns.length - colIdx;
               scope.applyChanges();
             },
             isFixedRight: function (container) {
               var colIdx = container.data('columnIndex');
-              return scope.columns.length - colIdx <= scope.pagination.fixRight;
+              return scope.columns.length - colIdx === scope.pagination.fixRight;
             },
             isFixedLeft: function (container) {
               var colIdx = container.data('columnIndex');
-              return scope.pagination.fixLeft >= colIdx;
+              return scope.pagination.fixLeft === colIdx;
             }
           };
 

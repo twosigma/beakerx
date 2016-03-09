@@ -1443,6 +1443,7 @@
 
           bkHelper.timeout(function() {
             // we must wait for the DOM elements to appear
+            $(id).parents('.dataTables_scroll').find('th, td').css('border-right-width', 1);
             scope.table = $(id).DataTable(init);
             scope.renderMenu = true;
             scope.colreorg = new $.fn.dataTable.ColReorder($(id), {
@@ -1736,7 +1737,11 @@
             } else {
               inits.rightColumns = 0;
             }
+            var leftfixcolumn = scope.table.column(scope.pagination.fixLeft);
+            $(leftfixcolumn.nodes()).css('border-right-width', 3);
+            $(leftfixcolumn.header()).css('border-right-width', 3);
             scope.fixcols = new $ .fn.dataTable.FixedColumns($(id), inits);
+            scope.fixcols.fnRedrawLayout();
 
             if (!scope.pagination.use) {
               var table = $('#' + scope.id);

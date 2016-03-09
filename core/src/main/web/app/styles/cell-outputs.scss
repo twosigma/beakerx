@@ -20,7 +20,24 @@ bk-code-cell-output {
   }
 
   .bk-object-label {
-    color: #31708f;
+    position: relative;
+    color: #f4c20b;
+    cursor: pointer;
+    &:after {
+      display: block;
+      content: "";
+      width: 0;
+      height: 0;
+      border-top: 3px solid transparent;
+      border-bottom: 3px solid transparent;
+      border-left: 5px solid #999;
+      position: absolute;
+      top: 4px;
+      right: -10px;
+    }
+    &:hover {
+      color: #1492df;
+    }
   }
 }
 

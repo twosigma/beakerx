@@ -450,13 +450,13 @@
       this.knownBeakerVars = { };
       this.getCache = { };
       this.setCache = { };
-      this.beakerObj = { }
+      this.beakerObj = { };
       this.nbmodel = nbmodel;
     };
 
     BeakerObject.prototype.isBeakerObject = function(obj) {
       return obj === this.beakerObj;
-    }
+    };
     
     BeakerObject.prototype.setupBeakerObject = function(modelOutput) {
       var self = this;
@@ -616,7 +616,7 @@
       // check if javascript removed a binding
       if ( this.nbmodel.namespace !== undefined ) {
         for (var p in this.nbmodel.namespace) {
-          if (this.knownBeakerVars[p] !== undefined && keys.indexOf(p) <0) {
+          if (this.knownBeakerVars[p] !== undefined && keys.indexOf(p) < 0) {
             delete this.nbmodel.namespace[p];
             delete this.knownBeakerVars[p];
           }
@@ -730,7 +730,7 @@
       }
       parents.pop(node);
       return false;
-  }
+    };
 
     var _bo = {};
 

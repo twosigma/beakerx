@@ -18,11 +18,10 @@
   'use strict';
 
   var module = angular.module('bk.notebook');
-  module.directive('simpleLayout', ['bkHelper', function (bkHelper) {
+  module.directive('simpleLayout', ['bkHelper', 'bkCoreManager', function (bkHelper, bkCoreManager) {
     return {
       restrict: 'E',
-      template: '<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b class="bk-object-label">{{model.getCellModel().labels[$index]}}<br/></b><bk-code-cell-output model="i" >' +
-      '</ bk-code-cell-output><br/>></li></ul>',
+      template: JST['mainapp/components/notebook/simplelayout'](),
       scope: {
         model: '='
       },
@@ -46,6 +45,31 @@
         $scope.isShowMenu = function () {
           return false;
         };
+        $scope.bkoMenuItems = [
+            {
+              name: 'Delete',
+              action: function(idx) {
+                var property = $scope.model.getCellModel().labels[idx];
+                var beakerObj = bkHelper.getBeakerObject();
+                var beaker = beakerObj.beakerObj;
+
+                if (beaker && property) {
+                  delete beaker[property];
+                  beakerObj.beakerObjectToNotebook();
+                }
+              }
+            },
+            {
+              name: 'Rename',
+              action: function(idx) {
+                $scope.getPropertyId = function() {
+                  return idx;
+                };
+                bkCoreManager.showFullModalDialog(function cb(r) { } ,
+                  'app/mainapp/dialogs/bkorename.jst.html', 'BkoRenameController', $scope);
+              }
+            }
+        ];
         $scope.$watch('isShowOutput()', function (oldval, newval) {
           $scope.showoutput = newval;
         });

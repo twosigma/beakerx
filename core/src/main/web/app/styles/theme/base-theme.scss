@@ -472,6 +472,9 @@
 
   .dropdown-menu > li > a {
     color: $std-fg-color;
+    &:hover + .glyphicon-ok {
+      color: $std-fg-color;
+    }
   }
 
   #start-page-menu-item {

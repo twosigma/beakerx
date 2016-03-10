@@ -16,8 +16,6 @@
 
 package com.twosigma.beaker.chart.xychart;
 
-import com.twosigma.beaker.chart.ObservableChart;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +23,7 @@ import java.util.List;
  * CombinedPlot
  *
  */
-public class CombinedPlot extends ObservableChart{
+public class CombinedPlot {
   private int initWidth = 640;
   private int initHeight = 480;
   private String title;

@@ -11,8 +11,7 @@
                     "mode": "javascript",
                     "background": "#FFE0F0"
                 }
-            },
-            "languageVersion": "ECMAScript 2015"
+            }
         },
         {
             "name": "SQL",
@@ -26,8 +25,7 @@
             "classPath": "",
             "datasorces": "",
             "outdir": "123",
-            "defaultDatasource": "jdbc:h2:mem:db1",
-            "datasources": "chemistry=jdbc:h2:mem:chemistry"
+            "defaultDatasource": "jdbc:h2:mem:db1"
         }
     ],
     "cells": [
@@ -111,8 +109,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "SQL",
-                "shellId": "58fe31b2-7aef-4f53-87cb-3f70e2dbaff0",
-                "elapsedTime": 277,
+                "shellId": "49279164-af94-4460-871b-555d8f2443d6",
+                "elapsedTime": 107,
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -189,7 +187,7 @@
                 "result": 1003,
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 32,
+                "elapsedTime": 29,
                 "height": 36
             },
             "evaluatorReader": true,
@@ -256,8 +254,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "SQL",
-                "shellId": "58fe31b2-7aef-4f53-87cb-3f70e2dbaff0",
-                "elapsedTime": 622,
+                "shellId": "49279164-af94-4460-871b-555d8f2443d6",
+                "elapsedTime": 596,
                 "height": 136
             },
             "evaluatorReader": true,
@@ -284,8 +282,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "58fe31b2-7aef-4f53-87cb-3f70e2dbaff0",
-                "elapsedTime": 616
+                "shellId": "de721528-3c4b-4364-91fc-5b8eff538567",
+                "elapsedTime": 596
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -333,7 +331,7 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 31,
+                "elapsedTime": 22,
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "TableDisplay",
@@ -482,94 +480,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "SQL",
-                "shellId": "58fe31b2-7aef-4f53-87cb-3f70e2dbaff0",
-                "elapsedTime": 447,
-                "height": 163
-            },
-            "evaluatorReader": true,
-            "lineCount": 2
-        },
-        {
-            "id": "markdownyLpV8P",
-            "type": "markdown",
-            "body": [
-                "You can also put a collection of JDBC strings into the \"Named Data Sources\" field in the Language Manager, each one prefixed by \"name=\" for some name.",
-                "Then refer to them by name with  `%%beakerDB`:"
-            ],
-            "evaluatorReader": false
-        },
-        {
-            "id": "codeVDv9Mf",
-            "type": "code",
-            "evaluator": "SQL",
-            "input": {
-                "body": [
-                    "%%beakerDB=chemistry",
-                    "SELECT * FROM molecules;"
-                ]
-            },
-            "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "NAME",
-                            "MOLARMASS"
-                        ],
-                        "actualalign": [
-                            "L",
-                            "L"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "getCellSho": [
-                            true,
-                            true
-                        ]
-                    }
-                },
-                "result": {
-                    "type": "TableDisplay",
-                    "columnNames": [
-                        "NAME",
-                        "MOLARMASS"
-                    ],
-                    "values": [
-                        [
-                            "Water",
-                            18.01
-                        ],
-                        [
-                            "Methane",
-                            16.04
-                        ],
-                        [
-                            "Lithium nitride",
-                            34.83
-                        ],
-                        [
-                            "Ammonia",
-                            17.03
-                        ]
-                    ],
-                    "types": [
-                        "java.lang.String",
-                        "java.lang.Double"
-                    ],
-                    "subtype": "TableDisplay"
-                },
-                "selectedType": "Table",
-                "pluginName": "SQL",
-                "shellId": "58fe31b2-7aef-4f53-87cb-3f70e2dbaff0",
-                "elapsedTime": 142,
+                "shellId": "de721528-3c4b-4364-91fc-5b8eff538567",
+                "elapsedTime": 108,
                 "height": 163
             },
             "evaluatorReader": true,
@@ -613,7 +525,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 39,
+                "elapsedTime": 24,
                 "hidden": true,
                 "result": [
                     1001,
@@ -652,8 +564,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "58fe31b2-7aef-4f53-87cb-3f70e2dbaff0",
-                "elapsedTime": 735
+                "shellId": "de721528-3c4b-4364-91fc-5b8eff538567",
+                "elapsedTime": 677
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -732,7 +644,7 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 54,
+                "elapsedTime": 23,
                 "height": 0
             },
             "evaluatorReader": true,
@@ -760,117 +672,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "58fe31b2-7aef-4f53-87cb-3f70e2dbaff0",
-                "elapsedTime": 679
-            },
-            "evaluatorReader": true,
-            "lineCount": 9,
-            "initialization": true
-        },
-        {
-            "id": "code5MMZXT",
-            "type": "code",
-            "evaluator": "JavaScript",
-            "input": {
-                "body": [
-                    "beaker.moleculesArray = [",
-                    "  {name: 'Water', molarmass: 18.01},",
-                    "  {name: 'Methane', molarmass: 16.04},",
-                    "  {name: 'Lithium nitride', molarmass: 34.83},",
-                    "  {name: 'Ammonia', molarmass: 17.03}];"
-                ]
-            },
-            "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "name",
-                            "molarmass"
-                        ],
-                        "actualalign": [
-                            "L",
-                            "R"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "getCellSho": [
-                            true,
-                            true
-                        ]
-                    }
-                },
-                "result": {
-                    "type": "TableDisplay",
-                    "subtype": "ListOfMaps",
-                    "columnNames": [
-                        "name",
-                        "molarmass"
-                    ],
-                    "values": [
-                        [
-                            "Water",
-                            18.01
-                        ],
-                        [
-                            "Methane",
-                            16.04
-                        ],
-                        [
-                            "Lithium nitride",
-                            34.83
-                        ],
-                        [
-                            "Ammonia",
-                            17.03
-                        ]
-                    ],
-                    "types": [
-                        "string",
-                        "double"
-                    ]
-                },
-                "selectedType": "Table",
-                "pluginName": "JavaScript",
-                "elapsedTime": 45,
-                "height": 0
-            },
-            "evaluatorReader": true,
-            "lineCount": 5,
-            "initialization": true
-        },
-        {
-            "id": "codeRbgJqi",
-            "type": "code",
-            "evaluator": "SQL",
-            "input": {
-                "body": [
-                    "%%beakerDB=chemistry",
-                    "drop table if exists molecules;",
-                    "CREATE TABLE molecules (",
-                    "  name varchar(45) NOT NULL,",
-                    "  molarmass float,",
-                    "  PRIMARY KEY (name)",
-                    ");",
-                    "",
-                    "INSERT INTO molecules VALUES (${moleculesArray[*].name}, ${moleculesArray[*].molarmass});"
-                ]
-            },
-            "output": {
-                "state": {},
-                "selectedType": "Hidden",
-                "pluginName": "SQL",
-                "shellId": "58fe31b2-7aef-4f53-87cb-3f70e2dbaff0",
-                "elapsedTime": 688,
-                "height": 0
+                "shellId": "de721528-3c4b-4364-91fc-5b8eff538567",
+                "elapsedTime": 618
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -1220,66 +1023,6 @@
                 [
                     "Antoine Lavoisier",
                     1743
-                ]
-            ],
-            "types": [
-                "string",
-                "double"
-            ]
-        },
-        "elementsArray": {
-            "type": "TableDisplay",
-            "subtype": "ListOfMaps",
-            "columnNames": [
-                "name",
-                "number"
-            ],
-            "values": [
-                [
-                    "Hydrogen",
-                    1
-                ],
-                [
-                    "Helium",
-                    2
-                ],
-                [
-                    "Lithium",
-                    3
-                ],
-                [
-                    "Beryllium",
-                    4
-                ]
-            ],
-            "types": [
-                "string",
-                "double"
-            ]
-        },
-        "moleculesArray": {
-            "type": "TableDisplay",
-            "subtype": "ListOfMaps",
-            "columnNames": [
-                "name",
-                "molarmass"
-            ],
-            "values": [
-                [
-                    "Water",
-                    18.01
-                ],
-                [
-                    "Methane",
-                    16.04
-                ],
-                [
-                    "Lithium nitride",
-                    34.83
-                ],
-                [
-                    "Ammonia",
-                    17.03
                 ]
             ],
             "types": [

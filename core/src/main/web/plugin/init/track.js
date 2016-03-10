@@ -22,7 +22,7 @@
         if (!_enabled) {
           _enabled = true;
           if (ga) {
-            var beakerVersion = window.beakerRegister.version;
+            var beakerVersion = window.beaker.version;
             ga('set',  {
               "dimension3": beakerVersion, //beakerVersion
               "metric3": 1 // beaker app start count

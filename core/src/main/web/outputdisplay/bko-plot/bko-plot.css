@@ -89,6 +89,8 @@
 
 .plot-constline,
 .plot-constband,
+.plot-line,
+.plot-area,
 .plot-cursor {
   pointer-events: none;
 }
@@ -188,12 +190,6 @@
 .plot-legenditeminline{
   display: inline-block;
   margin-right: 10px;
-  position: relative;
-}
-
-.plot-legenditeminrow {
-  display: block;
-  position: relative;
 }
 
 .plot-coverbox {

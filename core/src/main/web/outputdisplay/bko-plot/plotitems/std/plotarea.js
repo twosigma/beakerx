@@ -27,15 +27,66 @@
     PlotArea.prototype.respMinHeight = 5;
     PlotArea.prototype.plotClass = "plot-area";
     PlotArea.prototype.respClass = "plot-resp plot-respstem";
-    PlotArea.prototype.actionClass = "item-clickable item-onkey";
 
     PlotArea.prototype.setHighlighted = function(scope, highlighted) {
 
-      if(highlighted === true){
-        scope.jqsvg.find("#" + this.id+ " polygon").attr("filter", "url("+window.location.pathname+"#svgAreaFilter)");
-      }else{
-         scope.jqsvg.find("#" + this.id+ " polygon").removeAttr("filter");
+      var getHighlightedSize = function(size) {
+        return highlighted ? size - 2 : size;
+      };
+
+      var mapX = scope.data2scrXi,
+        mapY = scope.data2scrYi;
+      var eles = this.elements,
+          eleprops = this.elementProps;
+      var pstr = "";
+
+      for (var i = this.vindexL; i <= this.vindexR; i++) {
+        var ele = eles[i];
+        var x = mapX(ele.x), y = mapY(ele.y), y2 = mapY(ele.y2);
+
+        if (plotUtils.rangeAssert([x, y, y2])) {
+          eleprops.length = 0;
+          return;
+        }
+
+        if (this.interpolation === "linear") {
+          pstr += x + "," + y + " ";
+        } else if (this.interpolation === "none" && i < this.vindexR) {
+          var ele2 = eles[i + 1];
+          var x2 = mapX(ele2.x);
+          if (Math.abs(x2) > 1E6) {
+            break;
+          }
+          pstr += x + "," + y + " " + x2 + "," + y + " ";
+        }
       }
+
+      for (var i = this.vindexR; i >= this.vindexL; i--) {
+        var ele = eles[i];
+        var x = mapX(ele.x), y2 = mapY(ele.y2);
+
+        if (this.interpolation === "linear") {
+          pstr += x + "," + getHighlightedSize(y2) + " ";
+        } else if (this.interpolation === "none" && i < this.vindexR) {
+          var ele2 = eles[i + 1];
+          var x2 = mapX(ele2.x);
+
+          if (plotUtils.rangeAssert([x2])) {
+            eleprops.length = 0;
+            return;
+          }
+
+          pstr += x2 + "," + getHighlightedSize(y2) + " " + x + "," + getHighlightedSize(y2) + " ";
+        }
+      }
+
+      var svg = scope.maing;
+      var itemsvg = svg.select("#" + this.id);
+      itemsvg.select("polygon")
+        .transition()
+        .duration(plotUtils.getHighlightDuration())
+        .attr("points", pstr);
+
     };
 
     PlotArea.prototype.format = function(){
@@ -209,7 +260,7 @@
 
       itemsvg.selectAll("polygon")
         .data([props]).enter().append("polygon")
-        .attr("class", this.plotClass + " " + this.actionClass)
+        .attr("class", this.plotClass)
         .style("fill", function(d) { return d.fi; })
         .style("fill-opacity", function(d) { return d.fi_op; })
         .style("stroke", function(d) { return d.st; })
@@ -224,7 +275,7 @@
         itemsvg.selectAll("rect")
           .data(eleprops, function(d) { return d.id; }).enter().append("rect")
           .attr("id", function(d) { return d.id; })
-          .attr("class", this.respClass + " " + this.actionClass)
+          .attr("class", this.respClass)
           .attr("width", this.respWidth)
           .style("stroke", this.tip_color);
 
@@ -239,17 +290,14 @@
 
     PlotArea.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.hideTips(scope);
+      this.clearTips(scope);
     };
 
-    PlotArea.prototype.hideTips = function(scope, hidden) {
-      plotTip.hideTips(scope, this.id,  hidden);
+    PlotArea.prototype.clearTips = function(scope) {
+      plotTip.clearTips(scope, this.id);
     };
 
     PlotArea.prototype.createTip = function(ele) {
-      if (ele.tooltip)
-        return ele.tooltip;
-
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
@@ -264,5 +312,5 @@
 
     return PlotArea;
   };
-  beakerRegister.bkoFactory('PlotArea', ['plotUtils', 'plotTip', retfunc]);
+  beaker.bkoFactory('PlotArea', ['plotUtils', 'plotTip', retfunc]);
 })();

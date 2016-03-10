@@ -52,8 +52,6 @@ import java.util.logging.Logger;
 public class BasicObjectSerializer implements BeakerObjectConverter {
 
   public static final String TYPE_INTEGER = "integer";
-  public static final String TYPE_LONG    = "int64";
-  public static final String TYPE_BIGINT  = "bigint";
   public static final String TYPE_DOUBLE  = "double";
   public static final String TYPE_STRING  = "string";
   public static final String TYPE_BOOLEAN = "boolean";
@@ -62,40 +60,40 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
 
   private final static Logger logger = Logger.getLogger(BasicObjectSerializer.class.getName());
 
-  protected final Map<String, String>      types;
-  protected final List<String>             knownBeakerTypes;
+  protected final Map<String,String> types;
+  protected final List<String> knownBeakerTypes;
   protected final List<ObjectDeserializer> supportedDeserializers;
-  protected final List<ObjectSerializer>   supportedSerializers;
+  protected final List<ObjectSerializer> supportedSerializers;
 
-  protected final ThreadLocal<Map<String, String>>      threadTypes;
+  protected final ThreadLocal<Map<String,String>> threadTypes;
   protected final ThreadLocal<List<ObjectDeserializer>> threadDeserializers;
-  protected final ThreadLocal<List<ObjectSerializer>>   threadSerializers;
-
+  protected final ThreadLocal<List<ObjectSerializer>> threadSerializers;
+  
   protected boolean isListOfPrimitiveTypeMaps(Object o) {
-    if (!(o instanceof Collection<?>))
+    if (! (o instanceof Collection<?>))
       return false;
     Collection<?> c = (Collection<?>) o;
     if (c.isEmpty())
       return false;
     for (Object obj : c) {
-      if (obj != null && !isPrimitiveTypeMap(obj)) {
+      if (obj!=null && !isPrimitiveTypeMap(obj)) {        
         return false;
       }
     }
     return true;
   }
-
+  
   protected boolean isPrimitiveTypeMap(Object o) {
-    if (!(o instanceof Map<?, ?>))
+    if (!(o instanceof Map<?,?>))
       return false;
-    Map<?, ?> m = (Map<?, ?>) o;
-
+    Map<?,?> m = (Map<?,?>) o;
+        
     Set<?> eset = m.entrySet();
     for (Object entry : eset) {
-      Entry<?, ?> e = (Entry<?, ?>) entry;
-      if (e.getKey() != null && !isPrimitiveType(e.getKey().getClass().getName()))
-        return false;
-      if (e.getValue() != null && !isPrimitiveType(e.getValue().getClass().getName()))
+      Entry<?,?> e = (Entry<?, ?>) entry;
+      if (e.getKey()!=null && !isPrimitiveType(e.getKey().getClass().getName()))
+          return false;
+      if (e.getValue()!=null && !isPrimitiveType(e.getValue().getClass().getName()))
         return false;
     }
     return true;
@@ -112,24 +110,24 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         return false;
       Collection<?> e = (Collection<?>) entry;
       for (Object ei : e) {
-        if (ei != null && !isPrimitiveType(ei.getClass().getName()))
+        if (ei!=null && !isPrimitiveType(ei.getClass().getName()))
           return false;
       }
       if (max < e.size())
         max = e.size();
     }
-    return max >= 2 && m.size() >= 2;
+    return max>=2 && m.size()>=2;
   }
-
+  
   public BasicObjectSerializer() {
-    types = new HashMap<String, String>();
-    threadDeserializers = new ThreadLocal<List<ObjectDeserializer>>();
-    threadSerializers = new ThreadLocal<List<ObjectSerializer>>();
+    types                  = new HashMap<String,String>();
+    threadDeserializers    = new ThreadLocal<List<ObjectDeserializer>>();
+    threadSerializers      = new ThreadLocal<List<ObjectSerializer>>();
     supportedDeserializers = new ArrayList<ObjectDeserializer>();
-    supportedSerializers = new ArrayList<ObjectSerializer>();
-    threadTypes = new ThreadLocal<Map<String, String>>();
-    knownBeakerTypes = new ArrayList<String>();
-
+    supportedSerializers   = new ArrayList<ObjectSerializer>();
+    threadTypes            = new ThreadLocal<Map<String,String>>();
+    knownBeakerTypes       = new ArrayList<String>();
+    
     addTypeConversion("java.lang.Boolean", TYPE_BOOLEAN);
     addTypeConversion("java.lang.Byte", TYPE_INTEGER);
     addTypeConversion("java.lang.Character", TYPE_STRING);
@@ -137,7 +135,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     addTypeConversion("java.lang.Enum", TYPE_SELECT);
     addTypeConversion("java.lang.Float", TYPE_DOUBLE);
     addTypeConversion("java.lang.Integer", TYPE_INTEGER); 
-    addTypeConversion("java.lang.Long", TYPE_LONG);
+    addTypeConversion("java.lang.Long", TYPE_INTEGER);    
     addTypeConversion("java.lang.Short", TYPE_INTEGER);
     addTypeConversion("java.lang.String", TYPE_STRING);
     addTypeConversion("java.lang.StringBuffer", TYPE_STRING);
@@ -146,7 +144,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     addTypeConversion("java.util.concurrent.atomic.AtomicInteger", TYPE_INTEGER);
     addTypeConversion("java.util.concurrent.atomic.AtomicLong", TYPE_INTEGER);
     addTypeConversion("java.math.BigDecimal", TYPE_DOUBLE);
-    addTypeConversion("java.math.BigInteger", TYPE_BIGINT);
+    addTypeConversion("java.math.BigInteger", TYPE_INTEGER);
 
     addTypeSerializer(new PrimitiveTypeSerializer());
     addTypeSerializer(new ListOfPrimitiveTypeMapsSerializer(this));

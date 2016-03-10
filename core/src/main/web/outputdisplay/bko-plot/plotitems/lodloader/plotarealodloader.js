@@ -67,12 +67,12 @@
       if (this.lodOn === false) { return; }
       if (this.lodType === "area") {
         this.lodplotter.setZoomHash(this.zoomHash);
-        this.lodplotter.hideTips(scope);
+        this.lodplotter.clearTips(scope);
       } else if (this.lodType === "river"){
         this.lodplotter.setZoomHash(this.zoomHash);
         this.lodplotter2.setZoomHash(this.zoomHash);
-        this.lodplotter.hideTips(scope);
-        this.lodplotter2.hideTips(scope);
+        this.lodplotter.clearTips(scope);
+        this.lodplotter2.clearTips(scope);
       }
     };
 
@@ -274,19 +274,19 @@
 
     PlotAreaLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.hideTips(scope);
+      this.clearTips(scope);
     };
 
-    PlotAreaLodLoader.prototype.hideTips = function(scope, hidden) {
+    PlotAreaLodLoader.prototype.clearTips = function(scope) {
       if (this.lodOn === false) {
-        this.plotter.hideTips(scope);
+        this.plotter.clearTips(scope);
         return;
       }
       if (this.lodType === "area") {
-        this.lodplotter.hideTips(scope, hidden);
+        this.lodplotter.clearTips(scope);
       } else if (this.lodType === "river") {
-        this.lodplotter.hideTips(scope, hidden);
-        this.lodplotter2.hideTips(scope, hidden);
+        this.lodplotter.clearTips(scope);
+        this.lodplotter2.clearTips(scope);
       }
     };
 
@@ -317,7 +317,7 @@
 
     return PlotAreaLodLoader;
   };
-  beakerRegister.bkoFactory('PlotAreaLodLoader',
+  beaker.bkoFactory('PlotAreaLodLoader',
     ['plotUtils', 'PlotSampler', 'PlotArea', 'PlotLodLine', 'PlotLodRiver', 'PlotAuxRiver',
     retfunc]);
 })();

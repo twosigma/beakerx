@@ -153,14 +153,6 @@ public class UtilRest {
     return clean(content);
   }
 
-
-  @GET
-  @Path("exit")
-  public void exit() throws InterruptedException {
-    System.exit(0);
-  }
-
-
   /**
    * This function returns a Boolean setting as string. If the setting is null in the preference,
    * it will use the setting in the config, otherwise, what is set in preference is used.

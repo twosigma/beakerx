@@ -261,5 +261,5 @@
     
     return GradientLegend;
   };
-  beakerRegister.bkoFactory('GradientLegend', retfunc);
+  beaker.bkoFactory('GradientLegend', retfunc);
 })();

@@ -15,22 +15,9 @@
 -->
 
 <div ng-repeat="property in properties" class="form-group language-option property clearfix">
-  
-  <label ng-if="property.type === availableProperties.STRING">{{ property.name }}</label>
-  <textarea ng-if="property.type === availableProperties.STRING" ng-class="{'edited-property': property.edited && highlight}" class="form-control" ng-model="evaluator.settings[property.key]"></textarea>
-  <button ng-if="property.type === availableProperties.STRING" class="btn btn-default pull-right set" ng-click="set(property)">Set</button>
-
-  <input ng-if="property.type === availableProperties.BOOLEAN" class="beforeCheckbox" id="{{property.name}}-checkbox" type="checkbox" ng-model="evaluator.settings[property.key]" ng-change="set(property)"/>
-  <label class="checkbox-label" ng-if="property.type === availableProperties.BOOLEAN" for="{{property.name}}-checkbox">{{property.name}}</label>
-
-  <div class="radio" ng-if="property.type === availableProperties.ENUM">
-    <h6>{{ property.name }}</h6>
-    <label class="radio-inline" ng-repeat="value in property.values">
-      <!-- We need to generalize ambiance radio buttons that are currently specialized only for EasyForm and use them here -->
-      <input style="visibility: visible; margin-top: 0px;" name="{{::property.name}}" value="{{::value}}" type="radio" ng-model="evaluator.settings[property.key]" ng-change="set(property)" />{{value}}
-    </label>
-  </div>
-
+  <label>{{ property.name }}</label>
+  <textarea ng-class="{'edited-property': property.edited && highlight}" class="form-control" ng-model="evaluator.settings[property.key]"></textarea>
+  <button class="btn btn-default pull-right set" ng-click="set(property)">Set</button>
 </div>
 <div ng-repeat="action in actions" class="action language-option clearfix">
   <button class="btn btn-default" ng-click="evaluator.perform(action.key)">{{ action.name }}</button>

@@ -149,12 +149,6 @@ define(function(require, exports, module) {
         cb(x, undefined, true);
       });
     },
-    getAutocompleteDocumentation: function(matchedWord, callback) {
-      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/groovysh/autocompleteDocumentation"), {match: matchedWord})
-        .success(function(documentation) {
-          callback(documentation);
-      });
-    },
     exit: function(cb) {
       var self = this;
       this.cancelExecution();
@@ -210,7 +204,6 @@ define(function(require, exports, module) {
     "com.twosigma.beaker.chart.treemap.util.*",
     "net.sf.jtreemap.swing.*",
     "com.twosigma.beaker.chart.heatmap.HeatMap",
-    "com.twosigma.beaker.chart.KeyboardCodes",
     "com.twosigma.beaker.jvm.object.*",
     "com.twosigma.beaker.easyform.*",
     "com.twosigma.beaker.easyform.formitem.*"];

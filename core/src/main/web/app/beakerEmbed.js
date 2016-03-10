@@ -20,30 +20,23 @@
   var initOutputDisplay = function()
   {
     ZeroClipboard.config( { swfPath: "app/images/ZeroClipboard.swf", hoverClass: 'dropdown-submenu-flash' } );
-  };
+  }
 
   var setupBeakerConfigAndRun = function() {
 
     var beaker = angular.module('beaker', [
       'ngRoute',
       'ngStorage',
-      'ngFileUpload',
-      'ui.gravatar',
       'bk.core',
       'bk.evaluatePluginManager',
       'bk.controlPanel',
       'bk.mainApp',
-      'bk.helper',
-      'bk.utils',
-      'bk.publication',
-      'bk.globals'
-
+      'bk.helper'
     ]);
 
 
     // setup routing. the template is going to replace ng-view
     beaker.config(function($routeProvider) {
-      var _newSession, _import, _open, _target;
       var sessionRouteResolve = {};
       var generateId = function() {
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -54,57 +47,48 @@
       var makeNewProvider = function(result) {
         return function() {
           var newSessionId = generateId();
-          _newSession = result;
+          sessionRouteResolve.isNewSession = function () {
+            return result;
+          };
           return '/session/' + newSessionId;
         };
       };
       $routeProvider
-        .when('/session/new', {
-          redirectTo: makeNewProvider("new")
-        })
-        .when('/session/empty', {
-          redirectTo: makeNewProvider("empty")
-        })
-        .when('/session/import', {
-          redirectTo: function() {
-            _import = true;
-            return '/session/' + generateId();
-          }
-        })
-        .when('/session/:sessionId', {
-          template: JST["template/mainapp/app"](),
-          controller: 'notebookRouter',
-          resolve: {
-            isNewSession: function() {
-              return _newSession;
-            },
-            isImport: function() {
-              return _import;
-            },
-            isOpen: function() {
-              return _open;
-            },
-            target: function() {
-              return _target;
-            },
-            clearResolves: function() {
-              return function() {_newSession = _import = _open = _target = undefined;};
+          .when('/session/new', {
+            redirectTo: makeNewProvider("new")
+          })
+          .when('/session/empty', {
+            redirectTo: makeNewProvider("empty")
+          })
+          .when('/session/import', {
+            redirectTo: function() {
+              sessionRouteResolve.isImport = function() {
+                return true;
+              };
+              return '/session/' + generateId();
             }
-          }
-        })
-        .when('/open', {
-          redirectTo: function(routeParams, path, search) {
-            var newSessionId = generateId();
-            _open = true;
-            _target = search;
-            return '/session/' + newSessionId;
-          }
-        })
-        .when('/control', {
-          template: JST["template/dashboard/app"]()
-        }).otherwise({
-        redirectTo: "/control"
-      });
+          })
+          .when('/session/:sessionId', {
+            template: JST["template/mainapp/app"](),
+            resolve: sessionRouteResolve
+          })
+          .when('/open', {
+            redirectTo: function(routeParams, path, search) {
+              var newSessionId = generateId();
+              sessionRouteResolve.isOpen = function() {
+                return true;
+              };
+              sessionRouteResolve.target = function() {
+                return search;
+              };
+              return '/session/' + newSessionId;
+            }
+          })
+          .when('/control', {
+            template: JST["template/dashboard/app"](),
+          }).otherwise({
+            redirectTo: "/control"
+          });
     });
 
     beaker.config(function(bkRecentMenuProvider) {
@@ -249,8 +233,8 @@
         $('body').removeClass('dragover');
       });
       window.bkHelper = bkHelper;
-      for (var i in window.beakerRegister.postHelperHooks) {
-        window.beakerRegister.postHelperHooks[i]();
+      for (var i in window.beaker.postHelperHooks) {
+        window.beaker.postHelperHooks[i]();
       }
     });
 
@@ -266,8 +250,8 @@
         bkEvaluatePluginManager.addNameToUrlEntry(key, value);
       });
 
-      if (window.bkInit && window.bkInit.getEvaluatorUrlMap) {
-        var evaluatorsUrlMap = window.bkInit.getEvaluatorUrlMap();
+      if (window.beaker.getEvaluatorUrlMap) {
+        var evaluatorsUrlMap = window.beaker.getEvaluatorUrlMap();
         _(evaluatorsUrlMap).keys().each(function(key) {
           var value = evaluatorsUrlMap[key];
           bkEvaluatePluginManager.addNameToUrlEntry(key, value);
@@ -277,35 +261,28 @@
 
     beaker.run(function(bkUtils, $rootScope) {
       bkUtils.getVersionInfo().then(function(versionInfo) {
-        window.beakerRegister.version = versionInfo.version;
-        window.beakerRegister.buildTime = versionInfo.buildTime;
+        window.beaker.version = versionInfo.version;
+        window.beaker.buildTime = versionInfo.buildTime;
         $rootScope.getVersion = function() {
-          return window.beakerRegister.version;
+          return window.beaker.version;
         };
         $rootScope.getBuildTime = function() {
-          return window.beakerRegister.buildTime;
+          return window.beaker.buildTime;
         };
-      });
-    });
-    beaker.run(function(GLOBALS) {
-      // make sure requirejs reports error
-      requirejs.config({
-        waitSeconds: GLOBALS.REQUIREJS_TIMEOUT,
-        enforceDefine: true
       });
     });
   };
-
   var bootstrapBkApp = function() {
+    // make sure requirejs reports error
+    requirejs.config({
+      enforceDefine: true
+    });
 
     angular.element(document).ready(function() {
       angular.bootstrap(document, ["beaker"]);
     });
   };
-  Q.fcall(initOutputDisplay)
-    .then(setupBeakerConfigAndRun)
-    .then(bootstrapBkApp)
-    .catch(function (err) {
-      console.log(err);
-    });
+  initOutputDisplay();
+  setupBeakerConfigAndRun();
+  bootstrapBkApp();
 })();

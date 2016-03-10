@@ -17,15 +17,12 @@
 package com.twosigma.beaker.chart.xychart.plotitem;
 
 import com.twosigma.beaker.chart.Color;
-import org.apache.commons.lang3.SerializationUtils;
-
-import java.io.Serializable;
 
 /**
  * Crosshair
  *
  */
-public class Crosshair implements Serializable{
+public class Crosshair {
   private StrokeType style;
   private Float width;
   private Color color;
@@ -62,10 +59,5 @@ public class Crosshair implements Serializable{
 
   public Color getColor() {
     return this.color;
-  }
-
-  @Override
-  public Object clone() throws CloneNotSupportedException {
-    return SerializationUtils.clone(this);
   }
 }

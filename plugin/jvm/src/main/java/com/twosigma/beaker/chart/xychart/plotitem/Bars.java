@@ -24,14 +24,42 @@ import java.util.EnumSet;
 import java.util.List;
 
 
-public class Bars extends BasedXYGraphics {
+public class Bars extends XYGraphics {
 
   private final static EnumSet<Filter> POSSIBLE_LOD_FILTERS = EnumSet.of(Filter.BAR, Filter.BOX);
 
   private Number       baseWidth;
   private List<Number> widths;
+  private Number baseBase = 0.0d;
+  private List<Number> bases;
   private Color baseOutlineColor;
   private List<Color> outlineColors;
+
+  public void setBase(Object base) {
+    if (base instanceof Number) {
+      this.baseBase = ((Number) base).floatValue();
+    } else if (base instanceof List) {
+      @SuppressWarnings("unchecked")
+      List<Number> ss = (List<Number>) base;
+      setBases(ss);
+    } else {
+      throw new IllegalArgumentException(
+        "setBase takes Number or List of Number");
+    }
+  }
+
+  private void setBases(List<Number> bases) {
+    this.bases = bases;
+  }
+
+  public Number getBase() {
+    return this.baseBase;
+  }
+
+  public List<Number> getBases() {
+    return this.bases;
+  }
+
 
   public void setWidth(Object width) {
     if (width instanceof Number) {

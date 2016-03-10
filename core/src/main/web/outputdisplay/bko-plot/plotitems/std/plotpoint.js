@@ -24,7 +24,6 @@
 
     PlotPoint.prototype.plotClass = "plot-point";
     PlotPoint.prototype.respClass = "plot-resp";
-    PlotPoint.prototype.actionClass = "item-clickable item-onkey";
     PlotPoint.prototype.shapes = ["rect", "diamond", "circle"];
     PlotPoint.prototype.svgtags = ["rect", "polygon", "circle"];
 
@@ -203,9 +202,7 @@
           "st" : ele.stroke,
           "st_op" : ele.stroke_opacity,
           "st_w" : ele.stroke_width,
-          "st_da" : ele.stroke_dasharray,
-          "tooltip_cx" : x,
-          "tooltip_cy" : y
+          "st_da" : ele.stroke_dasharray
         };
         var shape = ele.shape == null ? this.shape : ele.shape;
         switch (shape) {
@@ -216,35 +213,34 @@
             pstr += (x + s) + "," + (y    ) + " ";
             pstr += (x    ) + "," + (y + s) + " ";
             _.extend(prop, {
-              "pts" : pstr,
-              "tooltip_cx" : x
+              "pts" : pstr
             });
             labely = y - s;
             break;
           case "circle":
             _.extend(prop, {
-              "cx": x,
-              "cy": y,
-              "r": s
+              "cx" : x,
+              "cy" : y,
+              "r" : s
             });
             labely = y - s;
             break;
           default:    // rects
             _.extend(prop, {
-              "x": x - s / 2,
-              "y": y - s / 2,
-              "w": s,
-              "h": s
+              "x" : x - s / 2,
+              "y" : y - s / 2,
+              "w" : s,
+              "h" : s
             });
             labely = y - s / 2;
         }
         this.elementProps[shape].push(prop);
-        if(ele.itemLabel || this.showItemLabel){
+        if(this.showItemLabel){
           var labelMargin = 3;
 
           var label = {
             "id": "label_" + prop.id,
-            "text": ele.itemLabel ? ele.itemLabel : ele._y,
+            "text": ele._y,
             "x": x,
             "y": labely - labelMargin
           };
@@ -292,7 +288,7 @@
         shapesvg.selectAll(tag)
           .data(eleprops, function(d) { return d.id; }).enter().append(tag)
           .attr("id", function(d) { return d.id; })
-          .attr("class", respClass + " " + this.actionClass)
+          .attr("class", respClass)
           .style("fill", function(d) { return d.fi; })
           .style("fill-opacity", function(d) { return d.fi_op; })
           .style("stroke", function(d) { return d.st; })
@@ -330,24 +326,22 @@
           .attr("text-anchor", "middle")
           .style("fill", "black")
           .style("stroke", "none")
-          .text(function(d) {return d.text;});
+          .text(function(d) {
+            return d.text;
+          });
       }
     };
 
     PlotPoint.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.hideTips(scope);
+      this.clearTips(scope);
     };
 
-    PlotPoint.prototype.hideTips = function(scope, hidden) {
-      plotTip.hideTips(scope, this.id,  hidden);
+    PlotPoint.prototype.clearTips = function(scope) {
+      plotTip.clearTips(scope, this.id);
     };
 
     PlotPoint.prototype.createTip = function(ele) {
-
-      if (ele.tooltip)
-        return ele.tooltip;
-
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
@@ -361,5 +355,5 @@
 
     return PlotPoint;
   };
-  beakerRegister.bkoFactory('PlotPoint', ['plotUtils', 'plotTip', retfunc]);
+  beaker.bkoFactory('PlotPoint', ['plotUtils', 'plotTip', retfunc]);
 })();

@@ -26,7 +26,6 @@
     PlotLodRiver.prototype.plotClass = "";
     PlotLodRiver.prototype.respClass = "plot-resp plot-respstem";
     PlotLodRiver.prototype.plotClassAvgLine = "plot-lodavgline";
-    PlotLodRiver.prototype.actionClass = "item-clickable item-onkey";
 
     PlotLodRiver.prototype.format = function() {
       if (this.color != null) {
@@ -171,7 +170,7 @@
         .data([props]).enter().append("polygon");
       groupsvg.select("polygon")
         .attr("points", props.pts)
-        .attr("class", this.plotClass + " " + this.actionClass)
+        .attr("class", this.plotClass)
         .style("fill", props.fi)
         .style("fill-opacity", props.fi_op)
         .style("stroke", props.st)
@@ -185,7 +184,7 @@
           .data([props]).enter().append("path");
         groupsvg.select("path")
           .attr("d", props.d)
-          .attr("class", this.plotClassAvgLine + " " + this.actionClass)
+          .attr("class", this.plotClassAvgLine)
           .style("stroke", clr)
           .style("stroke-opacity", props.st_op);
       }
@@ -197,7 +196,7 @@
         groupsvg.selectAll("rect")
           .data(eleprops, function(d) { return d.id; }).enter().append("rect")
           .attr("id", function(d) { return d.id; })
-          .attr("class", this.respClass + " " + this.actionClass)
+          .attr("class", this.respClass)
           .attr("width", this.respWidth)
           .style("stroke", this.tip_color);
 
@@ -210,11 +209,11 @@
       }
     };
 
-    PlotLodRiver.prototype.hideTips = function(scope, hidden) {
-      plotTip.hideTips(scope, this.id, hidden);
+    PlotLodRiver.prototype.clearTips = function(scope) {
+      plotTip.clearTips(scope, this.id);
     };
 
     return PlotLodRiver;
   };
-  beakerRegister.bkoFactory('PlotLodRiver', ['plotUtils', 'plotTip', retfunc]);
+  beaker.bkoFactory('PlotLodRiver', ['plotUtils', 'plotTip', retfunc]);
 })();

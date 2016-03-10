@@ -1,4 +1,3 @@
-outputdisplay/bko-tabledisplay/bko-datatables-headermenu.js
 outputdisplay/bko-tabledisplay/bko-tabledisplay.js
 outputdisplay/bko-image.js
 outputdisplay/bko-latex.js
@@ -9,7 +8,6 @@ outputdisplay/bko-vega.js
 outputdisplay/bko-plot/plotutils.js
 outputdisplay/bko-plot/plotsampler.js
 outputdisplay/bko-plot/plottip.js
-outputdisplay/bko-plot/plotservice.js
 outputdisplay/bko-plot/plotitems/auxes/plotauxbox.js
 outputdisplay/bko-plot/plotitems/auxes/plotauxriver.js
 outputdisplay/bko-plot/plotitems/auxes/plotauxstem.js

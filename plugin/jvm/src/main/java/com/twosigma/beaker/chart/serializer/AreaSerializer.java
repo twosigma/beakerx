@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.SerializerProvider;
  * AreaSerializer
  *
  */
-public class AreaSerializer extends BasedXYGraphicsSerializer<Area> {
+public class AreaSerializer extends XYGraphicsSerializer<Area> {
 
   @Override
   public void serialize(Area area, JsonGenerator jgen, SerializerProvider sp)
@@ -37,8 +37,14 @@ public class AreaSerializer extends BasedXYGraphicsSerializer<Area> {
 
     super.serialize(area, jgen, sp);
 
+    jgen.writeObjectField("type", area.getClass().getSimpleName());
     if (area.getColor() instanceof Color) {
       jgen.writeObjectField("color", area.getColor());
+    }
+    if (area.getBases() != null) {
+      jgen.writeObjectField("bases", area.getBases());
+    } else {
+      jgen.writeObjectField("base", area.getBase());
     }
     if (area.getInterpolation() != null) {
       jgen.writeObjectField("interpolation", area.getInterpolation());

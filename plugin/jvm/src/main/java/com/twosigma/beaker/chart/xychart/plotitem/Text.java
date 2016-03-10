@@ -17,16 +17,11 @@
 package com.twosigma.beaker.chart.xychart.plotitem;
 
 import com.twosigma.beaker.chart.Color;
-import org.apache.commons.lang3.SerializationUtils;
-
-import java.io.Serializable;
-
-import java.util.Date;
 
 /**
  * Text
  */
-public class Text implements Serializable, Cloneable{
+public class Text {
 
   private Number  x            = 0.0d;
   private Number  y            = 0.0d;
@@ -41,16 +36,8 @@ public class Text implements Serializable, Cloneable{
     return x;
   }
 
-  public void setX(Object x) {
-    if (x instanceof Number) {
-      this.x = (Number)x;
-    } else if (x instanceof Date) {
-      Date date = (Date)x;
-      this.x = date.getTime();
-    } else {
-      throw new IllegalArgumentException("x coordinate should be a number or java.util.Date object");
-    }
-
+  public void setX(Number x) {
+    this.x = x;
   }
 
   public Number getY() {
@@ -108,10 +95,5 @@ public class Text implements Serializable, Cloneable{
 
   public void setPlotType(Class plotType) {
     this.plotType = plotType;
-  }
-
-  @Override
-  public Object clone() throws CloneNotSupportedException {
-    return SerializationUtils.clone(this);
   }
 }

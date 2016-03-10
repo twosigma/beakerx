@@ -18,10 +18,10 @@
     <a tabindex="-1">Displays ({{model.getSelectedDisplay()}})</a>
     <ul class="dropdown-menu">
       <li ng-repeat="d in model.getApplicableDisplays()">
+        <i class="glyphicon glyphicon-ok" ng-show="d === model.getSelectedDisplay()"></i>
         <a tabindex="-1" href="#" ng-click="model.setSelectedDisplay(d)" eat-click>
           {{ d }}
         </a>
-        <i class="glyphicon glyphicon-ok" ng-show="d === model.getSelectedDisplay()"></i>
       </li>
     </ul>
   </li>

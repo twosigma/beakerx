@@ -296,16 +296,14 @@
 
     PlotText.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.hideTips(scope);
+      this.clearTips(scope);
     };
 
-    PlotText.prototype.hideTips = function(scope, hidden) {
-      plotTip.hideTips(scope, this.id, hidden);
+    PlotText.prototype.clearTips = function(scope) {
+      plotTip.clearTips(scope, this.id);
     };
 
     PlotText.prototype.createTip = function(ele) {
-      if (ele.tooltip)
-        return ele.tooltip;
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
@@ -319,5 +317,5 @@
 
     return PlotText;
   };
-  beakerRegister.bkoFactory('PlotText', ['plotUtils', 'plotTip',  retfunc]);
+  beaker.bkoFactory('PlotText', ['plotUtils', 'plotTip',  retfunc]);
 })();

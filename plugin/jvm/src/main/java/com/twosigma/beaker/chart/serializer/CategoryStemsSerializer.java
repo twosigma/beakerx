@@ -33,7 +33,7 @@ public class CategoryStemsSerializer extends CategoryGraphicsSerializer<Category
                                                      JsonProcessingException {
     jgen.writeStartObject();
 
-    super.serialize(categoryStems, jgen, provider);
+    serialize(categoryStems, jgen);
 
     if (categoryStems.getBases() != null) {
       jgen.writeObjectField("bases", categoryStems.getBases());

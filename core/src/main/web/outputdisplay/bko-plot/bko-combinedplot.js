@@ -21,7 +21,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils, combinedplotFormatter, bkCellMenuPluginManager, plotService) {
+  var retfunc = function(plotUtils, combinedplotFormatter, bkCellMenuPluginManager) {
     var CELL_TYPE = "bko-combinedplot";
     return {
       template :
@@ -136,43 +136,6 @@
               },
               getWidth : function() {
                 return scope.width;
-              },
-              onClick: function(subplotId, item, e) {
-                for (var i = 0; i < scope.stdmodel.plots.length; i++) {
-                  var subplot = scope.stdmodel.plots[i];
-                  if (subplotId === subplot.plotId) {
-                    var params = plotUtils.getActionObject(scope.model.getCellModel().type, e, i);
-                    plotService.onClick(scope.model.getCellModel().update_id,
-                                        item.uid,
-                                        scope.model.getEvaluatorId(),
-                                        params);
-                  }
-                }
-              },
-              onKey: function(key, subplotId, item, e) {
-                for (var i = 0; i < scope.stdmodel.plots.length; i++) {
-                  var subplot = scope.stdmodel.plots[i];
-                  if (subplotId === subplot.plotId) {
-                    var actionObject = plotUtils.getActionObject(scope.model.getCellModel().type, e, i);
-                    plotService.onKey(scope.model.getCellModel().update_id,
-                                      item.uid,
-                                      scope.model.getEvaluatorId(),
-                                      { key: key, actionObject: actionObject });
-                  }
-                }
-              },
-              setActionDetails: function(subplotId, item, e) {
-                var actionObject;
-                for (var i = 0; i < scope.stdmodel.plots.length; i++) {
-                  var subplot = scope.stdmodel.plots[i];
-                  if (subplotId === subplot.plotId) {
-                    actionObject = plotUtils.getActionObject(scope.model.getCellModel().type, e, i);
-                  }
-                }
-                return plotService.setActionDetails(scope.model.getCellModel().update_id,
-                                                    item.uid,
-                                                    scope.model.getEvaluatorId(),
-                                                    actionObject);
               }
             };
             models.push(pl);
@@ -303,6 +266,6 @@
       }
     };
   };
-  beakerRegister.bkoDirective("CombinedPlot",
-      ["plotUtils", "combinedplotFormatter", "bkCellMenuPluginManager", "plotService", retfunc]);
+  beaker.bkoDirective("CombinedPlot",
+      ["plotUtils", "combinedplotFormatter", "bkCellMenuPluginManager", retfunc]);
 })();

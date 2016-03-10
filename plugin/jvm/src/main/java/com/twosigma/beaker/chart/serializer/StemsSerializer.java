@@ -26,7 +26,7 @@ import org.codehaus.jackson.map.SerializerProvider;
  * PointsSerializer
  *
  */
-public class StemsSerializer extends BasedXYGraphicsSerializer<Stems> {
+public class StemsSerializer extends XYGraphicsSerializer<Stems> {
 
   @Override
   public void serialize(Stems stems, JsonGenerator jgen, SerializerProvider sp)
@@ -36,6 +36,12 @@ public class StemsSerializer extends BasedXYGraphicsSerializer<Stems> {
 
     super.serialize(stems, jgen, sp);
 
+    jgen.writeObjectField("type", stems.getClass().getSimpleName());
+    if (stems.getBases() != null) {
+      jgen.writeObjectField("bases", stems.getBases());
+    } else {
+      jgen.writeObjectField("base", stems.getBase());
+    }
     if (stems.getColors() != null) {
       jgen.writeObjectField("colors", stems.getColors());
     } else {

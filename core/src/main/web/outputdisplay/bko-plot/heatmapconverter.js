@@ -113,5 +113,5 @@
       }
     };
   };
-  beakerRegister.bkoFactory('heatmapConverter', retfunc);
+  beaker.bkoFactory('heatmapConverter', retfunc);
 })();

@@ -24,7 +24,6 @@
     PlotLodLine.prototype.respR = 5;
     PlotLodLine.prototype.plotClass = "plot-line";
     PlotLodLine.prototype.respClass = "plot-resp plot-respdot";
-    PlotLodLine.prototype.actionClass = "item-clickable item-onkey";
 
     PlotLodLine.prototype.render = function(scope, samples, gid){
       if (gid == null) { gid = ""; }
@@ -149,7 +148,7 @@
 
       itemsvg.selectAll("path")
         .data([props]).enter().append("path")
-        .attr("class", this.plotClass + " " + this.actionClass)
+        .attr("class", this.plotClass)
         .style("stroke", function(d) { return d.st; })
         .style("stroke-dasharray", function(d) { return d.st_da; })
         .style("stroke-width", function(d) { return d.st_w; })
@@ -163,7 +162,7 @@
         itemsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id; }).enter().append("circle")
           .attr("id", function(d) { return d.id; })
-          .attr("class", this.respClass + " " + this.actionClass)
+          .attr("class", this.respClass)
           .style("stroke", this.tip_color)
           .attr("r", this.respR);
         itemsvg.selectAll("circle")
@@ -174,11 +173,11 @@
       }
     };
 
-    PlotLodLine.prototype.hideTips = function(scope, hidden) {
-      plotTip.hideTips(scope, this.id, hidden);
+    PlotLodLine.prototype.clearTips = function(scope) {
+      plotTip.clearTips(scope, this.id);
     };
 
     return PlotLodLine;
   };
-  beakerRegister.bkoFactory('PlotLodLine', ['plotUtils', 'plotTip', retfunc]);
+  beaker.bkoFactory('PlotLodLine', ['plotUtils', 'plotTip', retfunc]);
 })();

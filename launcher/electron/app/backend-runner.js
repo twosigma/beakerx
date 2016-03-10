@@ -18,9 +18,10 @@ module.exports = (function() {
   var path = require('path');
   var ReadLine = require('readline');
   var spawn = require('child_process').spawn;
+  var spawnSync = require('child_process').spawnSync;
   var events = require('events');
   var os = require('os');
-  var request = require('request');
+  var killTree = require('tree-kill');
 
   var _url;
   var _hash;
@@ -69,8 +70,12 @@ module.exports = (function() {
     },
     kill: function() {
       var eventEmitter = new events.EventEmitter();
-      if (_local) {
-        request(this.getUrl() + this.getHash() + '/beaker/rest/util/exit', function (error, response, body) {
+      if (_local && (_osName.startsWith('Windows'))) {
+        spawnSync("taskkill", ["/pid", _backend.pid, '/f', '/t']);
+        _running = false;
+        eventEmitter.emit('killed');
+      } else if (_local) {
+        killTree(_backend.pid, 'SIGTERM', function (){
           _running = false;
           eventEmitter.emit('killed');
         });

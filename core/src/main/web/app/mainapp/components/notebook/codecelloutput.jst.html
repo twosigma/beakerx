@@ -21,7 +21,7 @@
     <bk-code-cell-output-menu model="outputCellMenuModel"></bk-code-cell-output-menu>
   </div>
   <div class="cell-menu-item expand-contract" ng-click="toggleExpansion()"
-       ng-class="!isExpanded() && 'collapsed'" title="{{!isExpanded() ? 'show' : 'hide'}} cell output" ng-show="isShowMenu()"></div>
+       ng-class="!isExpanded() && 'collapsed'" title="hide/show cell output" ng-show="isShowMenu()"></div>
 </div>
 <bk-output-display ng-show="isShowOutput()"
     model="outputDisplayModel"

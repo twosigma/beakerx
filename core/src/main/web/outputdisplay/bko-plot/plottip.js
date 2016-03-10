@@ -26,10 +26,8 @@
       return scope.jqcontainer.find("#" + tipid);
     };
 
-    var clear = function (scope, d, hide) {
-      if (hide !== true) {
-        delete scope.tips[d.id];
-      }
+    var clear = function (scope, d) {
+      delete scope.tips[d.id];
       scope.jqcontainer.find("#tip_" + d.id).remove();
       if (d.isresp === true) {
         scope.jqsvg.find("#" + d.id).css("opacity", 0);
@@ -45,6 +43,7 @@
       var closeIcon = $('<i/>', {class: 'fa fa-times'})
         .on('click', function () {
           clear(scope, d);
+          scope.interactMode = "remove";
           $(this).parent('.plot-tooltip').remove();
           impl.renderTips(scope);
         });
@@ -148,8 +147,8 @@
         var d = scope.tips[d.id];
         d.sticking = false;
 
-        d.targetx = d.tooltip_cx ? scope.scr2dataX(d.tooltip_cx) : scope.scr2dataX(mousePos[0]);
-        d.targety = d.tooltip_cy ? scope.scr2dataY(d.tooltip_cy) : scope.scr2dataY(mousePos[1]);
+        d.targetx = d.cx ? scope.scr2dataX(d.cx) : scope.scr2dataX(d.x);
+        d.targety = d.cy ? scope.scr2dataY(d.cy) : scope.scr2dataY(d.y);
 
         d.datax = scope.scr2dataX(mousePos[0] + 5);
         d.datay = scope.scr2dataY(mousePos[1] + 5);
@@ -167,15 +166,15 @@
         }
       },
 
-      hideTips: function (scope, itemid, hidden) {
-        hidden = hidden === false ? hidden : true;
+
+      clearTips: function (scope, itemid) {
         _.each(scope.tips, function (value, key) {
           if (key.search("" + itemid) === 0) {
-            scope.tips[key].hidden = hidden;
+            scope.jqcontainer.find("#tip_" + key).remove();
+            delete scope.tips[key];
           }
         });
       },
-
 
       renderTips: function (scope) {
 
@@ -203,6 +202,7 @@
               .on('mouseup', function (e) {
                 if (e.which == 3) {
                   clear(scope, d);
+                  scope.interactMode = "remove";
                   $(this).remove();
                 }
               });
@@ -211,8 +211,9 @@
             }
           }
           var w = tipdiv.outerWidth(), h = tipdiv.outerHeight();
-          if (d.hidden === true || outsideGrid(scope, x, y, w, h)) {
-            clear(scope, d, true);
+          if (outsideGrid(scope, x, y, w, h)) {
+            clear(scope, d);
+            scope.interactMode = "remove";
             tipdiv.remove();
             return;
           }
@@ -239,8 +240,10 @@
           if (d.isresp === true) {
             scope.jqsvg.find("#" + d.id).attr("opacity", 1);
           } else {
-            scope.jqsvg.find("#" + d.id).attr("filter", "url(" + window.location.pathname + "#svgfilter)");
+            scope.jqsvg.find("#" + d.id)
+              .attr("filter", "url(#svgfilter)");
           }
+
           if (d.sticking == true) {
             pinCloseIcon(scope, d);
             drawLine(scope, d, tipdiv);
@@ -250,5 +253,5 @@
     };
     return impl;
   };
-  beakerRegister.bkoFactory('plotTip', ['plotUtils', retfunc]);
+  beaker.bkoFactory('plotTip', ['plotUtils', retfunc]);
 })();

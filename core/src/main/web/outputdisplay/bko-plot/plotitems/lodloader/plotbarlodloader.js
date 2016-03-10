@@ -66,12 +66,12 @@
       if (this.lodOn === false) { return; }
       if (this.lodType === "bar") {
         this.lodplotter.setZoomHash(this.zoomHash);
-        this.lodplotter.hideTips(scope);
+        this.lodplotter.clearTips(scope);
       } else if (this.lodType === "box") {
         this.lodplotter.setZoomHash(this.zoomHash);
         this.lodplotter2.setZoomHash(this.zoomHash);
-        this.lodplotter.hideTips(scope);
-        this.lodplotter2.hideTips(scope);
+        this.lodplotter.clearTips(scope);
+        this.lodplotter2.clearTips(scope);
       }
     };
 
@@ -278,19 +278,19 @@
 
     PlotBarLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.hideTips(scope);
+      this.clearTips(scope);
     };
 
-    PlotBarLodLoader.prototype.hideTips = function(scope, hidden) {
+    PlotBarLodLoader.prototype.clearTips = function(scope) {
       if (this.lodOn === false) {
-        this.plotter.hideTips(scope, hidden);
+        this.plotter.clearTips(scope);
         return;
       }
       if (this.lodType === "bar") {
-        this.lodplotter.hideTips(scope, hidden);
+        this.lodplotter.clearTips(scope);
       } else if (this.lodType === "box") {
-        this.lodplotter.hideTips(scope, hidden);
-        this.lodplotter2.hideTips(scope, hidden);
+        this.lodplotter.clearTips(scope);
+        this.lodplotter2.clearTips(scope);
       }
     };
 
@@ -320,6 +320,6 @@
 
     return PlotBarLodLoader;
   };
-  beakerRegister.bkoFactory('PlotBarLodLoader',
+  beaker.bkoFactory('PlotBarLodLoader',
     ['plotUtils', 'PlotSampler', 'PlotBar', 'PlotLodBox', 'PlotAuxBox', retfunc]);
 })();

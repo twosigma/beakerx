@@ -126,7 +126,6 @@ task (copyJQueryUIImages, type: Copy) {
     into 'src/main/web/app/dist/images/'
 }
 
-
 task copyVendorStuff
 copyVendorStuff.dependsOn copyKatex
 copyVendorStuff.dependsOn copyRequireJS

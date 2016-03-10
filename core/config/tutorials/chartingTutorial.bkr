@@ -40,7 +40,7 @@
                     "background": "#E0FFE0"
                 }
             },
-            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.chart.KeyboardCodes"
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.jvm.object.*"
         }
     ],
     "cells": [
@@ -56,12 +56,93 @@
             "id": "markdownyljfKo",
             "type": "markdown",
             "body": [
-                "Beaker comes with its own charting library for creating interactive plots that you can click on, drag, zoom, and annotate.",
+                "Beaker comes with its own charting library for creating interactive plots. ",
                 "It is implemented in JavaScript and takes the specification for the plot to make and the data to plot in JSON.",
-                "You can access it from any language, but it's easiest with Groovy, and this tutorial shows you how.",
-                "See <a href=\"../beaker/app/dist/docs/index.html?com/twosigma/beaker/chart/Chart.html\" target=\"_blank\">documentation</a>"
+                "You can access it from any language, but it's easiest with Groovy, and this tutorial shows you how."
             ],
             "evaluatorReader": false
+        },
+        {
+            "id": "sectionjcPjoi",
+            "type": "section",
+            "title": "Initialize Demo Data",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": true
+        },
+        {
+            "id": "codeldwu25",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "rates = beaker.rates",
+                    "\"ok\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "ok",
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
+                "elapsedTime": 1396,
+                "height": 0
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "initialization": true
+        },
+        {
+            "id": "codeMV78ar",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def size = rates.size()",
+                    "(0 ..< size).each{row = rates[it]; row.spread = row.y10 - row.m3}",
+                    "\"ok\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "ok",
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
+                "elapsedTime": 711,
+                "height": 0
+            },
+            "evaluatorReader": true,
+            "lineCount": 3,
+            "initialization": true
+        },
+        {
+            "id": "code0s2jfv",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def f = new java.text.SimpleDateFormat(\"yyyy MMM dd\")",
+                    "lehmanDate = f.parse(\"2008 Sep 15\")",
+                    "bubbleBottomDate = f.parse(\"2002 Oct 09\")",
+                    "inversion1 = [f.parse(\"2000 Jul 22\"), f.parse(\"2001 Feb 16\")]",
+                    "inversion2 = [f.parse(\"2006 Aug 01\"), f.parse(\"2007 Jun 07\")]",
+                    "\"ok\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "ok",
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
+                "elapsedTime": 644,
+                "height": 0
+            },
+            "evaluatorReader": true,
+            "lineCount": 6,
+            "initialization": true
         },
         {
             "id": "sectionTfcZid",
@@ -112,11 +193,11 @@
                     "def b2 = new ConstantBand(x: inversion2, color: new Color(240, 100, 100, 55))",
                     "",
                     "// Add notation and line for Lehman Bankruptcy.",
-                    "p1 << new Text(x: lehmanDate, y: 7.5, text: \"Lehman Brothers Bankruptcy\")",
+                    "p1 << new Text(x: lehmanDate.getTime(), y: 7.5, text: \"Lehman Brothers Bankruptcy\")",
                     "def l1 = new ConstantLine(x: lehmanDate, style: StrokeType.DOT, color: Color.gray)",
                     "",
                     "// Add notation and line for Stocks Nadir.",
-                    "p1 << new Text(x: bubbleBottomDate, y: 5.75, text: \"Stocks Hit Bottom\")",
+                    "p1 << new Text(x: bubbleBottomDate.getTime(), y: 5.75, text: \"Stocks Hit Bottom\")",
                     "def l2 = new ConstantLine(x: bubbleBottomDate, style: StrokeType.DOT, color: Color.gray)",
                     "",
                     "// add the notations and highlight bands to both plots",
@@ -2439,80 +2520,6 @@
             "lineCount": 32
         },
         {
-            "id": "codeldwu25",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": [
-                    "rates = beaker.rates",
-                    "\"ok\""
-                ]
-            },
-            "output": {
-                "state": {},
-                "result": "ok",
-                "selectedType": "Text",
-                "pluginName": "Groovy",
-                "shellId": "66acefc1-1949-4406-98a7-d99e52dc839c",
-                "elapsedTime": 1791,
-                "height": 36
-            },
-            "evaluatorReader": true,
-            "lineCount": 2,
-            "initialization": true
-        },
-        {
-            "id": "codeMV78ar",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": [
-                    "def size = rates.size()",
-                    "(0 ..< size).each{row = rates[it]; row.spread = row.y10 - row.m3}",
-                    "\"ok\""
-                ]
-            },
-            "output": {
-                "state": {},
-                "result": "ok",
-                "selectedType": "Text",
-                "pluginName": "Groovy",
-                "shellId": "66acefc1-1949-4406-98a7-d99e52dc839c",
-                "elapsedTime": 689,
-                "height": 36
-            },
-            "evaluatorReader": true,
-            "lineCount": 3,
-            "initialization": true
-        },
-        {
-            "id": "code0s2jfv",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": [
-                    "def f = new java.text.SimpleDateFormat(\"yyyy MMM dd\")",
-                    "lehmanDate = f.parse(\"2008 Sep 15\")",
-                    "bubbleBottomDate = f.parse(\"2002 Oct 09\")",
-                    "inversion1 = [f.parse(\"2000 Jul 22\"), f.parse(\"2001 Feb 16\")]",
-                    "inversion2 = [f.parse(\"2006 Aug 01\"), f.parse(\"2007 Jun 07\")]",
-                    "\"ok\""
-                ]
-            },
-            "output": {
-                "state": {},
-                "result": "ok",
-                "selectedType": "Text",
-                "pluginName": "Groovy",
-                "shellId": "66acefc1-1949-4406-98a7-d99e52dc839c",
-                "elapsedTime": 707,
-                "height": 36
-            },
-            "evaluatorReader": true,
-            "lineCount": 6,
-            "initialization": true
-        },
-        {
             "id": "sectionHHnhXQ",
             "type": "section",
             "title": "Simple Automatic Plot",
@@ -3934,62 +3941,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "showAllItems": true,
-                    "plotSize": {
-                        "width": 640,
-                        "height": 480
-                    },
-                    "focus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.47380952380952385,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095242,
-                        "yspan": 0.05238095238095236
-                    },
-                    "lodOn": [
-                        null,
-                        null,
-                        null,
-                        null
-                    ],
-                    "lodType": [
-                        null,
-                        null,
-                        null,
-                        null
-                    ],
-                    "lodAuto": [
-                        null,
-                        null,
-                        null,
-                        null
-                    ],
-                    "zoomHash": [
-                        null,
-                        null,
-                        null,
-                        null
-                    ],
-                    "showItem": [
-                        true,
-                        true,
-                        true,
-                        true
-                    ],
-                    "visibleItem": 4,
-                    "legendableItem": 2,
-                    "defaultFocus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.47380952380952385,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095242,
-                        "yspan": 0.05238095238095236
-                    },
-                    "tips": {}
-                },
+                "state": {},
                 "result": {
                     "type": "Plot",
                     "init_width": 640,
@@ -6604,7 +6556,7 @@
                 "pluginName": "Groovy",
                 "shellId": "aa32f2c1-e85c-4515-8617-eb237b62180a",
                 "elapsedTime": 775,
-                "height": 502
+                "height": 519
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -8871,192 +8823,6 @@
             "lineCount": 4
         },
         {
-            "id": "sectionwW4zfy",
-            "type": "section",
-            "title": "Stacking",
-            "level": 2,
-            "evaluatorReader": false,
-            "collapsed": false
-        },
-        {
-            "id": "markdowngpUmGs",
-            "type": "markdown",
-            "body": [
-                "You can combine plot items that have a base property (Bars, Stems, Area)."
-            ],
-            "evaluatorReader": false
-        },
-        {
-            "id": "code9bXcXt",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": [
-                    "def y1 = [1,5,3,2,3]",
-                    "def y2 = [7,2,4,1,3]",
-                    "def p = new Plot(title: 'Plot with XYStacker', initHeight: 200)",
-                    "def a1 = new Area(y: y1, displayName: 'y1')",
-                    "def a2 = new Area(y: y2, displayName: 'y2')",
-                    "p << XYStacker.stack([a1, a2])"
-                ]
-            },
-            "output": {
-                "state": {
-                    "showAllItems": true,
-                    "plotSize": {
-                        "width": 640,
-                        "height": 200
-                    },
-                    "focus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095242,
-                        "yspan": 0.05238095238095242
-                    },
-                    "lodOn": [
-                        null,
-                        null
-                    ],
-                    "lodType": [
-                        null,
-                        null
-                    ],
-                    "lodAuto": [
-                        null,
-                        null
-                    ],
-                    "zoomHash": [
-                        null,
-                        null
-                    ],
-                    "showItem": [
-                        true,
-                        true
-                    ],
-                    "visibleItem": 2,
-                    "legendableItem": 2,
-                    "defaultFocus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095242,
-                        "yspan": 0.05238095238095242
-                    },
-                    "tips": {}
-                },
-                "result": {
-                    "type": "Plot",
-                    "init_width": 640,
-                    "init_height": 200,
-                    "chart_title": "Plot with XYStacker",
-                    "show_legend": null,
-                    "use_tool_tip": true,
-                    "legend_position": {
-                        "type": "LegendPosition",
-                        "position": "TOP_RIGHT"
-                    },
-                    "legend_layout": "VERTICAL",
-                    "domain_axis_label": null,
-                    "y_label": "",
-                    "rangeAxes": [
-                        {
-                            "type": "YAxis",
-                            "label": "",
-                            "auto_range": true,
-                            "auto_range_includes_zero": false,
-                            "lower_margin": 0.05,
-                            "upper_margin": 0.05,
-                            "lower_bound": 0,
-                            "upper_bound": 0,
-                            "use_log": false,
-                            "log_base": 10
-                        }
-                    ],
-                    "x_lower_margin": 0.05,
-                    "x_upper_margin": 0.05,
-                    "y_auto_range": true,
-                    "y_auto_range_includes_zero": false,
-                    "y_lower_margin": 0.05,
-                    "y_upper_margin": 0.05,
-                    "y_lower_bound": 0,
-                    "y_upper_bound": 0,
-                    "log_y": false,
-                    "timezone": null,
-                    "crosshair": null,
-                    "omit_checkboxes": false,
-                    "graphics_list": [
-                        {
-                            "x": [
-                                0,
-                                1,
-                                2,
-                                3,
-                                4
-                            ],
-                            "y": [
-                                1,
-                                5,
-                                3,
-                                2,
-                                3
-                            ],
-                            "visible": true,
-                            "display_name": "y1",
-                            "yAxis": null,
-                            "base": 0,
-                            "type": "Area"
-                        },
-                        {
-                            "x": [
-                                0,
-                                1,
-                                2,
-                                3,
-                                4
-                            ],
-                            "y": [
-                                8,
-                                7,
-                                7,
-                                3,
-                                6
-                            ],
-                            "visible": true,
-                            "display_name": "y2",
-                            "yAxis": null,
-                            "bases": [
-                                1,
-                                5,
-                                3,
-                                2,
-                                3
-                            ],
-                            "type": "Area"
-                        }
-                    ],
-                    "constant_lines": [],
-                    "constant_bands": [],
-                    "texts": [],
-                    "x_auto_range": true,
-                    "x_lower_bound": 0,
-                    "x_upper_bound": 0,
-                    "log_x": false,
-                    "x_log_base": 10,
-                    "tips": {}
-                },
-                "selectedType": "Plot",
-                "elapsedTime": 783,
-                "pluginName": "Groovy",
-                "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
-                "height": 249
-            },
-            "evaluatorReader": true,
-            "lineCount": 6
-        },
-        {
             "id": "sectionfjRouj",
             "type": "section",
             "title": "Constant Lines",
@@ -10001,7 +9767,7 @@
                     "def y = [3, 6, 4, 5, 9]",
                     "pp << new Line(displayName: \"Line\", x: x, y: y, width: 3)",
                     "pp << new Bars(displayName: \"Bar\", x: (1..10), y: [2, 2, 4, 4, 2, 2, 0, 2, 2, 4], width: 0.5)",
-                    "pp << new Points(x: x, y: y, size: 10, toolTip: {xs, ys -> \"x = \" + xs + \", y = \" + ys })"
+                    "pp << new Points(x: x, y: y, size: 10)"
                 ]
             },
             "output": {
@@ -10124,13 +9890,6 @@
                             "visible": true,
                             "display_name": "",
                             "yAxis": null,
-                            "tooltips": [
-                                "x = 1, y = 3",
-                                "x = 4, y = 6",
-                                "x = 6, y = 4",
-                                "x = 8, y = 5",
-                                "x = 10, y = 9"
-                            ],
                             "type": "Points",
                             "size": 10,
                             "shape": "DEFAULT",
@@ -10204,7 +9963,7 @@
                 },
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
-                "height": 533
+                "height": 528
             },
             "evaluatorReader": true,
             "lineCount": 8
@@ -15776,14 +15535,6 @@
             },
             "evaluatorReader": true,
             "lineCount": 5
-        },
-        {
-            "id": "sectionjcPjoi",
-            "type": "section",
-            "title": "Initialize Demo Data",
-            "level": 1,
-            "evaluatorReader": false,
-            "collapsed": true
         }
     ],
     "namespace": {

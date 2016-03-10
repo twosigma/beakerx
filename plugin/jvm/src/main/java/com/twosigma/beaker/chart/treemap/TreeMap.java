@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.chart.treemap;
 
-import com.twosigma.beaker.chart.Chart;
+import com.twosigma.beaker.Chart;
 import com.twosigma.beaker.chart.treemap.util.ColorProvider;
 import com.twosigma.beaker.chart.treemap.util.IToolTipBuilder;
 import com.twosigma.beaker.chart.treemap.util.RandomColorProvider;

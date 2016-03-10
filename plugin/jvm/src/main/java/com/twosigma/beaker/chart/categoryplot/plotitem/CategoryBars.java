@@ -32,7 +32,7 @@ public class CategoryBars extends CategoryGraphics {
   private List<Object>   outlineColors;
   private Boolean       baseFill;
   private List<Boolean> fills;
-  private Boolean       baseOutline = false;
+  private Boolean       baseOutline;
   private List<Boolean> outlines;
 
   private LabelPositionType labelPosition = LabelPositionType.CENTER;

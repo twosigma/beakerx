@@ -65,7 +65,7 @@
       this.zoomHash = plotUtils.randomString(3);
       if (this.lodOn === false) { return; }
       this.lodplotter.setZoomHash(this.zoomHash);
-      this.lodplotter.hideTips(scope);
+      this.lodplotter.clearTips(scope);
     };
 
     PlotLineLodLoader.prototype.applyZoomHash = function(hash) {
@@ -221,15 +221,15 @@
 
     PlotLineLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.hideTips(scope);
+      this.clearTips(scope);
     };
 
-    PlotLineLodLoader.prototype.hideTips = function(scope, hidden) {
+    PlotLineLodLoader.prototype.clearTips = function(scope) {
       if (this.lodOn === false) {
-        this.plotter.hideTips(scope, hidden);
+        this.plotter.clearTips(scope);
         return;
       }
-      this.lodplotter.hideTips(scope, hidden);
+      this.lodplotter.clearTips(scope);
     };
 
     PlotLineLodLoader.prototype.createTip = function(ele) {
@@ -253,7 +253,7 @@
 
     return PlotLineLodLoader;
   };
-  beakerRegister.bkoFactory('PlotLineLodLoader',
+  beaker.bkoFactory('PlotLineLodLoader',
     ['plotUtils', 'PlotSampler', 'PlotLine', 'PlotLodLine', 'PlotLodBox', 'PlotLodRiver',
     retfunc]);
 })();

@@ -26,7 +26,6 @@
     PlotLodStem.prototype.respClass = "plot-resp";
     PlotLodStem.prototype.plotClassAvgCircle = "plot-lodavg";
     PlotLodStem.prototype.plotAvgCircleR = 2;
-    PlotLodStem.prototype.actionClass = "item-clickable item-onkey";
 
     PlotLodStem.prototype.format = function() {
       if (this.color != null) {
@@ -154,7 +153,7 @@
       groupsvg.selectAll("line")
         .data(eleprops, function(d) { return d.id; }).enter().append("line")
         .attr("id", function(d) { return d.id; })
-        .attr("class", this.respClass + " " + this.actionClass);
+        .attr("class", this.respClass);
       groupsvg.selectAll("line")
         .data(eleprops, function(d) { return d.id; })
         .attr("x1", function(d) { return d.x; })
@@ -181,11 +180,11 @@
       }
     };
 
-    PlotLodStem.prototype.hideTips = function(scope, hidden) {
-      plotTip.hideTips(scope, this.id, hidden);
+    PlotLodStem.prototype.clearTips = function(scope) {
+      plotTip.clearTips(scope, this.id);
     };
 
     return PlotLodStem;
   };
-  beakerRegister.bkoFactory('PlotLodStem', ['plotUtils', 'plotTip', retfunc]);
+  beaker.bkoFactory('PlotLodStem', ['plotUtils', 'plotTip', retfunc]);
 })();

@@ -14,21 +14,6 @@
  *  limitations under the License.
  */
 
-import org.apache.tools.ant.taskdefs.condition.Os
-
 task check (type: Exec) {
-  if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-    commandLine 'python', 'nt_runner.py'
-  } else {
-    commandLine './runner'
-  }
+  commandLine './runner'
 }
-
-task checkembed (type: Exec) {
-  if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-    commandLine 'python', 'nt_runner_embed.py'
-  } else {
-    commandLine './runner_embed'
-  }
-}
-

@@ -16,16 +16,45 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
+import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Filter;
 
 import java.util.EnumSet;
+import java.util.List;
 
 
-public class Area extends BasedXYGraphics {
+public class Area extends XYGraphics {
 
   private final static EnumSet<Filter> POSSIBLE_LOD_FILTERS = EnumSet.of(Filter.AREA, Filter.RIVER);
 
+  private Number baseBase = 0.0d;
+  private List<Number> bases = null;
   private Integer interpolation;
+
+  public void setBase(Object base) {
+    if (base instanceof Number) {
+      this.baseBase = (Number) base;
+    } else if (base instanceof List) {
+      @SuppressWarnings("unchecked")
+      List<Number> temp = (List<Number>) base;
+      setBases(temp);
+    } else {
+      throw new IllegalArgumentException(
+          "setBase takes Number or List of Number");
+    }
+  }
+
+  private void setBases(List<Number> bases) {
+    this.bases = bases;
+  }
+
+  public Number getBase() {
+    return this.baseBase;
+  }
+
+  public List<Number> getBases() {
+    return this.bases;
+  }
 
   public void setInterpolation(Integer interpolation) {
     if (interpolation.intValue() < 0 || interpolation.intValue() > 1) {

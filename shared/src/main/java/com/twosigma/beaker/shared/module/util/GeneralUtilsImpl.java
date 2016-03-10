@@ -16,8 +16,6 @@
 
 package com.twosigma.beaker.shared.module.util;
 
-import org.apache.cxf.helpers.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -292,7 +290,7 @@ public class GeneralUtilsImpl implements GeneralUtils {
             public FileVisitResult visitFile(Path file,
                 @SuppressWarnings("unused") BasicFileAttributes attrs)
                 throws IOException {
-              FileUtils.delete(file.toFile());
+              Files.delete(file);
               return FileVisitResult.CONTINUE;
             }
 
@@ -300,7 +298,7 @@ public class GeneralUtilsImpl implements GeneralUtils {
             public FileVisitResult postVisitDirectory(Path dir, IOException e)
                 throws IOException {
               if (e == null) {
-                FileUtils.delete(dir.toFile());
+                Files.delete(dir);
                 return FileVisitResult.CONTINUE;
               }
               throw e;

@@ -22,20 +22,20 @@ import java.io.IOException;
 import java.util.List;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 /**
  * XYCombinedChartSerializer
  *
  */
-public class CombinedPlotSerializer extends ObservableChartSerializer<CombinedPlot> {
+public class CombinedPlotSerializer extends JsonSerializer<CombinedPlot> {
 
   @Override
   public void serialize(CombinedPlot plot, JsonGenerator jgen, SerializerProvider sp)
       throws IOException, JsonProcessingException
   {
     jgen.writeStartObject();
-    super.serialize(plot, jgen);
     jgen.writeObjectField("type", plot.getClass().getSimpleName());
     jgen.writeObjectField("init_width", plot.getInitWidth());
     jgen.writeObjectField("init_height", plot.getInitHeight());

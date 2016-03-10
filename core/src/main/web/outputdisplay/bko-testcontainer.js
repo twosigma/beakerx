@@ -18,7 +18,7 @@
  */
 (function() {
   'use strict';
-  beakerRegister.bkoDirective('TestContainer', ["bkCellMenuPluginManager", "bkUtils", function(bkCellMenuPluginManager, bkUtils) {
+  beaker.bkoDirective('TestContainer', ["bkCellMenuPluginManager", "bkUtils", function(bkCellMenuPluginManager, bkUtils) {
     var CELL_TYPE = "bko-testcontainer";
     return {
       template: '<div>TEST CONTAINER {{getStuff()}}</div>',
@@ -39,5 +39,5 @@
       }
     };
   }]);
-  beakerRegister.registerOutputDisplay("TestContainer", ["TestContainer", "Text"]);
+  beaker.registerOutputDisplay("TestContainer", ["TestContainer", "Text"]);
 })();

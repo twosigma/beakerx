@@ -101,7 +101,7 @@
             _shareMenuItems = newItems;
           },
           getCometdUtil: function() {
-            var id = $scope.getEvaluatorId();
+            var id = $scope.getEvaluatorId();            
             if (id) {
               var evaluator = bkEvaluatorManager.getEvaluator(id);
               if (evaluator) {
@@ -142,13 +142,6 @@
             return "Elapsed time: " + bkUtils.formatTimeString(elapsedTime);
           }
           return "";
-        };
-
-        var getEvaluationSequenceNumber = function() {
-          if ($scope.model.evaluationSequenceNumber) {
-            return "Run Sequence: " + $scope.model.evaluationSequenceNumber;
-          }
-          return null;
         };
 
         $scope.isShowOutput = function() {
@@ -234,10 +227,6 @@
             {
               name: getElapsedTimeString,
               action: null
-            },
-            {
-              name: getEvaluationSequenceNumber,
-              action: null
             }
           ];
         };
@@ -263,7 +252,7 @@
             }
           };
         })();
-
+        
         $scope.outputRefreshed = function() {
           if (!($scope.$$phase || $rootScope.$$phase))
             $scope.$digest();

@@ -157,7 +157,6 @@ http {
 
     %(plugin_section)s
     %(extra_rules)s
-    %(catch_outdated_requests_rule)s
   }
   server {
     listen 127.0.0.1:%(port_restart)s;

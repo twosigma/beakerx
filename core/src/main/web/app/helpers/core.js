@@ -51,9 +51,6 @@
       bkElectron,
       modalDialogOp,
       Upload,
-      autocompleteService,
-      autocompleteParametersService,
-      codeMirrorExtension,
       GLOBALS) {
 
     function isFilePath(path) {
@@ -242,6 +239,29 @@
       return $input;
     };
 
+    var codeMirrorExtension = undefined;
+
+    var codeMirrorFileName = {
+        type : 'string',
+        hint: function(token, cm) {
+          var deferred = bkHelper.newDeferred();
+          $.ajax({
+            type: "GET",
+            datatype: "json",
+            url: "../beaker/rest/file-io/autocomplete",
+            data: { path: token.string.substr(1)}
+          }).done(function(x) {
+            for (var i in x) {
+              x[i] = token.string[0] + x[i];
+            }
+            deferred.resolve(x);
+          }).error(function(x) {
+            deferred.resolve([]);
+          });
+          return deferred.promise;
+        }
+    };
+
     var bkCoreManager = {
 
       _prefs: {
@@ -307,9 +327,6 @@
       },
       getNotebookImporter: function(format) {
         return _importers[format];
-      },
-      getNotebookImporterNames: function() {
-        return Object.keys(_importers);
       },
       setFileLoader: function(uriType, fileLoader) {
         _fileLoaders[uriType] = fileLoader;
@@ -450,14 +467,6 @@
 
       codeMirrorOptions: function(scope, notebookCellOp) {
 
-        var showAutocomplete = function(cm) {
-          autocompleteService.showAutocomplete(cm, scope);
-        };
-
-        var maybeShowAutocomplete = function(cm) {
-          autocompleteService.maybeShowAutocomplete(cm, scope);
-        }
-
         var goCharRightOrMoveFocusDown = function(cm) {
           if ($('.CodeMirror-hint').length > 0) {
             //codecomplete is up, skip
@@ -582,6 +591,86 @@
           goToNextCodeCell();
         };
 
+        var maybeShowAutoComplete = function(cm) {
+          if (scope.bkNotebook.getCMKeyMapMode() === "emacs") {
+            cm.setCursor(cm.getCursor());
+            cm.setExtending(!cm.getExtending());
+            cm.on("change", function() {
+              cm.setExtending(false);
+            });
+          } else {
+            showAutoComplete(cm);
+          }
+        };
+
+        var showAutoComplete = function(cm) {
+          var getToken = function(editor, cur) {
+            return editor.getTokenAt(cur);
+          };
+          var getHints = function(editor, showHintCB, options) {
+            var cur = editor.getCursor();
+            var token = getToken(editor, cur);
+            var cursorPos = editor.indexFromPos(cur);
+
+            var waitfor = [];
+            for(var i in codeMirrorExtension.autocomplete) {
+              var t = codeMirrorExtension.autocomplete[i];
+              if (t.type === token.type || t.type === '*') {
+                waitfor.push(t.hint(token, editor));
+              }
+            }
+
+            var onResults = function(results, matched_text, dotFix) {
+              var start = token.start;
+              var end = token.end;
+              if (dotFix && token.string === ".") {
+                start += 1;
+              }
+              if (matched_text) {
+                start += (cur.ch - token.start - matched_text.length);
+                end = start + matched_text.length;
+              }
+              if (waitfor.length > 0) {
+                $q.all(waitfor).then(function (res) {
+                  for (var i in res) {
+                    results = results.concat(res[i]);
+                  }
+                  showHintCB({
+                    list: _.uniq(results),
+                    from: CodeMirror.Pos(cur.line, start),
+                    to: CodeMirror.Pos(cur.line, end)
+                  });
+                }, function(err) {
+                  showHintCB({
+                    list: _.uniq(results),
+                    from: CodeMirror.Pos(cur.line, start),
+                    to: CodeMirror.Pos(cur.line, end)
+                  });
+                })
+              } else {
+                showHintCB({
+                  list: _.uniq(results),
+                  from: CodeMirror.Pos(cur.line, start),
+                  to: CodeMirror.Pos(cur.line, end)
+                });
+              }
+            };
+            scope.autocomplete(cursorPos, onResults);
+          };
+
+          if (cm.getOption('mode') === 'htmlmixed' || cm.getOption('mode') === 'javascript') {
+            cm.execCommand("autocomplete");
+          } else {
+            var options = {
+              async: true,
+              closeOnUnfocus: true,
+              alignWithWord: true,
+              completeSingle: true
+            };
+            CodeMirror.showHint(cm, getHints, options);
+          }
+        };
+
         var reformat = function (cm) {
           var start = cm.getCursor(true).line;
           var end = cm.getCursor(false).line;
@@ -592,9 +681,6 @@
         };
 
         var shiftTab = function(cm) {
-          if (autocompleteParametersService.isActive()) {
-            return autocompleteParametersService.previousParameter();
-          }
           var cursor = cm.getCursor();
           var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
           if (leftLine.match(/^\s*$/)) {
@@ -628,24 +714,20 @@
         };
 
         var tab = function(cm) {
-          if (autocompleteParametersService.isActive()) {
-            return autocompleteParametersService.nextParameter();
-          }
           var cursor = cm.getCursor();
+          var lineLen = cm.getLine(cursor.line).length;
+          var rightLine = cm.getRange(cursor, {line: cursor.line, ch: lineLen});
           var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
           if (leftLine.match(/^\s*$/)) {
             cm.execCommand("indentMore");
           } else {
-            showAutocomplete(cm);
+            if (rightLine.match(/^\s*$/)) {
+              showAutoComplete(cm);
+            } else {
+              cm.execCommand("indentMore");
+            }
           }
         };
-
-        var enter = function(cm) {
-          if (autocompleteParametersService.isActive()) {
-            return autocompleteParametersService.endCompletionAndMoveCursor();
-          }
-          cm.execCommand("newlineAndIndent");
-        }
 
         var backspace = function(cm) {
           var cursor, anchor,
@@ -667,7 +749,6 @@
           _.each(toKill, function(i) {
             cm.replaceRange("", i.from, i.to);
           });
-          autocompleteService.backspace(cursor, cm);
         };
 
         var keys = {
@@ -679,12 +760,11 @@
             "Alt-J": moveFocusDown,
             "Alt-Up": moveFocusUp,
             "Alt-K": moveFocusUp,
-            "Enter": enter,
             "Ctrl-Enter": evaluate,
             "Cmd-Enter": evaluate,
             "Shift-Enter": evaluateAndGoDown,
-            "Ctrl-Space": maybeShowAutocomplete,
-            "Cmd-Space": showAutocomplete,
+            "Ctrl-Space": maybeShowAutoComplete,
+            "Cmd-Space": showAutoComplete,
             "Shift-Tab": shiftTab,
             "Shift-Ctrl-Space": showDocs,
             "Shift-Cmd-Space": showDocs,
@@ -703,6 +783,17 @@
             "Shift-Ctrl-F": reformat,
             "Shift-Cmd-F": reformat
         };
+
+
+        if (typeof window.bkInit !== 'undefined') {
+          codeMirrorExtension = window.bkInit.codeMirrorExtension;
+        }
+
+        if (typeof codeMirrorExtension === 'undefined') {
+          codeMirrorExtension = { autocomplete : [ codeMirrorFileName ]};
+        } else {
+          codeMirrorExtension.autocomplete.push(codeMirrorFileName);
+        }
 
         if (codeMirrorExtension.extraKeys !== undefined) {
           _.extend(keys, codeMirrorExtension.extraKeys);
@@ -903,56 +994,17 @@
           yesBtnClass = yesBtnClass ? _.isArray(yesBtnClass) ? okBtnClass.join(' ') : yesBtnClass : 'btn-default';
           noBtnClass = noBtnClass ? _.isArray(noBtnClass) ? noBtnClass.join(' ') : noBtnClass : 'btn-default';
           cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : 'btn-default';
-          var template = this.getDialogTemplateOpening(msgHeader, msgBody) +
+          var template = "<div class='modal-header'>" +
+              "<h1>" + msgHeader + "</h1>" +
+              "</div>" +
+              "<div class='modal-body'><p>" + msgBody + "</p></div>" +
+              '<div class="modal-footer">' +
               "   <button class='yes btn " + yesBtnClass +"' ng-click='close(0)'>" + yesBtnTxt + "</button>" +
               "   <button class='no btn " + noBtnClass +"' ng-click='close(1)'>" + noBtnTxt + "</button>" +
               "   <button class='cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
-              this.getDialogTemplateClosing();
+              "</div>";
           return this.showModalDialog(callback, template);
         }
-      },
-      showMultipleButtonsModal: function(params) {
-        var buttons = params.buttons;
-
-        var callback = function(result) {
-          buttons[result].action();
-        };
-
-        if (bkUtils.isElectron) {
-          var buttonTexts = [];
-          for (var i = 0; i < buttons.length; i++) {
-            buttonTexts.push(buttons[i].text);
-          }
-          var options = {
-            type: 'none',
-            buttons: buttonTexts,
-            title: params.msgHeader,
-            message: params.msgBody
-          };
-          return bkElectron.Dialog.showMessageBox(options, callback);
-        } else {
-          var template = this.getDialogTemplateOpening(params.msgHeader, params.msgBody);
-          for (var i = 0; i < buttons.length; i++) {
-            var buttonSettings = buttons[i];
-            var newTemplatePart = "   <button class='btn btn-default' ng-click='close(" + i + ")'>" + buttonSettings.text + "</button>"
-            template = template + newTemplatePart;
-          }
-          template = template + this.getDialogTemplateClosing();
-
-          return this.showModalDialog(callback, template);
-        }
-
-
-      },
-      getDialogTemplateOpening: function(msgHeader, msgBody) {
-        return "<div class='modal-header'>" +
-            "<h1>" + msgHeader + "</h1>" +
-            "</div>" +
-            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
-            '<div class="modal-footer">';
-      },
-      getDialogTemplateClosing: function() {
-        return "</div>";
       },
       getFileSystemFileChooserStrategy: function() {
         return new FileSystemFileChooserStrategy();

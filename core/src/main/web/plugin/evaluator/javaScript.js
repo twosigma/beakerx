@@ -30,31 +30,6 @@ define(function(require, exports, module) {
   var coffeescriptKeywords = ("and break catch class continue delete do else extends false finally for " +
       "if in instanceof isnt new no not null of off on or return switch then throw true try typeof until void while with yes").split(" ");
 
-  var ES2015 = "ECMAScript 2015";
-  var ES5 = "ECMAScript 5";
-
-  // Not using the es2015 plugin preset because it includes the "transform-es2015-modules-commonjs" plugin which puts forces strict mode on
-  var ES2015Plugins = [
-  "check-es2015-constants",
-  "transform-es2015-arrow-functions",
-  "transform-es2015-block-scoped-functions",
-  "transform-es2015-block-scoping",
-  "transform-es2015-classes",
-  "transform-es2015-computed-properties",
-  "transform-es2015-destructuring",
-  "transform-es2015-for-of",
-  "transform-es2015-function-name",
-  "transform-es2015-literals",
-  "transform-es2015-object-super",
-  "transform-es2015-parameters",
-  "transform-es2015-shorthand-properties",
-  "transform-es2015-spread",
-  "transform-es2015-sticky-regex",
-  "transform-es2015-template-literals",
-  "transform-es2015-typeof-symbol",
-  "transform-es2015-unicode-regex",
-  "transform-regenerator"
-  ];
 
   var getCompletions = function(token, context, keywords, options) {
     var found = [], start = token.string;
@@ -175,7 +150,6 @@ define(function(require, exports, module) {
     shortName: "Js",
     evaluate: function(code, modelOutput, refreshObj) {
       var deferred = bkHelper.newDeferred();
-      var self = this;
       bkHelper.timeout(function () {
         // this is visible to JS code in cell
         var beakerObj = bkHelper.getBeakerObject();
@@ -197,13 +171,9 @@ define(function(require, exports, module) {
 
           beakerObj.setupBeakerObject(modelOutput);
           beakerObj.notebookToBeakerObject();
-          window.beaker = beakerObj.beakerObj;
+          var beaker = beakerObj.beakerObj;
           try {
-            if (self.settings.languageVersion === ES2015) {
-              code = Babel.transform(code, { plugins: ES2015Plugins }).code;
-            } else {
-              acorn.parse(code);
-            }
+            acorn.parse(code);
           } catch (e) {
             showErrorState({
               modelOutput: modelOutput,
@@ -212,9 +182,7 @@ define(function(require, exports, module) {
             beakerObj.clearOutput();
             return deferred.reject();
           }
-          // (0, eval) is an indirect eval call to evaluate in non-strict mode
-          // more info: http://stackoverflow.com/questions/19357978/indirect-eval-call-in-strict-mode
-          var output = (0, eval)(code);
+          var output = eval(code);
           beakerObj.beakerObjectToNotebook();
           if ( typeof output === 'object' ) {
             if(typeof output.promise === 'object' && typeof output.promise.then === 'function') {
@@ -353,7 +321,6 @@ define(function(require, exports, module) {
       JavascriptCancelFunction = null;
     },
     spec: {
-      languageVersion: {type: "settableEnum", name: "JavaScript Version", values: [ES5, ES2015]}
     }
   };
   var JavaScript0 = function(settings) {
@@ -366,7 +333,6 @@ define(function(require, exports, module) {
     settings.view.cm.mode = JavaScript_0.cmMode;
     settings.view.cm.background = JavaScript_0.background;
     this.settings = settings;
-    this.settings.languageVersion = ES2015;
     this.perform = function(what) {
       var action = this.spec[what].action;
       this[action]();

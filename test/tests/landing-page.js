@@ -48,9 +48,9 @@ describe('beaker landing page', function() {
     expect(beakerPO.submenu.count()).toEqual(0);
   });
 
-  it('has a file menu with 6 items', function() {
+  it('has a file menu with 4 items', function() {
     beakerPO.openMenuAtIndex(0);
-    expect(beakerPO.submenu.count()).toEqual(6);
+    expect(beakerPO.submenu.count()).toEqual(4);
   });
 
   it('has a settings menu with 1 item', function() {

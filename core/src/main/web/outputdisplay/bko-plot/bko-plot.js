@@ -29,8 +29,7 @@
                          bkSessionManager,
                          bkUtils,
                          GradientLegend,
-                         bkoChartExtender,
-                         plotService) {
+                         bkoChartExtender) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -45,10 +44,6 @@
             "</marker>" +
             "<filter id='svgfilter'>" +
               "<feGaussianBlur result='blurOut' in='SourceGraphic' stdDeviation='1' />" +
-              "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
-            "</filter>" +
-            "<filter id='svgAreaFilter'>" +
-              "<feMorphology operator='dilate' result='blurOut' in='SourceGraphic' radius='2' />" +
               "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
             "</filter>" +
           "</defs>" +
@@ -79,7 +74,6 @@
         model.updateLegendPosition = function(){
           return $scope.updateLegendPosition();
         };
-
       },
       link : function(scope, element, attrs) {
         // rendering code
@@ -366,109 +360,8 @@
 
         };
 
-        scope.onKeyAction = function (item, onKeyEvent) {
-          var key = plotUtils.getKeyCodeConstant(onKeyEvent.keyCode);
-          for (var i = 0; i < scope.stdmodel.data.length; i++) {
-            var data = scope.stdmodel.data[i];
-            if (data.id === item.id || item.id.indexOf(data.id + "_") === 0) {
-              var plotId = scope.stdmodel.plotId;
-              if (data.keyTags != null && !_.isEmpty(data.keyTags[key])) {
-                if (scope.model.setActionDetails) {
-                  scope.model.setActionDetails(plotId, data, item).then(
-                    function () { plotUtils.evaluateTagCell(data.keyTags[key]); },
-                    function () { console.error('set action details error'); } );
-                } else {
-                  plotService.setActionDetails(plotId, data.uid, scope.model.getEvaluatorId(),
-                    plotUtils.getActionObject(scope.model.getCellModel().type, item)).then(
-                    function () { plotUtils.evaluateTagCell(data.keyTags[key]); },
-                    function () { console.error('set action details error'); });
-                }
-              } else if (data.keys != null && data.keys.indexOf(key) > -1) {
-                scope.legendDone = false;
-                scope.legendResetPosition = true;
-                scope.doNotLoadState = true;
-                if (scope.model.onKey) {
-                  scope.model.onKey(key, plotId, data, item);
-                } else {
-                  plotService.onKey(plotId, data.uid, scope.model.getEvaluatorId(), {
-                    key: key,
-                    actionObject: plotUtils.getActionObject(scope.model.getCellModel().type, item)
-                  });
-                }
-              }
-            }
-          }
-        };
-
-        scope.onKeyListeners = {}; //map: item.id -> listener function
-        scope.removeOnKeyListeners = function () {
-          for (var f in scope.onKeyListeners){
-            if(scope.onKeyListeners.hasOwnProperty(f)){
-              $(document).off("keydown.plot-action", scope.onKeyListeners[f]);
-            }
-          }
-          scope.onKeyListeners = {};
-        };
-
         scope.prepareInteraction = function() {
           var model = scope.stdmodel;
-
-          scope.svg.selectAll(".item-clickable")
-            .on('click.action', function (e) {
-              for (var i = 0; i < model.data.length; i++) {
-                var item = model.data[i];
-                if(item.hasClickAction === true && (item.id === e.id || e.id.indexOf(item.id + "_") === 0)) {
-                  var plotId = scope.stdmodel.plotId;
-                  if(!_.isEmpty(item.clickTag)){
-                    if (scope.model.setActionDetails) {
-                      scope.model.setActionDetails(plotId, item, e).then(
-                        function () { plotUtils.evaluateTagCell(item.clickTag); },
-                        function () { console.error('set action details error'); }
-                      );
-                    } else {
-                      plotService.setActionDetails( plotId,
-                                                    item.uid,
-                                                    scope.model.getEvaluatorId(),
-                                                    plotUtils.getActionObject(scope.model.getCellModel().type, e)).then(
-                        function () { plotUtils.evaluateTagCell(item.clickTag); },
-                        function () { console.error('set action details error'); }
-                      );
-                    }
-                  }else{
-                    scope.legendDone = false;
-                    scope.legendResetPosition = true;
-                    scope.doNotLoadState = true;
-                    if (scope.model.onClick) {
-                      scope.model.onClick(plotId, item, e);
-                      return;
-                    } else {
-                      plotService.onClick(plotId, item.uid, scope.model.getEvaluatorId(),
-                                          plotUtils.getActionObject(scope.model.getCellModel().type, e));
-                    }
-                  }
-                }
-              }
-            });
-
-          var onKeyElements = scope.svg.selectAll(".item-onkey");
-          //TODO add listeners only for elements that have keys or keyTags
-          onKeyElements
-            .on("mouseenter.plot-click", function(item){
-              if(!scope.onKeyListeners[item.id]) {
-                scope.onKeyListeners[item.id] = function(onKeyEvent){
-                  scope.onKeyAction(item, onKeyEvent);
-                };
-                $(document).on("keydown.plot-action", scope.onKeyListeners[item.id]);
-              }
-            })
-            .on("mouseleave.plot-click", function(item){
-              var keyListener = scope.onKeyListeners[item.id]
-              if (keyListener) {
-                delete scope.onKeyListeners[item.id];
-                $(document).off("keydown.plot-action", keyListener);
-              }
-            });
-
           if (model.useToolTip === false) {
             return;
           }
@@ -477,19 +370,11 @@
               scope.drawLegendPointer(d);
               return plotTip.tooltip(scope, d, d3.mouse(scope.svg[0][0]));
             })
-            .on('mousemove', function(d) {
-
-              scope.removeLegendPointer();
-              plotTip.untooltip(scope, d);
-
-              scope.drawLegendPointer(d);
-              return plotTip.tooltip(scope, d, d3.mouse(scope.svg[0][0]));
-            })
             .on("mouseleave", function(d) {
               scope.removeLegendPointer();
               return plotTip.untooltip(scope, d);
             })
-            .on("click.resp", function(d) {
+            .on("click", function(d) {
               return plotTip.toggleTooltip(scope, d);
             });
         };
@@ -1016,8 +901,9 @@
             .attr("id", "legendDraggableContainer")
             .attr("class", "plot-legenddraggable");
 
-          var legendUnit = "<div></div>",
-              legendLineUnit = isHorizontal ? "<div class='plot-legenditeminline'></div>" : "<div class='plot-legenditeminrow'></div>";
+          var legendUnit = isHorizontal ? "<div></div>" : "<table></table>",
+              legendLineUnit = isHorizontal ? "<div class='plot-legenditeminline'></div>" : "<tr></tr>",
+              legendLineItemUnit = isHorizontal ? "<span></span>" : "<td></td>";
           var legend = $(legendUnit).appendTo(legendDraggableContainer)
             .attr("id", "legends");
 
@@ -1025,29 +911,28 @@
 
           if (!scope.stdmodel.omitCheckboxes &&
             Object.keys(scope.legendMergedLines).length > 1) {  // skip "All" check when there is only one line
-            var allLegendId = plotUtils.randomString(32);
             var unit = $(legendLineUnit).appendTo(legend)
               .attr("id", "legend_all")
               .addClass("plot-legendline");
             $("<input type='checkbox'></input>")
-              .attr("id", "legendcheck_all_" + allLegendId)
-              .attr("class", "plot-legendcheckbox beforeCheckbox")
+              .attr("id", "legendcheck_all")
+              .attr("class", "plot-legendcheckbox")
               .prop("checked", scope.showAllItems)
               .click(function(e) {
                 return scope.toggleVisibility(e);
               })
-              .appendTo($(unit));
+              .appendTo($(legendLineItemUnit).appendTo(unit));
             $("<span></span>")
               .attr("id", "legendbox_all")
               .attr("class", "plot-legendbox")
               .css("background-color", "none")
-              .appendTo($(unit));
-            $("<label></label>")
+              .appendTo($(legendLineItemUnit).appendTo(unit));
+            $("<span></span>")
               .attr("id", "legendtext_all")
-              .attr("for", "legendcheck_all_" + allLegendId)
               .attr("class", "plot-label")
               .text("All")
-              .appendTo($(unit));
+              .appendTo($(legendLineItemUnit).appendTo(unit));
+            $(legendLineItemUnit).appendTo(unit);
           }
 
           for (var id in scope.legendMergedLines) {
@@ -1072,12 +957,12 @@
               // checkbox
               $("<input type='checkbox'></input>")
                 .attr("id", "legendcheck_" + id)
-                .attr("class", "plot-legendcheckbox beforeCheckbox")
+                .attr("class", "plot-legendcheckbox")
                 .prop("checked", line.showItem)
                 .click(function(e) {
                   return scope.toggleVisibility(e);
                 })
-                .appendTo(unit);
+                .appendTo($(legendLineItemUnit).appendTo(unit));
             }
 
             var clr = plotUtils.createColor(line.color, line.color_opacity),
@@ -1093,14 +978,13 @@
               .css("border",
                 line.stroke != null ? "1px " + sty + st_clr :
                 (line.color != null ? "1px " + sty + clr : "1px dotted gray"))
-              .appendTo(unit);
+              .appendTo($(legendLineItemUnit).appendTo(unit));
             // legend text
-            $("<label></label>").appendTo(unit)
+            $(legendLineItemUnit).appendTo(unit)
               .attr("id", "legendtext_" + id)
-              .attr("for", "legendcheck_" + id)
               .attr("class", "plot-label")
               .text(line.legend);
-            var lodhint = $("<span></span>").appendTo(unit)
+            var lodhint = $(legendLineItemUnit).appendTo(unit)
                 .attr("id", "hint_" + id);
 
             if (line.isLodItem === true) {
@@ -1162,6 +1046,8 @@
                 scope.update();
                 scope.setMergedLodHint(dataIds, e.data.id);
               });
+            } else {
+              $(legendLineItemUnit).appendTo(unit);
             }
           }
 
@@ -1274,12 +1160,10 @@
                   var dat = data[line.dataIds[i]];
                   dat.showItem = scope.showAllItems;
                   if (dat.showItem === false) {
-                    dat.hideTips(scope, true);
+                    dat.clearTips(scope);
                     if (dat.isLodItem === true) {
                       dat.lodOn = false;
                     }
-                  }else{
-                    dat.hideTips(scope, false);
                   }
                 }
                 if (line.showItem === false) {
@@ -1302,13 +1186,11 @@
             var dat = data[line.dataIds[j]];
             dat.showItem = !dat.showItem;
             if (dat.showItem === false) {
-              dat.hideTips(scope, true);
+              dat.clearTips(scope);
               if (dat.isLodItem === true) {
                 dat.lodOn = false;
-              }
-            } else {
-              dat.hideTips(scope, false);
             }
+          }
           }
           if (line.showItem === false) {
             if (line.isLodItem === true) {
@@ -1804,12 +1686,11 @@
 
           _.extend(scope.plotSize, scope.stdmodel.plotSize);
           var savedstate = scope.model.getDumpState();
-          if (scope.doNotLoadState !== true && savedstate !== undefined && savedstate.plotSize !== undefined) {
+          if (savedstate !== undefined && savedstate.plotSize !== undefined) {
             scope.loadState(savedstate);
           } else {
             scope.setDumpState(scope.dumpState());
           }
-          scope.doNotLoadState = false;
 
           // create layout elements
           scope.initLayout();
@@ -1949,7 +1830,6 @@
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();
           scope.jqlegendcontainer.find("#plotLegend").remove();
-          scope.removeOnKeyListeners();
         });
 
         scope.getSvgToSave = function() {
@@ -2098,7 +1978,7 @@
       }
     };
   };
-  beakerRegister.bkoDirective("Plot", [
+  beaker.bkoDirective("Plot", [
     "plotUtils",
     "plotTip",
     "plotFormatter",
@@ -2108,6 +1988,5 @@
     "bkUtils",
     "GradientLegend",
     "bkoChartExtender",
-    "plotService",
     retfunc]);
 })();

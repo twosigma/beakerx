@@ -32,7 +32,7 @@
     });
   };
 
-  window.beakerRegister.getEvaluatorUrlMap = function() {
+  window.beaker.getEvaluatorUrlMap = function() {
     return {
       "IPython": { url : "./plugins/eval/ipythonPlugins/ipython/ipython.js", bgColor: "#EEBD48", fgColor: "#FFFFFF", borderColor: "", shortName: "Py" },
       "Python3": { url : "./plugins/eval/ipythonPlugins/python3/python3.js", bgColor: "#EEBD48", fgColor: "#FFFFFF", borderColor: "", shortName: "Py" },
@@ -47,7 +47,7 @@
     };
   };
 
-  window.beakerRegister.getCellMenuList = function () {
+  window.beaker.getCellMenuList = function () {
     return [
             {
               cellType: ["notebook", "section", "code"],
@@ -65,7 +65,7 @@
             ];
   };
 
-  window.beakerRegister.getMenuItems = function() {
+  window.beaker.getMenuItems = function() {
     var toAdd = [
                  {
                    parent: "Notebook",
@@ -167,7 +167,7 @@
     return toAdd;
   };
 
-  window.beakerRegister.getControlMenuItems = function() {
+  window.beaker.getControlMenuItems = function() {
     var toAdd = [
                  {
                    parent: "File",
@@ -175,22 +175,11 @@
                    items: [
                            {
                              name: "New Notebook",
-                             shortcut: ["Ctrl-N", "Cmd-N"],
                              tooltip: "Open a new empty notebook, add the languages of your choice",
                              sortorder: 100,
                              action: function() {
                                bkHelper.newSession(true);
                              }
-                           },
-                           {
-                             name: "New Default Notebook",
-                             shortcut: ["Ctrl-Shift-N", "Cmd-Shift-N"],
-                             sortorder: 101,
-                             id: "new-notebook-menuitem",
-                             action: function() {
-                               bkHelper.newSession(false);
-                             },
-                             tooltip: "Open a new default notebook"
                            },
                            {
                              name: "Open recent",
@@ -199,6 +188,11 @@
                              items: function() {
                                return bkHelper.getRecentMenuItems();
                              }
+                           },
+                           {
+                             name: "Open",
+                             id: "open-menuitem",
+                             sortorder: 110
                            },
                            {
                              name: "Import",
@@ -211,23 +205,25 @@
                  {
                    parent: "File",
                    id: "file-menu",
+                   submenu: "Open",
+                   submenusortorder: 110,
                    items: [
-                     {
-                       name: "Open... (.bkr)",
-                       id: "open-menuitem",
-                       tooltip: "Open a bkr notebook file",
-                       sortorder: 110,
-                       action: function() {
-                           bkHelper.showModalDialog(
-                               function(originalUrl) {
-                                 bkHelper.openNotebook(originalUrl);
-                               },
-                               JST['template/opennotebook']({homedir: homeDir, extension: '.bkr'}),
-                               bkHelper.getFileSystemFileChooserStrategy()
-                           );
-                       }
-                     }
-                   ]
+                           {
+                             name: "Open... (.bkr)",
+                             id: "open-menuitem",
+                             tooltip: "Open a bkr notebook file",
+                             sortorder: 100,
+                             action: function() {
+                                 bkHelper.showModalDialog(
+                                     function(originalUrl) {
+                                       bkHelper.openNotebook(originalUrl);
+                                     },
+                                     JST['template/opennotebook']({homedir: homeDir, extension: '.bkr'}),
+                                     bkHelper.getFileSystemFileChooserStrategy()
+                                 );
+                             }
+                           }
+                           ]
                  }
                  ];
     return toAdd;

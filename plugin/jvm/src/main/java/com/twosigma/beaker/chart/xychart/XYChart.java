@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.chart.xychart;
 
-import com.twosigma.beaker.chart.AbstractChart;
+import com.twosigma.beaker.AbstractChart;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantBand;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;

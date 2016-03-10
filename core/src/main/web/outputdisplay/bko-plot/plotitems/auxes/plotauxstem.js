@@ -137,5 +137,5 @@
 
     return PlotAuxStem;
   };
-  beakerRegister.bkoFactory('PlotAuxStem', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotAuxStem', ['plotUtils', retfunc]);
 })();

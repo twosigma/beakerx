@@ -67,12 +67,12 @@
       if (this.lodOn === false) { return; }
       if (this.lodType === "stem") {
         this.lodplotter.setZoomHash(this.zoomHash);
-        this.lodplotter.hideTips(scope);
+        this.lodplotter.clearTips(scope);
       } else if (this.lodType === "stem+" || this.lodType === "box") {
         this.lodplotter.setZoomHash(this.zoomHash);
         this.lodplotter2.setZoomHash(this.zoomHash2);
-        this.lodplotter.hideTips(scope);
-        this.lodplotter2.hideTips(scope);
+        this.lodplotter.clearTips(scope);
+        this.lodplotter2.clearTips(scope);
       }
     };
 
@@ -297,19 +297,19 @@
 
     PlotStemLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.hideTips(scope);
+      this.clearTips(scope);
     };
 
-    PlotStemLodLoader.prototype.hideTips = function(scope, hidden) {
+    PlotStemLodLoader.prototype.clearTips = function(scope) {
       if (this.lodOn === false) {
-        this.plotter.hideTips(scope, hidden);
+        this.plotter.clearTips(scope);
         return;
       }
       if (this.lodType === "bar") {
-        this.lodplotter.hideTips(scope, hidden);
+        this.lodplotter.clearTips(scope);
       } else if (this.lodType === "box") {
-        this.lodplotter.hideTips(scope, hidden);
-        this.lodplotter2.hideTips(scope, hidden);
+        this.lodplotter.clearTips(scope);
+        this.lodplotter2.clearTips(scope);
       }
     };
 
@@ -339,7 +339,7 @@
 
     return PlotStemLodLoader;
   };
-  beakerRegister.bkoFactory('PlotStemLodLoader',
+  beaker.bkoFactory('PlotStemLodLoader',
     ['plotUtils', 'PlotSampler', 'PlotStem',
     'PlotLodStem', 'PlotAuxStem', 'PlotLodBox', 'PlotAuxBox', retfunc]);
 })();

@@ -418,7 +418,6 @@
     // Electron: require('remote')
     isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
     isWindows: osName === 'Windows',
-    isMacOS: osName === 'MacOS',
     osName: osName
     };
     return bkUtils;

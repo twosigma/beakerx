@@ -27,7 +27,7 @@
       return this.root === true;
     };
 
-    PlotTreeMapNode.prototype.hideTips = function (scope, hidden) {
+    PlotTreeMapNode.prototype.clearTips = function (scope) {
       //dummy function
     };
 
@@ -241,5 +241,5 @@
 
     return PlotTreeMapNode;
   };
-  beakerRegister.bkoFactory('PlotTreeMapNode', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotTreeMapNode', ['plotUtils', retfunc]);
 })();

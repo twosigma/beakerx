@@ -281,12 +281,6 @@
         if (!cell.output) {
           cell.output = {};
         }
-        var notebook = bkHelper.getNotebookModel();
-        if (!notebook.evaluationSequenceNumber) {
-          notebook.evaluationSequenceNumber = 0;
-        }
-        cell.output.evaluationSequenceNumber = ++notebook.evaluationSequenceNumber;
-
         var evalJob = {
           parent: parent,
           cellId: cell.id,

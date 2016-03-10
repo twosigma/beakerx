@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.chart.categoryplot;
 
-import com.twosigma.beaker.chart.AbstractChart;
+import com.twosigma.beaker.AbstractChart;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
 import com.twosigma.beaker.chart.xychart.plotitem.PlotOrientationType;
 

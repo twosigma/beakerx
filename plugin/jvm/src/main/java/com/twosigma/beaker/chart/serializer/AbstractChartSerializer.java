@@ -18,13 +18,13 @@
 package com.twosigma.beaker.chart.serializer;
 
 
-import com.twosigma.beaker.chart.AbstractChart;
+import com.twosigma.beaker.AbstractChart;
+import com.twosigma.beaker.chart.Color;
 import org.codehaus.jackson.JsonGenerator;
 
 import java.io.IOException;
 
 public abstract class AbstractChartSerializer<T extends AbstractChart> extends ChartSerializer<T> {
-
 
   protected void serialize(T chart, JsonGenerator jgen) throws IOException {
 

@@ -23,27 +23,27 @@
 (function() {
   'use strict';
 
-  window.beakerRegister = {
+  window.beaker = {
     toBeAddedToOutputDisplayFactory: {},
     bkoDirective: function(type, impl) {
-      if (window.beakerRegister.outputDisplayFactory) {
-        window.beakerRegister.outputDisplayFactory.add(type, impl);
+      if (window.beaker.outputDisplayFactory) {
+        window.beaker.outputDisplayFactory.add(type, impl);
       } else {
         this.toBeAddedToOutputDisplayFactory[type] = impl;
       }
     },
     toBeAddedToOutputDisplayService: {},
     bkoFactory: function(name, impl) {
-      if (window.beakerRegister.outputDisplayService) {
-        window.beakerRegister.outputDisplayService.addService(name, impl);
+      if (window.beaker.outputDisplayService) {
+        window.beaker.outputDisplayService.addService(name, impl);
       } else {
         this.toBeAddedToOutputDisplayService[name] = impl;
       }
     },
     toBeAddedToOutputDisplayType: {},
     registerOutputDisplay: function(type, displays) {
-      if (window.beakerRegister.outputDisplayFactory) {
-        window.beakerRegister.outputDisplayFactory.addOutputDisplayType(type, displays);
+      if (window.beaker.outputDisplayFactory) {
+        window.beaker.outputDisplayFactory.addOutputDisplayType(type, displays);
       } else {
         this.toBeAddedToOutputDisplayType[type] = displays;
       }
@@ -157,7 +157,7 @@
 
   var setupBeakerConfigAndRun = function() {
 
-    var beakerModule = angular.module('beaker', [
+    var beaker = angular.module('beaker', [
       'ngRoute',
       'ngStorage',
       'ngFileUpload',
@@ -174,12 +174,12 @@
     ]);
 
 
-    beakerModule.config(function($compileProvider) {
+    beaker.config(function($compileProvider) {
       $compileProvider.debugInfoEnabled(false);
     });
 
     // setup routing. the template is going to replace ng-view
-    beakerModule.config(function($routeProvider) {
+    beaker.config(function($routeProvider) {
       var _newSession, _import, _open, _target;
       var generateId = function() {
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -243,7 +243,7 @@
           });
     });
 
-    beakerModule.config(function(bkRecentMenuProvider) {
+    beaker.config(function(bkRecentMenuProvider) {
       var recentMenuServer = {
         addItem: function(doc, callback) {
           if (!doc) {
@@ -289,19 +289,19 @@
       bkRecentMenuProvider.configServer(recentMenuServer);
     });
 
-    beakerModule.config(function(bkShareProvider) {
+    beaker.config(function(bkShareProvider) {
       if (window.bkInit && window.bkInit.shareService) {
         bkShareProvider.config(window.bkInit.shareService);
       }
     });
 
-    beakerModule.config(function(bkTrackProvider) {
+    beaker.config(function(bkTrackProvider) {
       if (window.bkInit && window.bkInit.trackingService) {
         bkTrackProvider.config(window.bkInit.trackingService);
       }
     });
 
-    beakerModule.run(function($rootScope, $location, $route, $document, bkUtils, bkCoreManager, bkHelper, bkElectron) {
+    beaker.run(function($rootScope, $location, $route, $document, bkUtils, bkCoreManager, bkHelper, bkElectron) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {
@@ -400,12 +400,12 @@
         $('body').removeClass('dragover');
       });
       window.bkHelper = bkHelper;
-      for (var i in window.beakerRegister.postHelperHooks) {
-        window.beakerRegister.postHelperHooks[i]();
+      for (var i in window.beaker.postHelperHooks) {
+        window.beaker.postHelperHooks[i]();
       }
     });
 
-    beakerModule.run(function(bkEvaluatePluginManager) {
+    beaker.run(function(bkEvaluatePluginManager) {
       // for known plugins, so we can refer to the plugin with either its name or URL
       var defaultEvaluatorUrlMap = {
         "HTML": { url: "./plugin/evaluator/html.js",             bgColor: "#E3502B", fgColor: "#FFFFFF", borderColor: "",        shortName: "Ht" },
@@ -426,26 +426,26 @@
       }
     });
 
-    beakerModule.run(function(bkUtils, $rootScope) {
+    beaker.run(function(bkUtils, $rootScope) {
       bkUtils.getVersionInfo().then(function(versionInfo) {
-        window.beakerRegister.version = versionInfo.version;
-        window.beakerRegister.buildTime = versionInfo.buildTime;
+        window.beaker.version = versionInfo.version;
+        window.beaker.buildTime = versionInfo.buildTime;
         $rootScope.getVersion = function() {
-          return window.beakerRegister.version;
+          return window.beaker.version;
         };
         $rootScope.getBuildTime = function() {
-          return window.beakerRegister.buildTime;
+          return window.beaker.buildTime;
         };
       });
     });
-    beakerModule.run(function(bkPublicationAuth, $location, $localStorage, $window) {
+    beaker.run(function(bkPublicationAuth, $location, $localStorage, $window) {
       var params = $location.search();
       if (params["token"]) {
         $localStorage.token = params["token"];
         $window.close();
       }
     });
-    beakerModule.run(function(GLOBALS) {
+    beaker.run(function(GLOBALS) {
       // make sure requirejs reports error
       requirejs.config({
         waitSeconds: GLOBALS.REQUIREJS_TIMEOUT,

@@ -19,7 +19,7 @@
  */
 (function() {
   'use strict';
-  beakerRegister.bkoDirective('bkoVega', function() {
+  beaker.bkoDirective('bkoVega', function() {
     return {
       template: "<input type='text' ng-model='model'></input>" +
           "<button ng-click='parse()'>parse</button>" +

@@ -19,7 +19,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
-import com.twosigma.beaker.core.module.config.BeakerConfigPref;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import org.apache.commons.codec.binary.Base64;
@@ -74,7 +73,7 @@ public class PluginServiceLocatorRest {
   private static final int RESTART_ENSURE_RETRY_MAX_INTERVAL = 2500;
 
   private static final String REST_RULES =
-    "location ^~ %(base_url)s/ {\n" +
+    "location %(base_url)s/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/;\n" +
     "  proxy_set_header Authorization \"Basic %(auth)s\";\n" +
     "  proxy_http_version 1.1;\n" +
@@ -128,11 +127,6 @@ public class PluginServiceLocatorRest {
     "location ~ %(base_url)s/api/kernels/[0-9a-f-]+/ {\n" +
     IPYTHON_RULES_BASE;
 
-  private static final String CATCH_OUTDATED_REQUESTS_RULE =
-      "location ~ /%(urlhash)s[a-z0-9]+\\.\\d+/cometd/ {\n" +
-      "  return 404;\n" +
-      "}";
-
   private final String nginxDir;
   private final String nginxBinDir;
   private final String nginxStaticDir;
@@ -143,7 +137,6 @@ public class PluginServiceLocatorRest {
   private final String pluginDir;
   private final String [] nginxCommand;
   private final String [] nginxRestartCommand;
-  private final Boolean showZombieLogging;
   private String[] nginxEnv = null;
   private final Boolean publicServer;
   private final Integer portBase;
@@ -172,7 +165,6 @@ public class PluginServiceLocatorRest {
   private int portSearchStart;
   private BeakerConfig config;
   private String authToken;
-  private BeakerConfigPref bkConfigPref;
 
   private static String[] listToArray(List<String> lst) {
     return lst.toArray(new String[lst.size()]);
@@ -181,7 +173,6 @@ public class PluginServiceLocatorRest {
   @Inject
   private PluginServiceLocatorRest(
       BeakerConfig bkConfig,
-      BeakerConfigPref bkConfigPref,
       WebServerConfig webServerConfig,
       OutputLogService outputLogService,
       GeneralUtils utils) throws IOException {
@@ -242,7 +233,6 @@ public class PluginServiceLocatorRest {
     this.nginxRestartCommand[8] = "reload";
     
     this.corePassword = webServerConfig.getPassword();
-    this.showZombieLogging = bkConfigPref.getShowZombieLogging();
 
     // record plugin options from cli and to pass through to individual plugins
     for (Map.Entry<String, List<String>> e: bkConfig.getPluginOptions().entrySet()) {
@@ -742,7 +732,6 @@ public class PluginServiceLocatorRest {
     }
     nginxConfig = nginxConfig.replace("%(plugin_section)s", pluginSection.toString());
     nginxConfig = nginxConfig.replace("%(extra_rules)s", this.nginxExtraRules);
-    nginxConfig = nginxConfig.replace("%(catch_outdated_requests_rule)s", this.showZombieLogging ? "" : this.CATCH_OUTDATED_REQUESTS_RULE);
     nginxConfig = nginxConfig.replace("%(user_folder)s", this.userFolder);
     nginxConfig = nginxConfig.replace("%(host)s", hostName);
     nginxConfig = nginxConfig.replace("%(port_main)s", Integer.toString(this.portBase));

@@ -34,11 +34,6 @@ html {
     max-height: calc(100vh - 70px);
   }
 
-  .modal-body.error-title {
-    background-color: rgba(225, 0, 0, 0.5);
-    padding: 10px 25px;
-  }
-
   .modal-footer {
     border-width: 0;
   }
@@ -141,11 +136,9 @@ html {
     input {
       width: auto;
       display: inline-block;
-      margin-top: 2px;
     }
     label {
-      float: left;
-      margin-right: 5px;
+      margin-right: 2px;
       display: inline-block;
     }
   }

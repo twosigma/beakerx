@@ -33,7 +33,7 @@ public class CategoryPointsSerializer extends CategoryGraphicsSerializer<Categor
                                                      JsonProcessingException {
     jgen.writeStartObject();
 
-    super.serialize(categoryPoints, jgen, provider);
+    serialize(categoryPoints, jgen);
 
     if (categoryPoints.getSizes() != null) {
       jgen.writeObjectField("sizes", categoryPoints.getSizes());

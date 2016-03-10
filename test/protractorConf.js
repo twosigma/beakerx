@@ -22,7 +22,6 @@ var config = {
     defaultTimeoutInterval: 100000,
     print: function() {}
   },
-
   capabilities: {
     shardTestFiles: true,
     maxInstances: 3,
@@ -35,16 +34,14 @@ var config = {
     }));
   },
   specs: [
-    'tests/easyform.js',
-    'tests/landing-page.js',
-    'tests/notebook.js',
-    'tests/autotranslation.js',
-    'tests/code-cell.js',
-    'tests/text-cell.js',
-    'tests/cell-menu.js',
-    'tests/language-manager.js',
-    'tests/bugs.js',
-    'tests/vim-mode.js'
+          'tests/landing-page.js',
+          'tests/notebook.js',
+          'tests/autotranslation.js',
+          'tests/code-cell.js',
+          'tests/text-cell.js',
+          'tests/cell-menu.js',
+          'tests/language-manager.js',
+          'tests/bugs.js'
   ]
 };
 

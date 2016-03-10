@@ -271,6 +271,7 @@ task macCopyElectron(type: Exec, dependsOn: ['unzipElectron']) {
 macCopyElectron.onlyIf { mac }
 
 task makeOSXDMG(dependsOn: 'makeBundle') << {
+  delete 'osxdmg'
   ant.move(file: 'Beaker.app', tofile: 'osxdmg/Beaker.app')
 }
 makeOSXDMG.onlyIf { mac }

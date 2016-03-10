@@ -142,16 +142,6 @@
               $scope.newEmptyNotebook();
             });
             return false;
-          } else if (e.metaKey && !e.ctrlKey && e.shiftKey && (e.which === 78)) { // Cmd + Shift + n
-            bkUtils.fcall(function() {
-              $scope.newNotebook();
-            });
-            return false;
-          } else if (e.metaKey && !e.ctrlKey && (e.which === 78)) { // Cmd + n
-            bkUtils.fcall(function() {
-              $scope.newEmptyNotebook();
-            });
-            return false;
           } else if (bkUtils.isElectron) {
             var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
             // Command H

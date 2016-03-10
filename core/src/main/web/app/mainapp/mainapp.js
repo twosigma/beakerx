@@ -1012,6 +1012,16 @@
             _impl.saveNotebook();
             $scope.$apply();
             return false;
+          } else if (e.ctrlKey && e.shiftKey && (e.which === 78)) { // Ctrl + Shift + n
+            bkUtils.fcall(function() {
+              bkCoreManager.newSession(false);
+            });
+            return false;
+          } else if (e.ctrlKey && (e.which === 78)) { // Ctrl + n
+            bkUtils.fcall(function() {
+              bkCoreManager.newSession(true);
+            });
+            return false;
           } else if (bkUtils.isElectron) {
             var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
             // Command H

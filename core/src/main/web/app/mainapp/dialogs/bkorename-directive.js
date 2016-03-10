@@ -39,6 +39,10 @@
 
         delete beaker[oldPropertyName];
         beakerObj.beakerObjectToNotebook();
+
+        if ($scope.dscope && typeof $scope.dscope.evaluate == 'function') {
+          $scope.dscope.evaluate();
+        }
       }
 
       $uibModalInstance.close('save');

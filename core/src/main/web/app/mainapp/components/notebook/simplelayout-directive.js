@@ -45,6 +45,16 @@
         $scope.isShowMenu = function () {
           return false;
         };
+
+        $scope.evaluate = function() {
+          var cellId = $scope.model.getCellId();
+          if (!cellId) return;
+          bkCoreManager.getBkApp().evaluate(cellId).
+            catch(function(data) {
+              console.log('Evaluation failed');
+            });
+        };
+
         $scope.bkoMenuItems = [
             {
               name: 'Delete',
@@ -56,6 +66,7 @@
                 if (beaker && property) {
                   delete beaker[property];
                   beakerObj.beakerObjectToNotebook();
+                  $scope.evaluate();
                 }
               }
             },

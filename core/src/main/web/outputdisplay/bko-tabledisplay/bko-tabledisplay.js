@@ -1069,6 +1069,10 @@
             pp.width(me.width());
           }
           scope.updateResizeHandleWidth();
+          if (scope.fixcols) {   //do not need data update 
+            scope.fixcols._fnColCalc();
+            scope.fixcols._fnGridLayout()
+          }
         };
         scope.selectFixedColumnRow = function (dtRowIndex, select) {
           if (scope.fixcols) {
@@ -1557,7 +1561,7 @@
 
           bkHelper.timeout(function() {
             // we must wait for the DOM elements to appear
-            $(id).parents('.dataTables_scroll').find('th, td').css('border-right-width', 1);
+            $(id).parents('.dataTables_scroll').find('th, td').removeClass('left-fix-col-separator');
             scope.table = $(id).DataTable(init);
             scope.renderMenu = true;
             scope.colreorg = new $.fn.dataTable.ColReorder($(id), {
@@ -1920,13 +1924,15 @@
             } else {
               inits.rightColumns = 0;
             }
-            var leftfixcolumn = scope.table.column(scope.pagination.fixLeft);
-            $(leftfixcolumn.nodes()).css('border-right-width', 3);
-            $(leftfixcolumn.header()).css('border-right-width', 3);
+            var leftFixColumn = scope.table.column(scope.pagination.fixLeft);
+            var leftFixColumnHeader = $(scope.table.header()).find('tr').find('th:eq(' + scope.pagination.fixLeft + ')');
+            $(leftFixColumn.nodes()).addClass('left-fix-col-separator');
+            leftFixColumnHeader.addClass('left-fix-col-separator');
+
             scope.fixcols = new $ .fn.dataTable.FixedColumns($(id), inits);
-            scope.fixcols.fnRedrawLayout();
+            scope.update_size();
+
             setTimeout(function(){
-              scope.showFilter = false;
               scope.applyFilters();
             }, 0);
 

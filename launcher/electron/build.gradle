@@ -19,15 +19,19 @@ def mac = false
 def win = false
 def linux = false
 def platform = ''
+def setupName
 if (osName.startsWith('Mac')) {
   mac = true
   platform = 'darwin'
+  setupName = 'beaker-notebook-' + gitDescribe() + '-electron-mac'
 } else if (osName.startsWith('Windows')) {
   win = true
   platform = 'win32'
+  setupName = 'beaker-notebook-' + gitDescribe() + '-electron-windows'
 } else if (osName.startsWith('Linux')) {
   linux = true
   platform = 'linux'
+  setupName = 'beaker-notebook-' + gitDescribe() + '-electron-linux'
 }
 
 def gitDescribe() {
@@ -39,8 +43,6 @@ def gitDescribe() {
   return name
 }
 
-
-def setupName = 'beaker-notebook-' + gitDescribe() + '-electron-windows'
 
 def electronName = ''
 electronName = 'electron-v' + version + '-' + platform + '-' + arch
@@ -71,6 +73,8 @@ task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG', 'copyIss'
     commandLine './create-dmg/create-dmg', '--volname', 'Beaker', '--window-pos', '200', '120', '--window-size', '800', '400', '--icon-size', '100', '--icon', 'Beaker.app', '200', '190', '--hide-extension', 'Beaker.app', '--app-drop-link', '600', '185', dmgName, 'osxdmg/'
   } else if (win) {
     commandLine 'iscc', '/o./', '/f'+setupName, 'makeWinInstaller.iss'
+  }else{
+    zipElectron.execute();
   }
 }
 
@@ -100,7 +104,7 @@ task zipElectron (type: Zip) {
   from fileTree('beaker')
   archiveName = setupName + ".zip"
 }
-zipElectron.onlyIf { win }
+zipElectron.onlyIf { win || linux}
 
 
 task runElectron(type: Exec, dependsOn: ['unzipJRE', 'unzipPython', 'nodeInstall', 'makeDist']) {

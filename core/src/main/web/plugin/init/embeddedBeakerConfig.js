@@ -175,7 +175,7 @@
                    items: [
                            {
                              name: "New Notebook",
-                             shortcut: ["Ctrl-N", "Cmd-N"],
+                             shortcut: ["Ctrl-N"],
                              tooltip: "Open a new empty notebook, add the languages of your choice",
                              sortorder: 100,
                              action: function() {
@@ -184,7 +184,7 @@
                            },
                            {
                              name: "New Default Notebook",
-                             shortcut: ["Ctrl-Shift-N", "Cmd-Shift-N"],
+                             shortcut: ["Ctrl-Shift-N"],
                              sortorder: 101,
                              id: "new-notebook-menuitem",
                              action: function() {

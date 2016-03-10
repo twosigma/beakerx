@@ -52,7 +52,8 @@ HeaderMenu.prototype = {
       var targetClass = $(e.target).attr('class');
       var toggleClass = 'bko-column-header-menu';
 
-      if ($container[0] != e.target && !$.contains($container[0], e.target) && targetClass.indexOf(toggleClass) < 0) {
+      if ($container[0] != e.target && !$.contains($container[0], e.target) &&
+         (!targetClass || targetClass.indexOf(toggleClass) < 0)) {
         that._hide();
       }
     };
@@ -97,6 +98,11 @@ HeaderMenu.prototype = {
 
     $(this.s.dt.table().container()).on('click.headermenu', '.bko-column-header-menu', function(e) {
       var colIdx = $(this).parent().index();
+      var fixedCols = that.s.dt.settings()[0]._oFixedColumns;
+      var rightHeader = fixedCols ? fixedCols.dom.clone.right.header : null;
+      if (rightHeader && $(rightHeader).has(this).length) {
+        colIdx = that.s.dt.columns(':visible')[0].length - fixedCols.s.rightColumns + colIdx;
+      }
       var jqHeaderMenu = $(that.s.dt.column(colIdx + ':visible').header()).find(".bko-column-header-menu");
       if (that.dom.menu) {
         that._hide();
@@ -189,6 +195,11 @@ HeaderMenu.prototype = {
         });
 
       $li.append($item);
+
+      if (oItem.icon) {
+        var $icon = $('<i/>', {'class': oItem.icon});
+        $li.append($icon);
+      }
 
       if (typeof oItem.isChecked == 'function' && oItem.isChecked(that.dom.container)) {
         var $glyph = $('<i/>', {'class': 'glyphicon glyphicon-ok'});

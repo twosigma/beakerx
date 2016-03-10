@@ -24,6 +24,9 @@
   > li > a {
     position: relative;
     padding: 4px 80px 2px 23px;
+    &:hover + .glyphicon-ok {
+      color: $dropdown-link-hover-color;
+    }
   }
 
   > li > a > .menu-shortcut {
@@ -33,9 +36,16 @@
   }
 }
 
+.dropdown-menu .fa {
+  position: absolute;
+  top: 1px;
+  padding: 4px 4px;
+}
+
 .dropdown-menu .glyphicon {
   position: absolute;
   padding: 3px 4px;
+  z-index: 1;
   &.glyphicon-home {
     color: #CCC;
   }

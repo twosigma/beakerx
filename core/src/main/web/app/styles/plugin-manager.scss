@@ -34,6 +34,11 @@
 }
 
 .language-option {
+  position: relative;
+  .checkbox-label:after {
+    left: 0 !important;
+    margin-left: 0 !important;
+  }
   textarea {
     resize: vertical;
   }

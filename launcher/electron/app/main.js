@@ -33,7 +33,7 @@ var appReady = false;
 var filesToOpen = [];
 var ipcPort = 32326;
 var osName = os.type();
-var willQuit = false;
+var willQuit = true;
 
 // Report crashes to our server.
 crashReporter.start();
@@ -80,14 +80,10 @@ app.on('before-quit', function() {
 app.on('will-quit', function(event) {
   if (backendRunner.isRunning()) {
     console.log('Killing backend at ' + backendRunner.getUrl());
-    if (osName.startsWith('Darwin')) {
-      event.preventDefault();
-      backendRunner.kill().on('killed', function(){
-        app.quit();
-      });
-    } else {
-      backendRunner.kill();
-    }
+    event.preventDefault();
+    backendRunner.kill().on('killed', function(){
+      app.quit();
+    });
   }
 });
 
@@ -103,7 +99,8 @@ app.on('open-file', function(event, path) {
 
 // When all windows die
 app.on('window-all-closed', function() {
-  if (!willQuit && (osName.startsWith('Darwin'))) {
+  if (!willQuit) {
+    willQuit = true;
     mainMenu.show();
   } else {
     app.quit();
@@ -135,12 +132,14 @@ ipc.on('change-server', function(e, address, hash) {
 });
 
 ipc.on('new-backend', function() {
+  willQuit = false;
   windowManager.closeAll();
   backendRunner.kill();
   backendRunner.startNew().on('ready', connectToBackend);
 });
 
 mainMenu.emitter.on('new-backend', function() {
+  willQuit = false;
   windowManager.closeAll();
   backendRunner.kill();
   backendRunner.startNew().on('ready', connectToBackend);
@@ -194,7 +193,7 @@ function switchToBackend(address, hash) {
 
 function connectToBackend() {
   // Have to wait until backend is fully ready
-  spinUntilReady(backendRunner.getHash() + '/beaker/rest/util/ready', function() {
+  spinUntilReady('', function() {
     windowManager.connectToBackend();
     // Open file if launched with file
     if (filesToOpen.length > 0) {
@@ -226,9 +225,9 @@ function spinUntilReady(url, done) {
           setTimeout(spin, interval);
         }
       }
-    }
+    };
     request.get(backendRunner.getUrl() + url).on('response', callback);
-  }
+  };
   spin();
 }
 

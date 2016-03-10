@@ -243,11 +243,11 @@
       scope.maing.select("#" + this.id).selectAll("*").remove();
     };
 
-    PlotConstline.prototype.clearTips = function(scope) {
+    PlotConstline.prototype.hideTips = function(scope, hidden) {
       // do nothing, no tip for this type
     };
 
     return PlotConstline;
   };
-  beaker.bkoFactory('PlotConstline', ['plotUtils', retfunc]);
+  beakerRegister.bkoFactory('PlotConstline', ['plotUtils', retfunc]);
 })();

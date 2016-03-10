@@ -22,15 +22,30 @@
     position: relative;
   }
   > li > a {
-    padding-top: 4px;
-    padding-bottom: 2px;
-    padding-left: 23px;
+    position: relative;
+    padding: 4px 80px 2px 23px;
+    &:hover + .glyphicon-ok {
+      color: $dropdown-link-hover-color;
+    }
   }
+
+  > li > a > .menu-shortcut {
+    position: absolute;
+    right: 10px;
+    top: 4px;
+  }
+}
+
+.dropdown-menu .fa {
+  position: absolute;
+  top: 1px;
+  padding: 4px 4px;
 }
 
 .dropdown-menu .glyphicon {
   position: absolute;
   padding: 3px 4px;
+  z-index: 1;
   &.glyphicon-home {
     color: #CCC;
   }
@@ -64,7 +79,7 @@
     width: 0;
     height: 0;
     margin-top: 5px;
-    margin-right: -10px;
+    margin-right: -70px;
     border-color: transparent;
     border-left-color: #cccccc;
     border-style: solid;
@@ -73,7 +88,7 @@
   }
 
   &:hover {
-    .dropdown-menu {
+    > .dropdown-menu {
       display: block;
     }
   }
@@ -83,5 +98,17 @@
 .dropdown-submenu-flash {
   background: $highlight-blue;
   color: #fff;
+}
+
+.bko-header-menu {
+  position: relative;
+  top:      0;
+  bottom:   0;
+  left:     0;
+  right:    0;
+
+  .dropdown-menu {
+    position: absolute;
+  }
 }
 

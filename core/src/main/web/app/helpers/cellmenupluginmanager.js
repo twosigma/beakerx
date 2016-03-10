@@ -40,13 +40,13 @@
         for (var member in _cellMenuPlugins) {
           delete _cellMenuPlugins[member];
         }
-        if (window.beaker === undefined || window.beaker.isEmbedded === undefined) {
+        if (window.beaker === undefined || window.beakerRegister.isEmbedded === undefined) {
           bkUtils.httpGet('../beaker/rest/util/getCellMenuPlugins')
               .success(function(menuUrls) {
                 menuUrls.forEach(self.loadPlugin);
               });
         } else {
-          var ml = window.beaker.getCellMenuList();
+          var ml = window.beakerRegister.getCellMenuList();
           if (_.isArray(ml)) {
             var i;      
             for(i=0; i<ml.length; i++) {

@@ -124,9 +124,12 @@
         item.color = "none";
       }
       if (item.outline_color != null) {
-        item.stroke_opacity = parseInt(item.outline_color.substr(1,2), 16) / 255;
-        item.stroke = "#" + item.outline_color.substr(3);
-        delete item.outline_color;
+        if (!item.hasOwnProperty("outline") && !item.hasOwnProperty("outlines") ||
+            item.hasOwnProperty("outline") && item.outline === true) {
+          item.stroke_opacity = parseInt(item.outline_color.substr(1, 2), 16) / 255;
+          item.stroke = "#" + item.outline_color.substr(3);
+          //do not remove item.outline_color here, it is used in processElement()
+        }
       }
 
       if (item.type == null) { item.type = ""; }
@@ -170,6 +173,11 @@
     };
 
     var processElement = function(item, j, ele, yAxisSettings, logx) {
+
+      if (item.tooltips){
+        ele.tooltip = item.tooltips[j];
+      }
+
       // discard NaN entries
       if (ele.x === "NaN" || ele.y === "NaN" ||
         logx && ele.x <= 0 || yAxisSettings.logy && ele.y <= 0 )
@@ -182,7 +190,20 @@
       if (item.fills != null && item.fills[j] === false) {
         ele.color = "none";
       }
-      if (item.outline_colors != null) {
+      if (item.hasOwnProperty("outlines") || item.hasOwnProperty("outline")) {
+        if (item.outlines && item.outlines[j] === true || item.outline === true) {
+          if (item.outline_colors != null) {
+            ele.stroke_opacity = parseInt(item.outline_colors[j].substr(1, 2), 16) / 255;
+            ele.stroke = "#" + item.outline_colors[j].substr(3);
+          } else if (item.outline_color != null) {
+            ele.stroke_opacity = parseInt(item.outline_color.substr(1, 2), 16) / 255;
+            ele.stroke = "#" + item.outline_color.substr(3);
+          } else {
+            ele.stroke_opacity = 1;
+            ele.stroke = plotUtils.colorToHex("black");
+          }
+        }
+      } else if (item.outline_colors != null) {
         ele.stroke_opacity = parseInt(item.outline_colors[j].substr(1,2), 16) / 255;
         ele.stroke = "#" + item.outline_colors[j].substr(3);
       }
@@ -532,7 +553,11 @@
                     category: j,
                     x: item.x[j],
                     y: item.y[j]
+
                   };
+                  if(categoryItem.itemLabels){
+                    ele.itemLabel =  categoryItem.itemLabels[j][i];
+                  }
 
                   if(processElement(item, j, ele, yAxisSettings)){
                     elements.push(ele);
@@ -653,6 +678,7 @@
                 var ele = {};
                 ele.x = item.x[j];
                 ele.y = item.y[j];
+                ele.index = j;
 
                 if(processElement(item, j, ele, yAxisSettings, logx)){
                   elements.push(ele);
@@ -786,5 +812,5 @@
       }
     };
   };
-  beaker.bkoFactory('plotConverter', ["bkUtils", "plotUtils", retfunc]);
+  beakerRegister.bkoFactory('plotConverter', ["bkUtils", "plotUtils", retfunc]);
 })();

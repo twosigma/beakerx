@@ -46,7 +46,9 @@
       bkCoreManager,
       bkPublicationHelper,
       GLOBALS,
-      $timeout) {
+      $rootScope,
+      $timeout,
+      autocompleteParametersService) {
 
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {
@@ -291,7 +293,7 @@
         });
 
         $scope.cellmenu.addItem({
-          name: 'Options',
+          name: 'Options...',
           action: function() {
             bkCoreManager.showFullModalDialog(function cb(r) { } ,
                 'app/mainapp/dialogs/codecelloptions.jst.html', 'CodeCellOptionsController', $scope.cellmodel);
@@ -357,9 +359,12 @@
         var codeMirrorOptions = bkCoreManager.codeMirrorOptions(scope, notebookCellOp);
         _.extend(codeMirrorOptions.extraKeys, {
           'Esc' : function(cm) {
+            if (autocompleteParametersService.isActive()) {
+              return autocompleteParametersService.endCompletion();
+            }
             cm.execCommand('singleSelection');
             if (cm.state.vim && cm.state.vim.insertMode) {
-              return;
+              CodeMirror.Vim.exitInsertMode(cm);
             } else {
               if (isFullScreen(cm)) {
                 setFullScreen(cm, false);
@@ -401,31 +406,32 @@
         });
 
         var initCodeMirror = function() {
-          var template = '<textarea class="bkcelltextarea" ng-model="cellmodel.input.body">' + scope.cellmodel.input.body + '</textarea>';
-          $(element.find('.bkcelltextarea')[0]).replaceWith($(template));
+          var template = '<textarea class="bkcelltextarea" ng-model="cellmodel.input.body"/>';
+          $(element.find('.bkcelltextarea')[0]).replaceWith($(template).text(scope.cellmodel.input.body));
 
           _.extend(codeMirrorOptions, {
             theme: bkHelper.getTheme()
           });
 
-
           scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
           scope.cm.on('change', changeHandler);
           scope.cm.on('blur', function () {
-            if ($('.CodeMirror-hint').length > 0) {
+            if (!scope.cm.curOp || $('.CodeMirror-hint').length > 0) {
               //codecomplete is up, skip
               return;
             }
             CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
           });
           scope.cm.on('focus', function () {
-            if ($('.CodeMirror-hint').length > 0) {
+            if (!scope.cm.curOp || $('.CodeMirror-hint').length > 0) {
               //codecomplete is up, skip
               return;
             }
             CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
           });
+
+          scope.cm.on('gutterClick', onGutterClick);
 
           scope.updateUI(scope.getEvaluator());
           // Since the instantiation of codemirror instances is now lazy,
@@ -450,10 +456,6 @@
 
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
 
-        scope.focus = function() {
-          scope.cm.focus();
-        };
-
         // cellmodel.body --> CodeMirror
         scope.$watch('cellmodel.input.body', function(newVal, oldVal) {
           if (scope.cm && newVal !== scope.cm.getValue()) {
@@ -474,6 +476,49 @@
               bkUtils.refreshRootScope();
             }
           }
+        };
+
+        var onGutterClick = function(cm, line, gutter, e) {
+          if (gutter !== 'CodeMirror-linenumbers') return;
+
+          var prev = (e.ctrlKey || e.shiftKey) || e.metaKey ? cm.listSelections() : [];
+          var anchor = line;
+          var head = line + 1;
+
+          function update() {
+            var curr = {
+              anchor: CodeMirror.Pos(anchor, head > anchor ? 0 : null),
+              head: CodeMirror.Pos(head, 0)
+            };
+            if (e.shiftKey) {
+              if (prev[0].anchor.line >= head) {
+                cm.extendSelection(curr.anchor, prev[0].head, {origin: "*mouse"});
+              } else {
+                cm.extendSelection(prev[0].anchor, curr.head, {origin: "*mouse"});
+              }
+            } else {
+              cm.setSelections(prev.concat([curr]), prev.length, {origin: "*mouse"});
+            }
+            scope.focus();
+          }
+          function onMouseMove(e) {
+            var currLine = cm.lineAtHeight(e.clientY, "client");
+            if (head > anchor) {
+              currLine++;
+            }
+            if (currLine != head) {
+              head = currLine;
+              update();
+            }
+          }
+          function onMouseUp(e) {
+            removeEventListener("mouseup", onMouseUp);
+            removeEventListener("mousemove", onMouseMove);
+          }
+
+          update();
+          addEventListener("mousemove", onMouseMove);
+          addEventListener("mouseup", onMouseUp);
         };
 
         var inputMenuDiv = element.find('.bkcell').first();
@@ -563,6 +608,7 @@
           if (scope.cm) {
             scope.cm.off();
           }
+          CodeMirror.off('gutterClick', onGutterClick);
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id);
           scope.bkNotebook = null;

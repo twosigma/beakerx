@@ -25,6 +25,7 @@
     PlotLodBox.prototype.plotClass = "plot-lodbox";
     PlotLodBox.prototype.respClass = "plot-resp";
     PlotLodBox.prototype.plotClassAvgLine = "plot-lodavgline";
+    PlotLodBox.prototype.actionClass = "item-clickable item-onkey";
 
     PlotLodBox.prototype.format = function() {
       if (this.color != null) {
@@ -157,7 +158,7 @@
       groupsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
-        .attr("class", this.respClass);
+        .attr("class", this.respClass + " " + this.actionClass);
       groupsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; })
         .attr("x", function(d) { return d.x; })
@@ -185,11 +186,11 @@
       }
     };
 
-    PlotLodBox.prototype.clearTips = function(scope) {
-      plotTip.clearTips(scope, this.id);
+    PlotLodBox.prototype.hideTips = function(scope, hidden) {
+      plotTip.hideTips(scope, this.id, hidden);
     };
 
     return PlotLodBox;
   };
-  beaker.bkoFactory('PlotLodBox', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('PlotLodBox', ['plotUtils', 'plotTip', retfunc]);
 })();

@@ -18,15 +18,16 @@
 package com.twosigma.beaker.chart.serializer;
 
 
-import com.twosigma.beaker.Chart;
+import com.twosigma.beaker.chart.Chart;
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.JsonSerializer;
 
 import java.io.IOException;
 
-public abstract class ChartSerializer<T extends Chart> extends JsonSerializer<T> {
+public abstract class ChartSerializer<T extends Chart> extends ObservableChartSerializer<T> {
 
   protected void serialize(T chart, JsonGenerator jgen) throws IOException {
+
+    super.serialize(chart, jgen);
 
     String type = chart.getClass().getSimpleName();
     if ("SimpleTimePlot".equals(type)){

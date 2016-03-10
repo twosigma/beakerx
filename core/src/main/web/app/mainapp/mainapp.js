@@ -135,6 +135,7 @@
           return bkEvaluatorManager.newEvaluator(settings)
           .then(function(evaluator) {
             if (!_.isEmpty(evaluator.spec)) {
+              bkHelper.setLanguageManagerSettingsToBeakerObject(evaluator);
               var actionItems = [];
               _.each(evaluator.spec, function(value, key) {
                 if (value.type === "action") {
@@ -760,6 +761,7 @@
               evaluatorMenuItems = _.reject(evaluatorMenuItems, function(item) {
                 return item.name == plugin;
               });
+              bkHelper.removeLanguageManagerSettingsFromBeakerObject(plugin);
             },
             getEvaluatorMenuItems: function() {
               return evaluatorMenuItems;
@@ -1010,7 +1012,32 @@
             _impl.saveNotebook();
             $scope.$apply();
             return false;
-          } else if (e.target.nodeName !== "TEXTAREA") {
+          } else if (bkUtils.isElectron) {
+            var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
+            // Command H
+            if (ctrlXORCmd && e.which === 72) {
+              bkElectron.minimize();
+            }
+
+            // Command W
+            if (ctrlXORCmd && e.which === 87) {
+              bkElectron.closeWindow();
+            }
+
+            if (e.which === 123) { // F12
+              bkElectron.toggleDevTools();
+              return false;
+            } else if (ctrlXORCmd && ((e.which === 187) || (e.which === 107))) { // Ctrl + '+'
+              bkElectron.increaseZoom();
+              return false;
+            } else if (ctrlXORCmd && ((e.which === 189) || (e.which === 109))) { // Ctrl + '-'
+              bkElectron.decreaseZoom();
+              return false;
+            } else if (ctrlXORCmd && ((e.which === 48) || (e.which === 13))) {
+              bkElectron.resetZoom();
+              return false;
+            }
+          } else if (e.target.nodeName !== "TEXTAREA" && e.target.nodeName !== "INPUT") {
             if (e.ctrlKey && e.which === 90) { // Ctrl + z
               bkUtils.fcall(function() {
                 bkSessionManager.undo();
@@ -1031,33 +1058,7 @@
                 bkSessionManager.redo();
               });
               return false;
-            // TODO implement global redo
-            } else if (bkUtils.isElectron) {
-              var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
-              // Command H
-              if (ctrlXORCmd && e.which === 72) {
-                bkElectron.minimize();
-              }
-
-              // Command W
-              if (ctrlXORCmd && e.which === 87) {
-                bkElectron.closeWindow();
-              }
-
-              if (e.which === 123) { // F12
-                bkElectron.toggleDevTools();
-                return false;
-              } else if (ctrlXORCmd && ((e.which === 187) || (e.which === 107))) { // Ctrl + '+'
-                bkElectron.increaseZoom();
-                return false;
-              } else if (ctrlXORCmd && ((e.which === 189) || (e.which === 109))) { // Ctrl + '-'
-                bkElectron.decreaseZoom();
-                return false;
-              } else if (ctrlXORCmd && ((e.which === 48) || (e.which === 13))) {
-                bkElectron.resetZoom();
-                return false;
-              }
-            }
+            }// TODO implement global redo
           }
         };
         $(document).bind('keydown', keydownHandler);
@@ -1221,7 +1222,7 @@
         bkSessionManager.clear();
 
         bkMenuPluginManager.clear();
-        if (window.beaker === undefined || window.beaker.isEmbedded === undefined) {
+        if (window.beaker === undefined || window.beakerRegister.isEmbedded === undefined) {
           bkUtils.httpGet('../beaker/rest/util/getMenuPlugins')
           .success(function(menuUrls) {
             menuUrls.forEach(function(url) {
@@ -1229,7 +1230,7 @@
             });
           });
         } else {
-          var menues = window.beaker.getMenuItems();
+          var menues = window.beakerRegister.getMenuItems();
           bkMenuPluginManager.attachMenus(menues);
         }
         bkCellMenuPluginManager.reset();

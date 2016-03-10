@@ -74,8 +74,8 @@
           </li>
         </ul>
         <div class="share-private">
-          <label title="will not be indexed, can only be found if you have the URL">Unlisted share</label>
-          <input ng-model="model.private" type="checkbox" ng-value="true" class="field">
+          <input id="sharePrivate" ng-model="model.private" type="checkbox" ng-value="true" class="field">
+          <label for="sharePrivate" title="will not be indexed, can only be found if you have the URL">Unlisted share</label>
         </div>
         <div class="actions">
           <input ng-if="!saving" type="submit" ng-value="saveButton" class="btn btn-primary">

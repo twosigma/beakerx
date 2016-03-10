@@ -22,10 +22,30 @@ define(function(require, exports, module) {
   var fileMenuItems = [
     {
       name: "New Notebook",
+      shortcut: ["Ctrl-N", "Cmd-N"],
       tooltip: "Open a new empty notebook, add the languages of your choice",
       sortorder: 100,
       action: function() {
         bkHelper.newSession(true);
+      }
+    },
+    {
+      name: "New Default Notebook",
+      shortcut: ["Ctrl-Shift-N", "Cmd-Shift-N"],
+      sortorder: 101,
+      id: "new-notebook-menuitem",
+      action: function() {
+        bkHelper.newSession(false);
+      },
+      tooltip: "Open a new default notebook"
+    },
+    {
+      name: "Open... (.bkr)",
+      id: "open-menuitem",
+      tooltip: "Open a bkr notebook file",
+      sortorder: 110,
+      action: function() {
+        bkHelper.openWithDialog('bkr');
       }
     },
     {
@@ -35,11 +55,6 @@ define(function(require, exports, module) {
       items: function() {
         return bkHelper.getRecentMenuItems();
       }
-    },
-    {
-      name: "Open",
-      id: "open-menuitem",
-      sortorder: 110
     },
     {
       name: "Upload (.bkr)",
@@ -56,23 +71,6 @@ define(function(require, exports, module) {
         parent: "File",
         id: "file-menu",
         items: fileMenuItems
-      },
-      {
-        parent: "File",
-        id: "file-menu",
-        submenu: "Open",
-        submenusortorder: 110,
-        items: [
-          {
-            name: "Open... (.bkr)",
-            id: "open-menuitem",
-            tooltip: "Open a bkr notebook file",
-            sortorder: 100,
-            action: function() {
-              bkHelper.openWithDialog('bkr');
-            }
-          }
-        ]
       }
     ];
     menuItemsDeferred.resolve(toAdd);

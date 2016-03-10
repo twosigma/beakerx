@@ -183,18 +183,20 @@
 
     HeatMap.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.clearTips(scope);
+      this.hideTips(scope);
     };
 
-    HeatMap.prototype.clearTips = function(scope) {
-      plotTip.clearTips(scope, this.id);
+    HeatMap.prototype.hideTips = function(scope, hidden) {
+      plotTip.hideTips(scope, this.id, hidden);
     };
 
     HeatMap.prototype.createTip = function(ele, g, model) {
+      if (ele.tooltip)
+        return ele.tooltip;
       return "<div>" + ele.value.toFixed(5) * 1 + "</div>";
     };
 
     return HeatMap;
   };
-  beaker.bkoFactory('HeatMap', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('HeatMap', ['plotUtils', 'plotTip', retfunc]);
 })();

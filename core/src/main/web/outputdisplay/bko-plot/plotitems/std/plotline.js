@@ -1,4 +1,4 @@
-/*
+  /*
 *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
 *
 *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +26,7 @@
     PlotLine.prototype.respR = 5;
     PlotLine.prototype.plotClass = "plot-line";
     PlotLine.prototype.respClass = "plot-resp plot-respdot";
+    PlotLine.prototype.actionClass = "item-clickable item-onkey";
 
     PlotLine.prototype.setHighlighted = function(scope, highlighted) {
       var svg = scope.maing;
@@ -162,7 +163,10 @@
             "isresp" : true,
             "cx" : x,
             "cy" : y,
-            "op" : scope.tips[id] == null ? 0 : 1,
+            "tooltip_cx": x,
+            "tooltip_cy": y,
+            "tooltip_r": 5,
+            "op" : scope.tips[id] == null ? 0 : 1
           };
           eleprops.push(prop);
         }
@@ -185,12 +189,12 @@
         }
         pstr += nxtp;
 
-        if(this.showItemLabel){
+        if(ele.itemLabel || this.showItemLabel){
           var labelMargin = 3;
 
           var label = {
             "id": "label_" + id,
-            "text": ele._y,
+            "text": ele.itemLabel ? ele.itemLabel : ele._y,
             "x": x,
             "y": y - labelMargin
           };
@@ -221,7 +225,7 @@
         .data(props, function(d) { return d.id; }).exit().remove();
       itemsvg.selectAll("path")
         .data([props], function(d) { return d.id; }).enter().append("path")
-        .attr("class", this.plotClass)
+        .attr("class", this.plotClass + " " + this.actionClass)
         .style("stroke", function(d) { return d.st; })
         .style("stroke-dasharray", function(d) { return d.st_da; })
         .style("stroke-width", function(d) { return d.st_w; })
@@ -235,13 +239,13 @@
         itemsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id; }).enter().append("circle")
           .attr("id", function(d) { return d.id; })
-          .attr("class", this.respClass)
+          .attr("class", this.respClass + " " + this.actionClass)
           .style("stroke", this.tip_color);
         itemsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id; })
-          .attr("cx", function(d) { return d.cx; })
-          .attr("cy", function(d) { return d.cy; })
-          .attr("r", this.respR)
+          .attr("cx", function(d) { return d.tooltip_cx; })
+          .attr("cy", function(d) { return d.tooltip_cy; })
+          .attr("r", this.respR )
           .style("opacity", function(d) { return d.op; });
       }
       itemsvg.selectAll("text").remove();
@@ -260,14 +264,16 @@
 
     PlotLine.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      this.clearTips(scope);
+      this.hideTips(scope);
     };
 
-    PlotLine.prototype.clearTips = function(scope) {
-      plotTip.clearTips(scope, this.id);
+    PlotLine.prototype.hideTips = function(scope, hidden) {
+      plotTip.hideTips(scope, this.id, hidden);
     };
 
     PlotLine.prototype.createTip = function(ele) {
+      if (ele.tooltip)
+        return ele.tooltip;
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var valx = plotUtils.getTipString(ele._x, xAxis, true),
@@ -283,6 +289,6 @@
 
     return PlotLine;
   };
-  beaker.bkoFactory('PlotLine', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('PlotLine', ['plotUtils', 'plotTip', retfunc]);
 })();
 

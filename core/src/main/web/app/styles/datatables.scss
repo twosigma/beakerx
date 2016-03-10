@@ -1,9 +1,26 @@
 $border-color: #D4D0D0;
 
+.dtcontainer {
+  position: relative;
+  .dropdown-menu {
+    margin-top: 1px;
+  }
+  .dtmenu input[type='checkbox'] {
+    position: absolute;
+    top: 1px;
+    left: 5px;
+    padding: 3px 4px;
+  }
+  .ui-resizable-s span {
+    font-size: 13px;
+    float: right;
+  }
+}
+
 table.dataTable {
   margin : 0;
   thead th, tbody td {
-    padding: 4px 10px;
+    padding: 4px 10px 4px 20px;
     white-space: nowrap;
     border: 1px solid $border-color;
     border-width: 0 1px 0 0;
@@ -17,6 +34,10 @@ table.dataTable {
       border-width: 1px 1px 1px 0;
       color: #515A5A;
       font-weight: normal;
+    }
+    .filterRow th {
+      border-top-width: 0px;
+      padding-left: 5px;
     }
   }
 }
@@ -38,14 +59,78 @@ td.dtcenter {
   border-color: $border-color;
 }
 
+.dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_evalfilter {
+  float:      left;
+  text-align: left;
+  margin-top: 10px;
+  display:    none;
+
+  input {
+    margin-left: 0.5em;
+  }
+
+  .fa.fa-times {
+    cursor:       pointer;
+    padding: 5px;
+    color:        #999999;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.input-clear-growing {
+  position: relative;
+  input {
+    border: 1px solid #ccc;
+    padding-right: 20px;
+    width: 100%;
+  }
+  .hidden-length, .hidden-filter-input {
+    display: none;
+  }
+}
+.input-clear {
+  position: relative;
+  &.editing {
+    position: absolute;
+    left: 0px;
+    top: 1px;
+    z-index: 10;
+  }
+  input {
+    border: 1px solid #ccc;
+    padding: 0 20px 0 15px;
+    width: 100%;
+  }
+
+  span {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    height: 14px;
+    margin: auto;
+    color: #999999;
+
+    &.clear-filter {
+      right: 5px;
+      cursor: pointer;
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+    &.filter-icon {
+      cursor: auto;
+      left: 3px;
+    }
+  }
+}
+
 div.dtmenu {
-  float: right;
-  color: #73BE3B;
+  position: absolute;
+  top: 1px;
   cursor: pointer;
-  display: inline-block;
-  margin-bottom: -19px;
   &:hover {
-    color: #FFF;
     background-color: #39A9ED;
   }
 }
@@ -60,3 +145,42 @@ a.dtmenu {
   margin-left: 10px;
   margin-right: 10px;
 }
+
+.dtmenu .bko-menu {
+  display: block;
+  &:hover {
+    background-image: url("../images/menu_white@2x.png");
+  }
+  &.sorting_desc {
+    background-image: url("../images/sort_desc.png");
+    background-size: 20px;
+    opacity: 1;
+  }
+}
+
+.dt-cell-div {
+  width: 100%;
+  height: 18px;
+  position:relative;
+}
+
+.dt-cell-text {
+  position: relative;
+  width: 100%;
+}
+
+.dt-bar-data {
+  background-color: #6ba2c7;
+  height: 100%;
+  position: absolute;
+}
+
+.bko-table-use-pagination {
+  padding-top: 10px;
+  padding-left: 30px;
+  float: left;
+  label {
+    cursor: pointer;
+  }
+}
+

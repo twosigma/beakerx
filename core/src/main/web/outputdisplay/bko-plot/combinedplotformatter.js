@@ -106,5 +106,5 @@
       }
     };
   };
-  beaker.bkoFactory('combinedplotFormatter', ["bkUtils", "plotFormatter", "plotUtils", retfunc]);
+  beakerRegister.bkoFactory('combinedplotFormatter', ["bkUtils", "plotFormatter", "plotUtils", retfunc]);
 })();

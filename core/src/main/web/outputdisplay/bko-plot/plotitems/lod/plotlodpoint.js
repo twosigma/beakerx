@@ -26,6 +26,7 @@
     PlotLodPoint.prototype.respClass = "plot-resp";
     PlotLodPoint.prototype.shapes = ["rect", "diamond", "circle"];
     PlotLodPoint.prototype.svgtags = ["rect", "polygon", "circle"];
+    PlotLodPoint.prototype.actionClass = "item-clickable item-onkey";
 
     PlotLodPoint.prototype.format = function() {
       if (this.color != null) {
@@ -212,7 +213,7 @@
       groupsvg.selectAll(tag)
         .data(eleprops, function(d) { return d.id; }).enter().append(tag)
         .attr("id", function(d) { return d.id; })
-        .attr("class", this.respClass);
+        .attr("class", this.respClass + " " + this.actionClass);
 
       switch (shape) {
         case "circle":
@@ -237,11 +238,11 @@
       }
     };
 
-    PlotLodPoint.prototype.clearTips = function(scope) {
-      plotTip.clearTips(scope, this.id);
+    PlotLodPoint.prototype.hideTips = function(scope, hidden) {
+      plotTip.hideTips(scope, this.id, hidden);
     };
 
     return PlotLodPoint;
   };
-  beaker.bkoFactory('PlotLodPoint', ['plotUtils', 'plotTip', retfunc]);
+  beakerRegister.bkoFactory('PlotLodPoint', ['plotUtils', 'plotTip', retfunc]);
 })();

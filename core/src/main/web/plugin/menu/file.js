@@ -23,12 +23,23 @@ define(function(require, exports, module) {
   var fileMenuItems = [
     {
       name: "New Notebook",
+      shortcut: ["Ctrl-N", "Cmd-N"],
       sortorder: 100,
       id: "new-notebook-menuitem",
       action: function() {
         bkHelper.newSession(true);
       },
       tooltip: "Open a new empty notebook, add the languages of your choice"
+    },
+    {
+      name: "New Default Notebook",
+      shortcut: ["Ctrl-Shift-N", "Cmd-Shift-N"],
+      sortorder: 101,
+      id: "new-notebook-menuitem",
+      action: function() {
+        bkHelper.newSession(false);
+      },
+      tooltip: "Open a new default notebook"
     },
     {
       name: "New Beaker window",
@@ -38,11 +49,6 @@ define(function(require, exports, module) {
         bkHelper.openWindow('/beaker', 'control-panel');
       },
       tooltip: "Open a new browser tab or window to work on more than one notebook at the same time"
-    },
-    {
-      name: "Open",
-      id: "open-menuitem",
-      sortorder: 110
     },
     {
       name: "Open recent",
@@ -60,6 +66,7 @@ define(function(require, exports, module) {
     },
     {
       name: "Save",
+      shortcut: ["Ctrl-S", "Cmd-S"],
       id: "save-menuitem",
       sortorder: 130,
       action: function() {
@@ -68,13 +75,14 @@ define(function(require, exports, module) {
     },
     {
       name: "Save As",
+      shortcut: ["Ctrl-Shift-S", "Shift-Cmd-S"],
       id: "save-as-menuitem",
       sortorder: 140,
       autoReduce: true,
       items: []
     },
     {
-      name: "Publish",
+      name: "Publish...",
       sortorder: 145,
       id: "publish-menuitem",
       action: function () {

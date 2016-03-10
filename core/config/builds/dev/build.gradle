@@ -119,7 +119,7 @@ debug.dependsOn(builddebug)
 
 
 check.dependsOn(checkregular)
-//check.dependsOn(checkembed)
+check.dependsOn(checkembed)
 
 checkregular.dependsOn(build)
 checkregular.dependsOn(":test:check")

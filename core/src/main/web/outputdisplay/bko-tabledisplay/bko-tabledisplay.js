@@ -625,22 +625,10 @@
             }
             if (type === 'display') {
               if (_.isObject(value) && value.type === 'Date') {
-                time = moment(value.timestamp);
-                tz = $scope.tz;
-                if (tz) {
-                  time.tz(tz);
-                }
-                return time.format('YYYYMMDD HH:mm:ss.SSS ZZ');
+                return bkUtils.formatTimestamp(value.timestamp, $scope.tz, 'YYYYMMDD HH:mm:ss.SSS ZZ');
               }
-              var nano = value % 1000;
-              var micro = (value / 1000) % 1000;
               var milli = value / 1000 / 1000;
-              time = moment(milli);
-              tz = $scope.tz;
-              if (tz) {
-                time.tz(tz);
-              }
-              return time.format('YYYYMMDD HH:mm:ss.SSS ZZ');
+              return bkUtils.formatTimestamp(milli, $scope.tz, 'YYYYMMDD HH:mm:ss.SSS ZZ');
             }
             return value;
           },
@@ -664,22 +652,10 @@
             }
             if (type === 'display') {
               if (_.isObject(value) && value.type === 'Date') {
-                time = moment(value.timestamp);
-                tz = $scope.tz;
-                if (tz) {
-                  time.tz(tz);
-                }
-                return time.format('YYYY-MM-DD');
+                bkUtils.formatTimestamp(value.timestamp, $scope.tz, 'YYYY-MM-DD');
               }
-              var nano = value % 1000;
-              var micro = (value / 1000) % 1000;
               var milli = value / 1000 / 1000;
-              time = moment(milli);
-              tz = $scope.tz;
-              if (tz) {
-                time.tz(tz);
-              }
-              return time.format('YYYY-MM-DD');
+              bkUtils.formatTimestamp(milli, $scope.tz, 'YYYY-MM-DD');
             }
             return value;
           },
@@ -691,22 +667,10 @@
               return $scope.timeStrings[meta.row];
             }
             if (_.isObject(value) && value.type === 'Date') {
-              time = moment(value.timestamp);
-              tz = $scope.tz;
-              if (tz) {
-                time.tz(tz);
-              }
-              return time.format('HH:mm:ss.SSS ZZ');
+              return bkUtils.formatTimestamp(value.timestamp, $scope.tz, 'HH:mm:ss.SSS ZZ');
             }
-            var nano = value % 1000;
-            var micro = (value / 1000) % 1000;
             var milli = value / 1000 / 1000;
-            time = moment(milli);
-            tz = $scope.tz;
-            if (tz) {
-              time.tz(tz);
-            }
-            return time.format('HH:mm:ss.SSS ZZ');
+            return bkUtils.formatTimestamp(milli, $scope.tz, 'HH:mm:ss.SSS ZZ');
           }
         };
         $scope.doubleWithPrecisionConverters = {}; //map: precision -> convert function

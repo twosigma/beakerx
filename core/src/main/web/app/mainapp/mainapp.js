@@ -1012,12 +1012,12 @@
             _impl.saveNotebook();
             $scope.$apply();
             return false;
-          } else if (e.ctrlKey && e.shiftKey && (e.which === 78)) { // Ctrl + Shift + n
+          } else if (((bkHelper.isMacOS && e.ctrlKey) || (!bkHelper.isMacOS && e.altKey)) && e.shiftKey && (e.which === 78)) { // Ctrl/Alt + Shift + n
             bkUtils.fcall(function() {
               bkCoreManager.newSession(false);
             });
             return false;
-          } else if (e.ctrlKey && (e.which === 78)) { // Ctrl + n
+          } else if (((bkHelper.isMacOS && e.ctrlKey) || (!bkHelper.isMacOS && e.altKey)) && (e.which === 78)) { // Ctrl/Alt + n
             bkUtils.fcall(function() {
               bkCoreManager.newSession(true);
             });

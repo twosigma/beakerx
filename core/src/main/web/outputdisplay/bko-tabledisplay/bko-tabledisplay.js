@@ -793,6 +793,7 @@
 
         $scope.applyChanges = function() {
           $scope.doDestroy(false);
+          $scope.update = true;
           // reorder the table data
           var model = $scope.model.getCellModel();
           $scope.doCreateData(model);
@@ -827,6 +828,14 @@
 
         var unregisterOutputExpandEventListener = angular.noop; // used for deregistering listener
 
+        scope.containerClickFunction = function(e){
+          if($(scope.table.table().container()).has(e.target).length){
+            scope.addInteractionListeners();
+          } else {
+            scope.removeInteractionListeners();
+          }
+        };
+
         scope.doDestroy = function(all) {
           if (scope.table) {
             //jscs:disable
@@ -835,10 +844,9 @@
             $(window).unbind('resize.' + scope.id);
             $('#' + scope.id + ' tbody').off('click');
             scope.removeOnKeyListeners();
-            $('#' + scope.id + ' tbody').off('mouseleave.bko-datatable');
-            $('#' + scope.id + ' tbody').off('mouseenter.bko-datatable');
-            $(scope.table.table().container()).off('mouseleave.bko-datatable');
-            $(scope.table.table().container()).off('mouseenter.bko-datatable');
+            $('#' + scope.id + ' tbody').off('mouseleave.bko-dt-highlight');
+            $('#' + scope.id + ' tbody').off('mouseenter.bko-dt-highlight');
+            scope.removeInteractionListeners();
             scope.table.off('key');
             scope.table.off('column-visibility.dt');
             scope.removeFilterListeners();
@@ -860,6 +868,8 @@
             delete scope.actualtype;
             delete scope.actualalign;
             delete scope.data;
+            delete scope.update;
+            $(document.body).off('click.bko-dt-container', scope.containerClickFunction);
           }
           unregisterOutputExpandEventListener();
 
@@ -989,6 +999,7 @@
           scope.renderers = {}; //map: col index -> render function
           scope.doCreateData(model);
           scope.doCreateTable(model);
+          $(document.body).on('click.bko-dt-container', scope.containerClickFunction);
         };
 
         scope.doCreateData = function(model) {
@@ -1653,13 +1664,13 @@
             });
 
             $(id + ' tbody')
-              .on('mouseenter.bko-datatable', 'tr', function () {
+              .on('mouseenter.bko-dt-highlight', 'tr', function () {
                 var dtTR = scope.getDtRow(this);
                 var rowIndex = scope.table.row(dtTR).index();
                 $(dtTR).addClass('hover');
                 scope.highlightFixedColumnRow (rowIndex, true);
               })
-              .on('mouseleave.bko-datatable', 'tr', function () {
+              .on('mouseleave.bko-dt-highlight', 'tr', function () {
                 var dtTR = scope.getDtRow(this);
                 var rowIndex = scope.table.row(dtTR).index();
                 $(dtTR).removeClass('hover');
@@ -1831,32 +1842,45 @@
             };
 
             scope.removeOnKeyListeners();
-            $(scope.table.table().container())
-              .on("mouseenter.bko-datatable", 'td, th', function (e) {
-                if (scope.tableHasFocus()) {
-                  return; //ignore mouse over for key events if there is focus on table's cell
-                }
-                var column = scope.getColumnIndexByCellNode(this);
-                if (!scope.onKeyListeners[column]) {
-                  scope.onKeyListeners[column] = function (onKeyEvent) {
-                    if (scope.tableHasFocus()) {
-                      return; //ignore mouse over for key events if there is focus on table's cell
-                    }
-                    if (!onKeyEvent.isDefaultPrevented()) {
-                      scope.onKeyAction(column, onKeyEvent);
-                    }
-                  };
-                  $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
-                }
-              })
-              .on("mouseleave.bko-datatable", 'td, th', function (e) {
-                var column = scope.getColumnIndexByCellNode(this);
-                var listener = scope.onKeyListeners[column];
-                if(listener) {
-                  delete scope.onKeyListeners[column];
-                  $(document).off("keydown.bko-datatable", listener);
-                }
-              });
+
+            scope.addInteractionListeners = function () {
+              $(scope.table.table().container())
+                .on("mouseenter.bko-dt-interaction", 'td, th', function (e) {
+                  if (scope.tableHasFocus()) {
+                    return; //ignore mouse over for key events if there is focus on table's cell
+                  }
+                  var column = scope.getColumnIndexByCellNode(this);
+                  if (!scope.onKeyListeners[column]) {
+                    scope.onKeyListeners[column] = function (onKeyEvent) {
+                      if (scope.tableHasFocus()) {
+                        return; //ignore mouse over for key events if there is focus on table's cell
+                      }
+                      if (!onKeyEvent.isDefaultPrevented()) {
+                        scope.onKeyAction(column, onKeyEvent);
+                      }
+                    };
+                    $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
+                  }
+                })
+                .on("mouseleave.bko-dt-interaction", 'td, th', function (e) {
+                  var column = scope.getColumnIndexByCellNode(this);
+                  var listener = scope.onKeyListeners[column];
+                  if(listener) {
+                    delete scope.onKeyListeners[column];
+                    $(document).off("keydown.bko-datatable", listener);
+                  }
+                });
+            };
+
+            scope.removeInteractionListeners = function () {
+              $(scope.table.table().container()).off('mouseenter.bko-dt-interaction', 'td, th');
+              $(scope.table.table().container()).off('mouseleave.bko-dt-interaction', 'td, th');
+            };
+
+            if (scope.update) {
+              scope.addInteractionListeners();
+            };
+
             scope.table
               .on('key', function (e, datatable, key, cell, originalEvent) {
                 originalEvent.preventDefault();

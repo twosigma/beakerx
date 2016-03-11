@@ -112,8 +112,6 @@ HeaderMenu.prototype = {
       } else {
         that._show($(jqHeaderMenu));
       }
-
-      e.preventDefault();
     });
   },
 

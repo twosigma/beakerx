@@ -199,6 +199,7 @@ task downloadElectron(type: Exec) {
     commandLine 'curl', '-LO', 'https://github.com/atom/electron/releases/download/v' + version + '/' + electronName + '.zip'
   }
 }
+downloadElectron.onlyIf { !file(electronName + '.zip').exists() }
 
 task unzipElectron(type: Exec, dependsOn: ['downloadElectron']) {
   commandLine 'unzip', '-uo', '-d', 'beaker', electronName

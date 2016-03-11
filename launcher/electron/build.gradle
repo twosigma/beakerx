@@ -70,6 +70,7 @@ copyIss.onlyIf { win }
 
 task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG', 'copyIss']) {
   if (mac) {
+    delete dmgName
     commandLine './create-dmg/create-dmg', '--volname', 'Beaker', '--window-pos', '200', '120', '--window-size', '800', '400', '--icon-size', '100', '--icon', 'Beaker.app', '200', '190', '--hide-extension', 'Beaker.app', '--app-drop-link', '600', '185', dmgName, 'osxdmg/'
   } else if (win) {
     commandLine 'iscc', '/o./', '/f'+setupName, 'makeWinInstaller.iss'
@@ -277,6 +278,7 @@ task macCopyElectron(type: Exec, dependsOn: ['unzipElectron']) {
 macCopyElectron.onlyIf { mac }
 
 task makeOSXDMG(dependsOn: 'makeBundle') << {
+  delete 'osxdmg'
   ant.move(file: 'Beaker.app', tofile: 'osxdmg/Beaker.app')
 }
 makeOSXDMG.onlyIf { mac }

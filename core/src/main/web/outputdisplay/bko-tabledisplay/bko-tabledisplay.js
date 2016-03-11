@@ -1042,6 +1042,9 @@
           var pp = me.parent();
           if (pp.width() > me.width()) {
             pp.width(me.width());
+            me.attr('width', 'auto');
+          } else {
+            me.removeAttr('width');
           }
           scope.updateResizeHandleWidth();
           if (scope.fixcols) {   //do not need data update 
@@ -1512,16 +1515,21 @@
               scope.updateDTMenu();
               //jscs:enable
             },
-            'bSortCellsTop': true
+            'bSortCellsTop': true,
+            'colResize': {
+              'tableWidthFixed': false,
+              'exclude': _.range(scope.pagination.fixLeft + 1)
+                        .concat(_.range(scope.columns.length - scope.pagination.fixRight, scope.columns.length))
+            }
           };
 
           if (!scope.pagination.use) {
             init.paging = false;
             init.scrollY = scope.pagination.rowsToDisplay * 27 + 2;
             init.scrollCollapse = true;
-            init.dom = '<"bko-table"rtf>';
+            init.dom = '<"bko-table"Zrtf>';
           } else {
-            init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf<"#' + scope.id + '_evalfilter">>';
+            init.dom = '<"bko-table"Zrt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf<"#' + scope.id + '_evalfilter">>';
             if (scope.data.length > 25) {
               init.pagingType = 'simple_numbers';
               init.pageLength = 25;

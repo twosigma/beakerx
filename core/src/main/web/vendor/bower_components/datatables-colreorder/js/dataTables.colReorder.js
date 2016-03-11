@@ -825,7 +825,7 @@ ColReorder.prototype = {
 	{
 		var that = this;
 		$(nTh).on( 'mousedown.ColReorder', function (e) {
-			e.preventDefault();
+			//e.preventDefault(); //focus wasn't removed from the code cell when we clicked on table header
 			that._fnMouseDown.call( that, e, nTh );
 		} );
 	},

@@ -200,6 +200,8 @@ task downloadElectron(type: Exec) {
   }
 }
 
+downloadElectron.onlyIf { !file(electronName + '.zip').exists() }
+
 task unzipElectron(type: Exec, dependsOn: ['downloadElectron']) {
   commandLine 'unzip', '-uo', '-d', 'beaker', electronName
 }

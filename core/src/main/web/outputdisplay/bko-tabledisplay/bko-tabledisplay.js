@@ -1069,6 +1069,10 @@
             pp.width(me.width());
           }
           scope.updateResizeHandleWidth();
+          if (scope.fixcols) {   //do not need data update 
+            scope.fixcols._fnColCalc();
+            scope.fixcols._fnGridLayout()
+          }
         };
         scope.selectFixedColumnRow = function (dtRowIndex, select) {
           if (scope.fixcols) {
@@ -1287,29 +1291,23 @@
               var container = el.closest('.bko-header-menu');
               var colIdx = container.data('columnIndex');
               var fixed = this.isFixedLeft(container);
-              scope.pagination.fixLeft = colIdx;
-              if (fixed) {
-                scope.pagination.fixLeft--;
-              }
+              scope.pagination.fixLeft = fixed ? 0 : colIdx;
               scope.applyChanges();
             },
             doFixColumnRight: function (el) {
               var container = el.closest('.bko-header-menu');
               var colIdx = container.data('columnIndex');
               var fixed = this.isFixedRight(container);
-              scope.pagination.fixRight = scope.columns.length - colIdx;
-              if (fixed) {
-                scope.pagination.fixRight--;
-              }
+              scope.pagination.fixRight = fixed ? 0 : scope.columns.length - colIdx;
               scope.applyChanges();
             },
             isFixedRight: function (container) {
               var colIdx = container.data('columnIndex');
-              return scope.columns.length - colIdx <= scope.pagination.fixRight;
+              return scope.columns.length - colIdx === scope.pagination.fixRight;
             },
             isFixedLeft: function (container) {
               var colIdx = container.data('columnIndex');
-              return scope.pagination.fixLeft >= colIdx;
+              return scope.pagination.fixLeft === colIdx;
             }
           };
 
@@ -1563,6 +1561,7 @@
 
           bkHelper.timeout(function() {
             // we must wait for the DOM elements to appear
+            $(id).parents('.dataTables_scroll').find('th, td').removeClass('left-fix-col-separator');
             scope.table = $(id).DataTable(init);
             scope.renderMenu = true;
             scope.colreorg = new $.fn.dataTable.ColReorder($(id), {
@@ -1925,9 +1924,15 @@
             } else {
               inits.rightColumns = 0;
             }
+            var leftFixColumn = scope.table.column(scope.pagination.fixLeft);
+            var leftFixColumnHeader = $(scope.table.header()).find('tr').find('th:eq(' + scope.pagination.fixLeft + ')');
+            $(leftFixColumn.nodes()).addClass('left-fix-col-separator');
+            leftFixColumnHeader.addClass('left-fix-col-separator');
+
             scope.fixcols = new $ .fn.dataTable.FixedColumns($(id), inits);
+            scope.update_size();
+
             setTimeout(function(){
-              scope.showFilter = false;
               scope.applyFilters();
             }, 0);
 

@@ -125,12 +125,18 @@ tbody tr {
       background-image: url("../images/sort_asc.png");
       background-size:  20px;
       opacity:          1;
+      &:hover {
+        background-image: url("../images/sort_asc_white.png");
+      }
     }
 
     &.sorting_desc > .bko-menu {
       background-image: url("../images/sort_desc.png");
       background-size:  20px;
       opacity:          1;
+      &:hover {
+        background-image: url("../images/sort_desc_white.png");
+      }
     }
   }
 

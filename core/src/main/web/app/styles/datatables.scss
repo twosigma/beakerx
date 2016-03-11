@@ -155,6 +155,9 @@ a.dtmenu {
     background-image: url("../images/sort_desc.png");
     background-size: 20px;
     opacity: 1;
+    &:hover {
+      background-image: url("../images/sort_desc_white.png");
+    }
   }
 }
 

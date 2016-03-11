@@ -91,6 +91,9 @@
       formatTimeString: function(millis) {
         return commonUtils.formatTimeString(millis);
       },
+      formatTimestamp: function(timestamp, tz, format) {
+        return commonUtils.formatTimestamp(timestamp, tz, format);
+      },
       isMiddleClick: function(event) {
         return commonUtils.isMiddleClick(event);
       },

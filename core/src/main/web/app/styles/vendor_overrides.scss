@@ -183,3 +183,11 @@ table.DTFC_Cloned tfoot {
     overflow-y: hidden;
   }
 }
+
+input[type="checkbox"], input[type="radio"] {
+  margin: 2px 0 0;
+}
+
+.radio label, .checkbox label {
+  padding-left: 0;
+}

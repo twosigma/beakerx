@@ -31,7 +31,7 @@ if (osName.startsWith('Mac')) {
 } else if (osName.startsWith('Linux')) {
   linux = true
   platform = 'linux'
-  setupName = 'beaker-notebook-' + gitDescribe() + '-electron-linux'
+  setupName = 'beaker-notebook-' + gitDescribe() + '-electron-ubuntu'
 }
 
 def gitDescribe() {

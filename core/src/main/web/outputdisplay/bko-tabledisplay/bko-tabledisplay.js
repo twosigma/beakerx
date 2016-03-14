@@ -1042,6 +1042,8 @@
           var pp = me.parent();
           if (pp.width() > me.width()) {
             pp.width(me.width());
+          }
+          if (pp.width() >= me.width()) {
             me.attr('width', 'auto');
           } else {
             me.removeAttr('width');

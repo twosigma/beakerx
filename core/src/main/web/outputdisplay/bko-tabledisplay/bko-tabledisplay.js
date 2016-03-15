@@ -578,14 +578,14 @@
             return $scope.table.column($scope.getColumnIndexByCellNode(filterNode) + ':visible');
           };
           $($scope.table.table().container())
-            .on('keyup.column-filter change.column-filter', filterInputSelector, function () {
+            .on('keyup.column-filter change.column-filter', filterInputSelector, $.debounce(500, function() {
               var column = getColumn(this);
               if($scope.columnSearchActive){
                 column.search(this.value);
               }
               column.draw();
               $scope.updateFilterWidth($(this), column);
-            })
+            }))
             .on('focus.column-filter', filterInputSelector, function (event) {
               if($scope.keyTable){
                 $scope.keyTable.blur();
@@ -1578,9 +1578,9 @@
 
             var fField = $('#' + scope.id + '_evalfilter').addClass('dataTables_evalfilter');
             $('<input type="search">')
-              .on('keyup change', function () {
+              .on('keyup change', $.debounce(500, function () {
                 scope.table.draw();
-              })
+              }))
               .appendTo(
                 $('<label></label>')
                   .text('Filter:')

@@ -1387,6 +1387,7 @@
               },
               {
                 title: 'Heatmap',
+                shortcut: 'H',
                 isChecked: function(container) {
                   return scope.heatmapOnColumn[container.data('columnIndex')] === true;
                 },
@@ -1398,6 +1399,7 @@
               },
               {
                 title: 'Data Bars',
+                shortcut: 'B',
                 isChecked: function(container) {
                   return scope.barsOnColumn[container.data('columnIndex')] === true;
                 },

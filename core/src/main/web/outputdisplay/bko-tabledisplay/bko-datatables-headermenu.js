@@ -191,6 +191,10 @@ HeaderMenu.prototype = {
           e.preventDefault();
           e.stopPropagation();
         });
+      if (oItem.shortcut) {
+        var $shortcut = $('<span/>', {'class': 'menu-shortcut'}).text(oItem.shortcut);
+        $item.append($shortcut);
+      }
 
       $li.append($item);
 

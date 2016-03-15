@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    var retfunc = function(bkUtils, bkHelper, bkCoreManager, bkSessionManager, GLOBALS) {
+    var retfunc = function(bkUtils, bkHelper, bkCoreManager, bkSessionManager) {
       var keyCodeMap = {
         8	  : "BACKSPACE",
         9	  : "TAB",
@@ -56,10 +56,10 @@
     return {
 
       safeWidth: function(e){
-        return GLOBALS.IS_CHROME ? e.get(0).clientWidth : e.width();
+        return bkHelper.isChrome ? e.get(0).clientWidth : e.width();
       },
       safeHeight: function(e){
-        return GLOBALS.IS_CHROME ? e.get(0).clientHeight : e.height();
+        return bkHelper.isChrome ? e.get(0).clientHeight : e.height();
       },
       outsideScr: function(scope, x, y) {
         var W = this.safeWidth(scope.jqsvg), H = this.safeHeight(scope.jqsvg);
@@ -944,5 +944,5 @@
       }
     };
   };
-  beakerRegister.bkoFactory('plotUtils', ["bkUtils", "bkHelper", "bkCoreManager", "bkSessionManager", "GLOBALS", retfunc]);
+  beakerRegister.bkoFactory('plotUtils', ["bkUtils", "bkHelper", "bkCoreManager", "bkSessionManager", retfunc]);
 })();

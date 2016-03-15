@@ -84,9 +84,9 @@ describe('Category Plots (Bar Charts)', function () {
     expect(label_x_1.getText()).toBe('Neutral');
     expect(label_x_2.getText()).toBe('Base');
 
-    expect(label_x_0.getAttribute('transform')).toBe('translate(12 -10) rotate(45 182.75000000000017 445) ');
-    expect(label_x_1.getAttribute('transform')).toBe('translate(20.5 -10) rotate(45 345.5 445) ');
-    expect(label_x_2.getAttribute('transform')).toBe('translate(13 -10) rotate(45 524.2500000000003 445) ');
+    expect(label_x_0.getAttribute('transform')).toContain('translate(12 -10) rotate(45');
+    expect(label_x_1.getAttribute('transform')).toContain('translate(20.5 -10) rotate(45');
+    expect(label_x_2.getAttribute('transform')).toContain('translate(13 -10) rotate(45');
 
   });
 

@@ -50,7 +50,22 @@
       THEMES: {
         DEFAULT: 'default',
         AMBIANCE: 'ambiance'
-      }
+      },
+      //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+      // Opera 8.0+
+      IS_OPERA: (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0,
+      // Firefox 1.0+
+      IS_FIREFOX: typeof InstallTrigger !== 'undefined',
+      // At least Safari 3+: "[object HTMLElementConstructor]"
+      IS_SAFARI: Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0,
+      // Internet Explorer 6-11
+      IS_IE: /*@cc_on!@*/false || !!document.documentMode,
+      // Edge 20+
+      IS_EDGE: !this.IS_IE && !!window.StyleMedia,
+      // Chrome 1+
+      IS_CHROME: !!window.chrome && !!window.chrome.webstore,
+      // Blink engine detection
+      IS_BLINK: (this.IS_CHROME || this.IS_OPERA) && !!window.CSS
     };
   });
 })();

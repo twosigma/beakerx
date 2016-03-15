@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    var retfunc = function(bkUtils, bkHelper, bkCoreManager, bkSessionManager) {
+    var retfunc = function(bkUtils, bkHelper, bkCoreManager, bkSessionManager, GLOBALS) {
       var keyCodeMap = {
         8	  : "BACKSPACE",
         9	  : "TAB",
@@ -55,23 +55,11 @@
       };
     return {
 
-      isFirefox: function ()
-      {
-        return typeof InstallTrigger !== 'undefined';
-      },
-      isSafari: function ()
-      {
-        return Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-      },
-      isChrome: function ()
-      {
-        return !!window.chrome && !!window.chrome.webstore;
-      },
       safeWidth: function(e){
-        return (this.isChrome()) ? e.get(0).clientWidth : e.width();
+        return GLOBALS.IS_CHROME ? e.get(0).clientWidth : e.width();
       },
       safeHeight: function(e){
-        return (this.isChrome()) ? e.get(0).clientHeight : e.height();
+        return GLOBALS.IS_CHROME ? e.get(0).clientHeight : e.height();
       },
       outsideScr: function(scope, x, y) {
         var W = this.safeWidth(scope.jqsvg), H = this.safeHeight(scope.jqsvg);
@@ -956,5 +944,5 @@
       }
     };
   };
-  beakerRegister.bkoFactory('plotUtils', ["bkUtils", "bkHelper", "bkCoreManager", "bkSessionManager", retfunc]);
+  beakerRegister.bkoFactory('plotUtils', ["bkUtils", "bkHelper", "bkCoreManager", "bkSessionManager", "GLOBALS", retfunc]);
 })();

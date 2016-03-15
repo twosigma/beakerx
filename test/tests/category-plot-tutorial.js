@@ -41,7 +41,7 @@ describe('Category Plots (Bar Charts)', function () {
     beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(0, 0, 0), 'plot-bar');
     beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(0, 0, 1), 'plot-bar');
 
-    beakerPO.checkCount(beakerPO.getPlotMaing(0, 0).all(by.tagName('rect')), 6);
+    //beakerPO.checkCount(beakerPO.getPlotMaing(0, 0).all(by.tagName('rect')), 6);
   });
 
   it('Size', function () {

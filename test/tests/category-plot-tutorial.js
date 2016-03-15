@@ -40,8 +40,6 @@ describe('Category Plots (Bar Charts)', function () {
 
     beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(0, 0, 0), 'plot-bar');
     beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(0, 0, 1), 'plot-bar');
-
-    //beakerPO.checkCount(beakerPO.getPlotMaing(0, 0).all(by.tagName('rect')), 6);
   });
 
   it('Size', function () {
@@ -84,9 +82,13 @@ describe('Category Plots (Bar Charts)', function () {
     expect(label_x_1.getText()).toBe('Neutral');
     expect(label_x_2.getText()).toBe('Base');
 
-    expect(label_x_0.getAttribute('transform')).toContain('translate(12 -10) rotate(45');
-    expect(label_x_1.getAttribute('transform')).toContain('translate(20.5 -10) rotate(45');
-    expect(label_x_2.getAttribute('transform')).toContain('translate(13 -10) rotate(45');
+    expect(label_x_0.getAttribute('transform')).toContain('translate');
+    expect(label_x_1.getAttribute('transform')).toContain('translate');
+    expect(label_x_2.getAttribute('transform')).toContain('translate');
+
+    expect(label_x_0.getAttribute('transform')).toContain('rotate');
+    expect(label_x_1.getAttribute('transform')).toContain('rotate');
+    expect(label_x_2.getAttribute('transform')).toContain('rotate');
 
   });
 

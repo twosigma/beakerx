@@ -18,12 +18,13 @@
                     "mode": "javascript",
                     "background": "#FFE0F0"
                 }
-            }
+            },
+            "languageVersion": "ECMAScript 2015"
         },
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.KeyboardCodes",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -45,7 +46,9 @@
             "type": "markdown",
             "body": [
                 "Output containers are objects that hold a collection of other objects, and displays all its contents, even when they are complex interactive objects.",
-                "By default the contents are just stacked up on the page, but you can configure them to get tabs, grid, cycling, or other layout methods. See <a href=\"../beaker/app/dist/docs/index.html?com/twosigma/beaker/jvm/object/OutputContainer.html\" target=\"_blank\">documentation</a>"
+                "By default the contents are just stacked up on the page, but you can configure them to get tabs, grid, cycling, or other layout methods.",
+                "",
+                "See the complete <a href=\"../beaker/app/dist/docs/index.html?com/twosigma/beaker/jvm/object/OutputContainer.html\" target=\"_blank\">API Javadoc</a>."
             ],
             "evaluatorReader": false
         },
@@ -4896,8 +4899,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "dc9e5c47-02be-4791-909e-936662c1a963",
-                "elapsedTime": 1456,
+                "shellId": "a3ef832d-5efe-4936-a91e-4b506b09f264",
+                "elapsedTime": 652,
                 "height": 0,
                 "hidden": true
             },
@@ -4929,8 +4932,8 @@
                 "result": "ok",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "dc9e5c47-02be-4791-909e-936662c1a963",
-                "elapsedTime": 630,
+                "shellId": "a3ef832d-5efe-4936-a91e-4b506b09f264",
+                "elapsedTime": 559,
                 "height": 0
             },
             "evaluatorReader": true,
@@ -14329,7 +14332,7 @@
                 "pluginName": "Groovy",
                 "shellId": "dc9e5c47-02be-4791-909e-936662c1a963",
                 "elapsedTime": 671,
-                "height": 500
+                "height": 477
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -19694,7 +19697,7 @@
                 "pluginName": "Groovy",
                 "shellId": "dc9e5c47-02be-4791-909e-936662c1a963",
                 "elapsedTime": 642,
-                "height": 863
+                "height": 880
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -22458,7 +22461,7 @@
                 "pluginName": "Groovy",
                 "shellId": "a335b801-c7ad-422c-9508-5a77d87359a1",
                 "elapsedTime": 624,
-                "height": 872
+                "height": 889
             },
             "evaluatorReader": true,
             "lineCount": 13
@@ -27826,7 +27829,7 @@
                         "period": 2000
                     }
                 },
-                "height": 440
+                "height": 457
             },
             "evaluatorReader": true,
             "lineCount": 10

@@ -54,11 +54,24 @@
         222	: "SINGLE_QUOTE"
       };
     return {
+
+      isFirefox: function ()
+      {
+        return typeof InstallTrigger !== 'undefined';
+      },
+      isSafari: function ()
+      {
+        return Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+      },
+      isChrome: function ()
+      {
+        return !!window.chrome && !!window.chrome.webstore;
+      },
       safeWidth: function(e){
-        return e.get(0).clientWidth;
+        return (this.isChrome()) ? e.get(0).clientWidth : e.width();
       },
       safeHeight: function(e){
-        return e.get(0).clientHeight;
+        return (this.isChrome()) ? e.get(0).clientHeight : e.height();
       },
       outsideScr: function(scope, x, y) {
         var W = this.safeWidth(scope.jqsvg), H = this.safeHeight(scope.jqsvg);

@@ -1047,7 +1047,7 @@
             me.removeAttr('width');
           }
           scope.updateResizeHandleWidth();
-          if (scope.fixcols) {   //do not need data update 
+          if (scope.fixcols) { //do not need data update
             scope.fixcols._fnColCalc();
             scope.fixcols._fnGridLayout()
           }

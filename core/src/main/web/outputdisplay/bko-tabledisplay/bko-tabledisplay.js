@@ -1333,6 +1333,7 @@
               },
               {
                 title: 'Sort Ascending',
+                separator: true,
                 isChecked: function(container) {
                   return menuHelper.checkSorting(container, 'asc');
                 },
@@ -1360,6 +1361,7 @@
               },
               {
                 title: 'Align Left',
+                separator: true,
                 isChecked: function(container) {
                   return menuHelper.checkAlignment(container, 'L');
                 },
@@ -1388,6 +1390,7 @@
               {
                 title: 'Heatmap',
                 shortcut: 'H',
+                separator: true,
                 isChecked: function(container) {
                   return scope.heatmapOnColumn[container.data('columnIndex')] === true;
                 },

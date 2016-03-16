@@ -196,6 +196,10 @@ HeaderMenu.prototype = {
         $item.append($shortcut);
       }
 
+      if (oItem.separator) {
+        $item.addClass('menu-separator');
+      }
+
       $li.append($item);
 
       if (oItem.icon) {

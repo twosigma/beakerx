@@ -1894,7 +1894,9 @@
                 originalEvent.preventDefault();
                 scope.onKeyAction(cell.index().column, originalEvent);
               })
-              .on('column-visibility.dt', function () {
+              .on('column-visibility.dt', function (e, settings, column, state) {
+                var order = scope.table.colReorder.order;
+                scope.getCellSho[order()[column] - 1] = state;
                 scope.updateResizeHandleWidth();
               });
 

@@ -1145,7 +1145,7 @@
                   var cellDiv = $("<div></div>", {
                     "class": "dt-cell-div"
                   });
-                  var textSpan = $("<span></span>", {
+                  var textSpan = $("<div></div>", {
                     "class": "dt-cell-text"
                   }).text(value);
 

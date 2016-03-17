@@ -172,6 +172,8 @@ a.dtmenu {
 .dt-cell-text {
   position: relative;
   width: 100%;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 
 .dt-bar-data {

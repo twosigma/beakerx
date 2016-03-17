@@ -1525,9 +1525,7 @@
             },
             'bSortCellsTop': true,
             'colResize': {
-              'tableWidthFixed': false,
-              'exclude': _.range(scope.pagination.fixLeft + 1)
-                        .concat(_.range(scope.columns.length - scope.pagination.fixRight, scope.columns.length))
+              'tableWidthFixed': false
             }
           };
 

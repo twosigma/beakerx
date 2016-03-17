@@ -172,7 +172,6 @@ public class PluginServiceLocatorRest {
   private int portSearchStart;
   private BeakerConfig config;
   private String authToken;
-  private BeakerConfigPref bkConfigPref;
 
   private static String[] listToArray(List<String> lst) {
     return lst.toArray(new String[lst.size()]);
@@ -181,7 +180,6 @@ public class PluginServiceLocatorRest {
   @Inject
   private PluginServiceLocatorRest(
       BeakerConfig bkConfig,
-      BeakerConfigPref bkConfigPref,
       WebServerConfig webServerConfig,
       OutputLogService outputLogService,
       GeneralUtils utils) throws IOException {
@@ -242,7 +240,7 @@ public class PluginServiceLocatorRest {
     this.nginxRestartCommand[8] = "reload";
     
     this.corePassword = webServerConfig.getPassword();
-    this.showZombieLogging = bkConfigPref.getShowZombieLogging();
+    this.showZombieLogging = bkConfig.getShowZombieLogging();
 
     // record plugin options from cli and to pass through to individual plugins
     for (Map.Entry<String, List<String>> e: bkConfig.getPluginOptions().entrySet()) {

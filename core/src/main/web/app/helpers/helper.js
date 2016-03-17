@@ -73,6 +73,25 @@
 
     var bkHelper = {
 
+      isNewNotebookShortcut: function (e){
+        if (this.isMacOS){
+          return e.ctrlKey && (e.which === 78);// Ctrl + n
+        }
+        return e.altKey && (e.which === 78);// Alt + n
+      },
+      isNewEmptyNotebookShortcut: function (e){
+        if (this.isMacOS){
+          return e.ctrlKey && e.shiftKey && (e.which === 78);// Ctrl + Shift + n
+        }
+        return e.altKey && e.shiftKey && (e.which === 78);// Cmd + Shift + n
+      },
+      isSaveNotebookShortcut: function (e){
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83);// Cmd + s
+        }
+        return e.ctrlKey && !e.altKey && (e.which === 83);// Ctrl + s
+      },
+
       guid: function () {
         function s4() {
           return Math.floor((1 + Math.random()) * 0x10000)

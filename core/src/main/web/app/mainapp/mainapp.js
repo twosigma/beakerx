@@ -1002,22 +1002,17 @@
           });
         }
         var keydownHandler = function(e) {
-          if (e.ctrlKey && !e.altKey && (e.which === 83)) { // Ctrl + s
+          if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
             e.preventDefault();
             _impl.saveNotebook();
             $scope.$apply();
             return false;
-          } else if (e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83)) { // Cmd + s
-            e.preventDefault();
-            _impl.saveNotebook();
-            $scope.$apply();
-            return false;
-          } else if (((bkHelper.isMacOS && e.ctrlKey) || (!bkHelper.isMacOS && e.altKey)) && e.shiftKey && (e.which === 78)) { // Ctrl/Alt + Shift + n
+          }  else if (bkHelper.isNewEmptyNotebookShortcut(e)) { // Ctrl/Alt + Shift + n
             bkUtils.fcall(function() {
               bkCoreManager.newSession(false);
             });
             return false;
-          } else if (((bkHelper.isMacOS && e.ctrlKey) || (!bkHelper.isMacOS && e.altKey)) && (e.which === 78)) { // Ctrl/Alt + n
+          } else if (bkHelper.isNewNotebookShortcut(e)) { // Ctrl/Alt + n
             bkUtils.fcall(function() {
               bkCoreManager.newSession(true);
             });

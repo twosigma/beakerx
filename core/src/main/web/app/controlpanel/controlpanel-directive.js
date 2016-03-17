@@ -70,10 +70,10 @@
 
         // actions for UI
         $scope.newNotebook = function() {
-          bkCoreManager.newSession(false);
+          bkCoreManager.newSession(true);
         };
         $scope.newEmptyNotebook = function() {
-          bkCoreManager.newSession(true);
+          bkCoreManager.newSession(false);
         };
         $scope.openNotebook = function() {
           bkHelper.openWithDialog('bkr');
@@ -132,14 +132,14 @@
         };
 
         var keydownHandler = function(e) {
-          if (((bkHelper.isMacOS && e.ctrlKey) || (!bkHelper.isMacOS && e.altKey)) && e.shiftKey && (e.which === 78)) { // Ctrl + Shift + n
-            bkUtils.fcall(function() {
-              $scope.newNotebook();
-            });
-            return false;
-          } else if (((bkHelper.isMacOS && e.ctrlKey) || (!bkHelper.isMacOS && e.altKey)) && (e.which === 78)) { // Ctrl + n
+          if (bkHelper.isNewEmptyNotebookShortcut(e)) { // Ctrl/Alt + Shift + n
             bkUtils.fcall(function() {
               $scope.newEmptyNotebook();
+            });
+            return false;
+          } else if (bkHelper.isNewNotebookShortcut(e)) { // Ctrl/Alt + n
+            bkUtils.fcall(function() {
+              $scope.newNotebook();
             });
             return false;
           } else if (bkUtils.isElectron) {

@@ -1507,6 +1507,14 @@
             'language': {
               'emptyTable': 'empty table'
             },
+            'preDrawCallback': function(settings) {
+              if(scope.table){
+                //allow cell's text be truncated when column is resized to a very small
+                scope.table.columns().every(function(i){
+                  $(scope.table.column(i).nodes()).css('max-width', settings.aoColumns[i].sWidth);
+                });
+              }
+            },
             'drawCallback': function(settings) {
               //jscs:disable
               scope.update_size();

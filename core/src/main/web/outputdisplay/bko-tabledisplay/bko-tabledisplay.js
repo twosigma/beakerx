@@ -2009,8 +2009,8 @@
             if (scope.columnNames !== undefined) {
               state.columnNames = scope.columnNames.slice(0);
             }
-            if (scope.actualtypes !== undefined) {
-              state.actualtypes = scope.actualtypes.slice(0);
+            if (scope.actualtype !== undefined) {
+              state.actualtype = scope.actualtype.slice(0);
             }
             if (scope.actualalign !== undefined) {
               state.actualalign = scope.actualalign.slice(0);

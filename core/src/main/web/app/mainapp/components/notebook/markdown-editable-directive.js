@@ -104,7 +104,8 @@
         var codeMirrorOptions = _.extend(bkCoreManager.codeMirrorOptions(scope, notebookCellOp), {
           lineNumbers: false,
           mode: "markdown",
-          smartIndent: false
+          smartIndent: false,
+          lineWrapping: true
         });
 
         scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], codeMirrorOptions);

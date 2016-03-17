@@ -473,9 +473,8 @@
         };
 
         $scope.getColumnByInitialIndex = function(index){
-          var order = $scope.table.colReorder.order;
-          if (order){
-            index = order().indexOf(index);
+          if ($scope.colorder){
+            index = $scope.colorder.indexOf(index);
           }
           return $scope.table.column(index);
         };
@@ -1618,7 +1617,7 @@
                 var position = scope.fixcols.fnGetPosition(this);
                 rowIdx = position[0];
                 if ($(this).parents().hasClass('DTFC_RightWrapper')) {
-                  var order = scope.table.colReorder.order();
+                  var order = scope.colorder;
                   var fixRight = scope.pagination.fixRight;
                   var colIdxInRight = position[1];
                   colIdx = order[order.length - fixRight + colIdxInRight];
@@ -1895,8 +1894,7 @@
                 scope.onKeyAction(cell.index().column, originalEvent);
               })
               .on('column-visibility.dt', function (e, settings, column, state) {
-                var order = scope.table.colReorder.order;
-                scope.getCellSho[order()[column] - 1] = state;
+                scope.getCellSho[scope.colorder[column] - 1] = state;
                 scope.updateResizeHandleWidth();
               });
 

@@ -279,11 +279,13 @@ var BeakerPageObject = function() {
 
 
   this.getPlotLegendContainer = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
     return this.getCodeCellOutputByIndex(codeCellOutputIdx).all(By.css('.plot-plotlegendcontainer')).get(containerIdx);
   };
 
   this.getPlotSvg= function (codeCellOutputIdx, containerIdx) {
-    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(By.tagName('svg'));
+    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(By.id('svgg'));
   };
 
   this.getPlotMaing= function (codeCellOutputIdx, containerIdx) {

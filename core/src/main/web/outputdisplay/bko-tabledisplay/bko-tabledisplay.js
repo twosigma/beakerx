@@ -1238,13 +1238,13 @@
               var container = el.closest('.bko-header-menu');
               var colIdx = container.data('columnIndex');
 
-              scope.getCellAlign[colIdx - 1] = key;
-              scope.actualalign[colIdx - 1] = key;
+              scope.getCellAlign[scope.colorder[colIdx] - 1] = key;
+              scope.actualalign[scope.colorder[colIdx] - 1] = key;
               scope.applyChanges();
             },
             checkAlignment: function(container, key) {
               var colIdx = container.data('columnIndex');
-              return scope.actualalign[colIdx - 1] === key;
+              return scope.actualalign[scope.colorder[colIdx] - 1] === key;
             },
             doSorting: function(el, direction) {
               var container = el.closest('.bko-header-menu');
@@ -1546,7 +1546,11 @@
             $(id).parents('.dataTables_scroll').find('th, td').removeClass('left-fix-col-separator');
             scope.table = $(id).DataTable(init);
             scope.renderMenu = true;
+            if (!scope.colorder) {
+              scope.colorder = _.range(scope.columnNames.length + 1);
+            }
             scope.colreorg = new $.fn.dataTable.ColReorder($(id), {
+              'order': scope.colorder,
               'fnReorderCallback': function() {
                 if (scope.colreorg === undefined) {
                   return;
@@ -1559,11 +1563,6 @@
               'iFixedColumns': scope.pagination.fixLeft + 1,
               'iFixedColumnsRight': scope.pagination.fixRight
             });
-            if (scope.colorder !== undefined) {
-              scope.colreorg.fnOrder(scope.colorder);
-            } else {
-              scope.colorder = scope.colreorg.fnOrder().slice(0);
-            }
             scope.keyTable = new $.fn.dataTable.KeyTable($(id));
             scope.refreshCells();
 

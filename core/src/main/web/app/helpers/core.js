@@ -503,9 +503,9 @@
           }
           if (cm.getCursor().line === 0) {
             var prevCell = moveFocusUp();
-            if(prevCell) {
+            if (prevCell) {
               var prevCm = scope.bkNotebook.getCM(prevCell.id);
-              if(prevCm) {
+              if (prevCm) {
                 prevCm.setCursor({
                   line: prevCm.doc.size - 1,
                   ch: cm.getCursor().ch
@@ -527,9 +527,9 @@
           }
           if (cm.getCursor().line === cm.doc.size - 1) {
             var nextCell = moveFocusDown();
-            if(nextCell) {
+            if (nextCell) {
               var nextCm = scope.bkNotebook.getCM(nextCell.id);
-              if (nextCm){
+              if (nextCm) {
                 nextCm.setCursor({
                   line: 0,
                   ch: cm.getCursor().ch

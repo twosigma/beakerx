@@ -502,7 +502,16 @@
             return;
           }
           if (cm.getCursor().line === 0) {
-            moveFocusUp();
+            var prevCell = moveFocusUp();
+            if(prevCell) {
+              var prevCm = scope.bkNotebook.getCM(prevCell.id);
+              if(prevCm) {
+                prevCm.setCursor({
+                  line: prevCm.doc.size - 1,
+                  ch: cm.getCursor().ch
+                })
+              }
+            }
           } else {
             cm.execCommand("goLineUp");
             var top = cm.cursorCoords(true,'window').top;
@@ -517,7 +526,16 @@
             return;
           }
           if (cm.getCursor().line === cm.doc.size - 1) {
-            moveFocusDown();
+            var nextCell = moveFocusDown();
+            if(nextCell) {
+              var nextCm = scope.bkNotebook.getCM(nextCell.id);
+              if (nextCm){
+                nextCm.setCursor({
+                  line: 0,
+                  ch: cm.getCursor().ch
+                });
+              }
+            }
           } else {
             cm.execCommand("goLineDown");
           }
@@ -711,6 +729,7 @@
         return {
           lineNumbers: true,
           matchBrackets: true,
+          lineWrapping: true,
           extraKeys: keys,
           goToNextCodeCell: goToNextCodeCell,
           scrollbarStyle: "simple",

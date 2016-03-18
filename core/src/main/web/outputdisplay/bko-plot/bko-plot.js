@@ -1843,6 +1843,8 @@
           scope.removePipe = [];
 
           scope.calcMapping();
+
+          scope.legendDone = false;
           scope.update();
         };
 

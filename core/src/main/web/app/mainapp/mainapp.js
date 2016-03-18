@@ -1176,10 +1176,10 @@
                 "notebook.bkr");
               }, 1);
               timeoutPromise.then(function() {
-                $scope.disconnectedDialog = null;
+                $scope.disconnectedDialog = void 0;
               })
             }, function() {
-                $scope.disconnectedDialog = null;
+                $scope.disconnectedDialog = void 0;
             },
             "Save", "Not now", "btn-primary", ""
           );

@@ -1156,18 +1156,16 @@
       },
       asyncCallInLanguageManager: function(settings) {
         bkUtils.showLanguageManagerSpinner(settings.pluginName);
-        $.ajax({
-          type: "POST",
-          datatype: "json",
-          url: settings.url,
-          data: settings.data
-        }).done(function(ret) {
+
+        bkUtils.httpPost(settings.url, settings.data).success(function(ret) {
           bkUtils.hideLanguageManagerSpinner();
           settings.onSuccess && settings.onSuccess(ret);
-        }).fail(function(jqXHR, textStatus) {
-          bkUtils.hideLanguageManagerSpinner(textStatus);
-          console.error("Request failed: " + textStatus);
-          settings.onFail && settings.onFail(textStatus);
+        }).error(function(response) {
+          var statusText = response ? response.statusText : "No response from server";
+
+          bkUtils.hideLanguageManagerSpinner(statusText);
+          console.error("Request failed: " + statusText);
+          settings.onFail && settings.onFail(statusText);
         });
       },
       isElectron: bkUtils.isElectron,

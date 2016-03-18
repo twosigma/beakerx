@@ -46,6 +46,7 @@ var config = {
     'tests/bugs.js',
     'tests/vim-mode.js',
     'tests/charting-tutorial.js',
+
     'tests/heatmap-tutorial.js'
   ]
 };

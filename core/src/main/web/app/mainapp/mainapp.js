@@ -1002,15 +1002,20 @@
           });
         }
         var keydownHandler = function(e) {
-          if (e.ctrlKey && !e.altKey && (e.which === 83)) { // Ctrl + s
+          if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
             e.preventDefault();
             _impl.saveNotebook();
             $scope.$apply();
             return false;
-          } else if (e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83)) { // Cmd + s
-            e.preventDefault();
-            _impl.saveNotebook();
-            $scope.$apply();
+          }  else if (bkHelper.isNewDefaultNotebookShortcut(e)) { // Ctrl/Alt + Shift + n
+            bkUtils.fcall(function() {
+              bkCoreManager.newSession(false);
+            });
+            return false;
+          } else if (bkHelper.isNewNotebookShortcut(e)) { // Ctrl/Alt + n
+            bkUtils.fcall(function() {
+              bkCoreManager.newSession(true);
+            });
             return false;
           } else if (bkUtils.isElectron) {
             var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);

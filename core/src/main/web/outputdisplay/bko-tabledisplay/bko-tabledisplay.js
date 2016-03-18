@@ -834,10 +834,12 @@
         var unregisterOutputExpandEventListener = angular.noop; // used for deregistering listener
 
         scope.containerClickFunction = function(e){
-          if($(scope.table.table().container()).has(e.target).length){
-            scope.addInteractionListeners();
-          } else {
-            scope.removeInteractionListeners();
+          if (scope.table) {
+            if ($(scope.table.table().container()).has(e.target).length) {
+              scope.addInteractionListeners();
+            } else {
+              scope.removeInteractionListeners();
+            }
           }
         };
 
@@ -1052,7 +1054,7 @@
             me.removeAttr('width');
           }
           scope.updateResizeHandleWidth();
-          if (scope.fixcols) {   //do not need data update 
+          if (scope.fixcols) { //do not need data update
             scope.fixcols._fnColCalc();
             scope.fixcols._fnGridLayout()
           }
@@ -1297,39 +1299,6 @@
           var headerMenuItems = {
             items: [
               {
-                title: 'Sorting',
-                action: null,
-                items: [
-                  {
-                    title: 'Ascending',
-                    isChecked: function(container) {
-                      return menuHelper.checkSorting(container, 'asc');
-                    },
-                    action: function(el) {
-                      menuHelper.doSorting(el, 'asc');
-                    }
-                  },
-                  {
-                    title: 'Descending',
-                    isChecked: function(container) {
-                      return menuHelper.checkSorting(container, 'desc');
-                    },
-                    action: function(el) {
-                      menuHelper.doSorting(el, 'desc');
-                    }
-                  },
-                  {
-                    title: 'No sort',
-                    isChecked: function(container) {
-                      return menuHelper.checkSorting(container);
-                    },
-                    action: function() {
-                      scope.table.order([0, 'asc']).draw();
-                    }
-                  }
-                ]
-              },
-              {
                 title: 'Hide column',
                 action: function(el) {
                   var table = scope.table;
@@ -1341,74 +1310,9 @@
                 }
               },
               {
-                title: 'Format',
-                action: null,
-                items: getFormatSubitems
-              },
-              {
-                title: 'Alignment',
-                action: null,
-                items: [
-                  {
-                    title: 'Left',
-                    isChecked: function(container) {
-                      return menuHelper.checkAlignment(container, 'L');
-                    },
-                    action: function(el) {
-                      menuHelper.doAlignment(el, 'L');
-                    }
-                  },
-                  {
-                    title: 'Center',
-                    isChecked: function(container) {
-                      return menuHelper.checkAlignment(container, 'C');
-                    },
-                    action: function(el) {
-                      menuHelper.doAlignment(el, 'C');
-                    }
-                  },
-                  {
-                    title: 'Right',
-                    isChecked: function(container) {
-                      return menuHelper.checkAlignment(container, 'R');
-                    },
-                    action: function(el) {
-                      menuHelper.doAlignment(el, 'R');
-                    }
-                  }
-                ]
-              },
-              {
-                title: 'Style',
-                action: null,
-                items: [
-                  {
-                    title: 'Data Bars',
-                    isChecked: function(container) {
-                      return scope.barsOnColumn[container.data('columnIndex')] === true;
-                    },
-                    action: function(el) {
-                      var container = el.closest('.bko-header-menu');
-                      var colIdx = container.data('columnIndex');
-                      scope.showHideBars(colIdx);
-                    }
-                  },
-                  {
-                    title: 'Heatmap',
-                    isChecked: function(container) {
-                      return scope.heatmapOnColumn[container.data('columnIndex')] === true;
-                    },
-                    action: function(el) {
-                      var container = el.closest('.bko-header-menu');
-                      var colIdx = container.data('columnIndex');
-                      scope.showHideHeatmap(colIdx);
-                    }
-                  }
-                ]
-              },
-              {
                 title: 'Filter...',
                 icon: 'fa fa-filter',
+                tooltip: 'filter with an expression of $ for this column',
                 action: function(el) {
                   var table = scope.table;
                   var container = el.closest('.bko-header-menu');
@@ -1421,6 +1325,7 @@
               {
                 title: 'Search...',
                 icon: 'fa fa-search',
+                tooltip: 'search this column for a substring',
                 action: function(el) {
                   var table = scope.table;
                   var container = el.closest('.bko-header-menu');
@@ -1431,28 +1336,108 @@
                 }
               },
               {
-                title: 'Fix Column',
+                title: 'Format',
                 action: null,
-                items: [
-                  {
-                    title: 'Left',
-                    isChecked: function(container) {
-                      return menuHelper.isFixedLeft(container);
-                    },
-                    action: function(el) {
-                      menuHelper.doFixColumnLeft(el);
-                    }
-                  },
-                  {
-                    title: 'Right',
-                    isChecked: function(container) {
-                      return menuHelper.isFixedRight(container);
-                    },
-                    action: function(el) {
-                      menuHelper.doFixColumnRight(el);
-                    }
-                  }
-                ]
+                items: getFormatSubitems
+              },
+              {
+                title: 'Sort Ascending',
+                separator: true,
+                isChecked: function(container) {
+                  return menuHelper.checkSorting(container, 'asc');
+                },
+                action: function(el) {
+                  menuHelper.doSorting(el, 'asc');
+                }
+              },
+              {
+                title: 'Sort Descending',
+                isChecked: function(container) {
+                  return menuHelper.checkSorting(container, 'desc');
+                },
+                action: function(el) {
+                  menuHelper.doSorting(el, 'desc');
+                }
+              },
+              {
+                title: 'No Sort',
+                isChecked: function(container) {
+                  return menuHelper.checkSorting(container);
+                },
+                action: function() {
+                  scope.table.order([0, 'asc']).draw();
+                }
+              },
+              {
+                title: 'Align Left',
+                separator: true,
+                isChecked: function(container) {
+                  return menuHelper.checkAlignment(container, 'L');
+                },
+                action: function(el) {
+                  menuHelper.doAlignment(el, 'L');
+                }
+              },
+              {
+                title: 'Align Center',
+                isChecked: function(container) {
+                  return menuHelper.checkAlignment(container, 'C');
+                },
+                action: function(el) {
+                  menuHelper.doAlignment(el, 'C');
+                }
+              },
+              {
+                title: 'Align Right',
+                isChecked: function(container) {
+                  return menuHelper.checkAlignment(container, 'R');
+                },
+                action: function(el) {
+                  menuHelper.doAlignment(el, 'R');
+                }
+              },
+              {
+                title: 'Heatmap',
+                shortcut: 'H',
+                separator: true,
+                isChecked: function(container) {
+                  return scope.heatmapOnColumn[container.data('columnIndex')] === true;
+                },
+                action: function(el) {
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex');
+                  scope.showHideHeatmap(colIdx);
+                }
+              },
+              {
+                title: 'Data Bars',
+                shortcut: 'B',
+                isChecked: function(container) {
+                  return scope.barsOnColumn[container.data('columnIndex')] === true;
+                },
+                action: function(el) {
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex');
+                  scope.showHideBars(colIdx);
+                }
+              },
+              {
+                title: 'Fix Left',
+                isChecked: function(container) {
+                  return menuHelper.isFixedLeft(container);
+                },
+                action: function(el) {
+                  menuHelper.doFixColumnLeft(el);
+                }
+              },
+              {
+                title: 'Fix Right',
+                isChecked: function(container) {
+                  return menuHelper.isFixedRight(container);
+                },
+                action: function(el) {
+                  menuHelper.doFixColumnRight(el);
+                }
               }
             ]
           };
@@ -1532,7 +1517,7 @@
             init.paging = false;
             init.scrollY = scope.pagination.rowsToDisplay * 27 + 2;
             init.scrollCollapse = true;
-            init.dom = '<"bko-table"Zrtf>';
+            init.dom = '<"bko-table"Zrtf<"#' + scope.id + '_evalfilter">>';
           } else {
             init.dom = '<"bko-table"Zrt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf<"#' + scope.id + '_evalfilter">>';
             if (scope.data.length > 25) {
@@ -1574,6 +1559,7 @@
             scope.refreshCells();
 
             var sField = $('#' + scope.id + '_filter');
+            sField.find('input').attr('title', 'search the whole table for a substring');
             $('<i/>', {class: 'fa fa-times'})
               .bind('click', function(e) {
                 scope.showTableSearch();
@@ -1586,6 +1572,7 @@
               .on('keyup change', $.debounce(500, function () {
                 scope.table.draw();
               }))
+              .attr('title', 'filter with an expression with variables for each column')
               .appendTo(
                 $('<label></label>')
                   .text('Filter:')
@@ -1710,10 +1697,12 @@
               var filterIcon = jqContainer.find('.filter-icon');
               if(isSearch){
                 filterInput.addClass('search-active');
+                filterInput.attr('title', 'search this column for a substring');
                 filterIcon.removeClass('fa-filter');
                 filterIcon.addClass('fa-search');
               }else{
                 filterInput.removeClass('search-active');
+                filterInput.attr('title', 'filter with an expression of $ for this column');
                 filterIcon.removeClass('fa-search');
                 filterIcon.addClass('fa-filter');
               }

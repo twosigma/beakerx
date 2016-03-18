@@ -54,11 +54,12 @@
         222	: "SINGLE_QUOTE"
       };
     return {
+
       safeWidth: function(e){
-        return e.get(0).clientWidth;
+        return bkHelper.isChrome ? e.get(0).clientWidth : e.width();
       },
       safeHeight: function(e){
-        return e.get(0).clientHeight;
+        return bkHelper.isChrome ? e.get(0).clientHeight : e.height();
       },
       outsideScr: function(scope, x, y) {
         var W = this.safeWidth(scope.jqsvg), H = this.safeHeight(scope.jqsvg);

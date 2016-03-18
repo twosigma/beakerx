@@ -73,6 +73,14 @@
 
     var bkHelper = {
 
+      //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+      // Firefox 1.0+
+      isFirefox: typeof InstallTrigger !== 'undefined',
+      // At least Safari 3+: "[object HTMLElementConstructor]"
+      isSafari: Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0,
+      // Chrome 1+
+      isChrome: !!window.chrome && !!window.chrome.webstore,
+
       guid: function () {
         function s4() {
           return Math.floor((1 + Math.random()) * 0x10000)

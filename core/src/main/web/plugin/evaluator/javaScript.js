@@ -30,8 +30,10 @@ define(function(require, exports, module) {
   var coffeescriptKeywords = ("and break catch class continue delete do else extends false finally for " +
       "if in instanceof isnt new no not null of off on or return switch then throw true try typeof until void while with yes").split(" ");
 
-  var ES2015 = "ECMAScript 2015";
-  var ES5 = "ECMAScript 5";
+  var LANGUAGE_VERSIONS = {
+    "ES5": {name: "ECMAScript 5"},
+    "ES2015": {name: "ECMAScript 2015", babel: true, defaultVersion: true}
+  };
 
   // Not using the es2015 plugin preset because it includes the "transform-es2015-modules-commonjs" plugin which puts forces strict mode on
   var ES2015Plugins = [
@@ -155,7 +157,7 @@ define(function(require, exports, module) {
       context.push(tprop);
     }
     return getCompletions(token, context, keywords, options);
-  };
+  }
 
   var JavascriptCancelFunction = null;
 
@@ -200,7 +202,7 @@ define(function(require, exports, module) {
           beakerObj.notebookToBeakerObject();
           window.beaker = beakerObj.beakerObj;
           try {
-            if (self.settings.languageVersion === ES2015) {
+            if (LANGUAGE_VERSIONS[self.settings.languageVersion].babel) {
               code = Babel.transform(code, { plugins: ES2015Plugins }).code;
             } else {
               acorn.parse(code);
@@ -237,7 +239,7 @@ define(function(require, exports, module) {
                 } else {
                   deferred.reject();
                 }
-              }
+              };
               output.then(function(o) {
                 JavascriptCancelFunction = null;
                 if (beakerObj.isCircularObject(o))
@@ -354,7 +356,10 @@ define(function(require, exports, module) {
       JavascriptCancelFunction = null;
     },
     spec: {
-      languageVersion: {type: "settableEnum", name: "JavaScript Version", values: [ES5, ES2015]}
+      languageVersion: {
+        type: "settableEnum",
+        name: "JavaScript Version",
+        values: _.mapValues(LANGUAGE_VERSIONS, function(version) {return version.name;})}
     }
   };
   var JavaScript0 = function(settings) {
@@ -366,8 +371,12 @@ define(function(require, exports, module) {
     }
     settings.view.cm.mode = JavaScript_0.cmMode;
     settings.view.cm.background = JavaScript_0.background;
-    this.settings = settings;
-    this.settings.languageVersion = ES2015;
+    var defaultSettings = {
+      languageVersion: _.findKey(LANGUAGE_VERSIONS, function (version) {
+        return version.defaultVersion;
+      })
+    };
+    this.settings = _.merge({}, defaultSettings, settings);
     this.perform = function(what) {
       var action = this.spec[what].action;
       this[action]();

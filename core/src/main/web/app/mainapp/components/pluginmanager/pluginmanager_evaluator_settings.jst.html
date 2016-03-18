@@ -25,9 +25,9 @@
 
   <div class="radio" ng-if="property.type === availableProperties.ENUM">
     <h6>{{ property.name }}</h6>
-      <span class="radio-inline" ng-repeat="value in property.values">
+      <span class="radio-inline" ng-repeat="(value, label) in property.values">
         <input id="eval-settings-{{$index}}" name="{{::property.name}}" value="{{::value}}" type="radio" ng-model="evaluator.settings[property.key]" ng-change="set(property)" />
-        <label for="eval-settings-{{$index}}">{{value}}</label>
+        <label for="eval-settings-{{$index}}">{{label}}</label>
       </span>
   </div>
 

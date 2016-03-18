@@ -601,11 +601,17 @@
             })
             .on('keydown.column-filter', filterInputSelector, function (event) {
               var key = event.which;
-              if (key == 13) { //enter key
-                $scope.onFilterBlur($(this), this);
-              } else {
-                var column = $scope.getColumn(this);
-                $scope.onFilterEditing($(this), column);
+              var column = $scope.getColumn(this);
+              switch (key) {
+                case 13: //enter key
+                  $scope.onFilterBlur($(this), this);
+                  break;
+                case 27: //esc
+                  $scope.clearFilter(column, $(this));
+                  $scope.updateFilterWidth($(this), column);
+                  break;
+                default:
+                  $scope.onFilterEditing($(this), column);
               }
             })
             .on('mousedown.column-filter', clearFilterSelector, function (event) {
@@ -1559,7 +1565,13 @@
             scope.refreshCells();
 
             var sField = $('#' + scope.id + '_filter');
-            sField.find('input').attr('title', 'search the whole table for a substring');
+            sField.find('input')
+              .attr('title', 'search the whole table for a substring')
+              .on('keydown.column-filter', function (event) {
+                if (event.which === 27) { //esc
+                  scope.showTableSearch();
+                }
+              });
             $('<i/>', {class: 'fa fa-times'})
               .bind('click', function(e) {
                 scope.showTableSearch();

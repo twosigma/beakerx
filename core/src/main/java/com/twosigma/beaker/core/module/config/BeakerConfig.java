@@ -225,5 +225,8 @@ public interface BeakerConfig {
   public String getPluginPath(String plugin);
 
   public Object getPluginPrefs();
+
   public void setPluginPrefs(JSONObject prefs);
+
+  public Boolean getShowZombieLogging();
 }

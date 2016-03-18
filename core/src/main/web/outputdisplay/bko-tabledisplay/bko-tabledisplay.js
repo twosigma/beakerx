@@ -1511,6 +1511,7 @@
               if(scope.table){
                 //allow cell's text be truncated when column is resized to a very small
                 scope.table.columns().every(function(i){
+                  settings.aoColumns[i].sWidth = settings.aoColumns[i].sWidthOrig;
                   $(scope.table.column(i).nodes()).css('max-width', settings.aoColumns[i].sWidth);
                 });
               }

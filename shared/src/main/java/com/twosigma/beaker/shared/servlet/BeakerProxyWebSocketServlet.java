@@ -165,6 +165,9 @@ public class BeakerProxyWebSocketServlet extends ProxyServlet.Transparent {
   protected void copyRequestHeaders(HttpServletRequest clientRequest, Request proxyRequest) {
     proxyRequest.getHeaders().clear();
     Set headersToRemove = this.findConnectionHeaders(clientRequest);
+    if ("websocket".equals(clientRequest.getHeader("Upgrade"))) {
+      headersToRemove.clear();
+    }
     Enumeration headerNames = clientRequest.getHeaderNames();
 
     while(true) {
@@ -184,7 +187,7 @@ public class BeakerProxyWebSocketServlet extends ProxyServlet.Transparent {
             headerName = (String)headerNames.nextElement();
             lowerHeaderName = headerName.toLowerCase(Locale.ENGLISH);
           } while(HttpHeader.HOST.is(headerName) && !this._preserveHost);
-        } while(HOP_HEADERS.contains(lowerHeaderName));
+        } while(MY_HOP_HEADERS.contains(lowerHeaderName));
       } while(headersToRemove != null && headersToRemove.contains(lowerHeaderName));
 
       Enumeration headerValues = clientRequest.getHeaders(headerName);

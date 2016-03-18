@@ -516,7 +516,7 @@
             $scope.getCellIdx.push(i - 1);
             var order = $scope.colorder[i];
             $scope.getCellNam.push($scope.columns[order].title);
-            $scope.getCellSho.push($scope.table.column(order).visible());
+            $scope.getCellSho.push($scope.getColumnByInitialIndex(i).visible());
             $scope.getCellDisp.push($scope.actualtype[order - 1]);
             $scope.getCellAlign.push($scope.actualalign[order - 1]);
             if ($scope.types) {

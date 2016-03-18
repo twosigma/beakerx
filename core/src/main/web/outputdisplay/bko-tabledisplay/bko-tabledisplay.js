@@ -974,7 +974,12 @@
             if (typeof scope.pagination.fixRight === 'boolean') {
               scope.pagination.fixRight = 0;
             }
+            scope.barsOnColumn = scope.savedstate.barsOnColumn || {};
+            scope.heatmapOnColumn = scope.savedstate.heatmapOnColumn || {};
             scope.savedstate  = undefined;
+          } else {
+            scope.barsOnColumn = {}; //map: col index -> show bars
+            scope.heatmapOnColumn = {}; //map: col index -> show heatmap
           }
           // auto compute types
           if (scope.actualtype === undefined || scope.actualtype.length === 0) {
@@ -1001,8 +1006,6 @@
               }
             }
           }
-          scope.barsOnColumn = {}; //map: col index -> show bars
-          scope.heatmapOnColumn = {}; //map: col index -> show heatmap
           scope.renderers = {}; //map: col index -> render function
           scope.doCreateData(model);
           scope.doCreateTable(model);
@@ -1148,7 +1151,7 @@
               var value = $(td).text();
               if($.isNumeric(value)){
                 $(td).empty();
-                if(scope.barsOnColumn[colInd]){
+                if(scope.barsOnColumn[scope.colorder[colInd]]){
                   var cellDiv = $("<div></div>", {
                     "class": "dt-cell-div"
                   });
@@ -1173,7 +1176,7 @@
             scope.table.column(colInd).nodes().each(function (td) {
               var value = $(td).text();
               if($.isNumeric(value)){
-                var color = scope.heatmapOnColumn[colInd] ? colorScale(value) : "";
+                var color = scope.heatmapOnColumn[scope.colorder[colInd]] ? colorScale(value) : "";
                 $(td).css({
                   "background-color": color
                 });
@@ -1401,24 +1404,26 @@
                 shortcut: 'H',
                 separator: true,
                 isChecked: function(container) {
-                  return scope.heatmapOnColumn[container.data('columnIndex')] === true;
+                  var colIdx = container.data('columnIndex');
+                  return scope.heatmapOnColumn[scope.colorder[colIdx]] === true;
                 },
                 action: function(el) {
                   var container = el.closest('.bko-header-menu');
                   var colIdx = container.data('columnIndex');
-                  scope.showHideHeatmap(colIdx);
+                  scope.showHideHeatmap(scope.colorder[colIdx]);
                 }
               },
               {
                 title: 'Data Bars',
                 shortcut: 'B',
                 isChecked: function(container) {
-                  return scope.barsOnColumn[container.data('columnIndex')] === true;
+                  var colIdx = container.data('columnIndex');
+                  return scope.barsOnColumn[scope.colorder[colIdx]] === true;
                 },
                 action: function(el) {
                   var container = el.closest('.bko-header-menu');
                   var colIdx = container.data('columnIndex');
-                  scope.showHideBars(colIdx);
+                  scope.showHideBars(scope.colorder[colIdx]);
                 }
               },
               {
@@ -1549,6 +1554,7 @@
                 scope.colorder = scope.colreorg.fnOrder().slice(0);
                 scope.refreshCells();
                 scope.applyFilters();
+                scope.updateBackground();
                 scope.$digest();
               },
               'iFixedColumns': scope.pagination.fixLeft + 1,
@@ -1823,10 +1829,10 @@
               if (charCode) {
                 switch(charCode.toUpperCase()){
                   case 'B':
-                    scope.showHideBars(column);
+                    scope.showHideBars(scope.colorder[column]);
                     break;
                   case 'H':
-                    scope.showHideHeatmap(column);
+                    scope.showHideHeatmap(scope.colorder[column]);
                     break;
                 }
                 if (key >= 48 && key <= 57){ //numbers 1..9
@@ -2018,6 +2024,12 @@
             }
             if (scope.getCellSho !== undefined) {
               state.getCellSho = scope.getCellSho;
+            }
+            if (scope.barsOnColumn !== undefined) {
+              state.barsOnColumn = scope.barsOnColumn;
+            }
+            if (scope.heatmapOnColumn !== undefined) {
+              state.heatmapOnColumn = scope.heatmapOnColumn;
             }
 
             scope.model.setDumpState({datatablestate: state});

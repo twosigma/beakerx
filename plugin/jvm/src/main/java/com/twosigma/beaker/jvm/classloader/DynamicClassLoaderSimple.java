@@ -83,7 +83,12 @@ public class DynamicClassLoaderSimple extends ClassLoader {
   }
   
   public Class<?>  loadClass(String name)  throws ClassNotFoundException {
-    //System.out.println("load class "+name);
+    // try parent first
+    try {
+      return getParent().loadClass(name);
+    } catch (ClassNotFoundException cnfe) {      
+    }
+    // try java file
     if(!name.startsWith("java")) {
       String cname = formatClassName(name);
       String fname = outDir + cname;     
@@ -103,17 +108,14 @@ public class DynamicClassLoaderSimple extends ClassLoader {
           e.printStackTrace();
         }          
       }
-      
+      // try our custom classpath
       if (myloader != null) {
         Class<?> result = classes.get( name );
         if (result != null) {
-          //System.out.println("found on myloader cache");
           return result;
         }
-  
         InputStream is = myloader.getResourceAsStream(cname);
         if (is != null) {
-          //System.out.println("found on myloader");
           try {
             byte[] bytes = IOUtils.readBytesFromStream(is);
             result = getClass(name, bytes, true);
@@ -128,43 +130,41 @@ public class DynamicClassLoaderSimple extends ClassLoader {
         }
       }
     }
-    //System.out.println("goto parent");
-    return getParent().loadClass(name);
+    throw new ClassNotFoundException();
   }
 
   public URL getResource(String name) {
-    //System.out.println("get resource "+name);
-    if (myloader != null) {
-      URL c = myloader.getResource(name);
-      if (c!=null)
-        return c;
+    URL c;
+    
+    c = getParent().getResource(name);
+    if (c == null && myloader != null) {
+       c = myloader.getResource(name);
     }
-    return getParent().getResource(name);
+    return c;
   }
   
   public InputStream getResourceAsStream(String name) {
-    //System.out.println("gras "+name);
-    if (myloader != null) {
-      InputStream c = myloader.getResourceAsStream(name);
-      if (c!=null)
-        return c;
+    InputStream c;
+    c = getParent().getResourceAsStream(name);
+    if (c == null && myloader != null) {
+      c = myloader.getResourceAsStream(name);
     }
-    return getParent().getResourceAsStream(name);
+    return c;
   }
     
 
   public Enumeration<URL> getResources(String name) throws IOException
   {
+    Enumeration<URL> c;
+    c = getParent().getResources(name);
     //System.out.println("get resources "+name);
-    if (myloader != null) {
+    if (c == null && myloader != null) {
       try {
-        Enumeration<URL> c = myloader.getResources(name);
-        if (c!=null)
-          return c;
+        c = myloader.getResources(name);
       } catch(IOException e) {        
       }
     }
-    return getParent().getResources(name);
+    return c;
   }
 
   

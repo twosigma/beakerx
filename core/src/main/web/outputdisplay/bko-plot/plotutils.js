@@ -54,11 +54,12 @@
         222	: "SINGLE_QUOTE"
       };
     return {
+
       safeWidth: function(e){
-        return e.get(0).clientWidth;
+        return bkHelper.isChrome ? e.get(0).clientWidth : e.width();
       },
       safeHeight: function(e){
-        return e.get(0).clientHeight;
+        return bkHelper.isChrome ? e.get(0).clientHeight : e.height();
       },
       outsideScr: function(scope, x, y) {
         var W = this.safeWidth(scope.jqsvg), H = this.safeHeight(scope.jqsvg);
@@ -638,7 +639,6 @@
       base64Fonts: {},
 
       getFontToInject: function(font) {
-        var defer = bkUtils.newDeferred();
         var src = '';
         for (var url in font.urlformats) {
           if (font.urlformats.hasOwnProperty(url)) {
@@ -656,7 +656,6 @@
           "font-weight: " + font.fontWeight + ";" +
           "font-style: " + font.fontStyle + ";" +
           " }\n";
-        return defer.promise;
       },
 
       //http://stackoverflow.com/questions/7370943/retrieving-binary-file-content-using-javascript-base64-encode-it-and-reverse-de

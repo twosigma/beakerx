@@ -639,7 +639,6 @@
       base64Fonts: {},
 
       getFontToInject: function(font) {
-        var defer = bkUtils.newDeferred();
         var src = '';
         for (var url in font.urlformats) {
           if (font.urlformats.hasOwnProperty(url)) {
@@ -657,7 +656,6 @@
           "font-weight: " + font.fontWeight + ";" +
           "font-style: " + font.fontStyle + ";" +
           " }\n";
-        return defer.promise;
       },
 
       //http://stackoverflow.com/questions/7370943/retrieving-binary-file-content-using-javascript-base64-encode-it-and-reverse-de

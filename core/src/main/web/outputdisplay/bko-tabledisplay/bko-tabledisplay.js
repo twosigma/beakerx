@@ -568,24 +568,29 @@
             'blur.column-filter focus.column-filter', filterInputSelector);
           $($scope.table.table().container()).off('mousedown.column-filter', clearFilterSelector);
         };
+
+        $scope.getColumn = function(filterNode){
+          return $scope.table.column($scope.getColumnIndexByCellNode(filterNode) + ':visible');
+        };
+
+        $scope.columnFilterFn = function(){
+          var column = $scope.getColumn(this);
+          if ($scope.columnSearchActive) {
+            column.search(this.value);
+          }
+          column.draw();
+          $scope.updateFilterWidth($(this), column);
+        };
+
         // Apply filters
         $scope.applyFilters = function (){
           if (!$scope.table) { return; }
           $scope.removeFilterListeners();
           var filterInputSelector = '.filterRow .filter-input';
           var clearFilterSelector = '.filterRow .clear-filter';
-          var getColumn = function(filterNode){
-            return $scope.table.column($scope.getColumnIndexByCellNode(filterNode) + ':visible');
-          };
           $($scope.table.table().container())
-            .on('keyup.column-filter change.column-filter', filterInputSelector, function () {
-              var column = getColumn(this);
-              if($scope.columnSearchActive){
-                column.search(this.value);
-              }
-              column.draw();
-              $scope.updateFilterWidth($(this), column);
-            })
+            .on('keyup.column-filter change.column-filter', filterInputSelector,
+              $scope.columnSearchActive ? $scope.columnFilterFn : $.debounce(500, $scope.columnFilterFn))
             .on('focus.column-filter', filterInputSelector, function (event) {
               if($scope.keyTable){
                 $scope.keyTable.blur();
@@ -599,12 +604,12 @@
               if (key == 13) { //enter key
                 $scope.onFilterBlur($(this), this);
               } else {
-                var column = getColumn(this);
+                var column = $scope.getColumn(this);
                 $scope.onFilterEditing($(this), column);
               }
             })
             .on('mousedown.column-filter', clearFilterSelector, function (event) {
-              var column = getColumn(this);
+              var column = $scope.getColumn(this);
               var jqFilterInput = $(this).siblings('.filter-input');
               if(jqFilterInput.is(':focus')){
                 event.preventDefault();
@@ -1564,9 +1569,9 @@
 
             var fField = $('#' + scope.id + '_evalfilter').addClass('dataTables_evalfilter');
             $('<input type="search">')
-              .on('keyup change', function () {
+              .on('keyup change', $.debounce(500, function () {
                 scope.table.draw();
-              })
+              }))
               .attr('title', 'filter with an expression with variables for each column')
               .appendTo(
                 $('<label></label>')
@@ -1707,6 +1712,12 @@
                 scope.showFilter = true;
               }
               scope.columnSearchActive = isSearch;
+
+              var filterInputSelector = '.filterRow .filter-input';
+              jqContainer.off('keyup.column-filter change.column-filter');
+              jqContainer.on('keyup.column-filter change.column-filter', filterInputSelector,
+                              scope.columnSearchActive ? scope.columnFilterFn : $.debounce(500, scope.columnFilterFn));
+
               scope.$apply();
               if(scope.fixcols){
                 scope.fixcols.fnRedrawLayout();

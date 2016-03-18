@@ -729,6 +729,7 @@
         return {
           lineNumbers: true,
           matchBrackets: true,
+          lineWrapping: true,
           extraKeys: keys,
           goToNextCodeCell: goToNextCodeCell,
           scrollbarStyle: "simple",

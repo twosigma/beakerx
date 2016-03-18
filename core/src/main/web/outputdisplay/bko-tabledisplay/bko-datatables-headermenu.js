@@ -191,24 +191,12 @@ HeaderMenu.prototype = {
           e.preventDefault();
           e.stopPropagation();
         });
-      if (oItem.shortcut) {
-        var $shortcut = $('<span/>', {'class': 'menu-shortcut'}).text(oItem.shortcut);
-        $item.append($shortcut);
-      }
-
-      if (oItem.separator) {
-        $item.addClass('menu-separator');
-      }
 
       $li.append($item);
 
       if (oItem.icon) {
         var $icon = $('<i/>', {'class': oItem.icon});
         $li.append($icon);
-      }
-
-      if (!_.isEmpty(oItem.tooltip)) {
-        $li.attr('title', oItem.tooltip);
       }
 
       if (typeof oItem.isChecked == 'function' && oItem.isChecked(that.dom.container)) {

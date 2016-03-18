@@ -33,6 +33,7 @@ define(function(require, exports, module) {
       fgColor: "#FFFFFF",
       borderColor: "",
       shortName: "Cj",
+      tooltip: "A practical Lisp for the JVM",
       newShell: function(shellId, cb, ecb) {
         if (!shellId) {
           shellId = "";

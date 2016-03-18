@@ -33,6 +33,7 @@ define(function(require, exports, module) {
     fgColor: "#FFFFFF",
     borderColor: "",
     shortName: "Jv",
+    tooltip: "Java v8 originally from Sun, now Oracle",
     newShell: function(shellId, cb, ecb) {
       if (!shellId)
         shellId = "";

@@ -1294,39 +1294,6 @@
           var headerMenuItems = {
             items: [
               {
-                title: 'Sorting',
-                action: null,
-                items: [
-                  {
-                    title: 'Ascending',
-                    isChecked: function(container) {
-                      return menuHelper.checkSorting(container, 'asc');
-                    },
-                    action: function(el) {
-                      menuHelper.doSorting(el, 'asc');
-                    }
-                  },
-                  {
-                    title: 'Descending',
-                    isChecked: function(container) {
-                      return menuHelper.checkSorting(container, 'desc');
-                    },
-                    action: function(el) {
-                      menuHelper.doSorting(el, 'desc');
-                    }
-                  },
-                  {
-                    title: 'No sort',
-                    isChecked: function(container) {
-                      return menuHelper.checkSorting(container);
-                    },
-                    action: function() {
-                      scope.table.order([0, 'asc']).draw();
-                    }
-                  }
-                ]
-              },
-              {
                 title: 'Hide column',
                 action: function(el) {
                   var table = scope.table;
@@ -1336,72 +1303,6 @@
 
                   column.visible(!column.visible());
                 }
-              },
-              {
-                title: 'Format',
-                action: null,
-                items: getFormatSubitems
-              },
-              {
-                title: 'Alignment',
-                action: null,
-                items: [
-                  {
-                    title: 'Left',
-                    isChecked: function(container) {
-                      return menuHelper.checkAlignment(container, 'L');
-                    },
-                    action: function(el) {
-                      menuHelper.doAlignment(el, 'L');
-                    }
-                  },
-                  {
-                    title: 'Center',
-                    isChecked: function(container) {
-                      return menuHelper.checkAlignment(container, 'C');
-                    },
-                    action: function(el) {
-                      menuHelper.doAlignment(el, 'C');
-                    }
-                  },
-                  {
-                    title: 'Right',
-                    isChecked: function(container) {
-                      return menuHelper.checkAlignment(container, 'R');
-                    },
-                    action: function(el) {
-                      menuHelper.doAlignment(el, 'R');
-                    }
-                  }
-                ]
-              },
-              {
-                title: 'Style',
-                action: null,
-                items: [
-                  {
-                    title: 'Data Bars',
-                    isChecked: function(container) {
-                      return scope.barsOnColumn[container.data('columnIndex')] === true;
-                    },
-                    action: function(el) {
-                      var container = el.closest('.bko-header-menu');
-                      var colIdx = container.data('columnIndex');
-                      scope.showHideBars(colIdx);
-                    }
-                  },
-                  {
-                    title: 'Heatmap',
-                    isChecked: function(container) {
-                      return scope.heatmapOnColumn[container.data('columnIndex')] === true;
-                    },
-                    action: function(el) {
-                      var container = el.closest('.bko-header-menu');
-                      var colIdx = container.data('columnIndex');
-                      scope.showHideHeatmap(colIdx);
-                    }
-                  }
-                ]
               },
               {
                 title: 'Filter...',
@@ -1430,28 +1331,108 @@
                 }
               },
               {
-                title: 'Fix Column',
+                title: 'Format',
                 action: null,
-                items: [
-                  {
-                    title: 'Left',
-                    isChecked: function(container) {
-                      return menuHelper.isFixedLeft(container);
-                    },
-                    action: function(el) {
-                      menuHelper.doFixColumnLeft(el);
-                    }
-                  },
-                  {
-                    title: 'Right',
-                    isChecked: function(container) {
-                      return menuHelper.isFixedRight(container);
-                    },
-                    action: function(el) {
-                      menuHelper.doFixColumnRight(el);
-                    }
-                  }
-                ]
+                items: getFormatSubitems
+              },
+              {
+                title: 'Sort Ascending',
+                separator: true,
+                isChecked: function(container) {
+                  return menuHelper.checkSorting(container, 'asc');
+                },
+                action: function(el) {
+                  menuHelper.doSorting(el, 'asc');
+                }
+              },
+              {
+                title: 'Sort Descending',
+                isChecked: function(container) {
+                  return menuHelper.checkSorting(container, 'desc');
+                },
+                action: function(el) {
+                  menuHelper.doSorting(el, 'desc');
+                }
+              },
+              {
+                title: 'No Sort',
+                isChecked: function(container) {
+                  return menuHelper.checkSorting(container);
+                },
+                action: function() {
+                  scope.table.order([0, 'asc']).draw();
+                }
+              },
+              {
+                title: 'Align Left',
+                separator: true,
+                isChecked: function(container) {
+                  return menuHelper.checkAlignment(container, 'L');
+                },
+                action: function(el) {
+                  menuHelper.doAlignment(el, 'L');
+                }
+              },
+              {
+                title: 'Align Center',
+                isChecked: function(container) {
+                  return menuHelper.checkAlignment(container, 'C');
+                },
+                action: function(el) {
+                  menuHelper.doAlignment(el, 'C');
+                }
+              },
+              {
+                title: 'Align Right',
+                isChecked: function(container) {
+                  return menuHelper.checkAlignment(container, 'R');
+                },
+                action: function(el) {
+                  menuHelper.doAlignment(el, 'R');
+                }
+              },
+              {
+                title: 'Heatmap',
+                shortcut: 'H',
+                separator: true,
+                isChecked: function(container) {
+                  return scope.heatmapOnColumn[container.data('columnIndex')] === true;
+                },
+                action: function(el) {
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex');
+                  scope.showHideHeatmap(colIdx);
+                }
+              },
+              {
+                title: 'Data Bars',
+                shortcut: 'B',
+                isChecked: function(container) {
+                  return scope.barsOnColumn[container.data('columnIndex')] === true;
+                },
+                action: function(el) {
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex');
+                  scope.showHideBars(colIdx);
+                }
+              },
+              {
+                title: 'Fix Left',
+                isChecked: function(container) {
+                  return menuHelper.isFixedLeft(container);
+                },
+                action: function(el) {
+                  menuHelper.doFixColumnLeft(el);
+                }
+              },
+              {
+                title: 'Fix Right',
+                isChecked: function(container) {
+                  return menuHelper.isFixedRight(container);
+                },
+                action: function(el) {
+                  menuHelper.doFixColumnRight(el);
+                }
               }
             ]
           };

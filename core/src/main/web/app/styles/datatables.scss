@@ -229,7 +229,12 @@ table.dataTable.DTFC_Cloned.display tbody tr.even {
 .DTFC_RightWrapper table.dataTable tbody td:first-child {
   border-left-width: 3px;
 }
+
 .left-fix-col-separator {
   border-right-width: 3px !important;
+}
+
+.menu-separator {
+  border-top: solid 1px #CCC;
 }
 

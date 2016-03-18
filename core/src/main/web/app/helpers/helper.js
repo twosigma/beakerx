@@ -1154,6 +1154,22 @@
       hideLanguageManagerSpinner: function(error) {
         bkUtils.hideLanguageManagerSpinner(error);
       },
+      asyncCallInLanguageManager: function(settings) {
+        bkUtils.showLanguageManagerSpinner(settings.pluginName);
+        $.ajax({
+          type: "POST",
+          datatype: "json",
+          url: settings.url,
+          data: settings.data
+        }).done(function(ret) {
+          bkUtils.hideLanguageManagerSpinner();
+          settings.onSuccess && settings.onSuccess(ret);
+        }).fail(function(jqXHR, textStatus) {
+          bkUtils.hideLanguageManagerSpinner(textStatus);
+          console.error("Request failed: " + textStatus);
+          settings.onFail && settings.onFail(textStatus);
+        });
+      },
       isElectron: bkUtils.isElectron,
       isMacOS: bkUtils.isMacOS
     };

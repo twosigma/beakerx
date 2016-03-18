@@ -1165,34 +1165,30 @@
           }
         });
 
-        $scope.promptToSave = (function() {
-          var prompted = false;
-          return function() {
-            if (prompted) { // prevent prompting multiple at the same time
-              return;
-            }
-            prompted = true;
-            bkCoreManager.show2ButtonModal(
-              "Beaker server disconnected. Further edits will not be saved.<br>" +
-              "Save current notebook as a file?",
-              "Disconnected", function() {
-                // "Save", save the notebook as a file on the client side
-                bkSessionManager.dumpDisplayStatus();
-                var timeoutPromise = $timeout(function() {
-                  bkUtils.saveAsClientFile(
-                      bkSessionManager.getSaveData().notebookModelAsString,
-                  "notebook.bkr");
-                }, 1);
-                timeoutPromise.then(function() {
-                  prompted = false;
-                })
-              }, function() {
-                prompted = false;
-              },
-              "Save", "Not now", "btn-primary", ""
-            );
-          };
-        })();
+        $scope.promptToSave = function() {
+          if ($scope.disconnectedDialog) { // prevent prompting multiple at the same time
+            return;
+          }
+          $scope.disconnectedDialog = bkCoreManager.show2ButtonModal(
+            "Beaker server disconnected. Further edits will not be saved.<br>" +
+            "Save current notebook as a file?",
+            "Disconnected", function() {
+              // "Save", save the notebook as a file on the client side
+              bkSessionManager.dumpDisplayStatus();
+              var timeoutPromise = $timeout(function() {
+                bkUtils.saveAsClientFile(
+                    bkSessionManager.getSaveData().notebookModelAsString,
+                "notebook.bkr");
+              }, 1);
+              timeoutPromise.then(function() {
+                $scope.disconnectedDialog = void 0;
+              })
+            }, function() {
+                $scope.disconnectedDialog = void 0;
+            },
+            "Save", "Not now", "btn-primary", ""
+          );
+        };
         $rootScope.$on(GLOBALS.EVENTS.RECONNECT_FAILED, $scope.promptToSave);
 
         $scope.getOffineMessage = function() {

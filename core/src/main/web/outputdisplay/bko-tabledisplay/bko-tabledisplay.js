@@ -842,6 +842,7 @@
             //jscs:enable
             $(window).unbind('resize.' + scope.id);
             $('#' + scope.id + ' tbody').off('click');
+            $('#' + scope.id + ' tbody').off('dblclick');
             scope.removeOnKeyListeners();
             $('#' + scope.id + ' tbody').off('mouseleave.bko-dt-highlight');
             $('#' + scope.id + ' tbody').off('mouseenter.bko-dt-highlight');

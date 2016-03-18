@@ -829,10 +829,12 @@
         var unregisterOutputExpandEventListener = angular.noop; // used for deregistering listener
 
         scope.containerClickFunction = function(e){
-          if($(scope.table.table().container()).has(e.target).length){
-            scope.addInteractionListeners();
-          } else {
-            scope.removeInteractionListeners();
+          if (scope.table) {
+            if ($(scope.table.table().container()).has(e.target).length) {
+              scope.addInteractionListeners();
+            } else {
+              scope.removeInteractionListeners();
+            }
           }
         };
 
@@ -1047,7 +1049,7 @@
             me.removeAttr('width');
           }
           scope.updateResizeHandleWidth();
-          if (scope.fixcols) {   //do not need data update 
+          if (scope.fixcols) { //do not need data update
             scope.fixcols._fnColCalc();
             scope.fixcols._fnGridLayout()
           }
@@ -1305,6 +1307,7 @@
               {
                 title: 'Filter...',
                 icon: 'fa fa-filter',
+                tooltip: 'filter with an expression of $ for this column',
                 action: function(el) {
                   var table = scope.table;
                   var container = el.closest('.bko-header-menu');
@@ -1317,6 +1320,7 @@
               {
                 title: 'Search...',
                 icon: 'fa fa-search',
+                tooltip: 'search this column for a substring',
                 action: function(el) {
                   var table = scope.table;
                   var container = el.closest('.bko-header-menu');
@@ -1508,7 +1512,7 @@
             init.paging = false;
             init.scrollY = scope.pagination.rowsToDisplay * 27 + 2;
             init.scrollCollapse = true;
-            init.dom = '<"bko-table"Zrtf>';
+            init.dom = '<"bko-table"Zrtf<"#' + scope.id + '_evalfilter">>';
           } else {
             init.dom = '<"bko-table"Zrt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf<"#' + scope.id + '_evalfilter">>';
             if (scope.data.length > 25) {
@@ -1550,6 +1554,7 @@
             scope.refreshCells();
 
             var sField = $('#' + scope.id + '_filter');
+            sField.find('input').attr('title', 'search the whole table for a substring');
             $('<i/>', {class: 'fa fa-times'})
               .bind('click', function(e) {
                 scope.showTableSearch();
@@ -1562,6 +1567,7 @@
               .on('keyup change', function () {
                 scope.table.draw();
               })
+              .attr('title', 'filter with an expression with variables for each column')
               .appendTo(
                 $('<label></label>')
                   .text('Filter:')
@@ -1686,10 +1692,12 @@
               var filterIcon = jqContainer.find('.filter-icon');
               if(isSearch){
                 filterInput.addClass('search-active');
+                filterInput.attr('title', 'search this column for a substring');
                 filterIcon.removeClass('fa-filter');
                 filterIcon.addClass('fa-search');
               }else{
                 filterInput.removeClass('search-active');
+                filterInput.attr('title', 'filter with an expression of $ for this column');
                 filterIcon.removeClass('fa-search');
                 filterIcon.addClass('fa-filter');
               }

@@ -207,6 +207,10 @@ HeaderMenu.prototype = {
         $li.append($icon);
       }
 
+      if (!_.isEmpty(oItem.tooltip)) {
+        $li.attr('title', oItem.tooltip);
+      }
+
       if (typeof oItem.isChecked == 'function' && oItem.isChecked(that.dom.container)) {
         var $glyph = $('<i/>', {'class': 'glyphicon glyphicon-ok'});
         $li.append($glyph);

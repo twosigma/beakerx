@@ -58,8 +58,8 @@ describe('beaker landing page', function() {
     expect(beakerPO.submenu.count()).toEqual(1);
   });
 
-  it('has a help menu with 4 items', function() {
+  it('has a help menu with 5 items', function() {
     beakerPO.openMenuAtIndex(2);
-    expect(beakerPO.submenu.count()).toEqual(4);
+    expect(beakerPO.submenu.count()).toEqual(5);
   });
 });

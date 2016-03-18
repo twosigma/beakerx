@@ -43,11 +43,12 @@
        </li>
        <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(false)" id="dt-hide-all" eat-click>Hide All Columns</a></li>
        <li>
-         <a tabindex="-1" href="#" ng-click="showTableSearch()" id="dt-search" class="menu-separator" eat-click>Search...</a>
+         <a tabindex="-1" href="#" ng-click="showTableSearch()" id="dt-search" class="menu-separator" title="search the whole table for a substring" eat-click>Search...</a>
          <i class="fa fa-search"></i>
        </li>
        <li>
-         <a tabindex="-1" href="#" ng-click="showTableFilter()" id="dt-filter" eat-click>Filter...</a>
+         <a tabindex="-1" href="#" ng-click="showTableFilter()" id="dt-filter" eat-click
+            title="filter with an expression with variables for each column">Filter...</a>
          <i class="fa fa-filter"></i>
        </li>
        <li><a tabindex="-1" href="#" ng-click="hideFilter()" id="dt-hide-filter" eat-click>Hide Filter</a></li>

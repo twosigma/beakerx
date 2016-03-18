@@ -35,6 +35,12 @@ define(function(require, exports, module) {
     "ES2015": {name: "ECMAScript 2015", babel: true, defaultVersion: true}
   };
 
+  function getDefaultLanguageVersion() {
+    return _.findKey(LANGUAGE_VERSIONS, function (version) {
+      return version.defaultVersion;
+    });
+  }
+
   // Not using the es2015 plugin preset because it includes the "transform-es2015-modules-commonjs" plugin which puts forces strict mode on
   var ES2015Plugins = [
   "check-es2015-constants",
@@ -371,12 +377,11 @@ define(function(require, exports, module) {
     }
     settings.view.cm.mode = JavaScript_0.cmMode;
     settings.view.cm.background = JavaScript_0.background;
-    var defaultSettings = {
-      languageVersion: _.findKey(LANGUAGE_VERSIONS, function (version) {
-        return version.defaultVersion;
-      })
-    };
-    this.settings = _.merge({}, defaultSettings, settings);
+    this.settings = settings;
+
+    if (!_.contains(_.keys(LANGUAGE_VERSIONS), this.settings.languageVersion)) {
+      this.settings.languageVersion = getDefaultLanguageVersion();
+    }
     this.perform = function(what) {
       var action = this.spec[what].action;
       this[action]();

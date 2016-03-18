@@ -1160,7 +1160,7 @@
                   var cellDiv = $("<div></div>", {
                     "class": "dt-cell-div"
                   });
-                  var textSpan = $("<span></span>", {
+                  var textSpan = $("<div></div>", {
                     "class": "dt-cell-text"
                   }).text(value);
 
@@ -1505,6 +1505,15 @@
             'language': {
               'emptyTable': 'empty table'
             },
+            'preDrawCallback': function(settings) {
+              if(scope.table){
+                //allow cell's text be truncated when column is resized to a very small
+                scope.table.columns().every(function(i){
+                  settings.aoColumns[i].sWidth = settings.aoColumns[i].sWidthOrig;
+                  $(scope.table.column(i).nodes()).css('max-width', settings.aoColumns[i].sWidth);
+                });
+              }
+            },
             'drawCallback': function(settings) {
               //jscs:disable
               scope.update_size();
@@ -1515,9 +1524,7 @@
             },
             'bSortCellsTop': true,
             'colResize': {
-              'tableWidthFixed': false,
-              'exclude': _.range(scope.pagination.fixLeft + 1)
-                        .concat(_.range(scope.columns.length - scope.pagination.fixRight, scope.columns.length))
+              'tableWidthFixed': false
             }
           };
 

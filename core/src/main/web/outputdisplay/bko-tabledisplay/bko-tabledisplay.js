@@ -601,7 +601,7 @@
             })
             .on('keydown.column-filter', filterInputSelector, function (event) {
               var key = event.which;
-              var column = getColumn(this);
+              var column = $scope.getColumn(this);
               switch (key) {
                 case 13: //enter key
                   $scope.onFilterBlur($(this), this);

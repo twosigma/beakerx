@@ -27,6 +27,7 @@ define(function(require, exports, module) {
     fgColor: "#030303",
     borderColor: "3D4444",
     shortName: "Tx",
+    tooltip: "Donald Knuth's mathematical typesetting language",
     evaluate: function(code, modelOutput) {
       var startTime = new Date().getTime();
       return bkHelper.fcall(function() {

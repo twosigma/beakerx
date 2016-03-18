@@ -98,6 +98,7 @@ public class Main {
     opts.addOption(null, "require-password", false, "Ask for password when connecting");
     opts.addOption(null, "listen-interface", true, "Interface to listen on - requires ip address or '*'");
     opts.addOption(null, "portable", false, "Configuration and runtime files located in application instead of user home directory.");
+    opts.addOption(null, "show-zombie-logging", false, "Show distracting logging by clients of previous server instances.");
     
     CommandLine line = parser.parse(opts, args);
     if (line.hasOption("help")) {
@@ -180,7 +181,7 @@ public class Main {
     final String listenInterface = options.hasOption("listen-interface") ?
         options.getOptionValue("listen-interface") : null;
     final Boolean portable = options.hasOption("portable");
-    
+    final Boolean showZombieLogging = options.hasOption("show-zombie-logging");
     
     // create preferences for beaker core from cli options and others
     // to be used by BeakerCoreConfigModule to initialize its config
@@ -195,7 +196,8 @@ public class Main {
         useHttpsKey,
         requirePassword,
         listenInterface,
-        portable);
+        portable,
+        showZombieLogging);
 
     WebAppConfigPref webAppPref = createWebAppConfigPref(
         portBase + BEAKER_SERVER_PORT_OFFSET,
@@ -247,7 +249,8 @@ public class Main {
       final String useHttpsKey,
       final Boolean requirePassword,
       final String listenInterface,
-      final Boolean portable) {
+      final Boolean portable,
+      final Boolean showZombieLogging) {
     return new BeakerConfigPref() {
 
       private String authToken;
@@ -310,6 +313,9 @@ public class Main {
       public Boolean getPortable() {
         return portable;
       }
+
+      @Override
+      public Boolean getShowZombieLogging() { return showZombieLogging; }
     };
   }
 

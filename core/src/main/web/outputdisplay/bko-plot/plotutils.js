@@ -54,12 +54,19 @@
         222	: "SINGLE_QUOTE"
       };
     return {
+
+      safeWidth: function(e){
+        return bkHelper.isChrome ? e.get(0).clientWidth : e.width();
+      },
+      safeHeight: function(e){
+        return bkHelper.isChrome ? e.get(0).clientHeight : e.height();
+      },
       outsideScr: function(scope, x, y) {
-        var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+        var W = this.safeWidth(scope.jqsvg), H = this.safeHeight(scope.jqsvg);
         return x < 0 || x > W || y < 0 || y > H;
       },
       outsideScrBox: function(scope, x, y, w, h) {
-        var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+        var W = this.safeWidth(scope.jqsvg), H = this.safeHeight(scope.jqsvg);
         return x > W || x + w < 0 || y > H || y + h < 0;
       },
       updateRange : function(datarange, itemrange) {
@@ -632,7 +639,6 @@
       base64Fonts: {},
 
       getFontToInject: function(font) {
-        var defer = bkUtils.newDeferred();
         var src = '';
         for (var url in font.urlformats) {
           if (font.urlformats.hasOwnProperty(url)) {
@@ -650,7 +656,6 @@
           "font-weight: " + font.fontWeight + ";" +
           "font-style: " + font.fontStyle + ";" +
           " }\n";
-        return defer.promise;
       },
 
       //http://stackoverflow.com/questions/7370943/retrieving-binary-file-content-using-javascript-base64-encode-it-and-reverse-de

@@ -17,6 +17,8 @@
 var _ = require('underscore');
 
 var BeakerPageObject = function() {
+
+  this.EC = protractor.ExpectedConditions;
   this.baseURL = 'http://localhost:8801/';
   this.mainmenu = element.all(by.repeater('m in getMenus()'));
   //jscs:disable
@@ -161,6 +163,7 @@ var BeakerPageObject = function() {
   this.helpMenu = element(by.className('help-menu'));
 
   this.languageManagerMenuItem = element(by.className('language-manager-menuitem'));
+  this.runAllCellsMenuItem = element(by.className('run-all-cells-menuitem'));
   this.closeMenuItem = element(by.className('close-menuitem'));
 
   this.closeNotebook = function() {
@@ -228,6 +231,75 @@ var BeakerPageObject = function() {
     return element(by.css('.code-cell-area .' + language + '-menuitem'));
   };
   this.cellEvaluatorDisplay = element(by.css('.code-cell-area .cell-evaluator-menu b'));
+
+  //Functions for access to plot elements
+
+
+  this.scrollToCodeCellOutput = function (index) {
+    return browser.executeScript("$('.code-cell-output')[" + index + "].scrollIntoView();");
+  };
+
+  this.getCodeCellOutputByIndex = function (index) {
+    return element.all(by.css('.code-cell-output')).get(index);
+  };
+
+    this.getCodeCellOutputCombplotTitle = function (codeCellOutputIdx) {
+    return this.getCodeCellOutputByIndex(codeCellOutputIdx).element(by.id('combplotTitle')).getText();
+  };
+
+  this.getCodeCellOutputContainerTitle = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getCodeCellOutputByIndex(codeCellOutputIdx)
+      .all(by.id("plotTitle"))
+      .get(containerIdx).getText();
+  };
+
+  this.getCodeCellOutputContainerYLabel = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('ylabel')).getText();
+  };
+
+  this.getCodeCellOutputContainerYRLabel = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('yrlabel')).getText();
+  };
+
+  this.getCodeCellOutputContainerXLabel = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('xlabel')).getText();
+  };
+
+  this.getPlotLegendContainer = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getCodeCellOutputByIndex(codeCellOutputIdx).all(By.css('.plot-plotlegendcontainer')).get(containerIdx);
+  };
+
+  this.getPlotSvg= function (codeCellOutputIdx, containerIdx) {
+    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(By.id('svgg'));
+  };
+
+  this.getPlotMaing= function (codeCellOutputIdx, containerIdx) {
+    return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('maing'));
+  };
+
+  this.getPlotLabelg= function (codeCellOutputIdx, containerIdx) {
+    return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('labelg'));
+  };
+
+  this.getPlotSvgElementByIndex= function (codeCellOutputIdx, containerIdx, elementIndex) {
+    return this.getPlotSvg(codeCellOutputIdx, containerIdx).all(by.css("#maing > g")).get(elementIndex);
+  };
+
+  //End Functions for access to plot elements
 
   //CodeMirror API. See for information https://sharpkit.net/help/SharpKit.CodeMirror/SharpKit.CodeMirror/CodeMirror/
 
@@ -318,17 +390,65 @@ var BeakerPageObject = function() {
     }, 10000);
   };
 
+
   this.waitUntilLoadingFinished = function() {
     var self = this;
     return browser.wait(function() {
       return self.getLoadingIndicator().isPresent()
-      .then(function(present) {
+        .then(function(present) {
         return !present;
       })
       .thenCatch(function() {
         return false;
       });
     }, 10000);
+  };
+
+  this.waitUntilLoadingIndicator = function() {
+    browser.wait(this.EC.presenceOf($('.navbar-text > i')), 10000);
+  };
+
+  this.checkPlotIsPresent = function (codeCellOutputIdx, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    this.scrollToCodeCellOutput(codeCellOutputIdx);
+    expect(this.getPlotMaing(codeCellOutputIdx, containerIdx).isPresent()).toBe(true);
+  };
+
+
+  this.hasClass =  function  (element, cls) {
+    return element.getAttribute('class').then(function (classes) {
+      return classes && classes.split(' ').indexOf(cls) !== -1;
+    });
+  };
+
+  this.checkClass =  function (element, expectedClass){
+    expect(this.hasClass(element, expectedClass)).toBe(true);
+  };
+
+  this.checkCount =  function (elements, expectedCount){
+    expect(elements.count()).toBe(expectedCount);
+  };
+
+  this.checkLegendIsPresent = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    expect(this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(By.css('.plot-legend')).isPresent()).toBe(true);
+  };
+
+  this.checkSize = function (element, width, height) {
+    expect(element.getSize().then(function (size) {
+      return size.height
+    })).toBe(height);
+    expect(element.getSize().then(function (size) {
+      return size.width
+    })).toBe(width);
+  };
+
+
+  this.checkPlotLegentdLabel = function (codeCellOutputIdx, containerIdx, legentdLabelIndex, text) {
+    expect(this.getPlotLegendContainer(codeCellOutputIdx, containerIdx)
+      .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
   }
 
 };

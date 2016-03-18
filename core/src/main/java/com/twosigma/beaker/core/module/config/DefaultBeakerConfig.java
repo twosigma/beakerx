@@ -83,6 +83,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final Boolean requirePassword;
   private final String listenInterface;
   private SecureRandom random;
+  private Boolean showZombieLogging;
 
   private String hash(String password) {
     return DigestUtils.sha512Hex(password + getPasswordSalt());
@@ -182,6 +183,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.useHttpsKey = pref.getUseHttpsKey();
     this.requirePassword = pref.getRequirePassword();
     this.listenInterface = pref.getListenInterface();
+    this.showZombieLogging = pref.getShowZombieLogging();
     
     this.random = new SecureRandom();
     // protect the core server
@@ -446,6 +448,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
   public void setPluginPrefs(JSONObject newPrefs) {
     this.prefs = newPrefs;
+  }
+
+  @Override
+  public Boolean getShowZombieLogging() {
+    return this.showZombieLogging;
   }
 
   private void addOption(String plugin, String option) {

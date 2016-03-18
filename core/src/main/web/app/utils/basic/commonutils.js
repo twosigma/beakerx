@@ -187,6 +187,17 @@
         }
         return null;
       },
+      formatTimestamp: function(timestamp, tz, format) {
+        var time = moment(timestamp);
+        if (tz) {
+          if (tz.startsWith("GMT")) {
+            time.utcOffset(tz);
+          } else {
+            time.tz(tz);
+          }
+        }
+        return time.format(format);
+      },
       formatTimeString: function(millis) {
         if (millis < 60 * 1000) {
           return (millis / 1000).toFixed(1) + "s";

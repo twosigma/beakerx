@@ -37,6 +37,7 @@ table.dataTable {
     }
     .filterRow th {
       border-top-width: 0px;
+      padding-left: 5px;
     }
   }
 }
@@ -58,11 +59,16 @@ td.dtcenter {
   border-color: $border-color;
 }
 
-.dataTables_wrapper .dataTables_filter {
+.dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_evalfilter {
   float:      left;
   text-align: left;
-  margin-top: 10px;
+  margin-top: 7px;
+  margin-right: 10px;
   display:    none;
+
+  input {
+    margin-left: 0.5em;
+  }
 
   .fa.fa-times {
     cursor:       pointer;
@@ -90,25 +96,33 @@ td.dtcenter {
   &.editing {
     position: absolute;
     left: 0px;
+    top: 1px;
     z-index: 10;
   }
   input {
     border: 1px solid #ccc;
-    padding-right: 20px;
+    padding: 0 20px 0 15px;
     width: 100%;
   }
 
   span {
     position: absolute;
-    right: 5px;
     top: 0;
     bottom: 0;
     height: 14px;
     margin: auto;
-    cursor: pointer;
     color: #999999;
-    &:hover {
-      opacity: 0.8;
+
+    &.clear-filter {
+      right: 5px;
+      cursor: pointer;
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+    &.filter-icon {
+      cursor: auto;
+      left: 3px;
     }
   }
 }
@@ -142,6 +156,9 @@ a.dtmenu {
     background-image: url("../images/sort_desc.png");
     background-size: 20px;
     opacity: 1;
+    &:hover {
+      background-image: url("../images/sort_desc_white.png");
+    }
   }
 }
 
@@ -163,11 +180,61 @@ a.dtmenu {
 }
 
 .bko-table-use-pagination {
-  padding-top: 10px;
-  padding-left: 30px;
+  padding: 10px 10px 0 30px;;
   float: left;
   label {
     cursor: pointer;
   }
+}
+
+$fixed-column-even: #fafafa;
+$fixed-column-odd: #f3f3f3;
+$fixed-column-even-sorting: #f7f7f7;
+$fixed-column-odd-sorting: #f1f1f1;
+
+table.dataTable.DTFC_Cloned.display tbody tr.odd > .sorting_1,
+table.dataTable.DTFC_Cloned.order-column.stripe tbody tr.odd > .sorting_1 ,
+table.dataTable.DTFC_Cloned.display tbody tr.odd > .sorting_2,
+table.dataTable.DTFC_Cloned.order-column.stripe tbody tr.odd > .sorting_2,
+table.dataTable.DTFC_Cloned.display tbody tr.odd > .sorting_3,
+table.dataTable.DTFC_Cloned.order-column.stripe tbody tr.odd > .sorting_3 {
+  background-color: $fixed-column-odd-sorting;
+}
+
+table.dataTable.DTFC_Cloned.display tbody tr.even > .sorting_1,
+table.dataTable.DTFC_Cloned.order-column.stripe tbody tr.even > .sorting_1,
+table.dataTable.DTFC_Cloned.display tbody tr.even > .sorting_2,
+table.dataTable.DTFC_Cloned.order-column.stripe tbody tr.even > .sorting_2,
+table.dataTable.DTFC_Cloned.display tbody tr.even > .sorting_3,
+table.dataTable.DTFC_Cloned.order-column.stripe tbody tr.even > .sorting_3 {
+  background-color: $fixed-column-even-sorting;
+}
+
+table.dataTable.DTFC_Cloned.stripe tbody tr.odd,
+table.dataTable.DTFC_Cloned.display tbody tr.odd {
+  background-color: $fixed-column-odd;
+}
+
+table.dataTable.DTFC_Cloned.stripe tbody tr.even,
+table.dataTable.DTFC_Cloned.display tbody tr.even {
+  background-color: $fixed-column-even;
+}
+
+.DTFC_LeftWrapper table.dataTable thead th:last-child,
+.DTFC_LeftWrapper table.dataTable tbody td:last-child {
+  border-right-width: 3px;
+}
+
+.DTFC_RightWrapper table.dataTable thead th:first-child,
+.DTFC_RightWrapper table.dataTable tbody td:first-child {
+  border-left-width: 3px;
+}
+
+.left-fix-col-separator {
+  border-right-width: 3px !important;
+}
+
+.menu-separator {
+  border-top: solid 1px #CCC;
 }
 

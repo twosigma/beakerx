@@ -44,7 +44,9 @@ var config = {
     'tests/cell-menu.js',
     'tests/language-manager.js',
     'tests/bugs.js',
-    'tests/vim-mode.js'
+    'tests/vim-mode.js',
+    'tests/charting-tutorial.js',
+    'tests/category-plot-tutorial.js'
   ]
 };
 

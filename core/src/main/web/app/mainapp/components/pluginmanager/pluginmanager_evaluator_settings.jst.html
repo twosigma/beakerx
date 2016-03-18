@@ -25,10 +25,10 @@
 
   <div class="radio" ng-if="property.type === availableProperties.ENUM">
     <h6>{{ property.name }}</h6>
-    <label class="radio-inline" ng-repeat="value in property.values">
-      <!-- We need to generalize ambiance radio buttons that are currently specialized only for EasyForm and use them here -->
-      <input style="visibility: visible; margin-top: 0px;" name="{{::property.name}}" value="{{::value}}" type="radio" ng-model="evaluator.settings[property.key]" ng-change="set(property)" />{{value}}
-    </label>
+      <span class="radio-inline" ng-repeat="value in property.values">
+        <input id="eval-settings-{{$index}}" name="{{::property.name}}" value="{{::value}}" type="radio" ng-model="evaluator.settings[property.key]" ng-change="set(property)" />
+        <label for="eval-settings-{{$index}}">{{value}}</label>
+      </span>
   </div>
 
 </div>

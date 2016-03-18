@@ -277,7 +277,6 @@ var BeakerPageObject = function() {
     return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('xlabel')).getText();
   };
 
-
   this.getPlotLegendContainer = function (codeCellOutputIdx, containerIdx) {
     if (!containerIdx)
       containerIdx = 0;
@@ -290,6 +289,10 @@ var BeakerPageObject = function() {
 
   this.getPlotMaing= function (codeCellOutputIdx, containerIdx) {
     return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('maing'));
+  };
+
+  this.getPlotLabelg= function (codeCellOutputIdx, containerIdx) {
+    return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('labelg'));
   };
 
   this.getPlotSvgElementByIndex= function (codeCellOutputIdx, containerIdx, elementIndex) {
@@ -403,6 +406,49 @@ var BeakerPageObject = function() {
 
   this.waitUntilLoadingIndicator = function() {
     browser.wait(this.EC.presenceOf($('.navbar-text > i')), 10000);
+  };
+
+  this.checkPlotIsPresent = function (codeCellOutputIdx, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    this.scrollToCodeCellOutput(codeCellOutputIdx);
+    expect(this.getPlotMaing(codeCellOutputIdx, containerIdx).isPresent()).toBe(true);
+  };
+
+
+  this.hasClass =  function  (element, cls) {
+    return element.getAttribute('class').then(function (classes) {
+      return classes && classes.split(' ').indexOf(cls) !== -1;
+    });
+  };
+
+  this.checkClass =  function (element, expectedClass){
+    expect(this.hasClass(element, expectedClass)).toBe(true);
+  };
+
+  this.checkCount =  function (elements, expectedCount){
+    expect(elements.count()).toBe(expectedCount);
+  };
+
+  this.checkLegendIsPresent = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    expect(this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(By.css('.plot-legend')).isPresent()).toBe(true);
+  };
+
+  this.checkSize = function (element, width, height) {
+    expect(element.getSize().then(function (size) {
+      return size.height
+    })).toBe(height);
+    expect(element.getSize().then(function (size) {
+      return size.width
+    })).toBe(width);
+  };
+
+
+  this.checkPlotLegentdLabel = function (codeCellOutputIdx, containerIdx, legentdLabelIndex, text) {
+    expect(this.getPlotLegendContainer(codeCellOutputIdx, containerIdx)
+      .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
   }
 
 };

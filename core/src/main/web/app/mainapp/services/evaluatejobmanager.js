@@ -205,7 +205,7 @@
         cancelAll: function() {
           var idx;
           for ( idx=0; idx<_queue.length; idx++) {
-            _queue[idx].output.output.result = ERROR_MESSAGE_ON_CANCEL;
+            _queue[idx].output.result = ERROR_MESSAGE_ON_CANCEL;
             delete running[_queue[idx].cellId];
           }
           _queue = [];

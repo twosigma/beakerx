@@ -62,7 +62,8 @@ td.dtcenter {
 .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_evalfilter {
   float:      left;
   text-align: left;
-  margin-top: 10px;
+  margin-top: 7px;
+  margin-right: 10px;
   display:    none;
 
   input {
@@ -179,8 +180,7 @@ a.dtmenu {
 }
 
 .bko-table-use-pagination {
-  padding-top: 10px;
-  padding-left: 30px;
+  padding: 10px 10px 0 30px;;
   float: left;
   label {
     cursor: pointer;

@@ -1154,6 +1154,20 @@
       hideLanguageManagerSpinner: function(error) {
         bkUtils.hideLanguageManagerSpinner(error);
       },
+      asyncCallInLanguageManager: function(settings) {
+        bkUtils.showLanguageManagerSpinner(settings.pluginName);
+
+        bkUtils.httpPost(settings.url, settings.data).success(function(ret) {
+          bkUtils.hideLanguageManagerSpinner();
+          settings.onSuccess && settings.onSuccess(ret);
+        }).error(function(response) {
+          var statusText = response ? response.statusText : "No response from server";
+
+          bkUtils.hideLanguageManagerSpinner(statusText);
+          console.error("Request failed: " + statusText);
+          settings.onFail && settings.onFail(statusText);
+        });
+      },
       isElectron: bkUtils.isElectron,
       isMacOS: bkUtils.isMacOS
     };

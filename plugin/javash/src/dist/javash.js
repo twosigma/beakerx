@@ -101,33 +101,17 @@ define(function(require, exports, module) {
       }
     },
     resetEnvironment: function () {
-      bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
-      $.ajax({
-        type: "POST",
-        datatype: "json",
+      bkHelper.asyncCallInLanguageManager({
         url: bkHelper.serverUrl(serviceBase + "/rest/javash/resetEnvironment"),
-        data: {shellId: this.settings.shellID}
-      }).done(function (ret) {
-        bkHelper.hideLanguageManagerSpinner();
-        console.log("done resetEnvironment",ret);
-      }).fail(function(jqXHR, textStatus) {
-        bkHelper.hideLanguageManagerSpinner(textStatus);
-        console.error("Request failed: " + textStatus);
+        data: {shellId: this.settings.shellID},
+        pluginName: PLUGIN_NAME
       });
     },
     killAllThreads: function () {
-      bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
-      $.ajax({
-        type: "POST",
-        datatype: "json",
+      bkHelper.asyncCallInLanguageManager({
         url: bkHelper.serverUrl(serviceBase + "/rest/javash/killAllThreads"),
-        data: {shellId: this.settings.shellID}
-      }).done(function (ret) {
-        bkHelper.hideLanguageManagerSpinner();
-        console.log("done killAllThreads",ret);
-      }).fail(function(jqXHR, textStatus) {
-        bkHelper.hideLanguageManagerSpinner(textStatus);
-        console.error("Request failed: " + textStatus);
+        data: {shellId: this.settings.shellID},
+        pluginName: PLUGIN_NAME
       });
     },
     autocomplete: function(code, cpos, cb) {

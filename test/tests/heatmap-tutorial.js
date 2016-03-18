@@ -35,6 +35,15 @@ describe('HeatMap Tutorial', function () {
         expect(beakerPO.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(By.css('.plot-legend')).isPresent()).toBe(true);
     };
 
+    function checkSize(element, width, height) {
+        expect(element.getSize().then(function (size) {
+             return size.height
+                })).toBe(height);
+        expect(element.getSize().then(function (size) {
+             return size.width
+                })).toBe(width);
+    };
+
     beforeEach(function () {
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&readOnly=true");
@@ -49,18 +58,23 @@ describe('HeatMap Tutorial', function () {
             .then(done);
     });
 
-
     it('Basic HeatMap Example', function () {
         checkPlotIsPresent(1);
         checkLegendIsPresent(1);
     });
 
-    it('Title, Labels, and Legend', function () {
+    it('Title and Legend', function () {
         checkPlotIsPresent(2);
-        //expect(beakerPO.getCodeCellOutputContainerYLabel(2)).toBe("Y Label");
-        //expect(beakerPO.getCodeCellOutputContainerXLabel(2)).toBe("X Label");
-        expect(beakerPO.getCodeCellOutputContainerTitle(2)).toBe("Heatmap Second Example");
         checkLegendIsPresent(2);
+
+        expect(beakerPO.getCodeCellOutputContainerTitle(2)).toBe("Heatmap Second Example");
+    });
+
+    it('Labels', function () {
+        checkPlotIsPresent(2);
+
+        expect(beakerPO.getCodeCellOutputContainerYLabel(2)).toBe("Y Label");
+        expect(beakerPO.getCodeCellOutputContainerXLabel(2)).toBe("X Label");
     });
 
     it('Hiding the legend', function () {
@@ -68,7 +82,6 @@ describe('HeatMap Tutorial', function () {
         var nonexistent = beakerPO.getPlotLegendContainer(3, 0).all(By.css('.plot-legend'));
         expect(nonexistent.getText()).toEqual([ ]);
     });
-
 
     it('Setting colors', function () {
         checkPlotIsPresent(3);
@@ -78,5 +91,12 @@ describe('HeatMap Tutorial', function () {
         expect(beakerPO.getPlotSvg(4, 0).all(by.css("#maing > g > rect")).get(0).getAttribute('style')).toBe('fill: rgb(93, 93, 0);');
     });
 
+    it('Custom size, no tooltips', function () {
+        checkPlotIsPresent(5);
+        checkSize(beakerPO.getPlotSvg(5, 0), 900, 300);
+
+        var nonexistent = beakerPO.getPlotSvg(5, 0).all(By.css('.plot-resp'));
+        expect(nonexistent.getText()).toEqual([ ]);
+    });
 
 });

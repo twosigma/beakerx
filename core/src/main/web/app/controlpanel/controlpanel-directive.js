@@ -72,7 +72,7 @@
         $scope.newNotebook = function() {
           bkCoreManager.newSession(true);
         };
-        $scope.newEmptyNotebook = function() {
+        $scope.newDefaultNotebook = function() {
           bkCoreManager.newSession(false);
         };
         $scope.openNotebook = function() {
@@ -132,9 +132,9 @@
         };
 
         var keydownHandler = function(e) {
-          if (bkHelper.isNewEmptyNotebookShortcut(e)) { // Ctrl/Alt + Shift + n
+          if (bkHelper.isNewDefaultNotebookShortcut(e)) { // Ctrl/Alt + Shift + n
             bkUtils.fcall(function() {
-              $scope.newEmptyNotebook();
+              $scope.newDefaultNotebook();
             });
             return false;
           } else if (bkHelper.isNewNotebookShortcut(e)) { // Ctrl/Alt + n

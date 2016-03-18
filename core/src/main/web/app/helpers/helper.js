@@ -79,7 +79,7 @@
         }
         return e.altKey && (e.which === 78);// Alt + n
       },
-      isNewEmptyNotebookShortcut: function (e){
+      isNewDefaultNotebookShortcut: function (e){
         if (this.isMacOS){
           return e.ctrlKey && e.shiftKey && (e.which === 78);// Ctrl + Shift + n
         }

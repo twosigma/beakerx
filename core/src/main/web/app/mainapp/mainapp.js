@@ -1007,7 +1007,7 @@
             _impl.saveNotebook();
             $scope.$apply();
             return false;
-          }  else if (bkHelper.isNewEmptyNotebookShortcut(e)) { // Ctrl/Alt + Shift + n
+          }  else if (bkHelper.isNewDefaultNotebookShortcut(e)) { // Ctrl/Alt + Shift + n
             bkUtils.fcall(function() {
               bkCoreManager.newSession(false);
             });

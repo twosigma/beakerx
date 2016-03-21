@@ -162,7 +162,7 @@ define(function(require, exports, module) {
       defaultDatasource:  {type: "settableString", action: "updateShell", name: "Default data source"},
       datasources:  {type: "settableString", action: "updateShell", name: "Named data sources"},
       classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
-      resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
+      reset:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
       killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
     },
     cometdUtil: cometdUtil

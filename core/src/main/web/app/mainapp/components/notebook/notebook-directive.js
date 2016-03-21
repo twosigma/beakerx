@@ -270,6 +270,15 @@
           if (bkHelper.isLanguageManagerShortcut(e)) {
             bkHelper.showLanguageManager();
             return false;
+          } else if(bkHelper.isResetEnvironmentShortcut(e)) {
+            var loadedEvaluators = bkEvaluatorManager.getLoadedEvaluators();
+            for (var eachEval in loadedEvaluators) {
+              var evaluator = loadedEvaluators[eachEval];
+              if (evaluator.spec && evaluator.spec.reset) {
+                evaluator.perform('reset');
+              }
+            }
+            bkHelper.evaluateRoot("initialization");
           }
         };
         $(document).bind('keydown', keydownHandler);

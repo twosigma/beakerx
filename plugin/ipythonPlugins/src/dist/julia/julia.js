@@ -41,6 +41,7 @@ define(function(require, exports, module) {
       borderColor: "",
       shortName: "Jl",
       indentSpaces: 4,
+      tooltip: "Julia is a high performance dynamic langauge for technical computing.",
       newShell: function(shellID, cb, ecb) {
 
         var kernel = null;

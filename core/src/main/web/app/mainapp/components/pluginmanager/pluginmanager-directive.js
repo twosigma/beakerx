@@ -90,19 +90,19 @@
     $scope.getEvaluatorTooltipText = function (pluginName, pluginStatus) {
       var pluginDescription = $scope.getEvaluatorDetails(pluginName).tooltip;
       if(pluginDescription) {
-        var prefix;
+        var suffix;
         switch(pluginStatus) {
           case 'known':
-                prefix = 'Click to start ';
+                suffix = ' Click to start.';
                 break;
           case 'loading':
-                prefix = 'Starting ';
+                suffix = ' Starting...';
                 break;
           case 'active':
-                prefix = 'Click to remove from notebook ';
+                suffix = ' Click to remove from notebook.';
                 break;
         }
-        return prefix + pluginDescription;
+        return pluginDescription + suffix;
       }
     };
 

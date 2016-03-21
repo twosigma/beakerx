@@ -33,7 +33,7 @@ define(function(require, exports, module) {
     fgColor: "#FFFFFF",
     borderColor: "",
     shortName: "Gv",
-    tooltip: "the language that deserves the name JavaScript",
+    tooltip: "Groovy is the language that deserves the name JavaScript.",
     newShell: function(shellId, cb, ecb) {
       if (!shellId)
         shellId = "";

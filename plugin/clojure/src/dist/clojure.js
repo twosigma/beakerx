@@ -33,7 +33,7 @@ define(function(require, exports, module) {
       fgColor: "#FFFFFF",
       borderColor: "",
       shortName: "Cj",
-      tooltip: "a practical Lisp for the JVM",
+      tooltip: "Clojure is a practical Lisp for the JVM.",
       newShell: function(shellId, cb, ecb) {
         if (!shellId) {
           shellId = "";

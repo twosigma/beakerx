@@ -1020,6 +1020,16 @@
           } else if (bkHelper.isLanguageManagerShortcut(e)) {
             bkHelper.showLanguageManager();
             return false;
+          } else if(bkHelper.isResetEnvironmentShortcut(e)) {
+            var loadedEvaluators = bkEvaluatorManager.getLoadedEvaluators();
+            for (var eachEval in loadedEvaluators) {
+              var evaluator = loadedEvaluators[eachEval];
+              if (evaluator.spec && evaluator.spec.reset) {
+                evaluator.perform('reset');
+              }
+            }
+            bkHelper.evaluateRoot("initialization");
+            return false;
           } else if (bkUtils.isElectron) {
             var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
             // Command H

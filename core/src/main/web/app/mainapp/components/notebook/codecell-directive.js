@@ -292,6 +292,24 @@
           }
         });
 
+        $scope.isWordWrap = function () {
+          return !$scope.cellmodel.wordWrapDisabled;
+        };
+
+        $scope.cellmenu.addItem({
+          name: 'Word wrap',
+          isChecked: function () {
+            return $scope.isWordWrap();
+          },
+          action: function () {
+            if ($scope.cellmodel.wordWrapDisabled) {
+              delete $scope.cellmodel.wordWrapDisabled;
+            } else {
+              $scope.cellmodel.wordWrapDisabled = true;
+            }
+          }
+        });
+
         $scope.cellmenu.addItem({
           name: 'Options...',
           action: function() {
@@ -410,7 +428,8 @@
           $(element.find('.bkcelltextarea')[0]).replaceWith($(template).text(scope.cellmodel.input.body));
 
           _.extend(codeMirrorOptions, {
-            theme: bkHelper.getTheme()
+            theme: bkHelper.getTheme(),
+            lineWrapping: scope.isWordWrap()
           });
 
           scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
@@ -539,6 +558,12 @@
             } else {
               element.closest('.bkcell').removeClass('initcell');
             }
+          }
+        });
+
+        scope.$watch('isWordWrap()', function(newValue, oldValue) {
+          if (newValue !== oldValue) {
+            scope.cm.setOption('lineWrapping', newValue);
           }
         });
 

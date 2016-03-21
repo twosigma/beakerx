@@ -33,6 +33,7 @@ define(function(require, exports, module) {
       fgColor: "#FFFFFF",
       borderColor: "",
       shortName: "Sc",
+      tooltip: "Scala is a statically typed, functional language running on the JVM.",
       newShell: function(shellId, cb, ecb) {
         if (!shellId) {
           shellId = "";

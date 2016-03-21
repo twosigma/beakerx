@@ -162,7 +162,7 @@ define(function(require, exports, module) {
     },
     spec: {
       flags:       {type: 'settableString', action: 'updateShell', name: 'Compiler flags'},
-      resetEnv:    {type: 'action', action: 'resetEnvironment', name: 'Reset Environment'},
+      reset:    {type: 'action', action: 'resetEnvironment', name: 'Reset Environment'},
       killAllThr:  {type: 'action', action: 'killAllThreads', name: 'Kill All Threads'}
     },
     cometdUtil: cometdUtil

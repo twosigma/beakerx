@@ -153,7 +153,7 @@ define(function(require, exports, module) {
         imports:     {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"},
         outdir:      {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
         requirements:     {type: "settableString", action: "updateShell", name: "Require (Clojure libs, one per line)"},
-        resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
+        reset:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
         killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
       },
       cometdUtil: cometdUtil

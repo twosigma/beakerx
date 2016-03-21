@@ -21,11 +21,15 @@ var beakerPO;
 
 describe('Charting Tutorial', function () {
 
-  beforeEach(function () {
+  beforeEach(function (done) {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true");
-
-    browser.waitForAngular();
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true").then(
+        function(){done();},
+        function(reason){ console.log('error occurred while browser load page : ' + reason);}
+    );
+    browser.waitForAngular().then(function() {
+      done();
+    });
     beakerPO.waitUntilLoadingIndicator();
 
   });

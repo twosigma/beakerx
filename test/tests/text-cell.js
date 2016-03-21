@@ -27,10 +27,15 @@ function loadGroovy() {
 }
 
 describe('Text Cell', function() {
-  beforeEach(function() {
+  beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL);
-    browser.waitForAngular();
+    browser.get(beakerPO.baseURL).then(
+        function(){done();},
+        function(reason){ console.log('error occurred while browser load page : ' + reason);}
+    );
+    browser.waitForAngular().then(function() {
+      done();
+    });
 
     beakerPO.newEmptyNotebook.click();
   });

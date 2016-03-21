@@ -17,10 +17,15 @@
 var BeakerPageObject = require('./beaker.po.js');
 describe('language manager', function () {
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL);
-    browser.waitForAngular();
+    browser.get(beakerPO.baseURL).then(
+        function(){done();},
+        function(reason){ console.log('error occurred while browser load page : ' + reason);}
+    );
+    browser.waitForAngular().then(function() {
+      done();
+    });
     beakerPO.newEmptyNotebook.click();
     beakerPO.notebookMenu.click();
     beakerPO.languageManagerMenuItem.click();

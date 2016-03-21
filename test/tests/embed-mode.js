@@ -21,10 +21,15 @@ var beakerPO;
 
 describe('Embed mode', function() {
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL+"beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy-examples.bkr&readOnly=true");
-    browser.waitForAngular();
+    browser.get(beakerPO.baseURL+"beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy-examples.bkr&readOnly=true").then(
+        function(){done();},
+        function(reason){ console.log('error occurred while browser load page : ' + reason);}
+    );
+    browser.waitForAngular().then(function() {
+      done();
+    });
   });
 
   afterEach(function(done) {

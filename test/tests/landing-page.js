@@ -32,7 +32,10 @@ describe('beaker landing load', function() {
 describe('beaker landing page', function() {
   beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL);
+    browser.get(beakerPO.baseURL).then(
+        function(){done();},
+        function(reason){ console.log('error occurred while browser load page : ' + reason);}
+    );
     browser.waitForAngular().then(function() {
       done();
     });

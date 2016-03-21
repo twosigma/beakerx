@@ -16,8 +16,22 @@
 -->
 <ul>
   <li class="outputcontainer-li" ng-repeat="i in items track by $index">
-    <b class="">{{model.getCellModel().labels[$index]}}</b><br/>
-    <bk-code-cell-output model="i"></bk-code-cell-output>
+    <div class="dropdown">
+      <div class="dropdown-toggle" data-toggle="dropdown" title="beaker object menu">
+        <b class="bk-object-label">{{model.getCellModel().labels[$index]}}</b><br/>
+      </div>
+      <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+        <li ng-repeat="item in bkoMenuItems">
+          <a href="#"
+            tabindex="-1"
+            ng-click="item.action($parent.$index)"
+            ng-bind="item.name"
+            eat-click>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <bk-code-cell-output model="i" ></bk-code-cell-output>
   </li>
 </ul>
 

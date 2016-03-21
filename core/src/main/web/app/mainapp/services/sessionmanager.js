@@ -698,7 +698,11 @@
         obj = {
           type: 'OutputContainer',
           items: its,
-          labels: nms
+          labels: nms,
+          layout:{
+            borderDisplayed: false,
+            type: "BeakerObjectLayoutManager"
+          }
         };
       }
       return transform(obj);

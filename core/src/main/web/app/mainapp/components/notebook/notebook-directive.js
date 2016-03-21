@@ -266,27 +266,6 @@
           return $scope.getChildren().length == 0;
         };
 
-        var keydownHandler = function (e) {
-          if (bkHelper.isLanguageManagerShortcut(e)) {
-            bkHelper.showLanguageManager();
-            return false;
-          } else if(bkHelper.isResetEnvironmentShortcut(e)) {
-            var loadedEvaluators = bkEvaluatorManager.getLoadedEvaluators();
-            for (var eachEval in loadedEvaluators) {
-              var evaluator = loadedEvaluators[eachEval];
-              if (evaluator.spec && evaluator.spec.reset) {
-                evaluator.perform('reset');
-              }
-            }
-            bkHelper.evaluateRoot("initialization");
-          }
-        };
-        $(document).bind('keydown', keydownHandler);
-
-        $scope.$on('$destroy', function () {
-          $(document).unbind('keydown', keydownHandler);
-        });
-
         $scope.$watch(function() {
           return document.body.clientHeight;
         }, function(v, prev) {

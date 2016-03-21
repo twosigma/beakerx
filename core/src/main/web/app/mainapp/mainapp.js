@@ -1017,6 +1017,9 @@
               bkCoreManager.newSession(true);
             });
             return false;
+          } else if (bkHelper.isLanguageManagerShortcut(e)) {
+            bkHelper.showLanguageManager();
+            return false;
           } else if (bkUtils.isElectron) {
             var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
             // Command H

@@ -574,9 +574,11 @@
 
         $scope.columnFilterFn = function(){
           var column = $scope.getColumn(this);
+          var colIdx = $(this).parents('th').index();
           if ($scope.columnSearchActive) {
             column.search(this.value);
           }
+          $scope.columnFilter[$scope.colorder[colIdx] - 1] = this.value;
           column.draw();
           $scope.updateFilterWidth($(this), column);
         };
@@ -996,6 +998,9 @@
             scope.heatmapOnColumn = scope.savedstate.heatmapOnColumn || {};
             scope.tableFilter = scope.savedstate.tableFilter || '';
             scope.tableSearch = scope.savedstate.tableSearch || '';
+            scope.columnFilter = scope.savedstate.columnFilter || [];
+            scope.showFilter = scope.savedstate.showFilter;
+            scope.columnSearchActive = scope.savedstate.columnSearchActive;
 
             scope.savedstate  = undefined;
           } else {
@@ -1003,6 +1008,7 @@
             scope.heatmapOnColumn = {}; //map: col index -> show heatmap
             scope.tableFilter = '';
             scope.tableSearch = '';
+            scope.columnFilter = [];
           }
           // auto compute types
           if (scope.actualtype === undefined || scope.actualtype.length === 0) {
@@ -1744,19 +1750,22 @@
               var jqContainer = $(scope.table.table().container());
               var filterInput = jqContainer.find('.filter-input');
               var filterIcon = jqContainer.find('.filter-icon');
-              if(isSearch){
+              if (isSearch) {
                 filterInput.addClass('search-active');
                 filterInput.attr('title', 'search this column for a substring');
                 filterIcon.removeClass('fa-filter');
                 filterIcon.addClass('fa-search');
-              }else{
+              } else {
                 filterInput.removeClass('search-active');
                 filterInput.attr('title', 'filter with an expression of $ for this column');
                 filterIcon.removeClass('fa-search');
                 filterIcon.addClass('fa-filter');
               }
               if (scope.showFilter) {
-                scope.clearFilters();
+                if(scope.columnSearchActive !== isSearch){
+                  scope.clearFilters();
+                  scope.columnFilter = [];
+                }
               } else {
                 scope.showFilter = true;
               }
@@ -1765,13 +1774,15 @@
               var filterInputSelector = '.filterRow .filter-input';
               jqContainer.off('keyup.column-filter change.column-filter');
               jqContainer.on('keyup.column-filter change.column-filter', filterInputSelector,
-                              scope.columnSearchActive ? scope.columnFilterFn : $.debounce(500, scope.columnFilterFn));
+                scope.columnSearchActive ? scope.columnFilterFn : $.debounce(500, scope.columnFilterFn));
 
               scope.$apply();
-              if(scope.fixcols){
+              if (scope.fixcols) {
                 scope.fixcols.fnRedrawLayout();
               }
-              scope.getColumnFilter(column).focus();
+              if(column){
+                scope.getColumnFilter(column).focus();
+              }
             };
 
             scope.hideFilter = function () {
@@ -1802,6 +1813,7 @@
               if (hasNotEmptyFilter) {
                 scope.table.draw();
               }
+              scope.columnFilter = [];
             };
 
             scope.clearFilter = function (column, jqInput) {
@@ -1817,6 +1829,8 @@
                     scope.checkFilter();
                   }
                   scope.stopFilterEditing(jqInput);
+
+                  scope.columnFilter[scope.colorder[column.index()] - 1] = '';
                 }
               }
             };
@@ -1980,6 +1994,23 @@
 
             setTimeout(function(){
               scope.applyFilters();
+              if (scope.showFilter) {
+                if (!_.isEmpty(scope.columnFilter)) {
+                  scope.table.columns().every(function (i) {
+                    var column = this;
+                    var jqInput = scope.getColumnFilter(column);
+                    if (jqInput.length) {
+                      var filterValue = scope.columnFilter[scope.colorder[i] - 1];
+                      jqInput.val(filterValue);
+                      if (scope.columnSearchActive && !_.isEmpty(filterValue)) {
+                        column.search(filterValue);
+                      }
+                    }
+                  });
+                  scope.table.draw();
+                }
+                scope.doShowFilter(null, scope.columnSearchActive);
+              }
             }, 0);
 
             if (!scope.pagination.use) {
@@ -2080,6 +2111,15 @@
             }
             if (scope.tableSearch !== undefined) {
               state.tableSearch = scope.tableSearch;
+            }
+            if (scope.showFilter !== undefined) {
+              state.showFilter = scope.showFilter;
+            }
+            if (scope.columnSearchActive !== undefined) {
+              state.columnSearchActive = scope.columnSearchActive;
+            }
+            if (scope.columnFilter !== undefined) {
+              state.columnFilter = scope.columnFilter;
             }
 
             scope.model.setDumpState({datatablestate: state});

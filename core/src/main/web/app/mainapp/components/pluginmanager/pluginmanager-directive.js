@@ -85,8 +85,27 @@
 
     $scope.allowFromUrl = function() {
       return (window.beaker === undefined || window.beakerRegister.disablePluginLoadFromUrl === undefined || !window.beakerRegister.disablePluginLoadFromUrl);
-    }
-    
+    };
+
+    $scope.getEvaluatorTooltipText = function (pluginName, pluginStatus) {
+      var pluginDescription = $scope.getEvaluatorDetails(pluginName).tooltip;
+      if(pluginDescription) {
+        var prefix;
+        switch(pluginStatus) {
+          case 'known':
+                prefix = 'Click to start ';
+                break;
+          case 'loading':
+                prefix = 'Starting ';
+                break;
+          case 'active':
+                prefix = 'Click to remove from notebook ';
+                break;
+        }
+        return prefix + pluginDescription;
+      }
+    };
+
     $scope.evalTabOp = {
       newPluginNameOrUrl: "",
       showURL: false,

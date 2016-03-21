@@ -181,7 +181,7 @@ define(function(require, exports, module) {
     fgColor: "#4A4A4A",
     borderColor: "",
     shortName: "Js",
-    tooltip: "The native scripting language of the web",
+    tooltip: "the native scripting language of the web",
     evaluate: function(code, modelOutput, refreshObj) {
       var deferred = bkHelper.newDeferred();
       var self = this;

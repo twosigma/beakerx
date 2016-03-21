@@ -91,6 +91,12 @@
         }
         return e.ctrlKey && !e.altKey && (e.which === 83);// Ctrl + s
       },
+      isLanguageManagerShortcut: function (e) {
+        if (this.isMacOS) {
+          return e.ctrlKey && (e.which === 76);// Ctrl + l
+        }
+        return e.altKey && (e.which === 76);//Alt + l
+      },
 
       //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
       // Firefox 1.0+

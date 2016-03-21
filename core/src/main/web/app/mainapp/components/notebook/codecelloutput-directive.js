@@ -87,6 +87,9 @@
               return result;
             }
           },
+          getCellId: function() {
+            return $scope.cellId;
+          },
           isShowOutput: function() {
             return $scope.isShowOutput();
           },
@@ -267,7 +270,7 @@
         $scope.outputRefreshed = function() {
           if (!($scope.$$phase || $rootScope.$$phase))
             $scope.$digest();
-        }
+        };
         if ( $scope.cellId !== undefined )
           bkEvaluateJobManager.registerOutputCell($scope.cellId, $scope);
       }

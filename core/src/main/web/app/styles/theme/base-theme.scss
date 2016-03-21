@@ -211,7 +211,10 @@
     }
 
     .bk-object-label {
-      color: $std-out-color;
+      color: $std-link-color;
+      &:hover {
+        color: $std-out-color;
+      }
     }
 
     .output_subarea pre {

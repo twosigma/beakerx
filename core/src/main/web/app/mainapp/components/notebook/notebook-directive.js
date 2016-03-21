@@ -266,18 +266,6 @@
           return $scope.getChildren().length == 0;
         };
 
-        var keydownHandler = function (e) {
-          if (bkHelper.isLanguageManagerShortcut(e)) {
-            bkHelper.showLanguageManager();
-            return false;
-          }
-        };
-        $(document).bind('keydown', keydownHandler);
-
-        $scope.$on('$destroy', function () {
-          $(document).unbind('keydown', keydownHandler);
-        });
-
         $scope.$watch(function() {
           return document.body.clientHeight;
         }, function(v, prev) {

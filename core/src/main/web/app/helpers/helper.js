@@ -73,6 +73,25 @@
 
     var bkHelper = {
 
+      isNewNotebookShortcut: function (e){
+        if (this.isMacOS){
+          return e.ctrlKey && (e.which === 78);// Ctrl + n
+        }
+        return e.altKey && (e.which === 78);// Alt + n
+      },
+      isNewDefaultNotebookShortcut: function (e){
+        if (this.isMacOS){
+          return e.ctrlKey && e.shiftKey && (e.which === 78);// Ctrl + Shift + n
+        }
+        return e.altKey && e.shiftKey && (e.which === 78);// Cmd + Shift + n
+      },
+      isSaveNotebookShortcut: function (e){
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83);// Cmd + s
+        }
+        return e.ctrlKey && !e.altKey && (e.which === 83);// Ctrl + s
+      },
+
       //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
       // Firefox 1.0+
       isFirefox: typeof InstallTrigger !== 'undefined',
@@ -1134,6 +1153,20 @@
       },
       hideLanguageManagerSpinner: function(error) {
         bkUtils.hideLanguageManagerSpinner(error);
+      },
+      asyncCallInLanguageManager: function(settings) {
+        bkUtils.showLanguageManagerSpinner(settings.pluginName);
+
+        bkUtils.httpPost(settings.url, settings.data).success(function(ret) {
+          bkUtils.hideLanguageManagerSpinner();
+          settings.onSuccess && settings.onSuccess(ret);
+        }).error(function(response) {
+          var statusText = response ? response.statusText : "No response from server";
+
+          bkUtils.hideLanguageManagerSpinner(statusText);
+          console.error("Request failed: " + statusText);
+          settings.onFail && settings.onFail(statusText);
+        });
       },
       isElectron: bkUtils.isElectron,
       isMacOS: bkUtils.isMacOS

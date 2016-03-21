@@ -1001,6 +1001,7 @@
             scope.columnFilter = scope.savedstate.columnFilter || [];
             scope.showFilter = scope.savedstate.showFilter;
             scope.columnSearchActive = scope.savedstate.columnSearchActive;
+            scope.columnWidth = scope.savedstate.columnWidth || [];
 
             scope.savedstate  = undefined;
           } else {
@@ -1009,6 +1010,7 @@
             scope.tableFilter = '';
             scope.tableSearch = '';
             scope.columnFilter = [];
+            scope.columnWidth = [];
           }
           // auto compute types
           if (scope.actualtype === undefined || scope.actualtype.length === 0) {
@@ -1511,6 +1513,9 @@
             if (scope.getCellSho) {
               col.visible = scope.getCellSho[i];
             }
+            if (!_.isEmpty(scope.columnWidth[i])) {
+              col.sWidth = scope.columnWidth[i];
+            }
             cols.push(col);
           }
 
@@ -1550,7 +1555,10 @@
             },
             'bSortCellsTop': true,
             'colResize': {
-              'tableWidthFixed': false
+              'tableWidthFixed': false,
+              'resizeCallback': function(column){
+                scope.columnWidth[scope.colorder[column.idx] - 1] = column.sWidthOrig;
+              }
             }
           };
 
@@ -2120,6 +2128,9 @@
             }
             if (scope.columnFilter !== undefined) {
               state.columnFilter = scope.columnFilter;
+            }
+            if (scope.columnWidth !== undefined) {
+              state.columnWidth = scope.columnWidth;
             }
 
             scope.model.setDumpState({datatablestate: state});

@@ -185,6 +185,7 @@
         $scope.$watch('cellmodel.id', editedListener);
         $scope.$watch('cellmodel.evaluator', editedListener);
         $scope.$watch('cellmodel.initialization', editedListener);
+        $scope.$watch('cellmodel.wordWrapDisabled', editedListener);
         $scope.$watch('cellmodel.input.body', editedListener);
         $scope.$watch('cellmodel.output.result', editedListener);
 

@@ -208,7 +208,7 @@
             "type": "markdown",
             "body": [
                 "Below is some JavaScript code. To run it, move your cursor into the cell, click,",
-                "and then press {{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"&#x2318;\":\"Control\"}}-Enter  or click on the \"Run\" button.",
+                "and then press {{(beaker.client.mac)?\"&#x2318;\":\"Control\"}}-Enter  or click on the \"Run\" button.",
                 "",
                 "The output from running a cell appears right below the input."
             ],
@@ -245,7 +245,7 @@
             "type": "markdown",
             "body": [
                 "You can run any piece of code by selecting it (click and drag), and then pressing",
-                "Shift-{{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"&#x2318;\":\"Control\"}}-Enter.",
+                "Shift-{{(beaker.client.mac)?\"&#x2318;\":\"Control\"}}-Enter.",
                 "If you press it when there is no selection, then it runs the current line and advances the cursor by one line.",
                 "Try it on the following cell:"
             ],
@@ -521,7 +521,7 @@
                 "",
                 "The final button 'section' inserts section cells, which create hierarchy, as explained below.",
                 "",
-                "Click into the new cell and press {{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"&#x2318;\":\"Control\"}}-Shift-A. This will create another new cell of the same type."
+                "Click into the new cell and press {{(beaker.client.mac)?\"&#x2318;\":\"Control\"}}-Shift-A. This will create another new cell of the same type."
             ],
             "evaluatorReader": false,
             "mode": "preview"
@@ -542,7 +542,7 @@
                 "Pressing the Up and Down arrow keys will move your cursor from line to line within the cell,",
                 "and then from cell to cell if you keep going over the edge.",
                 "",
-                "Pressing {{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"&#x2318;\":\"Control\"}}-Shift-E within a code cell will allow you to change the cell's language.",
+                "Pressing {{(beaker.client.mac)?\"&#x2318;\":\"Control\"}}-Shift-E within a code cell will allow you to change the cell's language.",
                 "",
                 "In the top-right corner of the cell are some icons with common operations including running, deleting,",
                 "moving the cell up and down, and three dots for a menu with more actions.",
@@ -618,7 +618,7 @@
             "body": [
                 "Just like your web browser allows you to see many web pages at the same time,",
                 "Beaker allows you to work on multiple notebooks simultaneously. Use the **File → New Beaker window** command,",
-                "or {{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"&#x2318;\":\"Control\"}}-click on the Beaker logo in the upper-left corner to create a new tab in your browser.",
+                "or {{(beaker.client.mac)?\"&#x2318;\":\"Control\"}}-click on the Beaker logo in the upper-left corner to create a new tab in your browser.",
                 "Here you will find a list of the current editing sessions, just click on one to open it.",
                 "You can also use the file menu to open an existing notebook, create a new one, or select one of your recently used notebooks.",
                 "",

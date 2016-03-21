@@ -363,6 +363,11 @@
         beakerObj.notebookToBeakerObject();
         var beaker = beakerObj.beakerObj;
         beaker.prefs = {useOutputPanel: false, outputLineLimit: 1000};
+        beaker.client = {
+          mac: navigator.appVersion.indexOf("Mac") != -1,
+          windows: navigator.appVersion.indexOf("Win") != -1,
+          linux: navigator.appVersion.indexOf("Linux") != -1
+        };
         this.setThemeToBeakerObject();
         beakerObj.beakerObjectToNotebook();
       },

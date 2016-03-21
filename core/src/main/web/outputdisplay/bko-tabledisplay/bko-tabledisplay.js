@@ -1023,7 +1023,7 @@
                   scope.actualtype.push(2);
                   scope.actualalign.push('R');
                 } else if (scope.types[i] === 'double') {
-                  scope.actualtype.push('4.2');
+                  scope.actualtype.push('4.4');
                   scope.actualalign.push('R');
                 } else {
                   scope.actualtype.push(0);

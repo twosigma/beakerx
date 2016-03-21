@@ -173,7 +173,7 @@ define(function(require, exports, module) {
       outdir:      {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
       classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
       imports:     {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"},
-      resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
+      reset:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
       killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
     },
     cometdUtil: cometdUtil

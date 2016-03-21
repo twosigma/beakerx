@@ -766,6 +766,16 @@
             return bkUtils.formatTimestamp(milli, $scope.tz, 'HH:mm:ss.SSS ZZ');
           }
         };
+        $scope.isDoubleWithPrecision = function(type){
+          var parts = type.toString().split(".");
+          return parts.length > 1 && parts[0] === '4';
+        };
+        $scope.getDoublePrecision = function(type){
+          return $scope.isDoubleWithPrecision(type) ? type.toString().split(".")[1] : null;
+        };
+        $scope.getActualTypeByPrecision = function(precision){
+          return '4.' + precision;
+        };
         $scope.doubleWithPrecisionConverters = {}; //map: precision -> convert function
         for (var precision = 1; precision < 10; precision++) {
           $scope.doubleWithPrecisionConverters[precision] = function(precision, value, type, full, meta) {
@@ -994,7 +1004,7 @@
                   scope.actualtype.push(2);
                   scope.actualalign.push('R');
                 } else if (scope.types[i] === 'double') {
-                  scope.actualtype.push(5);
+                  scope.actualtype.push('4.2');
                   scope.actualalign.push('R');
                 } else {
                   scope.actualtype.push(0);
@@ -1006,7 +1016,6 @@
               }
             }
           }
-          scope.renderers = {}; //map: col index -> render function
           scope.doCreateData(model);
           scope.doCreateTable(model);
           $(document.body).on('click.bko-dt-container', scope.containerClickFunction);
@@ -1199,7 +1208,7 @@
                 title: obj.name,
                 isChecked: function(container) {
                   var colIdx = container.data('columnIndex');
-                  return scope.actualtype[colIdx - 1] === obj.type;
+                  return scope.actualtype[scope.colorder[colIdx] - 1] === obj.type;
                 }
               };
               if (obj.type === 4) { //double with precision
@@ -1209,9 +1218,8 @@
                     var container = el.closest('.bko-header-menu');
                     var colIdx = container.data('columnIndex');
 
-                    scope.getCellDisp[colIdx - 1] = obj.type;
-                    scope.actualtype[colIdx - 1] = obj.type;
-                    delete scope.renderers[colIdx];
+                    scope.getCellDisp[scope.colorder[colIdx] - 1] = obj.type;
+                    scope.actualtype[scope.colorder[colIdx] - 1] = obj.type;
                     scope.applyChanges();
                   }
                 };
@@ -1229,12 +1237,12 @@
                 title: precision,
                 isChecked: function(container) {
                   var colIdx = container.data('columnIndex');
-                  return scope.doubleWithPrecisionConverters[precision] === scope.renderers[colIdx];
+                  return scope.actualtype[scope.colorder[colIdx] - 1] == scope.getActualTypeByPrecision(precision);
                 },
                 action: function(el) {
                   var container = el.closest('.bko-header-menu');
                   var colIdx = container.data('columnIndex');
-                  scope.changePrecision(colIdx, precision);
+                  scope.changePrecision(scope.colorder[colIdx] - 1, precision);
                 }
               };
 
@@ -1474,8 +1482,8 @@
               col.className = 'dtcenter';
             }
 
-            if (scope.renderers[i + 1] != null) {
-              col.render = scope.renderers[i + 1]
+            if (scope.isDoubleWithPrecision(type)) {
+              col.render = scope.doubleWithPrecisionConverters[scope.getDoublePrecision(type)];
             } else if (scope.allConverters[type] !== undefined) {
               col.render = scope.allConverters[type];
             }
@@ -1691,8 +1699,7 @@
               _.defer(function () { scope.table.draw(false);  });
             };
             scope.changePrecision = function (column, precision) {
-              scope.renderers[column] = scope.doubleWithPrecisionConverters[precision];
-              scope.actualtype[column - 1] = 4; //double with precision
+              scope.actualtype[column] = scope.getActualTypeByPrecision(precision);
               scope.applyChanges();
             };
 
@@ -1836,7 +1843,7 @@
                     break;
                 }
                 if (key >= 48 && key <= 57){ //numbers 1..9
-                  scope.changePrecision(column, parseInt(charCode));
+                  scope.changePrecision(scope.colorder[column] - 1, parseInt(charCode));
                 }
               }
             };

@@ -150,8 +150,7 @@
         $scope.isShowOutput = function() {
 
           var result = $scope.cellmodel.output.result;
-
-          if (!result || result.hidden) {
+          if (_.isEmpty(result) || result.hidden) {
             return false;
           }
 

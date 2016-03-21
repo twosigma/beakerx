@@ -135,6 +135,13 @@
         else
           v.shortName = "";
 
+        if (e.tooltip !== undefined)
+          v.tooltip = e.tooltip;
+        else if (f !== undefined && f.tooltip !== undefined)
+          v.tooltip = f.tooltip;
+        else
+          v.tooltip = "";
+
         return v;
       },
       getLoadedEvaluators: function() {

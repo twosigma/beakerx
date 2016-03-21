@@ -33,6 +33,7 @@ define(function(require, exports, module) {
     fgColor: "#FFFFFF",
     borderColor: "",
     shortName: "Gv",
+    tooltip: "The language that deserves the name JavaScript",
     newShell: function(shellId, cb, ecb) {
       if (!shellId)
         shellId = "";
@@ -109,33 +110,17 @@ define(function(require, exports, module) {
       }
     },
     resetEnvironment: function () {
-      bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
-      $.ajax({
-        type: "POST",
-        datatype: "json",
+      bkHelper.asyncCallInLanguageManager({
         url: bkHelper.serverUrl(serviceBase + "/rest/groovysh/resetEnvironment"),
-        data: {shellId: this.settings.shellID}
-      }).done(function (ret) {
-        bkHelper.hideLanguageManagerSpinner();
-        console.log("done resetEnvironment", ret);
-      }).fail(function(jqXHR, textStatus) {
-        bkHelper.hideLanguageManagerSpinner(textStatus);
-        console.error("Request failed: " + textStatus);
+        data: {shellId: this.settings.shellID},
+        pluginName: PLUGIN_NAME
       });
     },
     killAllThreads: function () {
-      bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
-      $.ajax({
-        type: "POST",
-        datatype: "json",
+      bkHelper.asyncCallInLanguageManager({
         url: bkHelper.serverUrl(serviceBase + "/rest/groovysh/killAllThreads"),
-        data: {shellId: this.settings.shellID}
-      }).done(function (ret) {
-        bkHelper.hideLanguageManagerSpinner();
-        console.log("done killAllThreads", ret);
-      }).fail(function(jqXHR, textStatus) {
-        bkHelper.hideLanguageManagerSpinner(textStatus);
-        console.error("Request failed: " + textStatus);
+        data: {shellId: this.settings.shellID},
+        pluginName: PLUGIN_NAME
       });
     },
     autocomplete: function(code, cpos, cb) {

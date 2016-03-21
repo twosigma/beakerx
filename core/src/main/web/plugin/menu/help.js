@@ -47,6 +47,14 @@ define(function(require, exports, module) {
       tooltip: "Show keyboard shortcuts"
     },
     {
+      name: "Class Documentation",
+      sortorder: 115,
+      action: function() {
+        bkHelper.openWindow(bkHelper.serverUrl('beaker/app/dist/docs/index.html'));
+      },
+      tooltip: "Show class Documentation"
+    },
+    {
       name: "Report a bug or feature request",
       sortorder: 130,
       action: function() {

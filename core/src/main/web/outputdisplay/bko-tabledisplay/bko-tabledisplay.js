@@ -828,9 +828,10 @@
           if (sField.hasClass('show')) {
             input.focus();
           } else {
-            input.val('');
-            $scope.table.search('').draw();
+            $scope.tableSearch = '';
           }
+          input.val($scope.tableSearch);
+          $scope.table.search($scope.tableSearch).draw();
         };
         $scope.showTableFilter = function() {
           var fField = $('#' + $scope.id + '_evalfilter');
@@ -840,8 +841,9 @@
           if (fField.hasClass('show')) {
             input.focus();
           } else {
-            input.val('').trigger('change');
+            $scope.tableFilter = '';
           }
+          input.val($scope.tableFilter).trigger('change');
         };
       },
       link: function(scope, element) {
@@ -992,10 +994,15 @@
             }
             scope.barsOnColumn = scope.savedstate.barsOnColumn || {};
             scope.heatmapOnColumn = scope.savedstate.heatmapOnColumn || {};
+            scope.tableFilter = scope.savedstate.tableFilter || '';
+            scope.tableSearch = scope.savedstate.tableSearch || '';
+
             scope.savedstate  = undefined;
           } else {
             scope.barsOnColumn = {}; //map: col index -> show bars
             scope.heatmapOnColumn = {}; //map: col index -> show heatmap
+            scope.tableFilter = '';
+            scope.tableSearch = '';
           }
           // auto compute types
           if (scope.actualtype === undefined || scope.actualtype.length === 0) {
@@ -1590,6 +1597,7 @@
             sField.find('input')
               .attr('title', 'search the whole table for a substring')
               .on('keydown.column-filter', function (event) {
+                scope.tableSearch = this.value;
                 if (event.which === 27) { //esc
                   scope.showTableSearch();
                 }
@@ -1600,10 +1608,14 @@
                 e.stopPropagation();
               })
               .appendTo(sField);
+            if (!_.isEmpty(scope.tableSearch)) {
+              scope.showTableSearch();
+            }
 
             var fField = $('#' + scope.id + '_evalfilter').addClass('dataTables_evalfilter');
             $('<input type="search">')
               .on('keyup change', $.debounce(500, function () {
+                scope.tableFilter = this.value;
                 scope.table.draw();
               }))
               .attr('title', 'filter with an expression with variables for each column')
@@ -1618,6 +1630,10 @@
                 e.stopPropagation();
               })
               .appendTo(fField);
+
+            if (!_.isEmpty(scope.tableFilter)) {
+              scope.showTableFilter();
+            }
 
             if(init.paging !== false){
               var pagination = $(element).find(".bko-table-use-pagination");
@@ -2058,6 +2074,12 @@
             }
             if (scope.heatmapOnColumn !== undefined) {
               state.heatmapOnColumn = scope.heatmapOnColumn;
+            }
+            if (scope.tableFilter !== undefined) {
+              state.tableFilter = scope.tableFilter;
+            }
+            if (scope.tableSearch !== undefined) {
+              state.tableSearch = scope.tableSearch;
             }
 
             scope.model.setDumpState({datatablestate: state});

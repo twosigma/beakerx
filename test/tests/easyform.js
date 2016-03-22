@@ -67,15 +67,9 @@ describe('EasyForm', function () {
     expect(e.getAttribute('value')).toEqual("TEST");
   }
 
-  beforeEach(function (done) {
+  beforeEach(function () {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL).then(
-        function(){done();},
-        function(reason){ console.log('error occurred while browser load page : ' + reason);}
-    );
-    browser.waitForAngular().then(function() {
-      done();
-    });
+    browser.get(beakerPO.baseURL);
     beakerPO.newEmptyNotebook.click();
     loadGroovy();
     beakerPO.insertCellButton.click();

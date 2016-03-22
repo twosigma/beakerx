@@ -30,15 +30,9 @@ describe('beaker landing load', function() {
 });
 
 describe('beaker landing page', function() {
-  beforeEach(function(done) {
+  beforeEach(function() {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL).then(
-        function(){done();},
-        function(reason){ console.log('error occurred while browser load page : ' + reason);}
-    );
-    browser.waitForAngular().then(function() {
-      done();
-    });
+    browser.get(beakerPO.baseURL);
   });
 
   it('has a title and menu', function() {

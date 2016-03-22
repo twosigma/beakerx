@@ -21,15 +21,9 @@ var beakerPO;
 
 describe('HeatMap Tutorial', function () {
 
-    beforeEach(function (done) {
+    beforeEach(function () {
         beakerPO = new BeakerPageObject();
-        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&readOnly=true").then(
-            function(){done();},
-            function(reason){ console.log('error occurred while browser load page : ' + reason);}
-        );
-        browser.waitForAngular().then(function() {
-            done();
-        });
+        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&readOnly=true");
         beakerPO.waitUntilLoadingIndicator();
 
     });

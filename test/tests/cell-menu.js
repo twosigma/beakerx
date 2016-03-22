@@ -20,13 +20,7 @@ var path = require('path');
 describe('Cell Menu', function() {
   beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL).then(
-        function(){done();},
-        function(reason){ console.log('error occurred while browser load page : ' + reason);}
-    );
-    browser.waitForAngular().then(function() {
-      done();
-    });
+    browser.get(beakerPO.baseURL);
     beakerPO.newEmptyNotebook.click();
     beakerPO.insertNewCell()
     .then(done);

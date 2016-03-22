@@ -25,7 +25,7 @@ This page is for developers.  If you want to use or learn more about Beaker, see
 
 #Screenshots
 
-![screenshots](https://raw.githubusercontent.com/twosigma/beakernotebook/master/doc/screenshot.png)
+![screenshots](https://raw.githubusercontent.com/twosigma/beaker-notebook/master/doc/screenshots.png)
 
 #Publication Server
 Notebooks can published and converted into web pages that anyone can access with an ordinary web browser, even on a mobile device.

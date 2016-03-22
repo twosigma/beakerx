@@ -1001,6 +1001,34 @@
             bkElectron.updateMenus(bkMenuPluginManager.getMenus());
           });
         }
+
+        function resetAllKernels() {
+          var statusMessage = 'Trying to reset all kernels';
+          bkHelper.showStatus(statusMessage);
+
+          var evaluatorsWithResetMethod = _.values(bkEvaluatorManager.getLoadedEvaluators()).filter(function (item) {
+            return item.spec && item.spec.reset;
+          });
+
+          syncResetKernels(evaluatorsWithResetMethod);
+
+          function syncResetKernels(kernels) {
+            if(kernels.length > 0) {
+              var promise = kernels.pop().perform('reset');
+              if(promise) {
+                promise.finally(function () {
+                  syncResetKernels(kernels);
+                });
+              } else {
+                syncResetKernels(kernels);
+              }
+            } else {
+              bkHelper.clearStatus(statusMessage);
+              bkHelper.evaluateRoot("initialization");
+            }
+          }
+        }
+
         var keydownHandler = function(e) {
           if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
             e.preventDefault();
@@ -1021,14 +1049,7 @@
             bkHelper.showLanguageManager();
             return false;
           } else if(bkHelper.isResetEnvironmentShortcut(e)) {
-            var loadedEvaluators = bkEvaluatorManager.getLoadedEvaluators();
-            for (var eachEval in loadedEvaluators) {
-              var evaluator = loadedEvaluators[eachEval];
-              if (evaluator.spec && evaluator.spec.reset) {
-                evaluator.perform('reset');
-              }
-            }
-            bkHelper.evaluateRoot("initialization");
+            resetAllKernels();
             return false;
           } else if (bkUtils.isElectron) {
             var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);

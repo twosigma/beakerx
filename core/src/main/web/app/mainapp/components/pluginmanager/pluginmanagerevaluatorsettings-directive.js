@@ -64,6 +64,18 @@
                                                                 property.key,
                                                                 $scope.evaluator.settings[property.key])
         };
+
+        $scope.perform = function (action) {
+          action.running = true;
+          var promise = $scope.evaluator.perform(action.key);
+          if(promise) {
+            promise.finally(function () {
+              action.running = false;
+            });
+          } else {
+            action.running = false;
+          }
+        };
       },
       link: function(scope, element, attrs) {
         scope.availableProperties = GLOBALS.EVALUATOR_SPEC.PROPERTIES;

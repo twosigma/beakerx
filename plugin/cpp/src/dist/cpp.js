@@ -108,12 +108,18 @@ define(function(require, exports, module) {
       }
     },
     resetEnvironment: function() {
+      var deferred = bkHelper.newDeferred();
       $.ajax({
         type: 'POST',
         datatype: 'json',
         url: bkHelper.serverUrl(serviceBase + '/rest/cpp/resetEnvironment'),
         data: {shellId: this.settings.shellID}
+      }).done(function () {
+        deferred.resolve();
+      }).fail(function (err) {
+        deferred.reject(err);
       });
+      return deferred.promise;
     },
     killAllThreads: function() {
       $.ajax({

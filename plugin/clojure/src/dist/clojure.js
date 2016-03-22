@@ -97,11 +97,19 @@ define(function(require, exports, module) {
         }
       },
       resetEnvironment: function () {
+        var deferred = bkHelper.newDeferred();
         bkHelper.asyncCallInLanguageManager({
           url: bkHelper.serverUrl(serviceBase + "/rest/clojuresh/resetEnvironment"),
           data: {shellId: this.settings.shellID},
-          pluginName: PLUGIN_NAME
+          pluginName: PLUGIN_NAME,
+          onSuccess: function (data) {
+            deferred.resolve();
+          },
+          onFail: function (err) {
+            deferred.reject(err);
+          }
         });
+        return deferred.promise;
       },
       killAllThreads: function () {
         bkHelper.asyncCallInLanguageManager({
@@ -214,7 +222,7 @@ define(function(require, exports, module) {
           this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
-            this[action]();
+            return this[action]();
           };
         };
         clojureshell.prototype = Clojure;

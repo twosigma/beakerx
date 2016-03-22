@@ -430,6 +430,7 @@ define(function(require, exports, module) {
             this.settings.setup + "\n");
       },
       reset: function() {
+        var deferred = bkHelper.newDeferred();
         var kernel = kernels[this.settings.shellID];
         var self = this;
         bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
@@ -442,8 +443,10 @@ define(function(require, exports, module) {
                       kernel.iopub_channel.readyState == 1)) {
               self.evaluate(self.initCode(), {}).then(function() {
                 bkHelper.hideLanguageManagerSpinner();
+                deferred.resolve();
               }, function(err) {
                 bkHelper.hideLanguageManagerSpinner(err);
+                deferred.reject(err);
                 bkHelper.show1ButtonModal('ERROR: ' + err, PLUGIN_NAME + ' kernel restart failed');
               });
             } else {
@@ -452,6 +455,7 @@ define(function(require, exports, module) {
           };
           waitForKernel();
         });
+        return deferred.promise;
       },
       updateShell: function() {
         this.reset();
@@ -592,7 +596,7 @@ define(function(require, exports, module) {
           this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
-            this[action]();
+            return this[action]();
           };
         };
         Python3Shell.prototype = Python3Proto;

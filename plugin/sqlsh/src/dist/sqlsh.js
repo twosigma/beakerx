@@ -101,6 +101,7 @@ define(function(require, exports, module) {
       }
     },
     resetEnvironment: function () {
+      var deferred = bkHelper.newDeferred();
       $.ajax({
         type: "POST",
         datatype: "json",
@@ -108,7 +109,11 @@ define(function(require, exports, module) {
         data: {shellId: this.settings.shellID}
       }).done(function (ret) {
         console.log("done resetEnvironment",ret);
+        deferred.resolve();
+      }).fail(function (err) {
+        deferred.reject(err);
       });
+      return deferred;
     },
     killAllThreads: function () {
       $.ajax({

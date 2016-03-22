@@ -935,14 +935,18 @@
           var i;
 
           // validate saved state (if any) by using column \Names
+          var modelColumnNames = model.columnNames.slice(0);
+          if (model.hasIndex === 'true') {
+            modelColumnNames.shift();
+          }
           if (scope.savedstate !== undefined) {
             if (scope.savedstate.columnNames === undefined) {
               scope.savedstate = undefined;
-            } else if (scope.savedstate.columnNames.length !== model.columnNames.length) {
+            } else if (scope.savedstate.columnNames.length !== modelColumnNames.length) {
               scope.savedstate = undefined;
             } else {
               for (i = 0; i < scope.savedstate.columnNames.length; i++) {
-                if (model.columnNames[i] !== scope.savedstate.columnNames[i]) {
+                if (modelColumnNames[i] !== scope.savedstate.columnNames[i]) {
                   scope.savedstate = undefined;
                   break;
                 }

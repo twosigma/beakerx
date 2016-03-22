@@ -19,26 +19,32 @@ bk-code-cell-output {
     background: rgb(235, 235, 235);
   }
 
-  .bk-object-label {
+  .bk-object-label-menu {
+    color:              $green;
+    cursor:             pointer;
     position: relative;
-    color: #f4c20b;
-    cursor: pointer;
-    &:after {
-      display: block;
-      content: "";
-      width: 0;
-      height: 0;
-      border-left: 3px solid transparent;
-      border-right: 3px solid transparent;
-      border-top: 5px solid #999;
-      position: absolute;
-      top: 4px;
-      right: -10px;
-    }
+    background:         url(../images/down@2x.png) no-repeat center right;
+    padding-right:      13px;
+    background-size:    8px;
+
     &:hover {
       color: #1492df;
     }
+
+    .toggle-menu & {
+      top: 1px;
+      right: 8px;
+      height: 19px;
+      position: relative;
+      display: none;
+    }
+
+    b {
+      position: relative;
+      display: inline-block;
+    }
   }
+
 }
 
 .markup, .dataTables_scrollBody {

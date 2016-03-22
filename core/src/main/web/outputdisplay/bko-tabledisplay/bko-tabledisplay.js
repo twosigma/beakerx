@@ -1566,13 +1566,14 @@
             }
           };
 
+          var domCommon = '<"bko-table"Z' + (scope.data.length > 500 ? 'r' : '') + 't';
           if (!scope.pagination.use) {
             init.paging = false;
             init.scrollY = scope.pagination.rowsToDisplay * 27 + 2;
             init.scrollCollapse = true;
-            init.dom = '<"bko-table"Zrtf<"#' + scope.id + '_evalfilter">>';
+            init.dom = domCommon + 'f<"#' + scope.id + '_evalfilter">>';
           } else {
-            init.dom = '<"bko-table"Zrt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf<"#' + scope.id + '_evalfilter">>';
+            init.dom = domCommon + '<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf<"#' + scope.id + '_evalfilter">>';
             if (scope.data.length > 25) {
               init.pagingType = 'simple_numbers';
               init.pageLength = 25;

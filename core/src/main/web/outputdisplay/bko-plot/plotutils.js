@@ -56,10 +56,10 @@
     return {
 
       safeWidth: function(e){
-        return bkHelper.isChrome ? e.css("width").replace("px", "") : e.width();
+        return bkHelper.isChrome ? window.getComputedStyle(e.get()[0], null).getPropertyValue('width').match(/\d+/)[0] : e.width();
       },
       safeHeight: function(e){
-        return bkHelper.isChrome ? e.css("height").replace("px", "") : e.height();
+        return bkHelper.isChrome ? window.getComputedStyle(e.get()[0], null).getPropertyValue('height').match(/\d+/)[0] : e.height();
       },
       outsideScr: function(scope, x, y) {
         var W = this.safeWidth(scope.jqsvg), H = this.safeHeight(scope.jqsvg);

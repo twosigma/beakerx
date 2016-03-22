@@ -1749,8 +1749,26 @@
               scope.heatmapOnColumn[column] = !!!scope.heatmapOnColumn[column];
               _.defer(function () { scope.table.draw(false);  });
             };
+            scope.columnHasFormat = function (column, format) {
+              for (var i = 0; i < scope.types.length; i++) {
+                if(scope.types[column] === format){
+                  return true;
+                }
+              }
+              return false;
+            };
             scope.changePrecision = function (column, precision) {
-              scope.actualtype[column] = scope.getActualTypeByPrecision(precision);
+              if(scope.columnHasFormat(column, 'double')){
+                scope.actualtype[column] = scope.getActualTypeByPrecision(precision);
+                scope.applyChanges();
+              }
+            };
+            scope.changeAllPrecision = function (precision) {
+              for (var i = 1; i < scope.columns.length; i++) {
+                if(scope.columnHasFormat(i, 'double')){
+                  scope.actualtype[i] = scope.getActualTypeByPrecision(precision);
+                }
+              }
               scope.applyChanges();
             };
 
@@ -1902,7 +1920,11 @@
                     break;
                 }
                 if (key >= 48 && key <= 57){ //numbers 1..9
-                  scope.changePrecision(scope.colorder[column] - 1, parseInt(charCode));
+                  if(onKeyEvent.shiftKey){
+                    scope.changePrecision(scope.colorder[column] - 1, parseInt(charCode));
+                  }else{
+                    scope.changeAllPrecision(parseInt(charCode));
+                  }
                 }
               }
             };

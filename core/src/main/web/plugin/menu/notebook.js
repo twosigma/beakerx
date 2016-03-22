@@ -19,6 +19,7 @@ define(function(require, exports, module) {
   var menuItems = [
     {
       name: 'Language manager...',
+      shortcut: ["Alt-L", "Ctrl-L"],
       sortorder: 100,
       action: function () {
         bkHelper.showLanguageManager();

@@ -33,6 +33,7 @@ define(function(require, exports, module) {
     fgColor: "#FFFFFF",
     borderColor: "",
     shortName: "R",
+    tooltip: "GNU R is a language for statistical computing and graphics.",
     newShell: function(shellID, cb, ecb) {
       if (!shellID)
         shellID = "";

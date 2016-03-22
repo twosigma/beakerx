@@ -33,6 +33,7 @@ define(function(require, exports, module) {
     fgColor: '#FFFFFF',
     borderColor: '',
     shortName: 'C',
+    tooltip: "C++ is the object-oriented version of the venerable systems programming language.",
     newShell: function(shellId, cb, ecb) {
       if (!shellId) {
         shellId = '';

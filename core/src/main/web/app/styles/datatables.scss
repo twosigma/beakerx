@@ -24,6 +24,8 @@ table.dataTable {
     white-space: nowrap;
     border: 1px solid $border-color;
     border-width: 0 1px 0 0;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
     &:first-child {
       border-left-width: 1px;
     }
@@ -62,7 +64,8 @@ td.dtcenter {
 .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_evalfilter {
   float:      left;
   text-align: left;
-  margin-top: 10px;
+  margin-top: 7px;
+  margin-right: 10px;
   display:    none;
 
   input {
@@ -170,6 +173,8 @@ a.dtmenu {
 .dt-cell-text {
   position: relative;
   width: 100%;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 
 .dt-bar-data {
@@ -179,8 +184,7 @@ a.dtmenu {
 }
 
 .bko-table-use-pagination {
-  padding-top: 10px;
-  padding-left: 30px;
+  padding: 10px 10px 0 30px;;
   float: left;
   label {
     cursor: pointer;
@@ -229,7 +233,12 @@ table.dataTable.DTFC_Cloned.display tbody tr.even {
 .DTFC_RightWrapper table.dataTable tbody td:first-child {
   border-left-width: 3px;
 }
+
 .left-fix-col-separator {
   border-right-width: 3px !important;
+}
+
+.menu-separator {
+  border-top: solid 1px #CCC;
 }
 

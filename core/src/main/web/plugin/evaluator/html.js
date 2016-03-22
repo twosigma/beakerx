@@ -27,6 +27,7 @@ define(function(require, exports, module) {
     fgColor: "#FFFFFF",
     borderColor: "",
     shortName: "Ht",
+    tooltip: "HTML stands for hyper text markup language, including CSS.",
     evaluate: function(code, modelOutput) {
       var deferred = bkHelper.newDeferred();
       bkHelper.timeout(function () {

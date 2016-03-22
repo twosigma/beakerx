@@ -40,6 +40,7 @@ define(function(require, exports, module) {
       fgColor: "#FFFFFF",
       borderColor: "",
       shortName: "Py",
+      tooltip: "Python 3 kernel via Jupyter, including IPython magics.",
       indentSpaces: 4,
       newShell: function(shellID, cb, ecb) {
 

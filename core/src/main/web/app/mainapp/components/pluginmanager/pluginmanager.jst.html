@@ -29,7 +29,8 @@
   </div>
   <div class="modal-body fixed modal-large plugin-manager" style="padding-top: 69px; padding-bottom: 68px;"><!-- padding linked to modal-header/-footer heights  -->
     <div class="languages clearfix">
-      <button class="btn btn-default language-icon-button" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getEvaluatorStatuses()" ng-class="pluginName">
+      <button class="btn btn-default language-icon-button" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getEvaluatorStatuses()" ng-class="pluginName"
+              title="{{getEvaluatorTooltipText(pluginName, pluginStatus)}}">
         <span ng-class="'plugin-' + pluginStatus" class="plugin-status">&#x25cf;</span>
         <bk-language-logo bg-color="{{getEvaluatorDetails(pluginName).bgColor}}"
                           name="{{getEvaluatorDetails(pluginName).shortName}}"

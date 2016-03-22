@@ -22,7 +22,7 @@ define(function(require, exports, module) {
   var fileMenuItems = [
     {
       name: "New Notebook",
-      shortcut: ["Ctrl-N", "Cmd-N"],
+      shortcut: ["Alt-N", "Ctrl-N"],
       tooltip: "Open a new empty notebook, add the languages of your choice",
       sortorder: 100,
       action: function() {
@@ -31,7 +31,7 @@ define(function(require, exports, module) {
     },
     {
       name: "New Default Notebook",
-      shortcut: ["Ctrl-Shift-N", "Cmd-Shift-N"],
+      shortcut: ["Alt-Shift-N", "Ctrl-Shift-N"],
       sortorder: 101,
       id: "new-notebook-menuitem",
       action: function() {

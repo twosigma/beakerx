@@ -417,20 +417,12 @@
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
           scope.cm.on('change', changeHandler);
           scope.cm.on('blur', function () {
-            if (!scope.cm.curOp || $('.CodeMirror-hint').length > 0) {
+            if ($('.CodeMirror-hint').length > 0) {
               //codecomplete is up, skip
               return;
             }
-            CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
+            scope.cm.execCommand('goDocStart');
           });
-          scope.cm.on('focus', function () {
-            if (!scope.cm.curOp || $('.CodeMirror-hint').length > 0) {
-              //codecomplete is up, skip
-              return;
-            }
-            CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
-          });
-
           scope.cm.on('gutterClick', onGutterClick);
 
           scope.updateUI(scope.getEvaluator());

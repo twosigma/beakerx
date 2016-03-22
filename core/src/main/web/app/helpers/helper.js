@@ -73,6 +73,39 @@
 
     var bkHelper = {
 
+      isNewNotebookShortcut: function (e){
+        if (this.isMacOS){
+          return e.ctrlKey && (e.which === 78);// Ctrl + n
+        }
+        return e.altKey && (e.which === 78);// Alt + n
+      },
+      isNewDefaultNotebookShortcut: function (e){
+        if (this.isMacOS){
+          return e.ctrlKey && e.shiftKey && (e.which === 78);// Ctrl + Shift + n
+        }
+        return e.altKey && e.shiftKey && (e.which === 78);// Cmd + Shift + n
+      },
+      isSaveNotebookShortcut: function (e){
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83);// Cmd + s
+        }
+        return e.ctrlKey && !e.altKey && (e.which === 83);// Ctrl + s
+      },
+      isLanguageManagerShortcut: function (e) {
+        if (this.isMacOS) {
+          return e.ctrlKey && (e.which === 76);// Ctrl + l
+        }
+        return e.altKey && (e.which === 76);//Alt + l
+      },
+
+      //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+      // Firefox 1.0+
+      isFirefox: typeof InstallTrigger !== 'undefined',
+      // At least Safari 3+: "[object HTMLElementConstructor]"
+      isSafari: Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0,
+      // Chrome 1+
+      isChrome: !!window.chrome && !!window.chrome.webstore,
+
       guid: function () {
         function s4() {
           return Math.floor((1 + Math.random()) * 0x10000)
@@ -336,6 +369,11 @@
         beakerObj.notebookToBeakerObject();
         var beaker = beakerObj.beakerObj;
         beaker.prefs = {useOutputPanel: false, outputLineLimit: 1000};
+        beaker.client = {
+          mac: navigator.appVersion.indexOf("Mac") != -1,
+          windows: navigator.appVersion.indexOf("Win") != -1,
+          linux: navigator.appVersion.indexOf("Linux") != -1
+        };
         this.setThemeToBeakerObject();
         beakerObj.beakerObjectToNotebook();
       },
@@ -346,6 +384,10 @@
       stripOutBeakerLanguageManagerSettings: function(model) {
         if (model && model.namespace && model.namespace.language)
           delete model.namespace.language;
+      },
+      stripOutBeakerClient: function(model) {
+        if (model && model.namespace && model.namespace.client)
+          delete model.namespace.client;
       },
       getNotebookElement: function(currentScope) {
         return bkCoreManager.getNotebookElement(currentScope);
@@ -860,6 +902,7 @@
         var notebookModelCopy = angular.copy(m);
         bkHelper.stripOutBeakerPrefs(notebookModelCopy);
         bkHelper.stripOutBeakerLanguageManagerSettings(notebookModelCopy);
+        bkHelper.stripOutBeakerClient(notebookModelCopy);
         delete notebookModelCopy.evaluationSequenceNumber; //remove evaluation counter
         if (notebookModelCopy.cells) {
           for (var i = 0; i < notebookModelCopy.cells.length; i++) {
@@ -1126,6 +1169,20 @@
       },
       hideLanguageManagerSpinner: function(error) {
         bkUtils.hideLanguageManagerSpinner(error);
+      },
+      asyncCallInLanguageManager: function(settings) {
+        bkUtils.showLanguageManagerSpinner(settings.pluginName);
+
+        bkUtils.httpPost(settings.url, settings.data).success(function(ret) {
+          bkUtils.hideLanguageManagerSpinner();
+          settings.onSuccess && settings.onSuccess(ret);
+        }).error(function(response) {
+          var statusText = response ? response.statusText : "No response from server";
+
+          bkUtils.hideLanguageManagerSpinner(statusText);
+          console.error("Request failed: " + statusText);
+          settings.onFail && settings.onFail(statusText);
+        });
       },
       isElectron: bkUtils.isElectron,
       isMacOS: bkUtils.isMacOS

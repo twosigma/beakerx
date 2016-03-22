@@ -124,9 +124,11 @@ public class SimpleTimePlot extends TimePlot {
 
     List<Object> xs = new ArrayList<>();
     List<List<Number>> yss = new ArrayList<>();
+    Set<String> dataColumnsNames = new HashSet<>();
 
     if (data != null && columns != null) {
       for (Map<String, Object> row : data) {
+        dataColumnsNames.addAll(row.keySet());
 
         Object x = row.get(timeColumn);
         if(x instanceof Number){
@@ -146,6 +148,11 @@ public class SimpleTimePlot extends TimePlot {
           }
           yss.get(i).add((Number) row.get(column));
         }
+      }
+
+      final HashSet<String> columnsWithoutData = getColumnsWithoutData(dataColumnsNames);
+      if (!columnsWithoutData.isEmpty()) {
+        throw new IllegalArgumentException(String.format("Chart data not found for columns: %s", columnsWithoutData));
       }
 
       List<Color> colors = getChartColors();
@@ -260,6 +267,12 @@ public class SimpleTimePlot extends TimePlot {
   public void setDisplayPoints(boolean displayPoints) {
     this.displayPoints = displayPoints;
     reinitialize();
+  }
+
+  private HashSet<String> getColumnsWithoutData(Set<String> dataColumnsNames) {
+    final HashSet<String> columnsCopy = new HashSet<>(columns);
+    columnsCopy.removeAll(dataColumnsNames);
+    return columnsCopy;
   }
 
   private interface Predicate<T> {

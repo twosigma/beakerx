@@ -45,6 +45,7 @@ import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
 
 public class JavaEvaluator {
+  private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
   protected final String shellId;
   protected final String sessionId;
   protected final String packageId;
@@ -191,7 +192,7 @@ public class JavaEvaluator {
       insert++;
     }
      
-    final String CODE_TO_INSERT = "public class Foo { public static void beakerRun() { \n";
+    final String CODE_TO_INSERT = "public class " + WRAPPER_CLASS_NAME + " { public static void beakerRun() { \n";
       
     StringBuilder sb = new StringBuilder();
     for ( int i=0; i<insert; i++) {
@@ -330,7 +331,7 @@ public class JavaEvaluator {
             if (codev[codev.length-1].matches("(^|.*\\s+)return\\s+.*"))
               ret = "Object";
             // this is an expression evaluation
-            javaSourceCode.append("public class Foo {\n");
+            javaSourceCode.append("public class " + WRAPPER_CLASS_NAME + " {\n");
             javaSourceCode.append("public static ");
             javaSourceCode.append(ret);
             javaSourceCode.append(" beakerRun() throws Exception {\n");
@@ -339,13 +340,13 @@ public class JavaEvaluator {
             javaSourceCode.append("}\n");
             javaSourceCode.append("}\n");
         
-            compilationUnit.addJavaSource(pname+".Foo", javaSourceCode.toString());
+            compilationUnit.addJavaSource(pname+ "." + WRAPPER_CLASS_NAME, javaSourceCode.toString());
 
             try {
               javaSourceCompiler.compile(compilationUnit);
               
               javaSourceCompiler.persistCompiledClasses(compilationUnit);
-              Class<?> fooClass = loader.loadClass(pname+".Foo");
+              Class<?> fooClass = loader.loadClass(pname+ "." + WRAPPER_CLASS_NAME);
               Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
               
               if (!executor.executeTask(new MyRunnable(mth, j.outputObject, ret.equals("Object"), loader))) {

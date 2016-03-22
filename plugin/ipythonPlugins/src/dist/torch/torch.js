@@ -432,7 +432,7 @@ define(function(require, exports, module) {
                 bkHelper.hideLanguageManagerSpinner();
               }, function(err) {
                 bkHelper.hideLanguageManagerSpinner(err);
-                bkHelper.show1ButtonModal('ERROR: ' + err[0], PLUGIN_NAME + ' kernel restart failed');
+                bkHelper.show1ButtonModal('ERROR: ' + err, PLUGIN_NAME + ' kernel restart failed');
               });
             } else {
               setTimeout(waitForKernel, 50);

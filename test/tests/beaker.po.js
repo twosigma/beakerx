@@ -451,5 +451,19 @@ var BeakerPageObject = function() {
       .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
   }
 
+  this.checkDtContainer = function(codeCellOutputIdx, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    this.scrollToCodeCellOutput(codeCellOutputIdx);
+    expect(this.getDtContainer(codeCellOutputIdx, containerIdx).isPresent()).toBe(true);
+  }
+
+  this.getDtContainer = function(codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getCodeCellOutputByIndex(codeCellOutputIdx).all(By.css('.dtcontainer .bkr')).get(containerIdx);
+  }
+
+
 };
 module.exports = BeakerPageObject;

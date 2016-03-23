@@ -93,13 +93,15 @@ public class JavaSourceCompilerImpl implements JavaSourceCompiler {
         JavaCompiler.CompilationTask task = compiler.getTask(null, javaFileManager, diagnostics, compilationOptions, null, sources);
         StringBuilder diagnosticBuilder = new StringBuilder();
         task.call();
-        boolean compilationError = false;
+        int errors = 0;
         for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
-            compilationError |= buildDiagnosticMessage(diagnostic, diagnosticBuilder, registry);
+            if (buildDiagnosticMessage(diagnostic, diagnosticBuilder, registry)) {
+                errors++;
+            }
         }
         if (diagnosticBuilder.length() > 0) {
-            if (compilationError) {
-                throw new IllegalStateException(diagnosticBuilder.toString());
+            if (errors > 0) {
+                throw new IllegalStateException(getErrorMessage(diagnosticBuilder, errors));
             } else {
                 logger.log(Level.WARNING, diagnosticBuilder.toString());
             }
@@ -187,6 +189,12 @@ public class JavaSourceCompilerImpl implements JavaSourceCompiler {
         return new CompilationUnitImpl(outputClassDirectory);
     }
 
+    private String getErrorMessage(StringBuilder diagnosticBuilder, int errors) {
+        if (errors > 1) {
+            diagnosticBuilder.insert(0, String.format("%d compilation errors\n", errors));
+        }
+        return diagnosticBuilder.toString();
+    }
 
     public void persistCompiledClasses(CompilationUnit compilationUnit) {
         JavaFileObjectRegistry registry = compilationUnit.getRegistry();

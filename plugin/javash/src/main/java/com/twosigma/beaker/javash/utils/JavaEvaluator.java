@@ -227,7 +227,7 @@ public class JavaEvaluator {
       jobDescriptor j = null;
       JavaSourceCompiler javaSourceCompiler;
   
-      javaSourceCompiler = new JavaSourceCompilerImpl();
+      javaSourceCompiler = new BeakerJavaSourceCompiler();
       NamespaceClient nc =null;
       
       while(!exit) {
@@ -329,7 +329,7 @@ public class JavaEvaluator {
               javaSourceCompiler.compile(compilationUnit);
               javaSourceCompiler.persistCompiledClasses(compilationUnit);
               j.outputObject.finished(pname+"."+cname);
-            } catch(Exception e) { j.outputObject.error("ERROR:\n"+e.toString()); }    
+            } catch(Exception e) { j.outputObject.error("ERROR: "+e.toString()); }
           } else {
             String ret = "void";
             if (codev[codev.length-1].matches("(^|.*\\s+)return\\s+.*"))

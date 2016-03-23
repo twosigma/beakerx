@@ -32,10 +32,7 @@ describe('beaker landing load', function() {
 describe('beaker landing page', function() {
   beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL);
-    browser.waitForAngular().then(function() {
-      done();
-    });
+    browser.get(beakerPO.baseURL).then(done);
   });
 
   it('has a title and menu', function() {

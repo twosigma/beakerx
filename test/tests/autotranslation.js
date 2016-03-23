@@ -18,11 +18,10 @@ var BeakerPageObject = require('./beaker.po.js');
 var path = require('path');
 
 describe('autotranslation', function() {
-  beforeEach(function() {
+  beforeEach(function(done) {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000; // Slow initialization cells, CI box might need a long time to initialize these
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL);
-    browser.waitForAngular();
+    browser.get(beakerPO.baseURL).then(done);
   });
 
   it('handles JVM notebook', function(done) {

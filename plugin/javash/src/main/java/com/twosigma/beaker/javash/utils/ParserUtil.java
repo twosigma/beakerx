@@ -100,20 +100,22 @@ public class ParserUtil {
             state = State.CAN_BE_COMMENT_START;
           } else if (c == '"') {
             state = State.IN_STRING;
-            builder.append(c);
           } else if (c == '\'') {
             state = State.IN_CHAR;
-            builder.append(c);
-          } else {
-            builder.append(c);
           }
+          builder.append(c);
           break;
         case CAN_BE_COMMENT_START:
           if (parserState.isLastChar('/') && c == '/') {
+            if (builder.length() > 0) builder.setLength(builder.length() - 1);
             state = State.IN_LINE_COMMENT;
           } else if (parserState.isLastChar('/') && c == '*') {
+            if (builder.length() > 0) builder.setLength(builder.length() - 1);
             state = State.IN_BLOCK_COMMENT;
             inBlock = new StringBuffer();
+          } else {
+            state = State.CODE;
+            builder.append(c);
           }
           break;
         case IN_LINE_COMMENT:

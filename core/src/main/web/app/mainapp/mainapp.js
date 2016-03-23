@@ -1003,7 +1003,7 @@
         }
 
         function resetAllKernels() {
-          var statusMessage = 'Trying to reset all kernels';
+          var statusMessage = 'Resetting all languages and running all init cells';
           bkHelper.showStatus(statusMessage);
 
           var evaluatorsWithResetMethod = _.values(bkEvaluatorManager.getLoadedEvaluators()).filter(function (item) {

@@ -85,7 +85,7 @@
                 "",
                 "Click on this cell to see how this formatting was specified or to edit its contents.",
                 "Click away on the background of the notebook to reformat and display.",
-                "You can also use the {{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"&#x2318;\":\"Control\"}}-Enter keyboard shortcut to format a markdown cell.",
+                "You can also use the {{(beaker.client.mac)?\"&#x2318;\":\"Control\"}}-Enter keyboard shortcut to format a markdown cell.",
                 "",
                 "You can embed TeX ([Donald Knuth's](https://en.wikipedia.org/wiki/Donald_Knuth) mathematical typesetting system)",
                 "into a markdown cell by enclosing it with dollar characters: $e^{i\\pi}+1=0$.",
@@ -170,7 +170,7 @@
                 "{{beaker.e.toFixed(3)}}.",
                 "",
                 "You can also customize content according to the reader's operating sytem.  For example, you are on a",
-                "{{(navigator.appVersion.indexOf(\"Mac\")!=-1)?\"Mac, so &#x2318;-O\":\"PC, so Control-O\"}} opens a file.",
+                "{{(beaker.client.mac)?\"Mac, so &#x2318;-O\":\"PC, so Control-O\"}} opens a file.",
                 "",
                 "In order to get double braces without triggering JavaScript evaluation, use a zero-width unicode space",
                 "(see the markdown source for this cell)."

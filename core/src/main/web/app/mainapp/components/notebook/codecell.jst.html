@@ -41,7 +41,7 @@
         </div>
       </div>
     </div>
-    <div ng-if="!displayOutput"
+    <div ng-if="!displayOutput && hasOutput()"
          ng-style="{'min-height': (cellmodel.output && cellmodel.output.height) + 'px'}"
          class="code-cell-output"></div>
     <div ng-if ="displayOutput && hasOutput()" class="code-cell-output" ng-class="{

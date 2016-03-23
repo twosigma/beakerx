@@ -33,6 +33,7 @@ define(function(require, exports, module) {
     fgColor: "#FFFFFF",
     borderColor: "",
     shortName: "Sq",
+    tooltip: "SQL is one of the oldest and most common database query languages.",
     newShell: function(shellId, cb, ecb) {
       if (!shellId)
         shellId = "";

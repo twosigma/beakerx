@@ -1087,11 +1087,6 @@
           if (pp.width() > me.width()) {
             pp.width(me.width());
           }
-          if (pp.width() >= me.width()) {
-            me.attr('width', 'auto');
-          } else {
-            me.removeAttr('width');
-          }
           scope.updateResizeHandleWidth();
           if (scope.fixcols) { //do not need data update
             scope.fixcols._fnColCalc();
@@ -1544,8 +1539,13 @@
               if(scope.table){
                 //allow cell's text be truncated when column is resized to a very small
                 scope.table.columns().every(function(i){
-                  settings.aoColumns[i].sWidth = settings.aoColumns[i].sWidthOrig;
-                  $(scope.table.column(i).nodes()).css('max-width', settings.aoColumns[i].sWidth);
+                  var colWidth = settings.aoColumns[i].sWidthOrig;
+                  if (colWidth) {
+                    settings.aoColumns[i].sWidth = colWidth;
+                    $(scope.table.column(i).nodes())
+                      .css('max-width', colWidth)
+                      .css('min-width', colWidth);
+                  }
                 });
               }
             },

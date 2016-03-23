@@ -40,6 +40,7 @@ define(function(require, exports, module) {
       fgColor: "#000000",
       borderColor: "",
       shortName: "Lu",
+      tooltip: "Torch is a scientific computing and machine learning environment for Lua.",
       indentSpaces: 2,
       newShell: function(shellID, cb, ecb) {
 

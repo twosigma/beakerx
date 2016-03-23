@@ -11,7 +11,8 @@
                     "mode": "javascript",
                     "background": "#FFE0F0"
                 }
-            }
+            },
+            "languageVersion": "ES2015"
         },
         {
             "name": "IPython",
@@ -26,7 +27,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.chart.KeyboardCodes",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -86,8 +87,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "IPython",
-                "elapsedTime": 369,
-                "shellId": "BFD34B3E6D5A4CCD848905327557F7E9"
+                "elapsedTime": 347,
+                "shellId": "373612C62DCF4729A29DFEBD8EA8F112"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -114,8 +115,8 @@
                 "result": 11,
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 15,
-                "height": 36
+                "elapsedTime": 26,
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -142,9 +143,9 @@
                 "result": 12,
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ee9a6fff-4e6e-46d3-8ccc-5b220bc169e2",
-                "elapsedTime": 637,
-                "height": 36
+                "shellId": "c5d6dc2d-0c3e-4151-9d70-b748e32e2207",
+                "elapsedTime": 992,
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -215,8 +216,8 @@
                 ],
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 15,
-                "height": 36
+                "elapsedTime": 22,
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -233,7 +234,7 @@
             "id": "markdownJiBesS",
             "type": "markdown",
             "body": [
-                "You can see all the values set on the `beaker` object just by returning it from a JavaScript cell"
+                "You can see all the values set on the `beaker` object just by returning it from a JavaScript cell.  Each value has a menu you can use to delete or rename it."
             ],
             "evaluatorReader": false
         },
@@ -264,12 +265,16 @@
                     "labels": [
                         "y",
                         "x"
-                    ]
+                    ],
+                    "layout": {
+                        "borderDisplayed": false,
+                        "type": "BeakerObjectLayoutManager"
+                    }
                 },
                 "selectedType": "OutputContainer",
                 "pluginName": "JavaScript",
-                "elapsedTime": 15,
-                "height": 111
+                "elapsedTime": 20,
+                "height": 131
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -299,7 +304,7 @@
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
                 "elapsedTime": 13,
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -370,7 +375,7 @@
                 "selectedType": "Results",
                 "pluginName": "JavaScript",
                 "elapsedTime": 159,
-                "height": 86
+                "height": 106
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -384,7 +389,8 @@
             3,
             5,
             8
-        ]
+        ],
+        "x": 11
     },
     "metadata": {
         "publication-id": "560b5680-9a96-4fc1-a7f2-a4916c8de7e3"

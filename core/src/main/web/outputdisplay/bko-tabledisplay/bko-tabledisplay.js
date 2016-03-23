@@ -935,14 +935,18 @@
           var i;
 
           // validate saved state (if any) by using column \Names
+          var modelColumnNames = model.columnNames.slice(0);
+          if (model.hasIndex === 'true') {
+            modelColumnNames.shift();
+          }
           if (scope.savedstate !== undefined) {
             if (scope.savedstate.columnNames === undefined) {
               scope.savedstate = undefined;
-            } else if (scope.savedstate.columnNames.length !== model.columnNames.length) {
+            } else if (scope.savedstate.columnNames.length !== modelColumnNames.length) {
               scope.savedstate = undefined;
             } else {
               for (i = 0; i < scope.savedstate.columnNames.length; i++) {
-                if (model.columnNames[i] !== scope.savedstate.columnNames[i]) {
+                if (modelColumnNames[i] !== scope.savedstate.columnNames[i]) {
                   scope.savedstate = undefined;
                   break;
                 }
@@ -1562,13 +1566,14 @@
             }
           };
 
+          var domCommon = '<"bko-table"Z' + (scope.data.length > 500 ? 'r' : '') + 't';
           if (!scope.pagination.use) {
             init.paging = false;
             init.scrollY = scope.pagination.rowsToDisplay * 27 + 2;
             init.scrollCollapse = true;
-            init.dom = '<"bko-table"Zrtf<"#' + scope.id + '_evalfilter">>';
+            init.dom = domCommon + 'f<"#' + scope.id + '_evalfilter">>';
           } else {
-            init.dom = '<"bko-table"Zrt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf<"#' + scope.id + '_evalfilter">>';
+            init.dom = domCommon + '<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf<"#' + scope.id + '_evalfilter">>';
             if (scope.data.length > 25) {
               init.pagingType = 'simple_numbers';
               init.pageLength = 25;

@@ -18,10 +18,10 @@
   'use strict';
 
   var module = angular.module('bk.notebook');
-  module.directive('simpleLayout', ['bkHelper', 'bkCoreManager', function (bkHelper, bkCoreManager) {
+  module.directive('beakerobjectLayout', ['bkHelper', 'bkCoreManager', function (bkHelper, bkCoreManager) {
     return {
       restrict: 'E',
-      template: JST['mainapp/components/notebook/simplelayout'](),
+      template: JST['mainapp/components/notebook/beakerobjectlayout'](),
       scope: {
         model: '='
       },
@@ -55,6 +55,32 @@
             });
         };
 
+        $scope.bkoMenuItems = [
+            {
+              name: 'Delete',
+              action: function(idx) {
+                var property = $scope.model.getCellModel().labels[idx];
+                var beakerObj = bkHelper.getBeakerObject();
+                var beaker = beakerObj.beakerObj;
+
+                if (beaker && property) {
+                  delete beaker[property];
+                  beakerObj.beakerObjectToNotebook();
+                  $scope.evaluate();
+                }
+              }
+            },
+            {
+              name: 'Rename',
+              action: function(idx) {
+                $scope.getPropertyId = function() {
+                  return idx;
+                };
+                bkCoreManager.showFullModalDialog(function cb(r) { } ,
+                  'app/mainapp/dialogs/bkorename.jst.html', 'BkoRenameController', $scope);
+              }
+            }
+        ];
         $scope.$watch('isShowOutput()', function (oldval, newval) {
           $scope.showoutput = newval;
         });

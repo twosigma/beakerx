@@ -19,9 +19,32 @@ bk-code-cell-output {
     background: rgb(235, 235, 235);
   }
 
-  .bk-object-label {
-    color: #31708f;
+  .bk-object-label-menu {
+    color:              $green;
+    cursor:             pointer;
+    position: relative;
+    background:         url(../images/down@2x.png) no-repeat center right;
+    padding-right:      13px;
+    background-size:    8px;
+
+    &:hover {
+      color: #1492df;
+    }
+
+    .toggle-menu & {
+      top: 1px;
+      right: 8px;
+      height: 19px;
+      position: relative;
+      display: none;
+    }
+
+    b {
+      position: relative;
+      display: inline-block;
+    }
   }
+
 }
 
 .markup, .dataTables_scrollBody {

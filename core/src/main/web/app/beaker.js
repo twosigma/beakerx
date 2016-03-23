@@ -408,9 +408,9 @@
     beakerModule.run(function(bkEvaluatePluginManager) {
       // for known plugins, so we can refer to the plugin with either its name or URL
       var defaultEvaluatorUrlMap = {
-        "HTML": { url: "./plugin/evaluator/html.js",             bgColor: "#E3502B", fgColor: "#FFFFFF", borderColor: "",        shortName: "Ht", tooltip: "Hyper text markup language, including CSS" },
-        "TeX": { url: "./plugin/evaluator/latex.js",           bgColor: "#FFFFFF", fgColor: "#030303", borderColor: "#3D4444", shortName: "Tx", tooltip: "Donald Knuth's mathematical typesetting language" },
-        "JavaScript": { url: "./plugin/evaluator/javaScript.js", bgColor: "#EFDB52", fgColor: "#4A4A4A", borderColor: "",        shortName: "Js", tooltip: "The native scripting language of the web" }
+        "HTML": { url: "./plugin/evaluator/html.js",             bgColor: "#E3502B", fgColor: "#FFFFFF", borderColor: "",        shortName: "Ht", tooltip: "HTML stands for Hyper text markup language, including CSS." },
+        "TeX": { url: "./plugin/evaluator/latex.js",           bgColor: "#FFFFFF", fgColor: "#030303", borderColor: "#3D4444", shortName: "Tx", tooltip: "TeX is Donald Knuth's mathematical typesetting language." },
+        "JavaScript": { url: "./plugin/evaluator/javaScript.js", bgColor: "#EFDB52", fgColor: "#4A4A4A", borderColor: "",        shortName: "Js", tooltip: "JavaScript is the native scripting language of the web." }
       };
 
       _.each(defaultEvaluatorUrlMap, function(value, key) {

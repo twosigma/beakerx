@@ -91,6 +91,12 @@
         }
         return e.ctrlKey && !e.altKey && (e.which === 83);// Ctrl + s
       },
+      isLanguageManagerShortcut: function (e) {
+        if (this.isMacOS) {
+          return e.ctrlKey && (e.which === 76);// Ctrl + l
+        }
+        return e.altKey && (e.which === 76);//Alt + l
+      },
 
       //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
       // Firefox 1.0+
@@ -363,6 +369,11 @@
         beakerObj.notebookToBeakerObject();
         var beaker = beakerObj.beakerObj;
         beaker.prefs = {useOutputPanel: false, outputLineLimit: 1000};
+        beaker.client = {
+          mac: navigator.appVersion.indexOf("Mac") != -1,
+          windows: navigator.appVersion.indexOf("Win") != -1,
+          linux: navigator.appVersion.indexOf("Linux") != -1
+        };
         this.setThemeToBeakerObject();
         beakerObj.beakerObjectToNotebook();
       },
@@ -373,6 +384,10 @@
       stripOutBeakerLanguageManagerSettings: function(model) {
         if (model && model.namespace && model.namespace.language)
           delete model.namespace.language;
+      },
+      stripOutBeakerClient: function(model) {
+        if (model && model.namespace && model.namespace.client)
+          delete model.namespace.client;
       },
       getNotebookElement: function(currentScope) {
         return bkCoreManager.getNotebookElement(currentScope);
@@ -887,6 +902,7 @@
         var notebookModelCopy = angular.copy(m);
         bkHelper.stripOutBeakerPrefs(notebookModelCopy);
         bkHelper.stripOutBeakerLanguageManagerSettings(notebookModelCopy);
+        bkHelper.stripOutBeakerClient(notebookModelCopy);
         delete notebookModelCopy.evaluationSequenceNumber; //remove evaluation counter
         if (notebookModelCopy.cells) {
           for (var i = 0; i < notebookModelCopy.cells.length; i++) {

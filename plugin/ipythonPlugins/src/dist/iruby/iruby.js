@@ -40,6 +40,7 @@ define(function(require, exports, module) {
       fgColor: "#FFFFFF",
       borderColor: "",
       shortName: "Rb",
+      tooltip: "Ruby is a dynamic, open source language with a focus on simplicity and productivity.",
       newShell: function(shellID, cb, ecb) {
 
         var kernel = null;

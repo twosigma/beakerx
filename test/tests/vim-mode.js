@@ -21,9 +21,9 @@ var beakerPO;
 
 describe('Vim mode', function() {
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL);
+    browser.get(beakerPO.baseURL).then(done);
 
     beakerPO.newEmptyNotebook.click();
   });

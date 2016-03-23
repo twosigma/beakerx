@@ -17,9 +17,9 @@
 var BeakerPageObject = require('./beaker.po.js');
 describe('language manager', function () {
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL);
+    browser.get(beakerPO.baseURL).then(done);
     beakerPO.newEmptyNotebook.click();
     beakerPO.notebookMenu.click();
     beakerPO.languageManagerMenuItem.click();

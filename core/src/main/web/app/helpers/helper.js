@@ -1184,6 +1184,29 @@
           settings.onFail && settings.onFail(statusText);
         });
       },
+
+      winHeight: function () {
+        return window.innerHeight || (document.documentElement || document.body).clientHeight;
+      },
+
+      isFullScreen: function (cm) {
+        return /\bCodeMirror-fullscreen\b/.test(cm.getWrapperElement().className);
+      },
+
+      setFullScreen: function (cm, full) {
+        var wrap = cm.getWrapperElement();
+        if (full) {
+          wrap.className += ' CodeMirror-fullscreen';
+          wrap.style.height = this.winHeight() + 'px';
+          document.documentElement.style.overflow = 'hidden';
+        } else {
+          wrap.className = wrap.className.replace(' CodeMirror-fullscreen', '');
+          wrap.style.height = '';
+          document.documentElement.style.overflow = '';
+        }
+        cm.refresh();
+      },
+
       isElectron: bkUtils.isElectron,
       isMacOS: bkUtils.isMacOS
     };

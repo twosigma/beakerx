@@ -342,33 +342,12 @@
       link: function(scope, element) {
         scope.showDebug = false;
 
-        function isFullScreen(cm) {
-          return /\bCodeMirror-fullscreen\b/.test(cm.getWrapperElement().className);
-        }
-
-        function winHeight() {
-          return window.innerHeight || (document.documentElement || document.body).clientHeight;
-        }
-
-        function setFullScreen(cm, full) {
-          var wrap = cm.getWrapperElement();
-          if (full) {
-            wrap.className += ' CodeMirror-fullscreen';
-            wrap.style.height = winHeight() + 'px';
-            document.documentElement.style.overflow = 'hidden';
-          } else {
-            wrap.className = wrap.className.replace(' CodeMirror-fullscreen', '');
-            wrap.style.height = '';
-            document.documentElement.style.overflow = '';
-          }
-          cm.refresh();
-        }
         var resizeHandler = function() {
           var showing = document.body.getElementsByClassName('CodeMirror-fullscreen')[0];
           if (!showing) {
             return;
           }
-          showing.CodeMirror.getWrapperElement().style.height = winHeight() + 'px';
+          showing.CodeMirror.getWrapperElement().style.height = bkHelper.winHeight() + 'px';
         };
         scope.scrollTo = function(){
           window.scrollTo(0, element.offset().top - 100);
@@ -385,13 +364,10 @@
             if (cm.state.vim && cm.state.vim.insertMode) {
               CodeMirror.Vim.exitInsertMode(cm);
             } else {
-              if (isFullScreen(cm)) {
-                setFullScreen(cm, false);
+              if (bkHelper.isFullScreen(cm)) {
+                bkHelper.setFullScreen(cm, false);
               }
             }
-          },
-          'Alt-F11': function(cm) {
-            setFullScreen(cm, !isFullScreen(cm));
           },
           'Shift-Ctrl-A': function(cm) {
             scope.appendCodeCell();

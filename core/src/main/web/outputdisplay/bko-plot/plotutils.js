@@ -640,13 +640,19 @@
       getComputedStyle: function(e, style) {
         if (!e || e.length === 0)
           return null;
+        var getValue = function(e){
+          var value = window.getComputedStyle(e.get()[0], null).getPropertyValue(style).match(/\d+/);
+          if (!value || value.length === 0 )
+            return '';
+          return value[0];
+        };
         var hiddenParent = e.parents(".ng-hide:first");
         var value;
         if (hiddenParent.length === 0) {
-          value = window.getComputedStyle(e.get()[0], null).getPropertyValue(style).match(/\d+/)[0];
+          value = getValue(e);
         }else{
           hiddenParent.removeClass("ng-hide");
-          value = window.getComputedStyle(e.get()[0], null).getPropertyValue(style).match(/\d+/)[0];
+          value = getValue(e);
           hiddenParent.addClass("ng-hide");
         }
         return parseInt(value);

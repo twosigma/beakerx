@@ -265,10 +265,10 @@
 
           plotUtils.addTitleToSvg(combinedSvg[0], plotTitle, {
             width: plotTitle.width(),
-            height: plotUtils.outerHeight(plotTitle)
+            height: plotUtils.getActualCss(plotTitle, "outerHeight")
           });
 
-          var combinedSvgHeight = plotUtils.outerHeight(plotTitle, true);
+          var combinedSvgHeight = plotUtils.getActualCss(plotTitle, "outerHeight",  true);
           var combinedSvgWidth = 0;
           for (var i = 0; i < plots.length; i++) {
             var svg = plots[i].getSvgToSave();

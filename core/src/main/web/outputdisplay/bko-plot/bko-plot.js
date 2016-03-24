@@ -1962,7 +1962,7 @@
           svg.setAttribute('class', 'svg-export');
 
           var plotTitle = scope.jqplottitle;
-          var titleOuterHeight = plotUtils.outerHeight(plotTitle, true);
+          var titleOuterHeight = plotUtils.getActualCss(plotTitle, 'outerHeight', true);
 
           //legend
           scope.adjustSvgPositionWithLegend(svg, titleOuterHeight);
@@ -1972,7 +1972,7 @@
           plotUtils.translateChildren(svg, 0, titleOuterHeight);
           plotUtils.addTitleToSvg(svg, plotTitle, {
             width: plotTitle.width(),
-            height: plotUtils.outerHeight(plotTitle)
+            height: plotUtils.getActualCss(plotTitle, 'outerHeight')
           });
           plotUtils.addInlineStyles(svg);
 
@@ -2006,8 +2006,8 @@
 
           var W = plotUtils.outerWidth(scope.jqcontainer) + containerLeftMargin + 1;//add 1 because jQuery round size
           var H = plotUtils.outerHeight(scope.jqcontainer) + titleOuterHeight + 1;
-          var legendW = plotUtils.outerWidth(legendContainer, true);
-          var legendH = plotUtils.outerHeight(legendContainer, true);
+          var legendW = plotUtils.getActualCss(legendContainer, 'outerWidth', true);
+          var legendH = plotUtils.getActualCss(legendContainer, 'outerHeight', true);
           var legendPosition = scope.stdmodel.legendPosition;
 
           if (!legendPosition.position) {
@@ -2090,8 +2090,8 @@
           var x = getPositive(position.left);
           var y = position.top != null ? getPositive(position.top) : getPositive(position.bottom);
           svg.append("foreignObject")
-            .attr("width", plotUtils.outerWidth(legend, true) + 1)//add 1 because jQuery round size
-            .attr("height", plotUtils.outerHeight(legend, true) + 1)
+            .attr("width", plotUtils.getActualCss(legend, 'outerWidth', true) + 1)//add 1 because jQuery round size
+            .attr("height", plotUtils.getActualCss(legend, 'outerHeight', true) + 1)
             .attr("x", x)
             .attr("y", y)
             .append("xhtml:body")

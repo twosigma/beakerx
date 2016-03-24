@@ -425,11 +425,14 @@
           }
           if (!bkUtils.isElectron && queryCommandEnabled) {
             var getTableData = function() {
+              var isFiltered = function (index) {
+                return $scope.table.settings()[0].aiDisplay.indexOf(index) > -1;
+              };
               var data = $scope.table.rows(function(index, data, node) {
-                return $scope.selected[index];
+                return isFiltered(index) && $scope.selected[index];
               }).data();
               if (data === undefined || data.length === 0) {
-                data = $scope.table.rows().data();
+                data = $scope.table.rows(isFiltered).data();
               }
               var out = $scope.exportTo(data, 'tabs');
               return out;

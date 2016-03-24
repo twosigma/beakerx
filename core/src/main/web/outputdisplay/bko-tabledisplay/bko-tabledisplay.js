@@ -1783,7 +1783,7 @@
               }
             };
             scope.changeAllPrecision = function (precision) {
-              for (var i = 1; i < scope.columns.length; i++) {
+              for (var i = 0; i < scope.columns.length - 1; i++) {
                 if(scope.columnHasFormat(i, 'double')){
                   scope.actualtype[i] = scope.getActualTypeByPrecision(precision);
                 }

@@ -440,6 +440,13 @@
           return false;
         }
       },
+      runAllCellsInNotebook: function () {
+        if (getCurrentApp() && getCurrentApp().runAllCellsInNotebook) {
+          return getCurrentApp().runAllCellsInNotebook();
+        } else {
+          return false;
+        }
+      },
       hasCodeCell: function(toEval) {
         if (getCurrentApp() && getCurrentApp().evaluate) {
           return getCurrentApp().hasCodeCell(toEval);

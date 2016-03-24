@@ -592,6 +592,13 @@
               saveStart();
               return bkFileManipulation.saveNotebookAs(notebookUri, uriType).then(saveDone, saveFailed);
             },
+            runAllCellsInNotebook: function () {
+              bkHelper.evaluateRoot('root').then(function (res) {
+                bkHelper.go2FirstErrorCodeCell();
+              }, function (err) {
+                bkHelper.go2FirstErrorCodeCell();
+              });
+            },
             closeNotebook: closeNotebook,
             _closeNotebook: _closeNotebook,
             collapseAllSections: function() {
@@ -1048,6 +1055,9 @@
             bkUtils.fcall(function() {
               bkCoreManager.newSession(true);
             });
+            return false;
+          } else if (e.which === 116) { // F5
+            bkHelper.runAllCellsInNotebook();
             return false;
           } else if (bkHelper.isLanguageManagerShortcut(e)) {
             bkHelper.showLanguageManager();

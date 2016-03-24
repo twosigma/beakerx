@@ -50,13 +50,10 @@ define(function(require, exports, module) {
     },
     {
       name: 'Run all cells',
+      shortcut: 'F5',
       sortorder: 130,
       action: function() {
-        bkHelper.evaluateRoot('root').then(function(res) {
-          bkHelper.go2FirstErrorCodeCell();
-        }, function(err) {
-          bkHelper.go2FirstErrorCodeCell();
-        });
+        bkHelper.runAllCellsInNotebook();
       },
       tooltip: 'Run all cells',
       id: 'run-all-cells-menuitem'

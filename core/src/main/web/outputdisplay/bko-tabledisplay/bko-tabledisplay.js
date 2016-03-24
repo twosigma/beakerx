@@ -272,8 +272,8 @@
                   'Etc/GMT-13|GMT-13:00',
                   'Etc/GMT-14|GMT-14:00']);
   //jscs:disable
-  beakerRegister.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', '$rootScope',
-    function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS, $rootScope) {
+  beakerRegister.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', '$rootScope','$timeout',
+    function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS, $rootScope, $timeout) {
   //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
     return {
@@ -852,6 +852,15 @@
 
         var unregisterOutputExpandEventListener = angular.noop; // used for deregistering listener
 
+        var redrawTable = function(){
+          if (scope.table !== undefined && tableChanged) {
+            $timeout(function () {
+              _.defer(function(){ scope.table.draw(false);});
+              tableChanged = false;
+            }, 0);
+          }
+        };
+
         scope.containerClickFunction = function(e){
           if (scope.table) {
             if ($(scope.table.table().container()).has(e.target).length) {
@@ -901,24 +910,18 @@
           unregisterOutputExpandEventListener();
 
           scope.$on(GLOBALS.EVENTS.CELL_OUTPUT_LM_SHOWED, function() {
-            if (scope.table !== undefined && tableChanged) {
-              var parents = element.parents();
-
-              var cyclingContainer =  _.find(parents, function (parent) {
-                return parent.id.indexOf("lm-cycling-panel") !== -1;
-              });
-              if (cyclingContainer && cyclingContainer.style.display !== 'none'){
-                _.defer(function () {scope.table.draw(false);});
-                tableChanged = false;
-              }
-
-              var tabContainer =  _.find(parents, function (parent) {
-                return parent.id.indexOf("lm-tab-panel") !== -1;
-              });
-              if (tabContainer && tabContainer.classList.contains("active")){
-                _.defer(function () {scope.table.draw(false);});
-                tableChanged = false;
-              }
+            var parents = element.parents();
+            var cyclingContainer =  _.find(parents, function (parent) {
+              return parent.id.indexOf("lm-cycling-panel") !== -1;
+            });
+            if (cyclingContainer && cyclingContainer.style.display !== 'none'){
+              redrawTable();
+            }
+            var tabContainer =  _.find(parents, function (parent) {
+              return parent.id.indexOf("lm-tab-panel") !== -1;
+            });
+            if (tabContainer && tabContainer.classList.contains("active")){
+              redrawTable();
             }
           });
         };
@@ -926,10 +929,21 @@
           scope.doDestroy(true);
 
           unregisterOutputExpandEventListener = scope.$on(GLOBALS.EVENTS.CELL_OUTPUT_EXPANDED, function() {
-            if (scope.table !== undefined && tableChanged) {
-              _.defer(function() {scope.table.draw(false);});
-              tableChanged = false;
+            var parents = element.parents();
+            var cyclingContainer =  _.find(parents, function (parent) {
+              return parent.id.indexOf("lm-cycling-panel") !== -1;
+            });
+            if (cyclingContainer && cyclingContainer.style.display === 'none'){
+              return;
             }
+            var tabContainer =  _.find(parents, function (parent) {
+              return parent.id.indexOf("lm-tab-panel") !== -1;
+            });
+
+            if (tabContainer && !tabContainer.classList.contains("active")){
+              return;
+            }
+            redrawTable();
           });
 
           var i;

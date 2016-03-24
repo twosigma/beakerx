@@ -56,10 +56,10 @@
     return {
 
       safeWidth: function(e){
-        return bkHelper.isChrome ? window.getComputedStyle(e.get()[0], null).getPropertyValue('width').match(/\d+/)[0] : e.width();
+        return bkHelper.isChrome ? this.getComputedStyle(e, 'width') : e.width();
       },
       safeHeight: function(e){
-        return bkHelper.isChrome ? window.getComputedStyle(e.get()[0], null).getPropertyValue('height').match(/\d+/)[0] : e.height();
+        return bkHelper.isChrome ? this.getComputedStyle(e, 'height')  : e.height();
       },
       outsideScr: function(scope, x, y) {
         var W = this.safeWidth(scope.jqsvg), H = this.safeHeight(scope.jqsvg);
@@ -616,6 +616,33 @@
           download(canvas.toDataURL("image/png"), fileName);
           context.clearRect(0, 0, canvas.width, canvas.height);
         };
+      },
+
+      outerHeight: function (e, includeMargin) {
+        if (!e || e.length === 0)
+          return null;
+        return this.getComputedStyle(e, 'height')
+        + this.getComputedStyle(e, 'padding-top') + this.getComputedStyle(e, 'padding-bottom')
+        + this.getComputedStyle(e, 'border-top') + this.getComputedStyle(e, 'border-bottom')
+        + ((includeMargin === true ) ? this.getComputedStyle(e, 'margin-top') + this.getComputedStyle(e, 'margin-bottom') : 0);
+
+      },
+
+      outerWidth: function (e, includeMargin) {
+        if (!e || e.length === 0)
+          return null;
+        return this.getComputedStyle(e, 'width')
+        + this.getComputedStyle(e, 'padding-left') + this.getComputedStyle(e, 'padding-right')
+        + this.getComputedStyle(e, 'border-left') + this.getComputedStyle(e, 'border-right')
+        + ((includeMargin === true ) ? this.getComputedStyle(e, 'margin-left') + this.getComputedStyle(e, 'margin-right') : 0);
+      },
+
+
+      getComputedStyle: function(e, style) {
+        if (!e || e.length === 0)
+          return null;
+        var value = window.getComputedStyle(e.get()[0], null).getPropertyValue(style).match(/\d+/)[0];
+        return parseInt(value);
       },
 
       getActualCss: function(jqelement, jqFunction, jqFunctionParams) {

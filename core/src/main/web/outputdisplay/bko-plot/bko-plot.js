@@ -2002,8 +2002,10 @@
           var margin = scope.layout.legendMargin;
           var legendContainer = scope.jqlegendcontainer.find("#plotLegend");
           var containerLeftMargin = parseFloat(scope.jqcontainer.css("margin-left"));
-          var W = plotUtils.getActualCss(scope.jqcontainer, 'outerWidth') + containerLeftMargin + 1;//add 1 because jQuery round size
-          var H = plotUtils.getActualCss(scope.jqcontainer, 'outerHeight') + titleOuterHeight + 1;
+
+
+          var W = plotUtils.outerWidth(scope.jqcontainer) + containerLeftMargin + 1;//add 1 because jQuery round size
+          var H = plotUtils.outerHeight(scope.jqcontainer) + titleOuterHeight + 1;
           var legendW = plotUtils.getActualCss(legendContainer, 'outerWidth', true);
           var legendH = plotUtils.getActualCss(legendContainer, 'outerHeight', true);
           var legendPosition = scope.stdmodel.legendPosition;

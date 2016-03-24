@@ -358,10 +358,15 @@
 
         $scope.doCSVExport = function(all) {
           var data;
+          var isFiltered = function (index) {
+            return $scope.table.settings()[0].aiDisplay.indexOf(index) > -1;
+          };
           if (!all) {
-            data = $scope.table.rows().data();
+            data = $scope.table.rows(isFiltered).data();
           } else {
-            data = $scope.table.rows(function(index, data, node) { return $scope.selected[index]; }).data();
+            data = $scope.table.rows(function(index, data, node) {
+              return $scope.selected[index] && isFiltered(index);
+            }).data();
           }
           var out = $scope.exportTo(data, 'csv');
           bkHelper.selectFile(function(n) {
@@ -1905,7 +1910,7 @@
               var padding = 15;
               var textWidth = jqInput.parent().siblings('.hidden-length').text(jqInput.val()).width() + iconsWidth;
               var headerWidth = $(column.header()).width();
-              if(textWidth > headerWidth){
+              if(textWidth > headerWidth && jqInput.parent().hasClass('editing')){
                 jqInput.css('width', textWidth + padding);
               } else {
                 jqInput.css('width', '');

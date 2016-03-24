@@ -31,9 +31,6 @@ import java.io.StringWriter;
 import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 import com.twosigma.beaker.jvm.utils.BeakerPrefsUtils;
 
-import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
-import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
-
 import java.lang.reflect.*;
 import java.nio.file.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -225,9 +222,9 @@ public class JavaEvaluator {
     public void run() {
       DynamicClassLoaderSimple loader = null;
       jobDescriptor j = null;
-      JavaSourceCompiler javaSourceCompiler;
+      org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler;
   
-      javaSourceCompiler = new BeakerJavaSourceCompiler();
+      javaSourceCompiler = new JavaSourceCompiler();
       NamespaceClient nc =null;
       
       while(!exit) {
@@ -263,7 +260,7 @@ public class JavaEvaluator {
           Matcher m;
           String pname = packageId;
           
-          JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(outDir));
+          org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(outDir));
         
           // build the compiler class path
           String classpath = System.getProperty("java.class.path");

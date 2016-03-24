@@ -101,11 +101,19 @@ define(function(require, exports, module) {
       }
     },
     resetEnvironment: function () {
+      var deferred = bkHelper.newDeferred();
       bkHelper.asyncCallInLanguageManager({
         url: bkHelper.serverUrl(serviceBase + "/rest/javash/resetEnvironment"),
         data: {shellId: this.settings.shellID},
-        pluginName: PLUGIN_NAME
+        pluginName: PLUGIN_NAME,
+        onSuccess: function (data) {
+          deferred.resolve();
+        },
+        onFail: function (err) {
+          deferred.reject(err);
+        }
       });
+      return deferred.promise;
     },
     killAllThreads: function () {
       bkHelper.asyncCallInLanguageManager({
@@ -156,7 +164,7 @@ define(function(require, exports, module) {
       outdir:      {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
       classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
       imports:     {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"},
-      resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
+      reset:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
       killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
     },
     cometdUtil: cometdUtil
@@ -228,7 +236,7 @@ define(function(require, exports, module) {
           this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
-            this[action]();
+            return this[action]();
           };
         };
         JavaShell.prototype = JavaSh;

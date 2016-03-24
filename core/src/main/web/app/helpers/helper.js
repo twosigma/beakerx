@@ -97,6 +97,12 @@
         }
         return e.altKey && (e.which === 76);//Alt + l
       },
+      isResetEnvironmentShortcut: function (e) {
+        if (this.isMacOS) {
+          return e.ctrlKey && (e.which === 82); // Alt + r
+        }
+        return e.altKey && (e.which === 82); // Alt + r
+      },
 
       //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
       // Firefox 1.0+

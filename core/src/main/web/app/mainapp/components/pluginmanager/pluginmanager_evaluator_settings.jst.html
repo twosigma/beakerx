@@ -33,5 +33,5 @@
 
 </div>
 <div ng-repeat="action in actions" class="action language-option clearfix">
-  <button class="btn btn-default" ng-click="evaluator.perform(action.key)">{{ action.name }}</button>
+  <button class="btn btn-default" ng-click="perform(action)" ng-disabled="action.running">{{ action.name }}</button>
 </div>

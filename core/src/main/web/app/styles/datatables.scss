@@ -20,7 +20,7 @@ $border-color: #D4D0D0;
 table.dataTable {
   margin : 0;
   thead th, tbody td {
-    padding: 4px 10px 4px 20px;
+    padding: 6px 10px 2px 20px;
     white-space: nowrap;
     border: 1px solid $border-color;
     border-width: 0 1px 0 0;
@@ -40,6 +40,7 @@ table.dataTable {
     .filterRow th {
       border-top-width: 0px;
       padding-left: 5px;
+      overflow-x: initial;
     }
   }
 }
@@ -195,34 +196,31 @@ $fixed-column-even: #fafafa;
 $fixed-column-odd: #f3f3f3;
 $fixed-column-even-sorting: #f7f7f7;
 $fixed-column-odd-sorting: #f1f1f1;
+$fixed-column-selected: #B0BED9;
 
-table.dataTable.DTFC_Cloned.display tbody tr.odd > .sorting_1,
-table.dataTable.DTFC_Cloned.order-column.stripe tbody tr.odd > .sorting_1 ,
-table.dataTable.DTFC_Cloned.display tbody tr.odd > .sorting_2,
-table.dataTable.DTFC_Cloned.order-column.stripe tbody tr.odd > .sorting_2,
-table.dataTable.DTFC_Cloned.display tbody tr.odd > .sorting_3,
-table.dataTable.DTFC_Cloned.order-column.stripe tbody tr.odd > .sorting_3 {
-  background-color: $fixed-column-odd-sorting;
+table.dataTable.DTFC_Cloned.stripe tbody tr,
+table.dataTable.DTFC_Cloned.display tbody tr {
+  &.odd {
+    background-color: $fixed-column-odd;
+    & > .sorting_1 :not(.selected),
+    & > .sorting_2 :not(.selected),
+    & > .sorting_3 :not(.selected) {
+      background-color: $fixed-column-odd-sorting;
+    }
+  }
+  &.even {
+    background-color: $fixed-column-even;
+    & > .sorting_1 :not(.selected),
+    & > .sorting_2 :not(.selected),
+    & > .sorting_3 :not(.selected)  {
+      background-color: $fixed-column-even-sorting;
+    }
+  }
+  &.selected {
+    background-color: $fixed-column-selected;
+  }
 }
 
-table.dataTable.DTFC_Cloned.display tbody tr.even > .sorting_1,
-table.dataTable.DTFC_Cloned.order-column.stripe tbody tr.even > .sorting_1,
-table.dataTable.DTFC_Cloned.display tbody tr.even > .sorting_2,
-table.dataTable.DTFC_Cloned.order-column.stripe tbody tr.even > .sorting_2,
-table.dataTable.DTFC_Cloned.display tbody tr.even > .sorting_3,
-table.dataTable.DTFC_Cloned.order-column.stripe tbody tr.even > .sorting_3 {
-  background-color: $fixed-column-even-sorting;
-}
-
-table.dataTable.DTFC_Cloned.stripe tbody tr.odd,
-table.dataTable.DTFC_Cloned.display tbody tr.odd {
-  background-color: $fixed-column-odd;
-}
-
-table.dataTable.DTFC_Cloned.stripe tbody tr.even,
-table.dataTable.DTFC_Cloned.display tbody tr.even {
-  background-color: $fixed-column-even;
-}
 
 .DTFC_LeftWrapper table.dataTable thead th:last-child,
 .DTFC_LeftWrapper table.dataTable tbody td:last-child {

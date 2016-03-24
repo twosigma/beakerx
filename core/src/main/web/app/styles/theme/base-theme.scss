@@ -210,13 +210,6 @@
       color:      $std-fg-color;
     }
 
-    .bk-object-label {
-      color: $std-link-color;
-      &:hover {
-        color: $std-out-color;
-      }
-    }
-
     .output_subarea pre {
       color: $std-fg-color !important;
     }

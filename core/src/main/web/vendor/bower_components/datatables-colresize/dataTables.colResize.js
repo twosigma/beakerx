@@ -511,6 +511,14 @@
                         });
                         //Apply the new width to the columns after the table has been resized
                         domCols.width(that.s.mouse.targetColumn.width);
+                        if (that.s.mouse.targetColumn.width) { //allow resize when table width define to be small
+                            domCols.each(function (i, th) {
+                                var domBodyCols = $(th).parents('table').find('tbody tr').find("td:eq(" + $(th).index() + ")");
+                                domBodyCols
+                                  .css('max-width', that.s.mouse.targetColumn.width)
+                                  .css('min-width', that.s.mouse.targetColumn.width);
+                            });
+                        }
                     } else {
                         //A neighbour column must exist in order to resize a column in a table with a fixed width
                         if (that.s.mouse.neighbourColumn) {

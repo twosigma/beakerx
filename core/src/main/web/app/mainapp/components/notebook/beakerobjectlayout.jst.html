@@ -17,9 +17,9 @@
 <ul>
   <li class="outputcontainer-li" ng-repeat="i in items track by $index">
     <div class="dropdown">
-      <div class="dropdown-toggle" data-toggle="dropdown" title="beaker object menu">
-        <b class="bk-object-label">{{model.getCellModel().labels[$index]}}</b><br/>
-      </div>
+      <a class="dropdown-toggle bk-object-label-menu bkr" data-toggle="dropdown">
+        <b class="bkr">{{model.getCellModel().labels[$index]}}</b>
+      </a>
       <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
         <li ng-repeat="item in bkoMenuItems">
           <a href="#"

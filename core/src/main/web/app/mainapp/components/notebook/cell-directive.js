@@ -146,6 +146,7 @@
 
         $scope.deleteCell = function() {
           notebookCellOp.delete($scope.cellmodel.id, true);
+          bkSessionManager.setNotebookModelEdited(true);
         };
 
         $scope.getEvaluators = function() {
@@ -163,10 +164,12 @@
 
         $scope.moveCellUp = function() {
           notebookCellOp[moveMethod + 'Up']($scope.cellmodel.id);
+          bkSessionManager.setNotebookModelEdited(true);
         };
 
         $scope.moveCellDown = function() {
           notebookCellOp[moveMethod + 'Down']($scope.cellmodel.id);
+          bkSessionManager.setNotebookModelEdited(true);
         };
 
         $scope.moveCellUpDisabled = function() {

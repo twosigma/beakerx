@@ -21,7 +21,6 @@ describe('Cell Menu', function() {
   beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL);
-    browser.waitForAngular();
     beakerPO.newEmptyNotebook.click();
     beakerPO.insertNewCell()
     .then(done);

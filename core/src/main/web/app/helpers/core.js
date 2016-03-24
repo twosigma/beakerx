@@ -663,7 +663,7 @@
             return autocompleteParametersService.endCompletionAndMoveCursor();
           }
           cm.execCommand("newlineAndIndent");
-        }
+        };
 
         var backspace = function(cm) {
           var cursor, anchor,
@@ -686,6 +686,14 @@
             cm.replaceRange("", i.from, i.to);
           });
           autocompleteService.backspace(cursor, cm);
+        };
+
+        var isFullScreen = function (cm) {
+          return bkHelper.isFullScreen(cm);
+        };
+
+        var setFullScreen = function (cm) {
+          bkHelper.setFullScreen(cm, !bkHelper.isFullScreen(cm));
         };
 
         var keys = {
@@ -719,7 +727,8 @@
             'Right': goCharRightOrMoveFocusDown,
             'Left': goCharLeftOrMoveFocusDown,
             "Shift-Ctrl-F": reformat,
-            "Shift-Cmd-F": reformat
+            "Shift-Cmd-F": reformat,
+            "Alt-F11": setFullScreen
         };
 
         if (codeMirrorExtension.extraKeys !== undefined) {

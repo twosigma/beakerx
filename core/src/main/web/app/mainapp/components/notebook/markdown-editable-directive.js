@@ -106,6 +106,13 @@
           mode: "markdown",
           smartIndent: false
         });
+        _.extend(codeMirrorOptions.extraKeys, {
+          'Esc' : function(cm) {
+              if (bkHelper.isFullScreen(cm)) {
+                bkHelper.setFullScreen(cm, false);
+              }
+          }
+        });
 
         scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], codeMirrorOptions);
 

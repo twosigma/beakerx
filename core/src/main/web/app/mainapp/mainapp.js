@@ -1024,7 +1024,11 @@
               }
             } else {
               bkHelper.clearStatus(statusMessage);
-              bkHelper.evaluateRoot("initialization");
+              bkHelper.evaluateRoot("initialization").then(function (res) {
+                bkHelper.go2FirstErrorCodeCell();
+              }, function (err) {
+                bkHelper.go2FirstErrorCodeCell();
+              });
             }
           }
         }

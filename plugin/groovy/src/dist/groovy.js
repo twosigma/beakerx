@@ -122,7 +122,7 @@ define(function(require, exports, module) {
           deferred.reject(err);
         }
       });
-      return deferred;
+      return deferred.promise;
     },
     killAllThreads: function () {
       bkHelper.asyncCallInLanguageManager({
@@ -256,7 +256,7 @@ define(function(require, exports, module) {
           this.perform = function(what) {
             var action = this.spec[what].action;
             // XXX should use promise cb to avoid silent failure
-            this[action]();
+            return this[action]();
           };
         };
         GroovyShell.prototype = Groovy;

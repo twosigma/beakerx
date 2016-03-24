@@ -109,7 +109,7 @@ define(function(require, exports, module) {
             deferred.reject(err);
           }
         });
-        return deferred;
+        return deferred.promise;
       },
       killAllThreads: function () {
         bkHelper.asyncCallInLanguageManager({
@@ -229,7 +229,7 @@ define(function(require, exports, module) {
           this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
-            this[action]();
+            return this[action]();
           };
         };
         scalashell.prototype = Scala;

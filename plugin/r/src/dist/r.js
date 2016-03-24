@@ -199,7 +199,7 @@ define(function(require, exports, module) {
           this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
-            this[action]();
+            return this[action]();
           };
         };
         RShell.prototype = R;

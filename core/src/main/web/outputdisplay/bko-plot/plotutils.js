@@ -637,11 +637,18 @@
         + ((includeMargin === true ) ? this.getComputedStyle(e, 'margin-left') + this.getComputedStyle(e, 'margin-right') : 0);
       },
 
-
       getComputedStyle: function(e, style) {
         if (!e || e.length === 0)
           return null;
-        var value = window.getComputedStyle(e.get()[0], null).getPropertyValue(style).match(/\d+/)[0];
+        var hiddenParent = e.parents(".ng-hide:first");
+        var value;
+        if (hiddenParent.length === 0) {
+          value = window.getComputedStyle(e.get()[0], null).getPropertyValue(style).match(/\d+/)[0];
+        }else{
+          hiddenParent.removeClass("ng-hide");
+          value = window.getComputedStyle(e.get()[0], null).getPropertyValue(style).match(/\d+/)[0];
+          hiddenParent.addClass("ng-hide");
+        }
         return parseInt(value);
       },
 

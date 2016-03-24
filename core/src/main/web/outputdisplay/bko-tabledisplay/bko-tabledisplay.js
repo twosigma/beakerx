@@ -272,8 +272,8 @@
                   'Etc/GMT-13|GMT-13:00',
                   'Etc/GMT-14|GMT-14:00']);
   //jscs:disable
-  beakerRegister.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', '$rootScope',
-    function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS, $rootScope) {
+  beakerRegister.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', '$rootScope','$timeout',
+    function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS, $rootScope, $timeout) {
   //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
     return {

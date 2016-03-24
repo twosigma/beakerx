@@ -345,7 +345,7 @@
           }
         }
       };
-      bkUtils.initializeCometd(document.baseURI+'cometd/');
+      bkUtils.initializeCometd('ws://' + location.hostname + ":" + bkHelper.getCoreJettyPort() + '/cometd/');
       bkCoreManager.init(beakerRootOp);
       Q.delay(1000).then(function() {
         $.get("../beaker/rest/util/whoami", {}, function(data) {

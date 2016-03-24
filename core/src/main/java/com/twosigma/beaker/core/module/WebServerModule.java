@@ -24,7 +24,7 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
-import com.twosigma.beaker.shared.servlet.BeakerProxyWebSocketServlet;
+import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
@@ -82,9 +82,13 @@ public class WebServerModule extends AbstractModule {
     ServletContextHandler servletHandler = new ServletContextHandler(server, "/");
 
     String hash = bkConfig.getHash();
-    ServletHolder sh = servletHandler.addServlet(BeakerProxyWebSocketServlet.class, "/*");
+    ServletHolder sh = servletHandler.addServlet(BeakerProxyServlet.class, "/*");
     sh.setInitParameter("proxyTo", "http://127.0.0.1:" + webServerConfig.getPort());
     sh.setInitParameter("hash", hash);
+    sh.setInitParameter("corePort", String.valueOf(webServerConfig.getPort()));
+    sh.setInitParameter("publicServer", String.valueOf(bkConfig.getPublicServer()));
+    sh.setInitParameter("requirePassword", String.valueOf(bkConfig.getRequirePassword()));
+    sh.setInitParameter("authCookie", bkConfig.getAuthCookie());
 
     servletHandler.setInitParameter("maxCacheSize", "0");
     servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");

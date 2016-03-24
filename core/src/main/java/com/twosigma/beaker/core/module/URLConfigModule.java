@@ -50,13 +50,6 @@ public class URLConfigModule extends ServletModule {
       }
     });
 
-    bind(GuiceCometdServlet.class);
-    serve("/cometd/*").with(GuiceCometdServlet.class, new HashMap<String, String>() {
-      {
-        put("jsonContext", Jackson1JSONContextServer.class.getCanonicalName());
-      }
-    });
-
     serve("/fileupload").with(FileUploadServlet.class);
 
     final String pluginsWebDir = System.getProperty("user.dir") + "/config/plugins";

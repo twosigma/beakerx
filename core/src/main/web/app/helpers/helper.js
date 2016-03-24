@@ -166,6 +166,13 @@
       getBaseUrl: function() {
         return bkUtils.getBaseUrl();
       },
+      getPort: function() {
+        var port = location.port || (location.protocol === 'https:' ? '443' : '80');
+        return parseInt(port);
+      },
+      getCoreJettyPort: function () {
+        return this.getPort() + 1;
+      },
       // Open tab/window functions that handle the electron case
       openWindow: function(path, type) {
         if (bkUtils.isElectron) {
@@ -1057,10 +1064,10 @@
         var cometdUtil = {
             initialized: false,
             subscriptions: { },
-            init: function(pluginName, serviceBase) {
+            init: function(pluginName, port) {
               if (!this.initialized) {
                 this.cometd = new $.Cometd();
-                this.cometd.init(bkUtils.serverUrl(serviceBase + "/cometd/"));
+                this.cometd.init("ws://127.0.0.1:" + port + "/cometd/");
                 var self = this;
                 this.hlistener = this.cometd.addListener('/meta/handshake', function(message) {
                   if (window.bkDebug) console.log(pluginName+'/meta/handshake');

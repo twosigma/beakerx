@@ -21,11 +21,12 @@ import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
-import com.twosigma.beaker.shared.servlet.BeakerProxyWebSocketServlet;
+import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
+import org.json.simple.JSONObject;
 import org.jvnet.winp.WinProcess;
 
 import javax.ws.rs.DefaultValue;
@@ -389,7 +390,7 @@ public class PluginServiceLocatorRest {
    */
   @GET
   @Path("/{plugin-id}")
-  @Produces(MediaType.TEXT_PLAIN)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response locatePluginService(
       @PathParam("plugin-id") String pluginId,
       @QueryParam("command") String command,
@@ -404,7 +405,7 @@ public class PluginServiceLocatorRest {
     if (pConfig != null && pConfig.isStarted()) {
       System.out.println("plugin service " + pluginId +
           " already started at" + pConfig.getBaseUrl());
-      return buildResponse(pConfig.getBaseUrl(), false);
+      return buildResponse(pConfig.getBaseUrl(), String.valueOf(pConfig.getPort()), false);
     }
 
     String password = RandomStringUtils.random(40, true, true);
@@ -433,7 +434,7 @@ public class PluginServiceLocatorRest {
 //      Process restartproc = Runtime.getRuntime().exec(this.nginxRestartCommand, this.nginxEnv);
 //      startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
 //      restartproc.waitFor();
-      BeakerProxyWebSocketServlet.addPlugin(pluginId, port);
+      BeakerProxyServlet.addPlugin(pluginId, port);
 
       ArrayList<String> fullCommand =
         new ArrayList<String>(Arrays.asList(command.split("\\s+")));
@@ -505,7 +506,7 @@ public class PluginServiceLocatorRest {
     pConfig.setProcess(proc);
     System.out.println("Done starting " + pluginId);
 
-    return buildResponse(pConfig.getBaseUrl(), true);
+    return buildResponse(pConfig.getBaseUrl(), String.valueOf(pConfig.getPort()), true);
   }
 
   @GET
@@ -518,10 +519,13 @@ public class PluginServiceLocatorRest {
     return port;
   }
 
-  private static Response buildResponse(String baseUrl, boolean created) {
+  private static Response buildResponse(String baseUrl, String port, boolean created) {
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.put("baseUrl", baseUrl);
+    jsonObject.put("port", port);
     return Response
         .status(created ? Response.Status.CREATED : Response.Status.OK)
-        .entity(baseUrl)
+        .entity(jsonObject.toJSONString())
         .location(URI.create(baseUrl))
         .build();
   }

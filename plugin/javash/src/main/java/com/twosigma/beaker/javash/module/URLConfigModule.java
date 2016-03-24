@@ -40,13 +40,6 @@ public class URLConfigModule extends ServletModule {
       }
     });
 
-    bind(GuiceCometdServlet.class);
-    serve("/cometd/*").with(GuiceCometdServlet.class, new HashMap<String, String>() {
-      {
-        put("jsonContext", Jackson1JSONContextServer.class.getCanonicalName());
-      }
-    });
-
     // REST binding
     bind(JavashShellRest.class);
     bind(ReadyRest.class);

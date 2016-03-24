@@ -35,6 +35,9 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
+import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
+
+import javax.servlet.ServletException;
 
 /**
  * The WebServer Module that sets up the server singleton to be started in Init
@@ -70,7 +73,7 @@ public class WebServerModule extends AbstractModule {
 
   @Provides
   @Singleton
-  public Server getServer(final Injector injector) {
+  public Server getServer(final Injector injector) throws ServletException {
     WebServerConfig webServerConfig = injector.getInstance(WebServerConfig.class);
     String staticDir = webServerConfig.getStaticDirectory();
     Server server = new Server();
@@ -94,7 +97,7 @@ public class WebServerModule extends AbstractModule {
     servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");
 
     server.setHandler(servletHandler);
-
+    WebSocketServerContainerInitializer.configureContext(servletHandler);
     return server;
   }
 }

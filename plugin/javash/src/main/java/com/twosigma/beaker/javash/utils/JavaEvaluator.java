@@ -298,16 +298,20 @@ public class JavaEvaluator {
             javaSourceCode.append(";\n");
           }
         
-          p = Pattern.compile("\\s*import\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*(?:\\.\\*)?);.*");
+          p = Pattern.compile("\\s*import(\\s+static)?\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*(?:\\.\\*)?);.*");
           m = p.matcher(codev[ci]);
           while(m.matches()) {
-            String impstr = m.group(1);
-            ci++;
-            m = p.matcher(codev[ci]);
-        
+            String impstr = m.group(2);
+            String staticModifier = m.group(1);
             javaSourceCode.append("import ");
+            if (staticModifier != null) {
+              javaSourceCode.append("static ");
+            }
             javaSourceCode.append(impstr);
             javaSourceCode.append(";\n");
+
+            ci++;
+            m = p.matcher(codev[ci]);
           }
         
           p = Pattern.compile("(?:^|.*\\s+)class\\s+([a-zA-Z]\\w*).*");

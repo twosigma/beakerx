@@ -25,7 +25,7 @@ describe('SQL Tutorial', function () {
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fsql-examples.bkr&readOnly=true").then(done);
 
-        beakerPO.waitUntilLoadingIndicator();
+        beakerPO.waitUntilLoadingCellOutput();
     });
 
     it('Basic Query', function () {

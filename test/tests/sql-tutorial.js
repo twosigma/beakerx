@@ -28,11 +28,6 @@ describe('SQL Tutorial', function () {
         beakerPO.waitUntilLoadingIndicator();
     });
 
-    afterEach(function (done) {
-        beakerPO.closeNotebook()
-            .then(done);
-    });
-
     it('Basic Query', function () {
         var idxCell = 0;
         beakerPO.checkDtContainer(idxCell);

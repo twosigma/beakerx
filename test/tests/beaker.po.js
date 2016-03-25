@@ -490,5 +490,9 @@ var BeakerPageObject = function() {
     expect(tBody.get(0).getText()).toBe(firstRow);
   }
 
+  this.checkCellOutputText = function(codeCellOutputIdx, outputText){
+    expect(this.getCodeCellOutputByIndex(codeCellOutputIdx).element(By.css('pre')).getText()).toBe(outputText);
+  }
+
 };
 module.exports = BeakerPageObject;

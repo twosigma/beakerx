@@ -31,17 +31,17 @@ describe('Java Tutorial', function () {
     it('Java Examples', function () {
         var idxCell = 1;
         beakerPO.scrollToCodeCellOutput(idxCell);
-        expect(beakerPO.getCodeCellOutputByIndex(idxCell).element(By.css('pre')).getText()).toBe('Thu Jan 14 21:39:32 EST 2016');
+        beakerPO.checkCellOutputText(idxCell,'Thu Jan 14 21:39:32 EST 2016');
 
         idxCell=2;
         beakerPO.scrollToCodeCellOutput(idxCell);
-        expect(beakerPO.getCodeCellOutputByIndex(idxCell).element(By.css('pre')).getText()).toBe('THU JAN 14 21:39:36 EST 2016');
+        beakerPO.checkCellOutputText(idxCell,'THU JAN 14 21:39:36 EST 2016');
 
         idxCell=4;
         beakerPO.scrollToCodeCellOutput(idxCell);
-        expect(beakerPO.getCodeCellOutputByIndex(idxCell).element(By.css('pre')).getText()).toBe('test for autotranslation');
+        beakerPO.checkCellOutputText(idxCell,'test for autotranslation');
 
-        var idxCell = 5;
+        idxCell = 5;
         beakerPO.checkPlotIsPresent(idxCell);
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 0), 'plot-bar');
         expect(beakerPO.getCodeCellOutputContainerTitle(idxCell)).toBe("this is a Java plot");

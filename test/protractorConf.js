@@ -50,7 +50,8 @@ var config = {
     'tests/heatmap-tutorial.js',
     'tests/charting-tutorial2.js',
     'tests/sql-tutorial.js',
-    'tests/java-tutorial.js'
+    'tests/java-tutorial.js',
+    'tests/clojure-tutorial.js'
   ]
 };
 

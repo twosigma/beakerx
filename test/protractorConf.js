@@ -48,6 +48,7 @@ var config = {
     'tests/charting-tutorial.js',
     'tests/category-plot-tutorial.js',
     'tests/heatmap-tutorial.js',
+    'tests/charting-tutorial2.js',
     'tests/sql-tutorial.js'
   ]
 };

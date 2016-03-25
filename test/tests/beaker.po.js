@@ -461,9 +461,34 @@ var BeakerPageObject = function() {
   this.getDtContainer = function(codeCellOutputIdx, containerIdx) {
     if (!containerIdx)
       containerIdx = 0;
-    return this.getCodeCellOutputByIndex(codeCellOutputIdx).all(By.css('.dtcontainer .bkr')).get(containerIdx);
+    return this.getCodeCellOutputByIndex(codeCellOutputIdx).all(By.css('.dtcontainer')).get(containerIdx);
   }
 
+  this.getDataTablesScrollHead = function(codeCellOutputIdx, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getDtContainer(codeCellOutputIdx, containerIdx).element(By.css('.dataTables_scrollHead'));
+  }
+
+  this.getDataTablesScrollBody = function(codeCellOutputIdx, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getDtContainer(codeCellOutputIdx, containerIdx).element(By.css('.dataTables_scrollBody'));
+  }
+
+  this.getDataTablesTBody = function(codeCellOutputIdx){
+    return this.getDataTablesScrollBody(codeCellOutputIdx).all(By.css('tbody > tr'));
+  }
+
+  this.checkDataTableHead = function(codeCellOutputIdx, headLabels){
+    expect(this.getDataTablesScrollHead(codeCellOutputIdx).getText()).toBe(headLabels);
+  }
+
+  this.checkDataTableBody = function(codeCellOutputIdx, rowsCount, firstRow){
+    var tBody = this.getDataTablesTBody(codeCellOutputIdx);
+    expect(tBody.count()).toBe(rowsCount);
+    expect(tBody.get(0).getText()).toBe(firstRow);
+  }
 
 };
 module.exports = BeakerPageObject;

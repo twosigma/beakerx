@@ -21,12 +21,11 @@ var beakerPO;
 
 describe('SQL Tutorial', function () {
 
-    beforeEach(function () {
+    beforeEach(function (done) {
         beakerPO = new BeakerPageObject();
-        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fsql-examples.bkr&readOnly=true");
+        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fsql-examples.bkr&readOnly=true").then(done);
 
         beakerPO.waitUntilLoadingIndicator();
-
     });
 
     afterEach(function (done) {
@@ -35,7 +34,41 @@ describe('SQL Tutorial', function () {
     });
 
     it('Basic Query', function () {
-        beakerPO.checkDtContainer(0);
+        var idxCell = 0;
+        beakerPO.checkDtContainer(idxCell);
+        beakerPO.checkDataTableHead(idxCell, 'ID\nNAME\nCODE');
+        beakerPO.checkDataTableBody(idxCell, 5, '0 1001 AliceBlue #F0F8FF');
+
+    });
+
+    it('Autotranslate Input to Query', function(){
+        var idxCell = 1;
+        beakerPO.scrollToCodeCellOutput(idxCell);
+        expect(beakerPO.getCodeCellOutputByIndex(idxCell).element(By.css('pre')).getText()).toBe('1003');
+
+        idxCell++;
+        beakerPO.checkDtContainer(idxCell);
+        beakerPO.checkDataTableHead(idxCell, 'Key\nValue');
+        beakerPO.checkDataTableBody(idxCell, 3, '0 ID 1003');
+    });
+
+    it('Autotranslate Output of Query', function(){
+        var idxCell = 3;
+        beakerPO.checkDtContainer(idxCell);
+        beakerPO.checkDataTableHead(idxCell, 'ID\nNAME\nCODE');
+        beakerPO.checkDataTableBody(idxCell, 8, '0 1001 AliceBlue #F0F8FF');
+    });
+
+    it('Multiple Databases', function(){
+        var idxCell = 4;
+        beakerPO.checkDtContainer(idxCell);
+        beakerPO.checkDataTableHead(idxCell, 'NAME\nBORN');
+        beakerPO.checkDataTableBody(idxCell, 4, '0 Jacob Berzelius 1779');
+
+        idxCell++;
+        beakerPO.checkDtContainer(idxCell);
+        beakerPO.checkDataTableHead(idxCell, 'NAME\nMOLARMASS');
+        beakerPO.checkDataTableBody(idxCell, 4, '0 Water 18.01');
     });
 
 });

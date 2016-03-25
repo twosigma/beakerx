@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+$dropdown-menu-group-separator: solid 1px #CCC;
+
 .dropdown-menu {
   box-shadow: 0 0 4px rgba(0,0,0,0.2);
   -webkit-box-shadow: 0 0 4px rgba(0,0,0,0.2);
@@ -26,6 +28,9 @@
     padding: 4px 80px 2px 23px;
     &:hover + .glyphicon-ok {
       color: $dropdown-link-hover-color;
+    }
+    &.group-separator {
+      border-top: $dropdown-menu-group-separator;
     }
   }
 

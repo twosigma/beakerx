@@ -601,6 +601,13 @@
             },
             closeNotebook: closeNotebook,
             _closeNotebook: _closeNotebook,
+            showToC: function() {
+              _.each(this.getNotebookModel().cells, function(cell) {
+                if (cell.type == "section") {
+                  cell.collapsed = cell.level !== 1;
+                }
+              });
+            },
             collapseAllSections: function() {
               _.each(this.getNotebookModel().cells, function(cell) {
                 if (cell.type == "section") {

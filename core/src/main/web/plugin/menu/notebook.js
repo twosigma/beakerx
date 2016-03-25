@@ -59,6 +59,13 @@ define(function(require, exports, module) {
       id: 'run-all-cells-menuitem'
     },
     {
+      name: 'Show table of contents',
+      sortorder: 134,
+      action: bkHelper.showToC,
+      id: 'show-toc-menuitem',
+      cssClass: 'group-separator'
+    },
+    {
       name: 'Collapse all sections',
       sortorder: 135,
       action: bkHelper.collapseAllSections,
@@ -73,7 +80,8 @@ define(function(require, exports, module) {
     {
       name: 'Edit mode',
       sortorder: 140,
-      id: 'edit-mode-menuitem'
+      id: 'edit-mode-menuitem',
+      cssClass: 'group-separator'
     }
   ];
   var toAdd = [

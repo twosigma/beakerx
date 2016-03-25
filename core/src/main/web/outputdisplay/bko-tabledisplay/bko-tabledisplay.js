@@ -382,6 +382,11 @@
           } , 'Select name for CSV file to save', 'csv', 'Save');
         };
 
+        // reset table state
+        $scope.doResetAll = function () {
+          $scope.init($scope.getCellModel());
+        };
+
         // these are the menu actions
         $scope.doSelectAll = function(idx) {
           if ($scope.table === undefined) {
@@ -1020,23 +1025,31 @@
             if (typeof scope.pagination.fixRight === 'boolean') {
               scope.pagination.fixRight = 0;
             }
-            scope.barsOnColumn = scope.savedstate.barsOnColumn || {};
-            scope.heatmapOnColumn = scope.savedstate.heatmapOnColumn || {};
-            scope.tableFilter = scope.savedstate.tableFilter || '';
-            scope.tableSearch = scope.savedstate.tableSearch || '';
-            scope.columnFilter = scope.savedstate.columnFilter || [];
-            scope.showFilter = scope.savedstate.showFilter;
-            scope.columnSearchActive = scope.savedstate.columnSearchActive;
-            scope.columnWidth = scope.savedstate.columnWidth || [];
+            scope.barsOnColumn        = scope.savedstate.barsOnColumn || {};
+            scope.heatmapOnColumn     = scope.savedstate.heatmapOnColumn || {};
+            scope.tableFilter         = scope.savedstate.tableFilter || '';
+            scope.tableSearch         = scope.savedstate.tableSearch || '';
+            scope.columnFilter        = scope.savedstate.columnFilter || [];
+            scope.showFilter          = scope.savedstate.showFilter;
+            scope.columnSearchActive  = scope.savedstate.columnSearchActive;
+            scope.columnWidth         = scope.savedstate.columnWidth || [];
 
             scope.savedstate  = undefined;
           } else {
-            scope.barsOnColumn = {}; //map: col index -> show bars
-            scope.heatmapOnColumn = {}; //map: col index -> show heatmap
-            scope.tableFilter = '';
-            scope.tableSearch = '';
-            scope.columnFilter = [];
-            scope.columnWidth = [];
+            scope.colorder          = undefined;
+            scope.getCellSho        = undefined;
+            scope.barsOnColumn      = {}; //map: col index -> show bars
+            scope.heatmapOnColumn   = {}; //map: col index -> show heatmap
+            scope.tableFilter       = '';
+            scope.tableSearch       = '';
+            scope.columnFilter      = [];
+            scope.columnWidth       = [];
+            scope.pagination = {
+              'use' : true,
+              'rowsToDisplay' : 50,
+              'fixLeft' : 0,
+              'fixRight' : 0
+            };
           }
           // auto compute types
           if (scope.actualtype === undefined || scope.actualtype.length === 0) {
@@ -1534,8 +1547,8 @@
             if (scope.getCellSho) {
               col.visible = scope.getCellSho[i];
             }
-            if (!_.isEmpty(scope.columnWidth[i])) {
-              col.sWidth = scope.columnWidth[i];
+            if (scope.columnWidth) {
+              col.sWidth = scope.columnWidth[i] || 0;
             }
             cols.push(col);
           }

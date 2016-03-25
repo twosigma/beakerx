@@ -265,16 +265,16 @@
 
           plotUtils.addTitleToSvg(combinedSvg[0], plotTitle, {
             width: plotTitle.width(),
-            height: plotUtils.getActualCss(plotTitle, 'outerHeight')
+            height: plotUtils.getActualCss(plotTitle, "outerHeight")
           });
 
-          var combinedSvgHeight = plotUtils.getActualCss(plotTitle, 'outerHeight', true);
+          var combinedSvgHeight = plotUtils.getActualCss(plotTitle, "outerHeight",  true);
           var combinedSvgWidth = 0;
           for (var i = 0; i < plots.length; i++) {
             var svg = plots[i].getSvgToSave();
             plotUtils.translateChildren(svg, 0, combinedSvgHeight);
-            combinedSvgHeight += $(svg).outerHeight(true);
-            combinedSvgWidth = Math.max($(svg).outerWidth(true), combinedSvgWidth);
+            combinedSvgHeight += parseInt(svg.getAttribute("height"));
+            combinedSvgWidth = Math.max(parseInt(svg.getAttribute("width")), combinedSvgWidth);
             combinedSvg.append(svg.children);
           }
           combinedSvg.attr("width", combinedSvgWidth);

@@ -20,10 +20,12 @@ import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceFileObject;
 import org.abstractmeta.toolbox.compilation.compiler.registry.JavaFileObjectRegistry;
 
 import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaFileObject;
+import java.util.ArrayList;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
+import static java.lang.Math.*;
+import static java.lang.String.format;
 
 public class JavaSourceCompiler extends JavaSourceCompilerImpl {
   private static final char POSITION_CHARACTER = '^';
@@ -36,6 +38,15 @@ public class JavaSourceCompiler extends JavaSourceCompilerImpl {
     return diagnostic.getKind().equals(Diagnostic.Kind.ERROR);
   }
 
+  @Override
+  protected IllegalStateException createCompilationErrorException(JavaFileObjectRegistry registry, DiagnosticCollector<JavaFileObject> diagnostics) {
+    final ArrayList<CompilationException.CompilationError> compilationErrors = new ArrayList<>();
+    for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
+      compilationErrors.add(new CompilationException.CompilationError(((int) diagnostic.getLineNumber()), diagnostic.getMessage(null), getErrorDetails(diagnostic)));
+    }
+    return new CompilationException(format("%d compilation error(s)\n", compilationErrors.size()), compilationErrors);
+  }
+
   private String getErrorDetails(Diagnostic diagnostic) {
     String sourceErrorDetails = "";
     CharSequence sourceCode = getSourceContent(diagnostic);
@@ -43,6 +54,15 @@ public class JavaSourceCompiler extends JavaSourceCompilerImpl {
       String source = sourceCode.toString();
       int startPosition = (int) diagnostic.getStartPosition();
       int endPosition = (int) diagnostic.getEndPosition();
+
+      if (endPosition < 0 && startPosition < 0) {
+        return "";
+      }
+      if (startPosition < 0) {
+        startPosition = endPosition;
+      } else if (endPosition < 0) {
+        endPosition = startPosition;
+      }
 
       final int snippetStart = getSnippetStart(source, startPosition);
       final int snippetEnd = getSnippetEnd(source, endPosition);
@@ -69,7 +89,8 @@ public class JavaSourceCompiler extends JavaSourceCompilerImpl {
   }
 
   private int getSnippetStart(String source, int startPosition) {
-    final int lineStartPosition = source.lastIndexOf('\n', startPosition) + 1;
+    startPosition = abs(startPosition - 1);
+    final int lineStartPosition = source.lastIndexOf('\n', startPosition);
     final int previousSemicolonPosition = source.lastIndexOf(';', startPosition) + 1;
     return max(max(lineStartPosition, previousSemicolonPosition), abs(startPosition - 30));
   }

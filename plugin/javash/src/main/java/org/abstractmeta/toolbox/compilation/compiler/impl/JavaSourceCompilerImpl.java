@@ -16,12 +16,12 @@
 package org.abstractmeta.toolbox.compilation.compiler.impl;
 
 
+import com.google.common.io.Files;
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
 import org.abstractmeta.toolbox.compilation.compiler.registry.JavaFileObjectRegistry;
 import org.abstractmeta.toolbox.compilation.compiler.registry.impl.JavaFileObjectRegistryImpl;
 import org.abstractmeta.toolbox.compilation.compiler.util.ClassPathUtil;
 import org.abstractmeta.toolbox.compilation.compiler.util.URIUtil;
-import com.google.common.io.Files;
 
 import javax.tools.*;
 import java.io.File;
@@ -91,20 +91,12 @@ public class JavaSourceCompilerImpl implements JavaSourceCompiler {
         Iterable<JavaFileObject> sources = registry.get(JavaFileObject.Kind.SOURCE);
         Collection<String> compilationOptions = buildOptions(compilationUnit, result, options);
         JavaCompiler.CompilationTask task = compiler.getTask(null, javaFileManager, diagnostics, compilationOptions, null, sources);
-        StringBuilder diagnosticBuilder = new StringBuilder();
         task.call();
-        int errors = 0;
-        for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
-            if (buildDiagnosticMessage(diagnostic, diagnosticBuilder, registry)) {
-                errors++;
-            }
+        if (getDiagnosticCountByType(diagnostics, Diagnostic.Kind.ERROR) > 0) {
+            throw createCompilationErrorException(registry, diagnostics);
         }
-        if (diagnosticBuilder.length() > 0) {
-            if (errors > 0) {
-                throw new IllegalStateException(getErrorMessage(diagnosticBuilder, errors));
-            } else {
-                logger.log(Level.WARNING, diagnosticBuilder.toString());
-            }
+        if (getDiagnosticCountByType(diagnostics, Diagnostic.Kind.WARNING) > 0) {
+            logger.log(Level.WARNING, getDiagnosticString(registry, diagnostics));
         }
         result.addClassPathEntries(compilationUnit.getClassPathsEntries());
         return result;
@@ -189,11 +181,20 @@ public class JavaSourceCompilerImpl implements JavaSourceCompiler {
         return new CompilationUnitImpl(outputClassDirectory);
     }
 
-    private String getErrorMessage(StringBuilder diagnosticBuilder, int errors) {
-        if (errors > 1) {
-            diagnosticBuilder.insert(0, String.format("%d compilation errors\n", errors));
+    protected IllegalStateException createCompilationErrorException(JavaFileObjectRegistry registry, DiagnosticCollector<JavaFileObject> diagnostics) {
+        return new IllegalStateException(getDiagnosticString(registry, diagnostics));
+    }
+
+    private String getDiagnosticString(JavaFileObjectRegistry registry, DiagnosticCollector<JavaFileObject> diagnostics) {
+        StringBuilder diagnosticBuilder = new StringBuilder();
+        for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
+            buildDiagnosticMessage(diagnostic, diagnosticBuilder, registry);
         }
         return diagnosticBuilder.toString();
+    }
+
+    private long getDiagnosticCountByType(DiagnosticCollector<JavaFileObject> diagnostics, Diagnostic.Kind kind) {
+        return diagnostics.getDiagnostics().stream().filter(d -> d.getKind().equals(kind)).count();
     }
 
     public void persistCompiledClasses(CompilationUnit compilationUnit) {

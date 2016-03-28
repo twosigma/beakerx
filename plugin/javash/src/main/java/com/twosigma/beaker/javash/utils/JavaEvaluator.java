@@ -15,34 +15,31 @@
  */
 package com.twosigma.beaker.javash.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
-
 import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.javash.autocomplete.JavaAutocomplete;
+import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 import com.twosigma.beaker.jvm.utils.BeakerPrefsUtils;
-
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
 import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
 
-import java.lang.reflect.*;
-import java.nio.file.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.file.FileSystems;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-import java.util.regex.*;
-import java.io.File;
-
-import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
-import com.twosigma.beaker.autocomplete.ClasspathScanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class JavaEvaluator {
   private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
@@ -313,8 +310,8 @@ public class JavaEvaluator {
             ci++;
             m = p.matcher(codev[ci]);
           }
-        
-          p = Pattern.compile("(?:^|.*\\s+)class\\s+([a-zA-Z]\\w*).*");
+
+          p = Pattern.compile("(?:^|.*\\s+)(?:(?:class)|(?:interface))\\s+([a-zA-Z]\\w*).*");
           m = p.matcher(codev[ci]);
           if (m.matches()) {
             // this is a class definition

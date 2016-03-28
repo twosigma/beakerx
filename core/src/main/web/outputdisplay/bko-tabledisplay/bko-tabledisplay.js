@@ -894,6 +894,7 @@
             scope.table.off('key');
             scope.table.off('column-visibility.dt');
             scope.removeFilterListeners();
+            $(scope.table.table().container()).find('.dataTables_scrollHead').off('scroll');
             delete scope.table;
             delete scope.colreorg;
             if (scope.clipclient !== undefined) {
@@ -1584,7 +1585,8 @@
               'tableWidthFixed': false,
               'resizeCallback': function(column){
                 scope.columnWidth[scope.colorder[column.idx] - 1] = column.sWidthOrig;
-              }
+              },
+              'exclude': _.range(scope.columns.length - scope.pagination.fixRight, scope.columns.length)
             }
           };
 
@@ -1767,6 +1769,13 @@
                 $(dtTR).removeClass('hover');
                 scope.highlightFixedColumnRow (rowIndex, false);
               });
+
+            $(scope.table.table().container()).find('.dataTables_scrollHead').on('scroll', function () {
+              var filtersInFocus = $(scope.table.table().container()).find('.filter-input:focus');
+              if (filtersInFocus.length) {
+                scope.stopFilterEditing(filtersInFocus);
+              }
+            });
 
             scope.showHideBars = function (column) {
               scope.barsOnColumn[column] = !!!scope.barsOnColumn[column];

@@ -56,13 +56,20 @@ public class WebServerModule extends AbstractModule {
     Constraint constraint = new Constraint(Constraint.__BASIC_AUTH, "user");
     constraint.setAuthenticate(true);
     constraint.setRoles(new String[]{"user"});
+    Constraint wsConstraint = new Constraint(Constraint.ANY_AUTH, "ws");
+    wsConstraint.setAuthenticate(false);
+    wsConstraint.setRoles(new String[]{});
     ConstraintMapping cm = new ConstraintMapping();
     cm.setConstraint(constraint);
     cm.setPathSpec("/*");
+    ConstraintMapping wsConstraintMapping = new ConstraintMapping();
+    wsConstraintMapping.setConstraint(wsConstraint);
+    wsConstraintMapping.setPathSpec("/cometd/");
     ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
     csh.setAuthenticator(new BasicAuthenticator());
     csh.setRealmName("SecureRealm");
     csh.addConstraintMapping(cm);
+    csh.addConstraintMapping(wsConstraintMapping);
     HashLoginService loginService = new HashLoginService();
     loginService.putUser("beaker", Credential.getCredential(password),
                          new String[]{"user"});
@@ -89,6 +96,7 @@ public class WebServerModule extends AbstractModule {
     sh.setInitParameter("publicServer", String.valueOf(bkConfig.getPublicServer()));
     sh.setInitParameter("requirePassword", String.valueOf(bkConfig.getRequirePassword()));
     sh.setInitParameter("authCookie", bkConfig.getAuthCookie());
+    sh.setInitParameter("corePassword", webServerConfig.getPassword());
 
     servletHandler.setInitParameter("maxCacheSize", "0");
     servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");
@@ -117,7 +125,7 @@ public class WebServerModule extends AbstractModule {
       }
     });
 
-//    servletHandler.setSecurityHandler(makeSecurityHandler(webServerConfig.getPassword()));
+    servletHandler.setSecurityHandler(makeSecurityHandler(webServerConfig.getPassword()));
     servletHandler.addFilter(GuiceFilter.class, "/*", null);
 
     servletHandler.addServlet(DefaultServlet.class, "/*");

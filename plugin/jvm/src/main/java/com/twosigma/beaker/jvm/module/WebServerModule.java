@@ -53,13 +53,20 @@ public class WebServerModule extends AbstractModule {
     Constraint constraint = new Constraint(Constraint.__BASIC_AUTH, "user");
     constraint.setAuthenticate(true);
     constraint.setRoles(new String[]{"user"});
+    Constraint wsConstraint = new Constraint(Constraint.ANY_AUTH, "ws");
+    wsConstraint.setAuthenticate(false);
+    wsConstraint.setRoles(new String[]{});
     ConstraintMapping cm = new ConstraintMapping();
     cm.setConstraint(constraint);
     cm.setPathSpec("/*");
+    ConstraintMapping wsConstraintMapping = new ConstraintMapping();
+    wsConstraintMapping.setConstraint(wsConstraint);
+    wsConstraintMapping.setPathSpec("/cometd/");
     ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
+    csh.addConstraintMapping(wsConstraintMapping);
     try {
-	    if(Credential.getCredential(password)!=null) {
-		    csh.setAuthenticator(new BasicAuthenticator());
+      if (Credential.getCredential(password) != null) {
+        csh.setAuthenticator(new BasicAuthenticator());
 		    csh.setRealmName("SecureRealm");
 		    csh.addConstraintMapping(cm);
 		    HashLoginService loginService = new HashLoginService();
@@ -89,7 +96,7 @@ public class WebServerModule extends AbstractModule {
       }
     });
 
-//    servletHandler.setSecurityHandler(makeSecurityHandler(System.getenv("beaker_plugin_password")));
+    servletHandler.setSecurityHandler(makeSecurityHandler(System.getenv("beaker_plugin_password")));
     servletHandler.addFilter(GuiceFilter.class, "/*", null);
     servletHandler.addServlet(DefaultServlet.class, "/*");
     servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", staticDir);

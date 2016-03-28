@@ -15,6 +15,10 @@
  */
 package com.twosigma.beaker.shared.servlet;
 
+import org.apache.commons.codec.binary.Base64;
+import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.api.Response;
+import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.proxy.ProxyServlet;
 
 import javax.servlet.ServletConfig;
@@ -27,7 +31,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class BeakerProxyServlet extends ProxyServlet.Transparent {
 
-  private static Map<String, Integer> plugins = new ConcurrentHashMap<>();
+  private static Map<String, PluginConfig> plugins = new ConcurrentHashMap<>();
+  private final Base64 encoder = new Base64();
 
   private String _hash = "";
   private boolean _preserveHost;
@@ -37,6 +42,7 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   private String authCookie;
   private String authCookieRule;
   private String startPage;
+  private String corePassword;
 
   public BeakerProxyServlet() {
   }
@@ -50,6 +56,7 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
     this.publicServer = Boolean.parseBoolean(config.getInitParameter("publicServer"));
     this.requirePassword = Boolean.parseBoolean(config.getInitParameter("requirePassword"));
     this.authCookie = config.getInitParameter("authCookie");
+    this.corePassword = config.getInitParameter("corePassword");
     super.init();
     if (this.publicServer) {
       this.authCookieRule = "if ($http_cookie !~ \"BeakerAuth=" + this.authCookie + "\") {return 403;}";
@@ -66,6 +73,33 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   @Override
   protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     super.service(request, response);
+  }
+
+  @Override
+  protected void addProxyHeaders(HttpServletRequest clientRequest, Request proxyRequest) {
+    super.addProxyHeaders(clientRequest, proxyRequest);
+    for (String pluginId : plugins.keySet()) {
+      if (clientRequest.getPathInfo().contains(pluginId.toLowerCase())) {
+        proxyRequest.header(HttpHeader.AUTHORIZATION.toString(), "Basic " + this.getPluginAuth(pluginId));
+        return;
+      }
+    }
+    proxyRequest.header(HttpHeader.AUTHORIZATION.toString(), "Basic " + this.getCoreAuth());
+  }
+
+  @Override
+  protected void onServerResponseHeaders(HttpServletRequest clientRequest, HttpServletResponse proxyResponse, Response serverResponse) {
+    super.onServerResponseHeaders(clientRequest, proxyResponse, serverResponse);
+    proxyResponse.addHeader("beaker-auth-header", this.getCoreAuth());
+  }
+
+  private String getCoreAuth() {
+    return encoder.encodeBase64String(("beaker:" + this.corePassword).getBytes());
+  }
+
+  private String getPluginAuth(String pluginId) {
+    String pluginPassword = plugins.get(pluginId).getPassword();
+    return encoder.encodeBase64String(("beaker:" + pluginPassword).getBytes());
   }
 
   /*
@@ -97,7 +131,7 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
               } else {
                 for (String pluginId : plugins.keySet()) {
                   if (parts[i + 1].startsWith(pluginId.toLowerCase())) {
-                    result = result.replace(this.corePort, String.valueOf(plugins.get(pluginId)));
+                    result = result.replace(this.corePort, String.valueOf(plugins.get(pluginId).getPort()));
                     result = result.replace("/" + this._hash + "/" + parts[i + 1], "");
                     break;
                   }
@@ -111,8 +145,27 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
     return result;
   }
 
-  public static void addPlugin(String pluginId, int port) {
-    plugins.put(pluginId, port);
+  public static void addPlugin(String pluginId, int port, String password) {
+    plugins.put(pluginId, new PluginConfig(port, password));
+  }
+
+  private static class PluginConfig {
+
+    private final int port;
+    private final String password;
+
+    PluginConfig(int port, String password) {
+      this.port = port;
+      this.password = password;
+    }
+
+    public int getPort() {
+      return port;
+    }
+
+    public String getPassword() {
+      return password;
+    }
   }
 
 }

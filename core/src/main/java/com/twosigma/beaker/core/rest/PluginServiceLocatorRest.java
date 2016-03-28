@@ -434,7 +434,7 @@ public class PluginServiceLocatorRest {
 //      Process restartproc = Runtime.getRuntime().exec(this.nginxRestartCommand, this.nginxEnv);
 //      startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
 //      restartproc.waitFor();
-      BeakerProxyServlet.addPlugin(pluginId, port);
+      BeakerProxyServlet.addPlugin(pluginId, port, password);
 
       ArrayList<String> fullCommand =
         new ArrayList<String>(Arrays.asList(command.split("\\s+")));

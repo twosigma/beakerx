@@ -162,8 +162,9 @@
         addPublishMenuItem();
         initWatcher();
       };
-
-      initPublishDataAction();
+      if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
+        initPublishDataAction();
+      }
     }
   });
 })();

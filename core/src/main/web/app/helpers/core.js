@@ -719,7 +719,7 @@
             "Ctrl-Alt-Down": moveCellDown,
             "Cmd-Alt-Down": moveCellDown,
             "Ctrl-Alt-D": deleteCell,
-            "Cmd-Alt-D": deleteCell,
+            "Cmd-Alt-Backspace": deleteCell,
             "Tab": tab,
             "Backspace": backspace,
             "Ctrl-/": "toggleComment",

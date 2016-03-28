@@ -22,6 +22,7 @@
 package com.twosigma.beaker.javash.utils;
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.translate.AggregateTranslator;
 import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
 import org.apache.commons.lang3.text.translate.UnicodeUnescaper;
@@ -177,7 +178,8 @@ public class ParserUtil {
      * 2) remove empty lines
      */
   public static String normalizeCode(String code) {
-    return ParserUtil.removeComments(UNICODE_UNESCAPER.translate(code));
+    final String normalizedCode = ParserUtil.removeComments(UNICODE_UNESCAPER.translate(code));
+    return StringUtils.isNotBlank(normalizedCode) ? normalizedCode : StringUtils.EMPTY;
   }
 
 }

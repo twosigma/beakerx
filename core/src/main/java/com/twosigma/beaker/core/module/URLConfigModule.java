@@ -30,8 +30,6 @@ import com.twosigma.beaker.core.rest.PublishRest;
 import com.twosigma.beaker.core.rest.RecentMenuRest;
 import com.twosigma.beaker.core.rest.SessionBackupRest;
 import com.twosigma.beaker.core.rest.UtilRest;
-import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;
-import org.cometd.server.Jackson1JSONContextServer;
 
 import java.util.HashMap;
 

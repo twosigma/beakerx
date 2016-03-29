@@ -93,6 +93,7 @@ public class WebServerModule extends AbstractModule {
     sh.setInitParameter("proxyTo", "http://127.0.0.1:" + webServerConfig.getPort());
     sh.setInitParameter("hash", hash);
     sh.setInitParameter("corePort", String.valueOf(webServerConfig.getPort()));
+    sh.setInitParameter("proxyPort", String.valueOf(conn.getPort()));
     sh.setInitParameter("publicServer", String.valueOf(bkConfig.getPublicServer()));
     sh.setInitParameter("requirePassword", String.valueOf(bkConfig.getRequirePassword()));
     sh.setInitParameter("authCookie", bkConfig.getAuthCookie());

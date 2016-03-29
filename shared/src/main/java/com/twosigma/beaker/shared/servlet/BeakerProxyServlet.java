@@ -15,6 +15,12 @@
  */
 package com.twosigma.beaker.shared.servlet;
 
+import com.twosigma.beaker.shared.servlet.rules.EraseHashAndBeakerRule;
+import com.twosigma.beaker.shared.servlet.rules.EraseHashAndPluginNameRule;
+import com.twosigma.beaker.shared.servlet.rules.MainPageRule;
+import com.twosigma.beaker.shared.servlet.rules.RootSlashRule;
+import com.twosigma.beaker.shared.servlet.rules.SlashBeakerRule;
+import com.twosigma.beaker.shared.servlet.rules.URLRewriteRule;
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.api.Response;
@@ -26,12 +32,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BeakerProxyServlet extends ProxyServlet.Transparent {
 
   private static Map<String, PluginConfig> plugins = new ConcurrentHashMap<>();
+  private List<URLRewriteRule> rules = new LinkedList<>();
   private final Base64 encoder = new Base64();
 
   private String _hash = "";
@@ -43,6 +52,7 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   private String authCookieRule;
   private String startPage;
   private String corePassword;
+  private String proxyPort;
 
   public BeakerProxyServlet() {
   }
@@ -51,6 +61,7 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   public void init() throws ServletException {
     this._hash = this.getInitParameter("hash");
     this.corePort = this.getInitParameter("corePort");
+    this.proxyPort = this.getInitParameter("proxyPort");
     ServletConfig config = this.getServletConfig();
     this._preserveHost = Boolean.parseBoolean(config.getInitParameter("preserveHost"));
     this.publicServer = Boolean.parseBoolean(config.getInitParameter("publicServer"));
@@ -68,6 +79,16 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
       this.authCookieRule = "";
       this.startPage = "/beaker/";
     }
+    initRewriteRules();
+  }
+
+  private void initRewriteRules() {
+    rules.add(new SlashBeakerRule(this.corePort, this.proxyPort, this.startPage));
+    rules.add(new RootSlashRule(this.corePort, this.proxyPort, this.startPage));
+    rules.add(new MainPageRule("/rest/util/getMainPage"));
+    rules.add(new EraseHashAndBeakerRule(this._hash));
+    //TODO rewrite this rule. The rule for new plugin has to be applied after plugin is added in PluginServiceRest
+    rules.add(new EraseHashAndPluginNameRule(this, this._hash, this.corePort));
   }
 
   @Override
@@ -90,7 +111,6 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   @Override
   protected void onServerResponseHeaders(HttpServletRequest clientRequest, HttpServletResponse proxyResponse, Response serverResponse) {
     super.onServerResponseHeaders(clientRequest, proxyResponse, serverResponse);
-    proxyResponse.addHeader("beaker-auth-header", this.getCoreAuth());
   }
 
   private String getCoreAuth() {
@@ -103,45 +123,20 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   }
 
   /*
-    This is the place where ProxyServlet applies rules from nginx.conf
+    This is the place where ProxyServlet applies rules which were in nginx.conf
    */
   @Override
   protected String rewriteTarget(final HttpServletRequest request) {
-    //XXX TODO rewrite completely
     String result = super.rewriteTarget(request);
-    if (result != null) {
-      String path = request.getPathInfo();
-      if ("/beaker".equals(path)) {
-        result = result.replace(this.corePort, String.valueOf(request.getServerPort())).replace(path, this.startPage);
-      } else if("/".equals(path)) {
-        if (result.endsWith("/")) {
-          result = result.substring(0, result.length() - 1);
-        }
-        result = result.replace(this.corePort, String.valueOf(request.getServerPort())).concat(this.startPage);
-      } else if ("/beaker/".equals(path)) {
-        result = result.replace(path, "/rest/util/getMainPage");
-      } else {
-        String[] parts = path.split("/");
-        for (int i = 0; i < parts.length; i++) {
-          if (this._hash.equals(parts[i])) {
-            if (i < parts.length - 1) {
-              if ("beaker".equals(parts[i + 1])) {
-                result = result.replace("/" + this._hash + "/beaker", "");
-                break;
-              } else {
-                for (String pluginId : plugins.keySet()) {
-                  if (parts[i + 1].startsWith(pluginId.toLowerCase())) {
-                    result = result.replace(this.corePort, String.valueOf(plugins.get(pluginId).getPort()));
-                    result = result.replace("/" + this._hash + "/" + parts[i + 1], "");
-                    break;
-                  }
-                }
-              }
-            }
-          }
-        }
+    String path = request.getPathInfo();
+
+    for (URLRewriteRule rule : rules) {
+      if (rule.satisfy(path)) {
+        result = rule.apply(result, path);
+        break;
       }
     }
+
     return result;
   }
 
@@ -149,12 +144,12 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
     plugins.put(pluginId, new PluginConfig(port, password));
   }
 
-  private static class PluginConfig {
+  public static class PluginConfig {
 
     private final int port;
     private final String password;
 
-    PluginConfig(int port, String password) {
+    public PluginConfig(int port, String password) {
       this.port = port;
       this.password = password;
     }
@@ -168,4 +163,7 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
     }
   }
 
+  public Map<String, PluginConfig> getPlugins() {
+    return plugins;
+  }
 }

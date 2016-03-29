@@ -20,9 +20,7 @@ import com.twosigma.beaker.javash.rest.JavashShellRest;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.twosigma.beaker.jvm.rest.ReadyRest;
-import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;
 import java.util.HashMap;
-import org.cometd.server.Jackson1JSONContextServer;
 
 /**
  * The module for configuring servlets, REST binding.

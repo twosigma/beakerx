@@ -29,41 +29,41 @@ describe('SQL Tutorial', function () {
     });
 
     it('Basic Query', function () {
-        var idxCell = 0;
-        beakerPO.checkDtContainer(idxCell);
-        beakerPO.checkDataTableHead(idxCell, 'ID\nNAME\nCODE');
-        beakerPO.checkDataTableBody(idxCell, 5, '0 1001 AliceBlue #F0F8FF');
+        var idCell = "codef4U7zn";
+        beakerPO.checkDtContainerByIdCell(idCell);
+        beakerPO.checkDataTableHeadByIdCell(idCell, 'ID\nNAME\nCODE');
+        beakerPO.checkDataTableBodyByIdCell(idCell, 5, '0 1001 AliceBlue #F0F8FF');
 
     });
 
     it('Autotranslate Input to Query', function(){
-        var idxCell = 1;
-        beakerPO.scrollToCodeCellOutput(idxCell);
-        expect(beakerPO.getCodeCellOutputByIndex(idxCell).element(By.css('pre')).getText()).toBe('1003');
+        var idCell = "codeRXzfau";
+        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText()).toBe('1003');
 
-        idxCell++;
-        beakerPO.checkDtContainer(idxCell);
-        beakerPO.checkDataTableHead(idxCell, 'Key\nValue');
-        beakerPO.checkDataTableBody(idxCell, 3, '0 ID 1003');
+        idCell = "code3jTM1a";
+        beakerPO.checkDtContainerByIdCell(idCell);
+        beakerPO.checkDataTableHeadByIdCell(idCell, 'Key\nValue');
+        beakerPO.checkDataTableBodyByIdCell(idCell, 3, '0 ID 1003');
     });
 
     it('Autotranslate Output of Query', function(){
-        var idxCell = 3;
-        beakerPO.checkDtContainer(idxCell);
-        beakerPO.checkDataTableHead(idxCell, 'ID\nNAME\nCODE');
-        beakerPO.checkDataTableBody(idxCell, 8, '0 1001 AliceBlue #F0F8FF');
+        var idCell = "codeDbiIzh";
+        beakerPO.checkDtContainerByIdCell(idCell);
+        beakerPO.checkDataTableHeadByIdCell(idCell, 'ID\nNAME\nCODE');
+        beakerPO.checkDataTableBodyByIdCell(idCell, 8, '0 1001 AliceBlue #F0F8FF');
     });
 
     it('Multiple Databases', function(){
-        var idxCell = 4;
-        beakerPO.checkDtContainer(idxCell);
-        beakerPO.checkDataTableHead(idxCell, 'NAME\nBORN');
-        beakerPO.checkDataTableBody(idxCell, 4, '0 Jacob Berzelius 1779');
+        var idCell = "code506tI8";
+        beakerPO.checkDtContainerByIdCell(idCell);
+        beakerPO.checkDataTableHeadByIdCell(idCell, 'NAME\nBORN');
+        beakerPO.checkDataTableBodyByIdCell(idCell, 4, '0 Jacob Berzelius 1779');
 
-        idxCell++;
-        beakerPO.checkDtContainer(idxCell);
-        beakerPO.checkDataTableHead(idxCell, 'NAME\nMOLARMASS');
-        beakerPO.checkDataTableBody(idxCell, 4, '0 Water 18.01');
+        idCell = "codeVDv9Mf";
+        beakerPO.checkDtContainerByIdCell(idCell);
+        beakerPO.checkDataTableHeadByIdCell(idCell, 'NAME\nMOLARMASS');
+        beakerPO.checkDataTableBodyByIdCell(idCell, 4, '0 Water 18.01');
     });
 
 });

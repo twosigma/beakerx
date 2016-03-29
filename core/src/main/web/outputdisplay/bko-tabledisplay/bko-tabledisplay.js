@@ -1251,6 +1251,39 @@
           }
         };
 
+        scope.addInteractionListeners = function () {
+          $(scope.table.table().container())
+            .on("mouseenter.bko-dt-interaction", 'td, th', function (e) {
+              if (scope.tableHasFocus()) {
+                return; //ignore mouse over for key events if there is focus on table's cell
+              }
+              var column = scope.getColumnIndexByCellNode(this);
+              if (!scope.onKeyListeners[column]) {
+                scope.onKeyListeners[column] = function (onKeyEvent) {
+                  if (scope.tableHasFocus()) {
+                    return; //ignore mouse over for key events if there is focus on table's cell
+                  }
+                  if (!onKeyEvent.isDefaultPrevented()) {
+                    scope.onKeyAction(column, onKeyEvent);
+                  }
+                };
+                $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
+              }
+            })
+            .on("mouseleave.bko-dt-interaction", 'td, th', function (e) {
+              var column = scope.getColumnIndexByCellNode(this);
+              var listener = scope.onKeyListeners[column];
+              if(listener) {
+                delete scope.onKeyListeners[column];
+                $(document).off("keydown.bko-datatable", listener);
+              }
+            });
+        };
+        scope.removeInteractionListeners = function () {
+          $(scope.table.table().container()).off('mouseenter.bko-dt-interaction', 'td, th');
+          $(scope.table.table().container()).off('mouseleave.bko-dt-interaction', 'td, th');
+        };
+
         scope.doCreateTable = function(model) {
           var cols = [];
           var i;
@@ -1983,40 +2016,6 @@
             };
 
             scope.removeOnKeyListeners();
-
-            scope.addInteractionListeners = function () {
-              $(scope.table.table().container())
-                .on("mouseenter.bko-dt-interaction", 'td, th', function (e) {
-                  if (scope.tableHasFocus()) {
-                    return; //ignore mouse over for key events if there is focus on table's cell
-                  }
-                  var column = scope.getColumnIndexByCellNode(this);
-                  if (!scope.onKeyListeners[column]) {
-                    scope.onKeyListeners[column] = function (onKeyEvent) {
-                      if (scope.tableHasFocus()) {
-                        return; //ignore mouse over for key events if there is focus on table's cell
-                      }
-                      if (!onKeyEvent.isDefaultPrevented()) {
-                        scope.onKeyAction(column, onKeyEvent);
-                      }
-                    };
-                    $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
-                  }
-                })
-                .on("mouseleave.bko-dt-interaction", 'td, th', function (e) {
-                  var column = scope.getColumnIndexByCellNode(this);
-                  var listener = scope.onKeyListeners[column];
-                  if(listener) {
-                    delete scope.onKeyListeners[column];
-                    $(document).off("keydown.bko-datatable", listener);
-                  }
-                });
-            };
-
-            scope.removeInteractionListeners = function () {
-              $(scope.table.table().container()).off('mouseenter.bko-dt-interaction', 'td, th');
-              $(scope.table.table().container()).off('mouseleave.bko-dt-interaction', 'td, th');
-            };
 
             if (scope.update) {
               scope.addInteractionListeners();

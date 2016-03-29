@@ -65,6 +65,7 @@
             },
             toggleAdvancedMode: function() {
               this._advancedMode = !this._advancedMode;
+              $scope.$broadcast('advancedModeToggled')
             },
             isAdvancedMode: function() {
               return !!(this._advancedMode);

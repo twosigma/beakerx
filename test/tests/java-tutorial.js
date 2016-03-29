@@ -29,22 +29,22 @@ describe('Java Tutorial', function () {
     });
 
     it('Java Examples', function () {
-        var idxCell = 1;
-        beakerPO.scrollToCodeCellOutput(idxCell);
-        beakerPO.checkCellOutputText(idxCell,'Thu Jan 14 21:39:32 EST 2016');
+        var idCell = "codesvwb39";
+        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+        beakerPO.checkCellOutputTextByIdCell(idCell,'Thu Jan 14 21:39:32 EST 2016');
 
-        idxCell=2;
-        beakerPO.scrollToCodeCellOutput(idxCell);
-        beakerPO.checkCellOutputText(idxCell,'THU JAN 14 21:39:36 EST 2016');
+        idCell = "codeWRR4u2";
+        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+        beakerPO.checkCellOutputTextByIdCell(idCell,'THU JAN 14 21:39:36 EST 2016');
 
-        idxCell=4;
-        beakerPO.scrollToCodeCellOutput(idxCell);
-        beakerPO.checkCellOutputText(idxCell,'test for autotranslation');
+        idCell = "codegJFKLk";
+        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+        beakerPO.checkCellOutputTextByIdCell(idCell,'test for autotranslation');
 
-        idxCell = 5;
-        beakerPO.checkPlotIsPresent(idxCell);
-        beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 0), 'plot-bar');
-        expect(beakerPO.getCodeCellOutputContainerTitle(idxCell)).toBe("this is a Java plot");
+        idCell = "codeRd3d1I";
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
+        beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-bar');
+        expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("this is a Java plot");
     });
 
 });

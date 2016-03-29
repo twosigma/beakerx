@@ -574,5 +574,14 @@ var BeakerPageObject = function() {
     expect(this.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText()).toBe(outputText);
   }
 
+  this.getCodeCellOutputContainerTitleByIdCell = function (codeCellOutputId, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getCodeCellOutputByIdCell(codeCellOutputId)
+        .all(by.id("plotTitle"))
+        .get(containerIdx).getText();
+  };
+
 };
 module.exports = BeakerPageObject;

@@ -75,6 +75,12 @@
       newStrategy.manualEntry = function() {
         newStrategy.manualName = this.input ? this.input.split('/').pop() : "";
       };
+      newStrategy.checkCallback = function(result){
+        if (!result || result.indexOf('.bkr') !== result.length-4){
+          return false;
+        }
+        return true;
+      };
       newStrategy.treeViewfs = { // file service
         getChildren: function(basePath, openFolders) {
           var self = this;
@@ -985,6 +991,7 @@
       getFileSystemFileChooserStrategy: function() {
         return new FileSystemFileChooserStrategy();
       },
+
       showFullModalDialog: function(callback, template, controller, dscope) {
         var options = {
           windowClass: 'beaker-sandbox',
@@ -1111,12 +1118,17 @@
     };
     $scope.isWindows = function() {
       return bkUtils.isWindows;
-    }
+    };
     $rootScope.$on('modal.submit', function() {
       $scope.close($scope.getStrategy().getResult());
     });
-    $scope.close = function(result) {
-      $uibModalInstance.close(result);
+    $scope.close = function (result) {
+      if (!$scope.getStrategy || !$scope.getStrategy() || !$scope.getStrategy().checkCallback) {
+        $uibModalInstance.close(result);
+      }else {
+        if ($scope.getStrategy().checkCallback(result))
+          $uibModalInstance.close(result);
+      }
     };
   });
 

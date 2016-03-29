@@ -46,19 +46,19 @@
   $.fn.dataTable.moment('DD/MM/YYYY');
 
   $.fn.dataTable.Api.register( 'column().data().max()', function () {
-    return this.reduce( function (a, b) {
+    return this.length ? this.reduce( function (a, b) {
       var x = parseFloat( a ) || 0;
       var y = parseFloat( b ) || 0;
       return Math.max(x, y);
-    } );
+    } ) : 0;
   } );
 
   $.fn.dataTable.Api.register( 'column().data().min()', function () {
-    return this.reduce( function (a, b) {
+    return this.length ? this.reduce( function (a, b) {
       var x = parseFloat( a ) || 0;
       var y = parseFloat( b ) || 0;
       return Math.min(x, y);
-    } );
+    } ) : 0;
   } );
 
   // detect and sort by file size
@@ -962,9 +962,12 @@
           var i;
 
           // validate saved state (if any) by using column \Names
-          var modelColumnNames = model.columnNames.slice(0);
-          if (model.hasIndex === 'true') {
-            modelColumnNames.shift();
+          var modelColumnNames;
+          if (model.columnNames) {
+            modelColumnNames = model.columnNames.slice(0);
+            if (model.hasIndex === 'true') {
+              modelColumnNames.shift();
+            }
           }
           if (scope.savedstate !== undefined) {
             if (scope.savedstate.columnNames === undefined) {

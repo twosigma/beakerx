@@ -76,7 +76,7 @@
         newStrategy.manualName = this.input ? this.input.split('/').pop() : "";
       };
       newStrategy.checkCallback = function(result){
-        if (!result || result.indexOf('.bkr') !== result.length-4){
+        if (result && result.indexOf('.bkr') !== result.length-4){
           return false;
         }
         return true;

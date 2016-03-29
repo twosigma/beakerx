@@ -2030,7 +2030,7 @@
               updateSize();
             });
 
-            scope.$on('advancedModeToggled', function () {
+            scope.$on(GLOBALS.EVENTS.ADVANCED_MODE_TOGGLED, function () {
               updateSize();
             });
 

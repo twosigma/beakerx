@@ -26,7 +26,8 @@
     'bk.notebookNamespaceModelManager',
     'bk.recentMenu',
     'bk.evaluatorManager',
-    'bk.electron'
+    'bk.electron',
+    'bk.plotapi'
   ]);
 
   module.factory('bkSessionManager', function(
@@ -37,7 +38,8 @@
       bkNotebookNamespaceModelManager,
       bkEvaluatorManager,
       bkRecentMenu,
-      bkElectron) {
+      bkElectron,
+      bkPlotApi) {
 
     var ImageIcon = function(data) {
       if (data === undefined || data.type !== "ImageIcon") {
@@ -338,6 +340,10 @@
         return o;
       }
 
+      if (bkPlotApi.instanceOfPlotApi(v) && norecurse === undefined) {
+        return _.cloneDeep(v);
+      }
+
       if (_.isObject(v) && isDictionary(v) && norecurse === undefined) {
         var o = {}
         o.type = "TableDisplay";
@@ -533,6 +539,7 @@
         Object.defineProperty(this.beakerObj, 'timeout', { value: bkHelper.timeout, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'DataFrame', { value: DataFrame, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'ImageIcon', { value: ImageIcon, writeable: false, enumerable: true });
+        _.extend(this.beakerObj, bkPlotApi.list());
         this.predefined = Object.keys(this.beakerObj);
       }
       this._beaker_model_output_result = modelOutput.result; // XXX obviated by next line

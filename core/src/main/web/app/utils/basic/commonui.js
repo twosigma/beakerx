@@ -216,7 +216,8 @@
                 Alt: "&#x2325;",
                 Shift: "&#x21E7;",
                 Up: "&#x2191;",
-                Down: "&#x2193;"
+                Down: "&#x2193;",
+                Backspace: "&#x232b;"
               };
               str = str.replace(/-/g, "");
               var regexp = new RegExp(Object.keys(mapObj).join("|"),"gi");

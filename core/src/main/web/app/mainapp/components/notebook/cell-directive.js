@@ -182,7 +182,7 @@
 
         $scope.cellview.menu.addItem({
           name: 'Delete cell',
-          shortcut: ['Ctrl-Alt-D', 'Alt-Cmd-D'],
+          shortcut: ['Ctrl-Alt-D', 'Alt-Cmd-Backspace'],
           action: $scope.deleteCell
         });
 

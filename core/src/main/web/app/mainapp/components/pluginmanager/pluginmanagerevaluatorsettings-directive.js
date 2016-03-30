@@ -71,7 +71,7 @@
           try {
             promise = $scope.evaluator.perform(action.key);
           } catch (e) {
-            console.log(e);
+            console.error(e);
           }
           if(promise) {
             promise.finally(function () {

@@ -454,6 +454,13 @@
           return false;
         }
       },
+      resetAllKernelsInNotebook: function () {
+        if (getCurrentApp() && getCurrentApp().resetAllKernelsInNotebook) {
+          return getCurrentApp().resetAllKernelsInNotebook();
+        } else {
+          return false;
+        }
+      },
       hasCodeCell: function(toEval) {
         if (getCurrentApp() && getCurrentApp().evaluate) {
           return getCurrentApp().hasCodeCell(toEval);

@@ -59,6 +59,16 @@ define(function(require, exports, module) {
       id: 'run-all-cells-menuitem'
     },
     {
+      name: 'Reset backends',
+      shortcut: ["Alt-R", "Ctrl-R"],
+      sortorder: 132,
+      action: function() {
+        bkHelper.resetAllKernelsInNotebook();
+      },
+      tooltip: 'Reset backends',
+      id: 'reset-backends-menuitem'
+    },
+    {
       name: 'Show table of contents',
       sortorder: 134,
       action: bkHelper.showToC,

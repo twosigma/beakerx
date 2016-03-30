@@ -94,6 +94,9 @@
       formatTimestamp: function(timestamp, tz, format) {
         return commonUtils.formatTimestamp(timestamp, tz, format);
       },
+      applyTimezone: function(timestamp, tz) {
+        return commonUtils.applyTimezone(timestamp, tz);
+      },
       isMiddleClick: function(event) {
         return commonUtils.isMiddleClick(event);
       },

@@ -419,7 +419,8 @@
               //codecomplete is up, skip
               return;
             }
-            scope.cm.execCommand('goDocStart');
+
+            scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
           });
           scope.cm.on('gutterClick', onGutterClick);
 

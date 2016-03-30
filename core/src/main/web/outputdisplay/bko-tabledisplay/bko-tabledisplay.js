@@ -2044,14 +2044,22 @@
                 scope.updateResizeHandleWidth();
               });
 
-            $(window).bind('resize.' + scope.id, function() {
-              //jscs:disable
+            function updateSize() {
               clearTimeout(scope.refresh_size);
-              scope.refresh_size = setTimeout(function() { scope.update_size(); }, 250);
-              //jscs:enable
+              scope.refresh_size = setTimeout(function () {
+                scope.update_size();
+              }, 250);
+            }
+
+            $(window).bind('resize.' + scope.id, function () {
+              updateSize();
             });
 
-            var inits = {};
+            scope.$on(GLOBALS.EVENTS.ADVANCED_MODE_TOGGLED, function () {
+              updateSize();
+            });
+
+            var inits = {'heightMatch': 'none'};
             if ((scope.pagination.fixLeft + scope.pagination.fixRight) > (scope.columns.length - 1)) {
               scope.pagination.fixLeft = 0;
               scope.pagination.fixRight = 0;

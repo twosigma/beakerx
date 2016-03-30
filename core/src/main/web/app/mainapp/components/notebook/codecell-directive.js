@@ -121,7 +121,9 @@
         };
 
         $scope.backgroundClick = function(event) {
-          if (!$scope.isShowInput() || $(event.toElement).parents().hasClass('code-cell-output')) {
+          if (!$scope.isShowInput() ||
+              $(event.toElement).parents().hasClass('code-cell-output') ||
+              $(event.toElement).hasClass('evaluate-script')) {
             return;
           }
           var top = $(event.delegateTarget).offset().top;
@@ -417,7 +419,8 @@
               //codecomplete is up, skip
               return;
             }
-            scope.cm.execCommand('goDocStart');
+
+            scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
           });
           scope.cm.on('gutterClick', onGutterClick);
 

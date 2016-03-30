@@ -188,6 +188,9 @@
         return null;
       },
       formatTimestamp: function(timestamp, tz, format) {
+        return this.applyTimezone(timestamp, tz).format(format);
+      },
+      applyTimezone: function(timestamp, tz) {
         var time = moment(timestamp);
         if (tz) {
           if (tz.startsWith("GMT")) {
@@ -196,7 +199,7 @@
             time.tz(tz);
           }
         }
-        return time.format(format);
+        return time;
       },
       formatTimeString: function(millis) {
         if (millis < 60 * 1000) {

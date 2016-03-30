@@ -581,9 +581,14 @@
     left: 5px;
     margin: 0;
   }
-  input.plot-legendcheckbox.beforeCheckbox ~ label:after {
-    left: -3px;
+
+  input.plot-legendcheckbox.beforeCheckbox ~ label{
+    margin: 3px;
   }
+  input.plot-legendcheckbox.beforeCheckbox ~ span{
+    margin-left: 10px;
+  }
+
   input.paginationOption ~ label:after {
     right: -20px;
   }
@@ -595,7 +600,7 @@
     text-align: center;
     font-size: 15px;
     font-weight: normal;
-    line-height: 14px;
+    line-height: 18px;
     background-color: $ef-active-control-bg;
   }
   input[type="checkbox"]:checked ~ label:after {

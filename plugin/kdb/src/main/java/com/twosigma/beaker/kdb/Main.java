@@ -28,6 +28,7 @@ import com.twosigma.beaker.shared.module.GuiceCometdModule;
 import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
+import org.cometd.server.BayeuxServerImpl;
 import org.eclipse.jetty.server.Server;
 
 import java.io.FileInputStream;
@@ -88,6 +89,7 @@ public class Main {
     rest.setCorePort(corePort);
 
     Server server = injector.getInstance(Server.class);
+    injector.getInstance(BayeuxServerImpl.class);
     server.start();
     BeakerStdOutErrHandler.init();
   }

@@ -25,6 +25,7 @@ define(function(require, exports, module) {
     var COMMAND = "node/nodePlugin";
 
     var serviceBase = null;
+    var servicePort = null;
 
     var nodeProto = {
         pluginName: PLUGIN_NAME,
@@ -113,7 +114,8 @@ define(function(require, exports, module) {
         startedIndicator: "Server Starting",
         recordOutput: "true"
         }).success(function (ret) {
-            serviceBase = ret;
+            serviceBase = ret.baseUrl;
+            servicePort = ret.port;
             var NodeShell = function (settings, doneCB, ecb) {
                 var self = this;
                 var setShellIdCB = function (id) {

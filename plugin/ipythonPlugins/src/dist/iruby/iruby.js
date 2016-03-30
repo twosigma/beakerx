@@ -27,6 +27,7 @@ define(function(require, exports, module) {
   var _theCancelFunction = null;
   var gotError = false;
   var serviceBase = null;
+  var servicePort = null;
   var ipyVersion = false;
   var myPython = null;
   var now = function() {
@@ -447,7 +448,8 @@ define(function(require, exports, module) {
         command: COMMAND,
         nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2"
       }).success(function(ret) {
-        serviceBase = ret;
+        serviceBase = ret.baseUrl;
+        servicePort = ret.port;
         var IRubyShell = function(settings, doneCB, ecb) {
           var self = this;
           var setShellIdCB = function(shellID) {

@@ -99,9 +99,9 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   @Override
   protected void addProxyHeaders(HttpServletRequest clientRequest, Request proxyRequest) {
     super.addProxyHeaders(clientRequest, proxyRequest);
-    for (String pluginId : plugins.keySet()) {
-      if (clientRequest.getPathInfo().contains(pluginId.toLowerCase())) {
-        proxyRequest.header(HttpHeader.AUTHORIZATION.toString(), "Basic " + this.getPluginAuth(pluginId));
+    for (PluginConfig config : plugins.values()) {
+      if (clientRequest.getPathInfo().contains(config.getBaseUrl())) {
+        proxyRequest.header(HttpHeader.AUTHORIZATION.toString(), "Basic " + this.getAuth(config.getPassword()));
         return;
       }
     }
@@ -114,12 +114,11 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   }
 
   private String getCoreAuth() {
-    return encoder.encodeBase64String(("beaker:" + this.corePassword).getBytes());
+    return this.getAuth(this.corePassword);
   }
 
-  private String getPluginAuth(String pluginId) {
-    String pluginPassword = plugins.get(pluginId).getPassword();
-    return encoder.encodeBase64String(("beaker:" + pluginPassword).getBytes());
+  private String getAuth(String password) {
+    return encoder.encodeBase64String(("beaker:" + password).getBytes());
   }
 
   /*
@@ -140,18 +139,20 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
     return result;
   }
 
-  public static void addPlugin(String pluginId, int port, String password) {
-    plugins.put(pluginId, new PluginConfig(port, password));
+  public static void addPlugin(String pluginId, int port, String password, String baseUrl) {
+    plugins.put(pluginId, new PluginConfig(port, password, baseUrl));
   }
 
   public static class PluginConfig {
 
     private final int port;
     private final String password;
+    private final String baseUrl;
 
-    public PluginConfig(int port, String password) {
+    public PluginConfig(int port, String password, String baseUrl) {
       this.port = port;
       this.password = password;
+      this.baseUrl = baseUrl;
     }
 
     public int getPort() {
@@ -160,6 +161,10 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
 
     public String getPassword() {
       return password;
+    }
+
+    public String getBaseUrl() {
+      return baseUrl;
     }
   }
 

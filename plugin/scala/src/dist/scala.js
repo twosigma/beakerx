@@ -22,6 +22,7 @@ define(function(require, exports, module) {
   var PLUGIN_NAME = "Scala";
   var COMMAND = "scala/scalaPlugin";
   var serviceBase = null;
+  var servicePort = null;
   var cometdUtil = bkHelper.getUpdateService();
   var ScalaCancelFunction = null;
 
@@ -196,7 +197,8 @@ define(function(require, exports, module) {
       waitfor: "Started SelectChannelConnector",
       recordOutput: "true"
     }).success(function(ret) {
-      serviceBase = ret;
+      serviceBase = ret.baseUrl;
+      servicePort = ret.port;
       bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/rest/scalash/ready")).then(function () {
         if (window.languageServiceBase == undefined) {
           window.languageServiceBase = {};
@@ -206,7 +208,7 @@ define(function(require, exports, module) {
           window.languageUpdateService = {};
         }
         window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
-        cometdUtil.init(PLUGIN_NAME, serviceBase);
+        cometdUtil.init(PLUGIN_NAME, servicePort);
 
         var scalashell = function(settings, doneCB, ecb) {
           var self = this;

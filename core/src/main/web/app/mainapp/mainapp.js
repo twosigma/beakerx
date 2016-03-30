@@ -632,9 +632,15 @@
             closeNotebook: closeNotebook,
             _closeNotebook: _closeNotebook,
             showToC: function() {
+              var cellOp = bkSessionManager.getNotebookCellOp();
+              var hasChildSections = function(cell){
+                return _.any(cellOp.getAllDescendants(cell.id), function(child) {
+                  return child.type === 'section';
+                });
+              };
               _.each(this.getNotebookModel().cells, function(cell) {
                 if (cell.type == "section") {
-                  cell.collapsed = cell.level !== 1;
+                  cell.collapsed = !hasChildSections(cell);
                 }
               });
             },

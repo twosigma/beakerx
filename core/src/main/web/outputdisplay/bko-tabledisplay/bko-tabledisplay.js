@@ -558,6 +558,13 @@
               $(this).bind('click.DT', function (e) {
                 if(!$(e.target).hasClass('bko-column-header-menu')){
                   click(e);
+                  setTimeout(function(){
+                    $scope.tableOrder = [];
+                    var order = $scope.table.order();
+                    for(var i = 0; i < order.length; i++){
+                      $scope.tableOrder.push([$scope.colorder[order[i][0]], order[i][1]]);
+                    }
+                  }, 0);
                 }
               });
             }
@@ -918,6 +925,7 @@
             delete scope.actualalign;
             delete scope.data;
             delete scope.update;
+            delete scope.tableOrder;
             $(document.body).off('click.bko-dt-container', scope.containerClickFunction);
           }
           unregisterOutputExpandEventListener();
@@ -1036,6 +1044,7 @@
             scope.showFilter          = scope.savedstate.showFilter;
             scope.columnSearchActive  = scope.savedstate.columnSearchActive;
             scope.columnWidth         = scope.savedstate.columnWidth || [];
+            scope.tableOrder          = scope.savedstate.tableOrder;
 
             scope.savedstate  = undefined;
           } else {
@@ -1047,6 +1056,7 @@
             scope.tableSearch       = '';
             scope.columnFilter      = [];
             scope.columnWidth       = [];
+            scope.tableOrder        = undefined;
             scope.pagination = {
               'use' : true,
               'rowsToDisplay' : 50,
@@ -1599,7 +1609,7 @@
             'stateSave': true,
             'processing': true,
             'autoWidth': true,
-            'order': [[0, 'asc']],
+            'order': scope.tableOrder ? _.cloneDeep(scope.tableOrder) : [[0, 'asc']],
             'scrollX': '10%',
             'searching': true,
             'deferRender': true,
@@ -2195,6 +2205,9 @@
             }
             if (scope.columnWidth !== undefined) {
               state.columnWidth = scope.columnWidth;
+            }
+            if (scope.tableOrder !== undefined) {
+              state.tableOrder = scope.tableOrder.slice(0);
             }
 
             scope.model.setDumpState({datatablestate: state});

@@ -65,6 +65,7 @@
             },
             toggleAdvancedMode: function() {
               this._advancedMode = !this._advancedMode;
+              $scope.$broadcast(GLOBALS.EVENTS.ADVANCED_MODE_TOGGLED)
             },
             isAdvancedMode: function() {
               return !!(this._advancedMode);
@@ -281,31 +282,6 @@
           return true;
         };
 
-        $scope.isInitializationCell = function () {
-          return bkSessionManager.isRootCellInitialization();
-        };
-        $scope.menuItems = [
-          {
-            name: 'Run all',
-            action: function () {
-              bkCoreManager.getBkApp().evaluateRoot('root').
-                  catch(function (data) {
-                    console.error(data);
-                  });
-            }
-          },
-          {
-            name: 'Initialization Cell',
-            isChecked: function () {
-              return $scope.isInitializationCell();
-            },
-            action: function () {
-              bkSessionManager.setRootCellInitialization(!$scope.isInitializationCell());
-              notebookCellOp.reset();
-            }
-          }
-        ];
-
         bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
           preference: 'advanced-mode'
         }).success(function(isAdvanced) {
@@ -328,34 +304,9 @@
         });
       },
       link: function (scope, element, attrs) {
-        var div = element.find('.bkcell').first();
-        div.click(function (event) {
-          //click in the border or padding should trigger menu
-          if (bkUtils.getEventOffsetX(div, event) >= div.width()) {
-            var menu = div.find('.bkcellmenu').last();
-            menu.css('top', event.clientY);
-            menu.css('left', event.clientX - 150);
-            menu.find('.dropdown-toggle').first().dropdown('toggle');
-            event.stopPropagation();
-          }
-        });
-        if (scope.isInitializationCell()) {
-          div.addClass('initcell');
-        } else {
-          div.removeClass('initcell');
-        }
         scope.getNotebookElement = function() {
           return element;
         };
-        scope.$watch('isInitializationCell()', function (newValue, oldValue) {
-          if (newValue !== oldValue) {
-            if (newValue) {
-              div.addClass('initcell');
-            } else {
-              div.removeClass('initcell');
-            }
-          }
-        });
         scope.$on('$destroy', function() {
           scope.setBkNotebook({bkNotebook: undefined});
           bkOutputLog.unsubscribe();

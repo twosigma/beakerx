@@ -448,12 +448,12 @@
 
       getTipString : function(val, axis, fixed) {
         if (axis.axisType === "time") {
-          return moment(val).tz(axis.axisTimezone).format("YYYY MMM DD ddd, HH:mm:ss .SSS");
+          return bkUtils.formatTimestamp(val, axis.axisTimezone, "YYYY MMM DD ddd, HH:mm:ss .SSS");
         }
         if (axis.axisType === "nanotime") {
           var d = parseFloat(val.div(1000000).toFixed(0));
           var nanosec = val.mod(1000000000).toFixed(0);
-          return moment(d).tz(axis.axisTimezone).format("YYYY MMM DD ddd, HH:mm:ss") + "." + this.padStr(nanosec, 9);
+          return bkUtils.formatTimestamp(d, axis.axisTimezone, "YYYY MMM DD ddd, HH:mm:ss") + "." + this.padStr(nanosec, 9);
         }
         if (typeof(val) === "number") {
           if (fixed === true) {

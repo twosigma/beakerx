@@ -70,7 +70,9 @@
           var promise;
           try {
             promise = $scope.evaluator.perform(action.key);
-          } catch (ignore) { }
+          } catch (e) {
+            console.log(e);
+          }
           if(promise) {
             promise.finally(function () {
               action.running = false;

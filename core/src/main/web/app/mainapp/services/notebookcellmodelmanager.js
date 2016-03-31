@@ -53,7 +53,12 @@
     stack.peek = function() {
       return this[this.length - 1];
     };
-    _.each(decoratedCells, function(cell) {
+
+    var decoratedCellsKeys = Object.keys(decoratedCells);
+    decoratedCellsKeys.sort(function(a,b){return decoratedCells[a].rawIndex - decoratedCells[b].rawIndex});
+
+    decoratedCellsKeys.forEach(function(key) {
+      var cell = decoratedCells[key];
       if (cell.id === 'root') {
         return;
       }
@@ -230,11 +235,16 @@
           return this.getCell(parentId);
         }
       },
-      getChildren: function(id) {
+      getChildren: function (id) {
         var self = this;
-        return this._getDecoratedCell(id).children.map(function(childId) {
-          return self.getCell(childId);
-        });
+        var children = _.chain(this._getDecoratedCell(id).children)
+          .sortBy(function (childId) {
+            return self._getDecoratedCell(childId).rawIndex;
+          })
+          .map(function (childId) {
+            return self.getCell(childId);
+          }).value();
+        return children;
       },
       getAllDescendants: function(id) {
         var self = this;

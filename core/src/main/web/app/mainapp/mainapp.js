@@ -599,6 +599,36 @@
                 bkHelper.go2FirstErrorCodeCell();
               });
             },
+            resetAllKernelsInNotebook: function () {
+              var statusMessage = 'Resetting all languages and running all init cells';
+              bkHelper.showStatus(statusMessage);
+
+              var evaluatorsWithResetMethod = _.values(bkEvaluatorManager.getLoadedEvaluators()).filter(function (item) {
+                return item.spec && item.spec.reset;
+              });
+
+              syncResetKernels(evaluatorsWithResetMethod);
+
+              function syncResetKernels(kernels) {
+                if(kernels.length > 0) {
+                  var promise = kernels.pop().perform('reset');
+                  if(promise) {
+                    promise.finally(function () {
+                      syncResetKernels(kernels);
+                    });
+                  } else {
+                    syncResetKernels(kernels);
+                  }
+                } else {
+                  bkHelper.clearStatus(statusMessage);
+                  bkHelper.evaluateRoot("initialization").then(function (res) {
+                    bkHelper.go2FirstErrorCodeCell();
+                  }, function (err) {
+                    bkHelper.go2FirstErrorCodeCell();
+                  });
+                }
+              }
+            },
             closeNotebook: closeNotebook,
             _closeNotebook: _closeNotebook,
             collapseAllSections: function() {
@@ -1009,37 +1039,6 @@
           });
         }
 
-        function resetAllKernels() {
-          var statusMessage = 'Resetting all languages and running all init cells';
-          bkHelper.showStatus(statusMessage);
-
-          var evaluatorsWithResetMethod = _.values(bkEvaluatorManager.getLoadedEvaluators()).filter(function (item) {
-            return item.spec && item.spec.reset;
-          });
-
-          syncResetKernels(evaluatorsWithResetMethod);
-
-          function syncResetKernels(kernels) {
-            if(kernels.length > 0) {
-              var promise = kernels.pop().perform('reset');
-              if(promise) {
-                promise.finally(function () {
-                  syncResetKernels(kernels);
-                });
-              } else {
-                syncResetKernels(kernels);
-              }
-            } else {
-              bkHelper.clearStatus(statusMessage);
-              bkHelper.evaluateRoot("initialization").then(function (res) {
-                bkHelper.go2FirstErrorCodeCell();
-              }, function (err) {
-                bkHelper.go2FirstErrorCodeCell();
-              });
-            }
-          }
-        }
-
         var keydownHandler = function(e) {
           if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
             e.preventDefault();
@@ -1063,7 +1062,7 @@
             bkHelper.showLanguageManager();
             return false;
           } else if(bkHelper.isResetEnvironmentShortcut(e)) {
-            resetAllKernels();
+            bkHelper.resetAllKernelsInNotebook();
             return false;
           } else if (bkUtils.isElectron) {
             var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);

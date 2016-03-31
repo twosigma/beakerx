@@ -23,9 +23,9 @@ describe('HeatMap Tutorial', function () {
 
     beforeEach(function (done) {
         beakerPO = new BeakerPageObject();
-        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&readOnly=true").then(done);
-        beakerPO.waitUntilLoadingIndicator();
-
+        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&readOnly=true")
+            .then(done)
+            .then(beakerPO.waitUntilLoadingCellOutput());
     });
 
     afterEach(function (done) {

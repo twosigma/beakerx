@@ -408,6 +408,10 @@ var BeakerPageObject = function() {
     browser.wait(this.EC.presenceOf($('.navbar-text > i')), 10000);
   };
 
+  this.waitUntilLoadingCellOutput = function() {
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output')), 10000);
+  }
+
   this.checkPlotIsPresent = function (codeCellOutputIdx, containerIdx){
     if (!containerIdx)
       containerIdx = 0;

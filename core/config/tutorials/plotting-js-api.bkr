@@ -1,0 +1,302 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "HTML",
+            "plugin": "HTML",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            },
+            "languageVersion": "ES2015"
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectiontShwak",
+            "type": "section",
+            "title": "JavaScript Plots",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "sectionzblTi1",
+            "type": "section",
+            "title": "Plot with simple properties",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownD512KU",
+            "type": "markdown",
+            "body": [
+                "JavaScript plots has syntax very similar to Groovy plots. Property names are the same."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeoTTuqE",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "new beaker.Plot({title: \"Title\", ",
+                    "                 xLabel: \"Horizontal\", ",
+                    "                 yLabel: \"Vertical\",",
+                    "                 initWidth: 800,",
+                    "                 initHeight: 500})"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 800,
+                        "height": 500
+                    },
+                    "focus": {
+                        "xl": 0,
+                        "xr": 1,
+                        "yl": 0,
+                        "yr": 1,
+                        "xspan": 1,
+                        "yspan": 1
+                    },
+                    "lodOn": [],
+                    "lodType": [],
+                    "lodAuto": [],
+                    "zoomHash": [],
+                    "showItem": [],
+                    "visibleItem": 0,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0,
+                        "xr": 1,
+                        "yl": 0,
+                        "yr": 1,
+                        "xspan": 1,
+                        "yspan": 1
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 800,
+                    "init_height": 500,
+                    "chart_title": "Title",
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "domain_axis_label": "Horizontal",
+                    "y_label": "Vertical",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "graphics_list": [],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10,
+                    "type": "Plot",
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 44,
+                "height": 568
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "sectionzoQt5E",
+            "type": "section",
+            "title": "Section Level Two",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "sectionSikgag",
+            "type": "section",
+            "title": "Lines, Bars and Right yAxis",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codevSbPfK",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var pp = new beaker.Plot({title: 'Bars, Lines and 2nd yAxis', xLabel: \"xLabel\", yLabel: \"yLabel\", omitCheckboxes: true})",
+                    "pp.add(new beaker.YAxis({label: \"Right yAxis\"}))",
+                    "pp.add(new beaker.Bars({displayName: \"Bar\", x: [1,3,5,7,10], y: [100, 120,90,100,80], width: 1}))",
+                    "pp.add(new beaker.Line({displayName: \"Line\", x: [1, 4, 6, 8, 10], y: [3, 6, 4, 5, 9], width: 6, yAxis: \"Right yAxis\"}))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": "Bars, Lines and 2nd yAxis",
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "domain_axis_label": "xLabel",
+                    "y_label": "yLabel",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        },
+                        {
+                            "type": "YAxis",
+                            "label": "Right yAxis",
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": true,
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "x": [
+                                1,
+                                3,
+                                5,
+                                7,
+                                10
+                            ],
+                            "y": [
+                                100,
+                                120,
+                                90,
+                                100,
+                                80
+                            ],
+                            "display_name": "Bar",
+                            "type": "Bars",
+                            "width": 1
+                        },
+                        {
+                            "visible": true,
+                            "yAxis": "Right yAxis",
+                            "x": [
+                                1,
+                                4,
+                                6,
+                                8,
+                                10
+                            ],
+                            "y": [
+                                3,
+                                6,
+                                4,
+                                5,
+                                9
+                            ],
+                            "display_name": "Line",
+                            "type": "Line",
+                            "width": 6
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10,
+                    "type": "Plot",
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 150,
+                "height": 548
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
+        }
+    ],
+    "namespace": {}
+}

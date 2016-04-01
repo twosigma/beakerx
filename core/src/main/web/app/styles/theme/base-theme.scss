@@ -470,7 +470,7 @@
 
   .dropdown-menu > li > a {
     color: $std-fg-color;
-    &:hover + .glyphicon-ok {
+    &:hover + .glyphicon-ok, &:hover + .fa-check {
       color: $std-fg-color;
     }
   }

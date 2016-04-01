@@ -24,7 +24,7 @@
   > li > a {
     position: relative;
     padding: 4px 80px 2px 23px;
-    &:hover + .glyphicon-ok {
+    &:hover + .glyphicon-ok,  &:hover + .fa-check {
       color: $dropdown-link-hover-color;
     }
   }

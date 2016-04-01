@@ -31,9 +31,9 @@ describe('EasyForm', function () {
   }
 
   function evaluate(code) {
-    beakerPO.setCellInput(code);
-    beakerPO.evaluateCell();
-    beakerPO.waitForCellOutput();
+    beakerPO.setCellInput(code)
+        .then(beakerPO.evaluateCell())
+        .then(beakerPO.waitForCellOutput());
   }
 
   function testUndoRedo(code, selector) {
@@ -41,8 +41,9 @@ describe('EasyForm', function () {
 
     var e = element(by.css(selector));
 
-    e.sendKeys("TEST");
-    expect(e.getAttribute('value')).toEqual("TEST");
+    e.sendKeys("TEST").then(
+        expect(e.getAttribute('value')).toEqual("TEST")
+    );
 
     //TEST UNDO
     if (os.type() === 'Darwin') {

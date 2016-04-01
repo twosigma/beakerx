@@ -164,6 +164,9 @@
             }
           }
           result.push(item.id);
+          if(!_.isEmpty(item.cssClass)){
+            result.push(item.cssClass);
+          }
           return result.join(' ');
         };
 

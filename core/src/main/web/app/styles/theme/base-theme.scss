@@ -473,13 +473,12 @@
     &:hover + .glyphicon-ok {
       color: $std-fg-color;
     }
+    &.group-separator {
+      border-top: $dropdown-menu-group-separator;
+    }
   }
 
   #start-page-menu-item {
-    border-color: $cell-border;
-  }
-
-  .menu-separator {
     border-color: $cell-border;
   }
 

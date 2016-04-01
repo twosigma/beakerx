@@ -398,6 +398,13 @@
       getNotebookElement: function(currentScope) {
         return bkCoreManager.getNotebookElement(currentScope);
       },
+      showToC: function(){
+        if (getCurrentApp() && getCurrentApp().showToC) {
+          return getCurrentApp().showToC();
+        } else {
+          return false;
+        }
+      },
       collapseAllSections: function() {
         if (getCurrentApp() && getCurrentApp().collapseAllSections) {
           return getCurrentApp().collapseAllSections();

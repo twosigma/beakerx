@@ -197,7 +197,7 @@ HeaderMenu.prototype = {
       }
 
       if (oItem.separator) {
-        $item.addClass('menu-separator');
+        $item.addClass('group-separator');
       }
 
       $li.append($item);

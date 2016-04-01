@@ -76,7 +76,11 @@
         newStrategy.manualName = this.input ? this.input.split('/').pop() : "";
       };
       newStrategy.checkCallback = function(result){
-        if (result && result.indexOf('.bkr') !== result.length-4){
+        if (result && result.indexOf('.bkr') === -1){
+          $rootScope.$broadcast("SELECT_DIR",{
+            find_in_home_dir: true,
+            path: result
+          });
           return false;
         }
         return true;

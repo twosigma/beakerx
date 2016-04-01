@@ -38,6 +38,13 @@
     };
   });
 
+  var getSlash = function(isWindows) {
+    if (isWindows) {
+      return '\\'
+    }
+    return '/';
+  };
+
   var addTrailingSlash = function(str, isWindows) {
     if (isWindows) {
       if (!_.endsWith(str, '\\')) {
@@ -48,9 +55,10 @@
         str = str + '/';
       }
     }
+    return str;
   };
 
-  treeView.directive('treeView', function($templateCache, $rootScope, bkUtils) {
+  treeView.directive('treeView', function($templateCache, $rootScope, $timeout, bkUtils) {
     return {
       restrict: 'E',
       template: '<tree-node data="root" fs="fs" displayname="{{ rooturi }}"></tree-node>',
@@ -62,25 +70,76 @@
           //jscs:enable
         }
 
-        addTrailingSlash($scope.rooturi, bkUtils.isWindows);
-
         $rootScope.fsPrefs = $rootScope.fsPrefs || {
           openFolders: []
         };
 
-        $scope.root = {
-          type: 'directory',
-          uri: $scope.rooturi,
-          children: []
+        var isHomeDir = $scope.rooturi.length >= 3; // '/' for *nix and C:\ for windows
+        var separator  = getSlash(bkUtils.isWindows);
+
+        var getOpenFolders = function(path){
+          var openFolders = [];
+          if (path.indexOf($scope.rooturi)!== -1){
+            path = path.replace($scope.rooturi,  "");
+            var the_arr = path.split(separator);
+            var openFolder = addTrailingSlash($scope.rooturi, bkUtils.isWindows);
+            while (the_arr.length > 0){
+              var part =  the_arr.shift();
+              if (part.length > 0) {
+                openFolder += addTrailingSlash(part, bkUtils.isWindows);
+                openFolders.push(openFolder);
+              }
+            }
+            return openFolders;
+          }
+          return undefined;
         };
 
-        if (_.contains($rootScope.fsPrefs.openFolders, $scope.rooturi)) {
-          $scope.fs.getChildren($scope.rooturi, $rootScope.fsPrefs.openFolders).then(function(response) {
-            $scope.$evalAsync(function() {
-              $scope.root.children = response.data;
+        var reinit = function(rooturi, openFolders, callback){
+          $scope.root = {
+            type: 'directory',
+            uri: $scope.rooturi,
+            children: []
+          };
+
+            $scope.fs.getChildren(rooturi, openFolders).then(function(response) {
+              $scope.$evalAsync(function() {
+                $scope.root.children = response.data;
+                if (callback) {
+                  $timeout(function() {
+                    callback();
+                  }, 0);
+                }
+              });
             });
-          });
-        }
+        };
+
+        $scope.$on("SELECT_DIR", function (event, data) {
+          var callback = function(){
+            $rootScope.$broadcast("SCROLL_TO_TREE_NODE",{
+              path: data.path
+            });
+          };
+          var openFolders = getOpenFolders(data.path);
+          if (isHomeDir && data.find_in_home_dir == true){
+            if (openFolders) {
+              reinit($scope.rooturi, openFolders, callback);
+            }
+            else {
+
+              $rootScope.$broadcast("SELECT_DIR",{
+                find_in_home_dir: false,
+                path: data.path
+              });
+            }
+          }else if (!isHomeDir && data.find_in_home_dir == false){
+            if (openFolders) {
+              reinit($scope.rooturi, openFolders, callback);
+            }
+          }
+        });
+
+        reinit($scope.rooturi, $rootScope.fsPrefs.openFolders);
       }
     };
   });
@@ -202,6 +261,12 @@
 
         $scope.$on("MAKE_NEW_DIR", function (event, data) {
           $scope.onMakeNewDir(data.path);
+        });
+      },
+      link: function(scope, element, attrs, ctrl) {
+        scope.$on("SCROLL_TO_TREE_NODE", function (event, data) {
+          if (addTrailingSlash(data.path, bkUtils.isWindows) === addTrailingSlash(scope.data.uri, bkUtils.isWindows))
+            element.get()[0].scrollIntoView();
         });
       }
     };

@@ -38,9 +38,8 @@ describe('Python Tutorial', function () {
         idCell = "codeqPMAfv";
         beakerPO.scrollToCodeCellOutputByIdCell(idCell);
         beakerPO.checkDtContainerByIdCell(idCell);
-        beakerPO.checkDataTableHeadByIdCell(idCell, 'Index 3 mo\n6 mo\n1 yr\n2 yr\n3 yr\n5 yr\n7 yr\n10 yr');
-        beakerPO.checkDataTableBodyByIdCell(idCell, 5, '19900130 22:00:00.000 +0300 7.8981 7.9562 7.9210 8.0852 8.1324 8.1195 8.1962 8.2067 8.2586');
-
+        beakerPO.checkDataTableHeadByIdCell(idCell, 'Index 3 mo\n6 mo\n1 yr\n2 yr\n3 yr\n5 yr\n7 yr\n10 yr\n30 yr');
+        beakerPO.checkDataTableBodyByIdCell(idCell, 5, '19900130 19:00:00.000 +0000 7.8981 7.9562 7.9210 8.0852 8.1324 8.1195 8.1962 8.2067 8.2586');
 
         idCell = "codeZxPm5k";
         beakerPO.scrollToCodeCellOutputByIdCell(idCell);

@@ -455,6 +455,46 @@ var BeakerPageObject = function() {
       .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
   }
 
+  this.checkLegendIsPresentByIdCell = function (codeCellOutputId, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    expect(this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(By.css('.plot-legend')).isPresent()).toBe(true);
+  };
+
+  this.getCodeCellOutputCombplotTitleByIdCell = function (codeCellOutputId) {
+    return this.getCodeCellOutputByIdCell(codeCellOutputId).element(by.id('combplotTitle')).getText();
+  };
+
+  this.getCodeCellOutputContainerYLabelByIdCell = function (codeCellOutputId, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(by.id('ylabel')).getText();
+  };
+
+  this.getCodeCellOutputContainerTitleByIdCell = function (codeCellOutputId, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getCodeCellOutputByIdCell(codeCellOutputId)
+        .all(by.id("plotTitle"))
+        .get(containerIdx).getText();
+  };
+
+  this.getCodeCellOutputContainerXLabelByIdCell = function (codeCellOutputId, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(by.id('xlabel')).getText();
+  };
+
+  this.getCodeCellOutputContainerYRLabelByIdCell = function (codeCellOutputId, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(by.id('yrlabel')).getText();
+  };
+
   this.scrollToCodeCellOutputByIdCell = function (idCell) {
     return browser.executeScript("$('[cell-id=" + idCell +"]')[0].scrollIntoView();");
   };
@@ -574,14 +614,6 @@ var BeakerPageObject = function() {
     expect(this.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText()).toBe(outputText);
   }
 
-  this.getCodeCellOutputContainerTitleByIdCell = function (codeCellOutputId, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-
-    return this.getCodeCellOutputByIdCell(codeCellOutputId)
-        .all(by.id("plotTitle"))
-        .get(containerIdx).getText();
-  };
 
 };
 module.exports = BeakerPageObject;

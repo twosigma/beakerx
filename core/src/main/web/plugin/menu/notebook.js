@@ -59,13 +59,13 @@ define(function(require, exports, module) {
       id: 'run-all-cells-menuitem'
     },
     {
-      name: 'Reset backends',
+      name: 'Reset languages',
       shortcut: ["Alt-R", "Ctrl-R"],
       sortorder: 132,
       action: function() {
         bkHelper.resetAllKernelsInNotebook();
       },
-      tooltip: 'Reset backends',
+      tooltip: 'Reset each language and run all init cells',
       id: 'reset-backends-menuitem'
     },
     {

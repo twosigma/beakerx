@@ -36,8 +36,9 @@
            <li ng-repeat="column in columns" ng-if="!$first">
              <a tabindex="-1" href="" ng-click="showColumn($index, $event)">
                {{column.title}}
-               <input type="checkbox" ng-click="showColumn($index, $event)" ng-checked="isColumnVisible($index)">
              </a>
+             <input type="checkbox" id="{{id}}-{{$index}}-visible" class="beforeCheckbox" ng-click="showColumn($index, $event)" ng-checked="isColumnVisible($index)">
+             <label for="{{id}}-{{$index}}-visible" class="checkbox-label"></label>
            </li>
          </ul>
        </li>

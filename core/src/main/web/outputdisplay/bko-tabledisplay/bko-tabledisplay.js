@@ -1678,12 +1678,12 @@
 
             if(init.paging !== false){
               var pagination = $(element).find(".bko-table-use-pagination");
-              $('<label eat-click><input type="checkbox" checked="true"> use pagination</label>')
-                .bind('click', function(e) {
-                  if (e.target.tagName === 'INPUT') {
-                    scope.doUsePagination();
-                  }
+              $('<input type="checkbox" checked="true" id=' + scope.id +'usePagination class="beforeCheckbox">')
+                .bind('click', function (e) {
+                  scope.doUsePagination();
                 })
+                .appendTo(pagination);
+              $('<label for=' + scope.id +'usePagination> use pagination</label>')
                 .appendTo(pagination);
             }
 

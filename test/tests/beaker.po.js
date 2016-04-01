@@ -455,39 +455,6 @@ var BeakerPageObject = function() {
       .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
   }
 
-  this.scrollToCodeCellOutputByIdCell = function (idCell) {
-    return browser.executeScript("$('[cell-id=" + idCell +"]')[0].scrollIntoView();");
-  };
-
-  this.getCodeCellOutputByIdCell = function (idCell) {
-    return element.all(by.css('[cell-id=' + idCell + ']')).get(0);
-  };
-
-  this.checkPlotIsPresentByIdCell = function (codeCellOutputId, containerIdx){
-    if (!containerIdx)
-      containerIdx = 0;
-    this.scrollToCodeCellOutputByIdCell(codeCellOutputId);
-    expect(this.getPlotMaingByIdCell(codeCellOutputId, containerIdx).isPresent()).toBe(true);
-  };
-
-  this.getPlotMaingByIdCell = function (codeCellOutputId, containerIdx) {
-    return this.getPlotSvgByIdCell(codeCellOutputId, containerIdx).element(By.id('maing'));
-  };
-
-  this.getPlotSvgByIdCell = function (codeCellOutputId, containerIdx) {
-    return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(By.id('svgg'));
-  };
-
-  this.getPlotLegendContainerByIdCell = function (codeCellOutputId, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-    return this.getCodeCellOutputByIdCell(codeCellOutputId).all(By.css('.plot-plotlegendcontainer')).get(containerIdx);
-  };
-
-  this.getPlotSvgElementByIndexByIdCell = function (codeCellOutputId, containerIdx, elementIndex) {
-    return this.getPlotSvgByIdCell(codeCellOutputId, containerIdx).all(by.css("#maing > g")).get(elementIndex);
-  };
-
   this.checkLegendIsPresentByIdCell = function (codeCellOutputId, containerIdx) {
     if (!containerIdx)
       containerIdx = 0;
@@ -527,5 +494,126 @@ var BeakerPageObject = function() {
 
     return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(by.id('yrlabel')).getText();
   };
+
+  this.scrollToCodeCellOutputByIdCell = function (idCell) {
+    return browser.executeScript("$('[cell-id=" + idCell +"]')[0].scrollIntoView();");
+  };
+
+  this.getCodeCellOutputByIdCell = function (idCell) {
+    return element.all(by.css('[cell-id=' + idCell + ']')).get(0);
+  };
+
+  this.checkPlotIsPresentByIdCell = function (codeCellOutputId, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    this.scrollToCodeCellOutputByIdCell(codeCellOutputId);
+    expect(this.getPlotMaingByIdCell(codeCellOutputId, containerIdx).isPresent()).toBe(true);
+  };
+
+  this.getPlotMaingByIdCell = function (codeCellOutputId, containerIdx) {
+    return this.getPlotSvgByIdCell(codeCellOutputId, containerIdx).element(By.id('maing'));
+  };
+
+  this.getPlotSvgByIdCell = function (codeCellOutputId, containerIdx) {
+    return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(By.id('svgg'));
+  };
+
+  this.getPlotLegendContainerByIdCell = function (codeCellOutputId, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getCodeCellOutputByIdCell(codeCellOutputId).all(By.css('.plot-plotlegendcontainer')).get(containerIdx);
+  };
+
+  this.getPlotSvgElementByIndexByIdCell = function (codeCellOutputId, containerIdx, elementIndex) {
+    return this.getPlotSvgByIdCell(codeCellOutputId, containerIdx).all(by.css("#maing > g")).get(elementIndex);
+  };
+
+  this.checkDtContainer = function(codeCellOutputIdx, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    this.scrollToCodeCellOutput(codeCellOutputIdx);
+    expect(this.getDtContainer(codeCellOutputIdx, containerIdx).isPresent()).toBe(true);
+  }
+
+  this.checkDtContainerByIdCell = function(idCell, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    this.scrollToCodeCellOutputByIdCell(idCell);
+    expect(this.getDtContainerByIdCell(idCell, containerIdx).isPresent()).toBe(true);
+  }
+
+  this.getDtContainer = function(codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getCodeCellOutputByIndex(codeCellOutputIdx).all(By.css('.dtcontainer')).get(containerIdx);
+  }
+
+  this.getDtContainerByIdCell = function(idCell, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getCodeCellOutputByIdCell(idCell).all(By.css('.dtcontainer')).get(containerIdx);
+  }
+
+  this.getDataTablesScrollHead = function(codeCellOutputIdx, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getDtContainer(codeCellOutputIdx, containerIdx).element(By.css('.dataTables_scrollHead'));
+  }
+
+  this.getDataTablesScrollHeadByIdCell = function(idCell, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getDtContainerByIdCell(idCell, containerIdx).element(By.css('.dataTables_scrollHead'));
+  }
+
+  this.getDataTablesScrollBody = function(codeCellOutputIdx, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getDtContainer(codeCellOutputIdx, containerIdx).element(By.css('.dataTables_scrollBody'));
+  }
+
+  this.getDataTablesScrollBodyByIdCell = function(idCell, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getDtContainerByIdCell(idCell, containerIdx).element(By.css('.dataTables_scrollBody'));
+  }
+
+  this.getDataTablesTBody = function(codeCellOutputIdx){
+    return this.getDataTablesScrollBody(codeCellOutputIdx).all(By.css('tbody > tr'));
+  }
+
+  this.getDataTablesTBodyByIdCell = function(idCell){
+    return this.getDataTablesScrollBodyByIdCell(idCell).all(By.css('tbody > tr'));
+  }
+
+  this.checkDataTableHead = function(codeCellOutputIdx, headLabels){
+    expect(this.getDataTablesScrollHead(codeCellOutputIdx).getText()).toBe(headLabels);
+  }
+
+  this.checkDataTableHeadByIdCell = function(idCell, headLabels){
+    expect(this.getDataTablesScrollHeadByIdCell(idCell).getText()).toBe(headLabels);
+  }
+
+  this.checkDataTableBody = function(codeCellOutputIdx, rowsCount, firstRow){
+    var tBody = this.getDataTablesTBody(codeCellOutputIdx);
+    expect(tBody.count()).toBe(rowsCount);
+    expect(tBody.get(0).getText()).toBe(firstRow);
+  }
+
+  this.checkDataTableBodyByIdCell = function(idCell, rowsCount, firstRow){
+    var tBody = this.getDataTablesTBodyByIdCell(idCell);
+    expect(tBody.count()).toBe(rowsCount);
+    expect(tBody.get(0).getText()).toBe(firstRow);
+  }
+
+  this.checkCellOutputText = function(codeCellOutputIdx, outputText){
+    expect(this.getCodeCellOutputByIndex(codeCellOutputIdx).element(By.css('pre')).getText()).toBe(outputText);
+  }
+
+  this.checkCellOutputTextByIdCell = function(idCell, outputText){
+    expect(this.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText()).toBe(outputText);
+  }
+
+
 };
 module.exports = BeakerPageObject;

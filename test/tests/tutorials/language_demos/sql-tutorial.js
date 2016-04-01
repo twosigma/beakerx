@@ -15,7 +15,7 @@
  */
 
 
-var BeakerPageObject = require('./beaker.po.js');
+var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 

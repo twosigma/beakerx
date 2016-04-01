@@ -1864,6 +1864,7 @@
             // we must wait for the DOM elements to appear
             $(id).parents('.dataTables_scroll').find('th, td').removeClass('left-fix-col-separator');
             scope.table = $(id).DataTable(init);
+            scope.table.order(init.order);
             scope.renderMenu = true;
             if (!scope.colorder) {
               scope.colorder = _.range(scope.columnNames.length + 1);
@@ -1943,6 +1944,7 @@
             $(id + ' tbody').off('click');
             */
             $(id + ' tbody').on('dblclick', 'td', function(e) {
+              if (!scope.table) { return; }
               var rowIdx;
               var colIdx;
               var iPos = scope.table.cell(this).index();
@@ -1993,6 +1995,7 @@
             });
 
             $(id + ' tbody').on('click', 'tr', function(event) {
+              if (!scope.table) { return; }
               var dtTR = scope.getDtRow(this);
               var iPos = scope.table.row(dtTR).index();
               if (scope.selected[iPos]) {
@@ -2008,12 +2011,14 @@
 
             $(id + ' tbody')
               .on('mouseenter.bko-dt-highlight', 'tr', function () {
+                if (!scope.table) { return; }
                 var dtTR = scope.getDtRow(this);
                 var rowIndex = scope.table.row(dtTR).index();
                 $(dtTR).addClass('hover');
                 scope.highlightFixedColumnRow (rowIndex, true);
               })
               .on('mouseleave.bko-dt-highlight', 'tr', function () {
+                if (!scope.table) { return; }
                 var dtTR = scope.getDtRow(this);
                 var rowIndex = scope.table.row(dtTR).index();
                 $(dtTR).removeClass('hover');

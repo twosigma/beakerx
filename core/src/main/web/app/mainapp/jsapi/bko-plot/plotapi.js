@@ -18,7 +18,8 @@
   'use strict';
   var module = angular.module('bk.plotapi', []);
   module.factory('bkPlotApi', [
-    function () {
+    'bkUtils',
+    function (bkUtils) {
 
       var getValue = function (obj, value, defaultValue) {
         return obj.hasOwnProperty(value) ? obj[value] : defaultValue;
@@ -26,6 +27,19 @@
 
       var inheritsFrom = function (child, parent) {
         child.prototype = Object.create(parent.prototype);
+      };
+
+      var getColor = function (color) {
+        if(color instanceof Array) {
+          var values = [];
+          for(var i = 0; i < color.length; i++){
+            values.push(getColor(color[i]));
+          }
+          return values;
+        } else if (color instanceof Color){
+          return color.value;
+        }
+        return color;
       };
 
       //utils//
@@ -49,6 +63,70 @@
       ShapeType.LEVEL = 'LEVEL';
       ShapeType.VLEVEL = 'VLEVEL';
       ShapeType.LINECROSS = 'LINECROSS';
+
+      var LegendPosition = function(data){
+        if (data instanceof Array && data.length > 1) {
+          this.x = data[0];
+          this.y = data[0];
+        } else {
+          this.position = data;
+        }
+      };
+      LegendPosition.TOP = new LegendPosition('TOP');
+      LegendPosition.LEFT = new LegendPosition('LEFT');
+      LegendPosition.BOTTOM = new LegendPosition('BOTTOM');
+      LegendPosition.RIGHT = new LegendPosition('RIGHT');
+      LegendPosition.TOP_LEFT = new LegendPosition('TOP_LEFT');
+      LegendPosition.TOP_RIGHT = new LegendPosition('TOP_RIGHT');
+      LegendPosition.BOTTOM_LEFT = new LegendPosition('BOTTOM_LEFT');
+      LegendPosition.BOTTOM_RIGHT = new LegendPosition('BOTTOM_RIGHT');
+
+      var LegendLayout = function () { };
+      LegendLayout.HORIZONTAL = 'HORIZONTAL';
+      LegendLayout.VERTICAL = 'VERTICAL';
+
+      var Filter = function (text) {
+        this.text = text;
+      };
+      Filter.AREA = new Filter('area');
+      Filter.LINE = new Filter('line');
+      Filter.BAR = new Filter('bar');
+      Filter.BOX = new Filter('box');
+      Filter.POINT = new Filter('point');
+      Filter.STEAM = new Filter('stem');
+      Filter.STEAM_PLUS = new Filter('stem+');
+      Filter.RIVER = new Filter('river');
+
+      var Color = function (r, g, b, a) {
+        this.value = bkUtils.rgbaToHex(r, g, b, a);
+      };
+      Color.white = new Color(255, 255, 255);
+      Color.WHITE = Color.white;
+      Color.lightGray = new Color(192, 192, 192);
+      Color.LIGHT_GRAY = Color.lightGray;
+      Color.gray = new Color(128, 128, 128);
+      Color.GRAY = Color.gray;
+      Color.darkGray = new Color(64, 64, 64);
+      Color.DARK_GRAY = Color.darkGray;
+      Color.black = new Color(0, 0, 0);
+      Color.BLACK = Color.black;
+      Color.red = new Color(255, 0, 0);
+      Color.RED = Color.red;
+      Color.pink = new Color(255, 175, 175);
+      Color.PINK = Color.pink;
+      Color.orange = new Color(255, 200, 0);
+      Color.ORANGE = Color.orange;
+      Color.yellow = new Color(255, 255, 0);
+      Color.YELLOW = Color.yellow;
+      Color.green = new Color(0, 255, 0);
+      Color.GREEN = Color.green;
+      Color.magenta = new Color(255, 0, 255);
+      Color.MAGENTA = Color.magenta;
+      Color.cyan = new Color(0, 255, 255);
+      Color.CYAN = Color.cyan;
+      Color.blue = new Color(0, 0, 255);
+      Color.BLUE = Color.blue;
+
       //utils//
 
       var YAxis = function(data) {
@@ -83,7 +161,7 @@
           "x" : getValue(data, 'x', data.y ? _.range(data.y.length) : []),
           "y": data.y,
           "display_name": data.displayName,
-          "lod_filter" : data.lodFilter, //TODO should be enum
+          "lod_filter" : data.lodFilter,
           "tooltips": data.toolTips
           //TODO add actions
         });
@@ -96,7 +174,7 @@
         XYGraphics.call(this, data);
         _.extend(this, {
           "type": "Line",
-          "color": data.color, //TODO should be helper object
+          "color": getColor(data.color),
           "width": getValue(data, 'width', 1.5),
           "style": data.style,
           "interpolation": data.interpolation
@@ -128,10 +206,10 @@
         } else {
           this.width = data.width;
         }
-        if (data.colors) {
-          this.colors = data.colors;
+        if (data.color) {
+          this.colors = getColor(data.color);
         } else {
-          this.color = data.color;
+          this.color = getColor(data.color);
         }
         if (data.outlineColors) {
           this.outline_colors = data.outline_colors;
@@ -163,10 +241,10 @@
         } else {
           this.fill = data.fill;
         }
-        if (data.colors) {
-          this.colors = data.colors;
+        if (data.color) {
+          this.colors = getColor(data.color);
         } else {
-          this.color = data.color;
+          this.color = getColor(data.color);
         }
         if (data.outlineColors) {
           this.outline_colors = data.outline_colors;
@@ -184,10 +262,10 @@
           "type": "Stems",
           "width": getValue(data, 'width', 1.5)
         });
-        if (data.colors) {
-          this.colors = data.colors;
+        if (data.color instanceof Array) {
+          this.colors = getColor(data.color);
         } else {
-          this.color = data.color;
+          this.color = getColor(data.color);
         }
         if (data.style instanceof Array) {
           this.styles = data.style;
@@ -203,7 +281,7 @@
         BasedXYGraphics.call(this, data);
         _.extend(this, {
           "type": "Area",
-          "color": data.color,
+          "color": getColor(data.color),
           "interpolation": data.interpolation
         });
       };
@@ -215,7 +293,7 @@
         XYGraphics.call(this, data);
         _.extend(this, {
           "type": "Crosshair",
-          "color": data.color,
+          "color": getColor(data.color),
           "style": data.style,
           "width": data.width
         });
@@ -234,8 +312,8 @@
           "chart_title": data.title,
           "show_legend": data.showLegend,
           "use_tool_tip": getValue(data, 'useToolTip', true),
-          "legend_position": getValue(data, 'legendPosition', {"position": 'TOP_RIGHT'}), //TODO should be js object
-          "legend_layout": getValue(data, 'legendLayout', 'VERTICAL') //TODO should be js object
+          "legend_position": getValue(data, 'legendPosition', LegendPosition.TOP_RIGHT),
+          "legend_layout": getValue(data, 'legendLayout', LegendLayout.VERTICAL)
         });
         this.version = 'groovy';
       };
@@ -348,7 +426,11 @@
         Area: Area,
         Crosshair: Crosshair,
         StrokeType: StrokeType,
-        ShapeType: ShapeType
+        ShapeType: ShapeType,
+        LegendLayout: LegendLayout,
+        LegendPosition: LegendPosition,
+        Filter: Filter,
+        Color: Color
       };
       var list = function () {
         return api;

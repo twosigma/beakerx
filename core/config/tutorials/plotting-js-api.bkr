@@ -20,6 +20,16 @@
                 }
             },
             "languageVersion": "ES2015"
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.KeyboardCodes\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
         }
     ],
     "cells": [
@@ -127,7 +137,7 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 87,
+                "elapsedTime": 73,
                 "height": 568
             },
             "evaluatorReader": true,
@@ -160,6 +170,8 @@
                     "var pp = new beaker.Plot({title: 'Bars, Lines, Points and 2nd yAxis', ",
                     "                          xLabel: \"xLabel\", ",
                     "                          yLabel: \"yLabel\", ",
+                    "                          legendLayout: beaker.LegendLayout.HORIZONTAL,",
+                    "                          legendPosition: beaker.LegendPosition.RIGHT,",
                     "                          omitCheckboxes: true})",
                     "pp.add(new beaker.YAxis({label: \"Right yAxis\"}))",
                     "pp.add(new beaker.Bars({displayName: \"Bar\", ",
@@ -236,9 +248,9 @@
                     "chart_title": "Bars, Lines, Points and 2nd yAxis",
                     "use_tool_tip": true,
                     "legend_position": {
-                        "position": "TOP_RIGHT"
+                        "position": "RIGHT"
                     },
-                    "legend_layout": "VERTICAL",
+                    "legend_layout": "HORIZONTAL",
                     "version": "groovy",
                     "domain_axis_label": "xLabel",
                     "y_label": "yLabel",
@@ -334,11 +346,11 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 54,
+                "elapsedTime": 115,
                 "height": 548
             },
             "evaluatorReader": true,
-            "lineCount": 21
+            "lineCount": 23
         },
         {
             "id": "sectionoCymne",
@@ -358,14 +370,15 @@
                     "var plot = new beaker.Plot({crosshair: ch});",
                     "var y1 = [4, 8, 16, 20, 32]",
                     "var base = [2, 4, 8, 10, 16];",
+                    "var cs = [beaker.Color.black, beaker.Color.orange, beaker.Color.gray, beaker.Color.yellow, beaker.Color.pink]",
                     "var ss = [beaker.StrokeType.SOLID, ",
                     "          beaker.StrokeType.SOLID, ",
                     "          beaker.StrokeType.DASH, ",
                     "          beaker.StrokeType.DOT, ",
                     "          beaker.StrokeType.DASHDOT, ",
                     "          beaker.StrokeType.LONGDASH]",
-                    "plot.add(new beaker.Area({y: y1, base: base, color: beaker.prefs.theme.plotColors[2]}))",
-                    "plot.add(new beaker.Stems({y: y1, base: base, style: ss, width: 5, color: beaker.prefs.theme.plotColors[1]}))"
+                    "plot.add(new beaker.Area({y: y1, base: base, color: new beaker.Color(255, 0, 0, 50)}))",
+                    "plot.add(new beaker.Stems({y: y1, base: base, color: cs, style: ss, width: 5}))"
                 ]
             },
             "output": {
@@ -466,7 +479,7 @@
                                 16
                             ],
                             "type": "Area",
-                            "color": "#ff968236"
+                            "color": "#32ff0000"
                         },
                         {
                             "visible": true,
@@ -493,7 +506,13 @@
                             ],
                             "type": "Stems",
                             "width": 5,
-                            "color": "#ff21578d",
+                            "colors": [
+                                "#ff000000",
+                                "#ffffc800",
+                                "#ff808080",
+                                "#ffffff00",
+                                "#ffffafaf"
+                            ],
                             "styles": [
                                 "SOLID",
                                 "SOLID",
@@ -517,38 +536,11 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 44,
+                "elapsedTime": 58,
                 "height": 522
             },
             "evaluatorReader": true,
-            "lineCount": 12
-        },
-        {
-            "id": "codeAHQeU6",
-            "type": "code",
-            "evaluator": "JavaScript",
-            "input": {
-                "body": [
-                    "beaker.prefs.theme.plotColors"
-                ]
-            },
-            "output": {
-                "state": {},
-                "result": [
-                    "#ff8c1d17",
-                    "#ff21578d",
-                    "#ff968236",
-                    "#ff141e78",
-                    "#ff366436",
-                    "#ff3c1e32"
-                ],
-                "selectedType": "Text",
-                "pluginName": "JavaScript",
-                "elapsedTime": 21,
-                "height": 56
-            },
-            "evaluatorReader": true,
-            "lineCount": 1
+            "lineCount": 13
         }
     ],
     "namespace": {}

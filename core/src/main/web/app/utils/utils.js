@@ -425,7 +425,22 @@
     isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
     isWindows: osName === 'Windows',
     isMacOS: osName === 'MacOS',
-    osName: osName
+    osName: osName,
+
+    rgbaToHex: function (r, g, b, a) {
+      if(a == undefined){
+        a = 0xFF;
+      }
+      var num = ((a & 0xFF) << 24) |
+        ((r & 0xFF) << 16) |
+        ((g & 0xFF) << 8)  |
+        ((b & 0xFF));
+      if(num < 0) {
+        num = 0xFFFFFFFF + num + 1;
+      }
+      return "#" + num.toString(16);
+    }
+
     };
     return bkUtils;
   });

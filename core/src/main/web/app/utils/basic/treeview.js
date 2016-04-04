@@ -95,23 +95,23 @@
           return undefined;
         };
 
-        var reinit = function(rooturi, openFolders, callback){
+        var reinit = function (rooturi, openFolders, callback) {
           $scope.root = {
             type: 'directory',
             uri: $scope.rooturi,
             children: []
           };
 
-            $scope.fs.getChildren(rooturi, openFolders).then(function(response) {
-              $scope.$evalAsync(function() {
-                $scope.root.children = response.data;
-                if (callback) {
-                  $timeout(function() {
-                    callback();
-                  }, 0);
-                }
-              });
+          $scope.fs.getChildren(rooturi, openFolders).then(function (response) {
+            $scope.$evalAsync(function () {
+              $scope.root.children = response.data;
+              if (callback) {
+                $timeout(function () {
+                  callback();
+                }, 0);
+              }
             });
+          });
         };
 
         $scope.$on("SELECT_DIR", function (event, data) {
@@ -139,7 +139,11 @@
           }
         });
 
-        reinit($scope.rooturi, $rootScope.fsPrefs.openFolders);
+        $scope.root = {
+          type: 'directory',
+          uri: $scope.rooturi,
+          children: []
+        };
       }
     };
   });

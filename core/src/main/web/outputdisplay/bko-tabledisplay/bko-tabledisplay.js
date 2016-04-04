@@ -1596,13 +1596,13 @@
             init.dom = domCommon + 'f<"#' + scope.id + '_evalfilter">>';
           } else {
             init.dom = domCommon + '<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf<"#' + scope.id + '_evalfilter">>';
-            if (scope.data.length > 25) {
+            if (scope.data.length > 15) {
               init.pagingType = 'simple_numbers';
               init.pageLength = 25;
               init.lengthMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']];
             } else {
               init.paging = false;
-              init.scrollY = 350;
+              init.scrollY = 450;
               init.scrollCollapse = true;
             }
           }

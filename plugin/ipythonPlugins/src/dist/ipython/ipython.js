@@ -393,8 +393,8 @@ define(function(require, exports, module) {
       getAutocompleteDocumentation: function(matchedWord, callback) {
         this.showDocs(matchedWord, matchedWord.length - 1, function(docs) {
           var documentation = {};
-          if (docs.ansiHtml) {
-            documentation.description = ansi_up.ansi_to_html(docs.ansiHtml);
+          if (docs.hasOwnProperty('ansiHtml')) {
+            documentation.description = docs.ansiHtml && docs.ansiHtml.length ? ansi_up.ansi_to_html(docs.ansiHtml) : '';
             documentation.parameters = matchedWord[0] === '%' ? void 0 : getParametersFromDocumentation(documentation.description);
             return callback(documentation);
           }

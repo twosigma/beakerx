@@ -43,8 +43,10 @@
 
         scope.$on('showDocumentationForAutocomplete', function(event, doc) {
           tooltip.empty();
-          var html = getDocContent(doc);
 
+          if (!doc || !doc.length) {
+            return hideTooltip();
+          }
           displayTooltip(doc);
           var autocompleteList = $('ul.CodeMirror-hints');
           tooltip.addClass('CodeMirror-hints');

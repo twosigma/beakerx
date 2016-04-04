@@ -278,7 +278,7 @@
     var CELL_TYPE = 'bko-tabledisplay';
     var ROW_HEIGHT = 27;
     var ROW_HEIGHT_ADVANCED_MODE = 22;
-    var MIN_ROWS_FOR_PAGING = 15;
+    var MIN_ROWS_FOR_PAGING = 25;
     return {
       template: JST['bko-tabledisplay/output-table'],
       controller: function($scope, $uibModal) {

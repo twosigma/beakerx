@@ -1106,8 +1106,13 @@
           var me = $('#' + scope.id);
           // this is dataTables_scrollBody
           var pp = me.parent();
-          if (pp.width() > me.width()) {
-            pp.width(me.width());
+          var tableWidth = me.width();
+          var scrollWidth = scope.table && !scope.table.settings()[0].oBrowser.bScrollOversize ? 16 : 0;
+          if (pp.width() > tableWidth + scrollWidth) {
+            if(pp.height() < me.height()){
+              tableWidth += scrollWidth;
+            }
+            pp.width(tableWidth);
           }
           scope.updateResizeHandleWidth();
           if (scope.fixcols) { //do not need data update

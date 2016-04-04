@@ -7,9 +7,17 @@ $border-color: #D4D0D0;
   }
   .dtmenu input[type='checkbox'] {
     position: absolute;
-    top: 1px;
+    top: 3px;
     left: 5px;
     padding: 3px 4px;
+  }
+  .dtmenu .checkbox-label {
+    position: absolute;
+    top: 1px;
+    margin-left: 0px !important;
+    &:after {
+      top: 3px;
+    }
   }
   .ui-resizable-s span {
     font-size: 13px;
@@ -194,8 +202,10 @@ a.dtmenu {
 }
 
 .bko-table-use-pagination {
-  padding: 10px 10px 0 30px;;
+  padding: 10px 10px 0;
   float: left;
+  position: relative;
+  margin-left: 30px;
   label {
     cursor: pointer;
   }

@@ -248,11 +248,10 @@
         return deferred.promise;
       },
       getBeakerPreference: function(preferenceName) {
-        var deferred = angularUtils.newDeferred();
-        angularUtils.httpGet(serverUrl("beaker/rest/util/getPreference"), {preference: preferenceName}).
-            success(deferred.resolve).
-            error(deferred.reject);
-        return deferred.promise;
+        return angularUtils.httpGet(serverUrl("beaker/rest/util/getPreference"), {preference: preferenceName})
+          .then(function(response) {
+            return response.data;
+          });
       },
       generateNotebook: function(evaluators, cells, metadata) {
         var notebook = {

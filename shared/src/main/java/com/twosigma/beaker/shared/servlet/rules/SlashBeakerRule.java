@@ -15,26 +15,27 @@
  */
 package com.twosigma.beaker.shared.servlet.rules;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import com.twosigma.beaker.shared.servlet.rules.util.Replacement;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class SlashBeakerRule extends URLRewriteRule {
+import static com.twosigma.beaker.shared.servlet.rules.util.UrlUtils.getPath;
+
+public class SlashBeakerRule extends ProxyRuleImpl {
 
   private String startPage;
 
   public SlashBeakerRule(String corePort, String serverPort, String startPage) {
     this.startPage = startPage;
-    List<Pair<String, String>> replacements = new LinkedList<>();
-    replacements.add(new ImmutablePair<>(corePort, serverPort));
+    List<Replacement> replacements = new LinkedList<>();
+    replacements.add(new Replacement(corePort, serverPort));
     setReplacements(replacements);
   }
 
   @Override
-  protected String replace(String url, String path) {
-    return super.replace(url, path).replace(path, startPage);
+  protected String replace(String url) {
+    return super.replace(url).replace(getPath(url), startPage);
   }
 
   @Override

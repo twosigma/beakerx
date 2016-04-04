@@ -20,7 +20,7 @@ import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
 import java.util.Map;
 
 //TODO rewrite this rule. The rule for new plugin has to be applied after plugin is added in PluginServiceRest
-public class EraseHashAndPluginNameRule extends URLRewriteRule {
+public class EraseHashAndPluginNameRule extends ProxyRuleImpl {
 
   private final String hash;
   private final String corePort;
@@ -35,10 +35,10 @@ public class EraseHashAndPluginNameRule extends URLRewriteRule {
   }
 
   @Override
-  protected String replace(String url, String path) {
+  protected String replace(String url) {
     Map<String, BeakerProxyServlet.PluginConfig> plugins = this.proxyServlet.getPlugins();
     for (BeakerProxyServlet.PluginConfig config : plugins.values()) {
-      if (path.contains(SLASH + this.hash + SLASH + config.getBaseUrl())) {
+      if (url.contains(SLASH + this.hash + SLASH + config.getBaseUrl())) {
         String result = url.replace(this.corePort, String.valueOf(config.getPort()));
         result = result.replace(this.hash + SLASH + config.getBaseUrl() + SLASH, EMPTY_STRING);
         return result;

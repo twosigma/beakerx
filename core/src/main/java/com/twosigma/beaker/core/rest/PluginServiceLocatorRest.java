@@ -22,6 +22,8 @@ import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
+import com.twosigma.beaker.shared.servlet.rules.PluginProxyRule;
+import com.twosigma.beaker.shared.servlet.rules.util.Replacement;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
@@ -434,7 +436,7 @@ public class PluginServiceLocatorRest {
 //      Process restartproc = Runtime.getRuntime().exec(this.nginxRestartCommand, this.nginxEnv);
 //      startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
 //      restartproc.waitFor();
-      BeakerProxyServlet.addPlugin(pluginId, port, password, baseUrl);
+      BeakerProxyServlet.addPlugin(pluginId, port, password, baseUrl, getPluginSpecificRules(nginxRules));
 
       ArrayList<String> fullCommand =
         new ArrayList<String>(Arrays.asList(command.split("\\s+")));
@@ -507,6 +509,26 @@ public class PluginServiceLocatorRest {
     System.out.println("Done starting " + pluginId);
 
     return buildResponse(pConfig.getBaseUrl(), String.valueOf(pConfig.getPort()), true);
+  }
+
+  private ArrayList<PluginProxyRule> getPluginSpecificRules(String nginxRules) {
+    final ArrayList<PluginProxyRule> proxyRules = new ArrayList<>();
+    if (nginxRules.startsWith("ipython")) {
+      proxyRules.add(new PluginProxyRule("(.*)\\/api\\/((sessions)|(kernels\\/kill)|(kernelspecs))\\/",
+          new Replacement("(.+)\\/sessions\\/$", "$1/sessions", true),
+          new Replacement("(.+)/api/kernels/kill/$", "$1/api/kernels/", true)
+      ) {
+        @Override
+        public void setHeaders(org.eclipse.jetty.client.api.Request proxyRequest, String pathInfo) {
+          rewriteHeader(proxyRequest, "Origin", "http://127.0.0.1:" + getPluginConfig().getPort());
+        }
+      });
+      proxyRules.add(new PluginProxyRule("(.*)/api/kernels/[0-9a-f-]+/.*",    // websockets rule
+          new Replacement("\\/(kernels\\/[0-9a-f-]+\\/(.*))", "/$1", true),
+          new Replacement(":\\d{4}/", ":%(port)s/", true)
+      ));
+    }
+    return proxyRules;
   }
 
   @GET

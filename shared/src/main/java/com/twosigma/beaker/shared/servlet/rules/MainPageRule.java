@@ -15,7 +15,9 @@
  */
 package com.twosigma.beaker.shared.servlet.rules;
 
-public class MainPageRule extends URLRewriteRule {
+import static com.twosigma.beaker.shared.servlet.rules.util.UrlUtils.getPath;
+
+public class MainPageRule extends ProxyRuleImpl {
 
   private static final String SLASH_BEAKER_SLASH = "/beaker/";
   private String mainPage;
@@ -25,8 +27,8 @@ public class MainPageRule extends URLRewriteRule {
   }
 
   @Override
-  protected String replace(String url, String path) {
-    return url.replace(path, this.mainPage);
+  protected String replace(String url) {
+    return url.replace(getPath(url), this.mainPage);
   }
 
   @Override

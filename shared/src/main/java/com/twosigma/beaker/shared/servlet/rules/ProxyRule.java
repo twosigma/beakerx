@@ -13,23 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.twosigma.beaker.shared.servlet.rules;
 
-public class EraseHashAndBeakerRule extends ProxyRuleImpl {
+import org.eclipse.jetty.client.api.Request;
 
-  private final String hash;
+public interface ProxyRule {
 
-  public EraseHashAndBeakerRule(String hash) {
-    this.hash = hash;
-  }
+  boolean satisfy(String path);
 
-  @Override
-  protected String replace(String url) {
-    return url.replace(SLASH + this.hash + SLASH_BEAKER, EMPTY_STRING);
-  }
+  String rewriteTarget(String url, String path);
 
-  @Override
-  public boolean satisfy(final String path) {
-    return path.contains(SLASH + this.hash + SLASH_BEAKER);
-  }
+  void setHeaders(Request proxyRequest, String pathInfo);
 }

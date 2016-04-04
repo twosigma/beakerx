@@ -106,6 +106,41 @@
       };
       inheritsFrom(Bars, XYGraphics);
       //add prototype methods here
+
+      var Points = function(data){
+        if (!data) { data = {}; }
+        XYGraphics.call(this, data);
+        _.extend(this, {
+          "type": "Points"
+        });
+        if (data.sizes) {
+          this.sizes = data.sizes;
+        } else {
+          this.size = data.size;
+        }
+        if (data.shaps) {
+          this.shaps = data.shaps;
+        } else {
+          this.shape = data.shape;
+        }
+        if (data.fills) {
+          this.fills = data.fills;
+        } else {
+          this.fill = data.fill;
+        }
+        if (data.colors) {
+          this.colors = data.colors;
+        } else {
+          this.color = data.color;
+        }
+        if (data.outlineColors) {
+          this.outline_colors = data.outline_colors;
+        } else {
+          this.outline_color = data.outlineColor;
+        }
+      };
+      inheritsFrom(Points, XYGraphics);
+      //add prototype methods here
       //Plot items//
 
       //Plots//
@@ -225,7 +260,8 @@
         NanoPlot: NanoPlot,
         YAxis: YAxis,
         Line: Line,
-        Bars: Bars
+        Bars: Bars,
+        Points: Points
       };
       var list = function () {
         return api;

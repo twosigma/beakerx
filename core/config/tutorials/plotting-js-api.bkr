@@ -144,7 +144,7 @@
         {
             "id": "sectionSikgag",
             "type": "section",
-            "title": "Lines, Bars and Right yAxis",
+            "title": "Lines, Bars, Points and Right yAxis",
             "level": 3,
             "evaluatorReader": false,
             "collapsed": false
@@ -155,10 +155,13 @@
             "evaluator": "JavaScript",
             "input": {
                 "body": [
-                    "var pp = new beaker.Plot({title: 'Bars, Lines and 2nd yAxis', xLabel: \"xLabel\", yLabel: \"yLabel\", omitCheckboxes: true})",
+                    "var x = [1, 4, 6, 8, 10]",
+                    "var y = [3, 6, 4, 5, 9]",
+                    "var pp = new beaker.Plot({title: 'Bars, Lines, Points and 2nd yAxis', xLabel: \"xLabel\", yLabel: \"yLabel\", omitCheckboxes: true})",
                     "pp.add(new beaker.YAxis({label: \"Right yAxis\"}))",
                     "pp.add(new beaker.Bars({displayName: \"Bar\", x: [1,3,5,7,10], y: [100, 120,90,100,80], width: 1}))",
-                    "pp.add(new beaker.Line({displayName: \"Line\", x: [1, 4, 6, 8, 10], y: [3, 6, 4, 5, 9], width: 6, yAxis: \"Right yAxis\"}))"
+                    "pp.add(new beaker.Line({displayName: \"Line\", x: x, y: y, width: 6, yAxis: \"Right yAxis\"}))",
+                    "pp.add(new beaker.Points({x: x, y: y, size: 10, yAxis: \"Right yAxis\"}))"
                 ]
             },
             "output": {
@@ -178,25 +181,30 @@
                     },
                     "lodOn": [
                         null,
+                        null,
                         null
                     ],
                     "lodType": [
+                        null,
                         null,
                         null
                     ],
                     "lodAuto": [
                         null,
+                        null,
                         null
                     ],
                     "zoomHash": [
+                        null,
                         null,
                         null
                     ],
                     "showItem": [
                         true,
+                        true,
                         true
                     ],
-                    "visibleItem": 2,
+                    "visibleItem": 3,
                     "legendableItem": 2,
                     "defaultFocus": {
                         "xl": 0.4738095238095238,
@@ -211,7 +219,7 @@
                 "result": {
                     "init_width": 640,
                     "init_height": 480,
-                    "chart_title": "Bars, Lines and 2nd yAxis",
+                    "chart_title": "Bars, Lines, Points and 2nd yAxis",
                     "use_tool_tip": true,
                     "legend_position": {
                         "position": "TOP_RIGHT"
@@ -276,6 +284,26 @@
                             "display_name": "Line",
                             "type": "Line",
                             "width": 6
+                        },
+                        {
+                            "visible": true,
+                            "yAxis": "Right yAxis",
+                            "x": [
+                                1,
+                                4,
+                                6,
+                                8,
+                                10
+                            ],
+                            "y": [
+                                3,
+                                6,
+                                4,
+                                5,
+                                9
+                            ],
+                            "type": "Points",
+                            "size": 10
                         }
                     ],
                     "constant_lines": [],
@@ -291,11 +319,11 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 150,
+                "elapsedTime": 41,
                 "height": 548
             },
             "evaluatorReader": true,
-            "lineCount": 4
+            "lineCount": 7
         }
     ],
     "namespace": {}

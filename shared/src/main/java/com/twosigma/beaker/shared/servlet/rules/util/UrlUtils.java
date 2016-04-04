@@ -13,23 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.shared.servlet.rules;
 
-public class EraseHashAndBeakerRule extends ProxyRuleImpl {
+package com.twosigma.beaker.shared.servlet.rules.util;
 
-  private final String hash;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-  public EraseHashAndBeakerRule(String hash) {
-    this.hash = hash;
-  }
-
-  @Override
-  protected String replace(String url) {
-    return url.replace(SLASH + this.hash + SLASH_BEAKER, EMPTY_STRING);
-  }
-
-  @Override
-  public boolean satisfy(final String path) {
-    return path.contains(SLASH + this.hash + SLASH_BEAKER);
+public class UrlUtils {
+  public static String getPath(String url) {
+    String urlWithoutSchema = url.replaceFirst("https?\\:\\/\\/", "");
+    int endOfDomain = urlWithoutSchema.indexOf("/");
+    if (endOfDomain >= 0) {
+      return urlWithoutSchema.substring(endOfDomain);
+    }
+    return EMPTY;
   }
 }

@@ -13,23 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.shared.servlet.rules;
 
-public class EraseHashAndBeakerRule extends ProxyRuleImpl {
+package com.twosigma.beaker.shared.servlet.rules.util;
 
-  private final String hash;
+import org.junit.Test;
 
-  public EraseHashAndBeakerRule(String hash) {
-    this.hash = hash;
-  }
+import static com.twosigma.beaker.shared.servlet.rules.util.UrlUtils.getPath;
+import static org.junit.Assert.assertEquals;
 
-  @Override
-  protected String replace(String url) {
-    return url.replace(SLASH + this.hash + SLASH_BEAKER, EMPTY_STRING);
-  }
+public class UrlUtilsTest {
 
-  @Override
-  public boolean satisfy(final String path) {
-    return path.contains(SLASH + this.hash + SLASH_BEAKER);
+  @Test
+  public void testGetPath() {
+    assertEquals("", getPath("http://test.com"));
+    assertEquals("/", getPath("http://test.com/"));
+    assertEquals("/path/page.extension", getPath("http://test.com/path/page.extension"));
+    assertEquals("/path/page.extension", getPath("www.test.com/path/page.extension"));
   }
 }

@@ -15,20 +15,19 @@
  */
 package com.twosigma.beaker.shared.servlet.rules;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import com.twosigma.beaker.shared.servlet.rules.util.Replacement;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class RootSlashRule extends URLRewriteRule {
+public class RootSlashRule extends ProxyRuleImpl {
 
   private String startPage;
 
   public RootSlashRule(String corePort, String serverPort, String startPage) {
     this.startPage = startPage;
-    List<Pair<String, String>> replacements = new LinkedList<>();
-    replacements.add(new ImmutablePair<>(corePort, serverPort));
+    List<Replacement> replacements = new LinkedList<>();
+    replacements.add(new Replacement(corePort, serverPort));
     setReplacements(replacements);
   }
 

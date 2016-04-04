@@ -67,7 +67,12 @@
 
         $scope.perform = function (action) {
           action.running = true;
-          var promise = $scope.evaluator.perform(action.key);
+          var promise;
+          try {
+            promise = $scope.evaluator.perform(action.key);
+          } catch (e) {
+            console.error(e);
+          }
           if(promise) {
             promise.finally(function () {
               action.running = false;

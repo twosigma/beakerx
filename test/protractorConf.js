@@ -54,7 +54,8 @@ var config = {
     'tests/tutorials/language_demos/clojure-tutorial.js',
     'tests/tutorials/language_demos/python-tutorial.js',
     'tests/tutorials/language_demos/R-tutorial.js',
-    'tests/tutorials/language_demos/jscript-tutorial.js'
+    'tests/tutorials/language_demos/jscript-tutorial.js',
+    'tests/tutorials/language_demos/groovy-tutorial.js'
   ]
 };
 

@@ -28,6 +28,29 @@
         child.prototype = Object.create(parent.prototype);
       };
 
+      //utils//
+      var StrokeType = function () { };
+      StrokeType.NONE = 'NONE';
+      StrokeType.SOLID = 'SOLID';
+      StrokeType.DASH = 'DASH';
+      StrokeType.DOT = 'DOT';
+      StrokeType.DASHDOT = 'DASHDOT';
+      StrokeType.LONGDASH = 'LONGDASH';
+
+      var ShapeType = function () { };
+      ShapeType.SQUARE = 'SQUARE';
+      ShapeType.CIRCLE = 'CIRCLE';
+      ShapeType.TRIANGLE = 'TRIANGLE';
+      ShapeType.DIAMOND = 'DIAMOND';
+      ShapeType.DCROSS = 'DCROSS';
+      ShapeType.DOWNTRIANGLE = 'DOWNTRIANGLE';
+      ShapeType.CROSS = 'CROSS';
+      ShapeType.DEFAULT = 'DEFAULT';
+      ShapeType.LEVEL = 'LEVEL';
+      ShapeType.VLEVEL = 'VLEVEL';
+      ShapeType.LINECROSS = 'LINECROSS';
+      //utils//
+
       var YAxis = function(data) {
         if (!data) { data = {}; }
         _.extend(this, {
@@ -68,7 +91,7 @@
       inheritsFrom(XYGraphics, Graphics);
       //add prototype methods here
 
-      var Line = function(data){
+      var Line = function (data) {
         if (!data) { data = {}; }
         XYGraphics.call(this, data);
         _.extend(this, {
@@ -82,9 +105,21 @@
       inheritsFrom(Line, XYGraphics);
       //add prototype methods here
 
-      var Bars = function(data){
+      var BasedXYGraphics = function (data) {
         if (!data) { data = {}; }
         XYGraphics.call(this, data);
+        if (data.base instanceof Array) {
+          this.bases = data.base;
+        } else {
+          this.base = data.base;
+        }
+      };
+      inheritsFrom(BasedXYGraphics, XYGraphics);
+      //add prototype methods here
+
+      var Bars = function (data) {
+        if (!data) { data = {}; }
+        BasedXYGraphics.call(this, data);
         _.extend(this, {
           "type": "Bars"
         });
@@ -104,10 +139,10 @@
           this.outline_color = data.outlineColor;
         }
       };
-      inheritsFrom(Bars, XYGraphics);
+      inheritsFrom(Bars, BasedXYGraphics);
       //add prototype methods here
 
-      var Points = function(data){
+      var Points = function (data) {
         if (!data) { data = {}; }
         XYGraphics.call(this, data);
         _.extend(this, {
@@ -116,12 +151,12 @@
         if (data.sizes) {
           this.sizes = data.sizes;
         } else {
-          this.size = data.size;
+          this.size = getValue(data, 'size', 6.0);
         }
-        if (data.shaps) {
-          this.shaps = data.shaps;
+        if (data.shape instanceof Array) {
+          this.shapes = data.shape;
         } else {
-          this.shape = data.shape;
+          this.shape = getValue(data, 'shape', ShapeType.DEFAULT);
         }
         if (data.fills) {
           this.fills = data.fills;
@@ -141,10 +176,57 @@
       };
       inheritsFrom(Points, XYGraphics);
       //add prototype methods here
+
+      var Stems = function (data) {
+        if (!data) { data = {}; }
+        BasedXYGraphics.call(this, data);
+        _.extend(this, {
+          "type": "Stems",
+          "width": getValue(data, 'width', 1.5)
+        });
+        if (data.colors) {
+          this.colors = data.colors;
+        } else {
+          this.color = data.color;
+        }
+        if (data.style instanceof Array) {
+          this.styles = data.style;
+        } else {
+          this.style = getValue(data, 'style', StrokeType.SOLID);
+        }
+      };
+      inheritsFrom(Stems, BasedXYGraphics);
+      //add prototype methods here
+
+      var Area = function (data) {
+        if (!data) { data = {}; }
+        BasedXYGraphics.call(this, data);
+        _.extend(this, {
+          "type": "Area",
+          "color": data.color,
+          "interpolation": data.interpolation
+        });
+      };
+      inheritsFrom(Area, BasedXYGraphics);
+      //add prototype methods here
+
+      var Crosshair = function (data) {
+        if (!data) { data = {}; }
+        XYGraphics.call(this, data);
+        _.extend(this, {
+          "type": "Crosshair",
+          "color": data.color,
+          "style": data.style,
+          "width": data.width
+        });
+      };
+      inheritsFrom(Crosshair, BasedXYGraphics);
+      //add prototype methods here
+
       //Plot items//
 
       //Plots//
-      var Chart = function(data){
+      var Chart = function (data) {
         if (!data) { data = {}; }
         _.extend(this, {
           "init_width": getValue(data, 'initWidth', 640),
@@ -158,7 +240,7 @@
         this.version = 'groovy';
       };
 
-      var AbstractChart = function(data){
+      var AbstractChart = function (data) {
         if (!data) { data = {}; }
         Chart.call(this, data);
         var yAxis = new YAxis({
@@ -261,7 +343,12 @@
         YAxis: YAxis,
         Line: Line,
         Bars: Bars,
-        Points: Points
+        Points: Points,
+        Stems: Stems,
+        Area: Area,
+        Crosshair: Crosshair,
+        StrokeType: StrokeType,
+        ShapeType: ShapeType
       };
       var list = function () {
         return api;

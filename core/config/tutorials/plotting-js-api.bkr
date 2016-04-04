@@ -127,7 +127,7 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 44,
+                "elapsedTime": 87,
                 "height": 568
             },
             "evaluatorReader": true,
@@ -157,11 +157,25 @@
                 "body": [
                     "var x = [1, 4, 6, 8, 10]",
                     "var y = [3, 6, 4, 5, 9]",
-                    "var pp = new beaker.Plot({title: 'Bars, Lines, Points and 2nd yAxis', xLabel: \"xLabel\", yLabel: \"yLabel\", omitCheckboxes: true})",
+                    "var pp = new beaker.Plot({title: 'Bars, Lines, Points and 2nd yAxis', ",
+                    "                          xLabel: \"xLabel\", ",
+                    "                          yLabel: \"yLabel\", ",
+                    "                          omitCheckboxes: true})",
                     "pp.add(new beaker.YAxis({label: \"Right yAxis\"}))",
-                    "pp.add(new beaker.Bars({displayName: \"Bar\", x: [1,3,5,7,10], y: [100, 120,90,100,80], width: 1}))",
-                    "pp.add(new beaker.Line({displayName: \"Line\", x: x, y: y, width: 6, yAxis: \"Right yAxis\"}))",
-                    "pp.add(new beaker.Points({x: x, y: y, size: 10, yAxis: \"Right yAxis\"}))"
+                    "pp.add(new beaker.Bars({displayName: \"Bar\", ",
+                    "                        x: [1,3,5,7,10], ",
+                    "                        y: [100, 120,90,100,80], ",
+                    "                        width: 1}))",
+                    "pp.add(new beaker.Line({displayName: \"Line\", ",
+                    "                        x: x, ",
+                    "                        y: y, ",
+                    "                        width: 6, ",
+                    "                        yAxis: \"Right yAxis\"}))",
+                    "pp.add(new beaker.Points({x: x, ",
+                    "                          y: y, ",
+                    "                          size: 10, ",
+                    "                          shape: beaker.ShapeType.DIAMOND,",
+                    "                          yAxis: \"Right yAxis\"}))"
                 ]
             },
             "output": {
@@ -303,7 +317,8 @@
                                 9
                             ],
                             "type": "Points",
-                            "size": 10
+                            "size": 10,
+                            "shape": "DIAMOND"
                         }
                     ],
                     "constant_lines": [],
@@ -319,11 +334,221 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 41,
+                "elapsedTime": 54,
                 "height": 548
             },
             "evaluatorReader": true,
-            "lineCount": 7
+            "lineCount": 21
+        },
+        {
+            "id": "sectionoCymne",
+            "type": "section",
+            "title": "Areas, Stems and Crosshair",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeJ4dzwo",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var ch = new beaker.Crosshair({color: beaker.prefs.theme.plotColors[0], width: 2, style: beaker.StrokeType.DOT})",
+                    "var plot = new beaker.Plot({crosshair: ch});",
+                    "var y1 = [4, 8, 16, 20, 32]",
+                    "var base = [2, 4, 8, 10, 16];",
+                    "var ss = [beaker.StrokeType.SOLID, ",
+                    "          beaker.StrokeType.SOLID, ",
+                    "          beaker.StrokeType.DASH, ",
+                    "          beaker.StrokeType.DOT, ",
+                    "          beaker.StrokeType.DASHDOT, ",
+                    "          beaker.StrokeType.LONGDASH]",
+                    "plot.add(new beaker.Area({y: y1, base: base, color: beaker.prefs.theme.plotColors[2]}))",
+                    "plot.add(new beaker.Stems({y: y1, base: base, style: ss, width: 5, color: beaker.prefs.theme.plotColors[1]}))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "crosshair": {
+                        "visible": true,
+                        "x": [],
+                        "type": "Crosshair",
+                        "color": "#ff8c1d17",
+                        "style": "DOT",
+                        "width": 2
+                    },
+                    "omit_checkboxes": false,
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4
+                            ],
+                            "y": [
+                                4,
+                                8,
+                                16,
+                                20,
+                                32
+                            ],
+                            "bases": [
+                                2,
+                                4,
+                                8,
+                                10,
+                                16
+                            ],
+                            "type": "Area",
+                            "color": "#ff968236"
+                        },
+                        {
+                            "visible": true,
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4
+                            ],
+                            "y": [
+                                4,
+                                8,
+                                16,
+                                20,
+                                32
+                            ],
+                            "bases": [
+                                2,
+                                4,
+                                8,
+                                10,
+                                16
+                            ],
+                            "type": "Stems",
+                            "width": 5,
+                            "color": "#ff21578d",
+                            "styles": [
+                                "SOLID",
+                                "SOLID",
+                                "DASH",
+                                "DOT",
+                                "DASHDOT",
+                                "LONGDASH"
+                            ]
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10,
+                    "type": "Plot",
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 44,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 12
+        },
+        {
+            "id": "codeAHQeU6",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.prefs.theme.plotColors"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": [
+                    "#ff8c1d17",
+                    "#ff21578d",
+                    "#ff968236",
+                    "#ff141e78",
+                    "#ff366436",
+                    "#ff3c1e32"
+                ],
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 21,
+                "height": 56
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         }
     ],
     "namespace": {}

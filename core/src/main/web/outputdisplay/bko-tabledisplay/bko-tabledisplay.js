@@ -276,6 +276,9 @@
     function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS, $rootScope, $timeout) {
   //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
+    var ROW_HEIGHT = 27;
+    var ROW_HEIGHT_ADVANCED_MODE = 22;
+    var MIN_ROWS_FOR_PAGING = 25;
     return {
       template: JST['bko-tabledisplay/output-table'],
       controller: function($scope, $uibModal) {
@@ -1596,20 +1599,20 @@
           };
 
           var domCommon = '<"bko-table"Z' + (scope.data.length > 500 ? 'r' : '') + 't';
+          var rowHeight = bkHelper.getBkNotebookViewModel().isAdvancedMode() ? ROW_HEIGHT_ADVANCED_MODE : ROW_HEIGHT;
           if (!scope.pagination.use) {
             init.paging = false;
-            init.scrollY = scope.pagination.rowsToDisplay * 27 + 2;
+            init.scrollY = scope.pagination.rowsToDisplay * rowHeight + 2;
             init.scrollCollapse = true;
             init.dom = domCommon + 'f<"#' + scope.id + '_evalfilter">>';
           } else {
             init.dom = domCommon + '<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf<"#' + scope.id + '_evalfilter">>';
-            if (scope.data.length > 25) {
+            if (scope.data.length > MIN_ROWS_FOR_PAGING) {
               init.pagingType = 'simple_numbers';
               init.pageLength = 25;
               init.lengthMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']];
             } else {
               init.paging = false;
-              init.scrollY = 350;
               init.scrollCollapse = true;
             }
           }

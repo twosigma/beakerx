@@ -282,24 +282,18 @@
           return true;
         };
 
-        bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
-          preference: 'advanced-mode'
-        }).success(function(isAdvanced) {
+        bkUtils.getBeakerPreference('advanced-mode').then(function(isAdvanced) {
           if (_impl._viewModel.isAdvancedMode() != (isAdvanced === 'true')) {
             _impl._viewModel.toggleAdvancedMode();
           }
         });
 
-        bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
-          preference: 'edit-mode'
-        }).success(function(editMode) {
+        bkUtils.getBeakerPreference('edit-mode').then(function(editMode) {
           if (editMode !== '')
             _impl._viewModel.setEditMode(editMode);
         });
 
-        bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
-          preference: 'lod-threshold'
-        }).success(function (lodThreshold) {
+        bkUtils.getBeakerPreference('lod-threshold').then(function (lodThreshold) {
           _impl._viewModel.setLodThreshold(lodThreshold);
         });
       },

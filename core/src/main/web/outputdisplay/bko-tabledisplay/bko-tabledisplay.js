@@ -906,6 +906,7 @@
             scope.table.off('key');
             scope.table.off('column-visibility.dt');
             scope.removeFilterListeners();
+            $(scope.table.table().container()).find('.dataTables_scrollHead').off('scroll');
             delete scope.table;
             delete scope.colreorg;
             if (scope.clipclient !== undefined) {
@@ -1132,8 +1133,13 @@
           var me = $('#' + scope.id);
           // this is dataTables_scrollBody
           var pp = me.parent();
-          if (pp.width() > me.width()) {
-            pp.width(me.width());
+          var tableWidth = me.width();
+          var scrollWidth = scope.table && !scope.table.settings()[0].oBrowser.bScrollOversize ? 16 : 0;
+          if (pp.width() > tableWidth + scrollWidth) {
+            if(pp.height() < me.height()){
+              tableWidth += scrollWidth;
+            }
+            pp.width(tableWidth);
           }
           scope.updateResizeHandleWidth();
           if (scope.fixcols) { //do not need data update
@@ -1836,7 +1842,8 @@
               'tableWidthFixed': false,
               'resizeCallback': function(column){
                 scope.columnWidth[scope.colorder[column.idx] - 1] = column.sWidthOrig;
-              }
+              },
+              'exclude': _.range(scope.columns.length - scope.pagination.fixRight, scope.columns.length)
             }
           };
 
@@ -1931,12 +1938,12 @@
 
             if(init.paging !== false){
               var pagination = $(element).find(".bko-table-use-pagination");
-              $('<label eat-click><input type="checkbox" checked="true"> use pagination</label>')
-                .bind('click', function(e) {
-                  if (e.target.tagName === 'INPUT') {
-                    scope.doUsePagination();
-                  }
+              $('<input type="checkbox" checked="true" id=' + scope.id +'usePagination class="beforeCheckbox">')
+                .bind('click', function (e) {
+                  scope.doUsePagination();
                 })
+                .appendTo(pagination);
+              $('<label for=' + scope.id +'usePagination> use pagination</label>')
                 .appendTo(pagination);
             }
 
@@ -2024,6 +2031,13 @@
                 $(dtTR).removeClass('hover');
                 scope.highlightFixedColumnRow (rowIndex, false);
               });
+
+            $(scope.table.table().container()).find('.dataTables_scrollHead').on('scroll', function () {
+              var filtersInFocus = $(scope.table.table().container()).find('.filter-input:focus');
+              if (filtersInFocus.length) {
+                scope.stopFilterEditing(filtersInFocus);
+              }
+            });
 
             scope.removeOnKeyListeners();
 

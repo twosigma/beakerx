@@ -499,14 +499,23 @@ var BeakerPageObject = function() {
     return browser.executeScript("$('[cell-id=" + idCell +"]')[0].scrollIntoView();");
   };
 
+  this.scrollToBkCellByIdCell = function (idCell) {
+    return browser.executeScript("$('[cellid=" + idCell +"] > div')[0].scrollIntoView();");
+  };
+
   this.getCodeCellOutputByIdCell = function (idCell) {
     return element.all(by.css('[cell-id=' + idCell + ']')).get(0);
+  };
+
+  this.getBkCellByIdCell = function (idCell) {
+    return element.all(by.css('[cellid=' + idCell + '] > div')).get(0);
   };
 
   this.checkPlotIsPresentByIdCell = function (codeCellOutputId, containerIdx){
     if (!containerIdx)
       containerIdx = 0;
     this.scrollToCodeCellOutputByIdCell(codeCellOutputId);
+    browser.wait(this.EC.presenceOf($('[cell-id=' + codeCellOutputId + ']')), 10000);
     expect(this.getPlotMaingByIdCell(codeCellOutputId, containerIdx).isPresent()).toBe(true);
   };
 
@@ -614,6 +623,31 @@ var BeakerPageObject = function() {
     expect(this.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText()).toBe(outputText);
   }
 
+  this.checkCellOutputSubTextByIdCell = function(idCell, outputText, inxStart, lenght){
+    expect(this.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).isPresent()).toBe(true);
+    this.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText()
+        .then(function(value){
+          expect(value.substring(inxStart, lenght)).toBe(outputText);
+        });
+  }
 
+  this.checkImageByIdCell = function(idCell){
+    expect(this.getCodeCellOutputByIdCell(idCell).element(By.css('img')).isPresent()).toBe(true);
+    this.getCodeCellOutputByIdCell(idCell).element(By.css('img')).getAttribute('src')
+        .then(function(attr){
+          expect(attr.substring(0, 21)).toBe('data:image/png;base64');
+        });
+  }
+
+  this.clickCodeCellInputButtonByIdCell = function(idCell){
+    this.getBkCellByIdCell(idCell).element(by.css('.btn.btn-default.evaluate-script.advanced-hide.bkr')).click();
+    browser.wait(this.EC.presenceOf($('[cell-id=' + idCell + ']')), 10000);
+  }
+
+  this.checkSubString = function(strPromise, toBeStr, indxStart, lenght){
+    strPromise.getText().then(function(value){
+      expect(value.substring(indxStart, lenght)).toBe(toBeStr);
+    });
+  }
 };
 module.exports = BeakerPageObject;

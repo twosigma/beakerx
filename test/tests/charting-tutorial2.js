@@ -23,16 +23,10 @@ describe('Charting Tutorial', function () {
 
     beforeEach(function (done) {
         beakerPO = new BeakerPageObject();
-        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true").then(done);
+        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true")
+            .then(done)
+            .then(beakerPO.waitUntilLoadingCellOutput());
 
-        browser.waitForAngular();
-        beakerPO.waitUntilLoadingIndicator();
-
-    });
-
-    afterEach(function (done) {
-        beakerPO.closeNotebook()
-            .then(done);
     });
 
 
@@ -40,25 +34,21 @@ describe('Charting Tutorial', function () {
      *  - ConstantLine
      *  - ConstantBand
      */
-    it('Constant Lines', function() {
+    it('Constant Lines, ConstantBand', function() {
         var idCell = "coderpjgfG";
         beakerPO.checkPlotIsPresentByIdCell(idCell);
 
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-constline');
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 2), 'plot-constline');
-    });
 
-    it('Constant Bands', function() {
-        var idCell = "codeK6Nb0u";
+        idCell = "codeK6Nb0u";
         beakerPO.checkPlotIsPresentByIdCell(idCell);
 
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-constband');
-    });
 
-    it('Text', function() {
-        var idCell = "code3AqAel";
+        idCell = "code3AqAel";
         beakerPO.checkPlotIsPresentByIdCell(idCell);
 
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
@@ -72,10 +62,8 @@ describe('Charting Tutorial', function () {
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 7), 'plot-text');
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 8), 'plot-text');
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 9), 'plot-text');
-    });
 
-    it('Simple Time Plot', function() {
-        var idCell = "codePvwIFC";
+        idCell = "codePvwIFC";
         beakerPO.checkPlotIsPresentByIdCell(idCell);
         beakerPO.checkLegendIsPresentByIdCell(idCell);
 
@@ -85,20 +73,15 @@ describe('Charting Tutorial', function () {
         expect(beakerPO.getCodeCellOutputContainerYLabelByIdCell(idCell)).toBe("Price");
         expect(beakerPO.getCodeCellOutputContainerXLabelByIdCell(idCell)).toBe("Time");
 
-    });
-
-    it('Second Y Axis', function () {
-        var idCell = "codeZgVAtF";
+        idCell = "codeZgVAtF";
         beakerPO.checkPlotIsPresentByIdCell(idCell);
         beakerPO.checkLegendIsPresentByIdCell(idCell);
 
         expect(beakerPO.getCodeCellOutputContainerYLabelByIdCell(idCell)).toBe("Interest Rates");
         expect(beakerPO.getCodeCellOutputContainerXLabelByIdCell(idCell)).toBe("Time");
         expect(beakerPO.getCodeCellOutputContainerYRLabelByIdCell(idCell)).toBe("Spread");
-    });
 
-    it('Logarithmic Scale', function() {
-        var idCell = "codew7ZL7u";
+        idCell = "codew7ZL7u";
         beakerPO.checkPlotIsPresentByIdCell(idCell, 0);
         beakerPO.checkPlotIsPresentByIdCell(idCell, 1);
         beakerPO.checkLegendIsPresentByIdCell(idCell, 0);
@@ -111,18 +94,14 @@ describe('Charting Tutorial', function () {
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1).element(by.tagName('circle')).isPresent()).toBe(true);
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 1, 0).element(by.tagName('circle')).isPresent()).toBe(true);
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 1, 1).element(by.tagName('circle')).isPresent()).toBe(true);
-    });
 
-    it('Date Objects for the Time Coordinate', function() {
-        var idCell = "codekBlglo";
+        idCell = "codekBlglo";
         beakerPO.checkPlotIsPresentByIdCell(idCell);
         beakerPO.checkLegendIsPresentByIdCell(idCell);
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-point');
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-point');
-    });
 
-    it('Nanosecond Resolution', function() {
-        var idCell = "codecHXmVR";
+        idCell = "codecHXmVR";
         beakerPO.checkPlotIsPresentByIdCell(idCell);
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-point');
     });

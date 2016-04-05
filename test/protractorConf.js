@@ -43,7 +43,6 @@ var config = {
     'tests/text-cell.js',
     'tests/cell-menu.js',
     'tests/language-manager.js',
-    'tests/bugs.js',
     'tests/vim-mode.js',
     'tests/charting-tutorial.js',
     'tests/category-plot-tutorial.js',
@@ -52,7 +51,10 @@ var config = {
     'tests/tutorials/language_demos/sql-tutorial.js',
     'tests/tutorials/language_demos/java-tutorial.js',
     'tests/tutorials/language_demos/clojure-tutorial.js',
-    'tests/tutorials/language_demos/python-tutorial.js'
+    'tests/tutorials/language_demos/python-tutorial.js',
+    'tests/tutorials/language_demos/R-tutorial.js',
+    'tests/tutorials/language_demos/jscript-tutorial.js',
+    'tests/tutorials/language_demos/groovy-tutorial.js'
   ]
 };
 

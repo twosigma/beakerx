@@ -20,12 +20,13 @@
 
   var completionActive = false;
   var currentDocumentation = {};
-  var autocompleteParameters;
+  var autocompleteParameters = true;
 
   bkUtils.getBeakerPreference('autocomplete-parameters').then(function(autocompleteParametersPref) {
-    autocompleteParameters = autocompleteParametersPref === "true";
+    if (autocompleteParametersPref === "false") {
+      autocompleteParameters = false;
+    }
   });
-
   var showAutocomplete = function(cm, scope) {
     if (autocompleteParametersService.isActive()) {
       autocompleteParametersService.nextParameter();

@@ -206,6 +206,7 @@
         return bkUtils.getBaseUrl();
       },
       openNotebookInNewWindow: function (notebookUri, uriType, readOnly, format) {
+
         var filePathToUrl = function (path) {
           path = path.replace('\\', '/');
           path = path.replace(' ', '%20');
@@ -213,19 +214,19 @@
           return path.replace(drive, 'file:///$1:/');
         };
 
-        var url = $location.absUrl();
-        url = url.substr(0, url.indexOf("#"));
-        url += "#/open?uri=" + filePathToUrl(notebookUri);
+        var path = "/open?uri=" + filePathToUrl(notebookUri);
         if (uriType) {
-          url += "&type=" + uriType;
+          path += "&type=" + uriType;
         }
         if (readOnly) {
-          url += "&readOnly=" + readOnly;
+          path += "&readOnly=" + readOnly;
         }
         if (format) {
-          url += "&format=" + format;
+          path += "&format=" + format;
         }
-        window.open(url, '_blank');
+        bkHelper.openWindow(
+          bkHelper.getBaseUrl() + path,
+          'notebook');
       },
       // Open tab/window functions that handle the electron case
       openWindow: function(path, type) {

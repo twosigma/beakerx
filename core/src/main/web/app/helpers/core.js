@@ -1072,30 +1072,24 @@
       }
     };
 
-    bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
-      preference: 'fs-order-by'
-    }).success(function (fs_order_by) {
+    bkUtils.getBeakerPreference('fs-order-by').then(function (fs_order_by) {
       bkCoreManager._prefs.fs_order_by = !fs_order_by || fs_order_by.length === 0 ? 'uri' : fs_order_by;
-    }).error(function (response) {
+    }).catch(function (response) {
       console.log(response);
       bkCoreManager._prefs.fs_order_by = 'uri';
     });
 
-    bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
-      preference: 'fs-reverse'
-    }).success(function (fs_reverse) {
+    bkUtils.getBeakerPreference('fs-reverse').then(function (fs_reverse) {
       bkCoreManager._prefs.fs_reverse = !fs_reverse || fs_reverse.length === 0 ? false : fs_reverse;
-    }).error(function (response) {
+    }).catch(function (response) {
       console.log(response);
       bkCoreManager._prefs.fs_reverse = false;
     });
 
-    bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
-      preference: 'theme'
-    }).success(function (theme) {
+    bkUtils.getBeakerPreference('theme').then(function (theme) {
       bkCoreManager._prefs.setTheme(_.contains(_.values(GLOBALS.THEMES), theme) ? theme : GLOBALS.THEMES.DEFAULT);
       $rootScope.$broadcast('beaker.theme.set', theme);
-    }).error(function (response) {
+    }).catch(function (response) {
       console.log(response);
       bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);
     });

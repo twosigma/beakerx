@@ -547,62 +547,15 @@
           var markdownFragment = $('<div>' + content + '</div>');
           bkHelper.typeset(markdownFragment);
           var escapedHtmlContent = angular.copy(markdownFragment.html());
-          var html = angular.copy(markdownFragment);
           markdownFragment.remove();
-
-          function traverseChildNodes(node) {
-            var next;
-
-            var toDOM=function(str){
-              var d=document
-                ,i
-                ,a=d.createElement("div")
-                ,b=d.createDocumentFragment();
-              a.innerHTML=str;
-              while(i=a.firstChild)b.appendChild(i);
-              return b;
-            };
-
-            if (node.nodeType === 1 && node.className!= 'katex') {
-              if (node = node.firstChild) {
-                do {
-                  // Recursively call traverseChildNodes
-                  // on each child node
-                  next = node.nextSibling;
-                  traverseChildNodes(node);
-                } while(node = next);
-              }
-            } else if (node.nodeType === 3) {
-              var text = marked(node.data, {
-                gfm: true,
-                renderer: bkRenderer
-              });
-              var wrapper = toDOM(text.substr(3, text.length-8));//remove <p> and </p>\n
-              node.parentNode.insertBefore(wrapper, node);
-              node.remove();
-            }
-          }
-
-          if(html) {
-            /*
-             Name	                         Value
-             ELEMENT_NODE	                  1
-             ATTRIBUTE_NODE 	2
-             TEXT_NODE	3
-             CDATA_SECTION_NODE 	4
-             ENTITY_REFERENCE_NODE 	5
-             ENTITY_NODE 	6
-             PROCESSING_INSTRUCTION_NODE	7
-             COMMENT_NODE	8
-             DOCUMENT_NODE	9
-             DOCUMENT_TYPE_NODE	10
-             DOCUMENT_FRAGMENT_NODE	11
-             NOTATION_NODE 	12
-             */
-            traverseChildNodes(html[0]);
-
-          }
-          markupDeferred.resolve(html.html());
+          var unescapedGtCharacter = escapedHtmlContent.replace(/&gt;/g, '>');
+          var md = window.markdownit({
+            html: true,
+            linkify: true,
+            typographer: true
+          });
+          var result = md.render(unescapedGtCharacter);
+          markupDeferred.resolve(result);
         };
 
         var results = [], re = /{{([^}]+)}}/g, text;

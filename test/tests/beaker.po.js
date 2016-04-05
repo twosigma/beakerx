@@ -643,5 +643,11 @@ var BeakerPageObject = function() {
     this.getBkCellByIdCell(idCell).element(by.css('.btn.btn-default.evaluate-script.advanced-hide.bkr')).click();
     browser.wait(this.EC.presenceOf($('[cell-id=' + idCell + ']')), 10000);
   }
+
+  this.checkSubString = function(strPromise, toBeStr, indxStart, lenght){
+    strPromise.getText().then(function(value){
+      expect(value.substring(indxStart, lenght)).toBe(toBeStr);
+    });
+  }
 };
 module.exports = BeakerPageObject;

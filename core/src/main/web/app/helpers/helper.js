@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
+  module.factory('bkHelper', function($location, bkUtils, bkCoreManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -204,6 +204,28 @@
       },
       getBaseUrl: function() {
         return bkUtils.getBaseUrl();
+      },
+      openNotebookInNewWindow: function (notebookUri, uriType, readOnly, format) {
+        var filePathToUrl = function (path) {
+          path = path.replace('\\', '/');
+          path = path.replace(' ', '%20');
+          var drive = /(.)\:\//;
+          return path.replace(drive, 'file:///$1:/');
+        };
+
+        var url = $location.absUrl();
+        url = url.substr(0, url.indexOf("#"));
+        url += "#/open?uri=" + filePathToUrl(notebookUri);
+        if (uriType) {
+          url += "&type=" + uriType;
+        }
+        if (readOnly) {
+          url += "&readOnly=" + readOnly;
+        }
+        if (format) {
+          url += "&format=" + format;
+        }
+        window.open(url, '_blank');
       },
       // Open tab/window functions that handle the electron case
       openWindow: function(path, type) {

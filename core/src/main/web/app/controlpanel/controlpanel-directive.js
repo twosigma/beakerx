@@ -214,7 +214,7 @@
 
         $scope.openRecent = function(item) {
           if (_.isFunction(item.action)) {
-            item.action();
+            item.action(true);
           }
         };
 

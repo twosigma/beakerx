@@ -614,6 +614,27 @@ var BeakerPageObject = function() {
     expect(this.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText()).toBe(outputText);
   }
 
+  this.checkCellOutputSubTextByIdCell = function(idCell, outputText, inxStart, lenght){
+    expect(this.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).isPresent()).toBe(true);
+    this.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText()
+        .then(function(value){
+          expect(value.substring(inxStart, lenght)).toBe(outputText);
+        });
+  }
+
+  this.checkImageByIdCell = function(idCell){
+    expect(this.getCodeCellOutputByIdCell(idCell).element(By.css('img')).isPresent()).toBe(true);
+    this.getCodeCellOutputByIdCell(idCell).element(By.css('img')).getAttribute('src')
+        .then(function(attr){
+          expect(attr.substring(0, 21)).toBe('data:image/png;base64');
+        });
+  }
+
+  this.checkSubString = function(strPromise, toBeStr, indxStart, lenght){
+    strPromise.getText().then(function(value){
+      expect(value.substring(indxStart, lenght)).toBe(toBeStr);
+    });
+  }
 
 };
 module.exports = BeakerPageObject;

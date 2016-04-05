@@ -207,14 +207,7 @@
       },
       openNotebookInNewWindow: function (notebookUri, uriType, readOnly, format) {
 
-        var filePathToUrl = function (path) {
-          path = path.replace('\\', '/');
-          path = path.replace(' ', '%20');
-          var drive = /(.)\:\//;
-          return path.replace(drive, 'file:///$1:/');
-        };
-
-        var path = "/open?uri=" + filePathToUrl(notebookUri);
+        var path = "/open?uri=" + window.encodeURIComponent(notebookUri);
         if (uriType) {
           path += "&type=" + uriType;
         }

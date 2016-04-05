@@ -45,7 +45,7 @@ describe('R Tutorial', function () {
 
         idCell = "codezB5I5w";
         beakerPO.checkDtContainerByIdCell(idCell);
-        beakerPO.checkDataTableHeadByIdCell(idCell, 'Index manufacturer\nmodel\ndispl\nyear\ncyl\ntrans\ndrv\ncty\nhwy');
+        beakerPO.checkDataTableHeadByIdCell(idCell, 'Index manufacturer\nmodel\ndispl\nyear\ncyl\ntrans\ndrv\ncty\nhwy\nfl');
         beakerPO.checkDataTableBodyByIdCell(idCell, 25, '1 audi a4 1.8000 1,999 4 auto(l5) f 18 29 p compact');
 
         idCell = "codePI1mwS";

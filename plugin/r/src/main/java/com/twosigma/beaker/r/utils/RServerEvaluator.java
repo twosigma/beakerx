@@ -401,10 +401,6 @@ public class RServerEvaluator {
       }
     }
 
-    public void reset() {
-
-    }
-
     protected boolean startRserve()
     {
       pid = -1;

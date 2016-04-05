@@ -23,16 +23,10 @@ describe('Charting Tutorial', function () {
 
   beforeEach(function (done) {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true").then(done);
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true")
+        .then(done)
+        .then(beakerPO.waitUntilLoadingCellOutput());
 
-    browser.waitForAngular();
-    beakerPO.waitUntilLoadingIndicator();
-
-  });
-
-  afterEach(function (done) {
-    beakerPO.closeNotebook()
-      .then(done);
   });
 
 
@@ -44,7 +38,7 @@ describe('Charting Tutorial', function () {
    *  - Area
    *  - Text
    */
-  it('Custom Plot Example', function () {
+  it('CombinedPlot, TimePlot, Line, Area, Text ', function () {
     var idCell = "code42QbvS";
     beakerPO.checkPlotIsPresentByIdCell(idCell, 0);
     beakerPO.checkPlotIsPresentByIdCell(idCell, 1);
@@ -121,19 +115,14 @@ describe('Charting Tutorial', function () {
       beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 1, 3), 'plot-constband');
       beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 1, 4), 'plot-constband');
     }
-  });
 
-
-  it('Simple Automatic Plot', function() {
-    var idCell = "codePZwpbQ";
+    idCell = "codePZwpbQ";
     beakerPO.checkPlotIsPresentByIdCell(idCell);
     beakerPO.checkLegendIsPresentByIdCell(idCell);
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1).element(by.tagName('circle')).isPresent()).toBe(true);
-  });
 
-  it('Scatter Plot', function() {
-    var idCell = "code0gsBBt";
+    idCell = "code0gsBBt";
     beakerPO.checkPlotIsPresentByIdCell(idCell);
     beakerPO.checkLegendIsPresentByIdCell(idCell);
     beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-point');
@@ -141,49 +130,36 @@ describe('Charting Tutorial', function () {
 
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 2).element(by.tagName('circle')).isPresent()).toBe(true);
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 3).element(by.tagName('circle')).isPresent()).toBe(true);
-  });
 
-
-  it('Title and Axis Labels', function() {
-    var idCell = "codeH2ee1d";
+    idCell = "codeH2ee1d";
     beakerPO.checkPlotIsPresentByIdCell(idCell);
 
     expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("We Will Control the Title");
     expect(beakerPO.getCodeCellOutputContainerYLabelByIdCell(idCell)).toBe("Vertical");
     expect(beakerPO.getCodeCellOutputContainerXLabelByIdCell(idCell)).toBe("Horizontal");
-  });
 
-  it('Lines', function() {
-    var idCell = "codeXtjWnc";
+    idCell = "codeXtjWnc";
     beakerPO.checkPlotIsPresentByIdCell(idCell);
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
-  });
 
-  it('Stems', function() {
-    var idCell = "code4NJX5d";
+    idCell = "code4NJX5d";
     beakerPO.checkPlotIsPresentByIdCell(idCell);
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('line')).isPresent()).toBe(true);
-  });
 
-  it('Bars', function() {
-    var idCell = "codefbZDMO";
+    idCell = "codefbZDMO";
     beakerPO.checkPlotIsPresentByIdCell(idCell);
     beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-bar');
     expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Bars");
-  });
 
-  it('Points', function() {
-    var idCell = "codeSb2uCM";
+    idCell = "codeSb2uCM";
     beakerPO.checkPlotIsPresentByIdCell(idCell);
     beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-point');
     beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-point');
     beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 2), 'plot-point');
     beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 3), 'plot-point');
     expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Changing Point Size, Color, Shape");
-  });
 
-  it('Areas', function() {
-    var idCell = "codeZ7NCfO";
+    idCell = "codeZ7NCfO";
     beakerPO.checkPlotIsPresentByIdCell(idCell);
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('polygon')).isPresent()).toBe(true);
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1).element(by.tagName('polygon')).isPresent()).toBe(true);

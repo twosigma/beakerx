@@ -387,6 +387,7 @@
 
         // reset table state
         $scope.doResetAll = function () {
+          $scope.table.state.clear();
           $scope.init($scope.getCellModel());
         };
 
@@ -1059,6 +1060,8 @@
             scope.tableFilter       = '';
             scope.tableSearch       = '';
             scope.columnFilter      = [];
+            scope.showFilter        = false;
+            scope.columnSearchActive = false;
             scope.columnWidth       = [];
             scope.tableOrder        = undefined;
             scope.pagination = {
@@ -1369,6 +1372,7 @@
             scope.columnSearchActive ? scope.columnFilterFn : $.debounce(500, scope.columnFilterFn));
 
           scope.$apply();
+          scope.table.draw(false);
           if (scope.fixcols) {
             scope.fixcols.fnRedrawLayout();
           }
@@ -1874,7 +1878,6 @@
             // we must wait for the DOM elements to appear
             $(id).parents('.dataTables_scroll').find('th, td').removeClass('left-fix-col-separator');
             scope.table = $(id).DataTable(init);
-            scope.table.order(init.order);
             scope.renderMenu = true;
             if (!scope.colorder) {
               scope.colorder = _.range(scope.columnNames.length + 1);
@@ -2094,27 +2097,27 @@
             leftFixColumnHeader.addClass('left-fix-col-separator');
 
             scope.fixcols = new $ .fn.dataTable.FixedColumns($(id), inits);
-            scope.update_size();
 
             setTimeout(function(){
               scope.applyFilters();
-              if (scope.showFilter) {
-                if (!_.isEmpty(scope.columnFilter)) {
-                  scope.table.columns().every(function (i) {
-                    var column = this;
-                    var jqInput = scope.getColumnFilter(column);
-                    if (jqInput.length) {
-                      var filterValue = scope.columnFilter[scope.colorder[i] - 1];
-                      jqInput.val(filterValue);
-                      if (scope.columnSearchActive && !_.isEmpty(filterValue)) {
-                        column.search(filterValue);
-                      }
+              if (scope.columnFilter) {
+                scope.table.columns().every(function (i) {
+                  var column = this;
+                  var jqInput = scope.getColumnFilter(column);
+                  if (jqInput.length) {
+                    var filterValue = scope.columnFilter[scope.colorder[i] - 1];
+                    jqInput.val(filterValue);
+                    if (scope.columnSearchActive && !_.isEmpty(filterValue)) {
+                      column.search(filterValue);
                     }
-                  });
-                  scope.table.draw();
-                }
+                  }
+                });
+                scope.table.draw();
+              }
+              if (scope.showFilter) {
                 scope.doShowFilter(null, scope.columnSearchActive);
               }
+              scope.update_size();
             }, 0);
 
             if (!scope.pagination.use) {

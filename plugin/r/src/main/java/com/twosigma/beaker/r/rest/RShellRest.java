@@ -129,7 +129,9 @@ public class RShellRest {
       logger.severe(format("cannot find shell with shellId = %s", shellId));
       return;
     }
-    this.shells.get(shellId).resetEnvironment();
+    RServerEvaluator evaluator = this.shells.get(shellId);
+    evaluator.exit();
+    this.shells.put(shellId, new RServerEvaluator(shellId, evaluator.getSessionId(), corePort, objectSerializerProvider.get()));
   }
 
   @POST

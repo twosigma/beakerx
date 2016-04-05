@@ -145,7 +145,22 @@ define(function(require, exports, module) {
         data: { shellID: self.settings.shellID }
       }).done(cb);
     },
-    interrupt: function() {
+    resetEnvironment: function () {
+      var deferred = bkHelper.newDeferred();
+      var self = this;
+      $.ajax({
+        type: "POST",
+        datatype: "json",
+        url: bkHelper.serverUrl(serviceBase + "/rest/rsh/resetEnvironment"),
+        data: {shellID: self.settings.shellID}
+      }).done(function () {
+        deferred.resolve();
+      }).fail(function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;
+    },
+    interrupt: function () {
       this.cancelExecution();
     },
     cancelExecution: function() {
@@ -153,7 +168,9 @@ define(function(require, exports, module) {
         RCancelFunction();
       }
     },
-    spec: {},
+    spec: {
+      reset: {type: "action", action: "resetEnvironment", name: "Reset Environment"}
+    },
     cometdUtil: cometdUtil
   };
   var shellReadyDeferred = bkHelper.newDeferred();

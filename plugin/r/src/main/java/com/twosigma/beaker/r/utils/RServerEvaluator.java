@@ -67,6 +67,9 @@ public class RServerEvaluator {
   protected static final String BEGIN_MAGIC = "**beaker_begin_magic**";
   protected static final String END_MAGIC = "**beaker_end_magic**";
   private final static Logger logger = Logger.getLogger(RServerEvaluator.class.getName());
+  private static final String RESET_CODE =
+      "closeAllConnections()\n" +
+      "rm(list=ls())";
 
   protected final String shellId;
   protected final String sessionId;
@@ -151,6 +154,15 @@ public class RServerEvaluator {
   public List<String> autocomplete(String code, int caretPosition) {
     logger.fine("autocomplete");
     return myWorker.autocomplete(code,caretPosition);
+  }
+
+  public void resetEnvironment() {
+    logger.fine("reset");
+    jobQueue.clear();
+    final SimpleEvaluationObject evaluationObject = new SimpleEvaluationObject(RESET_CODE);
+    evaluationObject.started();
+    jobQueue.add(new jobDescriptor(RESET_CODE, evaluationObject));
+    syncObject.release();
   }
 
   protected int getPortFromCore() throws IOException, ClientProtocolException
@@ -387,6 +399,10 @@ public class RServerEvaluator {
           logger.log(Level.SEVERE, "exception sending signal: ", e);
         }
       }
+    }
+
+    public void reset() {
+
     }
 
     protected boolean startRserve()

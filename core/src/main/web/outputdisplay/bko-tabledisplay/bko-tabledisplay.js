@@ -611,7 +611,7 @@
               }
             })
             .on('blur.column-filter', filterInputSelector, function (event) {
-              $scope.onFilterBlur($(this), event.relatedTarget);
+              $scope.onFilterBlur($(this));
             })
             .on('keydown.column-filter', filterInputSelector, function (event) {
               var key = event.which;
@@ -1923,12 +1923,15 @@
               jqInputEl.parent().siblings('.hidden-filter').addClass('hidden-filter-input');
             };
 
-            scope.onFilterBlur = function (jqInputEl, relatedTarget) {
+            scope.onFilterBlur = function (jqInputEl) {
               scope.stopFilterEditing(jqInputEl);
-              if (!$(scope.table.table().container()).find('.filterRow').has(relatedTarget).length) {
-                // focus wasn't moved to another filter input
-                scope.checkFilter();
-              }
+              setTimeout(function () {
+                var filtersInFocus = $(scope.table.table().container()).find('.filter-input:focus');
+                if (!filtersInFocus.length) {
+                  //focus wasn't moved to another filter input
+                  scope.checkFilter();
+                }
+              }, 0);
             };
 
             scope.checkFilter = function () {

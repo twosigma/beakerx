@@ -19,6 +19,7 @@
       <span class="bko-menu" aria-hidden="true" ng-class="{ sorting_desc: isIndexColumnDesc }"></span>
      </a>
      <ul class="dropdown-menu" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
+       <li><a tabindex="-1" href="#" ng-click="doResetAll()" id="dt-reset-all" eat-click>Reset All</a></li>
        <li>
          <a tabindex="-1" href="#" ng-click="doUsePagination()" id="dt-use-pagination" eat-click>Use pagination</a>
          <i class="glyphicon glyphicon-ok" ng-show="pagination.use"></i>

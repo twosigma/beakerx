@@ -46,19 +46,19 @@
   $.fn.dataTable.moment('DD/MM/YYYY');
 
   $.fn.dataTable.Api.register( 'column().data().max()', function () {
-    return this.reduce( function (a, b) {
+    return this.length ? this.reduce( function (a, b) {
       var x = parseFloat( a ) || 0;
       var y = parseFloat( b ) || 0;
       return Math.max(x, y);
-    } );
+    } ) : 0;
   } );
 
   $.fn.dataTable.Api.register( 'column().data().min()', function () {
-    return this.reduce( function (a, b) {
+    return this.length ? this.reduce( function (a, b) {
       var x = parseFloat( a ) || 0;
       var y = parseFloat( b ) || 0;
       return Math.min(x, y);
-    } );
+    } ) : 0;
   } );
 
   // detect and sort by file size
@@ -389,6 +389,11 @@
           } , 'Select name for CSV file to save', 'csv', 'Save');
         };
 
+        // reset table state
+        $scope.doResetAll = function () {
+          $scope.init($scope.getCellModel());
+        };
+
         // these are the menu actions
         $scope.doSelectAll = function(idx) {
           if ($scope.table === undefined) {
@@ -560,6 +565,13 @@
               $(this).bind('click.DT', function (e) {
                 if(!$(e.target).hasClass('bko-column-header-menu')){
                   click(e);
+                  setTimeout(function(){
+                    $scope.tableOrder = [];
+                    var order = $scope.table.order();
+                    for(var i = 0; i < order.length; i++){
+                      $scope.tableOrder.push([$scope.colorder[order[i][0]], order[i][1]]);
+                    }
+                  }, 0);
                 }
               });
             }
@@ -987,6 +999,7 @@
             delete scope.actualalign;
             delete scope.data;
             delete scope.update;
+            delete scope.tableOrder;
             $(document.body).off('click.bko-dt-container', scope.containerClickFunction);
           }
           unregisterOutputExpandEventListener();
@@ -1031,9 +1044,12 @@
           var i;
 
           // validate saved state (if any) by using column \Names
-          var modelColumnNames = model.columnNames.slice(0);
-          if (model.hasIndex === 'true') {
-            modelColumnNames.shift();
+          var modelColumnNames;
+          if (model.columnNames) {
+            modelColumnNames = model.columnNames.slice(0);
+            if (model.hasIndex === 'true') {
+              modelColumnNames.shift();
+            }
           }
           if (scope.savedstate !== undefined) {
             if (scope.savedstate.columnNames === undefined) {
@@ -1094,23 +1110,33 @@
             if (typeof scope.pagination.fixRight === 'boolean') {
               scope.pagination.fixRight = 0;
             }
-            scope.barsOnColumn = scope.savedstate.barsOnColumn || {};
-            scope.heatmapOnColumn = scope.savedstate.heatmapOnColumn || {};
-            scope.tableFilter = scope.savedstate.tableFilter || '';
-            scope.tableSearch = scope.savedstate.tableSearch || '';
-            scope.columnFilter = scope.savedstate.columnFilter || [];
-            scope.showFilter = scope.savedstate.showFilter;
-            scope.columnSearchActive = scope.savedstate.columnSearchActive;
-            scope.columnWidth = scope.savedstate.columnWidth || [];
+            scope.barsOnColumn        = scope.savedstate.barsOnColumn || {};
+            scope.heatmapOnColumn     = scope.savedstate.heatmapOnColumn || {};
+            scope.tableFilter         = scope.savedstate.tableFilter || '';
+            scope.tableSearch         = scope.savedstate.tableSearch || '';
+            scope.columnFilter        = scope.savedstate.columnFilter || [];
+            scope.showFilter          = scope.savedstate.showFilter;
+            scope.columnSearchActive  = scope.savedstate.columnSearchActive;
+            scope.columnWidth         = scope.savedstate.columnWidth || [];
+            scope.tableOrder          = scope.savedstate.tableOrder;
 
             scope.savedstate  = undefined;
           } else {
-            scope.barsOnColumn = {}; //map: col index -> show bars
-            scope.heatmapOnColumn = {}; //map: col index -> show heatmap
-            scope.tableFilter = '';
-            scope.tableSearch = '';
-            scope.columnFilter = [];
-            scope.columnWidth = [];
+            scope.colorder          = undefined;
+            scope.getCellSho        = undefined;
+            scope.barsOnColumn      = {}; //map: col index -> show bars
+            scope.heatmapOnColumn   = {}; //map: col index -> show heatmap
+            scope.tableFilter       = '';
+            scope.tableSearch       = '';
+            scope.columnFilter      = [];
+            scope.columnWidth       = [];
+            scope.tableOrder        = undefined;
+            scope.pagination = {
+              'use' : true,
+              'rowsToDisplay' : 50,
+              'fixLeft' : 0,
+              'fixRight' : 0
+            };
           }
           // auto compute types
           if (scope.actualtype === undefined || scope.actualtype.length === 0) {
@@ -1309,6 +1335,235 @@
               }
             });
           }
+        };
+
+        scope.addInteractionListeners = function () {
+          $(scope.table.table().container())
+            .on("mouseenter.bko-dt-interaction", 'td, th', function (e) {
+              if (scope.tableHasFocus()) {
+                return; //ignore mouse over for key events if there is focus on table's cell
+              }
+              var column = scope.getColumnIndexByCellNode(this);
+              if (!scope.onKeyListeners[column]) {
+                scope.onKeyListeners[column] = function (onKeyEvent) {
+                  if (scope.tableHasFocus()) {
+                    return; //ignore mouse over for key events if there is focus on table's cell
+                  }
+                  if (!onKeyEvent.isDefaultPrevented()) {
+                    scope.onKeyAction(column, onKeyEvent);
+                  }
+                };
+                $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
+              }
+            })
+            .on("mouseleave.bko-dt-interaction", 'td, th', function (e) {
+              var column = scope.getColumnIndexByCellNode(this);
+              var listener = scope.onKeyListeners[column];
+              if(listener) {
+                delete scope.onKeyListeners[column];
+                $(document).off("keydown.bko-datatable", listener);
+              }
+            });
+        };
+        scope.removeInteractionListeners = function () {
+          $(scope.table.table().container()).off('mouseenter.bko-dt-interaction', 'td, th');
+          $(scope.table.table().container()).off('mouseleave.bko-dt-interaction', 'td, th');
+        };
+
+        scope.showHideBars = function (column) {
+          scope.barsOnColumn[column] = !!!scope.barsOnColumn[column];
+          _.defer(function () { scope.table.draw(false);  });
+        };
+        scope.showHideHeatmap = function (column) {
+          scope.heatmapOnColumn[column] = !!!scope.heatmapOnColumn[column];
+          _.defer(function () { scope.table.draw(false);  });
+        };
+
+        scope.columnHasFormat = function (column, format) {
+          for (var i = 0; i < scope.types.length; i++) {
+            if(scope.types[column] === format){
+              return true;
+            }
+          }
+          return false;
+        };
+        scope.changePrecision = function (column, precision) {
+          if(scope.columnHasFormat(column, 'double')){
+            scope.actualtype[column] = scope.getActualTypeByPrecision(precision);
+            scope.applyChanges();
+          }
+        };
+        scope.changeAllPrecision = function (precision) {
+          for (var i = 0; i < scope.columns.length - 1; i++) {
+            if(scope.columnHasFormat(i, 'double')){
+              scope.actualtype[i] = scope.getActualTypeByPrecision(precision);
+            }
+          }
+          scope.applyChanges();
+        };
+
+        scope.doShowFilter = function (column, isSearch) {
+          var jqContainer = $(scope.table.table().container());
+          var filterInput = jqContainer.find('.filter-input');
+          var filterIcon = jqContainer.find('.filter-icon');
+          if (isSearch) {
+            filterInput.addClass('search-active');
+            filterInput.attr('title', 'search this column for a substring');
+            filterIcon.removeClass('fa-filter');
+            filterIcon.addClass('fa-search');
+          } else {
+            filterInput.removeClass('search-active');
+            filterInput.attr('title', 'filter with an expression of $ for this column');
+            filterIcon.removeClass('fa-search');
+            filterIcon.addClass('fa-filter');
+          }
+          if (scope.showFilter) {
+            if(scope.columnSearchActive !== isSearch){
+              scope.clearFilters();
+              scope.columnFilter = [];
+            }
+          } else {
+            scope.showFilter = true;
+          }
+          scope.columnSearchActive = isSearch;
+
+          var filterInputSelector = '.filterRow .filter-input';
+          jqContainer.off('keyup.column-filter change.column-filter');
+          jqContainer.on('keyup.column-filter change.column-filter', filterInputSelector,
+            scope.columnSearchActive ? scope.columnFilterFn : $.debounce(500, scope.columnFilterFn));
+
+          scope.$apply();
+          if (scope.fixcols) {
+            scope.fixcols.fnRedrawLayout();
+          }
+          if(column){
+            scope.getColumnFilter(column).focus();
+          }
+        };
+        scope.hideFilter = function () {
+          scope.clearFilters();
+          scope.showFilter = false;
+          if (!(scope.$$phase || $rootScope.$$phase)) {
+            scope.$apply();
+          }
+          setTimeout(function(){
+            if (scope.fixcols){
+              scope.fixcols.fnRedrawLayout();
+            }
+          }, 0);
+        };
+        scope.clearFilters = function () {
+          var hasNotEmptyFilter = false;
+          scope.table.columns().every(function () {
+            var column = this;
+            var jqInput = scope.getColumnFilter(column);
+            var filterValue = jqInput.val();
+            if (!_.isEmpty(filterValue)) {
+              hasNotEmptyFilter = true;
+              jqInput.val('');
+              column.search('');
+            }
+          });
+          if (hasNotEmptyFilter) {
+            scope.table.draw();
+          }
+          scope.columnFilter = [];
+        };
+        scope.clearFilter = function (column, jqInput) {
+          if (column) {
+            var filterValue = jqInput.val();
+            if (!_.isEmpty(filterValue)) {
+              jqInput.val('');
+              if (scope.columnSearchActive) {
+                column.search('');
+              }
+              column.draw();
+              if (!jqInput.is(':focus')) {
+                scope.checkFilter();
+              }
+              scope.stopFilterEditing(jqInput);
+
+              scope.columnFilter[scope.colorder[column.index()] - 1] = '';
+            }
+          }
+        };
+        scope.stopFilterEditing = function (jqInputEl) {
+          jqInputEl.css('width', '');
+          jqInputEl.parent().removeClass('editing');
+          jqInputEl.parent().siblings('.hidden-filter').addClass('hidden-filter-input');
+        };
+        scope.onFilterBlur = function (jqInputEl) {
+          scope.stopFilterEditing(jqInputEl);
+          setTimeout(function () {
+            var filtersInFocus = $(scope.table.table().container()).find('.filter-input:focus');
+            if (!filtersInFocus.length) {
+              //focus wasn't moved to another filter input
+              scope.checkFilter();
+            }
+          }, 0);
+        };
+        scope.checkFilter = function () {
+          var hasNotEmptyFilter = false;
+
+          $(scope.table.table().container()).find('.filter-input').each(function(i, filterInput){
+            if(!_.isEmpty(filterInput.value)){
+              hasNotEmptyFilter = true;
+            }
+          });
+
+          if(!hasNotEmptyFilter){
+            scope.hideFilter();
+          }
+        };
+        scope.onFilterEditing = function(jqInputEl, column){
+          scope.updateFilterWidth(jqInputEl, column);
+          jqInputEl.parent().addClass('editing');
+          jqInputEl.parent().siblings('.hidden-filter').removeClass('hidden-filter-input');
+        };
+        scope.updateFilterWidth = function(jqInput, column){
+          var iconsWidth = 30;
+          var padding = 15;
+          var textWidth = jqInput.parent().siblings('.hidden-length').text(jqInput.val()).width() + iconsWidth;
+          var headerWidth = $(column.header()).width();
+          if(textWidth > headerWidth && jqInput.parent().hasClass('editing')){
+            jqInput.css('width', textWidth + padding);
+          } else {
+            jqInput.css('width', '');
+          }
+        };
+
+        scope.onKeyAction = function (column, onKeyEvent) {
+          var key = onKeyEvent.keyCode;
+          var charCode = String.fromCharCode(key);
+          if (charCode) {
+            switch(charCode.toUpperCase()){
+              case 'B':
+                scope.showHideBars(scope.colorder[column]);
+                break;
+              case 'H':
+                scope.showHideHeatmap(scope.colorder[column]);
+                break;
+            }
+            if (key >= 48 && key <= 57){ //numbers 1..9
+              if(onKeyEvent.shiftKey){
+                scope.changePrecision(scope.colorder[column] - 1, parseInt(charCode));
+              }else{
+                scope.changeAllPrecision(parseInt(charCode));
+              }
+            }
+          }
+        };
+
+        scope.getColumnIndexByCellNode = function (cellNode) {
+          return findDTColumnIndex(scope.table.settings()[0], cellNode);
+        };
+        scope.removeOnKeyListeners = function () {
+          for (var f in scope.onKeyListeners) {
+            if (scope.onKeyListeners.hasOwnProperty(f)) {
+              $(document).off("keydown.bko-datatable", scope.onKeyListeners[f]);
+            }
+          }
+          scope.onKeyListeners = {};//map: col index -> listener function
         };
 
         scope.doCreateTable = function(model) {
@@ -1607,8 +1862,8 @@
             if (scope.getCellSho) {
               col.visible = scope.getCellSho[i];
             }
-            if (!_.isEmpty(scope.columnWidth[i])) {
-              col.sWidth = scope.columnWidth[i];
+            if (scope.columnWidth) {
+              col.sWidth = scope.columnWidth[i] || 0;
             }
             cols.push(col);
           }
@@ -1623,7 +1878,7 @@
             'stateSave': true,
             'processing': true,
             'autoWidth': true,
-            'order': [[0, 'asc']],
+            'order': scope.tableOrder ? _.cloneDeep(scope.tableOrder) : [[0, 'asc']],
             'scrollX': '10%',
             'searching': true,
             'deferRender': true,
@@ -1766,6 +2021,7 @@
             $(id + ' tbody').off('click');
             */
             $(id + ' tbody').on('dblclick', 'td', function(e) {
+              if (!scope.table) { return; }
               var rowIdx;
               var colIdx;
               var iPos = scope.table.cell(this).index();
@@ -1816,6 +2072,7 @@
             });
 
             $(id + ' tbody').on('click', 'tr', function(event) {
+              if (!scope.table) { return; }
               var dtTR = scope.getDtRow(this);
               var iPos = scope.table.row(dtTR).index();
               if (scope.selected[iPos]) {
@@ -1831,12 +2088,14 @@
 
             $(id + ' tbody')
               .on('mouseenter.bko-dt-highlight', 'tr', function () {
+                if (!scope.table) { return; }
                 var dtTR = scope.getDtRow(this);
                 var rowIndex = scope.table.row(dtTR).index();
                 $(dtTR).addClass('hover');
                 scope.highlightFixedColumnRow (rowIndex, true);
               })
               .on('mouseleave.bko-dt-highlight', 'tr', function () {
+                if (!scope.table) { return; }
                 var dtTR = scope.getDtRow(this);
                 var rowIndex = scope.table.row(dtTR).index();
                 $(dtTR).removeClass('hover');
@@ -1850,249 +2109,11 @@
               }
             });
 
-            scope.showHideBars = function (column) {
-              scope.barsOnColumn[column] = !!!scope.barsOnColumn[column];
-              _.defer(function () { scope.table.draw(false);  });
-            };
-            scope.showHideHeatmap = function (column) {
-              scope.heatmapOnColumn[column] = !!!scope.heatmapOnColumn[column];
-              _.defer(function () { scope.table.draw(false);  });
-            };
-            scope.columnHasFormat = function (column, format) {
-              for (var i = 0; i < scope.types.length; i++) {
-                if(scope.types[column] === format){
-                  return true;
-                }
-              }
-              return false;
-            };
-            scope.changePrecision = function (column, precision) {
-              if(scope.columnHasFormat(column, 'double')){
-                scope.actualtype[column] = scope.getActualTypeByPrecision(precision);
-                scope.applyChanges();
-              }
-            };
-            scope.changeAllPrecision = function (precision) {
-              for (var i = 0; i < scope.columns.length - 1; i++) {
-                if(scope.columnHasFormat(i, 'double')){
-                  scope.actualtype[i] = scope.getActualTypeByPrecision(precision);
-                }
-              }
-              scope.applyChanges();
-            };
-
-            scope.doShowFilter = function (column, isSearch) {
-              var jqContainer = $(scope.table.table().container());
-              var filterInput = jqContainer.find('.filter-input');
-              var filterIcon = jqContainer.find('.filter-icon');
-              if (isSearch) {
-                filterInput.addClass('search-active');
-                filterInput.attr('title', 'search this column for a substring');
-                filterIcon.removeClass('fa-filter');
-                filterIcon.addClass('fa-search');
-              } else {
-                filterInput.removeClass('search-active');
-                filterInput.attr('title', 'filter with an expression of $ for this column');
-                filterIcon.removeClass('fa-search');
-                filterIcon.addClass('fa-filter');
-              }
-              if (scope.showFilter) {
-                if(scope.columnSearchActive !== isSearch){
-                  scope.clearFilters();
-                  scope.columnFilter = [];
-                }
-              } else {
-                scope.showFilter = true;
-              }
-              scope.columnSearchActive = isSearch;
-
-              var filterInputSelector = '.filterRow .filter-input';
-              jqContainer.off('keyup.column-filter change.column-filter');
-              jqContainer.on('keyup.column-filter change.column-filter', filterInputSelector,
-                scope.columnSearchActive ? scope.columnFilterFn : $.debounce(500, scope.columnFilterFn));
-
-              scope.$apply();
-              if (scope.fixcols) {
-                scope.fixcols.fnRedrawLayout();
-              }
-              if(column){
-                scope.getColumnFilter(column).focus();
-              }
-            };
-
-            scope.hideFilter = function () {
-              scope.clearFilters();
-              scope.showFilter = false;
-              if (!(scope.$$phase || $rootScope.$$phase)) {
-                scope.$apply();
-              }
-              setTimeout(function(){
-                if (scope.fixcols){
-                  scope.fixcols.fnRedrawLayout();
-                }
-              }, 0);
-            };
-
-            scope.clearFilters = function () {
-              var hasNotEmptyFilter = false;
-              scope.table.columns().every(function () {
-                var column = this;
-                var jqInput = scope.getColumnFilter(column);
-                var filterValue = jqInput.val();
-                if (!_.isEmpty(filterValue)) {
-                  hasNotEmptyFilter = true;
-                  jqInput.val('');
-                  column.search('');
-                }
-              });
-              if (hasNotEmptyFilter) {
-                scope.table.draw();
-              }
-              scope.columnFilter = [];
-            };
-
-            scope.clearFilter = function (column, jqInput) {
-              if (column) {
-                var filterValue = jqInput.val();
-                if (!_.isEmpty(filterValue)) {
-                  jqInput.val('');
-                  if (scope.columnSearchActive) {
-                    column.search('');
-                  }
-                  column.draw();
-                  if (!jqInput.is(':focus')) {
-                    scope.checkFilter();
-                  }
-                  scope.stopFilterEditing(jqInput);
-
-                  scope.columnFilter[scope.colorder[column.index()] - 1] = '';
-                }
-              }
-            };
-
-            scope.stopFilterEditing = function (jqInputEl) {
-              jqInputEl.css('width', '');
-              jqInputEl.parent().removeClass('editing');
-              jqInputEl.parent().siblings('.hidden-filter').addClass('hidden-filter-input');
-            };
-
-            scope.onFilterBlur = function (jqInputEl) {
-              scope.stopFilterEditing(jqInputEl);
-              setTimeout(function () {
-                var filtersInFocus = $(scope.table.table().container()).find('.filter-input:focus');
-                if (!filtersInFocus.length) {
-                  //focus wasn't moved to another filter input
-                  scope.checkFilter();
-                }
-              }, 0);
-            };
-
-            scope.checkFilter = function () {
-              var hasNotEmptyFilter = false;
-
-              $(scope.table.table().container()).find('.filter-input').each(function(i, filterInput){
-                if(!_.isEmpty(filterInput.value)){
-                  hasNotEmptyFilter = true;
-                }
-              });
-
-              if(!hasNotEmptyFilter){
-                scope.hideFilter();
-              }
-            };
-
-            scope.onFilterEditing = function(jqInputEl, column){
-              scope.updateFilterWidth(jqInputEl, column);
-              jqInputEl.parent().addClass('editing');
-              jqInputEl.parent().siblings('.hidden-filter').removeClass('hidden-filter-input');
-            };
-
-            scope.updateFilterWidth = function(jqInput, column){
-              var iconsWidth = 30;
-              var padding = 15;
-              var textWidth = jqInput.parent().siblings('.hidden-length').text(jqInput.val()).width() + iconsWidth;
-              var headerWidth = $(column.header()).width();
-              if(textWidth > headerWidth && jqInput.parent().hasClass('editing')){
-                jqInput.css('width', textWidth + padding);
-              } else {
-                jqInput.css('width', '');
-              }
-            };
-
-            scope.onKeyAction = function (column, onKeyEvent) {
-              var key = onKeyEvent.keyCode;
-              var charCode = String.fromCharCode(key);
-              if (charCode) {
-                switch(charCode.toUpperCase()){
-                  case 'B':
-                    scope.showHideBars(scope.colorder[column]);
-                    break;
-                  case 'H':
-                    scope.showHideHeatmap(scope.colorder[column]);
-                    break;
-                }
-                if (key >= 48 && key <= 57){ //numbers 1..9
-                  if(onKeyEvent.shiftKey){
-                    scope.changePrecision(scope.colorder[column] - 1, parseInt(charCode));
-                  }else{
-                    scope.changeAllPrecision(parseInt(charCode));
-                  }
-                }
-              }
-            };
-
-            scope.getColumnIndexByCellNode = function (cellNode) {
-              return findDTColumnIndex(scope.table.settings()[0], cellNode);
-            };
-
-            scope.removeOnKeyListeners = function () {
-              for (var f in scope.onKeyListeners) {
-                if (scope.onKeyListeners.hasOwnProperty(f)) {
-                  $(document).off("keydown.bko-datatable", scope.onKeyListeners[f]);
-                }
-              }
-              scope.onKeyListeners = {};//map: col index -> listener function
-            };
-
             scope.removeOnKeyListeners();
-
-            scope.addInteractionListeners = function () {
-              $(scope.table.table().container())
-                .on("mouseenter.bko-dt-interaction", 'td, th', function (e) {
-                  if (scope.tableHasFocus()) {
-                    return; //ignore mouse over for key events if there is focus on table's cell
-                  }
-                  var column = scope.getColumnIndexByCellNode(this);
-                  if (!scope.onKeyListeners[column]) {
-                    scope.onKeyListeners[column] = function (onKeyEvent) {
-                      if (scope.tableHasFocus()) {
-                        return; //ignore mouse over for key events if there is focus on table's cell
-                      }
-                      if (!onKeyEvent.isDefaultPrevented()) {
-                        scope.onKeyAction(column, onKeyEvent);
-                      }
-                    };
-                    $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
-                  }
-                })
-                .on("mouseleave.bko-dt-interaction", 'td, th', function (e) {
-                  var column = scope.getColumnIndexByCellNode(this);
-                  var listener = scope.onKeyListeners[column];
-                  if(listener) {
-                    delete scope.onKeyListeners[column];
-                    $(document).off("keydown.bko-datatable", listener);
-                  }
-                });
-            };
-
-            scope.removeInteractionListeners = function () {
-              $(scope.table.table().container()).off('mouseenter.bko-dt-interaction', 'td, th');
-              $(scope.table.table().container()).off('mouseleave.bko-dt-interaction', 'td, th');
-            };
 
             if (scope.update) {
               scope.addInteractionListeners();
-            };
+            }
 
             scope.table
               .on('key', function (e, datatable, key, cell, originalEvent) {
@@ -2253,6 +2274,9 @@
             }
             if (scope.columnWidth !== undefined) {
               state.columnWidth = scope.columnWidth;
+            }
+            if (scope.tableOrder !== undefined) {
+              state.tableOrder = scope.tableOrder.slice(0);
             }
 
             scope.model.setDumpState({datatablestate: state});

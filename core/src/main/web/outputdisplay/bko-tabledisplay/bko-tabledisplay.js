@@ -1099,11 +1099,6 @@
             scope.selected = selected;
           }
         };
-        scope.updateResizeHandleWidth = function () {
-          if (scope.jqTableResizeHandle) {
-            scope.jqTableResizeHandle.css('max-width', $('#' + scope.id).width());
-          }
-        };
         //jscs:disable
         scope.update_size = function() {
         //jscs:enable
@@ -1118,7 +1113,6 @@
             }
             pp.width(tableWidth);
           }
-          scope.updateResizeHandleWidth();
           if (scope.fixcols) { //do not need data update
             scope.fixcols._fnColCalc();
             scope.fixcols._fnGridLayout()
@@ -2033,7 +2027,6 @@
               })
               .on('column-visibility.dt', function (e, settings, column, state) {
                 scope.getCellSho[scope.colorder[column] - 1] = state;
-                scope.updateResizeHandleWidth();
               });
 
             function updateSize() {
@@ -2071,7 +2064,7 @@
             $(leftFixColumn.nodes()).addClass('left-fix-col-separator');
             leftFixColumnHeader.addClass('left-fix-col-separator');
 
-            scope.fixcols = new $ .fn.dataTable.FixedColumns($(id), inits);
+            scope.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
             scope.update_size();
 
             setTimeout(function(){
@@ -2094,23 +2087,6 @@
                 scope.doShowFilter(null, scope.columnSearchActive);
               }
             }, 0);
-
-            if (!scope.pagination.use) {
-              var table = $('#' + scope.id);
-              var scrollWrapper = table.closest('.DTFC_ScrollWrapper');
-              var scrollBody = table.parent();
-              var scrollHeader = table.closest('.dataTables_scrollHead');
-              scope.jqTableResizeHandle = scrollWrapper.resizable({
-                handles: 's',
-                resize: function (event, ui) {
-                  var newHeight = ui.size.height;
-                  var headerHeight = scrollHeader.height();
-                  scrollBody.css('max-height', newHeight - headerHeight);
-                }
-              }).find('.ui-resizable-handle');
-              scope.jqTableResizeHandle.append('<span class="glyphicon glyphicon-resize-vertical"></span>');
-              scope.updateResizeHandleWidth();
-            }
 
           }, 0);
         };

@@ -401,7 +401,7 @@ var BeakerPageObject = function() {
       .thenCatch(function() {
         return false;
       });
-    }, 10000);
+    }, 100000);
   };
 
   this.waitUntilLoadingIndicator = function() {
@@ -588,6 +588,10 @@ var BeakerPageObject = function() {
 
   this.checkDataTableHead = function(codeCellOutputIdx, headLabels){
     expect(this.getDataTablesScrollHead(codeCellOutputIdx).getText()).toBe(headLabels);
+  }
+
+  this.getDataTablesTHeadByIdCell = function(idCell){
+    return this.getDataTablesScrollHeadByIdCell(idCell).all(By.css('thead > tr'));
   }
 
   this.checkDataTableHeadByIdCell = function(idCell, headLabels){

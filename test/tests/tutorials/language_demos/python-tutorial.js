@@ -25,7 +25,7 @@ describe('Python Tutorial', function () {
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fipython-examples.bkr&readOnly=true").then(done);
 
-        beakerPO.waitUntilLoadingCellOutput();
+        beakerPO.waitUntilLoadingFinished();
     });
 
     it('IPython Examples', function () {
@@ -38,11 +38,23 @@ describe('Python Tutorial', function () {
         idCell = "codeqPMAfv";
         beakerPO.scrollToCodeCellOutputByIdCell(idCell);
         beakerPO.checkDtContainerByIdCell(idCell);
-        beakerPO.checkDataTableHeadByIdCell(idCell, 'Index 3 mo\n6 mo\n1 yr\n2 yr\n3 yr\n5 yr\n7 yr\n10 yr\n30 yr');
+        var arrStrHead = beakerPO.getDataTablesTHeadByIdCell(idCell).get(0).all(by.css('th'));
+        expect(arrStrHead.count()).toBe(10);
+        beakerPO.checkSubString(arrStrHead.get(0), 'Index', 0, 5);
+        beakerPO.checkSubString(arrStrHead.get(1), '3 mo', 0, 4);
+        beakerPO.checkSubString(arrStrHead.get(2), '6 mo', 0, 4);
+        beakerPO.checkSubString(arrStrHead.get(3), '1 yr', 0, 4);
+        beakerPO.checkSubString(arrStrHead.get(4), '2 yr', 0, 4);
+        beakerPO.checkSubString(arrStrHead.get(5), '3 yr', 0, 4);
+        beakerPO.checkSubString(arrStrHead.get(6), '5 yr', 0, 4);
+        beakerPO.checkSubString(arrStrHead.get(7), '7 yr', 0, 4);
+        beakerPO.checkSubString(arrStrHead.get(8), '10 yr', 0, 5);
+        beakerPO.checkSubString(arrStrHead.get(9), '30 yr', 0, 5);
 
         var tBody = beakerPO.getDataTablesTBodyByIdCell(idCell);
         expect(tBody.count()).toBe(5);
         var arrStr = tBody.get(0).all(by.css('td'));
+        expect(arrStr.count()).toBe(10);
         beakerPO.checkSubString(arrStr.get(0), '19900130', 0, 8);
         beakerPO.checkSubString(arrStr.get(1), '7.898', 0, 5);
         beakerPO.checkSubString(arrStr.get(2), '7.956', 0, 5);

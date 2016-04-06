@@ -26,19 +26,22 @@ import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
-public class ProxyWebSocket extends WebSocketAdapter {
+class ProxyWebSocket extends WebSocketAdapter {
 
   private static final int INTERNAL_SERVER_ERROR_STATUSCODE = 1011;
-  private final Object remoteSessionMonitor = new Object();
+  private static final int REMOTE_CONNECTION_WAIT_SECONDS = 30;
 
+  private final CountDownLatch remoteSessionSync = new CountDownLatch(1);
   private Session clientSession;
   private Session remoteSession;
   private ServletUpgradeRequest request;
   private RulesHolder rulesHolder;
   private String authString;
 
-  public ProxyWebSocket(ServletUpgradeRequest request, RulesHolder rulesHolder, String authString) {
+  ProxyWebSocket(ServletUpgradeRequest request, RulesHolder rulesHolder, String authString) {
     this.request = request;
     this.rulesHolder = rulesHolder;
     this.authString = authString;
@@ -93,27 +96,22 @@ public class ProxyWebSocket extends WebSocketAdapter {
   }
 
   private Session getRemoteSession() {
-    synchronized (remoteSessionMonitor) {
-      while(remoteSession == null) {
-        try {
-          remoteSessionMonitor.wait(1000);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-      }
+    try {
+      remoteSessionSync.await(REMOTE_CONNECTION_WAIT_SECONDS, TimeUnit.SECONDS);
       return remoteSession;
+    } catch (InterruptedException e) {
+      clientSession.close(INTERNAL_SERVER_ERROR_STATUSCODE, e.toString());
+      throw new RuntimeException("Failed to acquire remote host websocket connection", e);
     }
   }
 
-  class RemoteWebSocket extends WebSocketAdapter {
+  private class RemoteWebSocket extends WebSocketAdapter {
 
     @Override
     public void onWebSocketConnect(Session sess) {
       super.onWebSocketConnect(sess);
-      synchronized (remoteSessionMonitor) {
-        remoteSession = sess;
-        remoteSessionMonitor.notifyAll();
-      }
+      remoteSession = sess;
+      remoteSessionSync.countDown();
     }
 
     @Override

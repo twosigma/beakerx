@@ -18,26 +18,34 @@ package com.twosigma.beaker.shared.servlet.rules;
 import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
 import com.twosigma.beaker.shared.servlet.rules.util.Replacement;
 
+import java.util.List;
+
 import static java.lang.String.valueOf;
 
 public class PluginProxyRule extends ProxyRuleImpl {
   private BeakerProxyServlet.PluginConfig pluginConfig;
-  private String pathRegex;
+  private List<String> pathRegexes;
 
   public PluginProxyRule(Replacement... replacements) {
     this(null, replacements);
   }
 
-  public PluginProxyRule(String pathRegex, Replacement... replacements) {
+  public PluginProxyRule(List<String> pathRegexes, Replacement... replacements) {
     super(replacements);
-    this.pathRegex = pathRegex;
+    this.pathRegexes = pathRegexes;
   }
 
   @Override
   public boolean satisfy(String path) {
-    return pathRegex == null
-        ? super.satisfy(path)
-        : path.matches(pathRegex);
+    if (pathRegexes != null) {
+      for (String pathRegex : pathRegexes) {
+        if (path.matches(pathRegex)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return super.satisfy(path);
   }
 
   @Override

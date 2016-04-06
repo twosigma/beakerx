@@ -62,6 +62,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
+import static java.util.Collections.singletonList;
+
 
 /**
  * This is the service that locates a plugin service. And a service will be started if the target
@@ -514,7 +516,10 @@ public class PluginServiceLocatorRest {
   private ArrayList<PluginProxyRule> getPluginSpecificRules(String nginxRules) {
     final ArrayList<PluginProxyRule> proxyRules = new ArrayList<>();
     if (nginxRules.startsWith("ipython")) {
-      proxyRules.add(new PluginProxyRule("(.*)\\/api\\/((sessions)|(kernels\\/kill)|(kernelspecs))\\/",
+      proxyRules.add(new PluginProxyRule(Arrays.asList(
+          "(.*)\\/api\\/((sessions)|(kernels\\/kill)|(kernels/[0-9a-f-]+/interrupt)|(kernelspecs))\\/",
+          "(.*)/api/kernels/[0-9a-f-]+/((interrupt)|(restart))"
+      ),
           new Replacement("(.+)\\/sessions\\/$", "$1/sessions", true),
           new Replacement("(.+)/api/kernels/kill/$", "$1/api/kernels/", true)
       ) {
@@ -523,7 +528,7 @@ public class PluginServiceLocatorRest {
           rewriteHeader(proxyRequest, "Origin", "http://127.0.0.1:" + getPluginConfig().getPort());
         }
       });
-      proxyRules.add(new PluginProxyRule("(.*)/api/kernels/[0-9a-f-]+/.*",    // websockets rule
+      proxyRules.add(new PluginProxyRule(singletonList("(.*)/api/kernels/[0-9a-f-]+/.*"),    // websockets rule
           new Replacement("\\/(kernels\\/[0-9a-f-]+\\/(.*))", "/$1", true),
           new Replacement(":\\d{4}/", ":%(port)s/", true)
       ));

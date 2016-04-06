@@ -172,9 +172,13 @@
         gotoControlPanel: function() {
           return $location.path("/control").search({});
         },
-        openNotebook: function(notebookUri, uriType, readOnly, format) {
+        openNotebook: function(notebookUri, uriType, readOnly, format, newWindow) {
           if (!notebookUri) {
             return;
+          }
+          if (newWindow === true){
+            bkHelper.openNotebookInNewWindow(notebookUri, uriType, readOnly, format);
+            return null;
           }
 
           var routeParams = {

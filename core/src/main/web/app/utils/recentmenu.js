@@ -63,8 +63,8 @@
                   var item = angular.fromJson(items[i]);
                   _recentMenu.push({
                     name: getShortName(item.uri),
-                    action: function() {
-                      _pathOpener.open(item.uri, item.type, item.readOnly, item.format);
+                    action: function(newWindow) {
+                      _pathOpener.open(item.uri, item.type, item.readOnly, item.format, newWindow);
                     },
                     tooltip: item.uri
                   });

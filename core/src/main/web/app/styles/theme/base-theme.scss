@@ -414,6 +414,8 @@
     background-image: url("../../images/sort_both_gray.png");
   }
 
+
+
   table.dataTable.display tbody tr.odd > .sorting_1,
   table.dataTable.order-column.stripe tbody tr.odd > .sorting_1 {
     background-color: $main-theme-panel-background;
@@ -461,6 +463,15 @@
   table.dataTable thead {
     background-color: $std-btn-bg;
   }
+
+
+  table.dataTable.hover tbody tr:hover,
+  table.dataTable.display tbody tr:hover,
+  table.dataTable.hover tbody tr.hover,
+  table.dataTable.display tbody tr.hover{
+    background-color: $std-hover-bg;
+  }
+
 
   //dropdown menu
 

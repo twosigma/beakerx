@@ -90,7 +90,7 @@
         $scope.isAllowAnonymousTracking = false;
         if ((window.beaker === undefined || window.beakerRegister.isEmbedded === undefined) && bkTrack.isNeedPermission()) {
           bkUtils.getBeakerPreference('allow-anonymous-usage-tracking').then(function(allow) {
-            switch (allow.data) {
+            switch (allow) {
               case 'true':
                 $scope.isAllowAnonymousTracking = true;
                 break;

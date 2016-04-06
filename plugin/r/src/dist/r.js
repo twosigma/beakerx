@@ -148,15 +148,16 @@ define(function(require, exports, module) {
     resetEnvironment: function () {
       var deferred = bkHelper.newDeferred();
       var self = this;
-      $.ajax({
-        type: "POST",
-        datatype: "json",
+      bkHelper.asyncCallInLanguageManager({
         url: bkHelper.serverUrl(serviceBase + "/rest/rsh/resetEnvironment"),
-        data: {shellID: self.settings.shellID}
-      }).done(function () {
-        deferred.resolve();
-      }).fail(function (err) {
-        deferred.reject(err);
+        data: {shellID: self.settings.shellID},
+        pluginName: PLUGIN_NAME,
+        onSuccess: function (data) {
+          deferred.resolve();
+        },
+        onFail: function (err) {
+          deferred.reject(err);
+        }
       });
       return deferred.promise;
     },

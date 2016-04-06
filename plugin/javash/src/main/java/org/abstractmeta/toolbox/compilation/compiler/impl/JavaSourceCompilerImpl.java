@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -193,8 +194,13 @@ public class JavaSourceCompilerImpl implements JavaSourceCompiler {
         return diagnosticBuilder.toString();
     }
 
-    private long getDiagnosticCountByType(DiagnosticCollector<JavaFileObject> diagnostics, Diagnostic.Kind kind) {
-        return diagnostics.getDiagnostics().stream().filter(d -> d.getKind().equals(kind)).count();
+    private long getDiagnosticCountByType(DiagnosticCollector<JavaFileObject> diagnostics, final Diagnostic.Kind kind) {
+        return diagnostics.getDiagnostics().stream().filter(new Predicate<Diagnostic<? extends JavaFileObject>>() {
+            @Override
+            public boolean test(Diagnostic<? extends JavaFileObject> d) {
+                return d.getKind().equals(kind);
+            }
+        }).count();
     }
 
     public void persistCompiledClasses(CompilationUnit compilationUnit) {

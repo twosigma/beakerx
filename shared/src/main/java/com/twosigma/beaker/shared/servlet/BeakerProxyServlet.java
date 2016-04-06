@@ -21,8 +21,11 @@ import com.twosigma.beaker.shared.servlet.rules.EraseHashAndBeakerRule;
 import com.twosigma.beaker.shared.servlet.rules.EraseHashAndPluginNameRule;
 import com.twosigma.beaker.shared.servlet.rules.MainPageRule;
 import com.twosigma.beaker.shared.servlet.rules.PluginProxyRule;
+import com.twosigma.beaker.shared.servlet.rules.ProxyRuleImpl;
 import com.twosigma.beaker.shared.servlet.rules.RootSlashRule;
 import com.twosigma.beaker.shared.servlet.rules.SlashBeakerRule;
+import com.twosigma.beaker.shared.servlet.rules.util.Replacement;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.http.HttpField;
@@ -38,6 +41,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -99,6 +103,9 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
         return;
       }
     }
+    if(checkCommonRedirects(request, response)) {
+      return;
+    }
     super.service(request, response);
   }
 
@@ -123,6 +130,16 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   protected String rewriteTarget(final HttpServletRequest request) {
     String result = super.rewriteTarget(request);
     return rulesHolder.rewriteTarget(request, result);
+  }
+
+  private boolean checkCommonRedirects(HttpServletRequest request, HttpServletResponse response) {
+    if (request.getPathInfo().equals("/version")) {
+      response.setHeader("Access-Control-Allow-Origin", "*");
+      response.setHeader("Location", "/" + (StringUtils.isEmpty(this._hash) ? "" : this._hash + "/") + "beaker/rest/util/version");
+      response.setStatus(301);
+      return true;
+    }
+    return false;
   }
 
   private void initWebSockets() throws ServletException {

@@ -31,16 +31,27 @@ public class ProxyRuleImpl implements ProxyRule {
   protected static final String SLASH_BEAKER = SLASH.concat(BEAKER);
 
   private List<Replacement> replacements = Collections.emptyList();
+  private List<String> pathRegexes;
   private boolean finalRule = true;
 
   public ProxyRuleImpl() {
   }
 
-  public ProxyRuleImpl(Replacement... replacements) {
+  public ProxyRuleImpl(List<String> pathRegexes, Replacement... replacements) {
+    this.pathRegexes = pathRegexes;
     this.replacements = asList(replacements);
   }
 
-  public boolean satisfy(final String path) {
+  @Override
+  public boolean satisfy(String path) {
+    if (pathRegexes != null) {
+      for (String pathRegex : pathRegexes) {
+        if (path.matches(pathRegex)) {
+          return true;
+        }
+      }
+      return false;
+    }
     return true;
   }
 

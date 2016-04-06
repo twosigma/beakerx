@@ -24,28 +24,13 @@ import static java.lang.String.valueOf;
 
 public class PluginProxyRule extends ProxyRuleImpl {
   private BeakerProxyServlet.PluginConfig pluginConfig;
-  private List<String> pathRegexes;
 
   public PluginProxyRule(Replacement... replacements) {
     this(null, replacements);
   }
 
   public PluginProxyRule(List<String> pathRegexes, Replacement... replacements) {
-    super(replacements);
-    this.pathRegexes = pathRegexes;
-  }
-
-  @Override
-  public boolean satisfy(String path) {
-    if (pathRegexes != null) {
-      for (String pathRegex : pathRegexes) {
-        if (path.matches(pathRegex)) {
-          return true;
-        }
-      }
-      return false;
-    }
-    return super.satisfy(path);
+    super(pathRegexes, replacements);
   }
 
   @Override

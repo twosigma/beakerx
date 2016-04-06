@@ -33,7 +33,9 @@ import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Constraint;
@@ -125,6 +127,7 @@ public class WebServerModule extends AbstractModule {
         return injector;
       }
     });
+    server.addBean(createErrorHandler());
 
     servletHandler.setSecurityHandler(makeSecurityHandler(webServerConfig.getPassword()));
     servletHandler.addFilter(GuiceFilter.class, "/*", null);
@@ -146,5 +149,11 @@ public class WebServerModule extends AbstractModule {
 
     WebSocketServerContainerInitializer.configureContext(servletHandler);
     return server;
+  }
+
+  private ErrorPageErrorHandler createErrorHandler() {
+    final ErrorPageErrorHandler errorHandler = new ErrorPageErrorHandler();
+    errorHandler.addErrorPage(500, 599, "/static/50x.html");
+    return errorHandler;
   }
 }

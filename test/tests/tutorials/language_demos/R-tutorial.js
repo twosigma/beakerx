@@ -45,8 +45,38 @@ describe('R Tutorial', function () {
 
         idCell = "codezB5I5w";
         beakerPO.checkDtContainerByIdCell(idCell);
-        beakerPO.checkDataTableHeadByIdCell(idCell, 'Index manufacturer\nmodel\ndispl\nyear\ncyl\ntrans\ndrv\ncty\nhwy\nfl');
-        beakerPO.checkDataTableBodyByIdCell(idCell, 25, '1 audi a4 1.8000 1,999 4 auto(l5) f 18 29 p compact');
+        beakerPO.checkDtContainerByIdCell(idCell);
+        var arrStrHead = beakerPO.getDataTablesTHeadByIdCell(idCell).get(0).all(by.css('th'));
+        expect(arrStrHead.count()).toBe(12);
+        beakerPO.checkSubStringIfDisplayed(arrStrHead.get(0), 'Index', 0, 5);
+        beakerPO.checkSubStringIfDisplayed(arrStrHead.get(1), 'manufacturer', 0, 12);
+        beakerPO.checkSubStringIfDisplayed(arrStrHead.get(2), 'model', 0, 5);
+        beakerPO.checkSubStringIfDisplayed(arrStrHead.get(3), 'displ', 0, 5);
+        beakerPO.checkSubStringIfDisplayed(arrStrHead.get(4), 'year', 0, 4);
+        beakerPO.checkSubStringIfDisplayed(arrStrHead.get(5), 'cyl', 0, 3);
+        beakerPO.checkSubStringIfDisplayed(arrStrHead.get(6), 'trans', 0, 5);
+        beakerPO.checkSubStringIfDisplayed(arrStrHead.get(7), 'drv', 0, 3);
+        beakerPO.checkSubStringIfDisplayed(arrStrHead.get(8), 'cty', 0, 3);
+        beakerPO.checkSubStringIfDisplayed(arrStrHead.get(9), 'hwy', 0, 3);
+        beakerPO.checkSubStringIfDisplayed(arrStrHead.get(10), 'f1', 0, 2);
+        beakerPO.checkSubStringIfDisplayed(arrStrHead.get(11), 'class', 0, 5);
+
+        var tBody = beakerPO.getDataTablesTBodyByIdCell(idCell);
+        expect(tBody.count()).toBe(25);
+        var arrStr = tBody.get(0).all(by.css('td'));
+        expect(arrStr.count()).toBe(12);
+        beakerPO.checkSubString(arrStr.get(0), '1', 0, 1);
+        beakerPO.checkSubString(arrStr.get(1), 'audi', 0, 4);
+        beakerPO.checkSubString(arrStr.get(2), 'a4', 0, 2);
+        beakerPO.checkSubString(arrStr.get(3), '1.800', 0, 5);
+        beakerPO.checkSubString(arrStr.get(4), '1,99', 0, 4);
+        beakerPO.checkSubString(arrStr.get(5), '4', 0, 1);
+        beakerPO.checkSubString(arrStr.get(6), 'auto(l5)', 0, 8);
+        beakerPO.checkSubString(arrStr.get(7), 'f', 0, 1);
+        beakerPO.checkSubString(arrStr.get(8), '18', 0, 2);
+        beakerPO.checkSubString(arrStr.get(9), '29', 0, 2);
+        beakerPO.checkSubString(arrStr.get(10), 'p', 0, 1);
+        beakerPO.checkSubString(arrStr.get(11), 'compact', 0, 7);
 
         idCell = "codePI1mwS";
         beakerPO.scrollToCodeCellOutputByIdCell(idCell);

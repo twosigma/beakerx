@@ -153,10 +153,7 @@ define(function(require, exports, module) {
         RCancelFunction();
       }
     },
-    spec: {
-      reset:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
-      killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
-    },
+    spec: {},
     cometdUtil: cometdUtil
   };
   var shellReadyDeferred = bkHelper.newDeferred();

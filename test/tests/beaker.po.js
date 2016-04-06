@@ -401,7 +401,7 @@ var BeakerPageObject = function() {
       .thenCatch(function() {
         return false;
       });
-    }, 10000);
+    }, 100000);
   };
 
   this.waitUntilLoadingIndicator = function() {
@@ -599,6 +599,10 @@ var BeakerPageObject = function() {
     expect(this.getDataTablesScrollHead(codeCellOutputIdx).getText()).toBe(headLabels);
   }
 
+  this.getDataTablesTHeadByIdCell = function(idCell){
+    return this.getDataTablesScrollHeadByIdCell(idCell).all(By.css('thead > tr'));
+  }
+
   this.checkDataTableHeadByIdCell = function(idCell, headLabels){
     expect(this.getDataTablesScrollHeadByIdCell(idCell).getText()).toBe(headLabels);
   }
@@ -629,6 +633,21 @@ var BeakerPageObject = function() {
         .then(function(value){
           expect(value.substring(inxStart, lenght)).toBe(outputText);
         });
+  }
+
+  this.checkSubString = function(strPromise, toBeStr, indxStart, lenght){
+    strPromise.getText().then(function(value){
+      expect(value.substring(indxStart, lenght)).toBe(toBeStr);
+    });
+  }
+
+  this.checkSubStringIfDisplayed = function(strPromise, toBeStr, indxStart, lenght){
+    var self = this;
+    strPromise.isDisplayed().then(function(isVisible){
+      if(isVisible){
+        self.checkSubString(strPromise, toBeStr, indxStart, lenght);
+      }
+    });
   }
 
   this.checkImageByIdCell = function(idCell){

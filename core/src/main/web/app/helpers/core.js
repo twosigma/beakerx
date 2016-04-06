@@ -75,6 +75,16 @@
       newStrategy.manualEntry = function() {
         newStrategy.manualName = this.input ? this.input.split('/').pop() : "";
       };
+      newStrategy.checkCallback = function(result){
+        if (result && result.indexOf('.bkr') === -1){
+          $rootScope.$broadcast("SELECT_DIR",{
+            find_in_home_dir: true,
+            path: result
+          });
+          return false;
+        }
+        return true;
+      };
       newStrategy.treeViewfs = { // file service
         getChildren: function(basePath, openFolders) {
           var self = this;
@@ -719,7 +729,7 @@
             "Ctrl-Alt-Down": moveCellDown,
             "Cmd-Alt-Down": moveCellDown,
             "Ctrl-Alt-D": deleteCell,
-            "Cmd-Alt-D": deleteCell,
+            "Cmd-Alt-Backspace": deleteCell,
             "Tab": tab,
             "Backspace": backspace,
             "Ctrl-/": "toggleComment",
@@ -985,6 +995,7 @@
       getFileSystemFileChooserStrategy: function() {
         return new FileSystemFileChooserStrategy();
       },
+
       showFullModalDialog: function(callback, template, controller, dscope) {
         var options = {
           windowClass: 'beaker-sandbox',
@@ -1061,30 +1072,24 @@
       }
     };
 
-    bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
-      preference: 'fs-order-by'
-    }).success(function (fs_order_by) {
+    bkUtils.getBeakerPreference('fs-order-by').then(function (fs_order_by) {
       bkCoreManager._prefs.fs_order_by = !fs_order_by || fs_order_by.length === 0 ? 'uri' : fs_order_by;
-    }).error(function (response) {
+    }).catch(function (response) {
       console.log(response);
       bkCoreManager._prefs.fs_order_by = 'uri';
     });
 
-    bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
-      preference: 'fs-reverse'
-    }).success(function (fs_reverse) {
+    bkUtils.getBeakerPreference('fs-reverse').then(function (fs_reverse) {
       bkCoreManager._prefs.fs_reverse = !fs_reverse || fs_reverse.length === 0 ? false : fs_reverse;
-    }).error(function (response) {
+    }).catch(function (response) {
       console.log(response);
       bkCoreManager._prefs.fs_reverse = false;
     });
 
-    bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
-      preference: 'theme'
-    }).success(function (theme) {
+    bkUtils.getBeakerPreference('theme').then(function (theme) {
       bkCoreManager._prefs.setTheme(_.contains(_.values(GLOBALS.THEMES), theme) ? theme : GLOBALS.THEMES.DEFAULT);
       $rootScope.$broadcast('beaker.theme.set', theme);
-    }).error(function (response) {
+    }).catch(function (response) {
       console.log(response);
       bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);
     });
@@ -1111,12 +1116,17 @@
     };
     $scope.isWindows = function() {
       return bkUtils.isWindows;
-    }
+    };
     $rootScope.$on('modal.submit', function() {
       $scope.close($scope.getStrategy().getResult());
     });
-    $scope.close = function(result) {
-      $uibModalInstance.close(result);
+    $scope.close = function (result) {
+      if (!$scope.getStrategy || !$scope.getStrategy() || !$scope.getStrategy().checkCallback) {
+        $uibModalInstance.close(result);
+      }else {
+        if ($scope.getStrategy().checkCallback(result))
+          $uibModalInstance.close(result);
+      }
     };
   });
 

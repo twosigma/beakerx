@@ -403,6 +403,61 @@
             },
             "evaluatorReader": true,
             "lineCount": 22
+        },
+        {
+            "id": "section8gkn4D",
+            "type": "section",
+            "title": "Interfaces are Supported",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codep7qbeI",
+            "type": "code",
+            "evaluator": "Java",
+            "input": {
+                "body": [
+                    "package test.beaker;",
+                    "interface DateGetter {",
+                    "   public String getDateTxt();",
+                    "}"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "test.beaker.DateGetter",
+                "selectedType": "Text",
+                "pluginName": "Java",
+                "shellId": "98b2af38-7ec4-4749-91fb-7e4eaccc1817",
+                "elapsedTime": 603,
+                "height": 36
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
+        },
+        {
+            "id": "code6YBzOU",
+            "type": "code",
+            "evaluator": "Java",
+            "input": {
+                "body": [
+                    "package test.beaker;",
+                    "public class DG2 extends BeakerTest implements DateGetter {",
+                    "}"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "test.beaker.DG2",
+                "selectedType": "Text",
+                "pluginName": "Java",
+                "shellId": "98b2af38-7ec4-4749-91fb-7e4eaccc1817",
+                "elapsedTime": 598,
+                "height": 36
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
         }
     ],
     "namespace": {

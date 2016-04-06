@@ -32,7 +32,11 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.FileSystems;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
@@ -312,8 +316,8 @@ public class JavaEvaluator {
             ci = skipBlankLines(codev, ci + 1);
             m = p.matcher(codev[ci]);
           }
-        
-          p = Pattern.compile("(?:^|.*\\s+)class\\s+([a-zA-Z]\\w*).*");
+
+          p = Pattern.compile("(?:^|.*\\s+)(?:(?:class)|(?:interface))\\s+([a-zA-Z]\\w*).*");
           m = p.matcher(codev[ci]);
           if (m.matches()) {
             // this is a class definition

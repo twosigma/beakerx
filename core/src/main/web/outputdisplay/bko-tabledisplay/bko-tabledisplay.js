@@ -276,6 +276,9 @@
     function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS, $rootScope, $timeout) {
   //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
+    var ROW_HEIGHT = 27;
+    var ROW_HEIGHT_ADVANCED_MODE = 22;
+    var MIN_ROWS_FOR_PAGING = 25;
     return {
       template: JST['bko-tabledisplay/output-table'],
       controller: function($scope, $uibModal) {
@@ -894,6 +897,7 @@
             scope.table.off('key');
             scope.table.off('column-visibility.dt');
             scope.removeFilterListeners();
+            $(scope.table.table().container()).find('.dataTables_scrollHead').off('scroll');
             delete scope.table;
             delete scope.colreorg;
             if (scope.clipclient !== undefined) {
@@ -1106,8 +1110,13 @@
           var me = $('#' + scope.id);
           // this is dataTables_scrollBody
           var pp = me.parent();
-          if (pp.width() > me.width()) {
-            pp.width(me.width());
+          var tableWidth = me.width();
+          var scrollWidth = scope.table && !scope.table.settings()[0].oBrowser.bScrollOversize ? 16 : 0;
+          if (pp.width() > tableWidth + scrollWidth) {
+            if(pp.height() < me.height()){
+              tableWidth += scrollWidth;
+            }
+            pp.width(tableWidth);
           }
           scope.updateResizeHandleWidth();
           if (scope.fixcols) { //do not need data update
@@ -1584,25 +1593,26 @@
               'tableWidthFixed': false,
               'resizeCallback': function(column){
                 scope.columnWidth[scope.colorder[column.idx] - 1] = column.sWidthOrig;
-              }
+              },
+              'exclude': _.range(scope.columns.length - scope.pagination.fixRight, scope.columns.length)
             }
           };
 
           var domCommon = '<"bko-table"Z' + (scope.data.length > 500 ? 'r' : '') + 't';
+          var rowHeight = bkHelper.getBkNotebookViewModel().isAdvancedMode() ? ROW_HEIGHT_ADVANCED_MODE : ROW_HEIGHT;
           if (!scope.pagination.use) {
             init.paging = false;
-            init.scrollY = scope.pagination.rowsToDisplay * 27 + 2;
+            init.scrollY = scope.pagination.rowsToDisplay * rowHeight + 2;
             init.scrollCollapse = true;
             init.dom = domCommon + 'f<"#' + scope.id + '_evalfilter">>';
           } else {
             init.dom = domCommon + '<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf<"#' + scope.id + '_evalfilter">>';
-            if (scope.data.length > 25) {
+            if (scope.data.length > MIN_ROWS_FOR_PAGING) {
               init.pagingType = 'simple_numbers';
               init.pageLength = 25;
               init.lengthMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']];
             } else {
               init.paging = false;
-              init.scrollY = 350;
               init.scrollCollapse = true;
             }
           }
@@ -1678,12 +1688,12 @@
 
             if(init.paging !== false){
               var pagination = $(element).find(".bko-table-use-pagination");
-              $('<label eat-click><input type="checkbox" checked="true"> use pagination</label>')
-                .bind('click', function(e) {
-                  if (e.target.tagName === 'INPUT') {
-                    scope.doUsePagination();
-                  }
+              $('<input type="checkbox" checked="true" id=' + scope.id +'usePagination class="beforeCheckbox">')
+                .bind('click', function (e) {
+                  scope.doUsePagination();
                 })
+                .appendTo(pagination);
+              $('<label for=' + scope.id +'usePagination> use pagination</label>')
                 .appendTo(pagination);
             }
 
@@ -1767,6 +1777,13 @@
                 $(dtTR).removeClass('hover');
                 scope.highlightFixedColumnRow (rowIndex, false);
               });
+
+            $(scope.table.table().container()).find('.dataTables_scrollHead').on('scroll', function () {
+              var filtersInFocus = $(scope.table.table().container()).find('.filter-input:focus');
+              if (filtersInFocus.length) {
+                scope.stopFilterEditing(filtersInFocus);
+              }
+            });
 
             scope.showHideBars = function (column) {
               scope.barsOnColumn[column] = !!!scope.barsOnColumn[column];

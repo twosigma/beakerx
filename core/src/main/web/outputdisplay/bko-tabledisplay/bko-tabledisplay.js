@@ -280,6 +280,8 @@
     var ROW_HEIGHT_ADVANCED_MODE = 22;
     var DEFAULT_PAGE_LENGTH = 25;
     var MIN_ROWS_FOR_PAGING = DEFAULT_PAGE_LENGTH;
+    var FC_LEFT_SEPARATOR_CLASS = 'left-fix-col-separator';
+    var FC_RIGHT_SEPARATOR_CLASS = 'right-fix-col-separator';
     return {
       template: JST['bko-tabledisplay/output-table'],
       controller: function($scope, $uibModal) {
@@ -639,6 +641,24 @@
             });
         };
 
+        $scope.updateFixedColumnsSeparator = function(){
+          if ($scope.table) {
+            var getHeader = function(thIndex){
+              return $($scope.table.header()).find('tr').find('th:eq(' + thIndex + ')');
+            };
+            var updateColumn = function(columnIndex, cssClass){
+              var column = $scope.table.column(columnIndex);
+              var columnHeader = getHeader($(column.header()).index());
+              $(column.nodes()).addClass(cssClass);
+              columnHeader.addClass(cssClass);
+            };
+            updateColumn($scope.pagination.fixLeft, FC_LEFT_SEPARATOR_CLASS);
+            if($scope.pagination.fixRight){
+              updateColumn($scope.columns.length - $scope.pagination.fixRight, FC_RIGHT_SEPARATOR_CLASS);
+            }
+          }
+        };
+
         $scope.renderMenu = false;
 
         var chr = {
@@ -891,6 +911,37 @@
           }
         };
 
+        scope.getScrollBarWidth = function () {
+          var sizer = $('<p/>').css({
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: 150,
+              padding: 0,
+              overflow: 'scroll',
+              visibility: 'hidden'
+            })
+            .appendTo('body');
+          var width = sizer[0].offsetWidth - sizer[0].clientWidth;
+          sizer.remove();
+          return width;
+        };
+        scope.scrollbarWidth = scope.getScrollBarWidth();
+
+        scope.getTheme = function () {
+          return bkHelper.getTheme();
+        };
+        scope.$watch('getTheme()', function (newValue, oldValue) {
+          if (newValue !== oldValue) {
+            if (scope.table) {
+              scope.scrollbarWidth = scope.getScrollBarWidth();
+              scope.table.settings()[0].oScroll.iBarWidth = scope.scrollbarWidth;
+              scope.update_size();
+            }
+          }
+        });
+
         scope.containerClickFunction = function(e){
           if (scope.table) {
             if ($(scope.table.table().container()).has(e.target).length) {
@@ -1125,7 +1176,7 @@
           // this is dataTables_scrollBody
           var pp = me.parent();
           var tableWidth = me.width();
-          var scrollWidth = scope.table && !scope.table.settings()[0].oBrowser.bScrollOversize ? 16 : 0;
+          var scrollWidth = scope.scrollbarWidth;
           if (pp.width() > tableWidth + scrollWidth) {
             if(pp.height() < me.height()){
               tableWidth += scrollWidth;
@@ -1632,8 +1683,10 @@
 
           bkHelper.timeout(function() {
             // we must wait for the DOM elements to appear
-            $(id).parents('.dataTables_scroll').find('th, td').removeClass('left-fix-col-separator');
+            $(id).parents('.dataTables_scroll').find('th, td')
+              .removeClass(FC_LEFT_SEPARATOR_CLASS + ' ' + FC_RIGHT_SEPARATOR_CLASS);
             scope.table = $(id).DataTable(init);
+            scope.table.settings()[0].oScroll.iBarWidth = scope.scrollbarWidth;
             scope.renderMenu = true;
             if (!scope.colorder) {
               scope.colorder = _.range(scope.columnNames.length + 1);
@@ -2080,13 +2133,11 @@
             } else {
               inits.rightColumns = 0;
             }
-            var leftFixColumn = scope.table.column(scope.pagination.fixLeft);
-            var leftFixColumnHeader = $(scope.table.header()).find('tr').find('th:eq(' + scope.pagination.fixLeft + ')');
-            $(leftFixColumn.nodes()).addClass('left-fix-col-separator');
-            leftFixColumnHeader.addClass('left-fix-col-separator');
 
+            scope.updateFixedColumnsSeparator();
+            
             scope.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
-            scope.update_size();
+            scope.table.draw(false);
 
             setTimeout(function(){
               scope.applyFilters();

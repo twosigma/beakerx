@@ -236,19 +236,23 @@ table.dataTable.DTFC_Cloned.display tbody tr {
   }
 }
 
+$fix-col-separator-width: 3px;
 
 .DTFC_LeftWrapper table.dataTable thead th:last-child,
 .DTFC_LeftWrapper table.dataTable tbody td:last-child {
-  border-right-width: 3px;
+  border-right-width: $fix-col-separator-width;
 }
 
 .DTFC_RightWrapper table.dataTable thead th:first-child,
 .DTFC_RightWrapper table.dataTable tbody td:first-child {
-  border-left-width: 3px;
+  border-left-width: $fix-col-separator-width;
 }
 
 .left-fix-col-separator {
-  border-right-width: 3px !important;
+  border-right-width: $fix-col-separator-width !important;
+}
+.right-fix-col-separator {
+  border-left-width: $fix-col-separator-width !important;
 }
 
 .menu-separator {

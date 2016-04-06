@@ -58,7 +58,7 @@ describe('R Tutorial', function () {
         beakerPO.checkSubStringIfDisplayed(arrStrHead.get(7), 'drv', 0, 3);
         beakerPO.checkSubStringIfDisplayed(arrStrHead.get(8), 'cty', 0, 3);
         beakerPO.checkSubStringIfDisplayed(arrStrHead.get(9), 'hwy', 0, 3);
-        beakerPO.checkSubStringIfDisplayed(arrStrHead.get(10), 'f1', 0, 2);
+        beakerPO.checkSubStringIfDisplayed(arrStrHead.get(10), 'fl', 0, 2);
         beakerPO.checkSubStringIfDisplayed(arrStrHead.get(11), 'class', 0, 5);
 
         var tBody = beakerPO.getDataTablesTBodyByIdCell(idCell);

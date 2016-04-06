@@ -278,12 +278,16 @@
     var CELL_TYPE = 'bko-tabledisplay';
     var ROW_HEIGHT = 27;
     var ROW_HEIGHT_ADVANCED_MODE = 22;
-    var MIN_ROWS_FOR_PAGING = 25;
+    var DEFAULT_PAGE_LENGTH = 25;
+    var MIN_ROWS_FOR_PAGING = DEFAULT_PAGE_LENGTH;
+    var FC_LEFT_SEPARATOR_CLASS = 'left-fix-col-separator';
+    var FC_RIGHT_SEPARATOR_CLASS = 'right-fix-col-separator';
     return {
       template: JST['bko-tabledisplay/output-table'],
       controller: function($scope, $uibModal) {
 
         $scope.id = 'table_' + bkUtils.generateId(6);
+        $scope.rowsToDisplayMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']];
 
         $scope.getShareMenuPlugin = function() {
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
@@ -467,7 +471,7 @@
         $scope.getCellDispOpts =  [];
         $scope.pagination = {
           'use' : true,
-          'rowsToDisplay' : 50,
+          'rowsToDisplay' : DEFAULT_PAGE_LENGTH,
           'fixLeft' : 0,
           'fixRight' : 0
         };
@@ -622,7 +626,7 @@
               }
             })
             .on('blur.column-filter', filterInputSelector, function (event) {
-              $scope.onFilterBlur($(this), event.relatedTarget);
+              $scope.onFilterBlur($(this));
             })
             .on('keydown.column-filter', filterInputSelector, function (event) {
               var key = event.which;
@@ -648,6 +652,24 @@
               $scope.clearFilter(column, jqFilterInput);
               $scope.updateFilterWidth(jqFilterInput, column);
             });
+        };
+
+        $scope.updateFixedColumnsSeparator = function(){
+          if ($scope.table) {
+            var getHeader = function(thIndex){
+              return $($scope.table.header()).find('tr').find('th:eq(' + thIndex + ')');
+            };
+            var updateColumn = function(columnIndex, cssClass){
+              var column = $scope.table.column(columnIndex);
+              var columnHeader = getHeader($(column.header()).index());
+              $(column.nodes()).addClass(cssClass);
+              columnHeader.addClass(cssClass);
+            };
+            updateColumn($scope.pagination.fixLeft, FC_LEFT_SEPARATOR_CLASS);
+            if($scope.pagination.fixRight){
+              updateColumn($scope.columns.length - $scope.pagination.fixRight, FC_RIGHT_SEPARATOR_CLASS);
+            }
+          }
         };
 
         $scope.renderMenu = false;
@@ -871,6 +893,23 @@
           }
           input.val($scope.tableFilter).trigger('change');
         };
+
+        $scope.getScrollY = function () {
+          var rowHeight = bkHelper.getBkNotebookViewModel().isAdvancedMode() ? ROW_HEIGHT_ADVANCED_MODE : ROW_HEIGHT;
+          var rowsNumber = $scope.pagination.rowsToDisplay > 0 ? $scope.pagination.rowsToDisplay : $scope.data.length;
+          return rowsNumber * rowHeight + 2;
+        };
+
+        $scope.changePageLength = function (len) {
+          $scope.pagination.rowsToDisplay = len;
+          if ($scope.pagination.use) {
+            $scope.table.page.len(len).draw();
+          } else {
+            var scrollBody = $('#' + $scope.id).parent();
+            scrollBody.css('max-height', $scope.getScrollY());
+            $scope.update_size();
+          }
+        };
       },
       link: function(scope, element) {
 
@@ -884,6 +923,37 @@
             }, 0);
           }
         };
+
+        scope.getScrollBarWidth = function () {
+          var sizer = $('<p/>').css({
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: 150,
+              padding: 0,
+              overflow: 'scroll',
+              visibility: 'hidden'
+            })
+            .appendTo('body');
+          var width = sizer[0].offsetWidth - sizer[0].clientWidth;
+          sizer.remove();
+          return width;
+        };
+        scope.scrollbarWidth = scope.getScrollBarWidth();
+
+        scope.getTheme = function () {
+          return bkHelper.getTheme();
+        };
+        scope.$watch('getTheme()', function (newValue, oldValue) {
+          if (newValue !== oldValue) {
+            if (scope.table) {
+              scope.scrollbarWidth = scope.getScrollBarWidth();
+              scope.table.settings()[0].oScroll.iBarWidth = scope.scrollbarWidth;
+              scope.update_size();
+            }
+          }
+        });
 
         scope.containerClickFunction = function(e){
           if (scope.table) {
@@ -1128,11 +1198,6 @@
             scope.selected = selected;
           }
         };
-        scope.updateResizeHandleWidth = function () {
-          if (scope.jqTableResizeHandle) {
-            scope.jqTableResizeHandle.css('max-width', $('#' + scope.id).width());
-          }
-        };
         //jscs:disable
         scope.update_size = function() {
         //jscs:enable
@@ -1140,14 +1205,13 @@
           // this is dataTables_scrollBody
           var pp = me.parent();
           var tableWidth = me.width();
-          var scrollWidth = scope.table && !scope.table.settings()[0].oBrowser.bScrollOversize ? 16 : 0;
+          var scrollWidth = scope.scrollbarWidth;
           if (pp.width() > tableWidth + scrollWidth) {
             if(pp.height() < me.height()){
               tableWidth += scrollWidth;
             }
             pp.width(tableWidth);
           }
-          scope.updateResizeHandleWidth();
           if (scope.fixcols) { //do not need data update
             scope.fixcols._fnColCalc();
             scope.fixcols._fnGridLayout()
@@ -1432,12 +1496,15 @@
           jqInputEl.parent().removeClass('editing');
           jqInputEl.parent().siblings('.hidden-filter').addClass('hidden-filter-input');
         };
-        scope.onFilterBlur = function (jqInputEl, relatedTarget) {
+        scope.onFilterBlur = function (jqInputEl) {
           scope.stopFilterEditing(jqInputEl);
-          if (!$(scope.table.table().container()).find('.filterRow').has(relatedTarget).length) {
-            // focus wasn't moved to another filter input
-            scope.checkFilter();
-          }
+          setTimeout(function () {
+            var filtersInFocus = $(scope.table.table().container()).find('.filter-input:focus');
+            if (!filtersInFocus.length) {
+              //focus wasn't moved to another filter input
+              scope.checkFilter();
+            }
+          }, 0);
         };
         scope.checkFilter = function () {
           var hasNotEmptyFilter = false;
@@ -1855,18 +1922,17 @@
           };
 
           var domCommon = '<"bko-table"Z' + (scope.data.length > 500 ? 'r' : '') + 't';
-          var rowHeight = bkHelper.getBkNotebookViewModel().isAdvancedMode() ? ROW_HEIGHT_ADVANCED_MODE : ROW_HEIGHT;
           if (!scope.pagination.use) {
             init.paging = false;
-            init.scrollY = scope.pagination.rowsToDisplay * rowHeight + 2;
+            init.scrollY = scope.getScrollY();
             init.scrollCollapse = true;
             init.dom = domCommon + 'f<"#' + scope.id + '_evalfilter">>';
           } else {
             init.dom = domCommon + '<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf<"#' + scope.id + '_evalfilter">>';
             if (scope.data.length > MIN_ROWS_FOR_PAGING) {
               init.pagingType = 'simple_numbers';
-              init.pageLength = 25;
-              init.lengthMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']];
+              init.pageLength = scope.pagination.rowsToDisplay;
+              init.lengthMenu = scope.rowsToDisplayMenu;
             } else {
               init.paging = false;
               init.scrollCollapse = true;
@@ -1876,8 +1942,10 @@
 
           bkHelper.timeout(function() {
             // we must wait for the DOM elements to appear
-            $(id).parents('.dataTables_scroll').find('th, td').removeClass('left-fix-col-separator');
+            $(id).parents('.dataTables_scroll').find('th, td')
+              .removeClass(FC_LEFT_SEPARATOR_CLASS + ' ' + FC_RIGHT_SEPARATOR_CLASS);
             scope.table = $(id).DataTable(init);
+            scope.table.settings()[0].oScroll.iBarWidth = scope.scrollbarWidth;
             scope.renderMenu = true;
             if (!scope.colorder) {
               scope.colorder = _.range(scope.columnNames.length + 1);
@@ -2058,7 +2126,6 @@
               })
               .on('column-visibility.dt', function (e, settings, column, state) {
                 scope.getCellSho[scope.colorder[column] - 1] = state;
-                scope.updateResizeHandleWidth();
               });
 
             function updateSize() {
@@ -2091,12 +2158,11 @@
             } else {
               inits.rightColumns = 0;
             }
-            var leftFixColumn = scope.table.column(scope.pagination.fixLeft);
-            var leftFixColumnHeader = $(scope.table.header()).find('tr').find('th:eq(' + scope.pagination.fixLeft + ')');
-            $(leftFixColumn.nodes()).addClass('left-fix-col-separator');
-            leftFixColumnHeader.addClass('left-fix-col-separator');
 
-            scope.fixcols = new $ .fn.dataTable.FixedColumns($(id), inits);
+            scope.updateFixedColumnsSeparator();
+            
+            scope.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
+            scope.table.draw(false);
 
             setTimeout(function(){
               scope.applyFilters();
@@ -2119,23 +2185,6 @@
               }
               scope.update_size();
             }, 0);
-
-            if (!scope.pagination.use) {
-              var table = $('#' + scope.id);
-              var scrollWrapper = table.closest('.DTFC_ScrollWrapper');
-              var scrollBody = table.parent();
-              var scrollHeader = table.closest('.dataTables_scrollHead');
-              scope.jqTableResizeHandle = scrollWrapper.resizable({
-                handles: 's',
-                resize: function (event, ui) {
-                  var newHeight = ui.size.height;
-                  var headerHeight = scrollHeader.height();
-                  scrollBody.css('max-height', newHeight - headerHeight);
-                }
-              }).find('.ui-resizable-handle');
-              scope.jqTableResizeHandle.append('<span class="glyphicon glyphicon-resize-vertical"></span>');
-              scope.updateResizeHandleWidth();
-            }
 
           }, 0);
         };

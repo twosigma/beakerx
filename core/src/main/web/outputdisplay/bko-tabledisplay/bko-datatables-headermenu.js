@@ -152,10 +152,8 @@ HeaderMenu.prototype = {
 
       that._buildMenuItems(menuItems, $menu);
 
-      $menu.offset({
-          top: el.height() + 1,
-          left: el.offset().left - 51
-        })
+      $menu.css('top', el.height() + 1)
+        .css('left', el.offset().left - 51)
         .css('display', 'block')
         .appendTo(node);
       that.dom.menu = $menu;

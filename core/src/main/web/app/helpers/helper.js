@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
+  module.factory('bkHelper', function($location, $httpParamSerializer, bkUtils, bkCoreManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -71,7 +71,7 @@
       rgbaToHex(120, 100, 100), // dark
     ];
 
-    var bkHelper = {
+      var bkHelper = {
 
       isNewNotebookShortcut: function (e){
         if (this.isMacOS){
@@ -205,6 +205,23 @@
       getBaseUrl: function() {
         return bkUtils.getBaseUrl();
       },
+        openNotebookInNewWindow: function (notebookUri, uriType, readOnly, format) {
+          var params = {
+            'uri': notebookUri
+          };
+          if (uriType) {
+            params.type = uriType;
+          }
+          if (readOnly) {
+            params.readOnly = readOnly;
+          }
+          if (format) {
+            params.format = format;
+          }
+          bkHelper.openWindow(
+            bkHelper.getBaseUrl() + "/open?" + $httpParamSerializer(params),
+            'notebook');
+        },
       // Open tab/window functions that handle the electron case
       openWindow: function(path, type) {
         if (bkUtils.isElectron) {

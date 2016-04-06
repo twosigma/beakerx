@@ -278,12 +278,14 @@
     var CELL_TYPE = 'bko-tabledisplay';
     var ROW_HEIGHT = 27;
     var ROW_HEIGHT_ADVANCED_MODE = 22;
-    var MIN_ROWS_FOR_PAGING = 25;
+    var DEFAULT_PAGE_LENGTH = 25;
+    var MIN_ROWS_FOR_PAGING = DEFAULT_PAGE_LENGTH;
     return {
       template: JST['bko-tabledisplay/output-table'],
       controller: function($scope, $uibModal) {
 
         $scope.id = 'table_' + bkUtils.generateId(6);
+        $scope.rowsToDisplayMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']];
 
         $scope.getShareMenuPlugin = function() {
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
@@ -461,7 +463,7 @@
         $scope.getCellDispOpts =  [];
         $scope.pagination = {
           'use' : true,
-          'rowsToDisplay' : 50,
+          'rowsToDisplay' : DEFAULT_PAGE_LENGTH,
           'fixLeft' : 0,
           'fixRight' : 0
         };
@@ -857,6 +859,23 @@
             $scope.tableFilter = '';
           }
           input.val($scope.tableFilter).trigger('change');
+        };
+
+        $scope.getScrollY = function () {
+          var rowHeight = bkHelper.getBkNotebookViewModel().isAdvancedMode() ? ROW_HEIGHT_ADVANCED_MODE : ROW_HEIGHT;
+          var rowsNumber = $scope.pagination.rowsToDisplay > 0 ? $scope.pagination.rowsToDisplay : $scope.data.length;
+          return rowsNumber * rowHeight + 2;
+        };
+
+        $scope.changePageLength = function (len) {
+          $scope.pagination.rowsToDisplay = len;
+          if ($scope.pagination.use) {
+            $scope.table.page.len(len).draw();
+          } else {
+            var scrollBody = $('#' + $scope.id).parent();
+            scrollBody.css('max-height', $scope.getScrollY());
+            $scope.update_size();
+          }
         };
       },
       link: function(scope, element) {
@@ -1593,18 +1612,17 @@
           };
 
           var domCommon = '<"bko-table"Z' + (scope.data.length > 500 ? 'r' : '') + 't';
-          var rowHeight = bkHelper.getBkNotebookViewModel().isAdvancedMode() ? ROW_HEIGHT_ADVANCED_MODE : ROW_HEIGHT;
           if (!scope.pagination.use) {
             init.paging = false;
-            init.scrollY = scope.pagination.rowsToDisplay * rowHeight + 2;
+            init.scrollY = scope.getScrollY();
             init.scrollCollapse = true;
             init.dom = domCommon + 'f<"#' + scope.id + '_evalfilter">>';
           } else {
             init.dom = domCommon + '<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-use-pagination">>Sf<"#' + scope.id + '_evalfilter">>';
             if (scope.data.length > MIN_ROWS_FOR_PAGING) {
               init.pagingType = 'simple_numbers';
-              init.pageLength = 25;
-              init.lengthMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']];
+              init.pageLength = scope.pagination.rowsToDisplay;
+              init.lengthMenu = scope.rowsToDisplayMenu;
             } else {
               init.paging = false;
               init.scrollCollapse = true;

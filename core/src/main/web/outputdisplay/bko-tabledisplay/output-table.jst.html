@@ -23,7 +23,16 @@
          <a tabindex="-1" href="#" ng-click="doUsePagination()" id="dt-use-pagination" eat-click>Use pagination</a>
          <i class="glyphicon glyphicon-ok" ng-show="pagination.use"></i>
        </li>
-       <li><a tabindex="-1" href="#" ng-click="doSelectAll()" id="dt-select-all" eat-click>Select All</a></li>
+       <li class="dropdown-submenu">
+         <a tabindex="-1" href="#" id="dt-rows-to-show" eat-click>Rows to Show</a>
+         <ul class="dropdown-menu" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
+           <li ng-repeat="length in rowsToDisplayMenu[0]">
+             <a tabindex="-1" href="" ng-click="changePageLength(length)"> {{rowsToDisplayMenu[1][$index]}}</a>
+             <i class="glyphicon glyphicon-ok" ng-show="pagination.rowsToDisplay === length"></i>
+           </li>
+         </ul>
+       </li>
+       <li><a tabindex="-1" href="#" ng-click="doSelectAll()" id="dt-select-all" eat-click class="menu-separator">Select All</a></li>
        <li><a tabindex="-1" href="#" ng-click="doDeselectAll()" id="dt-deselect-all" eat-click>Deselect All</a></li>
        <li><a tabindex="-1" href="#" ng-click="doReverseSelection()" id="dt-reverse-selection" eat-click>Reverse Selection</a></li>
        <li><a tabindex="-1" href="#" ng-click="doCopyToClipboard()" id="{{id}}_dt_copy" class="menu-separator" eat-click>Copy to Clipboard</a></li>

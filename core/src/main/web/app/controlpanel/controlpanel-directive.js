@@ -212,9 +212,13 @@
 
         $scope.getRecentMenuItems();
 
-        $scope.openRecent = function(item) {
+        $scope.openRecent = function (item, event) {
           if (_.isFunction(item.action)) {
-            item.action();
+            if ((bkUtils.isMacOS && event.metaKey) || (!bkUtils.isMacOS && event.ctrlKey)) {
+              item.action(true);
+            } else {
+              item.action();
+            }
           }
         };
 

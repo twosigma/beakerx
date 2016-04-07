@@ -65,7 +65,7 @@ var BeakerPageObject = function() {
         .thenCatch(function() {
           return false;
         });
-    }, 5000);
+    }, 100000);
 
     return element(by.css('.modal-submit')).click();
   };
@@ -346,7 +346,7 @@ var BeakerPageObject = function() {
       .thenCatch(function() {
         return false;
       });
-    }, 5000);
+    }, 100000);
   };
 
   this.insertNewCell = function() {

@@ -20,15 +20,24 @@ var path = require('path');
 var beakerPO;
 
 describe('Python Tutorial', function () {
+    var isLangLoaded = "IPython haven't loaded";
 
     beforeEach(function (done) {
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fipython-examples.bkr&readOnly=true").then(done);
 
-        beakerPO.waitUntilLoadingFinished();
+        var start = new Date().getTime();
+        beakerPO.waitUntilLoadingFinished().then(function() {
+            var stop = new Date().getTime();
+            var len = stop - start;
+            console.log('Starting IPython language: ' + len + ' milliSeconds');
+            isLangLoaded = "IPython have loaded";
+        });
     });
 
     it('IPython Examples', function () {
+        expect(isLangLoaded).toBe('IPython have loaded');
+
         var idCell = "codeK0EmdK";
         beakerPO.scrollToCodeCellOutputByIdCell(idCell);
         expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('simple-layout')).isPresent()).toBe(true);

@@ -522,54 +522,18 @@
         if (!evaluateFn) {
           evaluateFn = this.evaluateCode;
         }
-
-        if (!this.bkRenderer) {
-          // Override markdown link renderer to always have `target="_blank"`
-          // Mostly from Renderer.prototype.link
-          // https://github.com/chjj/marked/blob/master/lib/marked.js#L862-L881
-          var bkRenderer = new marked.Renderer();
-          bkRenderer.link = function(href, title, text) {
-            var prot;
-            if (this.options.sanitize) {
-              try {
-                prot = decodeURIComponent(unescape(href))
-                    .replace(/[^\w:]/g, '')
-                    .toLowerCase();
-              } catch (e) {
-                return '';
-              }
-              //jshint ignore:start
-              if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0) {
-                //jshint ignore:end
-                return '';
-              }
-            }
-            var out = '<a href="' + href + '"';
-            if (title) {
-              out += ' title="' + title + '"';
-            }
-            out += ' target="_blank"'; // < ADDED THIS LINE ONLY
-            out += '>' + text + '</a>';
-            return out;
-          };
-
-          bkRenderer.paragraph = function(text) {
-            // Allow users to write \$ to escape $
-            return marked.Renderer.prototype.paragraph.call(this, text.replace(/\\\$/g, '$'));
-          };
-          this.bkRenderer = bkRenderer;
-        }
-
         var markIt = function(content) {
           var markdownFragment = $('<div>' + content + '</div>');
           bkHelper.typeset(markdownFragment);
           var escapedHtmlContent = angular.copy(markdownFragment.html());
           markdownFragment.remove();
           var unescapedGtCharacter = escapedHtmlContent.replace(/&gt;/g, '>');
-          var result = marked(unescapedGtCharacter, {
-            gfm: true,
-            renderer: bkRenderer
+          var md = window.markdownit({
+            html: true,
+            linkify: true,
+            typographer: true
           });
+          var result = md.render(unescapedGtCharacter);
           markupDeferred.resolve(result);
         };
 

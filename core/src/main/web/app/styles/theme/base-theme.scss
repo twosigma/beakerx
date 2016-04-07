@@ -456,7 +456,10 @@
     background-color: #303030;
   }
 
-  table.dataTable tbody tr.selected {
+  table.dataTable tbody tr.selected,
+  table.dataTable tbody tr.selected > .sorting_1,
+  table.dataTable tbody tr.selected > .sorting_2,
+  table.dataTable tbody tr.selected > .sorting_3{
     background-color: #435d72 !important;
   }
 
@@ -469,7 +472,7 @@
   table.dataTable.display tbody tr:hover,
   table.dataTable.hover tbody tr.hover,
   table.dataTable.display tbody tr.hover{
-    background-color: $std-hover-bg;
+    background-color: $std-hover-bg !important;
   }
 
 

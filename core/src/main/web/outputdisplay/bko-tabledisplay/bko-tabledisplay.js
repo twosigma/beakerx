@@ -577,6 +577,10 @@
               });
             }
           });
+          $.each($scope.colreorg.s.dt.aoColumns, function (i, column) {
+            $scope.getColumnFilter($scope.table.column(column.idx + ":visible"))
+              .closest('th').attr('data-column-index', i);
+          });
         };
 
         $scope.getColumnFilter = function(column){

@@ -24,11 +24,12 @@ $border-color: #D4D0D0;
 table.dataTable {
   margin : 0;
   thead th, tbody td {
+    position: relative;
     padding: 3px 10px 0 20px;
     white-space: nowrap;
     border: 1px solid $border-color;
     border-width: 0 1px 0 0;
-    overflow-x: hidden;
+    overflow: hidden;
     text-overflow: ellipsis;
     &:first-child {
       border-left-width: 1px;
@@ -44,7 +45,7 @@ table.dataTable {
     .filterRow th {
       border-top-width: 0px;
       padding-left: 5px;
-      overflow-x: initial;
+      overflow: initial;
     }
   }
   thead tr {
@@ -187,7 +188,7 @@ a.dtmenu {
 .dt-cell-text {
   position: relative;
   width: 100%;
-  overflow-x: hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 

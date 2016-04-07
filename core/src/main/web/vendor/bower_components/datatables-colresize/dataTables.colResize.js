@@ -488,6 +488,7 @@
                 //As long as the cursor is past the handle, resize the columns
                 if ((dx > 0 && distFromRight <= 0) || (dx < 0 && distFromRight >= 0)) {
                     if (!that.s.init.tableWidthFixed) {
+                      if (!(prevWidth <= minColumnWidth && dx < 0)) {
                         //As long as the width is larger than the minimum
                         var newColWidth = Math.max(minColumnWidth, prevWidth + dx);
                         //Get the width difference (take into account the columns minimum width)
@@ -511,6 +512,7 @@
                         });
                         //Apply the new width to the columns after the table has been resized
                         domCols.width(that.s.mouse.targetColumn.width);
+                        domCols.css('max-width', that.s.mouse.targetColumn.width);
                         if (that.s.mouse.targetColumn.width) { //allow resize when table width define to be small
                             domCols.each(function (i, th) {
                                 var domBodyCols = $(th).parents('table').find('tbody tr').find("td:eq(" + $(th).index() + ")");
@@ -519,6 +521,7 @@
                                   .css('min-width', that.s.mouse.targetColumn.width);
                             });
                         }
+                      }
                     } else {
                         //A neighbour column must exist in order to resize a column in a table with a fixed width
                         if (that.s.mouse.neighbourColumn) {

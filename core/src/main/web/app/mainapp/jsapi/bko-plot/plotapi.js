@@ -189,7 +189,7 @@
         if (data.base instanceof Array) {
           this.bases = data.base;
         } else {
-          this.base = data.base;
+          this.base = getValue(data, 'base', 0);
         }
       };
       inheritsFrom(BasedXYGraphics, XYGraphics);
@@ -382,6 +382,10 @@
       XYChart.prototype.add = function (item) {
         if (item instanceof XYGraphics) {
           this.graphics_list.push(item);
+        } else if (item instanceof Array) {
+          for (var i = 0; i < item.length; i++) {
+            this.add(item[i]);
+          }
         } else {
           abstractChartAdd.call(this, item);
         }
@@ -413,6 +417,28 @@
       //add prototype methods here
       //Plots//
 
+      var XYStacker = function () {};
+      XYStacker.stack = function (graphicsList) {
+        if(_.isEmpty(graphicsList) || graphicsList.length === 1) { return graphicsList; }
+
+        var stackedList = [graphicsList[0]];
+        var ysSize = graphicsList[0].y.length;
+        for (var gIndex = 1; gIndex < graphicsList.length; gIndex++) {
+          var current = graphicsList[gIndex];
+          var previous = graphicsList[gIndex - 1];
+          var currentYs = current.y;
+          var previousYs = previous.y;
+          if (ysSize !== currentYs.length) {
+            throw new Error("Plot items that are added to XYStack should have the same length coordinates");
+          }
+          for (var yIndex = 0; yIndex < ysSize; yIndex++) {
+            currentYs[yIndex] = currentYs[yIndex] + previousYs[yIndex];
+          }
+          current.bases = previousYs;
+          stackedList.push(current);
+        }
+        return stackedList;
+      };
 
       var api = {
         Plot: Plot,
@@ -430,7 +456,8 @@
         LegendLayout: LegendLayout,
         LegendPosition: LegendPosition,
         Filter: Filter,
-        Color: Color
+        Color: Color,
+        XYStacker: XYStacker
       };
       var list = function () {
         return api;

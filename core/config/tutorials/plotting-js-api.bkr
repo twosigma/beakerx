@@ -825,6 +825,162 @@
             },
             "evaluatorReader": true,
             "lineCount": 11
+        },
+        {
+            "id": "section4oVzNa",
+            "type": "section",
+            "title": "Stacking",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "code64EErR",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var y1 = [1,5,3,2,3]",
+                    "var y2 = [7,2,4,1,3]",
+                    "var p = new beaker.Plot({title: 'Plot with XYStacker', initHeight: 200})",
+                    "var a1 = new beaker.Area({y: y1, displayName: 'y1'})",
+                    "var a2 = new beaker.Area({y: y2, displayName: 'y2'})",
+                    "p.add(beaker.XYStacker.stack([a1, a2]))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 200
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 36,
+                "result": {
+                    "init_width": 640,
+                    "init_height": 200,
+                    "chart_title": "Plot with XYStacker",
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4
+                            ],
+                            "y": [
+                                1,
+                                5,
+                                3,
+                                2,
+                                3
+                            ],
+                            "display_name": "y1",
+                            "base": 0,
+                            "type": "Area"
+                        },
+                        {
+                            "visible": true,
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4
+                            ],
+                            "y": [
+                                8,
+                                7,
+                                7,
+                                3,
+                                6
+                            ],
+                            "display_name": "y2",
+                            "base": 0,
+                            "type": "Area",
+                            "bases": [
+                                1,
+                                5,
+                                3,
+                                2,
+                                3
+                            ]
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10,
+                    "type": "Plot",
+                    "tips": {}
+                },
+                "height": 268
+            },
+            "evaluatorReader": true,
+            "lineCount": 6
         }
     ],
     "namespace": {}

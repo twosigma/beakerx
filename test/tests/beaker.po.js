@@ -294,6 +294,10 @@ var BeakerPageObject = function() {
     return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('labelg'));
   };
 
+  this.getPlotLabelgByIdCell = function (idCell, containerIdx) {
+    return this.getPlotSvgByIdCell(idCell, containerIdx).element(By.id('labelg'));
+  };
+
   this.getPlotSvgElementByIndex= function (codeCellOutputIdx, containerIdx, elementIndex) {
     return this.getPlotSvg(codeCellOutputIdx, containerIdx).all(by.css("#maing > g")).get(elementIndex);
   };
@@ -418,7 +422,6 @@ var BeakerPageObject = function() {
     expect(this.getPlotMaing(codeCellOutputIdx, containerIdx).isPresent()).toBe(true);
   };
 
-
   this.hasClass =  function  (element, cls) {
     return element.getAttribute('class').then(function (classes) {
       return classes && classes.split(' ').indexOf(cls) !== -1;
@@ -452,6 +455,11 @@ var BeakerPageObject = function() {
   this.checkPlotLegentdLabel = function (codeCellOutputIdx, containerIdx, legentdLabelIndex, text) {
     expect(this.getPlotLegendContainer(codeCellOutputIdx, containerIdx)
       .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
+  }
+
+  this.checkPlotLegentdLabelByIdCell = function (idCell, containerIdx, legentdLabelIndex, text) {
+    expect(this.getPlotLegendContainerByIdCell(idCell, containerIdx)
+        .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
   }
 
   this.checkLegendIsPresentByIdCell = function (codeCellOutputId, containerIdx) {
@@ -520,7 +528,9 @@ var BeakerPageObject = function() {
   this.getPlotLegendContainerByIdCell = function (codeCellOutputId, containerIdx) {
     if (!containerIdx)
       containerIdx = 0;
-    return this.getCodeCellOutputByIdCell(codeCellOutputId).all(By.css('.plot-plotlegendcontainer')).get(containerIdx);
+    var elemPlot = this.getCodeCellOutputByIdCell(codeCellOutputId);
+    browser.wait(this.EC.presenceOf($('[cell-id=' + codeCellOutputId + '] .plot-plotlegendcontainer')), 10000);
+    return elemPlot.all(By.css('.plot-plotlegendcontainer')).get(containerIdx);
   };
 
   this.getPlotSvgElementByIndexByIdCell = function (codeCellOutputId, containerIdx, elementIndex) {

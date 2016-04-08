@@ -23,58 +23,50 @@ describe('Category Plots (Bar Charts)', function () {
 
   beforeEach(function (done) {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FCategoryPlot.bkr&readOnly=true").then(done);
-    beakerPO.waitUntilLoadingFinished();
-
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FCategoryPlot.bkr&readOnly=true")
+      .then(done)
+      .then(beakerPO.waitUntilLoadingCellOutput());
   });
 
-  afterEach(function (done) {
-    beakerPO.closeNotebook()
-      .then(done);
-  });
+  it('Category Plots (Bar Charts)', function () {
+    /* Input values */
+    var idCell = "codegJO0X1";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-bar');
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-bar');
 
-  it('Input values', function () {
-    beakerPO.checkPlotIsPresent(0);
 
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(0, 0, 0), 'plot-bar');
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(0, 0, 1), 'plot-bar');
-  });
+    /* Size */
+    idCell = "code7tZ3dr";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    beakerPO.checkSize(beakerPO.getPlotSvgByIdCell(idCell, 0), 400, 200);
 
-  it('Size', function () {
-    beakerPO.checkPlotIsPresent(1);
-    beakerPO.checkSize(beakerPO.getPlotSvg(1, 0), 400, 200);
-  });
+    /* Title and Axis Labels */
+    idCell = "codedWtzu7";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    expect(beakerPO.getCodeCellOutputContainerYLabelByIdCell(idCell)).toBe("Values");
+    expect(beakerPO.getCodeCellOutputContainerXLabelByIdCell(idCell)).toBe("Categories");
+    expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Hello CategoryPlot!");
 
-  it('Title and Axis Labels', function () {
-    beakerPO.checkPlotIsPresent(2);
+    /* Category Names */
+    idCell = "code41YRgl";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    expect(beakerPO.getPlotLabelgByIdCell(idCell).element(By.id('label_x_0')).getText()).toBe('Helium');
+    expect(beakerPO.getPlotLabelgByIdCell(idCell).element(By.id('label_x_1')).getText()).toBe('Neon');
+    expect(beakerPO.getPlotLabelgByIdCell(idCell).element(By.id('label_x_2')).getText()).toBe('Argon');
 
-    expect(beakerPO.getCodeCellOutputContainerYLabel(2)).toBe("Values");
-    expect(beakerPO.getCodeCellOutputContainerXLabel(2)).toBe("Categories");
-    expect(beakerPO.getCodeCellOutputContainerTitle(2)).toBe("Hello CategoryPlot!");
-  });
+    /* Series Names */
+    idCell = "code6t65Jt";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    beakerPO.checkPlotLegentdLabelByIdCell(idCell, 0, 1, 'Gas');
+    beakerPO.checkPlotLegentdLabelByIdCell(idCell, 0, 2, 'Liquid');
 
-  it('Category Names', function () {
-    beakerPO.checkPlotIsPresent(3);
-
-    expect(beakerPO.getPlotLabelg(3).element(By.id('label_x_0')).getText()).toBe('Helium');
-    expect(beakerPO.getPlotLabelg(3).element(By.id('label_x_1')).getText()).toBe('Neon');
-    expect(beakerPO.getPlotLabelg(3).element(By.id('label_x_2')).getText()).toBe('Argon');
-  });
-
-  it('Series Names', function () {
-    beakerPO.checkPlotIsPresent(4);
-
-    beakerPO.checkPlotLegentdLabel(4, 0, 1, 'Gas');
-    beakerPO.checkPlotLegentdLabel(4, 0, 2, 'Liquid');
-
-  });
-
-  it('Category Label Orientation', function () {
-    beakerPO.checkPlotIsPresent(8);
-
-    var label_x_0 = beakerPO.getPlotLabelg(8).element(By.id('label_x_0'));
-    var label_x_1 = beakerPO.getPlotLabelg(8).element(By.id('label_x_1'));
-    var label_x_2 = beakerPO.getPlotLabelg(8).element(By.id('label_x_2'));
+    /* Category Label Orientation */
+    idCell = "codeaGosEG";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    var label_x_0 = beakerPO.getPlotLabelgByIdCell(idCell).element(By.id('label_x_0'));
+    var label_x_1 = beakerPO.getPlotLabelgByIdCell(idCell).element(By.id('label_x_1'));
+    var label_x_2 = beakerPO.getPlotLabelgByIdCell(idCell).element(By.id('label_x_2'));
 
     expect(label_x_0.getText()).toBe('Acid');
     expect(label_x_1.getText()).toBe('Neutral');
@@ -88,55 +80,49 @@ describe('Category Plots (Bar Charts)', function () {
     expect(label_x_1.getAttribute('transform')).toContain('rotate');
     expect(label_x_2.getAttribute('transform')).toContain('rotate');
 
-  });
-
-  it('Single Color', function () {
-    beakerPO.checkPlotIsPresent(11);
+    /* Single Color */
+    idCell = "codem4cZE9";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
     var style = 'fill: rgb(255, 175, 175); fill-opacity: 1; stroke-opacity: 0;';
-    expect(beakerPO.getPlotSvgElementByIndex(11, 0, 0).getAttribute('style')).toBe(style);
-    expect(beakerPO.getPlotSvgElementByIndex(11, 0, 1).getAttribute('style')).toBe(style);
-    expect(beakerPO.getPlotSvgElementByIndex(11, 0, 2).getAttribute('style')).toBe(style);
-  });
+    expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).getAttribute('style')).toBe(style);
+    expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1).getAttribute('style')).toBe(style);
+    expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 2).getAttribute('style')).toBe(style);
 
-  it('CategoryStems', function () {
-    beakerPO.checkPlotIsPresent(21);
+    /* CategoryStems */
+    idCell = "codeDocK5W";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-stem');
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-stem');
 
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(21, 0, 0), 'plot-stem');
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(21, 0, 1), 'plot-stem');
+    /* CategoryPoints */
+    idCell = "code95xQ79";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-point');
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-point');
 
-  });
+    /* CategoryLines */
+    idCell = "codeJcHFBr";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
+    expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('path')).isPresent()).toBe(true);
+    expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1).element(by.tagName('circle')).isPresent()).toBe(true);
+    expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1).element(by.tagName('path')).isPresent()).toBe(true);
 
-  it('CategoryPoints', function () {
-    beakerPO.checkPlotIsPresent(22);
+    /* From a table (list of Maps) */
+    idCell = "codeX3eXQH";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-bar');
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-bar');
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 2), 'plot-bar');
 
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(22, 0, 0), 'plot-point');
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(22, 0, 1), 'plot-point');
-  });
+    expect(beakerPO.getPlotLabelgByIdCell(idCell).element(By.id('label_x_0')).getText()).toBe('closePrice_mean');
+    expect(beakerPO.getPlotLabelgByIdCell(idCell).element(By.id('label_x_1')).getText()).toBe('highPrice_mean');
+    expect(beakerPO.getPlotLabelgByIdCell(idCell).element(By.id('label_x_2')).getText()).toBe('lowPrice_mean');
+    expect(beakerPO.getPlotLabelgByIdCell(idCell).element(By.id('label_x_3')).getText()).toBe('openPrice_mean');
 
-  it('CategoryLines', function () {
-    beakerPO.checkPlotIsPresent(23);
-
-    expect(beakerPO.getPlotSvgElementByIndex(23, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
-    expect(beakerPO.getPlotSvgElementByIndex(23, 0, 0).element(by.tagName('path')).isPresent()).toBe(true);
-    expect(beakerPO.getPlotSvgElementByIndex(23, 0, 1).element(by.tagName('circle')).isPresent()).toBe(true);
-    expect(beakerPO.getPlotSvgElementByIndex(23, 0, 1).element(by.tagName('path')).isPresent()).toBe(true);
-  });
-
-  it('From a table (list of Maps)', function () {
-    beakerPO.checkPlotIsPresent(33);
-
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(33, 0, 0), 'plot-bar');
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(33, 0, 1), 'plot-bar');
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(33, 0, 2), 'plot-bar');
-
-    expect(beakerPO.getPlotLabelg(33).element(By.id('label_x_0')).getText()).toBe('closePrice_mean');
-    expect(beakerPO.getPlotLabelg(33).element(By.id('label_x_1')).getText()).toBe('highPrice_mean');
-    expect(beakerPO.getPlotLabelg(33).element(By.id('label_x_2')).getText()).toBe('lowPrice_mean');
-    expect(beakerPO.getPlotLabelg(33).element(By.id('label_x_3')).getText()).toBe('openPrice_mean');
-
-    beakerPO.checkPlotLegentdLabel(33, 0, 1, 'A');
-    beakerPO.checkPlotLegentdLabel(33, 0, 2, 'B');
-    beakerPO.checkPlotLegentdLabel(33, 0, 3, 'C');
+    beakerPO.checkPlotLegentdLabelByIdCell(idCell, 0, 1, 'A');
+    beakerPO.checkPlotLegentdLabelByIdCell(idCell, 0, 2, 'B');
+    beakerPO.checkPlotLegentdLabelByIdCell(idCell, 0, 3, 'C');
   });
 
 });

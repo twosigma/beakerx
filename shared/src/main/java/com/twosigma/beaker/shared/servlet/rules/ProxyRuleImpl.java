@@ -37,6 +37,10 @@ public class ProxyRuleImpl implements ProxyRule {
   public ProxyRuleImpl() {
   }
 
+  public ProxyRuleImpl(String pathRegex, Replacement... replacements) {
+    this(Collections.singletonList(pathRegex), replacements);
+  }
+
   public ProxyRuleImpl(List<String> pathRegexes, Replacement... replacements) {
     this.pathRegexes = pathRegexes;
     this.replacements = asList(replacements);

@@ -78,9 +78,9 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
     this.rulesHolder = new RulesHolder();
     super.init();
     if (publicServer) {
-      this.startPage = "/login/login.html";
+      this.startPage = "/static/login.html";
     } else if (requirePassword) {
-      this.startPage = "/login/login.html";
+      this.startPage = "/static/login.html";
     } else {
       this.startPage = "/beaker/";
     }
@@ -181,6 +181,7 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   }
 
   private void initRewriteRules() {
+    rulesHolder.add(new ProxyRuleImpl("/loginrest/.*", new Replacement("/loginrest/", "/rest/login/")));
     rulesHolder.add(new SlashBeakerRule(this.corePort, this.proxyPort, this.startPage));
     rulesHolder.add(new RootSlashRule(this.corePort, this.proxyPort, this.startPage));
     rulesHolder.add(new MainPageRule("/rest/util/getMainPage"));

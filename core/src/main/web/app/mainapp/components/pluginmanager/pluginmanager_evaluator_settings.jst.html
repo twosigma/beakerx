@@ -31,6 +31,16 @@
       </span>
   </div>
 
+  <label ng-if="property.type === availableProperties.SELECT">{{ property.name }}</label>
+  <ui-select ng-model="evaluator.settings[property.key]" ng-if="property.type === availableProperties.SELECT" ng-change="set(property)">
+    <ui-select-match>
+      <span ng-bind="$select.selected.name"></span>
+    </ui-select-match>
+    <ui-select-choices repeat="item in (property.values | filter: $select.search)" refresh="callback(property, [$select.search])" refresh-delay=0>
+      <span ng-bind="item"></span>
+    </ui-select-choices>
+  </ui-select>
+
 </div>
 <div ng-repeat="action in actions" class="action language-option clearfix">
   <button class="btn btn-default" ng-click="perform(action)" ng-disabled="action.running">{{ action.name }}</button>

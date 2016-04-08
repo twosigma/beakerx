@@ -29,7 +29,8 @@
     'bk.notebookCellModelManager',
     'bk.treeView',
     'bk.electron',
-    'ngAnimate'
+    'ngAnimate',
+    'ui.select'
   ]);
 
   /**

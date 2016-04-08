@@ -294,6 +294,10 @@ var BeakerPageObject = function() {
     return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('labelg'));
   };
 
+  this.getPlotLabelgByIdCell = function (idCell, containerIdx) {
+    return this.getPlotSvgByIdCell(idCell, containerIdx).element(By.id('labelg'));
+  };
+
   this.getPlotSvgElementByIndex= function (codeCellOutputIdx, containerIdx, elementIndex) {
     return this.getPlotSvg(codeCellOutputIdx, containerIdx).all(by.css("#maing > g")).get(elementIndex);
   };
@@ -418,7 +422,6 @@ var BeakerPageObject = function() {
     expect(this.getPlotMaing(codeCellOutputIdx, containerIdx).isPresent()).toBe(true);
   };
 
-
   this.hasClass =  function  (element, cls) {
     return element.getAttribute('class').then(function (classes) {
       return classes && classes.split(' ').indexOf(cls) !== -1;
@@ -452,6 +455,11 @@ var BeakerPageObject = function() {
   this.checkPlotLegentdLabel = function (codeCellOutputIdx, containerIdx, legentdLabelIndex, text) {
     expect(this.getPlotLegendContainer(codeCellOutputIdx, containerIdx)
       .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
+  }
+
+  this.checkPlotLegentdLabelByIdCell = function (idCell, containerIdx, legentdLabelIndex, text) {
+    expect(this.getPlotLegendContainerByIdCell(idCell, containerIdx)
+        .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
   }
 
   this.checkLegendIsPresentByIdCell = function (codeCellOutputId, containerIdx) {
@@ -499,6 +507,7 @@ var BeakerPageObject = function() {
   };
 
   this.getCodeCellOutputByIdCell = function (idCell) {
+    browser.wait(this.EC.presenceOf($('[cell-id=' + idCell + ']')), 10000);
     return element.all(by.css('[cell-id=' + idCell + ']')).get(0);
   };
 
@@ -506,6 +515,7 @@ var BeakerPageObject = function() {
     if (!containerIdx)
       containerIdx = 0;
     this.scrollToCodeCellOutputByIdCell(codeCellOutputId);
+    browser.wait(this.EC.presenceOf($('[cell-id=' + codeCellOutputId + ']')), 10000);
     expect(this.getPlotMaingByIdCell(codeCellOutputId, containerIdx).isPresent()).toBe(true);
   };
 

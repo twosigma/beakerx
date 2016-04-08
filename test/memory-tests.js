@@ -172,7 +172,7 @@ function printChange(original, current) {
 }
 
 drool.flow({
-  repeatCount: 1,
+  repeatCount: 20,
   setup: function () {
     driver.get('http://127.0.0.1:8801');
     openNotebook();

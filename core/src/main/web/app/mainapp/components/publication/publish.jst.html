@@ -47,7 +47,7 @@
         <select ng-model="model['category-id']" ng-options="category['public-id'] as category.name for category in categories" name="category" class="field">
           <option value="">Select a category</option>
         </select>
-        <label class="field text-danger" title="will not be indexed, can only be found if you have the URL">If you do not select a category your publication will be 'unlisted'</label>
+        <label class="field text-danger" ng-if="!model['category-id']" title="will not be indexed, can only be found if you have the URL">If you do not select a category your publication will be 'unlisted'</label>
         <div class="preview-image" ng-if="attachmentUrl">
           <label class="full">Preview image:</label>
           <img ng-src="{{attachmentUrl}}" width="50">

@@ -137,7 +137,7 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 73,
+                "elapsedTime": 17,
                 "height": 568
             },
             "evaluatorReader": true,
@@ -146,7 +146,7 @@
         {
             "id": "sectionzoQt5E",
             "type": "section",
-            "title": "Section Level Two",
+            "title": "Plot items",
             "level": 2,
             "evaluatorReader": false,
             "collapsed": false
@@ -346,17 +346,17 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 115,
+                "elapsedTime": 24,
                 "height": 548
             },
             "evaluatorReader": true,
             "lineCount": 23
         },
         {
-            "id": "sectionoCymne",
+            "id": "section3dQhKM",
             "type": "section",
             "title": "Areas, Stems and Crosshair",
-            "level": 2,
+            "level": 3,
             "evaluatorReader": false,
             "collapsed": false
         },
@@ -536,11 +536,295 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 58,
+                "elapsedTime": 23,
                 "height": 522
             },
             "evaluatorReader": true,
             "lineCount": 13
+        },
+        {
+            "id": "sectionpe35wC",
+            "type": "section",
+            "title": "TimePlot",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeXvW0km",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var today = new Date();",
+                    "var millis = today.getTime();",
+                    "var hour = 1000 * 60 * 60;",
+                    "var xs = [];",
+                    "var ys = [];",
+                    "for(var i=0; i <= 10; i++){",
+                    "  xs.push(millis + hour * i);",
+                    "  ys.push(i);",
+                    "}",
+                    "",
+                    "var plot = new beaker.TimePlot({timeZone: \"America/New_York\"});",
+                    "//list of milliseconds",
+                    "plot.add(new beaker.Points({x: xs, y: ys, size: 10, displayName: \"milliseconds\"}));"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null
+                    ],
+                    "lodType": [
+                        null
+                    ],
+                    "lodAuto": [
+                        null
+                    ],
+                    "zoomHash": [
+                        null
+                    ],
+                    "showItem": [
+                        true
+                    ],
+                    "visibleItem": 1,
+                    "legendableItem": 1,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "timezone": "America/New_York",
+                    "omit_checkboxes": false,
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "x": [
+                                1460108989408,
+                                1460112589408,
+                                1460116189408,
+                                1460119789408,
+                                1460123389408,
+                                1460126989408,
+                                1460130589408,
+                                1460134189408,
+                                1460137789408,
+                                1460141389408,
+                                1460144989408
+                            ],
+                            "y": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10
+                            ],
+                            "display_name": "milliseconds",
+                            "type": "Points",
+                            "size": 10,
+                            "shape": "DEFAULT"
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10,
+                    "type": "TimePlot",
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 43,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 13
+        },
+        {
+            "id": "section1oKa3Z",
+            "type": "section",
+            "title": "NanoPlot",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "code5CnkNN",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var today  = new Date()",
+                    "var millis = today.getTime()",
+                    "var nanos  = millis * 1000 * 1000",
+                    "var xs = [];",
+                    "var ys = [];",
+                    "for(var i=0; i <= 10; i++){",
+                    "  xs.push(new Big(nanos).plus(7 * i).toString());",
+                    "  ys.push(i);",
+                    "}",
+                    "var np = new beaker.NanoPlot()",
+                    "np.add(new beaker.Points({x: xs, y: ys}))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null
+                    ],
+                    "lodType": [
+                        null
+                    ],
+                    "lodAuto": [
+                        null
+                    ],
+                    "zoomHash": [
+                        null
+                    ],
+                    "showItem": [
+                        true
+                    ],
+                    "visibleItem": 1,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "x": [
+                                "1460109674486000000",
+                                "1460109674486000007",
+                                "1460109674486000014",
+                                "1460109674486000021",
+                                "1460109674486000028",
+                                "1460109674486000035",
+                                "1460109674486000042",
+                                "1460109674486000049",
+                                "1460109674486000056",
+                                "1460109674486000063",
+                                "1460109674486000070"
+                            ],
+                            "y": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10
+                            ],
+                            "type": "Points",
+                            "size": 6,
+                            "shape": "DEFAULT"
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10,
+                    "type": "NanoPlot",
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 59,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 11
         }
     ],
     "namespace": {}

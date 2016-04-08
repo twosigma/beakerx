@@ -530,7 +530,9 @@ var BeakerPageObject = function() {
   this.getPlotLegendContainerByIdCell = function (codeCellOutputId, containerIdx) {
     if (!containerIdx)
       containerIdx = 0;
-    return this.getCodeCellOutputByIdCell(codeCellOutputId).all(By.css('.plot-plotlegendcontainer')).get(containerIdx);
+    var elemPlot = this.getCodeCellOutputByIdCell(codeCellOutputId);
+    browser.wait(this.EC.presenceOf($('[cell-id=' + codeCellOutputId + '] .plot-plotlegendcontainer')), 10000);
+    return elemPlot.all(By.css('.plot-plotlegendcontainer')).get(containerIdx);
   };
 
   this.getPlotSvgElementByIndexByIdCell = function (codeCellOutputId, containerIdx, elementIndex) {

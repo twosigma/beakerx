@@ -369,7 +369,7 @@ define(function(require, exports, module) {
       },
       libraries: {
         type: "settableSelect",
-        values: ["jQuery", "Angular", "D3", "Backbone", "React", "Ember"]
+        remote: "https://api.cdnjs.com/libraries"
       }
     }
   };

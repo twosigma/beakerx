@@ -24,7 +24,7 @@
   var module = angular.module('bk.core');
 
   module.directive('bkPluginManagerEvaluatorSettings', function(
-      $compile, bkSessionManager, GLOBALS) {
+      $compile, bkSessionManager, GLOBALS, bkUtils) {
     return {
       restrict: 'E',
       template: JST["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"](),
@@ -39,6 +39,14 @@
         $scope.$on(GLOBALS.EVENTS.HIGHLIGHT_EDITED_LANGUAGE_SETTINGS, function(event, data) {
           $scope.highlight = true;
         });
+
+        $scope.searchRemote = function(url, scopeProperty) {
+          console.log(url);
+          bkUtils.httpGet(url).then(function(response) {
+            $scope[scopeProperty] = _.take(response.data.results, 20);
+            console.log(response);
+          });
+        };
 
         $scope.set = function(property) {
           if (property.action) {

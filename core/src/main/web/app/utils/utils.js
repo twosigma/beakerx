@@ -247,6 +247,12 @@
             });
         return deferred.promise;
       },
+      getBeakerPreference: function(preferenceName) {
+        return angularUtils.httpGet(serverUrl("beaker/rest/util/getPreference"), {preference: preferenceName})
+          .then(function(response) {
+            return response.data;
+          });
+      },
       generateNotebook: function(evaluators, cells, metadata) {
         var notebook = {
           beaker: "2",

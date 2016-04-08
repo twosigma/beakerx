@@ -194,7 +194,13 @@ public class JavaSourceCompilerImpl implements JavaSourceCompiler {
     }
 
     private long getDiagnosticCountByType(DiagnosticCollector<JavaFileObject> diagnostics, Diagnostic.Kind kind) {
-        return diagnostics.getDiagnostics().stream().filter(d -> d.getKind().equals(kind)).count();
+        long result = 0;
+        for (Diagnostic<? extends JavaFileObject> e : diagnostics.getDiagnostics()) {
+            if (e.getKind().equals(kind)) {
+                result += 1;
+            }
+        }
+        return result;
     }
 
     public void persistCompiledClasses(CompilationUnit compilationUnit) {

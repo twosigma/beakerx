@@ -312,10 +312,15 @@
           }
           return ret;
         },
-        openNotebook: function(notebookUri, uriType, readOnly, format) {
+        openNotebook: function(notebookUri, uriType, readOnly, format, newWindow) {
           if (!notebookUri) {
             return;
           }
+          if (newWindow === true){
+            bkHelper.openNotebookInNewWindow(notebookUri, uriType, readOnly, format);
+            return null;
+          }
+
           var routeParams = {
             uri: notebookUri
           };
@@ -328,6 +333,7 @@
           if (format) {
             routeParams.format = format;
           }
+
           var ret = $location.path('/open').search(routeParams);
           if (bkUtils.isElectron) {
             $rootScope.$apply();

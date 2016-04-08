@@ -45,148 +45,148 @@ describe('Charting Tutorial', function () {
    *  - Text
    */
   it('Custom Plot Example', function () {
-    var idxCell = 0;
-    beakerPO.checkPlotIsPresent(idxCell, 0);
-    beakerPO.checkPlotIsPresent(idxCell, 1);
+    var idCell = "code42QbvS";
+    beakerPO.checkPlotIsPresentByIdCell(idCell, 0);
+    beakerPO.checkPlotIsPresentByIdCell(idCell, 1);
 
-    beakerPO.checkLegendIsPresent(idxCell, 0);
+    beakerPO.checkLegendIsPresentByIdCell(idCell, 0);
 
-    expect(beakerPO.getCodeCellOutputCombplotTitle(idxCell)).toBe("US Treasuries");
-    expect(beakerPO.getCodeCellOutputContainerYLabel(idxCell, 0)).toBe("Interest Rate");
-    expect(beakerPO.getCodeCellOutputContainerYLabel(idxCell, 1)).toBe("Spread");
+    expect(beakerPO.getCodeCellOutputCombplotTitleByIdCell(idCell)).toBe("US Treasuries");
+    expect(beakerPO.getCodeCellOutputContainerYLabelByIdCell(idCell, 0)).toBe("Interest Rate");
+    expect(beakerPO.getCodeCellOutputContainerYLabelByIdCell(idCell, 1)).toBe("Spread");
 
     /**
      * def p1 = new TimePlot(yLabel: "Interest Rate", crosshair: ch)
      */
 
-    beakerPO.checkCount(beakerPO.getPlotMaing(idxCell, 0).all(by.tagName('g')), 8);
+    beakerPO.checkCount(beakerPO.getPlotMaingByIdCell(idCell, 0).all(by.tagName('g')), 8);
     {
       // The top plot has 2 lines.
 
       /**
        * p1 << new Line(x: rates.time, y: rates.m3, displayName: "3 month")
        */
-      beakerPO.checkCount(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 0).all(by.tagName('circle')), 313);
+      beakerPO.checkCount(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).all(by.tagName('circle')), 313);
       /**
        * p1 << new Line(x: rates.time, y: rates.y10, displayName: "10 year")
        */
-      beakerPO.checkCount(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 1).all(by.tagName('circle')), 313);
+      beakerPO.checkCount(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1).all(by.tagName('circle')), 313);
 
       /**
        * def l1 = new ConstantLine(x: lehmanDate, style: StrokeType.DOT, color: Color.gray)
        * def l2 = new ConstantLine(x: bubbleBottomDate, style: StrokeType.DOT, color: Color.gray)
        */
-      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 2), 'plot-constline');
-      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 3), 'plot-constline');
+      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 2), 'plot-constline');
+      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 3), 'plot-constline');
 
       /**
        * def b1 = new ConstantBand(x: inversion1, color: new Color(240, 100, 100, 55))
        * def b2 = new ConstantBand(x: inversion2, color: new Color(240, 100, 100, 55))
        */
-      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 4), 'plot-constband');
-      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 5), 'plot-constband');
+      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 4), 'plot-constband');
+      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 5), 'plot-constband');
 
       /**
        * p1 << new Text(x: lehmanDate, y: 7.5, text: "Lehman Brothers Bankruptcy")
        * p1 << new Text(x: bubbleBottomDate, y: 5.75, text: "Stocks Hit Bottom")
        */
-      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 6), 'plot-text');
-      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 7), 'plot-text');
+      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 6), 'plot-text');
+      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 7), 'plot-text');
     }
 
 
     /**
      * def p2 = new TimePlot(yLabel: "Spread", crosshair: ch)
      */
-    beakerPO.checkCount(beakerPO.getPlotMaing(idxCell, 1).all(by.tagName('g')), 5);
+    beakerPO.checkCount(beakerPO.getPlotMaingByIdCell(idCell, 1).all(by.tagName('g')), 5);
 
     {
       // The bottom plot has an area filled in.
       /**
        *  p2 << new Area(x: rates.time, y: rates.spread, color: new Color(120, 60, 0))
        */
-      expect(beakerPO.getPlotSvgElementByIndex(idxCell, 1, 0).element(by.css('.plot-area')).isPresent()).toBe(true);
+      expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 1, 0).element(by.css('.plot-area')).isPresent()).toBe(true);
 
       /**
        * def l1 = new ConstantLine(x: lehmanDate, style: StrokeType.DOT, color: Color.gray)
        * def l2 = new ConstantLine(x: bubbleBottomDate, style: StrokeType.DOT, color: Color.gray)
        */
-      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 1, 1), 'plot-constline');
-      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 1, 2), 'plot-constline');
+      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 1, 1), 'plot-constline');
+      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 1, 2), 'plot-constline');
 
       /**
        * def b1 = new ConstantBand(x: inversion1, color: new Color(240, 100, 100, 55))
        * def b2 = new ConstantBand(x: inversion2, color: new Color(240, 100, 100, 55))
        */
-      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 1, 3), 'plot-constband');
-      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 1, 4), 'plot-constband');
+      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 1, 3), 'plot-constband');
+      beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 1, 4), 'plot-constband');
     }
   });
 
 
   it('Simple Automatic Plot', function() {
-    var idxCell = 1;
-    beakerPO.checkPlotIsPresent(idxCell);
-    beakerPO.checkLegendIsPresent(idxCell);
-    expect(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
-    expect(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 1).element(by.tagName('circle')).isPresent()).toBe(true);
+    var idCell = "codePZwpbQ";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    beakerPO.checkLegendIsPresentByIdCell(idCell);
+    expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
+    expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1).element(by.tagName('circle')).isPresent()).toBe(true);
   });
 
   it('Scatter Plot', function() {
-    var idxCell = 2;
-    beakerPO.checkPlotIsPresent(idxCell);
-    beakerPO.checkLegendIsPresent(idxCell);
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 0), 'plot-point');
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 1), 'plot-point');
+    var idCell = "code0gsBBt";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    beakerPO.checkLegendIsPresentByIdCell(idCell);
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-point');
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-point');
 
-    expect(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 2).element(by.tagName('circle')).isPresent()).toBe(true);
-    expect(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 3).element(by.tagName('circle')).isPresent()).toBe(true);
+    expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 2).element(by.tagName('circle')).isPresent()).toBe(true);
+    expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 3).element(by.tagName('circle')).isPresent()).toBe(true);
   });
 
 
   it('Title and Axis Labels', function() {
-    var idxCell = 4;
-    beakerPO.checkPlotIsPresent(idxCell);
+    var idCell = "codeH2ee1d";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
 
-    expect(beakerPO.getCodeCellOutputContainerTitle(idxCell)).toBe("We Will Control the Title");
-    expect(beakerPO.getCodeCellOutputContainerYLabel(idxCell)).toBe("Vertical");
-    expect(beakerPO.getCodeCellOutputContainerXLabel(idxCell)).toBe("Horizontal");
+    expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("We Will Control the Title");
+    expect(beakerPO.getCodeCellOutputContainerYLabelByIdCell(idCell)).toBe("Vertical");
+    expect(beakerPO.getCodeCellOutputContainerXLabelByIdCell(idCell)).toBe("Horizontal");
   });
 
   it('Lines', function() {
-    var idxCell = 5;
-    beakerPO.checkPlotIsPresent(idxCell);
-    expect(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
+    var idCell = "codeXtjWnc";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
   });
 
   it('Stems', function() {
-    var idxCell = 7;
-    beakerPO.checkPlotIsPresent(idxCell);
-    expect(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 0).element(by.tagName('line')).isPresent()).toBe(true);
+    var idCell = "code4NJX5d";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('line')).isPresent()).toBe(true);
   });
 
   it('Bars', function() {
-    var idxCell = 9;
-    beakerPO.checkPlotIsPresent(idxCell);
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 0), 'plot-bar');
-    expect(beakerPO.getCodeCellOutputContainerTitle(idxCell)).toBe("Bars");
+    var idCell = "codefbZDMO";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-bar');
+    expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Bars");
   });
 
   it('Points', function() {
-    var idxCell = 10;
-    beakerPO.checkPlotIsPresent(idxCell);
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 0), 'plot-point');
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 1), 'plot-point');
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 2), 'plot-point');
-    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 3), 'plot-point');
-    expect(beakerPO.getCodeCellOutputContainerTitle(idxCell)).toBe("Changing Point Size, Color, Shape");
+    var idCell = "codeSb2uCM";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-point');
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-point');
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 2), 'plot-point');
+    beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 3), 'plot-point');
+    expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Changing Point Size, Color, Shape");
   });
 
   it('Areas', function() {
-    var idxCell = 12;
-    beakerPO.checkPlotIsPresent(idxCell);
-    expect(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 0).element(by.tagName('polygon')).isPresent()).toBe(true);
-    expect(beakerPO.getPlotSvgElementByIndex(idxCell, 0, 1).element(by.tagName('polygon')).isPresent()).toBe(true);
+    var idCell = "codeZ7NCfO";
+    beakerPO.checkPlotIsPresentByIdCell(idCell);
+    expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('polygon')).isPresent()).toBe(true);
+    expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1).element(by.tagName('polygon')).isPresent()).toBe(true);
   });
 
 });

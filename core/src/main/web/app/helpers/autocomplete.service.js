@@ -16,11 +16,17 @@
 
 (function() {
   'use strict';
-  angular.module('bk.core').factory('autocompleteService', function(codeMirrorExtension, autocompleteParametersService, bkEvaluatorManager, $q) {
+  angular.module('bk.core').factory('autocompleteService', function(codeMirrorExtension, autocompleteParametersService, bkEvaluatorManager, $q, bkUtils) {
 
   var completionActive = false;
   var currentDocumentation = {};
+  var autocompleteParameters = true;
 
+  bkUtils.getBeakerPreference('autocomplete-parameters').then(function(autocompleteParametersPref) {
+    if (autocompleteParametersPref === "false") {
+      autocompleteParameters = false;
+    }
+  });
   var showAutocomplete = function(cm, scope) {
     if (autocompleteParametersService.isActive()) {
       autocompleteParametersService.nextParameter();
@@ -149,7 +155,7 @@
         scope.$broadcast('showDocumentationForAutocomplete', documentation.description, true);
       }
 
-      if (documentation.parameters && !_.isEmpty(documentation.parameters)) {
+      if (documentation.parameters && autocompleteParameters && !_.isEmpty(documentation.parameters)) {
         currentDocumentation = documentation;
         writeCompletion(selectedWord, documentation.parameters, cm, matchedText);
       } else {
@@ -170,7 +176,9 @@
       return;
     }
     _.defer(function() {
-      autocompleteParametersService.startParameterCompletion(cm, currentDocumentation, cursorPosBegin, cursorPosEnd, scope);
+      if (autocompleteParameters) {
+        autocompleteParametersService.startParameterCompletion(cm, currentDocumentation, cursorPosBegin, cursorPosEnd, scope);
+      }
     });
   }
 

@@ -70,7 +70,7 @@
           <ul class="notebook-dashboard-list">
             <li class='session clearfix' ng-repeat='item in recents'>
               <div class="pull-left">
-                <a class='caption notebook-link' href="#" ng-click="openRecent(item)" ng-bind="item.name" eat-click></a>
+                <a class='caption notebook-link' href="#" ng-click="openRecent(item, $event)" ng-bind="item.name" eat-click></a>
                 <div class='light path' ng-if="item.tooltip" ng-bind="item.tooltip"></div>
               </div>
             </li>

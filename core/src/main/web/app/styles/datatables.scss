@@ -7,24 +7,29 @@ $border-color: #D4D0D0;
   }
   .dtmenu input[type='checkbox'] {
     position: absolute;
-    top: 1px;
+    top: 3px;
     left: 5px;
     padding: 3px 4px;
   }
-  .ui-resizable-s span {
-    font-size: 13px;
-    float: right;
+  .dtmenu .checkbox-label {
+    position: absolute;
+    top: 1px;
+    margin-left: 0px !important;
+    &:after {
+      top: 3px;
+    }
   }
 }
 
 table.dataTable {
   margin : 0;
   thead th, tbody td {
+    position: relative;
     padding: 3px 10px 0 20px;
     white-space: nowrap;
     border: 1px solid $border-color;
     border-width: 0 1px 0 0;
-    overflow-x: hidden;
+    overflow: hidden;
     text-overflow: ellipsis;
     &:first-child {
       border-left-width: 1px;
@@ -40,7 +45,7 @@ table.dataTable {
     .filterRow th {
       border-top-width: 0px;
       padding-left: 5px;
-      overflow-x: initial;
+      overflow: initial;
     }
   }
   thead tr {
@@ -183,7 +188,7 @@ a.dtmenu {
 .dt-cell-text {
   position: relative;
   width: 100%;
-  overflow-x: hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
@@ -194,8 +199,10 @@ a.dtmenu {
 }
 
 .bko-table-use-pagination {
-  padding: 10px 10px 0 30px;;
+  padding: 10px 10px 0;
   float: left;
+  position: relative;
+  margin-left: 30px;
   label {
     cursor: pointer;
   }
@@ -230,19 +237,23 @@ table.dataTable.DTFC_Cloned.display tbody tr {
   }
 }
 
+$fix-col-separator-width: 3px;
 
 .DTFC_LeftWrapper table.dataTable thead th:last-child,
 .DTFC_LeftWrapper table.dataTable tbody td:last-child {
-  border-right-width: 3px;
+  border-right-width: $fix-col-separator-width;
 }
 
 .DTFC_RightWrapper table.dataTable thead th:first-child,
 .DTFC_RightWrapper table.dataTable tbody td:first-child {
-  border-left-width: 3px;
+  border-left-width: $fix-col-separator-width;
 }
 
 .left-fix-col-separator {
-  border-right-width: 3px !important;
+  border-right-width: $fix-col-separator-width !important;
+}
+.right-fix-col-separator {
+  border-left-width: $fix-col-separator-width !important;
 }
 
 .menu-separator {

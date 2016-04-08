@@ -105,8 +105,9 @@ tbody tr {
   table thead th {
     cursor:       pointer;
     .bko-menu {
-      float:      left;
-      margin: -6px 0 0 -20px;
+      position: absolute;
+      top: 0px;
+      left: 0px;
       opacity:    0;
       transition: opacity 0.5s;
     }

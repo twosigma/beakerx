@@ -414,6 +414,8 @@
     background-image: url("../../images/sort_both_gray.png");
   }
 
+
+
   table.dataTable.display tbody tr.odd > .sorting_1,
   table.dataTable.order-column.stripe tbody tr.odd > .sorting_1 {
     background-color: $main-theme-panel-background;
@@ -454,13 +456,25 @@
     background-color: #303030;
   }
 
-  table.dataTable tbody tr.selected {
+  table.dataTable tbody tr.selected,
+  table.dataTable tbody tr.selected > .sorting_1,
+  table.dataTable tbody tr.selected > .sorting_2,
+  table.dataTable tbody tr.selected > .sorting_3{
     background-color: #435d72 !important;
   }
 
   table.dataTable thead {
     background-color: $std-btn-bg;
   }
+
+
+  table.dataTable.hover tbody tr:hover,
+  table.dataTable.display tbody tr:hover,
+  table.dataTable.hover tbody tr.hover,
+  table.dataTable.display tbody tr.hover{
+    background-color: $std-hover-bg !important;
+  }
+
 
   //dropdown menu
 
@@ -470,7 +484,7 @@
 
   .dropdown-menu > li > a {
     color: $std-fg-color;
-    &:hover + .glyphicon-ok {
+    &:hover + .glyphicon-ok, &:hover + .fa-check {
       color: $std-fg-color;
     }
   }

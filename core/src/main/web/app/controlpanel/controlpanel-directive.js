@@ -89,10 +89,8 @@
         // ask for tracking permission
         $scope.isAllowAnonymousTracking = false;
         if ((window.beaker === undefined || window.beakerRegister.isEmbedded === undefined) && bkTrack.isNeedPermission()) {
-          bkUtils.httpGet('../beaker/rest/util/getPreference', {
-            'preference': 'allow-anonymous-usage-tracking'
-          }).then(function(allow) {
-            switch (allow.data) {
+          bkUtils.getBeakerPreference('allow-anonymous-usage-tracking').then(function(allow) {
+            switch (allow) {
               case 'true':
                 $scope.isAllowAnonymousTracking = true;
                 break;
@@ -214,9 +212,13 @@
 
         $scope.getRecentMenuItems();
 
-        $scope.openRecent = function(item) {
+        $scope.openRecent = function (item, event) {
           if (_.isFunction(item.action)) {
-            item.action();
+            if ((bkUtils.isMacOS && event.metaKey) || (!bkUtils.isMacOS && event.ctrlKey)) {
+              item.action(true);
+            } else {
+              item.action();
+            }
           }
         };
 

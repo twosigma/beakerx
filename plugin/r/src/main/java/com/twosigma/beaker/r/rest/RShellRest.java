@@ -39,6 +39,8 @@ import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.r.utils.RServerEvaluator;
 
+import static java.lang.String.format;
+
 /**
  * Glue between the REST calls from the R plugin to the Rserve module that manages the R process.
  */
@@ -117,6 +119,19 @@ public class RShellRest {
       return obj;
     }
     return obj;
+  }
+
+  @POST
+  @Path("resetEnvironment")
+  public void resetEnvironment(@FormParam("shellID") String shellId) {
+    logger.fine("shellID="+shellId);
+    if(!this.shells.containsKey(shellId)) {
+      logger.severe(format("cannot find shell with shellId = %s", shellId));
+      return;
+    }
+    RServerEvaluator evaluator = this.shells.get(shellId);
+    evaluator.exit();
+    this.shells.put(shellId, new RServerEvaluator(shellId, evaluator.getSessionId(), corePort, objectSerializerProvider.get()));
   }
 
   @POST

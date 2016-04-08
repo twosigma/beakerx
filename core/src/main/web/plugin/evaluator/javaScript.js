@@ -365,7 +365,12 @@ define(function(require, exports, module) {
       languageVersion: {
         type: "settableEnum",
         name: "JavaScript Version",
-        values: _.mapValues(LANGUAGE_VERSIONS, function(version) {return version.name;})}
+        values: _.mapValues(LANGUAGE_VERSIONS, function(version) {return version.name;})
+      },
+      libraries: {
+        type: "settableSelect",
+        values: ["jQuery", "Angular", "D3", "Backbone", "React", "Ember"]
+      }
     }
   };
   var JavaScript0 = function(settings) {

@@ -32,11 +32,11 @@
   </div>
 
   <label ng-if="property.type === availableProperties.SELECT">{{ property.name }}</label>
-  <ui-select ng-model="evaluator.settings[property.key]" ng-if="property.type === availableProperties.SELECT" ng-change="set(property)">
+  <ui-select ng-model="evaluator.settings[property.key]" ng-if="property.type === availableProperties.SELECT" ng-change="set(property)" append-to-body="true">
     <ui-select-match>
       <span ng-bind="$select.selected.name"></span>
     </ui-select-match>
-    <ui-select-choices repeat="item in (property.values | filter: $select.search)" refresh="callback(property, [$select.search])" refresh-delay=0>
+    <ui-select-choices repeat="item in (property.values | filter: $select.search)">
       <span ng-bind="item"></span>
     </ui-select-choices>
   </ui-select>

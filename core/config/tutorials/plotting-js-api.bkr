@@ -543,6 +543,378 @@
             "lineCount": 13
         },
         {
+            "id": "sectionH4G1bT",
+            "type": "section",
+            "title": "Constant Lines, Constant Bands",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codex7zHdE",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var POSITIVE_INFINITY = 1.0 / 0.0;",
+                    "var NEGATIVE_INFINITY = -1.0 / 0.0;",
+                    "var p = new beaker.Plot()",
+                    "p.add(new beaker.Line({y: [-3, 1, 3, 4, 5]}))",
+                    "p.add(new beaker.ConstantBand({x: [NEGATIVE_INFINITY, 0.5], color: new beaker.Color(128, 128, 128, 50)}))",
+                    "p.add(new beaker.ConstantLine({x: 0.5, style: beaker.StrokeType.DOT, color: beaker.Color.blue}))",
+                    "p.add(new beaker.ConstantLine({y: -1, style: beaker.StrokeType.DASHDOT, color: beaker.Color.blue}))",
+                    "p.add(new beaker.ConstantLine({x: 3, y: 4, color: beaker.Color.gray, width: 5, showLabel: true}))",
+                    "p.add(new beaker.ConstantBand({x: [1, 2], y: [1, 3]}))",
+                    "p.add(new beaker.ConstantBand({x: [4, POSITIVE_INFINITY], color: new beaker.Color(128, 128, 128, 50)}))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 7,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4
+                            ],
+                            "y": [
+                                -3,
+                                1,
+                                3,
+                                4,
+                                5
+                            ],
+                            "type": "Line",
+                            "width": 1.5
+                        }
+                    ],
+                    "constant_lines": [
+                        {
+                            "visible": true,
+                            "type": "ConstantLine",
+                            "x": 0.5,
+                            "width": 1.5,
+                            "style": "DOT",
+                            "color": "#ff0000ff"
+                        },
+                        {
+                            "visible": true,
+                            "type": "ConstantLine",
+                            "y": -1,
+                            "width": 1.5,
+                            "style": "DASHDOT",
+                            "color": "#ff0000ff"
+                        },
+                        {
+                            "visible": true,
+                            "type": "ConstantLine",
+                            "x": 3,
+                            "y": 4,
+                            "showLabel": true,
+                            "width": 5,
+                            "color": "#ff808080"
+                        }
+                    ],
+                    "constant_bands": [
+                        {
+                            "visible": true,
+                            "type": "ConstantBand",
+                            "x": [
+                                null,
+                                0.5
+                            ],
+                            "color": "#32808080"
+                        },
+                        {
+                            "visible": true,
+                            "type": "ConstantBand",
+                            "x": [
+                                1,
+                                2
+                            ],
+                            "y": [
+                                1,
+                                3
+                            ],
+                            "color": "#7f007fff"
+                        },
+                        {
+                            "visible": true,
+                            "type": "ConstantBand",
+                            "x": [
+                                4,
+                                null
+                            ],
+                            "color": "#32808080"
+                        }
+                    ],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10,
+                    "type": "Plot",
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 42,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 10
+        },
+        {
+            "id": "codeytZUqf",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var POSITIVE_INFINITY = 1.0 / 0.0;",
+                    "var NEGATIVE_INFINITY = -1.0 / 0.0;",
+                    "var p = new beaker.Plot() ",
+                    "p.add(new beaker.Line({x: [-3, 1, 2, 4, 5], y: [4, 2, 6, 1, 5]}))",
+                    "p.add(new beaker.ConstantBand({x: [NEGATIVE_INFINITY, 1], color: new beaker.Color(128, 128, 128, 50)}))",
+                    "p.add(new beaker.ConstantBand({x: [1, 2]}))",
+                    "p.add(new beaker.ConstantBand({x: [4, POSITIVE_INFINITY]}))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 4,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "x": [
+                                -3,
+                                1,
+                                2,
+                                4,
+                                5
+                            ],
+                            "y": [
+                                4,
+                                2,
+                                6,
+                                1,
+                                5
+                            ],
+                            "type": "Line",
+                            "width": 1.5
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [
+                        {
+                            "visible": true,
+                            "type": "ConstantBand",
+                            "x": [
+                                null,
+                                1
+                            ],
+                            "color": "#32808080"
+                        },
+                        {
+                            "visible": true,
+                            "type": "ConstantBand",
+                            "x": [
+                                1,
+                                2
+                            ],
+                            "color": "#7f007fff"
+                        },
+                        {
+                            "visible": true,
+                            "type": "ConstantBand",
+                            "x": [
+                                4,
+                                null
+                            ],
+                            "color": "#7f007fff"
+                        }
+                    ],
+                    "texts": [],
+                    "x_auto_range": true,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "log_x": false,
+                    "x_log_base": 10,
+                    "type": "Plot",
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 43,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        },
+        {
             "id": "sectionpe35wC",
             "type": "section",
             "title": "TimePlot",

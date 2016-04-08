@@ -154,6 +154,35 @@
         });
       };
 
+      var ConstantLine = function (data) {
+        if (!data) { data = {}; }
+        Graphics.call(this, data);
+        _.extend(this, {
+          "type": "ConstantLine",
+          "x" : data.x,
+          "y": data.y,
+          "showLabel": data.showLabel,
+          "width" : getValue(data, 'width', 1.5),
+          "style": data.style,
+          "color": getColor(data.color)
+        });
+      };
+      inheritsFrom(ConstantLine, Graphics);
+      //add prototype methods here
+
+      var ConstantBand = function (data) {
+        if (!data) { data = {}; }
+        Graphics.call(this, data);
+        _.extend(this, {
+          "type": "ConstantBand",
+          "x" : data.x,
+          "y": data.y,
+          "color": getColor(getValue(data, 'color', new Color(0, 127, 255, 127)))
+        });
+      };
+      inheritsFrom(ConstantBand, Graphics);
+      //add prototype methods here
+
       var XYGraphics = function (data) {
         if (!data) { data = {}; }
         Graphics.call(this, data);
@@ -382,6 +411,10 @@
       XYChart.prototype.add = function (item) {
         if (item instanceof XYGraphics) {
           this.graphics_list.push(item);
+        } else if (item instanceof ConstantLine) {
+          this.constant_lines.push(item);
+        } else if (item instanceof ConstantBand) {
+          this.constant_bands.push(item);
         } else if (item instanceof Array) {
           for (var i = 0; i < item.length; i++) {
             this.add(item[i]);
@@ -450,6 +483,8 @@
         Points: Points,
         Stems: Stems,
         Area: Area,
+        ConstantLine: ConstantLine,
+        ConstantBand: ConstantBand,
         Crosshair: Crosshair,
         StrokeType: StrokeType,
         ShapeType: ShapeType,

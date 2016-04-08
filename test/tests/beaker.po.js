@@ -507,7 +507,6 @@ var BeakerPageObject = function() {
   };
 
   this.getCodeCellOutputByIdCell = function (idCell) {
-    browser.wait(this.EC.presenceOf($('[cell-id=' + idCell + ']')), 10000);
     return element.all(by.css('[cell-id=' + idCell + ']')).get(0);
   };
 
@@ -515,7 +514,6 @@ var BeakerPageObject = function() {
     if (!containerIdx)
       containerIdx = 0;
     this.scrollToCodeCellOutputByIdCell(codeCellOutputId);
-    browser.wait(this.EC.presenceOf($('[cell-id=' + codeCellOutputId + ']')), 10000);
     expect(this.getPlotMaingByIdCell(codeCellOutputId, containerIdx).isPresent()).toBe(true);
   };
 

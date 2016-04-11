@@ -538,6 +538,7 @@ var BeakerPageObject = function() {
     if (!containerIdx)
       containerIdx = 0;
     this.scrollToCodeCellOutputByIdCell(idCell);
+    browser.sleep(1000);
     expect(this.getDtContainerByIdCell(idCell, containerIdx).isPresent()).toBe(true);
   }
 

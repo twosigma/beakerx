@@ -18,7 +18,7 @@ var config = {
   seleniumAddress: 'http://localhost:4444/wd/hub',
   framework: 'jasmine2',
   allScriptsTimeout: 100000,
-  restartBrowserBetweenTests: true,
+  restartBrowserBetweenTests: false,
   jasmineNodeOpts: {
     defaultTimeoutInterval: 100000,
     print: function() {}
@@ -36,23 +36,7 @@ var config = {
     }));
   },
   specs: [
-    'tests/easyform.js',
-    'tests/landing-page.js',
-    'tests/notebook.js',
-    'tests/autotranslation.js',
-    'tests/code-cell.js',
-    'tests/text-cell.js',
-    'tests/cell-menu.js',
-    'tests/language-manager.js',
-    'tests/bugs.js',
-    'tests/vim-mode.js',
-    'tests/charting-tutorial.js',
-    'tests/heatmap-tutorial.js',
-    'tests/charting-tutorial2.js',
-    'tests/tutorials/language_demos/sql-tutorial.js',
-    'tests/tutorials/language_demos/java-tutorial.js',
-    'tests/tutorials/language_demos/clojure-tutorial.js',
-    'tests/tutorials/language_demos/python-tutorial.js'
+    'tests/category-plot-tutorial.js'
   ]
 };
 

@@ -29,7 +29,8 @@
                     "mode": "javascript",
                     "background": "#FFE0F0"
                 }
-            }
+            },
+            "languageVersion": "ES2015"
         },
         {
             "name": "Node",
@@ -70,6 +71,7 @@
                     "var count = 0;",
                     "var server = http.createServer(function (request, response) {",
                     "  response.setHeader(\"Access-Control-Allow-Origin\", \"*\"); // See Issue #1397",
+                    "  response.setHeader(\"Access-Control-Allow-Headers\", \"X-XSRF-TOKEN\");",
                     "  response.writeHead(200, {\"Content-Type\": \"text/plain\"});",
                     "  response.end(\"Hello from Node \" + count);",
                     "  count = count + 1;",
@@ -86,7 +88,7 @@
                 "height": 36
             },
             "evaluatorReader": true,
-            "lineCount": 10
+            "lineCount": 11
         },
         {
             "id": "codeYLvzUk",
@@ -104,7 +106,7 @@
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<div id=\"message\">Hello from Node 1000</div>"
+                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<div id=\"message\">Hello from Node 1003</div>"
                 },
                 "height": 35
             },
@@ -139,9 +141,9 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "result": "12.775ms per HTTP call",
+                "result": "11.382ms per HTTP call",
                 "pluginName": "JavaScript",
-                "elapsedTime": 12793,
+                "elapsedTime": 11468,
                 "height": 36
             },
             "evaluatorReader": true,

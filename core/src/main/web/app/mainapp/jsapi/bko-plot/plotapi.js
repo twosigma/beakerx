@@ -186,6 +186,11 @@
       var XYGraphics = function (data) {
         if (!data) { data = {}; }
         Graphics.call(this, data);
+        if (!_.isEmpty(data.x) && data.x[0] instanceof Date) {
+          for (var i = 0; i < data.x.length; i++) {
+            data.x[i] = data.x[i].getTime();
+          }
+        }
         _.extend(this, {
           "x" : getValue(data, 'x', data.y ? _.range(data.y.length) : []),
           "y": data.y,
@@ -586,6 +591,34 @@
       inheritsFrom(SimpleTimePlot, TimePlot);
       //add prototype methods here
 
+      var CombinedPlot = function (data){
+        if (!data) { data = {}; }
+        _.extend(this, {
+          "type": 'CombinedPlot',
+          "init_width": getValue(data, 'initWidth', 640),
+          "init_height": getValue(data, 'initHeight', 480),
+          "title": data.title,
+          "x_label": data.xLabel,
+          "plots": getValue(data, 'plots', []),
+          "weights": getValue(data, 'weights', [])
+        });
+        this.version = 'groovy';
+      };
+      //add prototype methods here
+      CombinedPlot.prototype.add = function (item, weight) {
+        if (item instanceof XYChart) {
+          this.plots.push(item);
+          this.weights.push(weight || 1);
+        } else if (item instanceof Array) {
+          for (var i = 0; i < item.length; i++) {
+            this.add(item[i], 1);
+          }
+        } else {
+          throw new Error("CombinedPlot takes XYChart or List of XYChart");
+        }
+        return this;
+      };
+
       //Plots//
 
       var api = {
@@ -593,6 +626,7 @@
         TimePlot: TimePlot,
         NanoPlot: NanoPlot,
         SimpleTimePlot: SimpleTimePlot,
+        CombinedPlot: CombinedPlot,
         YAxis: YAxis,
         Line: Line,
         Bars: Bars,

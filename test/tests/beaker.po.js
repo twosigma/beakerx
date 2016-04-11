@@ -65,7 +65,7 @@ var BeakerPageObject = function() {
         .thenCatch(function() {
           return false;
         });
-    }, 5000);
+    }, 100000);
 
     return element(by.css('.modal-submit')).click();
   };
@@ -79,7 +79,7 @@ var BeakerPageObject = function() {
       .thenCatch(function() {
         return false;
       });
-    }, 10000);
+    }, 100000);
   };
 
   this.openMenuAtIndex = function(index) {
@@ -108,25 +108,24 @@ var BeakerPageObject = function() {
   };
 
   this.setNormalEditMode = function() {
-    this.setEditMode('Normal');
+    this.setEditMode().then(element(by.css('#normal-edit-mode-menuitem')).click);
   };
 
   this.setEmacsEditMode = function() {
-    this.setEditMode('Emacs');
+    this.setEditMode().then(element(by.css('#emacs-edit-mode-menuitem')).click);
   };
 
   this.setVimEditMode = function () {
-    this.setEditMode('Vim');
+    this.setEditMode().then(element(by.css('#vim-edit-mode-menuitem')).click);
   };
 
   this.setSublimeEditMode = function() {
-    this.setEditMode('Sublime');
+    this.setEditMode().then(element(by.css('#sublime-edit-mode-menuitem')).click);
   };
 
-  this.setEditMode = function(mode) {
+  this.setEditMode = function() {
     element(by.css('.notebook-menu')).click();
-    browser.actions().mouseMove(element(by.css('.edit-mode-menuitem'))).perform();
-    element(by.partialLinkText(mode)).click();
+    return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
   };
 
   this.isCellMenuOpen = function(opts) {
@@ -346,7 +345,7 @@ var BeakerPageObject = function() {
       .thenCatch(function() {
         return false;
       });
-    }, 5000);
+    }, 100000);
   };
 
   this.insertNewCell = function() {

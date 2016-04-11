@@ -74,6 +74,10 @@ public class RServerEvaluator {
   protected workerThread myWorker;
   private int corePort;
 
+  public String getSessionId() {
+    return sessionId;
+  }
+
   class MyTranscoder extends ImageTranscoder {
     private BufferedImage image = null;
     public BufferedImage createImage(int w, int h) {

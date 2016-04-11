@@ -469,12 +469,6 @@
         $scope.getCellAlign    =  [];
         $scope.getCellDisp     =  [];
         $scope.getCellDispOpts =  [];
-        $scope.pagination = {
-          'use' : true,
-          'rowsToDisplay' : DEFAULT_PAGE_LENGTH,
-          'fixLeft' : 0,
-          'fixRight' : 0
-        };
 
         $scope.getCellDispOptsF = function(i) {
           return $scope.getCellDispOpts[i];
@@ -573,9 +567,15 @@
                       $scope.tableOrder.push([$scope.colorder[order[i][0]], order[i][1]]);
                     }
                   }, 0);
+                } else {
+                  $(this).blur(); // Remove focus outline
                 }
               });
             }
+          });
+          $.each($scope.colreorg.s.dt.aoColumns, function (i, column) {
+            $scope.getColumnFilter($scope.table.column(column.idx + ":visible"))
+              .closest('th').attr('data-column-index', i);
           });
         };
 
@@ -1136,7 +1136,7 @@
             scope.tableOrder        = undefined;
             scope.pagination = {
               'use' : true,
-              'rowsToDisplay' : 50,
+              'rowsToDisplay' : DEFAULT_PAGE_LENGTH,
               'fixLeft' : 0,
               'fixRight' : 0
             };

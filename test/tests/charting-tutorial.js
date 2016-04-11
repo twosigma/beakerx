@@ -19,22 +19,12 @@ var BeakerPageObject = require('./beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Charting Tutorial', function () {
+describe('Charting Tutorial', function (done) {
 
-  beforeEach(function (done) {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true").then(done);
-
-    browser.waitForAngular();
-    beakerPO.waitUntilLoadingIndicator();
-
-  });
-
-  afterEach(function (done) {
-    beakerPO.closeNotebook()
-      .then(done);
-  });
-
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true")
+        .then(done)
+        .then(beakerPO.waitUntilLoadingCellOutput());
 
   /**
    * Testing

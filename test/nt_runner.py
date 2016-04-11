@@ -39,6 +39,7 @@ for line in iter(beaker.stdout.readline, ''):
 
 os.chdir("../test/node_modules/protractor-flake/bin")
 result = os.system("node protractor-flake --node-bin node --max-attempts=3 -- ../../../protractorConf.js");
+result2 = os.system("node protractor-flake --node-bin node --max-attempts=3 -- ../../../protractorWithoutRestartBrowserConf.js");
 
 # Skipping memory tests because they hang on Jenkins
 #os.system("node ../../../memory-tests.js")
@@ -50,5 +51,5 @@ response = urllib2.urlopen('http://localhost:4444/selenium-server/driver/?cmd=sh
 html = response.read()
 
 
-if result:
+if result and result2:
     sys.exit(20)

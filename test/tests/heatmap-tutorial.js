@@ -19,19 +19,13 @@ var BeakerPageObject = require('./beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('HeatMap Tutorial', function () {
+describe('HeatMap Tutorial', function (done) {
 
-    beforeEach(function (done) {
-        beakerPO = new BeakerPageObject();
-        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&readOnly=true")
-            .then(done)
-            .then(beakerPO.waitUntilLoadingCellOutput());
-    });
+    beakerPO = new BeakerPageObject();
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&readOnly=true")
+        .then(done)
+        .then(beakerPO.waitUntilLoadingCellOutput());
 
-    afterEach(function (done) {
-        beakerPO.closeNotebook()
-            .then(done);
-    });
 
     it('Basic HeatMap Example', function () {
         beakerPO.checkPlotIsPresent(1);

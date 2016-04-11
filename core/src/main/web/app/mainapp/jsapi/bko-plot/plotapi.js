@@ -230,20 +230,20 @@
         _.extend(this, {
           "type": "Bars"
         });
-        if (data.widths) {
-          this.widths = data.widths;
+        if (data.width instanceof Array) {
+          this.widths = data.width;
         } else {
           this.width = data.width;
         }
-        if (data.color) {
+        if (data.color instanceof Array) {
           this.colors = getColor(data.color);
         } else {
           this.color = getColor(data.color);
         }
-        if (data.outlineColors) {
-          this.outline_colors = data.outline_colors;
+        if (data.outlineColor instanceof Array) {
+          this.outline_colors = getColor(data.outlineColor);
         } else {
-          this.outline_color = data.outlineColor;
+          this.outline_color = getColor(data.outlineColor);
         }
       };
       inheritsFrom(Bars, BasedXYGraphics);
@@ -255,8 +255,8 @@
         _.extend(this, {
           "type": "Points"
         });
-        if (data.sizes) {
-          this.sizes = data.sizes;
+        if (data.size instanceof Array) {
+          this.sizes = data.size;
         } else {
           this.size = getValue(data, 'size', 6.0);
         }
@@ -265,20 +265,20 @@
         } else {
           this.shape = getValue(data, 'shape', ShapeType.DEFAULT);
         }
-        if (data.fills) {
-          this.fills = data.fills;
+        if (data.fill instanceof Array) {
+          this.fills = data.fill;
         } else {
           this.fill = data.fill;
         }
-        if (data.color) {
+        if (data.color instanceof Array) {
           this.colors = getColor(data.color);
         } else {
           this.color = getColor(data.color);
         }
-        if (data.outlineColors) {
-          this.outline_colors = data.outline_colors;
+        if (data.outlineColor instanceof Array) {
+          this.outline_colors = getColor(data.outlineColor);
         } else {
-          this.outline_color = data.outlineColor;
+          this.outline_color = getColor(data.outlineColor);
         }
       };
       inheritsFrom(Points, XYGraphics);
@@ -471,12 +471,128 @@
       };
       inheritsFrom(NanoPlot, TimePlot);
       //add prototype methods here
+
+      var SimpleTimePlot = function (rates, columnNames, params) {
+        var data = {
+          "use_tool_tip": true,
+          "show_legend": true,
+          "domain_axis_label": 'Time'
+        };
+        if (params) {
+          _.extend(data, params);
+        }
+        TimePlot.call(this, data);
+
+        function getColumnsWithoutData(dataColumnsNames) {
+          var columnsCopy = _.clone(columnNames);
+          return _.filter(columnsCopy, function (o) {
+            return dataColumnsNames.indexOf(o) < 0;
+          });
+        }
+
+        function getChartColors() {
+          var chartColors = [];
+          if (colors != null) {
+            for (var i = 0; i < columnNames.length; i++) {
+              if (i < colors.length) {
+                chartColors.push(createChartColor(colors[i]));
+              }
+            }
+          }
+          return chartColors;
+        }
+
+        function createChartColor(color) {
+          if (color instanceof Array) {
+            try {
+              return new Color(color[0], color[1], color[2]);
+            } catch (e) {
+              throw new Error("Color list too short");
+            }
+          } else {
+            return color;
+          }
+        }
+
+        var colors = data.colors;
+        var displayLines = getValue(data, 'displayLines', true);
+        var displayPoints = getValue(data, 'displayPoints', false);
+        var timeColumn = getValue(data, 'timeColumn', 'time');
+        var displayNames = data.displayNames;
+
+        var xs = [];
+        var yss = [];
+        var dataColumnsNames = [];
+        if (rates != null && columnNames != null) {
+          for (var i = 0; i < rates.length; i++) {
+            var row = rates[i];
+            var x = row[timeColumn].getTime();
+            xs.push(x);
+
+            for (var j = 0; j < columnNames.length; j++) {
+              var column = columnNames[j];
+
+              if (j >= yss.length) {
+                yss.push([]);
+              }
+              yss[j].push(row[column]);
+            }
+          }
+          if (!_.isEmpty(rates)) {
+            dataColumnsNames = _.keys(rates[0]).slice(0);
+          }
+          var columnsWithoutData = getColumnsWithoutData(dataColumnsNames);
+          if (!_.isEmpty(columnsWithoutData)) {
+            throw new Error("Chart data not found for columns");
+          }
+
+          var colors = getChartColors();
+
+          for (var i = 0; i < yss.length; i++) {
+            var ys = yss[i];
+
+            if (displayLines) {
+              var lineData = {x: xs, y: ys};
+
+              if (displayNames != null && i < displayNames.length) {
+                lineData.displayName = displayNames[i];
+              } else {
+                lineData.displayName = columnNames[i];
+              }
+              if (i < colors.length) {
+                lineData.color = colors[i];
+              }
+
+              this.add(new Line(lineData));
+            }
+
+            if (displayPoints) {
+              var pointData = {x: xs, y: ys};
+              if (displayNames != null && i < displayNames.length) {
+                pointData.displayName = displayNames[i];
+              } else {
+                pointData.displayName = columnNames[i];
+              }
+              if (i < colors.length) {
+                pointData.color = colors[i];
+              }
+
+              this.add(new Points(pointData));
+            }
+          }
+
+        }
+      };
+      inheritsFrom(SimpleTimePlot, TimePlot);
+      //add prototype methods here
+
       //Plots//
 
       var api = {
         Plot: Plot,
         TimePlot: TimePlot,
         NanoPlot: NanoPlot,
+        SimpleTimePlot: SimpleTimePlot,
         YAxis: YAxis,
         Line: Line,
         Bars: Bars,

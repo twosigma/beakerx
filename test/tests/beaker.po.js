@@ -403,6 +403,19 @@ var BeakerPageObject = function() {
     }, 100000);
   };
 
+  this.waitUntilLoadingPlot = function(codeCellOutputIdx, containerIdx) {
+    var self = this;
+    return browser.wait(function() {
+      return self.getPlotLegendContainer(codeCellOutputIdx, containerIdx).isPresent()
+        .then(function(present) {
+          return present;
+        })
+        .thenCatch(function() {
+          return false;
+        });
+    }, 10000);
+  };
+
   this.waitUntilLoadingIndicator = function() {
     browser.wait(this.EC.presenceOf($('.navbar-text > i')), 10000);
   };
@@ -415,7 +428,7 @@ var BeakerPageObject = function() {
     if (!containerIdx)
       containerIdx = 0;
     this.scrollToCodeCellOutput(codeCellOutputIdx);
-    browser.sleep(1000);
+    this.waitUntilLoadingPlot(codeCellOutputIdx, containerIdx);
     expect(this.getPlotMaing(codeCellOutputIdx, containerIdx).isPresent()).toBe(true);
   };
 
@@ -507,7 +520,7 @@ var BeakerPageObject = function() {
     if (!containerIdx)
       containerIdx = 0;
     this.scrollToCodeCellOutputByIdCell(codeCellOutputId);
-    browser.sleep(1000);
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + codeCellOutputId + ']'), 10000));
     expect(this.getPlotMaingByIdCell(codeCellOutputId, containerIdx).isPresent()).toBe(true);
   };
 
@@ -540,7 +553,7 @@ var BeakerPageObject = function() {
     if (!containerIdx)
       containerIdx = 0;
     this.scrollToCodeCellOutputByIdCell(idCell);
-    browser.sleep(1000);
+    browser.wait(this.EC.presenceOf($('[cell-id=' + idCell + ']'), 10000));
     expect(this.getDtContainerByIdCell(idCell, containerIdx).isPresent()).toBe(true);
   }
 

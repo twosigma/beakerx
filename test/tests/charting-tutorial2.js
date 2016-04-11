@@ -32,6 +32,7 @@ describe('Charting Tutorial', function (done) {
      */
     it('Constant Lines', function() {
         var idCell = "coderpjgfG";
+        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
         beakerPO.checkPlotIsPresentByIdCell(idCell);
 
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
@@ -45,6 +46,8 @@ describe('Charting Tutorial', function (done) {
 
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-constband');
+        idCell = "codeAw8sVM";
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
     });
 
     it('Text', function() {
@@ -62,6 +65,9 @@ describe('Charting Tutorial', function (done) {
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 7), 'plot-text');
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 8), 'plot-text');
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 9), 'plot-text');
+
+        idCell = "codeFSqssT";
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
     });
 
     it('Simple Time Plot', function() {
@@ -101,6 +107,9 @@ describe('Charting Tutorial', function (done) {
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1).element(by.tagName('circle')).isPresent()).toBe(true);
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 1, 0).element(by.tagName('circle')).isPresent()).toBe(true);
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 1, 1).element(by.tagName('circle')).isPresent()).toBe(true);
+
+        idCell = "codekJB3sS";
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
     });
 
     it('Date Objects for the Time Coordinate', function() {

@@ -19,14 +19,13 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Java Tutorial', function () {
+describe('Java Tutorial', function (done) {
 
-    beforeEach(function (done) {
-        beakerPO = new BeakerPageObject();
-        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FjavaTutorial.bkr&readOnly=true").then(done);
+    beakerPO = new BeakerPageObject();
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FjavaTutorial.bkr&readOnly=true")
+        .then(done)
+        .then(beakerPO.waitUntilLoadingCellOutput());
 
-        beakerPO.waitUntilLoadingCellOutput();
-    });
 
     it('Java Examples', function () {
         var idCell = "codesvwb39";

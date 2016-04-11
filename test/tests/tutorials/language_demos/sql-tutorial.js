@@ -19,14 +19,13 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('SQL Tutorial', function () {
+describe('SQL Tutorial', function (done) {
 
-    beforeEach(function (done) {
-        beakerPO = new BeakerPageObject();
-        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fsql-examples.bkr&readOnly=true").then(done);
+    beakerPO = new BeakerPageObject();
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fsql-examples.bkr&readOnly=true")
+        .then(done)
+        .then(beakerPO.waitUntilLoadingCellOutput());
 
-        beakerPO.waitUntilLoadingCellOutput();
-    });
 
     it('Basic Query', function () {
         var idCell = "codef4U7zn";

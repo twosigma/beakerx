@@ -39,7 +39,11 @@ var config = {
     'tests/category-plot-tutorial.js',
     'tests/charting-tutorial.js',
     'tests/heatmap-tutorial.js',
-    'tests/charting-tutorial2.js'
+    'tests/charting-tutorial2.js',
+    'tests/tutorials/language_demos/sql-tutorial.js',
+    'tests/tutorials/language_demos/java-tutorial.js',
+    'tests/tutorials/language_demos/clojure-tutorial.js',
+    'tests/tutorials/language_demos/python-tutorial.js'
   ]
 };
 

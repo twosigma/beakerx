@@ -322,6 +322,20 @@
       inheritsFrom(Area, BasedXYGraphics);
       //add prototype methods here
 
+      var Text = function (data) {
+        if (!data) { data = {}; }
+        _.extend(this, {
+          "type": 'Text',
+          "x": getValue(data, 'x', 0),
+          "y": getValue(data, 'y', 0),
+          "show_pointer": getValue(data, 'showPointer', true),
+          "text": getValue(data, 'text', ''),
+          "pointer_angle": getValue(data, 'pointerAngle', (-0.25) * Math.PI),
+          "color": getColor(data.color),
+          "size": getValue(data, 'size', 13)
+        });
+      };
+
       var XYStacker = function () {};
       XYStacker.stack = function (graphicsList) {
         if(_.isEmpty(graphicsList) || graphicsList.length === 1) { return graphicsList; }
@@ -439,6 +453,8 @@
       XYChart.prototype.add = function (item) {
         if (item instanceof XYGraphics) {
           this.graphics_list.push(item);
+        } else if (item instanceof Text) {
+          this.texts.push(item);
         } else if (item instanceof ConstantLine) {
           this.constant_lines.push(item);
         } else if (item instanceof ConstantBand) {
@@ -633,6 +649,7 @@
         Points: Points,
         Stems: Stems,
         Area: Area,
+        Text: Text,
         ConstantLine: ConstantLine,
         ConstantBand: ConstantBand,
         Crosshair: Crosshair,

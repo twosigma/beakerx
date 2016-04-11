@@ -36,7 +36,10 @@ var config = {
     }));
   },
   specs: [
-    'tests/category-plot-tutorial.js'
+    'tests/category-plot-tutorial.js',
+    'tests/charting-tutorial.js',
+    'tests/heatmap-tutorial.js',
+    'tests/charting-tutorial2.js'
   ]
 };
 

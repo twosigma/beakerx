@@ -415,6 +415,7 @@ var BeakerPageObject = function() {
     if (!containerIdx)
       containerIdx = 0;
     this.scrollToCodeCellOutput(codeCellOutputIdx);
+    browser.sleep(1000);
     expect(this.getPlotMaing(codeCellOutputIdx, containerIdx).isPresent()).toBe(true);
   };
 
@@ -506,6 +507,7 @@ var BeakerPageObject = function() {
     if (!containerIdx)
       containerIdx = 0;
     this.scrollToCodeCellOutputByIdCell(codeCellOutputId);
+    browser.sleep(1000);
     expect(this.getPlotMaingByIdCell(codeCellOutputId, containerIdx).isPresent()).toBe(true);
   };
 

@@ -84,6 +84,7 @@ RUN apt-get install -y r-base r-base-dev libxml2-dev libssl-dev libcurl4-gnutls-
     Rscript -e "install.packages('RCurl',,'http://cran.us.r-project.org')" && \
     Rscript -e "install.packages('jpeg',,'http://cran.us.r-project.org')" && \
     Rscript -e "install.packages('png',,'http://cran.us.r-project.org')" && \
+    Rscript -e "install.packages('roxygen2',,'http://cran.us.r-project.org')" && \
     Rscript -e "install.packages('base64enc',,'http://cran.us.r-project.org')"
     
 

@@ -41,7 +41,7 @@ os.chdir("../test/node_modules/protractor-flake/bin")
 result = os.system("node protractor-flake --node-bin node --max-attempts=3 -- ../../../protractorConf.js");
 
 # Skipping memory tests because they hang on Jenkins
-# os.system("node memory-tests.js")
+os.system("node ../../../memory-tests.js")
 
 beaker.terminate()
 

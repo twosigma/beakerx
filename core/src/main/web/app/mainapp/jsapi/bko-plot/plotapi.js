@@ -472,7 +472,7 @@
       inheritsFrom(NanoPlot, TimePlot);
       //add prototype methods here
 
-      var SimpleTimePlot = function (rates, columnNames, params) {
+      var SimpleTimePlot = function (tableData, columnNames, params) {
         var data = {
           "use_tool_tip": true,
           "show_legend": true,
@@ -523,9 +523,9 @@
         var xs = [];
         var yss = [];
         var dataColumnsNames = [];
-        if (rates != null && columnNames != null) {
-          for (var i = 0; i < rates.length; i++) {
-            var row = rates[i];
+        if (tableData != null && columnNames != null) {
+          for (var i = 0; i < tableData.length; i++) {
+            var row = tableData[i];
             var x = row[timeColumn].getTime();
             xs.push(x);
 
@@ -538,8 +538,8 @@
               yss[j].push(row[column]);
             }
           }
-          if (!_.isEmpty(rates)) {
-            dataColumnsNames = _.keys(rates[0]).slice(0);
+          if (!_.isEmpty(tableData)) {
+            dataColumnsNames = _.keys(tableData[0]).slice(0);
           }
           var columnsWithoutData = getColumnsWithoutData(dataColumnsNames);
           if (!_.isEmpty(columnsWithoutData)) {

@@ -36,7 +36,7 @@
     <ui-select-match>
       <span ng-bind="$select.selected.name"></span>
     </ui-select-match>
-    <ui-select-choices repeat="item in (jsCdnLibs | filter: $select.search)" refresh="searchRemote(property.remote + '?search='+$select.search+'&fields=version,description', 'jsCdnLibs')" refresh-delay="500">
+    <ui-select-choices repeat="item in (jsCdnLibs | filter: $select.search)" refresh="searchRemote(property.remote + '?search='+$select.search+'&fields=version,description,homepage', 'jsCdnLibs')" refresh-delay="500" position="up">
       <span>{{item.name}} - v{{item.version}} - {{item.description}}</span>
     </ui-select-choices>
   </ui-select>

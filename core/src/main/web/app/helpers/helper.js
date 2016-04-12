@@ -191,26 +191,26 @@
       newSession: function(empty) {
         return bkCoreManager.newSession(empty);
       },
-      getBaseUrl: function() {
+      getBaseUrl: function () {
         return bkUtils.getBaseUrl();
       },
-        openNotebookInNewWindow: function (notebookUri, uriType, readOnly, format) {
-          var params = {
-            'uri': notebookUri
-          };
-          if (uriType) {
-            params.type = uriType;
-          }
-          if (readOnly) {
-            params.readOnly = readOnly;
-          }
-          if (format) {
-            params.format = format;
-          }
-          bkHelper.openWindow(
-            bkHelper.getBaseUrl() + "/open?" + $httpParamSerializer(params),
-            'notebook');
-        },
+      openNotebookInNewWindow: function (notebookUri, uriType, readOnly, format) {
+        var params = {
+          'uri': notebookUri
+        };
+        if (uriType) {
+          params.type = uriType;
+        }
+        if (readOnly) {
+          params.readOnly = readOnly;
+        }
+        if (format) {
+          params.format = format;
+        }
+        bkHelper.openWindow(
+          bkHelper.getBaseUrl() + "/open?" + $httpParamSerializer(params),
+          'notebook');
+      },
       // Open tab/window functions that handle the electron case
       openWindow: function(path, type) {
         if (bkUtils.isElectron) {

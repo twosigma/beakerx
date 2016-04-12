@@ -40,7 +40,7 @@
       <h1>{{title}}</h1>
       <form ng-submit="publishAction()">
         <label for="category" class="full">Notebook name others will see when you publish:</label>
-        <input ng-model="model.name" focus="true" required type="text" class="field">
+        <input ng-model="model.name" focus="true" ng-required="model['category-id']" type="text" class="field">
         <label for="category" class="full">Notebook description:</label>
         <textarea ng-model="model.description" rows="3" class="field"></textarea>
         <label for="category" class="full">Category that describes your notebook:</label>

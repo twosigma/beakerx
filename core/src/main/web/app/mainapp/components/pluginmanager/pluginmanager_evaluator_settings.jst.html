@@ -34,10 +34,10 @@
   <label ng-if="property.type === availableProperties.SELECT">{{ property.name }}</label>
   <ui-select multiple ng-model="evaluator.settings[property.key]" ng-if="property.type === availableProperties.SELECT">
     <ui-select-match>
-      <span ng-bind="$select.selected.name"></span>
+      <span>{{$item.name}}</span>
     </ui-select-match>
-    <ui-select-choices repeat="item in (jsCdnLibs | filter: $select.search)" refresh="searchRemote(property.remote + '?search='+$select.search+'&fields=version,description,homepage', 'jsCdnLibs')" refresh-delay="500" position="up">
-      <span>{{item.name}} - v{{item.version}} - {{item.description}}</span>
+    <ui-select-choices repeat="item in (jsCdnLibs | filter: $select.search)" refresh="searchRemote(property.remote + '?search='+$select.search+'&fields=version,description,homepage', 'jsCdnLibs')" refresh-delay="500" position="up" on-highlight="showLibraryPreview(item)">
+      <span>{{::item.name}} - v{{::item.version}} - {{::item.description}}</span>
     </ui-select-choices>
   </ui-select>
 

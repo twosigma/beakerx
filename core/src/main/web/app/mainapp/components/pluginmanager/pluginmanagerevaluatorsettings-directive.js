@@ -48,6 +48,10 @@
           });
         };
 
+        $scope.showLibraryPreview = function(library) {
+          console.log("PREVIEW", library);
+        };
+
         $scope.set = function(property) {
           if (property.action) {
             $scope.evaluator.perform(property.key);

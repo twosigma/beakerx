@@ -673,9 +673,12 @@
           return [];
         }
       },
-      hasIPythonEvaluatorsLoaded: function () {
-        return _.intersection(this.getEvaluators(), ['IPython', 'IRuby', 'Julia', 'Python3', 'Torch']).length > 0;
-      },  
+      setIPythonCookiesCleaned: function (value) {
+        this.iPythonCookiesCleaned = value;
+      },
+      isIPythonCookiesCleaned: function () {
+        return this.iPythonCookiesCleaned;
+      },
       go2FirstErrorCodeCell: function() {
         if (getCurrentApp() && getCurrentApp().go2FirstErrorCodeCell) {
           return getCurrentApp().go2FirstErrorCodeCell();

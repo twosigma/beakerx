@@ -55,7 +55,7 @@ define(function(require, exports, module) {
           shellID = myTorch.utils.uuid();
         }
 
-        if (!bkHelper.hasIPythonEvaluatorsLoaded()) {
+        if (!bkHelper.isIPythonCookiesCleaned()) {
           var theCookies = document.cookie.split(';');
           for (var i = 0; i < theCookies.length; i++) {
             if (theCookies[i].indexOf(' username-127-0-0-1-') === 0) {
@@ -63,6 +63,7 @@ define(function(require, exports, module) {
               document.cookie = theCookie[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/";
             }
           }
+          bkHelper.setIPythonCookiesCleaned(true);
         }
         
         bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"),

@@ -42,17 +42,7 @@
       }
     };
 
-    var rgbaToHex = function (r, g, b, a) {
-      a = 0xFF | a;
-      var num = ((a & 0xFF) << 24) |
-        ((r & 0xFF) << 16) |
-        ((g & 0xFF) << 8)  |
-        ((b & 0xFF));
-      if(num < 0) {
-        num = 0xFFFFFFFF + num + 1;
-      }
-      return "#" + num.toString(16);
-    };
+    var rgbaToHex = bkUtils.rgbaToHex;
     var defaultPlotColors = {};
     defaultPlotColors[GLOBALS.THEMES.DEFAULT] = [
       rgbaToHex(140, 29, 23),  // red
@@ -60,7 +50,7 @@
       rgbaToHex(150, 130, 54), // yellow
       rgbaToHex(20, 30, 120),  // violet
       rgbaToHex(54, 100, 54),  // green
-      rgbaToHex(60, 30, 50),   // dark
+      rgbaToHex(60, 30, 50)    // dark
     ];
     defaultPlotColors[GLOBALS.THEMES.AMBIANCE] = [
       rgbaToHex(191, 39, 31),   // red
@@ -68,7 +58,7 @@
       rgbaToHex(230, 230, 65),  // yellow
       rgbaToHex(30, 40, 190),   // violet
       rgbaToHex(75, 160, 75),   // green
-      rgbaToHex(120, 100, 100), // dark
+      rgbaToHex(120, 100, 100)  // dark
     ];
 
       var bkHelper = {
@@ -129,7 +119,6 @@
         return bkCoreManager.getTheme();
       },
       defaultPlotColors: defaultPlotColors,
-      rgbaToHex: rgbaToHex,
       setThemeToBeakerObject: function () {
         var beakerObject = this.getBeakerObject().beakerObj;
         if (beakerObject && beakerObject.prefs) {

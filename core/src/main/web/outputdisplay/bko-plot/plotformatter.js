@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils, plotConverter, heatmapConverter, PlotAxis, plotFactory, plotUtils, bkHelper) {
+  var retfunc = function(bkUtils, plotConverter, heatmapConverter, PlotAxis, plotFactory, plotUtils) {
 
     var createNewModel = function (model) {
 
@@ -633,5 +633,5 @@
     };
   };
   beakerRegister.bkoFactory('plotFormatter',
-    ["bkUtils", 'plotConverter', 'heatmapConverter', 'PlotAxis', 'plotFactory', 'plotUtils', 'bkHelper', retfunc]);
+    ["bkUtils", 'plotConverter', 'heatmapConverter', 'PlotAxis', 'plotFactory', 'plotUtils', retfunc]);
 })();

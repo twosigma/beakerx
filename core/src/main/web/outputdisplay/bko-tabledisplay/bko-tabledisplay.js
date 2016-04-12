@@ -469,12 +469,6 @@
         $scope.getCellAlign    =  [];
         $scope.getCellDisp     =  [];
         $scope.getCellDispOpts =  [];
-        $scope.pagination = {
-          'use' : true,
-          'rowsToDisplay' : DEFAULT_PAGE_LENGTH,
-          'fixLeft' : 0,
-          'fixRight' : 0
-        };
 
         $scope.getCellDispOptsF = function(i) {
           return $scope.getCellDispOpts[i];
@@ -1142,7 +1136,7 @@
             scope.tableOrder        = undefined;
             scope.pagination = {
               'use' : true,
-              'rowsToDisplay' : 50,
+              'rowsToDisplay' : DEFAULT_PAGE_LENGTH,
               'fixLeft' : 0,
               'fixRight' : 0
             };

@@ -21,6 +21,7 @@ var webdriver = require('./node_modules/drool/node_modules/selenium-webdriver');
 var config = {
   chromeOptions: 'no-sandbox'
 };
+//var until = require('./node_modules/drool/node_modules/selenium-webdriver/lib/webdriver/until');
 var driver;
 if (typeof process.env.chromeBinaryPath !== 'undefined') {
   config.chromeBinaryPath = process.env.chromeBinaryPath;
@@ -82,12 +83,12 @@ function addAndRemoveCell() {
 }
 
 function evaluateCell() {
-  waitForElement(function() {return driver.findElement(webdriver.By.css('.cell-menu-item.evaluate')).click();});
+  waitForElement(function() {return driver.findElement(webdriver.By.css('.evaluate-script')).click();});
 }
 
-function enterCode() {
-  return waitForElement(function() {
-    return driver.findElement(webdriver.By.css('.CodeMirror textarea')).sendKeys('1 + 1');
+function enterCode(code) {
+  return waitForElement(function () {
+    return driver.findElement(webdriver.By.css('.CodeMirror textarea')).sendKeys(code ? code : '1 + 1' );
   });
 }
 
@@ -103,7 +104,61 @@ function deleteCellOutput() {
 
 function evaluateAndRemoveOutputCell() {
   evaluateCell();
+  waitForCellOutput();
   deleteCellOutput();
+}
+
+
+var notebookMenu = function () {
+  return driver.findElement(webdriver.By.css('.notebook-menu'));
+};
+var languageManagerMenuItem = function () {
+  return driver.findElement(webdriver.By.css('.language-manager-menuitem'));
+};
+var languageManagerCloseButton = function () {
+  return driver.findElement(webdriver.By.css('.language-manager-close-button'));
+};
+var languageManagerButton = function(language) {
+  return driver.findElement(webdriver.By.css('.plugin-manager .' + language));
+};
+
+var waitForPlugin = function(language){
+  driver.wait(function () {
+    return driver.isElementPresent(webdriver.By.css('.plugin-manager .' + language + ' .plugin-active'));
+  }, 10000);
+};
+
+var waitForCellOutput = function () {
+  waitForElement(function() {
+    return driver.isElementPresent(webdriver.By.css('bk-output-display > div'));
+  });
+  return driver.wait(function () {
+    return driver.isElementPresent(webdriver.By.css('.navbar-text > i'))
+      .then(function(result) {
+        return !result;
+      })
+      .thenCatch(function () {
+        return false;
+      });
+  }, 10000);
+};
+
+function loadGroovy() {
+  waitForElement(function() {
+    return notebookMenu().click();
+  });
+  waitForElement(function() {
+    return languageManagerMenuItem().click();
+  });
+  waitForElement(function() {
+    return languageManagerButton('Groovy').click();
+  });
+
+  waitForPlugin('Groovy');
+
+  waitForElement(function() {
+    return languageManagerCloseButton().click();
+  });
 }
 
 function printChange(original, current) {
@@ -118,36 +173,88 @@ function printChange(original, current) {
 
 drool.flow({
   repeatCount: 20,
-  setup: function() {
+  setup: function () {
     driver.get('http://127.0.0.1:8801');
     openNotebook();
   },
-  action: function() {
+  action: function () {
     addAndRemoveCell();
   },
-  assert: function(after, initial) {
+  assert: function (after, initial) {
     printChange(initial, after);
   },
-  exit: function() {
+  exit: function () {
+    closeNotebook();
     driver.quit();
   }
-}, driver = instantiateDrool()). then(function() {
+}, driver = instantiateDrool()).then(function () {
   drool.flow({
     repeatCount: 20,
-    setup: function() {
+    setup: function () {
       driver.get('http://127.0.0.1:8801');
       openNotebook();
       addCell();
       enterCode();
     },
-    action: function() {
+    action: function () {
       evaluateAndRemoveOutputCell();
     },
-    assert: function(after, initial) {
+    assert: function (after, initial) {
       printChange(initial, after);
     },
-    exit: function() {
+    exit: function () {
+      closeNotebook();
       driver.quit();
     }
-  }, driver = drool.start(config));  
+  }, driver = instantiateDrool()).then(
+    function () {
+      drool.flow({
+        repeatCount: 20,
+        setup: function () {
+          driver.get('http://127.0.0.1:8801');
+          openNotebook();
+          loadGroovy();
+          addCell();
+          var code =
+            "def millis = new Date().time\n" +
+            "table = [[time: millis + 7 * 1, next_time:(millis + 77) * 1, temp:14.6],\n" +
+            "[time: millis + 7 * 2, next_time:(millis + 88) * 2, temp:18.1],\n" +
+            "[time: millis + 7 * 3, next_time:(millis + 99) * 3, temp:23.6]]\n" +
+            "table";
+          enterCode(code);
+        },
+        action: function () {
+          evaluateAndRemoveOutputCell();
+        },
+        assert: function (after, initial) {
+          printChange(initial, after);
+        },
+        exit: function () {
+          closeNotebook();
+          driver.quit();
+        }
+      }, driver = instantiateDrool()).then(function(){
+        drool.flow({
+          repeatCount: 20,
+          setup: function () {
+            driver.get('http://127.0.0.1:8801');
+            openNotebook();
+            loadGroovy();
+            addCell();
+            enterCode("new Plot().add(new Line(x: (0..5), y: [0, 1, 6, 5, 2, 8]))");
+          },
+          action: function () {
+            evaluateAndRemoveOutputCell();
+          },
+          assert: function (after, initial) {
+            printChange(initial, after);
+          },
+          exit: function () {
+            closeNotebook();
+            driver.quit();
+          }
+        }, driver = instantiateDrool())
+      })
+    }
+  );
 });

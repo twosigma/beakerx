@@ -153,9 +153,17 @@
         $scope.model.contents = bkHelper.sanitizeNotebookModel(notebook);
       }
 
+      function getPublicationModel() {
+        var pubModel = _.clone($scope.model);
+        if (_.isEmpty(pubModel.name)) {
+          pubModel.name = ' '; //to avoid error on pub server
+        }
+        return pubModel;
+      }
+
       function createPublication() {
         setModelContents();
-        return bkPublicationApi.createPublication($scope.model)
+        return bkPublicationApi.createPublication(getPublicationModel())
         .then(function(resp) {
           // save publication id as notebook metadata - only for entire notebook publication
           if (_.isUndefined(nModel)) {
@@ -167,7 +175,7 @@
 
       function updatePublication() {
         setModelContents();
-        return bkPublicationApi.updatePublication(notebook.metadata['publication-id'], $scope.model)
+        return bkPublicationApi.updatePublication(notebook.metadata['publication-id'], getPublicationModel())
         .then(function() {
           return notebook.metadata['publication-id'];
         });

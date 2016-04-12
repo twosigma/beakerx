@@ -44,11 +44,7 @@ var config = {
     'tests/text-cell.js',
     'tests/cell-menu.js',
     'tests/language-manager.js',
-    'tests/bugs.js',
-    'tests/vim-mode.js',
-    'tests/tutorials/language_demos/sql-tutorial.js',
-    'tests/tutorials/language_demos/java-tutorial.js',
-    'tests/tutorials/language_demos/clojure-tutorial.js'
+    'tests/vim-mode.js'
   ]
 };
 

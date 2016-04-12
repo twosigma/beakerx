@@ -392,7 +392,7 @@
         // reset table state
         $scope.doResetAll = function () {
           $scope.table.state.clear();
-          $scope.init($scope.getCellModel());
+          $scope.init($scope.getCellModel(), false);
         };
 
         // these are the menu actions
@@ -984,6 +984,11 @@
             scope.sField.remove();
             scope.fField.remove();
             $(element).find(".bko-table-use-pagination").remove();
+
+            if (all) {
+              scope.table.destroy(true);
+            }
+
             delete scope.sField;
             delete scope.fField;
             delete scope.table;
@@ -1026,8 +1031,8 @@
             }
           });
         };
-        scope.init = function(model) {
-          scope.doDestroy(true);
+        scope.init = function(model, destroy) {
+          scope.doDestroy(destroy);
 
           unregisterOutputExpandEventListener = scope.$on(GLOBALS.EVENTS.CELL_OUTPUT_EXPANDED, function() {
             var parents = element.parents();
@@ -1173,6 +1178,7 @@
           }
           scope.doCreateData(model);
           scope.doCreateTable(model);
+          $(document.body).off('click.bko-dt-container', scope.containerClickFunction);
           $(document.body).on('click.bko-dt-container', scope.containerClickFunction);
         };
 
@@ -2303,7 +2309,7 @@
         var tableChanged = false;
 
         scope.$watch('getCellModel()', function(m) {
-          scope.init(m);
+          scope.init(m, true);
           tableChanged = true;
         });
 

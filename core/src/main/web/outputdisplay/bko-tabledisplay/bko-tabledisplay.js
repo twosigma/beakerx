@@ -1409,6 +1409,7 @@
           var jqContainer = $(scope.table.table().container());
           var filterInput = jqContainer.find('.filter-input');
           var filterIcon = jqContainer.find('.filter-icon');
+          var redrawFixCols = false;
           if (isSearch) {
             filterInput.addClass('search-active');
             filterInput.attr('title', 'search this column for a substring');
@@ -1424,9 +1425,11 @@
             if(scope.columnSearchActive !== isSearch){
               scope.clearFilters();
               scope.columnFilter = [];
+              redrawFixCols = true;
             }
           } else {
             scope.showFilter = true;
+            redrawFixCols = true;
           }
           scope.columnSearchActive = isSearch;
 
@@ -1437,7 +1440,7 @@
 
           scope.$apply();
           scope.table.draw(false);
-          if (scope.fixcols) {
+          if (scope.fixcols && redrawFixCols) {
             scope.fixcols.fnRedrawLayout();
           }
           if(column){

@@ -45,6 +45,7 @@ sudo Rscript -e "install.packages('RCurl',,'http://cran.us.r-project.org')"
 sudo Rscript -e "install.packages('jpeg',,'http://cran.us.r-project.org')"
 sudo Rscript -e "install.packages('png',,'http://cran.us.r-project.org')"
 sudo Rscript -e "install.packages('base64enc',,'http://cran.us.r-project.org')"
+sudo Rscript -e "install.packages('roxygen2',,'http://cran.us.r-project.org')"
 
 # for zmq, needed by ipython and iruby
 sudo add-apt-repository --yes ppa:chris-lea/zeromq

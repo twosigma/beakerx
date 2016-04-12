@@ -20,7 +20,6 @@ var path = require('path');
 var beakerPO;
 
 describe('Python Tutorial', function (done) {
-    var isLangLoaded = "IPython haven't loaded";
 
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fipython-examples.bkr&readOnly=true").then(done);
@@ -30,11 +29,14 @@ describe('Python Tutorial', function (done) {
         var stop = new Date().getTime();
         var len = stop - start;
         console.log('Starting IPython language: ' + len + ' milliSeconds');
-        isLangLoaded = "IPython have loaded";
     });
 
     it('IPython can load', function () {
-        expect(isLangLoaded).toBe('IPython have loaded');
+        element(by.css('.modal-body .bkr')).isPresent().then(function(present){
+            if(present){
+                expect(element(by.css('.modal-body .bkr')).getText()).toBe('IPython have loaded');
+            }
+        });
     });
 
     it('IPython Examples', function () {

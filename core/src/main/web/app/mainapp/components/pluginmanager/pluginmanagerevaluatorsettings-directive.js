@@ -48,8 +48,8 @@
           });
         };
 
-        $scope.showLibraryPreview = function(library) {
-          console.log("PREVIEW", library);
+        $scope.showLibraryPreview = function(library, prop) {
+          console.log("PREVIEW", library, prop, $scope);
         };
 
         $scope.set = function(property) {

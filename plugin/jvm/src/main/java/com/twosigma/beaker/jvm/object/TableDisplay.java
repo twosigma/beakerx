@@ -28,6 +28,8 @@ import java.util.logging.Logger;
 import java.util.Set;
 
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
@@ -102,6 +104,9 @@ public class TableDisplay {
     }
     return null;
   }
+
+
+
   
   
   public List<List<?>> getValues() { return values; }
@@ -137,7 +142,112 @@ public class TableDisplay {
       parent.addKnownBeakerType("TableDisplay");
     }
 
-    private Object getValueForDeserializer(Object value, String clazz) {
+    @SuppressWarnings("unchecked")
+    public static List<Map<String, Object>> getValuesAsRows(BeakerObjectConverter parent, JsonNode n, ObjectMapper mapper) throws IOException {
+      List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+      String subtype = null;
+
+      List<List<?>> values = TableDisplay.DeSerializer.getValues(parent, n, mapper);
+      List<String> columns = TableDisplay.DeSerializer.getColumns(n, mapper);
+
+      if (n.has("subtype"))
+        subtype = mapper.readValue(n.get("subtype"), String.class);
+
+      if (subtype != null && subtype.equals(TableDisplay.LIST_OF_MAPS_SUBTYPE) && columns != null && values != null) {
+
+        for (List<?> value : values) {
+          Map<String, Object> m = new HashMap<String, Object>();
+          for (int c = 0; c < columns.size(); c++) {
+            if (value.size() > c)
+              m.put(columns.get(c), value.get(c));
+          }
+          rows.add(m);
+        }
+      }
+      else {
+        throw new IllegalArgumentException("Method 'getValuesAsRows' doesn't supported for this table");
+      }
+      return rows;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<List<?>> getValuesAsMatrix(BeakerObjectConverter parent, JsonNode n, ObjectMapper mapper) throws IOException {
+      String subtype = null;
+      List<List<?>> values = TableDisplay.DeSerializer.getValues(parent, n, mapper);
+      if (n.has("subtype"))
+        subtype = mapper.readValue(n.get("subtype"), String.class);
+
+      if (subtype != null && subtype.equals(TableDisplay.MATRIX_SUBTYPE)) {
+        return values;
+      }
+      throw new IllegalArgumentException("Method 'getValuesAsMatrix' doesn't supported for this table");
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> getValuesAsDictionary(BeakerObjectConverter parent, JsonNode n, ObjectMapper mapper) throws IOException {
+      Map<String, Object> m = new HashMap<String, Object>();
+      String subtype = null;
+
+      List<List<?>> values = TableDisplay.DeSerializer.getValues(parent, n, mapper);
+
+      if (n.has("subtype"))
+        subtype = mapper.readValue(n.get("subtype"), String.class);
+
+      if (subtype != null && subtype.equals(TableDisplay.DICTIONARY_SUBTYPE)) {
+        for (List<?> l : values) {
+          if (l.size() != 2)
+            continue;
+          m.put(l.get(0).toString(), l.get(1));
+        }
+      } else {
+        throw new IllegalArgumentException("Method 'getValuesAsDictionary' doesn't supported for this table");
+      }
+      return m;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<List<?>> getValues(BeakerObjectConverter parent, JsonNode n, ObjectMapper mapper) throws IOException {
+      List<List<?>> values = null;
+      List<String> classes = null;
+      if (n.has("types"))
+        classes = mapper.readValue(n.get("types"), List.class);
+      if (n.has("values")) {
+        JsonNode nn = n.get("values");
+        values = new ArrayList<List<?>>();
+        if (nn.isArray()) {
+          for (JsonNode nno : nn) {
+            if (nno.isArray()) {
+              ArrayList<Object> val = new ArrayList<Object>();
+              for (int i = 0; i < nno.size(); i++) {
+                JsonNode nnoo = nno.get(i);
+                Object obj = parent.deserialize(nnoo, mapper);
+                val.add(DeSerializer.getValueForDeserializer(obj, classes != null && classes.size() > i ? classes.get(i) : null));
+              }
+              values.add(val);
+            }
+          }
+        }
+      }
+      return values;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<String> getColumns(JsonNode n, ObjectMapper mapper) throws IOException {
+      List<String> columns = null;
+      if (n.has("columnNames"))
+        columns = mapper.readValue(n.get("columnNames"), List.class);
+      return columns;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<String> getClasses(JsonNode n, ObjectMapper mapper) throws IOException {
+      List<String> classes = null;
+      if (n.has("types"))
+        classes = mapper.readValue(n.get("types"), List.class);
+      return classes;
+    }
+
+    public static Object getValueForDeserializer(Object value, String clazz) {
       if (clazz != null) {
         if (BasicObjectSerializer.TYPE_LONG.equals(clazz)) {
           value = Long.parseLong(value.toString());
@@ -148,81 +258,47 @@ public class TableDisplay {
       return value;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Object deserialize(JsonNode n, ObjectMapper mapper) {
+    public static Pair<String, Object> getDeserializeObject(BeakerObjectConverter parent, JsonNode n, ObjectMapper mapper) {
       Object o = null;
+      String subtype = null;
       try {
-        List<List<?>> vals = null;
-        List<String> cols = null;
-        List<String> clas = null;
-        String subtype = null;
-        
-        if (n.has("columnNames"))
-          cols = mapper.readValue(n.get("columnNames"), List.class);
-        if (n.has("types"))
-          clas = mapper.readValue(n.get("types"), List.class);
-        if (n.has("values")) {
-          JsonNode nn = n.get("values");
-          vals = new ArrayList<List<?>>();
-          if (nn.isArray()) {
-            for (JsonNode nno : nn) {
-              if (nno.isArray()) {
-                ArrayList<Object> val = new ArrayList<Object>();
-                for (int i = 0; i < nno.size(); i++) {
-                  JsonNode nnoo = nno.get(i);
-                  Object obj = parent.deserialize(nnoo, mapper);
-                  val.add(getValueForDeserializer(obj, clas != null && clas.size() > i ? clas.get(i) : null));
-                }
-                vals.add(val);
-              }
-            }
-          }
-        }
+        List<List<?>> values = DeSerializer.getValues(parent, n, mapper);
+        List<String> columns = DeSerializer.getColumns(n, mapper);
+        List<String> classes = DeSerializer.getClasses(n, mapper);
+
         if (n.has("subtype"))
           subtype = mapper.readValue(n.get("subtype"), String.class);
-        /*
-         * unfortunately the other 'side' of this is in the BeakerObjectSerializer
-         */
-        if (subtype!=null && subtype.equals(TableDisplay.DICTIONARY_SUBTYPE)) {
-          Map<String,Object> m = new HashMap<String,Object>();
-          for(List<?> l : vals) {
-            if (l.size()!=2)
-              continue;
-            m.put(l.get(0).toString(), l.get(1));
-          }
-          o = m;
-        } else if(subtype!=null && subtype.equals(TableDisplay.LIST_OF_MAPS_SUBTYPE) && cols!=null && vals!=null) {
-          List<Map<String,Object>>  oo = new ArrayList<>();
-          for(int r=0; r<vals.size(); r++) {
-            Map<String,Object> m = new HashMap<>();
-            List<?> row = vals.get(r);
-            for(int c=0; c<cols.size(); c++) {
-              if(row.size()>c)
-                m.put(cols.get(c), row.get(c));
-            }
-            oo.add(m);
-          }
-          o = oo;
-        } else if(subtype!=null && subtype.equals(TableDisplay.MATRIX_SUBTYPE)) {
-          o = vals;
+
+        if (subtype != null && subtype.equals(TableDisplay.DICTIONARY_SUBTYPE)) {
+          o = getValuesAsDictionary(parent, n, mapper);
+        } else if (subtype != null && subtype.equals(TableDisplay.LIST_OF_MAPS_SUBTYPE) && columns != null && values != null) {
+          o = getValuesAsRows(parent, n, mapper);
+        } else if (subtype != null && subtype.equals(TableDisplay.MATRIX_SUBTYPE)) {
+          o = getValuesAsMatrix(parent, n, mapper);
         }
-        if (o==null) {
-          if (n.has("hasIndex") && mapper.readValue(n.get("hasIndex"), String.class).equals("true")) {
-            cols.remove(0);
-            clas.remove(0);
-            for(List<?> v : vals) {
+        if (o == null) {
+          if (n.has("hasIndex") && mapper.readValue(n.get("hasIndex"), String.class).equals("true")
+            && columns != null && values != null) {
+            columns.remove(0);
+            classes.remove(0);
+            for (List<?> v : values) {
               v.remove(0);
             }
-            o = new TableDisplay(vals, cols, clas);
+            o = new TableDisplay(values, columns, classes);
           } else {
-            o = new TableDisplay(vals, cols, clas);
+            o = new TableDisplay(values, columns, classes);
           }
         }
       } catch (Exception e) {
         logger.log(Level.SEVERE, "exception deserializing TableDisplay ", e);
       }
-      return o;
+      return new ImmutablePair<String, Object>(subtype, o);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object deserialize(JsonNode n, ObjectMapper mapper) {
+      return getDeserializeObject(parent, n, mapper).getRight();
     }
 
     @Override

@@ -37,6 +37,7 @@ import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
@@ -56,6 +57,7 @@ import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
 import com.twosigma.beaker.jvm.serialization.ObjectSerializer;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+import scala.collection.JavaConverters;
 
 public class ScalaEvaluator {
   private final static Logger logger = Logger.getLogger(ScalaEvaluator.class.getName());
@@ -681,85 +683,31 @@ public class ScalaEvaluator {
       parent = p;
       parent.addKnownBeakerType("TableDisplay");
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public Object deserialize(JsonNode n, ObjectMapper mapper) {
-      Object o = null;
-      try {
-        List<List<?>> vals = null;
-        List<String> cols = null;
-        List<String> clas = null;
-        String subtype = null;
-        
-        if (n.has("columnNames"))
-          cols = mapper.readValue(n.get("columnNames"), List.class);
-        if (n.has("types"))
-          clas = mapper.readValue(n.get("types"), List.class);
-        if (n.has("values")) {
-          JsonNode nn = n.get("values");
-          vals = new ArrayList<List<?>>();
-          if (nn.isArray()) {
-            for (JsonNode nno : nn) {
-              if (nno.isArray()) {
-                ArrayList<Object> val = new ArrayList<Object>();
-                for (JsonNode nnoo : nno) {
-                  Object obj = parent.deserialize(nnoo, mapper);
-                  val.add(obj);
-                }
-                vals.add(val);              
-              }
-            }
-          }
+      org.apache.commons.lang3.tuple.Pair<String, Object> deserializeObject = TableDisplay.DeSerializer.getDeserializeObject(parent, n, mapper);
+      String subtype  = deserializeObject.getLeft();
+      if (subtype != null && subtype.equals(TableDisplay.DICTIONARY_SUBTYPE)) {
+        return scala.collection.JavaConverters.mapAsScalaMapConverter((Map<String, Object>) deserializeObject.getRight()).asScala().toMap(Predef.<Tuple2<String, Object>>conforms());
+      } else if (subtype != null && subtype.equals(TableDisplay.LIST_OF_MAPS_SUBTYPE)) {
+        List<Map<String, Object>> rows = (List<Map<String, Object>>) deserializeObject.getRight();
+        List<Object> oo = new ArrayList<Object>();
+        for (Map<String, Object> row : rows) {
+          oo.add(JavaConverters.mapAsScalaMapConverter(row).asScala().toMap(Predef.<Tuple2<String, Object>>conforms()));
         }
-        if (n.has("subtype"))
-          subtype = mapper.readValue(n.get("subtype"), String.class);
-        /*
-         * unfortunately the other 'side' of this is in the BeakerObjectSerializer
-         */
-        if (subtype!=null && subtype.equals(TableDisplay.DICTIONARY_SUBTYPE)) {          
-          Map<String,Object> m = new HashMap<String,Object>();
-          for(List<?> l : vals) {
-            if (l.size()!=2)
-              continue;
-            m.put(l.get(0).toString(), l.get(1));
-          }
-          
-          o = scala.collection.JavaConverters.mapAsScalaMapConverter(m).asScala().toMap( Predef.<Tuple2<String,Object>>conforms());
-        } else if(subtype!=null && subtype.equals(TableDisplay.LIST_OF_MAPS_SUBTYPE) && cols!=null && vals!=null) {
-          List<Object>  oo = new ArrayList<Object>();
-          for(int r=0; r<vals.size(); r++) {
-            Map<String,Object> m = new HashMap<String,Object>();
-            List<?> row = vals.get(r);
-            for(int c=0; c<cols.size(); c++) {
-              if(row.size()>c)
-                m.put(cols.get(c), row.get(c));
-            }
-            oo.add(scala.collection.JavaConverters.mapAsScalaMapConverter(m).asScala().toMap( Predef.<Tuple2<String,Object>>conforms()));
-          }
-          o = scala.collection.JavaConversions.collectionAsScalaIterable(oo);
-        } else if(subtype!=null && subtype.equals(TableDisplay.MATRIX_SUBTYPE)) {
-          ArrayList<Object> ll = new ArrayList<Object>();
-          for (List<?> ob : vals) {
-            ll.add(scala.collection.JavaConversions.asScalaBuffer(ob).toList());
-          }
-          o = scala.collection.JavaConversions.asScalaBuffer(ll).toList();
+        return scala.collection.JavaConversions.collectionAsScalaIterable(oo);
+      } else if (subtype != null && subtype.equals(TableDisplay.MATRIX_SUBTYPE)) {
+        List<List<?>> matrix = (List<List<?>>) deserializeObject.getRight();
+        ArrayList<Object> ll = new ArrayList<Object>();
+        for (List<?> ob : matrix) {
+          ll.add(scala.collection.JavaConversions.asScalaBuffer(ob).toList());
         }
-        if (o==null) {
-          if (n.has("hasIndex") && mapper.readValue(n.get("hasIndex"), String.class).equals("true")) {
-            cols.remove(0);
-            clas.remove(0);
-            for(List<?> v : vals) {
-              v.remove(0);
-            }
-          }
-          o = new TableDisplay(vals, cols, clas);
-        }
-      } catch (Exception e) {
-        if (logger.isLoggable(Level.SEVERE))
-          logger.log(Level.SEVERE, "exception deserializing TableDisplay ", e);
+        return scala.collection.JavaConversions.asScalaBuffer(ll).toList();
       }
-      return o;
+
+      return deserializeObject.getRight();
     }
 
     @Override

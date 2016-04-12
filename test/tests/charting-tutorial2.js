@@ -19,22 +19,12 @@ var BeakerPageObject = require('./beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Charting Tutorial', function () {
+describe('Charting Tutorial', function (done) {
 
-    beforeEach(function (done) {
-        beakerPO = new BeakerPageObject();
-        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true").then(done);
-
-        browser.waitForAngular();
-        beakerPO.waitUntilLoadingIndicator();
-
-    });
-
-    afterEach(function (done) {
-        beakerPO.closeNotebook()
-            .then(done);
-    });
-
+    beakerPO = new BeakerPageObject();
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true")
+        .then(done)
+        .then(beakerPO.waitUntilLoadingCellOutput());
 
     /**
      *  - ConstantLine
@@ -42,6 +32,7 @@ describe('Charting Tutorial', function () {
      */
     it('Constant Lines', function() {
         var idCell = "coderpjgfG";
+        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
         beakerPO.checkPlotIsPresentByIdCell(idCell);
 
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
@@ -55,6 +46,8 @@ describe('Charting Tutorial', function () {
 
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-constband');
+        idCell = "codeAw8sVM";
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
     });
 
     it('Text', function() {
@@ -72,6 +65,9 @@ describe('Charting Tutorial', function () {
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 7), 'plot-text');
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 8), 'plot-text');
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 9), 'plot-text');
+
+        idCell = "codeFSqssT";
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
     });
 
     it('Simple Time Plot', function() {
@@ -111,6 +107,9 @@ describe('Charting Tutorial', function () {
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1).element(by.tagName('circle')).isPresent()).toBe(true);
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 1, 0).element(by.tagName('circle')).isPresent()).toBe(true);
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 1, 1).element(by.tagName('circle')).isPresent()).toBe(true);
+
+        idCell = "codekJB3sS";
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
     });
 
     it('Date Objects for the Time Coordinate', function() {

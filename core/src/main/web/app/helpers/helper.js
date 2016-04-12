@@ -673,6 +673,9 @@
           return [];
         }
       },
+      hasIPythonEvaluatorsLoaded: function () {
+        return _.intersection(this.getEvaluators(), ['IPython', 'IRuby', 'Julia', 'Python3', 'Torch']).length > 0;
+      },  
       go2FirstErrorCodeCell: function() {
         if (getCurrentApp() && getCurrentApp().go2FirstErrorCodeCell) {
           return getCurrentApp().go2FirstErrorCodeCell();

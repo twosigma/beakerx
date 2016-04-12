@@ -17,18 +17,29 @@
 var config = {
   seleniumAddress: 'http://localhost:4444/wd/hub',
   framework: 'jasmine2',
+  allScriptsTimeout: 100000,
   restartBrowserBetweenTests: false,
-  allScriptsTimeout: 20000,
-  getPageTimeout: 30000,
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 900000,
-    isVerbose: true
+    defaultTimeoutInterval: 100000,
+    print: function() {}
   },
+
   capabilities: {
-    browserName: 'chrome'
+    shardTestFiles: true,
+    maxInstances: 3,
+    browserName: 'firefox'
+  },
+  onPrepare: function() {
+    var SpecReporter = require('jasmine-spec-reporter');
+    jasmine.getEnv().addReporter(new SpecReporter({
+        displayStacktrace: 'specs'
+    }));
   },
   specs: [
-          'tests/perf-tests.js'
+    'tests/category-plot-tutorial.js',
+    'tests/charting-tutorial.js',
+    'tests/heatmap-tutorial.js',
+    'tests/charting-tutorial2.js'
   ]
 };
 

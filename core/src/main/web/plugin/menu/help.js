@@ -52,7 +52,7 @@ define(function(require, exports, module) {
       action: function() {
         bkHelper.openWindow(bkHelper.serverUrl('beaker/app/dist/docs/index.html'));
       },
-      tooltip: "Show class Documentation"
+      tooltip: "Show JavaDoc for native visualization, form, and layout APIs"
     },
     {
       name: "Report a bug or feature request",

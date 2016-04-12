@@ -19,19 +19,11 @@ var BeakerPageObject = require('./beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Category Plots (Bar Charts)', function () {
+describe('Category Plots (Bar Charts)', function (done) {
 
-  beforeEach(function (done) {
-    beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FCategoryPlot.bkr&readOnly=true").then(done);
-    beakerPO.waitUntilLoadingFinished();
-
-  });
-
-  afterEach(function (done) {
-    beakerPO.closeNotebook()
-      .then(done);
-  });
+  beakerPO = new BeakerPageObject();
+  browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FCategoryPlot.bkr&readOnly=true").then(done);
+  beakerPO.waitUntilLoadingFinished();
 
   it('Input values', function () {
     beakerPO.checkPlotIsPresent(0);

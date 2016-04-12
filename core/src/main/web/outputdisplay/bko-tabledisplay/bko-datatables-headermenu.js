@@ -59,10 +59,8 @@ HeaderMenu.prototype = {
     };
 
     $(document.body).on('click.table-headermenu', clickHandler);
-    dt.on('destroy', function () {
-      $(document.body).off('click.table-headermenu', clickHandler);
-      that._destroy();
-    });
+    dtSettings.oApi._fnCallbackReg(dtSettings, 'aoDestroyCallback', $.proxy(this._destroy, this), 'HeaderMenu');
+
   },
 
   _appendMenuContainer: function()
@@ -236,6 +234,7 @@ HeaderMenu.prototype = {
   },
 
   _destroy: function(){
+    $(document.body).off('click.table-headermenu');
     this.dom.container.remove();
     $(this.s.dt.table().container()).find('.bko-column-header-menu').remove();
     $(this.s.dt.table().container()).off('click.headermenu');

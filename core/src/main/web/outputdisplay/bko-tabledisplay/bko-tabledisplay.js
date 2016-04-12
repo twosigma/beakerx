@@ -392,7 +392,7 @@
         // reset table state
         $scope.doResetAll = function () {
           $scope.table.state.clear();
-          $scope.init($scope.getCellModel());
+          $scope.init($scope.getCellModel(), false);
         };
 
         // these are the menu actions
@@ -869,7 +869,7 @@
         };
 
         $scope.showTableSearch = function() {
-          var sField = $('#' + $scope.id + '_filter');
+          var sField = $scope.sField;
           sField.toggleClass('show');
 
           var input = sField.find("input[type='search']");
@@ -882,7 +882,7 @@
           $scope.table.search($scope.tableSearch).draw();
         };
         $scope.showTableFilter = function() {
-          var fField = $('#' + $scope.id + '_evalfilter');
+          var fField = $scope.fField;
           fField.toggleClass('show');
 
           var input = fField.find("input[type='search']");
@@ -981,6 +981,17 @@
             scope.table.off('column-visibility.dt');
             scope.removeFilterListeners();
             $(scope.table.table().container()).find('.dataTables_scrollHead').off('scroll');
+            scope.sField.remove();
+            scope.fField.remove();
+            $(element).find(".bko-table-use-pagination").remove();
+
+            if (all) {
+              scope.table.destroy(true);
+            }
+
+            delete scope.keyTable;
+            delete scope.sField;
+            delete scope.fField;
             delete scope.table;
             delete scope.colreorg;
             if (scope.clipclient !== undefined) {
@@ -1021,8 +1032,8 @@
             }
           });
         };
-        scope.init = function(model) {
-          scope.doDestroy(true);
+        scope.init = function(model, destroy) {
+          scope.doDestroy(destroy);
 
           unregisterOutputExpandEventListener = scope.$on(GLOBALS.EVENTS.CELL_OUTPUT_EXPANDED, function() {
             var parents = element.parents();
@@ -1168,6 +1179,7 @@
           }
           scope.doCreateData(model);
           scope.doCreateTable(model);
+          $(document.body).off('click.bko-dt-container', scope.containerClickFunction);
           $(document.body).on('click.bko-dt-container', scope.containerClickFunction);
         };
 
@@ -1341,36 +1353,42 @@
         };
 
         scope.addInteractionListeners = function () {
-          $(scope.table.table().container())
-            .on("mouseenter.bko-dt-interaction", 'td, th', function (e) {
-              if (scope.tableHasFocus()) {
-                return; //ignore mouse over for key events if there is focus on table's cell
-              }
-              var column = scope.getColumnIndexByCellNode(this);
-              if (!scope.onKeyListeners[column]) {
-                scope.onKeyListeners[column] = function (onKeyEvent) {
-                  if (scope.tableHasFocus()) {
-                    return; //ignore mouse over for key events if there is focus on table's cell
-                  }
-                  if (!onKeyEvent.isDefaultPrevented()) {
-                    scope.onKeyAction(column, onKeyEvent);
-                  }
-                };
-                $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
-              }
-            })
-            .on("mouseleave.bko-dt-interaction", 'td, th', function (e) {
-              var column = scope.getColumnIndexByCellNode(this);
-              var listener = scope.onKeyListeners[column];
-              if(listener) {
-                delete scope.onKeyListeners[column];
-                $(document).off("keydown.bko-datatable", listener);
-              }
-            });
+          if (!scope.interactionListeners) {
+            $(scope.table.table().container())
+              .on("mouseenter.bko-dt-interaction", 'td, th', function (e) {
+                if (scope.tableHasFocus()) {
+                  return; //ignore mouse over for key events if there is focus on table's cell
+                }
+                var column = scope.getColumnIndexByCellNode(this);
+                if (!scope.onKeyListeners[column]) {
+                  scope.onKeyListeners[column] = function (onKeyEvent) {
+                    if (scope.tableHasFocus()) {
+                      return; //ignore mouse over for key events if there is focus on table's cell
+                    }
+                    if (!onKeyEvent.isDefaultPrevented()) {
+                      scope.onKeyAction(column, onKeyEvent);
+                    }
+                  };
+                  $(document).on("keydown.bko-datatable", scope.onKeyListeners[column]);
+                }
+              })
+              .on("mouseleave.bko-dt-interaction", 'td, th', function (e) {
+                var column = scope.getColumnIndexByCellNode(this);
+                var listener = scope.onKeyListeners[column];
+                if (listener) {
+                  delete scope.onKeyListeners[column];
+                  $(document).off("keydown.bko-datatable", listener);
+                }
+              });
+            scope.interactionListeners = true;
+          }
         };
         scope.removeInteractionListeners = function () {
-          $(scope.table.table().container()).off('mouseenter.bko-dt-interaction', 'td, th');
-          $(scope.table.table().container()).off('mouseleave.bko-dt-interaction', 'td, th');
+          if (scope.interactionListeners) {
+            $(scope.table.table().container()).off('mouseenter.bko-dt-interaction', 'td, th');
+            $(scope.table.table().container()).off('mouseleave.bko-dt-interaction', 'td, th');
+            scope.interactionListeners = false;
+          }
         };
 
         scope.showHideBars = function (column) {
@@ -1968,8 +1986,8 @@
             scope.keyTable = new $.fn.dataTable.KeyTable($(id));
             scope.refreshCells();
 
-            var sField = $('#' + scope.id + '_filter');
-            sField.find('input')
+            scope.sField = $('#' + scope.id + '_filter');
+            scope.sField.find('input')
               .attr('title', 'search the whole table for a substring')
               .on('keydown.column-filter', function (event) {
                 scope.tableSearch = this.value;
@@ -1982,12 +2000,12 @@
                 scope.showTableSearch();
                 e.stopPropagation();
               })
-              .appendTo(sField);
+              .appendTo(scope.sField);
             if (!_.isEmpty(scope.tableSearch)) {
               scope.showTableSearch();
             }
 
-            var fField = $('#' + scope.id + '_evalfilter').addClass('dataTables_evalfilter');
+            scope.fField = $('#' + scope.id + '_evalfilter').addClass('dataTables_evalfilter');
             $('<input type="search">')
               .on('keyup change', $.debounce(500, function () {
                 scope.tableFilter = this.value;
@@ -1997,14 +2015,14 @@
               .appendTo(
                 $('<label></label>')
                   .text('Filter:')
-                  .appendTo(fField)
+                  .appendTo(scope.fField)
               );
             $('<i/>', {class: 'fa fa-times'})
               .bind('click', function(e) {
                 scope.showTableFilter();
                 e.stopPropagation();
               })
-              .appendTo(fField);
+              .appendTo(scope.fField);
 
             if (!_.isEmpty(scope.tableFilter)) {
               scope.showTableFilter();
@@ -2160,7 +2178,7 @@
             }
 
             scope.updateFixedColumnsSeparator();
-            
+
             scope.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
             scope.table.draw(false);
 
@@ -2298,7 +2316,7 @@
         var tableChanged = false;
 
         scope.$watch('getCellModel()', function(m) {
-          scope.init(m);
+          scope.init(m, true);
           tableChanged = true;
         });
 

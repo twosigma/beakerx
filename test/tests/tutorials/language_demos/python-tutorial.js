@@ -20,7 +20,6 @@ var path = require('path');
 var beakerPO;
 
 describe('Python Tutorial', function () {
-    var isLangLoaded = "IPython haven't loaded";
 
     beforeEach(function (done) {
         beakerPO = new BeakerPageObject();
@@ -31,12 +30,15 @@ describe('Python Tutorial', function () {
             var stop = new Date().getTime();
             var len = stop - start;
             console.log('Starting IPython language: ' + len + ' milliSeconds');
-            isLangLoaded = "IPython have loaded";
         });
     });
 
     it('IPython Examples', function () {
-        expect(isLangLoaded).toBe('IPython have loaded');
+        element(by.css('.modal-body .bkr')).isPresent().then(function(present){
+            if(present){
+                expect(element(by.css('.modal-body .bkr')).getText()).toBe('IPython have loaded');
+            }
+        });
 
         var idCell = "codeK0EmdK";
         beakerPO.scrollToCodeCellOutputByIdCell(idCell);

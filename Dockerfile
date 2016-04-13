@@ -42,6 +42,8 @@ RUN su -m beaker -c "julia --eval 'Pkg.add(\"IJulia\")'" && \
 RUN su -m beaker -c "julia --eval 'Pkg.rm(\"IJulia\")'" && \
     su -m beaker -c "julia --eval 'Pkg.add(\"IJulia\")'"
 
+RUN ipython kernelspec install /home/beaker/.local/share/jupyter/kernels/$(ls /home/beaker/.local/share/jupyter/kernels/ | grep julia)
+
 RUN mkdir -p /home/beaker/.beaker/v1/config && \
     echo '{"pref-format" : "1", "languages" : {"Python3" : {"path": "/home/beaker/py3k/bin"}}}' > /home/beaker/.beaker/v1/config/beaker.pref.json
 

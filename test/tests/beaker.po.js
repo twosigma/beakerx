@@ -655,5 +655,19 @@ var BeakerPageObject = function() {
     });
   }
 
+  this.scrollToBkCellByIdCell = function (idCell) {
+    return browser.executeScript("$('bk-cell[cellid=" + idCell +"] > div')[0].scrollIntoView();");
+  };
+
+  this.getBkCellByIdCell = function (idCell) {
+    return element(by.css('bk-cell[cellid=' + idCell + '] > div'));
+  };
+
+  this.checkBkCellByIdCell  = function (idCell) {
+    browser.wait(this.EC.presenceOf($('bk-cell[cellid=' + idCell + '] > div'), 10000));
+    this.scrollToBkCellByIdCell(idCell);
+    expect(this.getBkCellByIdCell(idCell).isPresent()).toBe(true);
+  };
+
 };
 module.exports = BeakerPageObject;

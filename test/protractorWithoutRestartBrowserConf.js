@@ -42,7 +42,8 @@ var config = {
     'tests/charting-tutorial2.js',
     'tests/tutorials/language_demos/sql-tutorial.js',
     'tests/tutorials/language_demos/java-tutorial.js',
-    'tests/tutorials/language_demos/clojure-tutorial.js'
+    'tests/tutorials/language_demos/clojure-tutorial.js',
+    'tests/tutorials/feature_overview/text-tutorial.js'
   ]
 };
 

@@ -42,5 +42,5 @@ os.environ['beaker_torch_init'] = plugin_dir
 if os.name == 'nt':
     subprocess.call(["python", plugin_dir+"/torchPluginStart.py"], shell=True)
 else:
-    os.execlp("python", "python", plugin_dir+"/torchPluginStart.py")
+    os.execlp("/usr/bin/env", "python", "python", plugin_dir+"/torchPluginStart.py")
 

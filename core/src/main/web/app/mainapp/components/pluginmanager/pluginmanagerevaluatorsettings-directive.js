@@ -41,15 +41,13 @@
         });
 
         $scope.searchRemote = function(url, scopeProperty) {
-          console.log(url);
           bkUtils.httpGet(url).then(function(response) {
             $scope[scopeProperty] = _.take(response.data.results, 20);
-            console.log(response);
           });
         };
 
         $scope.showLibraryPreview = function(library, prop) {
-          console.log("PREVIEW", library, prop, $scope);
+          // console.log("PREVIEW", library, prop, $scope);
         };
 
         $scope.set = function(property) {

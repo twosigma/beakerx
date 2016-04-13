@@ -35,6 +35,8 @@ define(function(require, exports, module) {
     "ES2015": {name: "ECMAScript 2015", babel: true, defaultVersion: true}
   };
 
+  var USER_LIBRARY_CLASS = "USER-IMPORTED-SCRIPT";
+
   function getDefaultLanguageVersion() {
     return _.findKey(LANGUAGE_VERSIONS, function (version) {
       return version.defaultVersion;
@@ -171,6 +173,30 @@ define(function(require, exports, module) {
     bkHelper.receiveEvaluationUpdate(err.modelOutput,
         {status: "ERROR", payload: err.payload},
         PLUGIN_NAME);
+  }
+
+  function loadLibraryIfNotLoaded(library) {
+    if (libraryLoaded(library)) {
+      return;
+    }
+    loadLibrary(library);
+  }
+
+  function libraryLoaded(library) {
+    if ($("." + USER_LIBRARY_CLASS).filter(function() {
+      return $(this).attr("src") === library.latest;
+    }).length > 0) {
+      return true;
+    }
+    return false;
+  }
+
+  function loadLibrary(library) {
+    var defineBackup = define;
+    define = void 0;
+    $.getScript(library.latest, function() {
+      _.defer(function() {define = defineBackup});
+    });
   }
 
   var JavaScript_0 = {
@@ -361,6 +387,13 @@ define(function(require, exports, module) {
       this.cancelExecution();
       JavascriptCancelFunction = null;
     },
+    loadAllLibraries: function() {
+      if (this.settings.libraries && this.settings.libraries.length) {
+        _.forEach(this.settings.libraries, function(library) {
+          loadLibraryIfNotLoaded(library);
+        });
+      }
+    },
     spec: {
       languageVersion: {
         type: "settableEnum",
@@ -369,7 +402,8 @@ define(function(require, exports, module) {
       },
       libraries: {
         type: "settableSelect",
-        remote: "https://api.cdnjs.com/libraries"
+        remote: "https://api.cdnjs.com/libraries",
+        action: "loadAllLibraries"
       }
     }
   };
@@ -391,6 +425,7 @@ define(function(require, exports, module) {
       var action = this.spec[what].action;
       this[action]();
     };
+    this.loadAllLibraries();
   };
   JavaScript0.prototype = JavaScript_0;
 

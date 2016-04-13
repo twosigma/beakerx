@@ -93,6 +93,51 @@ public class TableDisplay {
     }
   }
 
+  static List<Map<String, Object>> getValuesAsRows(List<List<?>> values, List<String> columns) {
+    List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+    if (columns != null && values != null) {
+
+      for (List<?> value : values) {
+        Map<String, Object> m = new HashMap<String, Object>();
+        for (int c = 0; c < columns.size(); c++) {
+          if (value.size() > c)
+            m.put(columns.get(c), value.get(c));
+        }
+        rows.add(m);
+      }
+    } else {
+      throw new IllegalArgumentException("Method 'getValuesAsRows' doesn't supported for this table");
+    }
+    return rows;
+  }
+
+  static List<List<?>> getValuesAsMatrix(List<List<?>> values) {
+    return values;
+  }
+
+  static Map<String, Object> getValuesAsDictionary(List<List<?>> values) {
+    Map<String, Object> m = new HashMap<String, Object>();
+    for (List<?> l : values) {
+      if (l.size() != 2)
+        throw new IllegalArgumentException("Method 'getValuesAsDictionary' doesn't supported for this table");
+      ;
+      m.put(l.get(0).toString(), l.get(1));
+    }
+    return m;
+  }
+
+  public  List<Map<String, Object>> getValuesAsRows(){
+    return getValuesAsRows(values, columns);
+  }
+
+  public  List<List<?>> getValuesAsMatrix(){
+    return getValuesAsMatrix( values);
+  }
+
+  public  Map<String, Object> getValuesAsDictionary(){
+    return getValuesAsDictionary(values);
+  }
+
   private Object getValueForSerializer(Object value, BeakerObjectConverter serializer){
     if (value != null) {
       String clazz = serializer.convertType(value.getClass().getName());
@@ -106,9 +151,6 @@ public class TableDisplay {
   }
 
 
-
-  
-  
   public List<List<?>> getValues() { return values; }
   public List<String> getColumnNames() { return columns; }
   public List<String> getTypes() { return classes; }
@@ -142,67 +184,20 @@ public class TableDisplay {
       parent.addKnownBeakerType("TableDisplay");
     }
 
-    @SuppressWarnings("unchecked")
     public static List<Map<String, Object>> getValuesAsRows(BeakerObjectConverter parent, JsonNode n, ObjectMapper mapper) throws IOException {
-      List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
-      String subtype = null;
-
       List<List<?>> values = TableDisplay.DeSerializer.getValues(parent, n, mapper);
       List<String> columns = TableDisplay.DeSerializer.getColumns(n, mapper);
-
-      if (n.has("subtype"))
-        subtype = mapper.readValue(n.get("subtype"), String.class);
-
-      if (subtype != null && subtype.equals(TableDisplay.LIST_OF_MAPS_SUBTYPE) && columns != null && values != null) {
-
-        for (List<?> value : values) {
-          Map<String, Object> m = new HashMap<String, Object>();
-          for (int c = 0; c < columns.size(); c++) {
-            if (value.size() > c)
-              m.put(columns.get(c), value.get(c));
-          }
-          rows.add(m);
-        }
-      }
-      else {
-        throw new IllegalArgumentException("Method 'getValuesAsRows' doesn't supported for this table");
-      }
-      return rows;
+      return TableDisplay.getValuesAsRows(values, columns);
     }
 
-    @SuppressWarnings("unchecked")
     public static List<List<?>> getValuesAsMatrix(BeakerObjectConverter parent, JsonNode n, ObjectMapper mapper) throws IOException {
-      String subtype = null;
       List<List<?>> values = TableDisplay.DeSerializer.getValues(parent, n, mapper);
-      if (n.has("subtype"))
-        subtype = mapper.readValue(n.get("subtype"), String.class);
-
-      if (subtype != null && subtype.equals(TableDisplay.MATRIX_SUBTYPE)) {
-        return values;
-      }
-      throw new IllegalArgumentException("Method 'getValuesAsMatrix' doesn't supported for this table");
+      return TableDisplay.getValuesAsMatrix(values);
     }
 
-    @SuppressWarnings("unchecked")
     public static Map<String, Object> getValuesAsDictionary(BeakerObjectConverter parent, JsonNode n, ObjectMapper mapper) throws IOException {
-      Map<String, Object> m = new HashMap<String, Object>();
-      String subtype = null;
-
       List<List<?>> values = TableDisplay.DeSerializer.getValues(parent, n, mapper);
-
-      if (n.has("subtype"))
-        subtype = mapper.readValue(n.get("subtype"), String.class);
-
-      if (subtype != null && subtype.equals(TableDisplay.DICTIONARY_SUBTYPE)) {
-        for (List<?> l : values) {
-          if (l.size() != 2)
-            continue;
-          m.put(l.get(0).toString(), l.get(1));
-        }
-      } else {
-        throw new IllegalArgumentException("Method 'getValuesAsDictionary' doesn't supported for this table");
-      }
-      return m;
+      return TableDisplay.getValuesAsDictionary(values);
     }
 
     @SuppressWarnings("unchecked")

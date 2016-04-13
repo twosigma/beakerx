@@ -43,6 +43,9 @@ define(function(require, exports, module) {
     });
   }
 
+  var DEFINE_BACKUP = define;
+  var loadQueuePromise = bkHelper.newPromise();
+
   // Not using the es2015 plugin preset because it includes the "transform-es2015-modules-commonjs" plugin which puts forces strict mode on
   var ES2015Plugins = [
   "check-es2015-constants",
@@ -176,10 +179,13 @@ define(function(require, exports, module) {
   }
 
   function loadLibraryIfNotLoaded(library) {
+    var deferred = bkHelper.newDeferred()
     if (libraryLoaded(library)) {
-      return;
+      deferred.resolve(library);
+    } else {
+      loadLibrary(library, deferred.resolve);
     }
-    loadLibrary(library);
+    return deferred.promise;
   }
 
   function libraryLoaded(library) {
@@ -191,11 +197,9 @@ define(function(require, exports, module) {
     return false;
   }
 
-  function loadLibrary(library) {
-    var defineBackup = define;
-    define = void 0;
+  function loadLibrary(library, cb) {
     $.getScript(library.latest, function() {
-      _.defer(function() {define = defineBackup});
+      _.defer(function() {cb(library)});
     });
   }
 
@@ -389,8 +393,18 @@ define(function(require, exports, module) {
     },
     loadAllLibraries: function() {
       if (this.settings.libraries && this.settings.libraries.length) {
+        loadQueuePromise = loadQueuePromise.then(function() {
+          define = void 0;
+          return bkHelper.newPromise();
+        });
         _.forEach(this.settings.libraries, function(library) {
-          loadLibraryIfNotLoaded(library);
+          loadQueuePromise = loadQueuePromise.then(function() {
+            return loadLibraryIfNotLoaded(library);
+          });
+        });
+        loadQueuePromise = loadQueuePromise.then(function() {
+          define = DEFINE_BACKUP;
+          return bkHelper.newPromise();
         });
       }
     },

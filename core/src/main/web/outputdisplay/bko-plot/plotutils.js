@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    var retfunc = function(bkUtils, bkHelper, bkCoreManager, bkSessionManager) {
+    var retfunc = function(bkUtils, bkCoreManager, bkSessionManager) {
       var keyCodeMap = {
         8	  : "BACKSPACE",
         9	  : "TAB",
@@ -903,7 +903,7 @@
         var saturation = 0.75;
         var luminance = 0.5;
         var rgb = this.hslToRgb(hue, saturation, luminance);
-        var niceColor = bkHelper.rgbaToHex(rgb[0], rgb[1], rgb[2]);
+        var niceColor = bkUtils.rgbaToHex(rgb[0], rgb[1], rgb[2]);
         while (bkHelper.defaultPlotColors[bkHelper.getTheme()].indexOf(niceColor) !== -1) {
           niceColor = this.createNiceColor();
         }
@@ -982,5 +982,5 @@
       }
     };
   };
-  beakerRegister.bkoFactory('plotUtils', ["bkUtils", "bkHelper", "bkCoreManager", "bkSessionManager", retfunc]);
+  beakerRegister.bkoFactory('plotUtils', ["bkUtils", "bkCoreManager", "bkSessionManager", retfunc]);
 })();

@@ -19,14 +19,12 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Clojure Tutorial', function () {
+describe('Clojure Tutorial', function (done) {
 
-    beforeEach(function (done) {
-        beakerPO = new BeakerPageObject();
-        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fclojure-examples.bkr&readOnly=true").then(done);
-
-        beakerPO.waitUntilLoadingCellOutput();
-    });
+    beakerPO = new BeakerPageObject();
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fclojure-examples.bkr&readOnly=true")
+        .then(done)
+        .then(beakerPO.waitUntilLoadingCellOutput());
 
     it('Clojure Examples', function () {
         var idCell = "codejnXAl6";

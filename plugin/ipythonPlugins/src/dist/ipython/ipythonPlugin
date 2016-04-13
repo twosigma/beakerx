@@ -45,4 +45,4 @@ os.environ["PYTHONPATH"] = plugin_dir + old_path
 if os.name == 'nt':
     subprocess.call(["python", plugin_dir+"/ipythonPluginStart.py"], shell=True)
 else:
-    os.execlp("python", "python", plugin_dir+"/ipythonPluginStart.py")
+    os.execlp("/usr/bin/env", "python", "python", plugin_dir+"/ipythonPluginStart.py")

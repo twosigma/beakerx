@@ -41,4 +41,4 @@ plugin_dir = os.path.dirname(sys.argv[0])
 if os.name == 'nt':
     subprocess.call(["python", plugin_dir+"/irubyPluginStart.py"], shell=True)
 else:
-    os.execlp("python","python", plugin_dir+"/irubyPluginStart.py")
+    os.execlp("python", "python", plugin_dir+"/irubyPluginStart.py")

@@ -650,6 +650,12 @@ var BeakerPageObject = function() {
   }
 
   this.checkSubString = function(strPromise, toBeStr, indxStart, lenght){
+    if(!indxStart){
+      indxStart = 0;
+    }
+    if(!lenght){
+      lenght = 100;
+    }
     strPromise.getText().then(function(value){
       expect(value.substring(indxStart, lenght)).toBe(toBeStr);
     });

@@ -218,6 +218,12 @@ public interface BeakerConfig {
    */
   public String getSharingServerUrl();
 
+  /*
+  *  XSRF-TOKEN
+  *  @return XSRF-TOKEN, generated at start
+  * */
+  String getAuthToken();
+
   /**
    * Path to find a backend.
    * @return

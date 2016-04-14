@@ -18,6 +18,7 @@ package com.twosigma.beaker.shared.servlet.rules;
 import com.twosigma.beaker.shared.servlet.rules.util.Replacement;
 import org.eclipse.jetty.client.api.Request;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.List;
 
@@ -66,6 +67,9 @@ public class ProxyRuleImpl implements ProxyRule {
   @Override
   public void setHeaders(Request proxyRequest, String pathInfo) {
   }
+
+  @Override
+  public void configureResponse(HttpServletResponse response) { }
 
   protected String modify(String url) {
     return url;

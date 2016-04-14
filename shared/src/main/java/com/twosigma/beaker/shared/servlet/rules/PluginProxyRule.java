@@ -17,6 +17,7 @@ package com.twosigma.beaker.shared.servlet.rules;
 
 import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
 import com.twosigma.beaker.shared.servlet.rules.util.Replacement;
+import org.eclipse.jetty.client.api.Response;
 
 import java.util.List;
 

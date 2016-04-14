@@ -209,7 +209,7 @@ public class Main {
         new WebServerModule(),
         new SerializerModule(),
         new GuiceCometdModule(),
-        new URLConfigModule(beakerCorePref));
+        new URLConfigModule());
 
 //    PluginServiceLocatorRest processStarter = injector.getInstance(PluginServiceLocatorRest.class);
 //    processStarter.setAuthToken(beakerCorePref.getAuthToken());

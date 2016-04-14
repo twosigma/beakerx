@@ -19,6 +19,7 @@ import com.twosigma.beaker.shared.servlet.rules.ProxyRuleImpl;
 import org.eclipse.jetty.client.api.Request;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,11 +46,20 @@ public class RulesHolder {
     }
   }
 
-  private List<ProxyRuleImpl> getRulesForRequest(HttpServletRequest clientRequest) {
-    return rules.stream().filter(r -> r.satisfy(clientRequest.getPathInfo())).collect(Collectors.toList());
+  public void configureResponse(HttpServletRequest request, HttpServletResponse response) {
+    for (ProxyRuleImpl proxyRule : getRulesForRequest(request)) {
+      proxyRule.configureResponse(response);
+      if(proxyRule.isFinal()) {
+        return;
+      }
+    }
   }
 
   public void add(ProxyRuleImpl rule) {
     this.rules.add(rule);
+  }
+
+  private List<ProxyRuleImpl> getRulesForRequest(HttpServletRequest clientRequest) {
+    return rules.stream().filter(r -> r.satisfy(clientRequest.getPathInfo())).collect(Collectors.toList());
   }
 }

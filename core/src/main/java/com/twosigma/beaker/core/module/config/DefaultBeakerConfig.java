@@ -77,6 +77,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String hash;
   private final String gist_server;
   private final String sharing_server;
+  private final String authToken;
   private JSONObject prefs;
   private final String useHttpsCert;
   private final String useHttpsKey;
@@ -191,6 +192,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
     String password = randomString(100);
     this.passwordHash = hash(password);
     this.password = password;
+    this.authToken = pref.getAuthToken();
 
     if (this.publicServer && (this.useHttpsCert == null || this.useHttpsKey == null))  {
       String cert = this.nginxServDir + "/ssl_cert.pem";
@@ -427,6 +429,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getSharingServerUrl() {
     return this.sharing_server;      
+  }
+
+  @Override
+  public String getAuthToken() {
+    return authToken;
   }
 
   @Override

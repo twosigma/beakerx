@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.core.module;
 
+import com.google.inject.Provider;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.twosigma.beaker.core.module.config.BeakerConfigPref;
@@ -38,12 +39,6 @@ import java.util.HashMap;
  * The module for configuring servlets, REST binding.
  */
 public class URLConfigModule extends ServletModule {
-
-  private String authToken;
-
-  public URLConfigModule(BeakerConfigPref pref) {
-    authToken = pref.getAuthToken();
-  }
 
   @SuppressWarnings("serial")
   @Override

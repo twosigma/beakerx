@@ -100,6 +100,7 @@ public class WebServerModule extends AbstractModule {
     sh.setInitParameter("requirePassword", String.valueOf(bkConfig.getRequirePassword()));
     sh.setInitParameter("authCookie", bkConfig.getAuthCookie());
     sh.setInitParameter("corePassword", webServerConfig.getPassword());
+    sh.setInitParameter("authToken", bkConfig.getAuthToken());
 
     servletHandler.setInitParameter("maxCacheSize", "0");
     servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");

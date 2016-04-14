@@ -16,14 +16,7 @@
 package com.twosigma.beaker.shared.servlet;
 
 import com.twosigma.beaker.shared.RulesHolder;
-import com.twosigma.beaker.shared.servlet.rules.ApplyPluginSpecificRules;
-import com.twosigma.beaker.shared.servlet.rules.EraseHashAndBeakerRule;
-import com.twosigma.beaker.shared.servlet.rules.EraseHashAndPluginNameRule;
-import com.twosigma.beaker.shared.servlet.rules.MainPageRule;
-import com.twosigma.beaker.shared.servlet.rules.PluginProxyRule;
-import com.twosigma.beaker.shared.servlet.rules.ProxyRuleImpl;
-import com.twosigma.beaker.shared.servlet.rules.RootSlashRule;
-import com.twosigma.beaker.shared.servlet.rules.SlashBeakerRule;
+import com.twosigma.beaker.shared.servlet.rules.*;
 import com.twosigma.beaker.shared.servlet.rules.util.Replacement;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.client.api.Request;
@@ -41,7 +34,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,6 +50,7 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   private String startPage;
   private String corePassword;
   private String proxyPort;
+  private String authToken;
 
   public BeakerProxyServlet() {
   }
@@ -75,6 +68,7 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
     boolean publicServer = Boolean.parseBoolean(config.getInitParameter("publicServer"));
     boolean requirePassword = Boolean.parseBoolean(config.getInitParameter("requirePassword"));
     this.corePassword = config.getInitParameter("corePassword");
+    this.authToken = config.getInitParameter("authToken");
     this.rulesHolder = new RulesHolder();
     super.init();
     if (publicServer) {
@@ -106,6 +100,7 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
     if(checkCommonRedirects(request, response)) {
       return;
     }
+    rulesHolder.configureResponse(request, response);
     super.service(request, response);
   }
 
@@ -181,10 +176,11 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   }
 
   private void initRewriteRules() {
+    rulesHolder.add(new CometdProxyRule(this.authToken, this._hash, this.corePort).setFinal(false));
     rulesHolder.add(new ProxyRuleImpl("/loginrest/.*", new Replacement("/loginrest/", "/rest/login/")));
     rulesHolder.add(new SlashBeakerRule(this.corePort, this.proxyPort, this.startPage));
     rulesHolder.add(new RootSlashRule(this.corePort, this.proxyPort, this.startPage));
-    rulesHolder.add(new MainPageRule("/rest/util/getMainPage"));
+    rulesHolder.add(new MainPageRule("/rest/util/getMainPage", this.authToken));
     rulesHolder.add(new EraseHashAndBeakerRule(this._hash));
     //TODO rewrite this rule. The rule for new plugin has to be applied after plugin is added in PluginServiceRest
     rulesHolder.add(new EraseHashAndPluginNameRule(this, this._hash, this.corePort).setFinal(false));

@@ -15,16 +15,12 @@
  */
 package com.twosigma.beaker.shared.module;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Provider;
-import com.google.inject.Provides;
-import com.google.inject.Scopes;
-import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
+import com.google.inject.*;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.annotation.ServerAnnotationProcessor;
 import org.cometd.annotation.Service;
@@ -36,9 +32,21 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import javax.servlet.ServletContext;
 
+import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
+
 // Should load from cometd-contrib
 public class GuiceCometdModule extends AbstractModule {
-  
+
+  private String authToken;
+
+  public GuiceCometdModule() {
+  }
+
+  public GuiceCometdModule(String authToken) {
+    this.authToken = authToken;
+  }
+
   @Override
   protected final void configure() {
     
@@ -131,7 +139,7 @@ public class GuiceCometdModule extends AbstractModule {
     server.setOption("ws.bufferSize", new Integer(1024*1024));
     server.setOption("ws.maxMessageSize", new Integer(1024*1024*16));
     server.setOption(ServletContext.class.getName(), servletContext);
-    server.setOption("cometdURLMapping", "/cometd/");
+    server.setOption("cometdURLMapping", getCometdMapping());
     configure(server);
     try {
       server.start();
@@ -139,6 +147,10 @@ public class GuiceCometdModule extends AbstractModule {
       throw new RuntimeException(e.getMessage(), e);
     }
     return server;
+  }
+
+  private String getCometdMapping() {
+    return isNoneBlank(authToken) ? format("/cometd-%s", authToken) : "/cometd/";
   }
 
   protected boolean discoverBindings() {

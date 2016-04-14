@@ -202,6 +202,7 @@ public class PluginServiceLocatorRest {
     this.useHttpsCert = bkConfig.getUseHttpsCert();
     this.useHttpsKey = bkConfig.getUseHttpsKey();
     this.requirePassword = bkConfig.getRequirePassword();
+    this.authToken = bkConfig.getAuthToken();
     this.listenInterface = bkConfig.getListenInterface();
     this.servPort = this.portBase + 1;
     this.corePort = this.portBase + 2;
@@ -277,10 +278,6 @@ public class PluginServiceLocatorRest {
       this.nginxEnv = new String[envList.size()];
       envList.toArray(this.nginxEnv);
     }
-  }
-
-  public void setAuthToken(String t) {
-    this.authToken = t;
   }
 
   private List<String> pythonBaseCommand(String pluginId, String command) {

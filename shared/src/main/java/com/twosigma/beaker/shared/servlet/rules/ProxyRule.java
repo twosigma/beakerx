@@ -17,6 +17,9 @@
 package com.twosigma.beaker.shared.servlet.rules;
 
 import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.api.Response;
+
+import javax.servlet.http.HttpServletResponse;
 
 public interface ProxyRule {
 
@@ -25,4 +28,6 @@ public interface ProxyRule {
   String rewriteTarget(String url, String path);
 
   void setHeaders(Request proxyRequest, String pathInfo);
+
+  void configureResponse(HttpServletResponse response);
 }

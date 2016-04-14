@@ -15,15 +15,24 @@
  */
 package com.twosigma.beaker.shared.servlet.rules;
 
+import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.api.Response;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import java.net.HttpCookie;
+
 import static com.twosigma.beaker.shared.servlet.rules.util.UrlUtils.getPath;
 
 public class MainPageRule extends ProxyRuleImpl {
 
   private static final String SLASH_BEAKER_SLASH = "/beaker/";
   private String mainPage;
+  private String authToken;
 
-  public MainPageRule(String mainPage) {
+  public MainPageRule(String mainPage, String authToken) {
     this.mainPage = mainPage;
+    this.authToken = authToken;
   }
 
   @Override
@@ -34,5 +43,12 @@ public class MainPageRule extends ProxyRuleImpl {
   @Override
   public boolean satisfy(final String path) {
     return SLASH_BEAKER_SLASH.equals(path);
+  }
+
+  @Override
+  public void configureResponse(HttpServletResponse response) {
+    Cookie xsrfTokenCookie = new Cookie("XSRF-TOKEN", this.authToken);
+    xsrfTokenCookie.setPath("/");
+    response.addCookie(xsrfTokenCookie);
   }
 }

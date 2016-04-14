@@ -30,7 +30,7 @@
     'bk.treeView',
     'bk.electron',
     'ngAnimate',
-    'ui.select'
+    'uiSelectWrapper'
   ]);
 
   /**

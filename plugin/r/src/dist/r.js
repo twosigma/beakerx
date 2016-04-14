@@ -34,6 +34,7 @@ define(function(require, exports, module) {
     fgColor: "#FFFFFF",
     borderColor: "",
     shortName: "R",
+    tooltip: "GNU R is a language for statistical computing and graphics.",
     newShell: function(shellID, cb, ecb) {
       if (!shellID)
         shellID = "";
@@ -145,7 +146,23 @@ define(function(require, exports, module) {
         data: { shellID: self.settings.shellID }
       }).done(cb);
     },
-    interrupt: function() {
+    resetEnvironment: function () {
+      var deferred = bkHelper.newDeferred();
+      var self = this;
+      bkHelper.asyncCallInLanguageManager({
+        url: bkHelper.serverUrl(serviceBase + "/rest/rsh/resetEnvironment"),
+        data: {shellID: self.settings.shellID},
+        pluginName: PLUGIN_NAME,
+        onSuccess: function (data) {
+          deferred.resolve();
+        },
+        onFail: function (err) {
+          deferred.reject(err);
+        }
+      });
+      return deferred.promise;
+    },
+    interrupt: function () {
       this.cancelExecution();
     },
     cancelExecution: function() {
@@ -154,8 +171,7 @@ define(function(require, exports, module) {
       }
     },
     spec: {
-      resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
-      killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
+      reset: {type: "action", action: "resetEnvironment", name: "Reset Environment"}
     },
     cometdUtil: cometdUtil
   };
@@ -200,7 +216,7 @@ define(function(require, exports, module) {
           this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
-            this[action]();
+            return this[action]();
           };
         };
         RShell.prototype = R;

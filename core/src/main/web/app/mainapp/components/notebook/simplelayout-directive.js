@@ -18,11 +18,10 @@
   'use strict';
 
   var module = angular.module('bk.notebook');
-  module.directive('simpleLayout', ['bkHelper', function (bkHelper) {
+  module.directive('simpleLayout', ['bkHelper', 'bkCoreManager', function (bkHelper, bkCoreManager) {
     return {
       restrict: 'E',
-      template: '<ul><li class="outputcontainer-li" ng-repeat="i in items track by $index"><b class="bk-object-label">{{model.getCellModel().labels[$index]}}<br/></b><bk-code-cell-output model="i" >' +
-      '</ bk-code-cell-output><br/>></li></ul>',
+      template: JST['mainapp/components/notebook/simplelayout'](),
       scope: {
         model: '='
       },
@@ -46,6 +45,16 @@
         $scope.isShowMenu = function () {
           return false;
         };
+
+        $scope.evaluate = function() {
+          var cellId = $scope.model.getCellId();
+          if (!cellId) return;
+          bkCoreManager.getBkApp().evaluate(cellId).
+            catch(function(data) {
+              console.log('Evaluation failed');
+            });
+        };
+
         $scope.$watch('isShowOutput()', function (oldval, newval) {
           $scope.showoutput = newval;
         });

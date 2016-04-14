@@ -51,6 +51,7 @@ applicationDistribution.from(pathingJar) {
 }
 
 startScripts {
+  defaultJvmOpts=['-Djava.awt.headless=' + 'true']
   doLast {
     def winScriptFile  = file getWindowsScript()
     def winFileText = winScriptFile.text

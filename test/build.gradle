@@ -23,3 +23,12 @@ task check (type: Exec) {
     commandLine './runner'
   }
 }
+
+task checkembed (type: Exec) {
+  if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+    commandLine 'python', 'nt_runner_embed.py'
+  } else {
+    commandLine './runner_embed'
+  }
+}
+

@@ -34,6 +34,7 @@ define(function(require, exports, module) {
     fgColor: "#FFFFFF",
     borderColor: "",
     shortName: "Sq",
+    tooltip: "SQL is one of the oldest and most common database query languages.",
     newShell: function(shellId, cb, ecb) {
       if (!shellId)
         shellId = "";
@@ -101,6 +102,7 @@ define(function(require, exports, module) {
       }
     },
     resetEnvironment: function () {
+      var deferred = bkHelper.newDeferred();
       $.ajax({
         type: "POST",
         datatype: "json",
@@ -108,7 +110,11 @@ define(function(require, exports, module) {
         data: {shellId: this.settings.shellID}
       }).done(function (ret) {
         console.log("done resetEnvironment",ret);
+        deferred.resolve();
+      }).fail(function (err) {
+        deferred.reject(err);
       });
+      return deferred.promise;
     },
     killAllThreads: function () {
       $.ajax({
@@ -163,7 +169,7 @@ define(function(require, exports, module) {
       defaultDatasource:  {type: "settableString", action: "updateShell", name: "Default data source"},
       datasources:  {type: "settableString", action: "updateShell", name: "Named data sources"},
       classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
-      resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
+      reset:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
       killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
     },
     cometdUtil: cometdUtil
@@ -218,7 +224,7 @@ define(function(require, exports, module) {
           this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
-            this[action]();
+            return this[action]();
           };
         };
         SqlShell.prototype = SqlSh;

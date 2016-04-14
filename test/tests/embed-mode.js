@@ -14,22 +14,27 @@
  *  limitations under the License.
  */
 
-var config = {
-  seleniumAddress: 'http://localhost:4444/wd/hub',
-  framework: 'jasmine2',
-  restartBrowserBetweenTests: false,
-  allScriptsTimeout: 20000,
-  getPageTimeout: 30000,
-  jasmineNodeOpts: {
-    defaultTimeoutInterval: 900000,
-    isVerbose: true
-  },
-  capabilities: {
-    browserName: 'chrome'
-  },
-  specs: [
-          'tests/perf-tests.js'
-  ]
-};
 
-exports.config = config;
+var BeakerPageObject = require('./beaker.po.js');
+var path = require('path');
+var beakerPO;
+
+describe('Embed mode', function() {
+
+  beforeEach(function(done) {
+    beakerPO = new BeakerPageObject();
+    browser.get(beakerPO.baseURL+"beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy-examples.bkr&readOnly=true").then(done);
+  });
+
+  afterEach(function(done) {
+    beakerPO.closeNotebook()
+      .then(done);
+  });
+
+  it('ready', function() {
+    beakerPO.getCellInput().then(function (result) {
+      expect(result).toBe('Groovy Examples')
+    });
+  });
+
+});

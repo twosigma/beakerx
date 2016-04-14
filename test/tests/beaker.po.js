@@ -17,6 +17,8 @@
 var _ = require('underscore');
 
 var BeakerPageObject = function() {
+
+  this.EC = protractor.ExpectedConditions;
   this.baseURL = 'http://localhost:8801/';
   this.mainmenu = element.all(by.repeater('m in getMenus()'));
   //jscs:disable
@@ -63,7 +65,7 @@ var BeakerPageObject = function() {
         .thenCatch(function() {
           return false;
         });
-    }, 5000);
+    }, 100000);
 
     return element(by.css('.modal-submit')).click();
   };
@@ -77,7 +79,7 @@ var BeakerPageObject = function() {
       .thenCatch(function() {
         return false;
       });
-    }, 10000);
+    }, 100000);
   };
 
   this.openMenuAtIndex = function(index) {
@@ -106,25 +108,24 @@ var BeakerPageObject = function() {
   };
 
   this.setNormalEditMode = function() {
-    this.setEditMode('Normal');
+    this.setEditMode().then(element(by.css('#normal-edit-mode-menuitem')).click);
   };
 
   this.setEmacsEditMode = function() {
-    this.setEditMode('Emacs');
+    this.setEditMode().then(element(by.css('#emacs-edit-mode-menuitem')).click);
   };
 
   this.setVimEditMode = function () {
-    this.setEditMode('Vim');
+    this.setEditMode().then(element(by.css('#vim-edit-mode-menuitem')).click);
   };
 
   this.setSublimeEditMode = function() {
-    this.setEditMode('Sublime');
+    this.setEditMode().then(element(by.css('#sublime-edit-mode-menuitem')).click);
   };
 
-  this.setEditMode = function(mode) {
+  this.setEditMode = function() {
     element(by.css('.notebook-menu')).click();
-    browser.actions().mouseMove(element(by.css('.edit-mode-menuitem'))).perform();
-    element(by.partialLinkText(mode)).click();
+    return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
   };
 
   this.isCellMenuOpen = function(opts) {
@@ -161,6 +162,7 @@ var BeakerPageObject = function() {
   this.helpMenu = element(by.className('help-menu'));
 
   this.languageManagerMenuItem = element(by.className('language-manager-menuitem'));
+  this.runAllCellsMenuItem = element(by.className('run-all-cells-menuitem'));
   this.closeMenuItem = element(by.className('close-menuitem'));
 
   this.closeNotebook = function() {
@@ -217,6 +219,7 @@ var BeakerPageObject = function() {
 
   this.languageManagerCloseButton = element(by.className('language-manager-close-button'));
   this.insertCellButton = element(by.className('insert-cell'));
+  this.deleteCellButton = element(by.className('delete-cell'));
   this.evaluateButton = this.getEvaluateButton();
   this.modalDialogYesButton = element(by.css('.modal .yes'));
   this.modalDialogNoButton = element(by.css('.modal .no'));
@@ -228,10 +231,79 @@ var BeakerPageObject = function() {
   };
   this.cellEvaluatorDisplay = element(by.css('.code-cell-area .cell-evaluator-menu b'));
 
+  //Functions for access to plot elements
+
+
+  this.scrollToCodeCellOutput = function (index) {
+    return browser.executeScript("$('.code-cell-output')[" + index + "].scrollIntoView();");
+  };
+
+  this.getCodeCellOutputByIndex = function (index) {
+    return element.all(by.css('.code-cell-output')).get(index);
+  };
+
+    this.getCodeCellOutputCombplotTitle = function (codeCellOutputIdx) {
+    return this.getCodeCellOutputByIndex(codeCellOutputIdx).element(by.id('combplotTitle')).getText();
+  };
+
+  this.getCodeCellOutputContainerTitle = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getCodeCellOutputByIndex(codeCellOutputIdx)
+      .all(by.id("plotTitle"))
+      .get(containerIdx).getText();
+  };
+
+  this.getCodeCellOutputContainerYLabel = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('ylabel')).getText();
+  };
+
+  this.getCodeCellOutputContainerYRLabel = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('yrlabel')).getText();
+  };
+
+  this.getCodeCellOutputContainerXLabel = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('xlabel')).getText();
+  };
+
+  this.getPlotLegendContainer = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getCodeCellOutputByIndex(codeCellOutputIdx).all(By.css('.plot-plotlegendcontainer')).get(containerIdx);
+  };
+
+  this.getPlotSvg= function (codeCellOutputIdx, containerIdx) {
+    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(By.id('svgg'));
+  };
+
+  this.getPlotMaing= function (codeCellOutputIdx, containerIdx) {
+    return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('maing'));
+  };
+
+  this.getPlotLabelg= function (codeCellOutputIdx, containerIdx) {
+    return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('labelg'));
+  };
+
+  this.getPlotSvgElementByIndex= function (codeCellOutputIdx, containerIdx, elementIndex) {
+    return this.getPlotSvg(codeCellOutputIdx, containerIdx).all(by.css("#maing > g")).get(elementIndex);
+  };
+
+  //End Functions for access to plot elements
+
   //CodeMirror API. See for information https://sharpkit.net/help/SharpKit.CodeMirror/SharpKit.CodeMirror/CodeMirror/
 
   this.setCellInput = function(code) {
-    return browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
+    return browser.executeScript("$('.CodeMirror')[0].CodeMirror.setValue('" + code + "')");
   };
 
   this.getCellInput = function() {
@@ -273,7 +345,7 @@ var BeakerPageObject = function() {
       .thenCatch(function() {
         return false;
       });
-    }, 5000);
+    }, 100000);
   };
 
   this.insertNewCell = function() {
@@ -317,17 +389,270 @@ var BeakerPageObject = function() {
     }, 10000);
   };
 
+
   this.waitUntilLoadingFinished = function() {
     var self = this;
     return browser.wait(function() {
       return self.getLoadingIndicator().isPresent()
-      .then(function(present) {
+        .then(function(present) {
         return !present;
       })
       .thenCatch(function() {
         return false;
       });
+    }, 100000);
+  };
+
+  this.waitUntilLoadingPlot = function(codeCellOutputIdx, containerIdx) {
+    var self = this;
+    return browser.wait(function() {
+      return self.getPlotLegendContainer(codeCellOutputIdx, containerIdx).isPresent()
+        .then(function(present) {
+          return present;
+        })
+        .thenCatch(function() {
+          return false;
+        });
     }, 10000);
+  };
+
+  this.waitUntilLoadingIndicator = function() {
+    browser.wait(this.EC.presenceOf($('.navbar-text > i')), 10000);
+  };
+
+  this.waitUntilLoadingCellOutput = function() {
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output')), 10000);
+  }
+
+  this.checkPlotIsPresent = function (codeCellOutputIdx, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    this.scrollToCodeCellOutput(codeCellOutputIdx);
+    this.waitUntilLoadingPlot(codeCellOutputIdx, containerIdx);
+    expect(this.getPlotMaing(codeCellOutputIdx, containerIdx).isPresent()).toBe(true);
+  };
+
+
+  this.hasClass =  function  (element, cls) {
+    return element.getAttribute('class').then(function (classes) {
+      return classes && classes.split(' ').indexOf(cls) !== -1;
+    });
+  };
+
+  this.checkClass =  function (element, expectedClass){
+    expect(this.hasClass(element, expectedClass)).toBe(true);
+  };
+
+  this.checkCount =  function (elements, expectedCount){
+    expect(elements.count()).toBe(expectedCount);
+  };
+
+  this.checkLegendIsPresent = function (codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    expect(this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(By.css('.plot-legend')).isPresent()).toBe(true);
+  };
+
+  this.checkSize = function (element, width, height) {
+    expect(element.getSize().then(function (size) {
+      return size.height
+    })).toBe(height);
+    expect(element.getSize().then(function (size) {
+      return size.width
+    })).toBe(width);
+  };
+
+
+  this.checkPlotLegentdLabel = function (codeCellOutputIdx, containerIdx, legentdLabelIndex, text) {
+    expect(this.getPlotLegendContainer(codeCellOutputIdx, containerIdx)
+      .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
+  }
+
+  this.checkLegendIsPresentByIdCell = function (codeCellOutputId, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    expect(this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(By.css('.plot-legend')).isPresent()).toBe(true);
+  };
+
+  this.getCodeCellOutputCombplotTitleByIdCell = function (codeCellOutputId) {
+    return this.getCodeCellOutputByIdCell(codeCellOutputId).element(by.id('combplotTitle')).getText();
+  };
+
+  this.getCodeCellOutputContainerYLabelByIdCell = function (codeCellOutputId, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(by.id('ylabel')).getText();
+  };
+
+  this.getCodeCellOutputContainerTitleByIdCell = function (codeCellOutputId, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getCodeCellOutputByIdCell(codeCellOutputId)
+        .all(by.id("plotTitle"))
+        .get(containerIdx).getText();
+  };
+
+  this.getCodeCellOutputContainerXLabelByIdCell = function (codeCellOutputId, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(by.id('xlabel')).getText();
+  };
+
+  this.getCodeCellOutputContainerYRLabelByIdCell = function (codeCellOutputId, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+
+    return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(by.id('yrlabel')).getText();
+  };
+
+  this.scrollToCodeCellOutputByIdCell = function (idCell) {
+    return browser.executeScript("$('[cell-id=" + idCell +"]')[0].scrollIntoView();");
+  };
+
+  this.getCodeCellOutputByIdCell = function (idCell) {
+    return element.all(by.css('[cell-id=' + idCell + ']')).get(0);
+  };
+
+  this.checkPlotIsPresentByIdCell = function (codeCellOutputId, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    this.scrollToCodeCellOutputByIdCell(codeCellOutputId);
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + codeCellOutputId + ']'), 10000));
+    expect(this.getPlotMaingByIdCell(codeCellOutputId, containerIdx).isPresent()).toBe(true);
+  };
+
+  this.getPlotMaingByIdCell = function (codeCellOutputId, containerIdx) {
+    return this.getPlotSvgByIdCell(codeCellOutputId, containerIdx).element(By.id('maing'));
+  };
+
+  this.getPlotSvgByIdCell = function (codeCellOutputId, containerIdx) {
+    return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(By.id('svgg'));
+  };
+
+  this.getPlotLegendContainerByIdCell = function (codeCellOutputId, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getCodeCellOutputByIdCell(codeCellOutputId).all(By.css('.plot-plotlegendcontainer')).get(containerIdx);
+  };
+
+  this.getPlotSvgElementByIndexByIdCell = function (codeCellOutputId, containerIdx, elementIndex) {
+    return this.getPlotSvgByIdCell(codeCellOutputId, containerIdx).all(by.css("#maing > g")).get(elementIndex);
+  };
+
+  this.checkDtContainer = function(codeCellOutputIdx, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    this.scrollToCodeCellOutput(codeCellOutputIdx);
+    expect(this.getDtContainer(codeCellOutputIdx, containerIdx).isPresent()).toBe(true);
+  }
+
+  this.checkDtContainerByIdCell = function(idCell, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    this.scrollToCodeCellOutputByIdCell(idCell);
+    browser.wait(this.EC.presenceOf($('[cell-id=' + idCell + ']'), 10000));
+    expect(this.getDtContainerByIdCell(idCell, containerIdx).isPresent()).toBe(true);
+  }
+
+  this.getDtContainer = function(codeCellOutputIdx, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getCodeCellOutputByIndex(codeCellOutputIdx).all(By.css('.dtcontainer')).get(containerIdx);
+  }
+
+  this.getDtContainerByIdCell = function(idCell, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getCodeCellOutputByIdCell(idCell).all(By.css('.dtcontainer')).get(containerIdx);
+  }
+
+  this.getDataTablesScrollHead = function(codeCellOutputIdx, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getDtContainer(codeCellOutputIdx, containerIdx).element(By.css('.dataTables_scrollHead'));
+  }
+
+  this.getDataTablesScrollHeadByIdCell = function(idCell, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getDtContainerByIdCell(idCell, containerIdx).element(By.css('.dataTables_scrollHead'));
+  }
+
+  this.getDataTablesScrollBody = function(codeCellOutputIdx, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getDtContainer(codeCellOutputIdx, containerIdx).element(By.css('.dataTables_scrollBody'));
+  }
+
+  this.getDataTablesScrollBodyByIdCell = function(idCell, containerIdx){
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getDtContainerByIdCell(idCell, containerIdx).element(By.css('.dataTables_scrollBody'));
+  }
+
+  this.getDataTablesTBody = function(codeCellOutputIdx){
+    return this.getDataTablesScrollBody(codeCellOutputIdx).all(By.css('tbody > tr'));
+  }
+
+  this.getDataTablesTBodyByIdCell = function(idCell){
+    return this.getDataTablesScrollBodyByIdCell(idCell).all(By.css('tbody > tr'));
+  }
+
+  this.checkDataTableHead = function(codeCellOutputIdx, headLabels){
+    expect(this.getDataTablesScrollHead(codeCellOutputIdx).getText()).toBe(headLabels);
+  }
+
+  this.getDataTablesTHeadByIdCell = function(idCell){
+    return this.getDataTablesScrollHeadByIdCell(idCell).all(By.css('thead > tr'));
+  }
+
+  this.checkDataTableHeadByIdCell = function(idCell, headLabels){
+    expect(this.getDataTablesScrollHeadByIdCell(idCell).getText()).toBe(headLabels);
+  }
+
+  this.checkDataTableBody = function(codeCellOutputIdx, rowsCount, firstRow){
+    var tBody = this.getDataTablesTBody(codeCellOutputIdx);
+    expect(tBody.count()).toBe(rowsCount);
+    expect(tBody.get(0).getText()).toBe(firstRow);
+  }
+
+  this.checkDataTableBodyByIdCell = function(idCell, rowsCount, firstRow){
+    var tBody = this.getDataTablesTBodyByIdCell(idCell);
+    expect(tBody.count()).toBe(rowsCount);
+    expect(tBody.get(0).getText()).toBe(firstRow);
+  }
+
+  this.checkCellOutputText = function(codeCellOutputIdx, outputText){
+    expect(this.getCodeCellOutputByIndex(codeCellOutputIdx).element(By.css('pre')).getText()).toBe(outputText);
+  }
+
+  this.checkCellOutputTextByIdCell = function(idCell, outputText){
+    expect(this.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText()).toBe(outputText);
+  }
+
+  this.checkCellOutputSubTextByIdCell = function(idCell, outputText, inxStart, lenght){
+    expect(this.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).isPresent()).toBe(true);
+    this.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText()
+        .then(function(value){
+          expect(value.substring(inxStart, lenght)).toBe(outputText);
+        });
+  }
+
+  this.checkImageByIdCell = function(idCell){
+    expect(this.getCodeCellOutputByIdCell(idCell).element(By.css('img')).isPresent()).toBe(true);
+    this.getCodeCellOutputByIdCell(idCell).element(By.css('img')).getAttribute('src')
+        .then(function(attr){
+          expect(attr.substring(0, 21)).toBe('data:image/png;base64');
+        });
+  }
+
+  this.checkSubString = function(strPromise, toBeStr, indxStart, lenght){
+    strPromise.getText().then(function(value){
+      expect(value.substring(indxStart, lenght)).toBe(toBeStr);
+    });
   }
 
 };

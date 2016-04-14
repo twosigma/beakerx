@@ -212,10 +212,12 @@
             if (bkHelper.isMacOS) {
               var mapObj = {
                 Cmd: "&#x2318;",
+                Ctrl: "&#x2303;",
                 Alt: "&#x2325;",
                 Shift: "&#x21E7;",
                 Up: "&#x2191;",
-                Down: "&#x2193;"
+                Down: "&#x2193;",
+                Backspace: "&#x232b;"
               };
               str = str.replace(/-/g, "");
               var regexp = new RegExp(Object.keys(mapObj).join("|"),"gi");
@@ -228,7 +230,7 @@
          }
 
           if (_.isArray(itemShortcut)) {
-            var shortcut = bkHelper.isMacOS ? itemShortcut[1] : itemShortcut[0];
+            var shortcut = (bkHelper.isMacOS ? itemShortcut[1] : itemShortcut[0]) || itemShortcut[0];
             return replace(shortcut);
           } else {
             return replace(itemShortcut);

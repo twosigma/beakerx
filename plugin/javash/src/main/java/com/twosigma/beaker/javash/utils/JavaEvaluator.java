@@ -15,36 +15,35 @@
  */
 package com.twosigma.beaker.javash.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
-
 import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.javash.autocomplete.JavaAutocomplete;
+import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
+import com.twosigma.beaker.jvm.utils.BeakerPrefsUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-
-import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
-import com.twosigma.beaker.jvm.utils.BeakerPrefsUtils;
-
-import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
-import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
-
-import java.lang.reflect.*;
-import java.nio.file.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.file.FileSystems;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-import java.util.regex.*;
-import java.io.File;
-
-import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
-import com.twosigma.beaker.autocomplete.ClasspathScanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class JavaEvaluator {
+  private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
   protected final String shellId;
   protected final String sessionId;
   protected final String packageId;
@@ -191,7 +190,7 @@ public class JavaEvaluator {
       insert++;
     }
      
-    final String CODE_TO_INSERT = "public class Foo { public static void beakerRun() { \n";
+    final String CODE_TO_INSERT = "public class " + WRAPPER_CLASS_NAME + " { public static void beakerRun() { \n";
       
     StringBuilder sb = new StringBuilder();
     for ( int i=0; i<insert; i++) {
@@ -224,9 +223,9 @@ public class JavaEvaluator {
     public void run() {
       DynamicClassLoaderSimple loader = null;
       jobDescriptor j = null;
-      JavaSourceCompiler javaSourceCompiler;
+      org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler;
   
-      javaSourceCompiler = new JavaSourceCompilerImpl();
+      javaSourceCompiler = new JavaSourceCompiler();
       NamespaceClient nc =null;
       
       while(!exit) {
@@ -262,7 +261,7 @@ public class JavaEvaluator {
           Matcher m;
           String pname = packageId;
           
-          JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(outDir));
+          org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(outDir));
         
           // build the compiler class path
           String classpath = System.getProperty("java.class.path");
@@ -278,14 +277,18 @@ public class JavaEvaluator {
         
           String [] codev = code.split("\n");
           int ci = 0;
-        
-          StringBuilder javaSourceCode =  new StringBuilder();
+
+          ci = skipBlankLines(codev, ci);
+
+          Map<Integer, Integer> lineNumbersMapping = new HashMap<>();
+          LineBrakingStringBuilderWrapper javaSourceCode =  new LineBrakingStringBuilderWrapper();
           p = Pattern.compile("\\s*package\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*);.*");
           m = p.matcher(codev[ci]);
         
           if (m.matches()) {
             pname = m.group(1);
-            ci++;
+            lineNumbersMapping.put(1, ci);
+            ci = skipBlankLines(codev, ci + 1);
           }
           javaSourceCode.append("package ");
           javaSourceCode.append(pname);
@@ -297,55 +300,60 @@ public class JavaEvaluator {
             javaSourceCode.append(";\n");
           }
         
-          p = Pattern.compile("\\s*import\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*(?:\\.\\*)?);.*");
+          p = Pattern.compile("\\s*import(\\s+static)?\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*(?:\\.\\*)?);.*");
           m = p.matcher(codev[ci]);
           while(m.matches()) {
-            String impstr = m.group(1);
-            ci++;
-            m = p.matcher(codev[ci]);
-        
+            String impstr = m.group(2);
+            String staticModifier = m.group(1);
             javaSourceCode.append("import ");
+            if (staticModifier != null) {
+              javaSourceCode.append("static ");
+            }
             javaSourceCode.append(impstr);
             javaSourceCode.append(";\n");
+            lineNumbersMapping.put(javaSourceCode.getLinesCount(), ci);
+
+            ci = skipBlankLines(codev, ci + 1);
+            m = p.matcher(codev[ci]);
           }
-        
-          p = Pattern.compile("(?:^|.*\\s+)class\\s+([a-zA-Z]\\w*).*");
+
+          p = Pattern.compile("(?:^|.*\\s+)(?:(?:class)|(?:interface))\\s+([a-zA-Z]\\w*).*");
           m = p.matcher(codev[ci]);
           if (m.matches()) {
             // this is a class definition
         
             String cname = m.group(1);
-        
-            for(; ci<codev.length; ci++)
-              javaSourceCode.append(codev[ci]);    
-        
+
+            addTheRestOfCode(codev, ci, javaSourceCode, lineNumbersMapping);
+
             compilationUnit.addJavaSource(pname+"."+cname, javaSourceCode.toString());
             try {
               javaSourceCompiler.compile(compilationUnit);
               javaSourceCompiler.persistCompiledClasses(compilationUnit);
               j.outputObject.finished(pname+"."+cname);
-            } catch(Exception e) { j.outputObject.error("ERROR:\n"+e.toString()); }    
+            } catch (CompilationException e) {
+              j.outputObject.error(buildErrorMessage(e, lineNumbersMapping));
+            } catch(Exception e) { j.outputObject.error("ERROR: "+e.toString()); }
           } else {
             String ret = "void";
             if (codev[codev.length-1].matches("(^|.*\\s+)return\\s+.*"))
               ret = "Object";
             // this is an expression evaluation
-            javaSourceCode.append("public class Foo {\n");
+            javaSourceCode.append("public class " + WRAPPER_CLASS_NAME + " {\n");
             javaSourceCode.append("public static ");
             javaSourceCode.append(ret);
             javaSourceCode.append(" beakerRun() throws Exception {\n");
-            for(; ci<codev.length; ci++)
-              javaSourceCode.append(codev[ci]);
+            addTheRestOfCode(codev, ci, javaSourceCode, lineNumbersMapping);
             javaSourceCode.append("}\n");
             javaSourceCode.append("}\n");
         
-            compilationUnit.addJavaSource(pname+".Foo", javaSourceCode.toString());
+            compilationUnit.addJavaSource(pname+ "." + WRAPPER_CLASS_NAME, javaSourceCode.toString());
 
             try {
               javaSourceCompiler.compile(compilationUnit);
               
               javaSourceCompiler.persistCompiledClasses(compilationUnit);
-              Class<?> fooClass = loader.loadClass(pname+".Foo");
+              Class<?> fooClass = loader.loadClass(pname+ "." + WRAPPER_CLASS_NAME);
               Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
               
               if (!executor.executeTask(new MyRunnable(mth, j.outputObject, ret.equals("Object"), loader))) {
@@ -355,7 +363,9 @@ public class JavaEvaluator {
                 nc.setOutputObj(null);
                 nc = null;
               }
-            } catch(Exception e) { j.outputObject.error("ERROR: "+e.toString()); }    
+            } catch (CompilationException e) {
+              j.outputObject.error(buildErrorMessage(e, lineNumbersMapping));
+            } catch(Exception e) { j.outputObject.error("ERROR: "+e.toString()); }
           }
           j = null;
         } catch(Throwable e) {
@@ -369,7 +379,44 @@ public class JavaEvaluator {
       }
       NamespaceClient.delBeaker(sessionId);
     }
-    
+
+    private int skipBlankLines(String[] lines, int ci) {
+      while (ci < lines.length - 1 && StringUtils.isBlank(lines[ci])) {
+        ci++;
+      }
+      return ci;
+    }
+
+    private String buildErrorMessage(CompilationException exception, Map<Integer, Integer> lineNumbersMapping) {
+      final StringBuilder stringBuilder = new StringBuilder();
+      stringBuilder.append("ERROR: ").append(exception.getMessage()).append('\n');
+      for (CompilationException.CompilationError compilationError : exception.getCompilationErrors()) {
+        stringBuilder
+            .append("error at line ")
+            .append(mapLineNumber(lineNumbersMapping, compilationError.getLineNumber())).append(": ")
+            .append(prepareForFrontend(compilationError.getErrorMessage())).append('\n')
+            .append(compilationError.getCode());
+      }
+      return stringBuilder.toString();
+    }
+
+    private String prepareForFrontend(String errorMessage) {
+      return errorMessage.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    }
+
+    private Integer mapLineNumber(Map<Integer, Integer> lineNumbersMapping, int ourNumber) {
+      final Integer usersNumber = lineNumbersMapping.get(ourNumber);
+      return usersNumber == null ? ourNumber : usersNumber + 1;
+    }
+
+    private void addTheRestOfCode(String[] codev, int ci, LineBrakingStringBuilderWrapper javaSourceCode, Map<Integer, Integer> lineNumbersMapping) {
+      for (; ci < codev.length; ci++) {
+        javaSourceCode.append(codev[ci]);
+        javaSourceCode.append("\n");
+        lineNumbersMapping.put(javaSourceCode.getLinesCount(), ci);
+      }
+    }
+
     protected class MyRunnable implements Runnable {
 
       protected final SimpleEvaluationObject theOutput;
@@ -413,5 +460,30 @@ public class JavaEvaluator {
       }
 
     };
+  }
+
+  private static class LineBrakingStringBuilderWrapper {
+    private static final String LINE_BREAK = "\n";
+    private StringBuilder delegate;
+    private int linesCount;
+
+    public LineBrakingStringBuilderWrapper() {
+      this.delegate = new StringBuilder();
+      this.linesCount = 0;
+    }
+
+    public void append(String string) {
+      this.delegate.append(string);
+      this.linesCount += StringUtils.countMatches(string, LINE_BREAK);
+    }
+
+    public int getLinesCount() {
+      return linesCount;
+    }
+
+    @Override
+    public String toString() {
+      return delegate.toString();
+    }
   }
 }

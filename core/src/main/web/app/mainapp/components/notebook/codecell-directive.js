@@ -121,7 +121,9 @@
         };
 
         $scope.backgroundClick = function(event) {
-          if (!$scope.isShowInput() || $(event.toElement).parents().hasClass('code-cell-output')) {
+          if (!$scope.isShowInput() ||
+              $(event.toElement).parents().hasClass('code-cell-output') ||
+              $(event.toElement).hasClass('evaluate-script')) {
             return;
           }
           var top = $(event.delegateTarget).offset().top;
@@ -185,6 +187,7 @@
         $scope.$watch('cellmodel.id', editedListener);
         $scope.$watch('cellmodel.evaluator', editedListener);
         $scope.$watch('cellmodel.initialization', editedListener);
+        $scope.$watch('cellmodel.wordWrapDisabled', editedListener);
         $scope.$watch('cellmodel.input.body', editedListener);
         $scope.$watch('cellmodel.output.result', editedListener);
 
@@ -292,6 +295,24 @@
           }
         });
 
+        $scope.isWordWrap = function () {
+          return !$scope.cellmodel.wordWrapDisabled;
+        };
+
+        $scope.cellmenu.addItem({
+          name: 'Word wrap',
+          isChecked: function () {
+            return $scope.isWordWrap();
+          },
+          action: function () {
+            if ($scope.cellmodel.wordWrapDisabled) {
+              delete $scope.cellmodel.wordWrapDisabled;
+            } else {
+              $scope.cellmodel.wordWrapDisabled = true;
+            }
+          }
+        });
+
         $scope.cellmenu.addItem({
           name: 'Options...',
           action: function() {
@@ -323,33 +344,12 @@
       link: function(scope, element) {
         scope.showDebug = false;
 
-        function isFullScreen(cm) {
-          return /\bCodeMirror-fullscreen\b/.test(cm.getWrapperElement().className);
-        }
-
-        function winHeight() {
-          return window.innerHeight || (document.documentElement || document.body).clientHeight;
-        }
-
-        function setFullScreen(cm, full) {
-          var wrap = cm.getWrapperElement();
-          if (full) {
-            wrap.className += ' CodeMirror-fullscreen';
-            wrap.style.height = winHeight() + 'px';
-            document.documentElement.style.overflow = 'hidden';
-          } else {
-            wrap.className = wrap.className.replace(' CodeMirror-fullscreen', '');
-            wrap.style.height = '';
-            document.documentElement.style.overflow = '';
-          }
-          cm.refresh();
-        }
         var resizeHandler = function() {
           var showing = document.body.getElementsByClassName('CodeMirror-fullscreen')[0];
           if (!showing) {
             return;
           }
-          showing.CodeMirror.getWrapperElement().style.height = winHeight() + 'px';
+          showing.CodeMirror.getWrapperElement().style.height = bkHelper.winHeight() + 'px';
         };
         scope.scrollTo = function(){
           window.scrollTo(0, element.offset().top - 100);
@@ -366,13 +366,10 @@
             if (cm.state.vim && cm.state.vim.insertMode) {
               CodeMirror.Vim.exitInsertMode(cm);
             } else {
-              if (isFullScreen(cm)) {
-                setFullScreen(cm, false);
+              if (bkHelper.isFullScreen(cm)) {
+                bkHelper.setFullScreen(cm, false);
               }
             }
-          },
-          'Alt-F11': function(cm) {
-            setFullScreen(cm, !isFullScreen(cm));
           },
           'Shift-Ctrl-A': function(cm) {
             scope.appendCodeCell();
@@ -410,27 +407,21 @@
           $(element.find('.bkcelltextarea')[0]).replaceWith($(template).text(scope.cellmodel.input.body));
 
           _.extend(codeMirrorOptions, {
-            theme: bkHelper.getTheme()
+            theme: bkHelper.getTheme(),
+            lineWrapping: scope.isWordWrap()
           });
 
           scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
           scope.cm.on('change', changeHandler);
           scope.cm.on('blur', function () {
-            if (!scope.cm.curOp || $('.CodeMirror-hint').length > 0) {
+            if ($('.CodeMirror-hint').length > 0) {
               //codecomplete is up, skip
               return;
             }
-            CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
-          });
-          scope.cm.on('focus', function () {
-            if (!scope.cm.curOp || $('.CodeMirror-hint').length > 0) {
-              //codecomplete is up, skip
-              return;
-            }
-            CodeMirror.signal(scope.cm, "cursorActivity", scope.cm);
-          });
 
+            scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
+          });
           scope.cm.on('gutterClick', onGutterClick);
 
           scope.updateUI(scope.getEvaluator());
@@ -539,6 +530,12 @@
             } else {
               element.closest('.bkcell').removeClass('initcell');
             }
+          }
+        });
+
+        scope.$watch('isWordWrap()', function(newValue, oldValue) {
+          if (newValue !== oldValue) {
+            scope.cm.setOption('lineWrapping', newValue);
           }
         });
 

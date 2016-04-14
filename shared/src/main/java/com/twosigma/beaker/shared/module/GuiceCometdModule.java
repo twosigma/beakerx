@@ -116,6 +116,12 @@ public class GuiceCometdModule extends AbstractModule {
     servletContext = ((ServletContextHandler) jetty.getHandler()).getServletContext();
 //    server.addTransport(new BkWebSocketTransport(server));
 
+    /*
+     * Set the max idle time.
+     * @param timeMs the max idle time in MS. Timeout <= 0 implies an infinite timeout
+     */
+//    server.setOption(WebSocketTransport.IDLE_TIMEOUT_OPTION, -1);
+
     server.setOption("jsonContext", new Jackson1JSONContextServer() {
       @Override
       public ObjectMapper getObjectMapper() {

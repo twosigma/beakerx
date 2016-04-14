@@ -26,7 +26,8 @@
     'bk.notebookNamespaceModelManager',
     'bk.recentMenu',
     'bk.evaluatorManager',
-    'bk.electron'
+    'bk.electron',
+    'bk.plotapi'
   ]);
 
   module.factory('bkSessionManager', function(
@@ -37,7 +38,8 @@
       bkNotebookNamespaceModelManager,
       bkEvaluatorManager,
       bkRecentMenu,
-      bkElectron) {
+      bkElectron,
+      bkPlotApi) {
 
     var ImageIcon = function(data) {
       if (data === undefined || data.type !== "ImageIcon") {
@@ -338,6 +340,10 @@
         return o;
       }
 
+      if (bkPlotApi.instanceOfPlotApi(v) && norecurse === undefined) {
+        return _.cloneDeep(v);
+      }
+
       if (_.isObject(v) && isDictionary(v) && norecurse === undefined) {
         var o = {}
         o.type = "TableDisplay";
@@ -450,13 +456,13 @@
       this.knownBeakerVars = { };
       this.getCache = { };
       this.setCache = { };
-      this.beakerObj = { }
+      this.beakerObj = { };
       this.nbmodel = nbmodel;
     };
 
     BeakerObject.prototype.isBeakerObject = function(obj) {
       return obj === this.beakerObj;
-    }
+    };
     
     BeakerObject.prototype.setupBeakerObject = function(modelOutput) {
       var self = this;
@@ -533,6 +539,7 @@
         Object.defineProperty(this.beakerObj, 'timeout', { value: bkHelper.timeout, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'DataFrame', { value: DataFrame, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'ImageIcon', { value: ImageIcon, writeable: false, enumerable: true });
+        _.extend(this.beakerObj, bkPlotApi.list());
         this.predefined = Object.keys(this.beakerObj);
       }
       this._beaker_model_output_result = modelOutput.result; // XXX obviated by next line
@@ -616,7 +623,7 @@
       // check if javascript removed a binding
       if ( this.nbmodel.namespace !== undefined ) {
         for (var p in this.nbmodel.namespace) {
-          if (this.knownBeakerVars[p] !== undefined && keys.indexOf(p) <0) {
+          if (this.knownBeakerVars[p] !== undefined && keys.indexOf(p) < 0) {
             delete this.nbmodel.namespace[p];
             delete this.knownBeakerVars[p];
           }
@@ -689,7 +696,7 @@
         var its = [];
         var nms = [];
         for (var p in this.nbmodel.namespace) {
-          if (this.predefined.indexOf(p)<0 && p != 'prefs' && p != 'language') {
+          if (this.predefined.indexOf(p)<0 && p != 'prefs' && p != 'language' && p != 'client') {
             var t = this.nbmodel.namespace[p];
             its.push(t);
             nms.push(p);
@@ -698,7 +705,11 @@
         obj = {
           type: 'OutputContainer',
           items: its,
-          labels: nms
+          labels: nms,
+          layout:{
+            borderDisplayed: false,
+            type: "BeakerObjectLayoutManager"
+          }
         };
       }
       return transform(obj);
@@ -730,7 +741,7 @@
       }
       parents.pop(node);
       return false;
-  }
+    };
 
     var _bo = {};
 

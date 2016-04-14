@@ -70,13 +70,16 @@
 
         // actions for UI
         $scope.newNotebook = function() {
-          bkCoreManager.newSession(false);
-        };
-        $scope.newEmptyNotebook = function() {
           bkCoreManager.newSession(true);
         };
+        $scope.newDefaultNotebook = function() {
+          bkCoreManager.newSession(false);
+        };
+        $scope.openNotebook = function() {
+          bkHelper.openWithDialog('bkr');
+        };
         $scope.openTutorial = function() {
-          bkCoreManager.openNotebook('config/tutorial.bkr', undefined, true);
+          bkHelper.openNotebookInNewWindow('file:config/tutorial.bkr', 'file', true, 'bkr');
         };
 
         $scope.getElectronMode = function() {
@@ -86,10 +89,8 @@
         // ask for tracking permission
         $scope.isAllowAnonymousTracking = false;
         if ((window.beaker === undefined || window.beakerRegister.isEmbedded === undefined) && bkTrack.isNeedPermission()) {
-          bkUtils.httpGet('../beaker/rest/util/getPreference', {
-            'preference': 'allow-anonymous-usage-tracking'
-          }).then(function(allow) {
-            switch (allow.data) {
+          bkUtils.getBeakerPreference('allow-anonymous-usage-tracking').then(function(allow) {
+            switch (allow) {
               case 'true':
                 $scope.isAllowAnonymousTracking = true;
                 break;
@@ -129,24 +130,14 @@
         };
 
         var keydownHandler = function(e) {
-          if (e.ctrlKey && e.shiftKey && (e.which === 78)) { // Ctrl + Shift + n
+          if (bkHelper.isNewDefaultNotebookShortcut(e)) { // Ctrl/Alt + Shift + n
+            bkUtils.fcall(function() {
+              $scope.newDefaultNotebook();
+            });
+            return false;
+          } else if (bkHelper.isNewNotebookShortcut(e)) { // Ctrl/Alt + n
             bkUtils.fcall(function() {
               $scope.newNotebook();
-            });
-            return false;
-          } else if (e.ctrlKey && (e.which === 78)) { // Ctrl + n
-            bkUtils.fcall(function() {
-              $scope.newEmptyNotebook();
-            });
-            return false;
-          } else if (e.metaKey && !e.ctrlKey && e.shiftKey && (e.which === 78)) { // Cmd + Shift + n
-            bkUtils.fcall(function() {
-              $scope.newNotebook();
-            });
-            return false;
-          } else if (e.metaKey && !e.ctrlKey && (e.which === 78)) { // Cmd + n
-            bkUtils.fcall(function() {
-              $scope.newEmptyNotebook();
             });
             return false;
           } else if (bkUtils.isElectron) {
@@ -203,6 +194,32 @@
 
         $scope.isSessionsListEmpty = function() {
           return _.isEmpty($scope.sessions);
+        };
+
+        $scope.recents = null;
+        $scope.getRecentMenuItems = function() {
+          $scope.recents = bkCoreManager.getRecentMenuItems();
+        };
+
+        $scope.isRecentEmpty = function() {
+          var isEmpty = _.isEmpty($scope.recents);
+          if ($scope.recents && $scope.recents.length) {
+            isEmpty = $scope.recents[0] && $scope.recents[0].disabled;
+          }
+
+          return isEmpty;
+        };
+
+        $scope.getRecentMenuItems();
+
+        $scope.openRecent = function (item, event) {
+          if (_.isFunction(item.action)) {
+            if ((bkUtils.isMacOS && event.metaKey) || (!bkUtils.isMacOS && event.ctrlKey)) {
+              item.action(true);
+            } else {
+              item.action();
+            }
+          }
         };
 
         var isDisconnected = function() {

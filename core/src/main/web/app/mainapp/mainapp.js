@@ -592,6 +592,43 @@
               saveStart();
               return bkFileManipulation.saveNotebookAs(notebookUri, uriType).then(saveDone, saveFailed);
             },
+            runAllCellsInNotebook: function () {
+              bkHelper.evaluateRoot('root').then(function (res) {
+                bkHelper.go2FirstErrorCodeCell();
+              }, function (err) {
+                bkHelper.go2FirstErrorCodeCell();
+              });
+            },
+            resetAllKernelsInNotebook: function () {
+              var statusMessage = 'Resetting all languages and running all init cells';
+              bkHelper.showStatus(statusMessage);
+
+              var evaluatorsWithResetMethod = _.values(bkEvaluatorManager.getLoadedEvaluators()).filter(function (item) {
+                return item.spec && item.spec.reset;
+              });
+
+              syncResetKernels(evaluatorsWithResetMethod);
+
+              function syncResetKernels(kernels) {
+                if(kernels.length > 0) {
+                  var promise = kernels.pop().perform('reset');
+                  if(promise) {
+                    promise.finally(function () {
+                      syncResetKernels(kernels);
+                    });
+                  } else {
+                    syncResetKernels(kernels);
+                  }
+                } else {
+                  bkHelper.clearStatus(statusMessage);
+                  bkHelper.evaluateRoot("initialization").then(function (res) {
+                    bkHelper.go2FirstErrorCodeCell();
+                  }, function (err) {
+                    bkHelper.go2FirstErrorCodeCell();
+                  });
+                }
+              }
+            },
             closeNotebook: closeNotebook,
             _closeNotebook: _closeNotebook,
             collapseAllSections: function() {
@@ -1001,18 +1038,58 @@
             bkElectron.updateMenus(bkMenuPluginManager.getMenus());
           });
         }
+
         var keydownHandler = function(e) {
-          if (e.ctrlKey && !e.altKey && (e.which === 83)) { // Ctrl + s
+          if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
             e.preventDefault();
             _impl.saveNotebook();
             $scope.$apply();
             return false;
-          } else if (e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83)) { // Cmd + s
-            e.preventDefault();
-            _impl.saveNotebook();
-            $scope.$apply();
+          }  else if (bkHelper.isNewDefaultNotebookShortcut(e)) { // Ctrl/Alt + Shift + n
+            bkUtils.fcall(function() {
+              bkCoreManager.newSession(false);
+            });
             return false;
-          } else if (e.target.nodeName !== "TEXTAREA") {
+          } else if (bkHelper.isNewNotebookShortcut(e)) { // Ctrl/Alt + n
+            bkUtils.fcall(function() {
+              bkCoreManager.newSession(true);
+            });
+            return false;
+          } else if (e.which === 116) { // F5
+            bkHelper.runAllCellsInNotebook();
+            return false;
+          } else if (bkHelper.isLanguageManagerShortcut(e)) {
+            bkHelper.showLanguageManager();
+            return false;
+          } else if(bkHelper.isResetEnvironmentShortcut(e)) {
+            bkHelper.resetAllKernelsInNotebook();
+            return false;
+          } else if (bkUtils.isElectron) {
+            var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
+            // Command H
+            if (ctrlXORCmd && e.which === 72) {
+              bkElectron.minimize();
+            }
+
+            // Command W
+            if (ctrlXORCmd && e.which === 87) {
+              bkElectron.closeWindow();
+            }
+
+            if (e.which === 123) { // F12
+              bkElectron.toggleDevTools();
+              return false;
+            } else if (ctrlXORCmd && ((e.which === 187) || (e.which === 107))) { // Ctrl + '+'
+              bkElectron.increaseZoom();
+              return false;
+            } else if (ctrlXORCmd && ((e.which === 189) || (e.which === 109))) { // Ctrl + '-'
+              bkElectron.decreaseZoom();
+              return false;
+            } else if (ctrlXORCmd && ((e.which === 48) || (e.which === 13))) {
+              bkElectron.resetZoom();
+              return false;
+            }
+          } else if (e.target.nodeName !== "TEXTAREA" && e.target.nodeName !== "INPUT") {
             if (e.ctrlKey && e.which === 90) { // Ctrl + z
               bkUtils.fcall(function() {
                 bkSessionManager.undo();
@@ -1033,33 +1110,7 @@
                 bkSessionManager.redo();
               });
               return false;
-            // TODO implement global redo
-            } else if (bkUtils.isElectron) {
-              var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
-              // Command H
-              if (ctrlXORCmd && e.which === 72) {
-                bkElectron.minimize();
-              }
-
-              // Command W
-              if (ctrlXORCmd && e.which === 87) {
-                bkElectron.closeWindow();
-              }
-
-              if (e.which === 123) { // F12
-                bkElectron.toggleDevTools();
-                return false;
-              } else if (ctrlXORCmd && ((e.which === 187) || (e.which === 107))) { // Ctrl + '+'
-                bkElectron.increaseZoom();
-                return false;
-              } else if (ctrlXORCmd && ((e.which === 189) || (e.which === 109))) { // Ctrl + '-'
-                bkElectron.decreaseZoom();
-                return false;
-              } else if (ctrlXORCmd && ((e.which === 48) || (e.which === 13))) {
-                bkElectron.resetZoom();
-                return false;
-              }
-            }
+            }// TODO implement global redo
           }
         };
         $(document).bind('keydown', keydownHandler);
@@ -1161,34 +1212,30 @@
           }
         });
 
-        $scope.promptToSave = (function() {
-          var prompted = false;
-          return function() {
-            if (prompted) { // prevent prompting multiple at the same time
-              return;
-            }
-            prompted = true;
-            bkCoreManager.show2ButtonModal(
-              "Beaker server disconnected. Further edits will not be saved.<br>" +
-              "Save current notebook as a file?",
-              "Disconnected", function() {
-                // "Save", save the notebook as a file on the client side
-                bkSessionManager.dumpDisplayStatus();
-                var timeoutPromise = $timeout(function() {
-                  bkUtils.saveAsClientFile(
-                      bkSessionManager.getSaveData().notebookModelAsString,
-                  "notebook.bkr");
-                }, 1);
-                timeoutPromise.then(function() {
-                  prompted = false;
-                })
-              }, function() {
-                prompted = false;
-              },
-              "Save", "Not now", "btn-primary", ""
-            );
-          };
-        })();
+        $scope.promptToSave = function() {
+          if ($scope.disconnectedDialog) { // prevent prompting multiple at the same time
+            return;
+          }
+          $scope.disconnectedDialog = bkCoreManager.show2ButtonModal(
+            "Beaker server disconnected. Further edits will not be saved.<br>" +
+            "Save current notebook as a file?",
+            "Disconnected", function() {
+              // "Save", save the notebook as a file on the client side
+              bkSessionManager.dumpDisplayStatus();
+              var timeoutPromise = $timeout(function() {
+                bkUtils.saveAsClientFile(
+                    bkSessionManager.getSaveData().notebookModelAsString,
+                "notebook.bkr");
+              }, 1);
+              timeoutPromise.then(function() {
+                $scope.disconnectedDialog = void 0;
+              })
+            }, function() {
+                $scope.disconnectedDialog = void 0;
+            },
+            "Save", "Not now", "btn-primary", ""
+          );
+        };
         $rootScope.$on(GLOBALS.EVENTS.RECONNECT_FAILED, $scope.promptToSave);
 
         $scope.getOffineMessage = function() {

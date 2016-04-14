@@ -25,7 +25,7 @@ This page is for developers.  If you want to use or learn more about Beaker, see
 
 #Screenshots
 
-![screenshots](http://twosigma.github.io/beaker-notebook/images/bk6.png)
+![screenshots](https://raw.githubusercontent.com/twosigma/beaker-notebook/master/doc/screenshots.png)
 
 #Publication Server
 Notebooks can published and converted into web pages that anyone can access with an ordinary web browser, even on a mobile device.
@@ -92,3 +92,4 @@ we need for you to fill out and email back to us a scan of a signed copy of the
 
 We're also looking to expand our full-time, NYC-based engineering team
 with a [full-stack web developer](http://www.twosigma.com/careers/position/936.html).
+

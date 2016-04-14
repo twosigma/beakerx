@@ -5,15 +5,32 @@ $border-color: #D4D0D0;
   .dropdown-menu {
     margin-top: 1px;
   }
+  .dtmenu input[type='checkbox'] {
+    position: absolute;
+    top: 3px;
+    left: 5px;
+    padding: 3px 4px;
+  }
+  .dtmenu .checkbox-label {
+    position: absolute;
+    top: 1px;
+    margin-left: 0px !important;
+    &:after {
+      top: 3px;
+    }
+  }
 }
 
 table.dataTable {
   margin : 0;
   thead th, tbody td {
-    padding: 4px 10px 4px 20px;
+    position: relative;
+    padding: 3px 10px 0 20px;
     white-space: nowrap;
     border: 1px solid $border-color;
     border-width: 0 1px 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     &:first-child {
       border-left-width: 1px;
     }
@@ -27,6 +44,17 @@ table.dataTable {
     }
     .filterRow th {
       border-top-width: 0px;
+      padding-left: 5px;
+      overflow: initial;
+    }
+  }
+  thead tr {
+    height: 27px;
+  }
+  tbody tr {
+    height: 27px;
+    .advanced-mode & {
+      height: 22px;
     }
   }
 }
@@ -48,11 +76,16 @@ td.dtcenter {
   border-color: $border-color;
 }
 
-.dataTables_wrapper .dataTables_filter {
+.dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_evalfilter {
   float:      left;
   text-align: left;
-  margin-top: 10px;
+  margin-top: 7px;
+  margin-right: 10px;
   display:    none;
+
+  input {
+    margin-left: 0.5em;
+  }
 
   .fa.fa-times {
     cursor:       pointer;
@@ -80,25 +113,33 @@ td.dtcenter {
   &.editing {
     position: absolute;
     left: 0px;
+    top: 1px;
     z-index: 10;
   }
   input {
     border: 1px solid #ccc;
-    padding-right: 20px;
+    padding: 0 20px 0 15px;
     width: 100%;
   }
 
   span {
     position: absolute;
-    right: 5px;
     top: 0;
     bottom: 0;
     height: 14px;
     margin: auto;
-    cursor: pointer;
     color: #999999;
-    &:hover {
-      opacity: 0.8;
+
+    &.clear-filter {
+      right: 5px;
+      cursor: pointer;
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+    &.filter-icon {
+      cursor: auto;
+      left: 3px;
     }
   }
 }
@@ -106,10 +147,8 @@ td.dtcenter {
 div.dtmenu {
   position: absolute;
   top: 1px;
-  color: #73BE3B;
   cursor: pointer;
   &:hover {
-    color: #FFF;
     background-color: #39A9ED;
   }
 }
@@ -125,12 +164,18 @@ a.dtmenu {
   margin-right: 10px;
 }
 
-.dtmenu .bko-menu{
+.dtmenu .bko-menu {
   display: block;
+  &:hover {
+    background-image: url("../images/menu_white@2x.png");
+  }
   &.sorting_desc {
     background-image: url("../images/sort_desc.png");
     background-size: 20px;
     opacity: 1;
+    &:hover {
+      background-image: url("../images/sort_desc_white.png");
+    }
   }
 }
 
@@ -143,6 +188,8 @@ a.dtmenu {
 .dt-cell-text {
   position: relative;
   width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dt-bar-data {
@@ -150,3 +197,66 @@ a.dtmenu {
   height: 100%;
   position: absolute;
 }
+
+.bko-table-use-pagination {
+  padding: 10px 10px 0;
+  float: left;
+  position: relative;
+  margin-left: 30px;
+  label {
+    cursor: pointer;
+  }
+}
+
+$fixed-column-even: #fafafa;
+$fixed-column-odd: #f3f3f3;
+$fixed-column-even-sorting: #f7f7f7;
+$fixed-column-odd-sorting: #f1f1f1;
+$fixed-column-selected: #B0BED9;
+
+table.dataTable.DTFC_Cloned.stripe tbody tr,
+table.dataTable.DTFC_Cloned.display tbody tr {
+  &.odd {
+    background-color: $fixed-column-odd;
+    & > .sorting_1 :not(.selected),
+    & > .sorting_2 :not(.selected),
+    & > .sorting_3 :not(.selected) {
+      background-color: $fixed-column-odd-sorting;
+    }
+  }
+  &.even {
+    background-color: $fixed-column-even;
+    & > .sorting_1 :not(.selected),
+    & > .sorting_2 :not(.selected),
+    & > .sorting_3 :not(.selected)  {
+      background-color: $fixed-column-even-sorting;
+    }
+  }
+  &.selected {
+    background-color: $fixed-column-selected;
+  }
+}
+
+$fix-col-separator-width: 3px;
+
+.DTFC_LeftWrapper table.dataTable thead th:last-child,
+.DTFC_LeftWrapper table.dataTable tbody td:last-child {
+  border-right-width: $fix-col-separator-width;
+}
+
+.DTFC_RightWrapper table.dataTable thead th:first-child,
+.DTFC_RightWrapper table.dataTable tbody td:first-child {
+  border-left-width: $fix-col-separator-width;
+}
+
+.left-fix-col-separator {
+  border-right-width: $fix-col-separator-width !important;
+}
+.right-fix-col-separator {
+  border-left-width: $fix-col-separator-width !important;
+}
+
+.menu-separator {
+  border-top: solid 1px #CCC;
+}
+

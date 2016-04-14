@@ -35,6 +35,7 @@ define(function(require, exports, module) {
         fgColor: "#FFFFFF",
         borderColor: "",
         shortName: "N",
+        tooltip: "Node is a JavaScript runtime built on Chrome's V8 engine, running on the server.",
         newShell: function (shellID, cb, ecb) {
             var self = this;
 

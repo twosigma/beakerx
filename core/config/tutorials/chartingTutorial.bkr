@@ -29,7 +29,8 @@
                     "mode": "javascript",
                     "background": "#FFE0F0"
                 }
-            }
+            },
+            "languageVersion": "ES2015"
         },
         {
             "name": "Groovy",
@@ -58,8 +59,9 @@
             "body": [
                 "Beaker comes with its own charting library for creating interactive plots that you can click on, drag, zoom, and annotate.",
                 "It is implemented in JavaScript and takes the specification for the plot to make and the data to plot in JSON.",
-                "You can access it from any language, but it's easiest with Groovy, and this tutorial shows you how.",
-                "See <a href=\"../beaker/app/dist/docs/index.html?com/twosigma/beaker/chart/Chart.html\" target=\"_blank\">documentation</a>"
+                "You can access it from any language, but it's easiest with Groovy, and this tutorial shows you how, with step-by-step examples.",
+                "",
+                "See also the complete  <a href=\"../beaker/app/dist/docs/index.html?com/twosigma/beaker/chart/Chart.html\" target=\"_blank\">API Javadoc</a>."
             ],
             "evaluatorReader": false
         },
@@ -2433,90 +2435,16 @@
                 },
                 "pluginName": "Groovy",
                 "shellId": "aa32f2c1-e85c-4515-8617-eb237b62180a",
-                "height": 534
+                "height": 532
             },
             "evaluatorReader": true,
             "lineCount": 32
         },
         {
-            "id": "codeldwu25",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": [
-                    "rates = beaker.rates",
-                    "\"ok\""
-                ]
-            },
-            "output": {
-                "state": {},
-                "result": "ok",
-                "selectedType": "Text",
-                "pluginName": "Groovy",
-                "shellId": "66acefc1-1949-4406-98a7-d99e52dc839c",
-                "elapsedTime": 1791,
-                "height": 36
-            },
-            "evaluatorReader": true,
-            "lineCount": 2,
-            "initialization": true
-        },
-        {
-            "id": "codeMV78ar",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": [
-                    "def size = rates.size()",
-                    "(0 ..< size).each{row = rates[it]; row.spread = row.y10 - row.m3}",
-                    "\"ok\""
-                ]
-            },
-            "output": {
-                "state": {},
-                "result": "ok",
-                "selectedType": "Text",
-                "pluginName": "Groovy",
-                "shellId": "66acefc1-1949-4406-98a7-d99e52dc839c",
-                "elapsedTime": 689,
-                "height": 36
-            },
-            "evaluatorReader": true,
-            "lineCount": 3,
-            "initialization": true
-        },
-        {
-            "id": "code0s2jfv",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": [
-                    "def f = new java.text.SimpleDateFormat(\"yyyy MMM dd\")",
-                    "lehmanDate = f.parse(\"2008 Sep 15\")",
-                    "bubbleBottomDate = f.parse(\"2002 Oct 09\")",
-                    "inversion1 = [f.parse(\"2000 Jul 22\"), f.parse(\"2001 Feb 16\")]",
-                    "inversion2 = [f.parse(\"2006 Aug 01\"), f.parse(\"2007 Jun 07\")]",
-                    "\"ok\""
-                ]
-            },
-            "output": {
-                "state": {},
-                "result": "ok",
-                "selectedType": "Text",
-                "pluginName": "Groovy",
-                "shellId": "66acefc1-1949-4406-98a7-d99e52dc839c",
-                "elapsedTime": 707,
-                "height": 36
-            },
-            "evaluatorReader": true,
-            "lineCount": 6,
-            "initialization": true
-        },
-        {
             "id": "sectionHHnhXQ",
             "type": "section",
             "title": "Simple Automatic Plot",
-            "level": 2,
+            "level": 1,
             "evaluatorReader": false,
             "collapsed": false
         },
@@ -6884,7 +6812,7 @@
                 },
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "height": 502
+                "height": 501
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -7009,7 +6937,7 @@
                 },
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
-                "height": 529
+                "height": 528
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -7821,7 +7749,7 @@
                 },
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
-                "height": 529
+                "height": 528
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -9051,7 +8979,7 @@
                 "elapsedTime": 783,
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
-                "height": 249
+                "height": 248
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -9399,7 +9327,7 @@
                 "pluginName": "Groovy",
                 "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
                 "elapsedTime": 717,
-                "height": 502
+                "height": 501
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -14825,7 +14753,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
                 "elapsedTime": 747,
-                "height": 561
+                "height": 559
             },
             "evaluatorReader": true,
             "lineCount": 24
@@ -15784,6 +15712,80 @@
             "level": 1,
             "evaluatorReader": false,
             "collapsed": true
+        },
+        {
+            "id": "codeldwu25",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "rates = beaker.rates",
+                    "\"ok\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "ok",
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "1723df11-b91b-466b-8623-55df73bf0400",
+                "elapsedTime": 1117,
+                "height": 0
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "initialization": true
+        },
+        {
+            "id": "codeMV78ar",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def size = rates.size()",
+                    "(0 ..< size).each{row = rates[it]; row.spread = row.y10 - row.m3}",
+                    "\"ok\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "ok",
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "1723df11-b91b-466b-8623-55df73bf0400",
+                "elapsedTime": 747,
+                "height": 0
+            },
+            "evaluatorReader": true,
+            "lineCount": 3,
+            "initialization": true
+        },
+        {
+            "id": "code0s2jfv",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def f = new java.text.SimpleDateFormat(\"yyyy MMM dd\")",
+                    "lehmanDate = f.parse(\"2008 Sep 15\")",
+                    "bubbleBottomDate = f.parse(\"2002 Oct 09\")",
+                    "inversion1 = [f.parse(\"2000 Jul 22\"), f.parse(\"2001 Feb 16\")]",
+                    "inversion2 = [f.parse(\"2006 Aug 01\"), f.parse(\"2007 Jun 07\")]",
+                    "\"ok\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "ok",
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "1723df11-b91b-466b-8623-55df73bf0400",
+                "elapsedTime": 691,
+                "height": 0
+            },
+            "evaluatorReader": true,
+            "lineCount": 6,
+            "initialization": true
         }
     ],
     "namespace": {

@@ -23,7 +23,7 @@
       <h1 class="error" ng-if="error">{{error}}</h1>
       <h1 ng-if="!error">Sign in to Beaker Publications</h1>
       <form ng-submit="signIn()">
-        <input ng-model="user.email" type="email" name="email" placeholder="Email" class="field">
+        <input ng-model="user.email" type="email" focus="true"  name="email" placeholder="Email" class="field">
         <input ng-model="user.password" type="password" required name="password" placeholder="Password" class="field">
         <input type="submit" value="Sign in" class="btn btn-primary" ng-if="!saving">
         <p ng-if="saving">
@@ -40,13 +40,14 @@
       <h1>{{title}}</h1>
       <form ng-submit="publishAction()">
         <label for="category" class="full">Notebook name others will see when you publish:</label>
-        <input ng-model="model.name" required type="text" class="field">
+        <input ng-model="model.name" focus="true" ng-required="model['category-id']" type="text" class="field">
         <label for="category" class="full">Notebook description:</label>
         <textarea ng-model="model.description" rows="3" class="field"></textarea>
         <label for="category" class="full">Category that describes your notebook:</label>
         <select ng-model="model['category-id']" ng-options="category['public-id'] as category.name for category in categories" name="category" class="field">
           <option value="">Select a category</option>
         </select>
+        <label class="field text-danger" ng-if="!model['category-id']" title="will not be indexed, can only be found if you have the URL">If you do not select a category your publication will be 'unlisted'</label>
         <div class="preview-image" ng-if="attachmentUrl">
           <label class="full">Preview image:</label>
           <img ng-src="{{attachmentUrl}}" width="50">
@@ -73,10 +74,6 @@
             <div class="value update-time">{{model['updated-at'] | date:'short'}}</div>
           </li>
         </ul>
-        <div class="share-private">
-          <input id="sharePrivate" ng-model="model.private" type="checkbox" ng-value="true" class="field">
-          <label for="sharePrivate" title="will not be indexed, can only be found if you have the URL">Unlisted share</label>
-        </div>
         <div class="actions">
           <input ng-if="!saving" type="submit" ng-value="saveButton" class="btn btn-primary">
           <input ng-if="!saving && published" type="button" class="btn" value="Publish as new" ng-click="publish('create', true)">

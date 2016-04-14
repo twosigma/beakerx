@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
+  module.factory('bkHelper', function($location, $httpParamSerializer, bkUtils, bkCoreManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -42,17 +42,7 @@
       }
     };
 
-    var rgbaToHex = function (r, g, b, a) {
-      a = 0xFF | a;
-      var num = ((a & 0xFF) << 24) |
-        ((r & 0xFF) << 16) |
-        ((g & 0xFF) << 8)  |
-        ((b & 0xFF));
-      if(num < 0) {
-        num = 0xFFFFFFFF + num + 1;
-      }
-      return "#" + num.toString(16);
-    };
+    var rgbaToHex = bkUtils.rgbaToHex;
     var defaultPlotColors = {};
     defaultPlotColors[GLOBALS.THEMES.DEFAULT] = [
       rgbaToHex(140, 29, 23),  // red
@@ -60,7 +50,7 @@
       rgbaToHex(150, 130, 54), // yellow
       rgbaToHex(20, 30, 120),  // violet
       rgbaToHex(54, 100, 54),  // green
-      rgbaToHex(60, 30, 50),   // dark
+      rgbaToHex(60, 30, 50)    // dark
     ];
     defaultPlotColors[GLOBALS.THEMES.AMBIANCE] = [
       rgbaToHex(191, 39, 31),   // red
@@ -68,10 +58,49 @@
       rgbaToHex(230, 230, 65),  // yellow
       rgbaToHex(30, 40, 190),   // violet
       rgbaToHex(75, 160, 75),   // green
-      rgbaToHex(120, 100, 100), // dark
+      rgbaToHex(120, 100, 100)  // dark
     ];
 
-    var bkHelper = {
+      var bkHelper = {
+
+      isNewNotebookShortcut: function (e){
+        if (this.isMacOS){
+          return e.ctrlKey && (e.which === 78);// Ctrl + n
+        }
+        return e.altKey && (e.which === 78);// Alt + n
+      },
+      isNewDefaultNotebookShortcut: function (e){
+        if (this.isMacOS){
+          return e.ctrlKey && e.shiftKey && (e.which === 78);// Ctrl + Shift + n
+        }
+        return e.altKey && e.shiftKey && (e.which === 78);// Cmd + Shift + n
+      },
+      isSaveNotebookShortcut: function (e){
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83);// Cmd + s
+        }
+        return e.ctrlKey && !e.altKey && (e.which === 83);// Ctrl + s
+      },
+      isLanguageManagerShortcut: function (e) {
+        if (this.isMacOS) {
+          return e.ctrlKey && (e.which === 76);// Ctrl + l
+        }
+        return e.altKey && (e.which === 76);//Alt + l
+      },
+      isResetEnvironmentShortcut: function (e) {
+        if (this.isMacOS) {
+          return e.ctrlKey && (e.which === 82); // Alt + r
+        }
+        return e.altKey && (e.which === 82); // Alt + r
+      },
+
+      //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+      // Firefox 1.0+
+      isFirefox: typeof InstallTrigger !== 'undefined',
+      // At least Safari 3+: "[object HTMLElementConstructor]"
+      isSafari: Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0,
+      // Chrome 1+
+      isChrome: !!window.chrome && !!window.chrome.webstore,
 
       guid: function () {
         function s4() {
@@ -90,7 +119,6 @@
         return bkCoreManager.getTheme();
       },
       defaultPlotColors: defaultPlotColors,
-      rgbaToHex: rgbaToHex,
       setThemeToBeakerObject: function () {
         var beakerObject = this.getBeakerObject().beakerObj;
         if (beakerObject && beakerObject.prefs) {
@@ -163,7 +191,7 @@
       newSession: function(empty) {
         return bkCoreManager.newSession(empty);
       },
-      getBaseUrl: function() {
+      getBaseUrl: function () {
         return bkUtils.getBaseUrl();
       },
       getPort: function() {
@@ -172,6 +200,23 @@
       },
       getCoreJettyPort: function () {
         return this.getPort() + 1;
+      },
+      openNotebookInNewWindow: function (notebookUri, uriType, readOnly, format) {
+        var params = {
+          'uri': notebookUri
+        };
+        if (uriType) {
+          params.type = uriType;
+        }
+        if (readOnly) {
+          params.readOnly = readOnly;
+        }
+        if (format) {
+          params.format = format;
+        }
+        bkHelper.openWindow(
+          bkHelper.getBaseUrl() + "/open?" + $httpParamSerializer(params),
+          'notebook');
       },
       // Open tab/window functions that handle the electron case
       openWindow: function(path, type) {
@@ -343,6 +388,11 @@
         beakerObj.notebookToBeakerObject();
         var beaker = beakerObj.beakerObj;
         beaker.prefs = {useOutputPanel: false, outputLineLimit: 1000};
+        beaker.client = {
+          mac: navigator.appVersion.indexOf("Mac") != -1,
+          windows: navigator.appVersion.indexOf("Win") != -1,
+          linux: navigator.appVersion.indexOf("Linux") != -1
+        };
         this.setThemeToBeakerObject();
         beakerObj.beakerObjectToNotebook();
       },
@@ -353,6 +403,10 @@
       stripOutBeakerLanguageManagerSettings: function(model) {
         if (model && model.namespace && model.namespace.language)
           delete model.namespace.language;
+      },
+      stripOutBeakerClient: function(model) {
+        if (model && model.namespace && model.namespace.client)
+          delete model.namespace.client;
       },
       getNotebookElement: function(currentScope) {
         return bkCoreManager.getNotebookElement(currentScope);
@@ -395,6 +449,20 @@
       renameNotebookTo: function(notebookUri, uriType) {
         if (getCurrentApp() && getCurrentApp().renameNotebookTo) {
           return getCurrentApp().renameNotebookTo(notebookUri, uriType);
+        } else {
+          return false;
+        }
+      },
+      runAllCellsInNotebook: function () {
+        if (getCurrentApp() && getCurrentApp().runAllCellsInNotebook) {
+          return getCurrentApp().runAllCellsInNotebook();
+        } else {
+          return false;
+        }
+      },
+      resetAllKernelsInNotebook: function () {
+        if (getCurrentApp() && getCurrentApp().resetAllKernelsInNotebook) {
+          return getCurrentApp().resetAllKernelsInNotebook();
         } else {
           return false;
         }
@@ -867,6 +935,7 @@
         var notebookModelCopy = angular.copy(m);
         bkHelper.stripOutBeakerPrefs(notebookModelCopy);
         bkHelper.stripOutBeakerLanguageManagerSettings(notebookModelCopy);
+        bkHelper.stripOutBeakerClient(notebookModelCopy);
         delete notebookModelCopy.evaluationSequenceNumber; //remove evaluation counter
         if (notebookModelCopy.cells) {
           for (var i = 0; i < notebookModelCopy.cells.length; i++) {
@@ -1134,6 +1203,43 @@
       hideLanguageManagerSpinner: function(error) {
         bkUtils.hideLanguageManagerSpinner(error);
       },
+      asyncCallInLanguageManager: function(settings) {
+        bkUtils.showLanguageManagerSpinner(settings.pluginName);
+
+        bkUtils.httpPost(settings.url, settings.data).success(function(ret) {
+          bkUtils.hideLanguageManagerSpinner();
+          settings.onSuccess && settings.onSuccess(ret);
+        }).error(function(response) {
+          var statusText = response ? response.statusText : "No response from server";
+
+          bkUtils.hideLanguageManagerSpinner(statusText);
+          console.error("Request failed: " + statusText);
+          settings.onFail && settings.onFail(statusText);
+        });
+      },
+
+      winHeight: function () {
+        return window.innerHeight || (document.documentElement || document.body).clientHeight;
+      },
+
+      isFullScreen: function (cm) {
+        return /\bCodeMirror-fullscreen\b/.test(cm.getWrapperElement().className);
+      },
+
+      setFullScreen: function (cm, full) {
+        var wrap = cm.getWrapperElement();
+        if (full) {
+          wrap.className += ' CodeMirror-fullscreen';
+          wrap.style.height = this.winHeight() + 'px';
+          document.documentElement.style.overflow = 'hidden';
+        } else {
+          wrap.className = wrap.className.replace(' CodeMirror-fullscreen', '');
+          wrap.style.height = '';
+          document.documentElement.style.overflow = '';
+        }
+        cm.refresh();
+      },
+
       isElectron: bkUtils.isElectron,
       isMacOS: bkUtils.isMacOS
     };

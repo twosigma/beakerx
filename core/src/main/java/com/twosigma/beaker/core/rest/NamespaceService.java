@@ -89,7 +89,7 @@ public class NamespaceService {
     return namesMap.get(session);
   }
 
-  private void addSocketListener(String session) {
+  private void addSocketListener(final String session) {
     if (bkWebSocketTransport != null) {
       if(sessionListeners.get(session) == null) {
         BkWebSocketListener listener = new BkWebSocketListener() {

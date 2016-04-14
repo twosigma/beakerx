@@ -20,23 +20,30 @@
   var initOutputDisplay = function()
   {
     ZeroClipboard.config( { swfPath: "app/images/ZeroClipboard.swf", hoverClass: 'dropdown-submenu-flash' } );
-  }
+  };
 
   var setupBeakerConfigAndRun = function() {
 
     var beaker = angular.module('beaker', [
       'ngRoute',
       'ngStorage',
+      'ngFileUpload',
+      'ui.gravatar',
       'bk.core',
       'bk.evaluatePluginManager',
       'bk.controlPanel',
       'bk.mainApp',
-      'bk.helper'
+      'bk.helper',
+      'bk.utils',
+      'bk.publication',
+      'bk.globals'
+
     ]);
 
 
     // setup routing. the template is going to replace ng-view
     beaker.config(function($routeProvider) {
+      var _newSession, _import, _open, _target;
       var sessionRouteResolve = {};
       var generateId = function() {
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -47,48 +54,57 @@
       var makeNewProvider = function(result) {
         return function() {
           var newSessionId = generateId();
-          sessionRouteResolve.isNewSession = function () {
-            return result;
-          };
+          _newSession = result;
           return '/session/' + newSessionId;
         };
       };
       $routeProvider
-          .when('/session/new', {
-            redirectTo: makeNewProvider("new")
-          })
-          .when('/session/empty', {
-            redirectTo: makeNewProvider("empty")
-          })
-          .when('/session/import', {
-            redirectTo: function() {
-              sessionRouteResolve.isImport = function() {
-                return true;
-              };
-              return '/session/' + generateId();
+        .when('/session/new', {
+          redirectTo: makeNewProvider("new")
+        })
+        .when('/session/empty', {
+          redirectTo: makeNewProvider("empty")
+        })
+        .when('/session/import', {
+          redirectTo: function() {
+            _import = true;
+            return '/session/' + generateId();
+          }
+        })
+        .when('/session/:sessionId', {
+          template: JST["template/mainapp/app"](),
+          controller: 'notebookRouter',
+          resolve: {
+            isNewSession: function() {
+              return _newSession;
+            },
+            isImport: function() {
+              return _import;
+            },
+            isOpen: function() {
+              return _open;
+            },
+            target: function() {
+              return _target;
+            },
+            clearResolves: function() {
+              return function() {_newSession = _import = _open = _target = undefined;};
             }
-          })
-          .when('/session/:sessionId', {
-            template: JST["template/mainapp/app"](),
-            resolve: sessionRouteResolve
-          })
-          .when('/open', {
-            redirectTo: function(routeParams, path, search) {
-              var newSessionId = generateId();
-              sessionRouteResolve.isOpen = function() {
-                return true;
-              };
-              sessionRouteResolve.target = function() {
-                return search;
-              };
-              return '/session/' + newSessionId;
-            }
-          })
-          .when('/control', {
-            template: JST["template/dashboard/app"](),
-          }).otherwise({
-            redirectTo: "/control"
-          });
+          }
+        })
+        .when('/open', {
+          redirectTo: function(routeParams, path, search) {
+            var newSessionId = generateId();
+            _open = true;
+            _target = search;
+            return '/session/' + newSessionId;
+          }
+        })
+        .when('/control', {
+          template: JST["template/dashboard/app"]()
+        }).otherwise({
+        redirectTo: "/control"
+      });
     });
 
     beaker.config(function(bkRecentMenuProvider) {
@@ -156,9 +172,13 @@
         gotoControlPanel: function() {
           return $location.path("/control").search({});
         },
-        openNotebook: function(notebookUri, uriType, readOnly, format) {
+        openNotebook: function(notebookUri, uriType, readOnly, format, newWindow) {
           if (!notebookUri) {
             return;
+          }
+          if (newWindow === true){
+            bkHelper.openNotebookInNewWindow(notebookUri, uriType, readOnly, format);
+            return null;
           }
 
           var routeParams = {
@@ -233,8 +253,8 @@
         $('body').removeClass('dragover');
       });
       window.bkHelper = bkHelper;
-      for (var i in window.beaker.postHelperHooks) {
-        window.beaker.postHelperHooks[i]();
+      for (var i in window.beakerRegister.postHelperHooks) {
+        window.beakerRegister.postHelperHooks[i]();
       }
     });
 
@@ -250,8 +270,8 @@
         bkEvaluatePluginManager.addNameToUrlEntry(key, value);
       });
 
-      if (window.beaker.getEvaluatorUrlMap) {
-        var evaluatorsUrlMap = window.beaker.getEvaluatorUrlMap();
+      if (window.bkInit && window.bkInit.getEvaluatorUrlMap) {
+        var evaluatorsUrlMap = window.bkInit.getEvaluatorUrlMap();
         _(evaluatorsUrlMap).keys().each(function(key) {
           var value = evaluatorsUrlMap[key];
           bkEvaluatePluginManager.addNameToUrlEntry(key, value);
@@ -261,28 +281,35 @@
 
     beaker.run(function(bkUtils, $rootScope) {
       bkUtils.getVersionInfo().then(function(versionInfo) {
-        window.beaker.version = versionInfo.version;
-        window.beaker.buildTime = versionInfo.buildTime;
+        window.beakerRegister.version = versionInfo.version;
+        window.beakerRegister.buildTime = versionInfo.buildTime;
         $rootScope.getVersion = function() {
-          return window.beaker.version;
+          return window.beakerRegister.version;
         };
         $rootScope.getBuildTime = function() {
-          return window.beaker.buildTime;
+          return window.beakerRegister.buildTime;
         };
       });
     });
-  };
-  var bootstrapBkApp = function() {
-    // make sure requirejs reports error
-    requirejs.config({
-      enforceDefine: true
+    beaker.run(function(GLOBALS) {
+      // make sure requirejs reports error
+      requirejs.config({
+        waitSeconds: GLOBALS.REQUIREJS_TIMEOUT,
+        enforceDefine: true
+      });
     });
+  };
+
+  var bootstrapBkApp = function() {
 
     angular.element(document).ready(function() {
       angular.bootstrap(document, ["beaker"]);
     });
   };
-  initOutputDisplay();
-  setupBeakerConfigAndRun();
-  bootstrapBkApp();
+  Q.fcall(initOutputDisplay)
+    .then(setupBeakerConfigAndRun)
+    .then(bootstrapBkApp)
+    .catch(function (err) {
+      console.log(err);
+    });
 })();

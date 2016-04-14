@@ -79,6 +79,8 @@ $marked-argument-unchanged-color: #1c96be;
 
 $marked-argument-changed-border: inset 0 0 5px #285d95;
 
+$ui-icons: url('../images/ambiance/ui-icons_ambiance_256x240.png');
+
 @import "base-theme";
 
 .beaker-theme-ambiance { @extend .base-theme; }

@@ -41,6 +41,7 @@ define(function(require, exports, module) {
       fgColor: "#FFFFFF",
       borderColor: "",
       shortName: "Rb",
+      tooltip: "Ruby is a dynamic, open source language with a focus on simplicity and productivity.",
       newShell: function(shellID, cb, ecb) {
 
         var kernel = null;
@@ -400,6 +401,7 @@ define(function(require, exports, module) {
         return this.settings.setup + "\n";
       },
       reset: function() {
+        var deferred = bkHelper.newDeferred();
         var kernel = kernels[this.settings.shellID];
         var self = this;
         bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
@@ -412,9 +414,11 @@ define(function(require, exports, module) {
                       kernel.iopub_channel.readyState == 1)) {
               self.evaluate(self.initCode(), {}).then(function() {
                 bkHelper.hideLanguageManagerSpinner();
+                deferred.resolve();
               }, function(err) {
                 bkHelper.hideLanguageManagerSpinner(err);
-                bkHelper.show1ButtonModal('ERROR: ' + err[0], PLUGIN_NAME + ' kernel restart failed');
+                deferred.reject(err);
+                bkHelper.show1ButtonModal('ERROR: ' + err, PLUGIN_NAME + ' kernel restart failed');
               });
             } else {
               setTimeout(waitForKernel, 50);
@@ -422,6 +426,7 @@ define(function(require, exports, module) {
           };
           waitForKernel();
         });
+        return deferred.promise;
       },
       updateShell: function() {
         this.reset();
@@ -499,7 +504,7 @@ define(function(require, exports, module) {
           this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
-            this[action]();
+            return this[action]();
           };
         };
         IRubyShell.prototype = IRubyProto;

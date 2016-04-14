@@ -54,10 +54,17 @@ public interface BeakerConfigPref {
    */
   public Map<String, List<String>> getPluginOptions();
 
+  public String getAuthToken();
+
   /**
    * Puts what normally goes in ~/.beaker instead into the root of the drive where the application
    * is mounted G:/.beaker or whatever drive.
    */
   public Boolean getPortable();
+
+  /**
+   * Switchs off logging unsuccessfull requests from outdated beaker pages
+   */
+  public Boolean getShowZombieLogging();
 
 }

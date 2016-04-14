@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils) {
+  var retfunc = function(plotUtils, bkUtils) {
     var PlotAxis = function(type) {
       this.type = "axis";
       this.axisType = type == null ? "linear" : type; // linear, log, time, category, nanotime
@@ -239,8 +239,8 @@
       var self = this;
 
       var selectStartOrEndInterval = function(value, interval) {
-        var nextIntervalStart = moment(value).tz(self.axisTimezone).endOf(interval).add(1, "ms");
-        var intervalStart = moment(value).tz(self.axisTimezone).startOf(interval);
+        var nextIntervalStart = bkUtils.applyTimezone(value, self.axisTimezone).endOf(interval).add(1, "ms");
+        var intervalStart = bkUtils.applyTimezone(value, self.axisTimezone).startOf(interval);
         return  ((nextIntervalStart - value) > (value - intervalStart)) ? intervalStart : nextIntervalStart;
       };
 
@@ -436,32 +436,32 @@
       }
 
       if (plotUtils.lte(span, this.SECOND) && this.axisType === "time") {
-        ret = moment(d).tz(this.axisTimezone).format(".SSS") + ( (d - Math.floor(d)).toFixed(this.axisFixed));
+        ret = bkUtils.formatTimestamp(d, this.axisTimezone, ".SSS") + ( (d - Math.floor(d)).toFixed(this.axisFixed));
       } else if (plotUtils.lte(span, this.MINUTE) && this.axisType === "time") {
-        ret = moment(d).tz(this.axisTimezone).format("mm:ss.SSS");
+        ret = bkUtils.formatTimestamp(d, this.axisTimezone, "mm:ss.SSS");
       } else if (plotUtils.lte(span, this.HOUR)) {
         if(this.axisType === "nanotime"){
           if (moment(d) < this.SECOND) {
             ret = "." + padStr(nanosec, 9);
           } else {
-            ret = moment(d).tz(this.axisTimezone).format("HH:mm:ss") + "." + padStr(nanosec, 9);
+            ret = bkUtils.formatTimestamp(d, this.axisTimezone, "HH:mm:ss") + "." + padStr(nanosec, 9);
           }
         }else{
-          ret = moment(d).tz(this.axisTimezone).format("HH:mm:ss");
+          ret = bkUtils.formatTimestamp(d, this.axisTimezone, "HH:mm:ss");
         }
       } else if (plotUtils.lte(span, this.DAY)) {
-        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD, HH:mm");
+        ret = bkUtils.formatTimestamp(d, this.axisTimezone, "YYYY MMM DD, HH:mm");
       } else if (plotUtils.lte(span, this.MONTH)) {
-        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM DD");
+        ret = bkUtils.formatTimestamp(d, this.axisTimezone, "YYYY MMM DD");
       } else if (plotUtils.lte(span, this.YEAR)) {
-        ret = moment(d).tz(this.axisTimezone).format("YYYY MMM");
+        ret = bkUtils.formatTimestamp(d, this.axisTimezone, "YYYY MMM");
       } else {
-        ret = moment(d).tz(this.axisTimezone).format("YYYY");
+        ret = bkUtils.formatTimestamp(d, this.axisTimezone, "YYYY");
       }
 
       return ret;
     };
     return PlotAxis;
   };
-  beakerRegister.bkoFactory('PlotAxis', ['plotUtils', retfunc]);
+  beakerRegister.bkoFactory('PlotAxis', ['plotUtils', 'bkUtils', retfunc]);
 })();

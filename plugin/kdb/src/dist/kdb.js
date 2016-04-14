@@ -33,6 +33,7 @@ define(function(require, exports, module) {
     fgColor: "#FFFFFF",
     borderColor: "",
     shortName: "K",
+    tooltip: "Kdb is a high-performance column-store database with a built-in query and programming language, q.",
     newShell: function(shellId, cb, ecb) {
       if (!shellId) shellId = "";
       bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/kdb/getShell"), { shellid: shellId, sessionId: bkHelper.getSessionId() })
@@ -152,10 +153,7 @@ define(function(require, exports, module) {
         kdbCancelFunction();
       }
     },
-    spec: {
-      resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
-      killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
-    },
+    spec: {},
     cometdUtil: cometdUtil
   };
   var shellReadyDeferred = bkHelper.newDeferred();
@@ -197,7 +195,7 @@ define(function(require, exports, module) {
           this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
-            this[action]();
+            return this[action]();
           };
         };
         kdbShell.prototype = KDB;

@@ -22,8 +22,10 @@
 package com.twosigma.beaker.javash.utils;
 
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.text.translate.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.translate.AggregateTranslator;
+import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
+import org.apache.commons.lang3.text.translate.UnicodeUnescaper;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -100,20 +102,22 @@ public class ParserUtil {
             state = State.CAN_BE_COMMENT_START;
           } else if (c == '"') {
             state = State.IN_STRING;
-            builder.append(c);
           } else if (c == '\'') {
             state = State.IN_CHAR;
-            builder.append(c);
-          } else {
-            builder.append(c);
           }
+          builder.append(c);
           break;
         case CAN_BE_COMMENT_START:
           if (parserState.isLastChar('/') && c == '/') {
+            if (builder.length() > 0) builder.setLength(builder.length() - 1);
             state = State.IN_LINE_COMMENT;
           } else if (parserState.isLastChar('/') && c == '*') {
+            if (builder.length() > 0) builder.setLength(builder.length() - 1);
             state = State.IN_BLOCK_COMMENT;
             inBlock = new StringBuffer();
+          } else {
+            state = State.CODE;
+            builder.append(c);
           }
           break;
         case IN_LINE_COMMENT:
@@ -169,36 +173,13 @@ public class ParserUtil {
   /*
      * This function does:
      * 1) remove comments
-     * 2) ensure we have a cr after each ';' (if not inside double quotes or single quotes)
-     * 3) remove empty lines
+     * This function doesn't do anymore:
+     * 1) ensure we have a cr after each ';' (if not inside double quotes or single quotes)
+     * 2) remove empty lines
      */
   public static String normalizeCode(String code) {
-    String c1 = ParserUtil.removeComments(UNICODE_UNESCAPER.translate(code));
-    StringBuilder c2 = new StringBuilder();
-    boolean indq = false;
-    boolean insq = false;
-    for (int i = 0; i < c1.length(); i++) {
-      char c = c1.charAt(i);
-      switch (c) {
-        case '"':
-          if (!insq && i > 0 && c1.charAt(i - 1) != '\\')
-            indq = !indq;
-          break;
-        case '\'':
-          if (!indq && i > 0 && c1.charAt(i - 1) != '\\')
-            insq = !insq;
-          break;
-        case ';':
-          if (!indq && !insq) {
-            c2.append(c);
-            c = '\n';
-          }
-          break;
-      }
-      c2.append(c);
-    }
-
-    return c2.toString().replaceAll("\n\n+", "\n").trim();
+    final String normalizedCode = ParserUtil.removeComments(UNICODE_UNESCAPER.translate(code));
+    return StringUtils.isNotBlank(normalizedCode) ? normalizedCode : StringUtils.EMPTY;
   }
 
 }

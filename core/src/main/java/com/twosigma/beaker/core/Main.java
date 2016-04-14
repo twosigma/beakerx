@@ -33,8 +33,10 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -95,7 +97,8 @@ public class Main {
     opts.addOption(null, "require-password", false, "Ask for password when connecting");
     opts.addOption(null, "listen-interface", true, "Interface to listen on - requires ip address or '*'");
     opts.addOption(null, "portable", false, "Configuration and runtime files located in application instead of user home directory.");
-    
+    opts.addOption(null, "show-zombie-logging", false, "Show distracting logging by clients of previous server instances.");
+
     CommandLine line = parser.parse(opts, args);
     if (line.hasOption("help")) {
       new HelpFormatter().printHelp("beaker.command", opts);
@@ -177,7 +180,7 @@ public class Main {
     final String listenInterface = options.hasOption("listen-interface") ?
         options.getOptionValue("listen-interface") : null;
     final Boolean portable = options.hasOption("portable");
-    
+    final Boolean showZombieLogging = options.hasOption("show-zombie-logging");
     
     // create preferences for beaker core from cli options and others
     // to be used by BeakerCoreConfigModule to initialize its config
@@ -192,7 +195,8 @@ public class Main {
         useHttpsKey,
         requirePassword,
         listenInterface,
-        portable);
+        portable,
+        showZombieLogging);
 
     WebAppConfigPref webAppPref = createWebAppConfigPref(
         portBase + BEAKER_SERVER_PORT_OFFSET,
@@ -205,7 +209,11 @@ public class Main {
         new WebServerModule(),
         new SerializerModule(),
         new GuiceCometdModule(),
-        new URLConfigModule());
+        new URLConfigModule(beakerCorePref));
+
+//    PluginServiceLocatorRest processStarter = injector.getInstance(PluginServiceLocatorRest.class);
+//    processStarter.setAuthToken(beakerCorePref.getAuthToken());
+//    processStarter.start();
 
     BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
 
@@ -240,8 +248,20 @@ public class Main {
       final String useHttpsKey,
       final Boolean requirePassword,
       final String listenInterface,
-      final Boolean portable) {
+      final Boolean portable,
+      final Boolean showZombieLogging) {
     return new BeakerConfigPref() {
+
+      private String authToken;
+
+      public String getAuthToken() {
+        if (null != this.authToken) {
+          return this.authToken;
+        }
+        String authEnv = System.getenv("beakerauth");
+        this.authToken = (null == authEnv) ? new BigInteger(255, new SecureRandom()).toString(32) : authEnv;
+        return this.authToken;
+      }
 
       @Override
       public Boolean getUseKerberos() {
@@ -292,6 +312,9 @@ public class Main {
       public Boolean getPortable() {
         return portable;
       }
+
+      @Override
+      public Boolean getShowZombieLogging() { return showZombieLogging; }
     };
   }
 

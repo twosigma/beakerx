@@ -13,6 +13,7 @@
 
 worker_processes  1;
 daemon off;
+# change this from error to debug for debugging
 error_log  "%(nginx_dir)s/logs/nginx.log" error;
 pid nginx.pid;
 
@@ -108,6 +109,7 @@ http {
       %(auth_cookie_rule)s
       proxy_pass http://127.0.0.1:%(port_beaker)s/rest/util/getMainPage;
       proxy_set_header Authorization "Basic %(auth)s";
+      add_header Set-Cookie "XSRF-TOKEN=%(sessionauth)s; path=/";
     }
     location = /%(urlhash)s/beaker/ {
       return 301 $scheme://$http_host%(start_page)s;
@@ -121,8 +123,30 @@ http {
       try_files $uri @dopass;
     }
 
+    # serve the static plugin content
+    location /%(urlhash)sbeaker/plugins/ {
+      %(auth_cookie_rule)s
+      rewrite ^/%(urlhash)sbeaker/(.*)$ /$1 break;
+      root "%(static_dir)s/../../../config/";
+      try_files $uri @dopass;
+    }
+
+    # forward websockets, auth using path instead of token
+    location /%(urlhash)sbeaker/cometd-%(sessionauth)s/ {
+      %(auth_cookie_rule)s
+      rewrite ^/%(urlhash)sbeaker/(.*)$ /$1 break;
+      proxy_pass http://127.0.0.1:%(port_beaker)s/beaker;
+      proxy_http_version 1.1; 
+      proxy_set_header Authorization "Basic %(auth)s";
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+    }
+
     # forward all other urls
     location @dopass {
+      if ($http_x_xsrf_token != "%(sessionauth)s") {
+        return 403;
+      }
       %(auth_cookie_rule)s
       proxy_pass http://127.0.0.1:%(port_beaker)s;
       proxy_http_version 1.1;
@@ -133,6 +157,7 @@ http {
 
     %(plugin_section)s
     %(extra_rules)s
+    %(catch_outdated_requests_rule)s
   }
   server {
     listen 127.0.0.1:%(port_restart)s;

@@ -31,13 +31,12 @@
 <div ng-class="{'electron-mode': getElectronMode()}" class="dashboard container-fluid">
   <div class="row">
     <div class="col-md-12">
-      <br/>
-      <h1>Beaker <small>The data scientist's laboratory</small></h1>
       <div ng-if='isSessionsListEmpty()' class="empty-session-prompt">
-        <p> 
-          <br/>
+        <br/>
+        <h1>Beaker <small>The data scientist's laboratory</small></h1>
+        <p><br/>
           Beginners should start with <strong>Help &#8594; Tutorial</strong>.
-	</p>
+	    </p>
       </div>
 
       <div ng-hide='isSessionsListEmpty()'>
@@ -48,14 +47,17 @@
       <div class="new-notebook">
         <div class="row">
           <div class="col-xs-3">
-            <a class='btn btn-default text-center btn-block' ng-click="newNotebook()">New Default Notebook</a>
+            <a class='btn btn-default text-center btn-block' ng-click="newDefaultNotebook()">New Default Notebook</a>
           </div>
           <div class="col-xs-3">
-            <a class='btn btn-default text-center btn-block new-empty-notebook' ng-click="newEmptyNotebook()">New Empty Notebook</a>
+            <a class='btn btn-default text-center btn-block new-empty-notebook' ng-click="newNotebook()">New Empty Notebook</a>
           </div>
         </div>
         <div class="row">
-          <div class="col-xs-6">
+          <div class="col-xs-3">
+            <a class='btn btn-default text-center btn-block' ng-click="openNotebook()">Open notebook...</a>
+          </div>
+          <div class="col-xs-3">
             <div class="faux-drop-zone">
               Or drag a .bkr file anywhere on this page to import
             </div>
@@ -63,6 +65,17 @@
         </div>
       </div>
 
+      <div class="recent-notebook" ng-hide='isRecentEmpty()'>
+        <h4 class="open-notebook-headline">Recent Notebooks</h4>
+          <ul class="notebook-dashboard-list">
+            <li class='session clearfix' ng-repeat='item in recents'>
+              <div class="pull-left">
+                <a class='caption notebook-link' href="#" ng-click="openRecent(item, $event)" ng-bind="item.name" eat-click></a>
+                <div class='light path' ng-if="item.tooltip" ng-bind="item.tooltip"></div>
+              </div>
+            </li>
+          </ul>
+      </div>
     </div>
   </div>
   <div class="row" ng-show="isAllowAnonymousTracking == null">

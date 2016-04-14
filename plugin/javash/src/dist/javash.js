@@ -34,6 +34,7 @@ define(function(require, exports, module) {
     fgColor: "#FFFFFF",
     borderColor: "",
     shortName: "Jv",
+    tooltip: "Java v8 originally from Sun, now Oracle.",
     newShell: function(shellId, cb, ecb) {
       if (!shellId)
         shellId = "";
@@ -101,33 +102,25 @@ define(function(require, exports, module) {
       }
     },
     resetEnvironment: function () {
-      bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
-      $.ajax({
-        type: "POST",
-        datatype: "json",
+      var deferred = bkHelper.newDeferred();
+      bkHelper.asyncCallInLanguageManager({
         url: bkHelper.serverUrl(serviceBase + "/rest/javash/resetEnvironment"),
-        data: {shellId: this.settings.shellID}
-      }).done(function (ret) {
-        bkHelper.hideLanguageManagerSpinner();
-        console.log("done resetEnvironment",ret);
-      }).fail(function(jqXHR, textStatus) {
-        bkHelper.hideLanguageManagerSpinner(textStatus);
-        console.error("Request failed: " + textStatus);
+        data: {shellId: this.settings.shellID},
+        pluginName: PLUGIN_NAME,
+        onSuccess: function (data) {
+          deferred.resolve();
+        },
+        onFail: function (err) {
+          deferred.reject(err);
+        }
       });
+      return deferred.promise;
     },
     killAllThreads: function () {
-      bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
-      $.ajax({
-        type: "POST",
-        datatype: "json",
+      bkHelper.asyncCallInLanguageManager({
         url: bkHelper.serverUrl(serviceBase + "/rest/javash/killAllThreads"),
-        data: {shellId: this.settings.shellID}
-      }).done(function (ret) {
-        bkHelper.hideLanguageManagerSpinner();
-        console.log("done killAllThreads",ret);
-      }).fail(function(jqXHR, textStatus) {
-        bkHelper.hideLanguageManagerSpinner(textStatus);
-        console.error("Request failed: " + textStatus);
+        data: {shellId: this.settings.shellID},
+        pluginName: PLUGIN_NAME
       });
     },
     autocomplete: function(code, cpos, cb) {
@@ -172,7 +165,7 @@ define(function(require, exports, module) {
       outdir:      {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
       classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
       imports:     {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"},
-      resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
+      reset:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
       killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
     },
     cometdUtil: cometdUtil
@@ -245,7 +238,7 @@ define(function(require, exports, module) {
           this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
-            this[action]();
+            return this[action]();
           };
         };
         JavaShell.prototype = JavaSh;

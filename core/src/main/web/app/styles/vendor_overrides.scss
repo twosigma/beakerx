@@ -101,12 +101,13 @@ tbody tr {
   }
 }
 
-.dataTables_scrollHead  table {
-  thead th {
+.dataTables_scrollHead, .DTFC_LeftHeadWrapper, .DTFC_RightHeadWrapper {
+  table thead th {
     cursor:       pointer;
     .bko-menu {
-      float:      left;
-      margin: -4px 0 0 -20px;
+      position: absolute;
+      top: 0px;
+      left: 0px;
       opacity:    0;
       transition: opacity 0.5s;
     }
@@ -116,6 +117,7 @@ tbody tr {
         opacity: 1;
         &:hover {
           background-color: $highlight-blue;
+          background-image: url("../images/menu_white@2x.png");
         }
       }
     }
@@ -124,22 +126,22 @@ tbody tr {
       background-image: url("../images/sort_asc.png");
       background-size:  20px;
       opacity:          1;
+      &:hover {
+        background-image: url("../images/sort_asc_white.png");
+      }
     }
 
     &.sorting_desc > .bko-menu {
       background-image: url("../images/sort_desc.png");
       background-size:  20px;
       opacity:          1;
+      &:hover {
+        background-image: url("../images/sort_desc_white.png");
+      }
     }
   }
 
-  thead .sorting, .sorting_asc, .sorting_desc {
-    background-image: none !important;
-  }
-}
-
-.DTFC_LeftHeadWrapper table {
-  thead .sorting, .sorting_asc, .sorting_desc {
+  table thead .sorting, .sorting_asc, .sorting_desc {
     background-image: none !important;
   }
 }
@@ -187,4 +189,12 @@ table.DTFC_Cloned tfoot {
   .list-component-outer.hide-scrollbar select {
     overflow-y: hidden;
   }
+}
+
+input[type="checkbox"], input[type="radio"] {
+  margin: 2px 0 0;
+}
+
+.radio label, .checkbox label {
+  padding-left: 0;
 }

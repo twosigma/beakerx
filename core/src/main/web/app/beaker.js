@@ -51,6 +51,17 @@
     postHelperHooks: []
   };
 
+  function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0)==' ') c = c.substring(1);
+      if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+    }
+    return undefined;
+  };
+
   var initPlugins = function() {
     var deferred = Q.defer();
     var plugins;
@@ -78,8 +89,9 @@
       loadJS(url, function() {
         loadList(urls, success, failure);
       }, failure);
-    }
+    };
 
+    $.ajaxSetup({headers: { "X-XSRF-TOKEN": getCookie("XSRF-TOKEN")}});
     $.get('../beaker/rest/util/getInitPlugins')
         .done(function(list) {
           loadList(list, function() {
@@ -300,10 +312,15 @@
           }
           return ret;
         },
-        openNotebook: function(notebookUri, uriType, readOnly, format) {
+        openNotebook: function(notebookUri, uriType, readOnly, format, newWindow) {
           if (!notebookUri) {
             return;
           }
+          if (newWindow === true){
+            bkHelper.openNotebookInNewWindow(notebookUri, uriType, readOnly, format);
+            return null;
+          }
+
           var routeParams = {
             uri: notebookUri
           };
@@ -316,6 +333,7 @@
           if (format) {
             routeParams.format = format;
           }
+
           var ret = $location.path('/open').search(routeParams);
           if (bkUtils.isElectron) {
             $rootScope.$apply();
@@ -345,7 +363,7 @@
           }
         }
       };
-      bkUtils.initializeCometd('ws://' + location.hostname + ":" + bkHelper.getCoreJettyPort() + '/cometd/');
+      bkUtils.initializeCometd('ws://' + location.hostname + ":" + bkHelper.getCoreJettyPort() + 'cometd-' + getCookie("XSRF-TOKEN") + '/');
       bkCoreManager.init(beakerRootOp);
       Q.delay(1000).then(function() {
         $.get("../beaker/rest/util/whoami", {}, function(data) {
@@ -396,9 +414,9 @@
     beakerModule.run(function(bkEvaluatePluginManager) {
       // for known plugins, so we can refer to the plugin with either its name or URL
       var defaultEvaluatorUrlMap = {
-        "HTML": { url: "./plugin/evaluator/html.js",             bgColor: "#E3502B", fgColor: "#FFFFFF", borderColor: "",        shortName: "Ht" },
-        "TeX": { url: "./plugin/evaluator/latex.js",           bgColor: "#FFFFFF", fgColor: "#030303", borderColor: "#3D4444", shortName: "Tx" },
-        "JavaScript": { url: "./plugin/evaluator/javaScript.js", bgColor: "#EFDB52", fgColor: "#4A4A4A", borderColor: "",        shortName: "Js" }
+        "HTML": { url: "./plugin/evaluator/html.js",             bgColor: "#E3502B", fgColor: "#FFFFFF", borderColor: "",        shortName: "Ht", tooltip: "HTML stands for Hyper text markup language, including CSS." },
+        "TeX": { url: "./plugin/evaluator/latex.js",           bgColor: "#FFFFFF", fgColor: "#030303", borderColor: "#3D4444", shortName: "Tx", tooltip: "TeX is Donald Knuth's mathematical typesetting language." },
+        "JavaScript": { url: "./plugin/evaluator/javaScript.js", bgColor: "#EFDB52", fgColor: "#4A4A4A", borderColor: "",        shortName: "Js", tooltip: "JavaScript is the native scripting language of the web." }
       };
 
       _.each(defaultEvaluatorUrlMap, function(value, key) {

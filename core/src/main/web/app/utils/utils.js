@@ -91,6 +91,12 @@
       formatTimeString: function(millis) {
         return commonUtils.formatTimeString(millis);
       },
+      formatTimestamp: function(timestamp, tz, format) {
+        return commonUtils.formatTimestamp(timestamp, tz, format);
+      },
+      applyTimezone: function(timestamp, tz) {
+        return commonUtils.applyTimezone(timestamp, tz);
+      },
       isMiddleClick: function(event) {
         return commonUtils.isMiddleClick(event);
       },
@@ -240,6 +246,12 @@
               deferred.reject(data, status, header, config);
             });
         return deferred.promise;
+      },
+      getBeakerPreference: function(preferenceName) {
+        return angularUtils.httpGet(serverUrl("beaker/rest/util/getPreference"), {preference: preferenceName})
+          .then(function(response) {
+            return response.data;
+          });
       },
       generateNotebook: function(evaluators, cells, metadata) {
         var notebook = {
@@ -419,7 +431,22 @@
     isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
     isWindows: osName === 'Windows',
     isMacOS: osName === 'MacOS',
-    osName: osName
+    osName: osName,
+
+    rgbaToHex: function (r, g, b, a) {
+      if(a == undefined){
+        a = 0xFF;
+      }
+      var num = ((a & 0xFF) << 24) |
+        ((r & 0xFF) << 16) |
+        ((g & 0xFF) << 8)  |
+        ((b & 0xFF));
+      if(num < 0) {
+        num = 0xFFFFFFFF + num + 1;
+      }
+      return "#" + num.toString(16);
+    }
+
     };
     return bkUtils;
   });

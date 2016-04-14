@@ -23,6 +23,7 @@ define(function(require, exports, module) {
     bkHelper.showStatus('Sharing to Web');
     var shareData = angular.copy(scope.getShareData());
     bkHelper.stripOutBeakerPrefs(shareData);
+    bkHelper.stripOutBeakerClient(shareData);
     bkHelper.updateCellsFromDOM(shareData.cells);
     bkHelper.httpPost("../beaker/rest/publish/github", {
       type: "notebook",

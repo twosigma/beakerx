@@ -32,10 +32,7 @@ describe('beaker landing load', function() {
 describe('beaker landing page', function() {
   beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL);
-    browser.waitForAngular().then(function() {
-      done();
-    });
+    browser.get(beakerPO.baseURL).then(done);
   });
 
   it('has a title and menu', function() {
@@ -48,9 +45,9 @@ describe('beaker landing page', function() {
     expect(beakerPO.submenu.count()).toEqual(0);
   });
 
-  it('has a file menu with 5 items', function() {
+  it('has a file menu with 6 items', function() {
     beakerPO.openMenuAtIndex(0);
-    expect(beakerPO.submenu.count()).toEqual(5);
+    expect(beakerPO.submenu.count()).toEqual(6);
   });
 
   it('has a settings menu with 1 item', function() {
@@ -58,8 +55,8 @@ describe('beaker landing page', function() {
     expect(beakerPO.submenu.count()).toEqual(1);
   });
 
-  it('has a help menu with 4 items', function() {
+  it('has a help menu with 5 items', function() {
     beakerPO.openMenuAtIndex(2);
-    expect(beakerPO.submenu.count()).toEqual(4);
+    expect(beakerPO.submenu.count()).toEqual(5);
   });
 });

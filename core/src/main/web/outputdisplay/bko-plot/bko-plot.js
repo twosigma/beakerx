@@ -611,12 +611,12 @@
               "id" : "xlabel",
               "class" : "plot-xylabel",
               "text" : model.xAxis.axisLabelWithCommon,
-              "x" : lMargin + (scope.jqsvg.width() - lMargin) / 2,
-              "y" : scope.jqsvg.height() - plotUtils.fonts.labelHeight
+              "x" : lMargin + (plotUtils.safeWidth(scope.jqsvg) - lMargin) / 2,
+              "y" : plotUtils.safeHeight(scope.jqsvg) - plotUtils.fonts.labelHeight
             });
           }
           if (model.yAxis.label != null) {
-            var x = plotUtils.fonts.labelHeight * 2, y = (scope.jqsvg.height() - bMargin) / 2;
+            var x = plotUtils.fonts.labelHeight * 2, y = (plotUtils.safeHeight(scope.jqsvg) - bMargin) / 2;
             scope.rpipeTexts.push({
               "id" : "ylabel",
               "class" : "plot-xylabel",
@@ -627,7 +627,7 @@
             });
           }
           if (model.yAxisR && model.yAxisR.label != null) {
-            var x = scope.jqsvg.width() - plotUtils.fonts.labelHeight, y = (scope.jqsvg.height() - bMargin) / 2;
+            var x = plotUtils.safeWidth(scope.jqsvg) - plotUtils.fonts.labelHeight, y = (plotUtils.safeHeight(scope.jqsvg) - bMargin) / 2;
             scope.rpipeTexts.push({
               "id" : "yrlabel",
               "class" : "plot-xylabel",
@@ -693,7 +693,7 @@
 
         scope.renderCursor = function(e) {
           var x = e.offsetX, y = e.offsetY;
-          var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+          var W = plotUtils.safeWidth(scope.jqsvg), H = plotUtils.safeHeight(scope.jqsvg);
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin,
               rMargin = scope.layout.rightLayoutMargin, tMargin = scope.layout.topLayoutMargin;
           var model = scope.stdmodel;
@@ -968,7 +968,7 @@
             .attr("id", "plotLegend")
             .attr("class", "plot-legend")
             .draggable(draggable)
-            .css("max-height", scope.jqsvg.height() - scope.layout.bottomLayoutMargin - scope.layout.topLayoutMargin);
+            .css("max-height", plotUtils.safeHeight(scope.jqsvg) - scope.layout.bottomLayoutMargin - scope.layout.topLayoutMargin);
 
           if (clazz != null) {
             legendContainer.addClass(clazz);
@@ -1363,7 +1363,7 @@
         };
 
         scope.renderCoverBox = function() {
-          var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+          var W = plotUtils.safeWidth(scope.jqsvg), H = plotUtils.safeHeight(scope.jqsvg);
           plotUtils.replotSingleRect(scope.labelg, {
             "id" : "coverboxYr",
             "class" : "plot-coverbox",
@@ -1464,7 +1464,7 @@
           if (scope.interactMode === "zoom") {
             // left click zoom
             var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
-            var W = scope.jqsvg.width() - lMargin, H = scope.jqsvg.height() - bMargin;
+            var W = plotUtils.safeWidth(scope.jqsvg) - lMargin, H = plotUtils.safeHeight(scope.jqsvg) - bMargin;
             var d3trans = d3.event.translate, d3scale = d3.event.scale;
             var dx = d3trans[0] - scope.lastx, dy = d3trans[1] - scope.lasty,
                 ds = this.lastscale / d3scale;
@@ -1508,7 +1508,7 @@
             } else {
               // scale only
               var level = scope.zoomLevel;
-              if (my <= scope.jqsvg.height() - scope.layout.bottomLayoutMargin) {
+              if (my <= plotUtils.safeHeight(scope.jqsvg) - scope.layout.bottomLayoutMargin) {
                 // scale y
                 var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;
                 var nyl = ym - ds * (ym - focus.yl), nyr = ym + ds * (focus.yr - ym),
@@ -1593,7 +1593,7 @@
         scope.resetFocus = function() {
           var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
-          var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+          var W = plotUtils.safeWidth(scope.jqsvg), H = plotUtils.safeHeight(scope.jqsvg);
           if (mx < lMargin && my < H - bMargin) {
             _.extend(scope.focus, _.pick(scope.defaultFocus, "yl", "yr", "yspan"));
           } else if (my > H - bMargin && mx > lMargin) {
@@ -1674,7 +1674,7 @@
               tMargin = scope.layout.topLayoutMargin,
               rMargin = scope.layout.rightLayoutMargin;
           var model = scope.stdmodel;
-          var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+          var W = plotUtils.safeWidth(scope.jqsvg), H = plotUtils.safeHeight(scope.jqsvg);
           if (emitFocusUpdate == true && scope.model.updateFocus != null) {
             scope.model.updateFocus({
               "xl" : focus.xl,
@@ -1843,6 +1843,8 @@
           scope.removePipe = [];
 
           scope.calcMapping();
+
+          scope.legendDone = false;
           scope.update();
         };
 
@@ -2000,8 +2002,10 @@
           var margin = scope.layout.legendMargin;
           var legendContainer = scope.jqlegendcontainer.find("#plotLegend");
           var containerLeftMargin = parseFloat(scope.jqcontainer.css("margin-left"));
-          var W = plotUtils.getActualCss(scope.jqcontainer, 'outerWidth') + containerLeftMargin + 1;//add 1 because jQuery round size
-          var H = plotUtils.getActualCss(scope.jqcontainer, 'outerHeight') + titleOuterHeight + 1;
+
+
+          var W = plotUtils.outerWidth(scope.jqcontainer) + containerLeftMargin + 1;//add 1 because jQuery round size
+          var H = plotUtils.outerHeight(scope.jqcontainer) + titleOuterHeight + 1;
           var legendW = plotUtils.getActualCss(legendContainer, 'outerWidth', true);
           var legendH = plotUtils.getActualCss(legendContainer, 'outerHeight', true);
           var legendPosition = scope.stdmodel.legendPosition;

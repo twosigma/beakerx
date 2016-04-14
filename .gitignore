@@ -93,6 +93,11 @@ core/src/main/web/vendor/bower_components/datatables-keytable/Readme.md
 core/src/main/web/vendor/bower_components/datatables-keytable/examples
 core/src/main/web/vendor/bower_components/datatables-keytable/docs
 
+core/src/main/web/vendor/bower_components/datatables-colresize/examples
+core/src/main/web/vendor/bower_components/datatables-colresize/.bower.json
+core/src/main/web/vendor/bower_components/datatables-colresize/bower.json
+core/src/main/web/vendor/bower_components/datatables-colresize/Readme.md
+
 core/src/main/web/vendor/bower_components/datatables/.bower.json
 core/src/main/web/vendor/bower_components/datatables/Contributing.md
 core/src/main/web/vendor/bower_components/datatables/Readme.md
@@ -122,3 +127,14 @@ core/src/main/web/vendor/bower_components/request-frame/demo
 core/src/main/web/vendor/bower_components/request-frame/src
 core/src/main/web/vendor/bower_components/request-frame/gulpfile.js
 core/src/main/web/vendor/bower_components/request-frame/.gitignore
+
+
+core/src/main/web/vendor/bower_components/jquery-throttle-debounce/docs
+core/src/main/web/vendor/bower_components/jquery-throttle-debounce/examples
+core/src/main/web/vendor/bower_components/jquery-throttle-debounce/shared
+core/src/main/web/vendor/bower_components/jquery-throttle-debounce/unit
+core/src/main/web/vendor/bower_components/jquery-throttle-debounce/.bower.json
+core/src/main/web/vendor/bower_components/jquery-throttle-debounce/jquery.ba-throttle-debounce.js
+core/src/main/web/vendor/bower_components/jquery-throttle-debounce/LICENSE-GPL
+core/src/main/web/vendor/bower_components/jquery-throttle-debounce/LICENSE-MIT
+core/src/main/web/vendor/bower_components/jquery-throttle-debounce/README.markdown

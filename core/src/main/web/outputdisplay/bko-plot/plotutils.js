@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    var retfunc = function(bkUtils, bkHelper, bkCoreManager, bkSessionManager) {
+    var retfunc = function(bkUtils, bkCoreManager, bkSessionManager) {
       var keyCodeMap = {
         8	  : "BACKSPACE",
         9	  : "TAB",
@@ -54,12 +54,19 @@
         222	: "SINGLE_QUOTE"
       };
     return {
+
+      safeWidth: function(e){
+        return bkHelper.isChrome ? this.getComputedStyle(e, 'width') : e.width();
+      },
+      safeHeight: function(e){
+        return bkHelper.isChrome ? this.getComputedStyle(e, 'height')  : e.height();
+      },
       outsideScr: function(scope, x, y) {
-        var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+        var W = this.safeWidth(scope.jqsvg), H = this.safeHeight(scope.jqsvg);
         return x < 0 || x > W || y < 0 || y > H;
       },
       outsideScrBox: function(scope, x, y, w, h) {
-        var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+        var W = this.safeWidth(scope.jqsvg), H = this.safeHeight(scope.jqsvg);
         return x > W || x + w < 0 || y > H || y + h < 0;
       },
       updateRange : function(datarange, itemrange) {
@@ -441,12 +448,12 @@
 
       getTipString : function(val, axis, fixed) {
         if (axis.axisType === "time") {
-          return moment(val).tz(axis.axisTimezone).format("YYYY MMM DD ddd, HH:mm:ss .SSS");
+          return bkUtils.formatTimestamp(val, axis.axisTimezone, "YYYY MMM DD ddd, HH:mm:ss .SSS");
         }
         if (axis.axisType === "nanotime") {
           var d = parseFloat(val.div(1000000).toFixed(0));
           var nanosec = val.mod(1000000000).toFixed(0);
-          return moment(d).tz(axis.axisTimezone).format("YYYY MMM DD ddd, HH:mm:ss") + "." + this.padStr(nanosec, 9);
+          return bkUtils.formatTimestamp(d, axis.axisTimezone, "YYYY MMM DD ddd, HH:mm:ss") + "." + this.padStr(nanosec, 9);
         }
         if (typeof(val) === "number") {
           if (fixed === true) {
@@ -611,6 +618,46 @@
         };
       },
 
+      outerHeight: function (e, includeMargin) {
+        if (!e || e.length === 0)
+          return null;
+        return this.getComputedStyle(e, 'height')
+        + this.getComputedStyle(e, 'padding-top') + this.getComputedStyle(e, 'padding-bottom')
+        + this.getComputedStyle(e, 'border-top') + this.getComputedStyle(e, 'border-bottom')
+        + ((includeMargin === true ) ? this.getComputedStyle(e, 'margin-top') + this.getComputedStyle(e, 'margin-bottom') : 0);
+
+      },
+
+      outerWidth: function (e, includeMargin) {
+        if (!e || e.length === 0)
+          return null;
+        return this.getComputedStyle(e, 'width')
+        + this.getComputedStyle(e, 'padding-left') + this.getComputedStyle(e, 'padding-right')
+        + this.getComputedStyle(e, 'border-left') + this.getComputedStyle(e, 'border-right')
+        + ((includeMargin === true ) ? this.getComputedStyle(e, 'margin-left') + this.getComputedStyle(e, 'margin-right') : 0);
+      },
+
+      getComputedStyle: function(e, style) {
+        if (!e || e.length === 0)
+          return null;
+        var getValue = function(e){
+          var value = window.getComputedStyle(e.get()[0], null).getPropertyValue(style).match(/\d+/);
+          if (!value || value.length === 0 )
+            return '';
+          return value[0];
+        };
+        var hiddenParent = e.parents(".ng-hide:first");
+        var value;
+        if (hiddenParent.length === 0) {
+          value = getValue(e);
+        }else{
+          hiddenParent.removeClass("ng-hide");
+          value = getValue(e);
+          hiddenParent.addClass("ng-hide");
+        }
+        return parseInt(value);
+      },
+
       getActualCss: function(jqelement, jqFunction, jqFunctionParams) {
         //to get actual size/position/etc values of hidden elements
         var value;
@@ -632,7 +679,6 @@
       base64Fonts: {},
 
       getFontToInject: function(font) {
-        var defer = bkUtils.newDeferred();
         var src = '';
         for (var url in font.urlformats) {
           if (font.urlformats.hasOwnProperty(url)) {
@@ -650,7 +696,6 @@
           "font-weight: " + font.fontWeight + ";" +
           "font-style: " + font.fontStyle + ";" +
           " }\n";
-        return defer.promise;
       },
 
       //http://stackoverflow.com/questions/7370943/retrieving-binary-file-content-using-javascript-base64-encode-it-and-reverse-de
@@ -858,7 +903,7 @@
         var saturation = 0.75;
         var luminance = 0.5;
         var rgb = this.hslToRgb(hue, saturation, luminance);
-        var niceColor = bkHelper.rgbaToHex(rgb[0], rgb[1], rgb[2]);
+        var niceColor = bkUtils.rgbaToHex(rgb[0], rgb[1], rgb[2]);
         while (bkHelper.defaultPlotColors[bkHelper.getTheme()].indexOf(niceColor) !== -1) {
           niceColor = this.createNiceColor();
         }
@@ -937,5 +982,5 @@
       }
     };
   };
-  beakerRegister.bkoFactory('plotUtils', ["bkUtils", "bkHelper", "bkCoreManager", "bkSessionManager", retfunc]);
+  beakerRegister.bkoFactory('plotUtils', ["bkUtils", "bkCoreManager", "bkSessionManager", retfunc]);
 })();

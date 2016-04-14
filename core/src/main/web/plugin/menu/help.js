@@ -24,9 +24,7 @@ define(function(require, exports, module) {
       name: "Tutorial",
       sortorder: 100,
       action: function() {
-        bkHelper.openWindow(
-                bkHelper.getBaseUrl() + '/open?uri=config/tutorial.bkr&readOnly=true',
-            'notebook');
+        bkHelper.openNotebookInNewWindow('file:config/tutorial.bkr', 'file', true, 'bkr');
       },
       tooltip: "Open the tutorial notebook"
     },
@@ -45,6 +43,14 @@ define(function(require, exports, module) {
         bkHelper.showModalDialog(undefined, "app/template/keyboardShortcuts.html");
       },
       tooltip: "Show keyboard shortcuts"
+    },
+    {
+      name: "Class Documentation",
+      sortorder: 115,
+      action: function() {
+        bkHelper.openWindow(bkHelper.serverUrl('beaker/app/dist/docs/index.html'));
+      },
+      tooltip: "Show JavaDoc for native visualization, form, and layout APIs"
     },
     {
       name: "Report a bug or feature request",

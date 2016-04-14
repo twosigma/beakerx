@@ -34,6 +34,7 @@ define(function(require, exports, module) {
     fgColor: '#FFFFFF',
     borderColor: '',
     shortName: 'C',
+    tooltip: "C++ is the object-oriented version of the venerable systems programming language.",
     newShell: function(shellId, cb, ecb) {
       if (!shellId) {
         shellId = '';
@@ -108,12 +109,18 @@ define(function(require, exports, module) {
       }
     },
     resetEnvironment: function() {
+      var deferred = bkHelper.newDeferred();
       $.ajax({
         type: 'POST',
         datatype: 'json',
         url: bkHelper.serverUrl(serviceBase + '/rest/cpp/resetEnvironment'),
         data: {shellId: this.settings.shellID}
+      }).done(function () {
+        deferred.resolve();
+      }).fail(function (err) {
+        deferred.reject(err);
       });
+      return deferred.promise;
     },
     killAllThreads: function() {
       $.ajax({
@@ -162,7 +169,7 @@ define(function(require, exports, module) {
     },
     spec: {
       flags:       {type: 'settableString', action: 'updateShell', name: 'Compiler flags'},
-      resetEnv:    {type: 'action', action: 'resetEnvironment', name: 'Reset Environment'},
+      reset:    {type: 'action', action: 'resetEnvironment', name: 'Reset Environment'},
       killAllThr:  {type: 'action', action: 'killAllThreads', name: 'Kill All Threads'}
     },
     cometdUtil: cometdUtil
@@ -217,7 +224,7 @@ define(function(require, exports, module) {
           this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
-            this[action]();
+            return this[action]();
           };
         };
         CppShell.prototype = CppSh;

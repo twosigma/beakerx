@@ -27,10 +27,9 @@ function loadGroovy() {
 }
 
 describe('Text Cell', function() {
-  beforeEach(function() {
+  beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL);
-    browser.waitForAngular();
+    browser.get(beakerPO.baseURL).then(done);
 
     beakerPO.newEmptyNotebook.click();
   });

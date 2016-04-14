@@ -123,8 +123,8 @@
           bMargin = scope.layout.bottomLayoutMargin,
           tMargin = scope.layout.topLayoutMargin,
           rMargin = scope.layout.rightLayoutMargin;
-      var W = scope.jqsvg.width(),
-          H = scope.jqsvg.height();
+      var W = plotUtils.safeWidth(scope.jqsvg),
+          H = plotUtils.safeHeight(scope.jqsvg);
 
       eleprops.length = 0;
 

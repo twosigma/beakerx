@@ -42,6 +42,7 @@ define(function(require, exports, module) {
       fgColor: "#FFFFFF",
       borderColor: "",
       shortName: "Py",
+      tooltip: "Python 2 kernel via Jupyter, including IPython magics.",
       indentSpaces: 4,
       newShell: function(shellID, cb, ecb) {
 
@@ -393,8 +394,8 @@ define(function(require, exports, module) {
       getAutocompleteDocumentation: function(matchedWord, callback) {
         this.showDocs(matchedWord, matchedWord.length - 1, function(docs) {
           var documentation = {};
-          if (docs.ansiHtml) {
-            documentation.description = ansi_up.ansi_to_html(docs.ansiHtml);
+          if (docs.hasOwnProperty('ansiHtml')) {
+            documentation.description = docs.ansiHtml && docs.ansiHtml.length ? ansi_up.ansi_to_html(docs.ansiHtml) : '';
             documentation.parameters = matchedWord[0] === '%' ? void 0 : getParametersFromDocumentation(documentation.description);
             return callback(documentation);
           }
@@ -442,6 +443,7 @@ define(function(require, exports, module) {
             this.settings.setup + "\n");
       },
       reset: function() {
+        var deferred = bkHelper.newDeferred();
         var kernel = kernels[this.settings.shellID];
         var self = this;
         bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
@@ -454,9 +456,11 @@ define(function(require, exports, module) {
                       kernel.iopub_channel.readyState == 1)) {
               self.evaluate(self.initCode(), {}).then(function() {
                 bkHelper.hideLanguageManagerSpinner();
+                deferred.resolve();
               }, function(err) {
                 bkHelper.hideLanguageManagerSpinner(err);
-                bkHelper.show1ButtonModal('ERROR: ' + err[0], PLUGIN_NAME + ' kernel restart failed');
+                deferred.reject(err);
+                bkHelper.show1ButtonModal('ERROR: ' + err, PLUGIN_NAME + ' kernel restart failed');
               });
             } else {
               setTimeout(waitForKernel, 50);
@@ -464,6 +468,7 @@ define(function(require, exports, module) {
           };
           waitForKernel();
         });
+        return deferred.promise;
       },
       updateShell: function() {
         this.reset();
@@ -610,7 +615,7 @@ define(function(require, exports, module) {
           this.newShell(settings.shellID, setShellIdCB, newShellErrorCb);
           this.perform = function(what) {
             var action = this.spec[what].action;
-            this[action]();
+            return this[action]();
           };
         };
         IPythonShell.prototype = IPythonProto;

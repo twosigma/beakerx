@@ -22,12 +22,22 @@ define(function(require, exports, module) {
   var fileMenuItems = [
     {
       name: "New Notebook",
-      shortcut: ["Ctrl-N", "Cmd-N"],
+      shortcut: ["Alt-N", "Ctrl-N"],
       tooltip: "Open a new empty notebook, add the languages of your choice",
       sortorder: 100,
       action: function() {
         bkHelper.newSession(true);
       }
+    },
+    {
+      name: "New Default Notebook",
+      shortcut: ["Alt-Shift-N", "Ctrl-Shift-N"],
+      sortorder: 101,
+      id: "new-notebook-menuitem",
+      action: function() {
+        bkHelper.newSession(false);
+      },
+      tooltip: "Open a new default notebook"
     },
     {
       name: "Open... (.bkr)",

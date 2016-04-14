@@ -19,6 +19,7 @@ define(function(require, exports, module) {
   var menuItems = [
     {
       name: 'Language manager...',
+      shortcut: ["Alt-L", "Ctrl-L"],
       sortorder: 100,
       action: function () {
         bkHelper.showLanguageManager();
@@ -49,16 +50,23 @@ define(function(require, exports, module) {
     },
     {
       name: 'Run all cells',
+      shortcut: 'F5',
       sortorder: 130,
       action: function() {
-        bkHelper.evaluateRoot('root').then(function(res) {
-          bkHelper.go2FirstErrorCodeCell();
-        }, function(err) {
-          bkHelper.go2FirstErrorCodeCell();
-        });
+        bkHelper.runAllCellsInNotebook();
       },
       tooltip: 'Run all cells',
       id: 'run-all-cells-menuitem'
+    },
+    {
+      name: 'Reset languages',
+      shortcut: ["Alt-R", "Ctrl-R"],
+      sortorder: 132,
+      action: function() {
+        bkHelper.resetAllKernelsInNotebook();
+      },
+      tooltip: 'Reset each language and run all init cells',
+      id: 'reset-backends-menuitem'
     },
     {
       name: 'Collapse all sections',

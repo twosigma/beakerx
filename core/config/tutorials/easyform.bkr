@@ -29,12 +29,13 @@
                     "mode": "javascript",
                     "background": "#FFE0F0"
                 }
-            }
+            },
+            "languageVersion": "ES2015"
         },
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.KeyboardCodes\ncom.twosigma.beaker.jvm.object.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -58,11 +59,13 @@
                 "Beaker has a Groovy API for creating forms that the user can fill in and trigger execution.",
                 "It's easy to create a form with it, and easy to access the values entered.",
                 "Just create a form object, add fields to it, and then return it so it's displayed for the",
-                "user to interact with. See <a href=\"../beaker/app/dist/docs/index.html?com/twosigma/beaker/easyform/EasyForm.html\" target=\"_blank\">documentation</a>",
+                "user to interact with.",
                 "",
                 "The 2nd parameter to the addButton method specifies a tag.",
                 "All cells with that tag are executed when the button is pressed.",
-                "Cell tags are accessible from the options dialog on the cell menu (three dots in the upper-right corner)."
+                "Cell tags are accessible from the options dialog on the cell menu (three dots in the upper-right corner).",
+                "",
+                "See the complete <a href=\"../beaker/app/dist/docs/index.html?com/twosigma/beaker/easyform/EasyForm.html\" target=\"_blank\">API Javadoc</a>."
             ],
             "evaluatorReader": false
         },
@@ -84,10 +87,10 @@
                 "state": {},
                 "selectedType": "EasyForm",
                 "pluginName": "Groovy",
-                "shellId": "1fda0fd9-1d8b-4a2c-82bf-ac58cbd74084",
-                "elapsedTime": 621,
+                "shellId": "31452459-cdf1-4cd0-88fe-faa36e3fa297",
+                "elapsedTime": 707,
                 "result": {
-                    "update_time": 1450849372664,
+                    "update_time": 1458007131667,
                     "type": "EasyForm",
                     "caption": "Form and Run",
                     "components": [
@@ -102,9 +105,8 @@
                             "type": "TextField",
                             "label": "last",
                             "enabled": true,
-                            "value": "Berzelius",
-                            "width": "15",
-                            "currentValue": "Berzelius"
+                            "value": "",
+                            "width": "15"
                         },
                         {
                             "type": "ButtonComponent",
@@ -204,7 +206,7 @@
             "output": {
                 "state": {},
                 "result": {
-                    "update_time": 1450849629586,
+                    "update_time": 1458007132470,
                     "type": "EasyForm",
                     "caption": "Form and Run",
                     "components": [
@@ -212,17 +214,17 @@
                             "type": "TextField",
                             "label": "first",
                             "enabled": true,
-                            "value": "action done",
+                            "value": "setinit",
                             "width": "15",
-                            "currentValue": "action done"
+                            "currentValue": "setinit"
                         },
                         {
                             "type": "TextField",
                             "label": "last",
                             "enabled": true,
-                            "value": "action done",
+                            "value": "setinit",
                             "width": "15",
-                            "currentValue": "action done"
+                            "currentValue": "setinit"
                         },
                         {
                             "type": "ButtonComponent",
@@ -234,8 +236,8 @@
                 },
                 "selectedType": "EasyForm",
                 "pluginName": "Groovy",
-                "shellId": "1fda0fd9-1d8b-4a2c-82bf-ac58cbd74084",
-                "elapsedTime": 630,
+                "shellId": "31452459-cdf1-4cd0-88fe-faa36e3fa297",
+                "elapsedTime": 587,
                 "height": 211
             },
             "evaluatorReader": true,
@@ -285,10 +287,10 @@
                 "state": {},
                 "selectedType": "EasyForm",
                 "pluginName": "Groovy",
-                "shellId": "1fda0fd9-1d8b-4a2c-82bf-ac58cbd74084",
-                "elapsedTime": 932,
+                "shellId": "31452459-cdf1-4cd0-88fe-faa36e3fa297",
+                "elapsedTime": 608,
                 "result": {
-                    "update_time": 1450849286030,
+                    "update_time": 1458007133208,
                     "type": "EasyForm",
                     "caption": "Field Types",
                     "components": [
@@ -317,8 +319,7 @@
                             "type": "CheckBox",
                             "label": "Check Box",
                             "enabled": true,
-                            "value": false,
-                            "currentValue": false
+                            "value": false
                         },
                         {
                             "type": "ComboBox",
@@ -360,8 +361,7 @@
                                 "b",
                                 "c",
                                 "d"
-                            ],
-                            "currentValue": "[a]"
+                            ]
                         },
                         {
                             "type": "ListComponent",
@@ -389,8 +389,7 @@
                                 "b",
                                 "c",
                                 "d"
-                            ],
-                            "currentValue": "[a]"
+                            ]
                         },
                         {
                             "type": "CheckBoxGroup",
@@ -403,8 +402,7 @@
                                 "b",
                                 "c",
                                 "d"
-                            ],
-                            "currentValue": ""
+                            ]
                         },
                         {
                             "type": "CheckBoxGroup",
@@ -461,7 +459,7 @@
                         }
                     ]
                 },
-                "height": 1015
+                "height": 1026
             },
             "evaluatorReader": true,
             "lineCount": 23,
@@ -481,33 +479,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50,
-                            "fixLeft": false,
-                            "fixRight": false
-                        },
-                        "columnNames": [
-                            "Key",
-                            "Value"
-                        ],
-                        "actualalign": [
-                            "L",
-                            "L"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "getCellSho": [
-                            true,
-                            true
-                        ]
-                    }
-                },
+                "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
                 "shellId": "89a44022-5f45-43bc-90f4-3c0c585cfcfb",
@@ -578,7 +550,7 @@
                     ],
                     "subtype": "Dictionary"
                 },
-                "height": 406
+                "height": 423
             },
             "evaluatorReader": true,
             "tags": "run2",

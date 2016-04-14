@@ -54,8 +54,8 @@
         return;
 
       var margin = {top: 0, right: 0, bottom: 0, left: 0},
-        width = (scope ? scope.jqsvg.width() : 300) - margin.left - margin.right,
-        height = (scope ? scope.jqsvg.height() : 200) - margin.top - margin.bottom;
+        width = (scope ? plotUtils.safeWidth(scope.jqsvg) : 300) - margin.left - margin.right,
+        height = (scope ? plotUtils.safeHeight(scope.jqsvg) : 200) - margin.top - margin.bottom;
 
       var treemap = d3.layout.treemap()
         .round(false)

@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 class ProxyWebSocket extends WebSocketAdapter {
 
   private static final int INTERNAL_SERVER_ERROR_STATUSCODE = 1011;
-  private static final int REMOTE_CONNECTION_WAIT_SECONDS = 30;
+  private static final int REMOTE_CONNECTION_WAIT_SECONDS = 5;
 
   private final CountDownLatch remoteSessionSync = new CountDownLatch(1);
   private Session clientSession;

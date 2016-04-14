@@ -25,14 +25,14 @@ import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
 import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
@@ -40,9 +40,12 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 
 import javax.servlet.ServletException;
+
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 
 /**
  * The WebServer Module that sets up the server singleton to be started in Init
@@ -84,10 +87,30 @@ public class WebServerModule extends AbstractModule {
     BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
 
     Server server = new Server();
-    final ServerConnector conn = new ServerConnector(server);
-    conn.setPort(bkConfig.getPortBase() + 1);
-    conn.setHost("127.0.0.1");
-    server.setConnectors(new Connector[] { conn });
+    ServerConnector connector;
+    boolean useSSL = bkConfig.getPublicServer() || (isNoneBlank(bkConfig.getUseHttpsCert()) && isNoneBlank(bkConfig.getUseHttpsKey()));
+    String host = bkConfig.getPublicServer() ? "0.0.0.0" : "127.0.0.1";
+    int proxyPort = bkConfig.getPublicServer() ? bkConfig.getPortBase() : bkConfig.getPortBase() + 1;
+    if (useSSL) {
+      HttpConfiguration https = new HttpConfiguration();
+      https.addCustomizer(new SecureRequestCustomizer());
+      SslContextFactory sslContextFactory = new SslContextFactory();
+      sslContextFactory.setKeyStorePath("~/keystore.jks");//todo certs and passwords
+      sslContextFactory.setKeyStorePassword("123456");//todo password here
+      sslContextFactory.setKeyManagerPassword("123456");//todo password here
+      connector = new ServerConnector(server,
+          new SslConnectionFactory(sslContextFactory, "http/1.1"),
+          new HttpConnectionFactory(https));
+      connector.setPort(proxyPort);
+      connector.setHost(host);
+    } else {
+      connector = new ServerConnector(server);
+      connector.setPort(proxyPort);
+      connector.setHost(host);
+    }
+
+
+    server.setConnectors(new Connector[] { connector });
     ServletContextHandler servletHandler = new ServletContextHandler(server, "/");
 
     String hash = bkConfig.getHash();
@@ -95,7 +118,7 @@ public class WebServerModule extends AbstractModule {
     sh.setInitParameter("proxyTo", "http://127.0.0.1:" + webServerConfig.getPort());
     sh.setInitParameter("hash", hash);
     sh.setInitParameter("corePort", String.valueOf(webServerConfig.getPort()));
-    sh.setInitParameter("proxyPort", String.valueOf(conn.getPort()));
+    sh.setInitParameter("proxyPort", String.valueOf(connector.getPort()));
     sh.setInitParameter("publicServer", String.valueOf(bkConfig.getPublicServer()));
     sh.setInitParameter("requirePassword", String.valueOf(bkConfig.getRequirePassword()));
     sh.setInitParameter("authCookie", bkConfig.getAuthCookie());

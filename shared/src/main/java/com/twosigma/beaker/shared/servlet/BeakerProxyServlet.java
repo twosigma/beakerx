@@ -26,6 +26,9 @@ import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.proxy.ProxyServlet;
 import org.eclipse.jetty.websocket.api.WebSocketBehavior;
 import org.eclipse.jetty.websocket.api.WebSocketPolicy;
+import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
+import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
+import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
 import javax.servlet.ServletConfig;
@@ -128,9 +131,18 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   }
 
   private boolean checkCommonRedirects(HttpServletRequest request, HttpServletResponse response) {
-    if (request.getPathInfo().equals("/version")) {
+    boolean redirect = false;
+    String path = request.getPathInfo();
+    if (path.equals("/") || path.equals("/beaker")) {
+      response.setHeader("Location", this.startPage);
+      redirect = true;
+    }
+    if (path.equals("/version")) {
       response.setHeader("Access-Control-Allow-Origin", "*");
       response.setHeader("Location", "/" + (StringUtils.isEmpty(this._hash) ? "" : this._hash + "/") + "beaker/rest/util/version");
+      redirect = true;
+    }
+    if (redirect) {
       response.setStatus(301);
       return true;
     }
@@ -142,7 +154,12 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
 
       factory = WebSocketServletFactory.Loader.create(createWebSocketPolicy());
       factory.register(ProxyWebSocket.class);
-      factory.setCreator((req, resp) -> new ProxyWebSocket(req, rulesHolder, getAuthHeaderString(req.getHttpServletRequest().getPathInfo())));
+      factory.setCreator(new WebSocketCreator() {
+        @Override
+        public Object createWebSocket(ServletUpgradeRequest request, ServletUpgradeResponse response) {
+          return new ProxyWebSocket(request, rulesHolder, getAuthHeaderString(request.getHttpServletRequest().getPathInfo()));
+        }
+      });
       ServletContext ctx = this.getServletContext();
       factory.init(ctx);
       ctx.setAttribute(WebSocketServletFactory.class.getName(), factory);
@@ -178,8 +195,10 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   private void initRewriteRules() {
     rulesHolder.add(new CometdProxyRule(this.authToken, this._hash, this.corePort).setFinal(false));
     rulesHolder.add(new ProxyRuleImpl("/loginrest/.*", new Replacement("/loginrest/", "/rest/login/")));
-    rulesHolder.add(new SlashBeakerRule(this.corePort, this.proxyPort, this.startPage));
-    rulesHolder.add(new RootSlashRule(this.corePort, this.proxyPort, this.startPage));
+    rulesHolder.add(new ProxyRuleImpl("/login/login.html", new Replacement("/login/", "/static/")).setFinal(false));
+    rulesHolder.add(new WebSocketRule().setFinal(false));
+//    rulesHolder.add(new SlashBeakerRule(this.corePort, this.proxyPort, this.startPage));
+//    rulesHolder.add(new RootSlashRule(this.corePort, this.proxyPort, this.startPage));
     rulesHolder.add(new MainPageRule("/rest/util/getMainPage", this.authToken));
     rulesHolder.add(new EraseHashAndBeakerRule(this._hash));
     //TODO rewrite this rule. The rule for new plugin has to be applied after plugin is added in PluginServiceRest

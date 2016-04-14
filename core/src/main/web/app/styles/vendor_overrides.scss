@@ -101,6 +101,10 @@ tbody tr {
   }
 }
 
+.DTFC_LeftHeadWrapper {
+  overflow: visible !important;
+}
+
 .dataTables_scrollHead, .DTFC_LeftHeadWrapper, .DTFC_RightHeadWrapper {
   table thead th {
     cursor:       pointer;

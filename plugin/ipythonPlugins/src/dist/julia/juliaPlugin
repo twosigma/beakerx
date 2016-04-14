@@ -42,5 +42,5 @@ os.environ['beaker_julia_init'] = plugin_dir
 if os.name == 'nt':
     subprocess.call(["python", plugin_dir+"/juliaPluginStart.py"], shell=True)
 else:
-    os.execlp("/usr/bin/env", "python", "python", plugin_dir+"/juliaPluginStart.py")
+    os.execlp("python","python", plugin_dir+"/juliaPluginStart.py")
 

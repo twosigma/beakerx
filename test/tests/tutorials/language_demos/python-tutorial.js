@@ -32,9 +32,9 @@ describe('Python Tutorial', function (done) {
     });
 
     it('IPython can load', function () {
-        element(by.css('.modal-body .bkr')).isPresent().then(function(present){
+        element(by.css('div.modal-body')).isPresent().then(function(present){
             if(present){
-                expect(element(by.css('.modal-body .bkr')).getText()).toBe('IPython have loaded');
+                expect(element.all(by.css('div.modal-body > p')).get(0).getText()).toBe('IPython have loaded');
             }
         });
     });

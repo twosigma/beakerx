@@ -90,4 +90,75 @@ describe('Beaker Tables', function () {
     });
   });
 
+  describe('Table Menu', function () {
+
+    function checkMenus(expectedItems, actualItems, done) {
+      expect(actualItems.count()).toBe(expectedItems.length);
+      actualItems.each(function(element, index) {
+        element.getInnerHtml().then(function (text) {
+          expect(text.trim()).toBe(expectedItems[index]);
+          if(done && index === expectedItems.length - 1){
+            done();
+          }
+        });
+      });
+    }
+
+    it('should contain items', function (done) {
+      var expectedItems = [
+        'Reset All Interactions',
+        'Use pagination',
+        'Rows to Show',
+        'Select All',
+        'Deselect All',
+        'Reverse Selection',
+        'Copy to Clipboard',
+        'Save All as CSV',
+        'Save Selected as CSV',
+        'Show All Columns',
+        'Show Column',
+        'Hide All Columns',
+        'Search...',
+        'Filter...',
+        'Hide Filter'
+      ];
+      var firstLevelItems = beakerPO.getDataTableMenuFirstLevelItems('Table Header');
+      checkMenus(expectedItems, firstLevelItems, done);
+    });
+
+    it('should contain submenus', function (done) {
+      var rowsToShowExpected = ['10', '25', '50', '100', 'All'];
+      var rowsToShowActual = beakerPO.getDataTableSubmenu('Table Header', 'Rows to Show').all(by.css('a'));
+      checkMenus(rowsToShowExpected, rowsToShowActual);
+      var showColumnExpected = ['A', 'B', 'C', 'D'];
+      var showColumnActual = beakerPO.getDataTableSubmenu('Table Header', 'Show Column').all(by.css('a'));
+      checkMenus(showColumnExpected, showColumnActual, done);
+    });
+
+    describe('Table Menu Toggle', function () {
+
+      it('should be in the left-most column header', function (done) {
+        beakerPO.getCodeOutputCellIdBySectionTitle('Table Header').then(function (v) {
+          beakerPO.getDTFCLeftColumnHeader(v, 0).getLocation().then(function (headerLocation) {
+            beakerPO.getDataTableMenuToggle('Table Header').getLocation().then(function (menuToggleLocation) {
+              var headerBorder = 1;
+              expect(menuToggleLocation.x).toBe(headerLocation.x + headerBorder);
+              expect(menuToggleLocation.y).toBe(headerLocation.y + headerBorder);
+              done();
+            });
+          });
+        });
+      });
+
+      it('should be white on hover', function (done) {
+        var menuToggle = beakerPO.getDataTableMenuToggle('Table Header');
+        browser.actions().mouseMove(menuToggle).perform();
+        expect(menuToggle.getCssValue('color')).toBe('rgba(35, 82, 124, 1)');
+        expect(menuToggle.element(by.css('span')).getCssValue('background-image')).toContain('menu_white@2x.png');
+        done();
+      });
+
+    });
+
+  });
 });

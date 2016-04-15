@@ -649,6 +649,16 @@ var BeakerPageObject = function() {
     return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('.dtmenu .dropdown-toggle'));
   };
 
+  this.getDataTableSubmenu = function (sectionTitle, menuTitle){
+    return this.getCodeCellOutputBySectionTitle(sectionTitle)
+      .element(by.cssContainingText('.dtmenu>ul>li', menuTitle))
+      .all(by.css('li'));
+  };
+
+  this.getDataTableMenuFirstLevelItems = function (sectionTitle) {
+    return this.getCodeCellOutputBySectionTitle(sectionTitle).all(by.css('.dtmenu>ul>li>a'));
+  };
+
   this.checkDataTableHead = function(codeCellOutputIdx, headLabels){
     expect(this.getDataTablesScrollHead(codeCellOutputIdx).getText()).toBe(headLabels);
   }

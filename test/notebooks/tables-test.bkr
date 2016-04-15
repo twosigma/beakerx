@@ -327,6 +327,133 @@
             },
             "evaluatorReader": true,
             "lineCount": 3
+        },
+        {
+            "id": "sections304jh",
+            "type": "section",
+            "title": "Table Header",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeHc5jUZ",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var table = []",
+                    "for(var i=0; i<5; i++){",
+                    "  table.push({A: 'a' + i, B: 'b' + i, C: 'c' + i, D: 'd' + i});",
+                    "}",
+                    "table"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "A",
+                            "B",
+                            "C",
+                            "D"
+                        ],
+                        "actualtype": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "heatmapOnColumn": {},
+                        "tableFilter": "",
+                        "tableSearch": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": []
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "subtype": "ListOfMaps",
+                    "columnNames": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ],
+                    "values": [
+                        [
+                            "a0",
+                            "b0",
+                            "c0",
+                            "d0"
+                        ],
+                        [
+                            "a1",
+                            "b1",
+                            "c1",
+                            "d1"
+                        ],
+                        [
+                            "a2",
+                            "b2",
+                            "c2",
+                            "d2"
+                        ],
+                        [
+                            "a3",
+                            "b3",
+                            "c3",
+                            "d3"
+                        ],
+                        [
+                            "a4",
+                            "b4",
+                            "c4",
+                            "d4"
+                        ]
+                    ],
+                    "types": [
+                        "string",
+                        "string",
+                        "string",
+                        "string"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 68,
+                "height": 210
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
         }
     ],
     "namespace": {

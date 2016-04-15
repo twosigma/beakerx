@@ -175,7 +175,7 @@ define(function(require, exports, module) {
           window.languageUpdateService = {};
         }
         window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
-        cometdUtil.init(PLUGIN_NAME, servicePort);
+        cometdUtil.init(PLUGIN_NAME, serviceBase);
 
         var kdbShell = function(settings, doneCallback, ecb) {
           var self = this;

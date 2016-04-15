@@ -53,11 +53,10 @@ class ProxyWebSocket extends WebSocketAdapter {
     this.clientSession = sess;
 
     if (sess instanceof WebSocketSession) {
-      final WebSocketClient client = new WebSocketClient();
-      String requestURI = request.getRequestURI().toString();
-      final String target = rulesHolder.rewriteTarget(request.getHttpServletRequest(), requestURI);
-
       try {
+        final WebSocketClient client = new WebSocketClient();
+        String requestURI = request.getRequestURI().toString();
+        final String target = rulesHolder.rewriteTarget(request.getHttpServletRequest(), requestURI);
         client.start();
         final ClientUpgradeRequest remoteRequest = new ClientUpgradeRequest();
         remoteRequest.setCookies(request.getCookies());

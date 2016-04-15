@@ -18,6 +18,7 @@ package com.twosigma.beaker.shared.servlet.rules;
 import com.twosigma.beaker.shared.servlet.rules.util.Replacement;
 import org.eclipse.jetty.client.api.Request;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.List;
@@ -26,10 +27,10 @@ import static java.util.Arrays.asList;
 
 public class ProxyRuleImpl implements ProxyRule {
 
-  protected static final String EMPTY_STRING = "";
-  protected static final String SLASH = "/";
-  protected static final String BEAKER = "beaker";
-  protected static final String SLASH_BEAKER = SLASH.concat(BEAKER);
+  static final String EMPTY_STRING = "";
+  static final String SLASH = "/";
+  private static final String BEAKER = "beaker";
+  static final String SLASH_BEAKER = SLASH.concat(BEAKER);
 
   private List<Replacement> replacements = Collections.emptyList();
   private List<String> pathRegexes;
@@ -48,10 +49,10 @@ public class ProxyRuleImpl implements ProxyRule {
   }
 
   @Override
-  public boolean satisfy(String path) {
+  public boolean satisfy(HttpServletRequest request) {
     if (pathRegexes != null) {
       for (String pathRegex : pathRegexes) {
-        if (path.matches(pathRegex)) {
+        if (request.getPathInfo().matches(pathRegex)) {
           return true;
         }
       }
@@ -60,12 +61,12 @@ public class ProxyRuleImpl implements ProxyRule {
     return true;
   }
 
-  public String rewriteTarget(final String url, String path) {
+  public String rewriteTarget(final String url, HttpServletRequest request) {
     return this.concat(this.replace(this.modify(url)));
   }
 
   @Override
-  public void setHeaders(Request proxyRequest, String pathInfo) {
+  public void setHeaders(Request proxyRequest, HttpServletRequest clientRequest) {
   }
 
   @Override

@@ -19,7 +19,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
-import com.twosigma.beaker.core.module.config.BeakerConfigPref;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
@@ -32,6 +31,7 @@ import org.apache.http.client.fluent.Request;
 import org.json.simple.JSONObject;
 import org.jvnet.winp.WinProcess;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -534,7 +534,7 @@ public class PluginServiceLocatorRest {
           new Replacement("(.+)/api/kernels/kill/$", "$1/api/kernels/", true)
       ) {
         @Override
-        public void setHeaders(org.eclipse.jetty.client.api.Request proxyRequest, String pathInfo) {
+        public void setHeaders(org.eclipse.jetty.client.api.Request proxyRequest, HttpServletRequest clientRequest) {
           rewriteHeader(proxyRequest, "Origin", "http://127.0.0.1:" + getPluginConfig().getPort());
         }
       });

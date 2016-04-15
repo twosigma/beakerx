@@ -15,6 +15,8 @@
  */
 package com.twosigma.beaker.shared.servlet.rules;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class EraseHashAndBeakerRule extends ProxyRuleImpl {
 
   private final String hash;
@@ -29,7 +31,7 @@ public class EraseHashAndBeakerRule extends ProxyRuleImpl {
   }
 
   @Override
-  public boolean satisfy(final String path) {
-    return path.contains(SLASH + this.hash + SLASH_BEAKER);
+  public boolean satisfy(final HttpServletRequest request) {
+    return request.getPathInfo().contains(SLASH + this.hash + SLASH_BEAKER);
   }
 }

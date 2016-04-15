@@ -20,16 +20,16 @@ import org.eclipse.jetty.client.api.Request;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RulesHolder {
   private List<ProxyRuleImpl> rules = new LinkedList<>();
 
   public String rewriteTarget(HttpServletRequest request, String result) {
     for (ProxyRuleImpl rule : getRulesForRequest(request)) {
-      result = rule.rewriteTarget(result, request.getPathInfo());
+      result = rule.rewriteTarget(result, request);
       if (rule.isFinal()) {
         break;
       }
@@ -39,7 +39,7 @@ public class RulesHolder {
 
   public void addHeaders(HttpServletRequest clientRequest, Request proxyRequest) {
     for (ProxyRuleImpl rule : getRulesForRequest(clientRequest)) {
-      rule.setHeaders(proxyRequest, clientRequest.getPathInfo());
+      rule.setHeaders(proxyRequest, clientRequest);
       if (rule.isFinal()) {
         break;
       }
@@ -60,6 +60,12 @@ public class RulesHolder {
   }
 
   private List<ProxyRuleImpl> getRulesForRequest(HttpServletRequest clientRequest) {
-    return rules.stream().filter(r -> r.satisfy(clientRequest.getPathInfo())).collect(Collectors.toList());
+    ArrayList<ProxyRuleImpl> result = new ArrayList<>();
+    for (ProxyRuleImpl rule : rules) {
+      if (rule.satisfy(clientRequest)) {
+        result.add(rule);
+      }
+    }
+    return result;
   }
 }

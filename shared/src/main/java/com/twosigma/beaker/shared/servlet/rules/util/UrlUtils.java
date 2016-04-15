@@ -16,6 +16,9 @@
 
 package com.twosigma.beaker.shared.servlet.rules.util;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class UrlUtils {
@@ -26,5 +29,25 @@ public class UrlUtils {
       return urlWithoutSchema.substring(endOfDomain);
     }
     return EMPTY;
+  }
+
+  public static String replacePort(String url, int port) {
+    try {
+      return setUriPort(new URI(url), port).toString();
+    } catch (URISyntaxException e) {
+      e.printStackTrace();
+      return url;
+    }
+  }
+
+  private static URI setUriPort(URI uri, int port)
+  {
+    try {
+      URI newUri = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), port, uri.getPath(), uri.getQuery(), uri.getFragment());
+      return newUri;
+    } catch (URISyntaxException e) {
+      e.printStackTrace();
+      return uri;
+    }
   }
 }

@@ -19,6 +19,7 @@ package com.twosigma.beaker.shared.servlet.rules.util;
 import org.junit.Test;
 
 import static com.twosigma.beaker.shared.servlet.rules.util.UrlUtils.getPath;
+import static com.twosigma.beaker.shared.servlet.rules.util.UrlUtils.replacePort;
 import static org.junit.Assert.assertEquals;
 
 public class UrlUtilsTest {
@@ -29,5 +30,12 @@ public class UrlUtilsTest {
     assertEquals("/", getPath("http://test.com/"));
     assertEquals("/path/page.extension", getPath("http://test.com/path/page.extension"));
     assertEquals("/path/page.extension", getPath("www.test.com/path/page.extension"));
+  }
+
+  @Test
+  public void testReplacePort() {
+    assertEquals("http://google.com:80/hello", replacePort("http://google.com/hello", 80));
+    assertEquals("wss://127.0.0.1:8802/hello", replacePort("wss://127.0.0.1:8800/hello", 8802));
+    assertEquals("ws://127.0.0.1:8802/hello", replacePort("ws://127.0.0.1/hello", 8802));
   }
 }

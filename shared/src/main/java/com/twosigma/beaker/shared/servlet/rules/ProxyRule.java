@@ -17,17 +17,18 @@
 package com.twosigma.beaker.shared.servlet.rules;
 
 import org.eclipse.jetty.client.api.Request;
-import org.eclipse.jetty.client.api.Response;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public interface ProxyRule {
+interface ProxyRule {
+  public static final String XSRF_TOKEN_COOKIE_NAME = "XSRF-TOKEN";
 
-  boolean satisfy(String path);
+  boolean satisfy(HttpServletRequest request);
 
-  String rewriteTarget(String url, String path);
+  String rewriteTarget(String url, HttpServletRequest request);
 
-  void setHeaders(Request proxyRequest, String pathInfo);
+  void setHeaders(Request proxyRequest, HttpServletRequest clientRequest);
 
   void configureResponse(HttpServletResponse response);
 }

@@ -17,7 +17,6 @@ package com.twosigma.beaker.shared.servlet.rules;
 
 import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
 import com.twosigma.beaker.shared.servlet.rules.util.Replacement;
-import org.eclipse.jetty.client.api.Response;
 
 import java.util.List;
 
@@ -25,10 +24,6 @@ import static java.lang.String.valueOf;
 
 public class PluginProxyRule extends ProxyRuleImpl {
   private BeakerProxyServlet.PluginConfig pluginConfig;
-
-  public PluginProxyRule(Replacement... replacements) {
-    this(null, replacements);
-  }
 
   public PluginProxyRule(List<String> pathRegexes, Replacement... replacements) {
     super(pathRegexes, replacements);
@@ -40,7 +35,7 @@ public class PluginProxyRule extends ProxyRuleImpl {
         .replace("%(port)s", valueOf(pluginConfig.getPort()));
   }
 
-  public BeakerProxyServlet.PluginConfig getPluginConfig() {
+  protected BeakerProxyServlet.PluginConfig getPluginConfig() {
     return pluginConfig;
   }
 

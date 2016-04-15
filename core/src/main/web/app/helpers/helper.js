@@ -1133,10 +1133,10 @@
         var cometdUtil = {
             initialized: false,
             subscriptions: { },
-            init: function(pluginName, port) {
+            init: function(pluginName, serviceBase) {
               if (!this.initialized) {
                 this.cometd = new $.Cometd();
-                this.cometd.init("ws://127.0.0.1:" + port + "/cometd/");
+                this.cometd.init(bkUtils.serverUrl(serviceBase + "/cometd/"));
                 var self = this;
                 this.hlistener = this.cometd.addListener('/meta/handshake', function(message) {
                   if (window.bkDebug) console.log(pluginName+'/meta/handshake');

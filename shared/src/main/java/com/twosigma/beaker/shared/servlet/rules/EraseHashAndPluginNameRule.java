@@ -16,8 +16,12 @@
 package com.twosigma.beaker.shared.servlet.rules;
 
 import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
+import com.twosigma.beaker.shared.servlet.rules.util.UrlUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+
+import static com.twosigma.beaker.shared.servlet.rules.util.UrlUtils.replacePort;
 
 //TODO rewrite this rule. The rule for new plugin has to be applied after plugin is added in PluginServiceRest
 public class EraseHashAndPluginNameRule extends ProxyRuleImpl {
@@ -39,7 +43,8 @@ public class EraseHashAndPluginNameRule extends ProxyRuleImpl {
     Map<String, BeakerProxyServlet.PluginConfig> plugins = this.proxyServlet.getPlugins();
     for (BeakerProxyServlet.PluginConfig config : plugins.values()) {
       if (url.contains(SLASH + this.hash + SLASH + config.getBaseUrl())) {
-        String result = url.replace(this.corePort, String.valueOf(config.getPort()));
+//        String result = url.replace(this.corePort, String.valueOf(config.getPort()));
+        String result = replacePort(url, config.getPort());
         result = result.replace(this.hash + SLASH + config.getBaseUrl() + SLASH, EMPTY_STRING);
         return result;
       }
@@ -48,9 +53,9 @@ public class EraseHashAndPluginNameRule extends ProxyRuleImpl {
   }
 
   @Override
-  public boolean satisfy(final String path) {
+  public boolean satisfy(final HttpServletRequest request) {
     for (BeakerProxyServlet.PluginConfig config : this.proxyServlet.getPlugins().values()) {
-      if (path.contains(SLASH + this.hash + SLASH + config.getBaseUrl())) {
+      if (request.getPathInfo().contains(SLASH + this.hash + SLASH + config.getBaseUrl())) {
         return true;
       }
     }

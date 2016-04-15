@@ -197,9 +197,8 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
     rulesHolder.add(new ProxyRuleImpl("/loginrest/.*", new Replacement("/loginrest/", "/rest/login/")));
     rulesHolder.add(new ProxyRuleImpl("/login/login.html", new Replacement("/login/", "/static/")).setFinal(false));
     rulesHolder.add(new WebSocketRule().setFinal(false));
-//    rulesHolder.add(new SlashBeakerRule(this.corePort, this.proxyPort, this.startPage));
-//    rulesHolder.add(new RootSlashRule(this.corePort, this.proxyPort, this.startPage));
     rulesHolder.add(new MainPageRule("/rest/util/getMainPage", this.authToken));
+    rulesHolder.add(new CheckXsrfRule(authToken).setFinal(false));
     rulesHolder.add(new EraseHashAndBeakerRule(this._hash));
     //TODO rewrite this rule. The rule for new plugin has to be applied after plugin is added in PluginServiceRest
     rulesHolder.add(new EraseHashAndPluginNameRule(this, this._hash, this.corePort).setFinal(false));

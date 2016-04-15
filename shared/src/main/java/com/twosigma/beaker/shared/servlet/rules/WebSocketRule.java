@@ -15,9 +15,11 @@
  */
 package com.twosigma.beaker.shared.servlet.rules;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class WebSocketRule extends ProxyRuleImpl {
   @Override
-  public String rewriteTarget(String url, String path) {
+  public String rewriteTarget(String url, HttpServletRequest request) {
     return replaceDomain(url);
   }
 

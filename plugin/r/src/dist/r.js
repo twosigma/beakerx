@@ -194,7 +194,7 @@ define(function(require, exports, module) {
           window.languageUpdateService = {};
         }
         window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
-        cometdUtil.init(PLUGIN_NAME, servicePort);
+        cometdUtil.init(PLUGIN_NAME, serviceBase);
 
         var RShell = function(settings, doneCB, ecb) {
           var self = this;

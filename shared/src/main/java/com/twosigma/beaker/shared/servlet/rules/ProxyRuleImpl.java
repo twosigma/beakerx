@@ -70,7 +70,7 @@ public class ProxyRuleImpl implements ProxyRule {
   }
 
   @Override
-  public void configureResponse(HttpServletResponse response) { }
+  public boolean configureResponse(HttpServletResponse response) { return false; }
 
   protected String modify(String url) {
     return url;

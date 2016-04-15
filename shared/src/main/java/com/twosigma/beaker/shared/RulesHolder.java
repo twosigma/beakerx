@@ -46,13 +46,20 @@ public class RulesHolder {
     }
   }
 
-  public void configureResponse(HttpServletRequest request, HttpServletResponse response) {
+  /**
+   *
+   * @return
+   * <b>true</b> - if request processing finished;
+   * <b>false</b> - if proxyServlet should continue processing this request. Default value.
+   * */
+  public boolean configureResponse(HttpServletRequest request, HttpServletResponse response) {
     for (ProxyRuleImpl proxyRule : getRulesForRequest(request)) {
-      proxyRule.configureResponse(response);
-      if(proxyRule.isFinal()) {
-        return;
+      boolean processingFinished = proxyRule.configureResponse(response);
+      if(processingFinished) {
+        return true;
       }
     }
+    return false;
   }
 
   public void add(ProxyRuleImpl rule) {

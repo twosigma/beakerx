@@ -30,5 +30,13 @@ interface ProxyRule {
 
   void setHeaders(Request proxyRequest, HttpServletRequest clientRequest);
 
-  void configureResponse(HttpServletResponse response);
+  /**
+  * Use to configure response object, for example, set cookies.
+  * It's also possible to do redirect with this method, but it should return true
+  *
+  * @return
+   * true - if request processing finished;
+   * false - if proxyServlet should continue processing this request. Default value.
+  * */
+  boolean configureResponse(HttpServletResponse response);
 }

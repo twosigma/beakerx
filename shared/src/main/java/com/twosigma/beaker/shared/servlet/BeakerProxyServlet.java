@@ -48,12 +48,12 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   private static Map<String, PluginConfig> plugins = new ConcurrentHashMap<>();
   private WebSocketServletFactory factory;
   private RulesHolder rulesHolder;
-  private String _hash = "";
+  private String hash = "";
   private String corePort;
   private String startPage;
   private String corePassword;
-  private String proxyPort;
   private String authToken;
+  private String authCookie;
 
   public BeakerProxyServlet() {
   }
@@ -64,29 +64,19 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
 
   @Override
   public void init() throws ServletException {
-    this._hash = this.getInitParameter("hash");
-    this.corePort = this.getInitParameter("corePort");
-    this.proxyPort = this.getInitParameter("proxyPort");
     ServletConfig config = this.getServletConfig();
     boolean publicServer = Boolean.parseBoolean(config.getInitParameter("publicServer"));
     boolean requirePassword = Boolean.parseBoolean(config.getInitParameter("requirePassword"));
+    this.hash = this.getInitParameter("hash");
+    this.corePort = this.getInitParameter("corePort");
     this.corePassword = config.getInitParameter("corePassword");
     this.authToken = config.getInitParameter("authToken");
+    this.authCookie = config.getInitParameter("authCookie");
     this.rulesHolder = new RulesHolder();
-    super.init();
-    if (publicServer) {
-      this.startPage = "/static/login.html";
-    } else if (requirePassword) {
-      this.startPage = "/static/login.html";
-    } else {
-      this.startPage = "/beaker/";
-    }
+    this.startPage = getStartPage(publicServer, requirePassword);
     initWebSockets();
-    initRewriteRules();
-  }
-
-  public String getAuthHeaderString(String path) {
-    return "Basic " + encodeAuth(getPassword(path));
+    initRewriteRules(requirePassword, publicServer);
+    super.init();
   }
 
   public Map<String, PluginConfig> getPlugins() {
@@ -95,15 +85,16 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
 
   @Override
   protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    if(isWebsocketRequest(request, response)) {
-      if(proxifyWebsocketRequest(request, response)) {
-        return;
-      }
+    if(isWebsocketRequest(request, response) && proxifyWebsocketRequest(request, response)) {
+      return;
     }
     if(checkCommonRedirects(request, response)) {
       return;
     }
-    rulesHolder.configureResponse(request, response);
+    if (rulesHolder.configureResponse(request, response)) {
+      return;
+    }
+
     super.service(request, response);
   }
 
@@ -121,13 +112,26 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
     }
   }
 
-  /*
-    This is the place where ProxyServlet applies rules which were in nginx.conf
-   */
   @Override
   protected String rewriteTarget(final HttpServletRequest request) {
     String result = super.rewriteTarget(request);
     return rulesHolder.rewriteTarget(request, result);
+  }
+
+  private String getStartPage(boolean publicServer, boolean requirePassword) {
+    String startPage;
+    if (publicServer) {
+      startPage = "/static/login.html";
+    } else if (requirePassword) {
+      startPage = "/static/login.html";
+    } else {
+      startPage = "/beaker/";
+    }
+    return startPage;
+  }
+
+  private String getAuthHeaderString(String path) {
+    return "Basic " + encodeAuth(getPassword(path));
   }
 
   private boolean checkCommonRedirects(HttpServletRequest request, HttpServletResponse response) {
@@ -139,7 +143,7 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
     }
     if (path.equals("/version")) {
       response.setHeader("Access-Control-Allow-Origin", "*");
-      response.setHeader("Location", "/" + (StringUtils.isEmpty(this._hash) ? "" : this._hash + "/") + "beaker/rest/util/version");
+      response.setHeader("Location", "/" + (StringUtils.isEmpty(this.hash) ? "" : this.hash + "/") + "beaker/rest/util/version");
       redirect = true;
     }
     if (redirect) {
@@ -192,17 +196,19 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
     return webSocketPolicy;
   }
 
-  private void initRewriteRules() {
-    rulesHolder.add(new CometdProxyRule(this.authToken, this._hash, this.corePort).setFinal(false));
+  private void initRewriteRules(boolean requirePassword, boolean publicServer) {
+    rulesHolder.add(new CometdProxyRule(this.authToken, this.hash, this.corePort).setFinal(false));
     rulesHolder.add(new ProxyRuleImpl("/loginrest/.*", new Replacement("/loginrest/", "/rest/login/")));
     rulesHolder.add(new ProxyRuleImpl("/login/login.html", new Replacement("/login/", "/static/")).setFinal(false));
     rulesHolder.add(new WebSocketRule().setFinal(false));
+    if (publicServer || requirePassword) {
+      rulesHolder.add(new AuthCookieRule(this.authCookie));
+    }
     rulesHolder.add(new MainPageRule("/rest/util/getMainPage", this.authToken));
     rulesHolder.add(new CheckXsrfRule(authToken).setFinal(false));
-    rulesHolder.add(new EraseHashAndBeakerRule(this._hash));
-    //TODO rewrite this rule. The rule for new plugin has to be applied after plugin is added in PluginServiceRest
-    rulesHolder.add(new EraseHashAndPluginNameRule(this, this._hash, this.corePort).setFinal(false));
-    rulesHolder.add(new ApplyPluginSpecificRules(this, this._hash, this.corePort));
+    rulesHolder.add(new EraseHashAndBeakerRule(this.hash));
+    rulesHolder.add(new EraseHashAndPluginNameRule(this, this.hash, this.corePort).setFinal(false));
+    rulesHolder.add(new ApplyPluginSpecificRules(this, this.hash, this.corePort));
   }
 
   private boolean proxifyWebsocketRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -233,7 +239,7 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
     private final String baseUrl;
     private final List<PluginProxyRule> rules;
 
-    public PluginConfig(int port, String password, String baseUrl, List<PluginProxyRule> rules) {
+    PluginConfig(int port, String password, String baseUrl, List<PluginProxyRule> rules) {
       this.port = port;
       this.password = password;
       this.baseUrl = baseUrl;

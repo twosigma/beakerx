@@ -43,9 +43,10 @@ public class MainPageRule extends ProxyRuleImpl {
   }
 
   @Override
-  public void configureResponse(HttpServletResponse response) {
+  public boolean configureResponse(HttpServletResponse response) {
     Cookie xsrfTokenCookie = new Cookie(XSRF_TOKEN_COOKIE_NAME, this.authToken);
     xsrfTokenCookie.setPath("/");
     response.addCookie(xsrfTokenCookie);
+    return false;
   }
 }

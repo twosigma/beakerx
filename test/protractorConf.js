@@ -27,7 +27,7 @@ var config = {
   capabilities: {
     shardTestFiles: true,
     maxInstances: 3,
-    browserName: 'chrome'
+    browserName: 'firefox'
   },
   onPrepare: function() {
     var SpecReporter = require('jasmine-spec-reporter');

@@ -597,7 +597,7 @@ var BeakerPageObject = function() {
     return this.getDataTablesScrollBody(codeCellOutputIdx).all(By.css('tbody > tr'));
   }
 
-  this.getDataTablesTBodyByIdCell = function(idCell){
+  this.getDataTablesTBodyByIdCell = function (idCell) {
     return this.getDataTablesScrollBodyByIdCell(idCell).all(By.css('tbody > tr'));
   }
 
@@ -641,15 +641,15 @@ var BeakerPageObject = function() {
     return this.getDTFCLeftHeader(cellId).all(by.css('th')).get(colInd);
   };
 
-  this.scrollDataTableHorizontally = function(cellId, x){
-    browser.executeScript("$('bk-code-cell-output[cell-id=" + cellId + "').find('.dataTables_scrollBody').scrollLeft(" + x +");");
+  this.scrollDataTableHorizontally = function (cellId, x) {
+    browser.executeScript("$('bk-code-cell-output[cell-id=" + cellId + "').find('.dataTables_scrollBody').scrollLeft(" + x + ");");
   };
 
   this.getDataTableMenuToggle = function (sectionTitle) {
     return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('.dtmenu .dropdown-toggle'));
   };
 
-  this.getDataTableSubmenu = function (sectionTitle, menuTitle){
+  this.getDataTableSubmenu = function (sectionTitle, menuTitle) {
     return this.getCodeCellOutputBySectionTitle(sectionTitle)
       .element(by.cssContainingText('.dtmenu>ul>li', menuTitle))
       .all(by.css('li'));

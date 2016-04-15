@@ -94,10 +94,10 @@ describe('Beaker Tables', function () {
 
     function checkMenus(expectedItems, actualItems, done) {
       expect(actualItems.count()).toBe(expectedItems.length);
-      actualItems.each(function(element, index) {
+      actualItems.each(function (element, index) {
         element.getInnerHtml().then(function (text) {
           expect(text.trim()).toBe(expectedItems[index]);
-          if(done && index === expectedItems.length - 1){
+          if (done && index === expectedItems.length - 1) {
             done();
           }
         });

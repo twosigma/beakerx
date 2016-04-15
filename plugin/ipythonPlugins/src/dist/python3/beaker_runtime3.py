@@ -21,6 +21,13 @@ import os, json, pandas, numpy
 import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, IPython, datetime, calendar, math, traceback, time
 from IPython.utils.traitlets import Unicode
 
+sys.path.append("config/plugins/eval/ipythonPlugins/api")
+import plotapi
+
+# sys.path.append("/Users/kpaharelau/Library/Application Support/IntelliJIdea15/python/pycharm-debug-py3k.egg")
+# import pydevd
+# pydevd.settrace('localhost', port=8888, stdoutToServer=True, stderrToServer=True)
+
 class OutputContainer:
     def __init__(self):
         self.items = []
@@ -204,6 +211,8 @@ def transform(obj):
         out['output'] = transformNR(obj.getOutput())
         out['tags'] = obj.getTags()
         return out
+    if isinstance(obj, plotapi.plot.Plot):
+        return obj.transform()
     return transformNaN(obj)
 
 def transformNR(obj):
@@ -237,6 +246,8 @@ def transformNR(obj):
         out['output'] = transformNR(obj.getOutput())
         out['tags'] = obj.getTags()
         return out
+    if isinstance(obj, plotapi.plot.Plot):
+        return obj.transform()
     return transformNaN(obj)
 
 def transformBack(obj):
@@ -245,6 +256,8 @@ def transformBack(obj):
         for k,v in obj.items():
             out[str(k)] = transformBack(v)
         if "type" in out:
+            if out['type'] == "Plot":
+                return plotapi.plot.transformBack(out)
             if out['type'] == "BeakerCodeCell":
                 c = BeakerCodeCell(out['cellId'], out['evaluatorId'])
                 if 'code' in out:
@@ -261,7 +274,7 @@ def transformBack(obj):
                 if 'items' in out:
                     for i in out['items']:
                         c.addItem(i)
-                return c;
+                return c
             if out['type'] == "Date":
                 return datetime.datetime.fromtimestamp(out["timestamp"]/1000)
             if out['type'] == "TableDisplay":

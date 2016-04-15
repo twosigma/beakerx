@@ -601,6 +601,54 @@ var BeakerPageObject = function() {
     return this.getDataTablesScrollBodyByIdCell(idCell).all(By.css('tbody > tr'));
   }
 
+  this.getDataTablesColumnByIdCell = function (cellId, colIndex) {
+    return this.getDataTablesTBodyByIdCell(cellId).all(by.css('td')).get(colIndex);
+  };
+
+  this.getDTFCLeftContainer = function (cellId) {
+    return this.getDtContainerByIdCell(cellId, 0).all(by.css('.DTFC_LeftWrapper'));
+  };
+
+  this.getDTFCRightContainer = function (cellId) {
+    return this.getDtContainerByIdCell(cellId, 0).all(by.css('.DTFC_RightWrapper'));
+  };
+
+  this.getDTFCLeftBody = function (cellId) {
+    return this.getDTFCLeftContainer(cellId).all(by.css('tbody > tr'));
+  };
+
+  this.getDTFCRightBody = function (cellId) {
+    return this.getDTFCRightContainer(cellId).all(by.css('tbody > tr'));
+  };
+
+  this.getDTFCLeftHeader = function (cellId) {
+    return this.getDTFCLeftContainer(cellId).all(by.css('thead > tr'));
+  };
+
+  this.getDTFCRightHeader = function (cellId) {
+    return this.getDTFCRightContainer(cellId).all(by.css('thead > tr'));
+  };
+
+  this.getDTFCLeftColumn = function (cellId, colInd) {
+    return this.getDTFCLeftBody(cellId).all(by.css('td')).get(colInd);
+  };
+
+  this.getDTFCRightColumn = function (cellId, colInd) {
+    return this.getDTFCRightBody(cellId).all(by.css('td')).get(colInd);
+  };
+
+  this.getDTFCLeftColumnHeader = function (cellId, colInd) {
+    return this.getDTFCLeftHeader(cellId).all(by.css('th')).get(colInd);
+  };
+
+  this.scrollDataTableHorizontally = function(cellId, x){
+    browser.executeScript("$('bk-code-cell-output[cell-id=" + cellId + "').find('.dataTables_scrollBody').scrollLeft(" + x +");");
+  };
+
+  this.getDataTableMenuToggle = function (sectionTitle) {
+    return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('.dtmenu .dropdown-toggle'));
+  };
+
   this.checkDataTableHead = function(codeCellOutputIdx, headLabels){
     expect(this.getDataTablesScrollHead(codeCellOutputIdx).getText()).toBe(headLabels);
   }
@@ -654,6 +702,19 @@ var BeakerPageObject = function() {
       expect(value.substring(indxStart, lenght)).toBe(toBeStr);
     });
   }
+
+  this.getSection = function (sectionTitle) {
+    return element(by.cssContainingText('.bk-section-title p', sectionTitle))
+      .element(by.xpath('ancestor::bk-section-cell'));
+  };
+
+  this.getCodeCellOutputBySectionTitle = function (sectionTitle) {
+    return this.getSection(sectionTitle).element(by.tagName('bk-code-cell-output'));
+  };
+
+  this.getCodeOutputCellIdBySectionTitle = function (sectionTitle) {
+    return this.getCodeCellOutputBySectionTitle(sectionTitle).getAttribute('cell-id');
+  };
 
 };
 module.exports = BeakerPageObject;

@@ -675,5 +675,23 @@ var BeakerPageObject = function() {
     expect(this.getBkCellByIdCell(idCell).isPresent()).toBe(true);
   };
 
+  this.checkHexCharCode = function(strPromise, charCode1, charCode2){
+    strPromise.getText().then(function(value){
+      expect(value.charCodeAt(0).toString(16)).toBe(charCode1);
+      if(charCode2){
+        expect(value.charCodeAt(1).toString(16)).toBe(charCode2);
+      }
+    });
+  }
+
+  this.checkHexCharCodeSubString = function(strPromise, indxStart, lenght, charCode1, charCode2){
+    strPromise.getText().then(function(value){
+      expect(value.substring(indxStart, lenght).charCodeAt(0).toString(16)).toBe(charCode1);
+      if(charCode2){
+        expect(value.substring(indxStart, lenght).charCodeAt(1).toString(16)).toBe(charCode2);
+      }
+    });
+  }
+
 };
 module.exports = BeakerPageObject;

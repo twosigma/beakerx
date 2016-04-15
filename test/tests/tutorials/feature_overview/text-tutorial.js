@@ -81,7 +81,7 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
         var katexElem = elemPreviw.all(by.css('p')).get(4).all(by.css('span.katex-html > span.base.textstyle.uncramped > span'));
         expect(katexElem.get(0).all(by.css('span > span.mord.mathit')).get(0).getText()).toBe('e');
         expect(katexElem.get(0).all(by.css('span.vlist span.mord.mathit')).get(0).getText()).toBe('i');
-        expect(katexElem.get(0).all(by.css('span.vlist span.mord.mathit')).get(1).getText()).toBe('p');
+        beakerPO.checkHexCharCode(katexElem.get(0).all(by.css('span.vlist span.mord.mathit')).get(1), '3c0');
         expect(katexElem.get(1).getText()).toBe('+');
         expect(katexElem.get(2).getText()).toBe('1');
         expect(katexElem.get(3).getText()).toBe('=');
@@ -113,8 +113,52 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
         beakerPO.checkSubString(elemEditPreArr.get(18), "into a markdown cell by enclosing it with dollar characters: $e^{i\\pi}+1=0$.");
         beakerPO.checkSubString(elemEditPreArr.get(19), "");
         beakerPO.checkSubString(elemEditPreArr.get(20), "You can just copy-and-paste unicode characters in:", 0, 50);
+        beakerPO.checkHexCharCodeSubString(elemEditPreArr.get(20), 51, 52, '73bb');
+        beakerPO.checkHexCharCodeSubString(elemEditPreArr.get(20), 52, 53, '7483');
         beakerPO.checkSubString(elemEditPreArr.get(20), ", or you can enter HTML entities like &amp;dagg", 53);
         beakerPO.checkSubString(elemEditPreArr.get(21), "In fact, many basic HTML elements work, like super&lt;sup&gt;scripts&lt;/sup&gt; for super<sup>scrip");
+    });
+
+    it('Size, Color, and Face', function () {
+        var idCell = "markdownMDiSsV";
+        beakerPO.checkBkCellByIdCell(idCell);
+        var elemPreviw = beakerPO.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'preview\'"]'));
+        var elemEdit = beakerPO.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'edit\'"]'));
+
+        expect(elemPreviw.isDisplayed()).toBe(true);
+        expect(elemEdit.isDisplayed()).toBe(false);
+
+        expect(elemPreviw.all(by.css('p')).get(0).getText()).toBe("You can change the size, color, and face of text with familar HTML <font> tags. For example, you can " +
+            "make the text larger or smaller compared to its normal size. Or make it green, or change face to font to Times or Courier. You can even change the background " +
+            "color like this: chocolate highlight.");
+        expect(elemPreviw.all(by.css('p')).get(0).element(by.css('font[size="+2"]')).getText()).toBe('larger');
+        expect(elemPreviw.all(by.css('p')).get(0).element(by.css('font[size="-2"]')).getText()).toBe('smaller');
+        expect(elemPreviw.all(by.css('p')).get(0).element(by.css('font[color="green"]')).getText()).toBe('green');
+        expect(elemPreviw.all(by.css('p')).get(0).element(by.css('font[face="Times"]')).getText()).toBe('Times');
+        expect(elemPreviw.all(by.css('p')).get(0).element(by.css('font[face="Courier"]')).getText()).toBe('Courier');
+        expect(elemPreviw.all(by.css('p')).get(0).element(by.css('font[style="background-color: chocolate"]')).getText()).toBe('chocolate highlight');
+        beakerPO.checkSubString(elemPreviw.all(by.css('p')).get(1), "These tags work with the math and markdown modes, for example:", 0, 62);
+        var katexElem = elemPreviw.all(by.css('p')).get(1).all(by.css('span.katex-html > span.base.textstyle.uncramped > span'));
+        beakerPO.checkHexCharCode(katexElem.get(0), '3bb');
+        expect(katexElem.get(1).getText()).toBe('=');
+        expect(katexElem.get(2).getText()).toBe('4');
+        expect(katexElem.get(3).getText()).toBe('8');
+        expect(katexElem.get(4).getText()).toBe('0');
+        expect(elemPreviw.all(by.css('p')).get(1).element(by.css('font[color="\#00d5ff "]')).isPresent()).toBe(true);
+        expect(elemPreviw.all(by.css('p')).get(1).element(by.css('strong')).getText()).toBe('bold times');
+
+        beakerPO.getBkCellByIdCell(idCell).click();
+        expect(elemPreviw.isDisplayed()).toBe(false);
+        expect(elemEdit.isDisplayed()).toBe(true);
+
+        var elemEditPreArr = elemEdit.all(by.css('.CodeMirror-code > pre'));
+        beakerPO.checkSubString(elemEditPreArr.get(0), "You can change the size, color, and face of text with familar HTML &lt;font&gt; tags.");
+        beakerPO.checkSubString(elemEditPreArr.get(1), 'For example, you can make the text <font size="+2">larger</font> or <font size="-2">smaller</font> compared to its norma', 0, 120);
+        beakerPO.checkSubString(elemEditPreArr.get(2), 'Or make it  <font color="green">green</font>, or change face to font to <font face="Times">Times</font> or <font face="C', 0, 120);
+        beakerPO.checkSubString(elemEditPreArr.get(3), 'You can even change the background color like this: <font style="background-color: chocolate">chocolate highlight</font>', 0, 120);
+        beakerPO.checkSubString(elemEditPreArr.get(4), "");
+        beakerPO.checkSubString(elemEditPreArr.get(5), 'These tags work with the math and markdown modes, for example: <font color="#00d5ff ">$\\lambda = 480$</font>, or **<font', 0, 120);
+
     });
 
 });

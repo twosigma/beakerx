@@ -15,12 +15,13 @@
  */
 package com.twosigma.beaker.shared.servlet.rules;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import static java.lang.String.format;
+import static org.eclipse.jetty.util.StringUtil.isNotBlank;
 
 public class CheckXsrfRule extends ProxyRuleImpl {
+  private static final String X_XSRF_TOKEN_HEADER_NAME = "X-XSRF-TOKEN";
   private String authToken;
 
   public CheckXsrfRule(String authToken) {
@@ -29,11 +30,7 @@ public class CheckXsrfRule extends ProxyRuleImpl {
 
   @Override
   public boolean satisfy(HttpServletRequest request) {
-    String path = request.getPathInfo();
-    if (path.startsWith("/static")) { // shouldn't verify XSRF token for static resources requests
-      return false;
-    }
-    return super.satisfy(request);
+    return this.authToken != null && isNotBlank(getXsrfHeader(request));
   }
 
   @Override
@@ -43,13 +40,12 @@ public class CheckXsrfRule extends ProxyRuleImpl {
   }
 
   private void checkXsrf(HttpServletRequest request) {
-    for (Cookie cookie : request.getCookies()) {
-      if (XSRF_TOKEN_COOKIE_NAME.equals(cookie.getName())) {
-        if(!this.authToken.equals(cookie.getValue())) {
-          throw new RuntimeException(format("Ivalid auth token %s", cookie.getValue()));
-        }
-        return;
-      }
+    if (!this.authToken.equals(getXsrfHeader(request))) {
+      throw new RuntimeException(format("Ivalid auth token %s", getXsrfHeader(request)));
     }
+  }
+
+  private String getXsrfHeader(HttpServletRequest request) {
+    return request.getHeader(X_XSRF_TOKEN_HEADER_NAME);
   }
 }

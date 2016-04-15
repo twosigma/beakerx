@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 class ProxyWebSocket extends WebSocketAdapter {
 
   private static final int INTERNAL_SERVER_ERROR_STATUSCODE = 1011;
-  private static final int REMOTE_CONNECTION_WAIT_SECONDS = 5;
+  private static final int REMOTE_CONNECTION_WAIT_SECONDS = 30;
 
   private final CountDownLatch remoteSessionSync = new CountDownLatch(1);
   private Session clientSession;
@@ -63,7 +63,7 @@ class ProxyWebSocket extends WebSocketAdapter {
         remoteRequest.setHeader(HttpHeader.AUTHORIZATION.toString(), this.authString);
         client.connect(new RemoteWebSocket(), new URI(target), remoteRequest);
       } catch (Exception e) {
-        clientSession.close(INTERNAL_SERVER_ERROR_STATUSCODE, e.toString());
+        closeWithError(clientSession, e);
       }
     }
   }
@@ -72,7 +72,10 @@ class ProxyWebSocket extends WebSocketAdapter {
   public void onWebSocketText(String message) {
     super.onWebSocketText(message);
     try {
-      getRemoteSession().getRemote().sendString(message);
+      Session remoteSession = getRemoteSession();
+      if (remoteSession != null) {
+        remoteSession.getRemote().sendString(message);
+      }
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -81,25 +84,34 @@ class ProxyWebSocket extends WebSocketAdapter {
   @Override
   public void onWebSocketClose(int statusCode, String reason) {
     super.onWebSocketClose(statusCode, reason);
-    getRemoteSession().close(statusCode, reason);
+    Session remoteSession = getRemoteSession();
+    if (remoteSession != null) {
+      remoteSession.close(statusCode, reason);
+    }
   }
 
   @Override
   public void onWebSocketError(Throwable cause) {
     super.onWebSocketError(cause);
-    closeWithError(cause);
+    Session remoteSession = getRemoteSession();
+    if (remoteSession != null) {
+      closeWithError(remoteSession, cause);
+    }
   }
 
-  private void closeWithError(Throwable cause) {
-    getRemoteSession().close(INTERNAL_SERVER_ERROR_STATUSCODE, cause.toString());
+  private void closeWithError(Session session, Throwable cause) {
+    session.close(INTERNAL_SERVER_ERROR_STATUSCODE, cause.toString());
   }
 
   private Session getRemoteSession() {
     try {
       remoteSessionSync.await(REMOTE_CONNECTION_WAIT_SECONDS, TimeUnit.SECONDS);
+      if (remoteSession == null) {
+        closeWithError(clientSession, new RuntimeException("Cant connect to remote websocket"));
+      }
       return remoteSession;
     } catch (InterruptedException e) {
-      clientSession.close(INTERNAL_SERVER_ERROR_STATUSCODE, e.toString());
+      closeWithError(clientSession, e);
       throw new RuntimeException("Failed to acquire remote host websocket connection", e);
     }
   }
@@ -132,7 +144,7 @@ class ProxyWebSocket extends WebSocketAdapter {
     @Override
     public void onWebSocketError(Throwable cause) {
       super.onWebSocketError(cause);
-      clientSession.close(INTERNAL_SERVER_ERROR_STATUSCODE, cause.toString());
+      closeWithError(clientSession, cause);
     }
   }
 }

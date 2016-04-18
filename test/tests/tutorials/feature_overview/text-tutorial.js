@@ -26,11 +26,7 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
     it('Edit and Preview mode', function () {
         var idCell = "markdown8nMuAN";
         beakerPO.checkBkCellByIdCell(idCell);
-        var elemPreviw = beakerPO.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'preview\'"]'));
-        var elemEdit = beakerPO.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'edit\'"]'));
-
-        expect(elemPreviw.isDisplayed()).toBe(true);
-        expect(elemEdit.isDisplayed()).toBe(false);
+        var elemPreviw = beakerPO.checkPreviewBkCellByIdCell(idCell);
 
         expect(elemPreviw.all(by.css('p')).get(0).getText()).toBe('Beaker\'s text cells (insert one by clicking \'text\' in the blue button bar) are based ' +
             'primarily on markdown, but have a number of more advanced features as described below. There are also HTML and TeX cells, which you can insert with ' +
@@ -42,10 +38,7 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
             'little run button in the upper-right of each cell.');
         expect(elemPreviw.all(by.css('li')).get(3).getText()).toBe('View → Theme: switch from the default black-on-white color theme to the light-on-dark ambience theme.');
 
-        beakerPO.getBkCellByIdCell(idCell).click();
-        expect(elemPreviw.isDisplayed()).toBe(false);
-        expect(elemEdit.isDisplayed()).toBe(true);
-
+        var elemEdit = beakerPO.checkEditBkCellByIdCell(idCell);
         var elemEditPreArr = elemEdit.all(by.css('.CodeMirror-code > pre'));
         expect(elemEditPreArr.get(0).getText()).toBe('Beaker\'s text cells (insert one by clicking \'text\' in the blue button bar) are based primarily on markdown,');
         expect(elemEditPreArr.get(1).getText()).toBe('but have a number of more advanced features as described below.  There are also HTML and TeX cells,');
@@ -63,11 +56,7 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
     it('Text Cells', function () {
         var idCell = "markdowngV91Gh";
         beakerPO.checkBkCellByIdCell(idCell);
-        var elemPreviw = beakerPO.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'preview\'"]'));
-        var elemEdit = beakerPO.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'edit\'"]'));
-
-        expect(elemPreviw.isDisplayed()).toBe(true);
-        expect(elemEdit.isDisplayed()).toBe(false);
+        var elemPreviw = beakerPO.checkPreviewBkCellByIdCell(idCell);
 
         beakerPO.checkSubString(elemPreviw.all(by.css('p')).get(0), "Beaker's text cells use Markdown, a text-to-HTML conversion tool that allows you to write using an e");
         beakerPO.checkSubString(elemPreviw.all(by.css('li')).get(0), "Markdown is good for making lists that emphasize your points,");
@@ -87,10 +76,7 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
         expect(katexElem.get(3).getText()).toBe('=');
         expect(katexElem.get(4).getText()).toBe('0');
 
-        beakerPO.getBkCellByIdCell(idCell).click();
-        expect(elemPreviw.isDisplayed()).toBe(false);
-        expect(elemEdit.isDisplayed()).toBe(true);
-
+        var elemEdit = beakerPO.checkEditBkCellByIdCell(idCell);
         var elemEditPreArr = elemEdit.all(by.css('.CodeMirror-code > pre'));
         beakerPO.checkSubString(elemEditPreArr.get(0), "Beaker's text cells use [Markdown](http://daringfireball.net/projects/markdown/syntax), a text-to-HT");
         beakerPO.checkSubString(elemEditPreArr.get(1), "you to write using an easy-to-read, easy-to-write plain text format.  Here's a quick demo:");
@@ -122,11 +108,7 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
     it('Size, Color, and Face', function () {
         var idCell = "markdownMDiSsV";
         beakerPO.checkBkCellByIdCell(idCell);
-        var elemPreviw = beakerPO.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'preview\'"]'));
-        var elemEdit = beakerPO.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'edit\'"]'));
-
-        expect(elemPreviw.isDisplayed()).toBe(true);
-        expect(elemEdit.isDisplayed()).toBe(false);
+        var elemPreviw = beakerPO.checkPreviewBkCellByIdCell(idCell);
 
         expect(elemPreviw.all(by.css('p')).get(0).getText()).toBe("You can change the size, color, and face of text with familar HTML <font> tags. For example, you can " +
             "make the text larger or smaller compared to its normal size. Or make it green, or change face to font to Times or Courier. You can even change the background " +
@@ -147,10 +129,7 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
         expect(elemPreviw.all(by.css('p')).get(1).element(by.css('font[color="\#00d5ff "]')).isPresent()).toBe(true);
         expect(elemPreviw.all(by.css('p')).get(1).element(by.css('strong')).getText()).toBe('bold times');
 
-        beakerPO.getBkCellByIdCell(idCell).click();
-        expect(elemPreviw.isDisplayed()).toBe(false);
-        expect(elemEdit.isDisplayed()).toBe(true);
-
+        var elemEdit = beakerPO.checkEditBkCellByIdCell(idCell);
         var elemEditPreArr = elemEdit.all(by.css('.CodeMirror-code > pre'));
         beakerPO.checkSubString(elemEditPreArr.get(0), "You can change the size, color, and face of text with familar HTML &lt;font&gt; tags.");
         beakerPO.checkSubString(elemEditPreArr.get(1), 'For example, you can make the text <font size="+2">larger</font> or <font size="-2">smaller</font> compared to its norma', 0, 120);
@@ -159,6 +138,142 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
         beakerPO.checkSubString(elemEditPreArr.get(4), "");
         beakerPO.checkSubString(elemEditPreArr.get(5), 'These tags work with the math and markdown modes, for example: <font color="#00d5ff ">$\\lambda = 480$</font>, or **<font', 0, 120);
 
+    });
+
+    it('Template Expansion', function () {
+        var idCell = "codedBOCfX";
+        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+        beakerPO.checkCellOutputSubTextByIdCell(idCell,'2.7182818284590', 0, 15);
+
+        idCell = "markdownqlcer3";
+        beakerPO.checkBkCellByIdCell(idCell);
+        var elemPreviw = beakerPO.checkPreviewBkCellByIdCell(idCell);
+
+        beakerPO.checkSubString(elemPreviw.all(by.css('p')).get(0), "Markdown cells can include values computed by JavaScript, or from any language via autotranslation a" );
+        expect(elemPreviw.all(by.css('p')).get(0).all(by.css('code')).get(0).getText()).toBe('beaker');
+        expect(elemPreviw.all(by.css('p')).get(0).all(by.css('code')).get(1).getText()).toBe('beaker.name');
+        expect(elemPreviw.all(by.css('p')).get(0).all(by.css('code')).get(2).getText()).toBe('{{beaker.name}}');
+
+        beakerPO.checkSubString(elemPreviw.all(by.css('p')).get(1), "Since you have full access to JavaScript you can call functions to do things like format numbers and");
+        expect(elemPreviw.all(by.css('p')).get(1).all(by.css('span.mord.mathit')).get(0).getText()).toBe('e');
+        beakerPO.checkSubString(elemPreviw.all(by.css('p')).get(2), "You can also customize content according to the reader's operating sytem. For example, you are on a ");
+        beakerPO.checkSubString(elemPreviw.all(by.css('p')).get(3), "In order to get double braces without triggering JavaScript evaluation, use a zero-width unicode spa" );
+
+        var elemEdit = beakerPO.checkEditBkCellByIdCell(idCell);
+        var elemEditPreArr = elemEdit.all(by.css('.CodeMirror-code > pre'));
+        beakerPO.checkSubString(elemEditPreArr.get(0), "Markdown cells can include values computed by JavaScript, or from any language via autotranslation a");
+        beakerPO.checkSubString(elemEditPreArr.get(1), 'Just enclose a JavaScript expression in double braces, and that code will be replaced with the resul');
+        beakerPO.checkSubString(elemEditPreArr.get(2), 'For example, given the definition of `beaker.name` above, writing `{&#8203;{beaker.name}}` appears a');
+        beakerPO.checkSubString(elemEditPreArr.get(3), 'on this cell to see the markdown source).');
+        beakerPO.checkSubString(elemEditPreArr.get(4), '');
+        beakerPO.checkSubString(elemEditPreArr.get(5), 'Since you have full access to JavaScript you can call functions to do things like');
+        beakerPO.checkSubString(elemEditPreArr.get(6), 'format numbers and call out results computed elsewhere in your notebook.  For example, $e$ the base ');
+        beakerPO.checkSubString(elemEditPreArr.get(7), '{{beaker.e.toFixed(3)}}.');
+        beakerPO.checkSubString(elemEditPreArr.get(8), '');
+        beakerPO.checkSubString(elemEditPreArr.get(9), "You can also customize content according to the reader's operating sytem.  For example, you are on a");
+        beakerPO.checkSubString(elemEditPreArr.get(10), '{{(beaker.client.mac)?"Mac, so &#x2318;-O":"PC, so Control-O"}} opens a file.');
+        beakerPO.checkSubString(elemEditPreArr.get(11), '');
+        beakerPO.checkSubString(elemEditPreArr.get(12), 'In order to get double braces without triggering JavaScript evaluation, use a zero-width unicode spa');
+        beakerPO.checkSubString(elemEditPreArr.get(13), '(see the markdown source for this cell).');
+    });
+
+    it('Section headings', function () {
+        idCell = "sectionIpgyB6";
+        expect(beakerPO.getBkCellByIdCell(idCell).isPresent()).toBe(true);
+        var elemPreviw = beakerPO.checkPreviewBkCellByIdCell(idCell);
+
+        beakerPO.checkSubString(elemPreviw.all(by.css('p')).get(0), "Section headings may include Markdown and TeX:", 0, 46 );
+        expect(elemPreviw.all(by.css('p')).get(0).element(by.css('strong')).getText()).toBe('bold');
+        expect(elemPreviw.all(by.css('p')).get(0).element(by.css('code')).getText()).toBe('mono');
+
+        var katexElem = elemPreviw.all(by.css('p')).get(0).all(by.css('span.katex-html > span.base.textstyle.uncramped > span'));
+        beakerPO.checkHexCharCode(katexElem.get(0), '3a9')
+        expect(katexElem.get(1).getText()).toBe('/');
+        beakerPO.checkHexCharCode(katexElem.get(2), '221e')
+
+        var elemEdit = beakerPO.getEditBkCellByIdCell(idCell);
+        beakerPO.getBkCellByIdCell(idCell).element(by.css('bk-markdown-editable')).click();
+        expect(elemPreviw.isDisplayed()).toBe(false);
+        expect(elemEdit.isDisplayed()).toBe(true);
+        var elemEditPreArr = elemEdit.all(by.css('.CodeMirror-code > pre'));
+        beakerPO.checkSubString(elemEditPreArr.get(0), "Section headings may include Markdown and TeX: **bold**, `mono`, $\\Omega / \\infty$");
+    });
+
+    it('HTML', function () {
+        var idCell = "codeB8fmAw";
+        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('script')).getAttribute('innerHTML')).toBe('\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n');
+
+        var elemP = beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('div > p'));
+        beakerPO.checkSubString(elemP.get(0), 'The usual text formatting tags work, like <em> for emphasis.');
+        beakerPO.checkSubString(elemP.get(1), 'But you can also create interactive elements:', 0, 45);
+        beakerPO.checkSubString(elemP.get(1).element(by.css('button')), 'What is a beaker?');
+        beakerPO.checkSubString(elemP.get(2), 'You can combine HTML and JavaScript cells to program interactive applications within Beaker.');
+        beakerPO.checkSubString(elemP.get(3), 'Click the contracting arrows in the menu of buttons at the top-right of this cell to hide the HTML s');
+    });
+
+    it('Images', function () {
+        var idCell = "codeS7gkvn";
+        beakerPO.checkImageByIdCell(idCell);
+
+        idCell = "markdownNOEwwT";
+        expect(beakerPO.getBkCellByIdCell(idCell).isPresent()).toBe(true);
+        var elemPreviw = beakerPO.checkPreviewBkCellByIdCell(idCell);
+        beakerPO.checkSubString(elemPreviw.all(by.css('p')).get(0), "You can include literal images in text cells:" );
+        beakerPO.checkAttribute(elemPreviw.element(by.css('p > img')), "src", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYA", 0, 50);
+
+        var elemEdit = beakerPO.checkEditBkCellByIdCell(idCell);
+        var elemEditPreArr = elemEdit.all(by.css('.CodeMirror-code > pre'));
+        beakerPO.checkSubString(elemEditPreArr.get(0), 'You can include literal images in text cells: ');
+        beakerPO.checkSubString(elemEditPreArr.get(1), '');
+        beakerPO.checkSubString(elemEditPreArr.get(2), '<img width="30" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYA', 0, 71);
+    });
+
+    it('TeX', function () {
+        var idCell = "codegJITkE";
+        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+
+        idCell = "codegJITkE";
+        var bkCell = beakerPO.getBkCellByIdCell(idCell).element(by.css('.CodeMirror-code'));
+        beakerPO.checkSubString(bkCell.all(by.css('pre')).get(0), "1 +  \\frac{q^2}{(1-q)}+\\frac{q^6}{(1-q)(1-q^2)}+\\cdots =" );
+        beakerPO.checkSubString(bkCell.all(by.css('pre')).get(1), "\\prod_{j=0}^{\\infty}\\frac{1}{(1-q^{5j+2})(1-q^{5j+3})}," );
+        beakerPO.checkSubString(bkCell.all(by.css('pre')).get(2), "\\quad\\quad \\text{for }\\lvert q\\rvert<1." );
+
+        var katexElem = beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('span.katex-html > span.base.textstyle.uncramped > span'));
+        expect(katexElem.get(0).getText()).toBe('1');
+        expect(katexElem.get(1).getText()).toBe('+');
+        expect(beakerPO.getFormulaSubElement(katexElem.get(2), 0).getText()).toBe('(');
+        expect(beakerPO.getFormulaSubElement(katexElem.get(2), 1).getText()).toBe('1');
+        beakerPO.checkHexCharCode(beakerPO.getFormulaSubElement(katexElem.get(2), 2), '2212');
+        expect(beakerPO.getFormulaSubElement(katexElem.get(2), 3).getText()).toBe('q');
+        expect(beakerPO.getFormulaSubElement(katexElem.get(2), 4).getText()).toBe(')');
+        expect(katexElem.get(3).getText()).toBe('+');
+        expect(beakerPO.getFormulaSubElement(katexElem.get(4), 0).getText()).toBe('(');
+        expect(beakerPO.getFormulaSubElement(katexElem.get(4), 1).getText()).toBe('1');
+        beakerPO.checkHexCharCode(beakerPO.getFormulaSubElement(katexElem.get(4), 2), '2212');
+        expect(beakerPO.getFormulaSubElement(katexElem.get(4), 3).getText()).toBe('q');
+        expect(beakerPO.getFormulaSubElement(katexElem.get(4), 4).getText()).toBe(')');
+        expect(katexElem.get(5).getText()).toBe('+');
+        beakerPO.checkHexCharCode(katexElem.get(6), '22ef');
+        expect(katexElem.get(7).getText()).toBe('=');
+        expect(beakerPO.getFormulaSubElement(katexElem.get(8), 0).getText()).toBe('j');
+        expect(beakerPO.getFormulaSubElement(katexElem.get(8), 1).getText()).toBe('=');
+        expect(beakerPO.getFormulaSubElement(katexElem.get(8), 2).getText()).toBe('0');
+        expect(beakerPO.getFormulaSubElement(katexElem.get(9), 0).getText()).toBe('(');
+        expect(beakerPO.getFormulaSubElement(katexElem.get(9), 1).getText()).toBe('1');
+        beakerPO.checkHexCharCode(beakerPO.getFormulaSubElement(katexElem.get(9), 2), '2212');
+        expect(beakerPO.getFormulaSubElement(katexElem.get(9), 3).getText()).toBe('q\n5j+2');
+        expect(katexElem.get(10).getText()).toBe(',');
+        expect(katexElem.get(11).getText()).toBe('');
+        expect(katexElem.get(12).getText()).toBe('');
+        expect(katexElem.get(13).getText()).toBe('for ');
+        beakerPO.checkHexCharCode(katexElem.get(14), '2223');
+        expect(katexElem.get(15).getText()).toBe('q');
+        beakerPO.checkHexCharCode(katexElem.get(16), '2223');
+        expect(katexElem.get(17).getText()).toBe('<');
+        expect(katexElem.get(18).getText()).toBe('1');
+        expect(katexElem.get(19).getText()).toBe('.');
     });
 
 });

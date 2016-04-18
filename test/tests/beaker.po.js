@@ -661,6 +661,18 @@ var BeakerPageObject = function() {
     });
   }
 
+  this.checkAttribute = function(strPromise, attrName, toBeStr, indxStart, lenght){
+    if(!indxStart){
+      indxStart = 0;
+    }
+    if(!lenght){
+      lenght = 100;
+    }
+    strPromise.getAttribute(attrName).then(function(value){
+      expect(value.substring(indxStart, lenght)).toBe(toBeStr);
+    });
+  }
+
   this.scrollToBkCellByIdCell = function (idCell) {
     return browser.executeScript("$('bk-cell[cellid=" + idCell +"] > div')[0].scrollIntoView();");
   };
@@ -691,6 +703,35 @@ var BeakerPageObject = function() {
         expect(value.substring(indxStart, lenght).charCodeAt(1).toString(16)).toBe(charCode2);
       }
     });
+  }
+
+  this.getPreviewBkCellByIdCell = function(idCell){
+    return this.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'preview\'"]'));
+  }
+
+  this.getEditBkCellByIdCell = function(idCell){
+    return this.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'edit\'"]'));
+  }
+
+  this.checkPreviewBkCellByIdCell = function(idCell){
+    var elemPreview = this.getPreviewBkCellByIdCell(idCell);
+    expect(elemPreview.isDisplayed()).toBe(true);
+    expect(this.getEditBkCellByIdCell(idCell).isDisplayed()).toBe(false);
+    return elemPreview;
+  }
+
+  this.checkEditBkCellByIdCell = function(idCell){
+    var elemEdit = this.getBkCellByIdCell(idCell).click();
+    expect(this.getPreviewBkCellByIdCell(idCell).isDisplayed()).toBe(false);
+    expect(elemEdit.isDisplayed()).toBe(true);
+    return elemEdit;
+  }
+
+  this.getFormulaSubElement = function(elemPromise, subIndex){
+    if(!subIndex){
+      subIndex = 0;
+    }
+    return elemPromise.all(by.css('span.mord.scriptstyle.cramped > span')).get(subIndex);
   }
 
 };

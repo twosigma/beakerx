@@ -30,12 +30,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Arrays;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,6 +46,7 @@ import javax.ws.rs.core.Response;
 
 import jcifs.util.MimeMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
@@ -267,6 +263,15 @@ public class FileIORest {
       result = extension;
     }
     return result;
+  }
+
+  @GET
+  @Path("isDirectory")
+  public Boolean isDirectory(@QueryParam("path") String path){
+    if (StringUtils.isEmpty(path))
+      return false;
+    File file = new File(path);
+    return file.exists() && file.isDirectory();
   }
 
   @POST

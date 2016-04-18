@@ -52,6 +52,7 @@ import javax.ws.rs.core.Response;
 
 import jcifs.util.MimeMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
@@ -268,6 +269,15 @@ public class FileIORest {
       result = extension;
     }
     return result;
+  }
+
+  @GET
+  @Path("isDirectory")
+  public Boolean isDirectory(@QueryParam("path") String path){
+    if (StringUtils.isEmpty(path))
+      return false;
+    File file = new File(path);
+    return file.exists() && file.isDirectory();
   }
 
   @POST

@@ -667,12 +667,26 @@ var BeakerPageObject = function() {
     return this.getDataTableMenu(sectionTitle).element(by.cssContainingText('li', menuTitle));
   };
 
+  this.getDataTableSubMenuItem = function(menu, submenu) {
+    return menu.element(by.cssContainingText('li', submenu));
+  };
+
   this.checkDataTableMenuItemHasIcon = function(menuItem, icon, has) {
     expect(menuItem.element(by.css('i.' + icon)).isDisplayed()).toBe(has);
   };
 
   this.getDataTablePaginationControl = function (cellId) {
     return this.getDtContainerByIdCell(cellId, 0).element(by.css('.bko-table-bottom'));
+  };
+
+  this.isDTRowInViewPort = function (scrollBody, rowInd, advancedMode) {
+    var ROW_HEIGHT = 27;
+    var ROW_HEIGHT_ADVANCED_MODE = 22;
+    var rowHeight = advancedMode ? ROW_HEIGHT_ADVANCED_MODE : ROW_HEIGHT;
+    var bodyBorder = 1;
+    return scrollBody.getSize().then(function (size) {
+      return size.height - bodyBorder === rowHeight * rowInd;
+    });
   };
 
   this.checkDataTableHead = function(codeCellOutputIdx, headLabels){

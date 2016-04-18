@@ -180,9 +180,40 @@ describe('Beaker Tables', function () {
           expect(beakerPO.getDataTablePaginationControl(v).isPresent()).toBe(true);
           beakerPO.getDataTableMenuToggle(section).click().then(function(){
             beakerPO.checkDataTableMenuItemHasIcon(paginationMenu, 'glyphicon-ok', true);
-            beakerPO.getDataTableMenuItem(section, 'Use pagination').click().then(function(){
+            paginationMenu.click().then(function(){
               expect(beakerPO.getDataTablePaginationControl(v).isPresent()).toBe(false);
               beakerPO.checkDataTableMenuItemHasIcon(paginationMenu, 'glyphicon-ok', false);
+              done();
+            });
+          });
+        });
+      });
+      it('should display 10 rows', function (done) {
+        var section = 'Table with pagination';
+        var rowsToShowMenu = beakerPO.getDataTableMenuItem(section, 'Rows to Show');
+
+        beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.getDataTableMenuToggle(section).click().then(function () {
+            browser.actions().mouseMove(rowsToShowMenu).perform();
+            var show10 = beakerPO.getDataTableSubMenuItem(rowsToShowMenu, '10');
+            show10.click().then(function () {
+              expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 10)).toBe(true);
+              expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 11)).toBe(false);
+              done();
+            });
+          });
+        });
+      });
+      it('should display All rows', function (done) {
+        var section = 'Table with pagination';
+        var rowsToShowMenu = beakerPO.getDataTableMenuItem(section, 'Rows to Show');
+
+        beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.getDataTableMenuToggle(section).click().then(function () {
+            browser.actions().mouseMove(rowsToShowMenu).perform();
+            var showAll = beakerPO.getDataTableSubMenuItem(rowsToShowMenu, 'All');
+            showAll.click().then(function () {
+              expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 50)).toBe(true);
               done();
             });
           });

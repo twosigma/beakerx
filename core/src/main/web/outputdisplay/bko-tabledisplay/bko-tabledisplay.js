@@ -886,7 +886,7 @@
         $scope.getScrollY = function () {
           var rowHeight = bkHelper.getBkNotebookViewModel().isAdvancedMode() ? ROW_HEIGHT_ADVANCED_MODE : ROW_HEIGHT;
           var rowsNumber = $scope.pagination.rowsToDisplay > 0 ? $scope.pagination.rowsToDisplay : $scope.data.length;
-          return rowsNumber * rowHeight + 2;
+          return rowsNumber * rowHeight;
         };
 
         $scope.changePageLength = function (len) {

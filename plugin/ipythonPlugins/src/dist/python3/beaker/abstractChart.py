@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import plotapi.chart as chart
+from .chart import Chart
 
-class AbstractChart(chart.Chart):
+class AbstractChart(Chart):
     def __init__(self):
         super().__init__()
         self.xLowerMargin = 0.05

@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import plotapi.legend.legendPosition as legendPosition, plotapi.legend.legendLayout as legendLayout
+# import plotapi.legend.legendPosition as legendPosition, plotapi.legend.legendLayout as legendLayout
+
+from .legend import legendLayout, legendPosition
 
 class Chart:
     def __init__(self):

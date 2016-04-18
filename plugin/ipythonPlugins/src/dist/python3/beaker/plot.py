@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import plotapi.abstractChart as abstractChart
+from .abstractChart import AbstractChart
 
-class Plot(abstractChart.AbstractChart):
+class Plot(AbstractChart):
     def transform (self):
         out = {}
         out['type'] = "Plot"

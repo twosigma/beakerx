@@ -21,8 +21,7 @@ import os, json, pandas, numpy
 import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, IPython, datetime, calendar, math, traceback, time
 from IPython.utils.traitlets import Unicode
 
-sys.path.append("config/plugins/eval/ipythonPlugins/api")
-import plotapi
+import beaker
 
 # sys.path.append("/Users/kpaharelau/Library/Application Support/IntelliJIdea15/python/pycharm-debug-py3k.egg")
 # import pydevd
@@ -211,7 +210,7 @@ def transform(obj):
         out['output'] = transformNR(obj.getOutput())
         out['tags'] = obj.getTags()
         return out
-    if isinstance(obj, plotapi.plot.Plot):
+    if isinstance(obj, beaker.Plot):
         return obj.transform()
     return transformNaN(obj)
 
@@ -246,7 +245,7 @@ def transformNR(obj):
         out['output'] = transformNR(obj.getOutput())
         out['tags'] = obj.getTags()
         return out
-    if isinstance(obj, plotapi.plot.Plot):
+    if isinstance(obj, beaker.Plot):
         return obj.transform()
     return transformNaN(obj)
 
@@ -257,7 +256,7 @@ def transformBack(obj):
             out[str(k)] = transformBack(v)
         if "type" in out:
             if out['type'] == "Plot":
-                return plotapi.plot.transformBack(out)
+                return beaker.Plot.transformBack(out)
             if out['type'] == "BeakerCodeCell":
                 c = BeakerCodeCell(out['cellId'], out['evaluatorId'])
                 if 'code' in out:

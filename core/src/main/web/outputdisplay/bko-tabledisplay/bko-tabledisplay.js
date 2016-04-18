@@ -1419,8 +1419,8 @@
             filterIcons.addClass('fa-search');
           } else {
             filterInputs.removeClass('search-active');
-            filterInputs.attr('title', 'filter with an expression of $ for this column');
-            $(filterInputs.get(0)).attr('title', 'filter with an expression with variables for each column');
+            filterInputs.attr('title', 'filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5"');
+            $(filterInputs.get(0)).attr('title', 'filter with an expression with a variable defined for each column');
             filterIcons.removeClass('fa-search');
             filterIcons.addClass('fa-filter');
           }
@@ -1721,7 +1721,7 @@
               {
                 title: 'Filter...',
                 icon: 'fa fa-filter',
-                tooltip: 'filter with an expression of $ for this column',
+                tooltip: 'filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5"',
                 action: function(el) {
                   var table = scope.table;
                   var container = el.closest('.bko-header-menu');

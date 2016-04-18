@@ -573,9 +573,8 @@
                       $scope.tableOrder.push([$scope.colorder[order[i][0]], order[i][1]]);
                     }
                   }, 0);
-                } else {
-                  $(this).blur(); // Remove focus outline
                 }
+                $(this).blur(); //outline is not removed for fixed columns so remove it manually
               });
             }
           });

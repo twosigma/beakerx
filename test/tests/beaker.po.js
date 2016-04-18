@@ -597,9 +597,97 @@ var BeakerPageObject = function() {
     return this.getDataTablesScrollBody(codeCellOutputIdx).all(By.css('tbody > tr'));
   }
 
-  this.getDataTablesTBodyByIdCell = function(idCell){
+  this.getDataTablesTBodyByIdCell = function (idCell) {
     return this.getDataTablesScrollBodyByIdCell(idCell).all(By.css('tbody > tr'));
   }
+
+  this.getDataTablesColumnByIdCell = function (cellId, colIndex) {
+    return this.getDataTablesTBodyByIdCell(cellId).all(by.css('td')).get(colIndex);
+  };
+
+  this.getDTFCLeftContainer = function (cellId) {
+    return this.getDtContainerByIdCell(cellId, 0).all(by.css('.DTFC_LeftWrapper'));
+  };
+
+  this.getDTFCRightContainer = function (cellId) {
+    return this.getDtContainerByIdCell(cellId, 0).all(by.css('.DTFC_RightWrapper'));
+  };
+
+  this.getDTFCLeftBody = function (cellId) {
+    return this.getDTFCLeftContainer(cellId).all(by.css('tbody > tr'));
+  };
+
+  this.getDTFCRightBody = function (cellId) {
+    return this.getDTFCRightContainer(cellId).all(by.css('tbody > tr'));
+  };
+
+  this.getDTFCLeftHeader = function (cellId) {
+    return this.getDTFCLeftContainer(cellId).all(by.css('thead > tr'));
+  };
+
+  this.getDTFCRightHeader = function (cellId) {
+    return this.getDTFCRightContainer(cellId).all(by.css('thead > tr'));
+  };
+
+  this.getDTFCLeftColumn = function (cellId, colInd) {
+    return this.getDTFCLeftBody(cellId).all(by.css('td')).get(colInd);
+  };
+
+  this.getDTFCRightColumn = function (cellId, colInd) {
+    return this.getDTFCRightBody(cellId).all(by.css('td')).get(colInd);
+  };
+
+  this.getDTFCLeftColumnHeader = function (cellId, colInd) {
+    return this.getDTFCLeftHeader(cellId).all(by.css('th')).get(colInd);
+  };
+
+  this.scrollDataTableHorizontally = function (cellId, x) {
+    browser.executeScript("$('bk-code-cell-output[cell-id=" + cellId + "').find('.dataTables_scrollBody').scrollLeft(" + x + ");");
+  };
+
+  this.getDataTableMenu = function (sectionTitle) {
+    return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('.dtmenu>ul'));
+  };
+
+  this.getDataTableMenuToggle = function (sectionTitle) {
+    return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('.dtmenu .dropdown-toggle'));
+  };
+
+  this.getDataTableSubmenu = function (sectionTitle, menuTitle) {
+    return this.getCodeCellOutputBySectionTitle(sectionTitle)
+      .element(by.cssContainingText('.dtmenu>ul>li', menuTitle))
+      .all(by.css('li'));
+  };
+
+  this.getDataTableMenuFirstLevelItems = function (sectionTitle) {
+    return this.getCodeCellOutputBySectionTitle(sectionTitle).all(by.css('.dtmenu>ul>li>a'));
+  };
+
+  this.getDataTableMenuItem = function(sectionTitle, menuTitle) {
+    return this.getDataTableMenu(sectionTitle).element(by.cssContainingText('li', menuTitle));
+  };
+
+  this.getDataTableSubMenuItem = function(menu, submenu) {
+    return menu.element(by.cssContainingText('li', submenu));
+  };
+
+  this.checkDataTableMenuItemHasIcon = function(menuItem, icon, has) {
+    expect(menuItem.element(by.css('i.' + icon)).isDisplayed()).toBe(has);
+  };
+
+  this.getDataTablePaginationControl = function (cellId) {
+    return this.getDtContainerByIdCell(cellId, 0).element(by.css('.bko-table-bottom'));
+  };
+
+  this.isDTRowInViewPort = function (scrollBody, rowInd, advancedMode) {
+    var ROW_HEIGHT = 27;
+    var ROW_HEIGHT_ADVANCED_MODE = 22;
+    var rowHeight = advancedMode ? ROW_HEIGHT_ADVANCED_MODE : ROW_HEIGHT;
+    var bodyBorder = 1;
+    return scrollBody.getSize().then(function (size) {
+      return size.height - bodyBorder === rowHeight * rowInd;
+    });
+  };
 
   this.checkDataTableHead = function(codeCellOutputIdx, headLabels){
     expect(this.getDataTablesScrollHead(codeCellOutputIdx).getText()).toBe(headLabels);
@@ -654,6 +742,21 @@ var BeakerPageObject = function() {
       expect(value.substring(indxStart, lenght)).toBe(toBeStr);
     });
   }
+
+  this.getSection = function (sectionTitle) {
+    return element(by.cssContainingText('.bk-section-title p', sectionTitle))
+      .element(by.xpath('ancestor::bk-section-cell'));
+  };
+
+  this.getCodeCellOutputBySectionTitle = function (sectionTitle) {
+    var section = this.getSection(sectionTitle);
+    browser.executeScript('return arguments[0].scrollIntoView();', section.getWebElement());
+    return section.element(by.tagName('bk-code-cell-output'));
+  };
+
+  this.getCodeOutputCellIdBySectionTitle = function (sectionTitle) {
+    return this.getCodeCellOutputBySectionTitle(sectionTitle).getAttribute('cell-id');
+  };
 
 };
 module.exports = BeakerPageObject;

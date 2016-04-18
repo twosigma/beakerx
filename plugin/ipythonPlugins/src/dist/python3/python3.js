@@ -55,12 +55,15 @@ define(function(require, exports, module) {
           shellID = myPython.utils.uuid();
         }
 
-        var theCookies = document.cookie.split(';');
-        for (var i = 0 ; i < theCookies.length; i++) {
-          if (theCookies[i].indexOf(' username-127-0-0-1-') === 0) {
-            var theCookie = theCookies[i].split('=');
-            document.cookie = theCookie[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/";
+        if (!bkHelper.isIPythonCookiesCleaned()) {
+          var theCookies = document.cookie.split(';');
+          for (var i = 0; i < theCookies.length; i++) {
+            if (theCookies[i].indexOf(' username-127-0-0-1-') === 0) {
+              var theCookie = theCookies[i].split('=');
+              document.cookie = theCookie[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/";
+            }
           }
+          bkHelper.setIPythonCookiesCleaned(true);
         }
         
         bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"),
@@ -324,7 +327,11 @@ define(function(require, exports, module) {
                   } else if (ipyVersion == '2') {
                     oa.append_mime_type(content.data, elem);
                   } else {
-                    oa.append_mime_type(content, elem);
+                    if(content.data['application/javascript']) {
+                      elem.append($('<script></script>').html(content.data['application/javascript']));
+                    } else {
+                      oa.append_mime_type(content, elem);
+                    }
                   }
                   var payload = elem.html();
                   if (finalStuff !== undefined && finalStuff.payload !== undefined) {

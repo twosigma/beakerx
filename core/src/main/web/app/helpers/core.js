@@ -845,7 +845,7 @@
         return this.showModalDialog(null, template);
       },
       show1ButtonModal: function(msgBody, msgHeader, callback, btnText, btnClass) {
-        if (!msgHeader) {
+        if (!msgHeader || msgBody.toLowerCase().indexOf(msgHeader.toLowerCase()) !== -1) {
           msgHeader = "Oops...";
         }
         if (bkUtils.isElectron) {

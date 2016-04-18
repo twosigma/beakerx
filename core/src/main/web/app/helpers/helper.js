@@ -662,6 +662,12 @@
           return [];
         }
       },
+      setIPythonCookiesCleaned: function (value) {
+        this.iPythonCookiesCleaned = value;
+      },
+      isIPythonCookiesCleaned: function () {
+        return this.iPythonCookiesCleaned;
+      },
       go2FirstErrorCodeCell: function() {
         if (getCurrentApp() && getCurrentApp().go2FirstErrorCodeCell) {
           return getCurrentApp().go2FirstErrorCodeCell();

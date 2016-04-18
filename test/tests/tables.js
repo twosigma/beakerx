@@ -25,8 +25,7 @@ describe('Beaker Tables', function () {
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL);
     beakerPO.openFile(path.join(__dirname, '../', 'notebooks/tables-test.bkr'));
-    beakerPO.waitUntilLoadingFinished();
-    browser.executeScript('window.scrollTo(0,document.body.scrollHeight)').then(done);
+    beakerPO.waitUntilLoadingFinished().then(done);
   });
 
   afterAll(function (done) {
@@ -126,13 +125,25 @@ describe('Beaker Tables', function () {
       checkMenus(expectedItems, firstLevelItems, done);
     });
 
-    it('should contain submenus', function (done) {
-      var rowsToShowExpected = ['10', '25', '50', '100', 'All'];
-      var rowsToShowActual = beakerPO.getDataTableSubmenu('Table Header', 'Rows to Show').all(by.css('a'));
-      checkMenus(rowsToShowExpected, rowsToShowActual);
-      var showColumnExpected = ['A', 'B', 'C', 'D'];
-      var showColumnActual = beakerPO.getDataTableSubmenu('Table Header', 'Show Column').all(by.css('a'));
-      checkMenus(showColumnExpected, showColumnActual, done);
+    it('should contain Rows to Show submenus', function (done) {
+      var menusExpected = ['10', '25', '50', '100', 'All'];
+      var menusActual = beakerPO.getDataTableSubmenu('Table Header', 'Rows to Show').all(by.css('a'));
+      checkMenus(menusExpected, menusActual, done);
+    });
+
+    it('should contain Show Column submenus', function (done) {
+      var menusExpected = ['A', 'B', 'C', 'D'];
+      var menusActual = beakerPO.getDataTableSubmenu('Table Header', 'Show Column').all(by.css('a'));
+      checkMenus(menusExpected, menusActual, done);
+    });
+
+    it('should have menu icons', function(done){
+      var section = 'Table Header';
+      beakerPO.getDataTableMenuToggle(section).click().then(function(){
+        beakerPO.checkDataTableMenuItemHasIcon(beakerPO.getDataTableMenuItem(section, 'Search...'), 'fa-search', true);
+        beakerPO.checkDataTableMenuItemHasIcon(beakerPO.getDataTableMenuItem(section, 'Filter...'), 'fa-filter', true);
+        done();
+      });
     });
 
     describe('Table Menu Toggle', function () {
@@ -158,6 +169,25 @@ describe('Beaker Tables', function () {
         done();
       });
 
+    });
+
+
+    describe('Table Menu Interactions', function () {
+      it('should hide pagination', function (done) {
+        var section = 'Table with pagination';
+        var paginationMenu = beakerPO.getDataTableMenuItem(section, 'Use pagination');
+        beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          expect(beakerPO.getDataTablePaginationControl(v).isPresent()).toBe(true);
+          beakerPO.getDataTableMenuToggle(section).click().then(function(){
+            beakerPO.checkDataTableMenuItemHasIcon(paginationMenu, 'glyphicon-ok', true);
+            beakerPO.getDataTableMenuItem(section, 'Use pagination').click().then(function(){
+              expect(beakerPO.getDataTablePaginationControl(v).isPresent()).toBe(false);
+              beakerPO.checkDataTableMenuItemHasIcon(paginationMenu, 'glyphicon-ok', false);
+              done();
+            });
+          });
+        });
+      });
     });
 
   });

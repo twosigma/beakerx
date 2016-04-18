@@ -77,7 +77,6 @@
                         "barsOnColumn": {},
                         "heatmapOnColumn": {},
                         "tableFilter": "",
-                        "tableSearch": "",
                         "showFilter": false,
                         "columnSearchActive": false,
                         "columnFilter": [],
@@ -178,7 +177,6 @@
                         "barsOnColumn": {},
                         "heatmapOnColumn": {},
                         "tableFilter": "",
-                        "tableSearch": "",
                         "showFilter": false,
                         "columnSearchActive": false,
                         "columnFilter": [],
@@ -292,7 +290,6 @@
                         "barsOnColumn": {},
                         "heatmapOnColumn": {},
                         "tableFilter": "",
-                        "tableSearch": "",
                         "showFilter": false,
                         "columnSearchActive": false,
                         "columnFilter": [],
@@ -392,7 +389,6 @@
                         "barsOnColumn": {},
                         "heatmapOnColumn": {},
                         "tableFilter": "",
-                        "tableSearch": "",
                         "showFilter": false,
                         "columnSearchActive": false,
                         "columnFilter": [],
@@ -451,6 +447,284 @@
                 "pluginName": "JavaScript",
                 "elapsedTime": 68,
                 "height": 210
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "sectionZmRcOh",
+            "type": "section",
+            "title": "Table with pagination",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "code9qsbfa",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var map = {}",
+                    "for(var i=0; i<50; i++){",
+                    "  map['key' + i] = i;",
+                    "}",
+                    "map"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "Key",
+                            "Value"
+                        ],
+                        "actualtype": [
+                            0,
+                            0
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "getCellSho": [
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "heatmapOnColumn": {},
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": []
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "values": [
+                        [
+                            "key0",
+                            0
+                        ],
+                        [
+                            "key1",
+                            1
+                        ],
+                        [
+                            "key2",
+                            2
+                        ],
+                        [
+                            "key3",
+                            3
+                        ],
+                        [
+                            "key4",
+                            4
+                        ],
+                        [
+                            "key5",
+                            5
+                        ],
+                        [
+                            "key6",
+                            6
+                        ],
+                        [
+                            "key7",
+                            7
+                        ],
+                        [
+                            "key8",
+                            8
+                        ],
+                        [
+                            "key9",
+                            9
+                        ],
+                        [
+                            "key10",
+                            10
+                        ],
+                        [
+                            "key11",
+                            11
+                        ],
+                        [
+                            "key12",
+                            12
+                        ],
+                        [
+                            "key13",
+                            13
+                        ],
+                        [
+                            "key14",
+                            14
+                        ],
+                        [
+                            "key15",
+                            15
+                        ],
+                        [
+                            "key16",
+                            16
+                        ],
+                        [
+                            "key17",
+                            17
+                        ],
+                        [
+                            "key18",
+                            18
+                        ],
+                        [
+                            "key19",
+                            19
+                        ],
+                        [
+                            "key20",
+                            20
+                        ],
+                        [
+                            "key21",
+                            21
+                        ],
+                        [
+                            "key22",
+                            22
+                        ],
+                        [
+                            "key23",
+                            23
+                        ],
+                        [
+                            "key24",
+                            24
+                        ],
+                        [
+                            "key25",
+                            25
+                        ],
+                        [
+                            "key26",
+                            26
+                        ],
+                        [
+                            "key27",
+                            27
+                        ],
+                        [
+                            "key28",
+                            28
+                        ],
+                        [
+                            "key29",
+                            29
+                        ],
+                        [
+                            "key30",
+                            30
+                        ],
+                        [
+                            "key31",
+                            31
+                        ],
+                        [
+                            "key32",
+                            32
+                        ],
+                        [
+                            "key33",
+                            33
+                        ],
+                        [
+                            "key34",
+                            34
+                        ],
+                        [
+                            "key35",
+                            35
+                        ],
+                        [
+                            "key36",
+                            36
+                        ],
+                        [
+                            "key37",
+                            37
+                        ],
+                        [
+                            "key38",
+                            38
+                        ],
+                        [
+                            "key39",
+                            39
+                        ],
+                        [
+                            "key40",
+                            40
+                        ],
+                        [
+                            "key41",
+                            41
+                        ],
+                        [
+                            "key42",
+                            42
+                        ],
+                        [
+                            "key43",
+                            43
+                        ],
+                        [
+                            "key44",
+                            44
+                        ],
+                        [
+                            "key45",
+                            45
+                        ],
+                        [
+                            "key46",
+                            46
+                        ],
+                        [
+                            "key47",
+                            47
+                        ],
+                        [
+                            "key48",
+                            48
+                        ],
+                        [
+                            "key49",
+                            49
+                        ]
+                    ],
+                    "subtype": "Dictionary",
+                    "columnNames": [
+                        "Key",
+                        "Value"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 69,
+                "height": 776
             },
             "evaluatorReader": true,
             "lineCount": 5

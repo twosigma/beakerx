@@ -645,6 +645,10 @@ var BeakerPageObject = function() {
     browser.executeScript("$('bk-code-cell-output[cell-id=" + cellId + "').find('.dataTables_scrollBody').scrollLeft(" + x + ");");
   };
 
+  this.getDataTableMenu = function (sectionTitle) {
+    return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('.dtmenu>ul'));
+  };
+
   this.getDataTableMenuToggle = function (sectionTitle) {
     return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('.dtmenu .dropdown-toggle'));
   };
@@ -657,6 +661,18 @@ var BeakerPageObject = function() {
 
   this.getDataTableMenuFirstLevelItems = function (sectionTitle) {
     return this.getCodeCellOutputBySectionTitle(sectionTitle).all(by.css('.dtmenu>ul>li>a'));
+  };
+
+  this.getDataTableMenuItem = function(sectionTitle, menuTitle) {
+    return this.getDataTableMenu(sectionTitle).element(by.cssContainingText('li', menuTitle));
+  };
+
+  this.checkDataTableMenuItemHasIcon = function(menuItem, icon, has) {
+    expect(menuItem.element(by.css('i.' + icon)).isDisplayed()).toBe(has);
+  };
+
+  this.getDataTablePaginationControl = function (cellId) {
+    return this.getDtContainerByIdCell(cellId, 0).element(by.css('.bko-table-bottom'));
   };
 
   this.checkDataTableHead = function(codeCellOutputIdx, headLabels){
@@ -719,7 +735,9 @@ var BeakerPageObject = function() {
   };
 
   this.getCodeCellOutputBySectionTitle = function (sectionTitle) {
-    return this.getSection(sectionTitle).element(by.tagName('bk-code-cell-output'));
+    var section = this.getSection(sectionTitle);
+    browser.executeScript('return arguments[0].scrollIntoView();', section.getWebElement());
+    return section.element(by.tagName('bk-code-cell-output'));
   };
 
   this.getCodeOutputCellIdBySectionTitle = function (sectionTitle) {

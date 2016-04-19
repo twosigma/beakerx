@@ -824,8 +824,8 @@ var BeakerPageObject = function() {
   }
 
   this.checkEditBkCellByIdCell = function(idCell){
-    browser.wait(this.EC.presenceOf($('bk-cell[cellid=' + idCell + '] bk-markdown-editable'), 10000));
-    this.getBkCellByIdCell(idCell).element(by.css('bk-markdown-editable')).click();
+    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="edit($event)"]')).click();
+    browser.wait(this.EC.visibilityOf($('bk-cell[cellid=' + idCell + '] div[ng-show="mode==\'edit\'"'), 10000));
     var elemEdit = this.getEditBkCellByIdCell(idCell);
     expect(this.getPreviewBkCellByIdCell(idCell).isDisplayed()).toBe(false);
     expect(elemEdit.isDisplayed()).toBe(true);

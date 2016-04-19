@@ -212,10 +212,7 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
         });
 
         it('Edit Mode', function () {
-            var elemEdit = beakerPO.getEditBkCellByIdCell(idCell);
-            beakerPO.getBkCellByIdCell(idCell).element(by.css('bk-markdown-editable')).click();
-            expect(beakerPO.getPreviewBkCellByIdCell(idCell).isDisplayed()).toBe(false);
-            expect(elemEdit.isDisplayed()).toBe(true);
+            var elemEdit = beakerPO.checkEditBkCellByIdCell(idCell);
             var elemEditPreArr = elemEdit.all(by.css('.CodeMirror-code > pre'));
             beakerPO.checkSubString(elemEditPreArr.get(0), "Section headings may include Markdown and TeX: **bold**, `mono`, $\\Omega / \\infty$");
         });

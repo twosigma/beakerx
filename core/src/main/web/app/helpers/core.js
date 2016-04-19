@@ -75,15 +75,32 @@
       newStrategy.manualEntry = function() {
         newStrategy.manualName = this.input ? this.input.split('/').pop() : "";
       };
-      newStrategy.checkCallback = function(result){
-        if (result && result.indexOf('.bkr') === -1){
-          $rootScope.$broadcast("SELECT_DIR",{
-            find_in_home_dir: true,
-            path: result
+      newStrategy.checkCallback = function (result) {
+        var deferred = bkUtils.newDeferred();
+        if (!result){
+          deferred.resolve({
+            result: true
           });
-          return false;
+        }else {
+          bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/file-io/isDirectory"),
+            {path: result}).success(function (value) {
+              if (value === true) {
+                $rootScope.$broadcast("SELECT_DIR", {
+                  find_in_home_dir: true,
+                  path: result
+                });
+                deferred.resolve({
+                  result: false
+                });
+              } else {
+                deferred.resolve({
+                  result: true
+                });
+              }
+            }
+          );
         }
-        return true;
+        return deferred.promise;
       };
       newStrategy.treeViewfs = { // file service
         getChildren: function(basePath, openFolders) {
@@ -845,7 +862,7 @@
         return this.showModalDialog(null, template);
       },
       show1ButtonModal: function(msgBody, msgHeader, callback, btnText, btnClass) {
-        if (!msgHeader) {
+        if (!msgHeader || msgBody.toLowerCase().indexOf(msgHeader.toLowerCase()) !== -1) {
           msgHeader = "Oops...";
         }
         if (bkUtils.isElectron) {
@@ -1124,8 +1141,10 @@
       if (!$scope.getStrategy || !$scope.getStrategy() || !$scope.getStrategy().checkCallback) {
         $uibModalInstance.close(result);
       }else {
-        if ($scope.getStrategy().checkCallback(result))
-          $uibModalInstance.close(result);
+        $scope.getStrategy().checkCallback(result).then(function(value) {
+          if (value.result === true)
+            $uibModalInstance.close(result);
+        });
       }
     };
   });

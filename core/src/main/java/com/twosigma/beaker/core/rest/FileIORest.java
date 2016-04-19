@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ import javax.ws.rs.core.Response;
 
 import jcifs.util.MimeMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
@@ -190,29 +192,29 @@ public class FileIORest {
     }
   }
 
+  private String readAsString(String path) {
+    try {
+      byte[] encoded = Files.readAllBytes(Paths.get(path));
+      return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
+    } catch (AccessDeniedException ade) {
+      throw new FileAccessDeniedException(ExceptionUtils.getMessage(ade));
+    } catch (Throwable t) {
+      throw new FileOpenException(ExceptionUtils.getStackTrace(t));
+    }
+  }
+
   @GET
   @Path("load")
   @Produces(MediaType.TEXT_PLAIN)
   public String load(@QueryParam("path") String path) throws IOException {
     path = removePrefix(path);
     if (Files.exists(Paths.get(path))) {
-      try {
-        byte[] encoded = Files.readAllBytes(Paths.get(path));
-        return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
-      } catch (Throwable t) {
-        throw new FileOpenException(ExceptionUtils.getStackTrace(t));
-      }
+      return readAsString(path);
     }
-
-    for(String s : this.searchDirs) {
+    for (String s : this.searchDirs) {
       String npath = s + "/" + path;
       if (Files.exists(Paths.get(npath))) {
-        try {
-          byte[] encoded = Files.readAllBytes(Paths.get(npath));
-          return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
-        } catch (Throwable t) {
-          throw new FileOpenException(ExceptionUtils.getStackTrace(t));
-        }
+        return readAsString(npath);
       }
     }
     throw new FileDoesntExistException(path + " was not found");
@@ -267,6 +269,15 @@ public class FileIORest {
       result = extension;
     }
     return result;
+  }
+
+  @GET
+  @Path("isDirectory")
+  public Boolean isDirectory(@QueryParam("path") String path){
+    if (StringUtils.isEmpty(path))
+      return false;
+    File file = new File(path);
+    return file.exists() && file.isDirectory();
   }
 
   @POST
@@ -438,6 +449,13 @@ public class FileIORest {
     public FileDoesntExistException(String message) {
       super(Response.status(Responses.NOT_FOUND)
           .entity(message).type("text/plain").build());
+    }
+  }
+
+  private static class FileAccessDeniedException extends WebApplicationException {
+    public FileAccessDeniedException(String message) {
+      super(Response.status(Responses.NOT_ACCEPTABLE)
+        .entity(message).type("text/plain").build());
     }
   }
 

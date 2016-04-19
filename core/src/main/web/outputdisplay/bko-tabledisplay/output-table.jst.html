@@ -54,12 +54,12 @@
        </li>
        <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(false)" id="dt-hide-all" eat-click>Hide All Columns</a></li>
        <li>
-         <a tabindex="-1" href="#" ng-click="showTableSearch()" id="dt-search" class="menu-separator" title="search the whole table for a substring" eat-click>Search...</a>
+         <a tabindex="-1" href="#" ng-click="doShowFilter(table.column(0), true)" id="dt-search" class="menu-separator" title="search the whole table for a substring" eat-click>Search...</a>
          <i class="fa fa-search"></i>
        </li>
        <li>
-         <a tabindex="-1" href="#" ng-click="showTableFilter()" id="dt-filter" eat-click
-            title="filter with an expression with variables for each column">Filter...</a>
+         <a tabindex="-1" href="#" ng-click="doShowFilter(table.column(0), false)" id="dt-filter" eat-click
+            title="filter with an expression with a variable defined for each column">Filter...</a>
          <i class="fa fa-filter"></i>
        </li>
        <li><a tabindex="-1" href="#" ng-click="hideFilter()" id="dt-hide-filter" eat-click>Hide Filter</a></li>
@@ -69,16 +69,14 @@
   <table cellpadding="0" class="display" border="0" cellspacing="0" width="10%" id="{{id}}">
     <thead>
       <tr>
-        <th></th>
-        <th ng-repeat="c in columnNames"></th>
+        <th ng-repeat="c in [].constructor(columns.length) track by $index"></th>
       </tr>
       <tr class="filterRow" ng-show="showFilter">
-        <th></th>
-        <th ng-repeat="c in columns" ng-if="!$first">
+        <th ng-repeat="c in [].constructor(columns.length) track by $index">
           <div class="input-clear-growing">
             <div class="input-clear">
               <span class="fa filter-icon"></span>
-              <input class="filter-input" type="text">
+              <input class="filter-input" ng-class="{'table-filter': $first}" type="text">
               <span class="fa fa-times clear-filter"></span>
             </div>
             <input tabindex="-1" class="hidden-filter hidden-filter-input">

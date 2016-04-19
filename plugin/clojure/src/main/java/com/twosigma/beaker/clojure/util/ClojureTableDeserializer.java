@@ -24,11 +24,8 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import clojure.lang.PersistentArrayMap;
 import clojure.lang.PersistentVector;
@@ -47,79 +44,24 @@ public class ClojureTableDeserializer implements ObjectDeserializer {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public Object deserialize(JsonNode n, ObjectMapper mapper) {
-    Object o = null;
-    try {
-      List<List<?>> vals = null;
-      List<String> cols = null;
-      List<String> clas = null;
-      String subtype = null;
 
-      if (n.has("columnNames"))
-        cols = mapper.readValue(n.get("columnNames"), List.class);
-      if (n.has("types"))
-        clas = mapper.readValue(n.get("types"), List.class);
-      if (n.has("values")) {
-        JsonNode nn = n.get("values");
-        vals = new ArrayList<List<?>>();
-        if (nn.isArray()) {
-          for (JsonNode nno : nn) {
-            if (nno.isArray()) {
-              ArrayList<Object> val = new ArrayList<Object>();
-              for (JsonNode nnoo : nno) {
-                Object obj = parent.deserialize(nnoo, mapper);
-                val.add(obj);
-              }
-              vals.add(val);
-            }
-          }
-        }
+    org.apache.commons.lang3.tuple.Pair<String, Object> deserializeObject = TableDisplay.DeSerializer.getDeserializeObject(parent, n, mapper);
+    String subtype = deserializeObject.getLeft();
+    if (subtype != null && subtype.equals(TableDisplay.DICTIONARY_SUBTYPE)) {
+      return PersistentArrayMap.create((Map) deserializeObject.getRight());
+    } else if (subtype != null && subtype.equals(TableDisplay.LIST_OF_MAPS_SUBTYPE)) {
+      List<Map<String, Object>> rows = (List<Map<String, Object>>) deserializeObject.getRight();
+      List<Object> oo = new ArrayList<Object>();
+      for (Map<String, Object> row : rows) {
+        oo.add(PersistentArrayMap.create(row));
       }
-      if (n.has("subtype"))
-        subtype = mapper.readValue(n.get("subtype"), String.class);
-        /*
-         * unfortunately the other 'side' of this is in the BeakerObjectSerializer
-         */
-      if (subtype != null && subtype.equals(TableDisplay.DICTIONARY_SUBTYPE)) {
-        Map<String, Object> m = new HashMap<String, Object>();
-        for (List<?> l : vals) {
-          if (l.size() != 2)
-            continue;
-          m.put(l.get(0).toString(), l.get(1));
-        }
-
-        o = PersistentArrayMap.create(m);
-      } else if (subtype != null && subtype.equals(TableDisplay.LIST_OF_MAPS_SUBTYPE) && cols != null && vals != null) {
-        List<Object> oo = new ArrayList<Object>();
-        for (int r = 0; r < vals.size(); r++) {
-          Map<String, Object> m = new HashMap<String, Object>();
-          List<?> row = vals.get(r);
-          for (int c = 0; c < cols.size(); c++) {
-            if (row.size() > c)
-              m.put(cols.get(c), row.get(c));
-          }
-          oo.add(PersistentArrayMap.create(m));
-        }
-        o = PersistentVector.create(oo);
-      } else if (subtype != null && subtype.equals(TableDisplay.MATRIX_SUBTYPE)) {
-        ArrayList<Object> ll = new ArrayList<Object>();
-
-        o = PersistentVector.create(vals);
-      }
-      if (o == null) {
-        if (n.has("hasIndex") && mapper.readValue(n.get("hasIndex"), String.class).equals("true")) {
-          cols.remove(0);
-          clas.remove(0);
-          for (List<?> v : vals) {
-            v.remove(0);
-          }
-        }
-        o = new TableDisplay(vals, cols, clas);
-      }
-    } catch (Exception e) {
-      Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+      return PersistentVector.create(oo);
+    } else if (subtype != null && subtype.equals(TableDisplay.MATRIX_SUBTYPE)) {
+      List<List<?>> matrix = (List<List<?>>) deserializeObject.getRight();
+      return PersistentVector.create(matrix);
     }
-    return o;
+    return deserializeObject.getRight();
   }
-
 }

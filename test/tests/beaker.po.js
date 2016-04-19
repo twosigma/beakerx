@@ -824,7 +824,8 @@ var BeakerPageObject = function() {
   }
 
   this.checkEditBkCellByIdCell = function(idCell){
-    var elemEdit = this.getBkCellByIdCell(idCell).click();
+    this.getBkCellByIdCell(idCell).click();
+    var elemEdit = this.getEditBkCellByIdCell(idCell);
     expect(this.getPreviewBkCellByIdCell(idCell).isDisplayed()).toBe(false);
     expect(elemEdit.isDisplayed()).toBe(true);
     return elemEdit;

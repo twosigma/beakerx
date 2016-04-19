@@ -21,6 +21,7 @@ module.exports = (function() {
   var events = require('events');
   var os = require('os');
   var request = require('request');
+  var killTree = require('tree-kill');
 
   var _url;
   var _hash;
@@ -70,10 +71,17 @@ module.exports = (function() {
     kill: function() {
       var eventEmitter = new events.EventEmitter();
       if (_local) {
-        request(this.getUrl() + this.getHash() + '/beaker/rest/util/exit', function (error, response, body) {
-          _running = false;
-          eventEmitter.emit('killed');
-        });
+        if (_osName.startsWith('Darwin')) {
+          killTree(_backend.pid, 'SIGTERM', function () {
+            _running = false;
+            eventEmitter.emit('killed');
+          });
+        } else {
+          request(this.getUrl() + this.getHash() + '/beaker/rest/util/exit', function (error, response, body) {
+            _running = false;
+            eventEmitter.emit('killed');
+          });
+        }
       }
       _backend = {};
       return eventEmitter;

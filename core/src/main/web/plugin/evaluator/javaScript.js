@@ -35,8 +35,6 @@ define(function(require, exports, module) {
     "ES2015": {name: "ECMAScript 2015", babel: true, defaultVersion: true}
   };
 
-  var USER_LIBRARY_CLASS = "USER-IMPORTED-SCRIPT";
-
   function getDefaultLanguageVersion() {
     return _.findKey(LANGUAGE_VERSIONS, function (version) {
       return version.defaultVersion;
@@ -45,6 +43,7 @@ define(function(require, exports, module) {
 
   var DEFINE_BACKUP = define;
   var loadQueuePromise = bkHelper.newPromise();
+  var scriptsLoaded = [];
 
   // Not using the es2015 plugin preset because it includes the "transform-es2015-modules-commonjs" plugin which puts forces strict mode on
   var ES2015Plugins = [
@@ -178,28 +177,30 @@ define(function(require, exports, module) {
         PLUGIN_NAME);
   }
 
-  function loadLibraryIfNotLoaded(library) {
+  function loadLibraryIfNotLoaded(url) {
     var deferred = bkHelper.newDeferred()
-    if (libraryLoaded(library)) {
-      deferred.resolve(library);
+    if (scriptLoaded(url)) {
+      deferred.resolve(url);
     } else {
-      loadLibrary(library, deferred.resolve);
+      loadLibrary(url, deferred.resolve);
     }
     return deferred.promise;
   }
 
-  function libraryLoaded(library) {
-    if ($("." + USER_LIBRARY_CLASS).filter(function() {
-      return $(this).attr("src") === library.latest;
-    }).length > 0) {
-      return true;
-    }
-    return false;
+  function scriptLoaded(scriptUrl) {
+    return _.contains(scriptLoaded, scriptUrl);
   }
 
-  function loadLibrary(library, cb) {
-    $.getScript(library.latest, function() {
-      _.defer(function() {cb(library)});
+  function loadLibrary(url, cb) {
+    $.getScript(url, function() {
+      scriptsLoaded.push(url);
+      _.defer(function() {cb(url)});
+    });
+  }
+
+  function getLibraryUrls(libraries) {
+    return _.map(libraries, function(lib) {
+      return lib.latest;
     });
   }
 
@@ -392,14 +393,18 @@ define(function(require, exports, module) {
       JavascriptCancelFunction = null;
     },
     loadAllLibraries: function() {
-      if (this.settings.libraries && this.settings.libraries.length) {
+      var scriptsToLoad = this.settings.libraries && this.settings.libraries.length ? getLibraryUrls(this.settings.libraries) : [];
+      scriptsToLoad = scriptsToLoad.concat(this.settings.scripts && this.settings.scripts.length ? this.settings.scripts : []);
+
+      if (scriptsToLoad.length) {
         loadQueuePromise = loadQueuePromise.then(function() {
           define = void 0;
           return bkHelper.newPromise();
         });
-        _.forEach(this.settings.libraries, function(library) {
+        _.forEach(scriptsToLoad, function(scriptUrl) {
           loadQueuePromise = loadQueuePromise.then(function() {
-            return loadLibraryIfNotLoaded(library);
+            console.log(scriptsToLoad, scriptUrl)
+            return loadLibraryIfNotLoaded(scriptUrl);
           });
         });
         loadQueuePromise = loadQueuePromise.then(function() {
@@ -415,8 +420,14 @@ define(function(require, exports, module) {
         values: _.mapValues(LANGUAGE_VERSIONS, function(version) {return version.name;})
       },
       libraries: {
+        name: "Libraries",
         type: "settableSelect",
         remote: "https://api.cdnjs.com/libraries",
+        action: "loadAllLibraries"
+      },
+      scripts: {
+        name: "Remote Javascript Files",
+        type: "settableString",
         action: "loadAllLibraries"
       }
     }

@@ -19,14 +19,11 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('R Tutorial', function () {
+describe('R Tutorial', function (done) {
 
-    beforeEach(function (done) {
-        beakerPO = new BeakerPageObject();
-        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fr-examples.bkr&readOnly=true")
-            .then(done)
-            .then(beakerPO.waitUntilLoadingCellOutput);
-    });
+    beakerPO = new BeakerPageObject();
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fr-examples.bkr&readOnly=true").then(done)
+    beakerPO.waitUntilLoadingCellOutput();
 
     describe('R Examples', function () {
 
@@ -49,7 +46,7 @@ describe('R Tutorial', function () {
         });
 
         it('Spreadsheet', function () {
-            idCell = "codezB5I5w";
+            var idCell = "codezB5I5w";
             beakerPO.checkDtContainerByIdCell(idCell);
             beakerPO.checkDtContainerByIdCell(idCell);
             var arrStrHead = beakerPO.getDataTablesTHeadByIdCell(idCell).get(0).all(by.css('th'));
@@ -86,37 +83,35 @@ describe('R Tutorial', function () {
         });
 
         it('Google map', function () {
-            idCell = "codePI1mwS";
+            var idCell = "codePI1mwS";
             beakerPO.scrollToCodeCellOutputByIdCell(idCell);
             beakerPO.checkImageByIdCell(idCell);
         });
 
         it('Library(MASS)', function () {
-            idCell = "codebUFdM3";
+            var idCell = "codebUFdM3";
             beakerPO.scrollToCodeCellOutputByIdCell(idCell);
             beakerPO.checkImageByIdCell(idCell);
         });
 
         it('Modeling and linear regression', function () {
-            idCell = "code8D0EwG";
+            var idCell = "code8D0EwG";
             beakerPO.scrollToCodeCellOutputByIdCell(idCell);
             beakerPO.checkImageByIdCell(idCell);
         });
 
         it('Analysis of Variance Table', function () {
-            idCell = "code4JWGX8";
+            var idCell = "code4JWGX8";
             beakerPO.scrollToCodeCellOutputByIdCell(idCell);
             beakerPO.checkCellOutputSubTextByIdCell(idCell, "Analysis of Variance Table\n\nResponse: weight\n     ", 0, 50);
-        });
 
-        it('Histogram', function () {
             idCell = "codeW7oCy6";
             beakerPO.scrollToCodeCellOutputByIdCell(idCell);
             beakerPO.checkCellOutputSubTextByIdCell(idCell, "Call:\nlm(formula = weight ~ group - 1)\n\nResiduals:" , 0, 50);
         });
 
         it('Display image', function () {
-            idCell = "codew89omS";
+            var idCell = "codew89omS";
             beakerPO.scrollToCodeCellOutputByIdCell(idCell);
             beakerPO.checkImageByIdCell(idCell);
         });

@@ -26,14 +26,12 @@ import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
 import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.*;
-import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -45,6 +43,10 @@ import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainer
 
 import javax.servlet.ServletException;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 
 /**
@@ -87,34 +89,22 @@ public class WebServerModule extends AbstractModule {
     BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
 
     Server server = new Server();
-    ServerConnector connector;
     boolean useSSL = bkConfig.getPublicServer() || (isNoneBlank(bkConfig.getUseHttpsCert()) && isNoneBlank(bkConfig.getUseHttpsKey()));
-    String host = bkConfig.getPublicServer() ? "0.0.0.0" : "127.0.0.1";
     int proxyPort = bkConfig.getPublicServer() ? bkConfig.getPortBase() : bkConfig.getPortBase() + 1;
-    if (useSSL) {
-      HttpConfiguration https = new HttpConfiguration();
-      https.addCustomizer(new SecureRequestCustomizer());
-      SslContextFactory sslContextFactory = new SslContextFactory();
-      sslContextFactory.setKeyStorePath("~/keystore.jks");//todo certs and passwords
-      sslContextFactory.setKeyStorePassword("123456");//todo password here
-      sslContextFactory.setKeyManagerPassword("123456");//todo password here
-      connector = new ServerConnector(server,
-          new SslConnectionFactory(sslContextFactory, "http/1.1"),
-          new HttpConnectionFactory(https));
-      connector.setPort(proxyPort);
-      connector.setHost(host);
-    } else {
-      connector = new ServerConnector(server);
-      connector.setPort(proxyPort);
-      connector.setHost(host);
-    }
-
+    ServerConnector connector;
+    connector = useSSL ? createSslServerConnector(server, bkConfig) : createDefaultServerConnector(server);
+    connector.setPort(proxyPort);
+    configureHost(bkConfig, connector);
+    server.addBean(createErrorHandler());
 
     server.setConnectors(new Connector[] { connector });
     ServletContextHandler servletHandler = new ServletContextHandler(server, "/");
 
     String hash = bkConfig.getHash();
     ServletHolder sh = servletHandler.addServlet(BeakerProxyServlet.class, "/*");
+    if (bkConfig.getPublicServer()) {
+      servletHandler.setVirtualHosts(new String[]{getHost(bkConfig)});
+    }
     sh.setInitParameter("proxyTo", "http://127.0.0.1:" + webServerConfig.getPort());
     sh.setInitParameter("hash", hash);
     sh.setInitParameter("corePort", String.valueOf(webServerConfig.getPort()));
@@ -132,6 +122,57 @@ public class WebServerModule extends AbstractModule {
 
     server.start();
     WebSocketServerContainerInitializer.configureContext(servletHandler);
+  }
+
+  private static String getHost(BeakerConfig bkConfig) {
+    String hostName = "none";
+    try {
+      hostName = InetAddress.getLocalHost().getHostName();
+    } catch (UnknownHostException e) {
+      System.err.println("warning: UnknownHostException from InetAddress.getLocalHost().getHostName(), ignored");
+    }
+    String listenInterface = bkConfig.getListenInterface();
+    if (listenInterface != null && !listenInterface.equals("*")) {
+      hostName = listenInterface;
+    }
+    return hostName;
+  }
+
+  private static void configureHost(BeakerConfig bkConfig, ServerConnector connector) {
+    String allInterfaces = "0.0.0.0";
+    String listenInterface = bkConfig.getListenInterface();
+    connector.setHost(bkConfig.getPublicServer()
+        ? allInterfaces
+        : listenInterface != null && !listenInterface.equals("*") ? listenInterface : "127.0.0.1");
+  }
+
+  private static ServerConnector createDefaultServerConnector(Server server) {
+    ServerConnector connector;
+    connector = new ServerConnector(server);
+    return connector;
+  }
+
+  private static ServerConnector createSslServerConnector(Server server, BeakerConfig bkConfig) {
+    ServerConnector connector;HttpConfiguration https = new HttpConfiguration();
+    https.addCustomizer(new SecureRequestCustomizer());
+    connector = new ServerConnector(server, createSslConnectionFactory(createSslContextFactory(bkConfig)), new HttpConnectionFactory(https));
+    return connector;
+  }
+
+  private static SslContextFactory createSslContextFactory(BeakerConfig bkConfig) {
+    String httpsCertPath = isNoneBlank(bkConfig.getUseHttpsCert()) ? bkConfig.getUseHttpsCert() : bkConfig.getDefaultSslCertPath();
+    String certPassword = isNoneBlank(bkConfig.getUseHttpsKey()) ? bkConfig.getUseHttpsKey() : BeakerConfig.DEFAULT_SSL_CERT_PASSWORD;
+    // todo using old httpskey property as a password - maybe should create another property for keystore password later
+
+    SslContextFactory sslContextFactory = new SslContextFactory();
+    sslContextFactory.setKeyStorePath(httpsCertPath);
+    sslContextFactory.setKeyStorePassword(certPassword);
+
+    return sslContextFactory;
+  }
+
+  private static SslConnectionFactory createSslConnectionFactory(SslContextFactory sslContextFactory) {
+    return new SslConnectionFactory(sslContextFactory, "http/1.1");
   }
 
   @Provides
@@ -175,7 +216,7 @@ public class WebServerModule extends AbstractModule {
     return server;
   }
 
-  private ErrorPageErrorHandler createErrorHandler() {
+  private static ErrorPageErrorHandler createErrorHandler() {
     final ErrorPageErrorHandler errorHandler = new ErrorPageErrorHandler();
     errorHandler.addErrorPage(500, 599, "/static/50x.html");
     return errorHandler;

@@ -27,6 +27,8 @@ import org.json.simple.JSONObject;
  * stores run-time configuration used by Beaker
  */
 public interface BeakerConfig {
+  String DEFAULT_SSL_CERT_PASSWORD = "123456";
+
   /**
    * The Beaker core directory
    * @return
@@ -235,4 +237,6 @@ public interface BeakerConfig {
   public void setPluginPrefs(JSONObject prefs);
 
   public Boolean getShowZombieLogging();
+
+  String getDefaultSslCertPath();
 }

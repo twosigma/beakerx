@@ -18,22 +18,20 @@ package com.twosigma.beaker.core.module.config;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+
+import java.io.*;
 import java.lang.Exception;
 import java.math.BigInteger;
 import java.net.UnknownHostException;
 import java.net.InetAddress;
 import java.security.SecureRandom;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -195,21 +193,15 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.authToken = pref.getAuthToken();
 
     if (this.publicServer && (this.useHttpsCert == null || this.useHttpsKey == null))  {
-      String cert = this.nginxServDir + "/ssl_cert.pem";
-      String tmp = this.nginxServDir + "/cert.tmp";
-      PrintWriter pw = new PrintWriter(tmp);
-      for (int i = 0; i < 10; i++)
-        pw.printf("\n");
-      pw.close();
+      String cert = getDefaultSslCertPath();
       // XXX I am baffled as to why using sh and this pipe is
       // necessary, but if you just exec openssl and write into its
       // stdin then it hangs.
+      String certPassword = StringUtils.isBlank(this.useHttpsKey) ? DEFAULT_SSL_CERT_PASSWORD : this.useHttpsKey;
       String[] cmd = {"sh", "-c",
-                      "cat " + tmp +
-                      " | openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout "
-                      + cert + " -out " + cert};
-      Process proc = Runtime.getRuntime().exec(cmd);
-      proc.waitFor();
+          "keytool -keystore " + cert + " -alias beaker -genkey -keyalg RSA -noprompt -dname CN=Beaker" +
+              " -storepass " + certPassword + " -keypass " + certPassword + ""};
+      Runtime.getRuntime().exec(cmd).waitFor();
     }
 
     this.version = utils.readFile(this.installDir + "/config/version");
@@ -449,17 +441,22 @@ public class DefaultBeakerConfig implements BeakerConfig {
     return result;
   }
 
+  @Override
+  public Boolean getShowZombieLogging() {
+    return this.showZombieLogging;
+  }
+
+  @Override
+  public String getDefaultSslCertPath() {
+    return this.nginxServDir + "/ssl_cert.jks";
+  }
+
   public Object getPluginPrefs() {
     return this.prefs.get("languages");
   }
 
   public void setPluginPrefs(JSONObject newPrefs) {
     this.prefs = newPrefs;
-  }
-
-  @Override
-  public Boolean getShowZombieLogging() {
-    return this.showZombieLogging;
   }
 
   private void addOption(String plugin, String option) {

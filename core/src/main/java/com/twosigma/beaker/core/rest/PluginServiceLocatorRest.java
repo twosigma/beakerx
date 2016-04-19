@@ -306,18 +306,6 @@ public class PluginServiceLocatorRest {
     return System.getProperty("os.name").contains("Windows");
   }
 
-  public void start() throws InterruptedException, IOException {
-    startReverseProxy();
-  }
-
-  private void startReverseProxy() throws InterruptedException, IOException {
-    generateNginxConfig();
-    System.out.println("starting nginx instance (" + this.nginxDir +")");
-    Process proc = Runtime.getRuntime().exec(this.nginxCommand, this.nginxEnv);
-    startGobblers(proc, "nginx", null, null);
-    this.nginxProc = proc;
-  }
-
   private void shutdown() {
     StreamGobbler.shuttingDown();
     if (windows()) {
@@ -675,6 +663,7 @@ public class PluginServiceLocatorRest {
     writePrivateFile(targetFile, config);
   }
 
+  // TODO SSV REMOVE
   private String generateNginxConfig() throws IOException, InterruptedException {
 
     java.nio.file.Path confDir = Paths.get(this.nginxServDir, "conf");

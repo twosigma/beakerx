@@ -116,7 +116,7 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
         var idCell = "markdownMDiSsV";
 
         it('Preview Mode', function () {
-            beakerPO.checkBkCellByIdCell(idCell);
+            expect(beakerPO.getBkCellByIdCell(idCell).isPresent()).toBe(true);
             var elemPreviw = beakerPO.checkPreviewBkCellByIdCell(idCell);
 
             expect(elemPreviw.all(by.css('p')).get(0).getText()).toBe("You can change the size, color, and face of text with familar HTML <font> tags. For example, you can " +

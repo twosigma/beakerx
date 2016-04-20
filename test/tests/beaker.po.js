@@ -650,7 +650,7 @@ var BeakerPageObject = function() {
   };
 
   this.getDataTableMenuToggle = function (sectionTitle) {
-    return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('.dtmenu .dropdown-toggle'));
+    return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('a[ng-click="menuToggle()"]'));
   };
 
   this.getDataTableSubmenu = function (sectionTitle, menuTitle) {

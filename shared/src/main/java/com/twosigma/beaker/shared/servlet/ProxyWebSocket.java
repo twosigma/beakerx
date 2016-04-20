@@ -40,11 +40,14 @@ class ProxyWebSocket extends WebSocketAdapter {
   private ServletUpgradeRequest request;
   private RulesHolder rulesHolder;
   private String authString;
+  private WebSocketClient client;;
 
   ProxyWebSocket(ServletUpgradeRequest request, RulesHolder rulesHolder, String authString) {
     this.request = request;
     this.rulesHolder = rulesHolder;
     this.authString = authString;
+
+    initWebSocketClient();
   }
 
   @Override
@@ -54,11 +57,8 @@ class ProxyWebSocket extends WebSocketAdapter {
 
     if (sess instanceof WebSocketSession) {
       try {
-        final WebSocketClient client = new WebSocketClient();
-        client.getPolicy().setMaxTextMessageSize(1024 * 1024 * 16);
         String requestURI = request.getRequestURI().toString();
         final String target = rulesHolder.rewriteTarget(request.getHttpServletRequest(), requestURI);
-        client.start();
         final ClientUpgradeRequest remoteRequest = new ClientUpgradeRequest();
         remoteRequest.setCookies(request.getCookies());
         remoteRequest.setHeader(HttpHeader.AUTHORIZATION.toString(), this.authString);
@@ -97,6 +97,17 @@ class ProxyWebSocket extends WebSocketAdapter {
     Session remoteSession = getRemoteSession();
     if (remoteSession != null) {
       closeWithError(remoteSession, cause);
+    }
+  }
+
+  private void initWebSocketClient() {
+    try {
+      client = new WebSocketClient();
+      client.getPolicy().setMaxTextMessageSize(1024 * 1024 * 16);
+      client.start();
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
     }
   }
 

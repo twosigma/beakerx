@@ -2,7 +2,6 @@ core/build
 core/.sass-cache
 beaker/*
 node_modules
-core/nginx/bin
 core/src/vendor
 shared/src/main/dist/
 core/src/main/dist/

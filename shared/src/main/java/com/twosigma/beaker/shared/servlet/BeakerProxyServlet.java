@@ -45,6 +45,7 @@ import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 
 public class BeakerProxyServlet extends ProxyServlet.Transparent {
 
+  private static final int MAX_TEXT_MESSAGE_SIZE = 1024 * 1024 * 16;
   private static Map<String, PluginConfig> plugins = new ConcurrentHashMap<>();
   private WebSocketServletFactory factory;
   private RulesHolder rulesHolder;
@@ -174,19 +175,11 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
 
   private WebSocketPolicy createWebSocketPolicy() {
     WebSocketPolicy webSocketPolicy = new WebSocketPolicy(WebSocketBehavior.SERVER);
+    webSocketPolicy.setMaxTextMessageSize(MAX_TEXT_MESSAGE_SIZE);
+    webSocketPolicy.setMaxBinaryMessageSize(MAX_TEXT_MESSAGE_SIZE);
     String max = this.getInitParameter("maxIdleTime");
     if(max != null) {
       webSocketPolicy.setIdleTimeout(Long.parseLong(max));
-    }
-
-    max = this.getInitParameter("maxTextMessageSize");
-    if(max != null) {
-      webSocketPolicy.setMaxTextMessageSize(Integer.parseInt(max));
-    }
-
-    max = this.getInitParameter("maxBinaryMessageSize");
-    if(max != null) {
-      webSocketPolicy.setMaxBinaryMessageSize(Integer.parseInt(max));
     }
 
     max = this.getInitParameter("inputBufferSize");

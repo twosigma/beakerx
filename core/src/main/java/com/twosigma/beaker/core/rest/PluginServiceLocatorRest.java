@@ -20,47 +20,25 @@ import com.google.inject.Singleton;
 import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
-import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
 import com.twosigma.beaker.shared.servlet.rules.PluginProxyRule;
 import com.twosigma.beaker.shared.servlet.rules.util.Replacement;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.fluent.Request;
 import org.json.simple.JSONObject;
 import org.jvnet.winp.WinProcess;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URI;
-import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 import static java.util.Collections.singletonList;
@@ -74,110 +52,19 @@ import static java.util.Collections.singletonList;
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class PluginServiceLocatorRest {
-  // these 3 times are in millis
-  private static final int RESTART_ENSURE_RETRY_MAX_WAIT = 30*1000;
-  private static final int RESTART_ENSURE_RETRY_INTERVAL = 10;
-  private static final int RESTART_ENSURE_RETRY_MAX_INTERVAL = 2500;
-
-  private static final String REST_RULES =
-    "location ^~ %(base_url)s/ {\n" +
-    "  proxy_pass http://127.0.0.1:%(port)s/;\n" +
-    "  proxy_set_header Authorization \"Basic %(auth)s\";\n" +
-    "  proxy_http_version 1.1;\n" +
-    "  proxy_set_header Upgrade $http_upgrade;\n" +
-    "  proxy_set_header Connection \"upgrade\";\n" +
-    "}\n";
-
-  private static final String IPYTHON_RULES_BASE =
-    "  rewrite ^%(base_url)s/(.*)$ /$1 break;\n" +
-    "  proxy_pass http://127.0.0.1:%(port)s;\n" +
-    "  proxy_http_version 1.1;\n" +
-    "  proxy_set_header Upgrade $http_upgrade;\n" +
-    "  proxy_set_header Connection \"upgrade\";\n" +
-    "  proxy_set_header Host 127.0.0.1:%(port)s;\n" +
-    "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
-    "}\n" +
-    "location %(base_url)s/login {\n" +
-    "  proxy_pass http://127.0.0.1:%(port)s/login;\n" +
-    "}\n";
-
-  private static final String IPYTHON1_RULES =
-    "location %(base_url)s/kernels/kill/ {\n" +
-    "  proxy_pass http://127.0.0.1:%(port)s/kernels/;\n" +
-    "}\n" +
-    "location %(base_url)s/kernels/ {\n" +
-    "  proxy_pass http://127.0.0.1:%(port)s/kernels;\n" +
-    "}\n" +
-    "location %(base_url)s/kernelspecs/ {\n" +
-    "  proxy_pass http://127.0.0.1:%(port)s/kernelspecs;\n" +
-    "}\n" +
-    "location ~ %(base_url)s/kernels/[0-9a-f-]+/ {\n" +
-    IPYTHON_RULES_BASE;
-
-  private static final String IPYTHON2_RULES =
-    "location %(base_url)s/api/kernels/kill/ {\n" +
-    "  proxy_pass http://127.0.0.1:%(port)s/api/kernels/;\n" +
-    "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
-    "}\n" +
-    "location %(base_url)s/api/kernels/ {\n" +
-    "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;\n" +
-    "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
-    "}\n" +
-    "location %(base_url)s/api/kernelspecs/ {\n" +
-    "  proxy_pass http://127.0.0.1:%(port)s/api/kernelspecs;\n" +
-    "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
-    "}\n" +
-    "location %(base_url)s/api/sessions/ {\n" +
-    "  proxy_pass http://127.0.0.1:%(port)s/api/sessions;\n" +
-    "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
-    "}\n" +
-    "location ~ %(base_url)s/api/kernels/[0-9a-f-]+/ {\n" +
-    IPYTHON_RULES_BASE;
-
-  private static final String CATCH_OUTDATED_REQUESTS_RULE =
-      "location ~ /%(urlhash)s[a-z0-9]+\\.\\d+/cometd/ {\n" +
-      "  return 404;\n" +
-      "}";
-
-  private final String nginxDir;
-  private final String nginxBinDir;
-  private final String nginxStaticDir;
-  private final String nginxServDir;
-  private final String nginxExtraRules;
-  private final String userFolder;
-  private final Map<String, String> nginxPluginRules;
+  private final String currentServDir;
   private final String pluginDir;
-  private final String [] nginxCommand;
-  private final String [] nginxRestartCommand;
-  private final Boolean showZombieLogging;
-  private String[] nginxEnv = null;
-  private final Boolean publicServer;
-  private final Integer portBase;
-  private final Integer servPort;
   private final Integer corePort;
-  private final Integer restartPort;
-  private final Integer reservedPortCount;
-  private final String authCookie;
   private final Map<String, String> pluginLocations;
   private final Map<String, List<String>> pluginArgs;
   private final Map<String, String[]> pluginEnvps;
   private final OutputLogService outputLogService;
-  private final Base64 encoder;
   private final String corePassword;
-  private final String urlHash;
 
-  private final String useHttpsCert;
-  private final String useHttpsKey;
-  private final Boolean requirePassword;
-  private final String listenInterface;
-  
-  private final String nginxTemplate;
   private final String ipythonTemplate;
   private final Map<String, PluginConfig> plugins = new HashMap<>();
-  private Process nginxProc;
   private int portSearchStart;
   private BeakerConfig config;
-  private String authToken;
 
   private static String[] listToArray(List<String> lst) {
     return lst.toArray(new String[lst.size()]);
@@ -187,67 +74,24 @@ public class PluginServiceLocatorRest {
   private PluginServiceLocatorRest(
       BeakerConfig bkConfig,
       WebServerConfig webServerConfig,
-      OutputLogService outputLogService,
-      GeneralUtils utils) throws IOException {
-    this.nginxDir = bkConfig.getNginxDirectory();
-    this.nginxBinDir = bkConfig.getNginxBinDirectory();
-    this.nginxStaticDir = bkConfig.getNginxStaticDirectory();
-    this.nginxServDir = bkConfig.getNginxServDirectory();
-    this.nginxExtraRules = bkConfig.getNginxExtraRules();
-    this.userFolder = bkConfig.getUserFolder();
-    this.nginxPluginRules = bkConfig.getNginxPluginRules();
+      OutputLogService outputLogService) throws IOException {
+    this.currentServDir = bkConfig.getCurrentServDirectory();
     this.pluginDir = bkConfig.getPluginDirectory();
-    this.publicServer = bkConfig.getPublicServer();
-    this.portBase = bkConfig.getPortBase();
-    this.useHttpsCert = bkConfig.getUseHttpsCert();
-    this.useHttpsKey = bkConfig.getUseHttpsKey();
-    this.requirePassword = bkConfig.getRequirePassword();
-    this.authToken = bkConfig.getAuthToken();
-    this.listenInterface = bkConfig.getListenInterface();
-    this.servPort = this.portBase + 1;
-    this.corePort = this.portBase + 2;
-    this.restartPort = this.portBase + 3;
-    this.reservedPortCount = bkConfig.getReservedPortCount();
-    this.authCookie = bkConfig.getAuthCookie();
+    Integer portBase = bkConfig.getPortBase();
+    this.corePort = portBase + 2;
+    Integer reservedPortCount = bkConfig.getReservedPortCount();
     this.pluginLocations = bkConfig.getPluginLocations();
     this.pluginEnvps = bkConfig.getPluginEnvps();
-    this.urlHash = bkConfig.getHash();
     this.pluginArgs = new HashMap<>();
     this.outputLogService = outputLogService;
-    this.encoder = new Base64();
     this.config = bkConfig;
-    this.nginxTemplate = utils.readFile(this.nginxDir + "/nginx.conf.template");
-    if (nginxTemplate == null) {
-      throw new RuntimeException("Cannot get nginx template");
-    }
     this.ipythonTemplate = ("c = get_config()\n" +
                             "c.NotebookApp.ip = u'127.0.0.1'\n" +
                             "c.NotebookApp.port = %(port)s\n" +
                             "c.NotebookApp.open_browser = False\n" +
                             "c.NotebookApp.password = u'%(hash)s'\n");
-    this.nginxCommand = new String[7];
-    
-    this.nginxCommand[0] = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
-    this.nginxCommand[1] = "-p";
-    this.nginxCommand[2] = this.nginxServDir;
-    this.nginxCommand[3] = "-c";
-    this.nginxCommand[4] = this.nginxServDir + "/conf/nginx.conf";
-    this.nginxCommand[5] = "-g";
-    this.nginxCommand[6] = "error_log stderr;";
-    
-    this.nginxRestartCommand = new String [9];
-    this.nginxRestartCommand[0] = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
-    this.nginxRestartCommand[1] = "-p";
-    this.nginxRestartCommand[2] = this.nginxServDir;
-    this.nginxRestartCommand[3] = "-c";
-    this.nginxRestartCommand[4] = this.nginxServDir + "/conf/nginx.conf";
-    this.nginxRestartCommand[5] = "-g";
-    this.nginxRestartCommand[6] = "error_log stderr;";
-    this.nginxRestartCommand[7] = "-s";
-    this.nginxRestartCommand[8] = "reload";
-    
+
     this.corePassword = webServerConfig.getPassword();
-    this.showZombieLogging = bkConfig.getShowZombieLogging();
 
     // record plugin options from cli and to pass through to individual plugins
     for (Map.Entry<String, List<String>> e: bkConfig.getPluginOptions().entrySet()) {
@@ -266,30 +110,19 @@ public class PluginServiceLocatorRest {
       }
     });
 
-    portSearchStart = this.portBase + this.reservedPortCount;
-
-    // on MacOS add library search path
-    if (macosx()) {
-      List<String> envList = new ArrayList<>();
-      for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
-        envList.add(entry.getKey() + "=" + entry.getValue());
-      }
-      envList.add("DYLD_LIBRARY_PATH=./nginx/bin");
-      this.nginxEnv = new String[envList.size()];
-      envList.toArray(this.nginxEnv);
-    }
+    portSearchStart = portBase + reservedPortCount;
   }
 
   private List<String> pythonBaseCommand(String pluginId, String command) {
     // Should pass pluginArgs too XXX?
-    List<String> result = new ArrayList<String>();
+    List<String> result = new ArrayList<>();
     String base = this.pluginLocations.containsKey(pluginId) ?
       this.pluginLocations.get(pluginId) : this.pluginDir;
     result.add(base + "/" + command);
     
     if (windows()) {
-	String python = this.config.getInstallDirectory() + "\\python\\python";
-	result.add(0, python);
+      String python = this.config.getInstallDirectory() + "\\python\\python";
+      result.add(0, python);
     }
     return result;
   }
@@ -308,11 +141,6 @@ public class PluginServiceLocatorRest {
 
   private void shutdown() {
     StreamGobbler.shuttingDown();
-    if (windows()) {
-      new WinProcess(this.nginxProc).killRecursively();
-    } else {
-      this.nginxProc.destroy(); // send SIGTERM
-    }
     for (PluginConfig p : this.plugins.values()) {
       p.shutDown();
     }
@@ -323,8 +151,8 @@ public class PluginServiceLocatorRest {
                       "beaker_plugin_path",
                       "beaker_tmp_dir",
                       "beaker_core_password"};
-    for (int i = 0; i < vars.length; i++)
-      if (var.startsWith(vars[i] + "="))
+    for (String var1 : vars)
+      if (var.startsWith(var1 + "="))
         return true;
     return false;
   }
@@ -337,9 +165,9 @@ public class PluginServiceLocatorRest {
         envList.add(entry.getKey() + "=" + entry.getValue());
     }
     if (env != null) {
-      for (int i = 0; i < env.length; i++) {
-        if (!internalEnvar(env[i]))
-          envList.add(env[i]);
+      for (String anEnv : env) {
+        if (!internalEnvar(anEnv))
+          envList.add(anEnv);
       }
     }
     if (password != null) {
@@ -347,8 +175,8 @@ public class PluginServiceLocatorRest {
     }
     envList.add("beaker_core_password=" + this.corePassword);
     envList.add("beaker_core_port=" + corePort);
-    envList.add("beaker_tmp_dir=" + this.nginxServDir);
-    envList.add("beaker_ipython_notebook_config=" + this.nginxServDir
+    envList.add("beaker_tmp_dir=" + this.currentServDir);
+    envList.add("beaker_ipython_notebook_config=" + this.currentServDir
         + "/profile_beaker_backend_" + pluginId + "/ipython_notebook_config.py");
     String plugPath = this.config.getPluginPath(pluginId);
     if (null != plugPath) {
@@ -380,7 +208,7 @@ public class PluginServiceLocatorRest {
    *
    * @param pluginId
    * @param command name of the starting script
-   * @param nginxRules rules to help setup nginx proxying
+   * @param proxyRules rules to help setup proxying
    * @param startedIndicator string indicating that the plugin has started
    * @param startedIndicatorStream stream to search for indicator, null defaults to stdout
    * @param recordOutput boolean, record out/err streams to output log service or not, null defaults
@@ -396,7 +224,7 @@ public class PluginServiceLocatorRest {
   public Response locatePluginService(
       @PathParam("plugin-id") String pluginId,
       @QueryParam("command") String command,
-      @QueryParam("nginxRules") @DefaultValue("rest") String nginxRules,
+      @QueryParam("proxyRules") @DefaultValue("rest") String proxyRules,
       @QueryParam("startedIndicator") String startedIndicator,
       @QueryParam("startedIndicatorStream") @DefaultValue("stdout") String startedIndicatorStream,
       @QueryParam("recordOutput") @DefaultValue("false") boolean recordOutput,
@@ -411,36 +239,26 @@ public class PluginServiceLocatorRest {
     }
 
     String password = RandomStringUtils.random(40, true, true);
-    Process proc = null;
-    String restartId = "";
+    Process proc;
 
     /*
      * Only one plugin can be started at a given time since we need to find a free port.
-     * We serialize starting of plugins and we parallelize nginx configuration reload with the actual plugin
-     * evaluator start.
      */
     synchronized (this) {
-      // find a port to use for proxypass between nginx and the plugin
+      // find a port to use for proxypass between proxy and the plugin
       final int port = getNextAvailablePort(this.portSearchStart);
       final String baseUrl = generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
-      pConfig = new PluginConfig(port, nginxRules, baseUrl, password);
+      pConfig = new PluginConfig(port, baseUrl, password);
       this.portSearchStart = pConfig.port + 1;
       this.plugins.put(pluginId, pConfig);
 
-      if (nginxRules.startsWith("ipython")) {
+      if (proxyRules.startsWith("ipython")) {
         generateIPythonConfig(pluginId, port, password, command);
       }
 
-      // reload nginx config
-//      restartId = generateNginxConfig();
-//      Process restartproc = Runtime.getRuntime().exec(this.nginxRestartCommand, this.nginxEnv);
-//      startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
-//      restartproc.waitFor();
-      BeakerProxyServlet.addPlugin(pluginId, port, password, baseUrl, getPluginSpecificRules(nginxRules));
+      BeakerProxyServlet.addPlugin(pluginId, port, password, baseUrl, getPluginSpecificRules(proxyRules));
 
-      ArrayList<String> fullCommand =
-        new ArrayList<String>(Arrays.asList(command.split("\\s+")));
-
+      ArrayList<String> fullCommand = new ArrayList<>(Arrays.asList(command.split("\\s+")));
       fullCommand.set(0, (this.pluginLocations.containsKey(pluginId) ?
                           this.pluginLocations.get(pluginId) : this.pluginDir)
                       + "/" + fullCommand.get(0));
@@ -474,10 +292,10 @@ public class PluginServiceLocatorRest {
         proc.getErrorStream() : proc.getInputStream();
       InputStreamReader ir = new InputStreamReader(is);
       BufferedReader br = new BufferedReader(ir);
-      String line = "";
+      String line;
       while ((line = br.readLine()) != null) {
         System.out.println("looking on " + startedIndicatorStream + " found:" + line);
-        if (line.indexOf(startedIndicator) >= 0) {
+        if (line.contains(startedIndicator)) {
           System.out.println("Acknowledge " + pluginId + " plugin started due to "+startedIndicator);
           break;
         }
@@ -490,30 +308,15 @@ public class PluginServiceLocatorRest {
 
     startGobblers(proc, pluginId, recordOutput ? this.outputLogService : null, waitfor);
 
-    // check that nginx did actually restart
-//    String url = "http://127.0.0.1:" + this.restartPort + "/restart." + restartId + "/present.html";
-//    try {
-//      spinCheck(url);
-//    } catch (Throwable t) {
-//      System.err.println("time out plugin =" + pluginId);
-//      this.plugins.remove(pluginId);
-//      if (windows()) {
-//        new WinProcess(proc).killRecursively();
-//      } else {
-//        proc.destroy(); // send SIGTERM
-//      }
-//      throw new NginxRestartFailedException("nginx restart failed.\n" + "url=" + url + "\n" + "message=" + t.getMessage());
-//    }
-
     pConfig.setProcess(proc);
     System.out.println("Done starting " + pluginId);
 
     return buildResponse(pConfig.getBaseUrl(), String.valueOf(pConfig.getPort()), true);
   }
 
-  private ArrayList<PluginProxyRule> getPluginSpecificRules(String nginxRules) {
+  private ArrayList<PluginProxyRule> getPluginSpecificRules(String pluginRulesString) {
     final ArrayList<PluginProxyRule> proxyRules = new ArrayList<>();
-    if (nginxRules.startsWith("ipython")) {
+    if (pluginRulesString.startsWith("ipython")) {
       proxyRules.add(new PluginProxyRule(Arrays.asList(
           "(.*)\\/api\\/((sessions)|(kernels\\/kill)|(kernels/[0-9a-f-]+/interrupt)|(kernelspecs))\\/",
           "(.*)/api/kernels/[0-9a-f-]+/((interrupt)|(restart))"
@@ -555,37 +358,9 @@ public class PluginServiceLocatorRest {
         .build();
   }
 
-  private static boolean spinCheck(String url)
-      throws IOException, InterruptedException
-  {
-
-    int interval = RESTART_ENSURE_RETRY_INTERVAL;
-    int totalTime = 0;
-    
-    while (totalTime < RESTART_ENSURE_RETRY_MAX_WAIT) {
-      Request get = Request.Get(url);
-      if (get.execute().returnResponse().getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-        return true;
-      }
-      Thread.sleep(interval);
-      totalTime += interval;
-      interval *= 1.5;
-      if (interval > RESTART_ENSURE_RETRY_MAX_INTERVAL)
-        interval = RESTART_ENSURE_RETRY_MAX_INTERVAL;
-    }
-    throw new RuntimeException("Spin check timed out: " + url);
-  }
-
   private static class PluginServiceNotFoundException extends WebApplicationException {
-    public PluginServiceNotFoundException(String message) {
+    PluginServiceNotFoundException(String message) {
       super(Response.status(Responses.NOT_FOUND)
-          .entity(message).type("text/plain").build());
-    }
-  }
-
-   private static class NginxRestartFailedException extends WebApplicationException {
-    public NginxRestartFailedException(String message) {
-      super(Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
           .entity(message).type("text/plain").build());
     }
   }
@@ -648,9 +423,9 @@ public class PluginServiceLocatorRest {
     List<String> cmd = pythonBaseCommand(pluginId, command);
     cmd.add("--profile");
     if(windows()){
-      cmd.add("\\\"" + this.nginxServDir + "\\\"");
+      cmd.add("\\\"" + this.currentServDir + "\\\"");
     }else{
-      cmd.add(this.nginxServDir);
+      cmd.add(this.currentServDir);
     }
     cmd.add(pluginId);
     Runtime.getRuntime().exec(listToArray(cmd), buildEnv(pluginId, null)).waitFor();
@@ -658,133 +433,12 @@ public class PluginServiceLocatorRest {
     String config = this.ipythonTemplate;
     config = config.replace("%(port)s", Integer.toString(port));
     config = config.replace("%(hash)s", hash);
-    java.nio.file.Path targetFile = Paths.get(this.nginxServDir + "/profile_beaker_backend_" + pluginId,
+    java.nio.file.Path targetFile = Paths.get(this.currentServDir + "/profile_beaker_backend_" + pluginId,
                                               "ipython_notebook_config.py");
     writePrivateFile(targetFile, config);
   }
 
-  // TODO SSV REMOVE
-  private String generateNginxConfig() throws IOException, InterruptedException {
-
-    java.nio.file.Path confDir = Paths.get(this.nginxServDir, "conf");
-    java.nio.file.Path logDir = Paths.get(this.nginxServDir, "logs");
-    java.nio.file.Path nginxClientTempDir = Paths.get(this.nginxServDir, "client_temp");
-
-    if (Files.notExists(confDir)) {
-      confDir.toFile().mkdirs();
-      Files.copy(Paths.get(this.nginxDir + "/mime.types"),
-                 Paths.get(confDir.toString() + "/mime.types"));
-    }
-    if (Files.notExists(logDir)) {
-      logDir.toFile().mkdirs();
-    }
-    if (Files.notExists(nginxClientTempDir)) {
-      nginxClientTempDir.toFile().mkdirs();
-    }
-
-    String restartId = RandomStringUtils.random(12, false, true);
-    String nginxConfig = this.nginxTemplate;
-    StringBuilder pluginSection = new StringBuilder();
-    for (PluginConfig pConfig : this.plugins.values()) {
-      String auth = encoder.encodeBase64String(("beaker:" + pConfig.getPassword()).getBytes());
-      String nginxRule = pConfig.getNginxRules();
-      if (this.nginxPluginRules.containsKey(nginxRule)) {
-        nginxRule = this.nginxPluginRules.get(nginxRule);
-      } else {
-        if (nginxRule.equals("rest"))
-          nginxRule = REST_RULES;
-        else if (nginxRule.equals("ipython1"))
-          nginxRule = IPYTHON1_RULES;
-        else if (nginxRule.equals("ipython2"))
-          nginxRule = IPYTHON2_RULES;
-        else {
-          throw new RuntimeException("unrecognized nginx rule: " + nginxRule);
-        }
-      }
-      nginxRule = nginxRule.replace("%(port)s", Integer.toString(pConfig.getPort()))
-        .replace("%(auth)s", auth)
-        .replace("%(base_url)s", (urlHash.isEmpty() ? "" : "/"+urlHash+"/" ) + pConfig.getBaseUrl());
-      pluginSection.append(nginxRule + "\n\n");
-    }
-    String auth = encoder.encodeBase64String(("beaker:" + this.corePassword).getBytes());
-    String listenSection;
-    String authCookieRule;
-    String startPage;
-    String hostName = "none"; // XXX hack
-    try {
-      // XXX should allow name to be set by user in bkConfig
-      hostName = InetAddress.getLocalHost().getHostName();
-    } catch (UnknownHostException e) {
-      System.err.println("warning: UnknownHostException from InetAddress.getLocalHost().getHostName(), ignored");
-    }
-    if (this.listenInterface != null && !this.listenInterface.equals("*")) {
-      hostName = this.listenInterface;
-    }
-    
-    if (this.publicServer) {
-      if (this.listenInterface != null && !this.listenInterface.equals("*")) {
-        listenSection = "listen " + this.listenInterface + ":"+ this.portBase + " ssl;\n";
-      } else {
-        listenSection = "listen " + this.portBase + " ssl;\n";
-      }
-      listenSection += "server_name " + hostName + ";\n";
-      
-      if (this.useHttpsCert==null || this.useHttpsKey==null) {
-        listenSection += "ssl_certificate " + this.nginxServDir + "/ssl_cert.pem;\n";
-        listenSection += "ssl_certificate_key " + this.nginxServDir + "/ssl_cert.pem;\n";
-      } else {
-        listenSection += "ssl_certificate " + this.useHttpsCert + ";\n";
-        listenSection += "ssl_certificate_key " + this.useHttpsKey + ";\n";
-      }
-      authCookieRule = "if ($http_cookie !~ \"BeakerAuth=" + this.authCookie + "\") {return 403;}";
-      startPage = "/login/login.html";
-    } else {
-      if (this.listenInterface != null) {
-        if(this.listenInterface.equals("*")) {
-          listenSection = "listen " + this.servPort + ";\n";          
-        } else {
-          listenSection = "listen "+this.listenInterface+":" + this.servPort + ";\n";
-        }
-      } else {
-        listenSection = "listen 127.0.0.1:" + this.servPort + ";\n";
-      }
-      if (this.requirePassword) {
-        authCookieRule = "if ($http_cookie !~ \"BeakerAuth=" + this.authCookie + "\") {return 403;}";
-        startPage = "/login/login.html";
-      } else {
-        authCookieRule = "";
-        startPage = "/beaker/";
-      }
-    }
-    nginxConfig = nginxConfig.replace("%(plugin_section)s", pluginSection.toString());
-    nginxConfig = nginxConfig.replace("%(extra_rules)s", this.nginxExtraRules);
-    nginxConfig = nginxConfig.replace("%(catch_outdated_requests_rule)s", this.showZombieLogging ? "" : this.CATCH_OUTDATED_REQUESTS_RULE);
-    nginxConfig = nginxConfig.replace("%(user_folder)s", this.userFolder);
-    nginxConfig = nginxConfig.replace("%(host)s", hostName);
-    nginxConfig = nginxConfig.replace("%(port_main)s", Integer.toString(this.portBase));
-    nginxConfig = nginxConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
-    nginxConfig = nginxConfig.replace("%(port_clear)s", Integer.toString(this.servPort));
-    nginxConfig = nginxConfig.replace("%(listen_on)s", this.publicServer ? "*" : "127.0.0.1");
-    nginxConfig = nginxConfig.replace("%(listen_section)s", listenSection);
-    nginxConfig = nginxConfig.replace("%(auth_cookie_rule)s", authCookieRule);
-    nginxConfig = nginxConfig.replace("%(start_page)s", startPage);
-    nginxConfig = nginxConfig.replace("%(port_restart)s", Integer.toString(this.restartPort));
-    nginxConfig = nginxConfig.replace("%(auth)s", auth);
-    nginxConfig = nginxConfig.replace("%(sessionauth)s", this.authToken);
-    nginxConfig = nginxConfig.replace("%(restart_id)s", restartId);
-    nginxConfig = nginxConfig.replace("%(urlhash)s", urlHash.isEmpty() ? "" : urlHash+"/");
-    nginxConfig = nginxConfig.replace("%(static_dir)s", this.nginxStaticDir.replaceAll("\\\\", "/"));
-    nginxConfig = nginxConfig.replace("%(nginx_dir)s", this.nginxServDir.replaceAll("\\\\", "/"));
-    // Apparently on windows our jetty backends network stack can be
-    // in a state where the spin/probe connection from the client gets
-    // stuck and it does not fail until it times out.
-    nginxConfig = nginxConfig.replace("%(proxy_connect_timeout)s", windows() ? "1" : "90");
-    java.nio.file.Path targetFile = Paths.get(this.nginxServDir, "conf/nginx.conf");
-    writePrivateFile(targetFile, nginxConfig);
-    return restartId;
-  }
-
-  private static int getNextAvailablePort(int start) {
+  private int getNextAvailablePort(int start) {
     final int SEARCH_LIMIT = 100;
     for (int p = start; p < start + SEARCH_LIMIT; ++p) {
       if (isPortAvailable(p)) {
@@ -795,9 +449,26 @@ public class PluginServiceLocatorRest {
     throw new RuntimeException("out of ports error");
   }
 
+  private static boolean isPortAvailable(int port) {
+    ServerSocket ss = null;
+    try {
+      InetAddress address = InetAddress.getByName("127.0.0.1");
+      ss = new ServerSocket(port, 1, address);
+      ss.setReuseAddress(true);
+      return true;
+    } catch (IOException ignore) {
+    } finally {
+      if (ss != null) {
+        try {
+          ss.close();
+        } catch (IOException ignore) {
+        }
+      }
+    }
+    return false;
+  }
+
   private static String generatePrefixedRandomString(String prefix, int randomPartLength) {
-    // Use lower case due to nginx bug handling mixed case locations
-    // (fixed in 1.5.6 but why depend on it).
     return prefix.toLowerCase() + "." + RandomStringUtils.random(randomPartLength, false, true);
   }
 
@@ -814,8 +485,7 @@ public class PluginServiceLocatorRest {
     proc = Runtime.getRuntime().exec(listToArray(cmd), buildEnv(pluginId, null));
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-version", null, null).start();
-    String line = br.readLine();
-    return line;
+    return br.readLine();
   }
 
   @GET
@@ -836,14 +506,12 @@ public class PluginServiceLocatorRest {
   private static class PluginConfig {
 
     private final int port;
-    private final String nginxRules;
     private Process proc;
     private final String baseUrl;
     private final String password;
 
-    PluginConfig(int port, String nginxRules, String baseUrl, String password) {
+    PluginConfig(int port, String baseUrl, String password) {
       this.port = port;
-      this.nginxRules = nginxRules;
       this.baseUrl = baseUrl;
       this.password = password;
     }
@@ -854,10 +522,6 @@ public class PluginServiceLocatorRest {
 
     String getBaseUrl() {
       return this.baseUrl;
-    }
-
-    String getNginxRules() {
-      return this.nginxRules;
     }
 
     String getPassword() {
@@ -882,28 +546,6 @@ public class PluginServiceLocatorRest {
       }
     }
 
-  }
-
-  private static boolean isPortAvailable(int port) {
-
-    ServerSocket ss = null;
-    try {
-      InetAddress address = InetAddress.getByName("127.0.0.1");
-      ss = new ServerSocket(port, 1, address);
-      // ss = new ServerSocket(port);
-      ss.setReuseAddress(true);
-      return true;
-    } catch (IOException e) {
-    } finally {
-      if (ss != null) {
-        try {
-          ss.close();
-        } catch (IOException e) {
-          /* should not be thrown */
-        }
-      }
-    }
-    return false;
   }
 
   private static void startGobblers(

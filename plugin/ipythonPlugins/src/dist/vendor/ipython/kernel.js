@@ -111,7 +111,7 @@ var IPython1 = (function (IPython1) {
         this.running = true;
         this.kernel_id = json.kernel_id;
 	// Beaker addition begin
-        // The URL from the server does not account for the remapping done by nginx.
+        // The URL from the server does not account for the remapping done by proxy.
 	console.log('rewriting ' + json.ws_url);
 	json.ws_url = ((window.location.protocol == "https:") ? "wss://" : "ws://") + window.location.host;
 	console.log('to ' + json.ws_url);

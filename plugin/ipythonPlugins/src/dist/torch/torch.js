@@ -472,7 +472,7 @@ define(function(require, exports, module) {
       myTorch = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : IPython);
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
-        nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2"
+        proxyRules: (ipyVersion == '1') ? "ipython1" : "ipython2"
       }).success(function(ret) {
         serviceBase = ret.baseUrl;
         servicePort = ret.port;

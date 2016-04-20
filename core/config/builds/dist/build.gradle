@@ -38,7 +38,7 @@ task makeDist(type: Exec) {
   if (platform == 'windows') {
     workingDir '../../..'
     commandLine 'cmd', '/c', '7za', 'a',
-                (zipName + '.zip'), 'config', 'src/main/web', 'build/install/core', 'nginx', 'LICENSE',
+                (zipName + '.zip'), 'config', 'src/main/web', 'build/install/core', 'LICENSE',
                 'beaker.command.bat', '-xr!.~', '-xr!.gradle'
   } else {
     commandLine './makeDist', zipName

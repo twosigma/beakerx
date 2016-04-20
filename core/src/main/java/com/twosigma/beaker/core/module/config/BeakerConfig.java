@@ -27,7 +27,6 @@ import org.json.simple.JSONObject;
  * stores run-time configuration used by Beaker
  */
 public interface BeakerConfig {
-  String DEFAULT_SSL_CERT_PASSWORD = "123456";
 
   /**
    * The Beaker core directory
@@ -49,41 +48,19 @@ public interface BeakerConfig {
    * @return
    */
   public String getDotDirectory();
+
   /**
-   * where to locate beaker specific nginx configs and scripts
+   * the root of server
    * @return
    */
-  public String getNginxDirectory();
-  /**
-   * where to locate nginx executable
-   * @return
-   */
-  public String getNginxBinDirectory();
-  /**
-   * where the static files are for the nginx server
-   * @return
-   */
-  public String getNginxStaticDirectory();
-  /**
-   * the root of nginx server
-   * @return
-   */
-  public String getNginxServDirectory();
-  /**
-   * extra enginx rules to be appended to nginx.conf
-   * @return
-   */
-  public String getNginxExtraRules();
+  public String getCurrentServDirectory();
+
   /**
    * folder the user can use for storage
    * @return
    */
   public String getUserFolder();
-  /**
-   * optional/extra/override nginx plugin rules
-   * @return
-   */
-  public Map<String, String> getNginxPluginRules();
+
   /**
    * Public Server
    * @return
@@ -239,4 +216,6 @@ public interface BeakerConfig {
   public Boolean getShowZombieLogging();
 
   String getDefaultSslCertPath();
+
+  String getDefaultSslCertPassword();
 }

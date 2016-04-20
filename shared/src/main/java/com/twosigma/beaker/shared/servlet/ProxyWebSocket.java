@@ -55,6 +55,7 @@ class ProxyWebSocket extends WebSocketAdapter {
     if (sess instanceof WebSocketSession) {
       try {
         final WebSocketClient client = new WebSocketClient();
+        client.getPolicy().setMaxTextMessageSize(1024 * 1024 * 16);
         String requestURI = request.getRequestURI().toString();
         final String target = rulesHolder.rewriteTarget(request.getHttpServletRequest(), requestURI);
         client.start();

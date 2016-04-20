@@ -25,7 +25,6 @@ import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
 import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
@@ -46,7 +45,6 @@ import javax.servlet.ServletException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 
 /**
@@ -161,7 +159,7 @@ public class WebServerModule extends AbstractModule {
 
   private static SslContextFactory createSslContextFactory(BeakerConfig bkConfig) {
     String httpsCertPath = isNoneBlank(bkConfig.getUseHttpsCert()) ? bkConfig.getUseHttpsCert() : bkConfig.getDefaultSslCertPath();
-    String certPassword = isNoneBlank(bkConfig.getUseHttpsKey()) ? bkConfig.getUseHttpsKey() : BeakerConfig.DEFAULT_SSL_CERT_PASSWORD;
+    String certPassword = isNoneBlank(bkConfig.getUseHttpsKey()) ? bkConfig.getUseHttpsKey() : bkConfig.getDefaultSslCertPassword();
     // todo using old httpskey property as a password - maybe should create another property for keystore password later
 
     SslContextFactory sslContextFactory = new SslContextFactory();

@@ -1,7 +1,6 @@
 core/build
 beaker/*
 node_modules
-nginx/bin
 src/vendor/
 src/main/web/template/version.html
 src/main/dist/

@@ -153,7 +153,7 @@ public class Main {
     int at = name.indexOf("@");
     if (at > 0) {
       String pid = name.substring(0, at);
-      String dir = bkConfig.getNginxServDirectory();
+      String dir = bkConfig.getCurrentServDirectory();
       PrintWriter out = new PrintWriter(dir + "/pid");
       out.println(pid);
       out.close();
@@ -210,10 +210,6 @@ public class Main {
         new SerializerModule(),
         new GuiceCometdModule(),
         new URLConfigModule());
-
-//    PluginServiceLocatorRest processStarter = injector.getInstance(PluginServiceLocatorRest.class);
-//    processStarter.setAuthToken(beakerCorePref.getAuthToken());
-//    processStarter.start();
 
     BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
 
@@ -348,20 +344,18 @@ public class Main {
   }
 
   private static boolean portAvailable(int port) {
-
     ServerSocket ss = null;
     try {
       InetAddress address = InetAddress.getByName("127.0.0.1");
       ss = new ServerSocket(port, 1, address);
       ss.setReuseAddress(true);
       return true;
-    } catch (IOException e) {
+    } catch (IOException ignore) {
     } finally {
       if (ss != null) {
         try {
           ss.close();
-        } catch (IOException e) {
-          /* should not be thrown */
+        } catch (IOException ignore) {
         }
       }
     }

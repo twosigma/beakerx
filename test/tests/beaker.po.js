@@ -758,5 +758,12 @@ var BeakerPageObject = function() {
     return this.getCodeCellOutputBySectionTitle(sectionTitle).getAttribute('cell-id');
   };
 
+  this.waitCodeCellOutputPresentByIdCell = function(idCell, outputType) {
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), 20000);
+  }
+
+  this.waitCodeCellOutputTablePresentByIdCell = function(idCell) {
+    this.waitCodeCellOutputPresentByIdCell(idCell, 'Table');
+  }
 };
 module.exports = BeakerPageObject;

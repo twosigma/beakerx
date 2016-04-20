@@ -44,7 +44,8 @@ describe('R Tutorial', function (done) {
 
         it('Histogram', function () {
             var idCell = "code2uVtKX";
-            beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Html');
             var svgElem = beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('svg > g'));
             expect(svgElem.count()).toBe(1);
             expect(svgElem.get(0).all(by.css('g')).count()).toBe(78);
@@ -53,8 +54,9 @@ describe('R Tutorial', function (done) {
 
         it('Box plot', function () {
             var idCell = "codeG6bqsQ";
-            beakerPO.scrollToCodeCellOutputByIdCell(idCell);
-            svgElem = beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('svg > g'));
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Html');
+            var svgElem = beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('svg > g'));
             expect(svgElem.count()).toBe(1);
             expect(svgElem.get(0).all(by.css('g')).count()).toBe(111);
             expect(svgElem.get(0).all(by.css('path')).count()).toBe(206);
@@ -62,6 +64,8 @@ describe('R Tutorial', function (done) {
 
         it('Spreadsheet', function () {
             var idCell = "codezB5I5w";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
             beakerPO.checkDtContainerByIdCell(idCell);
             beakerPO.checkDtContainerByIdCell(idCell);
             var arrStrHead = beakerPO.getDataTablesTHeadByIdCell(idCell).get(0).all(by.css('th'));
@@ -99,35 +103,41 @@ describe('R Tutorial', function (done) {
 
         it('Google map', function () {
             var idCell = "codePI1mwS";
-            beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image');
             beakerPO.checkImageByIdCell(idCell);
         });
 
         it('Library(MASS)', function () {
             var idCell = "codebUFdM3";
-            beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image');
             beakerPO.checkImageByIdCell(idCell);
         });
 
         it('Modeling and linear regression', function () {
             var idCell = "code8D0EwG";
-            beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image');
             beakerPO.checkImageByIdCell(idCell);
         });
 
         it('Analysis of Variance Table', function () {
             var idCell = "code4JWGX8";
-            beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
             beakerPO.checkCellOutputSubTextByIdCell(idCell, "Analysis of Variance Table\n\nResponse: weight\n     ", 0, 50);
 
             idCell = "codeW7oCy6";
-            beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
             beakerPO.checkCellOutputSubTextByIdCell(idCell, "Call:\nlm(formula = weight ~ group - 1)\n\nResiduals:" , 0, 50);
         });
 
         it('Display image', function () {
             var idCell = "codew89omS";
-            beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image');
             beakerPO.checkImageByIdCell(idCell);
         });
 

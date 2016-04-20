@@ -516,6 +516,14 @@ var BeakerPageObject = function() {
     return element.all(by.css('[cell-id=' + idCell + ']')).get(0);
   };
 
+  this.getBkCellByIdCell = function (idCell) {
+    return element.all(by.css('[cellid=' + idCell + '] > div')).get(0);
+  };
+
+  this.scrollToBkCellByIdCell = function (idCell) {
+    return browser.executeScript("$('[cellid=" + idCell +"]')[0].scrollIntoView();");
+  };
+
   this.checkPlotIsPresentByIdCell = function (codeCellOutputId, containerIdx){
     if (!containerIdx)
       containerIdx = 0;
@@ -766,5 +774,20 @@ var BeakerPageObject = function() {
       }
     });
   }
+
+  this.clickCodeCellInputButtonByIdCell = function(idCell, outputType){
+    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] [type="Progress"]')), 5000)
+        .then(browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), 20000)
+            .then(
+                function(isPresent){
+                  expect(isPresent).toBe(true);
+                },
+                function(value){
+                  expect(value).toBe('Output cell have displayed');
+                }
+            ));
+  }
+
 };
 module.exports = BeakerPageObject;

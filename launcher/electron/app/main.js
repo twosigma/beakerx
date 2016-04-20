@@ -15,7 +15,7 @@
  */
 
 var app = require('app');  // Module to control application life.
-var ipc = require('ipc');
+var ipc = require('electron').ipcMain;
 var http = require('http');
 var request = require('request');
 var shell = require('shell');

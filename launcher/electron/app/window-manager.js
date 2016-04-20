@@ -17,7 +17,7 @@
 module.exports = (function() {
   var BrowserWindow = require('browser-window');
   var backendRunner = require('./backend-runner.js');
-  var ipc = require('ipc');
+  var ipc = require('electron').ipcMain;
   var Faye = require('faye');
   // Do not rename to 'screen', because window.screen exists
   var electronScreen = require('screen');
@@ -166,7 +166,7 @@ module.exports = (function() {
     window.webContents.once('did-finish-load', function() {
       window.show();
     });
-    window.loadUrl(url);
+    window.loadURL(url);
 
     window.webContents.on('will-navigate', function(event, url) {
       if (window.webContents.getUrl() !== url) {

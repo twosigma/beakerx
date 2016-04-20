@@ -191,7 +191,7 @@ describe('Beaker Tables', function () {
           expect(beakerPO.getDataTablePaginationControl(v).isPresent()).toBe(true);
           beakerPO.getDataTableMenuToggle(section).click().then(function(){
             beakerPO.checkDataTableMenuItemHasIcon(paginationMenu, 'glyphicon-ok', true);
-            paginationMenu.click().then(function(){
+            paginationMenu.element(by.css('a[ng-click="doUsePagination()"]')).click().then(function(){
               expect(beakerPO.getDataTablePaginationControl(v).isPresent()).toBe(false);
               beakerPO.checkDataTableMenuItemHasIcon(paginationMenu, 'glyphicon-ok', false);
               done();
@@ -208,7 +208,7 @@ describe('Beaker Tables', function () {
           beakerPO.getDataTableMenuToggle(section).click().then(function () {
             browser.actions().mouseMove(rowsToShowMenu).perform();
             var show10 = beakerPO.getDataTableSubMenuItem(rowsToShowMenu, '10');
-            show10.click().then(function () {
+            show10.element(by.css('a[ng-click="changePageLength(length)"]')).click().then(function () {
               expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 10)).toBe(true);
               expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 11)).toBe(false);
               done();
@@ -225,7 +225,7 @@ describe('Beaker Tables', function () {
           beakerPO.getDataTableMenuToggle(section).click().then(function () {
             browser.actions().mouseMove(rowsToShowMenu).perform();
             var showAll = beakerPO.getDataTableSubMenuItem(rowsToShowMenu, 'All');
-            showAll.click().then(function () {
+            showAll.element(by.css('a[ng-click="changePageLength(length)"]')).click().then(function () {
               expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 50)).toBe(true);
               done();
             });

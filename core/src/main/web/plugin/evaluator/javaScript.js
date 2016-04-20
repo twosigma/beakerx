@@ -188,13 +188,19 @@ define(function(require, exports, module) {
   }
 
   function scriptLoaded(scriptUrl) {
-    return _.contains(scriptLoaded, scriptUrl);
+    return _.contains(scriptsLoaded, scriptUrl);
   }
 
   function loadLibrary(url, cb) {
-    $.getScript(url, function() {
-      scriptsLoaded.push(url);
-      _.defer(function() {cb(url)});
+    jQuery.ajax({
+      type: "GET",
+      url: url,
+      success: function() {
+        scriptsLoaded.push(url);
+        _.defer(function() {cb(url)});
+      },
+      dataType: "script",
+      cache: true
     });
   }
 
@@ -403,7 +409,6 @@ define(function(require, exports, module) {
         });
         _.forEach(scriptsToLoad, function(scriptUrl) {
           loadQueuePromise = loadQueuePromise.then(function() {
-            console.log(scriptsToLoad, scriptUrl)
             return loadLibraryIfNotLoaded(scriptUrl);
           });
         });

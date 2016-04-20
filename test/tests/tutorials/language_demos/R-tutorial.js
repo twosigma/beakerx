@@ -25,6 +25,21 @@ describe('R Tutorial', function (done) {
     browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fr-examples.bkr&readOnly=true").then(done)
     beakerPO.waitUntilLoadingCellOutput();
 
+    var start = new Date().getTime();
+    beakerPO.waitUntilLoadingFinished().then(function() {
+        var stop = new Date().getTime();
+        var len = stop - start;
+        console.log('Starting R language: ' + len + ' milliSeconds');
+    });
+
+    it('R can load', function () {
+        element(by.css('div.modal-body')).isPresent().then(function(present){
+            if(present){
+                expect(element.all(by.css('div.modal-body > p')).get(0).getText()).toBe('R have loaded');
+            }
+        });
+    });
+
     describe('R Examples', function () {
 
         it('Histogram', function () {

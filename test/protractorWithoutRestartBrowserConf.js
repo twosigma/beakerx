@@ -27,7 +27,7 @@ var config = {
   capabilities: {
     shardTestFiles: true,
     maxInstances: 3,
-    browserName: 'firefox'
+    browserName: 'chrome'
   },
   onPrepare: function() {
     var SpecReporter = require('jasmine-spec-reporter');
@@ -36,15 +36,16 @@ var config = {
     }));
   },
   specs: [
-    'tests/category-plot-tutorial.js',
-    'tests/charting-tutorial.js',
-    'tests/heatmap-tutorial.js',
-    'tests/charting-tutorial2.js',
-    'tests/tutorials/language_demos/sql-tutorial.js',
-    'tests/tutorials/language_demos/java-tutorial.js',
-    'tests/tutorials/language_demos/clojure-tutorial.js',
+    //'tests/category-plot-tutorial.js',
+    //'tests/charting-tutorial.js',
+    //'tests/heatmap-tutorial.js',
+    //'tests/charting-tutorial2.js',
+    //'tests/tutorials/language_demos/sql-tutorial.js',
+    //'tests/tutorials/language_demos/java-tutorial.js',
+    //'tests/tutorials/language_demos/clojure-tutorial.js',
+    //'tests/tutorials/language_demos/python-tutorial.js',
     'tests/tutorials/language_demos/R-tutorial.js',
-    'tests/tables.js'
+    //'tests/tables.js'
   ]
 };
 

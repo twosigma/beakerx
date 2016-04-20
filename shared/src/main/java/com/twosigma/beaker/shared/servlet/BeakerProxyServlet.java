@@ -26,6 +26,7 @@ import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.proxy.ProxyServlet;
 import org.eclipse.jetty.websocket.api.WebSocketBehavior;
 import org.eclipse.jetty.websocket.api.WebSocketPolicy;
+import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
@@ -159,10 +160,11 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
 
       factory = WebSocketServletFactory.Loader.create(createWebSocketPolicy());
       factory.register(ProxyWebSocket.class);
+      final WebSocketClient webSocketClient = createWebSocketClient();
       factory.setCreator(new WebSocketCreator() {
         @Override
         public Object createWebSocket(ServletUpgradeRequest request, ServletUpgradeResponse response) {
-          return new ProxyWebSocket(request, rulesHolder, getAuthHeaderString(request.getHttpServletRequest().getPathInfo()));
+          return new ProxyWebSocket(request, rulesHolder, getAuthHeaderString(request.getHttpServletRequest().getPathInfo()), webSocketClient);
         }
       });
       ServletContext ctx = this.getServletContext();
@@ -170,6 +172,18 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
       ctx.setAttribute(WebSocketServletFactory.class.getName(), factory);
     } catch (Exception var4) {
       throw new ServletException(var4);
+    }
+  }
+
+  private WebSocketClient createWebSocketClient() {
+    try {
+      WebSocketClient client = new WebSocketClient();
+      client.getPolicy().setMaxTextMessageSize(1024 * 1024 * 16);
+      client.start();
+      return client;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
     }
   }
 

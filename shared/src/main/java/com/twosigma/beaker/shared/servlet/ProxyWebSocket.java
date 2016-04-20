@@ -40,14 +40,13 @@ class ProxyWebSocket extends WebSocketAdapter {
   private ServletUpgradeRequest request;
   private RulesHolder rulesHolder;
   private String authString;
-  private WebSocketClient client;;
+  private WebSocketClient client;
 
-  ProxyWebSocket(ServletUpgradeRequest request, RulesHolder rulesHolder, String authString) {
+  ProxyWebSocket(ServletUpgradeRequest request, RulesHolder rulesHolder, String authString, WebSocketClient client) {
     this.request = request;
     this.rulesHolder = rulesHolder;
     this.authString = authString;
-
-    initWebSocketClient();
+    this.client = client;
   }
 
   @Override
@@ -97,17 +96,6 @@ class ProxyWebSocket extends WebSocketAdapter {
     Session remoteSession = getRemoteSession();
     if (remoteSession != null) {
       closeWithError(remoteSession, cause);
-    }
-  }
-
-  private void initWebSocketClient() {
-    try {
-      client = new WebSocketClient();
-      client.getPolicy().setMaxTextMessageSize(1024 * 1024 * 16);
-      client.start();
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
     }
   }
 

@@ -417,11 +417,7 @@
         }
         return o;
       }
-      var o = [];
-      for(var p in v) {
-        o.push(transformBack(v[p]));
-      }
-      return o;
+      return v.map(transformBack);
     };
 
 

@@ -24,7 +24,7 @@ module.exports = (function() {
   var request = require('request');
   var shell = require('shell');
 
-  var _windows = {};
+  var _windows = [];
   var _windowToSession = {};
   var _sessionToWindow = {};
 
@@ -38,10 +38,10 @@ module.exports = (function() {
   // Initialize cometd
 
   ipc.on('window-session', function(event, msg) {
-    var oldSession = _windowToSession[msg.windowId];
-
-    _sessionToWindow[msg.sessionId] = msg.windowId;
-    _windowToSession[msg.windowId] = msg.sessionId;
+    var windowRef = BrowserWindow.fromId(msg.windowId);
+    var oldSession = _windowToSession[windowRef];
+    _sessionToWindow[msg.sessionId] = windowRef;
+    _windowToSession[windowRef] = msg.sessionId;
 
     // Check if that window already had a session
     if (typeof oldSession !== 'undefined') {
@@ -58,13 +58,13 @@ module.exports = (function() {
   });
 
   ipc.on('session-focused', function(event, sessionId) {
-    var windowId = _sessionToWindow[sessionId];
-    if (typeof windowId === 'undefined') {
+    var windowRef = _sessionToWindow[sessionId];
+    if (typeof windowRef === 'undefined') {
       // Have to open window with session
       newWindow(backendRunner.getUrl() + '/beaker/#/session/' + sessionId, 'notebook');
       return;
     }
-    BrowserWindow.fromId(windowId).focus();
+    windowRef.focus();
   });
 
   var primaryDisplay = electronScreen.getPrimaryDisplay();
@@ -95,9 +95,9 @@ module.exports = (function() {
   function connectToBackend() {
     client = new Faye.Client(backendRunner.getUrl() + backendRunner.getHash() + '/beaker/cometd/');
     var subscription = client.subscribe('/sessionClosed', function(msg) {
-      var windowId = _sessionToWindow[msg.id];
-      if (typeof windowId !== 'undefined') {
-        BrowserWindow.fromId(windowId).destroy();
+      var windowRef = _sessionToWindow[msg.id];
+      if (typeof windowRef !== 'undefined') {
+        windowRef.destroy();
       }
     });
   }
@@ -120,10 +120,11 @@ module.exports = (function() {
 
     var window = new BrowserWindow(options);
 
-    _windows[window.id] = window;
+    _windows.push(window);
 
     window.unref = function() {
-      delete _windows[window.id];
+      _windows.splice(_windows.indexOf(window), 1);
+      window = null;
     }
 
     switch (type) {
@@ -135,9 +136,9 @@ module.exports = (function() {
           e.preventDefault();
         });
         window.on('closed', function(e) {
-          var sessionId = _windowToSession[window.id];
+          var sessionId = _windowToSession[window];
           delete _sessionToWindow[sessionId];
-          delete _windowToSession[window.id];
+          delete _windowToSession[window];
           window.unref();
         });
         break;

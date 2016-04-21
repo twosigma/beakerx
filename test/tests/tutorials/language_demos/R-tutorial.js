@@ -24,6 +24,7 @@ describe('R Tutorial', function (done) {
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fr-examples.bkr&readOnly=true").then(done)
     beakerPO.waitUntilLoadingCellOutput();
+    browser.driver.manage().window().maximize();
 
     var start = new Date().getTime();
     beakerPO.waitUntilLoadingFinished().then(function() {

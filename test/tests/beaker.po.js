@@ -776,6 +776,7 @@ var BeakerPageObject = function() {
   }
 
   this.clickCodeCellInputButtonByIdCell = function(idCell, outputType){
+    var self = this;
     this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
     browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']')), 5000)
         .then(browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), 20000)
@@ -785,6 +786,7 @@ var BeakerPageObject = function() {
                 },
                 function(value){
                   expect(value).toBe('Output cell have displayed');
+                  expect(self.getCodeCellOutputByIdCell(idCell).element(by.css('.out_error')).getText()).toBe('out error');
                 }
             ));
   }

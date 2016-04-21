@@ -220,26 +220,18 @@ describe('Beaker Tables', function () {
 
       it('should display All rows', function (done) {
         var section = 'Table with pagination';
+        browser.driver.manage().window().maximize();
         var rowsToShowMenu = beakerPO.getDataTableMenuItem(section, 'Rows to Show');
 
         beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
           beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
           beakerPO.getDataTableMenuToggle(section).click().then(function () {
             browser.actions().mouseMove(rowsToShowMenu).perform();
-            beakerPO.getDataTableSubMenuItem(rowsToShowMenu, 'All').isDisplayed().then(
-              function(isDisplayed){
-                expect(isDisplayed).toBe(true);
-                if(isDisplayed){
-                  var showAll = beakerPO.getDataTableSubMenuItem(rowsToShowMenu, 'All');
-                  showAll.element(by.css('a[ng-click="changePageLength(length)"]')).click().then(function () {
-                    expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 50)).toBe(true);
-                  });
-                }
-              },
-              function(error){
-                expect(error).toBe("SubMenu 'All' displayed")
-              }
-            ).then(done);
+            var showAll = beakerPO.getDataTableSubMenuItem(rowsToShowMenu, 'All');
+            showAll.element(by.css('a[ng-click="changePageLength(length)"]')).click().then(function () {
+              expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 50)).toBe(true);
+            });
+            done();
           });
         });
       });

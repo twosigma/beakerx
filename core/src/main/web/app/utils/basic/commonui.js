@@ -33,6 +33,14 @@
       }
     };
   });
+  module.directive('stopClick', function() {
+    return function(scope, element, attrs) {
+      element.click(function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    };
+  });
   module.directive('eatClick', function() {
     return function(scope, element, attrs) {
       element.click(function(event) {

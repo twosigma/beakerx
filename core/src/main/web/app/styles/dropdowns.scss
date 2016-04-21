@@ -34,6 +34,27 @@
     right: 10px;
     top: 4px;
   }
+
+  > .dropdown-menu-search {
+    position: relative;
+    padding: 3px;
+    input {
+      border: 1px solid #ccc;
+      padding: 0 0 0 18px;
+      width: 100%;
+    }
+    i {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      height: 14px;
+      left: 3px;
+      margin: auto;
+      padding: 0 2px;
+      color: #999999;
+      cursor: auto;
+    }
+  }
 }
 
 .dropdown-menu .fa {

@@ -22,6 +22,7 @@ module.exports = (function() {
   var os = require('os');
   var request = require('request');
   const session = require('electron').session;
+  var killTree = require('tree-kill');
 
   var _url;
   var _hash;
@@ -71,20 +72,27 @@ module.exports = (function() {
     kill: function() {
       var eventEmitter = new events.EventEmitter();
       if (_local) {
-        var self = this;
-        session.defaultSession.cookies.get({name : "XSRF-TOKEN"}, function(error, cookies) {
-          var options = {
-            url: self.getUrl() + self.getHash() + '/beaker/rest/util/exit',
-            headers: {
-              'X-XSRF-TOKEN': cookies[0].value
-            }
-          };
-          function callback(error, response, body) {
+        if (_osName.startsWith('Darwin')) {
+          killTree(_backend.pid, 'SIGTERM', function () {
             _running = false;
             eventEmitter.emit('killed');
-          }
-          request(options, callback);
-        });
+          });
+        } else {
+          var self = this;
+          session.defaultSession.cookies.get({name : "XSRF-TOKEN"}, function(error, cookies) {
+            var options = {
+              url: self.getUrl() + self.getHash() + '/beaker/rest/util/exit',
+              headers: {
+                'X-XSRF-TOKEN': cookies[0].value
+              }
+            };
+            function callback(error, response, body) {
+              _running = false;
+              eventEmitter.emit('killed');
+            }
+            request(options, callback);
+          });
+        }
       }
       _backend = {};
       return eventEmitter;

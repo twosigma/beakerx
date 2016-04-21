@@ -155,8 +155,12 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
         var idCell = "markdownqlcer3";
 
         it('Define values on the beaker object', function () {
-            beakerPO.scrollToCodeCellOutputByIdCell("codedBOCfX");
-            beakerPO.checkCellOutputSubTextByIdCell("codedBOCfX",'2.7182818284590', 0, 15);
+            var idCell2 = "codedBOCfX";
+            beakerPO.scrollToBkCellByIdCell(idCell2);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell2, 'Text');
+
+            beakerPO.scrollToCodeCellOutputByIdCell(idCell2);
+            beakerPO.checkCellOutputSubTextByIdCell(idCell2,'2.7182818284590', 0, 15);
         });
 
         it('Preview Mode', function () {
@@ -220,12 +224,14 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
 
     it('HTML', function () {
         var idCell = "codeB8fmAw";
-        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Html');
 
+        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
         expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('script')).getAttribute('innerHTML')).toBe('\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n');
 
-        var elemP = beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('div > p'));
-        beakerPO.checkSubString(elemP.get(0), 'The usual text formatting tags work, like <em> for emphasis.');
+        var elemP = beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('div p'));
+        beakerPO.checkSubString(elemP.get(0), 'The usual text formatting tags work, like for emphasis.');
         beakerPO.checkSubString(elemP.get(1), 'But you can also create interactive elements:', 0, 45);
         beakerPO.checkSubString(elemP.get(1).element(by.css('button')), 'What is a beaker?');
         beakerPO.checkSubString(elemP.get(2), 'You can combine HTML and JavaScript cells to program interactive applications within Beaker.');
@@ -256,9 +262,10 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
 
     it('TeX', function () {
         var idCell = "codegJITkE";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Latex');
         beakerPO.scrollToCodeCellOutputByIdCell(idCell);
 
-        idCell = "codegJITkE";
         var bkCell = beakerPO.getBkCellByIdCell(idCell).element(by.css('.CodeMirror-code'));
         beakerPO.checkSubString(bkCell.all(by.css('pre')).get(0), "1 +  \\frac{q^2}{(1-q)}+\\frac{q^6}{(1-q)(1-q^2)}+\\cdots =" );
         beakerPO.checkSubString(bkCell.all(by.css('pre')).get(1), "\\prod_{j=0}^{\\infty}\\frac{1}{(1-q^{5j+2})(1-q^{5j+3})}," );

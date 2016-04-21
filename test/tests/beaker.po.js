@@ -186,7 +186,7 @@ var BeakerPageObject = function() {
           deferred.fulfill(result);
         });
       return deferred.promise;
-    }.bind(this));
+    }.bind(this), 50000);
   };
 
   this.readMarkdownCell = function() {

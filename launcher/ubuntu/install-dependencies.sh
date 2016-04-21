@@ -26,8 +26,7 @@ sudo apt-get update
 sudo apt-get install -y gradle-2.4
 
 # npm
-# Note the new setup script name for Node.js v0.12
-curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
+curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # for cpp

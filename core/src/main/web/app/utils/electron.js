@@ -33,7 +33,7 @@
       var Menu = remote.require('menu');
       var Dialog = remote.require('dialog');
       var Shell = remote.require('shell');
-      var IPC = require('ipc');
+      var IPC = require('electron').ipcRenderer;
       var WebFrame = require('web-frame');
       var thisWindow = remote.getCurrentWindow();
       var app = remote.require('app');

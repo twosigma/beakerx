@@ -15,7 +15,7 @@
  */
 
 var app = require('app');  // Module to control application life.
-var ipc = require('ipc');
+var ipc = require('electron').ipcMain;
 var http = require('http');
 var request = require('request');
 var shell = require('shell');
@@ -33,7 +33,11 @@ var appReady = false;
 var filesToOpen = [];
 var ipcPort = 32326;
 var osName = os.type();
-var willQuit = true;
+
+var _osName = os.type();
+var isMac = _osName.startsWith('Darwin');
+
+var willQuit = isMac ? false : true;
 
 // Report crashes to our server.
 crashReporter.start();
@@ -100,7 +104,7 @@ app.on('open-file', function(event, path) {
 // When all windows die
 app.on('window-all-closed', function() {
   if (!willQuit) {
-    willQuit = true;
+    if (!isMac) willQuit = true;
     mainMenu.show();
   } else {
     app.quit();

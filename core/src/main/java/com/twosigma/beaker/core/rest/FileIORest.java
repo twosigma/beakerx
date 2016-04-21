@@ -146,7 +146,9 @@ public class FileIORest {
     path = removePrefix(path);
     try {
       utils.saveFile(path, contentAsString);
-    } catch (Throwable t) {
+    } catch (AccessDeniedException ade) {
+      throw new FileAccessDeniedException(ExceptionUtils.getMessage(ade));
+    }  catch (Throwable t) {
       throw new FileSaveException(ExceptionUtils.getStackTrace(t));
     }
   }

@@ -68,7 +68,21 @@ task copyIss(type: Exec, dependsOn: ['processTemplates']) {
 }
 copyIss.onlyIf { win }
 
-task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG', 'copyIss']) {
+task cleanElectron(type: Delete) {
+  delete 'dist', 'Beaker.app', '__MACOSX', 'jre', 'beaker', 'osxdmg',
+          fileTree(dir: './', include: "beaker-notebook-*-electron-mac.dmg"),
+          fileTree(dir: './', include: "beaker-notebook-*-electron-windows.exe"),
+          fileTree(dir: './', include: "beaker-notebook-*-electron-*.zip"),
+          'python',
+          setupName + '.exe',
+          "./templates/makeWinInstaller.iss"
+}
+
+task realCleanElectron(type: Delete, dependsOn: 'cleanElectron') {
+  delete 'app/node_modules', fileTree(dir: './', include: "electron*.zip")
+}
+
+task makeInstaller(type: Exec, dependsOn: ['realCleanElectron', 'makeBundle', 'makeOSXDMG', 'copyIss']) {
   if (mac) {
     delete dmgName
     commandLine './create-dmg/create-dmg', '--volname', 'Beaker', '--window-pos', '200', '120', '--window-size', '800', '400', '--icon-size', '100', '--icon', 'Beaker.app', '200', '190', '--hide-extension', 'Beaker.app', '--app-drop-link', '600', '185', dmgName, 'osxdmg/'
@@ -78,12 +92,14 @@ task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG', 'copyIss'
     commandLine 'gradle', 'zipElectron'
   }
 }
+makeInstaller.mustRunAfter realCleanElectron
 
 task createBundle(dependsOn: ['nodeInstall', 'copyBeakerApp', 'copyDist', 'copyJRE', 'copyTools', 'macCopyElectron', 'copyPList', 'copyIcons', 'winChangeDetails', 'linuxRename', 'linuxDepScript']) {
 }
 
-task makeBundle(dependsOn: ['createBundle', 'checkIdentity', 'signBundle']) {
+task makeBundle(dependsOn: ['realCleanElectron', 'createBundle', 'checkIdentity', 'signBundle']) {
 }
+makeBundle.mustRunAfter realCleanElectron
 
 task makePortableZip(dependsOn: ['makeBundle']) {
   doFirst {
@@ -153,20 +169,6 @@ task makeDist (dependsOn:[':beaker:build', 'unzipPython']) << {
       into './dist/python'
     }
   }
-}
-
-task cleanElectron(type: Delete) {
-  delete 'dist', 'Beaker.app', '__MACOSX', 'jre', 'beaker', 'osxdmg',
-    fileTree(dir: './', include: "beaker-notebook-*-electron-mac.dmg"),
-    fileTree(dir: './', include: "beaker-notebook-*-electron-windows.exe"),
-    fileTree(dir: './', include: "beaker-notebook-*-electron-*.zip"),
-    'python',
-    setupName + '.exe',
-    "./templates/makeWinInstaller.iss"
-}
-
-task realCleanElectron(type: Delete, dependsOn: 'cleanElectron') {
-  delete 'app/node_modules', fileTree(dir: './', include: "electron*.zip")
 }
 
 // Global tasks

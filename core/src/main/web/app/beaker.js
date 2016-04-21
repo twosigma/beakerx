@@ -307,7 +307,7 @@
       var beakerRootOp = {
         gotoControlPanel: function() {
           var ret = $location.path("/control").search({});
-          if (bkUtils.isElectron) {
+          if (bkUtils.isElectron && !$rootScope.$$phase) {
             $rootScope.$apply();
           }
           return ret;

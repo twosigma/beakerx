@@ -30,12 +30,24 @@
       link: function(scope, element, attrs) {
         var tooltip = element.find('.bkcelltooltip');
 
+        var currentTooltipHtml = '';
+
+        function tooltipIsOpen() {
+          return $('.bkcelltooltip-open').length > 0;
+        }
+
         ///handle showTooltip event//////////////////////
         scope.$on('showTooltip', function(event, doc) {
           tooltip.empty();
           bindEvents();
           var html = getDocContent(doc);
+
+          if (tooltipIsOpen() && html === currentTooltipHtml) {
+            return hideTooltip();
+          }
+
           if (html) {
+            currentTooltipHtml = html;
             displayTooltip(html);
             setTooltipPosition(calculateTooltipPosition());
           }

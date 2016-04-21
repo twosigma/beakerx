@@ -808,9 +808,11 @@
         };
 
         var attachSubmitListener = function() {
-          $document.on('keydown.modal', function(e) {
+          $document.on('keydown.modal', function (e) {
             if (e.which === 13) {
-              $('.modal .modal-submit').click();
+              var modal_submit = $('.modal .modal-submit');
+              if (modal_submit.length > 0)
+                modal_submit[0].click();
             }
           });
         };
@@ -876,6 +878,7 @@
         } else {
           btnText = btnText ? btnText : "Close";
           btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'btn-primary';
+          if (btnClass.indexOf("modal-submit") === -1) btnClass+=" modal-submit";
           var template = "<div class='modal-header'>" +
               "<h1>" + msgHeader + "</h1>" +
               "</div>" +

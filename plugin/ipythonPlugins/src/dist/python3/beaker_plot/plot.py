@@ -12,20 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .chart import Chart
+from .xyChart import XYChart
 
-class AbstractChart(Chart):
-    def __init__(self):
-        super().__init__()
-        self.xLowerMargin = 0.05
-        self.xUpperMargin = 0.05
-        self.xLabel = ""
-        self.omitCheckboxes = False
+class Plot(XYChart):
+
+    def transform (self):
+        out = {}
+        out['type'] = "Plot"
+        self._transform(out)
+        return out
 
     def _transform (self, out):
         super()._transform(out)
-        out['x_lower_margin'] = self.xLowerMargin
-        out['x_upper_margin'] = self.xUpperMargin
-        # out['xLabel'] = self.xLabel
-        out['omit_checkboxes'] = self.omitCheckboxes
 
+
+def transformBack (obj):
+    return Plot()

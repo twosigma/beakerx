@@ -12,18 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from .legend import LegendLayout
+from .legend import LegendPosition
+
+from .chart import Chart
 from .abstractChart import AbstractChart
+from .xyChart import XYChart
+from .plot import Plot
 
-class Plot(AbstractChart):
-    def transform (self):
-        out = {}
-        out['type'] = "Plot"
-        self._transform(out)
-        return out
-
-    def _transform (self, out):
-        super()._transform(out)
-
-
-def transformBack (obj):
-    return Plot()
+from .plotitem import *

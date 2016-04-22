@@ -408,7 +408,7 @@ define(function(require, exports, module) {
     },
     loadAllLibraries: function() {
       var scriptsToLoad = this.settings.libraries && this.settings.libraries.length ? getLibraryUrls(this.settings.libraries) : [];
-      scriptsToLoad = scriptsToLoad.concat(this.settings.scripts && this.settings.scripts.length ? this.settings.scripts : []);
+      scriptsToLoad = scriptsToLoad.concat(this.settings.scripts && this.settings.scripts.length ? this.settings.scripts.split("\n") : []);
 
       if (scriptsToLoad.length) {
         window.loadQueuePromise = window.loadQueuePromise.then(function() {

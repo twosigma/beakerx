@@ -42,12 +42,12 @@
        <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(true)" id="dt-show-all" class="menu-separator" eat-click>Show All Columns</a></li>
        <li class="dropdown-submenu">
          <a tabindex="-1" href="#" id="dt-show-columns" eat-click>Show Column</a>
-         <ul class="dropdown-menu" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
-           <div class="dropdown-menu-search" stop-click>
-             <i class="fa fa-search"></i>
-             <input ng-model="showColumnSearch" placeholder="search...">
-           </div>
-           <li ng-repeat="title in columnNames | filter: showColumnSearch">
+         <div class="dropdown-menu dropdown-menu-search" ng-if="showColumnMenu.searchable()" stop-click>
+           <i class="fa fa-search"></i>
+           <input ng-model="showColumnMenu.search" placeholder="search...">
+         </div>
+         <ul class="dropdown-menu scrollable" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
+           <li ng-repeat="title in columnNames | filter: showColumnMenu.search">
              <a tabindex="-1" href="" ng-click="showColumn($index+1, $event)">
                {{title}}
              </a>

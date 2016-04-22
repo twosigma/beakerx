@@ -64,6 +64,33 @@
       });
     };
   });
+
+  module.directive('dropdownMenuSearch', function() {
+    return {
+      restrict: 'C',
+      link: function(scope, element) {
+        setTimeout(function(){
+          var currentUL = element.siblings('ul');
+          var parentULs = currentUL.parents('ul');
+          var previousCss = [];
+          $([currentUL, parentULs]).each(function(i, e){
+            previousCss.push(e.attr("style"));
+            e.css({
+              position:   'absolute',
+              visibility: 'hidden',
+              display:    'block'
+            });
+          });
+
+          element.outerWidth(currentUL.width());
+
+          $([currentUL, parentULs]).each(function(i, e){
+            e.attr("style", previousCss[i] ? previousCss[i] : "");
+          });
+        });
+      }
+    }
+  });
   module.directive('dropdownPromoted', function() {
     // Is your dropdown being covered by its ancestors siblings?
     // Promote that shiz, and prepend it to the notebook so it doesn't

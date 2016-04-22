@@ -35,9 +35,8 @@
     top: 4px;
   }
 
-  > .dropdown-menu-search {
-    position: relative;
-    padding: 3px;
+  &.dropdown-menu-search {
+    padding: 5px 3px;
     input {
       border: 1px solid #ccc;
       padding: 0 0 0 18px;
@@ -55,6 +54,17 @@
       cursor: auto;
     }
   }
+
+  &.dropdown-menu-search + ul {
+    top: 30px;
+  }
+
+  &.scrollable {
+    overflow-y: auto;
+    max-height: 175px;
+    margin-bottom: 5px;
+  }
+
 }
 
 .dropdown-menu .fa {

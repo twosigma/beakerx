@@ -433,13 +433,13 @@ define(function(require, exports, module) {
         values: _.mapValues(LANGUAGE_VERSIONS, function(version) {return version.name;})
       },
       libraries: {
-        name: "Libraries",
+        name: "Search for Libraries",
         type: "settableSelect",
         remote: "https://api.cdnjs.com/libraries",
         action: "loadAllLibraries"
       },
       scripts: {
-        name: "Remote Javascript Files",
+        name: "Include Javascript Files",
         type: "settableString",
         action: "loadAllLibraries"
       }

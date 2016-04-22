@@ -491,7 +491,8 @@
             return;
           }
           if (cm.getCursor().line === scope.cm.doc.lastLine()
-            && cm.getCursor().ch === scope.cm.doc.getLine(scope.cm.doc.lastLine()).length) {
+            && cm.getCursor().ch === scope.cm.doc.getLine(scope.cm.doc.lastLine()).length
+            && !cm.somethingSelected()) {
             var nextCell = moveFocusDown();
             if (nextCell){
               var nextCm = scope.bkNotebook.getCM(nextCell.id);
@@ -552,7 +553,7 @@
             //codecomplete is up, skip
             return;
           }
-          if (cm.getCursor().line === cm.doc.size - 1) {
+          if (cm.getCursor().line === cm.doc.size - 1 && !cm.somethingSelected()) {
             var nextCell = moveFocusDown();
             if (nextCell) {
               var nextCm = scope.bkNotebook.getCM(nextCell.id);

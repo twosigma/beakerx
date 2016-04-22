@@ -42,7 +42,9 @@ define(function(require, exports, module) {
   }
 
   var DEFINE_BACKUP = define;
-  var loadQueuePromise = bkHelper.newPromise();
+  if (typeof window.loadQueuePromise === 'undefined') {
+    window.loadQueuePromise = bkHelper.newPromise();
+  }
   var scriptsLoaded = [];
 
   // Not using the es2015 plugin preset because it includes the "transform-es2015-modules-commonjs" plugin which puts forces strict mode on
@@ -403,16 +405,16 @@ define(function(require, exports, module) {
       scriptsToLoad = scriptsToLoad.concat(this.settings.scripts && this.settings.scripts.length ? this.settings.scripts : []);
 
       if (scriptsToLoad.length) {
-        loadQueuePromise = loadQueuePromise.then(function() {
+        window.loadQueuePromise = window.loadQueuePromise.then(function() {
           define = void 0;
           return bkHelper.newPromise();
         });
         _.forEach(scriptsToLoad, function(scriptUrl) {
-          loadQueuePromise = loadQueuePromise.then(function() {
+          window.loadQueuePromise = window.loadQueuePromise.then(function() {
             return loadLibraryIfNotLoaded(scriptUrl);
           });
         });
-        loadQueuePromise = loadQueuePromise.then(function() {
+        window.loadQueuePromise = window.loadQueuePromise.then(function() {
           define = DEFINE_BACKUP;
           return bkHelper.newPromise();
         });

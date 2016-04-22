@@ -28,11 +28,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 class ProxyWebSocket extends WebSocketAdapter {
 
   private static final int INTERNAL_SERVER_ERROR_STATUSCODE = 1011;
   private static final int REMOTE_CONNECTION_WAIT_SECONDS = 30;
+  private final static Logger logger = Logger.getLogger(ProxyWebSocket.class.getName());
 
   private final CountDownLatch remoteSessionSync = new CountDownLatch(1);
   private Session clientSession;
@@ -77,7 +80,7 @@ class ProxyWebSocket extends WebSocketAdapter {
         remoteSession.getRemote().sendString(message);
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.log(Level.WARNING, "error sending text to remote WS", e);
     }
   }
 
@@ -131,7 +134,7 @@ class ProxyWebSocket extends WebSocketAdapter {
       try {
         clientSession.getRemote().sendString(message);
       } catch (IOException e) {
-        e.printStackTrace();
+        logger.log(Level.WARNING, "error sending text to client WS", e);
       }
     }
 

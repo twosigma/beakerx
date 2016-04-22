@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.SecureRandom;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ class DefaultBeakerConfig implements BeakerConfig {
   private final Integer reservedPortCount;
   private final String configFileUrl;
   private final String preferenceFileUrl;
-  private final String defaultNotebookUrl;
+  private final String preferencesDefaultNotebook;
   private final String recentNotebooksFileUrl;
   private final String sessionBackupDir;
   private final Map<String, String> pluginLocations;
@@ -136,20 +137,9 @@ class DefaultBeakerConfig implements BeakerConfig {
     this.prefs = obj;
 
     this.userFolder = this.dotDir + "/web";
-    utils.ensureDirectoryExists(userFolder); 
+    utils.ensureDirectoryExists(userFolder);
 
-    final String prefDefaultNotebookUrl = pref.getDefaultNotebookUrl();
-    final String mainDefaultNotebookPath = this.dotDir + "/config/default-notebook.bkr";
-    final String defaultDefaultNotebookPath = this.installDir + "/config/default-notebook.bkr";
-    if (prefDefaultNotebookUrl != null) {
-      this.defaultNotebookUrl = prefDefaultNotebookUrl;
-    } else {
-      File f = new File(mainDefaultNotebookPath);
-      if(f.exists())
-        this.defaultNotebookUrl = mainDefaultNotebookPath;
-      else
-        this.defaultNotebookUrl = defaultDefaultNotebookPath;
-    }
+    this.preferencesDefaultNotebook = pref.getDefaultNotebookUrl();
 
     String varDir = this.dotDir + "/var";
     utils.ensureDirectoryExists(varDir);
@@ -278,7 +268,17 @@ class DefaultBeakerConfig implements BeakerConfig {
 
   @Override
   public String getDefaultNotebookUrl() {
-    return this.defaultNotebookUrl;
+    if (this.preferencesDefaultNotebook != null) {
+      return this.preferencesDefaultNotebook;
+    }
+    final String mainDefaultNotebookPath = this.dotDir + "/config/default-notebook.bkr";
+    final String defaultDefaultNotebookPath = this.installDir + "/config/default-notebook.bkr";
+    File f = new File(mainDefaultNotebookPath);
+    if(f.exists()) {
+      return mainDefaultNotebookPath;
+    } else {
+      return defaultDefaultNotebookPath;
+    }
   }
 
   @Override

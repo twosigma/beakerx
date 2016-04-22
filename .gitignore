@@ -35,7 +35,6 @@ launcher/electron/jre.zip
 launcher/electron/jre
 launcher/electron/dist
 launcher/electron/electron-v0.28.1-darwin-x64
-launcher/electron/electron-v0.28.1-darwin-x64.zip
 core/src/main/web/animation.gif
 core/src/main/web/foo.html
 launcher/electron/Beaker.app
@@ -46,7 +45,7 @@ launcher/electron/_MACOSX
 launcher/electron/beaker
 launcher/electron/osxdmg
 launcher/electron/beaker-notebook-*-electron-mac.dmg
-launcher/electron/electron-v0.32.1-darwin-x64.zip
+launcher/electron/electron-v*.zip
 launcher/electron/templates/makeWinInstaller.iss
 launcher/windows/python
 

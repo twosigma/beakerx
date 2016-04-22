@@ -184,7 +184,7 @@ define(function(require, exports, module) {
     if (scriptLoaded(url)) {
       deferred.resolve(url);
     } else {
-      loadLibrary(url, deferred.resolve);
+      loadLibrary(url, deferred.resolve, deferred.reject);
     }
     return deferred.promise;
   }
@@ -193,13 +193,19 @@ define(function(require, exports, module) {
     return _.contains(scriptsLoaded, scriptUrl);
   }
 
-  function loadLibrary(url, cb) {
+  function loadLibrary(url, cbSuccess, cbError) {
     jQuery.ajax({
       type: "GET",
       url: url,
       success: function() {
         scriptsLoaded.push(url);
-        _.defer(function() {cb(url)});
+        _.defer(function() {cbSuccess(url)});
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        cbError({
+          message: "Script " + url + " failed to load - ",
+          error: errorThrown
+        });
       },
       dataType: "script",
       cache: true
@@ -412,7 +418,7 @@ define(function(require, exports, module) {
         _.forEach(scriptsToLoad, function(scriptUrl) {
           window.loadQueuePromise = window.loadQueuePromise.then(function() {
             return loadLibraryIfNotLoaded(scriptUrl);
-          });
+          }).catch(function(e) {console.error(e.message + " - " + e.error);});
         });
         window.loadQueuePromise = window.loadQueuePromise.then(function() {
           define = DEFINE_BACKUP;

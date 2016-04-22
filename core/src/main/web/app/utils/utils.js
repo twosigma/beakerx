@@ -386,7 +386,7 @@
               });
             });
             return deferred.promise;
-          });
+          }).catch(function(e) {console.error(e.message + " - " + e.error)});
 
         }
         throw "illegal arg" + url;

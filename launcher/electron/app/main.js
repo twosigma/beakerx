@@ -33,7 +33,11 @@ var appReady = false;
 var filesToOpen = [];
 var ipcPort = 32326;
 var osName = os.type();
-var willQuit = false;
+
+var _osName = os.type();
+var isMac = _osName.startsWith('Darwin');
+
+var willQuit = isMac ? false : true;
 
 // Report crashes to our server.
 crashReporter.start();
@@ -100,6 +104,7 @@ app.on('open-file', function(event, path) {
 // When all windows die
 app.on('window-all-closed', function() {
   if (!willQuit) {
+    if (!isMac) willQuit = true;
     mainMenu.show();
   } else {
     app.quit();

@@ -40,10 +40,13 @@
           $scope.highlight = true;
         });
 
-        $scope.searchRemote = function(url, scopeProperty) {
-          bkUtils.httpGet(url).then(function(response) {
-            $scope[scopeProperty] = _.take(response.data.results, 20);
-          });
+        $scope.searchRemote = function(url, scopeProperty, searchInput) {
+          if (searchInput && searchInput.length > 0) {
+            bkUtils.httpGet(url).then(function(response) {
+              $scope[scopeProperty] = _.take(response.data.results, 20);
+            });
+          }
+          $scope[scopeProperty] = [];
         };
 
         $scope.showLibraryPreview = function(library, prop) {

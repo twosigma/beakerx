@@ -15,20 +15,18 @@
  */
 package com.twosigma.beaker.shared.servlet.rules;
 
-import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
+import com.twosigma.beaker.shared.servlet.ProxyServlet;
 import org.eclipse.jetty.client.api.Request;
 
 import javax.servlet.http.HttpServletRequest;
-
-import static java.lang.String.format;
 
 public class ApplyPluginSpecificRules extends ProxyRuleImpl {
 
   private final String hash;
   private final String corePort;
-  private final BeakerProxyServlet proxyServlet;
+  private final ProxyServlet proxyServlet;
 
-  public ApplyPluginSpecificRules(BeakerProxyServlet servlet, String hash, String corePort) {
+  public ApplyPluginSpecificRules(ProxyServlet servlet, String hash, String corePort) {
     this.proxyServlet = servlet;
     this.hash = hash;
     this.corePort = corePort;
@@ -36,7 +34,7 @@ public class ApplyPluginSpecificRules extends ProxyRuleImpl {
 
   @Override
   public String rewriteTarget(String url, HttpServletRequest request) {
-    for (BeakerProxyServlet.PluginConfig pluginConfig : proxyServlet.getPlugins().values()) {
+    for (ProxyServlet.PluginConfig pluginConfig : proxyServlet.getPlugins().values()) {
       if (pluginSatisfy(request.getPathInfo(), pluginConfig)) {
         return rewriteForPlugin(url, request, pluginConfig);
       }
@@ -46,7 +44,7 @@ public class ApplyPluginSpecificRules extends ProxyRuleImpl {
 
   @Override
   public void setHeaders(Request proxyRequest, HttpServletRequest clientRequest) {
-    for (BeakerProxyServlet.PluginConfig pluginConfig : this.proxyServlet.getPlugins().values()) {
+    for (ProxyServlet.PluginConfig pluginConfig : this.proxyServlet.getPlugins().values()) {
       if (pluginSatisfy(clientRequest.getPathInfo(), pluginConfig)) {
         addHeadersForPlugin(proxyRequest, clientRequest, pluginConfig);
         return;
@@ -56,7 +54,7 @@ public class ApplyPluginSpecificRules extends ProxyRuleImpl {
 
   @Override
   public boolean satisfy(final HttpServletRequest request) {
-    for (BeakerProxyServlet.PluginConfig config : this.proxyServlet.getPlugins().values()) {
+    for (ProxyServlet.PluginConfig config : this.proxyServlet.getPlugins().values()) {
       if (pluginSatisfy(request.getPathInfo(), config)) {
         return true;
       }
@@ -64,7 +62,7 @@ public class ApplyPluginSpecificRules extends ProxyRuleImpl {
     return false;
   }
 
-  private void addHeadersForPlugin(Request proxyRequest, HttpServletRequest clientRequest, BeakerProxyServlet.PluginConfig pluginConfig) {
+  private void addHeadersForPlugin(Request proxyRequest, HttpServletRequest clientRequest, ProxyServlet.PluginConfig pluginConfig) {
     for (PluginProxyRule pluginProxyRule : pluginConfig.getRules()) {
       if (pluginProxyRule.satisfy(clientRequest)) {
         pluginProxyRule.setHeaders(proxyRequest, clientRequest);
@@ -75,7 +73,7 @@ public class ApplyPluginSpecificRules extends ProxyRuleImpl {
     }
   }
 
-  private String rewriteForPlugin(String url, HttpServletRequest request, BeakerProxyServlet.PluginConfig pluginConfig) {
+  private String rewriteForPlugin(String url, HttpServletRequest request, ProxyServlet.PluginConfig pluginConfig) {
     for (ProxyRuleImpl rule : pluginConfig.getRules()) {
       if (rule.satisfy(request)) {
         url = rule.rewriteTarget(url, request);
@@ -87,7 +85,7 @@ public class ApplyPluginSpecificRules extends ProxyRuleImpl {
     return url;
   }
 
-  private boolean pluginSatisfy(String path, BeakerProxyServlet.PluginConfig config) {
+  private boolean pluginSatisfy(String path, ProxyServlet.PluginConfig config) {
     return path.contains(SLASH + this.hash + SLASH + config.getBaseUrl());
   }
 }

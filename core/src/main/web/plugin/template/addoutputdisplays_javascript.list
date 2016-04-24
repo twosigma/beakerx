@@ -5,6 +5,7 @@ outputdisplay/bko-latex.js
 outputdisplay/bko-progress.js
 outputdisplay/bko-results.js
 outputdisplay/bko-ggvis.js
+outputdisplay/bko-grviz.js
 outputdisplay/bko-vega.js
 outputdisplay/bko-plot/plotutils.js
 outputdisplay/bko-plot/plotsampler.js

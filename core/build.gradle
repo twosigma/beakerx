@@ -110,6 +110,11 @@ task (copyGGVis, type: Copy) {
 	into 'src/main/web/app/vendor/ggvis/'
 }
 
+task (copyGrViz, type: Copy) {
+  from 'src/main/web/vendor/grviz/'
+  into 'src/main/web/app/vendor/grviz/'
+}
+
 task copyPlotly << {
   copy {
     from 'src/main/web/vendor/plotly/'
@@ -132,6 +137,7 @@ copyVendorStuff.dependsOn copyKatex
 copyVendorStuff.dependsOn copyRequireJS
 copyVendorStuff.dependsOn copyJQueryUIImages
 copyVendorStuff.dependsOn copyGGVis
+copyVendorStuff.dependsOn copyGrViz
 copyVendorStuff.dependsOn copyPlotly
 
 task (compileAssets, type: Exec) {

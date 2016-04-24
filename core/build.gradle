@@ -110,9 +110,28 @@ task (copyGGVis, type: Copy) {
 	into 'src/main/web/app/vendor/ggvis/'
 }
 
-task (copyGrViz, type: Copy) {
-  from 'src/main/web/vendor/grviz/'
-  into 'src/main/web/app/vendor/grviz/'
+task copyGrViz << {
+  copy {
+    from 'src/main/web/vendor/grviz/'
+    into 'src/main/web/app/vendor/grviz/'
+  }
+  copy {
+    from 'src/main/web/vendor/bower_components/d3/'
+    into 'src/main/web/app/vendor/bower_components/d3/'
+    include '**.min.js'
+  }
+  copy {
+    from 'src/main/web/vendor/bower_components/vis/dist/'
+    into 'src/main/web/app/vendor/bower_components/vis/'
+    include '**.min.js'
+    include '**.min.css'
+
+  }
+  copy {
+    from 'src/main/web/vendor/bower_components/vivagraphjs/dist/'
+    into 'src/main/web/app/vendor/bower_components/vivagraphjs/'
+    include '**.min.js'
+  }
 }
 
 task copyPlotly << {

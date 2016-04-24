@@ -28,16 +28,15 @@
           "<html>\n" +
           "<head>\n" +
           "<meta charset=\"utf-8\"/>\n" +
-          "<script src=\"app/vendor/grviz/lib/htmlwidgets/htmlwidgets.js\"></script>\n" +
-          "<script src=\"app/vendor/grviz/lib/d3/d3.min.js\"></script>\n" +
-          "<script src=\"app/vendor/grviz/lib/dagre-d3/dagre-d3.min.js\"></script>\n" +
+          "<script src=\"app/vendor/htmlwidgets/htmlwidgets.js\"></script>\n" +
+          "<script src=\"app/vendor/bower_components/d3/d3.min.js\"></script>\n" +
           "<link href=\"app/vendor/grviz/lib/mermaid/dist/mermaid.css\" rel=\"stylesheet\" />\n" +
           "<script src=\"app/vendor/grviz/lib/mermaid/dist/mermaid.slim.min.js\"></script>\n" +
           "<link href=\"app/vendor/grviz/lib/styles/styles.css\" rel=\"stylesheet\" />\n" +
           "<script src=\"app/vendor/grviz/lib/viz/viz.js\"></script>\n" +
-          "<script src=\"app/vendor/grviz/lib/vis/vis.min.js\"></script>\n" +
-          "<link href=\"app/vendor/grviz/lib/vis/vis.min.css\" rel=\"stylesheet\" />\n" +
-          "<script src=\"app/vendor/grviz/lib/VivaGraphJS/dist/vivagraph.min.js\"></script>\n" +
+          "<script src=\"app/vendor/bower_components/vis/vis.min.js\"></script>\n" +
+          "<link href=\"app/vendor/bower_components/vis/vis.min.css\" rel=\"stylesheet\" />\n" +
+          "<script src=\"app/vendor/bower_components/vivagraphjs/vivagraph.min.js\"></script>\n" +
           "<script src=\"app/vendor/grviz/visNetwork.js\"></script>\n" +
           "<script src=\"app/vendor/grviz/lib/chromatography/chromatography.js\"></script>\n" +
           "<script src=\"app/vendor/grviz/DiagrammeR.js\"></script>\n" +
@@ -46,10 +45,10 @@
           "</head>\n" +
           "<body style=\"background-color:white;\">\n" +
           "<div id=\"htmlwidget_container\">\n" +
-          "  <div id=\"htmlwidget-6900\" style=\"width:100%;height:100%;\" class=\"$type$ html-widget\"></div>\n" +
+          "  <div id=\"$widgetId$\" style=\"width:100%;height:100%;\" class=\"$type$ html-widget\"></div>\n" +
           "</div>\n" +
-          "<script type=\"application/json\" data-for=\"htmlwidget-6900\">$payload$</script>\n" +
-          "<script type=\"application/htmlwidget-sizing\" data-for=\"htmlwidget-6900\">{\"viewer\":{\"width\":450,\"height\":350,\"padding\":15,\"fill\":true},\"browser\":{\"width\":820,\"height\":420,\"padding\":40,\"fill\":false}}</script>\n" +
+          "<script type=\"application/json\" data-for=\"$widgetId$\">$payload$</script>\n" +
+          "<script type=\"application/htmlwidget-sizing\" data-for=\"$widgetId$\">{\"viewer\":{\"width\":450,\"height\":350,\"padding\":15,\"fill\":true},\"browser\":{\"width\":820,\"height\":420,\"padding\":20,\"fill\":false}}</script>\n" +
           "</body>\n" +
           "</html>";
 
@@ -64,7 +63,7 @@
 
         scope.getView = function() {
           return $sce.trustAsHtml(getTemplate()
-            .replace('$widgetId$', 'htmlwidget' + scope.widgetId)
+            .replace(new RegExp('\\$widgetId\\$', 'g'), 'htmlwidget-' + scope.widgetId)
             .replace('$type$', scope.payload.concreteType)
             .replace('$payload$', scope.payload ? JSON.stringify(fixPayload()) : ''));
         };

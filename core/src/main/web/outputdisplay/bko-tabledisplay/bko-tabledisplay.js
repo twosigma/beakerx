@@ -297,7 +297,7 @@
 
         $scope.showColumnMenu = {
           searchable: function(){
-            return $scope.columnNames && $scope.columnNames.length > 7;
+            return $scope.columnNames && $scope.columnNames.length > 10;
           }
         };
 

@@ -46,7 +46,7 @@
            <i class="fa fa-search"></i>
            <input ng-model="showColumnMenu.search" placeholder="search...">
          </div>
-         <ul class="dropdown-menu scrollable" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
+         <ul class="dropdown-menu dropdown-submenu-scrollable" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
            <li ng-repeat="title in columnNames | filter: showColumnMenu.search">
              <a tabindex="-1" href="" ng-click="showColumn($index+1, $event)">
                {{title}}

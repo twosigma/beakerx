@@ -91,6 +91,25 @@
       }
     }
   });
+  module.directive('dropdownSubmenuScrollable', function() {
+    return {
+      restrict: 'C',
+      link: function(scope, element) {
+        var parent = element.parent();
+        var hoverHandler = function() {
+          var position = element[0].getBoundingClientRect();
+          var marginb = 3;
+          element.css('max-height', window.innerHeight - position.top - marginb);
+        };
+
+        parent.on('mouseenter', hoverHandler);
+
+        scope.$on('$destroy', function(){
+          parent.off('mouseenter', hoverHandler);
+        });
+      }
+    }
+  });
   module.directive('dropdownPromoted', function() {
     // Is your dropdown being covered by its ancestors siblings?
     // Promote that shiz, and prepend it to the notebook so it doesn't

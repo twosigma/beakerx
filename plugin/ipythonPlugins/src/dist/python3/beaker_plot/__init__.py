@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .legend import LegendLayout
-from .legend import LegendPosition
+from .legend import *
+from .plotitem import *
 
 from .chart import Chart
 from .abstractChart import AbstractChart
 from .xyChart import XYChart
 from .plot import Plot
 
-from .plotitem import *
+

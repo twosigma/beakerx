@@ -238,7 +238,7 @@
           return /^<[a-z][\s\S]*>/i.test(value);
         };
         return function(result) {
-          if (!result) {
+          if (result === null || typeof result === "undefined") {
             return ["Hidden"];
           }
           if (!result.type) {

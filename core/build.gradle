@@ -110,10 +110,10 @@ task (copyGGVis, type: Copy) {
 	into 'src/main/web/app/vendor/ggvis/'
 }
 
-task copyGrViz << {
+task copyDiagrammer << {
   copy {
-    from 'src/main/web/vendor/grviz/'
-    into 'src/main/web/app/vendor/grviz/'
+    from 'src/main/web/vendor/diagrammer/'
+    into 'src/main/web/app/vendor/diagrammer/'
   }
   copy {
     from 'src/main/web/vendor/bower_components/d3/'
@@ -156,7 +156,7 @@ copyVendorStuff.dependsOn copyKatex
 copyVendorStuff.dependsOn copyRequireJS
 copyVendorStuff.dependsOn copyJQueryUIImages
 copyVendorStuff.dependsOn copyGGVis
-copyVendorStuff.dependsOn copyGrViz
+copyVendorStuff.dependsOn copyDiagrammer
 copyVendorStuff.dependsOn copyPlotly
 
 task (compileAssets, type: Exec) {

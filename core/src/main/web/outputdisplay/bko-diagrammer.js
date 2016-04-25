@@ -18,7 +18,7 @@
  */
 (function() {
   'use strict';
-  beakerRegister.bkoDirective("grViz", ["$interval", "$compile", "$sce", "bkOutputDisplayFactory", function(
+  beakerRegister.bkoDirective("DiagrammeR", ["$interval", "$compile", "$sce", "bkOutputDisplayFactory", function(
       $interval, $compile, $sce, bkOutputDisplayFactory) {
     return {
       template: '<div><iframe srcdoc="{{getView()}}" style="height: 500px; width: 900px; resize: both; overflow: auto; border: 0;"></iframe></div>',
@@ -30,17 +30,17 @@
           "<meta charset=\"utf-8\"/>\n" +
           "<script src=\"app/vendor/htmlwidgets/htmlwidgets.js\"></script>\n" +
           "<script src=\"app/vendor/bower_components/d3/d3.min.js\"></script>\n" +
-          "<link href=\"app/vendor/grviz/lib/mermaid/dist/mermaid.css\" rel=\"stylesheet\" />\n" +
-          "<script src=\"app/vendor/grviz/lib/mermaid/dist/mermaid.slim.min.js\"></script>\n" +
-          "<link href=\"app/vendor/grviz/lib/styles/styles.css\" rel=\"stylesheet\" />\n" +
-          "<script src=\"app/vendor/grviz/lib/viz/viz.js\"></script>\n" +
+          "<link href=\"app/vendor/diagrammer/lib/mermaid/dist/mermaid.css\" rel=\"stylesheet\" />\n" +
+          "<script src=\"app/vendor/diagrammer/lib/mermaid/dist/mermaid.slim.min.js\"></script>\n" +
+          "<link href=\"app/vendor/diagrammer/lib/styles/styles.css\" rel=\"stylesheet\" />\n" +
+          "<script src=\"app/vendor/diagrammer/lib/viz/viz.js\"></script>\n" +
           "<script src=\"app/vendor/bower_components/vis/vis.min.js\"></script>\n" +
           "<link href=\"app/vendor/bower_components/vis/vis.min.css\" rel=\"stylesheet\" />\n" +
           "<script src=\"app/vendor/bower_components/vivagraphjs/vivagraph.min.js\"></script>\n" +
-          "<script src=\"app/vendor/grviz/visNetwork.js\"></script>\n" +
-          "<script src=\"app/vendor/grviz/lib/chromatography/chromatography.js\"></script>\n" +
-          "<script src=\"app/vendor/grviz/DiagrammeR.js\"></script>\n" +
-          "<script src=\"app/vendor/grviz/grViz.js\"></script>\n" +
+          "<script src=\"app/vendor/diagrammer/visNetwork.js\"></script>\n" +
+          "<script src=\"app/vendor/diagrammer/lib/chromatography/chromatography.js\"></script>\n" +
+          "<script src=\"app/vendor/diagrammer/DiagrammeR.js\"></script>\n" +
+          "<script src=\"app/vendor/diagrammer/grViz.js\"></script>\n" +
           "\n" +
           "</head>\n" +
           "<body style=\"background-color:white;\">\n" +
@@ -99,5 +99,5 @@
       }
     };
   }]);
-  beakerRegister.registerOutputDisplay("grViz", ["grViz", "Text"]);
+  beakerRegister.registerOutputDisplay("DiagrammeR", ["DiagrammeR", "Text"]);
 })();

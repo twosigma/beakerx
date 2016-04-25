@@ -422,7 +422,7 @@ convertToJSON <- function(val, collapse) {
 	o = p
   } else if (class(val) == "grViz" || class(val) == "DiagrammeR" || class(val) == "visNetwork") {
     temp <- print(val)
-    p = "{ \"type\": \"grViz\", \"concreteType\":\"";
+    p = "{ \"type\": \"DiagrammeR\", \"concreteType\":\"";
     p = paste(p, class(val), sep='')
     p = paste(p, "\", \"data\":", sep='')
     p = paste(p, toJSON(val), sep='')

@@ -98,14 +98,39 @@
         var parent = element.parent();
         var hoverHandler = function() {
           var position = element[0].getBoundingClientRect();
-          var marginb = 3;
-          element.css('max-height', window.innerHeight - position.top - marginb);
+          if (position.bottom > window.innerHeight) {
+            var itemHeight = 24;
+            var marginb = 3;
+            var menuItemsLength = element.children().length;
+            var itemsToShow = Math.min(menuItemsLength, 10);//show at least 10 item. if items<10 show them all
+            var padding = element.innerHeight() - element.height();
+
+            var requiredVisibleHeight = itemHeight * itemsToShow + padding;
+            var actualVisibleHeight = window.innerHeight - position.top;
+            var diff = requiredVisibleHeight - actualVisibleHeight + marginb;
+            if (diff > 0) {
+              element.css('top', parseInt(element.css('top'), 10) - diff);
+              var searchBox = element.siblings('.dropdown-menu-search');
+              searchBox.css('top', parseInt(searchBox.css('top'), 10) - diff);
+              position = element[0].getBoundingClientRect();
+            }
+            //show scroll
+            element.css('max-height', window.innerHeight - position.top - marginb);
+          }
+        };
+
+        var leaveHandler = function () {
+          element.css('top', '');
+          element.css('max-height', '');
+          element.siblings('.dropdown-menu-search').css('top', '');
         };
 
         parent.on('mouseenter', hoverHandler);
+        parent.on('mouseleave', leaveHandler);
 
         scope.$on('$destroy', function(){
           parent.off('mouseenter', hoverHandler);
+          parent.off('mouseleave', leaveHandler);
         });
       }
     }

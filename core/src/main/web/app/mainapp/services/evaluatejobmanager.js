@@ -69,7 +69,7 @@
       };
 
       var getEvaluatingStatusMsg = function (job) {
-        return "Evaluating " + job.evaluatorId + " cell " + job.cellId;
+        return "Evaluating " + job.evaluatorId + " cell" + (!_.isEmpty(job.tags) ? " " + job.tags : "");
       };
 
       var doNext = function(innext) {
@@ -260,7 +260,8 @@
           finished: false,
           runchild: undefined,
           children: [],
-          whendone : deferred
+          whendone : deferred,
+          tags: cell.tags
         };
         jobQueue.addChildren(parent,evalJob);
         if (notick === undefined)
@@ -301,7 +302,8 @@
           finished: false,
           runchild: undefined,
           children: [],
-          whendone : deferred
+          whendone : deferred,
+          tags: cell.tags
         };
         jobQueue.add(evalJob);
         if (notick === undefined)

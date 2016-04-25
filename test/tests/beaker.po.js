@@ -294,6 +294,10 @@ var BeakerPageObject = function() {
     return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('labelg'));
   };
 
+  this.getPlotLabelgByIdCell = function (idCell, containerIdx) {
+    return this.getPlotSvgByIdCell(idCell, containerIdx).element(By.id('labelg'));
+  };
+
   this.getPlotSvgElementByIndex= function (codeCellOutputIdx, containerIdx, elementIndex) {
     return this.getPlotSvg(codeCellOutputIdx, containerIdx).all(by.css("#maing > g")).get(elementIndex);
   };
@@ -466,6 +470,11 @@ var BeakerPageObject = function() {
   this.checkPlotLegentdLabel = function (codeCellOutputIdx, containerIdx, legentdLabelIndex, text) {
     expect(this.getPlotLegendContainer(codeCellOutputIdx, containerIdx)
       .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
+  }
+
+  this.checkPlotLegentdLabelByIdCell = function (idCell, containerIdx, legentdLabelIndex, text) {
+    expect(this.getPlotLegendContainerByIdCell(idCell, containerIdx)
+        .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
   }
 
   this.checkLegendIsPresentByIdCell = function (codeCellOutputId, containerIdx) {
@@ -757,6 +766,30 @@ var BeakerPageObject = function() {
   this.getCodeOutputCellIdBySectionTitle = function (sectionTitle) {
     return this.getCodeCellOutputBySectionTitle(sectionTitle).getAttribute('cell-id');
   };
+
+  this.getBkCellByIdCell = function (idCell) {
+    return element.all(by.css('[cellid=' + idCell + '] > div')).get(0);
+  };
+
+  this.scrollToBkCellByIdCell = function (idCell) {
+    return browser.executeScript("$('[cellid=" + idCell +"]')[0].scrollIntoView();");
+  };
+
+  this.clickCodeCellInputButtonByIdCell = function(idCell, outputType){
+    var self = this;
+    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']')), 5000)
+        .then(browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), 20000)
+            .then(
+                function(isPresent){
+                  expect(isPresent).toBe(true);
+                },
+                function(value){
+                  expect(value).toBe('Output cell have displayed');
+                  expect(self.getCodeCellOutputByIdCell(idCell).element(by.css('.out_error')).getText()).toBe('out error');
+                }
+            ));
+  }
 
 };
 module.exports = BeakerPageObject;

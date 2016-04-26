@@ -998,8 +998,10 @@
             modelOutput.result.object.outputdata.push(evaluation.outputdata[idx]);
           }
           var cnt = 0;
-          for (idx=0; idx<modelOutput.result.object.outputdata.length; idx++) {
-            cnt += modelOutput.result.object.outputdata[idx].value.split(/\n/).length;
+          for (idx = 0; idx < modelOutput.result.object.outputdata.length; idx++) {
+            var l = modelOutput.result.object.outputdata[idx].value.split(/\n/).length;
+            if (l > 0)
+              cnt += l - 1;
           }
           if (cnt > maxNumOfLines) {
             cnt -= maxNumOfLines;

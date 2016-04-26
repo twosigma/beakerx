@@ -263,7 +263,7 @@
                     "// But if you set the followin preference, then output is directed to a panel that opens up",
                     "// and collects all ouput like a log, and is not saved in the notebook.",
                     "// The preference itself is not saved in the notebook.",
-                    "beaker.prefs.useOutputPanel = false",
+                    "beaker.prefs.useOutputPanel = true",
                     "// After running this cell, run the above cell again."
                 ]
             },

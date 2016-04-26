@@ -204,7 +204,7 @@ task addevalplugins(dependsOn: []) {
       from 'templates/addevalplugins.template'
       into '.'
       rename { String fileName ->
-        "src/main/web/plugin/init/addevalplugins.js"
+        "src/main/web/app/genweb/addevalplugins.js"
       }
       filter(ReplaceTokens, tokens: [pluginDescriptions: generatePluginDescriptions()])
     }
@@ -270,7 +270,6 @@ task doRemove() {
       delete "config/build_time"
       delete "config/hash"
       delete "config/version"
-      delete  "src/main/web/plugin/init/addevalplugins.js"
   }
 }
 

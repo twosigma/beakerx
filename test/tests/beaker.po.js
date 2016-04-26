@@ -650,7 +650,7 @@ var BeakerPageObject = function() {
   };
 
   this.getDataTableMenuToggle = function (sectionTitle) {
-    return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('.dtmenu .dropdown-toggle'));
+    return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('a[ng-click="menuToggle()"]'));
   };
 
   this.getDataTableSubmenu = function (sectionTitle, menuTitle) {
@@ -757,6 +757,14 @@ var BeakerPageObject = function() {
   this.getCodeOutputCellIdBySectionTitle = function (sectionTitle) {
     return this.getCodeCellOutputBySectionTitle(sectionTitle).getAttribute('cell-id');
   };
+
+  this.waitCodeCellOutputPresentByIdCell = function(idCell, outputType) {
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), 20000);
+  }
+
+  this.waitCodeCellOutputTablePresentByIdCell = function(idCell) {
+    this.waitCodeCellOutputPresentByIdCell(idCell, 'Table');
+  }
 
   this.getBkCellByIdCell = function (idCell) {
     return element.all(by.css('[cellid=' + idCell + '] > div')).get(0);

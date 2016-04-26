@@ -20,7 +20,7 @@
     "ngstorage": "0.3.0",
     "font-awesome": "4.0.3",
     "big.js": "~2.5.1",
-    "marked": "~0.3.3",
+    "markdown-it": "6.0.1",
     "acorn": "0.3.1",
     "katex-build": "~0.5.1",
     "scrollin": "~0.3.0",

@@ -492,7 +492,8 @@
             return;
           }
           if (cm.getCursor().line === scope.cm.doc.lastLine()
-            && cm.getCursor().ch === scope.cm.doc.getLine(scope.cm.doc.lastLine()).length) {
+            && cm.getCursor().ch === scope.cm.doc.getLine(scope.cm.doc.lastLine()).length
+            && !cm.somethingSelected()) {
             var nextCell = moveFocusDown();
             if (nextCell){
               var nextCm = scope.bkNotebook.getCM(nextCell.id);
@@ -553,7 +554,7 @@
             //codecomplete is up, skip
             return;
           }
-          if (cm.getCursor().line === cm.doc.size - 1) {
+          if (cm.getCursor().line === cm.doc.size - 1 && !cm.somethingSelected()) {
             var nextCell = moveFocusDown();
             if (nextCell) {
               var nextCm = scope.bkNotebook.getCM(nextCell.id);
@@ -809,9 +810,11 @@
         };
 
         var attachSubmitListener = function() {
-          $document.on('keydown.modal', function(e) {
+          $document.on('keydown.modal', function (e) {
             if (e.which === 13) {
-              $('.modal .modal-submit').click();
+              var modal_submit = $('.modal .modal-submit');
+              if (modal_submit.length > 0)
+                modal_submit[0].click();
             }
           });
         };
@@ -877,6 +880,7 @@
         } else {
           btnText = btnText ? btnText : "Close";
           btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'btn-primary';
+          if (btnClass.indexOf("modal-submit") === -1) btnClass+=" modal-submit";
           var template = "<div class='modal-header'>" +
               "<h1>" + msgHeader + "</h1>" +
               "</div>" +
@@ -1037,20 +1041,28 @@
           }
         });
       },
-      showLanguageManager: function() {
-        var options = {
-          windowClass: 'beaker-sandbox',
-          backdropClass: 'beaker-sandbox',
-          backdrop: true,
-          keyboard: true,
-          backdropClick: true,
-          controller: 'pluginManagerCtrl',
-          template: JST['mainapp/components/pluginmanager/pluginmanager']()
-        };
+      showLanguageManager: (function() {
+        var languageManagerInstance;
 
-        var dd = $uibModal.open(options);
-        return dd.result;
-      },
+        return function() {
+          // result status is 1 if modal is closed, 2 if it is dismissed, and 0 if still open
+          if (languageManagerInstance && languageManagerInstance.result.$$state.status === 0) {
+            return languageManagerInstance.close()
+          }
+          var options = {
+            windowClass: 'beaker-sandbox',
+            backdropClass: 'beaker-sandbox',
+            backdrop: true,
+            keyboard: true,
+            backdropClick: true,
+            controller: 'pluginManagerCtrl',
+            template: JST['mainapp/components/pluginmanager/pluginmanager']()
+          };
+
+          languageManagerInstance = $uibModal.open(options);
+          return languageManagerInstance.result;
+        };
+      })(),
       showPublishForm: function(nModel, callback) {
         var options = {
           windowClass: 'beaker-sandbox',

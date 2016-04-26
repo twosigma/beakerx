@@ -45,7 +45,7 @@
         $scope.searchRemote = function(url, scopeProperty, searchInput) {
           if (searchInput && searchInput.length > 0) {
             $scope.searchingRemote = true;
-            bkUtils.httpGet(url).then(function(response) {
+            bkUtils.httpGetCached(url).then(function(response) {
               var jsLibraries = _.filter(response.data.results, function(e) {
                 return _.endsWith(e.latest, 'js');
               });

@@ -132,6 +132,9 @@
       httpGet: function(url, data, headers) {
         return angularUtils.httpGet(url, data, headers);
       },
+      httpGetCached: function(url, data, headers) {
+        return angularUtils.httpGetCached(url, data, headers);
+      },
       httpGetJson: function(url, data, headers) {
         return angularUtils.httpGetJson(url, data, headers);
       },

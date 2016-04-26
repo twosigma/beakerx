@@ -33,6 +33,74 @@ def winOrUnix(Object... args) {
   }
 }
 
+def collectPlugins(String path) {
+  def plugins = [];
+  def tree = fileTree(path){
+    include  '**/dist/**/*.js'
+    exclude '**/dist/app/**'
+    exclude '**/dist/vendor/**'
+    exclude '**/node_modules/**'
+  };
+  tree.visit { element ->
+    if (!element.isDirectory())
+      plugins << element.file
+  }
+  return plugins;
+}
+
+def getPluginKeyValue(line){
+  def start = line.indexOf('"')
+  def end = line.lastIndexOf('"')
+  if (start == -1 && end == -1){
+    start = line.indexOf("'")
+    end = line.lastIndexOf("'")
+  }
+  if (start != -1 && end != -1)
+    return line.substring(start + 1, end);
+  return ''
+}
+
+def generatePluginDescriptions(){
+  def pluginDescriptions = '';
+  def pluginKeys = [
+    "bgColor",
+    "fgColor",
+    "borderColor",
+    "shortName",
+    "tooltip"
+  ]
+  def plugins = collectPlugins('../plugin')
+  plugins.each { file ->
+    def map = [:]
+    def lines = file.readLines();
+    lines.each { String line ->
+      if (line.contains("var PLUGIN_NAME = ")){
+        map['pluginName'] = getPluginKeyValue(line);
+      }else if (line.contains('var COMMAND = ')){
+        def command = getPluginKeyValue(line);
+        map['url'] = "./plugins/eval/"+ command.substring(0, command.lastIndexOf('/')+1)+file.name;
+      }
+      else{
+        pluginKeys.each { String key ->
+          if (line.contains(key)) {
+            map[key] = getPluginKeyValue(line);
+          }
+        }
+      }
+    }
+    def pluginDescription = String.format("\"%s\": { url : \"%s\", bgColor: \"%s\", fgColor: \"%s\", borderColor: \"%s\", shortName: \"%s\", tooltip: \"%s\" },\n"
+      , map['pluginName']
+      , map['url']
+      , map['bgColor']
+      , map['fgColor']
+      , map['borderColor']
+      , map['shortName']
+      , map['tooltip'])
+    pluginDescriptions += pluginDescription;
+  }
+  return pluginDescriptions;
+}
+
 repositories {
   mavenCentral()
 }
@@ -43,13 +111,9 @@ dependencies {
   compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.17.1'
   compile group: 'com.sun.jersey', name: 'jersey-core', version: '1.17.1'
   compile group: 'commons-cli', name: 'commons-cli', version: '1.2'
+  compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
   compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.1'
-  compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.3.8.v20160314'
-  compile group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: '9.3.8.v20160314'
-  compile group: 'org.eclipse.jetty.websocket', name: 'websocket-client', version: '9.3.8.v20160314'
-  compile group: 'org.eclipse.jetty.websocket', name: 'javax-websocket-server-impl', version: '9.3.8.v20160314'
-  compile group: 'org.eclipse.jetty', name: 'jetty-util', version: '9.3.8.v20160314'
-  compile group: 'org.eclipse.jetty', name: 'jetty-util-ajax', version: '9.3.8.v20160314'
+  compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '8.1.13.v20130916'
   compile group: 'org.jvnet.winp', name: 'winp', version: '1.18'
   compile group: 'org.samba.jcifs', name: 'jcifs', version: '1.3.3'
   runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.6'
@@ -131,12 +195,24 @@ task (copyJQueryUIImages, type: Copy) {
 }
 
 
+import org.apache.tools.ant.filters.ReplaceTokens
+task addevalplugins(type: Copy, dependsOn: []) {
+  from 'templates/addevalplugins.template'
+  into '.'
+  rename { String fileName ->
+    "src/main/web/plugin/init/addevalplugins.js"
+  }
+  filter(ReplaceTokens, tokens: [pluginDescriptions: generatePluginDescriptions()])
+}
+
+
 task copyVendorStuff
 copyVendorStuff.dependsOn copyKatex
 copyVendorStuff.dependsOn copyRequireJS
 copyVendorStuff.dependsOn copyJQueryUIImages
 copyVendorStuff.dependsOn copyGGVis
 copyVendorStuff.dependsOn copyPlotly
+copyVendorStuff.dependsOn addevalplugins
 
 task (compileAssets, type: Exec) {
   commandLine(*(winOrUnix('npm', 'run-script', 'compile')))
@@ -154,6 +230,24 @@ task (compileAssetsEmbed, type: Exec) {
   }
 }
 
+task (copyNginx, type: Exec) {
+  if (mac()) {
+//  def brewLocation = 'which brew'.execute().text[0..-10] // use nginx from current machine
+    def brewLocation = '../launcher/mac/nginx/' // use nginx from old mac
+    commandLine 'cp', '-f',
+      brewLocation + 'lib/libpcre.1.dylib',
+      brewLocation + 'bin/nginx',
+      brewLocation + 'opt/openssl/lib/libssl.1.0.0.dylib',
+      brewLocation + 'opt/openssl/lib/libcrypto.1.0.0.dylib',
+      brewLocation + 'etc/nginx/mime.types',
+      'nginx/bin'
+  } else if (windows()) {
+    def nginxLocation = 'cmd /c where nginx'.execute().text.trim()
+    commandLine 'cmd', '/c', 'xcopy', '/Y', '/Q', nginxLocation, 'nginx\\bin', '&', 'xcopy', '/Y', '/Q', nginxLocation + '\\..\\conf\\mime.types', 'nginx\\bin'
+  }
+}
+
+
 task doRemove() {
   doLast {
       delete fileTree(dir: "node_modules")
@@ -170,6 +264,7 @@ task doRemove() {
       delete "config/build_time"
       delete "config/hash"
       delete "config/version"
+      delete  "src/main/web/plugin/init/addevalplugins.js"
   }
 }
 
@@ -209,6 +304,16 @@ runembed.dependsOn buildembed
 runembed.dependsOn jar
 runembed.dependsOn copyVendorStuff
 clean.dependsOn deleteTemp
+
+if (mac() || windows()) {
+  build.dependsOn copyNginx
+  buildembed.dependsOn copyNginx
+  builddebug.dependsOn copyNginx
+  run.dependsOn copyNginx
+  startScripts {
+    defaultJvmOpts=['-Dbeaker.nginx.bin.dir=' + './nginx/bin']
+  }
+}
 
 compileJava {
   options.compilerArgs << '-Xlint:deprecation'

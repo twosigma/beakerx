@@ -196,13 +196,17 @@ task (copyJQueryUIImages, type: Copy) {
 
 
 import org.apache.tools.ant.filters.ReplaceTokens
-task addevalplugins(type: Copy, dependsOn: []) {
-  from 'templates/addevalplugins.template'
-  into '.'
-  rename { String fileName ->
-    "src/main/web/plugin/init/addevalplugins.js"
+task addevalplugins(dependsOn: []) {
+  doLast {
+    copy {
+      from 'templates/addevalplugins.template'
+      into '.'
+      rename { String fileName ->
+        "src/main/web/app/genweb/addevalplugins.js"
+      }
+      filter(ReplaceTokens, tokens: [pluginDescriptions: generatePluginDescriptions()])
+    }
   }
-  filter(ReplaceTokens, tokens: [pluginDescriptions: generatePluginDescriptions()])
 }
 
 
@@ -264,7 +268,6 @@ task doRemove() {
       delete "config/build_time"
       delete "config/hash"
       delete "config/version"
-      delete  "src/main/web/plugin/init/addevalplugins.js"
   }
 }
 

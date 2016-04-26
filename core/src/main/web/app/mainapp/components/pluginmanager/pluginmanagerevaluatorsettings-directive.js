@@ -40,13 +40,18 @@
           $scope.highlight = true;
         });
 
+        $scope.searchingRemote = false;
+
         $scope.searchRemote = function(url, scopeProperty, searchInput) {
           if (searchInput && searchInput.length > 0) {
+            $scope.searchingRemote = true;
             bkUtils.httpGet(url).then(function(response) {
               $scope[scopeProperty] = _.take(response.data.results, 20);
+              $scope.searchingRemote = false;
             });
+          } else {
+            $scope[scopeProperty] = [];
           }
-          $scope[scopeProperty] = [];
         };
 
         $scope.showLibraryPreview = function(library, prop) {

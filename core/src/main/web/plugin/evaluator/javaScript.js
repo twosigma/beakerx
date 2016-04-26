@@ -436,7 +436,8 @@ define(function(require, exports, module) {
         name: "Search for Libraries",
         type: "settableSelect",
         remote: "https://api.cdnjs.com/libraries",
-        action: "loadAllLibraries"
+        action: "loadAllLibraries",
+        spinner: true
       },
       scripts: {
         name: "Include Javascript Files",

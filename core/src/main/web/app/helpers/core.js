@@ -1040,20 +1040,28 @@
           }
         });
       },
-      showLanguageManager: function() {
-        var options = {
-          windowClass: 'beaker-sandbox',
-          backdropClass: 'beaker-sandbox',
-          backdrop: true,
-          keyboard: true,
-          backdropClick: true,
-          controller: 'pluginManagerCtrl',
-          template: JST['mainapp/components/pluginmanager/pluginmanager']()
-        };
+      showLanguageManager: (function() {
+        var languageManagerInstance;
 
-        var dd = $uibModal.open(options);
-        return dd.result;
-      },
+        return function() {
+          // result status is 1 if modal is closed, 2 if it is dismissed, and 0 if still open
+          if (languageManagerInstance && languageManagerInstance.result.$$state.status === 0) {
+            return languageManagerInstance.close()
+          }
+          var options = {
+            windowClass: 'beaker-sandbox',
+            backdropClass: 'beaker-sandbox',
+            backdrop: true,
+            keyboard: true,
+            backdropClick: true,
+            controller: 'pluginManagerCtrl',
+            template: JST['mainapp/components/pluginmanager/pluginmanager']()
+          };
+
+          languageManagerInstance = $uibModal.open(options);
+          return languageManagerInstance.result;
+        };
+      })(),
       showPublishForm: function(nModel, callback) {
         var options = {
           windowClass: 'beaker-sandbox',

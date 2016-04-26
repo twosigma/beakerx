@@ -153,7 +153,7 @@
 
           var result = $scope.cellmodel.output.result;
 
-          if (!result || result.hidden) {
+          if (result === null || typeof result === "undefined" || result.hidden) {
             return false;
           }
 

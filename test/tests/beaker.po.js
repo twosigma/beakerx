@@ -790,6 +790,5 @@ var BeakerPageObject = function() {
                 }
             ));
   }
-
 };
 module.exports = BeakerPageObject;

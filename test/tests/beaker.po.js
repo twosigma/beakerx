@@ -765,5 +765,29 @@ var BeakerPageObject = function() {
   this.waitCodeCellOutputTablePresentByIdCell = function(idCell) {
     this.waitCodeCellOutputPresentByIdCell(idCell, 'Table');
   }
+
+  this.getBkCellByIdCell = function (idCell) {
+    return element.all(by.css('[cellid=' + idCell + '] > div')).get(0);
+  };
+
+  this.scrollToBkCellByIdCell = function (idCell) {
+    return browser.executeScript("$('[cellid=" + idCell +"]')[0].scrollIntoView();");
+  };
+
+  this.clickCodeCellInputButtonByIdCell = function(idCell, outputType){
+    var self = this;
+    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']')), 5000)
+        .then(browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), 20000)
+            .then(
+                function(isPresent){
+                  expect(isPresent).toBe(true);
+                },
+                function(value){
+                  expect(value).toBe('Output cell have displayed');
+                  expect(self.getCodeCellOutputByIdCell(idCell).element(by.css('.out_error')).getText()).toBe('out error');
+                }
+            ));
+  }
 };
 module.exports = BeakerPageObject;

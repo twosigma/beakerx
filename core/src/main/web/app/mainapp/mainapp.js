@@ -1129,6 +1129,9 @@
           $(document).unbind('keydown', keydownHandler);
           window.onbeforeunload = null;
           bkUtils.removeConnectedStatusListener();
+          if ($scope.reconnectFailedListenerUnsubscribe) {
+            $scope.reconnectFailedListenerUnsubscribe();
+          }
         };
 
         $scope.$on("$destroy", onDestroy);
@@ -1244,7 +1247,7 @@
             "Save", "Not now", "btn-primary", ""
           );
         };
-        $rootScope.$on(GLOBALS.EVENTS.RECONNECT_FAILED, $scope.promptToSave);
+        $scope.reconnectFailedListenerUnsubscribe = $rootScope.$on(GLOBALS.EVENTS.RECONNECT_FAILED, $scope.promptToSave);
 
         $scope.getOffineMessage = function() {
           return connectionManager.getStatusMessage();

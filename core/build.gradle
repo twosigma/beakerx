@@ -234,24 +234,6 @@ task (compileAssetsEmbed, type: Exec) {
   }
 }
 
-task (copyNginx, type: Exec) {
-  if (mac()) {
-//  def brewLocation = 'which brew'.execute().text[0..-10] // use nginx from current machine
-    def brewLocation = '../launcher/mac/nginx/' // use nginx from old mac
-    commandLine 'cp', '-f',
-      brewLocation + 'lib/libpcre.1.dylib',
-      brewLocation + 'bin/nginx',
-      brewLocation + 'opt/openssl/lib/libssl.1.0.0.dylib',
-      brewLocation + 'opt/openssl/lib/libcrypto.1.0.0.dylib',
-      brewLocation + 'etc/nginx/mime.types',
-      'nginx/bin'
-  } else if (windows()) {
-    def nginxLocation = 'cmd /c where nginx'.execute().text.trim()
-    commandLine 'cmd', '/c', 'xcopy', '/Y', '/Q', nginxLocation, 'nginx\\bin', '&', 'xcopy', '/Y', '/Q', nginxLocation + '\\..\\conf\\mime.types', 'nginx\\bin'
-  }
-}
-
-
 task doRemove() {
   doLast {
       delete fileTree(dir: "node_modules")
@@ -308,16 +290,6 @@ runembed.dependsOn buildembed
 runembed.dependsOn jar
 runembed.dependsOn copyVendorStuff
 clean.dependsOn deleteTemp
-
-if (mac() || windows()) {
-  build.dependsOn copyNginx
-  buildembed.dependsOn copyNginx
-  builddebug.dependsOn copyNginx
-  run.dependsOn copyNginx
-  startScripts {
-    defaultJvmOpts=['-Dbeaker.nginx.bin.dir=' + './nginx/bin']
-  }
-}
 
 compileJava {
   options.compilerArgs << '-Xlint:deprecation'

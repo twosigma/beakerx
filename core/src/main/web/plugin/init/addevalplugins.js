@@ -23,6 +23,7 @@
 "IPython": { url : "./plugins/eval/ipythonPlugins/ipython/ipython.js", bgColor: "#EEBD48", fgColor: "#FFFFFF", borderColor: "", shortName: "Py", tooltip: "Python 2 kernel via Jupyter, including IPython magics." },
 "IRuby": { url : "./plugins/eval/ipythonPlugins/iruby/iruby.js", bgColor: "#AF1712", fgColor: "#FFFFFF", borderColor: "", shortName: "Rb", tooltip: "Ruby is a dynamic, open source language with a focus on simplicity and productivity." },
 "Julia": { url : "./plugins/eval/ipythonPlugins/julia/julia.js", bgColor: "#6EAC5E", fgColor: "#FFFFFF", borderColor: "", shortName: "Jl", tooltip: "Julia is a high performance dynamic langauge for technical computing." },
+"null": { url : "null", bgColor: "null", fgColor: "null", borderColor: "null", shortName: "null", tooltip: "null" },
 "Python3": { url : "./plugins/eval/ipythonPlugins/python3/python3.js", bgColor: "#EEBD48", fgColor: "#FFFFFF", borderColor: "", shortName: "Py", tooltip: "Python 3 kernel via Jupyter, including IPython magics." },
 "Torch": { url : "./plugins/eval/ipythonPlugins/torch/torch.js", bgColor: "#2CBFBD", fgColor: "#000000", borderColor: "", shortName: "Lu", tooltip: "Torch is a scientific computing and machine learning environment for Lua." },
 "Java": { url : "./plugins/eval/javash/javash.js", bgColor: "#EB0000", fgColor: "#FFFFFF", borderColor: "", shortName: "Jv", tooltip: "Java v8 originally from Sun, now Oracle." },

@@ -46,7 +46,10 @@
           if (searchInput && searchInput.length > 0) {
             $scope.searchingRemote = true;
             bkUtils.httpGet(url).then(function(response) {
-              $scope[scopeProperty] = _.take(response.data.results, 20);
+              var jsLibraries = _.filter(response.data.results, function(e) {
+                return _.endsWith(e.latest, 'js');
+              });
+              $scope[scopeProperty] = _.take(jsLibraries, 20);
               $scope.searchingRemote = false;
             });
           } else {

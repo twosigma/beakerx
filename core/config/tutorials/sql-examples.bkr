@@ -91,6 +91,11 @@
                             "NAME",
                             "CODE"
                         ],
+                        "actualtype": [
+                            0,
+                            0,
+                            0
+                        ],
                         "actualalign": [
                             "L",
                             "L",
@@ -106,7 +111,12 @@
                             true,
                             true,
                             true
-                        ]
+                        ],
+                        "barsOnColumn": {},
+                        "heatmapOnColumn": {},
+                        "tableFilter": "",
+                        "columnFilter": [],
+                        "columnWidth": []
                     }
                 },
                 "selectedType": "Table",
@@ -154,7 +164,7 @@
                     ],
                     "subtype": "TableDisplay"
                 },
-                "height": 190
+                "height": 210
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -190,7 +200,7 @@
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
                 "elapsedTime": 32,
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -217,6 +227,10 @@
                             "Key",
                             "Value"
                         ],
+                        "actualtype": [
+                            0,
+                            0
+                        ],
                         "actualalign": [
                             "L",
                             "L"
@@ -229,7 +243,12 @@
                         "getCellSho": [
                             true,
                             true
-                        ]
+                        ],
+                        "barsOnColumn": {},
+                        "heatmapOnColumn": {},
+                        "tableFilter": "",
+                        "columnFilter": [],
+                        "columnWidth": []
                     }
                 },
                 "result": {
@@ -258,7 +277,7 @@
                 "pluginName": "SQL",
                 "shellId": "58fe31b2-7aef-4f53-87cb-3f70e2dbaff0",
                 "elapsedTime": 622,
-                "height": 136
+                "height": 156
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -284,8 +303,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "58fe31b2-7aef-4f53-87cb-3f70e2dbaff0",
-                "elapsedTime": 616
+                "shellId": "4448247f-2fee-4647-aaca-97839d87df02",
+                "elapsedTime": 684
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -304,7 +323,7 @@
                     "datatablestate": {
                         "pagination": {
                             "use": true,
-                            "rowsToDisplay": 50,
+                            "rowsToDisplay": 25,
                             "fixLeft": 0,
                             "fixRight": 0
                         },
@@ -312,6 +331,11 @@
                             "ID",
                             "NAME",
                             "CODE"
+                        ],
+                        "actualtype": [
+                            0,
+                            0,
+                            0
                         ],
                         "actualalign": [
                             "L",
@@ -328,7 +352,14 @@
                             true,
                             true,
                             true
-                        ]
+                        ],
+                        "barsOnColumn": {},
+                        "heatmapOnColumn": {},
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": []
                     }
                 },
                 "selectedType": "Table",
@@ -391,7 +422,7 @@
                         "CODE"
                     ]
                 },
-                "height": 271
+                "height": 291
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -435,6 +466,10 @@
                             "NAME",
                             "BORN"
                         ],
+                        "actualtype": [
+                            0,
+                            0
+                        ],
                         "actualalign": [
                             "L",
                             "L"
@@ -447,7 +482,12 @@
                         "getCellSho": [
                             true,
                             true
-                        ]
+                        ],
+                        "barsOnColumn": {},
+                        "heatmapOnColumn": {},
+                        "tableFilter": "",
+                        "columnFilter": [],
+                        "columnWidth": []
                     }
                 },
                 "result": {
@@ -484,7 +524,7 @@
                 "pluginName": "SQL",
                 "shellId": "58fe31b2-7aef-4f53-87cb-3f70e2dbaff0",
                 "elapsedTime": 447,
-                "height": 163
+                "height": 183
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -521,6 +561,10 @@
                             "NAME",
                             "MOLARMASS"
                         ],
+                        "actualtype": [
+                            0,
+                            0
+                        ],
                         "actualalign": [
                             "L",
                             "L"
@@ -533,7 +577,12 @@
                         "getCellSho": [
                             true,
                             true
-                        ]
+                        ],
+                        "barsOnColumn": {},
+                        "heatmapOnColumn": {},
+                        "tableFilter": "",
+                        "columnFilter": [],
+                        "columnWidth": []
                     }
                 },
                 "result": {
@@ -570,7 +619,7 @@
                 "pluginName": "SQL",
                 "shellId": "58fe31b2-7aef-4f53-87cb-3f70e2dbaff0",
                 "elapsedTime": 142,
-                "height": 163
+                "height": 183
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -613,7 +662,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 39,
+                "elapsedTime": 92,
                 "hidden": true,
                 "result": [
                     1001,
@@ -652,8 +701,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "58fe31b2-7aef-4f53-87cb-3f70e2dbaff0",
-                "elapsedTime": 735
+                "shellId": "4448247f-2fee-4647-aaca-97839d87df02",
+                "elapsedTime": 847
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -673,33 +722,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "name",
-                            "born"
-                        ],
-                        "actualalign": [
-                            "L",
-                            "R"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "getCellSho": [
-                            true,
-                            true
-                        ]
-                    }
-                },
+                "state": {},
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "ListOfMaps",
@@ -732,7 +755,7 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 54,
+                "elapsedTime": 50,
                 "height": 0
             },
             "evaluatorReader": true,
@@ -760,8 +783,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "58fe31b2-7aef-4f53-87cb-3f70e2dbaff0",
-                "elapsedTime": 679
+                "shellId": "4448247f-2fee-4647-aaca-97839d87df02",
+                "elapsedTime": 684
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -781,33 +804,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "name",
-                            "molarmass"
-                        ],
-                        "actualalign": [
-                            "L",
-                            "R"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "getCellSho": [
-                            true,
-                            true
-                        ]
-                    }
-                },
+                "state": {},
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "ListOfMaps",
@@ -840,7 +837,7 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 45,
+                "elapsedTime": 51,
                 "height": 0
             },
             "evaluatorReader": true,
@@ -868,8 +865,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "58fe31b2-7aef-4f53-87cb-3f70e2dbaff0",
-                "elapsedTime": 688,
+                "shellId": "4448247f-2fee-4647-aaca-97839d87df02",
+                "elapsedTime": 684,
                 "height": 0
             },
             "evaluatorReader": true,

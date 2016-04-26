@@ -500,10 +500,16 @@
             }
           };
 
-          function _closeNotebook() {
+          function _closeNotebook(destroy) {
             var closeSession = function() {
               bkSessionManager.close().then(function() {
-                bkCoreManager.gotoControlPanel();
+                if(destroy){
+                  if (bkUtils.isElectron) {
+                    bkElectron.thisWindow.destroy();
+                  }
+                } else {
+                  bkCoreManager.gotoControlPanel();
+                }
               });
             };
             if (bkSessionManager.isNotebookModelEdited() === false) {
@@ -524,25 +530,27 @@
             }
           };
 
-          function closeNotebook() {
+          function closeNotebook(destroy) {
             if (bkEvaluateJobManager.isAnyInProgress() ) {
               bkCoreManager.show2ButtonModal(
                   "All running and pending cells will be cancelled.",
                   "Warning!",
                   function() {
                     bkEvaluateJobManager.cancelAll().then(function() {
-                      _impl._closeNotebook();
+                      _impl._closeNotebook(destroy);
                     }
                   ); });
             } else
-              _closeNotebook();
+              _closeNotebook(destroy);
           };
 
           var evalCodeId = 0;
 
           if (bkUtils.isElectron) {
             bkElectron.IPC.removeAllListeners('close-window');
-            bkElectron.IPC.on('close-window', closeNotebook);
+            bkElectron.IPC.on('close-window', function(){
+              closeNotebook(true);
+            });
           }
 
           return {
@@ -1121,6 +1129,9 @@
           $(document).unbind('keydown', keydownHandler);
           window.onbeforeunload = null;
           bkUtils.removeConnectedStatusListener();
+          if ($scope.reconnectFailedListenerUnsubscribe) {
+            $scope.reconnectFailedListenerUnsubscribe();
+          }
         };
 
         $scope.$on("$destroy", onDestroy);
@@ -1236,7 +1247,7 @@
             "Save", "Not now", "btn-primary", ""
           );
         };
-        $rootScope.$on(GLOBALS.EVENTS.RECONNECT_FAILED, $scope.promptToSave);
+        $scope.reconnectFailedListenerUnsubscribe = $rootScope.$on(GLOBALS.EVENTS.RECONNECT_FAILED, $scope.promptToSave);
 
         $scope.getOffineMessage = function() {
           return connectionManager.getStatusMessage();

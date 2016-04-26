@@ -21,6 +21,7 @@ module.exports = (function() {
   var events = require('events');
   var os = require('os');
   var request = require('request');
+  const session = require('electron').session;
 
   var _url;
   var _hash;
@@ -70,9 +71,19 @@ module.exports = (function() {
     kill: function() {
       var eventEmitter = new events.EventEmitter();
       if (_local) {
-        request(this.getUrl() + this.getHash() + '/beaker/rest/util/exit', function (error, response, body) {
-          _running = false;
-          eventEmitter.emit('killed');
+        var self = this;
+        session.defaultSession.cookies.get({name : "XSRF-TOKEN"}, function(error, cookies) {
+          var options = {
+            url: self.getUrl() + self.getHash() + '/beaker/rest/util/exit',
+            headers: {
+              'X-XSRF-TOKEN': cookies[0].value
+            }
+          };
+          function callback(error, response, body) {
+            _running = false;
+            eventEmitter.emit('killed');
+          }
+          request(options, callback);
         });
       }
       _backend = {};

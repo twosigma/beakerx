@@ -516,14 +516,6 @@ var BeakerPageObject = function() {
     return element.all(by.css('[cell-id=' + idCell + ']')).get(0);
   };
 
-  this.getBkCellByIdCell = function (idCell) {
-    return element.all(by.css('[cellid=' + idCell + '] > div')).get(0);
-  };
-
-  this.scrollToBkCellByIdCell = function (idCell) {
-    return browser.executeScript("$('[cellid=" + idCell +"]')[0].scrollIntoView();");
-  };
-
   this.checkPlotIsPresentByIdCell = function (codeCellOutputId, containerIdx){
     if (!containerIdx)
       containerIdx = 0;
@@ -766,14 +758,13 @@ var BeakerPageObject = function() {
     return this.getCodeCellOutputBySectionTitle(sectionTitle).getAttribute('cell-id');
   };
 
-  this.checkSubStringIfDisplayed = function(strPromise, toBeStr, indxStart, lenght){
-    var self = this;
-    strPromise.isDisplayed().then(function(isVisible){
-      if(isVisible){
-        self.checkSubString(strPromise, toBeStr, indxStart, lenght);
-      }
-    });
-  }
+  this.getBkCellByIdCell = function (idCell) {
+    return element.all(by.css('[cellid=' + idCell + '] > div')).get(0);
+  };
+
+  this.scrollToBkCellByIdCell = function (idCell) {
+    return browser.executeScript("$('[cellid=" + idCell +"]')[0].scrollIntoView();");
+  };
 
   this.clickCodeCellInputButtonByIdCell = function(idCell, outputType){
     var self = this;
@@ -789,6 +780,15 @@ var BeakerPageObject = function() {
                   expect(self.getCodeCellOutputByIdCell(idCell).element(by.css('.out_error')).getText()).toBe('out error');
                 }
             ));
+  }
+
+  this.checkSubStringIfDisplayed = function(strPromise, toBeStr, indxStart, lenght){
+    var self = this;
+    strPromise.isDisplayed().then(function(isVisible){
+      if(isVisible){
+        self.checkSubString(strPromise, toBeStr, indxStart, lenght);
+      }
+    });
   }
 
 };

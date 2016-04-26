@@ -14,7 +14,7 @@
 worker_processes  1;
 daemon off;
 # change this from error to debug for debugging
-# error_log  "%(nginx_dir)s/logs/nginx.log" error;
+error_log  "%(nginx_dir)s/logs/nginx.log" error;
 pid nginx.pid;
 
 events {

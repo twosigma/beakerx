@@ -129,8 +129,8 @@
             return this._codeMirrors[cellId];
           },
           unregisterCM: function (cellId) {
-            delete this._codeMirrors[cellId];
             this._codeMirrors[cellId] = null;
+            delete this._codeMirrors[cellId];
           },
           _cmKeyMapMode: 'default',
           setCMKeyMapMode: function (keyMapMode) {

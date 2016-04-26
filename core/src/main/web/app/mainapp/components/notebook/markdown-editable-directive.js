@@ -46,6 +46,13 @@
         };
         scope.evaluate = syncContentAndPreview;
 
+        // cellmodel.body <-- CodeMirror
+        var changeHandler = function(cm, e) {
+          if (scope.cellmodel[contentAttribute] !== cm.getValue()) {
+            scope.cellmodel[contentAttribute] = cm.getValue();
+          }
+        };
+
         scope.bkNotebook = getBkNotebookWidget();
 
         scope.focus = function() {
@@ -130,6 +137,7 @@
           scope.mousedown = false;
         });
 
+        scope.cm.on("change", changeHandler);
         scope.cm.on("blur", function(cm) {
           setTimeout(function() {
             if (!scope.mousedown) {
@@ -148,7 +156,7 @@
         });
 
         scope.$watch('cellmodel.body', function(newVal, oldVal) {
-          if (newVal !== oldVal) {
+          if (newVal !== oldVal && !bkSessionManager.isNotebookModelEdited()){
             bkSessionManager.setNotebookModelEdited(true);
           }
         });
@@ -156,6 +164,7 @@
         scope.$on('$destroy', function() {
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id, scope.cm);
+          CodeMirror.off('change', changeHandler);
           scope.cm.off();
         });
       }

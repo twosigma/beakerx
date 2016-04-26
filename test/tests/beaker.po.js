@@ -776,20 +776,6 @@ var BeakerPageObject = function() {
     });
   }
 
-  this.scrollToBkCellByIdCell = function (idCell) {
-    return browser.executeScript("$('bk-cell[cellid=" + idCell +"] > div')[0].scrollIntoView();");
-  };
-
-  this.getBkCellByIdCell = function (idCell) {
-    return element(by.css('bk-cell[cellid=' + idCell + '] > div'));
-  };
-
-  this.checkBkCellByIdCell  = function (idCell) {
-    browser.wait(this.EC.presenceOf($('bk-cell[cellid=' + idCell + '] > div'), 10000));
-    this.scrollToBkCellByIdCell(idCell);
-    expect(this.getBkCellByIdCell(idCell).isPresent()).toBe(true);
-  };
-
   this.checkHexCharCode = function(strPromise, charCode1, charCode2){
     strPromise.getText().then(function(value){
       expect(value.charCodeAt(0).toString(16)).toBe(charCode1);
@@ -839,6 +825,14 @@ var BeakerPageObject = function() {
     return elemPromise.all(by.css('span.mord.scriptstyle.cramped > span')).get(subIndex);
   }
 
+  this.getBkCellByIdCell = function (idCell) {
+    return element.all(by.css('[cellid=' + idCell + '] > div')).get(0);
+  };
+
+  this.scrollToBkCellByIdCell = function (idCell) {
+    return browser.executeScript("$('[cellid=" + idCell +"]')[0].scrollIntoView();");
+  };
+
   this.clickCodeCellInputButtonByIdCell = function(idCell, outputType){
     var self = this;
     this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
@@ -854,6 +848,12 @@ var BeakerPageObject = function() {
                 }
             ));
   }
+
+  this.checkBkCellByIdCell  = function (idCell) {
+    browser.wait(this.EC.presenceOf($('bk-cell[cellid=' + idCell + '] > div'), 10000));
+    this.scrollToBkCellByIdCell(idCell);
+    expect(this.getBkCellByIdCell(idCell).isPresent()).toBe(true);
+  };
 
 };
 module.exports = BeakerPageObject;

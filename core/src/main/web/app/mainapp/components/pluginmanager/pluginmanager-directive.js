@@ -329,6 +329,19 @@
       }
     };
 
+    $(document.body).on('keydown.plugin-manager', function (event) {
+      if (_.values(KEY_CODES).indexOf(event.keyCode) > -1 && $('.plugin-manager').find(':focus').length === 0) {
+        $scope.navigationElements.get(0).focus();
+        event.preventDefault();
+      }
+    });
+
+    $scope.$on('$destroy', function () {
+      $(document.body).off('keydown.plugin-manager');
+      delete $scope.navigationGrid;
+      delete $scope.navigationElements;
+    });
+
     $rootScope.$on(GLOBALS.EVENTS.LANGUAGE_MANAGER_SHOW_SPINNER, function(event, data) {
       $scope.showSpinner = true;
       $scope.showMessage = true;

@@ -29,7 +29,8 @@
                     "mode": "javascript",
                     "background": "#FFE0F0"
                 }
-            }
+            },
+            "languageVersion": "ES2015"
         },
         {
             "name": "Java",
@@ -45,7 +46,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.chart.KeyboardCodes",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -83,20 +84,22 @@
                     "package test.beaker;",
                     "",
                     "import java.util.Date;",
+                    "import java.text.SimpleDateFormat;",
                     "",
                     "public class BeakerTest {",
                     "  private Date _date;",
-                    "",
+                    "  private SimpleDateFormat sdf = new SimpleDateFormat(\"yyyy-MM-dd'T'HH:mmZ\");",
+                    "  ",
                     "  public BeakerTest() {",
                     "    _date = new Date();",
                     "  }",
                     "",
                     "  public String getDateTxt() {",
-                    "    return _date.toString();",
+                    "    return \"Today:\" + sdf.format(_date);",
                     "  }",
                     "",
                     "  public String getDateUpperCaseTxt() {",
-                    "    return _date.toString().toUpperCase();",
+                    "    return getDateTxt().toUpperCase();",
                     "  }",
                     "",
                     "}",
@@ -107,14 +110,14 @@
                 "state": {},
                 "result": "test.beaker.BeakerTest",
                 "selectedType": "Text",
-                "elapsedTime": 1852,
+                "elapsedTime": 632,
                 "hidden": true,
                 "pluginName": "Java",
-                "shellId": "98b2af38-7ec4-4749-91fb-7e4eaccc1817",
-                "height": 34
+                "shellId": "2acc2f12-c289-4f60-b1c2-7eaf7e5636a6",
+                "height": 51
             },
             "evaluatorReader": true,
-            "lineCount": 21
+            "lineCount": 23
         },
         {
             "id": "markdownRNDmeB",
@@ -140,12 +143,12 @@
             },
             "output": {
                 "state": {},
-                "result": "Thu Jan 14 21:39:32 EST 2016",
+                "result": "Today:2016-04-22T12:33+0300",
                 "selectedType": "Text",
-                "elapsedTime": 592,
+                "elapsedTime": 636,
                 "pluginName": "Java",
-                "shellId": "98b2af38-7ec4-4749-91fb-7e4eaccc1817",
-                "height": 36
+                "shellId": "2acc2f12-c289-4f60-b1c2-7eaf7e5636a6",
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -174,12 +177,12 @@
             },
             "output": {
                 "state": {},
-                "result": "THU JAN 14 21:39:36 EST 2016",
+                "result": "TODAY:2016-04-22T12:35+0300",
                 "selectedType": "Text",
-                "elapsedTime": 1660,
+                "elapsedTime": 651,
                 "pluginName": "Groovy",
-                "shellId": "62f69e82-7503-4495-80c1-be0bc7945ff6",
-                "height": 36
+                "shellId": "cdba03b8-be36-4b65-abd9-bfe0b08ac2b8",
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -210,7 +213,7 @@
                 "hidden": true,
                 "pluginName": "JavaScript",
                 "elapsedTime": 20,
-                "height": 34
+                "height": 51
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -234,7 +237,7 @@
                 "elapsedTime": 580,
                 "pluginName": "Java",
                 "shellId": "98b2af38-7ec4-4749-91fb-7e4eaccc1817",
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -399,7 +402,7 @@
                 "elapsedTime": 620,
                 "pluginName": "Java",
                 "shellId": "98b2af38-7ec4-4749-91fb-7e4eaccc1817",
-                "height": 529
+                "height": 548
             },
             "evaluatorReader": true,
             "lineCount": 22
@@ -431,7 +434,7 @@
                 "pluginName": "Java",
                 "shellId": "98b2af38-7ec4-4749-91fb-7e4eaccc1817",
                 "elapsedTime": 603,
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -454,7 +457,7 @@
                 "pluginName": "Java",
                 "shellId": "98b2af38-7ec4-4749-91fb-7e4eaccc1817",
                 "elapsedTime": 598,
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 3

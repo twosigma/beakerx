@@ -333,11 +333,7 @@
       }
 
       if (_.isArray(v)) {
-        var o = [];
-        for(var p in v) {
-          o.push(transform(v[p], true));
-        }
-        return o;
+        return v.map(function(e) {return transform(e, true)});
       }
 
       if (bkPlotApi.instanceOfPlotApi(v) && norecurse === undefined) {
@@ -417,11 +413,7 @@
         }
         return o;
       }
-      var o = [];
-      for(var p in v) {
-        o.push(transformBack(v[p]));
-      }
-      return o;
+      return v.map(transformBack);
     };
 
 
@@ -631,8 +623,7 @@
       }
 
       // check if javascript set any NEW variable
-      for (var i in diff) {
-        var p = diff[i];
+      _.forEach(diff, function(p) {
         if (this.knownBeakerVars[p] === undefined) {
           if (this.nbmodel.namespace === undefined)
             this.nbmodel.namespace = { };
@@ -659,7 +650,7 @@
                 });
           }
         }
-      }
+      }.bind(this));
 
       // check if javascript set any new variable
       for (var p in this.setCache) {

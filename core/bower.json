@@ -34,6 +34,7 @@
     "ng-file-upload": "7.0.12",
     "angular-gravatar": "0.3.1",
     "datetimepicker": "2.4.5",
-    "jquery-throttle-debounce": "v1.1"
+    "jquery-throttle-debounce": "v1.1",
+    "angular-ui-select": "0.16.1"
   }
 }

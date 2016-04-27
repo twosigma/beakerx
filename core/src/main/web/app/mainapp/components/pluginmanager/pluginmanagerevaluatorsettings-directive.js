@@ -24,11 +24,23 @@
   var module = angular.module('bk.core');
 
   module.directive('bkPluginManagerEvaluatorSettings', function(
-      $compile, bkSessionManager, GLOBALS) {
+      $compile, bkSessionManager, GLOBALS, bkUtils, $timeout) {
     return {
       restrict: 'E',
       template: JST["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"](),
       controller: function($scope) {
+
+        var cdnJsError = (function() {
+          var timer = $timeout(function() {}, 0);
+          return function() {
+            $scope.cdnJsErrorOccured = true;
+            $timeout.cancel(timer);
+            timer = $timeout(function() {
+              $scope.cdnJsErrorOccured = false;
+            }, 5000);
+          }
+        })();
+
         $scope.savedSettings = angular.copy($scope.evaluator.settings);
         $scope.highlight = false;
 
@@ -39,6 +51,30 @@
         $scope.$on(GLOBALS.EVENTS.HIGHLIGHT_EDITED_LANGUAGE_SETTINGS, function(event, data) {
           $scope.highlight = true;
         });
+
+        $scope.searchingRemote = false;
+
+        $scope.searchRemote = function(url, scopeProperty, searchInput) {
+          if (searchInput && searchInput.length > 0) {
+            $scope.searchingRemote = true;
+            bkUtils.httpGetCached(url).then(function(response) {
+              var jsLibraries = _.filter(response.data.results, function(e) {
+                return _.endsWith(e.latest, 'js');
+              });
+              $scope[scopeProperty] = _.take(jsLibraries, 20);
+              $scope.searchingRemote = false;
+            }).catch(function(e) {
+              $scope.searchingRemote = false;
+              cdnJsError();
+            });
+          } else {
+            $scope[scopeProperty] = [];
+          }
+        };
+
+        $scope.showLibraryPreview = function(library, prop) {
+          // console.log("PREVIEW", library, prop, $scope);
+        };
 
         $scope.set = function(property) {
           if (property.action) {

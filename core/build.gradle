@@ -67,6 +67,7 @@ def generatePluginDescriptions(){
     "fgColor",
     "borderColor",
     "shortName",
+    "cmMode",
     "tooltip"
   ]
   def plugins = collectPlugins('../plugin')
@@ -88,13 +89,14 @@ def generatePluginDescriptions(){
         }
       }
     }
-    def pluginDescription = String.format("\"%s\": { url : \"%s\", bgColor: \"%s\", fgColor: \"%s\", borderColor: \"%s\", shortName: \"%s\", tooltip: \"%s\" },\n"
+    def pluginDescription = String.format("\"%s\": { url : \"%s\", bgColor: \"%s\", fgColor: \"%s\", borderColor: \"%s\", shortName: \"%s\", cmMode: \"%s\", tooltip: \"%s\" },\n"
       , map['pluginName']
       , map['url']
       , map['bgColor']
       , map['fgColor']
       , map['borderColor']
       , map['shortName']
+      , map['cmMode']
       , map['tooltip'])
     pluginDescriptions += pluginDescription;
   }
@@ -196,13 +198,17 @@ task (copyJQueryUIImages, type: Copy) {
 
 
 import org.apache.tools.ant.filters.ReplaceTokens
-task addevalplugins(type: Copy, dependsOn: []) {
-  from 'templates/addevalplugins.template'
-  into '.'
-  rename { String fileName ->
-    "src/main/web/plugin/init/addevalplugins.js"
+task addevalplugins(dependsOn: []) {
+  doLast {
+    copy {
+      from 'templates/addevalplugins.template'
+      into '.'
+      rename { String fileName ->
+        "src/main/web/app/genweb/addevalplugins.js"
+      }
+      filter(ReplaceTokens, tokens: [pluginDescriptions: generatePluginDescriptions()])
+    }
   }
-  filter(ReplaceTokens, tokens: [pluginDescriptions: generatePluginDescriptions()])
 }
 
 
@@ -264,7 +270,6 @@ task doRemove() {
       delete "config/build_time"
       delete "config/hash"
       delete "config/version"
-      delete  "src/main/web/plugin/init/addevalplugins.js"
   }
 }
 

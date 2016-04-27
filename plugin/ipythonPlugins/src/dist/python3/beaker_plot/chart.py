@@ -16,16 +16,13 @@ from beaker_plot.legend import *
 from beaker_plot.utils import *
 
 class Chart(BaseObject):
-  def __init__(self, data=None):
+  def __init__(self, **kwargs):
     BaseObject.__init__(self)
-    if data is None:
-      data = {}
-
-    self.init_width = getValue(data, 'initWidth', 640)
-    self.init_height = getValue(data, 'initHeight', 480)
-    self.chart_title = getValue(data, 'title')
-    self.show_legend = getValue(data, 'showLegend')
-    self.use_tool_tip = getValue(data, 'useToolTip', True)
-    self.legend_position = getValue(data, 'legendPosition', LegendPosition.Position.TOP_RIGHT)
-    self.legend_layout = getValue(data, 'legendLayout', LegendLayout.VERTICAL)
+    self.init_width = getValue(kwargs, 'initWidth', 640)
+    self.init_height = getValue(kwargs, 'initHeight', 480)
+    self.chart_title = getValue(kwargs, 'title')
+    self.show_legend = getValue(kwargs, 'showLegend')
+    self.use_tool_tip = getValue(kwargs, 'useToolTip', True)
+    self.legend_position = getValue(kwargs, 'legendPosition', LegendPosition.Position.TOP_RIGHT)
+    self.legend_layout = getValue(kwargs, 'legendLayout', LegendLayout.VERTICAL)
 

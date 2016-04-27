@@ -18,32 +18,30 @@ from beaker_plot.utils import *
 
 
 class AbstractChart(Chart):
-  def __init__(self, data=None):
-    if data is None:
-      data = {}
-    Chart.__init__(self, data)
+  def __init__(self, **kwargs):
+    Chart.__init__(self, **kwargs)
 
-    self.yAxis = YAxis({
-      "autoRange": getValue(data, 'yAutoRange'),
-      "autoRangeIncludesZero": getValue(data, 'yAutoRangeIncludesZero'),
-      "lowerMargin": getValue(data, 'yLowerMargin'),
-      "upperMargin": getValue(data, 'yUpperMargin'),
-      "lowerBound": getValue(data, 'yLowerBound'),
-      "upperBound": getValue(data, 'yUpperBound'),
-      "log": getValue(data, 'yLog'),
-      "logBase": getValue(data, 'yLogBase')
-    })
-    self.rangeAxes = getValue(data, 'yAxes', self.yAxis),
-    self.domain_axis_label= getValue(data, 'xLabel')
-    self.y_label = getValue(data, 'yLabel')
-    self.x_lower_margin = getValue(data, 'xLowerMargin', 0.05)
-    self.x_uppe_margin = getValue(data, 'xUpperMargin', 0.05)
-    self.y_auto_range = getValue(data, 'y_auto_range')
-    self.y_auto_range_includes_zero = getValue(data, 'y_auto_range_includes_zero')
-    self.y_lower_margin = getValue(data, 'y_lower_margin')
-    self.y_upper_margin = getValue(data, 'y_upper_margin')
-    self.y_lower_bound = getValue(data, 'y_lower_bound')
-    self.y_upper_bound = getValue(data, 'y_upper_bound')
-    self.log_y = getValue(data, 'log_y')
-    self.omit_checkboxes = getValue(data, 'omitCheckboxes', False)
+    self.yAxis = YAxis(
+      autoRange=getValue(kwargs, 'yAutoRange'),
+      autoRangeIncludesZero=getValue(kwargs, 'yAutoRangeIncludesZero'),
+      lowerMargin=getValue(kwargs, 'yLowerMargin'),
+      upperMargin=getValue(kwargs, 'yUpperMargin'),
+      lowerBound=getValue(kwargs, 'yLowerBound'),
+      upperBound=getValue(kwargs, 'yUpperBound'),
+      log=getValue(kwargs, 'yLog'),
+      logBase=getValue(kwargs, 'yLogBase')
+    )
+    self.rangeAxes = getValue(kwargs, 'yAxes', self.yAxis),
+    self.domain_axis_label= getValue(kwargs, 'xLabel')
+    self.y_label = getValue(kwargs, 'yLabel')
+    self.x_lower_margin = getValue(kwargs, 'xLowerMargin', 0.05)
+    self.x_uppe_margin = getValue(kwargs, 'xUpperMargin', 0.05)
+    self.y_auto_range = getValue(kwargs, 'y_auto_range')
+    self.y_auto_range_includes_zero = getValue(kwargs, 'y_auto_range_includes_zero')
+    self.y_lower_margin = getValue(kwargs, 'y_lower_margin')
+    self.y_upper_margin = getValue(kwargs, 'y_upper_margin')
+    self.y_lower_bound = getValue(kwargs, 'y_lower_bound')
+    self.y_upper_bound = getValue(kwargs, 'y_upper_bound')
+    self.log_y = getValue(kwargs, 'log_y')
+    self.omit_checkboxes = getValue(kwargs, 'omitCheckboxes', False)
 

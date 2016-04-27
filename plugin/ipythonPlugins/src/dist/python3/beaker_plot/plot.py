@@ -19,7 +19,8 @@ from beaker_plot.utils import *
 from beaker_plot.plotitem import *
 
 class Plot(XYChart):
-  pass
+  def __init__(self, **kwargs):
+    XYChart.__init__(self, **kwargs)
 
 
 def parseJSON(out):

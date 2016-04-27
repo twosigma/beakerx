@@ -18,20 +18,17 @@ from beaker_plot.plotitem import *
 
 
 class XYChart(AbstractChart):
-  def __init__(self, data=None):
-    if data is None:
-      data = {}
-    AbstractChart.__init__(self, data)
-
-    self.graphics_list = getValue(data, 'graphics', [])
-    self.constant_lines = getValue(data, 'constantLines', [])
-    self.constant_bands = getValue(data, 'constantBands', [])
-    self.texts = getValue(data, 'texts', [])
-    self.x_auto_range = getValue(data, 'xAutoRange', True)
-    self.x_lower_bound = getValue(data, 'xLowerBound', 0)
-    self.x_upper_bound = getValue(data, 'xUpperBound', 0)
-    self.log_x = getValue(data, 'logX', False)
-    self.x_log_base = getValue(data, 'xLogBase', 10)
-    self.lodThreshold = getValue(data, 'lodThreshold')
+  def __init__(self, **kwargs):
+    AbstractChart.__init__(self, **kwargs)
+    self.graphics_list = getValue(kwargs, 'graphics', [])
+    self.constant_lines = getValue(kwargs, 'constantLines', [])
+    self.constant_bands = getValue(kwargs, 'constantBands', [])
+    self.texts = getValue(kwargs, 'texts', [])
+    self.x_auto_range = getValue(kwargs, 'xAutoRange', True)
+    self.x_lower_bound = getValue(kwargs, 'xLowerBound', 0)
+    self.x_upper_bound = getValue(kwargs, 'xUpperBound', 0)
+    self.log_x = getValue(kwargs, 'logX', False)
+    self.x_log_base = getValue(kwargs, 'xLogBase', 10)
+    self.lodThreshold = getValue(kwargs, 'lodThreshold')
 
 

@@ -18,6 +18,7 @@ import math
 
 from beaker_plot.utils import *
 
+
 class ShapeType(Enum):
   SQUARE = 1
   CIRCLE = 2
@@ -42,50 +43,43 @@ class StrokeType(Enum):
 
 
 class Graphics(BaseObject):
-  def __init__(self, data=None):
+  def __init__(self, **kwargs):
     BaseObject.__init__(self)
-    if data is None:
-      data = {}
+
     self.type = self.__class__.__name__
-    self.visible = getValue(data, 'visible', True)
-    self.yAxis = getValue(data, 'yAxis')
+    self.visible = getValue(kwargs, 'visible', True)
+    self.yAxis = getValue(kwargs, 'yAxis')
 
 
 class ConstantLine(Graphics):
-  def __init__(self, data=None):
-    if data is None:
-      data = {}
-    Graphics.__init__(self, data)
-    self.x = getValue(data, 'x')
-    self.y = getValue(data, 'y')
-    self.color = getColor(getValue(data, 'color'))
-    self.width = getValue(data, 'width', 1.5)
-    self.style = getValue(data, 'style')
-    self.showLabel = getValue(data, 'showLabel')
+  def __init__(self, **kwargs):
+    Graphics.__init__(self, **kwargs)
+    self.x = getValue(kwargs, 'x')
+    self.y = getValue(kwargs, 'y')
+    self.color = getColor(getValue(kwargs, 'color'))
+    self.width = getValue(kwargs, 'width', 1.5)
+    self.style = getValue(kwargs, 'style')
+    self.showLabel = getValue(kwargs, 'showLabel')
 
 
 class ConstantBand(Graphics):
-  def __init__(self, data=None):
-    if data is None:
-      data = {}
-    Graphics.__init__(self, data)
-    self.x = getValue(data, 'x')
-    self.y = getValue(data, 'y')
-    self.color = getColor(getValue(data, 'color', Color(0, 127, 255, 127)))
+  def __init__(self, **kwargs):
+    Graphics.__init__(self, **kwargs)
+    self.x = getValue(kwargs, 'x')
+    self.y = getValue(kwargs, 'y')
+    self.color = getColor(getValue(kwargs, 'color', Color(0, 127, 255, 127)))
 
 
 class XYGraphics(Graphics):
-  def __init__(self, data=None):
-    if data is None:
-      data = {}
-    Graphics.__init__(self, data)
-    defY = getValue(data, 'y')
+  def __init__(self, **kwargs):
+    Graphics.__init__(self, **kwargs)
+    defY = getValue(kwargs, 'y')
     if defY is not None:
       defX = list(range(0, len(defY)))
     else:
       defX = []
 
-    self.x = getValue(data, 'x', defX)
+    self.x = getValue(kwargs, 'x', defX)
     if self.x is not None:
       for idx in range(len(self.x)):
         x = self.x[idx]
@@ -93,141 +87,129 @@ class XYGraphics(Graphics):
           self.x[idx] = x.microsecond
 
     self.y = defY
-    self.display_name = getValue(data, 'display_name')
-    self.lodFilter = getValue(data, 'lodFilter')
-    self.lodFilter = getValue(data, 'lodFilter')
+    self.display_name = getValue(kwargs, 'display_name')
+    self.lodFilter = getValue(kwargs, 'lodFilter')
+    self.lodFilter = getValue(kwargs, 'lodFilter')
 
 
 class Line(XYGraphics):
-  def __init__(self, data=None):
-    if data is None:
-      data = {}
-    XYGraphics.__init__(self, data)
-    self.width = getValue(data, 'width', 1.5)
-    self.style = getValue(data, 'style')
-    self.interpolation = getValue(data, 'interpolation')
-    self.color = getColor(getValue(data, 'color'))
+  def __init__(self, **kwargs):
+    XYGraphics.__init__(self, **kwargs)
+    self.width = getValue(kwargs, 'width', 1.5)
+    self.style = getValue(kwargs, 'style')
+    self.interpolation = getValue(kwargs, 'interpolation')
+    self.color = getColor(getValue(kwargs, 'color'))
+
 
 class BasedXYGraphics(XYGraphics):
-  def __init__(self, data=None):
-    if data is None:
-      data = {}
-    XYGraphics.__init__(self, data)
-    base = getValue(data, 'base')
+  def __init__(self, **kwargs):
+    XYGraphics.__init__(self, **kwargs)
+    base = getValue(kwargs, 'base')
     if isinstance(base, list):
       self.bases = base
     else:
-      self.base = getValue(data, 'base', 0)
+      self.base = getValue(kwargs, 'base', 0)
+
 
 class Bars(BasedXYGraphics):
-  def __init__(self, data=None):
-    if data is None:
-      data = {}
-    BasedXYGraphics.__init__(self, data)
+  def __init__(self, **kwargs):
+    BasedXYGraphics.__init__(self, **kwargs)
 
-    width = getValue(data, 'width')
+    width = getValue(kwargs, 'width')
     if isinstance(width, list):
       self.widths = width
     else:
       self.width = width
 
-    color = getColor(getValue(data, 'color'))
+    color = getColor(getValue(kwargs, 'color'))
     if isinstance(color, list):
       self.colors = color
     else:
       self.color = color
 
-    outlineColor = getColor(getValue(data, 'outlineColor'))
+    outlineColor = getColor(getValue(kwargs, 'outlineColor'))
     if isinstance(outlineColor, list):
       self.outline_colors = outlineColor
     else:
       self.outline_color = outlineColor
 
-class Points(XYGraphics):
-  def __init__(self, data=None):
-    if data is None:
-      data = {}
-    XYGraphics.__init__(self, data)
 
-    shape = getColor(getValue(data, 'shape'))
+class Points(XYGraphics):
+  def __init__(self, **kwargs):
+    XYGraphics.__init__(self, **kwargs)
+
+    shape = getColor(getValue(kwargs, 'shape'))
     if isinstance(shape, list):
       self.shapes = shape
     else:
-      self.shape = getValue(data, 'shape', ShapeType.DEFAULT)
+      self.shape = getValue(kwargs, 'shape', ShapeType.DEFAULT)
 
-    size = getColor(getValue(data, 'size'))
+    size = getColor(getValue(kwargs, 'size'))
     if isinstance(size, list):
       self.sizes = size
     else:
-      self.size = getValue(data, 'size', 0.6)
+      self.size = getValue(kwargs, 'size', 0.6)
 
-    fill = getColor(getValue(data, 'fill'))
+    fill = getColor(getValue(kwargs, 'fill'))
     if isinstance(fill, list):
       self.fills = fill
     else:
       self.fill = fill
 
-    color = getColor(getValue(data, 'color'))
+    color = getColor(getValue(kwargs, 'color'))
     if isinstance(color, list):
       self.colors = color
     else:
       self.color = color
 
-    outlineColor = getColor(getValue(data, 'outlineColor'))
+    outlineColor = getColor(getValue(kwargs, 'outlineColor'))
     if isinstance(outlineColor, list):
       self.outline_colors = outlineColor
     else:
       self.outline_color = outlineColor
 
+
 class Stems(BasedXYGraphics):
-  def __init__(self, data=None):
-    if data is None:
-      data = {}
-    BasedXYGraphics.__init__(self, data)
-    self.width = getValue(data, 'width', 1.5)
-    color = getColor(getValue(data, 'color'))
+  def __init__(self, **kwargs):
+    BasedXYGraphics.__init__(self, **kwargs)
+    self.width = getValue(kwargs, 'width', 1.5)
+    color = getColor(getValue(kwargs, 'color'))
     if isinstance(color, list):
       self.colors = color
     else:
       self.color = color
 
-    style = getValue(data, 'style')
+    style = getValue(kwargs, 'style')
     if isinstance(style, list):
       self.styles = style
     else:
-      self.style = getValue(data, 'style', StrokeType.SOLID)
+      self.style = getValue(kwargs, 'style', StrokeType.SOLID)
+
 
 class Area(BasedXYGraphics):
-  def __init__(self, data=None):
-    if data is None:
-      data = {}
-    BasedXYGraphics.__init__(self, data)
-    self.color = getColor(getValue(data, 'color'))
-    self.interpolation = getValue(data, 'interpolation')
+  def __init__(self, **kwargs):
+    BasedXYGraphics.__init__(self, **kwargs)
+    self.color = getColor(getValue(kwargs, 'color'))
+    self.interpolation = getValue(kwargs, 'interpolation')
+
 
 class Text():
-  def __init__(self, data=None):
-    if data is None:
-      data = {}
-
-    self.x = getValue(data, 'x', 0)
-    self.y = getValue(data, 'y', 0)
-    self.color = getColor(getValue(data, 'color'))
-    self.size = getValue(data, 'size', 13)
-    self.text = getValue(data, 'text', '')
-    self.show_pointer = getValue(data, 'show_pointer', True)
-    self.pointer_angle = getValue(data, 'pointer_angle', (-0.25) * math.pi)
+  def __init__(self, **kwargs):
+    self.x = getValue(kwargs, 'x', 0)
+    self.y = getValue(kwargs, 'y', 0)
+    self.color = getColor(getValue(kwargs, 'color'))
+    self.size = getValue(kwargs, 'size', 13)
+    self.text = getValue(kwargs, 'text', '')
+    self.show_pointer = getValue(kwargs, 'show_pointer', True)
+    self.pointer_angle = getValue(kwargs, 'pointer_angle', (-0.25) * math.pi)
 
 
 class YAxis():
-  def __init__(self, data=None):
-    if data is None:
-      data = {}
-    self.label = getValue(data, 'label', '')
-    self.autoRange = getValue(data, 'autoRange')
-    self.color = getColor(getValue(data, 'color'))
-    self.size = getValue(data, 'size', 13)
-    self.text = getValue(data, 'text', '')
-    self.show_pointer = getValue(data, 'show_pointer', True)
-    self.pointer_angle = getValue(data, 'pointer_angle', (-0.25) * math.pi)
-
+  def __init__(self, **kwargs):
+    self.label = getValue(kwargs, 'label', '')
+    self.autoRange = getValue(kwargs, 'autoRange')
+    self.color = getColor(getValue(kwargs, 'color'))
+    self.size = getValue(kwargs, 'size', 13)
+    self.text = getValue(kwargs, 'text', '')
+    self.show_pointer = getValue(kwargs, 'show_pointer', True)
+    self.pointer_angle = getValue(kwargs, 'pointer_angle', (-0.25) * math.pi)

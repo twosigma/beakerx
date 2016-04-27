@@ -24,6 +24,7 @@ describe('Embed mode', function() {
   beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL+"beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy-examples.bkr&readOnly=true").then(done);
+    beakerPO.waitUntilLoadingFinished();
   });
 
   afterEach(function(done) {

@@ -23,47 +23,69 @@ describe('HeatMap Tutorial', function (done) {
 
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&readOnly=true").then(done);
-    beakerPO.waitUntilLoadingCellOutput();
+    beakerPO.waitUntilLoadingFinished();
 
     it('Basic HeatMap Example', function () {
-        beakerPO.checkPlotIsPresent(1);
-        beakerPO.checkLegendIsPresent(1);
+        var idCell = "codeFh3TtJ";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
+        beakerPO.checkLegendIsPresentByIdCell(idCell);
+        beakerPO.getPlotLegendContainerByIdCell(idCell).element(by.css('#plotLegend')).getCssValue('top').then(function(legendTop){
+            beakerPO.getPlotLegendContainerByIdCell(idCell).element(by.css('#plotContainer')).getCssValue('top').then(function(plotTop){
+                expect(parseInt(plotTop)).toBeLessThan(parseInt(legendTop));
+            });
+        });
     });
 
-    it('Title and Legend', function () {
-        beakerPO.checkPlotIsPresent(2);
-        beakerPO.checkLegendIsPresent(2);
-
-        expect(beakerPO.getCodeCellOutputContainerTitle(2)).toBe("Heatmap Second Example");
+    it('Title, Labels and Legend', function () {
+        var idCell = "code4GJtht";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
+        beakerPO.checkLegendIsPresentByIdCell(idCell);
+        expect(beakerPO.getCodeCellOutputContainerXLabelByIdCell(idCell)).toBe("X Label");
+        expect(beakerPO.getCodeCellOutputContainerYLabelByIdCell(idCell)).toBe("Y Label");
+        expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Heatmap Second Example");
+        beakerPO.getPlotLegendContainerByIdCell(idCell).element(by.css('#plotLegend')).getCssValue('top').then(function(legendTop){
+            beakerPO.getPlotLegendContainerByIdCell(idCell).element(by.css('#plotContainer')).getCssValue('top').then(function(plotTop){
+                expect(parseInt(legendTop)).toBeLessThan(parseInt(plotTop));
+            });
+        });
     });
 
-    it('Labels', function () {
-        beakerPO.checkPlotIsPresent(2);
+    it('Setting colors, hiding the legend', function () {
+        var idCell = "codeVDjdY4";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
+        expect(beakerPO.getPlotLegendContainerByIdCell(idCell).element(by.css('#plotLegend')).isPresent()).toBe(false);
+        expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getCssValue('fill')).toBe('rgb(45, 185, 0)');
+        expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_1')).getCssValue('fill')).toBe('rgb(50, 187, 0)');
 
-        expect(beakerPO.getCodeCellOutputContainerYLabel(2)).toBe("Y Label");
-        expect(beakerPO.getCodeCellOutputContainerXLabel(2)).toBe("X Label");
-    });
-
-    it('Hiding the legend', function () {
-        beakerPO.checkPlotIsPresent(3);
-        var nonexistent = beakerPO.getPlotLegendContainer(3, 0).all(By.css('.plot-legend'));
-        expect(nonexistent.getText()).toEqual([ ]);
-    });
-
-    it('Setting colors', function () {
-        beakerPO.checkPlotIsPresent(3);
-        expect(beakerPO.getPlotSvg(3, 0).all(by.css("#maing > g > rect")).get(0).getAttribute('style')).toBe('fill: rgb(45, 185, 0);');
-
-        beakerPO.checkPlotIsPresent(4);
-        expect(beakerPO.getPlotSvg(4, 0).all(by.css("#maing > g > rect")).get(0).getAttribute('style')).toBe('fill: rgb(93, 93, 0);');
+        idCell = "codehVlhId";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
+        expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getCssValue('fill')).toBe('rgb(93, 93, 0)');
+        expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_1')).getCssValue('fill')).toBe('rgb(179, 179, 0)');
+        expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Custom Gradient Example");
+        expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')).toBeNull();
+        browser.actions().mouseMove(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0'))).perform().then(function(){
+            expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')).not.toBeNull();
+        });
     });
 
     it('Custom size, no tooltips', function () {
-        beakerPO.checkPlotIsPresent(5);
-        beakerPO.checkSize(beakerPO.getPlotSvg(5, 0), 900, 300);
-
-        var nonexistent = beakerPO.getPlotSvg(5, 0).all(By.css('.plot-resp'));
-        expect(nonexistent.getText()).toEqual([ ]);
+        var idCell = "codebYcLcg";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
+        beakerPO.checkSize(beakerPO.getPlotSvgByIdCell(idCell), 900, 300);
+        expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')).toBeNull();
+        browser.actions().mouseMove(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0'))).perform().then(function(){
+            expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')).toBeNull();
+        });
     });
 
 });

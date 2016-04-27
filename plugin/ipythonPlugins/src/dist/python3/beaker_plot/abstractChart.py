@@ -12,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .chart import Chart
-from .plotitem import *
-from .utils import *
-
+from beaker_plot.chart import Chart
+from beaker_plot.plotitem import *
+from beaker_plot.utils import *
 
 
 class AbstractChart(Chart):
@@ -34,9 +33,9 @@ class AbstractChart(Chart):
       "log": getValue(data, 'yLog'),
       "logBase": getValue(data, 'yLogBase')
     })
-
-    self.domain_axis_label= getValue(data, 'domain_axis_label')
-    self.y_label = getValue(data, 'y_label')
+    self.rangeAxes = getValue(data, 'yAxes', self.yAxis),
+    self.domain_axis_label= getValue(data, 'xLabel')
+    self.y_label = getValue(data, 'yLabel')
     self.x_lower_margin = getValue(data, 'xLowerMargin', 0.05)
     self.x_uppe_margin = getValue(data, 'xUpperMargin', 0.05)
     self.y_auto_range = getValue(data, 'y_auto_range')
@@ -46,12 +45,5 @@ class AbstractChart(Chart):
     self.y_lower_bound = getValue(data, 'y_lower_bound')
     self.y_upper_bound = getValue(data, 'y_upper_bound')
     self.log_y = getValue(data, 'log_y')
-    self.omitCheckboxes = getValue(data, 'omitCheckboxes', False)
+    self.omit_checkboxes = getValue(data, 'omitCheckboxes', False)
 
-
-  def _transform(self, out):
-    super()._transform(out)
-    out['x_lower_margin'] = self.xLowerMargin
-    out['x_upper_margin'] = self.xUpperMargin
-    # out['xLabel'] = self.xLabel
-    out['omit_checkboxes'] = self.omitCheckboxes

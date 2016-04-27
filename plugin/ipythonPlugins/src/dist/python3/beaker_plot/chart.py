@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .legend import *
-from .utils import *
+from beaker_plot.legend import *
+from beaker_plot.utils import *
 
-class Chart:
+class Chart(BaseObject):
   def __init__(self, data=None):
+    BaseObject.__init__(self)
     if data is None:
       data = {}
 
@@ -28,12 +29,3 @@ class Chart:
     self.legend_position = getValue(data, 'legendPosition', LegendPosition.Position.TOP_RIGHT)
     self.legend_layout = getValue(data, 'legendLayout', LegendLayout.VERTICAL)
 
-
-  def _transform(self, out):
-    out['init_width'] = self.init_width
-    out['init_height'] = self.init_height
-    out['chart_title'] = self.chart_title
-    out['show_legend'] = self.show_legend
-    out['use_tool_tip'] = self.use_tool_tip
-    out['legend_position'] = self.legend_position.transform()
-    out['legend_layout'] = self.legend_layout.name

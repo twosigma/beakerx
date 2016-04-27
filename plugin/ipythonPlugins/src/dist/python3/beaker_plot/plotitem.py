@@ -15,21 +15,8 @@
 from enum import Enum
 from datetime import datetime
 import math
-from .utils import *
 
-
-def getColor(color):
-  if isinstance(color, list):
-    values = []
-    for c in color:
-      values.append(getColor(c))
-
-    return values
-  elif isinstance(color, Color):
-    return color.value
-  else:
-    return color
-
+from beaker_plot.utils import *
 
 class ShapeType(Enum):
   SQUARE = 1
@@ -54,48 +41,12 @@ class StrokeType(Enum):
   LONGDASH = 5
 
 
-class Color:
-  def __init__(self, r, g, b, a=255):
-    self.value = ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF)
-    if self.value < 0:
-      self.value = 0xFFFFFFFF + self.value + 1
-
-  def hex(self):
-    return '#%02x' % self.value
-
-
-Color.white = Color(255, 255, 255)
-Color.WHITE = Color.white
-Color.lightGray = Color(192, 192, 192)
-Color.LIGHT_GRAY = Color.lightGray
-Color.gray = Color(128, 128, 128)
-Color.GRAY = Color.gray
-Color.darkGray = Color(64, 64, 64)
-Color.DARK_GRAY = Color.darkGray
-Color.black = Color(0, 0, 0)
-Color.BLACK = Color.black
-Color.red = Color(255, 0, 0)
-Color.RED = Color.red
-Color.pink = Color(255, 175, 175)
-Color.PINK = Color.pink
-Color.orange = Color(255, 200, 0)
-Color.ORANGE = Color.orange
-Color.yellow = Color(255, 255, 0)
-Color.YELLOW = Color.yellow
-Color.green = Color(0, 255, 0)
-Color.GREEN = Color.green
-Color.magenta = Color(255, 0, 255)
-Color.MAGENTA = Color.magenta
-Color.cyan = Color(0, 255, 255)
-Color.CYAN = Color.cyan
-Color.blue = Color(0, 0, 255)
-Color.BLUE = Color.blue
-
-
-class Graphics:
+class Graphics(BaseObject):
   def __init__(self, data=None):
+    BaseObject.__init__(self)
     if data is None:
       data = {}
+    self.type = self.__class__.__name__
     self.visible = getValue(data, 'visible', True)
     self.yAxis = getValue(data, 'yAxis')
 
@@ -107,7 +58,7 @@ class ConstantLine(Graphics):
     Graphics.__init__(self, data)
     self.x = getValue(data, 'x')
     self.y = getValue(data, 'y')
-    self.baseColor = getColor(getValue(data, 'color'))
+    self.color = getColor(getValue(data, 'color'))
     self.width = getValue(data, 'width', 1.5)
     self.style = getValue(data, 'style')
     self.showLabel = getValue(data, 'showLabel')
@@ -280,6 +231,3 @@ class YAxis():
     self.show_pointer = getValue(data, 'show_pointer', True)
     self.pointer_angle = getValue(data, 'pointer_angle', (-0.25) * math.pi)
 
-# TODO
-# XYStacker
-# Crosshair

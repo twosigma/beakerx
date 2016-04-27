@@ -12,19 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .xyChart import XYChart
+import json
+
+from beaker_plot.xyChart import XYChart
+from beaker_plot.utils import *
+from beaker_plot.plotitem import *
 
 class Plot(XYChart):
-
-    def transform (self):
-        out = {}
-        out['type'] = "Plot"
-        self._transform(out)
-        return out
-
-    def _transform (self, out):
-        super()._transform(out)
+  pass
 
 
-def transformBack (obj):
-    return Plot()
+def parseJSON(out):
+  return json.loads(out, object_hook=transformBack)
+
+def transformBack(obj):
+  if 'type' in obj:
+    res = eval(obj['type'])()
+    res.transformBack(obj)
+    return res
+  return obj

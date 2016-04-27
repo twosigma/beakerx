@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .abstractChart import AbstractChart
-from .utils import *
-from .plotitem import *
+from beaker_plot.abstractChart import AbstractChart
+from beaker_plot.utils import *
+from beaker_plot.plotitem import *
 
 
 class XYChart(AbstractChart):
@@ -34,9 +34,4 @@ class XYChart(AbstractChart):
     self.x_log_base = getValue(data, 'xLogBase', 10)
     self.lodThreshold = getValue(data, 'lodThreshold')
 
-  def _transform(self, out):
-    super()._transform(out)
-    out['x_lower_margin'] = self.xLowerMargin
-    out['x_upper_margin'] = self.xUpperMargin
-    # out['xLabel'] = self.xLabel
-    out['omit_checkboxes'] = self.omitCheckboxes
+

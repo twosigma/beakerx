@@ -67,6 +67,7 @@ def generatePluginDescriptions(){
     "fgColor",
     "borderColor",
     "shortName",
+    "cmMode",
     "tooltip"
   ]
   def plugins = collectPlugins('../plugin')
@@ -88,13 +89,14 @@ def generatePluginDescriptions(){
         }
       }
     }
-    def pluginDescription = String.format("\"%s\": { url : \"%s\", bgColor: \"%s\", fgColor: \"%s\", borderColor: \"%s\", shortName: \"%s\", tooltip: \"%s\" },\n"
+    def pluginDescription = String.format("\"%s\": { url : \"%s\", bgColor: \"%s\", fgColor: \"%s\", borderColor: \"%s\", shortName: \"%s\", cmMode: \"%s\", tooltip: \"%s\" },\n"
       , map['pluginName']
       , map['url']
       , map['bgColor']
       , map['fgColor']
       , map['borderColor']
       , map['shortName']
+      , map['cmMode']
       , map['tooltip'])
     pluginDescriptions += pluginDescription;
   }

@@ -81,18 +81,6 @@ describe('Groovy Tutorial', function (done) {
             beakerPO.checkCellOutputTextByIdCell(idCell, "standard\noutput");
         });
 
-        it("Don't use cell output", function () {
-            var idCell = "codehp1B5U";
-            beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Hidden');
-            beakerPO.checkCellOutputTextByIdCell(idCell, "");
-
-            idCell = "codeKIMiDC";
-            beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Results');
-            beakerPO.checkCellOutputTextByIdCell(idCell, "");
-        });
-
         it("Limit cell output", function () {
             var idCell = "codeUAzxIm";
             beakerPO.scrollToBkCellByIdCell(idCell);
@@ -105,6 +93,20 @@ describe('Groovy Tutorial', function (done) {
             beakerPO.checkCellOutputTextByIdCell(idCell, "standard\noutput");
         });
 
+        it("Use output panel", function () {
+            var idCell = "codehp1B5U";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+            beakerPO.checkCellOutputTextByIdCell(idCell, "true");
+
+            idCell = "codeKIMiDC";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
+            browser.wait(beakerPO.EC.presenceOf($('div.outputlogcontainer')), 10000)
+                .then(function(isPresent){
+                        expect(isPresent).toBe(true);
+                    });
+        });
     });
 
 });

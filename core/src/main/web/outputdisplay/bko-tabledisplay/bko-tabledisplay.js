@@ -295,6 +295,12 @@
         $scope.id = 'table_' + bkUtils.generateId(6);
         $scope.rowsToDisplayMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']];
 
+        $scope.showColumnMenu = {
+          searchable: function(){
+            return $scope.columnNames && $scope.columnNames.length > 10;
+          }
+        };
+
         $scope.getShareMenuPlugin = function() {
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
         };

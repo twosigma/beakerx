@@ -68,6 +68,10 @@
           } );
       };
 
+      var getEvaluatingStatusMsg = function (job) {
+        return "Evaluating " + job.evaluatorId + " cell" + (!_.isEmpty(job.tags) ? " " + job.tags : "");
+      };
+
       var doNext = function(innext) {
         var job;
 
@@ -110,9 +114,9 @@
             last.whendone.reject('... cancelled!');
             delete running[last.cellId];
             _jobInProgress.pop();
-            bkHelper.clearStatus("Evaluating " + last.evaluatorId + " cell " + last.cellId, true);
+            bkHelper.clearStatus(getEvaluatingStatusMsg(last), true);
             if (parent !== undefined) {
-              bkHelper.showStatus("Evaluating " + parent.evaluatorId + " cell " + parent.cellId, true);
+              bkHelper.showStatus(getEvaluatingStatusMsg(parent), true);
             } else {
               last.cancel_deferred.resolve('done');
             }
@@ -152,12 +156,12 @@
               }
             } else
               last.whendone.resolve(last.output);
-            bkHelper.clearStatus("Evaluating " + last.evaluatorId + " cell " + last.cellId, true);
+            bkHelper.clearStatus(getEvaluatingStatusMsg(last), true);
             delete running[last.cellId];
             _jobInProgress.pop();
             if (_jobInProgress.length > 0) {
               job = _jobInProgress[_jobInProgress.length-1];
-              bkHelper.showStatus("Evaluating " + job.evaluatorId + " cell " + job.cellId, true);
+              bkHelper.showStatus(getEvaluatingStatusMsg(job), true);
             }
             doNext(true);
             if (innext === undefined)
@@ -172,7 +176,7 @@
         }
 
         _jobInProgress.push(job);
-        bkHelper.showStatus("Evaluating " + job.evaluatorId + " cell " + job.cellId, true);
+        bkHelper.showStatus(getEvaluatingStatusMsg(job), true);
 
         evaluateJob(job)
         .then(function(data) {
@@ -256,7 +260,8 @@
           finished: false,
           runchild: undefined,
           children: [],
-          whendone : deferred
+          whendone : deferred,
+          tags: cell.tags
         };
         jobQueue.addChildren(parent,evalJob);
         if (notick === undefined)
@@ -297,7 +302,8 @@
           finished: false,
           runchild: undefined,
           children: [],
-          whendone : deferred
+          whendone : deferred,
+          tags: cell.tags
         };
         jobQueue.add(evalJob);
         if (notick === undefined)

@@ -33,6 +33,14 @@
       }
     };
   });
+  module.directive('stopClick', function() {
+    return function(scope, element, attrs) {
+      element.click(function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    };
+  });
   module.directive('eatClick', function() {
     return function(scope, element, attrs) {
       element.click(function(event) {
@@ -55,6 +63,77 @@
         return !it.hidden;
       });
     };
+  });
+
+  module.directive('dropdownMenuSearch', function() {
+    return {
+      restrict: 'C',
+      link: function(scope, element) {
+        setTimeout(function(){
+          var currentUL = element.siblings('ul');
+          var parentULs = currentUL.parents('ul');
+          var previousCss = [];
+          $([currentUL, parentULs]).each(function(i, e){
+            previousCss.push(e.attr("style"));
+            e.css({
+              position:   'absolute',
+              visibility: 'hidden',
+              display:    'block'
+            });
+          });
+
+          element.outerWidth(currentUL.width());
+
+          $([currentUL, parentULs]).each(function(i, e){
+            e.attr("style", previousCss[i] ? previousCss[i] : "");
+          });
+        });
+      }
+    }
+  });
+  module.directive('dropdownSubmenuScrollable', function() {
+    return {
+      restrict: 'C',
+      link: function(scope, element) {
+        var parent = element.parent();
+        var hoverHandler = function() {
+          var position = element[0].getBoundingClientRect();
+          if (position.bottom > window.innerHeight) {
+            var itemHeight = 24;
+            var marginb = 3;
+            var menuItemsLength = element.children().length;
+            var itemsToShow = Math.min(menuItemsLength, 10);//show at least 10 item. if items<10 show them all
+            var padding = element.innerHeight() - element.height();
+
+            var requiredVisibleHeight = itemHeight * itemsToShow + padding;
+            var actualVisibleHeight = window.innerHeight - position.top;
+            var diff = requiredVisibleHeight - actualVisibleHeight + marginb;
+            if (diff > 0) {
+              element.css('top', parseInt(element.css('top'), 10) - diff);
+              var searchBox = element.siblings('.dropdown-menu-search');
+              searchBox.css('top', parseInt(searchBox.css('top'), 10) - diff);
+              position = element[0].getBoundingClientRect();
+            }
+            //show scroll
+            element.css('max-height', window.innerHeight - position.top - marginb);
+          }
+        };
+
+        var leaveHandler = function () {
+          element.css('top', '');
+          element.css('max-height', '');
+          element.siblings('.dropdown-menu-search').css('top', '');
+        };
+
+        parent.on('mouseenter', hoverHandler);
+        parent.on('mouseleave', leaveHandler);
+
+        scope.$on('$destroy', function(){
+          parent.off('mouseenter', hoverHandler);
+          parent.off('mouseleave', leaveHandler);
+        });
+      }
+    }
   });
   module.directive('dropdownPromoted', function() {
     // Is your dropdown being covered by its ancestors siblings?

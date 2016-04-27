@@ -480,6 +480,14 @@
 
   .dropdown-menu {
     background-color: $std-bg-color;
+    > .dropdown-menu-search {
+      input {
+        border-color: $std-fg-color;
+      }
+      i {
+        color: $std-fg-color;
+      }
+    }
   }
 
   .dropdown-menu > li > a {

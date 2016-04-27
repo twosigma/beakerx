@@ -35,6 +35,7 @@ describe('Beaker Tables', function () {
   describe('Simple Table', function () {
     it('should have Key and Value columns', function (done) {
       beakerPO.getCodeOutputCellIdBySectionTitle('Key Value Table').then(function (v) {
+        beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
         beakerPO.checkDataTableHeadByIdCell(v, 'Key\nValue');
         done();
       });
@@ -42,6 +43,7 @@ describe('Beaker Tables', function () {
 
     it('should have 3 columns (index, name, mass)', function (done) {
       beakerPO.getCodeOutputCellIdBySectionTitle('Table with Index column').then(function (v) {
+        beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
         expect(beakerPO.getDataTablesTHeadByIdCell(v).all(by.css('th')).count()).toBe(6);//column names row and filter row
         beakerPO.checkDataTableHeadByIdCell(v, 'index name\nmass');
         done();
@@ -50,6 +52,7 @@ describe('Beaker Tables', function () {
 
     it('should be sorted by 1 column (asc)', function (done) {
       beakerPO.getCodeOutputCellIdBySectionTitle('Table with Index column').then(function (v) {
+        beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
         beakerPO.checkClass(beakerPO.getDataTablesColumnByIdCell(v, 0), 'sorting_1');
         beakerPO.checkDataTableBodyByIdCell(v, 5, '0 strange 95000000.0000');
         done();
@@ -58,6 +61,7 @@ describe('Beaker Tables', function () {
 
     it('should have 1st column fixed', function (done) {
       beakerPO.getCodeOutputCellIdBySectionTitle('Key Value Table').then(function (v) {
+        beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
         expect(beakerPO.getDTFCLeftBody(v).get(0).all(by.css('td')).count()).toBe(1);
         expect(beakerPO.getDTFCRightBody(v).count()).toBe(0);
         done();
@@ -66,6 +70,7 @@ describe('Beaker Tables', function () {
 
     it('should have horizontal scroll', function (done) {
       beakerPO.getCodeOutputCellIdBySectionTitle('Horizontal scroll').then(function (v) {
+        beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
         beakerPO.getDataTablesColumnByIdCell(v, 1).getLocation().then(function (locationBeforeScroll) {
           var x = 300;
           beakerPO.scrollDataTableHorizontally(v, x);
@@ -80,6 +85,7 @@ describe('Beaker Tables', function () {
 
     it('should have 1st column fixed when scrolling horizontally', function (done) {
       beakerPO.getCodeOutputCellIdBySectionTitle('Horizontal scroll').then(function (v) {
+        beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
         beakerPO.getDTFCLeftColumn(v, 0).getLocation().then(function (locationBeforeScroll) {
           beakerPO.scrollDataTableHorizontally(v, 10000);
           expect(beakerPO.getDTFCLeftColumn(v, 0).getLocation()).toEqual(locationBeforeScroll);
@@ -121,6 +127,9 @@ describe('Beaker Tables', function () {
         'Filter...',
         'Hide Filter'
       ];
+      beakerPO.getCodeOutputCellIdBySectionTitle('Table Header').then(function (v) {
+        beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+      });
       var firstLevelItems = beakerPO.getDataTableMenuFirstLevelItems('Table Header');
       checkMenus(expectedItems, firstLevelItems, done);
     });
@@ -150,6 +159,7 @@ describe('Beaker Tables', function () {
 
       it('should be in the left-most column header', function (done) {
         beakerPO.getCodeOutputCellIdBySectionTitle('Table Header').then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
           beakerPO.getDTFCLeftColumnHeader(v, 0).getLocation().then(function (headerLocation) {
             beakerPO.getDataTableMenuToggle('Table Header').getLocation().then(function (menuToggleLocation) {
               var headerBorder = 1;
@@ -177,10 +187,11 @@ describe('Beaker Tables', function () {
         var section = 'Table with pagination';
         var paginationMenu = beakerPO.getDataTableMenuItem(section, 'Use pagination');
         beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
           expect(beakerPO.getDataTablePaginationControl(v).isPresent()).toBe(true);
           beakerPO.getDataTableMenuToggle(section).click().then(function(){
             beakerPO.checkDataTableMenuItemHasIcon(paginationMenu, 'glyphicon-ok', true);
-            paginationMenu.click().then(function(){
+            paginationMenu.element(by.css('a[ng-click="doUsePagination()"]')).click().then(function(){
               expect(beakerPO.getDataTablePaginationControl(v).isPresent()).toBe(false);
               beakerPO.checkDataTableMenuItemHasIcon(paginationMenu, 'glyphicon-ok', false);
               done();
@@ -188,37 +199,43 @@ describe('Beaker Tables', function () {
           });
         });
       });
+
       it('should display 10 rows', function (done) {
         var section = 'Table with pagination';
         var rowsToShowMenu = beakerPO.getDataTableMenuItem(section, 'Rows to Show');
 
         beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
           beakerPO.getDataTableMenuToggle(section).click().then(function () {
             browser.actions().mouseMove(rowsToShowMenu).perform();
             var show10 = beakerPO.getDataTableSubMenuItem(rowsToShowMenu, '10');
-            show10.click().then(function () {
-              expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 10)).toBe(true);
-              expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 11)).toBe(false);
-              done();
+            show10.element(by.css('a[ng-click="changePageLength(length)"]')).click().then(function () {
+                expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 10)).toBe(true);
+                expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 11)).toBe(false);
+                done();
             });
           });
         });
       });
+
       it('should display All rows', function (done) {
         var section = 'Table with pagination';
+        browser.driver.manage().window().maximize();
         var rowsToShowMenu = beakerPO.getDataTableMenuItem(section, 'Rows to Show');
 
         beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
           beakerPO.getDataTableMenuToggle(section).click().then(function () {
             browser.actions().mouseMove(rowsToShowMenu).perform();
             var showAll = beakerPO.getDataTableSubMenuItem(rowsToShowMenu, 'All');
-            showAll.click().then(function () {
+            showAll.element(by.css('a[ng-click="changePageLength(length)"]')).click().then(function () {
               expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 50)).toBe(true);
-              done();
             });
+            done();
           });
         });
       });
+
     });
 
   });

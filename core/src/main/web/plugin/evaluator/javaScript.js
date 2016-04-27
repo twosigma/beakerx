@@ -440,7 +440,7 @@ define(function(require, exports, module) {
         spinner: true
       },
       scripts: {
-        name: "Include Javascript Files",
+        name: "Include JavaScript Files (URLs, one per line)",
         type: "settableString",
         action: "loadAllLibraries"
       }

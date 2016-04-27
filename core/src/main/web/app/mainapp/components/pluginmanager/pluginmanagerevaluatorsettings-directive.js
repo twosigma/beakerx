@@ -24,11 +24,23 @@
   var module = angular.module('bk.core');
 
   module.directive('bkPluginManagerEvaluatorSettings', function(
-      $compile, bkSessionManager, GLOBALS, bkUtils) {
+      $compile, bkSessionManager, GLOBALS, bkUtils, $timeout) {
     return {
       restrict: 'E',
       template: JST["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"](),
       controller: function($scope) {
+
+        var cdnJsError = (function() {
+          var timer = $timeout(function() {}, 0);
+          return function() {
+            $scope.cdnJsErrorOccured = true;
+            $timeout.cancel(timer);
+            timer = $timeout(function() {
+              $scope.cdnJsErrorOccured = false;
+            }, 5000);
+          }
+        })();
+
         $scope.savedSettings = angular.copy($scope.evaluator.settings);
         $scope.highlight = false;
 
@@ -51,6 +63,9 @@
               });
               $scope[scopeProperty] = _.take(jsLibraries, 20);
               $scope.searchingRemote = false;
+            }).catch(function(e) {
+              $scope.searchingRemote = false;
+              cdnJsError();
             });
           } else {
             $scope[scopeProperty] = [];

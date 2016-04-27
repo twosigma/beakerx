@@ -62,3 +62,11 @@
   position: relative;
   left: 10px;
 }
+
+.cdnjs-error {
+  transition: all linear 0.5s;
+  opacity: 1;
+  &.ng-hide {
+    opacity: 0;
+  }
+}

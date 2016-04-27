@@ -294,6 +294,10 @@ var BeakerPageObject = function() {
     return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('labelg'));
   };
 
+  this.getPlotLabelgByIdCell = function (idCell, containerIdx) {
+    return this.getPlotSvgByIdCell(idCell, containerIdx).element(By.id('labelg'));
+  };
+
   this.getPlotSvgElementByIndex= function (codeCellOutputIdx, containerIdx, elementIndex) {
     return this.getPlotSvg(codeCellOutputIdx, containerIdx).all(by.css("#maing > g")).get(elementIndex);
   };
@@ -466,6 +470,11 @@ var BeakerPageObject = function() {
   this.checkPlotLegentdLabel = function (codeCellOutputIdx, containerIdx, legentdLabelIndex, text) {
     expect(this.getPlotLegendContainer(codeCellOutputIdx, containerIdx)
       .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
+  }
+
+  this.checkPlotLegentdLabelByIdCell = function (idCell, containerIdx, legentdLabelIndex, text) {
+    expect(this.getPlotLegendContainerByIdCell(idCell, containerIdx)
+        .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
   }
 
   this.checkLegendIsPresentByIdCell = function (codeCellOutputId, containerIdx) {
@@ -650,7 +659,7 @@ var BeakerPageObject = function() {
   };
 
   this.getDataTableMenuToggle = function (sectionTitle) {
-    return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('.dtmenu .dropdown-toggle'));
+    return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('a[ng-click="menuToggle()"]'));
   };
 
   this.getDataTableSubmenu = function (sectionTitle, menuTitle) {
@@ -757,6 +766,14 @@ var BeakerPageObject = function() {
   this.getCodeOutputCellIdBySectionTitle = function (sectionTitle) {
     return this.getCodeCellOutputBySectionTitle(sectionTitle).getAttribute('cell-id');
   };
+
+  this.waitCodeCellOutputPresentByIdCell = function(idCell, outputType) {
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), 20000);
+  }
+
+  this.waitCodeCellOutputTablePresentByIdCell = function(idCell) {
+    this.waitCodeCellOutputPresentByIdCell(idCell, 'Table');
+  }
 
   this.getBkCellByIdCell = function (idCell) {
     return element.all(by.css('[cellid=' + idCell + '] > div')).get(0);

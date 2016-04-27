@@ -27,10 +27,10 @@
       </div>
     </div>
   </div>
-  <div class="modal-body fixed modal-large plugin-manager" style="padding-top: 69px; padding-bottom: 68px;"><!-- padding linked to modal-header/-footer heights  -->
+  <div ng-init="onInit()" class="modal-body fixed modal-large plugin-manager" style="padding-top: 69px; padding-bottom: 68px;"><!-- padding linked to modal-header/-footer heights  -->
     <div class="languages clearfix">
-      <button class="btn btn-default language-icon-button" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getEvaluatorStatuses()" ng-class="pluginName"
-              title="{{getEvaluatorTooltipText(pluginName, pluginStatus)}}">
+      <button class="btn btn-default language-icon-button navigate-btn" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getEvaluatorStatuses()" ng-class="pluginName"
+              title="{{getEvaluatorTooltipText(pluginName, pluginStatus)}}" ng-keydown="navigate($event)" ng-enter="evalTabOp.togglePlugin(pluginName)">
         <span ng-class="'plugin-' + pluginStatus" class="plugin-status">&#x25cf;</span>
         <bk-language-logo bg-color="{{getEvaluatorDetails(pluginName).bgColor}}"
                           name="{{getEvaluatorDetails(pluginName).shortName}}"
@@ -40,7 +40,7 @@
 
         {{pluginName}}
       </button>
-      <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="btn btn-default" ng-if="allowFromUrl()">
+      <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" ng-enter="evalTabOp.showURL = !evalTabOp.showURL" class="btn btn-default navigate-btn" ng-if="allowFromUrl()" ng-keydown="navigate($event)">
         From URL...
       </button>
     </div>

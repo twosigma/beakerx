@@ -15,17 +15,15 @@
  */
 
 
-var BeakerPageObject = require('./beaker.po.js');
+var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
 describe('HeatMap Tutorial', function (done) {
 
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&readOnly=true")
-        .then(done)
-        .then(beakerPO.waitUntilLoadingCellOutput());
-
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&readOnly=true").then(done);
+    beakerPO.waitUntilLoadingCellOutput();
 
     it('Basic HeatMap Example', function () {
         beakerPO.checkPlotIsPresent(1);

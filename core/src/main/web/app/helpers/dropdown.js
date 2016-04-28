@@ -62,12 +62,26 @@
     $('.dropdown-menu a').blur();
   };
 
+  function getParent($this) {
+    var selector = $this.attr('data-target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    var $parent = selector && $(selector)
+
+    return $parent && $parent.length ? $parent : $this.parent()
+  }
+
   var extensionMethods = {
     keydown: function (e) {
+      if (!/(37|39|38|40|27|32)/.test(e.which) || /input|textarea/i.test(e.target.tagName)) return;
+      e.preventDefault();
+      e.stopPropagation();
       var keyCode = e.keyCode;
       if (_.values(KEY_CODES).indexOf(keyCode) > -1) {
-        e.preventDefault();
-        e.stopPropagation();
         var jqEl = $(e.target);
         switch (event.keyCode) {
           case KEY_CODES.ARROW_LEFT:
@@ -88,11 +102,39 @@
             }
             break;
         }
+      } else {
+        ///// copy from Bootstrap dropdown.js/////
+        var $this = $(this);
+
+        if ($this.is('.disabled, :disabled')) return
+
+        var $parent  = getParent($this)
+        var isActive = $parent.hasClass('open')
+
+        if (!isActive && e.which != 27 || isActive && e.which == 27) {
+          if (e.which == 27) $parent.find(toggle).trigger('focus')
+          return $this.trigger('click')
+        }
+
+        ///// fix for navigation through items containing submenus /////
+        var desc = ' li:not(.disabled):visible a:not(.disabled):visible';
+        ///// fix for navigation through items containing submenus /////
+
+        var $items = $parent.find('.dropdown-menu' + desc)
+
+        if (!$items.length) return
+
+        var index = $items.index(e.target)
+
+        if (e.which == 38 && index > 0)                 index--         // up
+        if (e.which == 40 && index < $items.length - 1) index++         // down
+        if (!~index)                                    index = 0
+
+        $items.eq(index).trigger('focus')
+        ///// copy from Bootstrap dropdown.js /////
       }
-      return parentKeydown.apply(this, [e]);
     }
   };
-  var parentKeydown = $.fn.dropdown.Constructor.prototype.keydown;
   $.extend(true, $.fn.dropdown.Constructor.prototype, extensionMethods);
 
   $(document)

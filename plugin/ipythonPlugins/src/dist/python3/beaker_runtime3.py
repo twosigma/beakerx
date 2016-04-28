@@ -256,7 +256,7 @@ def transformBack(obj):
             out[str(k)] = transformBack(v)
         if "type" in out:
             if out['type'] == "Plot":
-                return beaker_plot.plot.transformBack(out)
+                return beaker_plot.chart.transformBack(out)
             if out['type'] == "BeakerCodeCell":
                 c = BeakerCodeCell(out['cellId'], out['evaluatorId'])
                 if 'code' in out:

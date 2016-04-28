@@ -16,9 +16,7 @@ from .legend import *
 from .plotitem import *
 from .utils import *
 
-from .chart import Chart
-from .abstractChart import AbstractChart
-from .xyChart import XYChart
-from .plot import Plot, transformBack
+from .chart import *
+
 
 

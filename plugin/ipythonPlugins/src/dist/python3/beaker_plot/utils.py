@@ -16,6 +16,7 @@ import json
 import inspect
 from datetime import datetime
 
+from enum import Enum
 
 class BaseObject:
   def __init__(self):
@@ -88,7 +89,9 @@ def getColor(color):
 class ObjectEncoder(json.JSONEncoder):
   def default(self, obj):
     if isinstance(obj, datetime):
-      return self.default(obj.microsecond)
+      return self.default(int(obj.strftime("%s")) * 1000)
+    elif isinstance(obj, Enum):
+      return self.default(obj.name)
     elif isinstance(obj, Color):
       return self.default(obj.hex())
     elif hasattr(obj, "__dict__"):

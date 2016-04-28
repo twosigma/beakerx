@@ -84,7 +84,7 @@ class XYGraphics(Graphics):
       for idx in range(len(self.x)):
         x = self.x[idx]
         if isinstance(x, datetime):
-          self.x[idx] = x.microsecond
+          self.x[idx] = int(x.strftime("%s")) * 1000
 
     self.y = defY
     self.display_name = getValue(kwargs, 'display_name')
@@ -193,8 +193,9 @@ class Area(BasedXYGraphics):
     self.interpolation = getValue(kwargs, 'interpolation')
 
 
-class Text():
+class Text(BaseObject):
   def __init__(self, **kwargs):
+    BaseObject.__init__(self)
     self.x = getValue(kwargs, 'x', 0)
     self.y = getValue(kwargs, 'y', 0)
     self.color = getColor(getValue(kwargs, 'color'))
@@ -204,8 +205,9 @@ class Text():
     self.pointer_angle = getValue(kwargs, 'pointer_angle', (-0.25) * math.pi)
 
 
-class YAxis():
+class YAxis(BaseObject):
   def __init__(self, **kwargs):
+    BaseObject.__init__(self)
     self.label = getValue(kwargs, 'label', '')
     self.autoRange = getValue(kwargs, 'autoRange')
     self.color = getColor(getValue(kwargs, 'color'))
@@ -213,3 +215,39 @@ class YAxis():
     self.text = getValue(kwargs, 'text', '')
     self.show_pointer = getValue(kwargs, 'show_pointer', True)
     self.pointer_angle = getValue(kwargs, 'pointer_angle', (-0.25) * math.pi)
+
+
+class XYStacker(BaseObject):
+  def __init__(self):
+    BaseObject.__init__(self)
+
+  def stack(self, graphicsList):
+    if graphicsList is None or len(graphicsList) == 1:
+      return graphicsList
+    else:
+      stackedList = []
+      ysSize = len(graphicsList[0].y)
+      for gIndex in range(1, len(graphicsList)):
+        current = graphicsList[gIndex]
+        previous = graphicsList[gIndex - 1]
+        currentYs = current.y
+        previousYs = previous.y
+
+        if ysSize != len(currentYs):
+          raise Exception('Plot items that are added to XYStack should have the same length coordinates')
+
+        for yIndex in range(ysSize):
+          currentYs[yIndex] = currentYs[yIndex] + previousYs[yIndex]
+
+        current.bases = previousYs
+        stackedList.append(current)
+
+      return stackedList
+
+
+class Crosshair(BasedXYGraphics):
+  def __init__(self, **kwargs):
+    BasedXYGraphics.__init__(self, **kwargs)
+    self.width = getValue(kwargs, 'width')
+    self.style = getValue(kwargs, 'style')
+    self.color = getColor(getValue(kwargs, 'color'))

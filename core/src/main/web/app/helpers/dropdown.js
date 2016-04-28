@@ -23,9 +23,11 @@
     ARROW_RIGHT: 39
   };
 
+  var toggle = '[data-toggle="dropdown"]';
+
   var getMenuToggle = function (el, prev) {
     var menu = el.closest('.dropdown');
-    return menu[prev ? 'prev' : 'next']().find('[data-toggle="dropdown"]');
+    return menu[prev ? 'prev' : 'next']().find(toggle);
   };
 
   var getNextMenuToggle = function (el) {
@@ -139,9 +141,9 @@
 
   $(document)
     .off('keydown.bs.dropdown.data-api', '.dropdown-menu')
-    .off('keydown.bs.dropdown.data-api', '[data-toggle="dropdown"]');
+    .off('keydown.bs.dropdown.data-api', toggle);
   $(document)
-    .on('keydown.bs.dropdown.data-api', '[data-toggle="dropdown"]', $.fn.dropdown.Constructor.prototype.keydown)
+    .on('keydown.bs.dropdown.data-api', toggle, $.fn.dropdown.Constructor.prototype.keydown)
     .on('keydown.bs.dropdown.data-api', '.dropdown-menu', $.fn.dropdown.Constructor.prototype.keydown)
     .on('mouseenter.bs.dropdown.data-api', '.dropdown-menu, .dropdown', clearMenus);
 

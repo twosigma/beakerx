@@ -40,7 +40,7 @@ var config = {
     //'tests/landing-page.js',
     //'tests/notebook.js',
     'tests/autotranslation.js',
-    'tests/code-cell.js',
+    //'tests/code-cell.js',
     //'tests/text-cell.js',
     //'tests/cell-menu.js',
     //'tests/language-manager.js',

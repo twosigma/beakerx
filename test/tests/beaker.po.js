@@ -37,17 +37,20 @@ var BeakerPageObject = function() {
         return false;
       });
     }, 100000);
-
+    var start = new Date().getTime();
     // wait for the modal to close
     return browser.wait(function() {
       return element(by.css('.modal-dialog')).isDisplayed()
-      .then(function(v) {
-        return false;
-      })
-      .thenCatch(function() {
-        return true;
-      });
-    }, 100000);
+          .then(function(v) {
+            return false;
+          })
+          .thenCatch(function() {
+            var stop = new Date().getTime();
+            var len = stop - start;
+            console.log('InstantiationCells: ' + len + ' milliSeconds');
+            return true;
+          });
+    }, 200000);
   };
 
   this.openFile = function(path) {

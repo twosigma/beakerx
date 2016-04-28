@@ -210,7 +210,7 @@ def transform(obj):
         out['output'] = transformNR(obj.getOutput())
         out['tags'] = obj.getTags()
         return out
-    if isinstance(obj, beaker_plot.Plot):
+    if isinstance(obj, beaker_plot.Chart):
         return obj.transform()
     return transformNaN(obj)
 
@@ -245,7 +245,7 @@ def transformNR(obj):
         out['output'] = transformNR(obj.getOutput())
         out['tags'] = obj.getTags()
         return out
-    if isinstance(obj, beaker_plot.Plot):
+    if isinstance(obj, beaker_plot.Chart):
         return obj.transform()
     return transformNaN(obj)
 
@@ -255,7 +255,11 @@ def transformBack(obj):
         for k,v in obj.items():
             out[str(k)] = transformBack(v)
         if "type" in out:
-            if out['type'] == "Plot":
+            if out['type'] == "Plot" \
+              or out['type'] == "TimePlot" \
+              or out['type'] == "NanoPlot" \
+              or out['type'] == "SimpleTimePlot" \
+              or out['type'] == "CombinedPlot":
                 return beaker_plot.chart.transformBack(out)
             if out['type'] == "BeakerCodeCell":
                 c = BeakerCodeCell(out['cellId'], out['evaluatorId'])

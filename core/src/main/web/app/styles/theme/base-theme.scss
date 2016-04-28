@@ -726,17 +726,5 @@
   .marked-argument-changed {
     box-shadow: $marked-argument-changed-border;
   }
-
-  .ui-select-container {
-    background-color: $std-bg-color;
-  }
-
-  .ui-select-choices a span {
-    color: $std-fg-color;
-  }
-
-  .ui-select-choices-row a:hover {
-    background-color: $std-border;
-  }
 }
 

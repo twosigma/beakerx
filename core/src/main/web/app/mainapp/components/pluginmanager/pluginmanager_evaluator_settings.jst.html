@@ -31,18 +31,6 @@
       </span>
   </div>
 
-  <div ng-if="property.type === availableProperties.SELECT">
-    <label>{{ property.name }} </label><span class="cdnjs-spinner" ng-if="property.spinner" ng-show="searchingRemote"><i class='fa fa-refresh fa-spin'></i></span>
-    <uib-alert class="cdnjs-error" ng-show="cdnJsErrorOccured" type="danger">Unable to reach cdnjs. Please try later or include javascript files manually.</uib-alert>
-    <ui-select multiple ng-model="evaluator.settings[property.key]" ng-change="set(property)">
-      <ui-select-match>
-        <span>{{$item.name}}</span>
-      </ui-select-match>
-      <ui-select-choices ng-class="!jsCdnLibs || jsCdnLibs.length < 1 ? 'hidden' : ''" repeat="item in (jsCdnLibs | filter: $select.search)" refresh="searchRemote(property.remote + '?search='+$select.search+'&fields=version,description,homepage', 'jsCdnLibs', $select.search)" position="up" refresh-delay="300" on-highlight="showLibraryPreview(item, property)">
-        <span>{{::item.name}} - v{{::item.version}} - {{::item.description}}</span>
-      </ui-select-choices>
-    </ui-select>
-  </div>
 </div>
 <div ng-repeat="action in actions" class="action language-option clearfix">
   <button class="btn btn-default" ng-click="perform(action)" ng-disabled="action.running">{{ action.name }}</button>

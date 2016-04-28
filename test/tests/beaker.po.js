@@ -27,27 +27,14 @@ var BeakerPageObject = function() {
     .filter(function(e, i) { return e.isDisplayed(); });
 
   this.waitForInstantiationCells = function() {
-    // First wait for the modal to show up when opening a URL
-    browser.wait(function() {
-      return element(by.css('.modal-dialog')).isDisplayed()
-      .then(function(v) {
-        return v;
-      })
-      .thenCatch(function() {
-        return false;
-      });
-    }, 100000);
+    var self = this;
+    var dialogIsPresent = this.EC.presenceOf($('.modal-dialog'));
 
-    // wait for the modal to close
-    return browser.wait(function() {
-      return element(by.css('.modal-dialog')).isDisplayed()
-      .then(function(v) {
-        return false;
-      })
-      .thenCatch(function() {
-        return true;
-      });
-    }, 100000);
+    // First wait for the modal to show up when opening a URL
+    browser.wait(dialogIsPresent, 10000).then(function(){
+      // wait for the modal to close
+      browser.wait(self.EC.not(dialogIsPresent), 100000);
+    });
   };
 
   this.openFile = function(path) {

@@ -539,6 +539,8 @@
         Object.defineProperty(this.beakerObj, 'timeout', { value: bkHelper.timeout, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'DataFrame', { value: DataFrame, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'ImageIcon', { value: ImageIcon, writeable: false, enumerable: true });
+        Object.defineProperty(this.beakerObj, 'getVersionNumber', { value: bkHelper.getVersionNumber, writeable: false, enumerable: true });
+        Object.defineProperty(this.beakerObj, 'getVersion', { value: bkHelper.getVersionString, writeable: false, enumerable: true });
         _.extend(this.beakerObj, bkPlotApi.list());
         this.predefined = Object.keys(this.beakerObj);
       }

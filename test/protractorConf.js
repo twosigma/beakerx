@@ -13,7 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
+var path = require('path');
+var reportPath = path.join(__dirname, "/reports/");
 var config = {
   seleniumAddress: 'http://localhost:4444/wd/hub',
   framework: 'jasmine2',
@@ -34,17 +35,24 @@ var config = {
     jasmine.getEnv().addReporter(new SpecReporter({
         displayStacktrace: 'specs'
     }));
+    var HtmlScreenshotReporter = require('protractor-jasmine2-html-reporter');
+    jasmine.getEnv().addReporter(
+        new HtmlScreenshotReporter({
+          savePath: reportPath,
+          screenshotsFolder: 'images',
+          filename: 'htmlReport.html',
+        }));
   },
   specs: [
-    'tests/easyform.js',
-    'tests/landing-page.js',
-    'tests/notebook.js',
+    //'tests/easyform.js',
+    //'tests/landing-page.js',
+    //'tests/notebook.js',
     'tests/autotranslation.js',
-    'tests/code-cell.js',
-    'tests/text-cell.js',
-    'tests/cell-menu.js',
-    'tests/language-manager.js',
-    'tests/vim-mode.js'
+    //'tests/code-cell.js',
+    //'tests/text-cell.js',
+    //'tests/cell-menu.js',
+    //'tests/language-manager.js',
+    //'tests/vim-mode.js'
   ]
 };
 

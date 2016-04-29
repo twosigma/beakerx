@@ -13,7 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
+var path = require('path');
+var reportPath = path.join(__dirname, "/reports2/");
 var config = {
   seleniumAddress: 'http://localhost:4444/wd/hub',
   framework: 'jasmine2',
@@ -34,17 +35,24 @@ var config = {
     jasmine.getEnv().addReporter(new SpecReporter({
         displayStacktrace: 'specs'
     }));
+    var HtmlScreenshotReporter = require('protractor-jasmine2-html-reporter');
+    jasmine.getEnv().addReporter(
+        new HtmlScreenshotReporter({
+          savePath: reportPath,
+          screenshotsFolder: 'images',
+          filename: 'htmlReport.html'
+        }));
   },
   specs: [
-    'tests/category-plot-tutorial.js',
-    'tests/charting-tutorial.js',
-    'tests/heatmap-tutorial.js',
-    'tests/charting-tutorial2.js',
-    'tests/tutorials/language_demos/sql-tutorial.js',
+    //'tests/category-plot-tutorial.js',
+    //'tests/charting-tutorial.js',
+    //'tests/heatmap-tutorial.js',
+    //'tests/charting-tutorial2.js',
+    //'tests/tutorials/language_demos/sql-tutorial.js',
     'tests/tutorials/language_demos/java-tutorial.js',
-    'tests/tutorials/language_demos/clojure-tutorial.js',
-    'tests/tutorials/feature_overview/text-tutorial.js',
-    'tests/tables.js'
+    //'tests/tutorials/language_demos/clojure-tutorial.js',
+    //'tests/tutorials/feature_overview/text-tutorial.js',
+    //'tests/tables.js'
   ]
 };
 

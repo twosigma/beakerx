@@ -44,8 +44,7 @@
         PROPERTIES: {
           STRING: "settableString",
           BOOLEAN: "settableBoolean",
-          ENUM: "settableEnum",
-          SELECT: "settableSelect"
+          ENUM: "settableEnum"
         },
         ACTION: "action"
       },

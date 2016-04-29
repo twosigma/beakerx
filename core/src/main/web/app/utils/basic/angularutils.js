@@ -69,9 +69,6 @@
       httpGet: function(url, data, headers) {
         return $http({method: "GET", url: url, params: data, headers: headers});
       },
-      httpGetCached: function(url, data, headers) {
-        return $http({method: "GET", url: url, params: data, headers: headers, cache: true});
-      },
       httpGetJson: function(url, data, headers) {
         return $http({
           method: "GET",

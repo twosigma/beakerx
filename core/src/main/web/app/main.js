@@ -16,35 +16,30 @@
 
 define('jquery',[], function() {return $;});
 define('underscore',[], function() {return _;});
+define("components/google-caja/html-css-sanitizer-minified", function(){});
+define("bootstrap", function(){});
+define("jquery-ui",[], function() {return $;});
 
 requirejs.config({
   paths: {
-    'ipython3_comm':             "../plugins/eval/ipythonPlugins/vendor/ipython3/comm",
-    'ipython3_namespace':        "../plugins/eval/ipythonPlugins/vendor/ipython3/namespace",
-    'ipython3_kernel':           "../plugins/eval/ipythonPlugins/vendor/ipython3/kernel",
-    'ipython3_outputarea':       "../plugins/eval/ipythonPlugins/vendor/ipython3/outputarea",
-    'ipython3_session':          "../plugins/eval/ipythonPlugins/vendor/ipython3/session",
-    'ipython3_serialize':        "../plugins/eval/ipythonPlugins/vendor/ipython3/serialize",
-    'ipython3_utils':            "../plugins/eval/ipythonPlugins/vendor/ipython3/utils",
-    'ipython3_initwidgets':      "../plugins/eval/ipythonPlugins/vendor/ipython3/init",
-    'ipython3_keyboard':         "../plugins/eval/ipythonPlugins/vendor/ipython3/keyboard",
-    'ipython3_keyboardmanager':         "../plugins/eval/ipythonPlugins/vendor/ipython3/keyboardmanager",
-    'ipython3_widgetmanager':    "../plugins/eval/ipythonPlugins/vendor/ipython3/manager",
-    'backbone':                  "../plugins/eval/ipythonPlugins/vendor/ipython3/backbone-min",
-    'ipython3_widget':           "../plugins/eval/ipythonPlugins/vendor/ipython3/widget",
-    'ipython3_widget_link':      "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_link",
-    'ipython3_widget_bool':      "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_bool",
-    'ipython3_widget_button':    "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_button",
-    'ipython3_widget_box':       "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_box",
-    'ipython3_widget_float':     "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_float",
-    'ipython3_widget_image':     "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_image",
-    'ipython3_widget_int':       "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_int",
-    'ipython3_widget_output':    "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_output",
-    'ipython3_widget_selection': "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_selection",
-    'ipython3_widget_selectioncontainer':
-                                 "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_selectioncontainer",
-    'ipython3_widget_string':    "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_string",
-    'ipython3_actions':    "../plugins/eval/ipythonPlugins/vendor/ipython3/actions",
-    'ipython3_events':    "../plugins/eval/ipythonPlugins/vendor/ipython3/events"
+    'base/js/utils':                "../plugins/eval/ipythonPlugins/vendor/ipython3/utils",
+    'base/js/events':               "../plugins/eval/ipythonPlugins/vendor/ipython3/events",
+    'base/js/namespace':            "../plugins/eval/ipythonPlugins/vendor/ipython3/namespace",
+    'base/js/security':             "../plugins/eval/ipythonPlugins/vendor/ipython3/security",
+    'base/js/keyboard':             "../plugins/eval/ipythonPlugins/vendor/ipython3/keyboard",
+    'base/js/dialog':               "../plugins/eval/ipythonPlugins/vendor/ipython3/dialog",
+    'kernel/comm':                  "../plugins/eval/ipythonPlugins/vendor/ipython3/comm",
+    'kernel/serialize':             "../plugins/eval/ipythonPlugins/vendor/ipython3/serialize",
+    'services/kernels/kernel':      "../plugins/eval/ipythonPlugins/vendor/ipython3/kernel",
+    'notebook/js/outputarea':       "../plugins/eval/ipythonPlugins/vendor/ipython3/outputarea",
+    'notebook/js/mathjaxutils':     "../plugins/eval/ipythonPlugins/vendor/ipython3/mathjaxutils",
+    'notebook/js/keyboardmanager':  "../plugins/eval/ipythonPlugins/vendor/ipython3/keyboardmanager",
+    'jupyter-js-widgets':           "../plugins/eval/ipythonPlugins/vendor/ipython3/jupyter-js-widgets",
+
+    'codemirror/lib/codemirror':                            "../plugins/eval/ipythonPlugins/vendor/ipython3/components/codemirror",
+    'components/marked/lib/marked':                         "../plugins/eval/ipythonPlugins/vendor/ipython3/components/marked",
+    'components/google-caja/html-css-sanitizer-minified':   "../plugins/eval/ipythonPlugins/vendor/ipython3/components/html-css-sanitizer-minified",
+    'jquery-ui':                                            "../plugins/eval/ipythonPlugins/vendor/ipython3/components/jquery-ui.min",
+    'bootstrap':                                            "../plugins/eval/ipythonPlugins/vendor/ipython3/components/bootstrap.min",
   }
 });

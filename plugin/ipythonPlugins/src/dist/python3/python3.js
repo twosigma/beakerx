@@ -540,10 +540,11 @@ define(function(require, exports, module) {
   var init = function() {
     var onSuccess = function() {
       if (ipyVersion == '3' || ipyVersion == '4') {
-        require('ipython3_namespace');
-        require('ipython3_kernel');
-        require('ipython3_utils');
-        require('ipython3_outputarea');
+        require('base/js/namespace');
+        require('services/kernels/kernel');
+        require('base/js/utils');
+        require('notebook/js/outputarea');
+        require('jupyter-js-widgets');
       }
       myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : IPython);
       bkHelper.locatePluginService(PLUGIN_NAME, {

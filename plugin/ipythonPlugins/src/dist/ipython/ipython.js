@@ -549,12 +549,13 @@ define(function(require, exports, module) {
   var init = function() {
     var onSuccess = function() {
       if (ipyVersion == '3' || ipyVersion == '4') {
-        require('ipython3_namespace');
-        require('ipython3_kernel');
-        require('ipython3_utils');
-        require('ipython3_outputarea');
-        require('ipython3_keyboardmanager');
-        var events = require('ipython3_events');
+        require('base/js/namespace');
+        require('services/kernels/kernel');
+        require('base/js/utils');
+        require('notebook/js/outputarea');
+        require('notebook/js/keyboardmanager');
+        require('jupyter-js-widgets');
+        var events = require('base/js/events');
         keyboard_manager = new IPython.KeyboardManager({events: events});
       }
       myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : IPython);

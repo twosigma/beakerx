@@ -22,6 +22,7 @@ import urllib2
 
 # make sure everything is properly installed
 os.system("npm install")
+os.system("npm install protractor-jasmine2-html-reporter --save")
 os.system("node_modules/protractor/bin/webdriver-manager update");
 
 with open(os.devnull, "w") as fnull:

@@ -872,5 +872,15 @@ var BeakerPageObject = function() {
     expect(this.getBkCellByIdCell(idCell).isPresent()).toBe(true);
   };
 
+
+  this.checkSubStringIfDisplayed = function(strPromise, toBeStr, indxStart, lenght){
+    var self = this;
+    strPromise.isDisplayed().then(function(isVisible){
+      if(isVisible){
+        self.checkSubString(strPromise, toBeStr, indxStart, lenght);
+      }
+    });
+  }
+
 };
 module.exports = BeakerPageObject;

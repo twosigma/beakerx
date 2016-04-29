@@ -84,12 +84,13 @@ class XYGraphics(Graphics):
       for idx in range(len(self.x)):
         x = self.x[idx]
         if isinstance(x, datetime):
-          self.x[idx] = int(x.strftime("%s")) * 1000
+          self.x[idx] = date_time_2_millis(x)
 
     self.y = defY
-    self.display_name = getValue(kwargs, 'display_name')
-    self.lodFilter = getValue(kwargs, 'lodFilter')
-    self.lodFilter = getValue(kwargs, 'lodFilter')
+
+    self.display_name = getValue(kwargs, 'displayName')
+    self.lod_filter = getValue(kwargs, 'lodFilter')
+    self.tooltips = getValue(kwargs, 'tooltips')
 
 
 class Line(XYGraphics):
@@ -148,7 +149,7 @@ class Points(XYGraphics):
     if isinstance(size, list):
       self.sizes = size
     else:
-      self.size = getValue(kwargs, 'size', 0.6)
+      self.size = getValue(kwargs, 'size', 6)
 
     fill = getColor(getValue(kwargs, 'fill'))
     if isinstance(fill, list):
@@ -210,11 +211,13 @@ class YAxis(BaseObject):
     BaseObject.__init__(self)
     self.label = getValue(kwargs, 'label', '')
     self.autoRange = getValue(kwargs, 'autoRange')
-    self.color = getColor(getValue(kwargs, 'color'))
-    self.size = getValue(kwargs, 'size', 13)
-    self.text = getValue(kwargs, 'text', '')
-    self.show_pointer = getValue(kwargs, 'show_pointer', True)
-    self.pointer_angle = getValue(kwargs, 'pointer_angle', (-0.25) * math.pi)
+    self.autoRangeIncludesZero = getValue(kwargs, 'autoRangeIncludesZero')
+    self.lower_margin = getValue(kwargs, 'lowerMargin', 0.05)
+    self.upper_margin = getValue(kwargs, 'upperMargin', 0.05)
+    self.lower_bound = getValue(kwargs, 'lowerBound')
+    self.upper_bound = getValue(kwargs, 'upperBound')
+    self.use_log = getValue(kwargs, 'log')
+    self.log_base = getValue(kwargs, 'logBase')
 
 
 class XYStacker(BaseObject):
@@ -225,7 +228,7 @@ class XYStacker(BaseObject):
     if graphicsList is None or len(graphicsList) == 1:
       return graphicsList
     else:
-      stackedList = []
+      stackedList = [graphicsList[0]]
       ysSize = len(graphicsList[0].y)
       for gIndex in range(1, len(graphicsList)):
         current = graphicsList[gIndex]

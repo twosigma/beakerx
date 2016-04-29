@@ -13,12 +13,24 @@
 # limitations under the License.
 
 from enum import Enum
+from beaker_plot.utils import *
 
 class LegendLayout(Enum):
   HORIZONTAL = 1
   VERTICAL = 2
 
-class LegendPosition:
+class LegendPosition():
+  def __init__(self, **kwargs):
+    self.position = getValue(kwargs, 'position')
+    self.x = getValue(kwargs, 'x')
+    self.y = getValue(kwargs, 'y')
+
+    if self.x is None and self.y is None and self.position is None:
+      self.position = LegendPosition.Position.TOP_RIGHT
+    elif self.position is not None:
+      self.x = None
+      self.y = None
+
   class Position(Enum):
     TOP = 1
     LEFT = 2
@@ -28,32 +40,3 @@ class LegendPosition:
     TOP_RIGHT = 6
     BOTTOM_LEFT = 7
     BOTTOM_RIGHT = 8
-
-  def __init__(self, obj=None):
-    if obj is not None:
-      if type(obj) == list:
-        if len(obj) > 0:
-          self.x = obj[0]
-          self.y = 0
-        if len(obj) > 1:
-          self.y = obj[1]
-      elif isinstance(obj, LegendPosition.Position):
-        self.position = obj
-        self.x = 0
-        self.y = 0
-      return
-
-    self.position = LegendPosition.Position.TOP_RIGHT
-    self.x = 0
-    self.y = 0
-
-  def transform(self):
-    out = {}
-    out['type'] = "LegendPosition"
-    out['x'] = self.x
-    out['y'] = self.y
-
-    if self.position is not None:
-      out['position'] = self.position.name
-
-    return out

@@ -14,9 +14,21 @@
 
 import json
 import inspect
+import time
 from datetime import datetime
 
 from enum import Enum
+
+current_milli_time = lambda: int(round(time.time() * 1000))
+
+def unix_time(dt):
+  epoch = datetime.utcfromtimestamp(0)
+  delta = dt - epoch
+  return delta.total_seconds()
+
+def date_time_2_millis(dt):
+  return int(unix_time(dt) * 1000.0)
+
 
 class BaseObject:
   def __init__(self):
@@ -89,7 +101,7 @@ def getColor(color):
 class ObjectEncoder(json.JSONEncoder):
   def default(self, obj):
     if isinstance(obj, datetime):
-      return self.default(int(obj.strftime("%s")) * 1000)
+      return self.default(date_time_2_millis(obj))
     elif isinstance(obj, Enum):
       return self.default(obj.name)
     elif isinstance(obj, Color):
@@ -99,6 +111,7 @@ class ObjectEncoder(json.JSONEncoder):
         (key, value)
         for key, value in inspect.getmembers(obj)
         if value is not None
+        and not key == "Position"
         and not key.startswith("__")
         and not inspect.isabstract(value)
         and not inspect.isbuiltin(value)

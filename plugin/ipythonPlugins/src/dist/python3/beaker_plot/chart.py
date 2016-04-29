@@ -27,7 +27,7 @@ class Chart(BaseObject):
     self.chart_title = getValue(kwargs, 'title')
     self.show_legend = getValue(kwargs, 'showLegend')
     self.use_tool_tip = getValue(kwargs, 'useToolTip', True)
-    self.legend_position = getValue(kwargs, 'legendPosition', LegendPosition.Position.TOP_RIGHT)
+    self.legend_position = getValue(kwargs, 'legendPosition', LegendPosition())
     self.legend_layout = getValue(kwargs, 'legendLayout', LegendLayout.VERTICAL)
 
 
@@ -37,20 +37,11 @@ class AbstractChart(Chart):
 
     self.rangeAxes = getValue(kwargs, 'yAxes', [])
     if len(self.rangeAxes) == 0:
-      self.rangeAxes.append(YAxis(
-        autoRange=getValue(kwargs, 'yAutoRange'),
-        autoRangeIncludesZero=getValue(kwargs, 'yAutoRangeIncludesZero'),
-        lowerMargin=getValue(kwargs, 'yLowerMargin'),
-        upperMargin=getValue(kwargs, 'yUpperMargin'),
-        lowerBound=getValue(kwargs, 'yLowerBound'),
-        upperBound=getValue(kwargs, 'yUpperBound'),
-        log=getValue(kwargs, 'yLog'),
-        logBase=getValue(kwargs, 'yLogBase')
-      ))
+      self.rangeAxes.append(YAxis(**kwargs))
     self.domain_axis_label = getValue(kwargs, 'xLabel')
     self.y_label = getValue(kwargs, 'yLabel')
     self.x_lower_margin = getValue(kwargs, 'xLowerMargin', 0.05)
-    self.x_uppe_margin = getValue(kwargs, 'xUpperMargin', 0.05)
+    self.x_upper_margin = getValue(kwargs, 'xUpperMargin', 0.05)
     self.y_auto_range = getValue(kwargs, 'yAutoRange')
     self.y_auto_range_includes_zero = getValue(kwargs, 'yAutoRangeIncludesZero')
     self.y_lower_margin = getValue(kwargs, 'yLowerMargin')
@@ -91,6 +82,7 @@ class XYChart(AbstractChart):
         self.add(elem)
     elif isinstance(item, YAxis):
       self.rangeAxes.append(item)
+    return self;
 
 
 class Plot(XYChart):
@@ -104,6 +96,40 @@ class TimePlot(XYChart):
 class NanoPlot(TimePlot):
   def __init__(self, **kwargs):
     TimePlot.__init__(self, **kwargs)
+
+  def transform (self):
+    for graphics in self.graphics_list:
+      graphics.x = [str(x) for x in graphics.x]
+    result = super().transform()
+    for graphics in self.graphics_list:
+      graphics.x = [int(x) for x in graphics.x]
+    return result
+
+
+
+
+class CombinedPlot( BaseObject):
+  def __init__(self, **kwargs):
+    BaseObject.__init__(self)
+    self.init_width = getValue(kwargs, 'initWidth', 640)
+    self.init_height = getValue(kwargs, 'initHeight', 480)
+    self.title = getValue(kwargs, 'title')
+    self.x_label = getValue(kwargs, 'xLabel')
+    self.plots = getValue(kwargs, 'plots', [])
+    self.weights = getValue(kwargs, 'weights', [])
+    self.version = 'groovy'
+
+  def add(self, item, weight):
+    if isinstance(item, XYChart):
+      self.plots.append(item)
+      self.weights.append(weight)
+    elif isinstance(item, list):
+      for elem in item:
+        self.add(elem, 1)
+    else:
+      raise Exception('CombinedPlot takes XYChart or List of XYChart')
+
+    return self
 
 
 def parseJSON(out):

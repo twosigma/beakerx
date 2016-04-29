@@ -27,14 +27,7 @@ var BeakerPageObject = function() {
     .filter(function(e, i) { return e.isDisplayed(); });
 
   this.waitForInstantiationCells = function() {
-    var self = this;
-    var dialogIsPresent = this.EC.presenceOf($('.modal-dialog'));
-
-    // First wait for the modal to show up when opening a URL
-    browser.wait(dialogIsPresent, 10000).then(function(){
-      // wait for the modal to close
-      browser.wait(self.EC.not(dialogIsPresent), 100000);
-    });
+    browser.wait(this.EC.not(this.EC.presenceOf($('.modal-dialog'))), 100000);
   };
 
   this.openFile = function(path) {

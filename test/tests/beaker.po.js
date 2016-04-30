@@ -19,7 +19,7 @@ var _ = require('underscore');
 var BeakerPageObject = function() {
 
   this.EC = protractor.ExpectedConditions;
-  this.baseURL = 'http://localhost:8801/';
+  this.baseURL = 'http://127.0.0.1:8801/';
   this.mainmenu = element.all(by.repeater('m in getMenus()'));
   //jscs:disable
   this.submenu = element.all(by.repeater("item in getMenuItems() | filter:isHidden | orderBy:'sortorder'"))
@@ -294,6 +294,10 @@ var BeakerPageObject = function() {
     return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('labelg'));
   };
 
+  this.getPlotLabelgByIdCell = function (idCell, containerIdx) {
+    return this.getPlotSvgByIdCell(idCell, containerIdx).element(By.id('labelg'));
+  };
+
   this.getPlotSvgElementByIndex= function (codeCellOutputIdx, containerIdx, elementIndex) {
     return this.getPlotSvg(codeCellOutputIdx, containerIdx).all(by.css("#maing > g")).get(elementIndex);
   };
@@ -468,10 +472,15 @@ var BeakerPageObject = function() {
       .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
   }
 
+  this.checkPlotLegentdLabelByIdCell = function (idCell, containerIdx, legentdLabelIndex, text) {
+    expect(this.getPlotLegendContainerByIdCell(idCell, containerIdx)
+        .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
+  }
+
   this.checkLegendIsPresentByIdCell = function (codeCellOutputId, containerIdx) {
     if (!containerIdx)
       containerIdx = 0;
-    expect(this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(By.css('.plot-legend')).isPresent()).toBe(true);
+    expect(this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(By.css('#plotLegend')).isPresent()).toBe(true);
   };
 
   this.getCodeCellOutputCombplotTitleByIdCell = function (codeCellOutputId) {
@@ -650,7 +659,7 @@ var BeakerPageObject = function() {
   };
 
   this.getDataTableMenuToggle = function (sectionTitle) {
-    return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('.dtmenu .dropdown-toggle'));
+    return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('a[ng-click="menuToggle()"]'));
   };
 
   this.getDataTableSubmenu = function (sectionTitle, menuTitle) {
@@ -738,6 +747,12 @@ var BeakerPageObject = function() {
   }
 
   this.checkSubString = function(strPromise, toBeStr, indxStart, lenght){
+    if(!indxStart){
+      indxStart = 0;
+    }
+    if(!lenght){
+      lenght = 100;
+    }
     strPromise.getText().then(function(value){
       expect(value.substring(indxStart, lenght)).toBe(toBeStr);
     });
@@ -757,6 +772,115 @@ var BeakerPageObject = function() {
   this.getCodeOutputCellIdBySectionTitle = function (sectionTitle) {
     return this.getCodeCellOutputBySectionTitle(sectionTitle).getAttribute('cell-id');
   };
+
+  this.waitCodeCellOutputPresentByIdCell = function(idCell, outputType) {
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), 20000);
+  }
+
+  this.waitCodeCellOutputTablePresentByIdCell = function(idCell) {
+    this.waitCodeCellOutputPresentByIdCell(idCell, 'Table');
+  }
+
+  this.checkAttribute = function(strPromise, attrName, toBeStr, indxStart, lenght){
+    if(!indxStart){
+      indxStart = 0;
+    }
+    if(!lenght){
+      lenght = 100;
+    }
+    strPromise.getAttribute(attrName).then(function(value){
+      expect(value.substring(indxStart, lenght)).toBe(toBeStr);
+    });
+  }
+
+  this.checkHexCharCode = function(strPromise, charCode1, charCode2){
+    strPromise.getText().then(function(value){
+      expect(value.charCodeAt(0).toString(16)).toBe(charCode1);
+      if(charCode2){
+        expect(value.charCodeAt(1).toString(16)).toBe(charCode2);
+      }
+    });
+  }
+
+  this.checkHexCharCodeSubString = function(strPromise, indxStart, lenght, charCode1, charCode2){
+    strPromise.getText().then(function(value){
+      expect(value.substring(indxStart, lenght).charCodeAt(0).toString(16)).toBe(charCode1);
+      if(charCode2){
+        expect(value.substring(indxStart, lenght).charCodeAt(1).toString(16)).toBe(charCode2);
+      }
+    });
+  }
+
+  this.getPreviewBkCellByIdCell = function(idCell){
+    return this.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'preview\'"]'));
+  }
+
+  this.getEditBkCellByIdCell = function(idCell){
+    return this.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'edit\'"]'));
+  }
+
+  this.checkPreviewBkCellByIdCell = function(idCell){
+    var elemPreview = this.getPreviewBkCellByIdCell(idCell);
+    expect(elemPreview.isDisplayed()).toBe(true);
+    expect(this.getEditBkCellByIdCell(idCell).isDisplayed()).toBe(false);
+    return elemPreview;
+  }
+
+  this.checkEditBkCellByIdCell = function(idCell){
+    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="edit($event)"]')).click();
+    browser.wait(this.EC.visibilityOf($('bk-cell[cellid=' + idCell + '] div[ng-show="mode==\'edit\'"'), 10000));
+    var elemEdit = this.getEditBkCellByIdCell(idCell);
+    expect(this.getPreviewBkCellByIdCell(idCell).isDisplayed()).toBe(false);
+    expect(elemEdit.isDisplayed()).toBe(true);
+    return elemEdit;
+  }
+
+  this.getFormulaSubElement = function(elemPromise, subIndex){
+    if(!subIndex){
+      subIndex = 0;
+    }
+    return elemPromise.all(by.css('span.mord.scriptstyle.cramped > span')).get(subIndex);
+  }
+
+  this.getBkCellByIdCell = function (idCell) {
+    return element.all(by.css('[cellid=' + idCell + '] > div')).get(0);
+  };
+
+  this.scrollToBkCellByIdCell = function (idCell) {
+    return browser.executeScript("$('[cellid=" + idCell +"]')[0].scrollIntoView();");
+  };
+
+  this.clickCodeCellInputButtonByIdCell = function(idCell, outputType){
+    var self = this;
+    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']')), 5000)
+        .then(browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), 20000)
+            .then(
+                function(isPresent){
+                  expect(isPresent).toBe(true);
+                },
+                function(value){
+                  expect(value).toBe('Output cell have displayed');
+                  expect(self.getCodeCellOutputByIdCell(idCell).element(by.css('.out_error')).getText()).toBe('out error');
+                }
+            ));
+  }
+
+  this.checkBkCellByIdCell  = function (idCell) {
+    browser.wait(this.EC.presenceOf($('bk-cell[cellid=' + idCell + '] > div'), 10000));
+    this.scrollToBkCellByIdCell(idCell);
+    expect(this.getBkCellByIdCell(idCell).isPresent()).toBe(true);
+  };
+
+
+  this.checkSubStringIfDisplayed = function(strPromise, toBeStr, indxStart, lenght){
+    var self = this;
+    strPromise.isDisplayed().then(function(isVisible){
+      if(isVisible){
+        self.checkSubString(strPromise, toBeStr, indxStart, lenght);
+      }
+    });
+  }
 
 };
 module.exports = BeakerPageObject;

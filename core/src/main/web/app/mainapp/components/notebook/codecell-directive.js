@@ -227,12 +227,20 @@
           return bkEvaluatorManager.getEvaluator($scope.cellmodel.evaluator);
         };
         $scope.updateUI = function(evaluator) {
+          if(!$scope.cm) {
+            return;
+          }
           $scope.cellmodel.evaluatorReader = Boolean(evaluator);
-          if ($scope.cm && evaluator) {
-            $scope.cm.setOption('mode', evaluator.cmMode);
-            if (evaluator.indentSpaces) {
-              $scope.cm.setOption('indentUnit', evaluator.indentSpaces);
-            }
+          var visualParams = bkEvaluatorManager.getVisualParams($scope.cellmodel.evaluator);
+          
+          var cmMode = evaluator ? evaluator.cmMode : visualParams ? visualParams.cmMode : undefined;
+          var indentSpaces = evaluator ? evaluator.indentSpaces : undefined;
+          
+          if(cmMode) {
+            $scope.cm.setOption('mode', visualParams.cmMode);
+          }
+          if(indentSpaces) {
+            $scope.cm.setOption('indentUnit', evaluator.indentSpaces);
           }
         };
         $scope.$watch('getEvaluator()', function(newValue, oldValue) {

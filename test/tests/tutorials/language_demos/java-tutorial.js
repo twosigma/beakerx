@@ -22,28 +22,62 @@ var beakerPO;
 describe('Java Tutorial', function (done) {
 
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FjavaTutorial.bkr&readOnly=true")
-        .then(done)
-        .then(beakerPO.waitUntilLoadingCellOutput());
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FjavaTutorial.bkr&readOnly=true").then(done);
+    beakerPO.waitUntilLoadingCellOutput();
 
 
-    it('Java Examples', function () {
-        var idCell = "codesvwb39";
-        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
-        beakerPO.checkCellOutputTextByIdCell(idCell,'Thu Jan 14 21:39:32 EST 2016');
+    describe('Java Examles', function () {
 
-        idCell = "codeWRR4u2";
-        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
-        beakerPO.checkCellOutputTextByIdCell(idCell,'THU JAN 14 21:39:36 EST 2016');
+        it('Define java class', function () {
+            var idCell = "codeYv6rtU";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
 
-        idCell = "codegJFKLk";
-        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
-        beakerPO.checkCellOutputTextByIdCell(idCell,'test for autotranslation');
+            idCell = "codesvwb39";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+            var dateStr = new Date().toISOString().substring(0, 10);
+            beakerPO.checkCellOutputSubTextByIdCell(idCell, 'Today:' + dateStr, 0, 16);
 
-        idCell = "codeRd3d1I";
-        beakerPO.checkPlotIsPresentByIdCell(idCell);
-        beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-bar');
-        expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("this is a Java plot");
+            idCell = "codeWRR4u2";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+            beakerPO.checkCellOutputSubTextByIdCell(idCell, 'TODAY:' + dateStr, 0, 16);
+        });
+
+        it('Autotranslation', function () {
+            var idCell = "codeHPHfmV";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+
+            idCell = "codegJFKLk";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+            beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+            beakerPO.checkCellOutputTextByIdCell(idCell, 'test for autotranslation');
+        });
+
+        it('Plot', function () {
+            var idCell = "codeRd3d1I";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+            beakerPO.checkPlotIsPresentByIdCell(idCell);
+            beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-bar');
+            expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("this is a Java plot");
+        });
+
+        it('Support interface', function () {
+            var idCell = "codep7qbeI";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+            beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+            beakerPO.checkCellOutputTextByIdCell(idCell, 'test.beaker.DateGetter');
+
+            idCell = "code6YBzOU";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+            beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+            beakerPO.checkCellOutputTextByIdCell(idCell, 'test.beaker.DG2');
+        });
     });
-
 });

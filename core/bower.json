@@ -20,7 +20,7 @@
     "ngstorage": "0.3.0",
     "font-awesome": "4.0.3",
     "big.js": "~2.5.1",
-    "marked": "~0.3.3",
+    "markdown-it": "6.0.1",
     "acorn": "0.3.1",
     "katex-build": "~0.5.1",
     "scrollin": "~0.3.0",
@@ -35,6 +35,7 @@
     "angular-gravatar": "0.3.1",
     "datetimepicker": "2.4.5",
     "jquery-throttle-debounce": "v1.1",
+    "angular-ui-select": "0.16.1",
     "vis": "4.16.1",
     "vivagraphjs": "latest"
   }

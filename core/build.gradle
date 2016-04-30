@@ -33,6 +33,76 @@ def winOrUnix(Object... args) {
   }
 }
 
+def collectPlugins(String path) {
+  def plugins = [];
+  def tree = fileTree(path){
+    include  '**/dist/**/*.js'
+    exclude '**/dist/app/**'
+    exclude '**/dist/vendor/**'
+    exclude '**/node_modules/**'
+  };
+  tree.visit { element ->
+    if (!element.isDirectory())
+      plugins << element.file
+  }
+  return plugins;
+}
+
+def getPluginKeyValue(line){
+  def start = line.indexOf('"')
+  def end = line.lastIndexOf('"')
+  if (start == -1 && end == -1){
+    start = line.indexOf("'")
+    end = line.lastIndexOf("'")
+  }
+  if (start != -1 && end != -1)
+    return line.substring(start + 1, end);
+  return ''
+}
+
+def generatePluginDescriptions(){
+  def pluginDescriptions = '';
+  def pluginKeys = [
+    "bgColor",
+    "fgColor",
+    "borderColor",
+    "shortName",
+    "cmMode",
+    "tooltip"
+  ]
+  def plugins = collectPlugins('../plugin')
+  plugins.each { file ->
+    def map = [:]
+    def lines = file.readLines();
+    lines.each { String line ->
+      if (line.contains("var PLUGIN_NAME = ")){
+        map['pluginName'] = getPluginKeyValue(line);
+      }else if (line.contains('var COMMAND = ')){
+        def command = getPluginKeyValue(line);
+        map['url'] = "./plugins/eval/"+ command.substring(0, command.lastIndexOf('/')+1)+file.name;
+      }
+      else{
+        pluginKeys.each { String key ->
+          if (line.contains(key)) {
+            map[key] = getPluginKeyValue(line);
+          }
+        }
+      }
+    }
+    def pluginDescription = String.format("\"%s\": { url : \"%s\", bgColor: \"%s\", fgColor: \"%s\", borderColor: \"%s\", shortName: \"%s\", cmMode: \"%s\", tooltip: \"%s\" },\n"
+      , map['pluginName']
+      , map['url']
+      , map['bgColor']
+      , map['fgColor']
+      , map['borderColor']
+      , map['shortName']
+      , map['cmMode']
+      , map['tooltip'])
+    pluginDescriptions += pluginDescription;
+  }
+  return pluginDescriptions;
+}
+
 repositories {
   mavenCentral()
 }
@@ -151,6 +221,21 @@ task (copyJQueryUIImages, type: Copy) {
 }
 
 
+import org.apache.tools.ant.filters.ReplaceTokens
+task addevalplugins(dependsOn: []) {
+  doLast {
+    copy {
+      from 'templates/addevalplugins.template'
+      into '.'
+      rename { String fileName ->
+        "src/main/web/app/genweb/addevalplugins.js"
+      }
+      filter(ReplaceTokens, tokens: [pluginDescriptions: generatePluginDescriptions()])
+    }
+  }
+}
+
+
 task copyVendorStuff
 copyVendorStuff.dependsOn copyKatex
 copyVendorStuff.dependsOn copyRequireJS
@@ -158,6 +243,7 @@ copyVendorStuff.dependsOn copyJQueryUIImages
 copyVendorStuff.dependsOn copyGGVis
 copyVendorStuff.dependsOn copyDiagrammer
 copyVendorStuff.dependsOn copyPlotly
+copyVendorStuff.dependsOn addevalplugins
 
 task (compileAssets, type: Exec) {
   commandLine(*(winOrUnix('npm', 'run-script', 'compile')))
@@ -191,6 +277,7 @@ task (copyNginx, type: Exec) {
     commandLine 'cmd', '/c', 'xcopy', '/Y', '/Q', nginxLocation, 'nginx\\bin', '&', 'xcopy', '/Y', '/Q', nginxLocation + '\\..\\conf\\mime.types', 'nginx\\bin'
   }
 }
+
 
 task doRemove() {
   doLast {

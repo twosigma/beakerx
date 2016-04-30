@@ -62,7 +62,7 @@ sudo apt-get install -y python-virtualenv python3-dev pkgconf libfreetype6-dev l
 virtualenv ~/py3k -p python3
 ~/py3k/bin/pip install ipython[notebook] jupyter
 ~/py3k/bin/pip install numpy matplotlib scipy jinja2 tornado pyzmq pandas pyaml
-sudo ~/py3k/bin/ipython kernelspec install-self
+sudo ~/py3k/bin/ipython kernel install
 
 # ruby
 sudo add-apt-repository -y ppa:brightbox/ruby-ng

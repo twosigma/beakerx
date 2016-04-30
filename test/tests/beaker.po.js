@@ -480,7 +480,7 @@ var BeakerPageObject = function() {
   this.checkLegendIsPresentByIdCell = function (codeCellOutputId, containerIdx) {
     if (!containerIdx)
       containerIdx = 0;
-    expect(this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(By.css('.plot-legend')).isPresent()).toBe(true);
+    expect(this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(By.css('#plotLegend')).isPresent()).toBe(true);
   };
 
   this.getCodeCellOutputCombplotTitleByIdCell = function (codeCellOutputId) {
@@ -747,6 +747,12 @@ var BeakerPageObject = function() {
   }
 
   this.checkSubString = function(strPromise, toBeStr, indxStart, lenght){
+    if(!indxStart){
+      indxStart = 0;
+    }
+    if(!lenght){
+      lenght = 100;
+    }
     strPromise.getText().then(function(value){
       expect(value.substring(indxStart, lenght)).toBe(toBeStr);
     });
@@ -775,6 +781,67 @@ var BeakerPageObject = function() {
     this.waitCodeCellOutputPresentByIdCell(idCell, 'Table');
   }
 
+  this.checkAttribute = function(strPromise, attrName, toBeStr, indxStart, lenght){
+    if(!indxStart){
+      indxStart = 0;
+    }
+    if(!lenght){
+      lenght = 100;
+    }
+    strPromise.getAttribute(attrName).then(function(value){
+      expect(value.substring(indxStart, lenght)).toBe(toBeStr);
+    });
+  }
+
+  this.checkHexCharCode = function(strPromise, charCode1, charCode2){
+    strPromise.getText().then(function(value){
+      expect(value.charCodeAt(0).toString(16)).toBe(charCode1);
+      if(charCode2){
+        expect(value.charCodeAt(1).toString(16)).toBe(charCode2);
+      }
+    });
+  }
+
+  this.checkHexCharCodeSubString = function(strPromise, indxStart, lenght, charCode1, charCode2){
+    strPromise.getText().then(function(value){
+      expect(value.substring(indxStart, lenght).charCodeAt(0).toString(16)).toBe(charCode1);
+      if(charCode2){
+        expect(value.substring(indxStart, lenght).charCodeAt(1).toString(16)).toBe(charCode2);
+      }
+    });
+  }
+
+  this.getPreviewBkCellByIdCell = function(idCell){
+    return this.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'preview\'"]'));
+  }
+
+  this.getEditBkCellByIdCell = function(idCell){
+    return this.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'edit\'"]'));
+  }
+
+  this.checkPreviewBkCellByIdCell = function(idCell){
+    var elemPreview = this.getPreviewBkCellByIdCell(idCell);
+    expect(elemPreview.isDisplayed()).toBe(true);
+    expect(this.getEditBkCellByIdCell(idCell).isDisplayed()).toBe(false);
+    return elemPreview;
+  }
+
+  this.checkEditBkCellByIdCell = function(idCell){
+    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="edit($event)"]')).click();
+    browser.wait(this.EC.visibilityOf($('bk-cell[cellid=' + idCell + '] div[ng-show="mode==\'edit\'"'), 10000));
+    var elemEdit = this.getEditBkCellByIdCell(idCell);
+    expect(this.getPreviewBkCellByIdCell(idCell).isDisplayed()).toBe(false);
+    expect(elemEdit.isDisplayed()).toBe(true);
+    return elemEdit;
+  }
+
+  this.getFormulaSubElement = function(elemPromise, subIndex){
+    if(!subIndex){
+      subIndex = 0;
+    }
+    return elemPromise.all(by.css('span.mord.scriptstyle.cramped > span')).get(subIndex);
+  }
+
   this.getBkCellByIdCell = function (idCell) {
     return element.all(by.css('[cellid=' + idCell + '] > div')).get(0);
   };
@@ -798,5 +865,22 @@ var BeakerPageObject = function() {
                 }
             ));
   }
+
+  this.checkBkCellByIdCell  = function (idCell) {
+    browser.wait(this.EC.presenceOf($('bk-cell[cellid=' + idCell + '] > div'), 10000));
+    this.scrollToBkCellByIdCell(idCell);
+    expect(this.getBkCellByIdCell(idCell).isPresent()).toBe(true);
+  };
+
+
+  this.checkSubStringIfDisplayed = function(strPromise, toBeStr, indxStart, lenght){
+    var self = this;
+    strPromise.isDisplayed().then(function(isVisible){
+      if(isVisible){
+        self.checkSubString(strPromise, toBeStr, indxStart, lenght);
+      }
+    });
+  }
+
 };
 module.exports = BeakerPageObject;

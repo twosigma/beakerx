@@ -1,10 +1,10 @@
-// Copyright (c) IPython Development Team.
+// Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-define('ipython3_comm', [
-    'ipython3_namespace',
-    'ipython3_utils'
-], function(IPython, utils) {
+define('kernel/comm', [
+    'jquery',
+    'base/js/utils',
+], function($, utils) {
     "use strict";
 
     //-----------------------------------------------------------------------
@@ -31,12 +31,14 @@ define('ipython3_comm', [
         }
     };
     
-    CommManager.prototype.new_comm = function (target_name, data, callbacks, metadata) {
+    CommManager.prototype.new_comm = function (target_name, data, callbacks, metadata, comm_id) {
         /**
          * Create a new Comm, register it, and open its Kernel-side counterpart
-         * Mimics the auto-registration in `Comm.__init__` in the IPython Comm
+         * Mimics the auto-registration in `Comm.__init__` in the Jupyter Comm.
+         *
+         * argument comm_id is optional
          */
-        var comm = new Comm(target_name);
+        var comm = new Comm(target_name, comm_id);
         this.register_comm(comm);
         comm.open(data, callbacks, metadata);
         return comm;
@@ -116,6 +118,7 @@ define('ipython3_comm', [
             // don't return a comm, so that further .then() functions
             // get an undefined comm input
         });
+        return this.comms[content.comm_id];
     };
     
     CommManager.prototype.comm_msg = function(msg) {
@@ -133,6 +136,7 @@ define('ipython3_comm', [
             }
             return comm;
         });
+        return this.comms[content.comm_id];
     };
     
     //-----------------------------------------------------------------------
@@ -150,7 +154,7 @@ define('ipython3_comm', [
         var content = {
             comm_id : this.comm_id,
             target_name : this.target_name,
-            data : data || {}
+            data : data || {},
         };
         return this.kernel.send_shell_message("comm_open", content, callbacks, metadata);
     };
@@ -158,7 +162,7 @@ define('ipython3_comm', [
     Comm.prototype.send = function (data, callbacks, metadata, buffers) {
         var content = {
             comm_id : this.comm_id,
-            data : data || {}
+            data : data || {},
         };
         return this.kernel.send_shell_message("comm_msg", content, callbacks, metadata, buffers);
     };
@@ -166,7 +170,7 @@ define('ipython3_comm', [
     Comm.prototype.close = function (data, callbacks, metadata) {
         var content = {
             comm_id : this.comm_id,
-            data : data || {}
+            data : data || {},
         };
         return this.kernel.send_shell_message("comm_close", content, callbacks, metadata);
     };
@@ -205,10 +209,6 @@ define('ipython3_comm', [
         this._callback('close', msg);
     };
     
-    // For backwards compatability.
-    IPython.CommManager = CommManager;
-    IPython.Comm = Comm;
-
     return {
         'CommManager': CommManager,
         'Comm': Comm

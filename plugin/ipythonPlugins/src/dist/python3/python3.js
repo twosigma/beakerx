@@ -539,7 +539,12 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     var onSuccess = function() {
-      if (ipyVersion == '3' || ipyVersion == '4') {
+      if (ipyVersion == '3') {
+        require('ipython3_namespace');
+        require('ipython3_kernel');
+        require('ipython3_utils');
+        require('ipython3_outputarea');
+      } else if(ipyVersion == '4') {
         require('base/js/namespace');
         require('services/kernels/kernel');
         require('base/js/utils');

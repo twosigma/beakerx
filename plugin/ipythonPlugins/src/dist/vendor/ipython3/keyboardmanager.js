@@ -1,4 +1,4 @@
-// Copyright (c) Jupyter Development Team.
+// Copyright (c) IPython Development Team.
 // Distributed under the terms of the Modified BSD License.
 /**
  *
@@ -8,11 +8,11 @@
  * @class KeyboardManager
  */
 
-define('notebook/js/keyboardmanager', [
-    'jquery',
-    'base/js/utils',
-    'base/js/keyboard',
-], function($, utils, keyboard) {
+define('ipython3_keyboardmanager', [
+    'ipython3_namespace',
+    'ipython3_utils',
+    'ipython3_keyboard'
+], function(IPython, utils, keyboard) {
     "use strict";
     
     // Main keyboard manager for the notebook
@@ -38,86 +38,6 @@ define('notebook/js/keyboardmanager', [
         this.env = {pager:this.pager};
         this.actions = options.actions;
         Object.seal(this);
-    };
-
-
-
-
-    /**
-     * Return a dict of common shortcut
-     * @method get_default_common_shortcuts
-     *
-     * @example Example of returned shortcut
-     * ```
-     * 'shortcut-key': 'action-name'
-     * // a string representing the shortcut as dash separated value.
-     * // e.g. 'shift' , 'shift-enter', 'cmd-t'
-     *```
-     */
-    KeyboardManager.prototype.get_default_common_shortcuts = function() {
-        return {
-            'shift'       : 'jupyter-notebook:ignore',
-            'shift-enter' : 'jupyter-notebook:run-cell-and-select-next',
-            'ctrl-enter'  : 'jupyter-notebook:run-cell',
-            'alt-enter'   : 'jupyter-notebook:run-cell-and-insert-below',
-            // cmd on mac, ctrl otherwise
-            'cmdtrl-s'    : 'jupyter-notebook:save-notebook',
-        };
-    };
-
-    KeyboardManager.prototype.get_default_edit_shortcuts = function() {
-        return {
-            'cmdtrl-shift-p'      : 'jupyter-notebook:show-command-palette',
-            'esc'                 : 'jupyter-notebook:enter-command-mode',
-            'ctrl-m'              : 'jupyter-notebook:enter-command-mode',
-            'up'                  : 'jupyter-notebook:move-cursor-up',
-            'down'                : 'jupyter-notebook:move-cursor-down',
-            'ctrl-shift--'        : 'jupyter-notebook:split-cell-at-cursor',
-        };
-    };
-
-    KeyboardManager.prototype.get_default_command_shortcuts = function() {
-        return {
-            'cmdtrl-shift-p': 'jupyter-notebook:show-command-palette',
-            'shift-space': 'jupyter-notebook:scroll-notebook-up',
-            'shift-v' : 'jupyter-notebook:paste-cell-above',
-            'shift-m' : 'jupyter-notebook:merge-cells',
-            'shift-o' : 'jupyter-notebook:toggle-cell-output-scrolled',
-            'enter' : 'jupyter-notebook:enter-edit-mode',
-            'space' : 'jupyter-notebook:scroll-notebook-down',
-            'down' : 'jupyter-notebook:select-next-cell',
-            'i,i' : 'jupyter-notebook:interrupt-kernel',
-            '0,0' : 'jupyter-notebook:confirm-restart-kernel',
-            'd,d' : 'jupyter-notebook:delete-cell',
-            'esc': 'jupyter-notebook:close-pager',
-            'up' : 'jupyter-notebook:select-previous-cell',
-            'k' : 'jupyter-notebook:select-previous-cell',
-            'j' : 'jupyter-notebook:select-next-cell',
-            'shift-k': 'jupyter-notebook:extend-selection-above',
-            'shift-j': 'jupyter-notebook:extend-selection-below',
-            'shift-up': 'jupyter-notebook:extend-selection-above',
-            'shift-down': 'jupyter-notebook:extend-selection-below',
-            'x' : 'jupyter-notebook:cut-cell',
-            'c' : 'jupyter-notebook:copy-cell',
-            'v' : 'jupyter-notebook:paste-cell-below',
-            'a' : 'jupyter-notebook:insert-cell-above',
-            'b' : 'jupyter-notebook:insert-cell-below',
-            'y' : 'jupyter-notebook:change-cell-to-code',
-            'm' : 'jupyter-notebook:change-cell-to-markdown',
-            'r' : 'jupyter-notebook:change-cell-to-raw',
-            '1' : 'jupyter-notebook:change-cell-to-heading-1',
-            '2' : 'jupyter-notebook:change-cell-to-heading-2',
-            '3' : 'jupyter-notebook:change-cell-to-heading-3',
-            '4' : 'jupyter-notebook:change-cell-to-heading-4',
-            '5' : 'jupyter-notebook:change-cell-to-heading-5',
-            '6' : 'jupyter-notebook:change-cell-to-heading-6',
-            'o' : 'jupyter-notebook:toggle-cell-output-collapsed',
-            's' : 'jupyter-notebook:save-notebook',
-            'l' : 'jupyter-notebook:toggle-cell-line-numbers',
-            'h' : 'jupyter-notebook:show-keyboard-shortcuts',
-            'z' : 'jupyter-notebook:undo-cell-deletion',
-            'q' : 'jupyter-notebook:close-pager',
-        };
     };
 
     KeyboardManager.prototype.bind_events = function () {
@@ -158,12 +78,7 @@ define('notebook/js/keyboardmanager', [
             }
             return true;
         }
-        
-        if (this.mode === 'edit') {
-            return this.edit_shortcuts.call_handler(event);
-        } else if (this.mode === 'command') {
-            return this.command_shortcuts.call_handler(event);
-        }
+
         return true;
     };
 
@@ -186,7 +101,6 @@ define('notebook/js/keyboardmanager', [
     };
 
     KeyboardManager.prototype.register_events = function (e) {
-        e = $(e);
         var that = this;
         var handle_focus = function () {
             that.disable();
@@ -220,6 +134,10 @@ define('notebook/js/keyboardmanager', [
             }
         });
     };
+
+
+    // For backwards compatibility.
+    IPython.KeyboardManager = KeyboardManager;
 
     return {'KeyboardManager': KeyboardManager};
 });

@@ -379,6 +379,13 @@ var BeakerPageObject = function() {
     }, 10000);
   };
 
+  this.waitForCellOutputByIdCell = function(idCell) {
+    var self = this;
+    browser.wait(this.getCodeCellOutputByIdCell(idCell).isDisplayed(), 10000).then(function(){
+      browser.wait(self.EC.not(self.EC.textToBePresentInElement(self.getCodeCellOutputByIdCell(idCell), 'Elapsed:'), 10000));
+    });
+  };
+
 
   this.waitUntilLoadingFinished = function() {
     var self = this;

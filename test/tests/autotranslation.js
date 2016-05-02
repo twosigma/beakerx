@@ -24,16 +24,18 @@ describe('autotranslation', function() {
     browser.get(beakerPO.baseURL).then(done);
   });
 
-  it('handles JVM notebook', function(done) {
+  it('handles JVM notebook', function() {
     beakerPO.openFile(path.join(__dirname, '../', 'notebooks/jvm-autotranslation-test.bkr'));
     beakerPO.waitForInstantiationCells();
 
-    beakerPO.waitForCellOutput();
+    beakerPO.waitForCellOutputByIdCell('maintest');
+    beakerPO.waitForCellOutputByIdCell('codeOSRZTr');
 
-    return beakerPO.getCellOutput().getText()
-    .then(function(output) {
+    beakerPO.getCodeCellOutputByIdCell('maintest').getText().then(function(output) {
       expect(output).toEqual('OK');
-      done();
+    });
+    beakerPO.getCodeCellOutputByIdCell('codeOSRZTr').getText().then(function(output) {
+      expect(output).toEqual('OK');
     });
   });
 });

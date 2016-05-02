@@ -80,4 +80,4 @@ define('base/js/namespace', function(){
 });
 
 // deprecated since 4.0, remove in 5+
-var IPython = Jupyter
+var IPython = Jupyter;

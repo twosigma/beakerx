@@ -1,4 +1,4 @@
-define(function () {
+define('jupyter-js-widgets', function () {
   return /******/ (function (modules) { // webpackBootstrap
     /******/ 	// The module cache
     /******/

@@ -23,9 +23,9 @@ from IPython.utils.traitlets import Unicode
 
 import beaker_plot
 
-sys.path.append("/Users/kpaharelau/Library/Application Support/IntelliJIdea15/python/pycharm-debug-py3k.egg")
-import pydevd
-pydevd.settrace('localhost', port=8888, stdoutToServer=True, stderrToServer=True)
+# sys.path.append("/Users/kpaharelau/Library/Application Support/IntelliJIdea15/python/pycharm-debug-py3k.egg")
+# import pydevd
+# pydevd.settrace('localhost', port=8888, stdoutToServer=True, stderrToServer=True)
 
 class OutputContainer:
     def __init__(self):

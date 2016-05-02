@@ -975,7 +975,11 @@
         var buttons = params.buttons;
 
         var callback = function(result) {
-          buttons[result].action();
+          if (result != undefined) {
+            buttons[result].action();
+          } else if (params.dismissAction) {
+            params.dismissAction();
+          }
         };
 
         if (bkUtils.isElectron) {
@@ -994,7 +998,7 @@
           var template = this.getDialogTemplateOpening(params.msgHeader, params.msgBody);
           for (var i = 0; i < buttons.length; i++) {
             var buttonSettings = buttons[i];
-            var newTemplatePart = "   <button class='btn btn-default' ng-click='close(" + i + ")'>" + buttonSettings.text + "</button>"
+            var newTemplatePart = "   <button class='btn btn-default " + buttonSettings.cssClass + "' ng-click='close(" + i + ")'>" + buttonSettings.text + "</button>"
             template = template + newTemplatePart;
           }
           template = template + this.getDialogTemplateClosing();

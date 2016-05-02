@@ -47,20 +47,14 @@ describe('R Tutorial', function (done) {
             var idCell = "code2uVtKX";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Html');
-            var svgElem = beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('svg > g'));
-            expect(svgElem.count()).toBe(1);
-            expect(svgElem.get(0).all(by.css('g')).count()).toBe(78);
-            expect(svgElem.get(0).all(by.css('path')).count()).toBe(108);
+            expect(beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('svg > g')).count()).toBe(1);
         });
 
         it('Box plot', function () {
             var idCell = "codeG6bqsQ";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Html');
-            var svgElem = beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('svg > g'));
-            expect(svgElem.count()).toBe(1);
-            expect(svgElem.get(0).all(by.css('g')).count()).toBe(111);
-            expect(svgElem.get(0).all(by.css('path')).count()).toBe(206);
+            expect(beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('svg > g')).count()).toBe(1);
         });
 
         it('Spreadsheet', function () {

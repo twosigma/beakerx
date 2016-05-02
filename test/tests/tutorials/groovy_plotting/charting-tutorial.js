@@ -36,8 +36,6 @@ describe('Charting Tutorial', function (done) {
    */
   it('Custom Plot Example', function () {
     var idCell = "code42QbvS";
-    beakerPO.scrollToBkCellByIdCell(idCell);
-    beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
     beakerPO.checkPlotIsPresentByIdCell(idCell, 0);
     beakerPO.checkPlotIsPresentByIdCell(idCell, 1);
 

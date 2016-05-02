@@ -25,7 +25,7 @@ describe('Category Plots (Bar Charts)', function (done) {
   browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FCategoryPlot.bkr&readOnly=true").then(done);
   beakerPO.waitUntilLoadingFinished();
 
-  describe('Category Plots', function(){
+/*  describe('Category Plots', function(){
     it('Input values', function () {
       var idCell = "codegJO0X1";
       beakerPO.scrollToBkCellByIdCell(idCell);
@@ -329,7 +329,7 @@ describe('Category Plots (Bar Charts)', function (done) {
       expect(beakerPO.getPlotLabelgByIdCell(idCell).element(By.id('label_y_0')).isPresent()).toBe(true);
       expect(beakerPO.getPlotLabelgByIdCell(idCell).element(By.id('label_yr_0')).isPresent()).toBe(true);
     });
-  });
+  });       */
 
   describe('Labels', function(){
     it('Item Labels', function () {
@@ -398,7 +398,9 @@ describe('Category Plots (Bar Charts)', function (done) {
 
       expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')).toBeNull();
       browser.actions().mouseMove(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0'))).perform().then(function(){
-        expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')).not.toBeNull();
+        browser.wait(beakerPO.EC.presenceOf(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')), 20000).then(function(){
+          expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')).not.toBeNull();
+        });
       });
     });
 

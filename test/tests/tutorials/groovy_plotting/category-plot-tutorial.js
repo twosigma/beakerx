@@ -25,7 +25,7 @@ describe('Category Plots (Bar Charts)', function (done) {
   browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FCategoryPlot.bkr&readOnly=true").then(done);
   beakerPO.waitUntilLoadingFinished();
 
-/*  describe('Category Plots', function(){
+  describe('Category Plots', function(){
     it('Input values', function () {
       var idCell = "codegJO0X1";
       beakerPO.scrollToBkCellByIdCell(idCell);
@@ -329,7 +329,7 @@ describe('Category Plots (Bar Charts)', function (done) {
       expect(beakerPO.getPlotLabelgByIdCell(idCell).element(By.id('label_y_0')).isPresent()).toBe(true);
       expect(beakerPO.getPlotLabelgByIdCell(idCell).element(By.id('label_yr_0')).isPresent()).toBe(true);
     });
-  });       */
+  });
 
   describe('Labels', function(){
     it('Item Labels', function () {

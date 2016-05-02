@@ -14,6 +14,8 @@
 
 import json
 
+from datetime import datetime
+
 from beaker_plot.legend import *
 from beaker_plot.utils import *
 from beaker_plot.plotitem import *
@@ -89,15 +91,17 @@ class Plot(XYChart):
   def __init__(self, **kwargs):
     XYChart.__init__(self, **kwargs)
 
+
 class TimePlot(XYChart):
   def __init__(self, **kwargs):
     XYChart.__init__(self, **kwargs)
+
 
 class NanoPlot(TimePlot):
   def __init__(self, **kwargs):
     TimePlot.__init__(self, **kwargs)
 
-  def transform (self):
+  def transform(self):
     for graphics in self.graphics_list:
       graphics.x = [str(x) for x in graphics.x]
     result = super().transform()
@@ -106,9 +110,7 @@ class NanoPlot(TimePlot):
     return result
 
 
-
-
-class CombinedPlot( BaseObject):
+class CombinedPlot(BaseObject):
   def __init__(self, **kwargs):
     BaseObject.__init__(self)
     self.init_width = getValue(kwargs, 'initWidth', 640)
@@ -130,6 +132,101 @@ class CombinedPlot( BaseObject):
       raise Exception('CombinedPlot takes XYChart or List of XYChart')
 
     return self
+
+
+class SimpleTimePlot(TimePlot):
+  def __init__(self, *args, **kwargs):
+    TimePlot.__init__(self, **kwargs)
+
+    self.type = 'TimePlot'
+    self.use_tool_tip = True
+    self.show_legend = True
+    self.domain_axis_label = 'Time'
+
+    displayNames = getValue(kwargs, 'displayNames')
+    displayLines = getValue(kwargs, 'displayLines', True)
+    displayPoints = getValue(kwargs, 'displayPoints', False)
+    timeColumn = getValue(kwargs, 'timeColumn', 'time')
+    colors = getValue(kwargs, 'colors')
+
+    if len(args) > 0:
+      tableData = args[0]
+    else:
+      tableData = []
+
+    if len(args) == 2:
+      columnNames = args[1]
+    else:
+      columnNames = []
+
+    xs = []
+    yss = []
+    dataColumnsNames = []
+
+    if tableData is not None and columnNames is not None:
+      dataColumnsNames.extend(list(tableData[0].keys()))
+
+      for row in tableData:
+        x = row[timeColumn]
+        if isinstance(x, datetime):
+          x = date_time_2_millis(x)
+        xs.append(x)
+
+        for idx in range(len(columnNames)):
+          column = columnNames[idx]
+          if (idx >= len(yss)):
+            yss.append([])
+
+          yss[idx].append(row[column])
+
+      colors = self.getChartColors(columnNames, colors)
+
+      for i in range(len(yss)):
+        ys = yss[i]
+        if displayLines is True:
+          line = Line(x=xs, y=ys)
+
+          if displayNames is not None and i < len(displayNames):
+            line.display_name = displayNames[i]
+          else:
+            line.display_name = columnNames[i]
+
+          if i < len(colors):
+            line.color = colors[i]
+
+          self.add(line)
+
+        if displayPoints is True:
+          points = Points(x=xs, y=ys)
+
+          if displayNames is not None and i < len(displayNames):
+            points.display_name = displayNames[i]
+          else:
+            points.display_name = columnNames[i]
+
+          if i < len(colors):
+            points.color = colors[i]
+
+          self.add(points)
+
+  def getChartColors(self, columnNames, colors):
+
+    chartColors = []
+    if colors is not None:
+      for i in range(len(columnNames)):
+        if i < len(colors):
+          chartColors.append(self.createChartColor(colors[i]))
+
+    return chartColors
+
+  def createChartColor(self, color):
+    if isinstance(color, list):
+      try:
+        return Color(color[0], color[1], color[2])
+      except  Exception:
+        raise Exception("Color list too short")
+    else:
+      return color
 
 
 def parseJSON(out):

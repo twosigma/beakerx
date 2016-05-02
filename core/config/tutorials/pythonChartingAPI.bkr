@@ -933,7 +933,6 @@
                     "import time",
                     "from beaker_plot import *",
                     "",
-                    "current_milli_time = lambda: int(round(time.time() * 1000))",
                     "millis=current_milli_time()",
                     "",
                     "hour = round(1000 * 60 * 60);",
@@ -1022,17 +1021,17 @@
                     "graphics_list": [
                         {
                             "x": [
-                                1462180448531,
-                                1462184048531,
-                                1462187648531,
-                                1462191248531,
-                                1462194848531,
-                                1462198448531,
-                                1462202048531,
-                                1462205648531,
-                                1462209248531,
-                                1462212848531,
-                                1462216448531
+                                1462180702128,
+                                1462184302128,
+                                1462187902128,
+                                1462191502128,
+                                1462195102128,
+                                1462198702128,
+                                1462202302128,
+                                1462205902128,
+                                1462209502128,
+                                1462213102128,
+                                1462216702128
                             ],
                             "display_name": "milliseconds",
                             "y": [
@@ -1061,7 +1060,7 @@
                 "selectedType": "Plot",
                 "pluginName": "Python3",
                 "shellId": "E0EE67FC44914E3993B094B8CA22FBEE",
-                "elapsedTime": 328,
+                "elapsedTime": 321,
                 "dataresult": [
                     1461854833142,
                     1461858433142,
@@ -1077,7 +1076,7 @@
                 "height": 522
             },
             "evaluatorReader": true,
-            "lineCount": 18
+            "lineCount": 17
         },
         {
             "id": "section1oKa3Z",

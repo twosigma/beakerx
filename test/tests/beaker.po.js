@@ -19,7 +19,7 @@ var _ = require('underscore');
 var BeakerPageObject = function() {
 
   this.EC = protractor.ExpectedConditions;
-  this.baseURL = 'http://localhost:8801/';
+  this.baseURL = 'http://127.0.0.1:8801/';
   this.mainmenu = element.all(by.repeater('m in getMenus()'));
   //jscs:disable
   this.submenu = element.all(by.repeater("item in getMenuItems() | filter:isHidden | orderBy:'sortorder'"))
@@ -480,7 +480,7 @@ var BeakerPageObject = function() {
   this.checkLegendIsPresentByIdCell = function (codeCellOutputId, containerIdx) {
     if (!containerIdx)
       containerIdx = 0;
-    expect(this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(By.css('.plot-legend')).isPresent()).toBe(true);
+    expect(this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(By.css('#plotLegend')).isPresent()).toBe(true);
   };
 
   this.getCodeCellOutputCombplotTitleByIdCell = function (codeCellOutputId) {
@@ -871,6 +871,16 @@ var BeakerPageObject = function() {
     this.scrollToBkCellByIdCell(idCell);
     expect(this.getBkCellByIdCell(idCell).isPresent()).toBe(true);
   };
+
+
+  this.checkSubStringIfDisplayed = function(strPromise, toBeStr, indxStart, lenght){
+    var self = this;
+    strPromise.isDisplayed().then(function(isVisible){
+      if(isVisible){
+        self.checkSubString(strPromise, toBeStr, indxStart, lenght);
+      }
+    });
+  }
 
 };
 module.exports = BeakerPageObject;

@@ -94,6 +94,7 @@ app.on('will-quit', function(event) {
 // Fired when OS opens file with application
 app.on('open-file', function(event, path) {
   event.preventDefault();
+  path = encodeURIComponent(path);
   if (backendReady) {
     windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + path, 'notebook');
   } else {

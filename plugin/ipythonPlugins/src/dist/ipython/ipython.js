@@ -568,7 +568,7 @@ define(function(require, exports, module) {
       if (events) {
         keyboard_manager = new IPython.KeyboardManager({events: events});
       }
-      myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : IPython);
+      myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : ((ipyVersion == '3') ? IPython3 : IPython));
 
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,

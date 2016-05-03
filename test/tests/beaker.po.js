@@ -15,6 +15,8 @@
  */
 
 var _ = require('underscore');
+var path = require('path');
+var fs = require('fs');
 
 var BeakerPageObject = function() {
 
@@ -26,28 +28,20 @@ var BeakerPageObject = function() {
   //jscs:enable
     .filter(function(e, i) { return e.isDisplayed(); });
 
-  this.waitForInstantiationCells = function() {
+  this.waitForInstantiationCells = function(screenshotName) {
+    var self = this;
+    var dialogIsPresent = this.EC.presenceOf($('.modal-dialog'));
     // First wait for the modal to show up when opening a URL
-    browser.wait(function() {
-      return element(by.css('.modal-dialog')).isDisplayed()
-      .then(function(v) {
-        return v;
-      })
-      .thenCatch(function() {
-        return false;
-      });
-    }, 100000);
-
-    // wait for the modal to close
-    return browser.wait(function() {
-      return element(by.css('.modal-dialog')).isDisplayed()
-      .then(function(v) {
-        return false;
-      })
-      .thenCatch(function() {
+    browser.wait(dialogIsPresent, 10000).then(function(){
+      // wait for the modal to close
+      browser.wait(self.EC.not(dialogIsPresent), 100000).then(function(){
         return true;
+      },
+      function(error){
+        beakerPO.createScreenshot(screenshotName);
+        expect(error).toBe('Cells have been initialized');
       });
-    }, 100000);
+    });
   };
 
   this.openFile = function(path) {
@@ -391,6 +385,13 @@ var BeakerPageObject = function() {
         return false;
       });
     }, 10000);
+  };
+
+  this.waitForCellOutputByIdCell = function(idCell) {
+    var self = this;
+    browser.wait(this.getCodeCellOutputByIdCell(idCell).isDisplayed(), 10000).then(function(){
+      browser.wait(self.EC.not(self.EC.textToBePresentInElement(self.getCodeCellOutputByIdCell(idCell), 'Elapsed:'), 10000));
+    });
   };
 
 
@@ -850,7 +851,7 @@ var BeakerPageObject = function() {
     return browser.executeScript("$('[cellid=" + idCell +"]')[0].scrollIntoView();");
   };
 
-  this.clickCodeCellInputButtonByIdCell = function(idCell, outputType){
+  this.clickCodeCellInputButtonByIdCell = function(idCell, outputType, screenshotName){
     var self = this;
     this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
     browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']')), 5000)
@@ -860,6 +861,7 @@ var BeakerPageObject = function() {
                   expect(isPresent).toBe(true);
                 },
                 function(value){
+                  self.createScreenshot(screenshotName);
                   expect(value).toBe('Output cell have displayed');
                   expect(self.getCodeCellOutputByIdCell(idCell).element(by.css('.out_error')).getText()).toBe('out error');
                 }
@@ -879,6 +881,24 @@ var BeakerPageObject = function() {
       if(isVisible){
         self.checkSubString(strPromise, toBeStr, indxStart, lenght);
       }
+    });
+  }
+
+  this.createScreenshot = function(fileName, dirPath){
+    if(!dirPath){
+      dirPath = path.join(__dirname, '../' ,"screenshots");
+    }
+    if(!fileName){
+      fileName = 'noname';
+    }
+    browser.takeScreenshot().then(function(png){
+      var filename = fileName + new Date().getTime() + '.png';
+      if(!fs.existsSync(dirPath)){
+        fs.mkdirSync(dirPath);
+      }
+      var stream = fs.createWriteStream(path.join(dirPath, filename));
+      stream.write(new Buffer(png, 'base64'));
+      stream.end();
     });
   }
 

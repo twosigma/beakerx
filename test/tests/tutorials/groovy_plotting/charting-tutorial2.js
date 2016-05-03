@@ -15,7 +15,7 @@
  */
 
 
-var BeakerPageObject = require('./beaker.po.js');
+var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
@@ -32,6 +32,8 @@ describe('Charting Tutorial', function (done) {
      */
     it('Constant Lines', function() {
         var idCell = "coderpjgfG";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
         beakerPO.scrollToCodeCellOutputByIdCell(idCell);
         beakerPO.checkPlotIsPresentByIdCell(idCell);
 
@@ -42,6 +44,8 @@ describe('Charting Tutorial', function (done) {
 
     it('Constant Bands', function() {
         var idCell = "codeK6Nb0u";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
         beakerPO.checkPlotIsPresentByIdCell(idCell);
 
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
@@ -52,6 +56,8 @@ describe('Charting Tutorial', function (done) {
 
     it('Text', function() {
         var idCell = "code3AqAel";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
         beakerPO.checkPlotIsPresentByIdCell(idCell);
 
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
@@ -67,11 +73,15 @@ describe('Charting Tutorial', function (done) {
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 9), 'plot-text');
 
         idCell = "codeFSqssT";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
         beakerPO.checkPlotIsPresentByIdCell(idCell);
     });
 
     it('Simple Time Plot', function() {
         var idCell = "codePvwIFC";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
         beakerPO.checkPlotIsPresentByIdCell(idCell);
         beakerPO.checkLegendIsPresentByIdCell(idCell);
 
@@ -85,6 +95,8 @@ describe('Charting Tutorial', function (done) {
 
     it('Second Y Axis', function () {
         var idCell = "codeZgVAtF";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
         beakerPO.checkPlotIsPresentByIdCell(idCell);
         beakerPO.checkLegendIsPresentByIdCell(idCell);
 
@@ -95,6 +107,8 @@ describe('Charting Tutorial', function (done) {
 
     it('Logarithmic Scale', function() {
         var idCell = "codew7ZL7u";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
         beakerPO.checkPlotIsPresentByIdCell(idCell, 0);
         beakerPO.checkPlotIsPresentByIdCell(idCell, 1);
         beakerPO.checkLegendIsPresentByIdCell(idCell, 0);
@@ -114,6 +128,8 @@ describe('Charting Tutorial', function (done) {
 
     it('Date Objects for the Time Coordinate', function() {
         var idCell = "codekBlglo";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
         beakerPO.checkPlotIsPresentByIdCell(idCell);
         beakerPO.checkLegendIsPresentByIdCell(idCell);
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-point');
@@ -122,6 +138,8 @@ describe('Charting Tutorial', function (done) {
 
     it('Nanosecond Resolution', function() {
         var idCell = "codecHXmVR";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
         beakerPO.checkPlotIsPresentByIdCell(idCell);
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-point');
     });

@@ -15,7 +15,7 @@
  */
 
 
-var BeakerPageObject = require('./beaker.po.js');
+var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
@@ -398,7 +398,9 @@ describe('Category Plots (Bar Charts)', function (done) {
 
       expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')).toBeNull();
       browser.actions().mouseMove(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0'))).perform().then(function(){
-        expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')).not.toBeNull();
+        browser.wait(beakerPO.EC.presenceOf(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')), 20000).then(function(){
+          expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')).not.toBeNull();
+        });
       });
     });
 

@@ -15,7 +15,7 @@
  */
 
 
-var BeakerPageObject = require('./beaker.po.js');
+var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
@@ -116,6 +116,8 @@ describe('Charting Tutorial', function (done) {
 
   it('Simple Automatic Plot', function() {
     var idCell = "codePZwpbQ";
+    beakerPO.scrollToBkCellByIdCell(idCell);
+    beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
     beakerPO.checkPlotIsPresentByIdCell(idCell);
     beakerPO.checkLegendIsPresentByIdCell(idCell);
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
@@ -124,6 +126,8 @@ describe('Charting Tutorial', function (done) {
 
   it('Scatter Plot', function() {
     var idCell = "code0gsBBt";
+    beakerPO.scrollToBkCellByIdCell(idCell);
+    beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
     beakerPO.checkPlotIsPresentByIdCell(idCell);
     beakerPO.checkLegendIsPresentByIdCell(idCell);
     beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-point');
@@ -136,6 +140,8 @@ describe('Charting Tutorial', function (done) {
 
   it('Title and Axis Labels', function() {
     var idCell = "codeH2ee1d";
+    beakerPO.scrollToBkCellByIdCell(idCell);
+    beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
     beakerPO.checkPlotIsPresentByIdCell(idCell);
 
     expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("We Will Control the Title");
@@ -145,18 +151,24 @@ describe('Charting Tutorial', function (done) {
 
   it('Lines', function() {
     var idCell = "codeXtjWnc";
+    beakerPO.scrollToBkCellByIdCell(idCell);
+    beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
     beakerPO.checkPlotIsPresentByIdCell(idCell);
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
   });
 
   it('Stems', function() {
     var idCell = "code4NJX5d";
+    beakerPO.scrollToBkCellByIdCell(idCell);
+    beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
     beakerPO.checkPlotIsPresentByIdCell(idCell);
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('line')).isPresent()).toBe(true);
   });
 
   it('Bars', function() {
     var idCell = "codefbZDMO";
+    beakerPO.scrollToBkCellByIdCell(idCell);
+    beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
     beakerPO.checkPlotIsPresentByIdCell(idCell);
     beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-bar');
     expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Bars");
@@ -164,6 +176,8 @@ describe('Charting Tutorial', function (done) {
 
   it('Points', function() {
     var idCell = "codeSb2uCM";
+    beakerPO.scrollToBkCellByIdCell(idCell);
+    beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
     beakerPO.checkPlotIsPresentByIdCell(idCell);
     beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-point');
     beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-point');
@@ -174,6 +188,8 @@ describe('Charting Tutorial', function (done) {
 
   it('Areas', function() {
     var idCell = "codeZ7NCfO";
+    beakerPO.scrollToBkCellByIdCell(idCell);
+    beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
     beakerPO.checkPlotIsPresentByIdCell(idCell);
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('polygon')).isPresent()).toBe(true);
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1).element(by.tagName('polygon')).isPresent()).toBe(true);

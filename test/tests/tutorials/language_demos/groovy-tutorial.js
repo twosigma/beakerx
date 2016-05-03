@@ -19,11 +19,18 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Groovy Tutorial', function (done) {
+describe('Groovy Tutorial', function () {
 
-    beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy-examples.bkr&readOnly=true").then(done);
-    beakerPO.waitUntilLoadingFinished();
+    beforeAll(function (done) {
+        beakerPO = new BeakerPageObject();
+        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy-examples.bkr&readOnly=true").then(done);
+        beakerPO.waitUntilLoadingFinished();
+    });
+
+    afterAll(function(done){
+        beakerPO.createScreenshot('groovyTutorial');
+        done();
+    });
 
     describe('Groovy examples', function () {
 

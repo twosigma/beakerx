@@ -106,7 +106,7 @@ describe('R Tutorial', function (done) {
         it('Library(MASS)', function () {
             var idCell = "codebUFdM3";
             beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image');
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image', 'RLibMASS');
             beakerPO.checkImageByIdCell(idCell);
         });
 

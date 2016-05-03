@@ -17,7 +17,7 @@ package com.twosigma.beaker.sqlsh.utils;
 
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.jvm.object.OutputContainer;
-import com.twosigma.beaker.jvm.object.TableDisplay;
+import com.twosigma.beaker.table.TableDisplay;
 
 import javax.sql.DataSource;
 

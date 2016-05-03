@@ -26,7 +26,7 @@ import com.twosigma.beaker.jvm.object.GridOutputContainerLayoutManager;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.jvm.object.OutputContainerCell;
 import com.twosigma.beaker.jvm.object.TabbedOutputContainerLayoutManager;
-import com.twosigma.beaker.jvm.object.TableDisplay;
+import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.jvm.object.UpdatableEvaluationResult;
 import com.twosigma.beaker.jvm.object.DashboardLayoutManager;
 import org.codehaus.jackson.JsonGenerator;

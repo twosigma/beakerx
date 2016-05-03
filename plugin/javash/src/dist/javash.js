@@ -187,7 +187,8 @@ define(function(require, exports, module) {
     "com.twosigma.beaker.chart.heatmap.HeatMap",
     "com.twosigma.beaker.jvm.object.*",
     "com.twosigma.beaker.easyform.*",
-    "com.twosigma.beaker.easyform.formitem.*"];
+    "com.twosigma.beaker.easyform.formitem.*",
+    "com.twosigma.beaker.table.*"];
   var shellReadyDeferred = bkHelper.newDeferred();
 
   var init = function() {

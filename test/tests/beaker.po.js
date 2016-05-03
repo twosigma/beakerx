@@ -861,7 +861,7 @@ var BeakerPageObject = function() {
                   expect(isPresent).toBe(true);
                 },
                 function(value){
-                  beakerPO.createScreenshot(screenshotName);
+                  this.createScreenshot(screenshotName);
                   expect(value).toBe('Output cell have displayed');
                   expect(self.getCodeCellOutputByIdCell(idCell).element(by.css('.out_error')).getText()).toBe('out error');
                 }

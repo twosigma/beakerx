@@ -15,6 +15,8 @@
  */
 
 var _ = require('underscore');
+var path = require('path');
+var fs = require('fs');
 
 var BeakerPageObject = function() {
 
@@ -26,13 +28,19 @@ var BeakerPageObject = function() {
   //jscs:enable
     .filter(function(e, i) { return e.isDisplayed(); });
 
-  this.waitForInstantiationCells = function() {
+  this.waitForInstantiationCells = function(screenshotName) {
     var self = this;
     var dialogIsPresent = this.EC.presenceOf($('.modal-dialog'));
     // First wait for the modal to show up when opening a URL
     browser.wait(dialogIsPresent, 10000).then(function(){
       // wait for the modal to close
-      browser.wait(self.EC.not(dialogIsPresent), 100000);
+      browser.wait(self.EC.not(dialogIsPresent), 100000).then(function(){
+        return true;
+      },
+      function(error){
+        beakerPO.createScreenshot(screenshotName);
+        expect(error).toBe('Cells have been initialized');
+      });
     });
   };
 
@@ -872,6 +880,24 @@ var BeakerPageObject = function() {
       if(isVisible){
         self.checkSubString(strPromise, toBeStr, indxStart, lenght);
       }
+    });
+  }
+
+  this.createScreenshot = function(fileName, dirPath){
+    if(!dirPath){
+      dirPath = path.join(__dirname, '../' ,"screenshots");
+    }
+    if(!fileName){
+      fileName = 'noname';
+    }
+    browser.takeScreenshot().then(function(png){
+      var filename = fileName + new Date().getTime() + '.png';
+      if(!fs.existsSync(dirPath)){
+        fs.mkdirSync(dirPath);
+      }
+      var stream = fs.createWriteStream(path.join(dirPath, filename));
+      stream.write(new Buffer(png, 'base64'));
+      stream.end();
     });
   }
 

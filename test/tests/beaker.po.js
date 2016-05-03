@@ -851,7 +851,7 @@ var BeakerPageObject = function() {
     return browser.executeScript("$('[cellid=" + idCell +"]')[0].scrollIntoView();");
   };
 
-  this.clickCodeCellInputButtonByIdCell = function(idCell, outputType){
+  this.clickCodeCellInputButtonByIdCell = function(idCell, outputType, screenshotName){
     var self = this;
     this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
     browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']')), 5000)
@@ -861,6 +861,7 @@ var BeakerPageObject = function() {
                   expect(isPresent).toBe(true);
                 },
                 function(value){
+                  beakerPO.createScreenshot(screenshotName);
                   expect(value).toBe('Output cell have displayed');
                   expect(self.getCodeCellOutputByIdCell(idCell).element(by.css('.out_error')).getText()).toBe('out error');
                 }

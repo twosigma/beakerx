@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.jvm.serialization;
 
-import java.awt.*;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

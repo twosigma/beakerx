@@ -245,6 +245,9 @@
 
       if (($input = $('input#import-notebook')).length) return $input;
 
+      $rootScope.getImportNotebookPattern = function () {
+        return getImportNotebookFileTypePattern();
+      };
       $rootScope.uploadFile = function(file) {
         if (file) {
           file.upload = Upload.upload({
@@ -1174,4 +1177,73 @@
       }
     };
   });
+
+  module.factory('bkDragAndDropHelper', function () {
+    var dragAndDropHelper = {
+      getImportNotebookPattern: function () {
+        return getImportNotebookFileTypePattern();
+      },
+      isFileForImportDragging: function (event) {
+        if(event.originalEvent) {
+          event = event.originalEvent;
+        }
+        if(event && event.dataTransfer && event.dataTransfer.items) {
+          var items = event.dataTransfer.items;
+          for (var i = 0; i < items.length; i++) {
+            if(items[i].type !== undefined && new RegExp(getImportNotebookFileTypePattern(), 'i').test(items[i].type)) {
+              return true;
+            }
+          }
+        }
+        return false;
+      },
+      configureDropEventHandlingForCodeMirror: function (cm, allowImageDropping) {
+        cm.on('drop', function (cm, e) {
+          if(allowImageDropping && !allowImageDropping()) {
+            return;
+          }
+          e.preventDefault();
+          e.stopPropagation();
+
+          var pos = posFromMouse(cm, e);
+          var files = e.dataTransfer.files;
+          if (files && files.length && window.FileReader && window.File) {
+            var n = files.length, text = Array(n), read = 0;
+            var loadFile = function(file, i) {
+              var reader = new FileReader;
+              reader.onload = function(fileLoadingEvent) {
+                text[i] = wrapImageDataUrl(fileLoadingEvent.target.result);
+                if (++read == n) {
+                  cm.setSelection(cm.clipPos(pos));
+                  cm.replaceSelection(text.join("\n"));
+                }
+              };
+              reader.readAsDataURL(file);
+            };
+            for (var i = 0; i < n; ++i) loadFile(files[i], i);
+          }
+
+          function posFromMouse(cm, e) {
+            var display = cm.display;
+            var x, y, space = display.lineSpace.getBoundingClientRect();
+            try { x = e.clientX - space.left; y = e.clientY - space.top; }
+            catch (e) { return null; }
+            return cm.coordsChar({left: x, top: y}, "div");
+          }
+
+          function wrapImageDataUrl(dataUrl) {
+            return '<img src="' + dataUrl + '" />';
+          }
+        });
+      },
+      clearDropEventHandlingForCodeMirror: function (cm) {
+        cm.off('drop');
+      }
+    };
+    return dragAndDropHelper;
+  });
+
+  function getImportNotebookFileTypePattern() {
+    return "^((?!image\/((png)|(jpg)|(jpeg))).)*?$";
+  }
 })();

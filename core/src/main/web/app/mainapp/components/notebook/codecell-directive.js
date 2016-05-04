@@ -44,6 +44,7 @@
       bkCellMenuPluginManager,
       bkSessionManager,
       bkCoreManager,
+      bkDragAndDropHelper,
       bkPublicationHelper,
       GLOBALS,
       $rootScope,
@@ -431,6 +432,9 @@
             scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
           });
           scope.cm.on('gutterClick', onGutterClick);
+          bkDragAndDropHelper.configureDropEventHandlingForCodeMirror(scope.cm, function () {
+            return scope.cm.getOption('mode') === 'htmlmixed';
+          });
 
           scope.updateUI(scope.getEvaluator());
           // Since the instantiation of codemirror instances is now lazy,
@@ -614,6 +618,7 @@
             scope.cm.off();
           }
           CodeMirror.off('gutterClick', onGutterClick);
+          bkDragAndDropHelper.clearDropEventHandlingForCodeMirror(scope.cm);
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id);
           scope.bkNotebook = null;

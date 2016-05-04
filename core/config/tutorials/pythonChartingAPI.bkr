@@ -52,54 +52,6 @@
             "collapsed": false
         },
         {
-            "id": "sectionzMKSuz",
-            "type": "section",
-            "title": "Work with milliseconds",
-            "level": 2,
-            "evaluatorReader": false,
-            "collapsed": false
-        },
-        {
-            "id": "code65F2qV",
-            "type": "code",
-            "evaluator": "Python3",
-            "input": {
-                "body": [
-                    "import beaker_plot ",
-                    "from datetime import datetime",
-                    "",
-                    "# working with milliseconds",
-                    "",
-                    "print(beaker_plot.current_milli_time())",
-                    "print(beaker_plot.date_time_2_millis(datetime.now()))",
-                    "",
-                    "# from python 3.3",
-                    "print(int(datetime.now().timestamp()*1000))"
-                ]
-            },
-            "output": {
-                "state": {},
-                "result": {
-                    "type": "Results",
-                    "outputdata": [
-                        {
-                            "type": "out",
-                            "value": "1462180446497\n1462191246496\n1462180446496\n"
-                        }
-                    ]
-                },
-                "selectedType": "Results",
-                "pluginName": "Python3",
-                "shellId": "E0EE67FC44914E3993B094B8CA22FBEE",
-                "elapsedTime": 256,
-                "dataresult": 1461921428.1989,
-                "height": 51,
-                "hidden": true
-            },
-            "evaluatorReader": true,
-            "lineCount": 10
-        },
-        {
             "id": "sectionzblTi1",
             "type": "section",
             "title": "Plot with simple properties",
@@ -6487,8 +6439,8 @@
                 "result": "ok",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "525dd41b-7cf5-4cb2-9414-ef4df293fdbf",
-                "elapsedTime": 1511,
+                "shellId": "952f0cf5-959b-4b43-a6f0-08079c7a9930",
+                "elapsedTime": 1826,
                 "height": 0
             },
             "evaluatorReader": true,

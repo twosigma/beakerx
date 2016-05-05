@@ -4,7 +4,6 @@ var express = require('express');
 var http = require('http');
 var uuid = require('node-uuid');
 var vm = require('vm');
-var m = require('module');
 
 var app = express();
 var port = process.argv[2];

@@ -138,8 +138,12 @@ import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
 import com.twosigma.beaker.shared.NamespaceBinding;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
+import com.twosigma.beaker.table.format.DecimalStringFormat;
+import com.twosigma.beaker.table.format.TimeStringFormat;
+import com.twosigma.beaker.table.serializer.DecimalStringFormatSerializer;
 import com.twosigma.beaker.table.serializer.TableDisplayDeSerializer;
 import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
+import com.twosigma.beaker.table.serializer.TimeStringFormatSerializer;
 import net.sf.jtreemap.swing.TreeMapNode;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
@@ -231,6 +235,9 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(BeakerCodeCell.class, injector.getInstance(BeakerCodeCell.Serializer.class));
 
       module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplaySerializer.class));
+      module.addSerializer(DecimalStringFormat.class, injector.getInstance(DecimalStringFormatSerializer.class));
+      module.addSerializer(TimeStringFormat.class, injector.getInstance(TimeStringFormatSerializer.class));
+
       module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainerSerializer.class));
       module.addSerializer(OutputContainerCell.class, injector.getInstance(OutputContainerCellSerializer.class));
       module.addSerializer(SimpleLayoutManager.class, injector.getInstance(SimpleLayoutManagerSerializer.class));

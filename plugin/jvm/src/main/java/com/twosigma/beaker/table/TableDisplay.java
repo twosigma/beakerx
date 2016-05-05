@@ -21,25 +21,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.Set;
 
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
+import com.twosigma.beaker.table.format.TableDisplayStringFormat;
 
 public class TableDisplay {
+  public static final String TABLE_DISPLAY_SUBTYPE = "TableDisplay";
+  public static final String LIST_OF_MAPS_SUBTYPE = "ListOfMaps";
+  public static final String MATRIX_SUBTYPE = "Matrix";
+  public static final String DICTIONARY_SUBTYPE = "Dictionary";
   private final static Logger logger = Logger.getLogger(TableDisplay.class.getName());
   private final List<List<?>> values;
   private final List<String> columns;
   private final List<String> classes;
   private final String subtype;
 
-  public static final String TABLE_DISPLAY_SUBTYPE = "TableDisplay";
-  public static final String LIST_OF_MAPS_SUBTYPE = "ListOfMaps";
-  public static final String MATRIX_SUBTYPE = "Matrix";
-  public static final String DICTIONARY_SUBTYPE = "Dictionary";
-  
+  private TimeUnit stringFormatForTimes;
+  private Map<String, TableDisplayStringFormat> stringFormatForType = new HashMap<>();
+  private Map<String, TableDisplayStringFormat> stringFormatForColumn = new HashMap<>();
+
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
     columns = co;
@@ -79,6 +84,30 @@ public class TableDisplay {
       }
       values.add(vals);
     }
+  }
+
+  public TimeUnit getStringFormatForTimes() {
+    return stringFormatForTimes;
+  }
+
+  public void setStringFormatForTimes(TimeUnit stringFormatForTimes) {
+    this.stringFormatForTimes = stringFormatForTimes;
+  }
+
+  public Map<String, TableDisplayStringFormat> getStringFormatForType() {
+    return stringFormatForType;
+  }
+
+  public void setStringFormatForType(Class type, TableDisplayStringFormat format) {
+    this.stringFormatForType.put(type.getSimpleName(), format);
+  }
+
+  public Map<String, TableDisplayStringFormat> getStringFormatForColumn() {
+    return stringFormatForColumn;
+  }
+
+  public void setStringFormatForColumn(String column, TableDisplayStringFormat format) {
+    this.stringFormatForColumn.put(column, format);
   }
 
   public static List<Map<String, Object>> getValuesAsRows(List<List<?>> values, List<String> columns) {

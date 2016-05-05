@@ -188,6 +188,7 @@ define(function(require, exports, module) {
   };
   var defaultImports = [
     "graxxia.*",
+    "java.util.concurrent.TimeUnit",
     "com.twosigma.beaker.NamespaceClient",
     "com.twosigma.beaker.BeakerProgressUpdate",
     "com.twosigma.beaker.chart.Color",
@@ -207,7 +208,8 @@ define(function(require, exports, module) {
     "com.twosigma.beaker.jvm.object.*",
     "com.twosigma.beaker.easyform.*",
     "com.twosigma.beaker.easyform.formitem.*",
-    "com.twosigma.beaker.table.*"];
+    "com.twosigma.beaker.table.*",
+    "com.twosigma.beaker.table.format.*"];
   var shellReadyDeferred = bkHelper.newDeferred();
   
   var init = function() {

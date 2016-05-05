@@ -170,6 +170,7 @@ define(function(require, exports, module) {
     cometdUtil: cometdUtil
   };
   var defaultImports = [
+    "java.util.concurrent.TimeUnit",
     "com.twosigma.beaker.chart.Color",
     "com.twosigma.beaker.chart.GradientColor",
     "com.twosigma.beaker.chart.legend.*",
@@ -188,7 +189,8 @@ define(function(require, exports, module) {
     "com.twosigma.beaker.jvm.object.*",
     "com.twosigma.beaker.easyform.*",
     "com.twosigma.beaker.easyform.formitem.*",
-    "com.twosigma.beaker.table.*"];
+    "com.twosigma.beaker.table.*",
+    "com.twosigma.beaker.table.format.*"];
   var shellReadyDeferred = bkHelper.newDeferred();
 
   var init = function() {

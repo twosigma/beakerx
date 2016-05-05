@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.table.serializer;
 
-import com.twosigma.beaker.table.TableDisplay;
+import com.twosigma.beaker.table.format.DecimalStringFormat;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
@@ -23,24 +23,19 @@ import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
 
-public class TableDisplaySerializer extends JsonSerializer<TableDisplay> {
+public class DecimalStringFormatSerializer extends JsonSerializer<DecimalStringFormat> {
 
   @Override
-  public void serialize(TableDisplay value,
+  public void serialize(DecimalStringFormat value,
                         JsonGenerator jgen,
                         SerializerProvider provider)
     throws IOException, JsonProcessingException {
 
     synchronized (value) {
       jgen.writeStartObject();
-      jgen.writeObjectField("type", "TableDisplay");
-      jgen.writeObjectField("columnNames", value.getColumnNames());
-      jgen.writeObjectField("types", value.getTypes());
-      jgen.writeObjectField("subtype", value.getSubtype());
-      jgen.writeObjectField("stringFormatForTimes", value.getStringFormatForTimes());
-      jgen.writeObjectField("stringFormatForType", value.getStringFormatForType());
-      jgen.writeObjectField("stringFormatForColumn", value.getStringFormatForColumn());
-      jgen.writeObjectField("values", value.getValues());
+      jgen.writeObjectField("type", "decimal");
+      jgen.writeObjectField("minDecimals", value.getMinDecimals());
+      jgen.writeObjectField("maxDecimals", value.getMaxDecimals());
       jgen.writeEndObject();
     }
   }

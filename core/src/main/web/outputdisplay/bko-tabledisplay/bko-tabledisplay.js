@@ -1126,6 +1126,14 @@
             scope.colorder          = undefined;
             scope.getCellSho        = undefined;
             scope.barsOnColumn      = {}; //map: col index -> show bars
+            _.forOwn(model.rendererForColumn, function (renderer, columnName) {
+              var colIndex = scope.columnNames.indexOf(columnName);
+              switch (renderer.type) {
+                case 'DataBars':
+                  scope.barsOnColumn[colIndex + 1] = {includeText: renderer.includeText};
+                  break;
+              }
+            });
             scope.heatmapOnColumn   = {}; //map: col index -> show heatmap
             scope.tableFilter       = '';
             scope.columnFilter      = [];
@@ -1304,9 +1312,10 @@
               .range(['#f76a6a', '#efda52', '#64bd7a']);
             scope.table.column(colInd).nodes().each(function (td) {
               var value = $(td).text();
-              if($.isNumeric(value)){
+              if ($.isNumeric(value)) {
                 $(td).empty();
-                if(scope.barsOnColumn[scope.colorder[colInd]]){
+                var barsRenderer = scope.barsOnColumn[scope.colorder[colInd]];
+                if (barsRenderer) {
                   var cellDiv = $("<div></div>", {
                     "class": "dt-cell-div"
                   });
@@ -1321,9 +1330,12 @@
                     "width": percent + "%"
                   });
                   cellDiv.append(barsBkg);
+                  if (!barsRenderer.includeText) {
+                    textSpan.hide();
+                  }
                   cellDiv.append(textSpan);
                   $(td).append(cellDiv);
-                }else{
+                } else {
                   $(td).text(value);
                 }
               }
@@ -1380,7 +1392,11 @@
         };
 
         scope.showHideBars = function (column) {
-          scope.barsOnColumn[column] = !!!scope.barsOnColumn[column];
+          if (scope.barsOnColumn[column]) {
+            delete scope.barsOnColumn[column];
+          } else {
+            scope.barsOnColumn[column] = {includeText: true};
+          }
           _.defer(function () { scope.table.draw(false);  });
         };
         scope.showHideHeatmap = function (column) {

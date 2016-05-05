@@ -3,10 +3,19 @@
 var express = require('express');
 var http = require('http');
 var uuid = require('node-uuid');
+var vm = require('vm');
+var m = require('module');
 
 var app = express();
 var port = process.argv[2];
 var host = process.argv[3];
+
+var sandbox = {
+    require: require,
+    http: http
+};
+
+var context = new vm.createContext(sandbox);
 
 console.log('Server Starting')
 
@@ -42,7 +51,7 @@ function processCode(code) {
     var returnValue;
     var result;
     try {
-        result = eval(code);
+        result = vm.runInContext(code, context);
         if(typeof result === "undefined"){
             result =  'undefined';
         }

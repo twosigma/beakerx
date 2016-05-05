@@ -114,7 +114,7 @@
         
         element.on('dragenter', function (e) {
           if(scope.isPreviewMode() && !bkDragAndDropHelper.isFileForImportDragging(e)) {
-            scope.edit(e);
+            scope.focus();
             scope.cm.refresh(); // CM should recalculate line heights
           }
         });
@@ -158,6 +158,7 @@
             }
           }, 0);
         });
+        bkDragAndDropHelper.configureDropEventHandlingForCodeMirror(scope.cm);
 
         scope.$on('beaker.cell.added', function(e, cellmodel) {
           if (cellmodel === scope.cellmodel) {
@@ -176,7 +177,6 @@
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id, scope.cm);
           CodeMirror.off('change', changeHandler);
-          bkDragAndDropHelper.clearDropEventHandlingForCodeMirror(scope.cm);
           scope.cm.off();
         });
       }

@@ -618,7 +618,6 @@
             scope.cm.off();
           }
           CodeMirror.off('gutterClick', onGutterClick);
-          bkDragAndDropHelper.clearDropEventHandlingForCodeMirror(scope.cm);
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id);
           scope.bkNotebook = null;

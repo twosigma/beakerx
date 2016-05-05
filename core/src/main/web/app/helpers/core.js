@@ -55,6 +55,7 @@
       autocompleteService,
       autocompleteParametersService,
       codeMirrorExtension,
+      bkDragAndDropHelper,
       GLOBALS) {
 
     function isFilePath(path) {
@@ -249,7 +250,7 @@
         return getImportNotebookFileTypePattern();
       };
       $rootScope.uploadFile = function(file) {
-        if (file) {
+        if (file && bkDragAndDropHelper.isFileForImport(file)) {
           file.upload = Upload.upload({
             url: endpoint,
             file: file,
@@ -1190,12 +1191,15 @@
         if(event && event.dataTransfer && event.dataTransfer.items) {
           var items = event.dataTransfer.items;
           for (var i = 0; i < items.length; i++) {
-            if(items[i].type !== undefined && new RegExp(getImportNotebookFileTypePattern(), 'i').test(items[i].type)) {
+            if(this.isFileForImport(items[i])) {
               return true;
             }
           }
         }
         return false;
+      },
+      isFileForImport: function (item) {
+        return item.type !== undefined && new RegExp(getImportNotebookFileTypePattern(), 'i').test(item.type);
       },
       configureDropEventHandlingForCodeMirror: function (cm, allowImageDropping) {
         cm.on('drop', function (cm, e) {
@@ -1235,9 +1239,6 @@
             return '<img src="' + dataUrl + '" />';
           }
         });
-      },
-      clearDropEventHandlingForCodeMirror: function (cm) {
-        cm.off('drop');
       }
     };
     return dragAndDropHelper;

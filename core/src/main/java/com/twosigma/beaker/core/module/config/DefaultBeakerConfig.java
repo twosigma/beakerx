@@ -165,6 +165,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
     augmentPluginOptions();
 
+    augmentPluginEnv();
+    
     this.publicServer = pref.getPublicServer();
     this.useHttpsCert = pref.getUseHttpsCert();
     this.useHttpsKey = pref.getUseHttpsKey();
@@ -482,4 +484,26 @@ public class DefaultBeakerConfig implements BeakerConfig {
       // ignore
     }
   }
+  
+  @SuppressWarnings("unchecked")
+  private void augmentPluginEnv() {
+    try {
+      Map<String, JSONObject> plugins = (Map<String, JSONObject>) this.prefs.get("languages");
+      for(Map.Entry<String, JSONObject> entry : plugins.entrySet()) {
+        String plugin = entry.getKey();
+        Object env = entry.getValue().get("env");
+        if(env == null) continue;
+        if(!(env instanceof Map)) { throw new RuntimeException("'env' value must be a map"); };
+        Map<String, String> m = (Map<String, String>) env;
+        List<String> envL = new ArrayList<String>();
+        for(Map.Entry<String, String> e : m.entrySet() ) {
+          envL.add(e.getKey() + "=" + e.getValue());
+        }
+        pluginEnvps.put(plugin, envL.toArray(new String[envL.size()]));
+      }
+    } catch (Exception e) {
+        // ignore
+    }
+  }
+  
 }

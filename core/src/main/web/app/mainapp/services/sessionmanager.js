@@ -35,6 +35,7 @@
       bkSession,
       bkNotebookManager,
       bkNotebookCellModelManager,
+      bkNotebookCellModelManagerFactory,
       bkNotebookNamespaceModelManager,
       bkEvaluatorManager,
       bkRecentMenu,
@@ -436,6 +437,23 @@
       };
     })();
 
+    var _dependencyManager = (function () {
+      var _storage = {};
+      return {
+        isLoaded: function (path) {
+          return _storage[path] !== undefined;
+        },
+        store: function (path, notebook) {
+          _storage[path] = bkNotebookCellModelManagerFactory.createInstance();
+          _storage[path].reset(notebook.cells);
+          return _storage[path];
+        },
+        reset: function () {
+          _storage = {};
+        }
+      };
+    })();
+
     var _uriType = null;
     var _readOnly = null;
     var _format = null;
@@ -520,6 +538,7 @@
           // display is broken without this, you get "OUTPUT" instead of any lines of text.
           bkHelper.refreshRootScope();
         }, writeable: false, enumerable: true });
+        Object.defineProperty(this.beakerObj, 'loadLibrary', { value: bkHelper.loadLibrary, writeable: false, enumerable: true});
         Object.defineProperty(this.beakerObj, 'loadJS', { value: bkHelper.loadJS, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'loadCSS', { value: bkHelper.loadCSS, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'loadList', { value: bkHelper.loadList, writeable: false, enumerable: true });
@@ -935,6 +954,7 @@
         _readOnly = null;
         _format = null;
         _notebookModel.reset();
+        _dependencyManager.reset();
         _sessionId = null;
         _edited = false;
         _needsBackup = false;
@@ -1153,6 +1173,12 @@
       },
       redo: function() {
         bkNotebookCellModelManager.redo();
+      },
+      isDependencyLoaded: function (path) {
+        return _dependencyManager.isLoaded(path);
+      },
+      storeDependency: function (path, notebookModel) {
+        return _dependencyManager.store(path, notebookModel);
       }
     };
   });

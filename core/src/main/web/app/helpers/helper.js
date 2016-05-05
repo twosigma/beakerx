@@ -488,6 +488,13 @@
           return false;
         }
       },
+      loadLibrary: function(path) {
+        if (getCurrentApp() && getCurrentApp().loadLibrary) {
+          return getCurrentApp().loadLibrary(path);
+        } else {
+          return false;
+        }
+      },        
       typeset: function(element) {
         try {
           renderMathInElement(element[0], {

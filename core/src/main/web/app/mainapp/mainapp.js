@@ -29,6 +29,7 @@
                                              'bk.globals',
                                              'bk.session',
                                              'bk.sessionManager',
+                                             'bk.notebookCellModelManager',
                                              'bk.menuPluginManager',
                                              'bk.cellMenuPluginManager',
                                              'bk.notebookVersionManager',
@@ -55,6 +56,7 @@
       bkSession,
       bkSessionManager,
       bkMenuPluginManager,
+      bkNotebookCellModelManagerFactory,
       bkCellMenuPluginManager,
       bkNotebookVersionManager,
       bkEvaluatorManager,
@@ -796,6 +798,31 @@
                 input: { body: code },
                 output: outcontainer
               }).then(function() { deferred.resolve(outcontainer.result); }, function(err) { deferred.reject(err); });
+              return deferred.promise;
+            },
+            loadLibrary: function (path) {
+              var deferred = bkHelper.newDeferred();
+              if (bkSessionManager.isDependencyLoaded(path)) {
+                deferred.resolve();
+              } else {
+                var importer = bkCoreManager.getNotebookImporter(bkCoreManager.guessFormat(path));
+                if (importer) {
+                  var fileLoader = bkCoreManager.getFileLoader(bkCoreManager.guessUriType(path));
+                  fileLoader.load(path).then(function (fileContentAsString) {
+                    var notebookModel = importer.import(fileContentAsString);
+                    notebookModel = bkNotebookVersionManager.open(notebookModel);
+                    var toEval = bkSessionManager.storeDependency(path, notebookModel).getInitializationCells();
+                    if (toEval.length === 0) {
+                      deferred.resolve();
+                    }
+                    bkEvaluateJobManager.evaluateAll(toEval).then(function (result) {
+                      deferred.resolve(result);
+                    });
+                  }).catch(function (data) {
+                    deferred.reject(data);
+                  });
+                }
+              }
               return deferred.promise;
             },
             addEvaluator: function(settings) {

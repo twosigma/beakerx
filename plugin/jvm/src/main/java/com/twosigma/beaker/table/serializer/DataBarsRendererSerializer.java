@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.table.serializer;
 
-import com.twosigma.beaker.table.TableDisplay;
+import com.twosigma.beaker.table.renderer.DataBarsRenderer;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
@@ -23,26 +23,18 @@ import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
 
-public class TableDisplaySerializer extends JsonSerializer<TableDisplay> {
+public class DataBarsRendererSerializer extends JsonSerializer<DataBarsRenderer> {
 
   @Override
-  public void serialize(TableDisplay value,
+  public void serialize(DataBarsRenderer value,
                         JsonGenerator jgen,
                         SerializerProvider provider)
     throws IOException, JsonProcessingException {
 
     synchronized (value) {
       jgen.writeStartObject();
-      jgen.writeObjectField("type", "TableDisplay");
-      jgen.writeObjectField("columnNames", value.getColumnNames());
-      jgen.writeObjectField("types", value.getTypes());
-      jgen.writeObjectField("subtype", value.getSubtype());
-      jgen.writeObjectField("stringFormatForTimes", value.getStringFormatForTimes());
-      jgen.writeObjectField("stringFormatForType", value.getStringFormatForType());
-      jgen.writeObjectField("stringFormatForColumn", value.getStringFormatForColumn());
-      jgen.writeObjectField("rendererForType", value.getRendererForType());
-      jgen.writeObjectField("rendererForColumn", value.getRendererForColumn());
-      jgen.writeObjectField("values", value.getValues());
+      jgen.writeObjectField("type", "DataBars");
+      jgen.writeObjectField("includeText", value.getIncludeText());
       jgen.writeEndObject();
     }
   }

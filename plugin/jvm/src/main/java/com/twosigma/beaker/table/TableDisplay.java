@@ -29,6 +29,7 @@ import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.table.format.TableDisplayStringFormat;
+import com.twosigma.beaker.table.renderer.TableDisplayCellRenderer;
 
 public class TableDisplay {
   public static final String TABLE_DISPLAY_SUBTYPE = "TableDisplay";
@@ -44,6 +45,8 @@ public class TableDisplay {
   private TimeUnit stringFormatForTimes;
   private Map<String, TableDisplayStringFormat> stringFormatForType = new HashMap<>();
   private Map<String, TableDisplayStringFormat> stringFormatForColumn = new HashMap<>();
+  private Map<String, TableDisplayCellRenderer> rendererForType = new HashMap<>();
+  private Map<String, TableDisplayCellRenderer> rendererForColumn = new HashMap<>();
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
@@ -108,6 +111,22 @@ public class TableDisplay {
 
   public void setStringFormatForColumn(String column, TableDisplayStringFormat format) {
     this.stringFormatForColumn.put(column, format);
+  }
+
+  public Map<String, TableDisplayCellRenderer> getRendererForType() {
+    return rendererForType;
+  }
+
+  public void setRendererForType(Class type, TableDisplayCellRenderer renderer) {
+    this.rendererForType.put(type.getSimpleName(), renderer);
+  }
+
+  public Map<String, TableDisplayCellRenderer> getRendererForColumn() {
+    return rendererForColumn;
+  }
+
+  public void setRendererForColumn(String column, TableDisplayCellRenderer renderer) {
+    this.rendererForColumn.put(column, renderer);
   }
 
   public static List<Map<String, Object>> getValuesAsRows(List<List<?>> values, List<String> columns) {

@@ -89,7 +89,7 @@ public class UtilRest {
   @Path("version")
   @Produces(MediaType.TEXT_PLAIN)
   public String version(@Context HttpServletRequest request) {
-    return format("%s %s %s %s",
+    return format("%s, %s, %s, %s",
         bkConfig.getVersion(),
         bkConfig.getHash(),
         System.getProperty("os.name"),

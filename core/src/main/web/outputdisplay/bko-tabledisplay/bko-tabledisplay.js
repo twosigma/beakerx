@@ -819,10 +819,10 @@
             }
             if (type === 'display') {
               if (_.isObject(value) && value.type === 'Date') {
-                bkUtils.formatTimestamp(value.timestamp, $scope.tz, 'YYYY-MM-DD');
+                return bkUtils.formatTimestamp(value.timestamp, $scope.tz, 'YYYY-MM-DD');
               }
               var milli = value / 1000 / 1000;
-              bkUtils.formatTimestamp(milli, $scope.tz, 'YYYY-MM-DD');
+              return bkUtils.formatTimestamp(milli, $scope.tz, 'YYYY-MM-DD');
             }
             return value;
           },

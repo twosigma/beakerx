@@ -43,9 +43,9 @@ public class TableDisplay {
   private final String subtype;
 
   private TimeUnit stringFormatForTimes;
-  private Map<String, TableDisplayStringFormat> stringFormatForType = new HashMap<>();
+  private Map<ColumnType, TableDisplayStringFormat> stringFormatForType = new HashMap<>();
   private Map<String, TableDisplayStringFormat> stringFormatForColumn = new HashMap<>();
-  private Map<String, TableDisplayCellRenderer> rendererForType = new HashMap<>();
+  private Map<ColumnType, TableDisplayCellRenderer> rendererForType = new HashMap<>();
   private Map<String, TableDisplayCellRenderer> rendererForColumn = new HashMap<>();
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
@@ -97,11 +97,11 @@ public class TableDisplay {
     this.stringFormatForTimes = stringFormatForTimes;
   }
 
-  public Map<String, TableDisplayStringFormat> getStringFormatForType() {
+  public Map<ColumnType, TableDisplayStringFormat> getStringFormatForType() {
     return stringFormatForType;
   }
 
-  public void setStringFormatForType(String type, TableDisplayStringFormat format) {
+  public void setStringFormatForType(ColumnType type, TableDisplayStringFormat format) {
     this.stringFormatForType.put(type, format);
   }
 
@@ -113,11 +113,11 @@ public class TableDisplay {
     this.stringFormatForColumn.put(column, format);
   }
 
-  public Map<String, TableDisplayCellRenderer> getRendererForType() {
+  public Map<ColumnType, TableDisplayCellRenderer> getRendererForType() {
     return rendererForType;
   }
 
-  public void setRendererForType(String type, TableDisplayCellRenderer renderer) {
+  public void setRendererForType(ColumnType type, TableDisplayCellRenderer renderer) {
     this.rendererForType.put(type, renderer);
   }
 

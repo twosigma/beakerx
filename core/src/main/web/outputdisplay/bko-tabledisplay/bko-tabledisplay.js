@@ -1126,13 +1126,16 @@
             scope.colorder          = undefined;
             scope.getCellSho        = undefined;
             scope.barsOnColumn      = {}; //map: col index -> show bars
+            if (!_.isEmpty(model.rendererForType)) {
+              _.forEach(scope.types, function (type, index) {
+                var renderer = model.rendererForType[type];
+                if (renderer) {
+                  scope.applyColumnRenderer(index, renderer);
+                }
+              });
+            }
             _.forOwn(model.rendererForColumn, function (renderer, columnName) {
-              var colIndex = scope.columnNames.indexOf(columnName);
-              switch (renderer.type) {
-                case 'DataBars':
-                  scope.barsOnColumn[colIndex + 1] = {includeText: renderer.includeText};
-                  break;
-              }
+              scope.applyColumnRenderer(scope.columnNames.indexOf(columnName), renderer);
             });
             scope.heatmapOnColumn   = {}; //map: col index -> show heatmap
             scope.tableFilter       = '';
@@ -1611,6 +1614,15 @@
             }
           }
           scope.onKeyListeners = {};//map: col index -> listener function
+        };
+
+        scope.applyColumnRenderer = function(colIndex, renderer){
+          switch (renderer.type) {
+            case 'DataBars':
+              scope.barsOnColumn[colIndex + 1] = {includeText: renderer.includeText};
+              break;
+            //other renderers here
+          }
         };
 
         scope.doCreateTable = function(model) {

@@ -101,8 +101,8 @@ public class TableDisplay {
     return stringFormatForType;
   }
 
-  public void setStringFormatForType(Class type, TableDisplayStringFormat format) {
-    this.stringFormatForType.put(type.getSimpleName(), format);
+  public void setStringFormatForType(String type, TableDisplayStringFormat format) {
+    this.stringFormatForType.put(type, format);
   }
 
   public Map<String, TableDisplayStringFormat> getStringFormatForColumn() {
@@ -117,8 +117,8 @@ public class TableDisplay {
     return rendererForType;
   }
 
-  public void setRendererForType(Class type, TableDisplayCellRenderer renderer) {
-    this.rendererForType.put(type.getSimpleName(), renderer);
+  public void setRendererForType(String type, TableDisplayCellRenderer renderer) {
+    this.rendererForType.put(type, renderer);
   }
 
   public Map<String, TableDisplayCellRenderer> getRendererForColumn() {

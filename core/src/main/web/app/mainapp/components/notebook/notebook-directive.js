@@ -44,7 +44,7 @@
         setBkNotebook: '&',
         isLoading: '='
       },
-      controller: function ($scope, bkEvaluatorManager, GLOBALS) {
+      controller: function ($scope, $rootScope, bkEvaluatorManager, bkDragAndDropHelper, GLOBALS) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var _impl = {
           _viewModel: {
@@ -296,6 +296,22 @@
         bkUtils.getBeakerPreference('lod-threshold').then(function (lodThreshold) {
           _impl._viewModel.setLodThreshold(lodThreshold);
         });
+
+        $scope.unregisters.push($rootScope.$on(GLOBALS.EVENTS.FILE_DROPPED, function (e, data) {
+          if (bkDragAndDropHelper.isImageFile(data.file)) {
+            bkDragAndDropHelper.loadImageFileAsString(data.file).then(function (imageTag) {
+              var markdownCell = bkSessionManager.getNotebookNewCellFactory().newMarkdownCell();
+              markdownCell.body = imageTag;
+              var notebookCellOp = bkSessionManager.getNotebookCellOp();
+              var cells = notebookCellOp.getCells();
+              if (cells.length === 0) {
+                notebookCellOp.insertFirst(markdownCell);
+              } else {
+                notebookCellOp.insertAfter(cells[cells.length - 1].id, markdownCell);
+              }
+            });
+          }
+        }));
       },
       link: function (scope, element, attrs) {
         scope.getNotebookElement = function() {

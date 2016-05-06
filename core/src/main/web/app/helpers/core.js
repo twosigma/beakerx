@@ -249,25 +249,29 @@
       $rootScope.getImportNotebookPattern = function () {
         return getImportNotebookFileTypePattern();
       };
-      $rootScope.uploadFile = function(file) {
-        if (file && bkDragAndDropHelper.isFileForImport(file)) {
-          file.upload = Upload.upload({
-            url: endpoint,
-            file: file,
-            method: 'POST'
-          });
+      $rootScope.fileDropped = function(file, event) {
+        if (file) {
+          if (bkDragAndDropHelper.isFileForImport(file)) {
+            file.upload = Upload.upload({
+              url: endpoint,
+              file: file,
+              method: 'POST'
+            });
 
-          file.upload.then(function (response) {
-            bkCoreManager.importNotebook(response.data);
-          }, function (response) {
-            if (response.status > 0)
-              console.log(response.status + ': ' + response.data);
-          });
+            file.upload.then(function (response) {
+              bkCoreManager.importNotebook(response.data);
+            }, function (response) {
+              if (response.status > 0)
+                console.log(response.status + ': ' + response.data);
+            });
+          } else {
+            $rootScope.$emit(GLOBALS.EVENTS.FILE_DROPPED, {file: file, event: event});
+          }
         }
       };
 
       $input = $('<input type="file" name="file" id="import-notebook" ' +
-          'ngf-select="uploadFile($file)" accept="application/json,application/text"' +
+          'ngf-select="fileDropped($file)" accept="application/json,application/text"' +
       'ngf-pattern="\'application/json,application/text\'" style="display: none"/>')
                 .prependTo('body');
 
@@ -1179,7 +1183,11 @@
     };
   });
 
-  module.factory('bkDragAndDropHelper', function () {
+  module.factory('bkDragAndDropHelper', function (bkUtils) {
+    function wrapImageDataUrl(dataUrl) {
+      return '<img src="' + dataUrl + '" />';
+    }
+
     var dragAndDropHelper = {
       getImportNotebookPattern: function () {
         return getImportNotebookFileTypePattern();
@@ -1201,6 +1209,20 @@
       isFileForImport: function (item) {
         return item.type !== undefined && new RegExp(getImportNotebookFileTypePattern(), 'i').test(item.type);
       },
+      loadImageFileAsString: function (file) {
+        if (file && window.FileReader && window.File) {
+          var deferred = bkUtils.newDeferred();
+          var reader = new FileReader;
+          reader.onload = function (loadingEvent) {
+            deferred.resolve(wrapImageDataUrl(loadingEvent.target.result));
+          };
+          reader.readAsDataURL(file);
+          return deferred.promise;
+        } else {
+          return false;
+        }
+      },
+      wrapImageDataUrl: wrapImageDataUrl,
       configureDropEventHandlingForCodeMirror: function (cm, allowImageDropping) {
         cm.on('drop', function (cm, e) {
           if(allowImageDropping && !allowImageDropping()) {
@@ -1234,17 +1256,22 @@
             catch (e) { return null; }
             return cm.coordsChar({left: x, top: y}, "div");
           }
-
-          function wrapImageDataUrl(dataUrl) {
-            return '<img src="' + dataUrl + '" />';
-          }
         });
-      }
+      },
+      isImageFile: isImageFile
     };
     return dragAndDropHelper;
   });
 
   function getImportNotebookFileTypePattern() {
     return "^((?!image\/((png)|(jpg)|(jpeg))).)*?$";
+  }
+  
+  function isImageFile(file) {
+    return file && file.type && new RegExp(getImageFileTypePattern(), 'i').test(file.type);
+  }
+  
+  function getImageFileTypePattern() {
+    return "image/((png)|(jpg)|(jpeg))";
   }
 })();

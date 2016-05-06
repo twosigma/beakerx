@@ -33,7 +33,8 @@
         SET_LANGUAGE_SETTINGS_EDITED: 'set-language-settings-edited',
         CELL_OUTPUT_EXPANDED: 'cell-output-expanded',
         CELL_OUTPUT_LM_SHOWED: 'cell-output-lm-showed',
-        ADVANCED_MODE_TOGGLED: 'advanced-mode-toggled'
+        ADVANCED_MODE_TOGGLED: 'advanced-mode-toggled',
+        FILE_DROPPED: 'file-dropped'
       },
       FILE_LOCATION: {
         FILESYS: "file",

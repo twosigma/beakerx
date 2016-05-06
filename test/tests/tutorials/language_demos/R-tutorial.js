@@ -60,7 +60,7 @@ describe('R Tutorial', function (done) {
         it('Spreadsheet', function () {
             var idCell = "codezB5I5w";
             beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table', 'RSpreadsheet');
             beakerPO.checkDtContainerByIdCell(idCell);
             beakerPO.checkDtContainerByIdCell(idCell);
             var arrStrHead = beakerPO.getDataTablesTHeadByIdCell(idCell).get(0).all(by.css('th'));
@@ -99,14 +99,14 @@ describe('R Tutorial', function (done) {
         it('Google map', function () {
             var idCell = "codePI1mwS";
             beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image');
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image', 'RGoogleMap');
             beakerPO.checkImageByIdCell(idCell);
         });
 
         it('Library(MASS)', function () {
             var idCell = "codebUFdM3";
             beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image');
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image', 'RLibMASS');
             beakerPO.checkImageByIdCell(idCell);
         });
 

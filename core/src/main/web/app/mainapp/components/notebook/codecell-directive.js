@@ -427,8 +427,9 @@
               //codecomplete is up, skip
               return;
             }
-
-            scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
+            if(document.hasFocus()){
+              scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
+            }
           });
           scope.cm.on('gutterClick', onGutterClick);
 

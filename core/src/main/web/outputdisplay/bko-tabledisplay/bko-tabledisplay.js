@@ -2147,9 +2147,10 @@
             scope.updateFixedColumnsSeparator();
 
             scope.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
-            scope.table.draw(false);
+            scope.fixcols.fnRedrawLayout();
 
             setTimeout(function(){
+              if (!scope.table) { return; }
               scope.applyFilters();
               if (scope.columnFilter) {
                 scope.table.columns().every(function (i) {
@@ -2169,12 +2170,11 @@
                     }
                   }
                 });
-                scope.table.draw();
               }
               if (scope.showFilter) {
                 scope.doShowFilter(null, scope.columnSearchActive);
               }
-              scope.update_size();
+
             }, 0);
 
           }, 0);

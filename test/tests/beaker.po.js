@@ -600,6 +600,14 @@ var BeakerPageObject = function() {
     return this.getDataTablesScrollHeadByIdCell(idCell).all(By.css('thead > tr'));
   }
 
+  this.checkTablesColumnsByIdCell = function(idCell, countColumn){
+    expect(this.getDataTablesTHeadByIdCell(idCell).get(0).all(by.css('th')).count()).toBe(countColumn);
+  }
+
+  this.checkTablesRowsByIdCell = function(idCell, countRows){
+    expect(this.getDataTablesTBodyByIdCell(idCell).count()).toBe(countRows);
+  }
+
   this.checkDataTableHeadByIdCell = function(idCell, headLabels){
     expect(this.getDataTablesScrollHeadByIdCell(idCell).getText()).toBe(headLabels);
   }

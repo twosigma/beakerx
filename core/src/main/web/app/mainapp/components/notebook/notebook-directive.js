@@ -305,9 +305,9 @@
               var notebookCellOp = bkSessionManager.getNotebookCellOp();
               var cells = notebookCellOp.getCells();
               if (cells.length === 0) {
-                notebookCellOp.insertFirst(markdownCell);
+                notebookCellOp.insertFirst(markdownCell, true);
               } else {
-                notebookCellOp.insertAfter(cells[cells.length - 1].id, markdownCell);
+                notebookCellOp.insertAfter(cells[cells.length - 1].id, markdownCell, true);
               }
             });
           }

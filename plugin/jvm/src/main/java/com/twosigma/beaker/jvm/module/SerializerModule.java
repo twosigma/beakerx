@@ -138,11 +138,13 @@ import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
 import com.twosigma.beaker.shared.NamespaceBinding;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
+import com.twosigma.beaker.table.TableDisplayAlignmentProvider;
 import com.twosigma.beaker.table.format.DecimalStringFormat;
 import com.twosigma.beaker.table.format.TimeStringFormat;
 import com.twosigma.beaker.table.renderer.DataBarsRenderer;
 import com.twosigma.beaker.table.serializer.DataBarsRendererSerializer;
 import com.twosigma.beaker.table.serializer.DecimalStringFormatSerializer;
+import com.twosigma.beaker.table.serializer.TableDisplayAlignmentSerializer;
 import com.twosigma.beaker.table.serializer.TableDisplayDeSerializer;
 import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
 import com.twosigma.beaker.table.serializer.TimeStringFormatSerializer;
@@ -240,6 +242,9 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(DecimalStringFormat.class, injector.getInstance(DecimalStringFormatSerializer.class));
       module.addSerializer(TimeStringFormat.class, injector.getInstance(TimeStringFormatSerializer.class));
       module.addSerializer(DataBarsRenderer.class, injector.getInstance(DataBarsRendererSerializer.class));
+      module.addSerializer(TableDisplayAlignmentProvider.class, injector.getInstance(TableDisplayAlignmentSerializer.class));
+
+
 
       module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainerSerializer.class));
       module.addSerializer(OutputContainerCell.class, injector.getInstance(OutputContainerCellSerializer.class));

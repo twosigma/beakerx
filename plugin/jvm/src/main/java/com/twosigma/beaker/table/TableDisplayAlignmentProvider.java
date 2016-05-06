@@ -16,7 +16,22 @@
 package com.twosigma.beaker.table;
 
 public enum TableDisplayAlignmentProvider {
-  CENTER_ALIGNMENT,
-  LEFT_ALIGNMENT,
-  RIGHT_ALIGNMENT
+  CENTER_ALIGNMENT("C"),
+  LEFT_ALIGNMENT("L"),
+  RIGHT_ALIGNMENT("R");
+
+  private String code;
+
+  TableDisplayAlignmentProvider(String code) {
+    this.code = code;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  @Override
+  public String toString() {
+    return getCode();
+  }
 }

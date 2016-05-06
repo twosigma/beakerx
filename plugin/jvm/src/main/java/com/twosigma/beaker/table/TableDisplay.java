@@ -143,7 +143,7 @@ public class TableDisplay {
     return alignmentForColumn;
   }
 
-  public void setAlignmentForColumn(String column, TableDisplayAlignmentProvider alignmentProvider) {
+  public void setAlignmentProviderForColumn(String column, TableDisplayAlignmentProvider alignmentProvider) {
     this.alignmentForColumn.put(column, alignmentProvider);
   }
 

@@ -19,9 +19,9 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Python Tutorial', function (done) {
+describe('Python Tutorial', function () {
 
-    beforeAll(function(){
+    beforeAll(function(done){
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fipython-examples.bkr&readOnly=true").then(done);
 
@@ -32,6 +32,11 @@ describe('Python Tutorial', function (done) {
             console.log('Starting IPython language: ' + len + ' milliSeconds');
         });
     });
+
+    afterAll(function(done){
+        beakerPO.createScreenshot('pythonTutorial');
+        done();
+    })
 
     it('IPython can load', function () {
         var self = this;

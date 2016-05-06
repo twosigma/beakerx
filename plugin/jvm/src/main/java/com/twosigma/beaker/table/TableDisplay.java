@@ -47,6 +47,8 @@ public class TableDisplay {
   private Map<String, TableDisplayStringFormat> stringFormatForColumn = new HashMap<>();
   private Map<ColumnType, TableDisplayCellRenderer> rendererForType = new HashMap<>();
   private Map<String, TableDisplayCellRenderer> rendererForColumn = new HashMap<>();
+  private Map<ColumnType, TableDisplayAlignmentProvider> alignmentForType = new HashMap<>();
+  private Map<String, TableDisplayAlignmentProvider> alignmentForColumn = new HashMap<>();
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
@@ -127,6 +129,22 @@ public class TableDisplay {
 
   public void setRendererForColumn(String column, TableDisplayCellRenderer renderer) {
     this.rendererForColumn.put(column, renderer);
+  }
+
+  public Map<ColumnType, TableDisplayAlignmentProvider> getAlignmentForType() {
+    return alignmentForType;
+  }
+
+  public void setAlignmentProviderForType(ColumnType type, TableDisplayAlignmentProvider alignmentProvider) {
+    this.alignmentForType.put(type, alignmentProvider);
+  }
+
+  public Map<String, TableDisplayAlignmentProvider> getAlignmentForColumn() {
+    return alignmentForColumn;
+  }
+
+  public void setAlignmentForColumn(String column, TableDisplayAlignmentProvider alignmentProvider) {
+    this.alignmentForColumn.put(column, alignmentProvider);
   }
 
   public static List<Map<String, Object>> getValuesAsRows(List<List<?>> values, List<String> columns) {

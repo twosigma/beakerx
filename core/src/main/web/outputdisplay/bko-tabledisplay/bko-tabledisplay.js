@@ -1175,6 +1175,17 @@
                 scope.actualalign.push('L');
               }
             }
+
+            _.forEach(model.types, function (type, index) {
+              var alignment = model.alignmentForType[type];
+              if(alignment){
+                scope.actualalign[index] = alignment;
+              }
+            });
+
+            _.forOwn(model.alignmentForColumn, function (alignment, columnName) {
+              scope.actualalign[scope.columnNames.indexOf(columnName)] = alignment;
+            });
           }
           scope.doCreateData(model);
           scope.doCreateTable(model);

@@ -54,7 +54,7 @@ RUN chown -R beaker:beaker /home/beaker/.beaker
 ###################
 
 # Password for public-server authentication.
-# Set to "<random>" for randomy generated password.
+# Set to "<random>" for randomly generated password.
 ENV BEAKERPASSWD "<random>"
 
 EXPOSE 8800

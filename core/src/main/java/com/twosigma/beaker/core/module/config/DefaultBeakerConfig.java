@@ -175,7 +175,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.random = new SecureRandom();
     // protect the core server
     this.authCookie = randomString(255);
-    String password = randomString(100);
+    String password = System.getenv("BEAKERPASSWD");
+    password = (null == password || password.equals("<random>")) ? randomString(100) : password;
     this.passwordHash = hash(password);
     this.password = password;
 

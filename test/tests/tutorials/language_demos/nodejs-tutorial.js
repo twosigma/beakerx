@@ -19,7 +19,7 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('JavaScript Tutorial', function () {
+describe('Node.js Tutorial', function () {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();

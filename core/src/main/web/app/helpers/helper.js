@@ -488,9 +488,9 @@
           return false;
         }
       },
-      loadLibrary: function(path) {
+      loadLibrary: function(path, modelOutput) {
         if (getCurrentApp() && getCurrentApp().loadLibrary) {
-          return getCurrentApp().loadLibrary(path);
+          return getCurrentApp().loadLibrary(path, modelOutput);
         } else {
           return false;
         }
@@ -985,7 +985,13 @@
           setupProgressOutput(modelOutput);
         modelOutput.result.object.message = "cancelling ...";
       },
-
+      printEvaluationProgress: function (modelOutput, text, outputType) {
+        this.receiveEvaluationUpdate(modelOutput,
+          {outputdata:[{type:outputType, value: text+"\n"}]}, "JavaScript");
+        // XXX should not be needed but when progress meter is shown at same time
+        // display is broken without this, you get "OUTPUT" instead of any lines of text.
+        this.refreshRootScope();
+      },  
       receiveEvaluationUpdate: function(modelOutput, evaluation, pluginName, shellId) {
         var beakerObj = bkHelper.getBeakerObject().beakerObj;
         var maxNumOfLines = beakerObj.prefs

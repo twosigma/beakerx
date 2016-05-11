@@ -800,7 +800,8 @@
               }).then(function() { deferred.resolve(outcontainer.result); }, function(err) { deferred.reject(err); });
               return deferred.promise;
             },
-            loadLibrary: function (path) {
+            loadLibrary: function (path, modelOutput) {
+              bkHelper.printEvaluationProgress(modelOutput, 'loading library ' + path, 'out');
               var deferred = bkHelper.newDeferred();
               var importer = bkCoreManager.getNotebookImporter(bkCoreManager.guessFormat(path));
               if (importer) {
@@ -818,13 +819,39 @@
                     bkSessionManager.deleteLibraryFromStorage(path);
                     deferred.reject("library doesn't have any initialization cells");
                   }
-                  bkEvaluateJobManager.evaluateAll(toEval).then(function (result) {
-                    deferred.resolve(result);
-                  }, function (reason) {
-                    bkSessionManager.deleteLibraryFromStorage(path);
-                    deferred.reject(reason);
+                  _.forEach(toEval, function (cell) {
+                    if(!bkEvaluatorManager.getEvaluator(cell.evaluator)) {
+                      addEvaluator({name: '', plugin: cell.evaluator}, false);
+                    }
                   });
+                  var executedCells = 0;
+                  function evaluateNext() {
+                    var innerDeferred = bkHelper.newDeferred();
+                    if(toEval.length > 0) {
+                      executedCells++;
+                      var cell = toEval.shift();
+                      var delegateModelOutput = {};
+                      cell.output = delegateModelOutput;
+                      bkEvaluateJobManager.evaluate(cell).then(function () {
+                        var result = delegateModelOutput.result;
+                        if (result && result.outputdata) {
+                          bkHelper.receiveEvaluationUpdate(modelOutput, result);
+                        }
+                        evaluateNext().then(innerDeferred.resolve, innerDeferred.reject);
+                      }, function (reason) {
+                        bkSessionManager.deleteLibraryFromStorage(path);
+                        innerDeferred.reject(reason);
+                      });
+                    } else {
+                      innerDeferred.resolve(executedCells);
+                    }
+                    return innerDeferred.promise;
+                  }
+
+                  evaluateNext().then(deferred.resolve, deferred.reject);
                 }, deferred.reject);
+              } else {
+                deferred.reject();
               }
               return deferred.promise;
             },

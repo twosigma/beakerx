@@ -440,13 +440,16 @@
     var _dependencyManager = (function () {
       var _storage = {};
       return {
-        getLibrary: function (path) {
-          return _storage[path];
+        getLibraryModel: function (path) {
+          var model;
+          if(_storage[path]) {
+            model = bkNotebookCellModelManagerFactory.createInstance();
+            model.reset(_storage[path].cells)
+          }
+          return model;
         },
         store: function (path, notebook) {
-          _storage[path] = bkNotebookCellModelManagerFactory.createInstance();
-          _storage[path].reset(notebook.cells);
-          return _storage[path];
+          _storage[path] = notebook;
         },
         delete: function (path) {
           delete _storage[path];
@@ -528,20 +531,14 @@
             return d.promise;
           }, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'print', {value: function(input) {
-          bkHelper.receiveEvaluationUpdate(self._beaker_model_output,
-                                           {outputdata:[{type:'out', value: input+"\n"}]}, "JavaScript");
-          // XXX should not be needed but when progress meter is shown at same time
-          // display is broken without this, you get "OUTPUT" instead of any lines of text.
-          bkHelper.refreshRootScope();
+          bkHelper.printEvaluationProgress(self._beaker_model_output, input, 'out');
         }, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'printError', {value: function(input) {
-          bkHelper.receiveEvaluationUpdate(self._beaker_model_output,
-                                           {outputdata:[{type:'err', value: input+"\n"}]}, "JavaScript");
-          // XXX should not be needed but when progress meter is shown at same time
-          // display is broken without this, you get "OUTPUT" instead of any lines of text.
-          bkHelper.refreshRootScope();
+          bkHelper.printEvaluationProgress(self._beaker_model_output, input, 'err');
         }, writeable: false, enumerable: true });
-        Object.defineProperty(this.beakerObj, 'loadLibrary', { value: bkHelper.loadLibrary, writeable: false, enumerable: true});
+        Object.defineProperty(this.beakerObj, 'loadLibrary', { value: function (path) {
+          return bkHelper.loadLibrary(path, self._beaker_model_output);
+        }, writeable: false, enumerable: true});
         Object.defineProperty(this.beakerObj, 'loadJS', { value: bkHelper.loadJS, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'loadCSS', { value: bkHelper.loadCSS, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'loadList', { value: bkHelper.loadList, writeable: false, enumerable: true });
@@ -1179,12 +1176,13 @@
       },
       loadLibrary: function (path, loaderCallback) {
         var deferred = bkUtils.newDeferred();
-        var storedDependency = _dependencyManager.getLibrary(path);
+        var storedDependency = _dependencyManager.getLibraryModel(path);
         if(storedDependency) {
           deferred.resolve(storedDependency);
         } else {
           loaderCallback(path).then(function (model) {
-            deferred.resolve(_dependencyManager.store(path, model));
+            _dependencyManager.store(path, model);
+            deferred.resolve(_dependencyManager.getLibraryModel(path));
           }, deferred.reject);
         }
         return deferred.promise;

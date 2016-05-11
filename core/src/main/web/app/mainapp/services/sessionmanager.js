@@ -440,13 +440,16 @@
     var _dependencyManager = (function () {
       var _storage = {};
       return {
-        isLoaded: function (path) {
-          return _storage[path] !== undefined;
+        getLibrary: function (path) {
+          return _storage[path];
         },
         store: function (path, notebook) {
           _storage[path] = bkNotebookCellModelManagerFactory.createInstance();
           _storage[path].reset(notebook.cells);
           return _storage[path];
+        },
+        delete: function (path) {
+          delete _storage[path];
         },
         reset: function () {
           _storage = {};
@@ -1174,11 +1177,20 @@
       redo: function() {
         bkNotebookCellModelManager.redo();
       },
-      isDependencyLoaded: function (path) {
-        return _dependencyManager.isLoaded(path);
+      loadLibrary: function (path, loaderCallback) {
+        var deferred = bkUtils.newDeferred();
+        var storedDependency = _dependencyManager.getLibrary(path);
+        if(storedDependency) {
+          deferred.resolve(storedDependency);
+        } else {
+          loaderCallback(path).then(function (model) {
+            deferred.resolve(_dependencyManager.store(path, model));
+          }, deferred.reject);
+        }
+        return deferred.promise;
       },
-      storeDependency: function (path, notebookModel) {
-        return _dependencyManager.store(path, notebookModel);
+      deleteLibraryFromStorage: function (path) {
+        _dependencyManager.delete(path);
       }
     };
   });

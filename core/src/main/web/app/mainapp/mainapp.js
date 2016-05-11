@@ -802,26 +802,29 @@
             },
             loadLibrary: function (path) {
               var deferred = bkHelper.newDeferred();
-              if (bkSessionManager.isDependencyLoaded(path)) {
-                deferred.resolve();
-              } else {
-                var importer = bkCoreManager.getNotebookImporter(bkCoreManager.guessFormat(path));
-                if (importer) {
-                  var fileLoader = bkCoreManager.getFileLoader(bkCoreManager.guessUriType(path));
+              var importer = bkCoreManager.getNotebookImporter(bkCoreManager.guessFormat(path));
+              if (importer) {
+                var fileLoader = bkCoreManager.getFileLoader(bkCoreManager.guessUriType(path));
+                
+                bkSessionManager.loadLibrary(path, function (path) {
+                  var deferred = bkUtils.newDeferred();
                   fileLoader.load(path).then(function (fileContentAsString) {
-                    var notebookModel = importer.import(fileContentAsString);
-                    notebookModel = bkNotebookVersionManager.open(notebookModel);
-                    var toEval = bkSessionManager.storeDependency(path, notebookModel).getInitializationCells();
-                    if (toEval.length === 0) {
-                      deferred.resolve();
-                    }
-                    bkEvaluateJobManager.evaluateAll(toEval).then(function (result) {
-                      deferred.resolve(result);
-                    });
-                  }).catch(function (data) {
-                    deferred.reject(data);
+                    deferred.resolve(bkNotebookVersionManager.open(importer.import(fileContentAsString)));
+                  }, deferred.reject);
+                  return deferred.promise;
+                }).then(function (notebookModel) {
+                  var toEval = notebookModel.getInitializationCells();
+                  if (toEval.length === 0) {
+                    bkSessionManager.deleteLibraryFromStorage(path);
+                    deferred.reject("library doesn't have any initialization cells");
+                  }
+                  bkEvaluateJobManager.evaluateAll(toEval).then(function (result) {
+                    deferred.resolve(result);
+                  }, function (reason) {
+                    bkSessionManager.deleteLibraryFromStorage(path);
+                    deferred.reject(reason);
                   });
-                }
+                }, deferred.reject);
               }
               return deferred.promise;
             },

@@ -26,7 +26,7 @@
   ]);
 
   module.factory('bkPublicationApi', function (bkUtils, $localStorage, Upload) {
-    var baseUrl = window.beaker !== undefined && window.beakerRegister.pubblicationApiURL !== undefined ? window.beakerRegister.pubblicationApiURL : 'https://pub.beakernotebook.com';
+    var baseUrl = window.beakerRegister !== undefined && window.beakerRegister.publicationApiURL !== undefined ? window.beakerRegister.publicationApiURL : 'https://pub.beakernotebook.com';
 
     function headers() {
       if ($localStorage.token) {

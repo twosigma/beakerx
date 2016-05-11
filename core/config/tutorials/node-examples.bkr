@@ -129,7 +129,7 @@
                     "    if (ncalls++ < 100)",
                     "      beaker.timeout(update, 0);",
                     "    else {",
-                    "      var ms = (new Date().getTime() - startTime) / 1000;",
+                    "      var ms = (new Date().getTime() - startTime) / 100;",
                     "      deferred.resolve(ms + \"ms per HTTP call\");",
                     "    }",
                     "  });",
@@ -141,9 +141,9 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "result": "1.561ms per HTTP call",
+                "result": "14.44ms per HTTP call",
                 "pluginName": "JavaScript",
-                "elapsedTime": 1669,
+                "elapsedTime": 1514,
                 "height": 56
             },
             "evaluatorReader": true,

@@ -61,4 +61,77 @@ describe('Histogram Tutorial', function() {
         expect(beakerPO.getPlotContainerByIdCell(idCell).getCssValue('width')).toBe('800px');
     });
 
+    describe('Multiple Data Sets', function(){
+        it('Wide Histogram with Manual Parameters', function () {
+            var idCell = "code46dBKX";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            //beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+            beakerPO.checkPlotIsPresentByIdCell(idCell);
+            expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Default is Overlap");
+            var i0Elem = beakerPO.getPlotSvgByIdCell(idCell).element(by.css('g#i0'));
+            expect(i0Elem.all(by.css('rect')).count()).toBe(99);
+            expect(i0Elem.getCssValue('fill')).toBe('rgb(0, 154, 166)');
+            expect(i0Elem.getCssValue('fill-opacity')).toEqual('1');
+            var i1Elem = beakerPO.getPlotSvgByIdCell(idCell).element(by.css('g#i1'));
+            expect(i1Elem.all(by.css('rect')).count()).toBe(99);
+            expect(i1Elem.getCssValue('fill')).toBe('rgb(230, 50, 50)');
+            expect(i1Elem.getCssValue('fill-opacity')).toBeLessThan(1);
+        });
+
+        it('Histogram.DisplayMode.STACK', function() {
+            var idCell = "codeN7OH4t";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+            beakerPO.checkPlotIsPresentByIdCell(idCell);
+            expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Stack");
+            expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('g#i0')).all(by.css('rect')).count()).toBe(99);
+            expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('g#i1')).all(by.css('rect')).count()).toBe(99);
+            beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('x').then(function(x00){
+                beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i1_0')).getAttribute('x').then(function(x10){
+                    expect(x00).toBe(x10);
+                });
+            });
+        });
+
+        it('Histogram.DisplayMode.SIDE_BY_SIDE', function(){
+            var idCell = "codeZKTiKo";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            //beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+            beakerPO.checkPlotIsPresentByIdCell(idCell);
+            expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Side by Side");
+            expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('g#i0')).all(by.css('rect')).count()).toBe(55);
+            expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('g#i1')).all(by.css('rect')).count()).toBe(55);
+            beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('x').then(function(x00){
+                beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i1_0')).getAttribute('x').then(function(x10){
+                    expect(x00).toBeLessThan(x10);
+                });
+            });
+        });
+    });
+
+    it('Cumulative', function(){
+        var idCell = "codeEqROmJ";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
+        expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Cumulative");
+        expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('g#i0')).all(by.css('rect')).count()).toBe(55);
+    });
+
+    it('Normed', function(){
+        var idCell = "codeGKqGpx";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
+        expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Normed, Area = 1.0");
+        expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('g#i0')).all(by.css('rect')).count()).toBe(55);
+    });
+
+    it('Log scale y-axis', function(){
+        var idCell = "codeoj0bOm";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
+    });
+
 });

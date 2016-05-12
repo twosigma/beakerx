@@ -31,7 +31,7 @@ describe('Spark with Scala Tutorial', function () {
         done();
     });
 
-    it('Scala can load', function(){
+    it('SparkContext', function () {
         beakerPO.notebookMenu.click();
         beakerPO.languageManagerMenuItem.click();
         element(by.css('li[heading="Scala"] > div')).click();
@@ -43,24 +43,13 @@ describe('Spark with Scala Tutorial', function () {
             element(by.css('div.navbar-text.loadingmsg')).getInnerHtml().then(function(value){
                 expect(value.indexOf('Starting Scala... done')).not.toBe(-1);
             });
-        }, function(){
-            beakerPO.createScreenshot('sparkScalaTutorialScalaLoad');
         });
         beakerPO.languageManagerCloseButton.click();
-    });
 
-    it('SparkContext', function () {
         var idCell = "codeWDegFP";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text', 'sparkScalaTutorialContext');
         beakerPO.checkCellOutputSubTextByIdCell(idCell, 'org.apache.spark.SparkContext', 0, 29);
-    });
-
-    it("Count 'a' and 'b' inside a text file", function () {
-        var idCell = "code6Vzt6O";
-        beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'results', 'sparkScalaTutorialCount');
-        beakerPO.checkCellOutputSubTextByIdCell(idCell, 'Lines with a: 159, Lines with b: 88', 0, 35);
     });
 
     it('Approximate Pi', function () {

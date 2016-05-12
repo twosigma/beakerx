@@ -232,6 +232,13 @@
             .error(deferred.reject);
         return deferred.promise;
       },
+      getVersionString: function () {
+        var deferred = angularUtils.newDeferred();
+        this.httpGet(serverUrl("beaker/rest/util/version"))
+          .success(deferred.resolve)
+          .error(deferred.reject);
+        return deferred.promise;
+      },
       getStartUpDirectory: function() {
         var deferred = angularUtils.newDeferred();
         this.httpGet(serverUrl("beaker/rest/file-io/getStartUpDirectory"))

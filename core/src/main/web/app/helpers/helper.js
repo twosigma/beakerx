@@ -667,6 +667,12 @@
           return false;
         }
       },
+      getVersionNumber: function () {
+        return window.beakerRegister.version;
+      },
+      getVersionString: function () {
+        return window.beakerRegister.versionString;
+      },
       // bk-notebook
       refreshBkNotebook: function () {
         var bkNotebook = getBkNotebookWidget();

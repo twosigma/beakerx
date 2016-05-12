@@ -712,3 +712,19 @@ displayImage <- function(img) {
   return (list(type='ImageIcon', width=dim(img)[1], height=dim(img)[2], imageData=base64encode(writePNG(img, target = raw()))))
 }
 
+getVersion <- function() {
+  req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
+              '/rest/util/version?session=', session_id, sep='')
+  reply = getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC)
+  return (reply)
+}
+
+getVersionNumber <- function() {
+  req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
+              '/rest/util/getVersionInfo?session=', session_id, sep='')
+  reply = getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC)
+  if (!isValidJSON(reply,TRUE))
+    stop('the server returned an invalid response')
+  info = fromJSON(reply)
+  return (info[['version']])
+}

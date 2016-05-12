@@ -294,6 +294,9 @@
           return window.beakerRegister.buildTime;
         };
       });
+      bkUtils.getVersionString().then(function (versionString) {
+        window.beakerRegister.versionString = versionString;
+      });
     });
     beaker.run(function(GLOBALS) {
       // make sure requirejs reports error

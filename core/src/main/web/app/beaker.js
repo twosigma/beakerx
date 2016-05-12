@@ -447,6 +447,9 @@
           return window.beakerRegister.buildTime;
         };
       });
+      bkUtils.getVersionString().then(function (versionString) {
+        window.beakerRegister.versionString = versionString;
+      });
     });
     beakerModule.run(function(bkPublicationAuth, $location, $localStorage, $window) {
       var params = $location.search();

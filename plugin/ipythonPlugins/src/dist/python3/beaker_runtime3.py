@@ -508,6 +508,17 @@ class Beaker:
         result = json.loads(conn.read().decode())
         return transformBack(result)
 
+    def getVersion(self):
+        req = urllib.request.Request('http://' + self.core_url + '/rest/util/version?' + urllib.parse.urlencode({'session':self.session_id}))
+        conn = self._beaker_url_opener.open(req)
+        return transformBack(conn.read().decode())
+
+    def getVersionNumber(self):
+        req = urllib.request.Request('http://' + self.core_url + '/rest/util/getVersionInfo?' + urllib.parse.urlencode({'session':self.session_id}))
+        conn = self._beaker_url_opener.open(req)
+        result = json.loads(conn.read().decode())
+        return transformBack(result['version'])
+
     def getCodeCells(self,filter):
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/getCodeCells?' +
                                      urllib.parse.urlencode({

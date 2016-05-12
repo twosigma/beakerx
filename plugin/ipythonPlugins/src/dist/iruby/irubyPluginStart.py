@@ -16,11 +16,6 @@
 
 import os
 import sys
-from IPython import start_ipython
-from subprocess import check_output
+from subprocess import call
 
-ipyversion = check_output(["ipython", "ipython", "--version"]).decode("utf-8")
-if ipyversion[0] == "4":
-  sys.exit(start_ipython(["notebook", "--config=" + os.environ["beaker_ipython_notebook_config"]]))
-else:
-  sys.exit(start_ipython(["notebook", "--ipython-dir=" + os.environ["beaker_tmp_dir"], "--profile", "beaker_backend_IRuby"]))
+sys.exit(call(["jupyter", "notebook", "--config=" + os.environ["beaker_ipython_notebook_config"]]))

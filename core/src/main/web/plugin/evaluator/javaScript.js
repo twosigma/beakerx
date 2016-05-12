@@ -41,6 +41,12 @@ define(function(require, exports, module) {
     });
   }
 
+  var DEFINE_BACKUP = define;
+  if (typeof window.loadQueuePromise === 'undefined') {
+    window.loadQueuePromise = bkHelper.newPromise();
+  }
+  var scriptsLoaded = [];
+
   // Not using the es2015 plugin preset because it includes the "transform-es2015-modules-commonjs" plugin which puts forces strict mode on
   var ES2015Plugins = [
   "check-es2015-constants",
@@ -171,6 +177,45 @@ define(function(require, exports, module) {
     bkHelper.receiveEvaluationUpdate(err.modelOutput,
         {status: "ERROR", payload: err.payload},
         PLUGIN_NAME);
+  }
+
+  function loadLibraryIfNotLoaded(url) {
+    var deferred = bkHelper.newDeferred()
+    if (scriptLoaded(url)) {
+      deferred.resolve(url);
+    } else {
+      loadLibrary(url, deferred.resolve, deferred.reject);
+    }
+    return deferred.promise;
+  }
+
+  function scriptLoaded(scriptUrl) {
+    return _.contains(scriptsLoaded, scriptUrl);
+  }
+
+  function loadLibrary(url, cbSuccess, cbError) {
+    jQuery.ajax({
+      type: "GET",
+      url: url,
+      success: function() {
+        scriptsLoaded.push(url);
+        _.defer(function() {cbSuccess(url)});
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        cbError({
+          message: "Script " + url + " failed to load - ",
+          error: errorThrown
+        });
+      },
+      dataType: "script",
+      cache: true
+    });
+  }
+
+  function getLibraryUrls(libraries) {
+    return _.map(libraries, function(lib) {
+      return lib.latest;
+    });
   }
 
   var JavaScript_0 = {
@@ -361,11 +406,44 @@ define(function(require, exports, module) {
       this.cancelExecution();
       JavascriptCancelFunction = null;
     },
+    loadAllLibraries: function() {
+      var scriptsToLoad = this.settings.libraries && this.settings.libraries.length ? getLibraryUrls(this.settings.libraries) : [];
+      scriptsToLoad = scriptsToLoad.concat(this.settings.scripts && this.settings.scripts.length ? this.settings.scripts.split("\n") : []);
+
+      if (scriptsToLoad.length) {
+        window.loadQueuePromise = window.loadQueuePromise.then(function() {
+          define = void 0;
+          return bkHelper.newPromise();
+        });
+        _.forEach(scriptsToLoad, function(scriptUrl) {
+          window.loadQueuePromise = window.loadQueuePromise.then(function() {
+            return loadLibraryIfNotLoaded(scriptUrl);
+          }).catch(function(e) {console.error(e.message + " - " + e.error);});
+        });
+        window.loadQueuePromise = window.loadQueuePromise.then(function() {
+          define = DEFINE_BACKUP;
+          return bkHelper.newPromise();
+        });
+      }
+    },
     spec: {
       languageVersion: {
         type: "settableEnum",
         name: "JavaScript Version",
-        values: _.mapValues(LANGUAGE_VERSIONS, function(version) {return version.name;})}
+        values: _.mapValues(LANGUAGE_VERSIONS, function(version) {return version.name;})
+      },
+      libraries: {
+        name: "Loaded Libraries",
+        type: "settableSelect",
+        remote: "https://api.cdnjs.com/libraries",
+        action: "loadAllLibraries",
+        spinner: true
+      },
+      scripts: {
+        name: "Include JavaScript Files (URLs, one per line)",
+        type: "settableString",
+        action: "loadAllLibraries"
+      }
     }
   };
   var JavaScript0 = function(settings) {
@@ -386,6 +464,7 @@ define(function(require, exports, module) {
       var action = this.spec[what].action;
       this[action]();
     };
+    this.loadAllLibraries();
   };
   JavaScript0.prototype = JavaScript_0;
 

@@ -361,8 +361,17 @@
       removeConnectedStatusListener: function() {
         return cometdUtils.removeConnectedStatusListener();
       },
+      addHandshakeListener: function(cb) {
+        return cometdUtils.addHandshakeListener(cb);
+      },
+      removeHandshakeListener: function() {
+        return cometdUtils.removeHandshakeListener();
+      },
       disconnect: function() {
         return cometdUtils.disconnect();
+      },
+      reconnect: function() {
+        return cometdUtils.reconnect();
       },
 
       beginsWith: function(haystack, needle) {

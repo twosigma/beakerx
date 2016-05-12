@@ -272,7 +272,7 @@
         }
         return null;
       },
-      insertBefore: function(id, cell) {
+      insertBefore: function(id, cell, quietly) {
         var index = this.getIndex(id);
         if (index !== -1) {
           cells.splice(index, 0, cell);
@@ -280,22 +280,26 @@
           throw 'target cell ' + id + ' was not found';
         }
         recreateCellMap();
-        $timeout(function() {
-          $rootScope.$broadcast('beaker.cell.added', cell);
-        });
+        if (!quietly) {
+          $timeout(function () {
+            $rootScope.$broadcast('beaker.cell.added', cell);
+          });
+        }
       },
-      insertFirst: function(cell) {
+      insertFirst: function(cell, quietly) {
         if (!_.isObject(cell)) {
           throw 'unacceptable';
         }
 
         cells.splice(0, 0, cell);
         recreateCellMap();
-        $timeout(function() {
-          $rootScope.$broadcast('beaker.cell.added', cell);
-        });
+        if (!quietly) {
+          $timeout(function () {
+            $rootScope.$broadcast('beaker.cell.added', cell);
+          });
+        }
       },
-      insertAfter: function(id, cell) {
+      insertAfter: function(id, cell, quietly) {
         if (!_.isObject(cell)) {
           throw 'unacceptable';
         }
@@ -307,11 +311,13 @@
           throw 'target cell ' + id + ' was not found';
         }
         recreateCellMap();
-        $timeout(function() {
-          $rootScope.$broadcast('beaker.cell.added', cell);
-        });
+        if (!quietly) {
+          $timeout(function () {
+            $rootScope.$broadcast('beaker.cell.added', cell);
+          });
+        }
       },
-      insertAt: function(index, cell, doNotClearUndoAction) {
+      insertAt: function(index, cell, doNotClearUndoAction, quietly) {
         if (_.isArray(cell)) {
           Array.prototype.splice.apply(cells, [index, 0].concat(cell));
         } else if (_.isObject(cell)) {
@@ -320,9 +326,11 @@
           throw 'unacceptable';
         }
         recreateCellMap(doNotClearUndoAction);
-        $timeout(function() {
-          $rootScope.$broadcast('beaker.cell.added', cell);
-        });
+        if (!quietly) {
+          $timeout(function () {
+            $rootScope.$broadcast('beaker.cell.added', cell);
+          });
+        }
       },
       isPossibleToMoveUp: function(id) {
         // If the cell isn't first (or nonexistent?)

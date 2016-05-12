@@ -165,7 +165,7 @@
 //      }
     });
 
-    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkHelper) {
+    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkHelper, bkDragAndDropHelper) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {
@@ -240,13 +240,17 @@
       });
       var counter = 0;
       $document.bind('dragenter', function (e) {
-        counter++;
-        $('body').addClass('dragover');
+        if (bkDragAndDropHelper.isFileForImportDragging(e)) {
+          counter++;
+          $('body').addClass('dragover');
+        }
       });
       $document.bind('dragleave', function (e) {
-        counter--;
-        if (counter === 0) {
-          $('body').removeClass('dragover');
+        if (bkDragAndDropHelper.isFileForImportDragging(e)) {
+          counter--;
+          if (counter === 0) {
+            $('body').removeClass('dragover');
+          }
         }
       });
       $document.bind('drop', function() {

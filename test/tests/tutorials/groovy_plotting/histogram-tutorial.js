@@ -32,11 +32,33 @@ describe('Histogram Tutorial', function() {
         done();
     });
 
-    it('Basic HeatMap Example', function () {
+    it('Random Demo Data', function () {
         element(by.css('bk-cell[cellid="section912gtQ"] span.bksectiontoggleplus')).click();
         var idCell = "codeQ4eHXa";
         beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+    });
+
+    it('Histogram of single data set', function () {
+        var idCell = "codesp4ayU";
+        beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
+        expect(beakerPO.getPlotMaingByIdCell(idCell).all(by.css('rect')).count()).toBe(25);
+    });
+
+    it('Wide Histogram with Manual Parameters', function () {
+        var idCell = "codeZrnKVR";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+        beakerPO.checkPlotIsPresentByIdCell(idCell);
+        expect(beakerPO.getPlotMaingByIdCell(idCell).all(by.css('rect')).count()).toBe(99);
+        expect(beakerPO.getCodeCellOutputContainerYLabelByIdCell(idCell)).toBe("Count");
+        expect(beakerPO.getCodeCellOutputContainerXLabelByIdCell(idCell)).toBe("Size");
+        expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Wide Histogram with Manual Parameters");
+        expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('g#i0')).getCssValue('fill')).toBe('rgb(0, 154, 166)');
+        expect(beakerPO.getPlotContainerByIdCell(idCell).getCssValue('height')).toBe('200px');
+        expect(beakerPO.getPlotContainerByIdCell(idCell).getCssValue('width')).toBe('800px');
     });
 
 });

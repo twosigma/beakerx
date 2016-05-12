@@ -46,7 +46,7 @@
 
         // setup menus
         bkMenuPluginManager.clear();
-        if (window.beaker === undefined || window.beakerRegister.isEmbedded === undefined) {
+        if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
           bkUtils.httpGet('../beaker/rest/util/getControlPanelMenuPlugins')
             .success(function(menuUrls) {
               menuUrls.forEach(function(url) {
@@ -88,7 +88,7 @@
 
         // ask for tracking permission
         $scope.isAllowAnonymousTracking = false;
-        if ((window.beaker === undefined || window.beakerRegister.isEmbedded === undefined) && bkTrack.isNeedPermission()) {
+        if ((window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) && bkTrack.isNeedPermission()) {
           bkUtils.getBeakerPreference('allow-anonymous-usage-tracking').then(function(allow) {
             switch (allow) {
               case 'true':
@@ -104,7 +104,7 @@
         } else {
           $scope.isAllowAnonymousTracking = true;
         }
-        if (window.beaker === undefined || window.beakerRegister.isEmbedded === undefined) {
+        if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
           $scope.$watch('isAllowAnonymousTracking', function(newValue, oldValue) {
             if (newValue !== oldValue) {
               var allow = null;

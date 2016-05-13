@@ -437,29 +437,6 @@
       };
     })();
 
-    var _dependencyManager = (function () {
-      var _storage = {};
-      return {
-        getLibraryModel: function (path) {
-          var model;
-          if(_storage[path]) {
-            model = bkNotebookCellModelManagerFactory.createInstance();
-            model.reset(_storage[path].cells)
-          }
-          return model;
-        },
-        store: function (path, notebook) {
-          _storage[path] = notebook;
-        },
-        delete: function (path) {
-          delete _storage[path];
-        },
-        reset: function () {
-          _storage = {};
-        }
-      };
-    })();
-
     var _uriType = null;
     var _readOnly = null;
     var _format = null;
@@ -956,7 +933,6 @@
         _readOnly = null;
         _format = null;
         _notebookModel.reset();
-        _dependencyManager.reset();
         _sessionId = null;
         _edited = false;
         _needsBackup = false;
@@ -1175,22 +1151,6 @@
       },
       redo: function() {
         bkNotebookCellModelManager.redo();
-      },
-      loadLibrary: function (path, loaderCallback) {
-        var deferred = bkUtils.newDeferred();
-        var storedDependency = _dependencyManager.getLibraryModel(path);
-        if(storedDependency) {
-          deferred.resolve(storedDependency);
-        } else {
-          loaderCallback(path).then(function (model) {
-            _dependencyManager.store(path, model);
-            deferred.resolve(_dependencyManager.getLibraryModel(path));
-          }, deferred.reject);
-        }
-        return deferred.promise;
-      },
-      deleteLibraryFromStorage: function (path) {
-        _dependencyManager.delete(path);
       }
     };
   });

@@ -800,34 +800,30 @@
               }).then(function() { deferred.resolve(outcontainer.result); }, function(err) { deferred.reject(err); });
               return deferred.promise;
             },
-            loadLibrary: function (path, modelOutput) {
+            loadSingleLibrary: function (path, modelOutput) {
               bkHelper.printEvaluationProgress(modelOutput, 'loading library ' + path, 'out');
+              var self = this;
               var deferred = bkHelper.newDeferred();
               var importer = bkCoreManager.getNotebookImporter(bkCoreManager.guessFormat(path));
               if (importer) {
                 var fileLoader = bkCoreManager.getFileLoader(bkCoreManager.guessUriType(path));
-                
-                bkSessionManager.loadLibrary(path, function (path) {
-                  var deferred = bkUtils.newDeferred();
-                  fileLoader.load(path).then(function (fileContentAsString) {
-                    deferred.resolve(bkNotebookVersionManager.open(importer.import(fileContentAsString)));
-                  }, deferred.reject);
-                  return deferred.promise;
-                }).then(function (notebookModel) {
+                fileLoader.load(path).then(function (fileContentAsString) {
+                  var notebookModel = bkNotebookCellModelManagerFactory.createInstance();
+                  notebookModel.reset(bkNotebookVersionManager.open(importer.import(fileContentAsString)).cells);
+
                   var toEval = notebookModel.getInitializationCells();
                   if (toEval.length === 0) {
-                    bkSessionManager.deleteLibraryFromStorage(path);
                     deferred.reject("library doesn't have any initialization cells");
                   }
                   _.forEach(toEval, function (cell) {
-                    if(!bkEvaluatorManager.getEvaluator(cell.evaluator)) {
-                      addEvaluator({name: '', plugin: cell.evaluator}, false);
+                    if (!bkEvaluatorManager.getEvaluator(cell.evaluator)) {
+                      self.addEvaluatorToNotebook(cell.evaluator);
                     }
                   });
                   var executedCells = 0;
                   function evaluateNext() {
                     var innerDeferred = bkHelper.newDeferred();
-                    if(toEval.length > 0) {
+                    if (toEval.length > 0) {
                       executedCells++;
                       var cell = toEval.shift();
                       var delegateModelOutput = {};
@@ -838,10 +834,7 @@
                           bkHelper.receiveEvaluationUpdate(modelOutput, result);
                         }
                         evaluateNext().then(innerDeferred.resolve, innerDeferred.reject);
-                      }, function (reason) {
-                        bkSessionManager.deleteLibraryFromStorage(path);
-                        innerDeferred.reject(reason);
-                      });
+                      }, innerDeferred.reject);
                     } else {
                       innerDeferred.resolve(executedCells);
                     }
@@ -849,14 +842,38 @@
                   }
 
                   evaluateNext().then(deferred.resolve, deferred.reject);
-                }, deferred.reject);
-              } else {
-                deferred.reject();
+                });
               }
               return deferred.promise;
             },
+            loadLibrary: function (path, modelOutput) {
+              if(_.isArray(path)) {
+                var self = this;
+                var deferred = bkHelper.newDeferred();
+                var overallExecutedCells = 0;
+                var loadNextLibrary = function () {
+                  self.loadSingleLibrary(path.shift(), modelOutput).then(function (executedCells) {
+                    overallExecutedCells += executedCells;
+                    if (path.length === 0) {
+                      deferred.resolve(overallExecutedCells);
+                    } else {
+                      loadNextLibrary();
+                    }
+                  }, deferred.reject);
+                };
+                loadNextLibrary();
+                return deferred.promise;
+              }
+              return this.loadSingleLibrary(path, modelOutput);
+            },
             addEvaluator: function(settings) {
               return addEvaluator(settings, true);
+            },
+            addEvaluatorToNotebook: function (pluginName) {
+              var settings = {name: '', plugin: pluginName};
+              bkSessionManager.addEvaluator(settings);
+              addEvaluator(settings);
+              $rootScope.$broadcast(GLOBALS.EVENTS.LANGUAGE_ADDED, { evaluator: pluginName });
             },
             removeEvaluator: function(plugin) {
               bkEvaluatorManager.removeEvaluator(plugin);

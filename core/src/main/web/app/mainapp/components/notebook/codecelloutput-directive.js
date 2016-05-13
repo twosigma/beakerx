@@ -135,6 +135,58 @@
           return type;
         };
 
+        $scope.getOutputSummary = function () {
+          var outputDisplayType = $scope.getOutputDisplayType();
+          var result = $scope.getOutputResult();
+
+          if (result) {
+            switch (outputDisplayType) {
+              case 'CombinedPlot':
+                if (result.plots && result.plots.length > 0) {
+                  return result.plots.length + ' plots';
+                }
+                break;
+              case 'Plot':
+                if (result.graphics_list && result.graphics_list.length > 0) {
+                  var items = result.graphics_list.length;
+                  return 'a plot with ' + items + (items > 1 ? ' items' : ' item');
+                }
+                break;
+              case 'Table':
+                return 'a table with ' + result.values.length + ' rows and ' + result.columnNames.length + ' columns';
+              case 'Results':
+                var out = 0, err = 0;
+                if (result.outputdata && result.outputdata.length > 0) {
+                  _.forEach(result.outputdata, function (outputLine) {
+                    if (outputLine.type === 'err') {
+                      err++;
+                    } else {
+                      out++;
+                    }
+                  })
+                }
+                var summary = '';
+                var getLinesSummary = function (num, s) {
+                  return num + ' ' + (num > 1 ? 'lines' : 'line') + ' of ' + s;
+                };
+                if (out > 0) {
+                  summary += getLinesSummary(out, 'stdout');
+                }
+                if (err > 0) {
+                  if (summary.length > 0) {
+                    summary += ', ';
+                  }
+                  summary += getLinesSummary(err, 'stderr');
+                }
+                if (summary.length > 0) {
+                  return summary;
+                }
+                break;
+            }
+          }
+          return outputDisplayType;
+        };
+
         $scope.$watch('getOutputDisplayType()', function() {
             $scope.outputCellMenuModel.refreshMenu();
         });

@@ -73,6 +73,9 @@
                 <a class='caption notebook-link' href="#" ng-click="openRecent(item, $event)" ng-bind="item.name" eat-click></a>
                 <div class='light path' ng-if="item.tooltip" ng-bind="item.tooltip"></div>
               </div>
+              <div class="pull-right">
+                <a class='glyphicon glyphicon-remove' href="#"  ng-click="removeRecent(item, $event)" eat-click ></a>
+              </div>
             </li>
           </ul>
       </div>

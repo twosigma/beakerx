@@ -39,7 +39,9 @@ for line in iter(beaker.stdout.readline, ''):
 
 os.chdir("../test/node_modules/protractor-flake/bin")
 result = os.system("node protractor-flake --node-bin node --max-attempts=3 -- ../../../protractorConf.js");
-result2 = os.system("node protractor-flake --node-bin node --max-attempts=3 -- ../../../protractorWithoutRestartBrowserConf.js");
+result2 = 1
+if not result:
+    result2 = os.system("node protractor-flake --node-bin node --max-attempts=3 -- ../../../protractorWithoutRestartBrowserConf.js")
 
 # Skipping memory tests because they hang on Jenkins
 #os.system("node ../../../memory-tests.js")
@@ -50,6 +52,5 @@ webcontrol.terminate();
 response = urllib2.urlopen('http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer')
 html = response.read()
 
-
-if result and result2:
+if result2:
     sys.exit(20)

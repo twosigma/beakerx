@@ -26,6 +26,15 @@ import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
 import com.twosigma.beaker.jvm.serialization.ObjectSerializer;
 import com.twosigma.beaker.shared.NamespaceBinding;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.fluent.Form;
+import org.apache.http.client.fluent.Request;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -34,16 +43,6 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.client.fluent.Form;
-import org.apache.http.client.ClientProtocolException;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 
 public class NamespaceClient {
 
@@ -58,6 +57,7 @@ public class NamespaceClient {
   private String urlBase;
   private String ctrlUrlBase;
   private String easyFormUrl;
+  private String utilUrl;
   private SimpleEvaluationObject seo;
   private Class<?> [] oclasses;
 
@@ -77,6 +77,7 @@ public class NamespaceClient {
     this.urlBase = "http://127.0.0.1:" + System.getenv("beaker_core_port") + "/rest/namespace";
     this.ctrlUrlBase = "http://127.0.0.1:" + System.getenv("beaker_core_port") + "/rest/notebookctrl";
     this.easyFormUrl = "http://127.0.0.1:" + System.getenv("beaker_core_port") + "/rest/easyform";
+    this.utilUrl = "http://127.0.0.1:" + System.getenv("beaker_core_port") + "/rest/util";
     oclasses = new Class<?>[4];
     
     oclasses[0] = Object.class;
@@ -344,7 +345,12 @@ public class NamespaceClient {
         .execute().returnContent().asString();
     return objectMapper.get().readValue(reply, StringObject.class).getText();
   }
-  
+
+  private Map<String, String> getVersionInfo() throws IOException {
+    String result = Request.Get(utilUrl + "/getVersionInfo").addHeader("Authorization", auth).execute().returnContent().asString();
+    return objectMapper.get().<HashMap<String, String>>readValue(result, new TypeReference<HashMap<String, String>>() { });
+  }
+
   public String setCodeCellBody(String name, String body) throws ClientProtocolException, IOException {
     Form form = Form.form().add("name", name).add("body", body).add("session", this.session);
     return runStringRequest("/setCodeCellBody", form);
@@ -359,7 +365,15 @@ public class NamespaceClient {
     Form form = Form.form().add("name", name).add("tags", tags).add("session", this.session);
     return runStringRequest("/setCodeCellTags", form);
   }
- 
+
+  public String getVersion() throws IOException {
+    return Request.Get(utilUrl + "/version").addHeader("Authorization", auth).execute().returnContent().asString();
+  }
+
+  public String getVersionNumber() throws IOException {
+    return getVersionInfo().get("version");
+  }
+
   /*
    * Autotranslation extension
    */

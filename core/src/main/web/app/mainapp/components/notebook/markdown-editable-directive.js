@@ -18,7 +18,7 @@
   'use strict';
 
   var module = angular.module('bk.notebook');
-  module.directive('bkMarkdownEditable', ['bkSessionManager', 'bkHelper', 'bkCoreManager', '$timeout', function(bkSessionManager, bkHelper, bkCoreManager, $timeout) {
+  module.directive('bkMarkdownEditable', ['bkSessionManager', 'bkHelper', 'bkCoreManager', 'bkDragAndDropHelper', '$timeout', function(bkSessionManager, bkHelper, bkCoreManager, bkDragAndDropHelper, $timeout) {
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {
       return bkCoreManager.getBkApp().getBkNotebookWidget();
@@ -54,6 +54,10 @@
         };
 
         scope.bkNotebook = getBkNotebookWidget();
+        
+        scope.isPreviewMode = function () {
+          return scope.mode === 'preview';
+        };
 
         scope.focus = function() {
           scope.edit();
@@ -107,6 +111,13 @@
             cm.focus();
           });
         };
+        
+        element.on('dragenter', function (e) {
+          if(scope.isPreviewMode() && !bkDragAndDropHelper.isFileForImportDragging(e)) {
+            scope.focus();
+            scope.cm.refresh(); // CM should recalculate line heights
+          }
+        });
 
         var codeMirrorOptions = _.extend(bkCoreManager.codeMirrorOptions(scope, notebookCellOp), {
           lineNumbers: false,
@@ -147,6 +158,7 @@
             }
           }, 0);
         });
+        bkDragAndDropHelper.configureDropEventHandlingForCodeMirror(scope.cm);
 
         scope.$on('beaker.cell.added', function(e, cellmodel) {
           if (cellmodel === scope.cellmodel) {

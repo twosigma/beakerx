@@ -157,7 +157,11 @@
   module.factory('bkNotebookCellModelManager', function(bkNotebookCellModelManagerFactory) {
     return bkNotebookCellModelManagerFactory.createInstance();
   });
-
+  
+  
+  
+  
+  
   module.factory('bkNotebookCellModelManagerFactory', function($timeout, $rootScope, bkEvaluateJobManager) {
     return {
       createInstance: function () {
@@ -244,12 +248,12 @@
           getChildren: function (id) {
             var self = this;
             var children = _.chain(this._getDecoratedCell(id).children)
-                .sortBy(function (childId) {
-                  return self._getDecoratedCell(childId).rawIndex;
-                })
-                .map(function (childId) {
-                  return self.getCell(childId);
-                }).value();
+              .sortBy(function (childId) {
+                return self._getDecoratedCell(childId).rawIndex;
+              })
+              .map(function (childId) {
+                return self.getCell(childId);
+              }).value();
             return children;
           },
           getAllDescendants: function(id) {
@@ -278,7 +282,7 @@
             }
             return null;
           },
-          insertBefore: function(id, cell) {
+          insertBefore: function(id, cell, quietly) {
             var index = this.getIndex(id);
             if (index !== -1) {
               cells.splice(index, 0, cell);
@@ -286,26 +290,30 @@
               throw 'target cell ' + id + ' was not found';
             }
             recreateCellMap();
-            $timeout(function() {
-              $rootScope.$broadcast('beaker.cell.added', cell);
-            });
+            if (!quietly) {
+              $timeout(function () {
+                $rootScope.$broadcast('beaker.cell.added', cell);
+              });
+            }
           },
-          insertFirst: function(cell) {
+          insertFirst: function(cell, quietly) {
             if (!_.isObject(cell)) {
               throw 'unacceptable';
             }
-
+    
             cells.splice(0, 0, cell);
             recreateCellMap();
-            $timeout(function() {
-              $rootScope.$broadcast('beaker.cell.added', cell);
-            });
+            if (!quietly) {
+              $timeout(function () {
+                $rootScope.$broadcast('beaker.cell.added', cell);
+              });
+            }
           },
-          insertAfter: function(id, cell) {
+          insertAfter: function(id, cell, quietly) {
             if (!_.isObject(cell)) {
               throw 'unacceptable';
             }
-
+    
             var index = this.getIndex(id);
             if (index !== -1) {
               cells.splice(index + 1, 0, cell);
@@ -313,11 +321,13 @@
               throw 'target cell ' + id + ' was not found';
             }
             recreateCellMap();
-            $timeout(function() {
-              $rootScope.$broadcast('beaker.cell.added', cell);
-            });
+            if (!quietly) {
+              $timeout(function () {
+                $rootScope.$broadcast('beaker.cell.added', cell);
+              });
+            }
           },
-          insertAt: function(index, cell, doNotClearUndoAction) {
+          insertAt: function(index, cell, doNotClearUndoAction, quietly) {
             if (_.isArray(cell)) {
               Array.prototype.splice.apply(cells, [index, 0].concat(cell));
             } else if (_.isObject(cell)) {
@@ -326,9 +336,11 @@
               throw 'unacceptable';
             }
             recreateCellMap(doNotClearUndoAction);
-            $timeout(function() {
-              $rootScope.$broadcast('beaker.cell.added', cell);
-            });
+            if (!quietly) {
+              $timeout(function () {
+                $rootScope.$broadcast('beaker.cell.added', cell);
+              });
+            }
           },
           isPossibleToMoveUp: function(id) {
             // If the cell isn't first (or nonexistent?)
@@ -370,9 +382,9 @@
           },
           undoableDelete: function() {
             this.deleteUndo = {
-              type: 'single',
-              index: this.getIndex(id),
-              cell: this.getCell(id)
+                type: 'single',
+                index: this.getIndex(id),
+                cell: this.getCell(id)
             };
             this.delete(id);
           },
@@ -460,7 +472,7 @@
                     cell.output.result = undefined;
                     cell.output.elapsedTime = undefined;
                     bkEvaluateJobManager.remove(cell);
-                  }
+                  }              
                 }
               });
             }
@@ -500,172 +512,172 @@
           },
           getPrevSection: function(id) {
             var prev = this.getPrev(id);
-
-            while (prev !== null && prev.type !== "section") {
-              prev = this.getPrev(prev.id);
-            }
-
-            return prev;
-          },
-          getPrevSibling: function(id) {
-            var parentId = this._getDecoratedCell(id).parent;
-            if (!parentId) {
-              return null;
-            }
-            var siblingIds = this._getDecoratedCell(parentId).children;
-            var myIndexAmongSiblings = siblingIds.indexOf(id);
-            if (myIndexAmongSiblings === 0) {
-              return null;
-            }
-            return this.getCell(siblingIds[myIndexAmongSiblings - 1]);
-          },
-          getNextSibling: function(id) {
-            var parentId = this._getDecoratedCell(id).parent;
-            if (!parentId) {
-              return null;
-            }
-            var siblingIds = this._getDecoratedCell(parentId).children;
-            var myIndexAmongSiblings = siblingIds.indexOf(id);
-            if (myIndexAmongSiblings === siblingIds.length - 1) {
-              return null;
-            }
-            return this.getCell(siblingIds[myIndexAmongSiblings + 1]);
-          },
-          isPossibleToMoveSectionUp: function(id) {
-            return !!this.getPrevSibling(id);
-          },
-          moveSectionUp: function(id) {
-            var index = this.getIndex(id);
-            var length = this.getSectionLength(id);
-            var prevSib = this.getPrevSibling(id);
-            if (!prevSib) {
-              throw 'Cannot move section up';
-            }
-            var prevSibId = prevSib.id;
-            var offset = -1 * this.getSectionLength(prevSibId);
-            this.shiftSegment(index, length, offset);
-          },
-          isPossibleToMoveSectionDown: function(id) {
-            return !!this.getNextSibling(id);
-          },
-          moveSectionDown: function(id) {
-            var nextSib = this.getNextSibling(id);
-            if (!nextSib) {
-              throw 'Cannot move section down';
-            }
-            this.moveSectionUp(nextSib.id);
-          },
-          getSectionLength: function(id) {
-            // the cell itself plus all descendants
-            return 1 + this._getDecoratedCell(id).allDescendants.length;
-          },
-
-          // The following has not been unit tested
-          getNext: function(id) {
-            var index = this.getIndex(id);
-            if (index === cells.length - 1) {
-              return null;
-            }
-            return this.getCellAtIndex(index + 1);
-          },
-          getPrev: function(id) {
-            var index = this.getIndex(id);
-            if (index === 0) {
-              return null;
-            }
-            return this.getCellAtIndex(index - 1);
-          },
-          findNextCodeCell: function(id) {
-            var index = this.getIndex(id);
-            if (index === cells.length - 1) {
-              return null;
-            }
-            return this.findCodeCell(this.getCellAtIndex(index + 1).id, true);
-          },
-          isContainer: function(id) {
-            return id === 'root' || !!this.getCell(id).level;
-          },
-          isEmpty: function(id) {
-            return this._getDecoratedCell(id).allDescendants.length === 0;
-          },
-          isLast: function(id) {
-            if (_.isEmpty(cells)) {
-              return false;
-            }
-            return _.last(cells).id === id;
-          },
-          appendAfter: function(id, cell) {
-            if (this.isContainer(id) && !this.isEmpty(id)) {
-              // add to tail
-              var descendants = this.getAllDescendants(id);
-              this.insertAfter(descendants[descendants.length - 1].id, this.clipboard);
-            } else {
-              // append after
-              this.insertAfter(id, cell);
-            }
-          },
-          getInitializationCells: function() {
-            return tagMap.initialization;
-          },
-          getCellsWithEvaluator: function(evaluator) {
-            return tagMap.evaluator[evaluator];
-          },
-          hasUserTag: function(t) {
-            return tagMap.usertags[t] !== undefined;
-          },
-          getCellsWithUserTag: function(t) {
-            return tagMap.usertags[t];
-          },
-          clipboard: null,
-          cut: function(id) {
-            if (this.clipboard) {
-              this.delete(this.clipboard);
-            }
-            this.clipboard = this.getCell(id);
-            this.delete(id);
-          },
-          paste: function(destinationId) {
-            if (this.clipboard) {
-              this.appendAfter(destinationId, this.clipboard);
-              this.clipboard = null;
-            }
-          },
-          canSetUserTags: function(tags) {
-            var re = /\s+/;
-            if (tags !== undefined) {
-              var tgs = tags.split(re);
-              var i;
-              for (i = 0; i < tgs.length; i++) {
-                if (cellMap[tgs[i]] !== undefined) {
-                  return 'ERROR: The name "' + tgs[i] + '" is already used as a cell name.';
+    
+                while (prev !== null && prev.type !== "section") {
+                  prev = this.getPrev(prev.id);
                 }
+    
+                return prev;
+              },
+              getPrevSibling: function(id) {
+                var parentId = this._getDecoratedCell(id).parent;
+                if (!parentId) {
+                  return null;
+                }
+                var siblingIds = this._getDecoratedCell(parentId).children;
+                var myIndexAmongSiblings = siblingIds.indexOf(id);
+                if (myIndexAmongSiblings === 0) {
+                  return null;
+                }
+                return this.getCell(siblingIds[myIndexAmongSiblings - 1]);
+              },
+              getNextSibling: function(id) {
+                var parentId = this._getDecoratedCell(id).parent;
+                if (!parentId) {
+                  return null;
+                }
+                var siblingIds = this._getDecoratedCell(parentId).children;
+                var myIndexAmongSiblings = siblingIds.indexOf(id);
+                if (myIndexAmongSiblings === siblingIds.length - 1) {
+                  return null;
+                }
+                return this.getCell(siblingIds[myIndexAmongSiblings + 1]);
+              },
+              isPossibleToMoveSectionUp: function(id) {
+                return !!this.getPrevSibling(id);
+              },
+              moveSectionUp: function(id) {
+                var index = this.getIndex(id);
+                var length = this.getSectionLength(id);
+                var prevSib = this.getPrevSibling(id);
+                if (!prevSib) {
+                  throw 'Cannot move section up';
+                }
+                var prevSibId = prevSib.id;
+                var offset = -1 * this.getSectionLength(prevSibId);
+                this.shiftSegment(index, length, offset);
+              },
+              isPossibleToMoveSectionDown: function(id) {
+                return !!this.getNextSibling(id);
+              },
+              moveSectionDown: function(id) {
+                var nextSib = this.getNextSibling(id);
+                if (!nextSib) {
+                  throw 'Cannot move section down';
+                }
+                this.moveSectionUp(nextSib.id);
+              },
+              getSectionLength: function(id) {
+                // the cell itself plus all descendants
+                return 1 + this._getDecoratedCell(id).allDescendants.length;
+              },
+    
+              // The following has not been unit tested
+              getNext: function(id) {
+                var index = this.getIndex(id);
+                if (index === cells.length - 1) {
+                  return null;
+                }
+                return this.getCellAtIndex(index + 1);
+              },
+              getPrev: function(id) {
+                var index = this.getIndex(id);
+                if (index === 0) {
+                  return null;
+                }
+                return this.getCellAtIndex(index - 1);
+              },
+              findNextCodeCell: function(id) {
+                var index = this.getIndex(id);
+                if (index === cells.length - 1) {
+                  return null;
+                }
+                return this.findCodeCell(this.getCellAtIndex(index + 1).id, true);
+              },
+              isContainer: function(id) {
+                return id === 'root' || !!this.getCell(id).level;
+              },
+              isEmpty: function(id) {
+                return this._getDecoratedCell(id).allDescendants.length === 0;
+              },
+              isLast: function(id) {
+                if (_.isEmpty(cells)) {
+                  return false;
+                }
+                return _.last(cells).id === id;
+              },
+              appendAfter: function(id, cell) {
+                if (this.isContainer(id) && !this.isEmpty(id)) {
+                  // add to tail
+                  var descendants = this.getAllDescendants(id);
+                  this.insertAfter(descendants[descendants.length - 1].id, this.clipboard);
+                } else {
+                  // append after
+                  this.insertAfter(id, cell);
+                }
+              },
+              getInitializationCells: function() {
+                return tagMap.initialization;
+              },
+              getCellsWithEvaluator: function(evaluator) {
+                return tagMap.evaluator[evaluator];
+              },
+              hasUserTag: function(t) {
+                return tagMap.usertags[t] !== undefined;
+              },
+              getCellsWithUserTag: function(t) {
+                return tagMap.usertags[t];
+              },
+              clipboard: null,
+              cut: function(id) {
+                if (this.clipboard) {
+                  this.delete(this.clipboard);
+                }
+                this.clipboard = this.getCell(id);
+                this.delete(id);
+              },
+              paste: function(destinationId) {
+                if (this.clipboard) {
+                  this.appendAfter(destinationId, this.clipboard);
+                  this.clipboard = null;
+                }
+              },
+              canSetUserTags: function(tags) {
+                var re = /\s+/;
+                if (tags !== undefined) {
+                  var tgs = tags.split(re);
+                  var i;
+                  for (i = 0; i < tgs.length; i++) {
+                    if (cellMap[tgs[i]] !== undefined) {
+                      return 'ERROR: The name "' + tgs[i] + '" is already used as a cell name.';
+                    }
+                  }
+                }
+                return '';
+              },
+              canRenameCell: function(newid) {
+                if (cellMap[newid] !== undefined) {
+                  return 'ERROR: Cell "' + newid + '" already exists.';
+                }
+                if (tagMap.usertags[newid] !== undefined) {
+                  return 'ERROR: The name "' + newid + '" is already used as a tag.';
+                }
+                return '';
+              },
+              renameCell: function(oldid, newid) {
+                if (this.canRenameCell(newid) !== '') {
+                  return;
+                }
+                var idx = this.getIndex(oldid);
+                if (idx >= 0) {
+                  cells[idx].id = newid;
+                  recreateCellMap();
+                }
+              },
+              rebuildMaps: function() {
+                recreateCellMap(true);
               }
-            }
-            return '';
-          },
-          canRenameCell: function(newid) {
-            if (cellMap[newid] !== undefined) {
-              return 'ERROR: Cell "' + newid + '" already exists.';
-            }
-            if (tagMap.usertags[newid] !== undefined) {
-              return 'ERROR: The name "' + newid + '" is already used as a tag.';
-            }
-            return '';
-          },
-          renameCell: function(oldid, newid) {
-            if (this.canRenameCell(newid) !== '') {
-              return;
-            }
-            var idx = this.getIndex(oldid);
-            if (idx >= 0) {
-              cells[idx].id = newid;
-              recreateCellMap();
-            }
-          },
-          rebuildMaps: function() {
-            recreateCellMap(true);
-          }
-        };
+            };
       }
     }
   });

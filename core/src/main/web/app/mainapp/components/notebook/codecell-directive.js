@@ -44,6 +44,7 @@
       bkCellMenuPluginManager,
       bkSessionManager,
       bkCoreManager,
+      bkDragAndDropHelper,
       bkPublicationHelper,
       GLOBALS,
       $rootScope,
@@ -427,10 +428,14 @@
               //codecomplete is up, skip
               return;
             }
-
-            scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
+            if(document.hasFocus()){
+              scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
+            }
           });
           scope.cm.on('gutterClick', onGutterClick);
+          bkDragAndDropHelper.configureDropEventHandlingForCodeMirror(scope.cm, function () {
+            return scope.cm.getOption('mode') === 'htmlmixed';
+          });
 
           scope.updateUI(scope.getEvaluator());
           // Since the instantiation of codemirror instances is now lazy,

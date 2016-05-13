@@ -76,7 +76,7 @@ define(function(require, exports, module) {
                 type: "POST",
                 datatype: "json",
                 url: bkHelper.serverUrl(serviceBase + "/evaluate"),
-                data: {shellID: self.settings.shellID, code: code}
+                data: {shellID: self.settings.shellID, code: encodeURIComponent(code)}
             }).done(function(ret) {
                 modelOutput.result = ret;
                 bkHelper.refreshRootScope();

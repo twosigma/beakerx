@@ -232,6 +232,13 @@
             .error(deferred.reject);
         return deferred.promise;
       },
+      getVersionString: function () {
+        var deferred = angularUtils.newDeferred();
+        this.httpGet(serverUrl("beaker/rest/util/version"))
+          .success(deferred.resolve)
+          .error(deferred.reject);
+        return deferred.promise;
+      },
       getStartUpDirectory: function() {
         var deferred = angularUtils.newDeferred();
         this.httpGet(serverUrl("beaker/rest/file-io/getStartUpDirectory"))
@@ -361,8 +368,17 @@
       removeConnectedStatusListener: function() {
         return cometdUtils.removeConnectedStatusListener();
       },
+      addHandshakeListener: function(cb) {
+        return cometdUtils.addHandshakeListener(cb);
+      },
+      removeHandshakeListener: function() {
+        return cometdUtils.removeHandshakeListener();
+      },
       disconnect: function() {
         return cometdUtils.disconnect();
+      },
+      reconnect: function() {
+        return cometdUtils.reconnect();
       },
 
       beginsWith: function(haystack, needle) {

@@ -184,6 +184,30 @@ task (copyGGVis, type: Copy) {
 	into 'src/main/web/app/vendor/ggvis/'
 }
 
+task copyDiagrammer << {
+  copy {
+    from 'src/main/web/vendor/diagrammer/'
+    into 'src/main/web/app/vendor/diagrammer/'
+  }
+  copy {
+    from 'src/main/web/vendor/bower_components/d3/'
+    into 'src/main/web/app/vendor/bower_components/d3/'
+    include '**.min.js'
+  }
+  copy {
+    from 'src/main/web/vendor/bower_components/vis/dist/'
+    into 'src/main/web/app/vendor/bower_components/vis/'
+    include '**.min.js'
+    include '**.min.css'
+
+  }
+  copy {
+    from 'src/main/web/vendor/bower_components/vivagraphjs/dist/'
+    into 'src/main/web/app/vendor/bower_components/vivagraphjs/'
+    include '**.min.js'
+  }
+}
+
 task copyPlotly << {
   copy {
     from 'src/main/web/vendor/plotly/'
@@ -221,6 +245,7 @@ copyVendorStuff.dependsOn copyKatex
 copyVendorStuff.dependsOn copyRequireJS
 copyVendorStuff.dependsOn copyJQueryUIImages
 copyVendorStuff.dependsOn copyGGVis
+copyVendorStuff.dependsOn copyDiagrammer
 copyVendorStuff.dependsOn copyPlotly
 copyVendorStuff.dependsOn addevalplugins
 

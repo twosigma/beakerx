@@ -15,6 +15,8 @@
  */
 
 var _ = require('underscore');
+var path = require('path');
+var fs = require('fs');
 
 var BeakerPageObject = function() {
 
@@ -26,28 +28,20 @@ var BeakerPageObject = function() {
   //jscs:enable
     .filter(function(e, i) { return e.isDisplayed(); });
 
-  this.waitForInstantiationCells = function() {
+  this.waitForInstantiationCells = function(screenshotName) {
+    var self = this;
+    var dialogIsPresent = this.EC.presenceOf($('.modal-dialog'));
     // First wait for the modal to show up when opening a URL
-    browser.wait(function() {
-      return element(by.css('.modal-dialog')).isDisplayed()
-      .then(function(v) {
-        return v;
-      })
-      .thenCatch(function() {
-        return false;
-      });
-    }, 100000);
-
-    // wait for the modal to close
-    return browser.wait(function() {
-      return element(by.css('.modal-dialog')).isDisplayed()
-      .then(function(v) {
-        return false;
-      })
-      .thenCatch(function() {
+    browser.wait(dialogIsPresent, 10000).then(function(){
+      // wait for the modal to close
+      browser.wait(self.EC.not(dialogIsPresent), 100000).then(function(){
         return true;
+      },
+      function(error){
+        beakerPO.createScreenshot(screenshotName);
+        expect(error).toBe('Cells have been initialized');
       });
-    }, 100000);
+    });
   };
 
   this.openFile = function(path) {
@@ -233,73 +227,12 @@ var BeakerPageObject = function() {
 
   //Functions for access to plot elements
 
-
-  this.scrollToCodeCellOutput = function (index) {
-    return browser.executeScript("$('.code-cell-output')[" + index + "].scrollIntoView();");
-  };
-
   this.getCodeCellOutputByIndex = function (index) {
     return element.all(by.css('.code-cell-output')).get(index);
   };
 
-    this.getCodeCellOutputCombplotTitle = function (codeCellOutputIdx) {
-    return this.getCodeCellOutputByIndex(codeCellOutputIdx).element(by.id('combplotTitle')).getText();
-  };
-
-  this.getCodeCellOutputContainerTitle = function (codeCellOutputIdx, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-
-    return this.getCodeCellOutputByIndex(codeCellOutputIdx)
-      .all(by.id("plotTitle"))
-      .get(containerIdx).getText();
-  };
-
-  this.getCodeCellOutputContainerYLabel = function (codeCellOutputIdx, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-
-    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('ylabel')).getText();
-  };
-
-  this.getCodeCellOutputContainerYRLabel = function (codeCellOutputIdx, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-
-    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('yrlabel')).getText();
-  };
-
-  this.getCodeCellOutputContainerXLabel = function (codeCellOutputIdx, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-
-    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('xlabel')).getText();
-  };
-
-  this.getPlotLegendContainer = function (codeCellOutputIdx, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-    return this.getCodeCellOutputByIndex(codeCellOutputIdx).all(By.css('.plot-plotlegendcontainer')).get(containerIdx);
-  };
-
-  this.getPlotSvg= function (codeCellOutputIdx, containerIdx) {
-    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(By.id('svgg'));
-  };
-
-  this.getPlotMaing= function (codeCellOutputIdx, containerIdx) {
-    return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('maing'));
-  };
-
-  this.getPlotLabelg= function (codeCellOutputIdx, containerIdx) {
-    return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('labelg'));
-  };
-
   this.getPlotLabelgByIdCell = function (idCell, containerIdx) {
     return this.getPlotSvgByIdCell(idCell, containerIdx).element(By.id('labelg'));
-  };
-
-  this.getPlotSvgElementByIndex= function (codeCellOutputIdx, containerIdx, elementIndex) {
-    return this.getPlotSvg(codeCellOutputIdx, containerIdx).all(by.css("#maing > g")).get(elementIndex);
   };
 
   //End Functions for access to plot elements
@@ -393,6 +326,12 @@ var BeakerPageObject = function() {
     }, 10000);
   };
 
+  this.waitForCellOutputByIdCell = function(idCell) {
+    var self = this;
+    browser.wait(this.getCodeCellOutputByIdCell(idCell).isDisplayed(), 10000).then(function(){
+      browser.wait(self.EC.not(self.EC.textToBePresentInElement(self.getCodeCellOutputByIdCell(idCell), 'Elapsed:'), 10000));
+    });
+  };
 
   this.waitUntilLoadingFinished = function() {
     var self = this;
@@ -407,35 +346,9 @@ var BeakerPageObject = function() {
     }, 100000);
   };
 
-  this.waitUntilLoadingPlot = function(codeCellOutputIdx, containerIdx) {
-    var self = this;
-    return browser.wait(function() {
-      return self.getPlotLegendContainer(codeCellOutputIdx, containerIdx).isPresent()
-        .then(function(present) {
-          return present;
-        })
-        .thenCatch(function() {
-          return false;
-        });
-    }, 10000);
-  };
-
-  this.waitUntilLoadingIndicator = function() {
-    browser.wait(this.EC.presenceOf($('.navbar-text > i')), 10000);
-  };
-
   this.waitUntilLoadingCellOutput = function() {
     browser.wait(this.EC.presenceOf($('bk-code-cell-output')), 10000);
   }
-
-  this.checkPlotIsPresent = function (codeCellOutputIdx, containerIdx){
-    if (!containerIdx)
-      containerIdx = 0;
-    this.scrollToCodeCellOutput(codeCellOutputIdx);
-    this.waitUntilLoadingPlot(codeCellOutputIdx, containerIdx);
-    expect(this.getPlotMaing(codeCellOutputIdx, containerIdx).isPresent()).toBe(true);
-  };
-
 
   this.hasClass =  function  (element, cls) {
     return element.getAttribute('class').then(function (classes) {
@@ -451,12 +364,6 @@ var BeakerPageObject = function() {
     expect(elements.count()).toBe(expectedCount);
   };
 
-  this.checkLegendIsPresent = function (codeCellOutputIdx, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-    expect(this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(By.css('.plot-legend')).isPresent()).toBe(true);
-  };
-
   this.checkSize = function (element, width, height) {
     expect(element.getSize().then(function (size) {
       return size.height
@@ -465,12 +372,6 @@ var BeakerPageObject = function() {
       return size.width
     })).toBe(width);
   };
-
-
-  this.checkPlotLegentdLabel = function (codeCellOutputIdx, containerIdx, legentdLabelIndex, text) {
-    expect(this.getPlotLegendContainer(codeCellOutputIdx, containerIdx)
-      .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
-  }
 
   this.checkPlotLegentdLabelByIdCell = function (idCell, containerIdx, legentdLabelIndex, text) {
     expect(this.getPlotLegendContainerByIdCell(idCell, containerIdx)
@@ -550,13 +451,6 @@ var BeakerPageObject = function() {
   this.getPlotSvgElementByIndexByIdCell = function (codeCellOutputId, containerIdx, elementIndex) {
     return this.getPlotSvgByIdCell(codeCellOutputId, containerIdx).all(by.css("#maing > g")).get(elementIndex);
   };
-
-  this.checkDtContainer = function(codeCellOutputIdx, containerIdx){
-    if (!containerIdx)
-      containerIdx = 0;
-    this.scrollToCodeCellOutput(codeCellOutputIdx);
-    expect(this.getDtContainer(codeCellOutputIdx, containerIdx).isPresent()).toBe(true);
-  }
 
   this.checkDtContainerByIdCell = function(idCell, containerIdx){
     if (!containerIdx)
@@ -706,6 +600,14 @@ var BeakerPageObject = function() {
     return this.getDataTablesScrollHeadByIdCell(idCell).all(By.css('thead > tr'));
   }
 
+  this.checkTablesColumnsByIdCell = function(idCell, countColumn){
+    expect(this.getDataTablesTHeadByIdCell(idCell).get(0).all(by.css('th')).count()).toBe(countColumn);
+  }
+
+  this.checkTablesRowsByIdCell = function(idCell, countRows){
+    expect(this.getDataTablesTBodyByIdCell(idCell).count()).toBe(countRows);
+  }
+
   this.checkDataTableHeadByIdCell = function(idCell, headLabels){
     expect(this.getDataTablesScrollHeadByIdCell(idCell).getText()).toBe(headLabels);
   }
@@ -850,16 +752,17 @@ var BeakerPageObject = function() {
     return browser.executeScript("$('[cellid=" + idCell +"]')[0].scrollIntoView();");
   };
 
-  this.clickCodeCellInputButtonByIdCell = function(idCell, outputType){
+  this.clickCodeCellInputButtonByIdCell = function(idCell, outputType, screenshotName){
     var self = this;
     this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
     browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']')), 5000)
-        .then(browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), 20000)
+        .then(browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), 25000)
             .then(
                 function(isPresent){
                   expect(isPresent).toBe(true);
                 },
                 function(value){
+                  self.createScreenshot(screenshotName);
                   expect(value).toBe('Output cell have displayed');
                   expect(self.getCodeCellOutputByIdCell(idCell).element(by.css('.out_error')).getText()).toBe('out error');
                 }
@@ -872,13 +775,30 @@ var BeakerPageObject = function() {
     expect(this.getBkCellByIdCell(idCell).isPresent()).toBe(true);
   };
 
-
   this.checkSubStringIfDisplayed = function(strPromise, toBeStr, indxStart, lenght){
     var self = this;
     strPromise.isDisplayed().then(function(isVisible){
       if(isVisible){
         self.checkSubString(strPromise, toBeStr, indxStart, lenght);
       }
+    });
+  }
+
+  this.createScreenshot = function(fileName, dirPath){
+    if(!dirPath){
+      dirPath = path.join(__dirname, '../' ,"screenshots");
+    }
+    if(!fileName){
+      fileName = 'noname';
+    }
+    browser.takeScreenshot().then(function(png){
+      var filename = fileName + new Date().getTime() + '.png';
+      if(!fs.existsSync(dirPath)){
+        fs.mkdirSync(dirPath);
+      }
+      var stream = fs.createWriteStream(path.join(dirPath, filename));
+      stream.write(new Buffer(png, 'base64'));
+      stream.end();
     });
   }
 

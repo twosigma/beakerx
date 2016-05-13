@@ -22,6 +22,8 @@ import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.nio.file.Files;
+
+import static java.lang.String.format;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,7 +89,11 @@ public class UtilRest {
   @Path("version")
   @Produces(MediaType.TEXT_PLAIN)
   public String version(@Context HttpServletRequest request) {
-    return "Beaker " + bkConfig.getHash() + " " + this.bkConfig.getVersion();
+    return format("%s, %s, %s, %s",
+        bkConfig.getVersion(),
+        bkConfig.getHash(),
+        System.getProperty("os.name"),
+        bkConfig.getBuildTime());
   }
 
   @GET

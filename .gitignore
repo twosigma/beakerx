@@ -136,3 +136,12 @@ core/src/main/web/vendor/bower_components/jquery-throttle-debounce/jquery.ba-thr
 core/src/main/web/vendor/bower_components/jquery-throttle-debounce/LICENSE-GPL
 core/src/main/web/vendor/bower_components/jquery-throttle-debounce/LICENSE-MIT
 core/src/main/web/vendor/bower_components/jquery-throttle-debounce/README.markdown
+
+core/src/main/web/vendor/bower_components/vivagraphjs/docs
+core/src/main/web/vendor/bower_components/vivagraphjs/demos
+core/src/main/web/vendor/bower_components/vivagraphjs/packages
+core/src/main/web/vendor/bower_components/vivagraphjs/src
+core/src/main/web/vendor/bower_components/vivagraphjs/dist/vivagraph.js
+core/src/main/web/vendor/bower_components/vivagraphjs/CHANGELOG
+core/src/main/web/vendor/bower_components/vivagraphjs/gulpfile.js
+core/src/main/web/vendor/bower_components/vivagraphjs/README.md

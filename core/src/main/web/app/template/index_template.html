@@ -218,10 +218,10 @@
   <!-- endbuild -->
 
 </head>
-<body ngf-drop="uploadFile($file)"
-      ngf-drag-over-class="dragover"
+<body ngf-drop="fileDropped($file, $event)"
+      ngf-drag-over-class="{accept: 'dragover', reject: 'dragover-invalid'}"
       accept="application/json,application/text"
-      ngf-pattern="'application/json,application/text'">
+      ngf-pattern="'/{{getImportNotebookPattern()}}/'">
   <ng-view class="beaker-sandbox"></ng-view>
 </body>
 </html>

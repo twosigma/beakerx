@@ -72,7 +72,7 @@ task cleanPlugins (type: Exec) {
 }
 
 def gitDescribe() {
-  def name = "git describe --all --long".execute().text.trim()
+  def name = "git describe --all".execute().text.trim()
   if (name.startsWith('heads/')) {
     name = name.substring(6)
   }

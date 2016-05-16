@@ -85,7 +85,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "result": "server started",
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 11
@@ -106,9 +106,9 @@
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<div id=\"message\">Hello from Node 1003</div>"
+                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<div id=\"message\">Hello from Node 101</div>"
                 },
-                "height": 35
+                "height": 55
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -126,10 +126,10 @@
                     "var update = function () {",
                     "  $.get(\"http://127.0.0.1:8000\", function(response) {",
                     "    document.getElementById(\"message\").innerHTML = response;",
-                    "    if (ncalls++ < 1000)",
+                    "    if (ncalls++ < 100)",
                     "      beaker.timeout(update, 0);",
                     "    else {",
-                    "      var ms = (new Date().getTime() - startTime) / 1000;",
+                    "      var ms = (new Date().getTime() - startTime) / 100;",
                     "      deferred.resolve(ms + \"ms per HTTP call\");",
                     "    }",
                     "  });",
@@ -141,10 +141,10 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "result": "11.382ms per HTTP call",
+                "result": "14.44ms per HTTP call",
                 "pluginName": "JavaScript",
-                "elapsedTime": 11468,
-                "height": 36
+                "elapsedTime": 1514,
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 17

@@ -1227,25 +1227,51 @@
           if ($scope.disconnectedDialog) { // prevent prompting multiple at the same time
             return;
           }
-          $scope.disconnectedDialog = bkCoreManager.show2ButtonModal(
-            "Beaker server disconnected. Further edits will not be saved.<br>" +
+          var dismissAction = function() {
+            $scope.disconnectedDialog = void 0;
+          };
+          var params = {
+            msgBody: "Beaker server disconnected. Further edits will not be saved.<br>" +
             "Save current notebook as a file?",
-            "Disconnected", function() {
-              // "Save", save the notebook as a file on the client side
-              bkSessionManager.dumpDisplayStatus();
-              var timeoutPromise = $timeout(function() {
-                bkUtils.saveAsClientFile(
-                    bkSessionManager.getSaveData().notebookModelAsString,
-                "notebook.bkr");
-              }, 1);
-              timeoutPromise.then(function() {
-                $scope.disconnectedDialog = void 0;
-              })
-            }, function() {
-                $scope.disconnectedDialog = void 0;
-            },
-            "Save", "Not now", "btn-primary", ""
-          );
+            msgHeader: "Disconnected",
+            dismissAction: dismissAction,
+            buttons: [
+              {
+                text: "Reconnect",
+                action: function () {
+                  bkUtils.addHandshakeListener(function(handshakeReply){
+                    if (handshakeReply.successful) {
+                      addConnectedStatusListener();
+                    }
+                  });
+                  bkUtils.reconnect();
+                  connectionManager.waitReconnect();
+                  $scope.disconnectedDialog = void 0;
+                },
+                cssClass: "btn-primary modal-submit"
+              },
+              {
+                text: "Save",
+                action: function() {
+                  // "Save", save the notebook as a file on the client side
+                  bkSessionManager.dumpDisplayStatus();
+                  var timeoutPromise = $timeout(function() {
+                    bkUtils.saveAsClientFile(
+                      bkSessionManager.getSaveData().notebookModelAsString,
+                      "notebook.bkr");
+                  }, 1);
+                  timeoutPromise.then(function() {
+                    $scope.disconnectedDialog = void 0;
+                  })
+                }
+              },
+              {
+                text: "Not now",
+                action: dismissAction
+              }
+            ]
+          };
+          $scope.disconnectedDialog = bkCoreManager.showMultipleButtonsModal(params);
         };
         $scope.reconnectFailedListenerUnsubscribe = $rootScope.$on(GLOBALS.EVENTS.RECONNECT_FAILED, $scope.promptToSave);
 
@@ -1256,16 +1282,21 @@
           return connectionManager.isDisconnected();
         };
 
-        bkUtils.addConnectedStatusListener(function(msg) {
-          if ($scope.isDisconnected() && msg.successful) {
-            connectionManager.onReconnected();
-            return $scope.$digest();
-          }
-          if (msg.failure) {
-            connectionManager.onDisconnected();
-            return $scope.$digest();
-          }
-        });
+        var addConnectedStatusListener = function(){
+          return bkUtils.addConnectedStatusListener(function(msg) {
+            if ($scope.isDisconnected() && msg.successful) {
+              connectionManager.onReconnected();
+              return $scope.$digest();
+            }
+            if (msg.failure) {
+              connectionManager.onDisconnected();
+              return $scope.$digest();
+            }
+          });
+        };
+
+        addConnectedStatusListener();
+
         $scope.$watch('isDisconnected()', function(disconnected) {
           if (disconnected) {
             stopAutoBackup();

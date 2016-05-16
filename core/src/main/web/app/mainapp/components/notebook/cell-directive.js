@@ -222,6 +222,16 @@
           return type + '-cell.html';
         };
 
+        $scope.getCellSummary = function () {
+          if($scope.isCodeCell()) {
+            var body = $scope.cellmodel.input.body;
+            var lines = body.split('\n');
+            if(lines.length > 0) {
+              return lines[0];
+            }
+          }
+        };
+
         $scope.isMarkdownCell = function() {
           return $scope.cellmodel.type === 'markdown';
         };

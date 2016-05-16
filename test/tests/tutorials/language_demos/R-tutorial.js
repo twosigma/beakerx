@@ -77,12 +77,12 @@ describe('R Tutorial', function (done) {
                 });
         });
 
-        it('Google map', function () {
-            var idCell = "codePI1mwS";
-            beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image', 'RGoogleMap');
-            beakerPO.checkImageByIdCell(idCell);
-        });
+        //it('Google map', function () {
+        //    var idCell = "codePI1mwS";
+        //    beakerPO.scrollToBkCellByIdCell(idCell);
+        //    beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image', 'RGoogleMap');
+        //    beakerPO.checkImageByIdCell(idCell);
+        //});
 
         it('Library(MASS)', function () {
             var idCell = "codebUFdM3";

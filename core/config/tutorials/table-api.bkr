@@ -58,9 +58,9 @@
                     "def rates = beaker.rates",
                     "def display = new TableDisplay(rates.values, rates.columnNames, rates.types)",
                     "//show all time columns in days",
-                    "display.setStringFormatForTimes(TimeUnit.DAYS)//not ready on fronend yet",
+                    "display.setStringFormatForTimes(TimeUnit.DAYS)",
                     "//min 2, max 2 decimal places for all doubles",
-                    "display.setStringFormatForType(ColumnType.Double, TableDisplayStringFormat.getDecimalFormat(2,2))//not ready on fronend yet",
+                    "display.setStringFormatForType(ColumnType.Double, TableDisplayStringFormat.getDecimalFormat(2,2))//not ready on frontend yet",
                     "//setting for a column takes precidence over the type",
                     "display.setStringFormatForColumn(\"closePrice\", TableDisplayStringFormat.getDecimalFormat(0, 0))",
                     "//set the alignment",
@@ -92,7 +92,7 @@
                             "y30"
                         ],
                         "actualtype": [
-                            0,
+                            8,
                             "4.4",
                             "4.4",
                             "4.4",
@@ -104,7 +104,7 @@
                             "4.4"
                         ],
                         "actualalign": [
-                            "L",
+                            "C",
                             "C",
                             "R",
                             "R",
@@ -164,7 +164,7 @@
                         "y30"
                     ],
                     "types": [
-                        "datetime",
+                        "time",
                         "double",
                         "double",
                         "double",
@@ -4899,8 +4899,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "a1318faa-ad7b-48ea-98bc-c58b9c314394",
-                "elapsedTime": 566,
+                "shellId": "37989ee9-914a-473f-a50b-43c2ffb61d2e",
+                "elapsedTime": 624,
                 "height": 776
             },
             "evaluatorReader": true,
@@ -4951,7 +4951,7 @@
                             "y30"
                         ],
                         "actualtype": [
-                            0,
+                            8,
                             "4.4",
                             "4.4",
                             "4.4",
@@ -4963,7 +4963,7 @@
                             "4.4"
                         ],
                         "actualalign": [
-                            "L",
+                            "C",
                             "R",
                             "R",
                             "R",
@@ -5051,7 +5051,7 @@
                         "y30"
                     ],
                     "types": [
-                        "datetime",
+                        "time",
                         "double",
                         "double",
                         "double",
@@ -9780,8 +9780,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "a1318faa-ad7b-48ea-98bc-c58b9c314394",
-                "elapsedTime": 607,
+                "shellId": "dcd32590-1ae3-41cd-a35d-e917bbf10acb",
+                "elapsedTime": 604,
                 "height": 776
             },
             "evaluatorReader": true,

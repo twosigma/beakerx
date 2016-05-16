@@ -288,6 +288,14 @@
     var MIN_ROWS_FOR_PAGING = DEFAULT_PAGE_LENGTH;
     var FC_LEFT_SEPARATOR_CLASS = 'left-fix-col-separator';
     var FC_RIGHT_SEPARATOR_CLASS = 'right-fix-col-separator';
+    var TIME_UNIT_FORMATS = {
+      DATETIME:     { title: 'datetime', format: 'YYYY-MM-DD HH:mm:ss.SSS ZZ' },
+      DAYS:         { title: 'date', format: 'YYYY-MM-DD' },
+      HOURS:        { title: 'hours', format: 'YYYY-MM-DD HH:mm ZZ' },
+      MINUTES:      { title: 'minutes', format: 'HH:mm ZZ' },
+      SECONDS:      { title: 'seconds', format: 'HH:mm:ss ZZ' },
+      MILLISECONDS: { title: 'milliseconds', format: 'HH:mm:ss.SSS ZZ' }
+    };
     return {
       template: JST['bko-tabledisplay/output-table'],
       controller: function($scope, $uibModal) {
@@ -553,7 +561,7 @@
                 $scope.getCellDispOpts.push($scope.allDoubleTypes);
               } else if ($scope.types[order - 1] === 'integer') {
                 $scope.getCellDispOpts.push($scope.allIntTypes);
-              } else if ($scope.types[order - 1] === 'time') {
+              } else if ($scope.types[order - 1] === 'time' || $scope.types[order - 1] === 'datetime') {
                 $scope.getCellDispOpts.push($scope.allTimeTypes);
               } else if ($scope.types[order - 1] === 'boolean') {
                 $scope.getCellDispOpts.push($scope.allBoolTypes);
@@ -713,11 +721,9 @@
         {type: 4, name: 'double with precision'},
         {type: 6, name: 'exponential 5'},
         {type: 7, name: 'exponential 15'},
-        {type: 8, name: 'datetime'},
+        {type: 8, name: 'time'},
         {type: 9, name: 'boolean'},
-        {type: 10, name: 'html'},
-        {type: 11, name: 'date'},
-        {type: 12, name: 'time'}];
+        {type: 10, name: 'html'}];
         $scope.allConverters = {
           // string
           0: function(value, type, full, meta) {
@@ -783,7 +789,7 @@
             }
             return value;
           },
-          // datetime
+          // time
           8: function(value, type, full, meta) {
             var time;
             var tz;
@@ -791,11 +797,13 @@
               return $scope.timeStrings[meta.row];
             }
             if (type === 'display') {
+              var format = _.isEmpty($scope.formatForTimes) ?
+                TIME_UNIT_FORMATS.DATETIME.format : TIME_UNIT_FORMATS[$scope.formatForTimes].format;
               if (_.isObject(value) && value.type === 'Date') {
-                return bkUtils.formatTimestamp(value.timestamp, $scope.tz, 'YYYYMMDD HH:mm:ss.SSS ZZ');
+                return bkUtils.formatTimestamp(value.timestamp, $scope.tz, format);
               }
               var milli = value / 1000 / 1000;
-              return bkUtils.formatTimestamp(milli, $scope.tz, 'YYYYMMDD HH:mm:ss.SSS ZZ');
+              return bkUtils.formatTimestamp(milli, $scope.tz, format);
             }
             return value;
           },
@@ -809,35 +817,6 @@
           // html
           10: function(value, type, full, meta) {
             return value;
-          },
-          // date
-          11: function(value, type, full, meta) {
-            var time;
-            var tz;
-            if ($scope.timeStrings) {
-              return $scope.timeStrings[meta.row];
-            }
-            if (type === 'display') {
-              if (_.isObject(value) && value.type === 'Date') {
-                return bkUtils.formatTimestamp(value.timestamp, $scope.tz, 'YYYY-MM-DD');
-              }
-              var milli = value / 1000 / 1000;
-              return bkUtils.formatTimestamp(milli, $scope.tz, 'YYYY-MM-DD');
-            }
-            return value;
-          },
-          // time
-          12: function(value, type, full, meta) {
-            var time;
-            var tz;
-            if ($scope.timeStrings) {
-              return $scope.timeStrings[meta.row];
-            }
-            if (_.isObject(value) && value.type === 'Date') {
-              return bkUtils.formatTimestamp(value.timestamp, $scope.tz, 'HH:mm:ss.SSS ZZ');
-            }
-            var milli = value / 1000 / 1000;
-            return bkUtils.formatTimestamp(milli, $scope.tz, 'HH:mm:ss.SSS ZZ');
           }
         };
         $scope.isDoubleWithPrecision = function(type){
@@ -863,10 +842,8 @@
           }.bind({}, precision);
         }
         $scope.allStringTypes = [{type: 0, name: 'string'}, {type: 10, name: 'html'}];
-        $scope.allTimeTypes   = [{type: 8, name: 'datetime'},
-                                 {type: 0, name: 'string'},
-                                 {type: 11, name: 'date'},
-                                 {type: 12, name: 'time'}];
+        $scope.allTimeTypes   = [{type: 8, name: 'time'},
+                                 {type: 0, name: 'string'}];
         $scope.allIntTypes    = [{type: 0, name: 'string'},
         {type: 1, name: 'integer'},
         {type: 2, name: 'formatted integer'},
@@ -1120,6 +1097,7 @@
             scope.columnSearchActive  = scope.savedstate.columnSearchActive;
             scope.columnWidth         = scope.savedstate.columnWidth || [];
             scope.tableOrder          = scope.savedstate.tableOrder;
+            scope.formatForTimes      = scope.savedstate.formatForTimes;
 
             scope.savedstate  = undefined;
           } else {
@@ -1150,6 +1128,7 @@
               'fixLeft' : 0,
               'fixRight' : 0
             };
+            scope.formatForTimes = model.stringFormatForTimes;
           }
           // auto compute types
           if (scope.actualtype === undefined || scope.actualtype.length === 0) {
@@ -1157,7 +1136,7 @@
             scope.actualalign = [];
             for (i = 0; i < scope.columnNames.length; i++) {
               if (scope.types !== undefined) {
-                if (scope.types[i] === 'time') {
+                if (scope.types[i] === 'time' || scope.types[i] === 'datetime') {
                   scope.actualtype.push(8);
                   scope.actualalign.push('C');
                 } else if (scope.types[i] === 'integer') {
@@ -1176,12 +1155,14 @@
               }
             }
 
-            _.forEach(model.types, function (type, index) {
-              var alignment = model.alignmentForType[type];
-              if(alignment){
-                scope.actualalign[index] = alignment;
-              }
-            });
+            if (!_.isEmpty(model.alignmentForType)) {
+              _.forEach(model.types, function (type, index) {
+                var alignment = model.alignmentForType[type];
+                if(alignment){
+                  scope.actualalign[index] = alignment;
+                }
+              });
+            }
 
             _.forOwn(model.alignmentForColumn, function (alignment, columnName) {
               scope.actualalign[scope.columnNames.indexOf(columnName)] = alignment;
@@ -1441,6 +1422,11 @@
           scope.applyChanges();
         };
 
+        scope.changeTimeFormat = function (timeUnit) {
+          scope.formatForTimes = timeUnit;
+          scope.applyChanges();
+        };
+
         scope.doShowFilter = function (column, isSearch) {
           var jqContainer = $(scope.table.table().container());
           var filterInputs = jqContainer.find('.filter-input');
@@ -1655,6 +1641,8 @@
               };
               if (obj.type === 4) { //double with precision
                 item.items = getPrecisionSubitems;
+              } else if (obj.type === 8) { //time
+                item.items = getTimeSubitems;
               } else {
                 item.action = function(el) {
                     var container = el.closest('.bko-header-menu');
@@ -1685,6 +1673,28 @@
                   var container = el.closest('.bko-header-menu');
                   var colIdx = container.data('columnIndex');
                   scope.changePrecision(scope.colorder[colIdx] - 1, precision);
+                }
+              };
+
+              items.push(item);
+            });
+
+            return items;
+          };
+          
+          var getTimeSubitems = function(container) {
+            var items = [];
+
+            _.forOwn(TIME_UNIT_FORMATS, function(value, unit) {
+              var item = {
+                title: value.title,
+                isChecked: function(container) {
+                  var colIdx = container.data('columnIndex');
+                  return scope.actualtype[scope.colorder[colIdx] - 1] === 8 &&
+                    (unit === scope.formatForTimes || unit == 'DATETIME' && scope.formatForTimes == null);
+                },
+                action: function(el) {
+                  scope.changeTimeFormat(unit);
                 }
               };
 

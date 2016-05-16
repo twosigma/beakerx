@@ -281,6 +281,8 @@ task (copyNginx, type: Exec) {
 
 task doRemove() {
   doLast {
+      delete fileTree(dir: "build/scripts")
+      delete "build/scripts"
       delete fileTree(dir: "node_modules")
       delete "node_modules"
       delete fileTree(dir: "src/main/web/app/genweb")
@@ -341,7 +343,11 @@ if (mac() || windows()) {
   builddebug.dependsOn copyNginx
   run.dependsOn copyNginx
   startScripts {
-    defaultJvmOpts=['-Dbeaker.nginx.bin.dir=' + './nginx/bin']
+    defaultJvmOpts=['-Dbeaker.nginx.bin.dir=' + './nginx/bin', '-Djava.awt.headless=' + 'true']
+    doLast {
+      // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
+      windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*')
+    }
   }
 }
 

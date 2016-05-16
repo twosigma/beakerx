@@ -758,11 +758,14 @@ var BeakerPageObject = function() {
     return browser.executeScript("$('[cellid=" + idCell +"]')[0].scrollIntoView();");
   };
 
-  this.clickCodeCellInputButtonByIdCell = function(idCell, outputType, screenshotName){
+  this.clickCodeCellInputButtonByIdCell = function(idCell, outputType, screenshotName, timeOut){
     var self = this;
+    if(!timeOut){
+      timeOut = 25000;
+    }
     this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
     browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']')), 5000)
-        .then(browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), 25000)
+        .then(browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), timeOut)
             .then(
                 function(isPresent){
                   expect(isPresent).toBe(true);

@@ -136,11 +136,15 @@
         };
 
         $scope.getOutputSummary = function () {
-          var outputDisplayType = $scope.getOutputDisplayType();
           var result = $scope.getOutputResult();
 
-          if (result) {
-            switch (outputDisplayType) {
+          function getItemsText(itemTitle, items) {
+            return items + ' ' + (items > 1 ? itemTitle + 's' : itemTitle);
+          }
+
+          function getOutputSummary(type, result) {
+            type = type || 'Text';
+            switch (type) {
               case 'CombinedPlot':
                 if (result.plots && result.plots.length > 0) {
                   return result.plots.length + ' plots';
@@ -149,10 +153,16 @@
               case 'Plot':
                 if (result.graphics_list && result.graphics_list.length > 0) {
                   var items = result.graphics_list.length;
-                  return 'a plot with ' + items + (items > 1 ? ' items' : ' item');
+                  return 'a plot with ' + getItemsText('item', items);
+                }
+                break;
+              case 'OutputContainer':
+                if(result.items) {
+                  return 'Container with ' + getItemsText('item', result.items.length);
                 }
                 break;
               case 'Table':
+              case 'TableDisplay':
                 return 'a table with ' + result.values.length + ' rows and ' + result.columnNames.length + ' columns';
               case 'Results':
                 var out = 0, err = 0;
@@ -165,26 +175,25 @@
                     }
                   })
                 }
-                var summary = '';
+                var summary = [];
                 var getLinesSummary = function (num, s) {
                   return num + ' ' + (num > 1 ? 'lines' : 'line') + ' of ' + s;
                 };
                 if (out > 0) {
-                  summary += getLinesSummary(out, 'stdout');
+                  summary.push(getLinesSummary(out, 'stdout'));
                 }
                 if (err > 0) {
-                  if (summary.length > 0) {
-                    summary += ', ';
-                  }
-                  summary += getLinesSummary(err, 'stderr');
+                  summary.push(getLinesSummary(err, 'stderr'));
                 }
-                if (summary.length > 0) {
-                  return summary;
+                if(result.payload) {
+                  summary.push(getOutputSummary(result.payload.type, result.payload));
                 }
+                return summary.join(', ');
                 break;
             }
+            return type;
           }
-          return outputDisplayType;
+          return result && getOutputSummary(result.innertype || result.type, result);
         };
 
         $scope.$watch('getOutputDisplayType()', function() {

@@ -50,6 +50,7 @@ public class TableDisplay {
   private Map<ColumnType, TableDisplayAlignmentProvider> alignmentForType = new HashMap<>();
   private Map<String, TableDisplayAlignmentProvider> alignmentForColumn = new HashMap<>();
   private Map<String, Boolean> columnsFrozen = new HashMap<>();
+  private Map<String, Boolean> columnsFrozenRight = new HashMap<>();
   private Map<String, Boolean> columnsVisible = new HashMap<>();
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
@@ -155,6 +156,14 @@ public class TableDisplay {
 
   public void setColumnFrozen(String column, boolean frozen) {
     this.columnsFrozen.put(column, frozen);
+  }
+
+  public Map<String, Boolean> getColumnsFrozenRight() {
+    return columnsFrozenRight;
+  }
+
+  public void setColumnFrozenRight(String column, boolean frozen) {
+    this.columnsFrozenRight.put(column, frozen);
   }
 
   public Map<String, Boolean> getColumnsVisible() {

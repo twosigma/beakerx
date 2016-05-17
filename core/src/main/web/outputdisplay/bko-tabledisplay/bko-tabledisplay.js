@@ -504,7 +504,7 @@
 
           var table = $scope.table;
           var cLength = [];
-          for (var i = 1; i <= $scope.columns.length; i++) {
+          for (var i = 1; i < $scope.columns.length; i++) {
             cLength.push(i);
           }
           table.columns(cLength).visible(visible);
@@ -1157,11 +1157,17 @@
                 columnsFrozen.push(scope.columnNames.indexOf(columnName));
               }
             });
+            var columnsFrozenRight = [];
+            _.forOwn(model.columnsFrozenRight, function (frozen, columnName) {
+              if (frozen) {
+                columnsFrozenRight.push(scope.columnNames.indexOf(columnName));
+              }
+            });
             scope.pagination = {
               'use' : true,
               'rowsToDisplay' : DEFAULT_PAGE_LENGTH,
               'fixLeft' : !_.isEmpty(columnsFrozen) ? Math.max.apply(null, columnsFrozen) + 1 : 0,
-              'fixRight' : 0
+              'fixRight' : !_.isEmpty(columnsFrozenRight) ? scope.columnNames.length - Math.min.apply(null, columnsFrozenRight) : 0,
             };
             scope.formatForTimes        = model.stringFormatForTimes || {};
             scope.stringFormatForType   = model.stringFormatForType || {};
@@ -2362,6 +2368,18 @@
             }
             if (scope.tableOrder !== undefined) {
               state.tableOrder = scope.tableOrder.slice(0);
+            }
+
+            if (scope.formatForTimes !== undefined) {
+              state.formatForTimes = scope.formatForTimes;
+            }
+
+            if (scope.stringFormatForType !== undefined) {
+              state.stringFormatForType = scope.stringFormatForType;
+            }
+
+            if (scope.stringFormatForColumn !== undefined) {
+              state.stringFormatForColumn = scope.stringFormatForColumn;
             }
 
             scope.model.setDumpState({datatablestate: state});

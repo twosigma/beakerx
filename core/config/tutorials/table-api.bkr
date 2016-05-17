@@ -146,7 +146,22 @@
                         "showFilter": false,
                         "columnSearchActive": false,
                         "columnFilter": [],
-                        "columnWidth": []
+                        "columnWidth": [],
+                        "formatForTimes": "DAYS",
+                        "stringFormatForType": {
+                            "double": {
+                                "type": "decimal",
+                                "minDecimals": 4,
+                                "maxDecimals": 6
+                            }
+                        },
+                        "stringFormatForColumn": {
+                            "m3": {
+                                "type": "decimal",
+                                "minDecimals": 0,
+                                "maxDecimals": 0
+                            }
+                        }
                     }
                 },
                 "result": {
@@ -200,6 +215,7 @@
                         "m3": "C"
                     },
                     "columnsFrozen": {},
+                    "columnsFrozenRight": {},
                     "columnsVisible": {},
                     "values": [
                         [
@@ -4901,8 +4917,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "aa446fe3-1bba-4ad7-a4dc-a11fddcf588a",
-                "elapsedTime": 667,
+                "shellId": "a5f55022-bce3-4f27-9c45-0bc95becf798",
+                "elapsedTime": 659,
                 "height": 776
             },
             "evaluatorReader": true,
@@ -5036,12 +5052,8 @@
                         "columnSearchActive": false,
                         "columnFilter": [],
                         "columnWidth": [],
-                        "tableOrder": [
-                            [
-                                4,
-                                "desc"
-                            ]
-                        ]
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {}
                     }
                 },
                 "result": {
@@ -5089,6 +5101,7 @@
                     "alignmentForType": {},
                     "alignmentForColumn": {},
                     "columnsFrozen": {},
+                    "columnsFrozenRight": {},
                     "columnsVisible": {},
                     "values": [
                         [
@@ -9790,8 +9803,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "aa446fe3-1bba-4ad7-a4dc-a11fddcf588a",
-                "elapsedTime": 1264,
+                "shellId": "a5f55022-bce3-4f27-9c45-0bc95becf798",
+                "elapsedTime": 613,
                 "height": 776
             },
             "evaluatorReader": true,
@@ -9815,6 +9828,8 @@
                     "def display = new TableDisplay(rates.values, rates.columnNames, rates.types)",
                     "//freeze a column",
                     "display.setColumnFrozen(\"m6\", true)",
+                    "//freeze a column to the right",
+                    "display.setColumnFrozenRight(\"y10\", true)",
                     "//hide a column",
                     "display.setColumnVisible(\"y30\", false)",
                     "display"
@@ -9827,7 +9842,7 @@
                             "use": true,
                             "rowsToDisplay": 25,
                             "fixLeft": 3,
-                            "fixRight": 0
+                            "fixRight": 2
                         },
                         "columnNames": [
                             "time",
@@ -9896,7 +9911,15 @@
                         "showFilter": false,
                         "columnSearchActive": false,
                         "columnFilter": [],
-                        "columnWidth": []
+                        "columnWidth": [
+                            null,
+                            null,
+                            null,
+                            "44px"
+                        ],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {}
                     }
                 },
                 "result": {
@@ -9935,6 +9958,9 @@
                     "alignmentForColumn": {},
                     "columnsFrozen": {
                         "m6": true
+                    },
+                    "columnsFrozenRight": {
+                        "y10": true
                     },
                     "columnsVisible": {
                         "y30": false
@@ -14639,12 +14665,12 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "aa446fe3-1bba-4ad7-a4dc-a11fddcf588a",
-                "elapsedTime": 652,
+                "shellId": "82243fe9-be82-433b-9bbb-791689a03072",
+                "elapsedTime": 618,
                 "height": 776
             },
             "evaluatorReader": true,
-            "lineCount": 7
+            "lineCount": 9
         }
     ],
     "namespace": {

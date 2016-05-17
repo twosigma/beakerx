@@ -762,7 +762,20 @@
           // double
           3: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
-              return parseFloat(value);
+              var doubleValue = parseFloat(value);
+              var colFormat = $scope.stringFormatForColumn[$scope.columnNames[meta.col - 1]];
+              var typeFormat = $scope.stringFormatForType.double;
+              var format = colFormat && colFormat.type === 'decimal' ? colFormat : typeFormat;
+              if (format && format.type === 'decimal') {
+                var precision = doubleValue.toString().split('.')[1];
+                if (precision && precision.length >= format.maxDecimals){
+                  return doubleValue.toFixed(format.maxDecimals);
+                } else {
+                  return doubleValue.toFixed(format.minDecimals);
+                }
+              } else {
+                return doubleValue;
+              }
             }
             if (type === 'sort') {
               return NaN;
@@ -1089,15 +1102,17 @@
             if (typeof scope.pagination.fixRight === 'boolean') {
               scope.pagination.fixRight = 0;
             }
-            scope.barsOnColumn        = scope.savedstate.barsOnColumn || {};
-            scope.heatmapOnColumn     = scope.savedstate.heatmapOnColumn || {};
-            scope.tableFilter         = scope.savedstate.tableFilter || '';
-            scope.columnFilter        = scope.savedstate.columnFilter || [];
-            scope.showFilter          = scope.savedstate.showFilter;
-            scope.columnSearchActive  = scope.savedstate.columnSearchActive;
-            scope.columnWidth         = scope.savedstate.columnWidth || [];
-            scope.tableOrder          = scope.savedstate.tableOrder;
-            scope.formatForTimes      = scope.savedstate.formatForTimes;
+            scope.barsOnColumn          = scope.savedstate.barsOnColumn || {};
+            scope.heatmapOnColumn       = scope.savedstate.heatmapOnColumn || {};
+            scope.tableFilter           = scope.savedstate.tableFilter || '';
+            scope.columnFilter          = scope.savedstate.columnFilter || [];
+            scope.showFilter            = scope.savedstate.showFilter;
+            scope.columnSearchActive    = scope.savedstate.columnSearchActive;
+            scope.columnWidth           = scope.savedstate.columnWidth || [];
+            scope.tableOrder            = scope.savedstate.tableOrder;
+            scope.formatForTimes        = scope.savedstate.formatForTimes;
+            scope.stringFormatForType   = scope.savedstate.stringFormatForType || {};
+            scope.stringFormatForColumn = scope.savedstate.stringFormatForColumn || {};
 
             scope.savedstate  = undefined;
           } else {
@@ -1128,7 +1143,9 @@
               'fixLeft' : 0,
               'fixRight' : 0
             };
-            scope.formatForTimes = model.stringFormatForTimes;
+            scope.formatForTimes        = model.stringFormatForTimes || {};
+            scope.stringFormatForType   = model.stringFormatForType || {};
+            scope.stringFormatForColumn = model.stringFormatForColumn || {};
           }
           // auto compute types
           if (scope.actualtype === undefined || scope.actualtype.length === 0) {
@@ -1143,7 +1160,11 @@
                   scope.actualtype.push(2);
                   scope.actualalign.push('R');
                 } else if (scope.types[i] === 'double') {
-                  scope.actualtype.push('4.4');
+                  if (scope.stringFormatForType.double || scope.stringFormatForColumn[scope.columnNames[i]]) {
+                    scope.actualtype.push(3);
+                  } else {
+                    scope.actualtype.push('4.4');
+                  }
                   scope.actualalign.push('R');
                 } else {
                   scope.actualtype.push(0);

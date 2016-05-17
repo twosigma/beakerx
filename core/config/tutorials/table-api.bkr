@@ -59,10 +59,10 @@
                     "def display = new TableDisplay(rates.values, rates.columnNames, rates.types)",
                     "//show all time columns in days",
                     "display.setStringFormatForTimes(TimeUnit.DAYS)",
-                    "//min 2, max 2 decimal places for all doubles",
-                    "display.setStringFormatForType(ColumnType.Double, TableDisplayStringFormat.getDecimalFormat(2,2))//not ready on frontend yet",
+                    "//min 4, max 6 decimal places for all doubles",
+                    "display.setStringFormatForType(ColumnType.Double, TableDisplayStringFormat.getDecimalFormat(4,6))",
                     "//setting for a column takes precidence over the type",
-                    "display.setStringFormatForColumn(\"closePrice\", TableDisplayStringFormat.getDecimalFormat(0, 0))",
+                    "display.setStringFormatForColumn(\"m3\", TableDisplayStringFormat.getDecimalFormat(0, 0))",
                     "//set the alignment",
                     "display.setAlignmentProviderForType(ColumnType.Double, TableDisplayAlignmentProvider.RIGHT_ALIGNMENT)",
                     "display.setAlignmentProviderForColumn('m3', TableDisplayAlignmentProvider.CENTER_ALIGNMENT)",
@@ -93,15 +93,15 @@
                         ],
                         "actualtype": [
                             8,
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4"
+                            3,
+                            3,
+                            3,
+                            3,
+                            3,
+                            3,
+                            3,
+                            3,
+                            3
                         ],
                         "actualalign": [
                             "C",
@@ -180,12 +180,12 @@
                     "stringFormatForType": {
                         "double": {
                             "type": "decimal",
-                            "minDecimals": 2,
-                            "maxDecimals": 2
+                            "minDecimals": 4,
+                            "maxDecimals": 6
                         }
                     },
                     "stringFormatForColumn": {
-                        "closePrice": {
+                        "m3": {
                             "type": "decimal",
                             "minDecimals": 0,
                             "maxDecimals": 0
@@ -4900,7 +4900,7 @@
                 "selectedType": "Table",
                 "pluginName": "Groovy",
                 "shellId": "37989ee9-914a-473f-a50b-43c2ffb61d2e",
-                "elapsedTime": 624,
+                "elapsedTime": 573,
                 "height": 776
             },
             "evaluatorReader": true,
@@ -9780,8 +9780,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "dcd32590-1ae3-41cd-a35d-e917bbf10acb",
-                "elapsedTime": 604,
+                "shellId": "37989ee9-914a-473f-a50b-43c2ffb61d2e",
+                "elapsedTime": 600,
                 "height": 776
             },
             "evaluatorReader": true,

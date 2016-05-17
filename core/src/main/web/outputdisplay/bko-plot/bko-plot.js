@@ -158,8 +158,8 @@
           scope.layout = {    // TODO, specify space for left/right y-axis, also avoid half-shown labels
             bottomLayoutMargin : 30,
             topLayoutMargin : 0,
-            leftLayoutMargin : 80,
-            rightLayoutMargin : scope.stdmodel.yAxisR ? 80 : 0,
+            leftLayoutMargin : calcVertLayoutMargin(scope.stdmodel.yAxis),
+            rightLayoutMargin : scope.stdmodel.yAxisR ? calcVertLayoutMargin(scope.stdmodel.yAxisR) : 0,
             legendMargin : 10,
             legendBoxSize : 10
           };
@@ -234,6 +234,45 @@
               scope.update();
             }
           });
+        };
+
+        function measureText(pText, pFontSize, pStyle) {
+          var lDiv = document.createElement('lDiv');
+
+          document.body.appendChild(lDiv);
+
+          if (pStyle != null) {
+            lDiv.style = pStyle;
+          }
+          lDiv.style.fontSize = "" + pFontSize + "px";
+          lDiv.style.position = "absolute";
+          lDiv.style.left = -1000;
+          lDiv.style.top = -1000;
+
+          lDiv.innerHTML = pText;
+
+          var lResult = {
+            width: lDiv.clientWidth,
+            height: lDiv.clientHeight
+          };
+
+          document.body.removeChild(lDiv);
+          lDiv = null;
+
+          return lResult;
+        }
+
+        var calcVertLayoutMargin = function (axis, pStyle) {
+          var result = 80;
+          if (axis && axis.axisType === 'linear') {
+            var l = axis.axisValL.toFixed(axis.axisFixed) + '';
+            var r = axis.axisValL.toFixed(axis.axisFixed) + '';
+
+            var m = l.length > r.length ? l : r;
+            var size = measureText(m, 13, pStyle);
+            result = size.width + size.height * 2;
+          }
+          return result > 80 ? result : 80;
         };
 
         scope.emitZoomLevelChange = function() {

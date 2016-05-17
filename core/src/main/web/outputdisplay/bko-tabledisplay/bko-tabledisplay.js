@@ -1137,10 +1137,16 @@
             scope.columnSearchActive = false;
             scope.columnWidth       = [];
             scope.tableOrder        = undefined;
+            var columnsFrozen = [];
+            _.forOwn(model.columnsFrozen, function (frozen, columnName) {
+              if (frozen) {
+                columnsFrozen.push(scope.columnNames.indexOf(columnName));
+              }
+            });
             scope.pagination = {
               'use' : true,
               'rowsToDisplay' : DEFAULT_PAGE_LENGTH,
-              'fixLeft' : 0,
+              'fixLeft' : !_.isEmpty(columnsFrozen) ? Math.max.apply(null, columnsFrozen) + 1 : 0,
               'fixRight' : 0
             };
             scope.formatForTimes        = model.stringFormatForTimes || {};

@@ -49,6 +49,7 @@ public class TableDisplay {
   private Map<String, TableDisplayCellRenderer> rendererForColumn = new HashMap<>();
   private Map<ColumnType, TableDisplayAlignmentProvider> alignmentForType = new HashMap<>();
   private Map<String, TableDisplayAlignmentProvider> alignmentForColumn = new HashMap<>();
+  private Map<String, Boolean> columnsFrozen = new HashMap<>();
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
@@ -145,6 +146,14 @@ public class TableDisplay {
 
   public void setAlignmentProviderForColumn(String column, TableDisplayAlignmentProvider alignmentProvider) {
     this.alignmentForColumn.put(column, alignmentProvider);
+  }
+
+  public Map<String, Boolean> getColumnsFrozen() {
+    return columnsFrozen;
+  }
+
+  public void setColumnFrozen(String column, boolean frozen) {
+    this.columnsFrozen.put(column, frozen);
   }
 
   public static List<Map<String, Object>> getValuesAsRows(List<List<?>> values, List<String> columns) {

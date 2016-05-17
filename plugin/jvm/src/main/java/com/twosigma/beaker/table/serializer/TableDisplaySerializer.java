@@ -44,6 +44,7 @@ public class TableDisplaySerializer extends JsonSerializer<TableDisplay> {
       jgen.writeObjectField("rendererForColumn", value.getRendererForColumn());
       jgen.writeObjectField("alignmentForType", value.getAlignmentForType());
       jgen.writeObjectField("alignmentForColumn", value.getAlignmentForColumn());
+      jgen.writeObjectField("columnsFrozen", value.getColumnsFrozen());
       jgen.writeObjectField("values", value.getValues());
       jgen.writeEndObject();
     }

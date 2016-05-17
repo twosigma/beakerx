@@ -90,7 +90,7 @@ var BeakerPageObject = function() {
   };
 
   this.toggleCellMenu = function(opts) {
-    return element.all(by.css('.bkcell .toggle-menu .dropdown-promoted'))
+    return element.all(by.css('.bkcell .toggle-menu-items .dropdown-promoted'))
     .get(opts.cellIndex)
     .click();
   };
@@ -123,7 +123,7 @@ var BeakerPageObject = function() {
   };
 
   this.isCellMenuOpen = function(opts) {
-    return element.all(by.css('.bkcell .open.toggle-menu.bkr'))
+    return element.all(by.css('.bkcell .open.toggle-menu-items.bkr'))
     .get(opts.cellIndex)
     .isDisplayed()
     .then(function() {

@@ -68,7 +68,7 @@ describe('Code Cell', function() {
   it('can open a cells language menu in advanced mode', function(done) {
     beakerPO.insertCellButton.click()
     .then(beakerPO.toggleAdvancedMode)
-    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 1}))
+    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 0}))
     .then(beakerPO.isLanguageCellMenuOpen)
     .then(function(isOpen) {
       expect(isOpen).toEqual(true);
@@ -80,7 +80,7 @@ describe('Code Cell', function() {
   it('can close a cell language menu by clicking off', function(done) {
     beakerPO.insertCellButton.click()
     .then(beakerPO.toggleAdvancedMode)
-    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 1}))
+    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 0}))
     .then(element(by.css('body')).click)
     .then(beakerPO.isLanguageCellMenuOpen)
     .then(function(isOpen) {

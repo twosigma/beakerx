@@ -68,8 +68,9 @@ describe('notebook', function() {
       beakerPO.waitUntilGraphOutputPresent()
       .then(function(present) {
         expect(present).toEqual(true);
-        done();
       });
+      beakerPO.createScreenshot('notebookOutputGraphs');
+      done();
     });
 
     it('can output graphs when minimized', function(done) {
@@ -79,8 +80,9 @@ describe('notebook', function() {
       beakerPO.waitUntilGraphOutputPresent()
       .then(function(present) {
         expect(present).toEqual(true);
-        done();
       });
+      beakerPO.createScreenshot('notebookOutputGraphs');
+      done();
     });
   });
 

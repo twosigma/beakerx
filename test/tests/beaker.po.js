@@ -123,7 +123,7 @@ var BeakerPageObject = function() {
   };
 
   this.isCellMenuOpen = function(opts) {
-    return element.all(by.css('.bkcell .open.toggle-menu.bkr'))
+    return element.all(by.css('.bkcell .open.toggle-menu-items.bkr'))
     .get(opts.cellIndex)
     .isDisplayed()
     .then(function() {
@@ -173,11 +173,16 @@ var BeakerPageObject = function() {
                     require('./mixins/cell.js'));
   };
   this.waitForPlugin = function(plugin) {
+    var self = this;
     browser.wait(function() {
       var deferred = protractor.promise.defer();
       this.languageManagerButtonActive(plugin).isPresent()
         .then(function(result) {
           deferred.fulfill(result);
+          self.createScreenshot('waitForPlugin' + plugin);
+        },
+        function(value){
+          self.createScreenshot('waitForPlugin' + plugin);
         });
       return deferred.promise;
     }.bind(this), 50000);

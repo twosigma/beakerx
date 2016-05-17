@@ -45,6 +45,7 @@ describe('Code Cell', function() {
     beakerPO.cellEvaluatorMenu.click();
     beakerPO.cellEvaluatorMenuItem('Groovy').click();
     expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual('Groovy');
+    beakerPO.createScreenshot('codeCellSetGroovy');
     done();
   });
 
@@ -62,17 +63,19 @@ describe('Code Cell', function() {
     expect(cell.inputWrapper().isDisplayed()).toBe(true);
     expect(cell.input().isDisplayed()).toBe(false);
     expect(cell.miniCellStatus().isDisplayed()).toBe(true);
+    beakerPO.createScreenshot('codeCellHideInput');
     done();
   });
 
   it('can open a cells language menu in advanced mode', function(done) {
     beakerPO.insertCellButton.click()
     .then(beakerPO.toggleAdvancedMode)
-    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 1}))
+    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 0}))
     .then(beakerPO.isLanguageCellMenuOpen)
     .then(function(isOpen) {
       expect(isOpen).toEqual(true);
     })
+    .then(beakerPO.createScreenshot.bind(this, 'codeCellAdvancedMode'))
     .then(beakerPO.toggleAdvancedMode)
     .then(done);
   });
@@ -80,12 +83,13 @@ describe('Code Cell', function() {
   it('can close a cell language menu by clicking off', function(done) {
     beakerPO.insertCellButton.click()
     .then(beakerPO.toggleAdvancedMode)
-    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 1}))
+    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 0}))
     .then(element(by.css('body')).click)
     .then(beakerPO.isLanguageCellMenuOpen)
     .then(function(isOpen) {
       expect(isOpen).toEqual(false);
     })
+    .then(beakerPO.createScreenshot.bind(this, 'codeCellCloseMenu'))
     .then(beakerPO.toggleAdvancedMode)
     .then(done);
   });

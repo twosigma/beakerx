@@ -90,7 +90,7 @@ var BeakerPageObject = function() {
   };
 
   this.toggleCellMenu = function(opts) {
-    return element.all(by.css('.bkcell .toggle-menu-items .dropdown-promoted'))
+    return element.all(by.css('.bkcell .toggle-menu .dropdown-promoted'))
     .get(opts.cellIndex)
     .click();
   };
@@ -173,11 +173,16 @@ var BeakerPageObject = function() {
                     require('./mixins/cell.js'));
   };
   this.waitForPlugin = function(plugin) {
+    var self = this;
     browser.wait(function() {
       var deferred = protractor.promise.defer();
       this.languageManagerButtonActive(plugin).isPresent()
         .then(function(result) {
           deferred.fulfill(result);
+          self.createScreenshot('waitForPlugin' + plugin);
+        },
+        function(value){
+          self.createScreenshot('waitForPlugin' + plugin);
         });
       return deferred.promise;
     }.bind(this), 50000);

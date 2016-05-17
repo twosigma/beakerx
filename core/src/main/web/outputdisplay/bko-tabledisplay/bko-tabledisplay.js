@@ -1632,6 +1632,10 @@
             var items = [];
 
             _.each(types, function(obj) {
+              if (obj.type === 8) { //time
+                items = items.concat(getTimeSubitems());
+                return;
+              }
               var item = {
                 title: obj.name,
                 isChecked: function(container) {
@@ -1641,8 +1645,6 @@
               };
               if (obj.type === 4) { //double with precision
                 item.items = getPrecisionSubitems;
-              } else if (obj.type === 8) { //time
-                item.items = getTimeSubitems;
               } else {
                 item.action = function(el) {
                     var container = el.closest('.bko-header-menu');
@@ -1682,7 +1684,7 @@
             return items;
           };
           
-          var getTimeSubitems = function(container) {
+          var getTimeSubitems = function() {
             var items = [];
 
             _.forOwn(TIME_UNIT_FORMATS, function(value, unit) {

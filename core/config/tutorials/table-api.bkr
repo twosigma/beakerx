@@ -200,6 +200,7 @@
                         "m3": "C"
                     },
                     "columnsFrozen": {},
+                    "columnsVisible": {},
                     "values": [
                         [
                             {
@@ -4900,8 +4901,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "3f6bb02b-4f95-4a4d-a1a3-757dfc725c4a",
-                "elapsedTime": 616,
+                "shellId": "aa446fe3-1bba-4ad7-a4dc-a11fddcf588a",
+                "elapsedTime": 667,
                 "height": 776
             },
             "evaluatorReader": true,
@@ -5034,7 +5035,13 @@
                         "showFilter": false,
                         "columnSearchActive": false,
                         "columnFilter": [],
-                        "columnWidth": []
+                        "columnWidth": [],
+                        "tableOrder": [
+                            [
+                                4,
+                                "desc"
+                            ]
+                        ]
                     }
                 },
                 "result": {
@@ -5081,6 +5088,8 @@
                     },
                     "alignmentForType": {},
                     "alignmentForColumn": {},
+                    "columnsFrozen": {},
+                    "columnsVisible": {},
                     "values": [
                         [
                             {
@@ -9781,8 +9790,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "37989ee9-914a-473f-a50b-43c2ffb61d2e",
-                "elapsedTime": 600,
+                "shellId": "aa446fe3-1bba-4ad7-a4dc-a11fddcf588a",
+                "elapsedTime": 1264,
                 "height": 776
             },
             "evaluatorReader": true,
@@ -9806,6 +9815,8 @@
                     "def display = new TableDisplay(rates.values, rates.columnNames, rates.types)",
                     "//freeze a column",
                     "display.setColumnFrozen(\"m6\", true)",
+                    "//hide a column",
+                    "display.setColumnVisible(\"y30\", false)",
                     "display"
                 ]
             },
@@ -9877,7 +9888,7 @@
                             true,
                             true,
                             true,
-                            true
+                            false
                         ],
                         "barsOnColumn": {},
                         "heatmapOnColumn": {},
@@ -9924,6 +9935,9 @@
                     "alignmentForColumn": {},
                     "columnsFrozen": {
                         "m6": true
+                    },
+                    "columnsVisible": {
+                        "y30": false
                     },
                     "values": [
                         [
@@ -14625,12 +14639,12 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "3f6bb02b-4f95-4a4d-a1a3-757dfc725c4a",
-                "elapsedTime": 620,
+                "shellId": "aa446fe3-1bba-4ad7-a4dc-a11fddcf588a",
+                "elapsedTime": 652,
                 "height": 776
             },
             "evaluatorReader": true,
-            "lineCount": 5
+            "lineCount": 7
         }
     ],
     "namespace": {

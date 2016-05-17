@@ -124,7 +124,10 @@
       var idxInRightClone = colInd - (colsLength - fixedCols.s.rightColumns);
       jqInput = $(rightFixedHeader).find('.filterRow th:eq(' + idxInRightClone + ') .filter-input');
     } else {
-      jqInput = $(dtSettings.aoHeader[1][colInd].cell).find('.filter-input');
+      var header = dtSettings.aoHeader[1][colInd];
+      if (header) {
+        jqInput = $(header.cell).find('.filter-input');
+      }
     }
     return jqInput;
   };
@@ -593,8 +596,10 @@
             }
           });
           $.each($scope.colreorg.s.dt.aoColumns, function (i, column) {
-            $scope.getColumnFilter($scope.table.column(column.idx + ":visible"))
-              .closest('th').attr('data-column-index', i);
+            var filter = $scope.getColumnFilter($scope.table.column(column.idx + ":visible"));
+            if (filter) {
+              filter.closest('th').attr('data-column-index', i);
+            }
           });
         };
 
@@ -1117,7 +1122,16 @@
             scope.savedstate  = undefined;
           } else {
             scope.colorder          = undefined;
-            scope.getCellSho        = undefined;
+            if (!_.isEmpty(model.columnsVisible)) {
+              scope.getCellSho = [];
+              _.forEach(scope.columnNames, function(columnName){
+                var visible = model.columnsVisible.hasOwnProperty(columnName) ? model.columnsVisible[columnName] : true;
+                scope.getCellSho.push(visible);
+              });
+            } else {
+              scope.getCellSho = undefined;
+            }
+
             scope.barsOnColumn      = {}; //map: col index -> show bars
             if (!_.isEmpty(model.rendererForType)) {
               _.forEach(scope.types, function (type, index) {

@@ -91,7 +91,8 @@
                 "You can embed TeX ([Donald Knuth's](https://en.wikipedia.org/wiki/Donald_Knuth) mathematical typesetting system)",
                 "into a markdown cell by enclosing it with dollar characters: $e^{i\\pi}+1=0$.",
                 "",
-                "You can just copy-and-paste unicode characters in: 玻璃, or you can enter HTML entities like &amp;dagger; for &dagger;.",
+                "You can write unicode with your native keyboard, or copy-and-paste unicode characters in: 玻璃.",
+                "Plus you can enter HTML entities like &amp;dagger; for &dagger;.",
                 "In fact, many basic HTML elements work, like super&lt;sup&gt;scripts&lt;/sup&gt; for super<sup>scripts</sup>."
             ],
             "evaluatorReader": false,
@@ -130,7 +131,7 @@
             "id": "markdownnClGUn",
             "type": "markdown",
             "body": [
-                "In the prose part of a notebook that you can write it is sometimes useful to refer to values computed previously in the notebook.",
+                "In the prose part of a notebook it is sometimes useful to refer to values computed by code in the notebook.",
                 "Beaker makes it easy to do this by supporting a form of template expansion.  To see this, start out by defining some values on the `beaker` object:"
             ],
             "evaluatorReader": false
@@ -161,14 +162,15 @@
             "id": "markdownqlcer3",
             "type": "markdown",
             "body": [
-                "Markdown cells can include values computed by JavaScript, or from any language via autotranslation and the `beaker` object.",
-                "Just enclose a JavaScript expression in double braces, and that code will be replaced with the result of its evaluation.",
+                "Text cells can include values computed by JavaScript, or from any language via autotranslation and the `beaker` object.",
+                "Just enclose a JavaScript expression in double braces, and that code will be replaced with the result of its evaluation. {{''",
+                "/* in the next line, unicode 8203 is for the zero-width space */}}",
                 "For example, given the definition of `beaker.name` above, writing `{&#8203;{beaker.name}}` appears as {{beaker.name}} (click",
                 "on this cell to see the markdown source).",
                 "",
                 "Since you have full access to JavaScript you can call functions to do things like",
                 "format numbers and call out results computed elsewhere in your notebook.  For example, $e$ the base of the natural logarithm, is about",
-                "{{beaker.e.toFixed(3)}}.",
+                "{{beaker.e.toFixed(3)}}, as computed above and formatted here.",
                 "",
                 "You can also customize content according to the reader's operating sytem.  For example, you are on a",
                 "{{(beaker.client.mac)?\"Mac, so &#x2318;-O\":\"PC, so Control-O\"}} opens a file.",

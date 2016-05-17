@@ -330,6 +330,10 @@ background-color: rgb(205, 223, 214);
   opacity: 0.5;
 }
 
+.vertical-align {
+  display: flex;
+  align-items: center;
+}
 
 .ansi-black-fg, .ansi-black-bg {color: black}
 .ansi-red-fg, .ansi-red-bg {color: red}

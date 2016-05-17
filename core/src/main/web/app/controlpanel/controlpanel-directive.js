@@ -223,15 +223,7 @@
         };
 
         $scope.removeRecent = function (item, event) {
-          bkHelper.show2ButtonModal('Remove from history?', null,
-            function() {
-              bkRecentMenu.removeRecentDocument(item);
-              $scope.doClose();
-            },
-            function() {
-              $scope.doClose();
-            },
-            "Yes", "No", "", "");
+          bkRecentMenu.removeRecentDocument(item);
         };
 
         var isDisconnected = function() {

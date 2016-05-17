@@ -69,12 +69,15 @@
         <h4 class="open-notebook-headline">Recent Notebooks</h4>
           <ul class="notebook-dashboard-list">
             <li class='session clearfix' ng-repeat='item in recents'>
-              <div class="pull-left">
-                <a class='caption notebook-link' href="#" ng-click="openRecent(item, $event)" ng-bind="item.name" eat-click></a>
-                <div class='light path' ng-if="item.tooltip" ng-bind="item.tooltip"></div>
-              </div>
-              <div class="pull-right">
-                <a class='glyphicon glyphicon-remove' href="#"  ng-click="removeRecent(item, $event)" eat-click ></a>
+              <div class="row  vertical-align">
+                <div class="col-xs-11">
+                  <a class='caption notebook-link' href="#" ng-click="openRecent(item, $event)" ng-bind="item.name" eat-click></a>
+                  <div class='light path' ng-if="item.tooltip" ng-bind="item.tooltip"></div>
+                </div>
+                <div class= "col-xs-1">
+                  <i class="glyphicon glyphicon-remove cursor_hand" ng-click="removeRecent(item, $event)"
+                     eat-click title="click to remove from history"></i>
+                </div>
               </div>
             </li>
           </ul>

@@ -45,6 +45,7 @@ describe('Code Cell', function() {
     beakerPO.cellEvaluatorMenu.click();
     beakerPO.cellEvaluatorMenuItem('Groovy').click();
     expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual('Groovy');
+    beakerPO.createScreenshot('codeCellSetGroovy');
     done();
   });
 
@@ -62,6 +63,7 @@ describe('Code Cell', function() {
     expect(cell.inputWrapper().isDisplayed()).toBe(true);
     expect(cell.input().isDisplayed()).toBe(false);
     expect(cell.miniCellStatus().isDisplayed()).toBe(true);
+    beakerPO.createScreenshot('codeCellHideInput');
     done();
   });
 
@@ -73,6 +75,7 @@ describe('Code Cell', function() {
     .then(function(isOpen) {
       expect(isOpen).toEqual(true);
     })
+    .then(beakerPO.createScreenshot.bind(this, 'codeCellAdvancedMode'))
     .then(beakerPO.toggleAdvancedMode)
     .then(done);
   });
@@ -86,6 +89,7 @@ describe('Code Cell', function() {
     .then(function(isOpen) {
       expect(isOpen).toEqual(false);
     })
+    .then(beakerPO.createScreenshot.bind(this, 'codeCellCloseMenu'))
     .then(beakerPO.toggleAdvancedMode)
     .then(done);
   });

@@ -45,12 +45,15 @@
     var rgbaToHex = bkUtils.rgbaToHex;
     var defaultPlotColors = {};
     defaultPlotColors[GLOBALS.THEMES.DEFAULT] = [
-      rgbaToHex(140, 29, 23),  // red
-      rgbaToHex(33, 87, 141),  // blue
-      rgbaToHex(150, 130, 54), // yellow
-      rgbaToHex(20, 30, 120),  // violet
-      rgbaToHex(54, 100, 54),  // green
-      rgbaToHex(60, 30, 50)    // dark
+      rgbaToHex(241, 88, 84),//F15854 (red)
+      rgbaToHex(93, 165, 218),//5DA5DA (blue)
+      rgbaToHex(96, 189, 104),//60BD68 (green)
+      rgbaToHex(250, 164, 58),//FAA43A (orange)
+      rgbaToHex(178, 145, 47),//B2912F (brown)
+      rgbaToHex(178, 118, 178),//B276B2 (purple)
+      rgbaToHex(222, 207, 63),//DECF3F (yellow)
+      rgbaToHex(77, 77, 77),//4D4D4D (gray)
+      rgbaToHex(241, 124, 176) //F17CB0 (pink)
     ];
     defaultPlotColors[GLOBALS.THEMES.AMBIANCE] = [
       rgbaToHex(191, 39, 31),   // red

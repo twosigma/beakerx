@@ -40,6 +40,16 @@ define(function(require, exports, module) {
       id: 'lock-menuitem'
     },
     {
+      name: 'Add a new code cell',
+      shortcut: ["Ctrl-Shift-A", "&#x2318;-Shift-A"],
+      sortorder: 115,
+      action: function () {
+        bkHelper.appendCodeCell();
+      },
+      tooltip: 'Add a new code cell',
+      id: 'append-code-cell-menuitem'
+    },
+    {
       name: 'Delete all output cells',
       sortorder: 120,
       action: function () {

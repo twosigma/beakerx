@@ -9826,12 +9826,16 @@
                 "body": [
                     "def rates = beaker.rates",
                     "def display = new TableDisplay(rates.values, rates.columnNames, rates.types)",
+                    "display.setStringFormatForType(ColumnType.Double, TableDisplayStringFormat.getDecimalFormat(9,9))",
                     "//freeze a column",
                     "display.setColumnFrozen(\"m6\", true)",
                     "//freeze a column to the right",
                     "display.setColumnFrozenRight(\"y10\", true)",
                     "//hide a column",
                     "display.setColumnVisible(\"y30\", false)",
+                    "",
+                    "//explicitly set column order/visiblity",
+                    "display.setColumnOrder([\"m3\", \"time\"])",
                     "display"
                 ]
             },
@@ -9858,15 +9862,15 @@
                         ],
                         "actualtype": [
                             8,
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4"
+                            3,
+                            3,
+                            3,
+                            3,
+                            3,
+                            3,
+                            3,
+                            3,
+                            3
                         ],
                         "actualalign": [
                             "C",
@@ -9911,14 +9915,15 @@
                         "showFilter": false,
                         "columnSearchActive": false,
                         "columnFilter": [],
-                        "columnWidth": [
-                            null,
-                            null,
-                            null,
-                            "44px"
-                        ],
+                        "columnWidth": [],
                         "formatForTimes": {},
-                        "stringFormatForType": {},
+                        "stringFormatForType": {
+                            "double": {
+                                "type": "decimal",
+                                "minDecimals": 9,
+                                "maxDecimals": 9
+                            }
+                        },
                         "stringFormatForColumn": {}
                     }
                 },
@@ -9950,7 +9955,13 @@
                     ],
                     "subtype": "TableDisplay",
                     "stringFormatForTimes": null,
-                    "stringFormatForType": {},
+                    "stringFormatForType": {
+                        "double": {
+                            "type": "decimal",
+                            "minDecimals": 9,
+                            "maxDecimals": 9
+                        }
+                    },
                     "stringFormatForColumn": {},
                     "rendererForType": {},
                     "rendererForColumn": {},
@@ -9965,6 +9976,10 @@
                     "columnsVisible": {
                         "y30": false
                     },
+                    "columnOrder": [
+                        "m3",
+                        "time"
+                    ],
                     "values": [
                         [
                             {
@@ -14665,12 +14680,12 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "82243fe9-be82-433b-9bbb-791689a03072",
-                "elapsedTime": 618,
-                "height": 776
+                "shellId": "441b1b83-3e08-4fb8-a0a6-225fe2dc42d1",
+                "elapsedTime": 622,
+                "height": 791
             },
             "evaluatorReader": true,
-            "lineCount": 9
+            "lineCount": 13
         }
     ],
     "namespace": {

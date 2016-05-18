@@ -687,19 +687,20 @@
             });
         };
 
-        $scope.updateFixedColumnsSeparator = function(){
+        $scope.updateFixedColumnsSeparator = function () {
           if ($scope.table) {
-            var getHeader = function(thIndex){
+            var getHeader = function (thIndex) {
               return $($scope.table.header()).find('tr').find('th:eq(' + thIndex + ')');
             };
-            var updateColumn = function(columnIndex, cssClass){
+            var updateColumn = function (columnIndex, cssClass) {
               var column = $scope.table.column(columnIndex);
+              if (!column.visible()) { return; }
               var columnHeader = getHeader($(column.header()).index());
               $(column.nodes()).addClass(cssClass);
               columnHeader.addClass(cssClass);
             };
             updateColumn($scope.pagination.fixLeft, FC_LEFT_SEPARATOR_CLASS);
-            if($scope.pagination.fixRight){
+            if ($scope.pagination.fixRight) {
               updateColumn($scope.columns.length - $scope.pagination.fixRight, FC_RIGHT_SEPARATOR_CLASS);
             }
           }
@@ -1121,8 +1122,7 @@
 
             scope.savedstate  = undefined;
           } else {
-            scope.colorder          = undefined;
-            if (!_.isEmpty(model.columnsVisible)) {
+            if (!_.isEmpty(model.columnsVisible) && _.isEmpty(model.columnOrder)) {
               scope.getCellSho = [];
               _.forEach(scope.columnNames, function(columnName){
                 var visible = model.columnsVisible.hasOwnProperty(columnName) ? model.columnsVisible[columnName] : true;
@@ -1132,7 +1132,25 @@
               scope.getCellSho = undefined;
             }
 
-            scope.barsOnColumn      = {}; //map: col index -> show bars
+            if (!_.isEmpty(model.columnOrder)) {
+              scope.colorder = [0];
+              scope.getCellSho = [];
+              _.forEach(model.columnOrder, function (columnName) {
+                scope.colorder.push(scope.columnNames.indexOf(columnName) + 1);
+              });
+              _.forEach(scope.columnNames, function (columnName) {
+                var colIndex = model.columnOrder.indexOf(columnName);
+                var visible = colIndex > -1;
+                scope.getCellSho.push(visible);
+                if (!visible) {
+                  scope.colorder.push(scope.columnNames.indexOf(columnName) + 1);
+                }
+              });
+            } else {
+              scope.colorder = undefined;
+            }
+
+            scope.barsOnColumn = {}; //map: col index -> show bars
             if (!_.isEmpty(model.rendererForType)) {
               _.forEach(scope.types, function (type, index) {
                 var renderer = model.rendererForType[type];
@@ -1151,23 +1169,27 @@
             scope.columnSearchActive = false;
             scope.columnWidth       = [];
             scope.tableOrder        = undefined;
+            var getColumnIndex = function (columnName) { // takes into account colorder
+              var initInd = scope.columnNames.indexOf(columnName) + 1;
+              return !_.isEmpty(scope.colorder) ? scope.colorder.indexOf(initInd) : initInd;
+            };
             var columnsFrozen = [];
             _.forOwn(model.columnsFrozen, function (frozen, columnName) {
               if (frozen) {
-                columnsFrozen.push(scope.columnNames.indexOf(columnName));
+                columnsFrozen.push(getColumnIndex(columnName));
               }
             });
             var columnsFrozenRight = [];
             _.forOwn(model.columnsFrozenRight, function (frozen, columnName) {
               if (frozen) {
-                columnsFrozenRight.push(scope.columnNames.indexOf(columnName));
+                columnsFrozenRight.push(getColumnIndex(columnName));
               }
             });
             scope.pagination = {
               'use' : true,
               'rowsToDisplay' : DEFAULT_PAGE_LENGTH,
-              'fixLeft' : !_.isEmpty(columnsFrozen) ? Math.max.apply(null, columnsFrozen) + 1 : 0,
-              'fixRight' : !_.isEmpty(columnsFrozenRight) ? scope.columnNames.length - Math.min.apply(null, columnsFrozenRight) : 0,
+              'fixLeft' : !_.isEmpty(columnsFrozen) ? Math.max.apply(null, columnsFrozen) : 0,
+              'fixRight' : !_.isEmpty(columnsFrozenRight) ? scope.columnNames.length - Math.min.apply(null, columnsFrozenRight) + 1 : 0,
             };
             scope.formatForTimes        = model.stringFormatForTimes || {};
             scope.stringFormatForType   = model.stringFormatForType || {};

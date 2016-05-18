@@ -47,6 +47,7 @@ public class TableDisplaySerializer extends JsonSerializer<TableDisplay> {
       jgen.writeObjectField("columnsFrozen", value.getColumnsFrozen());
       jgen.writeObjectField("columnsFrozenRight", value.getColumnsFrozenRight());
       jgen.writeObjectField("columnsVisible", value.getColumnsVisible());
+      jgen.writeObjectField("columnOrder", value.getColumnOrder());
       jgen.writeObjectField("values", value.getValues());
       jgen.writeEndObject();
     }

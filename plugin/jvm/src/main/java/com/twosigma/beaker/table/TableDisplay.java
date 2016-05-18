@@ -52,6 +52,7 @@ public class TableDisplay {
   private Map<String, Boolean> columnsFrozen = new HashMap<>();
   private Map<String, Boolean> columnsFrozenRight = new HashMap<>();
   private Map<String, Boolean> columnsVisible = new HashMap<>();
+  private List<String> columnOrder = new ArrayList<>();
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
@@ -172,6 +173,14 @@ public class TableDisplay {
 
   public void setColumnVisible(String column, boolean visible) {
     this.columnsVisible.put(column, visible);
+  }
+
+  public List<String> getColumnOrder() {
+    return columnOrder;
+  }
+
+  public void setColumnOrder(List<String> columnOrder) {
+    this.columnOrder = columnOrder;
   }
 
   public static List<Map<String, Object>> getValuesAsRows(List<List<?>> values, List<String> columns) {

@@ -41,7 +41,7 @@ describe('Code Cell', function() {
   it('can set a cell language to Groovy', function(done) {
     beakerPO.insertCellButton.click();
     loadGroovy();
-
+    browser.wait(beakerPO.EC.presenceOf(beakerPO.cellEvaluatorMenu), 10000);
     beakerPO.cellEvaluatorMenu.click();
     beakerPO.cellEvaluatorMenuItem('Groovy').click();
     expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual('Groovy');
@@ -52,7 +52,7 @@ describe('Code Cell', function() {
   it('can hide the input', function(done) {
     beakerPO.insertCellButton.click();
     loadGroovy();
-
+    browser.wait(beakerPO.EC.presenceOf(beakerPO.cellEvaluatorMenu), 10000);
     beakerPO.cellEvaluatorMenu.click();
     beakerPO.cellEvaluatorMenuItem('Groovy').click();
 
@@ -70,6 +70,7 @@ describe('Code Cell', function() {
   it('can open a cells language menu in advanced mode', function(done) {
     beakerPO.insertCellButton.click()
     .then(beakerPO.toggleAdvancedMode)
+    .then(function(){ browser.wait(beakerPO.EC.presenceOf(element.all(by.css('.dropdown-toggle bk-language-logo')).get(0)), 10000); })
     .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 0}))
     .then(beakerPO.isLanguageCellMenuOpen)
     .then(function(isOpen) {
@@ -83,6 +84,7 @@ describe('Code Cell', function() {
   it('can close a cell language menu by clicking off', function(done) {
     beakerPO.insertCellButton.click()
     .then(beakerPO.toggleAdvancedMode)
+    .then(function(){ browser.wait(beakerPO.EC.presenceOf(element.all(by.css('.dropdown-toggle bk-language-logo')).get(0)), 10000); })
     .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 0}))
     .then(element(by.css('body')).click)
     .then(beakerPO.isLanguageCellMenuOpen)

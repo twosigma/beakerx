@@ -273,7 +273,7 @@ var BeakerPageObject = function() {
   //end CodeMirror API
 
   this.toggleOutputCellExpansion = function() {
-    return element(by.css('.toggle-menu .expand-contract')).click();
+    return element(by.css('bk-code-cell-output div[ng-click="toggleExpansion()"]')).click();
   };
 
   this.evaluateCell = function() {

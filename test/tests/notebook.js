@@ -25,6 +25,7 @@ describe('notebook', function() {
   };
 
   function insertCellOfType(language) {
+    browser.wait(beakerPO.EC.presenceOf(beakerPO.cellEvaluatorMenu), 10000);
     beakerPO.cellEvaluatorMenu.click();
     beakerPO.cellEvaluatorMenuItem(language).click();
   }
@@ -103,6 +104,7 @@ describe('notebook', function() {
     beforeEach(function() {
       beakerPO.newEmptyNotebook.click();
       beakerPO.insertCellButton.click();
+      browser.wait(beakerPO.EC.presenceOf(beakerPO.cellEvaluatorMenu), 10000);
       beakerPO.cellEvaluatorMenu.click();
       beakerPO.cellEvaluatorMenuItem('JavaScript').click();
     });

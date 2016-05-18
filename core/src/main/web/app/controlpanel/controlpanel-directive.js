@@ -19,7 +19,7 @@
   var module = angular.module('bk.controlPanel');
 
   module.directive('bkControlPanel', function(
-        bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack, bkElectron, connectionManager, $location) {
+        bkUtils, bkHelper, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack, bkElectron, connectionManager, bkRecentMenu, $location) {
     return {
       restrict: 'E',
       template: JST['controlpanel/controlpanel'](),
@@ -220,6 +220,10 @@
               item.action();
             }
           }
+        };
+
+        $scope.removeRecent = function (item, event) {
+          bkRecentMenu.removeRecentDocument(item);
         };
 
         var isDisconnected = function() {

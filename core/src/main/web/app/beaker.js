@@ -261,6 +261,23 @@
             console.error("Request failed: " + textStatus);
           });
         },
+        removeItem: function(doc, callback) {
+          if (!doc) {
+            return;
+          }
+          var req = $.ajax({
+            type: "POST",
+            datatype: "json",
+            url: "../beaker/rest/recent-menu/removeItem",
+            data: {item: angular.toJson({
+              uri: doc.tooltip
+            })}
+          });
+          req.done(callback);
+          req.fail(function(jqXHR, textStatus) {
+            console.error("Request failed: " + textStatus);
+          });
+        },
         getItems: function(callback) {
           var req = $.ajax({
             type: "GET",

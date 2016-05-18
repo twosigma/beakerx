@@ -540,16 +540,17 @@ define(function(require, exports, module) {
   var init = function() {
     var onSuccess = function() {
       if (ipyVersion == '3') {
-        require('ipython3_namespace');
-        require('ipython3_kernel');
-        require('ipython3_utils');
-        require('ipython3_outputarea');
+        _.forEach(['ipython3_namespace',
+                   'ipython3_kernel',
+                   'ipython3_utils',
+                   'ipython3_outputarea'], function (r) {
+          require(r);
+        })
       } else if(ipyVersion == '4') {
         require('base/js/namespace');
         require('services/kernels/kernel');
         require('base/js/utils');
         require('notebook/js/outputarea');
-        require('jupyter-js-widgets');
       }
       myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : ((ipyVersion == '3') ? IPython3 : IPython));
       bkHelper.locatePluginService(PLUGIN_NAME, {
@@ -657,7 +658,6 @@ define(function(require, exports, module) {
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/kernel.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/utils.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/outputarea.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/jupyter-js-widgets.js"),
                                ], onSuccess, onFail);
           }
         }).error(function() {

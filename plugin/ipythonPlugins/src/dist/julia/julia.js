@@ -458,7 +458,6 @@ define(function(require, exports, module) {
         require('services/kernels/kernel');
         require('base/js/utils');
         require('notebook/js/outputarea');
-        require('jupyter-js-widgets');
       }
       myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : ((ipyVersion == '3') ? IPython3 : IPython));
       bkHelper.locatePluginService(PLUGIN_NAME, {
@@ -563,7 +562,6 @@ define(function(require, exports, module) {
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/kernel.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/utils.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/outputarea.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/jupyter-js-widgets.js"),
                                ], onSuccess, onFail);
           }
         }).error(function() {

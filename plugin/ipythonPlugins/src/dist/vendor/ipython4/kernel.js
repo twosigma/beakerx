@@ -4,7 +4,7 @@
 define('services/kernels/kernel', [
     'jquery',
     'base/js/utils',
-    'kernel/comm',
+    'services/kernels/comm',
     'kernel/serialize',
     'base/js/namespace',
     'base/js/events'
@@ -68,9 +68,7 @@ define('services/kernels/kernel', [
         this._pending_messages = [];
 
         Jupyter.kernel = this;
-        Jupyter.notebook = {
-            kernel: this
-        }
+        Jupyter.notebook.kernel = this;
     };
 
     /**
@@ -405,7 +403,7 @@ define('services/kernels/kernel', [
         this.id = data.id;
         this.kernel_url = utils.url_path_join(this.kernel_service_url,
             encodeURIComponent(this.id));
-        utils.load_extension("jupyter-js-widgets");
+        utils.load_extension("nbextensions/jupyter-js-widgets/extension");
         this.start_channels();
     };
 

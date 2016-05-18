@@ -132,6 +132,9 @@
       httpGet: function(url, data, headers) {
         return angularUtils.httpGet(url, data, headers);
       },
+      httpGetCached: function(url, data, headers) {
+        return angularUtils.httpGetCached(url, data, headers);
+      },
       httpGetJson: function(url, data, headers) {
         return angularUtils.httpGetJson(url, data, headers);
       },
@@ -227,6 +230,13 @@
         this.httpGet(serverUrl("beaker/rest/util/getVersionInfo"))
             .success(deferred.resolve)
             .error(deferred.reject);
+        return deferred.promise;
+      },
+      getVersionString: function () {
+        var deferred = angularUtils.newDeferred();
+        this.httpGet(serverUrl("beaker/rest/util/version"))
+          .success(deferred.resolve)
+          .error(deferred.reject);
         return deferred.promise;
       },
       getStartUpDirectory: function() {
@@ -358,8 +368,17 @@
       removeConnectedStatusListener: function() {
         return cometdUtils.removeConnectedStatusListener();
       },
+      addHandshakeListener: function(cb) {
+        return cometdUtils.addHandshakeListener(cb);
+      },
+      removeHandshakeListener: function() {
+        return cometdUtils.removeHandshakeListener();
+      },
       disconnect: function() {
         return cometdUtils.disconnect();
+      },
+      reconnect: function() {
+        return cometdUtils.reconnect();
       },
 
       beginsWith: function(haystack, needle) {
@@ -373,22 +392,23 @@
         var that = this;
         if (_.isString(url)) {
           var deferred = this.newDeferred();
-          window.requirejs([url], function (ret) {
-            if (!_.isEmpty(name)) {
-              that.moduleMap[name] = url;
-            }
-            deferred.resolve(ret);
-          }, function(err) {
-            deferred.reject({
-              message: "module failed to load",
-              error: err
+          return window.loadQueuePromise.then(function() {
+            window.requirejs([url], function (ret) {
+              if (!_.isEmpty(name)) {
+                that.moduleMap[name] = url;
+              }
+              deferred.resolve(ret);
+            }, function(err) {
+              deferred.reject({
+                message: "module failed to load",
+                error: err
+              });
             });
-          });
+            return deferred.promise;
+          }).catch(function(e) {console.error(e.message + " - " + e.error)});
 
-          return deferred.promise;
-        } else {
-          throw "illegal arg" + url;
         }
+        throw "illegal arg" + url;
       },
       require: function(nameOrUrl) {
         var url = this.moduleMap.hasOwnProperty(nameOrUrl) ? this.moduleMap[nameOrUrl] : nameOrUrl;
@@ -448,6 +468,11 @@
     }
 
     };
+
+    if (typeof window.loadQueuePromise === 'undefined') {
+      window.loadQueuePromise = bkUtils.newPromise();
+    }
+
     return bkUtils;
   });
 })();

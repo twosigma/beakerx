@@ -620,9 +620,9 @@
     text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
     color: $std-fg-color;
     text-align: center;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: normal;
-    line-height: 18px;
+    line-height: 14px;
     background-color: $ef-active-control-bg;
   }
   input[type="checkbox"]:checked ~ label:after {
@@ -725,6 +725,18 @@
 
   .marked-argument-changed {
     box-shadow: $marked-argument-changed-border;
+  }
+
+  .ui-select-container {
+    background-color: $std-bg-color;
+  }
+
+  .ui-select-choices a span {
+    color: $std-fg-color;
+  }
+
+  .ui-select-choices-row a:hover {
+    background-color: $std-border;
   }
 }
 

@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.jvm.serialization;
 
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,8 +33,17 @@ public class ImageIconSerializer extends JsonSerializer<ImageIcon> {
   @Override
   public void serialize(ImageIcon vi, JsonGenerator jgen, SerializerProvider provider)
       throws IOException, JsonProcessingException {
-    synchronized(vi) {
-      BufferedImage v = (BufferedImage) vi.getImage();
+    synchronized (vi) {
+
+      BufferedImage v = new BufferedImage(
+        vi.getIconWidth(),
+        vi.getIconHeight(),
+        BufferedImage.TYPE_INT_RGB);
+      Graphics g = v.createGraphics();
+      // paint the Icon to the BufferedImage.
+      vi.paintIcon(null, g, 0, 0);
+      g.dispose();
+
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       ImageIO.write(v, "png", baos);
       byte [] data = baos.toByteArray();

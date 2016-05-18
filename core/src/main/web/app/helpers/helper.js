@@ -667,6 +667,12 @@
           return false;
         }
       },
+      getVersionNumber: function () {
+        return window.beakerRegister.version;
+      },
+      getVersionString: function () {
+        return window.beakerRegister.versionString;
+      },
       // bk-notebook
       refreshBkNotebook: function () {
         var bkNotebook = getBkNotebookWidget();
@@ -1013,7 +1019,7 @@
               } else {
                 var a = modelOutput.result.object.outputdata[0].value.split(/\n/);
                 a.splice(0,cnt);
-                modelOutput.result.object.outputdata[0].value = a.join('\n');
+                modelOutput.result.object.outputdata[0].value = '...\n' + a.join('\n');
                 cnt = 0;
               }
             }

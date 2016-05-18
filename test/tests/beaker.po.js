@@ -123,7 +123,7 @@ var BeakerPageObject = function() {
   };
 
   this.isCellMenuOpen = function(opts) {
-    return element.all(by.css('.bkcell .open.toggle-menu-items.bkr'))
+    return element.all(by.css('.bkcell .toggle-menu-items.open'))
     .get(opts.cellIndex)
     .isDisplayed()
     .then(function() {

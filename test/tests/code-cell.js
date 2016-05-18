@@ -41,9 +41,10 @@ describe('Code Cell', function() {
   it('can set a cell language to Groovy', function(done) {
     beakerPO.insertCellButton.click();
     loadGroovy();
-    browser.wait(beakerPO.EC.presenceOf(beakerPO.cellEvaluatorMenu), 10000);
-    beakerPO.cellEvaluatorMenu.click();
+    browser.wait(beakerPO.EC.presenceOf(beakerPO.cellEvaluatorMenu), 10000)
+    .then(beakerPO.cellEvaluatorMenu.click);
     beakerPO.cellEvaluatorMenuItem('Groovy').click();
+    browser.wait(beakerPO.EC.presenceOf(beakerPO.cellEvaluatorDisplay), 10000);
     expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual('Groovy');
     beakerPO.createScreenshot('codeCellSetGroovy');
     done();
@@ -52,8 +53,8 @@ describe('Code Cell', function() {
   it('can hide the input', function(done) {
     beakerPO.insertCellButton.click();
     loadGroovy();
-    browser.wait(beakerPO.EC.presenceOf(beakerPO.cellEvaluatorMenu), 10000);
-    beakerPO.cellEvaluatorMenu.click();
+    browser.wait(beakerPO.EC.presenceOf(beakerPO.cellEvaluatorMenu), 10000)
+    .then(beakerPO.cellEvaluatorMenu.click);
     beakerPO.cellEvaluatorMenuItem('Groovy').click();
 
     var cell = beakerPO.codeCell(0);

@@ -36,9 +36,9 @@ var config = {
     }));
   },
   specs: [
-    'tests/easyform.js',
+    //'tests/easyform.js',
     'tests/landing-page.js',
-    'tests/notebook.js',
+    //'tests/notebook.js',
     //'tests/code-cell.js',
     'tests/text-cell.js',
     //'tests/cell-menu.js',

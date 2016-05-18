@@ -510,6 +510,11 @@
           table.columns(cLength).visible(visible);
         };
 
+        $scope.getColumnIndexByColName = function (columnName) { // takes into account colorder and index column
+          var initInd = $scope.columnNames.indexOf(columnName) + 1;
+          return !_.isEmpty($scope.colorder) ? $scope.colorder.indexOf(initInd) : initInd;
+        };
+
         $scope.getColumnByInitialIndex = function(index){
           if ($scope.colorder){
             index = $scope.colorder.indexOf(index);
@@ -769,7 +774,7 @@
           3: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               var doubleValue = parseFloat(value);
-              var colFormat = $scope.stringFormatForColumn[$scope.columnNames[meta.col - 1]];
+              var colFormat = $scope.stringFormatForColumn[meta.settings.aoColumns[meta.col].sTitle];
               var typeFormat = $scope.stringFormatForType.double;
               var format = colFormat && colFormat.type === 'decimal' ? colFormat : typeFormat;
               if (format && format.type === 'decimal') {
@@ -1160,7 +1165,7 @@
               });
             }
             _.forOwn(model.rendererForColumn, function (renderer, columnName) {
-              scope.applyColumnRenderer(scope.columnNames.indexOf(columnName), renderer);
+              scope.applyColumnRenderer(scope.getColumnIndexByColName(columnName) - 1, renderer);
             });
             scope.heatmapOnColumn   = {}; //map: col index -> show heatmap
             scope.tableFilter       = '';
@@ -1169,20 +1174,16 @@
             scope.columnSearchActive = false;
             scope.columnWidth       = [];
             scope.tableOrder        = undefined;
-            var getColumnIndex = function (columnName) { // takes into account colorder
-              var initInd = scope.columnNames.indexOf(columnName) + 1;
-              return !_.isEmpty(scope.colorder) ? scope.colorder.indexOf(initInd) : initInd;
-            };
             var columnsFrozen = [];
             _.forOwn(model.columnsFrozen, function (frozen, columnName) {
               if (frozen) {
-                columnsFrozen.push(getColumnIndex(columnName));
+                columnsFrozen.push(scope.getColumnIndexByColName(columnName));
               }
             });
             var columnsFrozenRight = [];
             _.forOwn(model.columnsFrozenRight, function (frozen, columnName) {
               if (frozen) {
-                columnsFrozenRight.push(getColumnIndex(columnName));
+                columnsFrozenRight.push(scope.getColumnIndexByColName(columnName));
               }
             });
             scope.pagination = {

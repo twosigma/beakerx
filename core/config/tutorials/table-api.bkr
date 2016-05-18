@@ -217,6 +217,7 @@
                     "columnsFrozen": {},
                     "columnsFrozenRight": {},
                     "columnsVisible": {},
+                    "columnOrder": [],
                     "values": [
                         [
                             {
@@ -4917,9 +4918,9 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "a5f55022-bce3-4f27-9c45-0bc95becf798",
-                "elapsedTime": 659,
-                "height": 776
+                "shellId": "7914864c-938b-4c7b-9f4a-08c051782332",
+                "elapsedTime": 793,
+                "height": 791
             },
             "evaluatorReader": true,
             "lineCount": 13
@@ -5052,6 +5053,7 @@
                         "columnSearchActive": false,
                         "columnFilter": [],
                         "columnWidth": [],
+                        "formatForTimes": {},
                         "stringFormatForType": {},
                         "stringFormatForColumn": {}
                     }
@@ -5103,6 +5105,7 @@
                     "columnsFrozen": {},
                     "columnsFrozenRight": {},
                     "columnsVisible": {},
+                    "columnOrder": [],
                     "values": [
                         [
                             {
@@ -9803,9 +9806,9 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "a5f55022-bce3-4f27-9c45-0bc95becf798",
-                "elapsedTime": 613,
-                "height": 776
+                "shellId": "7914864c-938b-4c7b-9f4a-08c051782332",
+                "elapsedTime": 618,
+                "height": 791
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -9835,7 +9838,7 @@
                     "display.setColumnVisible(\"y30\", false)",
                     "",
                     "//explicitly set column order/visiblity",
-                    "display.setColumnOrder([\"m3\", \"time\"])",
+                    "display.setColumnOrder([\"time\", \"m6\", \"y1\", \"y3\"]) //Columns in the list will be shown in the provided order. Columns not in the list will be hidden.",
                     "display"
                 ]
             },
@@ -9845,7 +9848,7 @@
                         "pagination": {
                             "use": true,
                             "rowsToDisplay": 25,
-                            "fixLeft": 3,
+                            "fixLeft": 2,
                             "fixRight": 2
                         },
                         "columnNames": [
@@ -9887,11 +9890,11 @@
                         "colorder": [
                             0,
                             1,
-                            2,
                             3,
                             4,
-                            5,
                             6,
+                            2,
+                            5,
                             7,
                             8,
                             9,
@@ -9907,7 +9910,7 @@
                             true,
                             true,
                             true,
-                            false
+                            true
                         ],
                         "barsOnColumn": {},
                         "heatmapOnColumn": {},
@@ -9977,8 +9980,10 @@
                         "y30": false
                     },
                     "columnOrder": [
-                        "m3",
-                        "time"
+                        "time",
+                        "m6",
+                        "y1",
+                        "y3"
                     ],
                     "values": [
                         [
@@ -14680,8 +14685,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "441b1b83-3e08-4fb8-a0a6-225fe2dc42d1",
-                "elapsedTime": 622,
+                "shellId": "7914864c-938b-4c7b-9f4a-08c051782332",
+                "elapsedTime": 614,
                 "height": 791
             },
             "evaluatorReader": true,

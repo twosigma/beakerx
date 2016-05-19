@@ -123,7 +123,7 @@ var BeakerPageObject = function() {
   };
 
   this.isCellMenuOpen = function(opts) {
-    return element.all(by.css('.bkcell .open.toggle-menu-items.bkr'))
+    return element.all(by.css('.bkcell .toggle-menu-items.open'))
     .get(opts.cellIndex)
     .isDisplayed()
     .then(function() {
@@ -334,7 +334,7 @@ var BeakerPageObject = function() {
   this.waitForCellOutputByIdCell = function(idCell) {
     var self = this;
     browser.wait(this.getCodeCellOutputByIdCell(idCell).isDisplayed(), 10000).then(function(){
-      browser.wait(self.EC.not(self.EC.textToBePresentInElement(self.getCodeCellOutputByIdCell(idCell), 'Elapsed:'), 10000));
+      browser.wait(self.EC.not(self.EC.textToBePresentInElement(self.getCodeCellOutputByIdCell(idCell), 'Elapsed:'), 20000));
     });
   };
 

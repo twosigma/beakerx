@@ -51,7 +51,7 @@ describe('Cell Menu', function() {
 
   it('opens', function(done) {
     beakerPO.toggleCellMenu({cellIndex: 0});
-    browser.wait(beakerPO.EC.presenceOf(element.all(by.css('.bkcell .open.toggle-menu-items.bkr')).get(0)), 10000);
+    browser.wait(beakerPO.EC.presenceOf(element.all(by.css('.bkcell .toggle-menu-items.open')).get(0)), 10000);
     beakerPO.isCellMenuOpen({cellIndex: 0})
     .then(function(isOpen) {
       expect(isOpen).toEqual(true);

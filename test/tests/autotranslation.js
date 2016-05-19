@@ -16,6 +16,7 @@
 
 var BeakerPageObject = require('./beaker.po.js');
 var path = require('path');
+var fs = require('fs');
 
 describe('autotranslation', function() {
   beforeEach(function(done) {
@@ -30,17 +31,24 @@ describe('autotranslation', function() {
   });
 
   it('handles JVM notebook', function() {
-    beakerPO.openFile(path.join(__dirname, '../', 'notebooks/jvm-autotranslation-test.bkr'));
-    beakerPO.waitForInstantiationCells('waitForInstantiationCell');
+    var tstPath = path.join(__dirname, '../', 'notebooks/jvm-autotranslation-test.bkr');
+    if(fs.existsSync(tstPath)){
+      beakerPO.openFile(tstPath);
+      beakerPO.waitForInstantiationCells('waitForInstantiationCell');
 
-    beakerPO.waitForCellOutputByIdCell('maintest');
-    beakerPO.waitForCellOutputByIdCell('codeOSRZTr');
+      beakerPO.waitForCellOutputByIdCell('maintest');
+      beakerPO.waitForCellOutputByIdCell('codeOSRZTr');
 
-    beakerPO.getCodeCellOutputByIdCell('maintest').getText().then(function(output) {
-      expect(output).toEqual('OK');
-    });
-    beakerPO.getCodeCellOutputByIdCell('codeOSRZTr').getText().then(function(output) {
-      expect(output).toEqual('OK');
-    });
+      beakerPO.getCodeCellOutputByIdCell('maintest').getText().then(function(output) {
+        expect(output).toEqual('OK');
+      });
+      beakerPO.getCodeCellOutputByIdCell('codeOSRZTr').getText().then(function(output) {
+        expect(output).toEqual('OK');
+      });
+    }
+    else{
+      expect(tstPath + ' not exists').toBe(tstPath + ' exists');
+    }
+
   });
 });

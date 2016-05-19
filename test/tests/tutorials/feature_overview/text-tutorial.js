@@ -30,7 +30,6 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
             beakerPO.checkBkCellByIdCell(idCell);
 
             var elemPreviw = beakerPO.checkPreviewBkCellByIdCell(idCell);
-            beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('p')).get(0), "Beaker’s text cells (insert one by clicking ‘text’ in the blue button bar) are based primarily on ma");
             beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('li')).get(0), 'Notebook → Lock: hides the all the code, and removes the boxes from around the cells.');
             beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('li')).get(1), 'View → Show Hierarchy: indents sections and adds numbering and lines to show hierarchy.');
             beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('li')).get(2), 'View → Advanced Mode: reduces vertical space and hides the big run button (you can still run cells w');
@@ -40,7 +39,6 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
         it('Edit Mode', function () {
             var elemEdit = beakerPO.checkEditBkCellByIdCell(idCell);
             var elemEditPreArr = elemEdit.all(by.css('.CodeMirror-code > pre'));
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(0), "Beaker's text cells (insert one by clicking 'text' in the blue button bar) are based primarily on ma");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(6), '* **Notebook → Lock**: hides the all the code, and removes the boxes from around the cells.');
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(7), '* **View → Show Hierarchy**: indents sections and adds numbering and lines to show hierarchy.');
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(8), '* **View → Advanced Mode**: reduces vertical space and hides the big run button (you can still run c');
@@ -55,8 +53,7 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
         it('Preview Mode', function () {
             beakerPO.checkBkCellByIdCell(idCell);
             var elemPreviw = beakerPO.checkPreviewBkCellByIdCell(idCell);
-
-            beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('p')).get(0), "Beaker’s text cells use Markdown, a text-to-HTML conversion tool that allows you to write using an e");
+            beakerPO.createScreenshot('TextCellsPreviewMode');
             beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('li')).get(0), "Markdown is good for making lists that emphasize your points,");
             beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('li')).get(1), "writing code documentation,");
             beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('li')).get(2), "and making bold statements.");
@@ -77,10 +74,8 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
 
         it('Edit Mode', function () {
             var elemEdit = beakerPO.checkEditBkCellByIdCell(idCell);
+            beakerPO.createScreenshot('TextCellsEditMode');
             var elemEditPreArr = elemEdit.all(by.css('.CodeMirror-code > pre'));
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(0), "Beaker's text cells use [Markdown](http://daringfireball.net/projects/markdown/syntax), a text-to-HT");
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(1), "you to write using an easy-to-read, easy-to-write plain text format.  Here's a quick demo:");
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(2), "");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(3), "* Markdown is good for making *lists that emphasize your points*,");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(4), "* writing `code documentation`,");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(5), "* and making **bold** statements.");

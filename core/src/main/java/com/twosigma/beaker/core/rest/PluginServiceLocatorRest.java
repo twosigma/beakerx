@@ -963,8 +963,6 @@ public class PluginServiceLocatorRest {
       if (!StringUtils.isBlank(plugPath)) {
         if (windows()) {
           plugPath += "/Scripts";
-        } else if (macosx()) {
-          plugPath += "/bin";
         }
         command = plugPath + '/' + command;
       }

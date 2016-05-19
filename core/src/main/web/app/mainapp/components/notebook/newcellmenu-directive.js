@@ -34,7 +34,7 @@
           $(document).trigger('click.bs.dropdown.data-api');
         };
       },
-      controller: function($scope, GLOBALS) {
+      controller: function($scope, $rootScope, GLOBALS) {
         var newCellFactory = bkSessionManager.getNotebookNewCellFactory();
         var recentlyAddedLanguage;
 
@@ -106,6 +106,12 @@
 
         $scope.$on('cellMapRecreated', function() {
           recentlyAddedLanguage = null;
+        });
+
+        $scope.$watch('defaultEvaluator()', function(newValue, oldValue) {
+          if (newValue !== oldValue) {
+            $rootScope.$emit("defaultEvaluatorChanged", $scope.defaultEvaluator());
+          }
         });
       }
     };

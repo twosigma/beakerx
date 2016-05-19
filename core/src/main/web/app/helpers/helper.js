@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function($location, $httpParamSerializer, bkUtils, bkCoreManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
+  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -61,6 +61,11 @@
       rgbaToHex(120, 100, 100)  // dark
     ];
 
+    var defaultEvaluator = GLOBALS.DEFAULT_EVALUATOR;
+    $rootScope.$on("defaultEvaluatorChanged", function (event, data) {
+      defaultEvaluator = data;
+    });
+
       var bkHelper = {
 
       isNewNotebookShortcut: function (e){
@@ -74,6 +79,12 @@
           return e.ctrlKey && e.shiftKey && (e.which === 78);// Ctrl + Shift + n
         }
         return e.altKey && e.shiftKey && (e.which === 78);// Cmd + Shift + n
+      },
+      isAppendCodeCellShortcut: function (e){
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Ctrl + Shift + A
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Cmd + Shift + A
       },
       isSaveNotebookShortcut: function (e){
         if (this.isMacOS){
@@ -646,6 +657,13 @@
           return [];
         }
       },
+      go2LastCodeCell: function() {
+        if (getCurrentApp() && getCurrentApp().go2LastCodeCell) {
+          getCurrentApp().go2LastCodeCell();
+        } else {
+          return [];
+        }
+      },
       getCodeCells: function(filter) {
         if (getCurrentApp() && getCurrentApp().getCodeCells) {
           return getCurrentApp().getCodeCells(filter);
@@ -856,8 +874,20 @@
           };
         });
       },
-      showLanguageManager: function() {
+      showLanguageManager: function () {
         return bkCoreManager.showLanguageManager();
+      },
+      appendCodeCell: function () {
+        var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var cells = notebookCellOp.getAllCodeCells();
+        if (cells === undefined || (!_.isArray(cells) && cells.length === 0)) {
+          return null;
+        }
+        var index = cells.length;
+        notebookCellOp.insertAt(index, newCell);
+        bkUtils.refreshRootScope();
+        this.go2LastCodeCell();
       },
       showPublishForm: function() {
         return bkCoreManager.showPublishForm();

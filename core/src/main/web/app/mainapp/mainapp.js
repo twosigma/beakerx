@@ -546,6 +546,12 @@
               _closeNotebook(destroy);
           };
 
+          var go = function(id) {
+            if (bkNotebookWidget && bkNotebookWidget.getFocusable(id)) {
+              bkNotebookWidget.getFocusable(id).scrollTo();
+            }
+          };
+
           var evalCodeId = 0;
 
           if (bkUtils.isElectron) {
@@ -905,16 +911,23 @@
               }
               return ret;
             },
-            go2FirstErrorCodeCell: function () {
+            go2LastCodeCell: function () {
               var cellOp = bkSessionManager.getNotebookCellOp();
               // get all code cells
               var cells = cellOp.getAllCodeCells();
 
-              var go = function(id) {
-                if (bkNotebookWidget && bkNotebookWidget.getFocusable(id)) {
-                    bkNotebookWidget.getFocusable(id).scrollTo();
-                }
-              };
+              if (cells === undefined || (!_.isArray(cells) && cells.length === 0)) {
+                return null;
+              }
+              if (_.isArray(cells)&& cells.length>0) {
+                var cell = cells[cells.length-1];
+                go(cell.id);
+              }
+            },
+            go2FirstErrorCodeCell: function () {
+              var cellOp = bkSessionManager.getNotebookCellOp();
+              // get all code cells
+              var cells = cellOp.getAllCodeCells();
 
               if (cells === undefined || (!_.isArray(cells) && cells.length === 0)) {
                 return null;
@@ -1137,7 +1150,13 @@
               bkCoreManager.newSession(true);
             });
             return false;
-          } else if (e.which === 116) { // F5
+          } else if (bkHelper.isAppendCodeCellShortcut(e)) {
+            bkUtils.fcall(function() {
+              bkHelper.appendCodeCell()
+            });
+            return false;
+          }
+          else if (e.which === 116) { // F5
             bkHelper.runAllCellsInNotebook();
             return false;
           } else if (bkHelper.isLanguageManagerShortcut(e)) {

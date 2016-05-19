@@ -540,12 +540,10 @@ define(function(require, exports, module) {
   var init = function() {
     var onSuccess = function() {
       if (ipyVersion == '3') {
-        _.forEach(['ipython3_namespace',
-                   'ipython3_kernel',
-                   'ipython3_utils',
-                   'ipython3_outputarea'], function (r) {
-          require(r);
-        })
+        require('ipython3_namespace');
+        require('ipython3_kernel');
+        require('ipython3_utils');
+        require('ipython3_outputarea');
       } else if(ipyVersion == '4') {
         require('base/js/namespace');
         require('services/kernels/kernel');

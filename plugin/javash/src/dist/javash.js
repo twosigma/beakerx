@@ -191,7 +191,8 @@ define(function(require, exports, module) {
     "com.twosigma.beaker.easyform.formitem.*",
     "com.twosigma.beaker.table.*",
     "com.twosigma.beaker.table.format.*",
-    "com.twosigma.beaker.table.renderer.*"];
+    "com.twosigma.beaker.table.renderer.*",
+    "com.twosigma.beaker.table.highlight.*"];
   var shellReadyDeferred = bkHelper.newDeferred();
 
   var init = function() {

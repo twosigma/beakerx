@@ -29,6 +29,7 @@ import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.table.format.TableDisplayStringFormat;
+import com.twosigma.beaker.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beaker.table.renderer.TableDisplayCellRenderer;
 
 public class TableDisplay {
@@ -53,6 +54,7 @@ public class TableDisplay {
   private Map<String, Boolean> columnsFrozenRight = new HashMap<>();
   private Map<String, Boolean> columnsVisible = new HashMap<>();
   private List<String> columnOrder = new ArrayList<>();
+  private List<TableDisplayCellHighlighter> cellHighlighters = new ArrayList<>();
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
@@ -177,6 +179,18 @@ public class TableDisplay {
 
   public List<String> getColumnOrder() {
     return columnOrder;
+  }
+
+  public List<TableDisplayCellHighlighter> getCellHighlighters() {
+    return cellHighlighters;
+  }
+
+  public void addCellHighlighter(TableDisplayCellHighlighter cellHighlighter) {
+    this.cellHighlighters.add(cellHighlighter);
+  }
+
+  public void removeAllCellHighlighters() {
+    this.cellHighlighters.clear();
   }
 
   public void setColumnOrder(List<String> columnOrder) {

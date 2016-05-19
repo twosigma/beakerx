@@ -24,7 +24,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.KeyboardCodes\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.table.*\njava.util.concurrent.TimeUnit\ncom.twosigma.beaker.table.format.*\ncom.twosigma.beaker.table.renderer.*",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.KeyboardCodes\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.table.*\njava.util.concurrent.TimeUnit\ncom.twosigma.beaker.table.format.*\ncom.twosigma.beaker.table.renderer.*\ncom.twosigma.beaker.table.highlight.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -218,6 +218,7 @@
                     "columnsFrozenRight": {},
                     "columnsVisible": {},
                     "columnOrder": [],
+                    "cellHighlighters": [],
                     "values": [
                         [
                             {
@@ -4918,9 +4919,9 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "7914864c-938b-4c7b-9f4a-08c051782332",
-                "elapsedTime": 793,
-                "height": 791
+                "shellId": "4554a24c-41fe-41fc-8bed-013523f9842c",
+                "elapsedTime": 656,
+                "height": 776
             },
             "evaluatorReader": true,
             "lineCount": 13
@@ -9808,7 +9809,7 @@
                 "pluginName": "Groovy",
                 "shellId": "7914864c-938b-4c7b-9f4a-08c051782332",
                 "elapsedTime": 618,
-                "height": 791
+                "height": 776
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -14687,10 +14688,138 @@
                 "pluginName": "Groovy",
                 "shellId": "7914864c-938b-4c7b-9f4a-08c051782332",
                 "elapsedTime": 614,
-                "height": 791
+                "height": 776
             },
             "evaluatorReader": true,
             "lineCount": 13
+        },
+        {
+            "id": "sectionLml955",
+            "type": "section",
+            "title": "Сell highlighters",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownjdecZq",
+            "type": "markdown",
+            "body": [
+                "The TableDisplay maintains a list of cell highlighters. When drawing the table, the highlighters are checked for a value starting with the most recently added. ",
+                "",
+                "The first non-null value will be used."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "sectionpl6qOP",
+            "type": "section",
+            "title": "Color the entire table like a heatmap based on column value",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeWyrMwb",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def rates = beaker.rates",
+                    "def display = new TableDisplay(rates.values, rates.columnNames, rates.types)",
+                    "display.addCellHighlighter(TableDisplayCellHighlighter.getHeatmapHighlighter(\"m3\", TableDisplayCellHighlighter.FULL_ROW))",
+                    "",
+                    "//the following two overloads should also be supported",
+                    "//set the min and max used for calculating the color",
+                    "display.addCellHighlighter(TableDisplayCellHighlighter.getHeatmapHighlighter(\"m6\", TableDisplayCellHighlighter.FULL_ROW, 0, 200))",
+                    "//set the colors used for the min and max",
+                    "display.addCellHighlighter(TableDisplayCellHighlighter.getHeatmapHighlighter(\"y1\", TableDisplayCellHighlighter.FULL_ROW, null, null, Color.GREEN, Color.RED))",
+                    "display"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "4554a24c-41fe-41fc-8bed-013523f9842c",
+                "elapsedTime": 673,
+                "height": 81
+            },
+            "evaluatorReader": true,
+            "lineCount": 10
+        },
+        {
+            "id": "section7FfZ3i",
+            "type": "section",
+            "title": "Heatmap with custom min/max values and colors",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": true
+        },
+        {
+            "id": "codetHTtD2",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "//def rates = beaker.rates",
+                    "//def display = new TableDisplay(rates.values, rates.columnNames, rates.types)",
+                    "//display.addCellHighlighter(TableDisplayCellHighlighter.getHeatmapHighlighter(\"m3\", 0, 150, Color.ORANGE, Color.PINK))",
+                    "//display.addCellHighlighter(TableDisplayCellHighlighter.getHeatmapHighlighter(\"m6\", TableDisplayCellHighlighter.SINGLE_COLUMN, 50, 150, Color.BLACK, Color.PINK))",
+                    "//wipe out all highlighting",
+                    "//display.removeAllCellHighlighters()",
+                    "//display"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "29b91644-7ec6-49b1-9b39-7020ae407dcd",
+                "elapsedTime": 987
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        },
+        {
+            "id": "sectionp8PWji",
+            "type": "section",
+            "title": "Unique Entries Highlighter",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": true
+        },
+        {
+            "id": "code9MhWz7",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "//use TableDisplayCellHighlighter.SINGLE_COLUMN to have the highlighter affect only one column",
+                    "//assign a color to each unique value of vendorId",
+                    "//display.addCellHighlighter(TableDisplayCellHighlighter.getUniqueEntriesHighlighter(\"m3\", TableDisplayCellHighlighter.SINGLE_COLUMN))"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Error",
+                    "object": [
+                        "groovy.lang.MissingPropertyException: No such property: display for class: script14636470711341471607200<br/>",
+                        "\tat script14636470711341471607200.run(script14636470711341471607200.groovy:3)",
+                        "\tat com.twosigma.beaker.groovy.utils.GroovyEvaluator$workerThread$MyRunnable.run(GroovyEvaluator.java:378)",
+                        ""
+                    ]
+                },
+                "selectedType": "BeakerDisplay",
+                "pluginName": "Groovy",
+                "shellId": "4554a24c-41fe-41fc-8bed-013523f9842c",
+                "elapsedTime": 685,
+                "height": 0
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
         }
     ],
     "namespace": {

@@ -45,20 +45,28 @@
     var rgbaToHex = bkUtils.rgbaToHex;
     var defaultPlotColors = {};
     defaultPlotColors[GLOBALS.THEMES.DEFAULT] = [
-      rgbaToHex(140, 29, 23),  // red
-      rgbaToHex(33, 87, 141),  // blue
-      rgbaToHex(150, 130, 54), // yellow
-      rgbaToHex(20, 30, 120),  // violet
-      rgbaToHex(54, 100, 54),  // green
-      rgbaToHex(60, 30, 50)    // dark
+      "#FF1F77B4", // blue
+      "#FFFF7F0E", // orange
+      "#FF2CA02C", // green
+      "#FFD62728", // red
+      "#FF9467BD", // purple
+      "#FF8C564B", // brown
+      "#FFE377C2", // pink
+      "#FF7F7F7F", // gray
+      "#FFBCBD22", // pear
+      "#FF17BECF"  // aqua
     ];
     defaultPlotColors[GLOBALS.THEMES.AMBIANCE] = [
-      rgbaToHex(191, 39, 31),   // red
-      rgbaToHex(46, 119, 191),  // blue
-      rgbaToHex(230, 230, 65),  // yellow
-      rgbaToHex(30, 40, 190),   // violet
-      rgbaToHex(75, 160, 75),   // green
-      rgbaToHex(120, 100, 100)  // dark
+      "#FF1F77B4", // blue
+      "#FFFF7F0E", // orange
+      "#FF2CA02C", // green
+      "#FFD62728", // red
+      "#FF9467BD", // purple
+      "#FF8C564B", // brown
+      "#FFE377C2", // pink
+      "#FF7F7F7F", // gray
+      "#FFBCBD22", // pear
+      "#FF17BECF"  // aqua
     ];
 
     var defaultEvaluator = GLOBALS.DEFAULT_EVALUATOR;

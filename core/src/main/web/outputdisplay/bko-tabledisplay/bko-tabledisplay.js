@@ -281,8 +281,8 @@
                   'Etc/GMT-13|GMT-13:00',
                   'Etc/GMT-14|GMT-14:00']);
   //jscs:disable
-  beakerRegister.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', '$rootScope','$timeout',
-    function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS, $rootScope, $timeout) {
+  beakerRegister.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', '$rootScope','$timeout', 'cellHighlighters',
+    function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS, $rootScope, $timeout, cellHighlighters) {
   //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
     var ROW_HEIGHT = 27;
@@ -1114,7 +1114,7 @@
               scope.pagination.fixRight = 0;
             }
             scope.barsOnColumn          = scope.savedstate.barsOnColumn || {};
-            scope.heatmapOnColumn       = scope.savedstate.heatmapOnColumn || {};
+            scope.cellHighlightersData  = scope.savedstate.cellHighlightersData || {};
             scope.tableFilter           = scope.savedstate.tableFilter || '';
             scope.columnFilter          = scope.savedstate.columnFilter || [];
             scope.showFilter            = scope.savedstate.showFilter;
@@ -1167,7 +1167,10 @@
             _.forOwn(model.rendererForColumn, function (renderer, columnName) {
               scope.applyColumnRenderer(scope.getColumnIndexByColName(columnName) - 1, renderer);
             });
-            scope.heatmapOnColumn   = {}; //map: col index -> show heatmap
+
+            scope.cellHighlightersData = model.cellHighlighters ? _.map(model.cellHighlighters, function(highlighter){
+              return _.extend({colInd: scope.getColumnIndexByColName(highlighter.colName)}, highlighter);
+            }) : {};
             scope.tableFilter       = '';
             scope.columnFilter      = [];
             scope.showFilter        = false;
@@ -1238,6 +1241,19 @@
               scope.actualalign[scope.columnNames.indexOf(columnName)] = alignment;
             });
           }
+
+          // cell highlighters
+          scope.cellHighlighters = {}; //map: col index -> highlighter
+          _.forEachRight(scope.cellHighlightersData, function (highlighter) {
+            if (!highlighter) { return; }
+            if(_.isEmpty(scope.cellHighlighters[highlighter.colInd])){
+              var jsHighlighter = cellHighlighters.createHighlighter(highlighter.type, highlighter);
+              if (jsHighlighter) {
+                scope.cellHighlighters[highlighter.colInd] = jsHighlighter;
+              }
+            }
+          });
+
           scope.doCreateData(model);
           scope.doCreateTable(model);
           $(document.body).off('click.bko-dt-container', scope.containerClickFunction);
@@ -1372,9 +1388,6 @@
           for (var colInd = 0; colInd < scope.columns.length; colInd++) {
             var max = scope.table.column(colInd).data().max();
             var min = scope.table.column(colInd).data().min();
-            var colorScale = d3.scale.linear()
-              .domain([min, (min + max) / 2, max])
-              .range(['#f76a6a', '#efda52', '#64bd7a']);
             scope.table.column(colInd).nodes().each(function (td) {
               var value = $(td).text();
               if ($.isNumeric(value)) {
@@ -1405,15 +1418,10 @@
                 }
               }
             });
-            scope.table.column(colInd).nodes().each(function (td) {
-              var value = $(td).text();
-              if($.isNumeric(value)){
-                var color = scope.heatmapOnColumn[scope.colorder[colInd]] ? colorScale(value) : "";
-                $(td).css({
-                  "background-color": color
-                });
-              }
-            });
+            var cellHighlighter = scope.cellHighlighters[colInd];
+            if (cellHighlighter) {
+              cellHighlighter.doHighlight(scope.table);
+            }
           }
         };
 
@@ -1464,9 +1472,20 @@
           }
           _.defer(function () { scope.table.draw(false);  });
         };
-        scope.showHideHeatmap = function (column) {
-          scope.heatmapOnColumn[column] = !!!scope.heatmapOnColumn[column];
+
+        scope.showHideHighlighter = function(column, highlighterType){
+          var highlighter = scope.cellHighlighters[column];
+          if (!highlighter || !(highlighter instanceof highlighterType)) {
+            scope.cellHighlighters[column] = new highlighterType({colInd: column});
+          } else {
+            highlighter.removeHighlight(scope.table);
+            delete scope.cellHighlighters[column];
+          }
           _.defer(function () { scope.table.draw(false);  });
+        };
+
+        scope.showHideHeatmap = function (column) {
+          scope.showHideHighlighter(column, cellHighlighters.HeatmapHighlighter);
         };
 
         scope.columnHasFormat = function (column, format) {
@@ -1753,7 +1772,7 @@
 
             return items;
           };
-          
+
           var getTimeSubitems = function() {
             var items = [];
 
@@ -1937,7 +1956,8 @@
                 separator: true,
                 isChecked: function(container) {
                   var colIdx = container.data('columnIndex');
-                  return scope.heatmapOnColumn[scope.colorder[colIdx]] === true;
+                  var highlighter = scope.cellHighlighters[scope.colorder[colIdx]];
+                  return highlighter && highlighter instanceof cellHighlighters.HeatmapHighlighter;
                 },
                 action: function(el) {
                   var container = el.closest('.bko-header-menu');
@@ -2371,8 +2391,10 @@
             if (scope.barsOnColumn !== undefined) {
               state.barsOnColumn = scope.barsOnColumn;
             }
-            if (scope.heatmapOnColumn !== undefined) {
-              state.heatmapOnColumn = scope.heatmapOnColumn;
+            if (scope.cellHighlighters !== undefined) {
+              state.cellHighlightersData = _.map(scope.cellHighlighters, function(highlighter, colInd){
+                return highlighter;
+              });
             }
             if (scope.tableFilter !== undefined) {
               state.tableFilter = scope.tableFilter;

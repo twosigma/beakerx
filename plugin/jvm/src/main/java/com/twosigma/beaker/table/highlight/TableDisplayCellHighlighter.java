@@ -18,24 +18,24 @@ package com.twosigma.beaker.table.highlight;
 import com.twosigma.beaker.chart.Color;
 
 public class TableDisplayCellHighlighter {
-  public static HighlightType FULL_ROW      = HighlightType.FULL_ROW;
-  public static HighlightType SINGLE_COLUMN = HighlightType.SINGLE_COLUMN;
-  private static HighlightType defaultType  = HighlightType.FULL_ROW;
+  public static HighlightStyle FULL_ROW      = HighlightStyle.FULL_ROW;
+  public static HighlightStyle SINGLE_COLUMN = HighlightStyle.SINGLE_COLUMN;
+  private static HighlightStyle defaultStyle = HighlightStyle.FULL_ROW;
 
   public static TableDisplayCellHighlighter getHeatmapHighlighter(String columnToUse) {
-    return new HeatmapHighlighter(columnToUse, defaultType);
+    return new HeatmapHighlighter(columnToUse, defaultStyle);
   }
 
-  public static TableDisplayCellHighlighter getHeatmapHighlighter(String columnToUse, HighlightType style) {
-    return new HeatmapHighlighter(columnToUse, defaultType);
+  public static TableDisplayCellHighlighter getHeatmapHighlighter(String columnToUse, HighlightStyle style) {
+    return new HeatmapHighlighter(columnToUse, style);
   }
 
-  public static TableDisplayCellHighlighter getHeatmapHighlighter(String columnToUse, HighlightType style,
+  public static TableDisplayCellHighlighter getHeatmapHighlighter(String columnToUse, HighlightStyle style,
                                                                   Number minVal, Number maxVal) {
     return new HeatmapHighlighter(columnToUse, style, minVal, maxVal);
   }
 
-  public static TableDisplayCellHighlighter getHeatmapHighlighter(String columnToUse, HighlightType style,
+  public static TableDisplayCellHighlighter getHeatmapHighlighter(String columnToUse, HighlightStyle style,
                                                                   Number minVal, Number maxVal,
                                                                   Color minColor, Color maxColor) {
     return new HeatmapHighlighter(columnToUse, style, minVal, maxVal, minColor, maxColor);
@@ -43,13 +43,13 @@ public class TableDisplayCellHighlighter {
 
   public static TableDisplayCellHighlighter getHeatmapHighlighter(String columnToUse,
                                                                   Number minVal, Number maxVal) {
-    return new HeatmapHighlighter(columnToUse, defaultType, minVal, maxVal);
+    return new HeatmapHighlighter(columnToUse, defaultStyle, minVal, maxVal);
   }
 
   public static TableDisplayCellHighlighter getHeatmapHighlighter(String columnToUse,
                                                                   Number minVal, Number maxVal,
                                                                   Color minColor, Color maxColor) {
-    return new HeatmapHighlighter(columnToUse, defaultType, minVal, maxVal, minColor, maxColor);
+    return new HeatmapHighlighter(columnToUse, defaultStyle, minVal, maxVal, minColor, maxColor);
   }
 
 }

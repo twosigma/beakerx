@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.table.highlight;
 
-public enum HighlightType {
+public enum HighlightStyle {
   FULL_ROW,
   SINGLE_COLUMN
 }

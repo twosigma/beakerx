@@ -19,25 +19,25 @@ import com.twosigma.beaker.chart.Color;
 
 public class HeatmapHighlighter extends TableDisplayCellHighlighter {
   private String colName;
-  private HighlightType style;
+  private HighlightStyle style;
   private Number minVal;
   private Number maxVal;
   private Color minColor;
   private Color maxColor;
 
-  HeatmapHighlighter(String colName, HighlightType style) {
+  HeatmapHighlighter(String colName, HighlightStyle style) {
     this.colName = colName;
     this.style = style;
   }
 
-  HeatmapHighlighter(String colName, HighlightType style, Number minVal, Number maxVal) {
+  HeatmapHighlighter(String colName, HighlightStyle style, Number minVal, Number maxVal) {
     this.colName = colName;
     this.style = style;
     this.minVal = minVal;
     this.maxVal = maxVal;
   }
 
-  HeatmapHighlighter(String colName, HighlightType style, Number minVal, Number maxVal, Color minColor, Color maxColor) {
+  HeatmapHighlighter(String colName, HighlightStyle style, Number minVal, Number maxVal, Color minColor, Color maxColor) {
     this.colName = colName;
     this.style = style;
     this.minVal = minVal;
@@ -50,7 +50,7 @@ public class HeatmapHighlighter extends TableDisplayCellHighlighter {
     return colName;
   }
 
-  public HighlightType getStyle() {
+  public HighlightStyle getStyle() {
     return style;
   }
 

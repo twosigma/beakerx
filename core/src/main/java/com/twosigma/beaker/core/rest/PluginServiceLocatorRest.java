@@ -942,11 +942,7 @@ public class PluginServiceLocatorRest {
     private boolean copyExtensionFileFromPythonDist() {
       try {
         String plugPath = config.getPluginPath(pluginId);
-        String command = "jupyter";
-        if (!StringUtils.isBlank(plugPath)) {
-          command = plugPath + '/' + command;
-        }
-        Process jupyterPathsProcess = Runtime.getRuntime().exec(new String[]{command, "--paths"}, buildEnv(pluginId, null));
+        Process jupyterPathsProcess = Runtime.getRuntime().exec(new String[]{getJupyterCommand(plugPath), "--paths"}, buildEnv(pluginId, null));
         jupyterPathsProcess.waitFor();
         List<String> jupyterDataPaths = parseJupyterDataPaths(jupyterPathsProcess);
         for (String jupyterDataPath : jupyterDataPaths) {
@@ -960,6 +956,19 @@ public class PluginServiceLocatorRest {
         e.printStackTrace();
       }
       return false;
+    }
+
+    private String getJupyterCommand(String plugPath) {
+      String command = "jupyter";
+      if (!StringUtils.isBlank(plugPath)) {
+        if (windows()) {
+          plugPath += "/Scripts";
+        } else if (macosx()) {
+          plugPath += "/bin";
+        }
+        command = plugPath + '/' + command;
+      }
+      return command;
     }
 
     private java.nio.file.Path getJupyterExtensionPath(String jupyterDataPath) {

@@ -179,7 +179,6 @@ var BeakerPageObject = function() {
       this.languageManagerButtonActive(plugin).isPresent()
         .then(function(result) {
           deferred.fulfill(result);
-          self.createScreenshot('waitForPlugin' + plugin);
         },
         function(value){
           self.createScreenshot('waitForPlugin' + plugin);

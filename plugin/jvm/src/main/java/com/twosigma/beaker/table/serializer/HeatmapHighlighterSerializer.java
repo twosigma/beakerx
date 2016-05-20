@@ -43,15 +43,14 @@ public class HeatmapHighlighterSerializer<H extends HeatmapHighlighter> extends 
                               SerializerProvider provider)
     throws IOException, JsonProcessingException {
 
-    synchronized (value) {
-      jgen.writeObjectField("type", value.getClass().getSimpleName());
-      jgen.writeObjectField("colName", value.getColName());
-      jgen.writeObjectField("style", value.getStyle());
-      jgen.writeObjectField("minVal", value.getMinVal());
-      jgen.writeObjectField("maxVal", value.getMaxVal());
-      jgen.writeObjectField("minColor", value.getMinColor());
-      jgen.writeObjectField("maxColor", value.getMaxColor());
-    }
+    jgen.writeObjectField("type", value.getClass().getSimpleName());
+    jgen.writeObjectField("colName", value.getColName());
+    jgen.writeObjectField("style", value.getStyle());
+    jgen.writeObjectField("minVal", value.getMinVal());
+    jgen.writeObjectField("maxVal", value.getMaxVal());
+    jgen.writeObjectField("minColor", value.getMinColor());
+    jgen.writeObjectField("maxColor", value.getMaxColor());
+
   }
 
 }

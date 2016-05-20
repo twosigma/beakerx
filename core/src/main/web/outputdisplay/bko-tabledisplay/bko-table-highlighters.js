@@ -124,6 +124,9 @@
           midColor: formatColor(data.midColor)
         });
         this.colorScale = function (min, max) {
+          if (this.midVal == null) {
+            this.midVal = (min + max) / 2;
+          }
           return d3.scale.linear(min, max).domain([min, this.midVal, max]).range([this.minColor, this.midColor, this.maxColor]);
         };
       };

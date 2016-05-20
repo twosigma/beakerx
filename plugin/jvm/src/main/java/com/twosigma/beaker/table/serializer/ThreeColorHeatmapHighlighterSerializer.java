@@ -35,6 +35,7 @@ public class ThreeColorHeatmapHighlighterSerializer extends HeatmapHighlighterSe
       serializeObj(value, jgen, provider);
       jgen.writeObjectField("midVal", value.getMidVal());
       jgen.writeObjectField("midColor", value.getMidColor());
+      jgen.writeEndObject();
     }
   }
 }

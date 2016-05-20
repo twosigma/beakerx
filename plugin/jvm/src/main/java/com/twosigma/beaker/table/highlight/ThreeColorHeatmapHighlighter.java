@@ -21,15 +21,15 @@ public class ThreeColorHeatmapHighlighter extends HeatmapHighlighter{
   private Number midVal;
   private Color midColor;
 
-  ThreeColorHeatmapHighlighter(String colName, HighlightStyle style){
+  public ThreeColorHeatmapHighlighter(String colName, HighlightStyle style){
     super(colName, style);
   }
-  ThreeColorHeatmapHighlighter(String colName, HighlightStyle style, Number minVal,
+  public ThreeColorHeatmapHighlighter(String colName, HighlightStyle style, Number minVal,
                                Number midVal, Number maxVal){
     super(colName, style, minVal, maxVal);
     this.midVal = midVal;
   }
-  ThreeColorHeatmapHighlighter(String colName, HighlightStyle style, Number minVal,
+  public ThreeColorHeatmapHighlighter(String colName, HighlightStyle style, Number minVal,
                                Number midVal, Number maxVal, Color minColor,
                                Color midColor, Color maxColor){
     super(colName, style, minVal, maxVal, minColor, maxColor);

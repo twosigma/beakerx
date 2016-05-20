@@ -14546,8 +14546,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "9c304b7c-a826-4aa0-8be1-379c573d201d",
-                "elapsedTime": 597,
+                "shellId": "39bcdabd-6447-4923-b292-9df5a24cd4d2",
+                "elapsedTime": 625,
                 "height": 776,
                 "result": {
                     "type": "TableDisplay",
@@ -19318,6 +19318,9 @@
                     "def display = new TableDisplay(rates.values, rates.columnNames, rates.types)",
                     "display.addCellHighlighter(TableDisplayCellHighlighter.getHeatmapHighlighter(\"m3\", 0, 8, Color.ORANGE, Color.PINK))",
                     "display.addCellHighlighter(TableDisplayCellHighlighter.getHeatmapHighlighter(\"m6\", TableDisplayCellHighlighter.SINGLE_COLUMN, 6, 8, Color.BLACK, Color.PINK))",
+                    "",
+                    "display.addCellHighlighter(new ThreeColorHeatmapHighlighter(\"y1\", TableDisplayCellHighlighter.SINGLE_COLUMN, 4, 6, 8, new Color(247,106,106), new Color(239,218,82), new Color(100,189,122)))",
+                    "",
                     "//wipe out all highlighting",
                     "//display.removeAllCellHighlighters()",
                     "display"
@@ -19412,6 +19415,17 @@
                                 "maxVal": 8,
                                 "minColor": "#000000",
                                 "maxColor": "#FFAFAF"
+                            },
+                            {
+                                "style": "SINGLE_COLUMN",
+                                "colInd": 4,
+                                "type": "ThreeColorHeatmapHighlighter",
+                                "minVal": 4,
+                                "maxVal": 8,
+                                "minColor": "#F76A6A",
+                                "maxColor": "#64BD7A",
+                                "midVal": 6,
+                                "midColor": "#EFDA52"
                             }
                         ],
                         "tableFilter": "",
@@ -19426,8 +19440,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "9c304b7c-a826-4aa0-8be1-379c573d201d",
-                "elapsedTime": 622,
+                "shellId": "39bcdabd-6447-4923-b292-9df5a24cd4d2",
+                "elapsedTime": 624,
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -19484,6 +19498,17 @@
                             "maxVal": 8,
                             "minColor": "#FF000000",
                             "maxColor": "#FFFFAFAF"
+                        },
+                        {
+                            "type": "ThreeColorHeatmapHighlighter",
+                            "colName": "y1",
+                            "style": "SINGLE_COLUMN",
+                            "minVal": 4,
+                            "maxVal": 8,
+                            "minColor": "#FFF76A6A",
+                            "maxColor": "#FF64BD7A",
+                            "midVal": 6,
+                            "midColor": "#FFEFDA52"
                         }
                     ],
                     "values": [
@@ -24187,47 +24212,7 @@
                 "height": 776
             },
             "evaluatorReader": true,
-            "lineCount": 7
-        },
-        {
-            "id": "sectionp8PWji",
-            "type": "section",
-            "title": "Unique Entries Highlighter",
-            "level": 3,
-            "evaluatorReader": false,
-            "collapsed": true
-        },
-        {
-            "id": "code9MhWz7",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": [
-                    "//use TableDisplayCellHighlighter.SINGLE_COLUMN to have the highlighter affect only one column",
-                    "//assign a color to each unique value of vendorId",
-                    "//display.addCellHighlighter(TableDisplayCellHighlighter.getUniqueEntriesHighlighter(\"m3\", TableDisplayCellHighlighter.SINGLE_COLUMN))"
-                ]
-            },
-            "output": {
-                "state": {},
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Error",
-                    "object": [
-                        "groovy.lang.MissingPropertyException: No such property: display for class: script14636470711341471607200<br/>",
-                        "\tat script14636470711341471607200.run(script14636470711341471607200.groovy:3)",
-                        "\tat com.twosigma.beaker.groovy.utils.GroovyEvaluator$workerThread$MyRunnable.run(GroovyEvaluator.java:378)",
-                        ""
-                    ]
-                },
-                "selectedType": "BeakerDisplay",
-                "pluginName": "Groovy",
-                "shellId": "4554a24c-41fe-41fc-8bed-013523f9842c",
-                "elapsedTime": 685,
-                "height": 0
-            },
-            "evaluatorReader": true,
-            "lineCount": 3
+            "lineCount": 10
         }
     ],
     "namespace": {

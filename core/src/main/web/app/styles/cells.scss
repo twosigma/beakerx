@@ -42,14 +42,11 @@ bk-markdown-editable .CodeMirror {
 }
 
 .mini-cell-stats {
-  top: 22px;
-  left: 20px;
   color: $font-grey;
-  position: absolute;
   font-size: 12px;
-  .advanced-mode & {
-    top: 11px;
-  }
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .loading-state {
   color: $font-grey;

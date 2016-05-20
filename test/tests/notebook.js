@@ -25,6 +25,7 @@ describe('notebook', function() {
   };
 
   function insertCellOfType(language) {
+    browser.wait(beakerPO.EC.presenceOf(beakerPO.cellEvaluatorMenu), 10000);
     beakerPO.cellEvaluatorMenu.click();
     beakerPO.cellEvaluatorMenuItem(language).click();
   }
@@ -68,8 +69,9 @@ describe('notebook', function() {
       beakerPO.waitUntilGraphOutputPresent()
       .then(function(present) {
         expect(present).toEqual(true);
-        done();
       });
+      beakerPO.createScreenshot('notebookOutputGraphs');
+      done();
     });
 
     it('can output graphs when minimized', function(done) {
@@ -79,8 +81,9 @@ describe('notebook', function() {
       beakerPO.waitUntilGraphOutputPresent()
       .then(function(present) {
         expect(present).toEqual(true);
-        done();
       });
+      beakerPO.createScreenshot('notebookOutputGraphs');
+      done();
     });
   });
 
@@ -101,6 +104,7 @@ describe('notebook', function() {
     beforeEach(function() {
       beakerPO.newEmptyNotebook.click();
       beakerPO.insertCellButton.click();
+      browser.wait(beakerPO.EC.presenceOf(beakerPO.cellEvaluatorMenu), 10000);
       beakerPO.cellEvaluatorMenu.click();
       beakerPO.cellEvaluatorMenuItem('JavaScript').click();
     });

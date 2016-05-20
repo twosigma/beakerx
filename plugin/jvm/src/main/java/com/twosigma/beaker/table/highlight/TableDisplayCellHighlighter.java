@@ -18,7 +18,7 @@ package com.twosigma.beaker.table.highlight;
 import com.twosigma.beaker.chart.Color;
 
 public class TableDisplayCellHighlighter {
-  public static HighlightStyle FULL_ROW      = HighlightStyle.FULL_ROW;
+  public static HighlightStyle FULL_ROW = HighlightStyle.FULL_ROW;
   public static HighlightStyle SINGLE_COLUMN = HighlightStyle.SINGLE_COLUMN;
   private static HighlightStyle defaultStyle = HighlightStyle.FULL_ROW;
 
@@ -50,6 +50,15 @@ public class TableDisplayCellHighlighter {
                                                                   Number minVal, Number maxVal,
                                                                   Color minColor, Color maxColor) {
     return new HeatmapHighlighter(columnToUse, defaultStyle, minVal, maxVal, minColor, maxColor);
+  }
+
+  public static TableDisplayCellHighlighter getUniqueEntriesHighlighter(String columnToUse) {
+    return new UniqueEntriesHighlighter(columnToUse, defaultStyle);
+  }
+
+  public static TableDisplayCellHighlighter getUniqueEntriesHighlighter(java.lang.String columnToUse,
+                                                                        HighlightStyle style) {
+    return new UniqueEntriesHighlighter(columnToUse, style);
   }
 
 }

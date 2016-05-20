@@ -99,12 +99,12 @@
           var colorScaleFunction = this.colorScale(this.minVal, this.maxVal);
 
           var self = this;
-          table.column(self.colInd).nodes().each(function (td, rowInd) {
+          table.column(self.colInd).nodes().each(function (td) {
             var value = $(td).text();
             if ($.isNumeric(value)) {
               var color = colorScaleFunction(value);
               var nodeToHighlight = self.style === HIGHLIGHT_STYLE.SINGLE_COLUMN ?
-                $(td) : $(table.row(rowInd).node()).find('td');
+                $(td) : $(table.row(table.cell(td).index().row).node()).find('td');
               nodeToHighlight.css({
                 'background-color': color
               });

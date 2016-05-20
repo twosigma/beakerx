@@ -1476,6 +1476,9 @@
         scope.showHideHighlighter = function(column, highlighterType){
           var highlighter = scope.cellHighlighters[column];
           if (!highlighter || !(highlighter instanceof highlighterType)) {
+            if (highlighter) {
+              highlighter.removeHighlight(scope.table);
+            }
             scope.cellHighlighters[column] = new highlighterType({colInd: column});
           } else {
             highlighter.removeHighlight(scope.table);

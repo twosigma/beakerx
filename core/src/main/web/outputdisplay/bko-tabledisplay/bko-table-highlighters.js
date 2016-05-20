@@ -65,8 +65,11 @@
           type: data.type,
         });
         this.removeHighlight = function (table) {
+          var self = this;
           table.column(this.colInd).nodes().each(function (td) {
-            $(td).css({'background-color': ''});
+            var nodeToHighlight = self.style === HIGHLIGHT_STYLE.SINGLE_COLUMN ?
+              $(td) : $(table.row(table.cell(td).index().row).node()).find('td');
+            nodeToHighlight.css({'background-color': ''});
           });
         };
       };

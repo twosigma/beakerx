@@ -276,10 +276,11 @@
 
       if (window.bkInit && window.bkInit.getEvaluatorUrlMap) {
         var evaluatorsUrlMap = window.bkInit.getEvaluatorUrlMap();
-        _(evaluatorsUrlMap).keys().each(function(key) {
+        var keys = _.keys(evaluatorsUrlMap);
+        _.each(keys, function(key) {
           var value = evaluatorsUrlMap[key];
           bkEvaluatePluginManager.addNameToUrlEntry(key, value);
-        }).value();
+        });
       }
     });
 

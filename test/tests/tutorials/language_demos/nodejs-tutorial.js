@@ -37,7 +37,7 @@ describe('Node.js Tutorial', function () {
         it('Start server', function () {
             var idCell = "codeuBtnh9";
             beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text', 'nodejsStart', 60000);
             beakerPO.checkCellOutputSubTextByIdCell(idCell, 'server started', 0, 14);
         });
 
@@ -48,7 +48,7 @@ describe('Node.js Tutorial', function () {
 
             idCell = "code5aRHZP";
             beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text', 'nodejsClient', 60000);
             beakerPO.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText()
                 .then(function(value){
                     expect(value.indexOf('per HTTP call')).not.toBe(-1);

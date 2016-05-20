@@ -222,10 +222,7 @@
             $scope.evalTabOp.newPluginNameOrUrl = "";
           }
           $scope.evalTabOp.activateThisTab = plugin;
-          var newEval = { name: '', plugin: plugin };
-          bkSessionManager.addEvaluator(newEval);
-          bkCoreManager.getBkApp().addEvaluator(newEval);
-          $rootScope.$broadcast('languageAdded', { evaluator: plugin });
+          bkCoreManager.getBkApp().addEvaluatorToNotebook(plugin);
         }
       }
     };

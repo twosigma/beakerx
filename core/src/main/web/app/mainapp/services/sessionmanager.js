@@ -35,6 +35,7 @@
       bkSession,
       bkNotebookManager,
       bkNotebookCellModelManager,
+      bkNotebookCellModelManagerFactory,
       bkNotebookNamespaceModelManager,
       bkEvaluatorManager,
       bkRecentMenu,
@@ -507,19 +508,14 @@
             return d.promise;
           }, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'print', {value: function(input) {
-          bkHelper.receiveEvaluationUpdate(self._beaker_model_output,
-                                           {outputdata:[{type:'out', value: input+"\n"}]}, "JavaScript");
-          // XXX should not be needed but when progress meter is shown at same time
-          // display is broken without this, you get "OUTPUT" instead of any lines of text.
-          bkHelper.refreshRootScope();
+          bkHelper.printEvaluationProgress(self._beaker_model_output, input, 'out');
         }, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'printError', {value: function(input) {
-          bkHelper.receiveEvaluationUpdate(self._beaker_model_output,
-                                           {outputdata:[{type:'err', value: input+"\n"}]}, "JavaScript");
-          // XXX should not be needed but when progress meter is shown at same time
-          // display is broken without this, you get "OUTPUT" instead of any lines of text.
-          bkHelper.refreshRootScope();
+          bkHelper.printEvaluationProgress(self._beaker_model_output, input, 'err');
         }, writeable: false, enumerable: true });
+        Object.defineProperty(this.beakerObj, 'loadLibrary', { value: function (path) {
+          return bkHelper.loadLibrary(path, self._beaker_model_output);
+        }, writeable: false, enumerable: true});
         Object.defineProperty(this.beakerObj, 'loadJS', { value: bkHelper.loadJS, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'loadCSS', { value: bkHelper.loadCSS, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'loadList', { value: bkHelper.loadList, writeable: false, enumerable: true });

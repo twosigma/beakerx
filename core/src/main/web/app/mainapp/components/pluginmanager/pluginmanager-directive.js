@@ -84,7 +84,7 @@
     };
 
     $scope.allowFromUrl = function() {
-      return (window.beaker === undefined || window.beakerRegister.disablePluginLoadFromUrl === undefined || !window.beakerRegister.disablePluginLoadFromUrl);
+      return (window.beakerRegister === undefined || window.beakerRegister.disablePluginLoadFromUrl === undefined || !window.beakerRegister.disablePluginLoadFromUrl);
     };
 
     $scope.getEvaluatorTooltipText = function (pluginName, pluginStatus) {

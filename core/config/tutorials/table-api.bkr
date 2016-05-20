@@ -24213,6 +24213,184 @@
             },
             "evaluatorReader": true,
             "lineCount": 10
+        },
+        {
+            "id": "sectionmGwPpW",
+            "type": "section",
+            "title": "UniqueEntriesHighlighter",
+            "level": 3,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownLEvHJc",
+            "type": "markdown",
+            "body": [
+                "Creates a highlighter that assigns a unique color to each value in the provided column (can also colors a single column or the full row)"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "code2KwSKV",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def table = new TableDisplay([[1,2,3], ",
+                    "                              [3,4,5], ",
+                    "                              [6,2,8], ",
+                    "                              [6,2,8], ",
+                    "                              [6,2,8], ",
+                    "                              [6,4,8], ",
+                    "                              [6,2,8], ",
+                    "                              [6,2,8], ",
+                    "                              [6,5,8]], ",
+                    "                             ['a', 'b', 'c'], ",
+                    "                             ['double', 'double', 'double'])",
+                    "table.addCellHighlighter(TableDisplayCellHighlighter.getUniqueEntriesHighlighter(\"b\", TableDisplayCellHighlighter.FULL_ROW))",
+                    "table"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "a",
+                            "b",
+                            "c"
+                        ],
+                        "actualtype": [
+                            "4.4",
+                            "4.4",
+                            "4.4"
+                        ],
+                        "actualalign": [
+                            "R",
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [
+                            {
+                                "style": "FULL_ROW",
+                                "colInd": 2,
+                                "type": "UniqueEntriesHighlighter"
+                            }
+                        ],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {}
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "a",
+                        "b",
+                        "c"
+                    ],
+                    "types": [
+                        "double",
+                        "double",
+                        "double"
+                    ],
+                    "subtype": "TableDisplay",
+                    "stringFormatForTimes": null,
+                    "stringFormatForType": {},
+                    "stringFormatForColumn": {},
+                    "rendererForType": {},
+                    "rendererForColumn": {},
+                    "alignmentForType": {},
+                    "alignmentForColumn": {},
+                    "columnsFrozen": {},
+                    "columnsFrozenRight": {},
+                    "columnsVisible": {},
+                    "columnOrder": [],
+                    "cellHighlighters": [
+                        {
+                            "type": "UniqueEntriesHighlighter",
+                            "colName": "b",
+                            "style": "FULL_ROW"
+                        }
+                    ],
+                    "values": [
+                        [
+                            1,
+                            2,
+                            3
+                        ],
+                        [
+                            3,
+                            4,
+                            5
+                        ],
+                        [
+                            6,
+                            2,
+                            8
+                        ],
+                        [
+                            6,
+                            2,
+                            8
+                        ],
+                        [
+                            6,
+                            2,
+                            8
+                        ],
+                        [
+                            6,
+                            4,
+                            8
+                        ],
+                        [
+                            6,
+                            2,
+                            8
+                        ],
+                        [
+                            6,
+                            2,
+                            8
+                        ],
+                        [
+                            6,
+                            5,
+                            8
+                        ]
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "58c32643-7f1d-4a3e-b5cb-6eb9f10e306c",
+                "elapsedTime": 598,
+                "height": 318
+            },
+            "evaluatorReader": true,
+            "lineCount": 13
         }
     ],
     "namespace": {

@@ -135,6 +135,44 @@
       };
       //////////ThreeColorHeatmap Highlighter//////////
 
+      //////////UniqueEntriesHighlighter//////////
+      var UniqueEntriesHighlighter = function (data) {
+        if (!data) { data = {}; }
+        CellHighlighter.call(this, data);
+        _.extend(this, {
+          type: 'UniqueEntriesHighlighter'
+        });
+
+        var generateColor = function (colorNum, colors) {
+          return "hsl(" + (colorNum * (360 / colors)) + ", 75%, 85%)";
+        };
+
+        var findUniqueValues = function (colData) {
+          return colData.unique().toArray();
+        };
+
+        this.doHighlight = function (table) {
+          var uniqueValues = findUniqueValues(table.column(this.colInd).data());
+          var uniqueColors = {};
+          _.forEach(uniqueValues, function(value, index){
+            uniqueColors[value] = generateColor(index, uniqueValues.length);
+          });
+          var self = this;
+          table.column(self.colInd).nodes().each(function (td) {
+            var value = table.cell(td).data();
+            if ($.isNumeric(value)) {
+              var color = uniqueColors[value];
+              var nodeToHighlight = self.style === HIGHLIGHT_STYLE.SINGLE_COLUMN ?
+                $(td) : $(table.row(table.cell(td).index().row).node()).find('td');
+              nodeToHighlight.css({
+                'background-color': color
+              });
+            }
+          });
+        };
+      };
+      //////////UniqueEntriesHighlighter//////////
+
       return {
         HeatmapHighlighter: HeatmapHighlighter,
         ThreeColorHeatmapHighlighter: ThreeColorHeatmapHighlighter,
@@ -144,6 +182,8 @@
               return new HeatmapHighlighter(data);
             case 'ThreeColorHeatmapHighlighter':
               return new ThreeColorHeatmapHighlighter(data);
+            case 'UniqueEntriesHighlighter':
+              return new UniqueEntriesHighlighter(data);
           }
         }
       }

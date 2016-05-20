@@ -50,11 +50,11 @@
               newmodel.userFocus.yr = axis.upper_bound;
             }
           } else {
-            if (axis.lower_margin != null) {
-              newmodel.margin.bottom = axis.lower_margin;
+            if (model.lower_margin != null) {
+              newmodel.margin.bottom = model.lower_margin;
             }
-            if (axis.upper_margin != null) {
-              newmodel.margin.top = axis.upper_margin;
+            if (model.upper_margin != null) {
+              newmodel.margin.top = model.upper_margin;
             }
           }
         }

@@ -59,8 +59,8 @@
           newmodel = _.extend(newmodel, {
             userFocus: {},
             xAxis: {label: model.domain_axis_label},
-            yAxis: {label: model.y_label},
-            yAxisR: model.rangeAxes.length > 1 ? {label: model.rangeAxes[1].label} : null,
+            yAxis: {label: model.y_label, lowerMargin: model.rangeAxes[0].lower_margin, upperMargin: model.rangeAxes[0].upper_margin},
+            yAxisR: model.rangeAxes.length > 1 ? {label: model.rangeAxes[1].label, lowerMargin: model.rangeAxes[1].lower_margin, upperMargin: model.rangeAxes[1].upper_margin} : null,
             orientation: model.orientation != null ? model.orientation : "VERTICAL",
             omitCheckboxes: model.omit_checkboxes,
             nanoOffset: null,
@@ -183,6 +183,8 @@
           if (label != null) {
             axis.setLabel(label);
           }
+          axis.axisMarginValL = modelAxis.lowerMargin;
+          axis.axisMarginValR = modelAxis.upperMargin;
           return axis;
         };
         model.yAxis = updateYAxisRange(model.yAxis, model.vrange);

@@ -20,10 +20,15 @@ import java.util.Observer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerSession;
 
 public class ObservableUpdaterFactory implements UpdaterFactory {
+
+  private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(16,
+                                            new ThreadFactoryBuilder().setNameFormat("ObservableUpdater-%d").build());
 
   @Override
   public boolean isApplicable(Object o) {
@@ -38,7 +43,7 @@ public class ObservableUpdaterFactory implements UpdaterFactory {
       Object updateSource) {
 
     ObservableUpdater result =
-        new ObservableUpdater(session, localSession, channelId);
+        new ObservableUpdater(session, localSession, channelId, executor);
     ((Observable) updateSource).addObserver(result);
 
     return result;
@@ -47,14 +52,15 @@ public class ObservableUpdaterFactory implements UpdaterFactory {
   private static class ObservableUpdater extends Updater
     implements Observer, Runnable {
 
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService executor;
     private Object updateObject = null;
 
     ObservableUpdater(
         ServerSession session,
         LocalSession localSession,
-        String channelId) {
+        String channelId, ScheduledExecutorService executor) {
       super(session, localSession, channelId);
+      this.executor = executor;
     }
 
     @Override

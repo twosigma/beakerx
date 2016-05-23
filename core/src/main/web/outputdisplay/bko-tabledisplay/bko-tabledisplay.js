@@ -843,6 +843,10 @@
             return value;
           }
         };
+        $scope.valueFormatter = function(value, type, full, meta) {
+          var columnName = $scope.columnNames[meta.col - 1];
+          return $scope.stringFormatForColumn[columnName].values[columnName][meta.row];
+        },
         $scope.isDoubleWithPrecision = function(type){
           var parts = type.toString().split(".");
           return parts.length > 1 && parts[0] === '4';
@@ -1205,14 +1209,18 @@
             scope.actualalign = [];
             for (i = 0; i < scope.columnNames.length; i++) {
               if (scope.types !== undefined) {
-                if (scope.types[i] === 'time' || scope.types[i] === 'datetime') {
+                var stringFormatForColumn =  scope.stringFormatForColumn[scope.columnNames[i]];
+                if (stringFormatForColumn && stringFormatForColumn.type === 'value'){
+                  scope.actualtype.push(0);
+                  scope.actualalign.push('L');
+                } else if (scope.types[i] === 'time' || scope.types[i] === 'datetime') {
                   scope.actualtype.push(8);
                   scope.actualalign.push('C');
                 } else if (scope.types[i] === 'integer') {
                   scope.actualtype.push(2);
                   scope.actualalign.push('R');
                 } else if (scope.types[i] === 'double') {
-                  if (scope.stringFormatForType.double || scope.stringFormatForColumn[scope.columnNames[i]]) {
+                  if (scope.stringFormatForType.double || stringFormatForColumn) {
                     scope.actualtype.push(3);
                   } else {
                     scope.actualtype.push('4.4');
@@ -2029,7 +2037,10 @@
               col.className = 'dtcenter';
             }
 
-            if (scope.isDoubleWithPrecision(type)) {
+            var stringFormatForColumn = scope.stringFormatForColumn[scope.columnNames[i]];
+            if (stringFormatForColumn && stringFormatForColumn.type === 'value' && type === 0){
+              col.render = scope.valueFormatter;
+            } else if (scope.isDoubleWithPrecision(type)) {
               col.render = scope.doubleWithPrecisionConverters[scope.getDoublePrecision(type)];
             } else if (scope.allConverters[type] !== undefined) {
               col.render = scope.allConverters[type];

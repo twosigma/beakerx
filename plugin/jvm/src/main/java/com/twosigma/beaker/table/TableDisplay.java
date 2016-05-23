@@ -15,7 +15,9 @@
  */
 package com.twosigma.beaker.table;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,7 @@ import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.table.format.TableDisplayStringFormat;
+import com.twosigma.beaker.table.format.ValueStringFormat;
 import com.twosigma.beaker.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beaker.table.renderer.TableDisplayCellRenderer;
 
@@ -119,6 +122,24 @@ public class TableDisplay {
 
   public void setStringFormatForColumn(String column, TableDisplayStringFormat format) {
     this.stringFormatForColumn.put(column, format);
+  }
+
+  public void setStringFormatForColumn(String column, Object closure) {
+    int colIndex = this.columns.indexOf(column);
+    if (colIndex == -1) {
+      throw new IllegalArgumentException("Column " + column + " doesn't exist");
+    }
+    List<String> formattedValues = new ArrayList<>();
+    try {
+      for (int row = 0; row < this.values.size(); row++) {
+        Object value = this.values.get(row).get(colIndex);
+        Object[] params = new Object[]{ value, row, column, this };
+        formattedValues.add((String) runClosure(closure, params));
+      }
+    } catch (Throwable e) {
+      throw new IllegalArgumentException("Can not create format using closure.", e);
+    }
+    this.stringFormatForColumn.put(column, new ValueStringFormat(column, formattedValues));
   }
 
   public Map<ColumnType, TableDisplayCellRenderer> getRendererForType() {
@@ -260,5 +281,18 @@ public class TableDisplay {
   public List<String> getTypes() { return classes; }
   public String getSubtype() {
     return subtype;
+  }
+
+  private Object runClosure(Object closure, Object... params) throws Exception{
+    Class<?> clazz = closure.getClass();
+    Method getMaximumNumberOfParameters = clazz.getMethod("getMaximumNumberOfParameters");
+    getMaximumNumberOfParameters.setAccessible(true);
+    int numberOfParameters = (int) getMaximumNumberOfParameters.invoke(closure);
+    Method call;
+    Class<Object>[] paramTypes = new Class[numberOfParameters];
+    Arrays.fill(paramTypes, Object.class);
+    call = clazz.getMethod("call", paramTypes);
+    call.setAccessible(true);
+    return call.invoke(closure, Arrays.copyOfRange(params, 0, numberOfParameters));
   }
 }

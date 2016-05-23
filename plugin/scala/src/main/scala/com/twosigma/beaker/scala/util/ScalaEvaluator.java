@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2014-2016 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -328,7 +328,8 @@ public class ScalaEvaluator {
     protected void newEvaluator() throws MalformedURLException
     {
       logger.fine("creating new evaluator");
-      shell = new ScalaEvaluatorGlue(newClassLoader(), loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"));
+      shell = new ScalaEvaluatorGlue(newClassLoader(),
+        loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), outDir);
 
       if (!imports.isEmpty()) {
         for (int i = 0; i < imports.size(); i++) {
@@ -393,7 +394,8 @@ public class ScalaEvaluator {
   protected void newAutoCompleteEvaluator() throws MalformedURLException
   {
     logger.fine("creating new autocomplete evaluator");
-    acshell = new ScalaEvaluatorGlue(newAutoCompleteClassLoader(), acloader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"));
+    acshell = new ScalaEvaluatorGlue(newAutoCompleteClassLoader(),
+      acloader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), outDir);
 
     if (!imports.isEmpty()) {
       for (int i = 0; i < imports.size(); i++) {

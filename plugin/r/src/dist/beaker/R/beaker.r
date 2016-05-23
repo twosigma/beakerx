@@ -339,7 +339,7 @@ convertToJSON <- function(val, collapse) {
   else if (class(val) == "data.table") {
     o = convertToJSON(as.data.frame(val))
   }
-  else if (class(val) == "data.frame") {
+  else if ('data.frame' %in% class(val)) {
     p = "{ \"type\":\"TableDisplay\",\"subtype\":\"TableDisplay\",\"hasIndex\":\"true\",\"columnNames\":"
     colNames = c('Index')
     colNames = c(colNames,names(val))

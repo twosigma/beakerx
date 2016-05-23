@@ -60,7 +60,8 @@
                 "Beaker supports using [Spark](http://spark.apache.org/) with its native language, Scala.",
                 "",
                 "You must use a Spark version compatible with Scala 2.11 (to be compatible with the Scala in Beaker).  We have one prebuilt you can [download](https://s3.amazonaws.com/beaker-distributions/spark-1.5.0-bin-custom-spark.tgz).",
-                "Just add `lib/spark-assembly-1.5.0-hadoop2.4.0.jar` to your class path (with the Language Manager) and then try the following demos."
+                "Just add `lib/spark-assembly-1.5.0-hadoop2.4.0.jar` to your class path (with the Language Manager) and then try the following demos.",
+                "For a Windows OS you must download [hadoop](http://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-2.6.4/hadoop-2.6.4.tar.gz), extract downloaded file and add path to extracted folder as HADOOP_HOME property to the system variable. Also you can download winutils.exe here: http://public-repo-1.hortonworks.com/hdp-win-alpha/winutils.exe. Then copy it to your HADOOP_HOME/bin directory."
             ],
             "evaluatorReader": false
         },

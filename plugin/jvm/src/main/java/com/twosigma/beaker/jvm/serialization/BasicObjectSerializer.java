@@ -93,13 +93,13 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     Set<?> eset = m.entrySet();
     for (Object entry : eset) {
       Entry<?, ?> e = (Entry<?, ?>) entry;
-      if (e.getKey() != null && !isPrimitiveType(e.getKey().getClass().getName()))
-        return false;
       if (e.getValue() != null && !isPrimitiveType(e.getValue().getClass().getName()))
         return false;
     }
     return true;
   }
+
+
 
   protected boolean isPrimitiveTypeListOfList(Object o) {
     if (!(o instanceof Collection<?>))

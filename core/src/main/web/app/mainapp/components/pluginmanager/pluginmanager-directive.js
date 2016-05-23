@@ -84,7 +84,7 @@
     };
 
     $scope.allowFromUrl = function() {
-      return (window.beaker === undefined || window.beakerRegister.disablePluginLoadFromUrl === undefined || !window.beakerRegister.disablePluginLoadFromUrl);
+      return (window.beakerRegister === undefined || window.beakerRegister.disablePluginLoadFromUrl === undefined || !window.beakerRegister.disablePluginLoadFromUrl);
     };
 
     $scope.getEvaluatorTooltipText = function (pluginName, pluginStatus) {
@@ -197,7 +197,7 @@
         var fromUrl = name ? false : true;
         var status = this.getEvaluatorStatuses()[plugin];
 
-        if (!fromUrl && !_.contains(['active', 'known'], status)) return;
+        if (!fromUrl && !_.includes(['active', 'known'], status)) return;
         // for now, if the plugin isn't from a URL or active or known
         // (namely loading) return.
         // TODO: other states we should support: failed and exiting.
@@ -222,10 +222,7 @@
             $scope.evalTabOp.newPluginNameOrUrl = "";
           }
           $scope.evalTabOp.activateThisTab = plugin;
-          var newEval = { name: '', plugin: plugin };
-          bkSessionManager.addEvaluator(newEval);
-          bkCoreManager.getBkApp().addEvaluator(newEval);
-          $rootScope.$broadcast('languageAdded', { evaluator: plugin });
+          bkCoreManager.getBkApp().addEvaluatorToNotebook(plugin);
         }
       }
     };

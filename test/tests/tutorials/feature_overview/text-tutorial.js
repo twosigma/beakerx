@@ -30,7 +30,6 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
             beakerPO.checkBkCellByIdCell(idCell);
 
             var elemPreviw = beakerPO.checkPreviewBkCellByIdCell(idCell);
-            beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('p')).get(0), "Beaker’s text cells (insert one by clicking ‘text’ in the blue button bar) are based primarily on ma");
             beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('li')).get(0), 'Notebook → Lock: hides the all the code, and removes the boxes from around the cells.');
             beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('li')).get(1), 'View → Show Hierarchy: indents sections and adds numbering and lines to show hierarchy.');
             beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('li')).get(2), 'View → Advanced Mode: reduces vertical space and hides the big run button (you can still run cells w');
@@ -40,7 +39,6 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
         it('Edit Mode', function () {
             var elemEdit = beakerPO.checkEditBkCellByIdCell(idCell);
             var elemEditPreArr = elemEdit.all(by.css('.CodeMirror-code > pre'));
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(0), "Beaker's text cells (insert one by clicking 'text' in the blue button bar) are based primarily on ma");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(6), '* **Notebook → Lock**: hides the all the code, and removes the boxes from around the cells.');
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(7), '* **View → Show Hierarchy**: indents sections and adds numbering and lines to show hierarchy.');
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(8), '* **View → Advanced Mode**: reduces vertical space and hides the big run button (you can still run c');
@@ -60,11 +58,10 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
             beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('li')).get(0), "Markdown is good for making lists that emphasize your points,");
             beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('li')).get(1), "writing code documentation,");
             beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('li')).get(2), "and making bold statements.");
-            beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('p')).get(1), "It has too many features to demonstrate all of them here, so we’ll cut to this block quote:");
             beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('blockquote')).get(0), "The best way to get a feel for Markdown’s formatting syntax is simply to look at a Markdown-formatte");
             beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('p')).get(3), "Click on this cell to see how this formatting was specified or to edit its contents. Click away on t");
             beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('p')).get(4), "You can embed TeX (Donald Knuth’s mathematical typesetting system) into a markdown cell by enclosing");
-            beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('p')).get(5), "You can just copy-and-paste unicode characters in:", 0, 50);
+            beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('p')).get(5), "You can write unicode with your native keyboard, o", 0, 50);
             var katexElem = elemPreviw.all(by.css('p')).get(4).all(by.css('span.katex-html > span.base.textstyle.uncramped > span'));
             expect(katexElem.get(0).all(by.css('span > span.mord.mathit')).get(0).getText()).toBe('e');
             expect(katexElem.get(0).all(by.css('span.vlist span.mord.mathit')).get(0).getText()).toBe('i');
@@ -79,14 +76,9 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
             var elemEdit = beakerPO.checkEditBkCellByIdCell(idCell);
             var elemEditPreArr = elemEdit.all(by.css('.CodeMirror-code > pre'));
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(0), "Beaker's text cells use [Markdown](http://daringfireball.net/projects/markdown/syntax), a text-to-HT");
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(1), "you to write using an easy-to-read, easy-to-write plain text format.  Here's a quick demo:");
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(2), "");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(3), "* Markdown is good for making *lists that emphasize your points*,");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(4), "* writing `code documentation`,");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(5), "* and making **bold** statements.");
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(6), "");
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(7), "It has too many features to demonstrate all of them here, so we'll cut to this block quote:");
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(8), "");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(9), "> The best way to get a feel for Markdown’s formatting syntax is simply to look at a");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(10), "Markdown-formatted document. For example, you can view the Markdown source for");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(11), "the article text on this page here: http://daringfireball.net/projects/markdown/index.text");
@@ -98,11 +90,11 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(17), "You can embed TeX ([Donald Knuth's](https://en.wikipedia.org/wiki/Donald_Knuth) mathematical typeset");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(18), "into a markdown cell by enclosing it with dollar characters: $e^{i\\pi}+1=0$.");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(19), "");
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(20), "You can just copy-and-paste unicode characters in:", 0, 50);
-            beakerPO.checkHexCharCodeSubString(elemEditPreArr.get(20), 51, 52, '73bb');
-            beakerPO.checkHexCharCodeSubString(elemEditPreArr.get(20), 52, 53, '7483');
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(20), ", or you can enter HTML entities like &amp;dagg", 53);
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(21), "In fact, many basic HTML elements work, like super&lt;sup&gt;scripts&lt;/sup&gt; for super<sup>scrip");
+            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(20), "You can write unicode with your native keyboard, o", 0, 50);
+            beakerPO.checkHexCharCodeSubString(elemEditPreArr.get(20), 90, 91, '73bb');
+            beakerPO.checkHexCharCodeSubString(elemEditPreArr.get(20), 91, 92, '7483');
+            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(21), "Plus you can enter HTML entities like &amp;dagger; for &dagger;.");
+            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(22), "In fact, many basic HTML elements work, like super&lt;sup&gt;scripts&lt;/sup&gt; for super<sup>scrip");
         });
     });
 
@@ -161,7 +153,7 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
             beakerPO.checkBkCellByIdCell(idCell);
             var elemPreviw = beakerPO.checkPreviewBkCellByIdCell(idCell);
 
-            beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('p')).get(0), "Markdown cells can include values computed by JavaScript, or from any language via autotranslation a" );
+            beakerPO.checkSubStringIfDisplayed(elemPreviw.all(by.css('p')).get(0), "Text cells can include values computed by JavaScript, or from any language via autotranslation and t" );
             expect(elemPreviw.all(by.css('p')).get(0).all(by.css('code')).get(0).getText()).toBe('beaker');
             expect(elemPreviw.all(by.css('p')).get(0).all(by.css('code')).get(1).getText()).toBe('beaker.name');
             expect(elemPreviw.all(by.css('p')).get(0).all(by.css('code')).get(2).getText()).toBe('{{beaker.name}}');
@@ -175,20 +167,14 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
         it('Edit Mode', function () {
             var elemEdit = beakerPO.checkEditBkCellByIdCell(idCell);
             var elemEditPreArr = elemEdit.all(by.css('.CodeMirror-code > pre'));
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(0), "Markdown cells can include values computed by JavaScript, or from any language via autotranslation a");
+            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(0), "Text cells can include values computed by JavaScript, or from any language via autotranslation and t");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(1), 'Just enclose a JavaScript expression in double braces, and that code will be replaced with the resul');
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(2), 'For example, given the definition of `beaker.name` above, writing `{&#8203;{beaker.name}}` appears a');
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(3), 'on this cell to see the markdown source).');
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(4), '');
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(5), 'Since you have full access to JavaScript you can call functions to do things like');
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(6), 'format numbers and call out results computed elsewhere in your notebook.  For example, $e$ the base ');
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(7), '{{beaker.e.toFixed(3)}}.');
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(8), '');
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(9), "You can also customize content according to the reader's operating sytem.  For example, you are on a");
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(10), '{{(beaker.client.mac)?"Mac, so &#x2318;-O":"PC, so Control-O"}} opens a file.');
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(11), '');
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(12), 'In order to get double braces without triggering JavaScript evaluation, use a zero-width unicode spa');
-            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(13), '(see the markdown source for this cell).');
+            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(3), 'For example, given the definition of `beaker.name` above, writing `{&#8203;{beaker.name}}` appears a');
+            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(6), 'Since you have full access to JavaScript you can call functions to do things like');
+            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(7), 'format numbers and call out results computed elsewhere in your notebook.  For example, $e$ the base ');
+            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(8), '{{beaker.e.toFixed(3)}}, as computed above and formatted here.');
+            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(10), "You can also customize content according to the reader's operating sytem.  For example, you are on a");
+            beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(11), '{{(beaker.client.mac)?"Mac, so &#x2318;-O":"PC, so Control-O"}} opens a file.');
         });
     });
 

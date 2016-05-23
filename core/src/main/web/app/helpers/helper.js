@@ -345,7 +345,7 @@
           var strategy = bkHelper.getFileSystemFileChooserStrategy();
           strategy.treeViewfs.extFilter = [ext];
           bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getLocalDrives()]).then(function(values) {
-            if (bkUtils.isWindows) {
+            if (bkUtils.isWindows()) {
               strategy.localDrives = values[1];
             }
             bkCoreManager.showModalDialog(
@@ -859,7 +859,7 @@
         strategy.title = title;
         strategy.closebtn = closebtn;
         bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getLocalDrives()]).then(function (values) {
-          if (bkUtils.isWindows) {
+          if (bkUtils.isWindows()) {
             strategy.localDrives = values[1];
           }
           return bkCoreManager.showModalDialog(
@@ -1263,7 +1263,7 @@
       },
 
       isElectron: bkUtils.isElectron,
-      isMacOS: bkUtils.isMacOS
+      isMacOS: bkUtils.isMacOS()
     };
 
     return bkHelper;

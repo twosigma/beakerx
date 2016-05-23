@@ -214,7 +214,7 @@
 
         $scope.openRecent = function (item, event) {
           if (_.isFunction(item.action)) {
-            if ((bkUtils.isMacOS && event.metaKey) || (!bkUtils.isMacOS && event.ctrlKey)) {
+            if ((bkUtils.isMacOS() && event.metaKey) || (!bkUtils.isMacOS() && event.ctrlKey)) {
               item.action(true);
             } else {
               item.action();

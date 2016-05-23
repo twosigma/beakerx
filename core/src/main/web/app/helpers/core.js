@@ -1157,7 +1157,7 @@
       return modalDialogOp.getStrategy();
     };
     $scope.isWindows = function() {
-      return bkUtils.isWindows;
+      return bkUtils.isWindows();
     };
     $rootScope.$on('modal.submit', function() {
       $scope.close($scope.getStrategy().getResult());

@@ -41,7 +41,7 @@
 
       var _status = '';
 
-      var _ctrlKey = (bkUtils.osName() == 'MacOS') ? 'Command' : 'Control';
+      var _ctrlKey = (bkUtils.osName == 'MacOS') ? 'Command' : 'Control';
       var _zoomFactor = 1.0;
       var increaseZoom = function() {
         _zoomFactor += 0.1;

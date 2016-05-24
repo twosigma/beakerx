@@ -75,18 +75,18 @@
         };
 
         var isHomeDir = $scope.rooturi.length >= 3; // '/' for *nix and C:\ for windows
-        var separator  = getSlash(bkUtils.isWindows());
+        var separator  = getSlash(bkUtils.serverOS.isWindows());
 
         var getOpenFolders = function(path){
           var openFolders = [];
           if (path.indexOf($scope.rooturi)!== -1){
             path = path.replace($scope.rooturi,  "");
             var the_arr = path.split(separator);
-            var openFolder = addTrailingSlash($scope.rooturi, bkUtils.isWindows());
+            var openFolder = addTrailingSlash($scope.rooturi, bkUtils.serverOS.isWindows());
             while (the_arr.length > 0){
               var part =  the_arr.shift();
               if (part.length > 0) {
-                openFolder += addTrailingSlash(part, bkUtils.isWindows());
+                openFolder += addTrailingSlash(part, bkUtils.serverOS.isWindows());
                 openFolders.push(openFolder);
               }
             }
@@ -198,7 +198,7 @@
         $scope.click = function() {
           if ($scope.data.type === 'directory') {
             var uri = $scope.data.uri;
-            addTrailingSlash(uri, bkUtils.isWindows());
+            addTrailingSlash(uri, bkUtils.serverOS.isWindows());
             $scope.fs.fillInput(uri);
             // toggle
             if (!_.isEmpty($scope.data.children)) {
@@ -269,7 +269,7 @@
       },
       link: function(scope, element, attrs, ctrl) {
         scope.$on("SCROLL_TO_TREE_NODE", function (event, data) {
-          if (addTrailingSlash(data.path, bkUtils.isWindows()) === addTrailingSlash(scope.data.uri, bkUtils.isWindows()))
+          if (addTrailingSlash(data.path, bkUtils.serverOS.isWindows()) === addTrailingSlash(scope.data.uri, bkUtils.serverOS.isWindows()))
             element.get()[0].scrollIntoView();
         });
       }

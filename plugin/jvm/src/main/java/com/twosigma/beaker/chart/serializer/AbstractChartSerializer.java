@@ -33,8 +33,6 @@ public abstract class AbstractChartSerializer<T extends AbstractChart> extends C
     jgen.writeObjectField("domain_axis_label", chart.getXLabel());
     jgen.writeObjectField("y_label", chart.getYLabel());
     jgen.writeObjectField("rangeAxes", chart.getYAxes());
-    jgen.writeObjectField("lower_margin", chart.getLowerMargin());
-    jgen.writeObjectField("upper_margin", chart.getUpperMargin());
     jgen.writeObjectField("x_lower_margin", chart.getXLowerMargin());
     jgen.writeObjectField("x_upper_margin", chart.getXUpperMargin());
     jgen.writeObjectField("y_auto_range", chart.getYAutoRange());

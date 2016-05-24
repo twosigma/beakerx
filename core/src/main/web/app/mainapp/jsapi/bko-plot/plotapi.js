@@ -406,8 +406,6 @@
           "domain_axis_label": data.xLabel,
           "y_label": data.yLabel,
           "rangeAxes": data.yAxes || [yAxis],
-          "lower_margin": getValue(data, 'lowerMargin', 0.05),
-          "upper_margin": getValue(data, 'upperMargin', 0.05),
           "x_lower_margin": getValue(data, 'xLowerMargin', 0.05),
           "x_upper_margin": getValue(data, 'xUpperMargin', 0.05),
           "y_auto_range": yAxis.auto_range,

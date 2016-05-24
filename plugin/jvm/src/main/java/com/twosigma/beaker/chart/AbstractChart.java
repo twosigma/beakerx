@@ -29,8 +29,6 @@ public abstract class AbstractChart extends Chart {
   private final List<YAxis> yAxes = new ArrayList<>();
   private double xLowerMargin = 0.05;
   private double xUpperMargin = 0.05;
-  private double lowerMargin = 0.05;
-  private double upperMargin = 0.05;
   protected TimeZone timeZone;
   private Crosshair crosshair;
   private boolean omitCheckboxes = false;
@@ -119,24 +117,6 @@ public abstract class AbstractChart extends Chart {
 
   public double getXUpperMargin() {
     return this.xUpperMargin;
-  }
-
-  public double getLowerMargin() {
-    return lowerMargin;
-  }
-
-  public AbstractChart setLowerMargin(double lowerMargin) {
-    this.lowerMargin = lowerMargin;
-    return this;
-  }
-
-  public double getUpperMargin() {
-    return upperMargin;
-  }
-
-  public AbstractChart setUpperMargin(double upperMargin) {
-    this.upperMargin = upperMargin;
-    return this;
   }
 
   public AbstractChart setyAutoRange(boolean yAutoRange) {

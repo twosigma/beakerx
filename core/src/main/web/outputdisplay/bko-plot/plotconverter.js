@@ -430,13 +430,6 @@
             if (axis.upper_bound != null) {
               newmodel.userFocus.yr = axis.upper_bound;
             }
-          } else {
-            if (model.lower_margin != null) {
-              newmodel.margin.bottom = model.lower_margin;
-            }
-            if (model.upper_margin != null) {
-              newmodel.margin.top = model.upper_margin;
-            }
           }
         }
 

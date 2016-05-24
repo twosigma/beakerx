@@ -18,12 +18,11 @@ package com.twosigma.beaker.table.serializer;
 import com.twosigma.beaker.table.TableDisplay;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
 
-public class TableDisplaySerializer extends JsonSerializer<TableDisplay> {
+public class TableDisplaySerializer extends ObservableTableDisplaySerializer<TableDisplay> {
 
   @Override
   public void serialize(TableDisplay value,
@@ -33,6 +32,7 @@ public class TableDisplaySerializer extends JsonSerializer<TableDisplay> {
 
     synchronized (value) {
       jgen.writeStartObject();
+      super.serialize(value, jgen);
       jgen.writeObjectField("type", "TableDisplay");
       jgen.writeObjectField("columnNames", value.getColumnNames());
       jgen.writeObjectField("types", value.getTypes());

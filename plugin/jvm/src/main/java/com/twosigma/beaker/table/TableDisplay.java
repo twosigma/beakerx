@@ -35,7 +35,7 @@ import com.twosigma.beaker.table.format.ValueStringFormat;
 import com.twosigma.beaker.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beaker.table.renderer.TableDisplayCellRenderer;
 
-public class TableDisplay {
+public class TableDisplay extends ObservableTableDisplay {
   public static final String TABLE_DISPLAY_SUBTYPE = "TableDisplay";
   public static final String LIST_OF_MAPS_SUBTYPE = "ListOfMaps";
   public static final String MATRIX_SUBTYPE = "Matrix";
@@ -64,6 +64,10 @@ public class TableDisplay {
     columns = co;
     classes = cl;
     subtype = TABLE_DISPLAY_SUBTYPE;
+  }
+
+  public TableDisplay(Collection<Map<?,?>> v) {
+    this(v, new BasicObjectSerializer());
   }
 
   public TableDisplay(Collection<Map<?,?>> v, BeakerObjectConverter serializer) {
@@ -283,16 +287,4 @@ public class TableDisplay {
     return subtype;
   }
 
-  private Object runClosure(Object closure, Object... params) throws Exception{
-    Class<?> clazz = closure.getClass();
-    Method getMaximumNumberOfParameters = clazz.getMethod("getMaximumNumberOfParameters");
-    getMaximumNumberOfParameters.setAccessible(true);
-    int numberOfParameters = (int) getMaximumNumberOfParameters.invoke(closure);
-    Method call;
-    Class<Object>[] paramTypes = new Class[numberOfParameters];
-    Arrays.fill(paramTypes, Object.class);
-    call = clazz.getMethod("call", paramTypes);
-    call.setAccessible(true);
-    return call.invoke(closure, Arrays.copyOfRange(params, 0, numberOfParameters));
-  }
 }

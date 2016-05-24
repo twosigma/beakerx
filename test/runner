@@ -28,7 +28,7 @@ os.system("node_modules/protractor/bin/webdriver-manager update");
 with open(os.devnull, "w") as fnull:
     webcontrol = subprocess.Popen(["node_modules/protractor/bin/webdriver-manager", "start"], stdout=fnull, stderr=fnull, preexec_fn=os.setsid);
 
-beaker = subprocess.Popen(["../core/beaker.command", "-open-browser", "false"], stdout=subprocess.PIPE, , preexec_fn=os.setsid)
+beaker = subprocess.Popen(["../core/beaker.command", "-open-browser", "false"], stdout=subprocess.PIPE, preexec_fn=os.setsid)
 
 for line in iter(beaker.stdout.readline, ''):
     print(">>>" + line.strip())

@@ -174,10 +174,10 @@
               range.yspan = range.yr - range.yl;
             }
           }
-          focus.yl = range.yl - range.yspan * margin.bottom;
+          focus.yl = range.yl - range.yspan * 0.05;
         }
         if (focus.yr == null) {
-          focus.yr = range.yr + range.yspan * margin.top;
+          focus.yr = range.yr + range.yspan * 0.05;
         }
         focus.xspan = focus.xr - focus.xl;
         focus.yspan = focus.yr - focus.yl;

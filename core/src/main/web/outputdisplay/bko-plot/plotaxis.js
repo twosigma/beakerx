@@ -206,18 +206,6 @@
         i++;
       }
 
-      // applying margins
-      var range = pr - pl;
-      this.axisMarginValL = this.axisMarginValL || 0;
-      this.axisMarginValR = this.axisMarginValR || 0;
-      var percentRangeWithMargins = this.axisMarginValL + this.axisMarginValR + 1;
-      var rangeMultiplier = range / percentRangeWithMargins;
-      var leftMarginActual = this.axisMarginValL * rangeMultiplier;
-      var rightMarginActual = this.axisMarginValR * rangeMultiplier;
-      pl += leftMarginActual;
-      pr -= rightMarginActual;
-
-
       this.axisStep = w;
       this.axisFixed = f;
 

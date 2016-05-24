@@ -566,6 +566,21 @@
           var range = plotUtils.getDataRange(yAxisData).datarange;
           var rangeR = _.isEmpty(yAxisRData) ? null : plotUtils.getDataRange(yAxisRData).datarange;
 
+          var applyMargins = function (range, axis) {
+            axis.lowerMargin = axis.lowerMargin || 0;
+            axis.upperMargin = axis.upperMargin || 0;
+
+            var span = range.yr - range.yl;
+            range.yl -= axis.lowerMargin * span;
+            range.yr += axis.upperMargin * span;
+            range.yspan = range.yr - range.yl;
+            return range;
+          };
+          range = applyMargins(range, newmodel.yAxis);
+          if (rangeR) {
+            rangeR = applyMargins(rangeR, newmodel.yAxisR);
+          }
+
           if (newmodel.yIncludeZero === true && range.yl > 0) {
             range.yl = 0;
             range.yspan = range.yr - range.yl;

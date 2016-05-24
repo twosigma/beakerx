@@ -19,15 +19,16 @@ import sys
 import subprocess
 import time
 import urllib2
+import signal
 
 # make sure everything is properly installed
 os.system("npm install")
 os.system("node_modules/protractor/bin/webdriver-manager update");
 
 with open(os.devnull, "w") as fnull:
-    webcontrol = subprocess.Popen(["node_modules/protractor/bin/webdriver-manager", "start"], stdout=fnull, stderr=fnull);
+    webcontrol = subprocess.Popen(["node_modules/protractor/bin/webdriver-manager", "start"], stdout=fnull, stderr=fnull, preexec_fn=os.setsid);
 
-beaker = subprocess.Popen(["../core/beaker.command", "-open-browser", "false"], stdout=subprocess.PIPE)
+beaker = subprocess.Popen(["../core/beaker.command", "-open-browser", "false"], stdout=subprocess.PIPE, , preexec_fn=os.setsid)
 
 for line in iter(beaker.stdout.readline, ''):
     print(">>>" + line.strip())
@@ -42,9 +43,10 @@ if not result:
 # Skipping memory tests because they hang on Jenkins
 # os.system("node memory-tests.js")
 
-beaker.terminate()
+# Send the signal to all the process groups
+os.killpg(os.getpgid(beaker.pid), signal.SIGTERM)
+os.killpg(os.getpgid(webcontrol.pid), signal.SIGTERM)
 
-webcontrol.terminate();
 response = urllib2.urlopen('http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer')
 html = response.read()
 

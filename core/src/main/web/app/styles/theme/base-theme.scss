@@ -158,6 +158,10 @@
     color: $std-fg-color;
   }
 
+  .bko-glyphicon{
+    color: $std-fg-color;
+  }
+
   .faux-drop-zone {
     border-color: $std-fg-color;
     color:        $std-fg-color;
@@ -338,8 +342,8 @@
     color: $std-fg-color;
   }
 
-  .toggle-menu {
-    background: rgba(32, 32, 32, 0.5);
+  .toggle-menu:not(.wide) {
+    background: rgba($main-theme-panel-background, 0.5);
   }
 
   .dataTables_length {

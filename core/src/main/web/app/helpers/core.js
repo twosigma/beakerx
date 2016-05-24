@@ -1129,7 +1129,7 @@
     });
 
     bkUtils.getBeakerPreference('theme').then(function (theme) {
-      bkCoreManager._prefs.setTheme(_.contains(_.values(GLOBALS.THEMES), theme) ? theme : GLOBALS.THEMES.DEFAULT);
+      bkCoreManager._prefs.setTheme(_.includes(_.values(GLOBALS.THEMES), theme) ? theme : GLOBALS.THEMES.DEFAULT);
       $rootScope.$broadcast('beaker.theme.set', theme);
     }).catch(function (response) {
       console.log(response);

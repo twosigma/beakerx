@@ -57,7 +57,8 @@ RUN apt-get install -y libzmq3-dbg libzmq3-dev libzmq3 \
                        python-pip python-dev python-yaml \
                        python-matplotlib python-scipy
 
-RUN pip install 'ipython<3.9' jinja2 tornado pyzmq pandas jsonschema jupyter
+RUN pip install 'ipython<3.9' jinja2 tornado pyzmq pandas jsonschema jupyter && \
+    ipython kernelspec install-self
 
 #############
 #  Python3  #

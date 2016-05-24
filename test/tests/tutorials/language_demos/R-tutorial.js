@@ -96,17 +96,17 @@ describe('R Tutorial', function (done) {
             beakerPO.checkSubString(arrStr.get(11), 'compact', 0, 7);
         });
 
-        it('Google map', function () {
-            var idCell = "codePI1mwS";
-            beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image', 'RGoogleMap');
-            beakerPO.checkImageByIdCell(idCell);
-        });
+        //it('Google map', function () {
+        //    var idCell = "codePI1mwS";
+        //    beakerPO.scrollToBkCellByIdCell(idCell);
+        //    beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image', 'RGoogleMap');
+        //    beakerPO.checkImageByIdCell(idCell);
+        //});
 
         it('Library(MASS)', function () {
             var idCell = "codebUFdM3";
             beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image', 'RLibMASS');
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image', 'RLibMASS', 60000);
             beakerPO.checkImageByIdCell(idCell);
         });
 
@@ -120,8 +120,16 @@ describe('R Tutorial', function (done) {
         it('Analysis of Variance Table', function () {
             var idCell = "code4JWGX8";
             beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
-            beakerPO.checkCellOutputSubTextByIdCell(idCell, "Analysis of Variance Table\n\nResponse: weight\n     ", 0, 50);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+            beakerPO.checkDtContainerByIdCell(idCell);
+            var arrStrHead = beakerPO.getDataTablesTHeadByIdCell(idCell).get(0).all(by.css('th'));
+            expect(arrStrHead.count()).toBe(6);
+            beakerPO.checkSubStringIfDisplayed(arrStrHead.get(0), 'Index', 0, 5);
+            beakerPO.checkSubStringIfDisplayed(arrStrHead.get(1), 'Df', 0, 2);
+            beakerPO.checkSubStringIfDisplayed(arrStrHead.get(2), 'Sum Sq', 0, 6);
+            beakerPO.checkSubStringIfDisplayed(arrStrHead.get(3), 'Mean Sq', 0, 7);
+            beakerPO.checkSubStringIfDisplayed(arrStrHead.get(4), 'F value', 0, 7);
+            beakerPO.checkSubStringIfDisplayed(arrStrHead.get(5), 'Pr(>F)', 0, 6);
 
             idCell = "codeW7oCy6";
             beakerPO.scrollToBkCellByIdCell(idCell);

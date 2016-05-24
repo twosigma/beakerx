@@ -27,3 +27,6 @@
     model="outputDisplayModel"
     type="{{ getOutputDisplayType() }}">
 </bk-output-display>
+<div ng-show="!isShowOutput()" class="mini-cell-stats">
+  {{getOutputSummary()}}
+</div>

@@ -111,28 +111,12 @@ compileJava {
   options.compilerArgs << '-Xlint:unchecked'
 }
 
-// Fix command-length issue in windows startscript
-task pathingJar(type: Jar) {
-  appendix = 'pathing'
-  manifest {
-    attributes("Class-Path": configurations.runtime.collect { it.getName() }.join(' ') + ' ' + jar.archiveName )
-  }
-}
-
-applicationDistribution.from(pathingJar) {
-  into "lib"
-}
 
 startScripts {
+  defaultJvmOpts=['-Djava.awt.headless=' + 'true']
   doLast {
-    def winScriptFile  = file getWindowsScript()
-    def winFileText = winScriptFile.text
-
-    // Remove too-long-classpath and use pathing jar instead
-    winFileText = winFileText.replaceAll('set CLASSPATH=.*', 'rem CLASSPATH declaration removed.')
-    winFileText = winFileText.replaceAll('("%JAVA_EXE%" .* -classpath ")%CLASSPATH%(" .*)', '$1%APP_HOME%\\\\lib\\\\' + pathingJar.archiveName + '$2')
-
-    winScriptFile.text = winFileText
+    // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
+    windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*')
   }
 }
 

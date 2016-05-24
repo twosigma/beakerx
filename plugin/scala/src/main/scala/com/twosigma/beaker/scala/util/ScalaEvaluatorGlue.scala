@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2014-2016 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -32,9 +32,11 @@ import scala.collection.JavaConversions._
 
 case class ResetState(val state: String);
 
-class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String) {
+class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: String) {
   val settings = {
     val s = new Settings();
+    s.processArguments(List("-Yrepl-class-based",
+        "-Yrepl-outdir", replClassdir), true)
     s.bootclasspath.value = cp;
     s.classpath.value = cp;
     s.usejavacp.value = true;

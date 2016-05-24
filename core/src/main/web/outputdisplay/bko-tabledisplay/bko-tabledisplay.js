@@ -281,8 +281,10 @@
                   'Etc/GMT-13|GMT-13:00',
                   'Etc/GMT-14|GMT-14:00']);
   //jscs:disable
-  beakerRegister.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', '$rootScope','$timeout', 'cellHighlighters',
-    function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS, $rootScope, $timeout, cellHighlighters) {
+  beakerRegister.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS',
+    '$rootScope','$timeout', 'cellHighlighters', 'tableService',
+    function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS,
+             $rootScope, $timeout, cellHighlighters, tableService) {
   //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
     var ROW_HEIGHT = 27;
@@ -516,6 +518,7 @@
         };
 
         $scope.getColumnByInitialIndex = function(index){
+          if (!$scope.table) { return null; }
           if ($scope.colorder){
             index = $scope.colorder.indexOf(index);
           }
@@ -530,7 +533,8 @@
           }
         };
         $scope.isColumnVisible = function (initialIndex) {
-          return $scope.getColumnByInitialIndex(initialIndex).visible();
+          var column = $scope.getColumnByInitialIndex(initialIndex);
+          return column && column.visible();
         };
 
         $scope.doUsePagination = function () {
@@ -846,7 +850,7 @@
         $scope.valueFormatter = function(value, type, full, meta) {
           var columnName = $scope.columnNames[meta.col - 1];
           return $scope.stringFormatForColumn[columnName].values[columnName][meta.row];
-        },
+        };
         $scope.isDoubleWithPrecision = function(type){
           var parts = type.toString().split(".");
           return parts.length > 1 && parts[0] === '4';
@@ -911,6 +915,8 @@
         };
       },
       link: function(scope, element) {
+
+        var cellModel;
 
         var unregisterOutputExpandEventListener = angular.noop; // used for deregistering listener
 
@@ -2135,7 +2141,7 @@
             scope.colreorg = new $.fn.dataTable.ColReorder($(id), {
               'order': scope.colorder,
               'fnReorderCallback': function() {
-                if (scope.colreorg === undefined) {
+                if (scope.colreorg === undefined || scope.colreorg.s == null) {
                   return;
                 }
                 scope.colorder = scope.colreorg.fnOrder().slice(0);
@@ -2185,11 +2191,12 @@
                 }
               }
 
-              var currentCell = $(scope.table.cells(function (idx, data, node) {
+              var currentCell = scope.table.cells(function (idx, data, node) {
                 return idx.column === colIdx && idx.row ===  rowIdx;
-              }).nodes());
+              });
+              var currentCellNodes = $(currentCell.nodes());
 
-              var isCurrentCellSelected = currentCell.hasClass('selected');
+              var isCurrentCellSelected = currentCellNodes.hasClass('selected');
 
               if (scope.selected[rowIdx]) {
                 scope.selected[rowIdx] = false;
@@ -2206,10 +2213,20 @@
                 });
               }
               if (!isCurrentCellSelected) {
-                currentCell.addClass('selected');
+                currentCellNodes.addClass('selected');
                 if(iPos === undefined) {
                   scope.selectFixedColumnCell($(this), true);
                 }
+              }
+
+              if (model.hasDoubleClickAction) {
+                var index = currentCell.indexes()[0];
+                tableService.onDoubleClick(model['update_id'],
+                  index.row,
+                  index.column - 1,
+                  scope.model.getEvaluatorId()).then(function () {
+                  scope.update = true;
+                });
               }
 
               e.stopPropagation();
@@ -2455,8 +2472,11 @@
         var tableChanged = false;
 
         scope.$watch('getCellModel()', function(m) {
-          scope.init(m, true);
-          tableChanged = true;
+          if(!angular.equals(m, cellModel)){
+            cellModel = m;
+            scope.init(m, !scope.update);
+            tableChanged = true;
+          }
         });
 
         scope.$on('beaker.section.toggled', function(e, isCollapsed) {
@@ -2470,9 +2490,11 @@
         scope.updateDTMenu = function(){
           if(scope.table){
             var orderInfo = scope.table.order()[0];
-            scope.isIndexColumnDesc = orderInfo[0] === 0 && orderInfo[1] === 'desc';
-            if (!(scope.$$phase || $rootScope.$$phase)) {
-              scope.$apply();
+            if (orderInfo) {
+              scope.isIndexColumnDesc = orderInfo[0] === 0 && orderInfo[1] === 'desc';
+              if (!(scope.$$phase || $rootScope.$$phase)) {
+                scope.$apply();
+              }
             }
           }
         };

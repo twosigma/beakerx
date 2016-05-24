@@ -3395,10 +3395,10 @@
                     "focus": {
                         "xl": 0.46944444444444444,
                         "xr": 0.5305555555555554,
-                        "yl": 0.4751372611128709,
-                        "yr": 0.5238596769084575,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
                         "xspan": 0.061111111111111005,
-                        "yspan": 0.04872241579558656
+                        "yspan": 0.05238095238095242
                     },
                     "lodOn": [
                         null,
@@ -3430,10 +3430,10 @@
                     "defaultFocus": {
                         "xl": 0.46944444444444444,
                         "xr": 0.5305555555555554,
-                        "yl": 0.4751372611128709,
-                        "yr": 0.5238596769084575,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
                         "xspan": 0.061111111111111005,
-                        "yspan": 0.04872241579558656
+                        "yspan": 0.05238095238095242
                     },
                     "tips": {}
                 },
@@ -3457,8 +3457,8 @@
                             "label": "Price",
                             "auto_range": true,
                             "auto_range_includes_zero": false,
-                            "lower_margin": 0.05,
-                            "upper_margin": 0.05,
+                            "lower_margin": 0,
+                            "upper_margin": 0,
                             "lower_bound": 0,
                             "upper_bound": 0,
                             "use_log": false,
@@ -3469,7 +3469,7 @@
                             "label": "Volume",
                             "auto_range": true,
                             "auto_range_includes_zero": false,
-                            "lower_margin": 0.05,
+                            "lower_margin": 0,
                             "upper_margin": 1,
                             "lower_bound": 0,
                             "upper_bound": 0,
@@ -3481,8 +3481,8 @@
                     "x_upper_margin": 0.05,
                     "y_auto_range": true,
                     "y_auto_range_includes_zero": false,
-                    "y_lower_margin": 0.05,
-                    "y_upper_margin": 0.05,
+                    "y_lower_margin": 0,
+                    "y_upper_margin": 0,
                     "y_lower_bound": 0,
                     "y_upper_bound": 0,
                     "log_y": false,
@@ -3498,7 +3498,7 @@
                     "graphics_list": [
                         {
                             "type": "CategoryBars",
-                            "uid": "d2463199-6c37-4f0d-92b8-abdfea288733",
+                            "uid": "ffb66dc4-7791-4b18-9120-80a58d4cf53d",
                             "visible": true,
                             "yAxis": "Volume",
                             "hasClickAction": false,
@@ -3523,7 +3523,7 @@
                         },
                         {
                             "type": "CategoryLines",
-                            "uid": "23e2662c-1e71-4359-b731-0cd27a7ffa95",
+                            "uid": "0539f83c-1d98-46e6-9a56-8aab31d6e1cc",
                             "visible": true,
                             "yAxis": null,
                             "hasClickAction": false,
@@ -3544,7 +3544,7 @@
                         },
                         {
                             "type": "CategoryPoints",
-                            "uid": "0420febd-77bc-4407-8762-cae11317131b",
+                            "uid": "88c92d3c-1615-4e1b-8701-417b7e85a356",
                             "visible": true,
                             "yAxis": null,
                             "hasClickAction": false,
@@ -3573,8 +3573,8 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "c1a040e6-b38f-41be-be0b-adf83f581bb0",
-                "elapsedTime": 916,
+                "shellId": "7e1d0959-5b1e-47ec-b43c-5455859037b7",
+                "elapsedTime": 1050,
                 "height": 528
             },
             "evaluatorReader": true,

@@ -346,7 +346,8 @@
           if (true){
             $uibModal.open({
               templateUrl: "app/template/fileopen.jst.html",
-              controller: 'fileOpenDialogCtrl'
+              controller: 'fileOpenDialogCtrl',
+              size: 'lg'
             }).result.then(function(result){
               bkHelper.openNotebook(result.path, uriType, readOnly, format)
             });

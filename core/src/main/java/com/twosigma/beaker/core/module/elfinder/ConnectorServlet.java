@@ -1,14 +1,30 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.twosigma.beaker.core.module.elfinder;
 
-import cn.bluejoe.elfinder.controller.executor.CommandExecutorFactory;
-import cn.bluejoe.elfinder.controller.executor.DefaultCommandExecutorFactory;
-import cn.bluejoe.elfinder.controller.executors.MissingCommandExecutor;
-import cn.bluejoe.elfinder.impl.DefaultFsService;
-import cn.bluejoe.elfinder.impl.DefaultFsServiceConfig;
-import cn.bluejoe.elfinder.impl.FsSecurityCheckForAll;
-import cn.bluejoe.elfinder.impl.StaticFsServiceFactory;
-import cn.bluejoe.elfinder.localfs.LocalFsVolume;
+
 import com.google.inject.Singleton;
+import com.twosigma.beaker.core.module.elfinder.service.CommandFactory;
+import com.twosigma.beaker.core.module.elfinder.impl.DefaultCommandFactory;
+import com.twosigma.beaker.core.module.elfinder.impl.commands.MissingCommand;
+import com.twosigma.beaker.core.module.elfinder.impl.DefaultFsService;
+import com.twosigma.beaker.core.module.elfinder.impl.DefaultFsServiceConfig;
+import com.twosigma.beaker.core.module.elfinder.impl.FsSecurityCheckForAll;
+import com.twosigma.beaker.core.module.elfinder.impl.StaticFsServiceFactory;
+import com.twosigma.beaker.core.module.elfinder.impl.localfs.LocalFsVolume;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -21,26 +37,20 @@ import java.io.IOException;
 @Singleton
 public class ConnectorServlet extends HttpServlet {
   //core member of this Servlet
-  ConnectorController _connectorController;
+  private ConnectorController connectorController;
 
   /**
    * create a command executor factory
-   *
-   * @param config
-   * @return
    */
-  protected CommandExecutorFactory createCommandExecutorFactory(ServletConfig config) {
-    DefaultCommandExecutorFactory defaultCommandExecutorFactory = new DefaultCommandExecutorFactory();
-    defaultCommandExecutorFactory.setClassNamePattern("cn.bluejoe.elfinder.controller.executors.%sCommandExecutor");
-    defaultCommandExecutorFactory.setFallbackCommand(new MissingCommandExecutor());
+  protected CommandFactory createCommandExecutorFactory(ServletConfig config) {
+    DefaultCommandFactory defaultCommandExecutorFactory = new DefaultCommandFactory();
+    defaultCommandExecutorFactory.setClassNamePattern("com.twosigma.beaker.core.module.elfinder.impl.commands.%sCommand");
+    defaultCommandExecutorFactory.setFallbackCommand(new MissingCommand());
     return defaultCommandExecutorFactory;
   }
 
   /**
    * create a connector controller
-   *
-   * @param config
-   * @return
    */
   protected ConnectorController createConnectorController(ServletConfig config) {
     ConnectorController connectorController = new ConnectorController();
@@ -59,11 +69,19 @@ public class ConnectorServlet extends HttpServlet {
     serviceConfig.setTmbWidth(80);
 
     fsService.setServiceConfig(serviceConfig);
+    String userHomeDir = System.getProperty("user.home");
+    if (System.getProperty("os.name").toLowerCase().contains("win")) {
+      fsService.addVolume("A",
+                          createLocalFsVolume(userHomeDir,
+                                              new File(userHomeDir)));
+    } else {
+      fsService.addVolume("A",
+                          createLocalFsVolume("/", new File("/")));
+      fsService.addVolume("B",
+                          createLocalFsVolume(userHomeDir,
+                                              new File(userHomeDir)));
+    }
 
-    fsService.addVolume("A",
-      createLocalFsVolume(System.getProperty("user.home"), new File(System.getProperty("user.home"))));
-//    fsService.addVolume("B",
-//      createLocalFsVolume("/", new File("/")));
 
     return fsService;
   }
@@ -77,9 +95,6 @@ public class ConnectorServlet extends HttpServlet {
 
   /**
    * create a service factory
-   *
-   * @param config
-   * @return
    */
   protected StaticFsServiceFactory createServiceFactory(ServletConfig config) {
     StaticFsServiceFactory staticFsServiceFactory = new StaticFsServiceFactory();
@@ -92,17 +107,17 @@ public class ConnectorServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
     throws ServletException, IOException {
-    _connectorController.connector(req, resp);
+    connectorController.connector(req, resp);
   }
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp)
     throws ServletException, IOException {
-    _connectorController.connector(req, resp);
+    connectorController.connector(req, resp);
   }
 
   @Override
   public void init(ServletConfig config) throws ServletException {
-    _connectorController = createConnectorController(config);
+    connectorController = createConnectorController(config);
   }
 }

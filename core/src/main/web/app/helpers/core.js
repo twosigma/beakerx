@@ -1171,21 +1171,25 @@
             }
           }
         },
+        defaultView: 'icons',
         uiOptions: {
           // toolbar configuration
           toolbar: [
             ['back', 'forward'],
             ['mkdir'],
-            ['open'],
-            ['info'],
-            ['search'],
             ['view']
           ],
+
+          // navbar options
+          navbar : {
+            minWidth : 150,
+            maxWidth : 1200
+          },
 
           // directories tree options
           tree: {
             // expand current root on init
-            openRootOnLoad: true,
+            openRootOnLoad: false,
             // auto load current dir parents
             syncTree: true
           }

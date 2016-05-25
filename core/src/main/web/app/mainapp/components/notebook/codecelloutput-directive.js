@@ -193,7 +193,7 @@
             }
             return type;
           }
-          return result && getOutputSummary(result.innertype || result.type, result);
+          return result !== undefined && getOutputSummary(result.innertype || result.type, result);
         };
 
         $scope.$watch('getOutputDisplayType()', function() {

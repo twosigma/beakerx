@@ -170,6 +170,10 @@ bk-section-cell {
       border: 1px solid $error_red;
       margin: -1px;
     }
+
+    &.no-output {
+      display: none;
+    }
   }
 }
 

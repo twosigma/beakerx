@@ -148,11 +148,12 @@ public abstract class AbstractCommand implements Command {
     info.put("write", fsi.isWritable(fsi) ? 1 : 0);
     info.put("locked", fsi.isLocked(fsi) ? 1 : 0);
 
-    if (fsi.getMimeType().startsWith("image")) {
-      StringBuffer qs = request.getRequestURL();
-      info.put("tmb", qs.append(String.format("?cmd=tmb&target=%s",
-                                              fsi.getHash())));
-    }
+    //TODO: request.getRequestURL() is not correct
+//    if (fsi.getMimeType().startsWith("image")) {
+//      StringBuffer qs = request.getRequestURL();
+//      info.put("tmb", qs.append(String.format("?cmd=tmb&target=%s",
+//                                              fsi.getHash())));
+//    }
 
     if (fsi.isRoot()) {
       info.put("name", fsi.getVolumnName());

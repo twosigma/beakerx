@@ -135,7 +135,7 @@ describe('TreeMap Tutorial', function () {
     it('Example of big TreeMap', function(){
         var idCell = "code86osu2";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot', 'bigTreeMap', 60000);
         beakerPO.checkPlotIsPresentByIdCell(idCell);
     });
 

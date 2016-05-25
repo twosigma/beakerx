@@ -1405,7 +1405,7 @@
         bkSessionManager.clear();
 
         bkMenuPluginManager.clear();
-        if (window.beaker === undefined || window.beakerRegister.isEmbedded === undefined) {
+        if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
           bkUtils.httpGet('../beaker/rest/util/getMenuPlugins')
           .success(function(menuUrls) {
             menuUrls.forEach(function(url) {

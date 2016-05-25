@@ -114,7 +114,7 @@
 
           // To prevent from mangling user created html table,
           // only use table display for dataframe tables (BEAKER-456)
-          if (!_.contains(elem.classList, 'dataframe')) {
+          if (!_.includes(elem.classList, 'dataframe')) {
             return null;
           }
 

@@ -1672,7 +1672,7 @@
               var container = el.closest('.bko-header-menu');
               var colIdx = container.data('columnIndex');
 
-              if (_.contains(['asc', 'desc'], direction)) {
+              if (_.includes(['asc', 'desc'], direction)) {
                 scope.table.order([colIdx, direction]).draw();
               }
             },
@@ -1680,7 +1680,7 @@
               var order = scope.table.order();
               var colIdx = container.data('columnIndex');
 
-              if (_.contains(['asc', 'desc'], direction)) {
+              if (_.includes(['asc', 'desc'], direction)) {
                 return (order[0][0] == colIdx && order[0][1] == direction);
               } else {
                 return (order[0][0] !== colIdx);

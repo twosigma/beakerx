@@ -75,6 +75,9 @@ bk-code-cell-output {
     float: right;
     height: 10px;
     width: 147px;
+    .locked & {
+      display: none;
+    }
   }
 }
 

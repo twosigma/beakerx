@@ -165,7 +165,7 @@
 //      }
     });
 
-    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkHelper) {
+    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkHelper, bkDragAndDropHelper) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {
@@ -240,13 +240,17 @@
       });
       var counter = 0;
       $document.bind('dragenter', function (e) {
-        counter++;
-        $('body').addClass('dragover');
+        if (bkDragAndDropHelper.isFileForImportDragging(e)) {
+          counter++;
+          $('body').addClass('dragover');
+        }
       });
       $document.bind('dragleave', function (e) {
-        counter--;
-        if (counter === 0) {
-          $('body').removeClass('dragover');
+        if (bkDragAndDropHelper.isFileForImportDragging(e)) {
+          counter--;
+          if (counter === 0) {
+            $('body').removeClass('dragover');
+          }
         }
       });
       $document.bind('drop', function() {
@@ -272,10 +276,11 @@
 
       if (window.bkInit && window.bkInit.getEvaluatorUrlMap) {
         var evaluatorsUrlMap = window.bkInit.getEvaluatorUrlMap();
-        _(evaluatorsUrlMap).keys().each(function(key) {
+        var keys = _.keys(evaluatorsUrlMap);
+        _.each(keys, function(key) {
           var value = evaluatorsUrlMap[key];
           bkEvaluatePluginManager.addNameToUrlEntry(key, value);
-        }).value();
+        });
       }
     });
 
@@ -289,6 +294,9 @@
         $rootScope.getBuildTime = function() {
           return window.beakerRegister.buildTime;
         };
+      });
+      bkUtils.getVersionString().then(function (versionString) {
+        window.beakerRegister.versionString = versionString;
       });
     });
     beaker.run(function(GLOBALS) {

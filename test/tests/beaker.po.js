@@ -123,7 +123,7 @@ var BeakerPageObject = function() {
   };
 
   this.isCellMenuOpen = function(opts) {
-    return element.all(by.css('.bkcell .open.toggle-menu.bkr'))
+    return element.all(by.css('.bkcell .open.toggle-menu-items.bkr'))
     .get(opts.cellIndex)
     .isDisplayed()
     .then(function() {
@@ -173,11 +173,15 @@ var BeakerPageObject = function() {
                     require('./mixins/cell.js'));
   };
   this.waitForPlugin = function(plugin) {
+    var self = this;
     browser.wait(function() {
       var deferred = protractor.promise.defer();
       this.languageManagerButtonActive(plugin).isPresent()
         .then(function(result) {
           deferred.fulfill(result);
+        },
+        function(value){
+          self.createScreenshot('waitForPlugin' + plugin);
         });
       return deferred.promise;
     }.bind(this), 50000);
@@ -268,7 +272,7 @@ var BeakerPageObject = function() {
   //end CodeMirror API
 
   this.toggleOutputCellExpansion = function() {
-    return element(by.css('.toggle-menu .expand-contract')).click();
+    return element(by.css('bk-code-cell-output div[ng-click="toggleExpansion()"]')).click();
   };
 
   this.evaluateCell = function() {
@@ -456,6 +460,12 @@ var BeakerPageObject = function() {
     if (!containerIdx)
       containerIdx = 0;
     return this.getCodeCellOutputByIdCell(codeCellOutputId).all(By.css('.plot-plotlegendcontainer')).get(containerIdx);
+  };
+
+  this.getPlotContainerByIdCell = function (codeCellOutputId, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(by.css('#plotContainer'));
   };
 
   this.getPlotSvgElementByIndexByIdCell = function (codeCellOutputId, containerIdx, elementIndex) {
@@ -762,11 +772,14 @@ var BeakerPageObject = function() {
     return browser.executeScript("$('[cellid=" + idCell +"]')[0].scrollIntoView();");
   };
 
-  this.clickCodeCellInputButtonByIdCell = function(idCell, outputType, screenshotName){
+  this.clickCodeCellInputButtonByIdCell = function(idCell, outputType, screenshotName, timeOut){
     var self = this;
+    if(!timeOut){
+      timeOut = 25000;
+    }
     this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
     browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']')), 5000)
-        .then(browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), 25000)
+        .then(browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), timeOut)
             .then(
                 function(isPresent){
                   expect(isPresent).toBe(true);

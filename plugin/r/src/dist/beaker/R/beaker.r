@@ -339,7 +339,7 @@ convertToJSON <- function(val, collapse) {
   else if (class(val) == "data.table") {
     o = convertToJSON(as.data.frame(val))
   }
-  else if (class(val) == "data.frame") {
+  else if ('data.frame' %in% class(val)) {
     p = "{ \"type\":\"TableDisplay\",\"subtype\":\"TableDisplay\",\"hasIndex\":\"true\",\"columnNames\":"
     colNames = c('Index')
     colNames = c(colNames,names(val))
@@ -420,6 +420,14 @@ convertToJSON <- function(val, collapse) {
     p = paste(p, toJSON(as.character(temp[[2]])), sep='')
 	p = paste(p, "}", sep='')
 	o = p
+  } else if (class(val) == "grViz" || class(val) == "DiagrammeR" || class(val) == "visNetwork") {
+    temp <- print(val)
+    p = "{ \"type\": \"DiagrammeR\", \"concreteType\":\"";
+    p = paste(p, class(val), sep='')
+    p = paste(p, "\", \"data\":", sep='')
+    p = paste(p, toJSON(val), sep='')
+    p = paste(p, "}", sep='')
+    o = p
   } else if(class(val) == "plotly") {
     temp <- print(val)
     p = "{ \"type\":\"Plotly\", \"data\":"
@@ -704,3 +712,19 @@ displayImage <- function(img) {
   return (list(type='ImageIcon', width=dim(img)[1], height=dim(img)[2], imageData=base64encode(writePNG(img, target = raw()))))
 }
 
+getVersion <- function() {
+  req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
+              '/rest/util/version?session=', session_id, sep='')
+  reply = getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC)
+  return (reply)
+}
+
+getVersionNumber <- function() {
+  req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
+              '/rest/util/getVersionInfo?session=', session_id, sep='')
+  reply = getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC)
+  if (!isValidJSON(reply,TRUE))
+    stop('the server returned an invalid response')
+  info = fromJSON(reply)
+  return (info[['version']])
+}

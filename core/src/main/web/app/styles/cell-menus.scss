@@ -68,10 +68,19 @@ bk-new-cell-menu {
 .toggle-menu {
   top: $grid-row-height - 5px;
   right: 1px;
-  position:   absolute;
+  position: absolute;
   background: rgba(255, 255, 255, 0.5);
   padding-right: $grid-gutter-width;
   z-index: 1;
+  &.wide {
+    width: 100%;
+    overflow: hidden;
+    background: none;
+  }
+  .mini-cell-stats {
+    margin-top: 6px;
+    margin-left: 20px;
+  }
 }
 
 .cell-menu-item {

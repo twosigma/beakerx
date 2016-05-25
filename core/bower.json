@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "jquery": "2.0.3",
-    "angular": "1.5.0",
+    "angular": "1.5.5",
     "angular-route": "1.5.0",
     "angular-animate": "1.5.0",
     "angular-touch": "1.5.0",
@@ -35,6 +35,8 @@
     "angular-gravatar": "0.3.1",
     "datetimepicker": "2.4.5",
     "jquery-throttle-debounce": "v1.1",
-    "angular-ui-select": "0.16.1"
+    "angular-ui-select": "0.16.1",
+    "vis": "4.16.1",
+    "vivagraphjs": "latest"
   }
 }

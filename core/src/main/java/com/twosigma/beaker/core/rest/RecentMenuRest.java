@@ -111,6 +111,14 @@ public class RecentMenuRest {
   }
 
   @POST
+  @Path("removeItem")
+  public void removeItem(@FormParam("item") String item) throws IOException {
+    final String s = item.replace("{", "").replace("}", "");
+    this.recentDocuments.removeIf(doc->doc.contains(s));
+    recordToFile();
+  }
+
+  @POST
   @Path("clear")
   public void clear() throws IOException {
     this.recentDocuments.clear();

@@ -23,6 +23,7 @@
   module.factory('cometdUtils', function () {
     var _statusListener;
     var _outputListener;
+    var _handshakeListener;
     return {
       initializeCometd: function(uri) {
         $.cometd.init({
@@ -49,10 +50,23 @@
           _outputListener = undefined;
         }
       },
+      addHandshakeListener: function (cb) {
+        this.removeHandshakeListener();
+        _handshakeListener = $.cometd.addListener("/meta/handshake", cb);
+      },
+      removeHandshakeListener: function () {
+        if (_handshakeListener) {
+          $.cometd.removeListener(_handshakeListener);
+          _handshakeListener = undefined;
+        }
+      },
       disconnect: function() {
         this.removeConnectedStatusListener();
         this.removeOutputlogUpdateListener();
         return $.cometd.disconnect();
+      },
+      reconnect: function() {
+        $.cometd.handshake();
       }
     };
   });

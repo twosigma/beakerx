@@ -18,6 +18,7 @@ package com.twosigma.beaker.core.module;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.twosigma.beaker.core.module.config.BeakerConfigPref;
+import com.twosigma.beaker.core.module.elfinder.ConnectorServlet;
 import com.twosigma.beaker.core.rest.FileIORest;
 import com.twosigma.beaker.core.rest.HttpProxyRest;
 import com.twosigma.beaker.core.rest.LoginRest;
@@ -64,7 +65,14 @@ public class URLConfigModule extends ServletModule {
       }
     });
 
+    try {
+      Thread.sleep(10000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+
     serve("/fileupload").with(FileUploadServlet.class);
+    serve("/connector").with(ConnectorServlet.class);
 
     final String pluginsWebDir = System.getProperty("user.dir") + "/config/plugins";
     serve("/plugins/*").with(new StaticResourceServlet(pluginsWebDir),

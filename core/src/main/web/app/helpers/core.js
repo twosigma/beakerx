@@ -1151,6 +1151,59 @@
     };
   });
 
+  module.controller('fileOpenDialogCtrl', function ($scope, $rootScope, $uibModalInstance) {
+
+    var selected = {};
+
+    $scope.init = function () {
+      $('#elfinder').elfinder({
+        url: '../beaker/connector',
+        resizable: false,
+        handlers: {
+          select: function (event, elfinderInstance) {
+            if (event.data.selected && event.data.selected.length > 0) {
+              selected.file = elfinderInstance.file(event.data.selected[0]);
+              selected.path = elfinderInstance.path(event.data.selected[0]);
+
+            } else {
+              selected.file = null;
+              selected.path = null;
+            }
+          }
+        },
+        uiOptions: {
+          // toolbar configuration
+          toolbar: [
+            ['back', 'forward'],
+            ['mkdir'],
+            ['open'],
+            ['info'],
+            ['search'],
+            ['view']
+          ],
+
+          // directories tree options
+          tree: {
+            // expand current root on init
+            openRootOnLoad: true,
+            // auto load current dir parents
+            syncTree: true
+          }
+        }
+      });
+    };
+
+    $scope.open = function () {
+      if (selected.file) {
+        $uibModalInstance.close(selected);
+      }
+    };
+
+    $scope.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+  });
+
   module.controller('modalDialogCtrl', function($scope, $rootScope, $uibModalInstance, modalDialogOp,
                                                 bkUtils) {
     $scope.getStrategy = function() {

@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
+  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, $uibModal,  bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -342,21 +342,32 @@
             bkHelper.openWindow(bkUtils.getBaseUrl() + '/open?' + jQuery.param(routeParams), 'notebook');
           });
         } else {
-          var strategy = bkHelper.getFileSystemFileChooserStrategy();
-          strategy.treeViewfs.extFilter = [ext];
-          bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getLocalDrives()]).then(function(values) {
-            if (bkUtils.isWindows) {
-              strategy.localDrives = values[1];
-            }
-            bkCoreManager.showModalDialog(
+
+          if (true){
+            $uibModal.open({
+              templateUrl: "app/template/fileopen.jst.html",
+              controller: 'fileOpenDialogCtrl'
+            }).result.then(function(result){
+              bkHelper.openNotebook(result.path, uriType, readOnly, format)
+            });
+            bkHelper.openNotebook()
+          }else{
+            var strategy = bkHelper.getFileSystemFileChooserStrategy();
+            strategy.treeViewfs.extFilter = [ext];
+            bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getLocalDrives()]).then(function(values) {
+              if (bkUtils.isWindows) {
+                strategy.localDrives = values[1];
+              }
+              bkCoreManager.showModalDialog(
                 bkHelper.openNotebook,
                 JST['template/opennotebook']({homedir: values[0], extension: '.' + ext}),
                 strategy,
                 uriType,
                 readOnly,
                 format
-            );
-          });
+              );
+            });
+          }
         }
       },
       Electron: bkElectron,

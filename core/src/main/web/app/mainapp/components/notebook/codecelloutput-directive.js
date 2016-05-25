@@ -24,7 +24,7 @@
   var module = angular.module('bk.notebook');
 
   module.directive('bkCodeCellOutput', function(
-      $rootScope, bkUtils, bkOutputDisplayFactory, bkEvaluatorManager, bkEvaluateJobManager, GLOBALS) {
+      $rootScope, bkUtils, bkOutputDisplayFactory, bkEvaluatorManager, bkEvaluateJobManager, bkSessionManager, GLOBALS) {
     return {
       restrict: "E",
       template: JST["mainapp/components/notebook/codecelloutput"](),
@@ -242,6 +242,10 @@
           if ($scope.$parent.cellmodel !== undefined && $scope.$parent.cellmodel.output !== undefined)
             return !$scope.$parent.cellmodel.output.hidden;
           return true;
+        };
+        
+        $scope.isShowOutputSummary = function () {
+          return !$scope.isExpanded() && !bkSessionManager.isNotebookLocked();
         };
 
         $scope.getAdditionalMenuItems = function() {

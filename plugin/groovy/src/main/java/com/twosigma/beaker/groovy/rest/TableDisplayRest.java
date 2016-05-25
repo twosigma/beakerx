@@ -18,6 +18,7 @@ package com.twosigma.beaker.groovy.rest;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.table.ObservableTableDisplay;
 import com.twosigma.beaker.table.action.TableDisplayObjectManager;
+import org.apache.cxf.common.util.CollectionUtils;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -46,6 +47,19 @@ public class TableDisplayRest {
     ObservableTableDisplay tableDisplay = tableDisplayObjectManager.getTableDisplay(tableId);
     if(tableDisplay != null){
       tableDisplay.fireDoubleClick(params);
+      tableDisplay.setChanged();
+      tableDisplay.notifyObservers();
+    }
+  }
+
+  @POST
+  @Path("oncontextmenu/{tableId}")
+  public void onContextMenu(@PathParam("tableId") String tableId,
+                            List<Object> params) throws IOException, InterruptedException {
+    ObservableTableDisplay tableDisplay = tableDisplayObjectManager.getTableDisplay(tableId);
+    if (tableDisplay != null && !CollectionUtils.isEmpty(params)) {
+      String name = (String) params.remove(0);
+      tableDisplay.fireContextMenuClick(name, params);
       tableDisplay.setChanged();
       tableDisplay.notifyObservers();
     }

@@ -18,11 +18,15 @@ package com.twosigma.beaker.table;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
+import java.util.Set;
 
 public abstract class ObservableTableDisplay extends Observable implements Cloneable, Serializable {
   private Object doubleClickListener;
+  private Map<String, Object> contextMenuListeners = new HashMap<>();
 
   @Override
   public synchronized void setChanged() {
@@ -35,19 +39,37 @@ public abstract class ObservableTableDisplay extends Observable implements Clone
 
   public void fireDoubleClick(List<Object> params) {
     if (this.doubleClickListener != null) {
-      if (params.size() == 2) {
-        params.add(this);
-      }
+      addTableDisplayToClosureParams(params);
       try {
         runClosure(this.doubleClickListener, params.toArray());
       } catch (Exception e) {
-        e.printStackTrace();
+        throw new RuntimeException("Unable execute closure", e);
       }
     }
   }
 
   public boolean hasDoubleClickAction() {
     return this.doubleClickListener != null;
+  }
+
+  public void addContextMenuItem(String name, Object closure){
+    this.contextMenuListeners.put(name, closure);
+  }
+
+  public Set<String> getContextMenuItems () {
+    return this.contextMenuListeners.keySet();
+  }
+
+  public void fireContextMenuClick(String name, List<Object> params) {
+    Object contextMenuListener = this.contextMenuListeners.get(name);
+    if (contextMenuListener != null) {
+      addTableDisplayToClosureParams(params);
+      try {
+        runClosure(contextMenuListener, params.toArray());
+      } catch (Exception e) {
+        throw new RuntimeException("Unable execute closure", e);
+      }
+    }
   }
 
   protected Object runClosure(Object closure, Object... params) throws Exception{
@@ -61,5 +83,11 @@ public abstract class ObservableTableDisplay extends Observable implements Clone
     call = clazz.getMethod("call", paramTypes);
     call.setAccessible(true);
     return call.invoke(closure, Arrays.copyOfRange(params, 0, numberOfParameters));
+  }
+
+  private void addTableDisplayToClosureParams(List<Object> params){
+    if (params.size() == 2) {
+      params.add(this);
+    }
   }
 }

@@ -988,6 +988,10 @@
             $(scope.table.table().container()).find('.dataTables_scrollHead').off('scroll');
             $(element).find(".bko-table-use-pagination").remove();
 
+            $.contextMenu('destroy', {
+              selector: '#' + scope.id + " tbody td"
+            });
+
             if (all) {
               scope.table.destroy(true);
             }
@@ -1267,6 +1271,25 @@
               }
             }
           });
+
+          if (!_.isEmpty(model.contextMenuItems)) {
+            scope.contextMenuItems = {};
+            _.forEach(model.contextMenuItems, function (item) {
+              scope.contextMenuItems[item] = {
+                name: item,
+                callback: function (itemKey, options) {
+                  var index = scope.table.cell(options.$trigger.get(0)).index();
+                  tableService.onContextMenu(model['update_id'],
+                    itemKey,
+                    index.row,
+                    index.column - 1,
+                    scope.model.getEvaluatorId()).then(function () {
+                    scope.update = true;
+                  });
+                }
+              }
+            });
+          }
 
           scope.doCreateData(model);
           scope.doCreateTable(model);
@@ -2127,6 +2150,12 @@
             }
           }
           scope.fixcreated = false;
+          if (!_.isEmpty(scope.contextMenuItems)) {
+            $.contextMenu({
+              selector: id + " tbody td",
+              items: scope.contextMenuItems
+            });
+          }
 
           bkHelper.timeout(function() {
             // we must wait for the DOM elements to appear

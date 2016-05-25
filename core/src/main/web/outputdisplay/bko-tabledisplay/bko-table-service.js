@@ -39,6 +39,9 @@
     return {
       onDoubleClick: function (tableId, row, column, evaluatorId) {
         return onAction('ondoubleclick', tableId, [row, column], evaluatorId);
+      },
+      onContextMenu: function (tableId, menuKey, row, column, evaluatorId) {
+        return onAction('oncontextmenu', tableId, [menuKey, row, column], evaluatorId);
       }
     };
   };

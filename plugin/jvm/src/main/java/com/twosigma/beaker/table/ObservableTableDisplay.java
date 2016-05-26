@@ -39,8 +39,8 @@ public abstract class ObservableTableDisplay extends Observable implements Clone
 
   public void fireDoubleClick(List<Object> params) {
     if (this.doubleClickListener != null) {
-      addTableDisplayToClosureParams(params);
       try {
+        params.add(this);
         runClosure(this.doubleClickListener, params.toArray());
       } catch (Exception e) {
         throw new RuntimeException("Unable execute closure", e);
@@ -63,8 +63,8 @@ public abstract class ObservableTableDisplay extends Observable implements Clone
   public void fireContextMenuClick(String name, List<Object> params) {
     Object contextMenuListener = this.contextMenuListeners.get(name);
     if (contextMenuListener != null) {
-      addTableDisplayToClosureParams(params);
       try {
+        params.add(this);
         runClosure(contextMenuListener, params.toArray());
       } catch (Exception e) {
         throw new RuntimeException("Unable execute closure", e);
@@ -83,11 +83,5 @@ public abstract class ObservableTableDisplay extends Observable implements Clone
     call = clazz.getMethod("call", paramTypes);
     call.setAccessible(true);
     return call.invoke(closure, Arrays.copyOfRange(params, 0, numberOfParameters));
-  }
-
-  private void addTableDisplayToClosureParams(List<Object> params){
-    if (params.size() == 2) {
-      params.add(this);
-    }
   }
 }

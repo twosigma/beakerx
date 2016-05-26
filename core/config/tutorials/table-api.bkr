@@ -491,7 +491,8 @@
                                     ]
                                 }
                             }
-                        }
+                        },
+                        "tooltips": []
                     }
                 },
                 "result": {
@@ -5707,7 +5708,8 @@
                         "columnWidth": [],
                         "formatForTimes": {},
                         "stringFormatForType": {},
-                        "stringFormatForColumn": {}
+                        "stringFormatForColumn": {},
+                        "tooltips": []
                     }
                 },
                 "result": {
@@ -10581,7 +10583,8 @@
                                 "maxDecimals": 9
                             }
                         },
-                        "stringFormatForColumn": {}
+                        "stringFormatForColumn": {},
+                        "tooltips": []
                     }
                 },
                 "result": {
@@ -24952,7 +24955,7 @@
                         ]
                     ]
                 },
-                "height": 850
+                "height": 813
             },
             "evaluatorReader": false,
             "lineCount": 10
@@ -24995,58 +24998,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 25,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "a",
-                            "b",
-                            "c"
-                        ],
-                        "actualtype": [
-                            "4.4",
-                            "4.4",
-                            "4.4"
-                        ],
-                        "actualalign": [
-                            "R",
-                            "R",
-                            "R"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "getCellSho": [
-                            true,
-                            true,
-                            true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [
-                            {
-                                "style": "FULL_ROW",
-                                "colInd": 2,
-                                "type": "UniqueEntriesHighlighter"
-                            }
-                        ],
-                        "tableFilter": "",
-                        "showFilter": false,
-                        "columnSearchActive": false,
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "formatForTimes": {},
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {}
-                    }
-                },
+                "state": {},
                 "result": {
                     "hasDoubleClickAction": false,
                     "type": "TableDisplay",
@@ -25131,9 +25083,9 @@
                 "pluginName": "Groovy",
                 "shellId": "1e042215-07ce-47a3-8dab-a9855aee1fa2",
                 "elapsedTime": 831,
-                "height": 318
+                "height": 429
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 13
         },
         {
@@ -25212,13 +25164,14 @@
                         "columnWidth": [],
                         "formatForTimes": {},
                         "stringFormatForType": {},
-                        "stringFormatForColumn": {}
+                        "stringFormatForColumn": {},
+                        "tooltips": []
                     }
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "51879f05-a656-4983-8cbc-9f1ed703d73b",
-                "elapsedTime": 668,
+                "shellId": "7bda9e20-3f8c-4e41-b899-8e2267b5b708",
+                "elapsedTime": 680,
                 "height": 156,
                 "result": {
                     "hasDoubleClickAction": true,
@@ -25249,19 +25202,20 @@
                     "columnsVisible": {},
                     "columnOrder": [],
                     "cellHighlighters": [],
+                    "tooltips": [],
                     "values": [
                         [
                             1,
                             2,
-                            -3
+                            3
                         ],
                         [
                             4,
-                            -5,
+                            5,
                             6
                         ],
                         [
-                            -7,
+                            7,
                             8,
                             5
                         ]
@@ -25271,6 +25225,169 @@
             "evaluatorReader": true,
             "lineCount": 16,
             "initialization": true
+        },
+        {
+            "id": "sectionDuaA5R",
+            "type": "section",
+            "title": "Misc formatting",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "code0Xkn1E",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def mapList4 = [",
+                    " [firstCol:1, secondCol:2, thirdCol:3],",
+                    " [firstCol:4, secondCol:5, thirdCol:6],",
+                    " [firstCol:7, secondCol:8, thirdCol:9]",
+                    "]",
+                    "td4 = new TableDisplay(mapList4)",
+                    "",
+                    "//tool tip can be set with a closure",
+                    "td4.setToolTip { row, col, display ->",
+                    " \"The value is: \" + display.values[row][col]",
+                    "}",
+                    "td4"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "firstCol",
+                            "secondCol",
+                            "thirdCol"
+                        ],
+                        "actualtype": [
+                            2,
+                            2,
+                            2
+                        ],
+                        "actualalign": [
+                            "R",
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": [
+                            [
+                                "The value is: 1",
+                                "The value is: 2",
+                                "The value is: 3"
+                            ],
+                            [
+                                "The value is: 4",
+                                "The value is: 5",
+                                "The value is: 6"
+                            ],
+                            [
+                                "The value is: 7",
+                                "The value is: 8",
+                                "The value is: 9"
+                            ]
+                        ]
+                    }
+                },
+                "result": {
+                    "hasDoubleClickAction": false,
+                    "contextMenuItems": [],
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "firstCol",
+                        "secondCol",
+                        "thirdCol"
+                    ],
+                    "types": [
+                        "integer",
+                        "integer",
+                        "integer"
+                    ],
+                    "subtype": "ListOfMaps",
+                    "stringFormatForTimes": null,
+                    "stringFormatForType": {},
+                    "stringFormatForColumn": {},
+                    "rendererForType": {},
+                    "rendererForColumn": {},
+                    "alignmentForType": {},
+                    "alignmentForColumn": {},
+                    "columnsFrozen": {},
+                    "columnsFrozenRight": {},
+                    "columnsVisible": {},
+                    "columnOrder": [],
+                    "cellHighlighters": [],
+                    "tooltips": [
+                        [
+                            "The value is: 1",
+                            "The value is: 2",
+                            "The value is: 3"
+                        ],
+                        [
+                            "The value is: 4",
+                            "The value is: 5",
+                            "The value is: 6"
+                        ],
+                        [
+                            "The value is: 7",
+                            "The value is: 8",
+                            "The value is: 9"
+                        ]
+                    ],
+                    "values": [
+                        [
+                            1,
+                            2,
+                            3
+                        ],
+                        [
+                            4,
+                            5,
+                            6
+                        ],
+                        [
+                            7,
+                            8,
+                            9
+                        ]
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "7bda9e20-3f8c-4e41-b899-8e2267b5b708",
+                "elapsedTime": 667,
+                "height": 156
+            },
+            "evaluatorReader": true,
+            "lineCount": 12
         }
     ],
     "namespace": {

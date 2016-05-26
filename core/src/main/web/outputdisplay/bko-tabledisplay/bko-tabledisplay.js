@@ -1138,6 +1138,7 @@
             scope.formatForTimes        = scope.savedstate.formatForTimes;
             scope.stringFormatForType   = scope.savedstate.stringFormatForType || {};
             scope.stringFormatForColumn = scope.savedstate.stringFormatForColumn || {};
+            scope.tooltips = scope.savedstate.tooltips || [];
 
             scope.savedstate  = undefined;
           } else {
@@ -1212,6 +1213,7 @@
             scope.formatForTimes        = model.stringFormatForTimes || {};
             scope.stringFormatForType   = model.stringFormatForType || {};
             scope.stringFormatForColumn = model.stringFormatForColumn || {};
+            scope.tooltips              = model.tooltips || [];
           }
           // auto compute types
           if (scope.actualtype === undefined || scope.actualtype.length === 0) {
@@ -2060,6 +2062,11 @@
               'title' : scope.columnNames[i],
               'header': { 'menu': headerMenuItems }
             };
+            if(!_.isEmpty(scope.tooltips)){
+              col.createdCell = function (td, cellData, rowData, row, col) {
+                $(td).attr('title', scope.tooltips[row][col - 1]);
+              }
+            }
             if (al === 'R') {
               col.className = 'dtright';
             } else if (al === 'C') {
@@ -2485,6 +2492,10 @@
 
             if (scope.stringFormatForColumn !== undefined) {
               state.stringFormatForColumn = scope.stringFormatForColumn;
+            }
+
+            if (scope.tooltips !== undefined) {
+              state.tooltips = scope.tooltips;
             }
 
             scope.model.setDumpState({datatablestate: state});

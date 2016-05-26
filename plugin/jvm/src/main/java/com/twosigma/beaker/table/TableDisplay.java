@@ -58,6 +58,7 @@ public class TableDisplay extends ObservableTableDisplay {
   private Map<String, Boolean> columnsVisible = new HashMap<>();
   private List<String> columnOrder = new ArrayList<>();
   private List<TableDisplayCellHighlighter> cellHighlighters = new ArrayList<>();
+  private List<List<String>> tooltips = new ArrayList<>();
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
@@ -220,6 +221,26 @@ public class TableDisplay extends ObservableTableDisplay {
 
   public void setColumnOrder(List<String> columnOrder) {
     this.columnOrder = columnOrder;
+  }
+
+  public void setToolTip(Object closure) {
+    try {
+      for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
+        List<?> row = this.values.get(rowInd);
+        List<String> rowToolTips = new ArrayList<>();
+        for (int colInd = 0; colInd < row.size(); colInd++) {
+          Object[] params = new Object[]{rowInd, colInd, this};
+          rowToolTips.add((String) runClosure(closure, params));
+        }
+        tooltips.add(rowToolTips);
+      }
+    } catch (Throwable e) {
+      throw new IllegalArgumentException("Can not set tooltip using closure.", e);
+    }
+  }
+
+  public List<List<String>> getTooltips() {
+    return tooltips;
   }
 
   public static List<Map<String, Object>> getValuesAsRows(List<List<?>> values, List<String> columns) {

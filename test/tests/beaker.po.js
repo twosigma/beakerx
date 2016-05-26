@@ -354,6 +354,16 @@ var BeakerPageObject = function() {
     browser.wait(this.EC.presenceOf($('bk-code-cell-output')), 10000);
   }
 
+  this.waitUntilEvaluating =  function(msg){
+    if(!msg){
+      msg = 'Evaluating';
+    }
+    var self = this;
+    browser.wait(this.EC.textToBePresentInElement($('div.navbar-text.loadingmsg'), msg), 20000).then(function(){
+      browser.wait(self.EC.not($('div.navbar-text.loadingmsg')), 30000);
+    });
+  }
+
   this.hasClass =  function  (element, cls) {
     return element.getAttribute('class').then(function (classes) {
       return classes && classes.split(' ').indexOf(cls) !== -1;

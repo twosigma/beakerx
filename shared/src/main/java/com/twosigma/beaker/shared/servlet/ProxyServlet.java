@@ -16,14 +16,22 @@
 package com.twosigma.beaker.shared.servlet;
 
 import com.twosigma.beaker.shared.RulesHolder;
-import com.twosigma.beaker.shared.servlet.rules.*;
+import com.twosigma.beaker.shared.servlet.rules.ApplyPluginSpecificRules;
+import com.twosigma.beaker.shared.servlet.rules.AuthCookieRule;
+import com.twosigma.beaker.shared.servlet.rules.CheckXsrfRule;
+import com.twosigma.beaker.shared.servlet.rules.CometdProxyRule;
+import com.twosigma.beaker.shared.servlet.rules.EraseHashAndBeakerRule;
+import com.twosigma.beaker.shared.servlet.rules.EraseHashAndPluginNameRule;
+import com.twosigma.beaker.shared.servlet.rules.MainPageRule;
+import com.twosigma.beaker.shared.servlet.rules.PluginProxyRule;
+import com.twosigma.beaker.shared.servlet.rules.ProxyRuleImpl;
+import com.twosigma.beaker.shared.servlet.rules.WebSocketRule;
 import com.twosigma.beaker.shared.servlet.rules.util.Replacement;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.http.HttpField;
 import org.eclipse.jetty.http.HttpHeader;
-import org.eclipse.jetty.proxy.ProxyServlet;
 import org.eclipse.jetty.websocket.api.WebSocketBehavior;
 import org.eclipse.jetty.websocket.api.WebSocketPolicy;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
@@ -44,7 +52,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 
-public class BeakerProxyServlet extends ProxyServlet.Transparent {
+public class ProxyServlet extends org.eclipse.jetty.proxy.ProxyServlet.Transparent {
 
   private static final int MAX_TEXT_MESSAGE_SIZE = 1024 * 1024 * 16;
   private static Map<String, PluginConfig> plugins = new ConcurrentHashMap<>();
@@ -57,7 +65,7 @@ public class BeakerProxyServlet extends ProxyServlet.Transparent {
   private String authToken;
   private String authCookie;
 
-  public BeakerProxyServlet() {
+  public ProxyServlet() {
   }
 
   public static void addPlugin(String pluginId, int port, String password, String baseUrl, List<PluginProxyRule> pluginSpecificRules) {

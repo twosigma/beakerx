@@ -15,8 +15,7 @@
  */
 package com.twosigma.beaker.shared.servlet.rules;
 
-import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
-import com.twosigma.beaker.shared.servlet.rules.util.UrlUtils;
+import com.twosigma.beaker.shared.servlet.ProxyServlet;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -28,9 +27,9 @@ public class EraseHashAndPluginNameRule extends ProxyRuleImpl {
 
   private final String hash;
   private final String corePort;
-  private final BeakerProxyServlet proxyServlet;
+  private final ProxyServlet proxyServlet;
 
-  public EraseHashAndPluginNameRule(BeakerProxyServlet servlet,
+  public EraseHashAndPluginNameRule(ProxyServlet servlet,
                                     String hash,
                                     String corePort) {
     this.proxyServlet = servlet;
@@ -40,8 +39,8 @@ public class EraseHashAndPluginNameRule extends ProxyRuleImpl {
 
   @Override
   protected String replace(String url) {
-    Map<String, BeakerProxyServlet.PluginConfig> plugins = this.proxyServlet.getPlugins();
-    for (BeakerProxyServlet.PluginConfig config : plugins.values()) {
+    Map<String, ProxyServlet.PluginConfig> plugins = this.proxyServlet.getPlugins();
+    for (ProxyServlet.PluginConfig config : plugins.values()) {
       if (url.contains(SLASH + this.hash + SLASH + config.getBaseUrl())) {
 //        String result = url.replace(this.corePort, String.valueOf(config.getPort()));
         String result = replacePort(url, config.getPort());
@@ -54,7 +53,7 @@ public class EraseHashAndPluginNameRule extends ProxyRuleImpl {
 
   @Override
   public boolean satisfy(final HttpServletRequest request) {
-    for (BeakerProxyServlet.PluginConfig config : this.proxyServlet.getPlugins().values()) {
+    for (ProxyServlet.PluginConfig config : this.proxyServlet.getPlugins().values()) {
       if (request.getPathInfo().contains(SLASH + this.hash + SLASH + config.getBaseUrl())) {
         return true;
       }

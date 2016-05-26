@@ -323,6 +323,14 @@ runembed.dependsOn jar
 runembed.dependsOn copyVendorStuff
 clean.dependsOn deleteTemp
 
+startScripts {
+  defaultJvmOpts=['-Djava.awt.headless=' + 'true']
+  doLast {
+    // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
+    windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*')
+  }
+}
+
 compileJava {
   options.compilerArgs << '-Xlint:deprecation'
   options.compilerArgs << '-Xlint:unchecked'
@@ -331,14 +339,6 @@ compileJava {
 if (hasProperty('inTesting')) {
   run {
     args '--disable-kerberos', '--default-notebook', 'config/default-test.bkr'
-  }
-}
-
-startScripts {
-  defaultJvmOpts=['-Djava.awt.headless=' + 'true']
-  doLast {
-    // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
-    windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*')
   }
 }
 

@@ -17,21 +17,30 @@ package com.twosigma.beaker.shared.servlet.rules;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
+
 public class EraseHashAndBeakerRule extends ProxyRuleImpl {
 
-  private final String hash;
+  private String replaceTemplate;
+  private String replacement;
 
   public EraseHashAndBeakerRule(String hash) {
-    this.hash = hash;
+    if (isNoneBlank(hash)) {
+      replaceTemplate = SLASH + hash + SLASH_BEAKER;
+      replacement = EMPTY_STRING;
+    } else { // in embed mode hash is blank
+      replaceTemplate = SLASH_BEAKER + SLASH;
+      replacement = SLASH;
+    }
   }
 
   @Override
   protected String replace(String url) {
-    return url.replace(SLASH + this.hash + SLASH_BEAKER, EMPTY_STRING);
+    return url.replace(replaceTemplate, replacement);
   }
 
   @Override
   public boolean satisfy(final HttpServletRequest request) {
-    return request.getPathInfo().contains(SLASH + this.hash + SLASH_BEAKER);
+    return request.getPathInfo().contains(replaceTemplate);
   }
 }

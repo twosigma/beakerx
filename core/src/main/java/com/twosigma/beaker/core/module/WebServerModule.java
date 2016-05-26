@@ -24,13 +24,19 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
-import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
+import com.twosigma.beaker.shared.servlet.ProxyServlet;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
-import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -41,7 +47,6 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 
 import javax.servlet.ServletException;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -99,7 +104,7 @@ public class WebServerModule extends AbstractModule {
     ServletContextHandler servletHandler = new ServletContextHandler(server, "/");
 
     String hash = bkConfig.getHash();
-    ServletHolder sh = servletHandler.addServlet(BeakerProxyServlet.class, "/*");
+    ServletHolder sh = servletHandler.addServlet(ProxyServlet.class, "/*");
     if (bkConfig.getPublicServer()) {
       servletHandler.setVirtualHosts(new String[]{getHost(bkConfig)});
     }

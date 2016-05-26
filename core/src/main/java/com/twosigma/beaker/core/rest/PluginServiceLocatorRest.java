@@ -20,7 +20,7 @@ import com.google.inject.Singleton;
 import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
-import com.twosigma.beaker.shared.servlet.BeakerProxyServlet;
+import com.twosigma.beaker.shared.servlet.ProxyServlet;
 import com.twosigma.beaker.shared.servlet.rules.PluginProxyRule;
 import com.twosigma.beaker.shared.servlet.rules.util.Replacement;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -28,17 +28,34 @@ import org.json.simple.JSONObject;
 import org.jvnet.winp.WinProcess;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import static java.util.Collections.singletonList;
@@ -119,7 +136,7 @@ public class PluginServiceLocatorRest {
     String base = this.pluginLocations.containsKey(pluginId) ?
       this.pluginLocations.get(pluginId) : this.pluginDir;
     result.add(base + "/" + command);
-    
+
     if (windows()) {
       String python = this.config.getInstallDirectory() + "\\python\\python";
       result.add(0, python);
@@ -230,7 +247,7 @@ public class PluginServiceLocatorRest {
       @QueryParam("recordOutput") @DefaultValue("false") boolean recordOutput,
       @QueryParam("waitfor") String waitfor)
     throws InterruptedException, IOException, ExecutionException {
-      
+
     PluginConfig pConfig = this.plugins.get(pluginId);
     if (pConfig != null && pConfig.isStarted()) {
       System.out.println("plugin service " + pluginId +
@@ -256,7 +273,7 @@ public class PluginServiceLocatorRest {
         generateIPythonConfig(pluginId, port, password, command);
       }
 
-      BeakerProxyServlet.addPlugin(pluginId, port, password, baseUrl, getPluginSpecificRules(proxyRules));
+      ProxyServlet.addPlugin(pluginId, port, password, baseUrl, getPluginSpecificRules(proxyRules));
 
       ArrayList<String> fullCommand = new ArrayList<>(Arrays.asList(command.split("\\s+")));
       fullCommand.set(0, (this.pluginLocations.containsKey(pluginId) ?
@@ -286,7 +303,7 @@ public class PluginServiceLocatorRest {
       }
       proc = Runtime.getRuntime().exec(listToArray(fullCommand), env);
     }
-    
+
     if (startedIndicator != null && !startedIndicator.isEmpty()) {
       InputStream is = startedIndicatorStream.equals("stderr") ?
         proc.getErrorStream() : proc.getInputStream();

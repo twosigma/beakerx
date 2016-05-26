@@ -54,6 +54,7 @@ task generateJavadoc(type: Javadoc) {
   include "com/twosigma/beaker/jvm/object/DashboardLayoutManager.java"
   include "com/twosigma/beaker/jvm/object/GridOutputContainerLayoutManager.java"
   include "com/twosigma/beaker/jvm/object/OutputContainerCell.java"
+  include "com/twosigma/beaker/jvm/object/OutputCell.java"
   include "com/twosigma/beaker/jvm/object/OutputContainerLayoutManager.java"
   include "com/twosigma/beaker/jvm/object/SimpleLayoutManager.java"
   include "com/twosigma/beaker/jvm/object/TabbedOutputContainerLayoutManager.java"

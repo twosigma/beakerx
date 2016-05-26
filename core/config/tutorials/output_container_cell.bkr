@@ -47,6 +47,7 @@
             "body": [
                 "Output containers are objects that hold a collection of other objects, and displays all its contents, even when they are complex interactive objects.",
                 "By default the contents are just stacked up on the page, but you can configure them to get tabs, grid, cycling, or other layout methods.",
+                "There is also class for having no visible output at all: hidden outputs.",
                 "",
                 "See the complete <a href=\"../beaker/app/dist/docs/index.html?com/twosigma/beaker/jvm/object/OutputContainer.html\" target=\"_blank\">API Javadoc</a>."
             ],
@@ -113,65 +114,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "m3",
-                            "y30",
-                            "y1",
-                            "m6",
-                            "y2",
-                            "y10",
-                            "y3",
-                            "time",
-                            "y5",
-                            "y7"
-                        ],
-                        "actualalign": [
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "C",
-                            "R",
-                            "R"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10
-                        ],
-                        "getCellSho": [
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true
-                        ]
-                    }
-                },
+                "state": {},
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -4899,12 +4842,12 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "a3ef832d-5efe-4936-a91e-4b506b09f264",
-                "elapsedTime": 652,
+                "shellId": "b3248d1f-d109-418c-8008-fb522c4fb23c",
+                "elapsedTime": 1273,
                 "height": 0,
                 "hidden": true
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 1,
             "initialization": true
         },
@@ -4932,13 +4875,49 @@
                 "result": "ok",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "a3ef832d-5efe-4936-a91e-4b506b09f264",
-                "elapsedTime": 559,
+                "shellId": "b3248d1f-d109-418c-8008-fb522c4fb23c",
+                "elapsedTime": 592,
+                "height": 0
+            },
+            "evaluatorReader": false,
+            "lineCount": 11,
+            "initialization": true
+        },
+        {
+            "id": "sectionIW1PHf",
+            "type": "section",
+            "title": "Hidden Output",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codetJfc7K",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// something we don't want to see",
+                    "def big(x) {",
+                    "  return (x < 2) ? x : [x, big(x - 1), big(x - 2)]",
+                    "}",
+                    "x = big(10)",
+                    "OutputCell.HIDDEN"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "HiddenOutputCell"
+                },
+                "selectedType": "Hidden",
+                "pluginName": "Groovy",
+                "shellId": "b3248d1f-d109-418c-8008-fb522c4fb23c",
+                "elapsedTime": 690,
                 "height": 0
             },
             "evaluatorReader": true,
-            "lineCount": 11,
-            "initialization": true
+            "lineCount": 6
         },
         {
             "id": "sectioncfIcC7",
@@ -8966,7 +8945,7 @@
                 "pluginName": "Groovy",
                 "shellId": "dc9e5c47-02be-4791-909e-936662c1a963",
                 "elapsedTime": 691,
-                "height": 1219
+                "height": 1169
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -14332,7 +14311,7 @@
                 "pluginName": "Groovy",
                 "shellId": "dc9e5c47-02be-4791-909e-936662c1a963",
                 "elapsedTime": 671,
-                "height": 477
+                "height": 331
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -19697,7 +19676,7 @@
                 "pluginName": "Groovy",
                 "shellId": "dc9e5c47-02be-4791-909e-936662c1a963",
                 "elapsedTime": 642,
-                "height": 880
+                "height": 863
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -22461,7 +22440,7 @@
                 "pluginName": "Groovy",
                 "shellId": "a335b801-c7ad-422c-9508-5a77d87359a1",
                 "elapsedTime": 624,
-                "height": 889
+                "height": 822
             },
             "evaluatorReader": true,
             "lineCount": 13
@@ -27829,7 +27808,7 @@
                         "period": 2000
                     }
                 },
-                "height": 457
+                "height": 440
             },
             "evaluatorReader": true,
             "lineCount": 10

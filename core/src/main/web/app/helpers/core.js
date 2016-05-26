@@ -29,7 +29,8 @@
     'bk.notebookCellModelManager',
     'bk.treeView',
     'bk.electron',
-    'ngAnimate'
+    'ngAnimate',
+    'uiSelectWrapper'
   ]);
 
   /**
@@ -54,6 +55,7 @@
       autocompleteService,
       autocompleteParametersService,
       codeMirrorExtension,
+      bkDragAndDropHelper,
       GLOBALS) {
 
     function isFilePath(path) {
@@ -244,25 +246,32 @@
 
       if (($input = $('input#import-notebook')).length) return $input;
 
-      $rootScope.uploadFile = function(file) {
+      $rootScope.getImportNotebookPattern = function () {
+        return getImportNotebookFileTypePattern();
+      };
+      $rootScope.fileDropped = function(file, event) {
         if (file) {
-          file.upload = Upload.upload({
-            url: endpoint,
-            file: file,
-            method: 'POST'
-          });
+          if (bkDragAndDropHelper.isFileForImport(file)) {
+            file.upload = Upload.upload({
+              url: endpoint,
+              file: file,
+              method: 'POST'
+            });
 
-          file.upload.then(function (response) {
-            bkCoreManager.importNotebook(response.data);
-          }, function (response) {
-            if (response.status > 0)
-              console.log(response.status + ': ' + response.data);
-          });
+            file.upload.then(function (response) {
+              bkCoreManager.importNotebook(response.data);
+            }, function (response) {
+              if (response.status > 0)
+                console.log(response.status + ': ' + response.data);
+            });
+          } else {
+            $rootScope.$emit(GLOBALS.EVENTS.FILE_DROPPED, {file: file, event: event});
+          }
         }
       };
 
       $input = $('<input type="file" name="file" id="import-notebook" ' +
-          'ngf-select="uploadFile($file)" accept="application/json,application/text"' +
+          'ngf-select="fileDropped($file)" accept="application/json,application/text"' +
       'ngf-pattern="\'application/json,application/text\'" style="display: none"/>')
                 .prependTo('body');
 
@@ -491,7 +500,8 @@
             return;
           }
           if (cm.getCursor().line === scope.cm.doc.lastLine()
-            && cm.getCursor().ch === scope.cm.doc.getLine(scope.cm.doc.lastLine()).length) {
+            && cm.getCursor().ch === scope.cm.doc.getLine(scope.cm.doc.lastLine()).length
+            && !cm.somethingSelected()) {
             var nextCell = moveFocusDown();
             if (nextCell){
               var nextCm = scope.bkNotebook.getCM(nextCell.id);
@@ -552,7 +562,7 @@
             //codecomplete is up, skip
             return;
           }
-          if (cm.getCursor().line === cm.doc.size - 1) {
+          if (cm.getCursor().line === cm.doc.size - 1 && !cm.somethingSelected()) {
             var nextCell = moveFocusDown();
             if (nextCell) {
               var nextCm = scope.bkNotebook.getCM(nextCell.id);
@@ -973,7 +983,11 @@
         var buttons = params.buttons;
 
         var callback = function(result) {
-          buttons[result].action();
+          if (result != undefined) {
+            buttons[result].action();
+          } else if (params.dismissAction) {
+            params.dismissAction();
+          }
         };
 
         if (bkUtils.isElectron) {
@@ -992,7 +1006,7 @@
           var template = this.getDialogTemplateOpening(params.msgHeader, params.msgBody);
           for (var i = 0; i < buttons.length; i++) {
             var buttonSettings = buttons[i];
-            var newTemplatePart = "   <button class='btn btn-default' ng-click='close(" + i + ")'>" + buttonSettings.text + "</button>"
+            var newTemplatePart = "   <button class='btn btn-default " + buttonSettings.cssClass + "' ng-click='close(" + i + ")'>" + buttonSettings.text + "</button>"
             template = template + newTemplatePart;
           }
           template = template + this.getDialogTemplateClosing();
@@ -1039,20 +1053,28 @@
           }
         });
       },
-      showLanguageManager: function() {
-        var options = {
-          windowClass: 'beaker-sandbox',
-          backdropClass: 'beaker-sandbox',
-          backdrop: true,
-          keyboard: true,
-          backdropClick: true,
-          controller: 'pluginManagerCtrl',
-          template: JST['mainapp/components/pluginmanager/pluginmanager']()
-        };
+      showLanguageManager: (function() {
+        var languageManagerInstance;
 
-        var dd = $uibModal.open(options);
-        return dd.result;
-      },
+        return function() {
+          // result status is 1 if modal is closed, 2 if it is dismissed, and 0 if still open
+          if (languageManagerInstance && languageManagerInstance.result.$$state.status === 0) {
+            return languageManagerInstance.close()
+          }
+          var options = {
+            windowClass: 'beaker-sandbox',
+            backdropClass: 'beaker-sandbox',
+            backdrop: true,
+            keyboard: true,
+            backdropClick: true,
+            controller: 'pluginManagerCtrl',
+            template: JST['mainapp/components/pluginmanager/pluginmanager']()
+          };
+
+          languageManagerInstance = $uibModal.open(options);
+          return languageManagerInstance.result;
+        };
+      })(),
       showPublishForm: function(nModel, callback) {
         var options = {
           windowClass: 'beaker-sandbox',
@@ -1107,7 +1129,7 @@
     });
 
     bkUtils.getBeakerPreference('theme').then(function (theme) {
-      bkCoreManager._prefs.setTheme(_.contains(_.values(GLOBALS.THEMES), theme) ? theme : GLOBALS.THEMES.DEFAULT);
+      bkCoreManager._prefs.setTheme(_.includes(_.values(GLOBALS.THEMES), theme) ? theme : GLOBALS.THEMES.DEFAULT);
       $rootScope.$broadcast('beaker.theme.set', theme);
     }).catch(function (response) {
       console.log(response);
@@ -1164,4 +1186,96 @@
       }
     };
   });
+
+  module.factory('bkDragAndDropHelper', function (bkUtils) {
+    function wrapImageDataUrl(dataUrl) {
+      return '<img src="' + dataUrl + '" />';
+    }
+
+    var dragAndDropHelper = {
+      getImportNotebookPattern: function () {
+        return getImportNotebookFileTypePattern();
+      },
+      isFileForImportDragging: function (event) {
+        if(event.originalEvent) {
+          event = event.originalEvent;
+        }
+        if(event && event.dataTransfer && event.dataTransfer.items) {
+          var items = event.dataTransfer.items;
+          for (var i = 0; i < items.length; i++) {
+            if(this.isFileForImport(items[i])) {
+              return true;
+            }
+          }
+        }
+        return false;
+      },
+      isFileForImport: function (item) {
+        return item.type !== undefined && new RegExp(getImportNotebookFileTypePattern(), 'i').test(item.type);
+      },
+      loadImageFileAsString: function (file) {
+        if (file && window.FileReader && window.File) {
+          var deferred = bkUtils.newDeferred();
+          var reader = new FileReader;
+          reader.onload = function (loadingEvent) {
+            deferred.resolve(wrapImageDataUrl(loadingEvent.target.result));
+          };
+          reader.readAsDataURL(file);
+          return deferred.promise;
+        } else {
+          return false;
+        }
+      },
+      wrapImageDataUrl: wrapImageDataUrl,
+      configureDropEventHandlingForCodeMirror: function (cm, allowImageDropping) {
+        cm.on('drop', function (cm, e) {
+          if(allowImageDropping && !allowImageDropping()) {
+            return;
+          }
+          e.preventDefault();
+          e.stopPropagation();
+
+          var pos = posFromMouse(cm, e);
+          var files = e.dataTransfer.files;
+          if (files && files.length && window.FileReader && window.File) {
+            var n = files.length, text = Array(n), read = 0;
+            var loadFile = function(file, i) {
+              var reader = new FileReader;
+              reader.onload = function(fileLoadingEvent) {
+                text[i] = wrapImageDataUrl(fileLoadingEvent.target.result);
+                if (++read == n) {
+                  cm.setSelection(cm.clipPos(pos));
+                  cm.replaceSelection(text.join("\n"));
+                }
+              };
+              reader.readAsDataURL(file);
+            };
+            for (var i = 0; i < n; ++i) loadFile(files[i], i);
+          }
+
+          function posFromMouse(cm, e) {
+            var display = cm.display;
+            var x, y, space = display.lineSpace.getBoundingClientRect();
+            try { x = e.clientX - space.left; y = e.clientY - space.top; }
+            catch (e) { return null; }
+            return cm.coordsChar({left: x, top: y}, "div");
+          }
+        });
+      },
+      isImageFile: isImageFile
+    };
+    return dragAndDropHelper;
+  });
+
+  function getImportNotebookFileTypePattern() {
+    return "^((?!image\/((png)|(jpg)|(jpeg))).)*?$";
+  }
+  
+  function isImageFile(file) {
+    return file && file.type && new RegExp(getImageFileTypePattern(), 'i').test(file.type);
+  }
+  
+  function getImageFileTypePattern() {
+    return "image/((png)|(jpg)|(jpeg))";
+  }
 })();

@@ -103,6 +103,11 @@
           if (_server) {
             _server.addItem(item, refreshMenu);
           }
+        },
+        removeRecentDocument: function(item) {
+          if (_server) {
+            _server.removeItem(item, refreshMenu);
+          }
         }
       };
     };

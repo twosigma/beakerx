@@ -42,14 +42,11 @@ bk-markdown-editable .CodeMirror {
 }
 
 .mini-cell-stats {
-  top: 22px;
-  left: 20px;
   color: $font-grey;
-  position: absolute;
   font-size: 12px;
-  .advanced-mode & {
-    top: 11px;
-  }
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .loading-state {
   color: $font-grey;
@@ -173,6 +170,10 @@ bk-section-cell {
       border: 1px solid $error_red;
       margin: -1px;
     }
+
+    &.no-output {
+      display: none;
+    }
   }
 }
 
@@ -224,6 +225,9 @@ bk-output-display {
     overflow:     visible;
     line-height:  inherit;
     background:   transparent;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -o-pre-wrap;
   }
 
   &[type="Results"] {

@@ -140,6 +140,7 @@ public class GuiceCometdModule extends AbstractModule {
     server.setOption("ws.maxMessageSize", new Integer(1024*1024*16));
     server.setOption(ServletContext.class.getName(), servletContext);
     server.setOption("cometdURLMapping", getCometdMapping());
+    server.setOption("threadPoolMaxSize", 16);
     configure(server);
     try {
       server.start();

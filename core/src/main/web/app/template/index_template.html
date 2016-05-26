@@ -56,7 +56,7 @@
   <script src="vendor/bower_components/datatables-colreorder/js/dataTables.colReorder.js"></script>
   <script src="vendor/bower_components/datatables-keytable/js/dataTables.keyTable.js"></script>
   <script src="vendor/bower_components/datatables-colresize/dataTables.colResize.js"></script>
-  <script src="vendor/bower_components/marked/marked.min.js"></script>
+  <script src="vendor/bower_components/markdown-it/dist/markdown-it.js"></script>
   <script src="vendor/bower_components/angular/angular.js"></script>
   <script src="vendor/bower_components/ngstorage/ngStorage.min.js"></script>
   <script src="vendor/bower_components/angular-route/angular-route.js"></script>
@@ -112,6 +112,7 @@
   <script src="vendor/bower_components/datetimepicker/jquery.datetimepicker.js"></script>
   <script src="vendor/babel/babel.min.js"></script>
   <script src="vendor/bower_components/jquery-throttle-debounce/jquery.ba-throttle-debounce.min.js"></script>
+  <script src="vendor/bower_components/angular-ui-select/dist/select.js"></script>
   <!-- endbuild -->
 
   <!-- htmlbuild:embedremove -->
@@ -130,6 +131,7 @@
   <script src="app/controlpanel/controlpanelsessionitem-directive.js"></script>
 
   <script src="app/helpers/cellmenupluginmanager.js"></script>
+  <script src="app/helpers/ui-select-wrapper.module.js"></script>
   <script src="app/helpers/core.js"></script>
   <script src="app/helpers/code-mirror-extension.service.js"></script>
   <script src="app/helpers/autocomplete.service.js"></script>
@@ -138,6 +140,7 @@
   <script src="app/helpers/evaluatepluginmanager.js"></script>
   <script src="app/helpers/helper.js"></script>
   <script src="app/helpers/menupluginmanager.js"></script>
+  <script src="app/helpers/dropdown.js"></script>
 
   <script src="app/mainapp/components/notebook/notebook-router.js"></script>
   <script src="app/mainapp/mainapp.js"></script>
@@ -215,10 +218,10 @@
   <!-- endbuild -->
 
 </head>
-<body ngf-drop="uploadFile($file)"
-      ngf-drag-over-class="dragover"
+<body ngf-drop="fileDropped($file, $event)"
+      ngf-drag-over-class="{accept: 'dragover', reject: 'dragover-invalid'}"
       accept="application/json,application/text"
-      ngf-pattern="'application/json,application/text'">
+      ngf-pattern="'/{{getImportNotebookPattern()}}/'">
   <ng-view class="beaker-sandbox"></ng-view>
 </body>
 </html>

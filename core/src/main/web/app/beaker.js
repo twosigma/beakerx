@@ -261,6 +261,23 @@
             console.error("Request failed: " + textStatus);
           });
         },
+        removeItem: function(doc, callback) {
+          if (!doc) {
+            return;
+          }
+          var req = $.ajax({
+            type: "POST",
+            datatype: "json",
+            url: "../beaker/rest/recent-menu/removeItem",
+            data: {item: angular.toJson({
+              uri: doc.tooltip
+            })}
+          });
+          req.done(callback);
+          req.fail(function(jqXHR, textStatus) {
+            console.error("Request failed: " + textStatus);
+          });
+        },
         getItems: function(callback) {
           var req = $.ajax({
             type: "GET",
@@ -301,7 +318,7 @@
       }
     });
 
-    beakerModule.run(function($rootScope, $location, $route, $document, bkUtils, bkCoreManager, bkHelper, bkElectron) {
+    beakerModule.run(function($rootScope, $location, $route, $document, bkUtils, bkCoreManager, bkHelper, bkElectron, bkDragAndDropHelper) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {
@@ -393,13 +410,17 @@
       });
       var counter = 0;
       $document.bind('dragenter', function (e) {
-        counter++;
-        $('body').addClass('dragover');
+        if (bkDragAndDropHelper.isFileForImportDragging(e)) {
+          counter++;
+          $('body').addClass('dragover');
+        }
       });
       $document.bind('dragleave', function (e) {
-        counter--;
-        if (counter === 0) {
-          $('body').removeClass('dragover');
+        if (bkDragAndDropHelper.isFileForImportDragging(e)) {
+          counter--;
+          if (counter === 0) {
+            $('body').removeClass('dragover');
+          }
         }
       });
       $document.bind('drop', function() {
@@ -442,6 +463,9 @@
         $rootScope.getBuildTime = function() {
           return window.beakerRegister.buildTime;
         };
+      });
+      bkUtils.getVersionString().then(function (versionString) {
+        window.beakerRegister.versionString = versionString;
       });
     });
     beakerModule.run(function(bkPublicationAuth, $location, $localStorage, $window) {

@@ -24,7 +24,7 @@
   > li > a {
     position: relative;
     padding: 4px 80px 2px 23px;
-    &:hover + .glyphicon-ok,  &:hover + .fa-check {
+    &:hover + .glyphicon-ok, &.hover + .glyphicon-ok,  &:hover + .fa-check,  &.hover + .fa-check {
       color: $dropdown-link-hover-color;
     }
   }
@@ -34,6 +34,35 @@
     right: 10px;
     top: 4px;
   }
+
+  &.dropdown-menu-search {
+    padding: 5px 3px;
+    input {
+      border: 1px solid #ccc;
+      padding: 0 0 0 18px;
+      width: 100%;
+    }
+    i {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      height: 14px;
+      left: 3px;
+      margin: auto;
+      padding: 0 2px;
+      color: #999999;
+      cursor: auto;
+    }
+  }
+
+  &.dropdown-menu-search + ul {
+    top: 30px;
+  }
+
+  &.dropdown-submenu-scrollable {
+    overflow-y: auto;
+  }
+
 }
 
 .dropdown-menu .fa {
@@ -87,7 +116,7 @@
     content: " ";
   }
 
-  &:hover {
+  &:hover, &.hover {
     > .dropdown-menu {
       display: block;
     }

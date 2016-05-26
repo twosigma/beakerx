@@ -107,40 +107,22 @@
         var v = { };
         var e = evaluators[name];
         var f = bkEvaluatePluginManager.getVisualParams(name);
-        if (e.bgColor !== undefined)
-          v.bgColor = e.bgColor;
-        else if (f !== undefined && f.bgColor !== undefined)
-          v.bgColor = f.bgColor;
-        else
-          v.bgColor = "";
 
-        if (e.fgColor !== undefined)
-          v.fgColor = e.fgColor;
-        else if (f !== undefined && f.fgColor !== undefined)
-          v.fgColor = f.fgColor;
-        else
-          v.fgColor = "";
+        function populateField(fieldName) {
+          if (e[fieldName] !== undefined)
+            v[fieldName] = e[fieldName];
+          else if (f !== undefined && f[fieldName] !== undefined)
+            v[fieldName] = f[fieldName];
+          else
+            v[fieldName] = "";
+        }
 
-        if (e.borderColor !== undefined)
-          v.borderColor = e.borderColor;
-        else if (f !== undefined && f.borderColor !== undefined)
-          v.borderColor = f.borderColor;
-        else
-          v.borderColor = "";
-
-        if (e.shortName !== undefined)
-          v.shortName = e.shortName;
-        else if (f !== undefined && f.shortName !== undefined)
-          v.shortName = f.shortName;
-        else
-          v.shortName = "";
-
-        if (e.tooltip !== undefined)
-          v.tooltip = e.tooltip;
-        else if (f !== undefined && f.tooltip !== undefined)
-          v.tooltip = f.tooltip;
-        else
-          v.tooltip = "";
+        populateField('bgColor');
+        populateField('fgColor');
+        populateField('borderColor');
+        populateField('shortName');
+        populateField('tooltip');
+        populateField('cmMode');
 
         return v;
       },

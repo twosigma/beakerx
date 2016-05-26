@@ -50,3 +50,8 @@ Enclosed are a set of tests powered by protractor.
 *  curl -Lo chromedriver.zip http://chromedriver.storage.googleapis.com/2.16/chromedriver_linux64.zip && unzip chromedriver.zip
 *  export PATH=$PATH:/home/beaker/src:/home/beaker/src/chrome-linux
 *  gradle check
+
+
+### Check the tests
+
+*  after executing tests ./test/screenshots/ directory contains screenshots of tests

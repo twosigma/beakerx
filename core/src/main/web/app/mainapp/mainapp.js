@@ -29,6 +29,7 @@
                                              'bk.globals',
                                              'bk.session',
                                              'bk.sessionManager',
+                                             'bk.notebookCellModelManager',
                                              'bk.menuPluginManager',
                                              'bk.cellMenuPluginManager',
                                              'bk.notebookVersionManager',
@@ -55,6 +56,7 @@
       bkSession,
       bkSessionManager,
       bkMenuPluginManager,
+      bkNotebookCellModelManagerFactory,
       bkCellMenuPluginManager,
       bkNotebookVersionManager,
       bkEvaluatorManager,
@@ -544,6 +546,12 @@
               _closeNotebook(destroy);
           };
 
+          var go = function(id) {
+            if (bkNotebookWidget && bkNotebookWidget.getFocusable(id)) {
+              bkNotebookWidget.getFocusable(id).scrollTo();
+            }
+          };
+
           var evalCodeId = 0;
 
           if (bkUtils.isElectron) {
@@ -798,8 +806,80 @@
               }).then(function() { deferred.resolve(outcontainer.result); }, function(err) { deferred.reject(err); });
               return deferred.promise;
             },
+            loadSingleLibrary: function (path, modelOutput) {
+              bkHelper.printEvaluationProgress(modelOutput, 'loading library ' + path, 'out');
+              var self = this;
+              var deferred = bkHelper.newDeferred();
+              var importer = bkCoreManager.getNotebookImporter(bkCoreManager.guessFormat(path));
+              if (importer) {
+                var fileLoader = bkCoreManager.getFileLoader(bkCoreManager.guessUriType(path));
+                fileLoader.load(path).then(function (fileContentAsString) {
+                  var notebookModel = bkNotebookCellModelManagerFactory.createInstance();
+                  notebookModel.reset(bkNotebookVersionManager.open(importer.import(fileContentAsString)).cells);
+
+                  var toEval = notebookModel.getInitializationCells();
+                  if (toEval.length === 0) {
+                    deferred.reject("library doesn't have any initialization cells");
+                  }
+                  _.forEach(toEval, function (cell) {
+                    if (!bkEvaluatorManager.getEvaluator(cell.evaluator)) {
+                      self.addEvaluatorToNotebook(cell.evaluator);
+                    }
+                  });
+                  var executedCells = 0;
+                  function evaluateNext() {
+                    var innerDeferred = bkHelper.newDeferred();
+                    if (toEval.length > 0) {
+                      executedCells++;
+                      var cell = toEval.shift();
+                      var delegateModelOutput = {};
+                      cell.output = delegateModelOutput;
+                      bkEvaluateJobManager.evaluate(cell).then(function () {
+                        var result = delegateModelOutput.result;
+                        if (result && result.outputdata) {
+                          bkHelper.receiveEvaluationUpdate(modelOutput, result);
+                        }
+                        evaluateNext().then(innerDeferred.resolve, innerDeferred.reject);
+                      }, innerDeferred.reject);
+                    } else {
+                      innerDeferred.resolve(executedCells);
+                    }
+                    return innerDeferred.promise;
+                  }
+
+                  evaluateNext().then(deferred.resolve, deferred.reject);
+                });
+              }
+              return deferred.promise;
+            },
+            loadLibrary: function (path, modelOutput) {
+              if(_.isArray(path)) {
+                var self = this;
+                var deferred = bkHelper.newDeferred();
+                var overallExecutedCells = 0;
+                var loadNextLibrary = function () {
+                  self.loadSingleLibrary(path.shift(), modelOutput).then(function (executedCells) {
+                    overallExecutedCells += executedCells;
+                    if (path.length === 0) {
+                      deferred.resolve(overallExecutedCells);
+                    } else {
+                      loadNextLibrary();
+                    }
+                  }, deferred.reject);
+                };
+                loadNextLibrary();
+                return deferred.promise;
+              }
+              return this.loadSingleLibrary(path, modelOutput);
+            },
             addEvaluator: function(settings) {
               return addEvaluator(settings, true);
+            },
+            addEvaluatorToNotebook: function (pluginName) {
+              var settings = {name: '', plugin: pluginName};
+              bkSessionManager.addEvaluator(settings);
+              addEvaluator(settings);
+              $rootScope.$broadcast(GLOBALS.EVENTS.LANGUAGE_ADDED, { evaluator: pluginName });
             },
             removeEvaluator: function(plugin) {
               bkEvaluatorManager.removeEvaluator(plugin);
@@ -831,16 +911,23 @@
               }
               return ret;
             },
-            go2FirstErrorCodeCell: function () {
+            go2LastCodeCell: function () {
               var cellOp = bkSessionManager.getNotebookCellOp();
               // get all code cells
               var cells = cellOp.getAllCodeCells();
 
-              var go = function(id) {
-                if (bkNotebookWidget && bkNotebookWidget.getFocusable(id)) {
-                    bkNotebookWidget.getFocusable(id).scrollTo();
-                }
-              };
+              if (cells === undefined || (!_.isArray(cells) && cells.length === 0)) {
+                return null;
+              }
+              if (_.isArray(cells)&& cells.length>0) {
+                var cell = cells[cells.length-1];
+                go(cell.id);
+              }
+            },
+            go2FirstErrorCodeCell: function () {
+              var cellOp = bkSessionManager.getNotebookCellOp();
+              // get all code cells
+              var cells = cellOp.getAllCodeCells();
 
               if (cells === undefined || (!_.isArray(cells) && cells.length === 0)) {
                 return null;
@@ -1063,7 +1150,13 @@
               bkCoreManager.newSession(true);
             });
             return false;
-          } else if (e.which === 116) { // F5
+          } else if (bkHelper.isAppendCodeCellShortcut(e)) {
+            bkUtils.fcall(function() {
+              bkHelper.appendCodeCell()
+            });
+            return false;
+          }
+          else if (e.which === 116) { // F5
             bkHelper.runAllCellsInNotebook();
             return false;
           } else if (bkHelper.isLanguageManagerShortcut(e)) {
@@ -1129,6 +1222,9 @@
           $(document).unbind('keydown', keydownHandler);
           window.onbeforeunload = null;
           bkUtils.removeConnectedStatusListener();
+          if ($scope.reconnectFailedListenerUnsubscribe) {
+            $scope.reconnectFailedListenerUnsubscribe();
+          }
         };
 
         $scope.$on("$destroy", onDestroy);
@@ -1224,27 +1320,53 @@
           if ($scope.disconnectedDialog) { // prevent prompting multiple at the same time
             return;
           }
-          $scope.disconnectedDialog = bkCoreManager.show2ButtonModal(
-            "Beaker server disconnected. Further edits will not be saved.<br>" +
+          var dismissAction = function() {
+            $scope.disconnectedDialog = void 0;
+          };
+          var params = {
+            msgBody: "Beaker server disconnected. Further edits will not be saved.<br>" +
             "Save current notebook as a file?",
-            "Disconnected", function() {
-              // "Save", save the notebook as a file on the client side
-              bkSessionManager.dumpDisplayStatus();
-              var timeoutPromise = $timeout(function() {
-                bkUtils.saveAsClientFile(
-                    bkSessionManager.getSaveData().notebookModelAsString,
-                "notebook.bkr");
-              }, 1);
-              timeoutPromise.then(function() {
-                $scope.disconnectedDialog = void 0;
-              })
-            }, function() {
-                $scope.disconnectedDialog = void 0;
-            },
-            "Save", "Not now", "btn-primary", ""
-          );
+            msgHeader: "Disconnected",
+            dismissAction: dismissAction,
+            buttons: [
+              {
+                text: "Reconnect",
+                action: function () {
+                  bkUtils.addHandshakeListener(function(handshakeReply){
+                    if (handshakeReply.successful) {
+                      addConnectedStatusListener();
+                    }
+                  });
+                  bkUtils.reconnect();
+                  connectionManager.waitReconnect();
+                  $scope.disconnectedDialog = void 0;
+                },
+                cssClass: "btn-primary modal-submit"
+              },
+              {
+                text: "Save",
+                action: function() {
+                  // "Save", save the notebook as a file on the client side
+                  bkSessionManager.dumpDisplayStatus();
+                  var timeoutPromise = $timeout(function() {
+                    bkUtils.saveAsClientFile(
+                      bkSessionManager.getSaveData().notebookModelAsString,
+                      "notebook.bkr");
+                  }, 1);
+                  timeoutPromise.then(function() {
+                    $scope.disconnectedDialog = void 0;
+                  })
+                }
+              },
+              {
+                text: "Not now",
+                action: dismissAction
+              }
+            ]
+          };
+          $scope.disconnectedDialog = bkCoreManager.showMultipleButtonsModal(params);
         };
-        $rootScope.$on(GLOBALS.EVENTS.RECONNECT_FAILED, $scope.promptToSave);
+        $scope.reconnectFailedListenerUnsubscribe = $rootScope.$on(GLOBALS.EVENTS.RECONNECT_FAILED, $scope.promptToSave);
 
         $scope.getOffineMessage = function() {
           return connectionManager.getStatusMessage();
@@ -1253,16 +1375,21 @@
           return connectionManager.isDisconnected();
         };
 
-        bkUtils.addConnectedStatusListener(function(msg) {
-          if ($scope.isDisconnected() && msg.successful) {
-            connectionManager.onReconnected();
-            return $scope.$digest();
-          }
-          if (msg.failure) {
-            connectionManager.onDisconnected();
-            return $scope.$digest();
-          }
-        });
+        var addConnectedStatusListener = function(){
+          return bkUtils.addConnectedStatusListener(function(msg) {
+            if ($scope.isDisconnected() && msg.successful) {
+              connectionManager.onReconnected();
+              return $scope.$digest();
+            }
+            if (msg.failure) {
+              connectionManager.onDisconnected();
+              return $scope.$digest();
+            }
+          });
+        };
+
+        addConnectedStatusListener();
+
         $scope.$watch('isDisconnected()', function(disconnected) {
           if (disconnected) {
             stopAutoBackup();
@@ -1278,7 +1405,7 @@
         bkSessionManager.clear();
 
         bkMenuPluginManager.clear();
-        if (window.beaker === undefined || window.beakerRegister.isEmbedded === undefined) {
+        if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
           bkUtils.httpGet('../beaker/rest/util/getMenuPlugins')
           .success(function(menuUrls) {
             menuUrls.forEach(function(url) {

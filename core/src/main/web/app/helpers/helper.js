@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function($location, $httpParamSerializer, bkUtils, bkCoreManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
+  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -45,21 +45,34 @@
     var rgbaToHex = bkUtils.rgbaToHex;
     var defaultPlotColors = {};
     defaultPlotColors[GLOBALS.THEMES.DEFAULT] = [
-      rgbaToHex(140, 29, 23),  // red
-      rgbaToHex(33, 87, 141),  // blue
-      rgbaToHex(150, 130, 54), // yellow
-      rgbaToHex(20, 30, 120),  // violet
-      rgbaToHex(54, 100, 54),  // green
-      rgbaToHex(60, 30, 50)    // dark
+      "#FF1F77B4", // blue
+      "#FFFF7F0E", // orange
+      "#FF2CA02C", // green
+      "#FFD62728", // red
+      "#FF9467BD", // purple
+      "#FF8C564B", // brown
+      "#FFE377C2", // pink
+      "#FF7F7F7F", // gray
+      "#FFBCBD22", // pear
+      "#FF17BECF"  // aqua
     ];
     defaultPlotColors[GLOBALS.THEMES.AMBIANCE] = [
-      rgbaToHex(191, 39, 31),   // red
-      rgbaToHex(46, 119, 191),  // blue
-      rgbaToHex(230, 230, 65),  // yellow
-      rgbaToHex(30, 40, 190),   // violet
-      rgbaToHex(75, 160, 75),   // green
-      rgbaToHex(120, 100, 100)  // dark
+      "#FF1F77B4", // blue
+      "#FFFF7F0E", // orange
+      "#FF2CA02C", // green
+      "#FFD62728", // red
+      "#FF9467BD", // purple
+      "#FF8C564B", // brown
+      "#FFE377C2", // pink
+      "#FF7F7F7F", // gray
+      "#FFBCBD22", // pear
+      "#FF17BECF"  // aqua
     ];
+
+    var defaultEvaluator = GLOBALS.DEFAULT_EVALUATOR;
+    $rootScope.$on("defaultEvaluatorChanged", function (event, data) {
+      defaultEvaluator = data;
+    });
 
       var bkHelper = {
 
@@ -74,6 +87,12 @@
           return e.ctrlKey && e.shiftKey && (e.which === 78);// Ctrl + Shift + n
         }
         return e.altKey && e.shiftKey && (e.which === 78);// Cmd + Shift + n
+      },
+      isAppendCodeCellShortcut: function (e){
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Ctrl + Shift + A
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Cmd + Shift + A
       },
       isSaveNotebookShortcut: function (e){
         if (this.isMacOS){
@@ -333,7 +352,7 @@
           var strategy = bkHelper.getFileSystemFileChooserStrategy();
           strategy.treeViewfs.extFilter = [ext];
           bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getLocalDrives()]).then(function(values) {
-            if (bkUtils.isWindows) {
+            if (bkUtils.serverOS.isWindows()) {
               strategy.localDrives = values[1];
             }
             bkCoreManager.showModalDialog(
@@ -495,6 +514,13 @@
           return false;
         }
       },
+      loadLibrary: function(path, modelOutput) {
+        if (getCurrentApp() && getCurrentApp().loadLibrary) {
+          return getCurrentApp().loadLibrary(path, modelOutput);
+        } else {
+          return false;
+        }
+      },        
       typeset: function(element) {
         try {
           renderMathInElement(element[0], {
@@ -518,54 +544,18 @@
         if (!evaluateFn) {
           evaluateFn = this.evaluateCode;
         }
-
-        if (!this.bkRenderer) {
-          // Override markdown link renderer to always have `target="_blank"`
-          // Mostly from Renderer.prototype.link
-          // https://github.com/chjj/marked/blob/master/lib/marked.js#L862-L881
-          var bkRenderer = new marked.Renderer();
-          bkRenderer.link = function(href, title, text) {
-            var prot;
-            if (this.options.sanitize) {
-              try {
-                prot = decodeURIComponent(unescape(href))
-                    .replace(/[^\w:]/g, '')
-                    .toLowerCase();
-              } catch (e) {
-                return '';
-              }
-              //jshint ignore:start
-              if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0) {
-                //jshint ignore:end
-                return '';
-              }
-            }
-            var out = '<a href="' + href + '"';
-            if (title) {
-              out += ' title="' + title + '"';
-            }
-            out += ' target="_blank"'; // < ADDED THIS LINE ONLY
-            out += '>' + text + '</a>';
-            return out;
-          };
-
-          bkRenderer.paragraph = function(text) {
-            // Allow users to write \$ to escape $
-            return marked.Renderer.prototype.paragraph.call(this, text.replace(/\\\$/g, '$'));
-          };
-          this.bkRenderer = bkRenderer;
-        }
-
         var markIt = function(content) {
           var markdownFragment = $('<div>' + content + '</div>');
           bkHelper.typeset(markdownFragment);
           var escapedHtmlContent = angular.copy(markdownFragment.html());
           markdownFragment.remove();
           var unescapedGtCharacter = escapedHtmlContent.replace(/&gt;/g, '>');
-          var result = marked(unescapedGtCharacter, {
-            gfm: true,
-            renderer: bkRenderer
+          var md = window.markdownit({
+            html: true,
+            linkify: true,
+            typographer: true
           });
+          var result = md.render(unescapedGtCharacter);
           markupDeferred.resolve(result);
         };
 
@@ -682,6 +672,13 @@
           return [];
         }
       },
+      go2LastCodeCell: function() {
+        if (getCurrentApp() && getCurrentApp().go2LastCodeCell) {
+          getCurrentApp().go2LastCodeCell();
+        } else {
+          return [];
+        }
+      },
       getCodeCells: function(filter) {
         if (getCurrentApp() && getCurrentApp().getCodeCells) {
           return getCurrentApp().getCodeCells(filter);
@@ -709,6 +706,12 @@
         } else {
           return false;
         }
+      },
+      getVersionNumber: function () {
+        return window.beakerRegister.version;
+      },
+      getVersionString: function () {
+        return window.beakerRegister.versionString;
       },
       // bk-notebook
       refreshBkNotebook: function () {
@@ -863,7 +866,7 @@
         strategy.title = title;
         strategy.closebtn = closebtn;
         bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getLocalDrives()]).then(function (values) {
-          if (bkUtils.isWindows) {
+          if (bkUtils.serverOS.isWindows()) {
             strategy.localDrives = values[1];
           }
           return bkCoreManager.showModalDialog(
@@ -886,8 +889,20 @@
           };
         });
       },
-      showLanguageManager: function() {
+      showLanguageManager: function () {
         return bkCoreManager.showLanguageManager();
+      },
+      appendCodeCell: function () {
+        var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var cells = notebookCellOp.getAllCodeCells();
+        if (cells === undefined || (!_.isArray(cells) && cells.length === 0)) {
+          return null;
+        }
+        var index = cells.length;
+        notebookCellOp.insertAt(index, newCell);
+        bkUtils.refreshRootScope();
+        this.go2LastCodeCell();
       },
       showPublishForm: function() {
         return bkCoreManager.showPublishForm();
@@ -1021,7 +1036,13 @@
           setupProgressOutput(modelOutput);
         modelOutput.result.object.message = "cancelling ...";
       },
-
+      printEvaluationProgress: function (modelOutput, text, outputType) {
+        this.receiveEvaluationUpdate(modelOutput,
+          {outputdata:[{type:outputType, value: text+"\n"}]}, "JavaScript");
+        // XXX should not be needed but when progress meter is shown at same time
+        // display is broken without this, you get "OUTPUT" instead of any lines of text.
+        this.refreshRootScope();
+      },  
       receiveEvaluationUpdate: function(modelOutput, evaluation, pluginName, shellId) {
         var beakerObj = bkHelper.getBeakerObject().beakerObj;
         var maxNumOfLines = beakerObj.prefs
@@ -1041,8 +1062,10 @@
             modelOutput.result.object.outputdata.push(evaluation.outputdata[idx]);
           }
           var cnt = 0;
-          for (idx=0; idx<modelOutput.result.object.outputdata.length; idx++) {
-            cnt += modelOutput.result.object.outputdata[idx].value.split(/\n/).length;
+          for (idx = 0; idx < modelOutput.result.object.outputdata.length; idx++) {
+            var l = modelOutput.result.object.outputdata[idx].value.split(/\n/).length;
+            if (l > 0)
+              cnt += l - 1;
           }
           if (cnt > maxNumOfLines) {
             cnt -= maxNumOfLines;
@@ -1054,7 +1077,7 @@
               } else {
                 var a = modelOutput.result.object.outputdata[0].value.split(/\n/);
                 a.splice(0,cnt);
-                modelOutput.result.object.outputdata[0].value = a.join('\n');
+                modelOutput.result.object.outputdata[0].value = '...\n' + a.join('\n');
                 cnt = 0;
               }
             }

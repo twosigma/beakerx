@@ -4,7 +4,7 @@
   "allow-anonymous-usage-tracking": null,
   "init": [
     "./plugin/init/track.js",
-    "./plugin/init/addevalplugins.js",
+    "./app/genweb/addevalplugins.js",
     "./plugin/init/addoutputdisplays.js"
   ],
   "control-panel-menu-plugins": [

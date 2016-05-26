@@ -24,7 +24,7 @@
   var module = angular.module('bk.notebook');
 
   module.directive('bkCodeCellOutput', function(
-      $rootScope, bkUtils, bkOutputDisplayFactory, bkEvaluatorManager, bkEvaluateJobManager, GLOBALS) {
+      $rootScope, bkUtils, bkOutputDisplayFactory, bkEvaluatorManager, bkEvaluateJobManager, bkSessionManager, GLOBALS) {
     return {
       restrict: "E",
       template: JST["mainapp/components/notebook/codecelloutput"](),
@@ -135,6 +135,67 @@
           return type;
         };
 
+        $scope.getOutputSummary = function () {
+          var result = $scope.getOutputResult();
+
+          function getItemsText(itemTitle, items) {
+            return items + ' ' + (items > 1 ? itemTitle + 's' : itemTitle);
+          }
+
+          function getOutputSummary(type, result) {
+            type = type || 'Text';
+            switch (type) {
+              case 'CombinedPlot':
+                if (result.plots && result.plots.length > 0) {
+                  return result.plots.length + ' plots';
+                }
+                break;
+              case 'Plot':
+                if (result.graphics_list && result.graphics_list.length > 0) {
+                  var items = result.graphics_list.length;
+                  return 'a plot with ' + getItemsText('item', items);
+                }
+                break;
+              case 'OutputContainer':
+                if(result.items) {
+                  return 'Container with ' + getItemsText('item', result.items.length);
+                }
+                break;
+              case 'Table':
+              case 'TableDisplay':
+                return 'a table with ' + result.values.length + ' rows and ' + result.columnNames.length + ' columns';
+              case 'Results':
+                var out = 0, err = 0;
+                if (result.outputdata && result.outputdata.length > 0) {
+                  _.forEach(result.outputdata, function (outputLine) {
+                    if (outputLine.type === 'err') {
+                      err++;
+                    } else {
+                      out++;
+                    }
+                  })
+                }
+                var summary = [];
+                var getLinesSummary = function (num, s) {
+                  return num + ' ' + (num > 1 ? 'lines' : 'line') + ' of ' + s;
+                };
+                if (out > 0) {
+                  summary.push(getLinesSummary(out, 'stdout'));
+                }
+                if (err > 0) {
+                  summary.push(getLinesSummary(err, 'stderr'));
+                }
+                if(result.payload) {
+                  summary.push(getOutputSummary(result.payload.type, result.payload));
+                }
+                return summary.join(', ');
+                break;
+            }
+            return type;
+          }
+          return result !== undefined && getOutputSummary(result.innertype || result.type, result);
+        };
+
         $scope.$watch('getOutputDisplayType()', function() {
             $scope.outputCellMenuModel.refreshMenu();
         });
@@ -181,6 +242,10 @@
           if ($scope.$parent.cellmodel !== undefined && $scope.$parent.cellmodel.output !== undefined)
             return !$scope.$parent.cellmodel.output.hidden;
           return true;
+        };
+        
+        $scope.isShowOutputSummary = function () {
+          return !$scope.isExpanded() && !bkSessionManager.isNotebookLocked();
         };
 
         $scope.getAdditionalMenuItems = function() {

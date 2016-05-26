@@ -15,39 +15,33 @@
  */
 
 var _ = require('underscore');
+var path = require('path');
+var fs = require('fs');
 
 var BeakerPageObject = function() {
 
   this.EC = protractor.ExpectedConditions;
-  this.baseURL = 'http://localhost:8801/';
+  this.baseURL = 'http://127.0.0.1:8801/';
   this.mainmenu = element.all(by.repeater('m in getMenus()'));
   //jscs:disable
   this.submenu = element.all(by.repeater("item in getMenuItems() | filter:isHidden | orderBy:'sortorder'"))
   //jscs:enable
     .filter(function(e, i) { return e.isDisplayed(); });
 
-  this.waitForInstantiationCells = function() {
+  this.waitForInstantiationCells = function(screenshotName) {
+    var self = this;
+    var dialogIsPresent = this.EC.presenceOf($('.modal-dialog'));
     // First wait for the modal to show up when opening a URL
-    browser.wait(function() {
-      return element(by.css('.modal-dialog')).isDisplayed()
-      .then(function(v) {
-        return v;
-      })
-      .thenCatch(function() {
-        return false;
-      });
-    }, 100000);
-
-    // wait for the modal to close
-    return browser.wait(function() {
-      return element(by.css('.modal-dialog')).isDisplayed()
-      .then(function(v) {
-        return false;
-      })
-      .thenCatch(function() {
+    browser.wait(dialogIsPresent, 10000).then(function(){
+      // wait for the modal to close
+      browser.wait(self.EC.not(dialogIsPresent), 100000).then(function(){
         return true;
+      },
+      function(error){
+        beakerPO.createScreenshot(screenshotName);
+        expect(error).toBe('Cells have been initialized');
       });
-    }, 100000);
+    });
   };
 
   this.openFile = function(path) {
@@ -129,7 +123,7 @@ var BeakerPageObject = function() {
   };
 
   this.isCellMenuOpen = function(opts) {
-    return element.all(by.css('.bkcell .open.toggle-menu.bkr'))
+    return element.all(by.css('.bkcell .open.toggle-menu-items.bkr'))
     .get(opts.cellIndex)
     .isDisplayed()
     .then(function() {
@@ -179,11 +173,15 @@ var BeakerPageObject = function() {
                     require('./mixins/cell.js'));
   };
   this.waitForPlugin = function(plugin) {
+    var self = this;
     browser.wait(function() {
       var deferred = protractor.promise.defer();
       this.languageManagerButtonActive(plugin).isPresent()
         .then(function(result) {
           deferred.fulfill(result);
+        },
+        function(value){
+          self.createScreenshot('waitForPlugin' + plugin);
         });
       return deferred.promise;
     }.bind(this), 50000);
@@ -233,69 +231,12 @@ var BeakerPageObject = function() {
 
   //Functions for access to plot elements
 
-
-  this.scrollToCodeCellOutput = function (index) {
-    return browser.executeScript("$('.code-cell-output')[" + index + "].scrollIntoView();");
-  };
-
   this.getCodeCellOutputByIndex = function (index) {
     return element.all(by.css('.code-cell-output')).get(index);
   };
 
-    this.getCodeCellOutputCombplotTitle = function (codeCellOutputIdx) {
-    return this.getCodeCellOutputByIndex(codeCellOutputIdx).element(by.id('combplotTitle')).getText();
-  };
-
-  this.getCodeCellOutputContainerTitle = function (codeCellOutputIdx, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-
-    return this.getCodeCellOutputByIndex(codeCellOutputIdx)
-      .all(by.id("plotTitle"))
-      .get(containerIdx).getText();
-  };
-
-  this.getCodeCellOutputContainerYLabel = function (codeCellOutputIdx, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-
-    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('ylabel')).getText();
-  };
-
-  this.getCodeCellOutputContainerYRLabel = function (codeCellOutputIdx, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-
-    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('yrlabel')).getText();
-  };
-
-  this.getCodeCellOutputContainerXLabel = function (codeCellOutputIdx, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-
-    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(by.id('xlabel')).getText();
-  };
-
-  this.getPlotLegendContainer = function (codeCellOutputIdx, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-    return this.getCodeCellOutputByIndex(codeCellOutputIdx).all(By.css('.plot-plotlegendcontainer')).get(containerIdx);
-  };
-
-  this.getPlotSvg= function (codeCellOutputIdx, containerIdx) {
-    return this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(By.id('svgg'));
-  };
-
-  this.getPlotMaing= function (codeCellOutputIdx, containerIdx) {
-    return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('maing'));
-  };
-
-  this.getPlotLabelg= function (codeCellOutputIdx, containerIdx) {
-    return this.getPlotSvg(codeCellOutputIdx, containerIdx).element(By.id('labelg'));
-  };
-
-  this.getPlotSvgElementByIndex= function (codeCellOutputIdx, containerIdx, elementIndex) {
-    return this.getPlotSvg(codeCellOutputIdx, containerIdx).all(by.css("#maing > g")).get(elementIndex);
+  this.getPlotLabelgByIdCell = function (idCell, containerIdx) {
+    return this.getPlotSvgByIdCell(idCell, containerIdx).element(By.id('labelg'));
   };
 
   //End Functions for access to plot elements
@@ -331,7 +272,7 @@ var BeakerPageObject = function() {
   //end CodeMirror API
 
   this.toggleOutputCellExpansion = function() {
-    return element(by.css('.toggle-menu .expand-contract')).click();
+    return element(by.css('bk-code-cell-output div[ng-click="toggleExpansion()"]')).click();
   };
 
   this.evaluateCell = function() {
@@ -389,6 +330,12 @@ var BeakerPageObject = function() {
     }, 10000);
   };
 
+  this.waitForCellOutputByIdCell = function(idCell) {
+    var self = this;
+    browser.wait(this.getCodeCellOutputByIdCell(idCell).isDisplayed(), 10000).then(function(){
+      browser.wait(self.EC.not(self.EC.textToBePresentInElement(self.getCodeCellOutputByIdCell(idCell), 'Elapsed:'), 10000));
+    });
+  };
 
   this.waitUntilLoadingFinished = function() {
     var self = this;
@@ -403,35 +350,9 @@ var BeakerPageObject = function() {
     }, 100000);
   };
 
-  this.waitUntilLoadingPlot = function(codeCellOutputIdx, containerIdx) {
-    var self = this;
-    return browser.wait(function() {
-      return self.getPlotLegendContainer(codeCellOutputIdx, containerIdx).isPresent()
-        .then(function(present) {
-          return present;
-        })
-        .thenCatch(function() {
-          return false;
-        });
-    }, 10000);
-  };
-
-  this.waitUntilLoadingIndicator = function() {
-    browser.wait(this.EC.presenceOf($('.navbar-text > i')), 10000);
-  };
-
   this.waitUntilLoadingCellOutput = function() {
     browser.wait(this.EC.presenceOf($('bk-code-cell-output')), 10000);
   }
-
-  this.checkPlotIsPresent = function (codeCellOutputIdx, containerIdx){
-    if (!containerIdx)
-      containerIdx = 0;
-    this.scrollToCodeCellOutput(codeCellOutputIdx);
-    this.waitUntilLoadingPlot(codeCellOutputIdx, containerIdx);
-    expect(this.getPlotMaing(codeCellOutputIdx, containerIdx).isPresent()).toBe(true);
-  };
-
 
   this.hasClass =  function  (element, cls) {
     return element.getAttribute('class').then(function (classes) {
@@ -447,12 +368,6 @@ var BeakerPageObject = function() {
     expect(elements.count()).toBe(expectedCount);
   };
 
-  this.checkLegendIsPresent = function (codeCellOutputIdx, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-    expect(this.getPlotLegendContainer(codeCellOutputIdx, containerIdx).element(By.css('.plot-legend')).isPresent()).toBe(true);
-  };
-
   this.checkSize = function (element, width, height) {
     expect(element.getSize().then(function (size) {
       return size.height
@@ -462,16 +377,15 @@ var BeakerPageObject = function() {
     })).toBe(width);
   };
 
-
-  this.checkPlotLegentdLabel = function (codeCellOutputIdx, containerIdx, legentdLabelIndex, text) {
-    expect(this.getPlotLegendContainer(codeCellOutputIdx, containerIdx)
-      .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
+  this.checkPlotLegentdLabelByIdCell = function (idCell, containerIdx, legentdLabelIndex, text) {
+    expect(this.getPlotLegendContainerByIdCell(idCell, containerIdx)
+        .all(By.tagName('label')).get(legentdLabelIndex).getText()).toBe(text);
   }
 
   this.checkLegendIsPresentByIdCell = function (codeCellOutputId, containerIdx) {
     if (!containerIdx)
       containerIdx = 0;
-    expect(this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(By.css('.plot-legend')).isPresent()).toBe(true);
+    expect(this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(By.css('#plotLegend')).isPresent()).toBe(true);
   };
 
   this.getCodeCellOutputCombplotTitleByIdCell = function (codeCellOutputId) {
@@ -538,16 +452,15 @@ var BeakerPageObject = function() {
     return this.getCodeCellOutputByIdCell(codeCellOutputId).all(By.css('.plot-plotlegendcontainer')).get(containerIdx);
   };
 
+  this.getPlotContainerByIdCell = function (codeCellOutputId, containerIdx) {
+    if (!containerIdx)
+      containerIdx = 0;
+    return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(by.css('#plotContainer'));
+  };
+
   this.getPlotSvgElementByIndexByIdCell = function (codeCellOutputId, containerIdx, elementIndex) {
     return this.getPlotSvgByIdCell(codeCellOutputId, containerIdx).all(by.css("#maing > g")).get(elementIndex);
   };
-
-  this.checkDtContainer = function(codeCellOutputIdx, containerIdx){
-    if (!containerIdx)
-      containerIdx = 0;
-    this.scrollToCodeCellOutput(codeCellOutputIdx);
-    expect(this.getDtContainer(codeCellOutputIdx, containerIdx).isPresent()).toBe(true);
-  }
 
   this.checkDtContainerByIdCell = function(idCell, containerIdx){
     if (!containerIdx)
@@ -650,7 +563,7 @@ var BeakerPageObject = function() {
   };
 
   this.getDataTableMenuToggle = function (sectionTitle) {
-    return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('.dtmenu .dropdown-toggle'));
+    return this.getCodeCellOutputBySectionTitle(sectionTitle).element(by.css('a[ng-click="menuToggle()"]'));
   };
 
   this.getDataTableSubmenu = function (sectionTitle, menuTitle) {
@@ -697,6 +610,14 @@ var BeakerPageObject = function() {
     return this.getDataTablesScrollHeadByIdCell(idCell).all(By.css('thead > tr'));
   }
 
+  this.checkTablesColumnsByIdCell = function(idCell, countColumn){
+    expect(this.getDataTablesTHeadByIdCell(idCell).get(0).all(by.css('th')).count()).toBe(countColumn);
+  }
+
+  this.checkTablesRowsByIdCell = function(idCell, countRows){
+    expect(this.getDataTablesTBodyByIdCell(idCell).count()).toBe(countRows);
+  }
+
   this.checkDataTableHeadByIdCell = function(idCell, headLabels){
     expect(this.getDataTablesScrollHeadByIdCell(idCell).getText()).toBe(headLabels);
   }
@@ -738,6 +659,12 @@ var BeakerPageObject = function() {
   }
 
   this.checkSubString = function(strPromise, toBeStr, indxStart, lenght){
+    if(!indxStart){
+      indxStart = 0;
+    }
+    if(!lenght){
+      lenght = 100;
+    }
     strPromise.getText().then(function(value){
       expect(value.substring(indxStart, lenght)).toBe(toBeStr);
     });
@@ -757,6 +684,145 @@ var BeakerPageObject = function() {
   this.getCodeOutputCellIdBySectionTitle = function (sectionTitle) {
     return this.getCodeCellOutputBySectionTitle(sectionTitle).getAttribute('cell-id');
   };
+
+  this.waitCodeCellOutputPresentByIdCell = function(idCell, outputType) {
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), 20000);
+  }
+
+  this.waitCodeCellOutputTablePresentByIdCell = function(idCell) {
+    this.waitCodeCellOutputPresentByIdCell(idCell, 'Table');
+  }
+
+  this.checkAttribute = function(strPromise, attrName, toBeStr, indxStart, lenght){
+    if(!indxStart){
+      indxStart = 0;
+    }
+    if(!lenght){
+      lenght = 100;
+    }
+    strPromise.getAttribute(attrName).then(function(value){
+      expect(value.substring(indxStart, lenght)).toBe(toBeStr);
+    });
+  }
+
+  this.checkHexCharCode = function(strPromise, charCode1, charCode2){
+    strPromise.getText().then(function(value){
+      expect(value.charCodeAt(0).toString(16)).toBe(charCode1);
+      if(charCode2){
+        expect(value.charCodeAt(1).toString(16)).toBe(charCode2);
+      }
+    });
+  }
+
+  this.checkHexCharCodeSubString = function(strPromise, indxStart, lenght, charCode1, charCode2){
+    strPromise.getText().then(function(value){
+      expect(value.substring(indxStart, lenght).charCodeAt(0).toString(16)).toBe(charCode1);
+      if(charCode2){
+        expect(value.substring(indxStart, lenght).charCodeAt(1).toString(16)).toBe(charCode2);
+      }
+    });
+  }
+
+  this.getPreviewBkCellByIdCell = function(idCell){
+    return this.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'preview\'"]'));
+  }
+
+  this.getEditBkCellByIdCell = function(idCell){
+    return this.getBkCellByIdCell(idCell).element(by.css('div[ng-show="mode==\'edit\'"]'));
+  }
+
+  this.checkPreviewBkCellByIdCell = function(idCell){
+    var elemPreview = this.getPreviewBkCellByIdCell(idCell);
+    expect(elemPreview.isDisplayed()).toBe(true);
+    expect(this.getEditBkCellByIdCell(idCell).isDisplayed()).toBe(false);
+    return elemPreview;
+  }
+
+  this.checkEditBkCellByIdCell = function(idCell){
+    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="edit($event)"]')).click();
+    browser.wait(this.EC.visibilityOf($('bk-cell[cellid=' + idCell + '] div[ng-show="mode==\'edit\'"'), 10000));
+    var elemEdit = this.getEditBkCellByIdCell(idCell);
+    expect(this.getPreviewBkCellByIdCell(idCell).isDisplayed()).toBe(false);
+    expect(elemEdit.isDisplayed()).toBe(true);
+    return elemEdit;
+  }
+
+  this.getFormulaSubElement = function(elemPromise, subIndex){
+    if(!subIndex){
+      subIndex = 0;
+    }
+    return elemPromise.all(by.css('span.mord.scriptstyle.cramped > span')).get(subIndex);
+  }
+
+  this.getBkCellByIdCell = function (idCell) {
+    return element.all(by.css('[cellid=' + idCell + '] > div')).get(0);
+  };
+
+  this.scrollToBkCellByIdCell = function (idCell) {
+    return browser.executeScript("$('[cellid=" + idCell +"]')[0].scrollIntoView();");
+  };
+
+  this.clickCodeCellInputButtonByIdCell = function(idCell, outputType, screenshotName, timeOut){
+    var self = this;
+    if(!timeOut){
+      timeOut = 25000;
+    }
+    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']')), 5000)
+        .then(browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), timeOut)
+            .then(
+                function(isPresent){
+                  expect(isPresent).toBe(true);
+                },
+                function(value){
+                  self.createScreenshot(screenshotName);
+                  expect(value).toBe('Output cell have displayed');
+                  expect(self.getCodeCellOutputByIdCell(idCell).element(by.css('.out_error')).getText()).toBe('out error');
+                }
+            ));
+  }
+
+  this.checkBkCellByIdCell  = function (idCell) {
+    browser.wait(this.EC.presenceOf($('bk-cell[cellid=' + idCell + '] > div'), 10000));
+    this.scrollToBkCellByIdCell(idCell);
+    expect(this.getBkCellByIdCell(idCell).isPresent()).toBe(true);
+  };
+
+  this.checkSubStringIfDisplayed = function(strPromise, toBeStr, indxStart, lenght){
+    var self = this;
+    strPromise.isDisplayed().then(function(isVisible){
+      if(isVisible){
+        self.checkSubString(strPromise, toBeStr, indxStart, lenght);
+      }
+    });
+  }
+
+  this.createScreenshot = function(fileName, dirPath){
+    if(!dirPath){
+      dirPath = path.join(__dirname, '../' ,"screenshots");
+    }
+    if(!fileName){
+      fileName = 'noname';
+    }
+    browser.takeScreenshot().then(function(png){
+      var filename = fileName + new Date().getTime() + '.png';
+      if(!fs.existsSync(dirPath)){
+        fs.mkdirSync(dirPath);
+      }
+      var stream = fs.createWriteStream(path.join(dirPath, filename));
+      stream.write(new Buffer(png, 'base64'));
+      stream.end();
+    });
+  }
+
+  this.runCellWithoutDisplayResultByIdCell = function(idCell, timeOut){
+    if(!timeOut){
+      timeOut = 25000;
+    }
+    this.scrollToBkCellByIdCell(idCell);
+    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
+    browser.wait(this.EC.not(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']'))), timeOut);
+  }
 
 };
 module.exports = BeakerPageObject;

@@ -48,7 +48,7 @@
       osName="Linux";
     }
 
-    
+
     function serverUrl(path) {
       return serverRoot + path;
     }
@@ -65,6 +65,69 @@
       var pieces = locator.split(":");
       return { source: pieces[1], destination: pieces[2] }
     }
+
+    var getServerOS = function () {
+      var _isWindows = function (version) {
+        return (version.toLowerCase().indexOf("win") >= 0);
+      };
+      var _isMacOS = function (version) {
+        return version.toLowerCase().indexOf("mac") >= 0;
+      };
+      var _isUnix = function (version) {
+        return (version.toLowerCase().indexOf("nix") >= 0 || version.indexOf("aix") > 0 );
+      };
+      var _isLinux = function (version) {
+        return version.toLowerCase().indexOf("nux") >= 0;
+      };
+
+      var _osName = function (version) {
+        var osName = "unknown";
+        if (_isWindows(version)) {
+          osName = "Windows";
+        } else if (_isMacOS(version)) {
+          osName = "MacOS";
+        } else if (_isLinux(version)) {
+          osName = "Linux";
+        } else if (_isUnix(version)) {
+          osName = "Unix";
+        }
+        return osName
+      };
+
+      var isWindows = false;
+      var isMacOS = false;
+      var isLinux = false;
+      var isUnix = false;
+      var osName = 'unknown';
+
+      angularUtils.httpGet(serverUrl("beaker/rest/util/version"))
+        .success(function (result) {
+          isWindows = _isWindows(result);
+          isMacOS = _isMacOS(result);
+          isLinux = _isLinux(result);
+          isUnix = _isUnix(result);
+          osName = _osName(result);
+        });
+      return {
+        isWindows: function(){
+          return isWindows;
+        },
+        isMacOS: function(){
+          return isMacOS;
+        },
+        isLinux: function(){
+          return isLinux;
+        },
+        isUnix: function(){
+          return isUnix;
+        },
+        osName: function(){
+          return osName;
+        }
+      };
+    };
+
+    var serverOS = getServerOS();
 
     var bkUtils = {
         serverUrl: serverUrl,
@@ -131,6 +194,9 @@
       },
       httpGet: function(url, data, headers) {
         return angularUtils.httpGet(url, data, headers);
+      },
+      httpGetCached: function(url, data, headers) {
+        return angularUtils.httpGetCached(url, data, headers);
       },
       httpGetJson: function(url, data, headers) {
         return angularUtils.httpGetJson(url, data, headers);
@@ -227,6 +293,13 @@
         this.httpGet(serverUrl("beaker/rest/util/getVersionInfo"))
             .success(deferred.resolve)
             .error(deferred.reject);
+        return deferred.promise;
+      },
+      getVersionString: function () {
+        var deferred = angularUtils.newDeferred();
+        this.httpGet(serverUrl("beaker/rest/util/version"))
+          .success(deferred.resolve)
+          .error(deferred.reject);
         return deferred.promise;
       },
       getStartUpDirectory: function() {
@@ -358,8 +431,17 @@
       removeConnectedStatusListener: function() {
         return cometdUtils.removeConnectedStatusListener();
       },
+      addHandshakeListener: function(cb) {
+        return cometdUtils.addHandshakeListener(cb);
+      },
+      removeHandshakeListener: function() {
+        return cometdUtils.removeHandshakeListener();
+      },
       disconnect: function() {
         return cometdUtils.disconnect();
+      },
+      reconnect: function() {
+        return cometdUtils.reconnect();
       },
 
       beginsWith: function(haystack, needle) {
@@ -373,22 +455,23 @@
         var that = this;
         if (_.isString(url)) {
           var deferred = this.newDeferred();
-          window.requirejs([url], function (ret) {
-            if (!_.isEmpty(name)) {
-              that.moduleMap[name] = url;
-            }
-            deferred.resolve(ret);
-          }, function(err) {
-            deferred.reject({
-              message: "module failed to load",
-              error: err
+          return window.loadQueuePromise.then(function() {
+            window.requirejs([url], function (ret) {
+              if (!_.isEmpty(name)) {
+                that.moduleMap[name] = url;
+              }
+              deferred.resolve(ret);
+            }, function(err) {
+              deferred.reject({
+                message: "module failed to load",
+                error: err
+              });
             });
-          });
+            return deferred.promise;
+          }).catch(function(e) {console.error(e.message + " - " + e.error)});
 
-          return deferred.promise;
-        } else {
-          throw "illegal arg" + url;
         }
+        throw "illegal arg" + url;
       },
       require: function(nameOrUrl) {
         var url = this.moduleMap.hasOwnProperty(nameOrUrl) ? this.moduleMap[nameOrUrl] : nameOrUrl;
@@ -429,6 +512,9 @@
     },
     // Electron: require('remote')
     isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
+
+    serverOS:  serverOS,
+
     isWindows: osName === 'Windows',
     isMacOS: osName === 'MacOS',
     osName: osName,
@@ -448,6 +534,11 @@
     }
 
     };
+
+    if (typeof window.loadQueuePromise === 'undefined') {
+      window.loadQueuePromise = bkUtils.newPromise();
+    }
+
     return bkUtils;
   });
 })();

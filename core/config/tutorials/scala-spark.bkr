@@ -29,7 +29,8 @@
                     "mode": "javascript",
                     "background": "#FFE0F0"
                 }
-            }
+            },
+            "languageVersion": "ES2015"
         },
         {
             "name": "Scala",
@@ -59,7 +60,8 @@
                 "Beaker supports using [Spark](http://spark.apache.org/) with its native language, Scala.",
                 "",
                 "You must use a Spark version compatible with Scala 2.11 (to be compatible with the Scala in Beaker).  We have one prebuilt you can [download](https://s3.amazonaws.com/beaker-distributions/spark-1.5.0-bin-custom-spark.tgz).",
-                "Just add `lib/spark-assembly-1.5.0-hadoop2.4.0.jar` to your class path (with the Language Manager) and then try the following demos."
+                "Just add `lib/spark-assembly-1.5.0-hadoop2.4.0.jar` to your class path (with the Language Manager) and then try the following demos.",
+                "For a Windows OS you must download [hadoop](http://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-2.6.4/hadoop-2.6.4.tar.gz), extract downloaded file and add path to extracted folder as HADOOP_HOME property to the system variable. Also you can download winutils.exe here: http://public-repo-1.hortonworks.com/hdp-win-alpha/winutils.exe. Then copy it to your HADOOP_HOME/bin directory."
             ],
             "evaluatorReader": false
         },
@@ -90,52 +92,10 @@
             "lineCount": 6
         },
         {
-            "id": "markdownDxvZC8",
-            "type": "markdown",
-            "body": [
-                "You can then count (in parallel) how many 'a' and 'b' are inside a text file."
-            ],
-            "evaluatorReader": false
-        },
-        {
-            "id": "code6Vzt6O",
-            "type": "code",
-            "evaluator": "Scala",
-            "input": {
-                "body": [
-                    "val logFile = \"../../../../../LICENSE\"",
-                    "val logData = sc.textFile(logFile, 2).cache()",
-                    "val numAs = logData.filter(line => line.contains(\"a\")).count()",
-                    "val numBs = logData.filter(line => line.contains(\"b\")).count()",
-                    "println(\"Lines with a: %s, Lines with b: %s\".format(numAs, numBs))"
-                ]
-            },
-            "output": {
-                "state": {},
-                "selectedType": "Results",
-                "pluginName": "Scala",
-                "shellId": "dfb34acc-d0f8-4de0-bbf2-cf98f659610f",
-                "elapsedTime": 4262,
-                "result": {
-                    "type": "Results",
-                    "outputdata": [
-                        {
-                            "type": "out",
-                            "value": "Lines with a: 159, Lines with b: 88\n"
-                        }
-                    ],
-                    "payload": "()"
-                },
-                "height": 54
-            },
-            "evaluatorReader": true,
-            "lineCount": 5
-        },
-        {
             "id": "markdownf3UnSb",
             "type": "markdown",
             "body": [
-                "Or you can try to approximate $\\pi$."
+                "Then you can approximate $\\pi$ with a parallel map-reduce:"
             ],
             "evaluatorReader": false
         },

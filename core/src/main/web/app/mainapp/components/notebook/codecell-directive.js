@@ -44,6 +44,7 @@
       bkCellMenuPluginManager,
       bkSessionManager,
       bkCoreManager,
+      bkDragAndDropHelper,
       bkPublicationHelper,
       GLOBALS,
       $rootScope,
@@ -153,11 +154,11 @@
 
           var result = $scope.cellmodel.output.result;
 
-          if (!result || result.hidden) {
+          if (!$scope.hasOutput() || result.hidden) {
             return false;
           }
 
-          if (result.status !== "RUNNING" && $scope.cellmodel.output.hidden === true) {
+          if (result.status !== "RUNNING" && ($scope.cellmodel.output.hidden === true || $scope.isHiddenOutput())) {
             return false;
           }
 
@@ -227,12 +228,20 @@
           return bkEvaluatorManager.getEvaluator($scope.cellmodel.evaluator);
         };
         $scope.updateUI = function(evaluator) {
+          if(!$scope.cm) {
+            return;
+          }
           $scope.cellmodel.evaluatorReader = Boolean(evaluator);
-          if ($scope.cm && evaluator) {
-            $scope.cm.setOption('mode', evaluator.cmMode);
-            if (evaluator.indentSpaces) {
-              $scope.cm.setOption('indentUnit', evaluator.indentSpaces);
-            }
+          var visualParams = bkEvaluatorManager.getVisualParams($scope.cellmodel.evaluator);
+          
+          var cmMode = evaluator ? evaluator.cmMode : visualParams ? visualParams.cmMode : undefined;
+          var indentSpaces = evaluator ? evaluator.indentSpaces : undefined;
+          
+          if(cmMode) {
+            $scope.cm.setOption('mode', visualParams.cmMode);
+          }
+          if(indentSpaces) {
+            $scope.cm.setOption('indentUnit', evaluator.indentSpaces);
           }
         };
         $scope.$watch('getEvaluator()', function(newValue, oldValue) {
@@ -419,10 +428,14 @@
               //codecomplete is up, skip
               return;
             }
-
-            scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
+            if(document.hasFocus()){
+              scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
+            }
           });
           scope.cm.on('gutterClick', onGutterClick);
+          bkDragAndDropHelper.configureDropEventHandlingForCodeMirror(scope.cm, function () {
+            return scope.cm.getOption('mode') === 'htmlmixed';
+          });
 
           scope.updateUI(scope.getEvaluator());
           // Since the instantiation of codemirror instances is now lazy,

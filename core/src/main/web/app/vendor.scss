@@ -28,7 +28,7 @@
 @import "styles/variables.scss";
 
 $icon-font-path: "../../app/fonts/";
-@import "../vendor/bower_components/bootstrap-sass/assets/stylesheets/bootstrap.scss";
+@import "styles/customBootstrap";
 
 @import "styles/datatables.scss";
 
@@ -43,3 +43,4 @@ $icon-font-path: "../../app/fonts/";
 @import "../vendor/bower_components/datatables-keytable/css/keyTable.foundation";
 @import "../vendor/bower_components/datatables-keytable/css/keyTable.jqueryui";
 @import "../vendor/bower_components/datetimepicker/jquery.datetimepicker.css";
+@import "../vendor/bower_components/angular-ui-select/dist/select.css";

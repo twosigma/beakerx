@@ -29,7 +29,8 @@
                     "mode": "javascript",
                     "background": "#FFE0F0"
                 }
-            }
+            },
+            "languageVersion": "ES2015"
         },
         {
             "name": "Groovy",
@@ -39,7 +40,7 @@
                     "mode": "groovy"
                 }
             },
-            "imports": "static java.lang.Math.*\ngraxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*"
+            "imports": "static java.lang.Math.*\ngraxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.chart.KeyboardCodes"
         }
     ],
     "cells": [
@@ -79,7 +80,7 @@
                 "pluginName": "Groovy",
                 "shellId": "83c25701-8752-4c5d-93c2-633874320032",
                 "result": 2,
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -95,21 +96,21 @@
             },
             "output": {
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 598,
+                "elapsedTime": 693,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "83c25701-8752-4c5d-93c2-633874320032",
+                "shellId": "7dc2e921-dea7-42a6-babe-8b64e4da332c",
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Error",
                     "object": [
-                        "groovy.lang.MissingPropertyException: No such property: a for class: Script18<br/>",
-                        "\tat Script18.run(Script18.groovy:1)",
-                        "\tat com.twosigma.beaker.groovy.utils.GroovyEvaluator$workerThread$MyRunnable.run(GroovyEvaluator.java:282)",
+                        "groovy.lang.MissingPropertyException: No such property: a for class: script1461334212410911287145\r<br/>",
+                        "\tat script1461334212410911287145.run(script1461334212410911287145.groovy:1)\r",
+                        "\tat com.twosigma.beaker.groovy.utils.GroovyEvaluator$workerThread$MyRunnable.run(GroovyEvaluator.java:378)\r",
                         ""
                     ]
                 },
-                "height": 52
+                "height": 97
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -130,7 +131,7 @@
                 "pluginName": "Groovy",
                 "shellId": "83c25701-8752-4c5d-93c2-633874320032",
                 "result": 2,
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -147,12 +148,12 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 597,
+                "elapsedTime": 638,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "83c25701-8752-4c5d-93c2-633874320032",
-                "result": "Script20$_run_closure1@4db975cd",
-                "height": 36
+                "shellId": "7dc2e921-dea7-42a6-babe-8b64e4da332c",
+                "result": "script1461335945050231881823$_run_closure1@dcded02",
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -173,7 +174,7 @@
                 "pluginName": "Groovy",
                 "shellId": "83c25701-8752-4c5d-93c2-633874320032",
                 "result": 8,
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -194,7 +195,7 @@
                 "pluginName": "Groovy",
                 "shellId": "83c25701-8752-4c5d-93c2-633874320032",
                 "result": "Multiplying Strings!Multiplying Strings!",
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -218,7 +219,7 @@
                 "pluginName": "Groovy",
                 "shellId": "c3ed8428-fa57-4980-b809-2c4abd45079d",
                 "elapsedTime": 595,
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -231,28 +232,29 @@
                 "body": [
                     "// Like most languages, output normally appears in the cell output and",
                     "// is saved in the notebook.",
-                    "println(\"standard output\")"
+                    "println(\"standard\")",
+                    "println(\"output\")"
                 ]
             },
             "output": {
                 "state": {},
                 "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "83c25701-8752-4c5d-93c2-633874320032",
-                "elapsedTime": 1617,
+                "shellId": "7dc2e921-dea7-42a6-babe-8b64e4da332c",
+                "elapsedTime": 696,
                 "result": {
                     "type": "Results",
                     "outputdata": [
                         {
                             "type": "out",
-                            "value": "standard output\n"
+                            "value": "output\r\n"
                         }
                     ]
                 },
-                "height": 35
+                "height": 55
             },
             "evaluatorReader": true,
-            "lineCount": 3
+            "lineCount": 4
         },
         {
             "id": "codehp1B5U",
@@ -263,7 +265,7 @@
                     "// But if you set the followin preference, then output is directed to a panel that opens up",
                     "// and collects all ouput like a log, and is not saved in the notebook.",
                     "// The preference itself is not saved in the notebook.",
-                    "beaker.prefs.useOutputPanel = false",
+                    "beaker.prefs.useOutputPanel = true",
                     "// After running this cell, run the above cell again."
                 ]
             },
@@ -271,7 +273,9 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "JavaScript",
-                "elapsedTime": 27
+                "elapsedTime": 89,
+                "result": false,
+                "height": 51
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -284,17 +288,20 @@
                 "body": [
                     "// Normally the output that appears in cell output is limited to 1000 lines.",
                     "// Set this preference to change that limit.",
-                    "beaker.prefs.outputLineLimit = 10000 "
+                    "beaker.prefs.outputLineLimit = 2",
+                    ""
                 ]
             },
             "output": {
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 26
+                "elapsedTime": 32,
+                "result": 2,
+                "height": 56
             },
             "evaluatorReader": true,
-            "lineCount": 3
+            "lineCount": 4
         }
     ],
     "namespace": {}

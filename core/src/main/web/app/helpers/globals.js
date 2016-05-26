@@ -31,9 +31,11 @@
         DISCARD_LANGUAGE_SETTINGS: 'discard-language-settings',
         HIGHLIGHT_EDITED_LANGUAGE_SETTINGS: 'highlight-edited-language-settings',
         SET_LANGUAGE_SETTINGS_EDITED: 'set-language-settings-edited',
+        LANGUAGE_ADDED: 'languageAdded',
         CELL_OUTPUT_EXPANDED: 'cell-output-expanded',
         CELL_OUTPUT_LM_SHOWED: 'cell-output-lm-showed',
-        ADVANCED_MODE_TOGGLED: 'advanced-mode-toggled'
+        ADVANCED_MODE_TOGGLED: 'advanced-mode-toggled',
+        FILE_DROPPED: 'file-dropped'
       },
       FILE_LOCATION: {
         FILESYS: "file",
@@ -44,7 +46,8 @@
         PROPERTIES: {
           STRING: "settableString",
           BOOLEAN: "settableBoolean",
-          ENUM: "settableEnum"
+          ENUM: "settableEnum",
+          SELECT: "settableSelect"
         },
         ACTION: "action"
       },

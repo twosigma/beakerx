@@ -1,13 +1,14 @@
-// Copyright (c) IPython Development Team.
+// Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-define('ipython3_kernel', [
-    'ipython3_namespace',
-    'ipython3_utils',
-    'ipython3_comm',
-    'ipython3_serialize',
-    'ipython3_initwidgets'
-], function(IPython3, utils, comm, serialize, widgetmanager) {
+define('services/kernels/kernel', [
+    'jquery',
+    'base/js/utils',
+    'services/kernels/comm',
+    'kernel/serialize',
+    'base/js/namespace',
+    'base/js/events'
+], function($, utils, comm, serialize, Jupyter, events) {
     "use strict";
 
     /**
@@ -16,14 +17,16 @@ define('ipython3_kernel', [
      * by.  the `Session` object. Once created, this object should be
      * used to communicate with the kernel.
      * 
+     * Preliminary documentation for the REST API is at
+     * https://github.com/ipython/ipython/wiki/IPEP-16%3A-Notebook-multi-directory-dashboard-and-URL-mapping#kernels-api
+     * 
      * @class Kernel
      * @param {string} kernel_service_url - the URL to access the kernel REST api
      * @param {string} ws_url - the websockets URL
-     * @param {Notebook} notebook - notebook object
      * @param {string} name - the kernel type (e.g. python3)
      */
-    var Kernel = function (kernel_service_url, ws_url, notebook, name) {
-        this.events = notebook.events;
+    var Kernel = function (kernel_service_url, ws_url, name) {
+        this.events = events;
 
         this.id = null;
         this.name = name;
@@ -31,7 +34,7 @@ define('ipython3_kernel', [
 
         this.kernel_service_url = kernel_service_url;
         this.kernel_url = null;
-        this.ws_url = ws_url || IPython3.utils.get_body_data("wsUrl");
+        this.ws_url = ws_url || utils.get_body_data("wsUrl");
         if (!this.ws_url) {
             // trailing 's' in https will become wss for secure web sockets
             this.ws_url = location.protocol.replace('http', 'ws') + "//" + location.host;
@@ -40,6 +43,7 @@ define('ipython3_kernel', [
         this.username = "username";
         this.session_id = utils.uuid();
         this._msg_callbacks = {};
+        this._msg_queue = Promise.resolve();
         this.info_reply = {}; // kernel_info_reply stored here after starting
 
         if (typeof(WebSocket) !== 'undefined') {
@@ -53,7 +57,6 @@ define('ipython3_kernel', [
         this.bind_events();
         this.init_iopub_handlers();
         this.comm_manager = new comm.CommManager(this);
-        this.widget_manager = new widgetmanager.WidgetManager(this.comm_manager, notebook);
         
         this.last_msg_id = null;
         this.last_msg_callbacks = {};
@@ -61,6 +64,11 @@ define('ipython3_kernel', [
         this._autorestart_attempt = 0;
         this._reconnect_attempt = 0;
         this.reconnect_limit = 7;
+        
+        this._pending_messages = [];
+
+        Jupyter.kernel = this;
+        Jupyter.notebook.kernel = this;
     };
 
     /**
@@ -194,6 +202,7 @@ define('ipython3_kernel', [
             cache: false,
             type: "POST",
             data: JSON.stringify({name: this.name}),
+            contentType: 'application/json',
             dataType: "json",
             success: this._on_success(on_success),
             error: this._on_error(error)
@@ -271,11 +280,12 @@ define('ipython3_kernel', [
             }
         };
 
-        var url = utils.url_join_encode(this.kernel_url, 'interrupt');
+        var url = utils.url_path_join(this.kernel_url, 'interrupt');
         $.ajax(url, {
             processData: false,
             cache: false,
             type: "POST",
+            contentType: false,  // there's no data with this
             dataType: "json",
             success: this._on_success(on_success),
             error: this._on_error(error)
@@ -312,11 +322,12 @@ define('ipython3_kernel', [
             }
         };
 
-        var url = utils.url_join_encode(this.kernel_url, 'restart');
+        var url = utils.url_path_join(this.kernel_url, 'restart');
         $.ajax(url, {
             processData: false,
             cache: false,
             type: "POST",
+            contentType: false,  // there's no data with this
             dataType: "json",
             success: this._on_success(on_success),
             error: this._on_error(on_error)
@@ -337,7 +348,7 @@ define('ipython3_kernel', [
         this._reconnect_attempt = this._reconnect_attempt + 1;
         this.events.trigger('kernel_reconnecting.Kernel', {
             kernel: this,
-            attempt: this._reconnect_attempt
+            attempt: this._reconnect_attempt,
         });
         this.start_channels();
     };
@@ -357,7 +368,8 @@ define('ipython3_kernel', [
                 that.id = data.id;
                 that.name = data.name;
             }
-            that.kernel_url = utils.url_join_encode(that.kernel_service_url, that.id);
+            that.kernel_url = utils.url_path_join(that.kernel_service_url,
+                encodeURIComponent(that.id));
             if (success) {
                 success(data, status, xhr);
             }
@@ -389,7 +401,9 @@ define('ipython3_kernel', [
          * @param {Object} data - information about the kernel including id
          */
         this.id = data.id;
-        this.kernel_url = utils.url_join_encode(this.kernel_service_url, this.id);
+        this.kernel_url = utils.url_path_join(this.kernel_service_url,
+            encodeURIComponent(this.id));
+        utils.load_extension("nbextensions/jupyter-js-widgets/extension");
         this.start_channels();
     };
 
@@ -402,6 +416,15 @@ define('ipython3_kernel', [
          * @function _kernel_connected
          */
         this.events.trigger('kernel_connected.Kernel', {kernel: this});
+
+        // Send pending messages. We shift the message off the queue
+        // after the message is sent so that if there is an exception,
+        // the message is still pending.
+        while (this._pending_messages.length > 0) {
+          this.ws.send(this._pending_messages[0]);
+          this._pending_messages.shift();
+        }
+
         // get kernel info so we know what state the kernel is in
         var that = this;
         this.kernel_info(function (reply) {
@@ -436,7 +459,7 @@ define('ipython3_kernel', [
         
         this.ws = new this.WebSocket([
                 that.ws_url,
-                utils.url_join_encode(that.kernel_url, 'channels'),
+                utils.url_path_join(that.kernel_url, 'channels'),
                 "?session_id=" + that.session_id
             ].join('')
         );
@@ -535,7 +558,7 @@ define('ipython3_kernel', [
         } else {
             this.events.trigger('kernel_connection_dead.Kernel', {
                 kernel: this,
-                reconnect_attempt: this._reconnect_attempt
+                reconnect_attempt: this._reconnect_attempt,
             });
             console.log("Failed to reconnect, giving up.");
         }
@@ -595,18 +618,33 @@ define('ipython3_kernel', [
         return (this.ws === null);
     };
     
+    Kernel.prototype._send = function(msg) {
+      /**
+       * Send a message (if the kernel is connected) or queue the message for future delivery
+       *
+       * Pending messages will automatically be sent when a kernel becomes connected.
+       *
+       * @function _send
+       * @param msg
+       */
+      if (this.is_connected()) {
+            this.ws.send(msg);
+        } else {
+            this._pending_messages.push(msg);
+        }
+    }
+    
     Kernel.prototype.send_shell_message = function (msg_type, content, callbacks, metadata, buffers) {
         /**
          * Send a message on the Kernel's shell channel
          *
+         * If the kernel is not connected, the message will be buffered.
+         * 
          * @function send_shell_message
          */
-        if (!this.is_connected()) {
-            throw new Error("kernel is not connected");
-        }
         var msg = this._get_msg(msg_type, content, metadata, buffers);
         msg.channel = 'shell';
-        this.ws.send(serialize.serialize(msg));
+        this._send(serialize.serialize(msg));
         this.set_callbacks_for_msg(msg.header.msg_id, callbacks);
         return msg.header.msg_id;
     };
@@ -627,6 +665,27 @@ define('ipython3_kernel', [
             callbacks = { shell : { reply : callback } };
         }
         return this.send_shell_message("kernel_info_request", {}, callbacks);
+    };
+
+    Kernel.prototype.comm_info = function (target_name, callback) {
+        /**
+         * Get comm info
+         *
+         * @function comm_info
+         * @param callback {function}
+         *
+         * When calling this method, pass a callback function that expects one argument.
+         * The callback will be passed the complete `comm_info_reply` message documented
+         * [here](http://ipython.org/ipython-doc/dev/development/messaging.html#comm_info)
+         */
+        var callbacks;
+        if (callback) {
+            callbacks = { shell : { reply : callback } };
+        }
+        var content = {
+            target_name : target_name,
+        };
+        return this.send_shell_message("comm_info_request", content, callbacks);
     };
 
     Kernel.prototype.inspect = function (code, cursor_pos, callback) {
@@ -749,16 +808,13 @@ define('ipython3_kernel', [
      * @function send_input_reply
      */
     Kernel.prototype.send_input_reply = function (input) {
-        if (!this.is_connected()) {
-            throw new Error("kernel is not connected");
-        }
         var content = {
             value : input
         };
         this.events.trigger('input_reply.Kernel', {kernel: this, content: content});
         var msg = this._get_msg("input_reply", content);
         msg.channel = 'stdin';
-        this.ws.send(serialize.serialize(msg));
+        this._send(serialize.serialize(msg));
         return msg.header.msg_id;
     };
 
@@ -853,20 +909,21 @@ define('ipython3_kernel', [
     };
     
     Kernel.prototype._handle_ws_message = function (e) {
-        serialize.deserialize(e.data, $.proxy(this._finish_ws_message, this));
+        var that = this;
+        this._msg_queue = this._msg_queue.then(function() {
+            return serialize.deserialize(e.data);
+        }).then(function(msg) {return that._finish_ws_message(msg);})
+        .catch(function(error) { console.error("Couldn't process kernel message", error); });
     };
 
     Kernel.prototype._finish_ws_message = function (msg) {
         switch (msg.channel) {
             case 'shell':
-                this._handle_shell_reply(msg);
-                break;
+                return this._handle_shell_reply(msg);
             case 'iopub':
-                this._handle_iopub_message(msg);
-                break;
+                return this._handle_iopub_message(msg);
             case 'stdin':
-                this._handle_input_request(msg);
-                break;
+                return this._handle_input_request(msg);
             default:
                 console.error("unrecognized message channel", msg.channel, msg);
         }
@@ -874,10 +931,12 @@ define('ipython3_kernel', [
     
     Kernel.prototype._handle_shell_reply = function (reply) {
         this.events.trigger('shell_reply.Kernel', {kernel: this, reply:reply});
+        var that = this;
         var content = reply.content;
         var metadata = reply.metadata;
         var parent_id = reply.parent_header.msg_id;
         var callbacks = this.get_callbacks_for_msg(parent_id);
+        var promise = Promise.resolve();
         if (!callbacks || !callbacks.shell) {
             return;
         }
@@ -887,17 +946,21 @@ define('ipython3_kernel', [
         this._finish_shell(parent_id);
         
         if (shell_callbacks.reply !== undefined) {
-            shell_callbacks.reply(reply);
+            promise = promise.then(function() {return shell_callbacks.reply(reply);});
         }
         if (content.payload && shell_callbacks.payload) {
-            this._handle_payloads(content.payload, shell_callbacks.payload, reply);
+            promise = promise.then(function() {
+                return that._handle_payloads(content.payload, shell_callbacks.payload, reply);
+            });
         }
+        return promise;
     };
 
     /**
      * @function _handle_payloads
      */
     Kernel.prototype._handle_payloads = function (payloads, payload_callbacks, msg) {
+        var promise = [];
         var l = payloads.length;
         // Payloads are handled by triggering events because we don't want the Kernel
         // to depend on the Notebook or Pager classes.
@@ -905,9 +968,10 @@ define('ipython3_kernel', [
             var payload = payloads[i];
             var callback = payload_callbacks[payload.source];
             if (callback) {
-                callback(payload, msg);
+                promise.push(callback(payload, msg));
             }
         }
+        return Promise.all(promise);
     };
 
     /**
@@ -1020,7 +1084,7 @@ define('ipython3_kernel', [
     Kernel.prototype._handle_iopub_message = function (msg) {
         var handler = this.get_iopub_handler(msg.header.msg_type);
         if (handler !== undefined) {
-            handler(msg);
+            return handler(msg);
         }
     };
 
@@ -1043,9 +1107,6 @@ define('ipython3_kernel', [
             }
         }
     };
-
-    // Backwards compatability.
-    IPython3.Kernel = Kernel;
 
     return {'Kernel': Kernel};
 });

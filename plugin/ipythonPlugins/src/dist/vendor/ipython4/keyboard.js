@@ -1,4 +1,4 @@
-// Copyright (c) IPython Development Team.
+// Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 /**
  *
@@ -8,16 +8,17 @@
  * @class ShortcutManager
  */
 
-define('ipython3_keyboard', [
-    'ipython3_namespace',
-    'ipython3_utils'
-], function(IPython3, utils) {
+define('base/js/keyboard', [
+    'jquery',
+    'base/js/utils',
+    'underscore',
+], function($, utils, _) {
     "use strict";
 
 
     /**
      * Setup global keycodes and inverse keycodes.
-     * 
+     *
      * See http://unixpapa.com/js/key.html for a complete description. The short of
      * it is that there are different keycode sets. Firefox uses the "Mozilla keycodes"
      * and Webkit/IE use the "IE keycodes". These keycode sets are mostly the same
@@ -38,21 +39,21 @@ define('ipython3_keyboard', [
         'numpad5': 101, 'numpad6': 102, 'numpad7': 103, 'numpad8': 104, 'numpad9': 105,
         'multiply': 106, 'add': 107, 'subtract': 109, 'decimal': 110, 'divide': 111,
         'f1': 112, 'f2': 113, 'f3': 114, 'f4': 115, 'f5': 116, 'f6': 117, 'f7': 118,
-        'f8': 119, 'f9': 120, 'f11': 122, 'f12': 123, 'f13': 124, 'f14': 125, 'f15': 126,
+        'f8': 119, 'f9': 120, 'f10': 121, 'f11': 122, 'f12': 123, 'f13': 124, 'f14': 125, 'f15': 126,
         'backspace': 8, 'tab': 9, 'enter': 13, 'shift': 16, 'ctrl': 17, 'alt': 18,
         'meta': 91, 'capslock': 20, 'esc': 27, 'space': 32, 'pageup': 33, 'pagedown': 34,
         'end': 35, 'home': 36, 'left': 37, 'up': 38, 'right': 39, 'down': 40,
-        'insert': 45, 'delete': 46, 'numlock': 144
+        'insert': 45, 'delete': 46, 'numlock': 144,
     };
     
     // These apply to Firefox and Opera
     var _mozilla_keycodes = {
-        '; :': 59, '= +': 61, '- _': 173, 'meta': 224
+        '; :': 59, '= +': 61, '- _': 173, 'meta': 224, 'minus':173
     };
     
     // This apply to Webkit and IE
     var _ie_keycodes = {
-        '; :': 186, '= +': 187, '- _': 189
+        '; :': 186, '= +': 187, '- _': 189, 'minus':189
     };
     
     var browser = utils.browser[0];
@@ -104,7 +105,7 @@ define('ipython3_keyboard', [
         }
 
         shortcut = shortcut.toLowerCase().replace('cmd', 'meta');
-        shortcut = shortcut.replace(/-$/, '_');  // catch shortcuts using '-' key
+        shortcut = shortcut.replace(/-$/, 'minus');  // catch shortcuts using '-' key
         shortcut = shortcut.replace(/,$/, 'comma');  // catch shortcuts using '-' key
         if(shortcut.indexOf(',') !== -1){
             var sht = shortcut.split(',');
@@ -129,7 +130,7 @@ define('ipython3_keyboard', [
          **/
         type = type || 'keydown';
         shortcut = normalize_shortcut(shortcut);
-        shortcut = shortcut.replace(/-$/, '_');  // catch shortcuts using '-' key
+        shortcut = shortcut.replace(/-$/, 'minus');  // catch shortcuts using '-' key
         var values = shortcut.split("-");
         var modifiers = values.slice(0,-1);
         var key = values[values.length-1];
@@ -147,7 +148,7 @@ define('ipython3_keyboard', [
          * false otherwise
          **/
         var key = inv_keycodes[event.which];
-        return ((event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) && 
+        return ((event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) &&
          (key === 'alt'|| key === 'ctrl'|| key === 'meta'|| key === 'shift'));
 
     };
@@ -189,7 +190,7 @@ define('ipython3_keyboard', [
         /**
          * Clear the pending shortcut soon, and cancel previous clearing
          * that might be registered.
-         **/ 
+         **/
          var that = this;
          clearTimeout(this._cleartimeout);
          this._cleartimeout = setTimeout(function(){that.clearqueue();}, this.delay);
@@ -224,6 +225,17 @@ define('ipython3_keyboard', [
         }
         return dct;
     };
+    
+    ShortcutManager.prototype.get_action_shortcut = function(name){
+      var ftree = flatten_shorttree(this._shortcuts);
+      var res = {};
+      for (var sht in ftree ){
+        if(ftree[sht] === name){
+          return sht;
+        }
+      }
+      return undefined;
+    };
 
     ShortcutManager.prototype.help = function () {
         var help = [];
@@ -243,7 +255,13 @@ define('ipython3_keyboard', [
         }
         help.sort(function (a, b) {
             if (a.help_index === b.help_index) {
-                return 0;
+                if (a.shortcut === b.shortcut) {
+                    return 0;
+                }
+                if (a.shortcut > b.shortcut) {
+                    return 1;
+                }
+                return -1;
             }
             if (a.help_index === undefined || a.help_index > b.help_index){
                 return 1;
@@ -285,7 +303,7 @@ define('ipython3_keyboard', [
     };
 
     ShortcutManager.prototype.set_shortcut = function( shortcut, action_name){
-        if( typeof(action_name) !== 'string'){ throw('action is not a string', action_name);}
+        if( typeof(action_name) !== 'string'){throw new Error('action is not a string', action_name);}
         if( typeof(shortcut) === 'string'){
             shortcut = shortcut.split(',');
         }
@@ -350,9 +368,8 @@ define('ipython3_keyboard', [
          **/
         var action_name = this.actions.get_name(data);
         if (! action_name){
-            throw('does nto know how to deal with ', data);
+          throw new Error('does not know how to deal with : ' + data);
         }
-        
         shortcut = normalize_shortcut(shortcut);
         this.set_shortcut(shortcut, action_name);
 
@@ -384,10 +401,19 @@ define('ipython3_keyboard', [
         if( typeof(shortcut) === 'string'){
             shortcut = shortcut.split(',');
         }
-        this._remove_leaf(shortcut, this._shortcuts);
-        if (!suppress_help_update) {
+        /*
+         *  The shortcut error should be explicit here, because it will be
+         *  seen by users.
+         */
+        try
+        {
+          this._remove_leaf(shortcut, this._shortcuts);
+          if (!suppress_help_update) {
             // update the keyboard shortcuts notebook help
             this.events.trigger('rebuild.QuickHelp');
+          }
+        } catch (ex) {
+          throw new Error('trying to remove a non-existent shortcut', shortcut);
         }
     };
 
@@ -442,11 +468,8 @@ define('ipython3_keyboard', [
         normalize_key : normalize_key,
         normalize_shortcut : normalize_shortcut,
         shortcut_to_event : shortcut_to_event,
-        event_to_shortcut : event_to_shortcut
+        event_to_shortcut : event_to_shortcut,
     };
-
-    // For backwards compatibility.
-    IPython3.keyboard = keyboard;
 
     return keyboard;
 });

@@ -1,4 +1,4 @@
-// Copyright (c) IPython Development Team.
+// Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
 // Give us an object to bind all events to. This object should be created
@@ -9,7 +9,7 @@
 //     events.on("event.Namespace", function () { do_stuff(); });
 // });
 
-define('ipython3_events', ['ipython3_namespace'], function (IPython3) {
+define('base/js/events', ['base/js/namespace', 'jquery'], function(IPython, $) {
     "use strict";
 
     var Events = function () {};
@@ -17,8 +17,8 @@ define('ipython3_events', ['ipython3_namespace'], function (IPython3) {
     var events = new Events();
     
     // Backwards compatability.
-    IPython3.Events = Events;
-    IPython3.events = events;
+    IPython.Events = Events;
+    IPython.events = events;
     
     return $([events]);
 });

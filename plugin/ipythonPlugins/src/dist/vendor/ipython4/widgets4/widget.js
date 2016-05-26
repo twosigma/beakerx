@@ -1,13 +1,38 @@
-// Copyright (c) IPython Development Team.
+// Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-define('ipython3_widget', [
-  'ipython3_widgetmanager',
-  'ipython3_utils',
-  'ipython3_namespace',
-  'backbone'
-], function(widgetmanager, utils, IPython3, Backbone){
+define(["nbextensions/widgets/widgets/js/manager",
+        "underscore",
+        "backbone",
+        "base/js/utils",
+        "base/js/namespace",
+], function(widgetmanager, _, Backbone, utils, IPython){
     "use strict";
+
+    var unpack_models = function unpack_models(value, model) {
+        /**
+         * Replace model ids with models recursively.
+         */
+        var unpacked;
+        if (_.isArray(value)) {
+            unpacked = [];
+            _.each(value, function(sub_value, key) {
+                unpacked.push(unpack_models(sub_value, model));
+            });
+            return Promise.all(unpacked);
+        } else if (value instanceof Object) {
+            unpacked = {};
+            _.each(value, function(sub_value, key) {
+                unpacked[key] = unpack_models(sub_value, model);
+            });
+            return utils.resolve_promises_dict(unpacked);
+        } else if (typeof value === 'string' && value.slice(0,10) === "IPY_MODEL_") {
+            // get_model returns a promise already
+            return model.widget_manager.get_model(value.slice(10, value.length));
+        } else {
+            return Promise.resolve(value);
+        }
+    };
 
     var WidgetModel = Backbone.Model.extend({
         constructor: function (widget_manager, model_id, comm) {
@@ -23,6 +48,7 @@ define('ipython3_widget', [
              *      An ID unique to this model.
              * comm : Comm instance (optional)
              */
+            WidgetModel.__super__.constructor.apply(this);
             this.widget_manager = widget_manager;
             this.state_change = Promise.resolve();
             this._buffered_state_diff = {};
@@ -30,22 +56,29 @@ define('ipython3_widget', [
             this.msg_buffer = null;
             this.state_lock = null;
             this.id = model_id;
+            this._first_state = true;
+
+            // Force backbone to think that the model has already been
+            // synced with the server.  As of backbone 1.1, backbone
+            // ignores `patch` if it thinks the model has never been
+            // pushed.
+            this.isNew = function() { return false; };
+
             this.views = {};
             this._resolve_received_state = {};
 
-            if (comm !== undefined) {
+            if (comm) {
                 // Remember comm associated with the model.
                 this.comm = comm;
                 comm.model = this;
 
                 // Hook comm messages up to model.
-                comm.on_close($.proxy(this._handle_comm_closed, this));
-                comm.on_msg($.proxy(this._handle_comm_msg, this));
-
-                // Assume the comm is alive.
+                comm.on_close(_.bind(this._handle_comm_closed, this));
+                comm.on_msg(_.bind(this._handle_comm_msg, this));
+                
                 this.set_comm_live(true);
             } else {
-                this.set_comm_live(false);
+                this.comm_live = false;
             }
 
             // Listen for the events that lead to the websocket being terminated.
@@ -57,17 +90,15 @@ define('ipython3_widget', [
             widget_manager.notebook.events.on('kernel_killed.Kernel', died);
             widget_manager.notebook.events.on('kernel_restarting.Kernel', died);
             widget_manager.notebook.events.on('kernel_dead.Kernel', died);
-
-            return Backbone.Model.apply(this);
         },
 
-        send: function (content, callbacks) {
+        send: function (content, callbacks, buffers) {
             /**
              * Send a custom msg over the comm.
              */
             if (this.comm !== undefined) {
                 var data = {method: 'custom', content: content};
-                this.comm.send(data, callbacks);
+                this.comm.send(data, callbacks, {}, buffers);
                 this.pending_msgs++;
             }
         },
@@ -81,15 +112,16 @@ define('ipython3_widget', [
                 return;
             }
 
-            var msg_id = this.comm.send({method: 'request_state'}, callbacks || this.widget_manager.callbacks());
+            var msg_id = this.comm.send({
+                method: 'request_state'
+            }, callbacks || this.widget_manager.callbacks());
 
-            // Promise that is resolved when a state is received
+            // Promise that resolves to the model when the state is received
             // from the back-end.
             var that = this;
-            var received_state = new Promise(function(resolve) {
+            return new Promise(function(resolve) {
                 that._resolve_received_state[msg_id] = resolve;
             });
-            return received_state;
         },
 
         set_comm_live: function(live) {
@@ -129,81 +161,104 @@ define('ipython3_widget', [
             this.trigger('comm:close');
             this.close(true);
         },
-
+        _deserialize_state: function(state) {
+            /** 
+             * Deserialize fields that have a custom serializer.
+             */
+            var serializers = this.constructor.serializers;
+            if (serializers) {
+                var deserialized = {};
+                for (var k in state) {
+                    if (serializers[k] && serializers[k].deserialize) {
+                         deserialized[k] = (serializers[k].deserialize)(state[k], this);
+                    } else {
+                         deserialized[k] = state[k];
+                    }
+                }
+            } else {
+                deserialized = state;
+            }
+            return utils.resolve_promises_dict(deserialized);
+        },
         _handle_comm_msg: function (msg) {
             /**
              * Handle incoming comm msg.
              */
             var method = msg.content.data.method;
+            
             var that = this;
             switch (method) {
                 case 'update':
                     this.state_change = this.state_change
                         .then(function() {
-                            return that.set_state(msg.content.data.state);
+                            var state = msg.content.data.state || {};
+                            var buffer_keys = msg.content.data.buffers || [];
+                            var buffers = msg.buffers || [];
+                            for (var i=0; i<buffer_keys.length; i++) {
+                                state[buffer_keys[i]] = buffers[i];
+                            }
+                            return that._deserialize_state(state); 
+                        }).then(function(state) {
+                            that.set_state(state);
                         }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
                         .then(function() {
                             var parent_id = msg.parent_header.msg_id;
                             if (that._resolve_received_state[parent_id] !== undefined) {
-                                that._resolve_received_state[parent_id].call();
+                                that._resolve_received_state[parent_id](that);
                                 delete that._resolve_received_state[parent_id];
                             }
                         }).catch(utils.reject("Couldn't resolve state request promise", true));
-                    break;
+                    return this.state_change;
                 case 'custom':
-                    this.trigger('msg:custom', msg.content.data.content);
-                    break;
+                    this.trigger('msg:custom', msg.content.data.content, msg.buffers);
+                    return Promise.resolve();
                 case 'display':
-                  var elem = $(document.createElement("div"));
-                  elem.addClass('ipy-output');
-                  elem.attr('data-msg-id', msg.parent_header.msg_id);
-                  var widget_area = $(document.createElement("div"));
-                  widget_area.addClass('widget-area');
-                  var widget_subarea = $(document.createElement("div"));
-                  widget_subarea.addClass('widget-subarea');
-                  widget_subarea.appendTo(widget_area);
-                  widget_area.appendTo(elem);
-                  var kernel = this.widget_manager.comm_manager.kernel;
-                  if (kernel) {
-                    //This cause fail on plot display
-                    //kernel.appendToWidgetOutput = true;
-                    var callbacks = kernel.get_callbacks_for_msg(msg.parent_header.msg_id);
-                    if (callbacks && callbacks.iopub) {
-                      msg.content.data['text/html'] = elem[0].outerHTML;
-                      callbacks.iopub.output(msg);
+                    var elem = $(document.createElement("div"));
+                    elem.addClass('ipy-output');
+                    elem.attr('data-msg-id', msg.parent_header.msg_id);
+                    var widget_area = $(document.createElement("div"));
+                    widget_area.addClass('widget-area');
+                    var widget_subarea = $(document.createElement("div"));
+                    widget_subarea.addClass('widget-subarea');
+                    widget_subarea.appendTo(widget_area);
+                    widget_area.appendTo(elem);
+                    var kernel = this.widget_manager.comm_manager.kernel;
+                    if (kernel) {
+                        //This cause fail on plot display
+                        //kernel.appendToWidgetOutput = true;
+                        var callbacks = kernel.get_callbacks_for_msg(msg.parent_header.msg_id);
+                        if (callbacks && callbacks.iopub) {
+                            msg.content.data['text/html'] = elem[0].outerHTML;
+                            callbacks.iopub.output(msg);
+                        }
                     }
-                  }
-                  this.state_change = this.state_change.then(function() {
-                      that.widget_manager.display_view(msg, that);
-                  }).catch(utils.reject('Could not process display view msg', true));
-                  break;
+                    this.state_change = this.state_change.then(function() {
+                        that.widget_manager.display_model(msg, that);
+                    }).catch(utils.reject('Could not process display view msg', true));
+                    return this.state_change;
             }
         },
 
         set_state: function (state) {
-            var that = this;
             // Handle when a widget is updated via the python side.
-            return this._unpack_models(state).then(function(state) {
-                that.state_lock = state;
-                try {
-                    WidgetModel.__super__.set.call(that, state);
-                } finally {
-                    that.state_lock = null;
+            this.state_lock = state;
+            try {
+                WidgetModel.__super__.set.call(this, state);
+                if (this._first_state) {
+                    this.trigger('ready', this);
+                    this._first_state = false;
                 }
-            }).catch(utils.reject("Couldn't set model state", true));
+            } finally {
+                this.state_lock = null;
+            }
         },
 
         get_state: function() {
             // Get the serializable state of the model.
-            var state = this.toJSON();
-            for (var key in state) {
-                if (state.hasOwnProperty(key)) {
-                    state[key] = this._pack_models(state[key]);
-                }
-            }
-            return state;
+            // Equivalent to Backbone.Model.toJSON()
+            return _.clone(this.attributes);
         },
-
+        
         _handle_status: function (msg, callbacks) {
             /**
              * Handle status msgs.
@@ -215,8 +270,12 @@ define('ipython3_widget', [
                     // Send buffer if this message caused another message to be
                     // throttled.
                     if (this.msg_buffer !== null &&
-                        (this.get('msg_throttle') || 3) === this.pending_msgs) {
-                        var data = {method: 'backbone', sync_method: 'update', sync_data: this.msg_buffer};
+                        (this.get('msg_throttle') || 1) === this.pending_msgs) {
+                        var data = {
+                            method: 'backbone',
+                            sync_method: 'update',
+                            sync_data: this.msg_buffer
+                        };
                         this.comm.send(data, callbacks);
                         this.msg_buffer = null;
                     } else {
@@ -250,9 +309,9 @@ define('ipython3_widget', [
             var return_value = WidgetModel.__super__.set.apply(this, arguments);
 
             // Backbone only remembers the diff of the most recent set()
-            // operation.  Calling set multiple times in a row results in a 
+            // operation.  Calling set multiple times in a row results in a
             // loss of diff information.  Here we keep our own running diff.
-            this._buffered_state_diff = $.extend(this._buffered_state_diff, this.changedAttributes() || {});
+            this._buffered_state_diff = _.extend(this._buffered_state_diff, this.changedAttributes() || {});
             return return_value;
         },
 
@@ -261,6 +320,19 @@ define('ipython3_widget', [
              * Handle sync to the back-end.  Called when a model.save() is called.
              *
              * Make sure a comm exists.
+
+             * Parameters
+             * ----------
+             * method : create, update, patch, delete, read
+             *   create/update always send the full attribute set
+             *   patch - only send attributes listed in options.attrs, and if we are queuing
+             *     up messages, combine with previous messages that have not been sent yet
+             * model : the model we are syncing
+             *   will normally be the same as `this`
+             * options : dict
+             *   the `attrs` key, if it exists, gives an {attr: value} dict that should be synced,
+             *   otherwise, sync all attributes
+             * 
              */
             var error = options.error || function() {
                 console.error('Backbone sync error:', arguments);
@@ -270,8 +342,11 @@ define('ipython3_widget', [
                 return false;
             }
 
-            // Delete any key value pairs that the back-end already knows about.
-            var attrs = (method === 'patch') ? options.attrs : model.toJSON(options);
+            var attrs = (method === 'patch') ? options.attrs : model.get_state(options);
+
+            // the state_lock lists attributes that are currently be changed right now from a kernel message
+            // we don't want to send these non-changes back to the kernel, so we delete them out of attrs
+            // (but we only delete them if the value hasn't changed from the value stored in the state_lock
             if (this.state_lock !== null) {
                 var keys = Object.keys(this.state_lock);
                 for (var i=0; i<keys.length; i++) {
@@ -281,9 +356,7 @@ define('ipython3_widget', [
                     }
                 }
             }
-
-            // Only sync if there are attributes to send to the back-end.
-            attrs = this._pack_models(attrs);
+            
             if (_.size(attrs) > 0) {
 
                 // If this message was sent via backbone itself, it will not
@@ -292,15 +365,14 @@ define('ipython3_widget', [
                 var callbacks = options.callbacks || this.callbacks();
 
                 // Check throttle.
-                if (this.pending_msgs >= (this.get('msg_throttle') || 3)) {
+                if (this.pending_msgs >= (this.get('msg_throttle') || 1)) {
                     // The throttle has been exceeded, buffer the current msg so
-                    // it can be sent once the kernel has finished processing 
+                    // it can be sent once the kernel has finished processing
                     // some of the existing messages.
-                    
                     // Combine updates if it is a 'patch' sync, otherwise replace updates
                     switch (method) {
                         case 'patch':
-                            this.msg_buffer = $.extend(this.msg_buffer || {}, attrs);
+                            this.msg_buffer = _.extend(this.msg_buffer || {}, attrs);
                             break;
                         case 'update':
                         case 'create':
@@ -313,17 +385,58 @@ define('ipython3_widget', [
                     this.msg_buffer_callbacks = callbacks;
 
                 } else {
-                    // We haven't exceeded the throttle, send the message like 
+                    // We haven't exceeded the throttle, send the message like
                     // normal.
-                    var data = {method: 'backbone', sync_data: attrs};
-                    this.comm.send(data, callbacks);
+                    this.send_sync_message(attrs, callbacks);
                     this.pending_msgs++;
                 }
             }
-            // Since the comm is a one-way communication, assume the message 
+            // Since the comm is a one-way communication, assume the message
             // arrived.  Don't call success since we don't have a model back from the server
             // this means we miss out on the 'sync' event.
             this._buffered_state_diff = {};
+        },
+
+
+        send_sync_message: function(attrs, callbacks) {
+            // prepare and send a comm message syncing attrs
+            var that = this;
+            // first, build a state dictionary with key=the attribute and the value
+            // being the value or the promise of the serialized value
+            var serializers = this.constructor.serializers;
+            if (serializers) {
+                for (var k in attrs) {
+                    if (serializers[k] && serializers[k].serialize) {
+                        attrs[k] = (serializers[k].serialize)(attrs[k], this);
+                    }
+                }
+            }
+            utils.resolve_promises_dict(attrs).then(function(state) {
+                // get binary values, then send
+                var keys = Object.keys(state);
+                var buffers = [];
+                var buffer_keys = [];
+                for (var i=0; i<keys.length; i++) {
+                    var key = keys[i];
+                    var value = state[key];
+                    if (value) {
+                        if (value.buffer instanceof ArrayBuffer
+                            || value instanceof ArrayBuffer) {
+                            buffers.push(value);
+                            buffer_keys.push(key);
+                            delete state[key];
+                        }
+                    }
+                }
+                that.comm.send({
+                    method: 'backbone',
+                    sync_data: state,
+                    buffer_keys: buffer_keys
+                }, callbacks, {}, buffers);
+            }).catch(function(error) {
+                that.pending_msgs--;
+                return (utils.reject("Couldn't send widget sync message", true))(error);
+            });
         },
 
         save_changes: function(callbacks) {
@@ -332,61 +445,8 @@ define('ipython3_widget', [
              *
              * This invokes a Backbone.Sync.
              */
-            this.save(this._buffered_state_diff, {patch: true, callbacks: callbacks});
-        },
-
-        _pack_models: function(value) {
-            /**
-             * Replace models with model ids recursively.
-             */
-            var that = this;
-            var packed;
-            if (value instanceof Backbone.Model) {
-                return "IPY_MODEL_" + value.id;
-
-            } else if ($.isArray(value)) {
-                packed = [];
-                _.each(value, function(sub_value, key) {
-                    packed.push(that._pack_models(sub_value));
-                });
-                return packed;
-            } else if (value instanceof Date || value instanceof String) {
-                return value;
-            } else if (value instanceof Object) {
-                packed = {};
-                _.each(value, function(sub_value, key) {
-                    packed[key] = that._pack_models(sub_value);
-                });
-                return packed;
-
-            } else {
-                return value;
-            }
-        },
-
-        _unpack_models: function(value) {
-            /**
-             * Replace model ids with models recursively.
-             */
-            var that = this;
-            var unpacked;
-            if ($.isArray(value)) {
-                unpacked = [];
-                _.each(value, function(sub_value, key) {
-                    unpacked.push(that._unpack_models(sub_value));
-                });
-                return Promise.all(unpacked);
-            } else if (value instanceof Object) {
-                unpacked = {};
-                _.each(value, function(sub_value, key) {
-                    unpacked[key] = that._unpack_models(sub_value);
-                });
-                return utils.resolve_promises_dict(unpacked);
-            } else if (typeof value === 'string' && value.slice(0,10) === "IPY_MODEL_") {
-                // get_model returns a promise already
-                return this.widget_manager.get_model(value.slice(10, value.length));
-            } else {
-                return Promise.resolve(value);
+            if (this.comm_live) {
+                this.save(this._buffered_state_diff, {patch: true, callbacks: callbacks});
             }
         },
 
@@ -394,43 +454,56 @@ define('ipython3_widget', [
             /**
              * on_some_change(["key1", "key2"], foo, context) differs from
              * on("change:key1 change:key2", foo, context).
-             * If the widget attributes key1 and key2 are both modified, 
+             * If the widget attributes key1 and key2 are both modified,
              * the second form will result in foo being called twice
              * while the first will call foo only once.
              */
             this.on('change', function() {
                 if (keys.some(this.hasChanged, this)) {
-                    callback.apply(context);
+                    callback.apply(context, arguments);
                 }
             }, this);
 
-       }
+        },
+
+        toJSON: function(options) {
+            /**
+             * Serialize the model.  See the deserialization function at the top of this file
+             * and the kernel-side serializer/deserializer.
+             */
+            return "IPY_MODEL_" + this.id;
+        }
     });
     widgetmanager.WidgetManager.register_widget_model('WidgetModel', WidgetModel);
 
 
-    var WidgetView = Backbone.View.extend({
+    var WidgetViewMixin = {
         initialize: function(parameters) {
             /**
              * Public constructor.
              */
-            this.model.on('change',this.update,this);
+            this.listenTo(this.model, 'change', this.update, this);
 
             // Bubble the comm live events.
-            this.model.on('comm:live', function() {
+            this.listenTo(this.model, 'comm:live', function() {
                 this.trigger('comm:live', this);
             }, this);
-            this.model.on('comm:dead', function() {
+            this.listenTo(this.model, 'comm:dead', function() {
                 this.trigger('comm:dead', this);
             }, this);
 
             this.options = parameters.options;
-            this.on('displayed', function() { 
-                this.is_displayed = true; 
-            }, this);
+            /**
+             * this.displayed is a promise that resolves when the view is
+             * inserted in the DOM.
+             */
+            var that = this;
+            this.displayed = new Promise(function(resolve, reject) {
+                that.once('displayed', resolve);
+            });
         },
 
-        update: function(){
+        update: function() {
             /**
              * Triggered on model change.
              *
@@ -443,8 +516,8 @@ define('ipython3_widget', [
              * Create and promise that resolves to a child view of a given model
              */
             var that = this;
-            options = $.extend({ parent: this }, options || {});
-            return this.model.widget_manager.create_view(child_model, options).catch(utils.reject("Couldn't create child view"), true);
+            options = _.extend({ parent: this }, options || {});
+            return this.model.widget_manager.create_view(child_model, options).catch(utils.reject("Couldn't create child view", true));
         },
 
         callbacks: function(){
@@ -462,11 +535,11 @@ define('ipython3_widget', [
              */
         },
 
-        send: function (content) {
+        send: function (content, buffers) {
             /**
              * Send a custom msg associated with this view.
              */
-            this.model.send(content, this.callbacks());
+            this.model.send(content, this.callbacks(), buffers);
         },
 
         touch: function () {
@@ -475,14 +548,12 @@ define('ipython3_widget', [
 
         after_displayed: function (callback, context) {
             /**
-             * Calls the callback right away is the view is already displayed
-             * otherwise, register the callback to the 'displayed' event.
+             * Deprecated method. Calls the callback right away is the view is
+             * already displayed otherwise, register the callback to the 'displayed'
+             * event.
              */
-            if (this.is_displayed) {
-                callback.apply(context);
-            } else {
-                this.on('displayed', callback, context);
-            }
+            console.log('`WidgetView.after_displayed` is deprecated. Use the WidgetView.displayed promise instead.');
+            this.displayed.then(_.bind(callback, context));
         },
 
         remove: function () {
@@ -490,66 +561,66 @@ define('ipython3_widget', [
             WidgetView.__super__.remove.apply(this, arguments);
             this.trigger('remove');
         }
-    });
+    };
 
 
-    var DOMWidgetView = WidgetView.extend({
+    var DOMWidgetViewMixin = {
         initialize: function (parameters) {
             /**
              * Public constructor
              */
-            DOMWidgetView.__super__.initialize.apply(this, [parameters]);
-            this.model.on('change:visible', this.update_visible, this);
-            this.model.on('change:_css', this.update_css, this);
+            WidgetViewMixin.initialize.apply(this, [parameters]);
+            this.listenTo(this.model, 'change:visible', this.update_visible, this);
+            this.listenTo(this.model, 'change:_css', this.update_css, this);
 
-            this.model.on('change:_dom_classes', function(model, new_classes) {
+            this.listenTo(this.model, 'change:_dom_classes', function(model, new_classes) {
                 var old_classes = model.previous('_dom_classes');
                 this.update_classes(old_classes, new_classes);
             }, this);
 
-            this.model.on('change:color', function (model, value) { 
+            this.listenTo(this.model, 'change:color', function (model, value) { 
                 this.update_attr('color', value); }, this);
 
-            this.model.on('change:background_color', function (model, value) { 
+            this.listenTo(this.model, 'change:background_color', function (model, value) { 
                 this.update_attr('background', value); }, this);
 
-            this.model.on('change:width', function (model, value) { 
+            this.listenTo(this.model, 'change:width', function (model, value) { 
                 this.update_attr('width', value); }, this);
 
-            this.model.on('change:height', function (model, value) { 
+            this.listenTo(this.model, 'change:height', function (model, value) { 
                 this.update_attr('height', value); }, this);
 
-            this.model.on('change:border_color', function (model, value) { 
+            this.listenTo(this.model, 'change:border_color', function (model, value) { 
                 this.update_attr('border-color', value); }, this);
 
-            this.model.on('change:border_width', function (model, value) { 
+            this.listenTo(this.model, 'change:border_width', function (model, value) { 
                 this.update_attr('border-width', value); }, this);
 
-            this.model.on('change:border_style', function (model, value) { 
+            this.listenTo(this.model, 'change:border_style', function (model, value) { 
                 this.update_attr('border-style', value); }, this);
 
-            this.model.on('change:font_style', function (model, value) { 
+            this.listenTo(this.model, 'change:font_style', function (model, value) { 
                 this.update_attr('font-style', value); }, this);
 
-            this.model.on('change:font_weight', function (model, value) { 
+            this.listenTo(this.model, 'change:font_weight', function (model, value) { 
                 this.update_attr('font-weight', value); }, this);
 
-            this.model.on('change:font_size', function (model, value) { 
+            this.listenTo(this.model, 'change:font_size', function (model, value) { 
                 this.update_attr('font-size', this._default_px(value)); }, this);
 
-            this.model.on('change:font_family', function (model, value) { 
+            this.listenTo(this.model, 'change:font_family', function (model, value) { 
                 this.update_attr('font-family', value); }, this);
 
-            this.model.on('change:padding', function (model, value) { 
+            this.listenTo(this.model, 'change:padding', function (model, value) { 
                 this.update_attr('padding', value); }, this);
 
-            this.model.on('change:margin', function (model, value) { 
+            this.listenTo(this.model, 'change:margin', function (model, value) { 
                 this.update_attr('margin', this._default_px(value)); }, this);
 
-            this.model.on('change:border_radius', function (model, value) { 
+            this.listenTo(this.model, 'change:border_radius', function (model, value) { 
                 this.update_attr('border-radius', this._default_px(value)); }, this);
 
-            this.after_displayed(function() {
+            this.displayed.then(_.bind(function() {
                 this.update_visible(this.model, this.model.get("visible"));
                 this.update_classes([], this.model.get('_dom_classes'));
                 
@@ -569,14 +640,14 @@ define('ipython3_widget', [
                 this.update_attr('border-radius', this._default_px(this.model.get('border_radius')));
 
                 this.update_css(this.model, this.model.get("_css"));
-            }, this);
+            }, this));
         },
 
         _default_px: function(value) {
             /**
              * Makes browser interpret a numerical string as a pixel value.
              */
-            if (/^\d+\.?(\d+)?$/.test(value.trim())) {
+            if (value && /^\d+\.?(\d+)?$/.test(value.trim())) {
                 return value.trim() + 'px';
             }
             return value;
@@ -586,7 +657,7 @@ define('ipython3_widget', [
             /**
              * Set a css attr of the widget view.
              */
-            this.$el.css(name, value);
+            this.el.style[name] = value;
         },
 
         update_visible: function(model, value) {
@@ -595,13 +666,20 @@ define('ipython3_widget', [
              */
             switch(value) {
                 case null: // python None
-                    this.$el.show().css('visibility', 'hidden'); break;
+                    if (this._old_display !== undefined) {
+                        this.el.style.display = this._old_display;
+                    }
+                    this.el.style.visibility = 'hidden'; break;
                 case false:
-                    this.$el.hide(); break;
+                    this._old_display = this.el.style.display || '';
+                    this.el.style.display = 'none'; break;
                 case true:
-                    this.$el.show().css('visibility', ''); break;
+                    if (this._old_display !== undefined) {
+                        this.el.style.display = this._old_display;
+                    }
+                    this.el.style.visibility = ''; break;
             }
-         },
+        },
 
         update_css: function (model, css) {
             /**
@@ -611,27 +689,34 @@ define('ipython3_widget', [
             for (var i = 0; i < css.length; i++) {
                 // Apply the css traits to all elements that match the selector.
                 var selector = css[i][0];
-                var elements = this._get_selector_element(selector);
+                var parent = this.el.parentElement
+                var elements = parent.querySelectorAll(selector) || [this.el];
                 if (elements.length > 0) {
                     var trait_key = css[i][1];
                     var trait_value = css[i][2];
-                    elements.css(trait_key ,trait_value);
+                    _.each(elements, function(e) {
+                        e.style[trait_key] = trait_value;
+                    });
                 }
             }
         },
 
-        update_classes: function (old_classes, new_classes, $el) {
+        update_classes: function (old_classes, new_classes, el) {
             /**
-             * Update the DOM classes applied to an element, default to this.$el.
+             * Update the DOM classes applied to an element, default to this.el.
              */
-            if ($el===undefined) {
-                $el = this.$el;
+            if (el===undefined) {
+                el = this.el;
             }
-            _.difference(old_classes, new_classes).map(function(c) {$el.removeClass(c);})
-            _.difference(new_classes, old_classes).map(function(c) {$el.addClass(c);})
+            _.difference(old_classes, new_classes).map(function(c) {
+                el.classList.remove(c);
+            });
+            _.difference(new_classes, old_classes).map(function(c) {
+                el.classList.add(c);
+            });
         },
 
-        update_mapped_classes: function(class_map, trait_name, previous_trait_value, $el) {
+        update_mapped_classes: function(class_map, trait_name, previous_trait_value, el) {
             /**
              * Update the DOM classes applied to the widget based on a single
              * trait's value.
@@ -655,7 +740,7 @@ define('ipython3_widget', [
              *  Name of the trait to check the value of.
              * previous_trait_value: optional string, default ''
              *  Last trait value
-             * $el: optional jQuery element handle, defaults to this.$el
+             * el: optional DOM element handle, defaults to this.$el
              *  Element that the classes are applied to.
              */
             var key = previous_trait_value;
@@ -666,26 +751,15 @@ define('ipython3_widget', [
             key = this.model.get(trait_name);
             var new_classes = class_map[key] ? class_map[key] : [];
 
-            this.update_classes(old_classes, new_classes, $el || this.$el);
+            this.update_classes(old_classes, new_classes, el || this.el);
         },
-        
-        _get_selector_element: function (selector) {
-            /**
-             * Get the elements via the css selector.
-             */
-            var elements;
-            if (!selector) {
-                elements = this.$el;
-            } else {
-                elements = this.$el.find(selector).addBack(selector);
-            }
-            return elements;
-        },
+
+
 
         typeset: function(element, text){
             utils.typeset.apply(null, arguments);
-        }
-    });
+        },
+    };
 
 
     var ViewList = function(create_view, remove_view, context) {
@@ -695,7 +769,7 @@ define('ipython3_widget', [
          * - remove_view takes a view and destroys it (including calling `view.remove()`)
          * - each time the update() function is called with a new list, the create and remove
          *   callbacks will be called in an order so that if you append the views created in the
-         *   create callback and remove the views in the remove callback, you will duplicate 
+         *   create callback and remove the views in the remove callback, you will duplicate
          *   the order of the list.
          * - the remove callback defaults to just removing the view (e.g., pass in null for the second parameter)
          * - the context defaults to the created ViewList.  If you pass another context, the create and remove
@@ -732,7 +806,6 @@ define('ipython3_widget', [
                     break;
                 }
             }
-            
             var first_removed = i;
             // Remove the non-matching items from the old list.
             var removed = this.views.splice(first_removed, this.views.length-first_removed);
@@ -764,18 +837,24 @@ define('ipython3_widget', [
                 that.views = [];
                 that._models = [];
             });
-        }
+        },
     });
 
+    // For backwards compatibility.
+    var WidgetView = Backbone.View.extend(WidgetViewMixin);
+    var DOMWidgetView = WidgetView.extend(DOMWidgetViewMixin);
+
     var widget = {
+        'unpack_models': unpack_models,
         'WidgetModel': WidgetModel,
+        'WidgetViewMixin': WidgetViewMixin,
+        'DOMWidgetViewMixin': DOMWidgetViewMixin,
+        'ViewList': ViewList,
+
+        // For backwards compatibility.
         'WidgetView': WidgetView,
         'DOMWidgetView': DOMWidgetView,
-        'ViewList': ViewList
     };
-
-    // For backwards compatability.
-    $.extend(IPython3, widget);
 
     return widget;
 });

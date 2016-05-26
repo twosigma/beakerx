@@ -1,10 +1,14 @@
-// Copyright (c) IPython Development Team.
+// Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-define('ipython3_outputarea', [
-    'ipython3_namespace',
-    'ipython3_utils'
-], function(IPython3, utils) {
+define('notebook/js/outputarea', [
+    'jquery-ui',
+    'base/js/utils',
+    'base/js/security',
+    'base/js/keyboard',
+    'notebook/js/mathjaxutils',
+    'components/marked/lib/marked',
+], function($, utils, security, keyboard, mathjaxutils, marked) {
     "use strict";
 
     /**
@@ -52,17 +56,17 @@ define('ipython3_outputarea', [
     OutputArea.prototype.style = function () {
         this.collapse_button.hide();
         this.prompt_overlay.hide();
-
+        
         this.wrapper.addClass('output_wrapper');
         this.element.addClass('output');
-
+        
         this.collapse_button.addClass("btn btn-default output_collapsed");
         this.collapse_button.attr('title', 'click to expand output');
         this.collapse_button.text('. . .');
-
+        
         this.prompt_overlay.addClass('out_prompt_overlay prompt');
         this.prompt_overlay.attr('title', 'click to expand output; double click to hide output');
-
+        
         this.collapse();
     };
 
@@ -198,7 +202,7 @@ define('ipython3_outputarea', [
     };
 
 
-    // typeset with Latex
+    // typeset with MathJax if MathJax is available
     OutputArea.prototype.typeset = function () {
         utils.typeset(this.element);
     };
@@ -228,8 +232,8 @@ define('ipython3_outputarea', [
         }
         this.append_output(json);
     };
-
-
+    
+    
     OutputArea.output_types = [
         'application/javascript',
         'text/html',
@@ -264,10 +268,10 @@ define('ipython3_outputarea', [
         });
         return bundle;
     };
-
+    
     OutputArea.prototype.append_output = function (json) {
         this.expand();
-
+        
         // Clear the output if clear is queued.
         var needs_height_reset = false;
         if (this.clear_queued) {
@@ -298,7 +302,7 @@ define('ipython3_outputarea', [
         }
 
         // We must release the animation fixed height in a callback since Gecko
-        // (FireFox) doesn't render the image immediately as the data is
+        // (FireFox) doesn't render the image immediately as the data is 
         // available.
         var that = this;
         var handle_appended = function ($el) {
@@ -316,7 +320,7 @@ define('ipython3_outputarea', [
         } else {
             handle_appended();
         }
-
+        
         if (record_output) {
             this.outputs.push(json);
         }
@@ -397,7 +401,7 @@ define('ipython3_outputarea', [
             .append($('<div/>').text(err.toString()).addClass('js-error'))
             .append($('<div/>').text('See your browser Javascript console for more details.').addClass('js-error'));
     };
-
+    
     OutputArea.prototype._safe_append = function (toinsert) {
         /**
          * safely append an item to the document
@@ -479,6 +483,7 @@ define('ipython3_outputarea', [
                 last.text = utils.fixCarriageReturn(last.text + json.text);
                 var pre = this.element.find('div.'+subclass).last().find('pre');
                 var html = utils.fixConsole(last.text);
+                html = utils.autoLinkUrls(html);
                 // The only user content injected with this HTML call is
                 // escaped by the fixConsole() method.
                 pre.html(html);
@@ -543,7 +548,7 @@ define('ipython3_outputarea', [
         'image/png' : true,
         'image/jpeg' : true
     };
-
+    
     OutputArea.prototype.append_mime_type = function (json, element, handle_inserted) {
         for (var i=0; i < OutputArea.display_order.length; i++) {
             var type = OutputArea.display_order[i];
@@ -563,7 +568,7 @@ define('ipython3_outputarea', [
                 var md = json.metadata || {};
                 var toinsert = append.apply(this, [value, md, element, handle_inserted]);
                 // Since only the png and jpeg mime types call the inserted
-                // callback, if the mime type is something other we must call the
+                // callback, if the mime type is something other we must call the 
                 // inserted callback only when the element is actually inserted
                 // into the DOM.  Use a timeout of 0 to do this.
                 if (['image/png', 'image/jpeg'].indexOf(type) < 0 && handle_inserted !== undefined) {
@@ -582,6 +587,7 @@ define('ipython3_outputarea', [
         var toinsert = this.create_output_subarea(md, "output_html rendered_html", type);
         this.keyboard_manager.register_events(toinsert);
         toinsert.append(html);
+        dblclick_to_reset_size(toinsert.find('img'));
         element.append(toinsert);
         return toinsert;
     };
@@ -589,7 +595,7 @@ define('ipython3_outputarea', [
 
     var append_markdown = function(markdown, md, element) {
         var type = 'text/markdown';
-        var toinsert = this.create_output_subarea(md, "output_markdown", type);
+        var toinsert = this.create_output_subarea(md, "output_markdown rendered_html", type);
         var text_and_math = mathjaxutils.remove_math(markdown);
         var text = text_and_math[0];
         var math = text_and_math[1];
@@ -597,6 +603,7 @@ define('ipython3_outputarea', [
             html = mathjaxutils.replace_math(html, math);
             toinsert.append(html);
         });
+        dblclick_to_reset_size(toinsert.find('img'));
         element.append(toinsert);
         return toinsert;
     };
@@ -607,7 +614,7 @@ define('ipython3_outputarea', [
          * We just eval the JS code, element appears in the local scope.
          */
         var type = 'application/javascript';
-        var toinsert = this.create_output_subarea(md, "output_javascript", type);
+        var toinsert = this.create_output_subarea(md, "output_javascript rendered_html", type);
         this.keyboard_manager.register_events(toinsert);
         element.append(toinsert);
 
@@ -643,8 +650,9 @@ define('ipython3_outputarea', [
         var type = 'image/svg+xml';
         var toinsert = this.create_output_subarea(md, "output_svg", type);
 
-        // Get the svg element from within the HTML.
-        var svg = $('<div />').html(svg_html).find('svg');
+        // Get the svg element from within the HTML. 
+        // One svg is supposed, but could embed other nested svgs
+        var svg = $($('<div \>').html(svg_html).find('svg')[0]);
         var svg_area = $('<div />');
         var width = svg.attr('width');
         var height = svg.attr('height');
@@ -655,12 +663,6 @@ define('ipython3_outputarea', [
             .width(width)
             .height(height);
 
-        // The jQuery resize handlers don't seem to work on the svg element.
-        // When the svg renders completely, measure it's size and set the parent
-        // div to that size.  Then set the svg to 100% the size of the parent
-        // div and make the parent div resizable.
-        this._dblclick_to_reset_size(svg_area, true, false);
-
         svg_area.append(svg);
         toinsert.append(svg_area);
         element.append(toinsert);
@@ -668,46 +670,23 @@ define('ipython3_outputarea', [
         return toinsert;
     };
 
-    OutputArea.prototype._dblclick_to_reset_size = function (img, immediately, resize_parent) {
+    function dblclick_to_reset_size (img) {
         /**
-         * Add a resize handler to an element
+         * Double-click on an image toggles confinement to notebook width
          *
          * img: jQuery element
-         * immediately: bool=False
-         *      Wait for the element to load before creating the handle.
-         * resize_parent: bool=True
-         *      Should the parent of the element be resized when the element is
-         *      reset (by double click).
          */
-        var callback = function (){
-            var h0 = img.height();
-            var w0 = img.width();
-            if (!(h0 && w0)) {
-                // zero size, don't make it resizable
-                return;
+
+        img.dblclick(function () {
+            // dblclick toggles *raw* size, disabling max-width confinement.
+            if (img.hasClass('unconfined')) {
+                img.removeClass('unconfined');
+            } else {
+                img.addClass('unconfined');
             }
-            img.resizable({
-                aspectRatio: true,
-                autoHide: true
-            });
-            img.dblclick(function () {
-                // resize wrapper & image together for some reason:
-                img.height(h0);
-                img.width(w0);
-                if (resize_parent === undefined || resize_parent) {
-                    img.parent().height(h0);
-                    img.parent().width(w0);
-                }
-            });
-        };
-
-        if (immediately) {
-            callback();
-        } else {
-            img.on("load", callback);
-        }
-    };
-
+        });
+    }
+    
     var set_width_height = function (img, md, mime) {
         /**
          * set width and height of an img element from metadata
@@ -716,8 +695,11 @@ define('ipython3_outputarea', [
         if (height !== undefined) img.attr('height', height);
         var width = _get_metadata_key(md, 'width', mime);
         if (width !== undefined) img.attr('width', width);
+        if (_get_metadata_key(md, 'unconfined', mime)) {
+            img.addClass('unconfined');
+        }
     };
-
+    
     var append_png = function (png, md, element, handle_inserted) {
         var type = 'image/png';
         var toinsert = this.create_output_subarea(md, "output_png", type);
@@ -729,7 +711,7 @@ define('ipython3_outputarea', [
         }
         img[0].src = 'data:image/png;base64,'+ png;
         set_width_height(img, md, 'image/png');
-        this._dblclick_to_reset_size(img);
+        dblclick_to_reset_size(img);
         toinsert.append(img);
         element.append(toinsert);
         return toinsert;
@@ -747,7 +729,7 @@ define('ipython3_outputarea', [
         }
         img[0].src = 'data:image/jpeg;base64,'+ jpeg;
         set_width_height(img, md, 'image/jpeg');
-        this._dblclick_to_reset_size(img);
+        dblclick_to_reset_size(img);
         toinsert.append(img);
         element.append(toinsert);
         return toinsert;
@@ -783,36 +765,36 @@ define('ipython3_outputarea', [
         this.expand();
         var content = msg.content;
         var area = this.create_output_area();
-
+        
         // disable any other raw_inputs, if they are left around
         $("div.output_subarea.raw_input_container").remove();
-
+        
         var input_type = content.password ? 'password' : 'text';
-
+        
         area.append(
             $("<div/>")
             .addClass("box-flex1 output_subarea raw_input_container")
             .append(
-                $("<span/>")
+                $("<pre/>")
                 .addClass("raw_input_prompt")
-                .text(content.prompt)
-            )
-            .append(
-                $("<input/>")
-                .addClass("raw_input")
-                .attr('type', input_type)
-                .attr("size", 47)
-                .keydown(function (event, ui) {
-                    // make sure we submit on enter,
-                    // and don't re-execute the *cell* on shift-enter
-                    if (event.which === keyboard.keycodes.enter) {
-                        that._submit_raw_input();
-                        return false;
-                    }
-                })
+                .html(utils.fixConsole(content.prompt))
+                .append(
+                    $("<input/>")
+                    .addClass("raw_input")
+                    .attr('type', input_type)
+                    .attr("size", 47)
+                    .keydown(function (event, ui) {
+                        // make sure we submit on enter,
+                        // and don't re-execute the *cell* on shift-enter
+                        if (event.which === keyboard.keycodes.enter) {
+                            that._submit_raw_input();
+                            return false;
+                        }
+                    })
+                )
             )
         );
-
+        
         this.element.append(area);
         var raw_input = area.find('input.raw_input');
         // Register events that enable/disable the keyboard manager while raw
@@ -826,7 +808,7 @@ define('ipython3_outputarea', [
 
     OutputArea.prototype._submit_raw_input = function (evt) {
         var container = this.element.find("div.raw_input_container");
-        var theprompt = container.find("span.raw_input_prompt");
+        var theprompt = container.find("pre.raw_input_prompt");
         var theinput = container.find("input.raw_input");
         var value = theinput.val();
         var echo  = value;
@@ -877,7 +859,7 @@ define('ipython3_outputarea', [
                 this.element.height(height);
                 this.clear_queued = false;
             }
-
+            
             // Clear all
             // Remove load event handlers from img tags because we don't want
             // them to fire if the image is never added to the page.
@@ -886,7 +868,7 @@ define('ipython3_outputarea', [
 
             // Notify others of changes.
             this.element.trigger('changed');
-
+            
             this.outputs = [];
             this.trusted = true;
             this.unscroll_area();
@@ -979,9 +961,6 @@ define('ipython3_outputarea', [
         "application/javascript" : append_javascript,
         "application/pdf" : append_pdf
     };
-
-    // For backwards compatability.
-    IPython3.OutputArea = OutputArea;
 
     return {'OutputArea': OutputArea};
 });

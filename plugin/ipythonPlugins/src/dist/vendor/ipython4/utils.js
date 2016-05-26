@@ -1,53 +1,95 @@
-// Copyright (c) IPython Development Team.
+// Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-define('ipython3_utils', [
-    'ipython3_namespace'
-], function(IPython3) {
+define('base/js/utils', [
+    'jquery',
+    // 'codemirror/lib/codemirror',
+    // 'moment',
+    // silently upgrades CodeMirror
+    // 'codemirror/mode/meta',
+], function($
+  // , moment
+) {
     "use strict";
+    
+    // keep track of which extensions have been loaded already
+    var extensions_loaded = [];
 
-    var load_extensions = function () {
-        // load one or more IPython notebook extensions with requirejs
-
-        var extensions = [];
-        var extension_names = arguments;
-        for (var i = 0; i < extension_names.length; i++) {
-            extensions.push("nbextensions/" + arguments[i]);
-        }
-
-        require(extensions,
-            function () {
-                for (var i = 0; i < arguments.length; i++) {
-                    var ext = arguments[i];
-                    var ext_name = extension_names[i];
-                    // success callback
-                    console.log("Loaded extension: " + ext_name);
-                    if (ext && ext.load_ipython_extension !== undefined) {
-                        ext.load_ipython_extension();
-                    }
-                }
-            },
-            function (err) {
-                // failure callback
-                console.log("Failed to load extension(s):", err.requireModules, err);
-            }
-        );
+    /**
+     * Whether or not an extension has been loaded
+     * @param  {string} extension - name of the extension
+     * @return {boolean}            true if loaded already
+     */
+    var is_loaded = function(extension) {
+        var ext_path = "nbextensions/" + extension;
+        return extensions_loaded.indexOf(ext_path) >= 0;
     };
 
-    IPython3.load_extensions = load_extensions;
+    /**
+     * Load a single extension.
+     * @param  {string} extension - extension path.
+     * @return {Promise} that resolves to an extension module handle
+     */
+    var load_extension = function (extension) {
+        return new Promise(function(resolve, reject) {
+            var ext_path = extension;
+            requirejs([ext_path], function(module) {
+                if (!is_loaded(extension)) {
+                    console.log("Loading extension: " + extension);
+                    if (module.load_ipython_extension) {
+                        Promise.resolve(module.load_ipython_extension()).then(function() {
+                            resolve(module);
+                        }).catch(reject);
+                    }
+                    extensions_loaded.push(ext_path);
+                } else {
+                    console.log("Loaded extension already: " + extension);
+                    resolve(module);
+                }
+            }, function(err) {
+                reject(err);
+            });
+        });
+    };
+
+    /**
+     * Load multiple extensions.
+     * Takes n-args, where each arg is a string path to the extension.
+     * @return {Promise} that resolves to a list of loaded module handles.
+     */
+    var load_extensions = function () {
+        console.log("load_extensions", arguments);
+        return Promise.all(Array.prototype.map.call(arguments, load_extension)).catch(function(err) {
+            console.error("Failed to load extension" + (err.requireModules.length>1?'s':'') + ":", err.requireModules, err);
+        });
+    };
+
+    /**
+     * Return a list of extensions that should be active
+     * The config for nbextensions comes in as a dict where keys are 
+     * nbextensions paths and the values are a bool indicating if it 
+     * should be active. This returns a list of nbextension paths
+     * where the value is true
+     */
+    function filter_extensions(nbext_config) {
+        var active = [];
+        Object.keys(nbext_config).forEach(function (nbext) {
+            if (nbext_config[nbext]) {active.push(nbext);}
+        });
+        return active;
+    }
 
     /**
      * Wait for a config section to load, and then load the extensions specified
      * in a 'load_extensions' key inside it.
      */
     function load_extensions_from_config(section) {
-        section.loaded.then(function() {
+        return section.loaded.then(function() {
             if (section.data.load_extensions) {
-                var nbextension_paths = Object.getOwnPropertyNames(
-                                            section.data.load_extensions);
-                load_extensions.apply(this, nbextension_paths);
+                var active = filter_extensions(section.data.load_extensions);
+                return load_extensions.apply(this, active);
             }
-        });
+        }).catch(utils.reject('Could not load nbextensions from ' + section.section_name + ' config file'));
     }
 
     //============================================================================
@@ -193,7 +235,7 @@ define('ipython3_utils', [
     //Map from terminal commands to CSS classes
     var ansi_colormap = {
         "01":"ansibold",
-
+        
         "30":"ansiblack",
         "31":"ansired",
         "32":"ansigreen",
@@ -202,7 +244,7 @@ define('ipython3_utils', [
         "35":"ansipurple",
         "36":"ansicyan",
         "37":"ansigray",
-
+        
         "40":"ansibgblack",
         "41":"ansibgred",
         "42":"ansibggreen",
@@ -212,7 +254,7 @@ define('ipython3_utils', [
         "46":"ansibgcyan",
         "47":"ansibggray"
     };
-
+    
     function _process_numbers(attrs, numbers) {
         // process ansi escapes
         var n = numbers.shift();
@@ -228,7 +270,7 @@ define('ipython3_utils', [
                 console.log("Not enough fields for VT100 color", numbers);
                 return;
             }
-
+            
             var index_or_rgb = numbers.shift();
             var r,g,b;
             if (index_or_rgb == "5") {
@@ -293,12 +335,12 @@ define('ipython3_utils', [
         }
     }
 
-    function ansispan(str) {
+    function _ansispan(str) {
         // ansispan function adapted from github.com/mmalecki/ansispan (MIT License)
         // regular ansi escapes (using the table above)
         var is_open = false;
         return str.replace(/\033\[(0?[01]|22|39)?([;\d]+)?m/g, function(match, prefix, pattern) {
-            if (!pattern) {
+            if (!pattern || prefix === '39') {
                 // [(01|22|39|)m close spans
                 if (is_open) {
                     is_open = false;
@@ -333,11 +375,11 @@ define('ipython3_utils', [
 
         // Strip all ANSI codes that are not color related.  Matches
         // all ANSI codes that do not end with "m".
-        var ignored_re = /(?=(\033\[[\d;=]*[a-ln-zA-Z]{1}))\1(?!m)/g;
+        var ignored_re = /(?=(\033\[[?\d;=]*[a-ln-zA-Z]{1}))\1(?!m)/g;
         txt = txt.replace(ignored_re, "");
-
+        
         // color ansi codes
-        txt = ansispan(txt);
+        txt = _ansispan(txt);
         return txt;
     }
 
@@ -355,7 +397,7 @@ define('ipython3_utils', [
 
     // Locate any URLs and convert them to a anchor tag
     function autoLinkUrls(txt) {
-        return txt.replace(/(^|\s)(https?|ftp)(:[^'">\s]+)/gi,
+        return txt.replace(/(^|\s)(https?|ftp)(:[^'"<>\s]+)/gi,
             "$1<a target=\"_blank\" href=\"$2$3\">$2$3</a>");
     }
 
@@ -369,7 +411,7 @@ define('ipython3_utils', [
         test.remove();
         return Math.floor(points*pixel_per_point);
     };
-
+    
     var always_new = function (constructor) {
         /**
          * wrapper around contructor to avoid requiring `var a = new constructor()`
@@ -402,13 +444,13 @@ define('ipython3_utils', [
         url = url.replace(/\/\/+/, '/');
         return url;
     };
-
+    
     var url_path_split = function (path) {
         /**
          * Like os.path.split for URLs.
          * Always returns two strings, the directory path and the base filename
          */
-
+        
         var idx = path.lastIndexOf('/');
         if (idx === -1) {
             return ['', path];
@@ -416,7 +458,7 @@ define('ipython3_utils', [
             return [ path.slice(0, idx), path.slice(idx + 1) ];
         }
     };
-
+    
     var parse_url = function (url) {
         /**
          * an `a` element with an href allows attr-access to the parsed segments of a URL
@@ -432,7 +474,7 @@ define('ipython3_utils', [
         a.href = url;
         return a;
     };
-
+    
     var encode_uri_components = function (uri) {
         /**
          * encode just the components of a multi-segment uri,
@@ -440,7 +482,7 @@ define('ipython3_utils', [
          */
         return uri.split('/').map(encodeURIComponent).join('/');
     };
-
+    
     var url_join_encode = function () {
         /**
          * join a sequence of url components with '/',
@@ -483,44 +525,17 @@ define('ipython3_utils', [
             return val;
         return decodeURIComponent(val);
     };
-
+    
     var to_absolute_cursor_pos = function (cm, cursor) {
-        /**
-         * get the absolute cursor position from CodeMirror's col, ch
-         */
-        if (!cursor) {
-            cursor = cm.getCursor();
-        }
-        var cursor_pos = cursor.ch;
-        for (var i = 0; i < cursor.line; i++) {
-            cursor_pos += cm.getLine(i).length + 1;
-        }
-        return cursor_pos;
+        console.warn('`utils.to_absolute_cursor_pos(cm, pos)` is deprecated. Use `cm.indexFromPos(cursor)`');
+        return cm.indexFromPos(cusrsor);
     };
-
+    
     var from_absolute_cursor_pos = function (cm, cursor_pos) {
-        /**
-         * turn absolute cursor postion into CodeMirror col, ch cursor
-         */
-        var i, line;
-        var offset = 0;
-        for (i = 0, line=cm.getLine(i); line !== undefined; i++, line=cm.getLine(i)) {
-            if (offset + line.length < cursor_pos) {
-                offset += line.length + 1;
-            } else {
-                return {
-                    line : i,
-                    ch : cursor_pos - offset,
-                };
-            }
-        }
-        // reached end, return endpoint
-        return {
-            ch : line.length - 1,
-            line : i - 1,
-        };
+        console.warn('`utils.from_absolute_cursor_pos(cm, pos)` is deprecated. Use `cm.posFromIndex(index)`');
+        return cm.posFromIndex(cursor_pos);
     };
-
+    
     // http://stackoverflow.com/questions/2400935/browser-detection-in-javascript
     var browser = (function() {
         if (typeof navigator === 'undefined') {
@@ -547,7 +562,7 @@ define('ipython3_utils', [
         if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
         return OSName;
     })();
-
+    
     var get_url_param = function (name) {
         // get a URL parameter. I cannot believe we actually need this.
         // Based on http://stackoverflow.com/a/25359264/938949
@@ -556,7 +571,7 @@ define('ipython3_utils', [
             return decodeURIComponent(match[1] || '');
         }
     };
-
+    
     var is_or_has = function (a, b) {
         /**
          * Is b a child of a or a itself?
@@ -580,13 +595,13 @@ define('ipython3_utils', [
             return false;
         }
     };
-
+    
     var mergeopt = function(_class, options, overwrite){
         options = options || {};
         overwrite = overwrite || {};
         return $.extend(true, {}, _class.options_default, options, overwrite);
     };
-
+    
     var ajax_error_msg = function (jqXHR) {
         /**
          * Return a JSON error message if there is one,
@@ -611,44 +626,44 @@ define('ipython3_utils', [
     };
 
     var requireCodeMirrorMode = function (mode, callback, errback) {
-        /**
-         * find a predefined mode or detect from CM metadata then
-         * require and callback with the resolveable mode string: mime or
-         * custom name
-         */
-
-        var modename = (typeof mode == "string") ? mode :
-            mode.mode || mode.name;
-
-        // simplest, cheapest check by mode name: mode may also have config
-        if (CodeMirror.modes.hasOwnProperty(modename)) {
-            // return the full mode object, if it has a name
-            callback(mode.name ? mode : modename);
-            return;
-        }
-
-        // *somehow* get back a CM.modeInfo-like object that has .mode and
-        // .mime
-        var info = (mode && mode.mode && mode.mime && mode) ||
-            CodeMirror.findModeByName(modename) ||
-            CodeMirror.findModeByExtension(modename.split(".").slice(-1)) ||
-            CodeMirror.findModeByMIME(modename) ||
-            {mode: modename, mime: modename};
-
-        require([
-                // might want to use CodeMirror.modeURL here
-                ['codemirror/mode', info.mode, info.mode].join('/'),
-            ], function() {
-              // return the original mode, as from a kernelspec on first load
-              // or the mimetype, as for most highlighting
-              callback(mode.name ? mode : info.mime);
-            }, errback
-        );
+        // /** 
+        //  * find a predefined mode or detect from CM metadata then
+        //  * require and callback with the resolveable mode string: mime or
+        //  * custom name
+        //  */
+        //
+        // var modename = (typeof mode == "string") ? mode :
+        //     mode.mode || mode.name;
+        //
+        // // simplest, cheapest check by mode name: mode may also have config
+        // if (CodeMirror.modes.hasOwnProperty(modename)) {
+        //     // return the full mode object, if it has a name
+        //     callback(mode.name ? mode : modename);
+        //     return;
+        // }
+        //
+        // // *somehow* get back a CM.modeInfo-like object that has .mode and
+        // // .mime
+        // var info = (mode && mode.mode && mode.mime && mode) ||
+        //     CodeMirror.findModeByName(modename) ||
+        //     CodeMirror.findModeByExtension(modename.split(".").slice(-1)) ||
+        //     CodeMirror.findModeByMIME(modename) ||
+        //     {mode: modename, mime: modename};
+        //
+        // require([
+        //         // might want to use CodeMirror.modeURL here
+        //         ['codemirror/mode', info.mode, info.mode].join('/'),
+        //     ], function() {
+        //       // return the original mode, as from a kernelspec on first load
+        //       // or the mimetype, as for most highlighting
+        //       callback(mode.name ? mode : info.mime);
+        //     }, errback
+        // );
     };
-
+    
     /** Error type for wrapped XHR errors. */
     var XHR_ERROR = 'XhrError';
-
+    
     /**
      * Wraps an AJAX error as an Error object.
      */
@@ -661,7 +676,7 @@ define('ipython3_utils', [
         wrapped_error.xhr_error = error;
         return wrapped_error;
     };
-
+    
     var promising_ajax = function(url, settings) {
         /**
          * Like $.ajax, but returning an ES6 promise. success and error settings
@@ -714,8 +729,8 @@ define('ipython3_utils', [
         /**
          * Tries to load a class
          *
-         * Tries to load a class from a module using require.js, if a module
-         * is specified, otherwise tries to load a class from the global
+         * Tries to load a class from a module using require.js, if a module 
+         * is specified, otherwise tries to load a class from the global 
          * registry, if the global registry is provided.
          */
         return new Promise(function(resolve, reject) {
@@ -761,26 +776,28 @@ define('ipython3_utils', [
     var reject = function(message, log) {
         /**
          * Creates a wrappable Promise rejection function.
-         *
+         * 
          * Creates a function that returns a Promise.reject with a new WrappedError
-         * that has the provided message and wraps the original error that
+         * that has the provided message and wraps the original error that 
          * caused the promise to reject.
          */
-        return function(error) {
+        return function(error) { 
             var wrapped_error = new WrappedError(message, error);
-            if (log) console.error(wrapped_error);
-            return Promise.reject(wrapped_error);
+            if (log) {
+                console.error(message, " -- ", error);
+            }
+            return Promise.reject(wrapped_error); 
         };
     };
 
     var typeset = function(element, text) {
         /**
-         * Apply Katex rendering to an element, and optionally set its text
+         * Apply MathJax rendering to an element, and optionally set its text
          *
-         * If Katex is not available, make no changes.
+         * If MathJax is not available, make no changes.
          *
          * Returns the output any number of typeset elements, or undefined if
-         * Katex was not available.
+         * MathJax was not available.
          *
          * Parameters
          * ----------
@@ -791,59 +808,56 @@ define('ipython3_utils', [
         if(arguments.length > 1){
             $el.text(text);
         }
-        if(!window.renderMathInElement){
+        if(!window.MathJax){
             return;
         }
         return $el.map(function(){
-            // Katex takes a DOM node: $.map makes `this` the context
-            return window.renderMathInElement(this, {
-              delimiters: [
-                {left: "$$", right: "$$", display: true},
-                {left: "$", right:  "$", display: false},
-                {left: "\\[", right: "\\]", display: true},
-                {left: "\\(", right: "\\)", display: false}
-              ]
-            });
+            // MathJax takes a DOM node: $.map makes `this` the context
+            return MathJax.Hub.Queue(["Typeset", MathJax.Hub, this]);
         });
     };
-
+    
     var time = {};
     time.milliseconds = {};
     time.milliseconds.s = 1000;
     time.milliseconds.m = 60 * time.milliseconds.s;
     time.milliseconds.h = 60 * time.milliseconds.m;
     time.milliseconds.d = 24 * time.milliseconds.h;
-
-    time.thresholds = {
-        // moment.js thresholds in milliseconds
-        s: moment.relativeTimeThreshold('s') * time.milliseconds.s,
-        m: moment.relativeTimeThreshold('m') * time.milliseconds.m,
-        h: moment.relativeTimeThreshold('h') * time.milliseconds.h,
-        d: moment.relativeTimeThreshold('d') * time.milliseconds.d,
-    };
-
+    
+    // time.thresholds = {
+    //     moment.js thresholds in milliseconds
+        // s: moment.relativeTimeThreshold('s') * time.milliseconds.s,
+        // m: moment.relativeTimeThreshold('m') * time.milliseconds.m,
+        // h: moment.relativeTimeThreshold('h') * time.milliseconds.h,
+        // d: moment.relativeTimeThreshold('d') * time.milliseconds.d,
+    // };
+    
     time.timeout_from_dt = function (dt) {
         /** compute a timeout based on dt
-
+        
         input and output both in milliseconds
-
+        
         use moment's relative time thresholds:
-
+        
         - 10 seconds if in 'seconds ago' territory
         - 1 minute if in 'minutes ago'
         - 1 hour otherwise
         */
-        if (dt < time.thresholds.s) {
-            return 10 * time.milliseconds.s;
-        } else if (dt < time.thresholds.m) {
-            return time.milliseconds.m;
-        } else {
-            return time.milliseconds.h;
-        }
+        // if (dt < time.thresholds.s) {
+        //     return 10 * time.milliseconds.s;
+        // } else if (dt < time.thresholds.m) {
+        //     return time.milliseconds.m;
+        // } else {
+        //     return time.milliseconds.h;
+        // }
+        return 1;
     };
-
+    
     var utils = {
+        is_loaded: is_loaded,
+        load_extension: load_extension,
         load_extensions: load_extensions,
+        filter_extensions: filter_extensions,
         load_extensions_from_config: load_extensions_from_config,
         regex_split : regex_split,
         uuid : uuid,
@@ -880,10 +894,8 @@ define('ipython3_utils', [
         reject: reject,
         typeset: typeset,
         time: time,
+        _ansispan:_ansispan
     };
 
-    // Backwards compatability.
-    IPython3.utils = utils;
-
     return utils;
-});
+}); 

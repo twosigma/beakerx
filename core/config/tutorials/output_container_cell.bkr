@@ -47,6 +47,7 @@
             "body": [
                 "Output containers are objects that hold a collection of other objects, and displays all its contents, even when they are complex interactive objects.",
                 "By default the contents are just stacked up on the page, but you can configure them to get tabs, grid, cycling, or other layout methods.",
+                "There is also a class for having no visible output at all: hidden outputs.",
                 "",
                 "See the complete <a href=\"../beaker/app/dist/docs/index.html?com/twosigma/beaker/jvm/object/OutputContainer.html\" target=\"_blank\">API Javadoc</a>."
             ],
@@ -113,65 +114,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "m3",
-                            "y30",
-                            "y1",
-                            "m6",
-                            "y2",
-                            "y10",
-                            "y3",
-                            "time",
-                            "y5",
-                            "y7"
-                        ],
-                        "actualalign": [
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "C",
-                            "R",
-                            "R"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10
-                        ],
-                        "getCellSho": [
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true
-                        ]
-                    }
-                },
+                "state": {},
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -4899,12 +4842,12 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "a3ef832d-5efe-4936-a91e-4b506b09f264",
-                "elapsedTime": 652,
+                "shellId": "b3248d1f-d109-418c-8008-fb522c4fb23c",
+                "elapsedTime": 1273,
                 "height": 0,
                 "hidden": true
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 1,
             "initialization": true
         },
@@ -4932,13 +4875,49 @@
                 "result": "ok",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "a3ef832d-5efe-4936-a91e-4b506b09f264",
-                "elapsedTime": 559,
+                "shellId": "b3248d1f-d109-418c-8008-fb522c4fb23c",
+                "elapsedTime": 592,
+                "height": 0
+            },
+            "evaluatorReader": false,
+            "lineCount": 11,
+            "initialization": true
+        },
+        {
+            "id": "sectionIW1PHf",
+            "type": "section",
+            "title": "Hidden Output",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codetJfc7K",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// something we don't want to see",
+                    "def big(x) {",
+                    "  return (x < 2) ? x : [x, big(x - 1), big(x - 2)]",
+                    "}",
+                    "x = big(10)",
+                    "OutputCell.HIDDEN"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "HiddenOutputCell"
+                },
+                "selectedType": "Hidden",
+                "pluginName": "Groovy",
+                "shellId": "b3248d1f-d109-418c-8008-fb522c4fb23c",
+                "elapsedTime": 690,
                 "height": 0
             },
             "evaluatorReader": true,
-            "lineCount": 11,
-            "initialization": true
+            "lineCount": 6
         },
         {
             "id": "sectioncfIcC7",
@@ -4968,6 +4947,7 @@
                     ],
                     "items": [
                         {
+                            "update_id": "f27a1b14-5aea-4689-bd78-a382bb2a177b",
                             "type": "Plot",
                             "init_width": 300,
                             "init_height": 400,
@@ -4987,8 +4967,8 @@
                                     "label": "",
                                     "auto_range": true,
                                     "auto_range_includes_zero": false,
-                                    "lower_margin": 0.05,
-                                    "upper_margin": 0.05,
+                                    "lower_margin": 0,
+                                    "upper_margin": 0,
                                     "lower_bound": 0,
                                     "upper_bound": 0,
                                     "use_log": false,
@@ -4999,8 +4979,8 @@
                             "x_upper_margin": 0.05,
                             "y_auto_range": true,
                             "y_auto_range_includes_zero": false,
-                            "y_lower_margin": 0.05,
-                            "y_upper_margin": 0.05,
+                            "y_lower_margin": 0,
+                            "y_upper_margin": 0,
                             "y_lower_bound": 0,
                             "y_upper_bound": 0,
                             "log_y": false,
@@ -5009,6 +4989,11 @@
                             "omit_checkboxes": false,
                             "graphics_list": [
                                 {
+                                    "type": "Points",
+                                    "uid": "0f18a623-196d-4d84-8c1d-034d8c268cda",
+                                    "visible": true,
+                                    "yAxis": null,
+                                    "hasClickAction": false,
                                     "x": [
                                         7.920952380952381,
                                         8.111052631578946,
@@ -5639,10 +5624,7 @@
                                         2.97,
                                         2.98
                                     ],
-                                    "visible": true,
                                     "display_name": "y1 vs y30",
-                                    "yAxis": null,
-                                    "type": "Points",
                                     "size": 3,
                                     "shape": "DEFAULT",
                                     "fill": null,
@@ -5650,6 +5632,11 @@
                                     "outline_color": null
                                 },
                                 {
+                                    "type": "Points",
+                                    "uid": "75876d8a-f9e2-4fac-a987-4dd14eb09e14",
+                                    "visible": true,
+                                    "yAxis": null,
+                                    "hasClickAction": false,
                                     "x": [
                                         7.898095238095237,
                                         8.002105263157894,
@@ -6280,10 +6267,7 @@
                                         1.6986363636363635,
                                         1.73
                                     ],
-                                    "visible": true,
                                     "display_name": "m3 vs y5",
-                                    "yAxis": null,
-                                    "type": "Points",
                                     "size": 3,
                                     "shape": "DEFAULT",
                                     "fill": null,
@@ -6291,6 +6275,11 @@
                                     "outline_color": null
                                 },
                                 {
+                                    "type": "Line",
+                                    "uid": "12f58db0-2f22-4b75-9c40-024843a96523",
+                                    "visible": true,
+                                    "yAxis": null,
+                                    "hasClickAction": false,
                                     "x": [
                                         7.898095238095237,
                                         8.002105263157894,
@@ -6921,14 +6910,16 @@
                                         1.6986363636363635,
                                         1.73
                                     ],
-                                    "visible": true,
                                     "display_name": "",
-                                    "yAxis": null,
-                                    "type": "Line",
                                     "color": "#64787878",
                                     "width": 1.5
                                 },
                                 {
+                                    "type": "Line",
+                                    "uid": "f47f092b-8da5-43dd-b858-5ba2f03b3493",
+                                    "visible": true,
+                                    "yAxis": null,
+                                    "hasClickAction": false,
                                     "x": [
                                         7.920952380952381,
                                         8.111052631578946,
@@ -7559,10 +7550,7 @@
                                         2.97,
                                         2.98
                                     ],
-                                    "visible": true,
                                     "display_name": "",
-                                    "yAxis": null,
-                                    "type": "Line",
                                     "color": "#64787878",
                                     "width": 1.5
                                 }
@@ -7578,6 +7566,7 @@
                             "tips": {}
                         },
                         {
+                            "update_id": "4bbaee2a-e760-4633-b204-0456ad9b3944",
                             "type": "TimePlot",
                             "init_width": 300,
                             "init_height": 400,
@@ -7597,8 +7586,8 @@
                                     "label": "",
                                     "auto_range": true,
                                     "auto_range_includes_zero": false,
-                                    "lower_margin": 0.05,
-                                    "upper_margin": 0.05,
+                                    "lower_margin": 0,
+                                    "upper_margin": 0,
                                     "lower_bound": 0,
                                     "upper_bound": 0,
                                     "use_log": false,
@@ -7609,8 +7598,8 @@
                             "x_upper_margin": 0.05,
                             "y_auto_range": true,
                             "y_auto_range_includes_zero": false,
-                            "y_lower_margin": 0.05,
-                            "y_upper_margin": 0.05,
+                            "y_lower_margin": 0,
+                            "y_upper_margin": 0,
                             "y_lower_bound": 0,
                             "y_upper_bound": 0,
                             "log_y": false,
@@ -7619,6 +7608,11 @@
                             "omit_checkboxes": false,
                             "graphics_list": [
                                 {
+                                    "type": "Line",
+                                    "uid": "c64ac2c5-dbbd-4e24-99cf-b49960e1ee99",
+                                    "visible": true,
+                                    "yAxis": null,
+                                    "hasClickAction": false,
                                     "x": [
                                         633744000000,
                                         636163200000,
@@ -8249,13 +8243,15 @@
                                         0.2286363636363637,
                                         0.22
                                     ],
-                                    "visible": true,
                                     "display_name": "m3",
-                                    "yAxis": null,
-                                    "type": "Line",
                                     "width": 1.5
                                 },
                                 {
+                                    "type": "Line",
+                                    "uid": "336d703d-e08c-4d7a-a76d-49410c7098e7",
+                                    "visible": true,
+                                    "yAxis": null,
+                                    "hasClickAction": false,
                                     "x": [
                                         633744000000,
                                         636163200000,
@@ -8886,10 +8882,7 @@
                                         0.6536363636363638,
                                         0.61
                                     ],
-                                    "visible": true,
                                     "display_name": "y1",
-                                    "yAxis": null,
-                                    "type": "Line",
                                     "width": 1.5
                                 }
                             ],
@@ -8964,9 +8957,9 @@
                 },
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "dc9e5c47-02be-4791-909e-936662c1a963",
-                "elapsedTime": 691,
-                "height": 1219
+                "shellId": "b3248d1f-d109-418c-8008-fb522c4fb23c",
+                "elapsedTime": 737,
+                "height": 1169
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -9008,6 +9001,7 @@
                     ],
                     "items": [
                         {
+                            "update_id": "f27a1b14-5aea-4689-bd78-a382bb2a177b",
                             "type": "Plot",
                             "init_width": 300,
                             "init_height": 400,
@@ -9027,8 +9021,8 @@
                                     "label": "",
                                     "auto_range": true,
                                     "auto_range_includes_zero": false,
-                                    "lower_margin": 0.05,
-                                    "upper_margin": 0.05,
+                                    "lower_margin": 0,
+                                    "upper_margin": 0,
                                     "lower_bound": 0,
                                     "upper_bound": 0,
                                     "use_log": false,
@@ -9039,8 +9033,8 @@
                             "x_upper_margin": 0.05,
                             "y_auto_range": true,
                             "y_auto_range_includes_zero": false,
-                            "y_lower_margin": 0.05,
-                            "y_upper_margin": 0.05,
+                            "y_lower_margin": 0,
+                            "y_upper_margin": 0,
                             "y_lower_bound": 0,
                             "y_upper_bound": 0,
                             "log_y": false,
@@ -9049,6 +9043,11 @@
                             "omit_checkboxes": false,
                             "graphics_list": [
                                 {
+                                    "type": "Points",
+                                    "uid": "0f18a623-196d-4d84-8c1d-034d8c268cda",
+                                    "visible": true,
+                                    "yAxis": null,
+                                    "hasClickAction": false,
                                     "x": [
                                         7.920952380952381,
                                         8.111052631578946,
@@ -9679,10 +9678,7 @@
                                         2.97,
                                         2.98
                                     ],
-                                    "visible": true,
                                     "display_name": "y1 vs y30",
-                                    "yAxis": null,
-                                    "type": "Points",
                                     "size": 3,
                                     "shape": "DEFAULT",
                                     "fill": null,
@@ -9690,6 +9686,11 @@
                                     "outline_color": null
                                 },
                                 {
+                                    "type": "Points",
+                                    "uid": "75876d8a-f9e2-4fac-a987-4dd14eb09e14",
+                                    "visible": true,
+                                    "yAxis": null,
+                                    "hasClickAction": false,
                                     "x": [
                                         7.898095238095237,
                                         8.002105263157894,
@@ -10320,10 +10321,7 @@
                                         1.6986363636363635,
                                         1.73
                                     ],
-                                    "visible": true,
                                     "display_name": "m3 vs y5",
-                                    "yAxis": null,
-                                    "type": "Points",
                                     "size": 3,
                                     "shape": "DEFAULT",
                                     "fill": null,
@@ -10331,6 +10329,11 @@
                                     "outline_color": null
                                 },
                                 {
+                                    "type": "Line",
+                                    "uid": "12f58db0-2f22-4b75-9c40-024843a96523",
+                                    "visible": true,
+                                    "yAxis": null,
+                                    "hasClickAction": false,
                                     "x": [
                                         7.898095238095237,
                                         8.002105263157894,
@@ -10961,14 +10964,16 @@
                                         1.6986363636363635,
                                         1.73
                                     ],
-                                    "visible": true,
                                     "display_name": "",
-                                    "yAxis": null,
-                                    "type": "Line",
                                     "color": "#64787878",
                                     "width": 1.5
                                 },
                                 {
+                                    "type": "Line",
+                                    "uid": "f47f092b-8da5-43dd-b858-5ba2f03b3493",
+                                    "visible": true,
+                                    "yAxis": null,
+                                    "hasClickAction": false,
                                     "x": [
                                         7.920952380952381,
                                         8.111052631578946,
@@ -11599,10 +11604,7 @@
                                         2.97,
                                         2.98
                                     ],
-                                    "visible": true,
                                     "display_name": "",
-                                    "yAxis": null,
-                                    "type": "Line",
                                     "color": "#64787878",
                                     "width": 1.5
                                 }
@@ -11618,6 +11620,7 @@
                             "tips": {}
                         },
                         {
+                            "update_id": "4bbaee2a-e760-4633-b204-0456ad9b3944",
                             "type": "TimePlot",
                             "init_width": 300,
                             "init_height": 400,
@@ -11637,8 +11640,8 @@
                                     "label": "",
                                     "auto_range": true,
                                     "auto_range_includes_zero": false,
-                                    "lower_margin": 0.05,
-                                    "upper_margin": 0.05,
+                                    "lower_margin": 0,
+                                    "upper_margin": 0,
                                     "lower_bound": 0,
                                     "upper_bound": 0,
                                     "use_log": false,
@@ -11649,8 +11652,8 @@
                             "x_upper_margin": 0.05,
                             "y_auto_range": true,
                             "y_auto_range_includes_zero": false,
-                            "y_lower_margin": 0.05,
-                            "y_upper_margin": 0.05,
+                            "y_lower_margin": 0,
+                            "y_upper_margin": 0,
                             "y_lower_bound": 0,
                             "y_upper_bound": 0,
                             "log_y": false,
@@ -11659,6 +11662,11 @@
                             "omit_checkboxes": false,
                             "graphics_list": [
                                 {
+                                    "type": "Line",
+                                    "uid": "c64ac2c5-dbbd-4e24-99cf-b49960e1ee99",
+                                    "visible": true,
+                                    "yAxis": null,
+                                    "hasClickAction": false,
                                     "x": [
                                         633744000000,
                                         636163200000,
@@ -12289,13 +12297,15 @@
                                         0.2286363636363637,
                                         0.22
                                     ],
-                                    "visible": true,
                                     "display_name": "m3",
-                                    "yAxis": null,
-                                    "type": "Line",
                                     "width": 1.5
                                 },
                                 {
+                                    "type": "Line",
+                                    "uid": "336d703d-e08c-4d7a-a76d-49410c7098e7",
+                                    "visible": true,
+                                    "yAxis": null,
+                                    "hasClickAction": false,
                                     "x": [
                                         633744000000,
                                         636163200000,
@@ -12926,10 +12936,7 @@
                                         0.6536363636363638,
                                         0.61
                                     ],
-                                    "visible": true,
                                     "display_name": "y1",
-                                    "yAxis": null,
-                                    "type": "Line",
                                     "width": 1.5
                                 }
                             ],
@@ -12944,6 +12951,7 @@
                             "tips": {}
                         },
                         {
+                            "update_id": "5440a59a-df6d-4fd6-9c08-18ec83aa4b6f",
                             "type": "TimePlot",
                             "init_width": 300,
                             "init_height": 400,
@@ -12963,8 +12971,8 @@
                                     "label": "",
                                     "auto_range": true,
                                     "auto_range_includes_zero": false,
-                                    "lower_margin": 0.05,
-                                    "upper_margin": 0.05,
+                                    "lower_margin": 0,
+                                    "upper_margin": 0,
                                     "lower_bound": 0,
                                     "upper_bound": 0,
                                     "use_log": false,
@@ -12975,8 +12983,8 @@
                             "x_upper_margin": 0.05,
                             "y_auto_range": true,
                             "y_auto_range_includes_zero": false,
-                            "y_lower_margin": 0.05,
-                            "y_upper_margin": 0.05,
+                            "y_lower_margin": 0,
+                            "y_upper_margin": 0,
                             "y_lower_bound": 0,
                             "y_upper_bound": 0,
                             "log_y": false,
@@ -12985,6 +12993,11 @@
                             "omit_checkboxes": false,
                             "graphics_list": [
                                 {
+                                    "type": "Line",
+                                    "uid": "ddde22c3-00ea-474d-8f7d-88d054a96d8c",
+                                    "visible": true,
+                                    "yAxis": null,
+                                    "hasClickAction": false,
                                     "x": [
                                         633744000000,
                                         636163200000,
@@ -13615,13 +13628,15 @@
                                         1.6986363636363635,
                                         1.73
                                     ],
-                                    "visible": true,
                                     "display_name": "y5",
-                                    "yAxis": null,
-                                    "type": "Line",
                                     "width": 1.5
                                 },
                                 {
+                                    "type": "Line",
+                                    "uid": "524b6961-9688-4ea2-9bee-c712d23bd1b8",
+                                    "visible": true,
+                                    "yAxis": null,
+                                    "hasClickAction": false,
                                     "x": [
                                         633744000000,
                                         636163200000,
@@ -14252,10 +14267,7 @@
                                         2.2427272727272736,
                                         2.24
                                     ],
-                                    "visible": true,
                                     "display_name": "y10",
-                                    "yAxis": null,
-                                    "type": "Line",
                                     "width": 1.5
                                 }
                             ],
@@ -14330,8 +14342,8 @@
                 },
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "dc9e5c47-02be-4791-909e-936662c1a963",
-                "elapsedTime": 671,
+                "shellId": "b3248d1f-d109-418c-8008-fb522c4fb23c",
+                "elapsedTime": 711,
                 "height": 477
             },
             "evaluatorReader": true,
@@ -19697,7 +19709,7 @@
                 "pluginName": "Groovy",
                 "shellId": "dc9e5c47-02be-4791-909e-936662c1a963",
                 "elapsedTime": 642,
-                "height": 880
+                "height": 863
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -22461,7 +22473,7 @@
                 "pluginName": "Groovy",
                 "shellId": "a335b801-c7ad-422c-9508-5a77d87359a1",
                 "elapsedTime": 624,
-                "height": 889
+                "height": 822
             },
             "evaluatorReader": true,
             "lineCount": 13
@@ -27829,7 +27841,7 @@
                         "period": 2000
                     }
                 },
-                "height": 457
+                "height": 440
             },
             "evaluatorReader": true,
             "lineCount": 10

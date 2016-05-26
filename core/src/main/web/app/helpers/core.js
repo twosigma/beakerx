@@ -807,6 +807,23 @@
       getNotebookCellManager: function() {
         return bkNotebookCellModelManager;
       },
+
+      showFileOpenDialog: function(callback, strategy) {
+        modalDialogOp.setStrategy(strategy);
+        $uibModal.open({
+          templateUrl: "app/template/fileopen.jst.html",
+          controller: 'fileOpenDialogCtrl',
+          windowClass: 'beaker-sandbox',
+          backdropClass: 'beaker-sandbox',
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          size: 'lg'
+        }).result.then(function(result){
+          callback(result.path);
+        });
+      },
+
       showModalDialog: function(callback, template, strategy, uriType, readOnly, format) {
         var options = {
           windowClass: 'beaker-sandbox',
@@ -1151,14 +1168,40 @@
     };
   });
 
-  module.controller('fileOpenDialogCtrl', function ($scope, $rootScope, $uibModalInstance) {
+  module.controller('fileOpenDialogCtrl', function ($scope, $rootScope, $uibModalInstance, modalDialogOp) {
 
-    var selected = {};
+    var elfinder;
+
+    var selected = {
+      file: null,
+      path: null
+    };
+
+    $scope.getStrategy = function () {
+      return modalDialogOp.getStrategy();
+    };
+
+    $scope.mime = function () {
+      if ($scope.getStrategy().treeViewfs.applyExtFilter === true) {
+        if ($scope.getStrategy().treeViewfs.extension === 'bkr') {
+          return ['directory', 'application/beaker-notebook'];
+        } else if ($scope.getStrategy().treeViewfs.extension === 'py') {
+          return ['directory', 'text/x-python'];
+        }
+      }
+
+      return [];
+    };
+
+    $scope.ready = function () {
+      return selected.file && selected.file.mime !== 'directory';
+    };
 
     $scope.init = function () {
-      $('#elfinder').elfinder({
+      elfinder = $('#elfinder').elfinder({
         url: '../beaker/connector',
         resizable: false,
+        onlyMimes: $scope.mime(),
         handlers: {
           select: function (event, elfinderInstance) {
             if (event.data.selected && event.data.selected.length > 0) {
@@ -1169,6 +1212,7 @@
               selected.file = null;
               selected.path = null;
             }
+            $scope.$apply();
           }
         },
         defaultView: 'icons',
@@ -1181,9 +1225,9 @@
           ],
 
           // navbar options
-          navbar : {
-            minWidth : 150,
-            maxWidth : 1200
+          navbar: {
+            minWidth: 150,
+            maxWidth: 1200
           },
 
           // directories tree options
@@ -1194,7 +1238,7 @@
             syncTree: true
           }
         }
-      });
+      }).elfinder('instance');
     };
 
     $scope.open = function () {
@@ -1206,6 +1250,15 @@
     $scope.cancel = function () {
       $uibModalInstance.dismiss('cancel');
     };
+
+    $scope.$watch(function (scope) {
+      return scope.getStrategy().treeViewfs.applyExtFilter
+    }, function () {
+      if (elfinder) {
+        elfinder.options.onlyMimes = $scope.mime();
+        elfinder.exec('reload');
+      }
+    });
   });
 
   module.controller('modalDialogCtrl', function($scope, $rootScope, $uibModalInstance, modalDialogOp,

@@ -344,14 +344,19 @@
         } else {
 
           if (true){
-            $uibModal.open({
-              templateUrl: "app/template/fileopen.jst.html",
-              controller: 'fileOpenDialogCtrl',
-              size: 'lg'
-            }).result.then(function(result){
-              bkHelper.openNotebook(result.path, uriType, readOnly, format)
-            });
-            bkHelper.openNotebook()
+            var  FileOpenStrategy = function () {
+              var newStrategy = this;
+              newStrategy.treeViewfs = {
+                applyExtFilter: true,
+                extension: ext
+              };
+            };
+            bkCoreManager.showFileOpenDialog(
+              function (path) {
+                bkHelper.openNotebook(path, uriType, readOnly, format);
+              },
+              new FileOpenStrategy()
+            );
           }else{
             var strategy = bkHelper.getFileSystemFileChooserStrategy();
             strategy.treeViewfs.extFilter = [ext];

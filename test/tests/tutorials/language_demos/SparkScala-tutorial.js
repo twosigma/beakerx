@@ -31,13 +31,21 @@ describe('Spark with Scala Tutorial', function () {
         done();
     });
 
+    function getUserHome() {
+        return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+    }
+
     it('SparkContext', function () {
         beakerPO.notebookMenu.click();
         beakerPO.languageManagerMenuItem.click();
         element(by.css('li[heading="Scala"] > div')).click();
         var langOptElem = element(by.css('div.tab-pane.active')).element(by.cssContainingText('div.language-option', 'Class path'));
         browser.executeScript('arguments[0].scrollIntoView();', langOptElem.getWebElement());
-        expect(langOptElem.element(by.css('textarea')).getAttribute('value')).toBe('/tmp/spark-assembly-1.5.0-hadoop2.4.0.jar');
+
+        var textAreaElem = langOptElem.element(by.css('textarea'));
+        textAreaElem.clear();
+        var jarPath = path.join(getUserHome() ,"libs/spark-assembly-1.5.0-hadoop2.4.0.jar");
+        textAreaElem.sendKeys(jarPath);
         langOptElem.element(by.css('button')).click();
         browser.wait(beakerPO.EC.presenceOf($('div.navbar-text.loadingmsg.ng-hide')), 30000).then(function(){
             element(by.css('div.navbar-text.loadingmsg')).getInnerHtml().then(function(value){
@@ -48,8 +56,11 @@ describe('Spark with Scala Tutorial', function () {
 
         var idCell = "codeWDegFP";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text', 'sparkScalaTutorialContext');
-        beakerPO.checkCellOutputSubTextByIdCell(idCell, 'org.apache.spark.SparkContext', 0, 29);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text', 'sparkScalaTutorialContext', 45000);
+        beakerPO.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText()
+            .then(function(value){
+                expect(value.indexOf('sc: org.apache.spark.SparkContext = org.apache.spark.SparkContext')).not.toBe(-1);
+            });
     });
 
     it('Approximate Pi', function () {

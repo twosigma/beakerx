@@ -53,6 +53,10 @@ RUN chown -R beaker:beaker /home/beaker/.beaker
 #       Run       #
 ###################
 
+# Password for public-server authentication.
+# Set to "<random>" for randomly generated password.
+ENV BEAKERPASSWD "<random>"
+
 EXPOSE 8800
 WORKDIR /home/beaker/src
 CMD su -m beaker -c "export PATH=$PATH:/usr/sbin && /home/beaker/src/core/beaker.command --public-server"

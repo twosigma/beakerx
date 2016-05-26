@@ -76,10 +76,11 @@ public class ConnectorServlet extends HttpServlet {
                                               new File(userHomeDir)));
 
       File[] roots = File.listRoots();
-      for(int i = 0; i < roots.length ; i++) {
-        fsService.addVolume(roots[i].getPath(),
-                            createLocalFsVolume(roots[i].getPath(),
-                                                roots[i]));
+      for (File root : roots) {
+        String path = root.getPath();
+        fsService.addVolume(path.replace(":\\", ""),
+                            createLocalFsVolume(path,
+                                                root));
       }
     } else {
       fsService.addVolume("A",

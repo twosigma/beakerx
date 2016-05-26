@@ -225,6 +225,9 @@ bk-output-display {
     overflow:     visible;
     line-height:  inherit;
     background:   transparent;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -o-pre-wrap;
   }
 
   &[type="Results"] {

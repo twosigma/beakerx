@@ -59,6 +59,8 @@ public class TableDisplay extends ObservableTableDisplay {
   private List<String> columnOrder = new ArrayList<>();
   private List<TableDisplayCellHighlighter> cellHighlighters = new ArrayList<>();
   private List<List<String>> tooltips = new ArrayList<>();
+  private Integer dataFontSize;
+  private Integer headerFontSize;
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
@@ -241,6 +243,22 @@ public class TableDisplay extends ObservableTableDisplay {
 
   public List<List<String>> getTooltips() {
     return tooltips;
+  }
+
+  public Integer getDataFontSize() {
+    return dataFontSize;
+  }
+
+  public void setDataFontSize(Integer dataFontSize) {
+    this.dataFontSize = dataFontSize;
+  }
+
+  public Integer getHeaderFontSize() {
+    return headerFontSize;
+  }
+
+  public void setHeaderFontSize(Integer headerFontSize) {
+    this.headerFontSize = headerFontSize;
   }
 
   public static List<Map<String, Object>> getValuesAsRows(List<List<?>> values, List<String> columns) {

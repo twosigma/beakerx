@@ -1139,6 +1139,8 @@
             scope.stringFormatForType   = scope.savedstate.stringFormatForType || {};
             scope.stringFormatForColumn = scope.savedstate.stringFormatForColumn || {};
             scope.tooltips = scope.savedstate.tooltips || [];
+            scope.dataFontSize = scope.savedstate.dataFontSize;
+            scope.headerFontSize = scope.savedstate.headerFontSize;
 
             scope.savedstate  = undefined;
           } else {
@@ -1214,6 +1216,8 @@
             scope.stringFormatForType   = model.stringFormatForType || {};
             scope.stringFormatForColumn = model.stringFormatForColumn || {};
             scope.tooltips              = model.tooltips || [];
+            scope.dataFontSize          = model.dataFontSize;
+            scope.headerFontSize        = model.headerFontSize;
           }
           // auto compute types
           if (scope.actualtype === undefined || scope.actualtype.length === 0) {
@@ -2043,6 +2047,11 @@
 
           // build configuration
           var converter = scope.allConverters[1];
+          var createdCell = function (td, cellData, rowData, row, col) {
+            if (scope.dataFontSize) {
+              $(td).css({'font-size': scope.dataFontSize});
+            }
+          };
           if (scope.hasIndex) {
             for (var i = 0; i < scope.allTypes.length; i++) {
               if (scope.allTypes[i].name === scope.indexType) {
@@ -2050,9 +2059,9 @@
                 break;
               }
             }
-            cols.push({'title' : scope.indexName, 'className': 'dtright', 'render': converter});
+            cols.push({'title' : scope.indexName, 'className': 'dtright', 'render': converter, createdCell: createdCell});
           } else {
-            cols.push({'title': '    ', 'className': 'dtright', 'render': converter});
+            cols.push({'title': '    ', 'className': 'dtright', 'render': converter, createdCell: createdCell});
           }
 
           for (i = 0; i < scope.columnNames.length; i++) {
@@ -2062,11 +2071,15 @@
               'title' : scope.columnNames[i],
               'header': { 'menu': headerMenuItems }
             };
-            if(!_.isEmpty(scope.tooltips)){
-              col.createdCell = function (td, cellData, rowData, row, col) {
+            col.createdCell = function (td, cellData, rowData, row, col) {
+              if(!_.isEmpty(scope.tooltips)){
                 $(td).attr('title', scope.tooltips[row][col - 1]);
               }
-            }
+              if (scope.dataFontSize) {
+                $(td).css({'font-size': scope.dataFontSize});
+              }
+            };
+
             if (al === 'R') {
               col.className = 'dtright';
             } else if (al === 'C') {
@@ -2169,6 +2182,11 @@
             $(id).parents('.dataTables_scroll').find('th, td')
               .removeClass(FC_LEFT_SEPARATOR_CLASS + ' ' + FC_RIGHT_SEPARATOR_CLASS);
             scope.table = $(id).DataTable(init);
+
+            if (scope.headerFontSize) {
+              $(scope.table.table().container()).find('thead th').css({'font-size': scope.headerFontSize});
+            }
+
             scope.table.settings()[0].oScroll.iBarWidth = scope.scrollbarWidth;
             scope.renderMenu = true;
             if (!scope.colorder) {

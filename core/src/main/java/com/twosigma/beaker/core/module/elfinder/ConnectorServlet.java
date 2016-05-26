@@ -74,6 +74,13 @@ public class ConnectorServlet extends HttpServlet {
       fsService.addVolume("A",
                           createLocalFsVolume(userHomeDir,
                                               new File(userHomeDir)));
+
+      File[] roots = File.listRoots();
+      for(int i = 0; i < roots.length ; i++) {
+        fsService.addVolume(roots[i].getPath(),
+                            createLocalFsVolume(roots[i].getPath(),
+                                                roots[i]));
+      }
     } else {
       fsService.addVolume("A",
                           createLocalFsVolume("/", new File("/")));

@@ -6477,7 +6477,7 @@
                 "pluginName": "Groovy",
                 "shellId": "aa32f2c1-e85c-4515-8617-eb237b62180a",
                 "elapsedTime": 775,
-                "height": 519
+                "height": 536
             },
             "evaluatorReader": false,
             "lineCount": 5
@@ -6697,7 +6697,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "height": 518
+                "height": 535
             },
             "evaluatorReader": false,
             "lineCount": 6
@@ -6792,7 +6792,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
-                "height": 545
+                "height": 562
             },
             "evaluatorReader": false,
             "lineCount": 1
@@ -6919,7 +6919,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
-                "height": 519
+                "height": 536
             },
             "evaluatorReader": false,
             "lineCount": 15
@@ -7140,7 +7140,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
-                "height": 546
+                "height": 563
             },
             "evaluatorReader": false,
             "lineCount": 9
@@ -7273,7 +7273,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
-                "height": 519
+                "height": 536
             },
             "evaluatorReader": false,
             "lineCount": 4
@@ -7414,7 +7414,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
-                "height": 545
+                "height": 562
             },
             "evaluatorReader": false,
             "lineCount": 6
@@ -7539,7 +7539,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "height": 546
+                "height": 563
             },
             "evaluatorReader": false,
             "lineCount": 4
@@ -7743,7 +7743,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "height": 546
+                "height": 563
             },
             "evaluatorReader": false,
             "lineCount": 9
@@ -7966,7 +7966,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
-                "height": 546
+                "height": 563
             },
             "evaluatorReader": false,
             "lineCount": 8
@@ -8091,7 +8091,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
-                "height": 519
+                "height": 536
             },
             "evaluatorReader": false,
             "lineCount": 6
@@ -8218,7 +8218,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
-                "height": 519
+                "height": 536
             },
             "evaluatorReader": false,
             "lineCount": 4
@@ -8359,7 +8359,7 @@
                 "elapsedTime": 783,
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
-                "height": 265
+                "height": 282
             },
             "evaluatorReader": false,
             "lineCount": 6
@@ -8491,7 +8491,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
                 "elapsedTime": 736,
-                "height": 519
+                "height": 536
             },
             "evaluatorReader": false,
             "lineCount": 5
@@ -8607,7 +8607,7 @@
                 "pluginName": "Groovy",
                 "shellId": "633b136d-ae08-4f35-a3be-e085b9efa047",
                 "elapsedTime": 717,
-                "height": 518
+                "height": 535
             },
             "evaluatorReader": false,
             "lineCount": 1
@@ -8746,7 +8746,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
                 "elapsedTime": 734,
-                "height": 519
+                "height": 536
             },
             "evaluatorReader": false,
             "lineCount": 5
@@ -8988,7 +8988,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
                 "elapsedTime": 1145,
-                "height": 519
+                "height": 536
             },
             "evaluatorReader": false,
             "lineCount": 16
@@ -9222,7 +9222,7 @@
                 "state": {},
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
-                "height": 550
+                "height": 567
             },
             "evaluatorReader": false,
             "lineCount": 8
@@ -10669,9 +10669,10 @@
             "id": "markdownmyaVjp",
             "type": "markdown",
             "body": [
-                "The plot can have two y-axes. Just add a YAxis to the plot object, and specify its label.",
-                "Then for data that should be scaled according to the second axis,",
-                "specify the property \"yAxis\" with a value that coincides with the label given."
+                "The plot can have two y-axes. Just add a `YAxis` to the plot object, and specify its label.",
+                "Then for data that should be scaled according to this second axis,",
+                "specify the property `yAxis` with a value that coincides with the label given.",
+                "You can use `upperMargin` and `lowerMargin` to restrict the range of the data leaving more white, perhaps for the data on the other axis."
             ],
             "evaluatorReader": false
         },
@@ -10682,8 +10683,9 @@
             "input": {
                 "body": [
                     "def p = new TimePlot(xLabel: \"Time\", yLabel: \"Interest Rates\")",
-                    "p << new YAxis(label: \"Spread\", upperMargin: 0.5)",
-                    "p << new Area(x: rates.time, y: rates.spread, displayName: \"Spread\", yAxis: \"Spread\", color: new Color(180, 50, 50, 128))",
+                    "p << new YAxis(label: \"Spread\", upperMargin: 4)",
+                    "p << new Area(x: rates.time, y: rates.spread, displayName: \"Spread\",",
+                    "              yAxis: \"Spread\", color: new Color(180, 50, 50, 128))",
                     "p << new Line(x: rates.time, y: rates.m3, displayName: \"3 Month\")",
                     "p << new Line(x: rates.time, y: rates.y10, displayName: \"10 Year\")"
                 ]
@@ -10698,10 +10700,10 @@
                     "focus": {
                         "xl": 0.4738095238095238,
                         "xr": 0.5261904761904762,
-                        "yl": 0.47553065214355544,
-                        "yr": 0.5238409440022344,
+                        "yl": 0.47380952380952374,
+                        "yr": 0.5261904761904762,
                         "xspan": 0.05238095238095242,
-                        "yspan": 0.04831029185867891
+                        "yspan": 0.05238095238095247
                     },
                     "lodOn": [
                         null,
@@ -10733,10 +10735,10 @@
                     "defaultFocus": {
                         "xl": 0.4738095238095238,
                         "xr": 0.5261904761904762,
-                        "yl": 0.47553065214355544,
-                        "yr": 0.5238409440022344,
+                        "yl": 0.47380952380952374,
+                        "yr": 0.5261904761904762,
                         "xspan": 0.05238095238095242,
-                        "yspan": 0.04831029185867891
+                        "yspan": 0.05238095238095247
                     },
                     "tips": {}
                 },
@@ -10760,8 +10762,8 @@
                             "label": "Interest Rates",
                             "auto_range": true,
                             "auto_range_includes_zero": false,
-                            "lower_margin": 0.05,
-                            "upper_margin": 0.05,
+                            "lower_margin": 0,
+                            "upper_margin": 0,
                             "lower_bound": 0,
                             "upper_bound": 0,
                             "use_log": false,
@@ -10772,8 +10774,8 @@
                             "label": "Spread",
                             "auto_range": true,
                             "auto_range_includes_zero": false,
-                            "lower_margin": 0.05,
-                            "upper_margin": 0.5,
+                            "lower_margin": 0,
+                            "upper_margin": 4,
                             "lower_bound": 0,
                             "upper_bound": 0,
                             "use_log": false,
@@ -10784,8 +10786,8 @@
                     "x_upper_margin": 0.05,
                     "y_auto_range": true,
                     "y_auto_range_includes_zero": false,
-                    "y_lower_margin": 0.05,
-                    "y_upper_margin": 0.05,
+                    "y_lower_margin": 0,
+                    "y_upper_margin": 0,
                     "y_lower_bound": 0,
                     "y_upper_bound": 0,
                     "log_y": false,
@@ -10795,7 +10797,7 @@
                     "graphics_list": [
                         {
                             "type": "Area",
-                            "uid": "3211beb2-db36-44e7-a149-9292f847832e",
+                            "uid": "47d4410a-ee8c-434f-8b86-9040d77e78f9",
                             "visible": true,
                             "yAxis": "Spread",
                             "hasClickAction": false,
@@ -11435,7 +11437,7 @@
                         },
                         {
                             "type": "Line",
-                            "uid": "75d68f61-83f2-43b8-a4e7-e6ec7fa03313",
+                            "uid": "1ed0ed58-4754-447c-afc2-55e9aea58a86",
                             "visible": true,
                             "yAxis": null,
                             "hasClickAction": false,
@@ -12074,7 +12076,7 @@
                         },
                         {
                             "type": "Line",
-                            "uid": "3ddabd1e-a492-43fa-b340-6a2ebae84208",
+                            "uid": "bdecf6f0-ab08-44b9-b415-08dfbe924d44",
                             "visible": true,
                             "yAxis": null,
                             "hasClickAction": false,
@@ -12724,12 +12726,12 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "8d06db32-d911-4d46-a7ab-82f0a027ff38",
-                "elapsedTime": 865,
+                "shellId": "d23a8e1e-f818-4e13-9079-f418cd5ea515",
+                "elapsedTime": 791,
                 "height": 502
             },
             "evaluatorReader": true,
-            "lineCount": 5
+            "lineCount": 6
         },
         {
             "id": "sectionwk1oGt",
@@ -13879,52 +13881,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "showAllItems": true,
-                    "plotSize": {
-                        "width": 640,
-                        "height": 480
-                    },
-                    "focus": {
-                        "xl": 0,
-                        "xr": 0.0995475113122172,
-                        "yl": 2.6020852139652106e-18,
-                        "yr": 0.09954751131221717,
-                        "xspan": 0.0995475113122172,
-                        "yspan": 0.09954751131221717
-                    },
-                    "lodOn": [
-                        null,
-                        null
-                    ],
-                    "lodType": [
-                        null,
-                        null
-                    ],
-                    "lodAuto": [
-                        null,
-                        null
-                    ],
-                    "zoomHash": [
-                        null,
-                        null
-                    ],
-                    "showItem": [
-                        true,
-                        true
-                    ],
-                    "visibleItem": 2,
-                    "legendableItem": 2,
-                    "defaultFocus": {
-                        "xl": 0,
-                        "xr": 0.0995475113122172,
-                        "yl": 0.004524886877828056,
-                        "yr": 0.09502262443438914,
-                        "xspan": 0.0995475113122172,
-                        "yspan": 0.09049773755656108
-                    },
-                    "tips": {}
-                },
+                "state": {},
                 "result": {
                     "type": "Plot",
                     "init_width": 640,
@@ -14403,9 +14360,9 @@
                 "pluginName": "Groovy",
                 "shellId": "4f9f13b6-f7d9-4813-af3f-1d47510a1938",
                 "elapsedTime": 750,
-                "height": 528
+                "height": 545
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 16
         },
         {
@@ -14581,7 +14538,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
                 "elapsedTime": 697,
-                "height": 519
+                "height": 536
             },
             "evaluatorReader": false,
             "lineCount": 14
@@ -14711,7 +14668,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ac094138-ac85-4166-93ba-6f8c514b76a9",
                 "elapsedTime": 719,
-                "height": 519
+                "height": 536
             },
             "evaluatorReader": false,
             "lineCount": 5
@@ -14739,8 +14696,8 @@
                 "result": "ok",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "8d06db32-d911-4d46-a7ab-82f0a027ff38",
-                "elapsedTime": 1121,
+                "shellId": "d23a8e1e-f818-4e13-9079-f418cd5ea515",
+                "elapsedTime": 1088,
                 "height": 0
             },
             "evaluatorReader": false,
@@ -14763,8 +14720,8 @@
                 "result": "ok",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "8d06db32-d911-4d46-a7ab-82f0a027ff38",
-                "elapsedTime": 740,
+                "shellId": "d23a8e1e-f818-4e13-9079-f418cd5ea515",
+                "elapsedTime": 710,
                 "height": 0
             },
             "evaluatorReader": false,
@@ -14790,8 +14747,8 @@
                 "result": "ok",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "8d06db32-d911-4d46-a7ab-82f0a027ff38",
-                "elapsedTime": 734,
+                "shellId": "d23a8e1e-f818-4e13-9079-f418cd5ea515",
+                "elapsedTime": 993,
                 "height": 0
             },
             "evaluatorReader": false,

@@ -27,7 +27,7 @@
       var getParentId = function(cId) {
         var pId = null;
         _.find(tagMap, function(v, k) {
-          if (_.contains(v, cId)) {
+          if (_.includes(v, cId)) {
             pId = k;
             return true;
           }
@@ -91,7 +91,7 @@
           retCell = convertMarkdownCell(cell);
           break;
       }
-      if (tagMap2 && _.contains(tagMap2.initialization, cell.id)) {
+      if (tagMap2 && _.includes(tagMap2.initialization, cell.id)) {
         retCell.initialization = true;
       }
       return retCell;

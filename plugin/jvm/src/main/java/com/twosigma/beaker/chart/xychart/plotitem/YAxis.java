@@ -41,7 +41,7 @@ public class YAxis implements Serializable, Cloneable{
   }
 
   public YAxis(String label) {
-    this(label, 0.05, 0.05);
+    this(label, 0, 0);
   }
 
   public YAxis(double lowerMargin, double upperMargin) {

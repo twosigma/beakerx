@@ -59,8 +59,8 @@
           newmodel = _.extend(newmodel, {
             userFocus: {},
             xAxis: {label: model.domain_axis_label},
-            yAxis: {label: model.y_label},
-            yAxisR: model.rangeAxes.length > 1 ? {label: model.rangeAxes[1].label} : null,
+            yAxis: {label: model.y_label, lowerMargin: model.rangeAxes[0].lower_margin, upperMargin: model.rangeAxes[0].upper_margin},
+            yAxisR: model.rangeAxes.length > 1 ? {label: model.rangeAxes[1].label, lowerMargin: model.rangeAxes[1].lower_margin, upperMargin: model.rangeAxes[1].upper_margin} : null,
             orientation: model.orientation != null ? model.orientation : "VERTICAL",
             omitCheckboxes: model.omit_checkboxes,
             nanoOffset: null,
@@ -183,6 +183,8 @@
           if (label != null) {
             axis.setLabel(label);
           }
+          axis.axisMarginValL = modelAxis.lowerMargin;
+          axis.axisMarginValR = modelAxis.upperMargin;
           return axis;
         };
         model.yAxis = updateYAxisRange(model.yAxis, model.vrange);
@@ -563,6 +565,21 @@
 
           var range = plotUtils.getDataRange(yAxisData).datarange;
           var rangeR = _.isEmpty(yAxisRData) ? null : plotUtils.getDataRange(yAxisRData).datarange;
+
+          var applyMargins = function (range, axis) {
+            axis.lowerMargin = axis.lowerMargin || 0;
+            axis.upperMargin = axis.upperMargin || 0;
+
+            var span = range.yr - range.yl;
+            range.yl -= axis.lowerMargin * span;
+            range.yr += axis.upperMargin * span;
+            range.yspan = range.yr - range.yl;
+            return range;
+          };
+          range = applyMargins(range, newmodel.yAxis);
+          if (rangeR) {
+            rangeR = applyMargins(rangeR, newmodel.yAxisR);
+          }
 
           if (newmodel.yIncludeZero === true && range.yl > 0) {
             range.yl = 0;

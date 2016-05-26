@@ -53,6 +53,13 @@ header {
     padding-left: 15px;
   }
 
+  .navbar-text.path-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: calc(100% - 115px);
+  }
+
   .navbar-brand-fill {
     fill: #fff;
   }

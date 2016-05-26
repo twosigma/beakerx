@@ -17,7 +17,7 @@
   <div class="navbar navbar-inverse">
     <bk-brand-logo reference="/beaker/#/control" on-click="gotoControlPanel(event)"></bk-brand-logo>
     <div ng-switch="renamingAllowed()">
-      <a ng-switch-when="true" href="#" class="navbar-text" ng-click="renameNotebook()" eat-click>{{pathname()}}</a>
+      <a ng-switch-when="true" href="#" class="navbar-text path-name" ng-click="renameNotebook()" eat-click>{{pathname()}}</a>
       <p ng-switch-default class="navbar-text">{{pathname()}}</p>
     </div>
     <span class="navbar-text" ng-if="loading || !!loadingmsg">

@@ -1141,6 +1141,7 @@
             scope.tooltips = scope.savedstate.tooltips || [];
             scope.dataFontSize = scope.savedstate.dataFontSize;
             scope.headerFontSize = scope.savedstate.headerFontSize;
+            scope.fontColor = scope.savedstate.fontColor;
 
             scope.savedstate  = undefined;
           } else {
@@ -1218,6 +1219,7 @@
             scope.tooltips              = model.tooltips || [];
             scope.dataFontSize          = model.dataFontSize;
             scope.headerFontSize        = model.headerFontSize;
+            scope.fontColor             = model.fontColor;
           }
           // auto compute types
           if (scope.actualtype === undefined || scope.actualtype.length === 0) {
@@ -2077,6 +2079,12 @@
               }
               if (scope.dataFontSize) {
                 $(td).css({'font-size': scope.dataFontSize});
+              }
+              if (scope.fontColor) {
+                var color = scope.fontColor[row][col - 1];
+                var color_opacity = parseInt(color.substr(1, 2), 16) / 255;
+                $(td).css({'color': "#" + color.substr(3)});
+                $(td).css({'opacity': color_opacity});
               }
             };
 

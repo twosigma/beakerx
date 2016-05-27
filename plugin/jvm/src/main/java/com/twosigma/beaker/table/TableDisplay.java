@@ -15,9 +15,7 @@
  */
 package com.twosigma.beaker.table;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.Set;
 
+import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
@@ -61,6 +60,7 @@ public class TableDisplay extends ObservableTableDisplay {
   private List<List<String>> tooltips = new ArrayList<>();
   private Integer dataFontSize;
   private Integer headerFontSize;
+  private List<List<Color>> fontColor = new ArrayList<>();
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
@@ -259,6 +259,26 @@ public class TableDisplay extends ObservableTableDisplay {
 
   public void setHeaderFontSize(Integer headerFontSize) {
     this.headerFontSize = headerFontSize;
+  }
+
+  public List<List<Color>> getFontColor() {
+    return fontColor;
+  }
+
+  public void setFontColorProvider(Object closure) {
+    try {
+      for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
+        List<?> row = this.values.get(rowInd);
+        List<Color> rowFontColors = new ArrayList<>();
+        for (int colInd = 0; colInd < row.size(); colInd++) {
+          Object[] params = new Object[]{rowInd, colInd, this};
+          rowFontColors.add((Color) runClosure(closure, params));
+        }
+        this.fontColor.add(rowFontColors);
+      }
+    } catch (Throwable e) {
+      throw new IllegalArgumentException("Can not set font color using closure.", e);
+    }
   }
 
   public static List<Map<String, Object>> getValuesAsRows(List<List<?>> values, List<String> columns) {

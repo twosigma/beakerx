@@ -52,6 +52,7 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
       jgen.writeObjectField("tooltips", value.getTooltips());
       jgen.writeObjectField("dataFontSize", value.getDataFontSize());
       jgen.writeObjectField("headerFontSize", value.getHeaderFontSize());
+      jgen.writeObjectField("fontColor", value.getFontColor());
       jgen.writeObjectField("values", value.getValues());
       jgen.writeEndObject();
     }

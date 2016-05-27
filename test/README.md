@@ -55,3 +55,7 @@ Enclosed are a set of tests powered by protractor.
 ### Check the tests
 
 *  after executing tests ./test/screenshots/ directory contains screenshots of tests
+
+### Folder for library
+
+ If you need to test Scala you should add spark-assembly-1.5.0-hadoop2.4.0.jar to $HOME/lib/ (Ubuntu, Mac) or $USERPROFILE/lib/ (Windows).

@@ -44,7 +44,7 @@ describe('Spark with Scala Tutorial', function () {
 
         var textAreaElem = langOptElem.element(by.css('textarea'));
         textAreaElem.clear();
-        var jarPath = path.join(getUserHome() ,"libs/spark-assembly-1.5.0-hadoop2.4.0.jar");
+        var jarPath = path.join(getUserHome() ,"lib/spark-assembly-1.5.0-hadoop2.4.0.jar");
         textAreaElem.sendKeys(jarPath);
         langOptElem.element(by.css('button')).click();
         browser.wait(beakerPO.EC.presenceOf($('div.navbar-text.loadingmsg.ng-hide')), 30000).then(function(){

@@ -57,7 +57,21 @@ header {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: calc(100% - 115px);
+    max-width: calc(70% - 115px)
+  }
+  .navbar-text.path-name.full {
+    max-width: calc(100% - 115px);
+  }
+
+  .navbar-text.loadingmsg {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(30% - 20px);
+    .loading-spin {
+      margin-top: 0px;
+      margin-right: 10px;
+    }
   }
 
   .navbar-brand-fill {

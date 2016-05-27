@@ -17,13 +17,13 @@
   <div class="navbar navbar-inverse">
     <bk-brand-logo reference="/beaker/#/control" on-click="gotoControlPanel(event)"></bk-brand-logo>
     <div ng-switch="renamingAllowed()">
-      <a ng-switch-when="true" href="#" class="navbar-text path-name" ng-click="renameNotebook()" eat-click>{{pathname()}}</a>
-      <p ng-switch-default class="navbar-text">{{pathname()}}</p>
+      <a ng-switch-when="true" href="#" class="navbar-text path-name" ng-class="{full: !loading && !loadingmsg}" ng-click="renameNotebook()" eat-click>{{pathname()}}</a>
+      <p ng-switch-default class="navbar-text path-name" ng-class="{full: !loading && !loadingmsg}">{{pathname()}}</p>
     </div>
-    <span class="navbar-text" ng-if="loading || !!loadingmsg">
-      <i class='fa fa-refresh fa-spin text-white'></i>
-    </span>
     <div class="navbar-text text-white loadingmsg" ng-if="loading || !!loadingmsg">
+      <span class="loading-spin">
+       <i class='fa fa-refresh fa-spin text-white'></i>
+      </span>
       {{loadingmsg}}
     </div>
   </div>

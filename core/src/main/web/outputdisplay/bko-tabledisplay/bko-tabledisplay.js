@@ -2080,7 +2080,7 @@
               if (scope.dataFontSize) {
                 $(td).css({'font-size': scope.dataFontSize});
               }
-              if (scope.fontColor) {
+              if (!_.isEmpty(scope.fontColor)) {
                 var color = scope.fontColor[row][col - 1];
                 var color_opacity = parseInt(color.substr(1, 2), 16) / 255;
                 $(td).css({'color': "#" + color.substr(3)});

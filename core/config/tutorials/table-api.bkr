@@ -77,8 +77,7 @@
                     "}",
                     "",
                     "display"
-                ],
-                "hidden": true
+                ]
             },
             "output": {
                 "state": {
@@ -497,6 +496,7 @@
                 },
                 "result": {
                     "hasDoubleClickAction": false,
+                    "contextMenuItems": [],
                     "type": "TableDisplay",
                     "columnNames": [
                         "time",
@@ -871,6 +871,10 @@
                     "columnsVisible": {},
                     "columnOrder": [],
                     "cellHighlighters": [],
+                    "tooltips": [],
+                    "dataFontSize": null,
+                    "headerFontSize": null,
+                    "fontColor": [],
                     "values": [
                         [
                             {
@@ -5571,8 +5575,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "1e042215-07ce-47a3-8dab-a9855aee1fa2",
-                "elapsedTime": 615,
+                "shellId": "d968cb7d-8dc7-4627-85b8-f95da66e2100",
+                "elapsedTime": 643,
                 "height": 776
             },
             "evaluatorReader": true,
@@ -5714,6 +5718,7 @@
                 },
                 "result": {
                     "hasDoubleClickAction": false,
+                    "contextMenuItems": [],
                     "type": "TableDisplay",
                     "columnNames": [
                         "time",
@@ -5762,6 +5767,10 @@
                     "columnsVisible": {},
                     "columnOrder": [],
                     "cellHighlighters": [],
+                    "tooltips": [],
+                    "dataFontSize": null,
+                    "headerFontSize": null,
+                    "fontColor": [],
                     "values": [
                         [
                             {
@@ -10462,8 +10471,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "1e042215-07ce-47a3-8dab-a9855aee1fa2",
-                "elapsedTime": 709,
+                "shellId": "d968cb7d-8dc7-4627-85b8-f95da66e2100",
+                "elapsedTime": 751,
                 "height": 776
             },
             "evaluatorReader": true,
@@ -10589,6 +10598,7 @@
                 },
                 "result": {
                     "hasDoubleClickAction": false,
+                    "contextMenuItems": [],
                     "type": "TableDisplay",
                     "columnNames": [
                         "time",
@@ -10644,6 +10654,10 @@
                         "y3"
                     ],
                     "cellHighlighters": [],
+                    "tooltips": [],
+                    "dataFontSize": null,
+                    "headerFontSize": null,
+                    "fontColor": [],
                     "values": [
                         [
                             {
@@ -15344,8 +15358,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "1e042215-07ce-47a3-8dab-a9855aee1fa2",
-                "elapsedTime": 757,
+                "shellId": "d968cb7d-8dc7-4627-85b8-f95da66e2100",
+                "elapsedTime": 766,
                 "height": 776
             },
             "evaluatorReader": true,
@@ -15491,11 +15505,12 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "1e042215-07ce-47a3-8dab-a9855aee1fa2",
-                "elapsedTime": 1379,
+                "shellId": "d968cb7d-8dc7-4627-85b8-f95da66e2100",
+                "elapsedTime": 1440,
                 "height": 776,
                 "result": {
                     "hasDoubleClickAction": false,
+                    "contextMenuItems": [],
                     "type": "TableDisplay",
                     "columnNames": [
                         "time",
@@ -15544,6 +15559,10 @@
                             "maxColor": null
                         }
                     ],
+                    "tooltips": [],
+                    "dataFontSize": null,
+                    "headerFontSize": null,
+                    "fontColor": [],
                     "values": [
                         [
                             {
@@ -20387,10 +20406,11 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "1e042215-07ce-47a3-8dab-a9855aee1fa2",
-                "elapsedTime": 1563,
+                "shellId": "d968cb7d-8dc7-4627-85b8-f95da66e2100",
+                "elapsedTime": 921,
                 "result": {
                     "hasDoubleClickAction": false,
+                    "contextMenuItems": [],
                     "type": "TableDisplay",
                     "columnNames": [
                         "time",
@@ -20459,6 +20479,10 @@
                             "midColor": "#FFEFDA52"
                         }
                     ],
+                    "tooltips": [],
+                    "dataFontSize": null,
+                    "headerFontSize": null,
+                    "fontColor": [],
                     "values": [
                         [
                             {
@@ -25255,6 +25279,7 @@
                 },
                 "result": {
                     "hasDoubleClickAction": false,
+                    "contextMenuItems": [],
                     "type": "TableDisplay",
                     "columnNames": [
                         "a",
@@ -25285,6 +25310,10 @@
                             "style": "FULL_ROW"
                         }
                     ],
+                    "tooltips": [],
+                    "dataFontSize": null,
+                    "headerFontSize": null,
+                    "fontColor": [],
                     "values": [
                         [
                             1,
@@ -25335,8 +25364,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "1e042215-07ce-47a3-8dab-a9855aee1fa2",
-                "elapsedTime": 831,
+                "shellId": "d968cb7d-8dc7-4627-85b8-f95da66e2100",
+                "elapsedTime": 803,
                 "height": 318
             },
             "evaluatorReader": true,
@@ -25424,8 +25453,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "6d59ac12-3018-419c-961c-3bb653a1f3f0",
-                "elapsedTime": 1016,
+                "shellId": "add6a82a-cbfa-4f64-854d-b92e215ec398",
+                "elapsedTime": 677,
                 "height": 156,
                 "result": {
                     "hasDoubleClickAction": true,
@@ -25502,7 +25531,7 @@
                     " [firstCol:4, secondCol:5, thirdCol:6],",
                     " [firstCol:7, secondCol:8, thirdCol:9]",
                     "]",
-                    "td4 = new TableDisplay(mapList4)",
+                    "def td4 = new TableDisplay(mapList4)",
                     "",
                     "//tool tip can be set with a closure",
                     "td4.setToolTip { row, col, display ->",
@@ -25589,6 +25618,11 @@
                         ]
                     }
                 },
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "add6a82a-cbfa-4f64-854d-b92e215ec398",
+                "elapsedTime": 583,
+                "height": 175,
                 "result": {
                     "hasDoubleClickAction": false,
                     "contextMenuItems": [],
@@ -25669,15 +25703,11 @@
                             9
                         ]
                     ]
-                },
-                "selectedType": "Table",
-                "pluginName": "Groovy",
-                "shellId": "6d59ac12-3018-419c-961c-3bb653a1f3f0",
-                "elapsedTime": 701,
-                "height": 175
+                }
             },
             "evaluatorReader": true,
-            "lineCount": 26
+            "lineCount": 26,
+            "initialization": true
         }
     ],
     "namespace": {

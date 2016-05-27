@@ -2542,7 +2542,11 @@
         scope.$watch('getCellModel()', function(m) {
           if(!angular.equals(m, cellModel)){
             cellModel = m;
-            scope.init(m, !scope.update);
+            if (scope.update) {
+              scope.applyChanges();
+            } else {
+              scope.init(m, true);
+            }
             tableChanged = true;
           }
         });

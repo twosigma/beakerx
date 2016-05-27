@@ -2526,6 +2526,18 @@
               state.tooltips = scope.tooltips;
             }
 
+            if (scope.headerFontSize !== undefined) {
+              state.headerFontSize = scope.headerFontSize;
+            }
+
+            if (scope.dataFontSize !== undefined) {
+              state.dataFontSize = scope.dataFontSize;
+            }
+
+            if (scope.fontColor !== undefined) {
+              state.fontColor = scope.fontColor;
+            }
+
             scope.model.setDumpState({datatablestate: state});
           }
         });

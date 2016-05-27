@@ -15500,7 +15500,10 @@
                         "formatForTimes": {},
                         "stringFormatForType": {},
                         "stringFormatForColumn": {},
-                        "tooltips": []
+                        "tooltips": [],
+                        "headerFontSize": null,
+                        "dataFontSize": null,
+                        "fontColor": []
                     }
                 },
                 "selectedType": "Table",
@@ -25453,8 +25456,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "add6a82a-cbfa-4f64-854d-b92e215ec398",
-                "elapsedTime": 677,
+                "shellId": "f6eb75f6-4ccf-436f-ad73-2db04917193b",
+                "elapsedTime": 667,
                 "height": 156,
                 "result": {
                     "hasDoubleClickAction": true,
@@ -25615,13 +25618,32 @@
                                 "The value is: 8",
                                 "The value is: 9"
                             ]
+                        ],
+                        "headerFontSize": 30,
+                        "dataFontSize": 15,
+                        "fontColor": [
+                            [
+                                "#FFC0C0C0",
+                                "#FF808080",
+                                "#FFFF0000"
+                            ],
+                            [
+                                "#FFFFFF00",
+                                "#FFFFC800",
+                                "#FFFF0000"
+                            ],
+                            [
+                                "#FFFF00FF",
+                                "#FF0000FF",
+                                "#FF000000"
+                            ]
                         ]
                     }
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "add6a82a-cbfa-4f64-854d-b92e215ec398",
-                "elapsedTime": 583,
+                "shellId": "f6eb75f6-4ccf-436f-ad73-2db04917193b",
+                "elapsedTime": 740,
                 "height": 175,
                 "result": {
                     "hasDoubleClickAction": false,

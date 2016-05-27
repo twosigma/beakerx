@@ -2083,8 +2083,10 @@
               if (!_.isEmpty(scope.fontColor)) {
                 var color = scope.fontColor[row][col - 1];
                 var color_opacity = parseInt(color.substr(1, 2), 16) / 255;
-                $(td).css({'color': "#" + color.substr(3)});
-                $(td).css({'opacity': color_opacity});
+                $(td).css({
+                  'color': "#" + color.substr(3),
+                  'opacity': color_opacity
+                });
               }
             };
 
@@ -2192,7 +2194,7 @@
             scope.table = $(id).DataTable(init);
 
             if (scope.headerFontSize) {
-              $(scope.table.table().container()).find('thead th').css({'font-size': scope.headerFontSize});
+              $(scope.table.table().container()).find('thead tr:not(".filterRow") th').css({'font-size': scope.headerFontSize});
             }
 
             scope.table.settings()[0].oScroll.iBarWidth = scope.scrollbarWidth;

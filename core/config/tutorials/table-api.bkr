@@ -5575,8 +5575,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "d968cb7d-8dc7-4627-85b8-f95da66e2100",
-                "elapsedTime": 643,
+                "shellId": "ef043c6e-bce0-4b6a-bfc9-f7960284cb8e",
+                "elapsedTime": 644,
                 "height": 776
             },
             "evaluatorReader": true,
@@ -10471,8 +10471,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "d968cb7d-8dc7-4627-85b8-f95da66e2100",
-                "elapsedTime": 751,
+                "shellId": "ef043c6e-bce0-4b6a-bfc9-f7960284cb8e",
+                "elapsedTime": 891,
                 "height": 776
             },
             "evaluatorReader": true,
@@ -15358,8 +15358,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "d968cb7d-8dc7-4627-85b8-f95da66e2100",
-                "elapsedTime": 766,
+                "shellId": "ef043c6e-bce0-4b6a-bfc9-f7960284cb8e",
+                "elapsedTime": 1280,
                 "height": 776
             },
             "evaluatorReader": true,
@@ -15508,8 +15508,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "d968cb7d-8dc7-4627-85b8-f95da66e2100",
-                "elapsedTime": 1440,
+                "shellId": "ef043c6e-bce0-4b6a-bfc9-f7960284cb8e",
+                "elapsedTime": 1908,
                 "height": 776,
                 "result": {
                     "hasDoubleClickAction": false,
@@ -20409,8 +20409,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "d968cb7d-8dc7-4627-85b8-f95da66e2100",
-                "elapsedTime": 921,
+                "shellId": "ef043c6e-bce0-4b6a-bfc9-f7960284cb8e",
+                "elapsedTime": 872,
                 "result": {
                     "hasDoubleClickAction": false,
                     "contextMenuItems": [],
@@ -25277,7 +25277,10 @@
                         "formatForTimes": {},
                         "stringFormatForType": {},
                         "stringFormatForColumn": {},
-                        "tooltips": []
+                        "tooltips": [],
+                        "headerFontSize": null,
+                        "dataFontSize": null,
+                        "fontColor": []
                     }
                 },
                 "result": {
@@ -25367,8 +25370,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "d968cb7d-8dc7-4627-85b8-f95da66e2100",
-                "elapsedTime": 803,
+                "shellId": "ef043c6e-bce0-4b6a-bfc9-f7960284cb8e",
+                "elapsedTime": 890,
                 "height": 318
             },
             "evaluatorReader": true,
@@ -25456,8 +25459,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "f6eb75f6-4ccf-436f-ad73-2db04917193b",
-                "elapsedTime": 667,
+                "shellId": "61850ba7-3d9d-490c-bfe8-db46c335edd9",
+                "elapsedTime": 660,
                 "height": 156,
                 "result": {
                     "hasDoubleClickAction": true,
@@ -25532,7 +25535,7 @@
                     "def mapList4 = [",
                     " [firstCol:1, secondCol:2, thirdCol:3],",
                     " [firstCol:4, secondCol:5, thirdCol:6],",
-                    " [firstCol:7, secondCol:8, thirdCol:9]",
+                    " [firstCol:9, secondCol:8, thirdCol:9]",
                     "]",
                     "def td4 = new TableDisplay(mapList4)",
                     "",
@@ -25552,6 +25555,14 @@
                     "",
                     "td4.setFontColorProvider { row, col, td ->",
                     " colors[row][col]",
+                    "}",
+                    "",
+                    "//try different filter options",
+                    "td4.setRowFilter { row, model ->",
+                    " //model[row][1] == 8",
+                    " true",
+                    " //false",
+                    " //model[row][0] == model[row][2]",
                     "}",
                     "",
                     "td4"
@@ -25614,7 +25625,7 @@
                                 "The value is: 6"
                             ],
                             [
-                                "The value is: 7",
+                                "The value is: 9",
                                 "The value is: 8",
                                 "The value is: 9"
                             ]
@@ -25642,8 +25653,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "f6eb75f6-4ccf-436f-ad73-2db04917193b",
-                "elapsedTime": 740,
+                "shellId": "61850ba7-3d9d-490c-bfe8-db46c335edd9",
+                "elapsedTime": 691,
                 "height": 175,
                 "result": {
                     "hasDoubleClickAction": false,
@@ -25684,7 +25695,7 @@
                             "The value is: 6"
                         ],
                         [
-                            "The value is: 7",
+                            "The value is: 9",
                             "The value is: 8",
                             "The value is: 9"
                         ]
@@ -25708,6 +25719,23 @@
                             "#FF000000"
                         ]
                     ],
+                    "filteredValues": [
+                        [
+                            1,
+                            2,
+                            3
+                        ],
+                        [
+                            4,
+                            5,
+                            6
+                        ],
+                        [
+                            9,
+                            8,
+                            9
+                        ]
+                    ],
                     "values": [
                         [
                             1,
@@ -25720,7 +25748,7 @@
                             6
                         ],
                         [
-                            7,
+                            9,
                             8,
                             9
                         ]
@@ -25728,7 +25756,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 26,
+            "lineCount": 34,
             "initialization": true
         }
     ],

@@ -1307,14 +1307,15 @@
 
         scope.doCreateData = function(model) {
           // create a dummy column to keep server ordering if not already present
+          var values = model.hasOwnProperty('filteredValues') ? model.filteredValues : model.values;
           if (!scope.hasIndex) {
             var data = [];
             var r;
             var selected = [];
-            for (r = 0; r < model.values.length; r++) {
+            for (r = 0; r < values.length; r++) {
               var row = [];
               row.push(r);
-              data.push(row.concat(model.values[r]));
+              data.push(row.concat(values[r]));
               selected.push(false);
             }
             scope.data = data;
@@ -1323,9 +1324,9 @@
             var data = [];
             var r;
             var selected = [];
-            for (r = 0; r < model.values.length; r++) {
+            for (r = 0; r < values.length; r++) {
               var row = [];
-              data.push(row.concat(model.values[r]));
+              data.push(row.concat(values[r]));
               selected.push(false);
             }
             scope.data = data;

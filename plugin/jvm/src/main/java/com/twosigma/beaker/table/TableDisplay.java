@@ -61,6 +61,7 @@ public class TableDisplay extends ObservableTableDisplay {
   private Integer dataFontSize;
   private Integer headerFontSize;
   private List<List<Color>> fontColor = new ArrayList<>();
+  private List<List<?>> filteredValues;
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
@@ -140,7 +141,7 @@ public class TableDisplay extends ObservableTableDisplay {
     try {
       for (int row = 0; row < this.values.size(); row++) {
         Object value = this.values.get(row).get(colIndex);
-        Object[] params = new Object[]{ value, row, column, this };
+        Object[] params = new Object[]{ value, row, colIndex, this };
         formattedValues.add((String) runClosure(closure, params));
       }
     } catch (Throwable e) {
@@ -279,6 +280,25 @@ public class TableDisplay extends ObservableTableDisplay {
     } catch (Throwable e) {
       throw new IllegalArgumentException("Can not set font color using closure.", e);
     }
+  }
+
+  public void setRowFilter(Object closure) {
+    List<List<?>> filteredValues = new ArrayList<>();
+    try {
+      for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
+        Object[] params = new Object[]{rowInd, this.values};
+        if((boolean)runClosure(closure, params)){
+          filteredValues.add(values.get(rowInd));
+        }
+      }
+    } catch (Throwable e) {
+      throw new IllegalArgumentException("Can not set row filter using closure.", e);
+    }
+    this.filteredValues = filteredValues;
+  }
+
+  public List<List<?>> getFilteredValues() {
+    return filteredValues;
   }
 
   public static List<Map<String, Object>> getValuesAsRows(List<List<?>> values, List<String> columns) {

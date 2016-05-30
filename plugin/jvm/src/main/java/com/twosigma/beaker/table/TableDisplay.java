@@ -32,6 +32,7 @@ import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.table.format.TableDisplayStringFormat;
 import com.twosigma.beaker.table.format.ValueStringFormat;
 import com.twosigma.beaker.table.highlight.TableDisplayCellHighlighter;
+import com.twosigma.beaker.table.highlight.ValueHighlighter;
 import com.twosigma.beaker.table.renderer.TableDisplayCellRenderer;
 
 public class TableDisplay extends ObservableTableDisplay {
@@ -216,6 +217,30 @@ public class TableDisplay extends ObservableTableDisplay {
 
   public void addCellHighlighter(TableDisplayCellHighlighter cellHighlighter) {
     this.cellHighlighters.add(cellHighlighter);
+  }
+
+  public void addCellHighlighter(Object closure) {
+    Map<String, List<Color>> colors = new HashMap<>();
+    try {
+      int rowSize = this.values.get(0).size();
+      for (int colInd = 0; colInd < rowSize; colInd++) {
+        boolean hasHighlightedValues = false;
+        List<Color> columnColors = new ArrayList<>();
+        for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
+          Object[] params = new Object[]{rowInd, colInd, this};
+          Color color = (Color) runClosure(closure, params);
+          if (color != null) {
+            hasHighlightedValues = true;
+          }
+          columnColors.add(color);
+        }
+        if (hasHighlightedValues) {
+          this.cellHighlighters.add(new ValueHighlighter(this.columns.get(colInd), columnColors));
+        }
+      }
+    } catch (Throwable e) {
+      throw new IllegalArgumentException("Can not set cell highlighter using closure.", e);
+    }
   }
 
   public void removeAllCellHighlighters() {

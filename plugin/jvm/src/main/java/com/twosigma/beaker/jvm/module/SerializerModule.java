@@ -145,6 +145,7 @@ import com.twosigma.beaker.table.format.ValueStringFormat;
 import com.twosigma.beaker.table.highlight.HeatmapHighlighter;
 import com.twosigma.beaker.table.highlight.ThreeColorHeatmapHighlighter;
 import com.twosigma.beaker.table.highlight.UniqueEntriesHighlighter;
+import com.twosigma.beaker.table.highlight.ValueHighlighter;
 import com.twosigma.beaker.table.renderer.DataBarsRenderer;
 import com.twosigma.beaker.table.serializer.DataBarsRendererSerializer;
 import com.twosigma.beaker.table.serializer.DecimalStringFormatSerializer;
@@ -155,6 +156,7 @@ import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
 import com.twosigma.beaker.table.serializer.ThreeColorHeatmapHighlighterSerializer;
 import com.twosigma.beaker.table.serializer.TimeStringFormatSerializer;
 import com.twosigma.beaker.table.serializer.UniqueEntriesHighlighterSerializer;
+import com.twosigma.beaker.table.serializer.ValueHighlighterSerializer;
 import com.twosigma.beaker.table.serializer.ValueStringFormatSerializer;
 import net.sf.jtreemap.swing.TreeMapNode;
 import org.codehaus.jackson.Version;
@@ -255,6 +257,7 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(HeatmapHighlighter.class, injector.getInstance(HeatmapHighlighterSerializer.class));
       module.addSerializer(ThreeColorHeatmapHighlighter.class, injector.getInstance(ThreeColorHeatmapHighlighterSerializer.class));
       module.addSerializer(UniqueEntriesHighlighter.class, injector.getInstance(UniqueEntriesHighlighterSerializer.class));
+      module.addSerializer(ValueHighlighter.class, injector.getInstance(ValueHighlighterSerializer.class));
 
       module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainerSerializer.class));
       module.addSerializer(OutputContainerCell.class, injector.getInstance(OutputContainerCellSerializer.class));

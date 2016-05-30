@@ -173,6 +173,30 @@
       };
       //////////UniqueEntriesHighlighter//////////
 
+      ///////////////Value Highlighter///////////////
+      var ValueHighlighter = function (data) {
+        if (!data) { data = {}; }
+        CellHighlighter.call(this, data);
+        _.extend(this, {
+          colors: data.colors,
+          type: 'ValueHighlighter',
+          style: HIGHLIGHT_STYLE.SINGLE_COLUMN
+        });
+        this.doHighlight = function (table) {
+          var self = this;
+          table.column(self.colInd).nodes().each(function (td) {
+            var index = table.cell(td).index();
+            var color = self.colors[index.row];
+            if(color){
+              $(td).css({
+                'background-color': formatColor(color)
+              });
+            }
+          });
+        };
+      };
+      ///////////////Value Highlighter///////////////
+
       return {
         HeatmapHighlighter: HeatmapHighlighter,
         ThreeColorHeatmapHighlighter: ThreeColorHeatmapHighlighter,
@@ -184,6 +208,8 @@
               return new ThreeColorHeatmapHighlighter(data);
             case 'UniqueEntriesHighlighter':
               return new UniqueEntriesHighlighter(data);
+            case 'ValueHighlighter':
+              return new ValueHighlighter(data);
           }
         }
       }

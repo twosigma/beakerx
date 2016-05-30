@@ -1323,7 +1323,6 @@
       return str;
     };
 
-    $scope.directory = null;
     $scope.filename = null;
 
     $scope.getStrategy = function () {
@@ -1343,7 +1342,7 @@
     };
 
     $scope.ready = function () {
-      return $scope.directory && ($scope.filename && $scope.filename.trim().length > 0)? true : false;
+      return elfinder.path(elfinder.cwd().hash) && ($scope.filename && $scope.filename.trim().length > 0)? true : false;
     };
 
     $scope.init = function () {
@@ -1361,9 +1360,6 @@
 
             }
             $scope.$apply();
-          },
-          open: function (event, elfinderInstance) {
-            $scope.directory = elfinderInstance.path(event.data.files[0].hash)
           }
         },
         defaultView: 'icons',
@@ -1394,8 +1390,16 @@
 
     $scope.save = function () {
       if ($scope.ready()) {
+        var filename = $scope.filename.trim();
+        var extension = $scope.getStrategy().treeViewfs.extension;
+        if (extension !== undefined && extension.length > 0) {
+          if (filename.indexOf(extension) != filename.length - extension.length) {
+            filename += "." + extension;
+          }
+        }
+
         $uibModalInstance.close({
-          uri: addTrailingSlash($scope.directory, bkUtils.serverOS.isWindows()) + $scope.filename,
+          uri: addTrailingSlash(elfinder.path(elfinder.cwd().hash), bkUtils.serverOS.isWindows()) + filename,
           uriType: GLOBALS.FILE_LOCATION.FILESYS
         });
       }

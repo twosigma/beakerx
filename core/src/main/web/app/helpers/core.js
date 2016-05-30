@@ -810,7 +810,7 @@
 
       showFileOpenDialog: function(callback, strategy) {
         modalDialogOp.setStrategy(strategy);
-        $uibModal.open({
+        var dd = $uibModal.open({
           templateUrl: "app/template/fileopen.jst.html",
           controller: 'fileOpenDialogCtrl',
           windowClass: 'beaker-sandbox',
@@ -819,9 +819,48 @@
           keyboard: true,
           backdropClick: true,
           size: 'lg'
-        }).result.then(function(result){
-          callback(result.path);
         });
+        dd.result.then(
+          function (result) {
+            callback(result);
+          }, function () {
+            //Trigger when modal is dismissed
+            callback();
+          }).catch(function () {
+        });
+        return dd;
+      },
+
+      showFileSaveDialog: function(callback, ext, saveButtonTitle) {
+        var  FileSaveStrategy = function () {
+          var newStrategy = this;
+          newStrategy.saveButtonTitle = saveButtonTitle;
+          newStrategy.treeViewfs = {
+            applyExtFilter: true,
+            extension: ext
+          };
+        };
+        modalDialogOp.setStrategy(new FileSaveStrategy());
+        var dd = $uibModal.open({
+          templateUrl: "app/template/filesave.jst.html",
+          controller: 'fileSaveDialogCtrl',
+          windowClass: 'beaker-sandbox',
+          backdropClass: 'beaker-sandbox',
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          size: 'lg'
+        });
+        dd.result.then(
+          function (result) {
+            callback(result);
+          }, function () {
+            //Trigger when modal is dismissed
+            callback();
+          }).catch(function () {
+          console.log('error!!!!')
+        });
+        return dd;
       },
 
       showModalDialog: function(callback, template, strategy, uriType, readOnly, format) {
@@ -1168,7 +1207,7 @@
     };
   });
 
-  module.controller('fileOpenDialogCtrl', function ($scope, $rootScope, $uibModalInstance, modalDialogOp) {
+  module.controller('fileOpenDialogCtrl', function ($scope, $rootScope, $uibModalInstance, angularUtils, modalDialogOp) {
 
     var elfinder;
 
@@ -1198,21 +1237,133 @@
     };
 
     $scope.init = function () {
+        elfinder = $('#elfinder').elfinder({
+          url: '../beaker/connector',
+          useBrowserHistory: false,
+          resizable: false,
+          onlyMimes: $scope.mime(),
+          getFileCallback: function(url) {
+            $scope.open();
+          },
+          handlers: {
+            select: function (event, elfinderInstance) {
+              if (event.data.selected && event.data.selected.length > 0) {
+                selected.file = elfinderInstance.file(event.data.selected[0]);
+                selected.path = elfinderInstance.path(event.data.selected[0]);
+
+              } else {
+                selected.file = null;
+                selected.path = null;
+              }
+              $scope.$apply();
+            }
+          },
+          defaultView: 'icons',
+          uiOptions: {
+            // toolbar configuration
+            toolbar: [
+              ['back', 'forward'],
+              ['mkdir'],
+              ['view']
+            ],
+
+            // navbar options
+            navbar: {
+              minWidth: 150,
+              maxWidth: 1200
+            },
+
+            // directories tree options
+            tree: {
+              // expand current root on init
+              openRootOnLoad: false,
+              // auto load current dir parents
+              syncTree: true
+            }
+          }
+        }).elfinder('instance');
+
+    };
+
+    $scope.open = function () {
+      if ($scope.ready()) {
+        $uibModalInstance.close(selected);
+      }
+    };
+
+    $scope.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+
+    $scope.$watch(function (scope) {
+      return scope.getStrategy().treeViewfs.applyExtFilter
+    }, function () {
+      if (elfinder) {
+        elfinder.options.onlyMimes = $scope.mime();
+        elfinder.exec('reload');
+      }
+    });
+
+  });
+
+  module.controller('fileSaveDialogCtrl', function ($scope, $rootScope, $uibModalInstance, bkUtils, GLOBALS, modalDialogOp) {
+
+    var elfinder;
+
+    var addTrailingSlash = function(str, isWindows) {
+      if (isWindows) {
+        if (!_.endsWith(str, '\\')) {
+          str = str + '\\';
+        }
+      } else {
+        if (!_.endsWith(str, '/')) {
+          str = str + '/';
+        }
+      }
+      return str;
+    };
+
+    $scope.directory = null;
+    $scope.filename = null;
+
+    $scope.getStrategy = function () {
+      return modalDialogOp.getStrategy();
+    };
+
+    $scope.mime = function () {
+      if ($scope.getStrategy().treeViewfs.applyExtFilter === true) {
+        if ($scope.getStrategy().treeViewfs.extension === 'bkr') {
+          return ['directory', 'application/beaker-notebook'];
+        } else if ($scope.getStrategy().treeViewfs.extension === 'py') {
+          return ['directory', 'text/x-python'];
+        }
+      }
+
+      return [];
+    };
+
+    $scope.ready = function () {
+      return $scope.directory && ($scope.filename && $scope.filename.trim().length > 0)? true : false;
+    };
+
+    $scope.init = function () {
       elfinder = $('#elfinder').elfinder({
         url: '../beaker/connector',
         resizable: false,
+        useBrowserHistory: false,
         onlyMimes: $scope.mime(),
         handlers: {
           select: function (event, elfinderInstance) {
             if (event.data.selected && event.data.selected.length > 0) {
-              selected.file = elfinderInstance.file(event.data.selected[0]);
-              selected.path = elfinderInstance.path(event.data.selected[0]);
+              var file = elfinderInstance.file(event.data.selected[0]);
+              if (file.mime !== 'directory')
+                $scope.filename = file.name;
 
-            } else {
-              selected.file = null;
-              selected.path = null;
             }
             $scope.$apply();
+          },
+          open: function (event, elfinderInstance) {
+            $scope.directory = elfinderInstance.path(event.data.files[0].hash)
           }
         },
         defaultView: 'icons',
@@ -1241,9 +1392,12 @@
       }).elfinder('instance');
     };
 
-    $scope.open = function () {
-      if (selected.file) {
-        $uibModalInstance.close(selected);
+    $scope.save = function () {
+      if ($scope.ready()) {
+        $uibModalInstance.close({
+          uri: addTrailingSlash($scope.directory, bkUtils.serverOS.isWindows()) + $scope.filename,
+          uriType: GLOBALS.FILE_LOCATION.FILESYS
+        });
       }
     };
 

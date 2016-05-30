@@ -57,11 +57,13 @@ define(function(require, exports, module) {
                 return bkHelper.saveNotebookAs(path, 'file');
               })
             } else {
-              bkHelper.showDefaultSavingFileChooser().then(function(ret) {
+              var callback = function(ret){
                 if (ret.uri) {
                   return bkHelper.saveNotebookAs(ret.uri, ret.uriType);
                 }
-              });
+              };
+              bkHelper.showFileSaveDialog(callback, "bkr");
+              return callback;
             }
             bkHelper.showSaveDialog
           }

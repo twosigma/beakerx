@@ -74,6 +74,8 @@
       defaultEvaluator = data;
     });
 
+
+
       var bkHelper = {
 
       isNewNotebookShortcut: function (e){
@@ -329,7 +331,7 @@
             // Format this accordingly!
             var routeParams = {
               uri: path
-            }
+            };
             if (uriType) {
               routeParams.type = uriType;
             }
@@ -342,8 +344,6 @@
             bkHelper.openWindow(bkUtils.getBaseUrl() + '/open?' + jQuery.param(routeParams), 'notebook');
           });
         } else {
-
-          if (true){
             var  FileOpenStrategy = function () {
               var newStrategy = this;
               newStrategy.treeViewfs = {
@@ -352,28 +352,12 @@
               };
             };
             bkCoreManager.showFileOpenDialog(
-              function (path) {
-                bkHelper.openNotebook(path, uriType, readOnly, format);
+              function (selected) {
+                if (selected && selected.path)
+                bkHelper.openNotebook(selected.path, uriType, readOnly, format);
               },
               new FileOpenStrategy()
             );
-          }else{
-            var strategy = bkHelper.getFileSystemFileChooserStrategy();
-            strategy.treeViewfs.extFilter = [ext];
-            bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getLocalDrives()]).then(function(values) {
-              if (bkUtils.isWindows) {
-                strategy.localDrives = values[1];
-              }
-              bkCoreManager.showModalDialog(
-                bkHelper.openNotebook,
-                JST['template/opennotebook']({homedir: values[0], extension: '.' + ext}),
-                strategy,
-                uriType,
-                readOnly,
-                format
-              );
-            });
-          }
         }
       },
       Electron: bkElectron,
@@ -461,7 +445,7 @@
           return false;
         }
       },
-      saveNotebook: function() {
+        saveNotebook: function() {
         if (getCurrentApp() && getCurrentApp().saveNotebook) {
           return getCurrentApp().saveNotebook();
         } else {
@@ -844,6 +828,9 @@
       },
       showDefaultSavingFileChooser: function(initPath, saveButtonTitle) {
         return bkCoreManager.showDefaultSavingFileChooser(initPath, saveButtonTitle);
+      },
+      showFileSaveDialog: function(callback, ext, saveButtonTitle) {
+        return bkCoreManager.showFileSaveDialog(callback, ext, saveButtonTitle);
       },
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();

@@ -170,6 +170,10 @@ bk-section-cell {
       border: 1px solid $error_red;
       margin: -1px;
     }
+
+    &.no-output {
+      display: none;
+    }
   }
 }
 
@@ -221,6 +225,9 @@ bk-output-display {
     overflow:     visible;
     line-height:  inherit;
     background:   transparent;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -o-pre-wrap;
   }
 
   &[type="Results"] {

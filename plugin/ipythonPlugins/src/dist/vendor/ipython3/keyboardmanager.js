@@ -12,7 +12,7 @@ define('ipython3_keyboardmanager', [
     'ipython3_namespace',
     'ipython3_utils',
     'ipython3_keyboard'
-], function(IPython, utils, keyboard) {
+], function(IPython3, utils, keyboard) {
     "use strict";
     
     // Main keyboard manager for the notebook
@@ -137,7 +137,7 @@ define('ipython3_keyboardmanager', [
 
 
     // For backwards compatibility.
-    IPython.KeyboardManager = KeyboardManager;
+    IPython3.KeyboardManager = KeyboardManager;
 
     return {'KeyboardManager': KeyboardManager};
 });

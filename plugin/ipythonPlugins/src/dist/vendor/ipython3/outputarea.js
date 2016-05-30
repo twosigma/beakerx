@@ -4,7 +4,7 @@
 define('ipython3_outputarea', [
     'ipython3_namespace',
     'ipython3_utils'
-], function(IPython, utils) {
+], function(IPython3, utils) {
     "use strict";
 
     /**
@@ -981,7 +981,7 @@ define('ipython3_outputarea', [
     };
 
     // For backwards compatability.
-    IPython.OutputArea = OutputArea;
+    IPython3.OutputArea = OutputArea;
 
     return {'OutputArea': OutputArea};
 });

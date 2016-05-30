@@ -206,7 +206,6 @@
         i++;
       }
 
-
       this.axisStep = w;
       this.axisFixed = f;
 

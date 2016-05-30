@@ -876,7 +876,7 @@
         strategy.title = title;
         strategy.closebtn = closebtn;
         bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getLocalDrives()]).then(function (values) {
-          if (bkUtils.isWindows) {
+          if (bkUtils.serverOS.isWindows()) {
             strategy.localDrives = values[1];
           }
           return bkCoreManager.showModalDialog(

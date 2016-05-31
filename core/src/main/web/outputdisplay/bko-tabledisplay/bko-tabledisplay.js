@@ -989,8 +989,12 @@
             $(element).find(".bko-table-use-pagination").remove();
 
             $.contextMenu('destroy', {
-              selector: '#' + scope.id + " tbody td"
+              selector: '#' + scope.id + ' tbody td'
             });
+            $.contextMenu('destroy', {
+              selector: '#' + scope.id +'_wrapper thead'
+            });
+            $(document).off('contextmenu.bko-dt-header', '#' + scope.id +'_wrapper thead th');
 
             if (all) {
               scope.table.destroy(true);
@@ -1776,18 +1780,30 @@
         };
 
         scope.rotateHeader = function () {
+          var headerTexts = $(scope.table.table().container()).find('thead th span.header-text');
+          var headerTextMaxWidth = Math.max.apply(null, headerTexts.map(function () {
+            return $(this).width();
+          }).get());
+          var lineHeight = parseFloat(headerTexts.css('line-height'));
           if (scope.headersVertical) {
-            var headerTexts = $(scope.table.table().container()).find('thead th span.header-vertical');
-            var headerTextMaxWidth = Math.max.apply(null, headerTexts.map(function () {
-              return $(this).width();
-            }).get());
-            var lineHeight = parseFloat(headerTexts.css('line-height'));
+            headerTexts.addClass('rotate');
             var padding = 10;
             headerTexts.css('transform', 'rotate(270deg) translateX(-' + (lineHeight - padding) + 'px)');
             $(scope.table.table().header()).find('th').css({
               'height': headerTextMaxWidth + padding + 'px',
               'max-width': lineHeight,
               'vertical-align': 'bottom'
+            });
+          } else {
+            headerTexts.removeClass('rotate');
+            headerTexts.css('transform', '');
+            $(scope.table.table().container()).find('thead th').css({
+              'height': '',
+              'max-width': '',
+              'vertical-align': ''
+            });
+            $(scope.table.table().container()).find('thead tr').css({
+              'height': ''
             });
           }
         };
@@ -2103,7 +2119,7 @@
             var type = scope.actualtype[i];
             var al = scope.actualalign[i];
             var col = {
-              'title' : scope.headersVertical ? '<span class="header-vertical">' + scope.columnNames[i] +'</span>' : scope.columnNames[i],
+              'title' : '<span class="header-text">' + scope.columnNames[i] +'</span>',
               'header': { 'menu': headerMenuItems }
             };
             col.createdCell = function (td, cellData, rowData, row, col) {
@@ -2215,10 +2231,40 @@
           scope.fixcreated = false;
           if (!_.isEmpty(scope.contextMenuItems)) {
             $.contextMenu({
-              selector: id + " tbody td",
+              selector: id +' tbody td',
               items: scope.contextMenuItems
             });
           }
+
+
+          var rotateMenuItem = {
+              callback: function (itemKey, options) {
+              scope.headersVertical = !!!scope.headersVertical;
+              scope.rotateHeader();
+              scope.table.draw();
+            }
+          };
+          $.contextMenu({
+            selector: id +'_wrapper thead',
+            items: {
+              verticalHeaders: _.extend({}, rotateMenuItem, {
+                name: 'vertical headers',
+                visible: function(key, opt){
+                  return !!!scope.headersVertical;
+                }
+              }),
+              horizontalHeaders: _.extend({}, rotateMenuItem, {
+                name: 'horizontal headers',
+                visible: function(key, opt){
+                  return !!scope.headersVertical;
+                }
+              })
+            }
+          });
+
+          $(document).on('contextmenu.bko-dt-header', id +'_wrapper thead th', function(){
+            $(this).blur();
+          });
 
           bkHelper.timeout(function() {
             // we must wait for the DOM elements to appear

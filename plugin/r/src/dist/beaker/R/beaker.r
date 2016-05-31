@@ -339,6 +339,13 @@ convertToJSON <- function(val, collapse) {
   else if (class(val) == "data.table") {
     o = convertToJSON(as.data.frame(val))
   }
+  else if(class(val) == "plotly" || class(val) == "plotly_hash") {
+    temp <- print(val)
+    p = "{ \"type\":\"Plotly\", \"data\":"
+    p = paste(p, plotly:::to_JSON(temp), sep='')
+    p = paste(p, "}", sep='')
+    o = p
+  }
   else if ('data.frame' %in% class(val)) {
     p = "{ \"type\":\"TableDisplay\",\"subtype\":\"TableDisplay\",\"hasIndex\":\"true\",\"columnNames\":"
     colNames = c('Index')
@@ -426,12 +433,6 @@ convertToJSON <- function(val, collapse) {
     p = paste(p, class(val), sep='')
     p = paste(p, "\", \"data\":", sep='')
     p = paste(p, toJSON(val), sep='')
-    p = paste(p, "}", sep='')
-    o = p
-  } else if(class(val) == "plotly") {
-    temp <- print(val)
-    p = "{ \"type\":\"Plotly\", \"data\":"
-    p = paste(p, plotly:::to_JSON(temp), sep='')
     p = paste(p, "}", sep='')
     o = p
   } else {

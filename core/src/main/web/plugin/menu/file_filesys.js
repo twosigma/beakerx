@@ -58,7 +58,7 @@ define(function(require, exports, module) {
               })
             } else {
               var callback = function(ret){
-                if (ret.uri) {
+                if (ret && ret.uri) {
                   return bkHelper.saveNotebookAs(ret.uri, ret.uriType);
                 }
               };

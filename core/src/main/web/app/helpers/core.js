@@ -1237,7 +1237,8 @@
     };
 
     $scope.init = function () {
-        elfinder = $('#elfinder').elfinder({
+      var $elfinder = $('#elfinder');
+      elfinder = $elfinder.elfinder({
           url: '../beaker/connector',
           useBrowserHistory: false,
           resizable: false,
@@ -1283,6 +1284,15 @@
           }
         }).elfinder('instance');
 
+
+      $elfinder.css("width", '100%');
+      $elfinder.css("height", '100%');
+
+      $( ".modal-content" ).resizable({
+        resize: function( event, ui ) {
+          $elfinder.trigger('resize');
+        }
+      });
     };
 
     $scope.open = function () {
@@ -1346,7 +1356,8 @@
     };
 
     $scope.init = function () {
-      elfinder = $('#elfinder').elfinder({
+      var $elfinder = $('#elfinder');
+      elfinder = $elfinder.elfinder({
         url: '../beaker/connector',
         resizable: false,
         useBrowserHistory: false,
@@ -1386,6 +1397,15 @@
           }
         }
       }).elfinder('instance');
+
+      $elfinder.css("width", '100%');
+      $elfinder.css("height", '100%');
+
+      $( ".modal-content" ).resizable({
+        resize: function( event, ui ) {
+          $elfinder.trigger('resize');
+        }
+      });
     };
 
     $scope.save = function () {

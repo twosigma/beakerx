@@ -15,13 +15,17 @@
   limitations under the License.
 -->
 
-<div id="elfinder" ng-init="init()" style="padding-bottom: 68px"/>
+<div id="elfinder" ng-init="init()" style="width: 100% !important; height: 100% !important; padding-bottom: 68px"/>
 <div class="modal-footer fixed" style="height: 68px;">
   <span style="float:left; position:relative;" ng-if="getStrategy().treeViewfs.extension !== undefined">
-     <input class="beforeCheckbox" id="extensionFilter"type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter">
-     <label ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show .{{ getStrategy().treeViewfs.extension }} files only</label>
+     <input class="beforeCheckbox" id="extensionFilter" type="checkbox" style="vertical-align:top;"
+            ng-model="getStrategy().treeViewfs.applyExtFilter">
+     <label ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show .{{
+       getStrategy().treeViewfs.extension }} files only</label>
    </span>
   <button ng-click="cancel()" class="btn btn-default">Cancel</button>
   <button ng-click="open()" ng-disabled="!ready()" class="btn btn-primary modal-submit">Open</button>
 </div>
+
+
 

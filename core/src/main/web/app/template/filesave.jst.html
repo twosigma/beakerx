@@ -15,11 +15,11 @@
   limitations under the License.
 -->
 
-<div class="modal-header form-group property language-option clearfix" style="padding: 20px;">
+<div class="modal-header fixed form-group property language-option clearfix" style="padding: 20px;margin-bottom: 0">
   <label>Save As: </label>
   <input type="text" class="form-control" ng-model="filename" />
 </div>
-<div id="elfinder" ng-init="init()" style="padding-bottom: 68px"/>
+<div id="elfinder" ng-init="init()" style="padding-bottom: 68px; padding-top: 112px"/>
 <div class="modal-footer fixed" style="height: 68px;">
    <span style="float:left; position:relative;" ng-if="getStrategy().treeViewfs.extension !== undefined">
      <input class="beforeCheckbox" id="extensionFilter"type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter">

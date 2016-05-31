@@ -1,3 +1,4 @@
+/* jshint ignore:start */
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
  * Digest Algorithm, as defined in RFC 1321.
@@ -6,7 +7,7 @@
  * Distributed under the BSD License
  * See http://pajhome.org.uk/crypt/md5 for more info.
  */
-angular.module('md5', []).factory('md5', function() {
+angular.module('md5', []).constant('md5', (function() {
 
   /*
    * Configurable variables. You may need to tweak these to be compatible with
@@ -380,8 +381,8 @@ angular.module('md5', []).factory('md5', function() {
   }
 
   return hex_md5;
-});
-
+})());
+/* jshint ignore:end */
 (function() {
   var gravatarDirectiveFactory;
 
@@ -413,13 +414,13 @@ angular.module('md5', []).factory('md5', function() {
             delete attrs[directiveName];
             opts = filterKeys('gravatar', attrs);
             unbind = scope.$watch(item, function(newVal) {
+              element.attr('src', gravatarService.url(newVal, opts));
               if (bindOnce) {
                 if (newVal == null) {
                   return;
                 }
                 unbind();
               }
-              element.attr('src', gravatarService.url(newVal, opts));
             });
           }
         };
@@ -427,48 +428,57 @@ angular.module('md5', []).factory('md5', function() {
     ];
   };
 
-  angular.module('ui.gravatar', ['md5']).provider('gravatarService', function() {
-    var hashRegex, self, serialize;
-    self = this;
-    hashRegex = /^[0-9a-f]{32}$/i;
-    serialize = function(object) {
-      var k, params, v;
-      params = [];
-      for (k in object) {
-        v = object[k];
-        params.push("" + k + "=" + (encodeURIComponent(v)));
-      }
-      return params.join('&');
-    };
-    this.defaults = {};
-    this.secure = false;
-    this.protocol = null;
-    this.$get = [
-      'md5', function(md5) {
-        return {
-          url: function(src, opts) {
-            var params, pieces, prefix, urlBase;
-            if (src == null) {
-              src = '';
+  angular.module('ui.gravatar', ['md5']).provider('gravatarService', [
+    'md5', function(md5) {
+      var hashRegex, self, serialize;
+      self = this;
+      hashRegex = /^[0-9a-f]{32}$/i;
+      serialize = function(object) {
+        var k, params, v;
+        params = [];
+        for (k in object) {
+          v = object[k];
+          params.push("" + k + "=" + (encodeURIComponent(v)));
+        }
+        return params.join('&');
+      };
+      this.defaults = {};
+      this.secure = false;
+      this.protocol = null;
+      this.urlFunc = function(opts) {
+        var params, pieces, prefix, src, urlBase;
+        prefix = opts.protocol ? opts.protocol + ':' : '';
+        urlBase = opts.secure ? 'https://secure' : prefix + '//www';
+        src = hashRegex.test(opts.src) ? opts.src : md5(opts.src);
+        pieces = [urlBase, '.gravatar.com/avatar/', src];
+        params = serialize(opts.params);
+        if (params.length > 0) {
+          pieces.push('?' + params);
+        }
+        return pieces.join('');
+      };
+      this.$get = [
+        function() {
+          return {
+            url: function(src, params) {
+              if (src == null) {
+                src = '';
+              }
+              if (params == null) {
+                params = {};
+              }
+              return self.urlFunc({
+                params: angular.extend(angular.copy(self.defaults), params),
+                protocol: self.protocol,
+                secure: self.secure,
+                src: src
+              });
             }
-            if (opts == null) {
-              opts = {};
-            }
-            opts = angular.extend(angular.copy(self.defaults), opts);
-            prefix = self.protocol ? self.protocol + ':' : '';
-            urlBase = self.secure ? 'https://secure' : prefix + '//www';
-            src = hashRegex.test(src) ? src : md5(src);
-            pieces = [urlBase, '.gravatar.com/avatar/', src];
-            params = serialize(opts);
-            if (params.length > 0) {
-              pieces.push('?' + params);
-            }
-            return pieces.join('');
-          }
-        };
-      }
-    ];
-    return this;
-  }).directive('gravatarSrc', gravatarDirectiveFactory()).directive('gravatarSrcOnce', gravatarDirectiveFactory(true));
+          };
+        }
+      ];
+      return this;
+    }
+  ]).directive('gravatarSrc', gravatarDirectiveFactory()).directive('gravatarSrcOnce', gravatarDirectiveFactory(true));
 
 }).call(this);

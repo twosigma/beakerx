@@ -154,11 +154,11 @@
 
           var result = $scope.cellmodel.output.result;
 
-          if (!result || result.hidden) {
+          if (!$scope.hasOutput() || result.hidden) {
             return false;
           }
 
-          if (result.status !== "RUNNING" && $scope.cellmodel.output.hidden === true) {
+          if (result.status !== "RUNNING" && ($scope.cellmodel.output.hidden === true || $scope.isHiddenOutput())) {
             return false;
           }
 

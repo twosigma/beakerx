@@ -815,5 +815,14 @@ var BeakerPageObject = function() {
     });
   }
 
+  this.runCellWithoutDisplayResultByIdCell = function(idCell, timeOut){
+    if(!timeOut){
+      timeOut = 25000;
+    }
+    this.scrollToBkCellByIdCell(idCell);
+    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
+    browser.wait(this.EC.not(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']'))), timeOut);
+  }
+
 };
 module.exports = BeakerPageObject;

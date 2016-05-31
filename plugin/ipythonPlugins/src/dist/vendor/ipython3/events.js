@@ -9,7 +9,7 @@
 //     events.on("event.Namespace", function () { do_stuff(); });
 // });
 
-define('ipython3_events', ['ipython3_namespace'], function (IPython) {
+define('ipython3_events', ['ipython3_namespace'], function (IPython3) {
     "use strict";
 
     var Events = function () {};
@@ -17,8 +17,8 @@ define('ipython3_events', ['ipython3_namespace'], function (IPython) {
     var events = new Events();
     
     // Backwards compatability.
-    IPython.Events = Events;
-    IPython.events = events;
+    IPython3.Events = Events;
+    IPython3.events = events;
     
     return $([events]);
 });

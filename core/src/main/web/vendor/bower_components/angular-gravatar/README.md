@@ -1,8 +1,8 @@
-[![Bower version](https://badge.fury.io/bo/angular-gravatar.png)](http://badge.fury.io/bo/angular-gravatar)
-[![NPM version](https://badge.fury.io/js/angular-gravatar.png)](http://badge.fury.io/js/angular-gravatar)
+[![Bower version](https://badge.fury.io/bo/angular-gravatar.svg)](http://badge.fury.io/bo/angular-gravatar)
+[![NPM version](https://badge.fury.io/js/angular-gravatar.svg)](http://badge.fury.io/js/angular-gravatar)
 
-[![Build Status](https://travis-ci.org/wallin/angular-gravatar.png?branch=master)](https://travis-ci.org/wallin/angular-gravatar)
-[![Code Climate](https://codeclimate.com/github/wallin/angular-gravatar.png)](https://codeclimate.com/github/wallin/angular-gravatar)
+[![Build Status](https://travis-ci.org/wallin/angular-gravatar.svg?branch=master)](https://travis-ci.org/wallin/angular-gravatar)
+[![Code Climate](https://codeclimate.com/github/wallin/angular-gravatar.svg)](https://codeclimate.com/github/wallin/angular-gravatar)
 angular-gravatar
 ==============
 
@@ -34,7 +34,7 @@ Usage
 Include angular-gravatar.js in your application.
 
 ```html
-<script src="components/angular-gravatar/build/angular-gravatar.js"></script>
+<script src="bower_components/angular-gravatar/build/angular-gravatar.js"></script>
 ```
 
 Add the module `ui.gravatar` as a dependency to your app:
@@ -47,6 +47,9 @@ Then use the directive on an image tag and it will set the correct `src`
 attribute for you.
 
 ```html
+<!-- using a scope variable //-->
+<img gravatar-src="user.email" gravatar-size="100">
+<!-- or a string directly //-->
 <img gravatar-src="'sebastian.wallin@gmail.com'" gravatar-size="100">
 ```
 
@@ -56,7 +59,7 @@ If the source is already an MD5 hash, it will be left untouched (thanks @thewarp
 
 If you know that the source is not going to change, you can use the `gravatar-src-once` instead:
 
-```js
+```html
 <img gravatar-src-once="user.email">
 ```
 
@@ -82,6 +85,11 @@ angular.module('ui.gravatar').config([
 
     // Force protocol
     gravatarServiceProvider.protocol = 'my-protocol';
+
+    // Override URL generating function
+    gravatarServiceProvider.urlFunc = function(options) {
+      // Code to generate custom URL
+    };
   }
 ]);
 ```
@@ -101,8 +109,11 @@ MIT
 
 [Contributors](https://github.com/wallin/angular-gravatar/graphs/contributors)
 -----
-* Alexander Makarenko (https://github.com/estliberitas)
-* Eduardo Garcia (https://github.com/thewarpaint)
-* Thomas Vervest (https://github.com/tvervest)
-* Gonzalo Aguirre (https://github.com/gaguirre)
-* Gabe Hayes (https://github.com/gabehayes)
+* Alexander Makarenko, [@estliberitas](https://github.com/estliberitas)
+* Eduardo Garcia, [@thewarpaint](https://github.com/thewarpaint)
+* Thomas Vervest, [@tvervest](https://github.com/tvervest)
+* Gonzalo Aguirre, [@gaguirre](https://github.com/gaguirre)
+* Gabe Hayes, [@gabehayes](https://github.com/gabehayes)
+* Peter Dave Hello, [@PeterDaveHello](https://github.com/PeterDaveHello)
+* Kalisa Falzone, [@KalisaFalzone](https://github.com/KalisaFalzone)
+* Victor Torres, [@victor-torres](https://github.com/victor-torres)

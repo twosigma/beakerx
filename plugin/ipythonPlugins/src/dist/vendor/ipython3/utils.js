@@ -3,7 +3,7 @@
 
 define('ipython3_utils', [
     'ipython3_namespace'
-], function(IPython) {
+], function(IPython3) {
     "use strict";
 
     var load_extensions = function () {
@@ -34,7 +34,7 @@ define('ipython3_utils', [
         );
     };
 
-    IPython.load_extensions = load_extensions;
+    IPython3.load_extensions = load_extensions;
 
     /**
      * Wait for a config section to load, and then load the extensions specified
@@ -883,7 +883,7 @@ define('ipython3_utils', [
     };
 
     // Backwards compatability.
-    IPython.utils = utils;
+    IPython3.utils = utils;
 
     return utils;
 });

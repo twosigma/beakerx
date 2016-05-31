@@ -39,13 +39,13 @@
 
   body, html, .well, .languages, .code-cell-input, .modal-header, .modal-body, .modal-footer, .row {
     background: $main-theme-panel-background !important;
-    color:      $std-fg-color !important;
+    color: $std-fg-color !important;
     .close {
-      color:    $std-fg-color !important;
+      color: $std-fg-color !important;
     }
     h1, h2, h3, h4, h5, h6, p {
-      color:    $std-fg-color !important;
-      cursor:   $text-cursor;
+      color: $std-fg-color !important;
+      cursor: $text-cursor;
     }
   }
 
@@ -66,12 +66,12 @@
   }
 
   .panel-primary {
-    border-color:   $std-border;
-    .panel-body{
-      background:   $main-theme-panel-background !important;
+    border-color: $std-border;
+    .panel-body {
+      background: $main-theme-panel-background !important;
     }
     .panel-heading {
-      background:   $std-btn-bg !important;
+      background: $std-btn-bg !important;
       border-color: $std-border;
       .panel-title {
         background: $std-btn-bg !important;
@@ -80,9 +80,9 @@
   }
 
   a {
-    color:    $std-link-color;
+    color: $std-link-color;
     &:hover {
-      color:  $std-hover-bg;
+      color: $std-hover-bg;
     }
   }
 
@@ -92,18 +92,18 @@
 
   textarea, .publish input.field, .publish select, .publish textarea {
     border-color: $cell-border;
-    background:   $std-bg-color !important;
-    color:        $std-fg-color !important;
+    background: $std-bg-color !important;
+    color: $std-fg-color !important;
   }
 
   button, .btn, .btn-default {
-    background:   $std-btn-bg;
-    color:        $std-fg-color;
+    background: $std-btn-bg;
+    color: $std-fg-color;
     border-color: $std-border;
-    cursor:       pointer;
+    cursor: pointer;
     &:hover {
-      color:        $std-fg-color;
-      background:   $std-hover-bg;
+      color: $std-fg-color;
+      background: $std-hover-bg;
       border-color: $std-hover-border;
     }
   }
@@ -113,28 +113,28 @@
   }
 
   .modal-content .btn-primary {
-    background:     $primary-btn-bg;
+    background: $primary-btn-bg;
     &:hover {
-      background:   $std-hover-bg;
+      background: $std-hover-bg;
       border-color: $std-hover-border;
     }
   }
 
   button.close {
-    background:   transparent;
-    border:       0;
-    text-shadow:  0 1px 0 #000;
-    opacity:      0.5;
+    background: transparent;
+    border: 0;
+    text-shadow: 0 1px 0 #000;
+    opacity: 0.5;
     &:hover {
       background: transparent;
-      border:     0;
-      opacity:    0.7;
+      border: 0;
+      opacity: 0.7;
     }
   }
 
   .btn-danger {
     background-color: $btn-danger-bkg;
-    border-color:     $btn-danger-bkg;
+    border-color: $btn-danger-bkg;
   }
 
   .notebook-link {
@@ -158,14 +158,14 @@
     color: $std-fg-color;
   }
 
-  .bko-glyphicon{
+  .bko-glyphicon {
     color: $std-fg-color;
   }
 
   .faux-drop-zone {
     border-color: $std-fg-color;
-    color:        $std-fg-color;
-    cursor:       $text-cursor;
+    color: $std-fg-color;
+    cursor: $text-cursor;
   }
 
   .path, .open-date, em, span.text {
@@ -193,12 +193,12 @@
 
   .ui-state-focus {
     background: $navbar-default-link-hover-bg none;
-    border-color:     $std-hover-border;
+    border-color: $std-hover-border;
   }
 
   .cell-power-button {
-    color:              #d8d8d8;
-    background-color:   $main-theme-panel-background;
+    color: #d8d8d8;
+    background-color: $main-theme-panel-background;
 
     .fa-power-off:before {
       background-color: $main-theme-panel-background;
@@ -211,7 +211,7 @@
   bk-output-display {
     > div:nth-of-type(1) {
       background: $main-theme-panel-background;
-      color:      $std-fg-color;
+      color: $std-fg-color;
     }
 
     .output_subarea pre {
@@ -233,7 +233,7 @@
 
   bk-markdown-editable, .code-cell-output {
     background: $main-theme-panel-background !important;
-    color:      $std-fg-color;
+    color: $std-fg-color;
   }
 
   bk-markdown-cell bk-markdown-editable, .bkcell.code-cell-area, .textcell-wrapper {
@@ -268,7 +268,7 @@
 
   bk-markdown-editable code {
     background-color: $std-btn-bg;
-    color:            $std-fg-color;
+    color: $std-fg-color;
   }
 
   .markup p {
@@ -309,7 +309,7 @@
   }
 
   .text-line-style {
-    fill:   white;
+    fill: white;
     stroke: white
   }
 
@@ -356,7 +356,7 @@
   }
 
   .outputlogcontainer {
-    color:            $std-fg-color;
+    color: $std-fg-color;
     background-color: $std-bg-color;
 
     .outputloghandle {
@@ -369,11 +369,11 @@
     }
 
     .btn-group .btn-primary {
-      color:            $std-fg-color;
+      color: $std-fg-color;
       background-color: $primary-btn-bg;
       &:hover {
-        background-color:   $std-hover-bg;
-        border-color:       $std-hover-border;
+        background-color: $std-hover-bg;
+        border-color: $std-hover-border;
       }
     }
   }
@@ -418,8 +418,6 @@
     background-image: url("../../images/sort_both_gray.png");
   }
 
-
-
   table.dataTable.display tbody tr.odd > .sorting_1,
   table.dataTable.order-column.stripe tbody tr.odd > .sorting_1 {
     background-color: $main-theme-panel-background;
@@ -463,7 +461,7 @@
   table.dataTable tbody tr.selected,
   table.dataTable tbody tr.selected > .sorting_1,
   table.dataTable tbody tr.selected > .sorting_2,
-  table.dataTable tbody tr.selected > .sorting_3{
+  table.dataTable tbody tr.selected > .sorting_3 {
     background-color: #435d72 !important;
   }
 
@@ -471,14 +469,12 @@
     background-color: $std-btn-bg;
   }
 
-
   table.dataTable.hover tbody tr:hover,
   table.dataTable.display tbody tr:hover,
   table.dataTable.hover tbody tr.hover,
-  table.dataTable.display tbody tr.hover{
+  table.dataTable.display tbody tr.hover {
     background-color: $std-hover-bg !important;
   }
-
 
   //dropdown menu
 
@@ -513,13 +509,13 @@
 
   .navbar-default {
     background-color: $std-bg-color;
-    border-color:     $navbar-default-border;
+    border-color: $navbar-default-border;
 
     .navbar-brand {
       color: $navbar-default-brand-color;
       &:hover,
       &:focus {
-        color:            $navbar-default-brand-hover-color;
+        color: $navbar-default-brand-hover-color;
         background-color: $navbar-default-brand-hover-bg;
       }
     }
@@ -533,7 +529,7 @@
         color: $std-fg-color;
         &:hover,
         &:focus {
-          color:            $std-fg-color;
+          color: $std-fg-color;
           background-color: $navbar-default-link-hover-bg;
         }
       }
@@ -541,7 +537,7 @@
         &,
         &:hover,
         &:focus {
-          color:            $navbar-default-link-active-color;
+          color: $navbar-default-link-active-color;
           background-color: $navbar-default-link-active-bg;
         }
       }
@@ -549,7 +545,7 @@
         &,
         &:hover,
         &:focus {
-          color:            $navbar-default-link-disabled-color;
+          color: $navbar-default-link-disabled-color;
           background-color: $navbar-default-link-disabled-bg;
         }
       }
@@ -560,10 +556,10 @@
     border-bottom-color: $cell-border;
 
     > li > a:hover, .uib-tab > div:hover {
-      border-color:         $std-hover-border;
-      border-bottom-color:  transparent;
-      background-color:     $navbar-default-link-active-bg;
-      color:                $std-fg-color;
+      border-color: $std-hover-border;
+      border-bottom-color: transparent;
+      background-color: $navbar-default-link-active-bg;
+      color: $std-fg-color;
     }
 
     > li.active > a, .uib-tab.active > div {
@@ -608,10 +604,10 @@
     margin: 0;
   }
 
-  input.plot-legendcheckbox.beforeCheckbox ~ label{
+  input.plot-legendcheckbox.beforeCheckbox ~ label {
     margin: 3px;
   }
-  input.plot-legendcheckbox.beforeCheckbox ~ span{
+  input.plot-legendcheckbox.beforeCheckbox ~ span {
     margin-left: 10px;
   }
 
@@ -671,15 +667,23 @@
   }
 
   //CodeMirror
-  .CodeMirror-selected { background: $cm-selection-color; }
-  .CodeMirror-focused .CodeMirror-selected { background: $cm-selection-color; }
-  .CodeMirror ::selection { background-color: $cm-selection-color; }
-  .CodeMirror ::-moz-selection { background-color: $cm-selection-color; }
+  .CodeMirror-selected {
+    background: $cm-selection-color;
+  }
+  .CodeMirror-focused .CodeMirror-selected {
+    background: $cm-selection-color;
+  }
+  .CodeMirror ::selection {
+    background-color: $cm-selection-color;
+  }
+  .CodeMirror ::-moz-selection {
+    background-color: $cm-selection-color;
+  }
 
   .CodeMirror-gutters {
     background-color: $main-theme-panel-background;
-    border:           none;
-    box-shadow:       none;
+    border: none;
+    box-shadow: none;
   }
 
   .CodeMirror-linenumbers, .CodeMirror-linenumber {
@@ -700,8 +704,8 @@
 
   .CodeMirror-hints, .bkcelltooltip {
     background-color: $std-bg-color;
-    color:            $std-fg-color;
-    border-color:     $cell-border;
+    color: $std-fg-color;
+    border-color: $cell-border;
   }
 
   .CodeMirror-hint {
@@ -714,7 +718,7 @@
 
   li.CodeMirror-hint-active {
     background: $navbar-default-link-active-bg;
-    color:      $std-fg-color;
+    color: $std-fg-color;
   }
 
   .cm-header {
@@ -742,5 +746,54 @@
   .ui-select-choices-row a:hover {
     background-color: $std-border;
   }
+
+  .elfinder .elfinder-navbar {
+    background: $std-bg-color !important;
+  }
+
+  .elfinder-navbar .ui-state-hover,
+  .elfinder-cwd table tr.ui-state-hover {
+    background-image: none !important;
+    color: $navbar-default-link-hover-color;
+    background-color: $std-hover-bg !important;
+    border-color: $std-hover-border !important;
+  }
+  .elfinder-navbar .ui-state-active,
+  .elfinder-cwd table td.ui-state-hover {
+    background-image: none !important;
+    background: #435d72;
+    border-color:$std-hover-border;
+  }
+
+  .elfinder-cwd table tr:nth-child(odd) {
+    background-color: $main-theme-panel-background;
+  }
+
+  .elfinder .ui-state-default,
+  .elfinder .ui-widget-content .ui-state-default,
+  .elfinder .ui-widget-header .ui-state-default {
+    color: $std-fg-color;
+  }
+
+  .elfinder .elfinder-cwd table thead td {
+    background-color: $std-btn-bg;
+    color: $std-fg-color;
+    .ui-state-active {
+      background-color: $main-theme-panel-background;
+    }
+
+  }
+  .elfinder .elfinder-cwd table thead td.ui-state-active {
+    background: $std-fg-color;
+    background: -moz-linear-gradient(top, $std-fg-color 0%, $cell-border 50%, $std-border 51%, $std-bg-color 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $std-fg-color), color-stop(50%, $cell-border), color-stop(51%, $std-border), color-stop(100%, $std-bg-color));
+    background: -webkit-linear-gradient(top, $std-fg-color 0%, $cell-border 50%, $std-border 51%, $std-bg-color 100%);
+    background: -o-linear-gradient(top, $std-fg-color 0%, $cell-border 50%, $std-border 51%, $std-bg-color 100%);
+    background: -ms-linear-gradient(top, $std-fg-color 0%, $cell-border 50%, $std-border 51%, $std-bg-color 100%);
+    background: linear-gradient(to bottom, $std-fg-color 0%, $cell-border 50%, $std-border 51%, $std-bg-color 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$std-fg-color', endColorstr='$std-bg-color', GradientType=0);
+  }
+
 }
+
 

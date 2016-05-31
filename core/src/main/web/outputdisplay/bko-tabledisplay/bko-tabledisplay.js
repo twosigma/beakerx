@@ -1142,6 +1142,7 @@
             scope.dataFontSize = scope.savedstate.dataFontSize;
             scope.headerFontSize = scope.savedstate.headerFontSize;
             scope.fontColor = scope.savedstate.fontColor;
+            scope.headersVertical = scope.savedstate.headersVertical;
 
             scope.savedstate  = undefined;
           } else {
@@ -1220,6 +1221,7 @@
             scope.dataFontSize          = model.dataFontSize;
             scope.headerFontSize        = model.headerFontSize;
             scope.fontColor             = model.fontColor;
+            scope.headersVertical       = model.headersVertical;
           }
           // auto compute types
           if (scope.actualtype === undefined || scope.actualtype.length === 0) {
@@ -1760,6 +1762,36 @@
           }
         };
 
+        scope.updateHeaderLayout = function () {
+          if(scope.table){
+            scope.updateHeaderFontSize();
+            scope.rotateHeader();
+          }
+        };
+
+        scope.updateHeaderFontSize = function () {
+          if (scope.headerFontSize) {
+            $(scope.table.table().container()).find('thead tr:not(".filterRow") th').css({'font-size': scope.headerFontSize});
+          }
+        };
+
+        scope.rotateHeader = function () {
+          if (scope.headersVertical) {
+            var headerTexts = $(scope.table.table().container()).find('thead th span.header-vertical');
+            var headerTextMaxWidth = Math.max.apply(null, headerTexts.map(function () {
+              return $(this).width();
+            }).get());
+            var lineHeight = parseFloat(headerTexts.css('line-height'));
+            var padding = 10;
+            headerTexts.css('transform', 'rotate(270deg) translateX(-' + (lineHeight - padding) + 'px)');
+            $(scope.table.table().header()).find('th').css({
+              'height': headerTextMaxWidth + padding + 'px',
+              'max-width': lineHeight,
+              'vertical-align': 'bottom'
+            });
+          }
+        };
+
         scope.doCreateTable = function(model) {
           var cols = [];
           var i;
@@ -2071,7 +2103,7 @@
             var type = scope.actualtype[i];
             var al = scope.actualalign[i];
             var col = {
-              'title' : scope.columnNames[i],
+              'title' : scope.headersVertical ? '<span class="header-vertical">' + scope.columnNames[i] +'</span>' : scope.columnNames[i],
               'header': { 'menu': headerMenuItems }
             };
             col.createdCell = function (td, cellData, rowData, row, col) {
@@ -2194,9 +2226,7 @@
               .removeClass(FC_LEFT_SEPARATOR_CLASS + ' ' + FC_RIGHT_SEPARATOR_CLASS);
             scope.table = $(id).DataTable(init);
 
-            if (scope.headerFontSize) {
-              $(scope.table.table().container()).find('thead tr:not(".filterRow") th').css({'font-size': scope.headerFontSize});
-            }
+            scope.updateHeaderLayout();
 
             scope.table.settings()[0].oScroll.iBarWidth = scope.scrollbarWidth;
             scope.renderMenu = true;
@@ -2348,6 +2378,8 @@
               })
               .on('column-visibility.dt', function (e, settings, column, state) {
                 scope.getCellSho[scope.colorder[column] - 1] = state;
+                scope.updateHeaderLayout();
+                scope.table.draw();
               });
 
             function updateSize() {
@@ -2537,6 +2569,10 @@
 
             if (scope.fontColor !== undefined) {
               state.fontColor = scope.fontColor;
+            }
+
+            if (scope.headersVertical !== undefined) {
+              state.headersVertical = scope.headersVertical;
             }
 
             scope.model.setDumpState({datatablestate: state});

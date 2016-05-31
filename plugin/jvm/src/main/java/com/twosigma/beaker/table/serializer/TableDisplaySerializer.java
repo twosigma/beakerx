@@ -56,6 +56,7 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
       if (value.getFilteredValues() != null) {
         jgen.writeObjectField("filteredValues", value.getFilteredValues());
       }
+      jgen.writeBooleanField("headersVertical", value.getHeadersVertical());
       jgen.writeObjectField("values", value.getValues());
       jgen.writeEndObject();
     }

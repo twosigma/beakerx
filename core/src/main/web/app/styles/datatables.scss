@@ -261,3 +261,10 @@ $fix-col-separator-width: 3px;
   border-top: solid 1px #CCC;
 }
 
+.header-vertical {
+  transform-origin: top left;
+  display: inline-block;
+  white-space: nowrap;
+  text-align: left;
+}
+

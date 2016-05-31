@@ -63,6 +63,7 @@ public class TableDisplay extends ObservableTableDisplay {
   private Integer headerFontSize;
   private List<List<Color>> fontColor = new ArrayList<>();
   private List<List<?>> filteredValues;
+  private boolean headersVertical;
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
@@ -320,6 +321,14 @@ public class TableDisplay extends ObservableTableDisplay {
       throw new IllegalArgumentException("Can not set row filter using closure.", e);
     }
     this.filteredValues = filteredValues;
+  }
+
+  public void setHeadersVertical(boolean headersVertical){
+    this.headersVertical = headersVertical;
+  }
+
+  public Boolean getHeadersVertical() {
+    return headersVertical;
   }
 
   public List<List<?>> getFilteredValues() {

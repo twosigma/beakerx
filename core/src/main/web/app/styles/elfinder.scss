@@ -1,0 +1,142 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+/* input textarea */
+.elfinder input,
+.elfinder textarea {
+  color: #000;
+  background-color: #FFF;
+}
+
+.elfinder .elfinder-navbar {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.elfinder-cwd-view-icons .elfinder-cwd-filename,
+.elfinder-cwd-view-list td {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.elfinder-info-tb {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.dialogelfinder .dialogelfinder-drag {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.elfinder-place-drag .elfinder-navbar-dir {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.elfinder-quicklook-title {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.elfinder-quicklook-info-data {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.elfinder-quicklook-preview-text-wrapper {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.elfinder-button-search input {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.elfinder-statusbar div {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.elfinder-drag-num {
+  font-size: 12px;
+}
+
+.elfinder input,
+.elfinder button,
+.elfinder select,
+.elfinder textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+
+/* dialogs */
+.std42-dialog, .std42-dialog .ui-widget-content { background-color:#ededed; background-image:none; background-clip: content-box; }
+
+/* navbar */
+.elfinder .elfinder-navbar { background:white !important; }
+.elfinder-navbar .ui-state-hover  { color:#000; background-color:#edf1f4; border-color:#bdcbd8; }
+.elfinder-navbar .ui-state-active { background: #3875d7;    border-color:#3875d7; color:#fff; }
+.elfinder-navbar .elfinder-droppable-active {background:#A7C6E5 !important;}
+/* disabled elfinder */
+.elfinder-disabled .elfinder-navbar .ui-state-active { background: #dadada; border-color:#aaa; color:#fff; }
+
+
+/* current directory */
+/* selected file in "icons" view */
+.elfinder-cwd-view-icons .elfinder-cwd-file .ui-state-hover { background:#ccc; }
+
+/* list view*/
+.elfinder-cwd table thead td.ui-state-hover { background:#ddd; }
+.elfinder-cwd table tr:nth-child(odd) { background-color:#edf3fe; }
+.elfinder-cwd table tr {
+  border: 1px solid transparent;
+  border-top:1px solid #fff;
+}
+.elfinder-cwd .elfinder-droppable-active td { background:#A7C6E5 !important; }
+
+
+/* common selected background/color */
+.elfinder-cwd-view-icons .elfinder-cwd-file .elfinder-cwd-filename.ui-state-hover,
+.elfinder-cwd table td.ui-state-hover,
+.elfinder-button-menu .ui-state-hover { background: #3875d7; color:#fff;}
+/* disabled elfinder */
+.elfinder-disabled .elfinder-cwd-view-icons .elfinder-cwd-file .elfinder-cwd-filename.ui-state-hover,
+.elfinder-disabled .elfinder-cwd table td.ui-state-hover { background:#dadada;}
+
+/* statusbar */
+.elfinder .elfinder-statusbar { color:#555; }
+.elfinder .elfinder-statusbar a { text-decoration:none; color:#555;}
+
+
+.std42-dialog .elfinder-help, .std42-dialog .elfinder-help .ui-widget-content { background:#fff;}
+
+/* contextmenu */
+.elfinder-contextmenu .ui-state-hover { background: #3875d7; color:#fff; }
+.elfinder-contextmenu .ui-state-hover .elfinder-contextmenu-arrow { background-image:url('../img/arrows-active.png'); }

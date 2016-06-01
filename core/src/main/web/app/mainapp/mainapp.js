@@ -291,7 +291,6 @@
               bkUtils.all(promises).then(function() {
                 if (!isExistingSession) {
                   bkUtils.log("open", {
-                    uri: notebookUri,
                     uriType: uriType,
                     format: format,
                     maxCellLevel: _.max(notebookModel.cells, function(cell) {
@@ -318,7 +317,6 @@
 
             if (!isExistingSession) {
               bkUtils.log("open", {
-                uri: notebookUri,
                 uriType: uriType,
                 format: format,
                 maxCellLevel: _.max(notebookModel.cells, function(cell) {

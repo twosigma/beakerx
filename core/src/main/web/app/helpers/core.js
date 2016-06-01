@@ -1186,7 +1186,28 @@
       }
     };
   });
+  
+  module.factory('bkAnsiColorHelper', function () {
+    function getChunks(text) {
+      return text.split(/\033\[/);
+    }
 
+    function chunkHasColorCodes(item) {
+      return !!item.match(/^([!\x3c-\x3f]*)([\d;]*)([\x20-\x2c]*[\x40-\x7e])([\s\S]*)/m);
+    }
+
+    return {
+      hasAnsiColors: function (text) {
+        return getChunks(text).some(function (item) {
+          return chunkHasColorCodes(item);
+        });
+      },
+      convertToHtml: function (text) {
+        return ansi_up.ansi_to_html(text);
+      }
+    };
+  });
+  
   module.factory('bkDragAndDropHelper', function (bkUtils) {
     function wrapImageDataUrl(dataUrl) {
       return '<img src="' + dataUrl + '" />';

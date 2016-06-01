@@ -474,6 +474,7 @@
           var saveDone = function(ret) {
             bkSessionManager.setNotebookModelEdited(false);
             bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
+            bkSessionManager.recordRecentNotebook();
             updateSessionStore(ret.uri, ret.uriType, false);
             showTransientStatusMessage("Saved");
           };
@@ -487,10 +488,14 @@
             }
           };
 
-          var renameDone = function(ret) {
-            bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
-            updateSessionStore(ret.uri, ret.uriType, false);
-            showTransientStatusMessage("Renamed");
+          var getRenameDoneCallback = function() {
+            var oldUrl = bkSessionManager.getNotebookPath();
+            return function (ret) {
+              bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
+              bkSessionManager.updateRecentDocument(oldUrl);
+              updateSessionStore(ret.uri, ret.uriType, false);
+              showTransientStatusMessage("Renamed");
+            }
           };
 
           var renameFailed = function (msg) {
@@ -598,7 +603,7 @@
                 return;
               }
               showLoadingStatusMessage("Renaming");
-              return bkFileManipulation.renameNotebook(notebookUri, uriType).then(renameDone, renameFailed);
+              return bkFileManipulation.renameNotebook(notebookUri, uriType).then(getRenameDoneCallback(), renameFailed);
             },
             saveNotebookAs: function(notebookUri, uriType) {
               if (_.isEmpty(notebookUri)) {

@@ -104,6 +104,19 @@
             _server.addItem(item, refreshMenu);
           }
         },
+        updateRecendDocument: function (oldUrl, item) {
+          var existingItem = _.find(this.getMenuItems(), function (item) {
+            return item.tooltip === oldUrl;
+          });
+          if(existingItem && _server) {
+            var self = this;
+            _server.removeItem(existingItem, function () {
+              self.recordRecentDocument(item);
+            });
+          } else {
+            this.recordRecentDocument(item);
+          }
+        },
         removeRecentDocument: function(item) {
           if (_server) {
             _server.removeItem(item, refreshMenu);

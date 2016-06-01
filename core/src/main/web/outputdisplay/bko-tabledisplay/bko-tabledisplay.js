@@ -169,9 +169,10 @@
       var $$ = {};
       var variables = "var $ = undefined;";
       _.forEach(settings.aoColumns, function (column, index) {
-        $$[column.sTitle] = row[index];
-        if (isValidJSIdentifier(column.sTitle)) {
-          variables += ('var ' + column.sTitle + '=' + formatValue(row[index]) + ';');
+        var title = $(column.sTitle).text();
+        $$[title] = row[index];
+        if (isValidJSIdentifier(title)) {
+          variables += ('var ' + title + '=' + formatValue(row[index]) + ';');
         }
       });
 
@@ -778,7 +779,7 @@
           3: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               var doubleValue = parseFloat(value);
-              var colFormat = $scope.stringFormatForColumn[meta.settings.aoColumns[meta.col].sTitle];
+              var colFormat = $scope.stringFormatForColumn[$(meta.settings.aoColumns[meta.col].sTitle).text()];
               var typeFormat = $scope.stringFormatForType.double;
               var format = colFormat && colFormat.type === 'decimal' ? colFormat : typeFormat;
               if (format && format.type === 'decimal') {

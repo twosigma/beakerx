@@ -21,6 +21,7 @@ import com.twosigma.beaker.core.module.elfinder.service.FsItemFilter;
 import com.twosigma.beaker.core.module.elfinder.service.FsService;
 import com.twosigma.beaker.core.module.elfinder.util.FsItemFilterUtils;
 import com.twosigma.beaker.core.module.elfinder.util.FsServiceUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -168,6 +169,9 @@ public abstract class AbstractCommand implements Command {
     String url = fsi.getURL();
     if (url != null) {
       info.put("url", url);
+    }
+    if (!StringUtils.isEmpty(fsi.getCssCls())){
+      info.put("csscls", fsi.getCssCls());
     }
 
     return info;

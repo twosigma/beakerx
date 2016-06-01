@@ -1273,8 +1273,25 @@
             toolbar: [
               ['back', 'forward'],
               ['mkdir'],
-              ['view']
+              ['copy', 'cut', 'paste'],
+              ['rm'],
+              ['duplicate', 'rename'],
+              ['extract', 'archive'],
+              ['view', 'sort']
             ],
+            contextmenu : {
+              // navbarfolder menu
+              navbar : ['copy', 'cut', 'paste', 'duplicate', '|', 'rm',],
+
+              // current directory menu
+              cwd    : ['reload', 'back', '|', 'mkdir', 'paste' ],
+
+              // current directory file menu
+              files  : [
+                'copy', 'cut', 'paste', 'duplicate', '|',
+                'rm', '|', 'archive', 'extract'
+              ]
+            },
 
             // navbar options
             navbar: {
@@ -1389,13 +1406,24 @@
           toolbar: [
             ['back', 'forward'],
             ['mkdir'],
-            ['view']
+            ['copy', 'cut', 'paste'],
+            ['rm'],
+            ['duplicate', 'rename'],
+            ['extract', 'archive'],
+            ['view', 'sort']
           ],
+          contextmenu : {
+            // navbarfolder menu
+            navbar : ['copy', 'cut', 'paste', 'duplicate', '|', 'rm',],
 
-          // navbar options
-          navbar: {
-            minWidth: 150,
-            maxWidth: 1200
+            // current directory menu
+            cwd    : ['reload', 'back', '|', 'mkdir', 'paste' ],
+
+            // current directory file menu
+            files  : [
+              'copy', 'cut', 'paste', 'duplicate', '|',
+              'rm', '|', 'archive', 'extract'
+            ]
           },
 
           // directories tree options

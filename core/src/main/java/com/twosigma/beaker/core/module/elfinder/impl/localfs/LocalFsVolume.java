@@ -59,6 +59,7 @@ public class LocalFsVolume implements FsVolume {
 
   private String name;
   private File   rootDir;
+  private String csscls;
 
   private File asFile(FsItem fsi) {
     return ((LocalFsItem) fsi).getFile();
@@ -255,5 +256,15 @@ public class LocalFsVolume implements FsVolume {
         os.close();
       }
     }
+  }
+
+  @Override
+  public String getCssCls() {
+    return csscls;
+  }
+
+  @Override
+  public void setCssCls(String csscls) {
+    this.csscls = csscls;
   }
 }

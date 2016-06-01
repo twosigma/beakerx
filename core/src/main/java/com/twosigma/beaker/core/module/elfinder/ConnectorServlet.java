@@ -78,13 +78,17 @@ public class ConnectorServlet extends HttpServlet {
       File[] roots = File.listRoots();
       for (File root : roots) {
         String path = root.getPath();
+        LocalFsVolume disk = createLocalFsVolume(path,
+                                                 root);
+        disk.setCssCls("elfinder-navbar-root-local");
         fsService.addVolume(path.replace(":\\", ""),
-                            createLocalFsVolume(path,
-                                                root));
+                            disk);
       }
     } else {
+      LocalFsVolume rootVolume = createLocalFsVolume("/", new File("/"));
+      rootVolume.setCssCls("elfinder-navbar-root-local");
       fsService.addVolume("A",
-                          createLocalFsVolume("/", new File("/")));
+                          rootVolume);
       fsService.addVolume("B",
                           createLocalFsVolume(userHomeDir,
                                               new File(userHomeDir)));

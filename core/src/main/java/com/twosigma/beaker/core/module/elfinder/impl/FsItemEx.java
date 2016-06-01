@@ -189,4 +189,5 @@ public class FsItemEx implements FsItem {
     return v.getURL(f);
   }
 
+  public String getCssCls() {return v.getCssCls();}
 }

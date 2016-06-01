@@ -47,6 +47,10 @@ public interface FsVolume {
 
   FsItem getRoot();
 
+  String getCssCls();
+
+  void setCssCls(String csscls);
+
   long getSize(FsItem fsi) throws IOException;
 
   String getThumbnailFileName(FsItem fsi);

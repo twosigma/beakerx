@@ -37,7 +37,6 @@
     "jquery-throttle-debounce": "v1.1",
     "angular-ui-select": "0.16.1",
     "vis": "4.16.1",
-    "vivagraphjs": "latest",
-    "ansi_up": "1.3.0"
+    "vivagraphjs": "latest"
   }
 }

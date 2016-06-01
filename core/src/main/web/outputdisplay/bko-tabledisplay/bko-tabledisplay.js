@@ -1767,7 +1767,7 @@
         };
 
         scope.updateHeaderLayout = function () {
-          if(scope.table){
+          if (scope.table) {
             scope.updateHeaderFontSize();
             scope.rotateHeader();
           }
@@ -1780,7 +1780,11 @@
         };
 
         scope.rotateHeader = function () {
-          var headerTexts = $(scope.table.table().container()).find('thead th span.header-text');
+          var headerRows = $(scope.table.table().container())
+            .find('.DTFC_LeftHeadWrapper, .DTFC_RightHeadWrapper, .dataTables_scrollHead')
+            .find('thead tr:not(".filterRow")');
+          var headerCols = headerRows.find('th');
+          var headerTexts = headerCols.find('span.header-text');
           var headerTextMaxWidth = Math.max.apply(null, headerTexts.map(function () {
             return $(this).width();
           }).get());
@@ -1789,7 +1793,7 @@
             headerTexts.addClass('rotate');
             var padding = 10;
             headerTexts.css('transform', 'rotate(270deg) translateX(-' + (lineHeight - padding) + 'px)');
-            $(scope.table.table().header()).find('th').css({
+            headerCols.css({
               'height': headerTextMaxWidth + padding + 'px',
               'max-width': lineHeight,
               'vertical-align': 'bottom'
@@ -1797,14 +1801,12 @@
           } else {
             headerTexts.removeClass('rotate');
             headerTexts.css('transform', '');
-            $(scope.table.table().container()).find('thead th').css({
+            headerCols.css({
               'height': '',
               'max-width': '',
               'vertical-align': ''
             });
-            $(scope.table.table().container()).find('thead tr').css({
-              'height': ''
-            });
+            headerRows.css({'height': ''});
           }
         };
 
@@ -2236,9 +2238,8 @@
             });
           }
 
-
           var rotateMenuItem = {
-              callback: function (itemKey, options) {
+            callback: function (itemKey, options) {
               scope.headersVertical = !!!scope.headersVertical;
               scope.rotateHeader();
               scope.table.draw();
@@ -2424,8 +2425,10 @@
               })
               .on('column-visibility.dt', function (e, settings, column, state) {
                 scope.getCellSho[scope.colorder[column] - 1] = state;
-                scope.updateHeaderLayout();
-                scope.table.draw();
+                setTimeout(function(){
+                  scope.updateHeaderLayout();
+                  scope.table.draw(false);
+                }, 0);
               });
 
             function updateSize() {

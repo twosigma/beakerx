@@ -971,7 +971,7 @@
         bkRecentMenu.recordRecentDocument(generateRecentDocumentItem());
       },
       updateRecentDocument: function (oldUrl) {
-        bkRecentMenu.updateRecendDocument(oldUrl, generateRecentDocumentItem());
+        bkRecentMenu.updateRecentDocument(oldUrl, generateRecentDocumentItem());
       },
       getNotebookPath: function() {
         if (_notebookUri.get()) {

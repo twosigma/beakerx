@@ -104,7 +104,7 @@
             _server.addItem(item, refreshMenu);
           }
         },
-        updateRecendDocument: function (oldUrl, item) {
+        updateRecentDocument: function (oldUrl, item) {
           var existingItem = _.find(this.getMenuItems(), function (item) {
             return item.tooltip === oldUrl;
           });

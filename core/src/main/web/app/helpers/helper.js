@@ -829,8 +829,8 @@
       showDefaultSavingFileChooser: function(initPath, saveButtonTitle) {
         return bkCoreManager.showDefaultSavingFileChooser(initPath, saveButtonTitle);
       },
-      showFileSaveDialog: function(callback, ext, saveButtonTitle) {
-        return bkCoreManager.showFileSaveDialog(callback, ext, saveButtonTitle);
+      showFileSaveDialog: function(data) {
+        return bkCoreManager.showFileSaveDialog(data);
       },
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();

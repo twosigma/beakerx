@@ -229,8 +229,10 @@
       rename: function(oldUri, newUri, overwrite) {
         return bkUtils.renameFile(oldUri, newUri, overwrite);
       },
-      showFileChooser: function(initUri) {
-        return bkCoreManager.showDefaultSavingFileChooser(initUri);
+      showFileChooser: function (initUri) {
+        return bkCoreManager.showFileSaveDialog({
+          initUri: initUri
+        });
       }
     };
 
@@ -831,13 +833,15 @@
         return dd;
       },
 
-      showFileSaveDialog: function(callback, ext, saveButtonTitle) {
+      showFileSaveDialog: function(data) {
+        var deferred = bkUtils.newDeferred();
         var  FileSaveStrategy = function () {
           var newStrategy = this;
-          newStrategy.saveButtonTitle = saveButtonTitle;
+          newStrategy.initUri = data.initUri;
+          newStrategy.saveButtonTitle = data.saveButtonTitle;
           newStrategy.treeViewfs = {
             applyExtFilter: true,
-            extension: ext
+            extension: data.extension
           };
         };
         modalDialogOp.setStrategy(new FileSaveStrategy());
@@ -853,14 +857,18 @@
         });
         dd.result.then(
           function (result) {
-            callback(result);
+            deferred.resolve({
+              uri: result.uri,
+              uriType: result.uriType
+            });
+            data.callback(result);
           }, function () {
             //Trigger when modal is dismissed
-            callback();
+            data.callback();
           }).catch(function () {
           console.log('error!!!!')
         });
-        return dd;
+        return deferred.promise;
       },
 
       showModalDialog: function(callback, template, strategy, uriType, readOnly, format) {
@@ -1362,6 +1370,8 @@
         resizable: false,
         useBrowserHistory: false,
         onlyMimes: $scope.mime(),
+        getFileCallback: function (file) {
+        },
         handlers: {
           select: function (event, elfinderInstance) {
             if (event.data.selected && event.data.selected.length > 0) {
@@ -1406,6 +1416,11 @@
           $elfinder.trigger('resize');
         }
       });
+
+      if ( $scope.getStrategy().initUri){
+        $scope.filename = $scope.getStrategy().initUri.substring($scope.getStrategy().initUri.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/') + 1);
+        $scope.getStrategy().treeViewfs.extension = $scope.filename.substring($scope.filename.lastIndexOf('.') + 1);
+      }
     };
 
     $scope.save = function () {

@@ -1265,7 +1265,7 @@
           } else {
             initUri = null;
           }
-          bkHelper.showDefaultSavingFileChooser(initUri, saveButtonTitle).then(function(ret) {
+          bkHelper.showFileSaveDialog({initUri: initUri, saveButtonTitle: saveButtonTitle}).then(function (ret) {
             if (ret.uri) {
               return saveFn(ret.uri, ret.uriType);
             }

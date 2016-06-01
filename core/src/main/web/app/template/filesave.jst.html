@@ -21,7 +21,7 @@
 </div>
 <div id="elfinder" ng-init="init()" style="padding-bottom: 68px; padding-top: 112px"/>
 <div class="modal-footer fixed" style="height: 68px;">
-   <span style="float:left; position:relative;" ng-if="getStrategy().treeViewfs.extension !== undefined">
+   <span style="float:left; position:relative;" ng-show="getStrategy().treeViewfs.extension !== undefined">
      <input class="beforeCheckbox" id="extensionFilter"type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter">
      <label ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show .{{ getStrategy().treeViewfs.extension }} files only</label>
    </span>

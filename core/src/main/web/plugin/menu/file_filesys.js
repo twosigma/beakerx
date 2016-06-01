@@ -57,15 +57,14 @@ define(function(require, exports, module) {
                 return bkHelper.saveNotebookAs(path, 'file');
               })
             } else {
-              var callback = function(ret){
-                if (ret && ret.uri) {
+              bkHelper.showFileSaveDialog({
+                extension: "bkr"
+              }).then(function (ret) {
+                if (ret.uri) {
                   return bkHelper.saveNotebookAs(ret.uri, ret.uriType);
                 }
-              };
-              bkHelper.showFileSaveDialog(callback, "bkr");
-              return callback;
+              });
             }
-            bkHelper.showSaveDialog
           }
         }
       ]

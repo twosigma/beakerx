@@ -737,7 +737,7 @@
         {type: 4, name: 'double with precision'},
         {type: 6, name: 'exponential 5'},
         {type: 7, name: 'exponential 15'},
-        {type: 8, name: 'time'},
+        {type: 8, name: 'datetime'},
         {type: 9, name: 'boolean'},
         {type: 10, name: 'html'}];
         $scope.allConverters = {
@@ -818,7 +818,7 @@
             }
             return value;
           },
-          // time
+          // datetime
           8: function(value, type, full, meta) {
             var time;
             var tz;
@@ -875,12 +875,12 @@
           }.bind({}, precision);
         }
         $scope.allStringTypes = [{type: 0, name: 'string'}, {type: 10, name: 'html'}];
-        $scope.allTimeTypes   = [{type: 8, name: 'time'},
+        $scope.allTimeTypes   = [{type: 8, name: 'datetime'},
                                  {type: 0, name: 'string'}];
         $scope.allIntTypes    = [{type: 0, name: 'string'},
         {type: 1, name: 'integer'},
         {type: 2, name: 'formatted integer'},
-        {type: 8, name: 'time'}];
+        {type: 8, name: 'datetime'}];
         $scope.allDoubleTypes = [{type: 0, name: 'string'},
         {type: 3, name: 'double'},
         {type: 4, name: 'double with precision'},
@@ -1821,7 +1821,7 @@
             var items = [];
 
             _.each(types, function(obj) {
-              if (obj.type === 8) { //time
+              if (obj.type === 8) { //datetime
                 items = items.concat(getTimeSubitems());
                 return;
               }
@@ -1882,7 +1882,7 @@
                 isChecked: function(container) {
                   var colIdx = container.data('columnIndex');
                   return scope.actualtype[scope.colorder[colIdx] - 1] === 8 &&
-                    (unit === scope.formatForTimes || unit == 'DATETIME' && scope.formatForTimes == null);
+                    (unit === scope.formatForTimes || unit == 'DATETIME' && _.isEmpty(scope.formatForTimes));
                 },
                 action: function(el) {
                   scope.changeTimeFormat(unit);

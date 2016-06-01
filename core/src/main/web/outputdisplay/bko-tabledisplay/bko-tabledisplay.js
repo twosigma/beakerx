@@ -2247,6 +2247,7 @@
           };
           $.contextMenu({
             selector: id +'_wrapper thead',
+            zIndex: 3, //to be over fixed headers
             items: {
               verticalHeaders: _.extend({}, rotateMenuItem, {
                 name: 'vertical headers',

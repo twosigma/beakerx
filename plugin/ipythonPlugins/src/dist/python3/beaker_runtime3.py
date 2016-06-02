@@ -360,7 +360,6 @@ class DataFrameEncoder(json.JSONEncoder):
         if type(obj) == datetime.datetime or type(obj) == datetime.date or type(obj).__name__ == 'Timestamp':
             out = {}
             out['type'] = "Date"
-            print(obj.timetuple())
             out['timestamp'] = time.mktime(obj.timetuple()) * 1000
             return out
         if type(obj) == pandas.core.frame.DataFrame:

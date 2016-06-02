@@ -381,7 +381,7 @@
                     "}",
                     "",
                     "t = beaker.mpg",
-                    "if(!t.getClass().getName().equals('com.twosigma.beaker.jvm.object.TableDisplay')) {",
+                    "if(!t.getClass().getName().equals('com.twosigma.beaker.table.TableDisplay')) {",
                     "  System.out.println(\"ERROR on data frame\")",
                     "  error = true",
                     "}",

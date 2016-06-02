@@ -65,7 +65,7 @@
                     "(if-not (instance? Boolean (beaker :get \"v2\")) (conj! err \"ERROR reading Boolean\"))",
                     "(if-not (instance? String (beaker :get \"v3\")) (conj! err \"ERROR reading String\"))",
                     "(if-not (instance? java.util.Date (beaker :get \"v4\")) (conj! err \"ERROR reading Date\"))",
-                    "(if-not (instance? com.twosigma.beaker.jvm.object.TableDisplay (beaker :get \"v5\")) (conj! err \"ERROR reading data frame\"))",
+                    "(if-not (instance? com.twosigma.beaker.table.TableDisplay (beaker :get \"v5\")) (conj! err \"ERROR reading data frame\"))",
                     "(if-not (instance? clojure.lang.PersistentVector (beaker :get \"v6\")) (conj! err \"ERROR reading list of dictionaries\"))",
                     "",
                     "(if-not (instance? clojure.lang.PersistentVector (beaker :get \"v7\")) (conj! err \"ERROR reading basic collection\"))",

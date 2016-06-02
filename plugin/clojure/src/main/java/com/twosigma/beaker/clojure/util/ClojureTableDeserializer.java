@@ -16,10 +16,11 @@
 
 package com.twosigma.beaker.clojure.util;
 
-import com.twosigma.beaker.jvm.object.TableDisplay;
+import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
 
+import com.twosigma.beaker.table.serializer.TableDisplayDeSerializer;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -47,7 +48,7 @@ public class ClojureTableDeserializer implements ObjectDeserializer {
   @SuppressWarnings("unchecked")
   public Object deserialize(JsonNode n, ObjectMapper mapper) {
 
-    org.apache.commons.lang3.tuple.Pair<String, Object> deserializeObject = TableDisplay.DeSerializer.getDeserializeObject(parent, n, mapper);
+    org.apache.commons.lang3.tuple.Pair<String, Object> deserializeObject = TableDisplayDeSerializer.getDeserializeObject(parent, n, mapper);
     String subtype = deserializeObject.getLeft();
     if (subtype != null && subtype.equals(TableDisplay.DICTIONARY_SUBTYPE)) {
       return PersistentArrayMap.create((Map) deserializeObject.getRight());

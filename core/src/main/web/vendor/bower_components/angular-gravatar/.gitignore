@@ -1,5 +1,5 @@
 .DS_Store
-/components
+/bower_components
 /node_modules
 /coverage
 /build/spec

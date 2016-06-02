@@ -28,7 +28,7 @@
 @import "styles/variables.scss";
 
 $icon-font-path: "../../app/fonts/";
-@import "../vendor/bower_components/bootstrap-sass/assets/stylesheets/bootstrap.scss";
+@import "styles/customBootstrap";
 
 @import "styles/datatables.scss";
 

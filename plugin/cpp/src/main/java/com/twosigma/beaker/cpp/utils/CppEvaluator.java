@@ -57,8 +57,6 @@ import com.twosigma.beaker.cpp.autocomplete.CPP14Lexer;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Parser;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Listener;
 
-import com.twosigma.beaker.cpp.utils.CellGobbler;
-
 public class CppEvaluator {
   protected final String shellId;
   protected final String sessionId;
@@ -329,10 +327,8 @@ public class CppEvaluator {
           pb.redirectOutput(Redirect.PIPE);
           pb.redirectError(Redirect.PIPE);
           Process p = pb.start();
-          CellGobbler clangOut = new CellGobbler(p.getInputStream(), "stderr", theOutput);
-          CellGobbler clangErr = new CellGobbler(p.getErrorStream(), "stderr", theOutput);
-          clangOut.start();
-          clangErr.start();
+          CellGobblerManager.getInstance().startCellGobbler(p.getInputStream(), "stderr", theOutput);
+          CellGobblerManager.getInstance().startCellGobbler(p.getErrorStream(), "stderr", theOutput);
           if((p.waitFor()) == 0) {
             loadedCells.add(theCellId);
           } else {
@@ -362,10 +358,8 @@ public class CppEvaluator {
             pb.redirectOutput(Redirect.PIPE);
             pb.redirectError(Redirect.PIPE);
             cellProc = pb.start();
-            CellGobbler cellOut = new CellGobbler(cellProc.getInputStream(), "stdout", theOutput);
-            CellGobbler cellErr = new CellGobbler(cellProc.getErrorStream(), "stderr", theOutput);
-            cellOut.start();
-            cellErr.start();
+            CellGobblerManager.getInstance().startCellGobbler(cellProc.getInputStream(), "stdout", theOutput);
+            CellGobblerManager.getInstance().startCellGobbler(cellProc.getErrorStream(), "stderr", theOutput);
             if((cellProc.waitFor()) == 0) {
               try {
                 InputStream file = new FileInputStream(tmpDir + "/" + theCellId + ".result");

@@ -430,9 +430,6 @@
         },
         set: function(v) {
           _v = v;
-          if (!_.isEmpty(_v)) {
-            bkRecentMenu.recordRecentDocument(generateRecentDocumentItem());
-          }
         }
       };
     })();
@@ -922,6 +919,7 @@
         bkNotebookManager.init(this);
         connectcontrol(sessionId);
         bkSession.backup(_sessionId, generateBackupData());
+        bkRecentMenu.recordRecentDocument(generateRecentDocumentItem());
       },
       clear: function() {
         disconnectcontrol(_sessionId);
@@ -968,6 +966,12 @@
         _readOnly = readOnly;
         _format = format;
         _notebookUri.set(notebookUri);
+      },
+      recordRecentNotebook: function () {
+        bkRecentMenu.recordRecentDocument(generateRecentDocumentItem());
+      },
+      updateRecentDocument: function (oldUrl) {
+        bkRecentMenu.updateRecentDocument(oldUrl, generateRecentDocumentItem());
       },
       getNotebookPath: function() {
         if (_notebookUri.get()) {

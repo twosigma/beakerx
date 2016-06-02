@@ -22,6 +22,7 @@ import com.google.inject.Singleton;
 import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.BeakerProgressUpdate;
 import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.jvm.object.OutputCell;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.GradientColor;
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
@@ -123,6 +124,7 @@ import com.twosigma.beaker.jvm.serialization.GridOutputContainerLayoutManagerSer
 import com.twosigma.beaker.jvm.serialization.ImageIconSerializer;
 import com.twosigma.beaker.jvm.serialization.MapDeserializer;
 import com.twosigma.beaker.jvm.serialization.NamespaceBindingDeserializer;
+import com.twosigma.beaker.jvm.serialization.OutputCellStateSerializer;
 import com.twosigma.beaker.jvm.serialization.OutputContainerCellDeserializer;
 import com.twosigma.beaker.jvm.serialization.OutputContainerCellSerializer;
 import com.twosigma.beaker.jvm.serialization.OutputContainerDeserializer;
@@ -261,6 +263,7 @@ public class SerializerModule extends AbstractModule {
 
       module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainerSerializer.class));
       module.addSerializer(OutputContainerCell.class, injector.getInstance(OutputContainerCellSerializer.class));
+      module.addSerializer(OutputCell.State.class, injector.getInstance(OutputCellStateSerializer.class));
       module.addSerializer(SimpleLayoutManager.class, injector.getInstance(SimpleLayoutManagerSerializer.class));
       module.addSerializer(TabbedOutputContainerLayoutManager.class, injector.getInstance(TabbedOutputContainerLayoutManagerSerializer.class));
       module.addSerializer(GridOutputContainerLayoutManager.class, injector.getInstance(GridOutputContainerLayoutManagerSerializer.class));

@@ -53,6 +53,25 @@ html {
     bottom: 0;
     width: 100%;
   }
+
+  .filedialog{
+    display:block;
+    margin:auto;
+  }
+
+  .filedialog-header{
+    position: relative !important;
+  }
+
+  .filedialog-content{
+    max-height: calc(100vh - 320px) !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .filedialog-footer{
+    position: relative !important;
+  }
 }
 
 .modal {

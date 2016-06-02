@@ -1,0 +1,4 @@
+#!/bin/bash
+Xvfb :99 &
+export DISPLAY=:99
+export PATH=$PATH:/usr/sbin:/home/beaker/src:/home/beaker/chrome-linux && gradle check

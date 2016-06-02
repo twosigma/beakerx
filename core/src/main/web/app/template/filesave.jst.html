@@ -16,7 +16,7 @@
 -->
 
 <div class="modal-header fixed form-group property language-option clearfix" style="padding: 20px;margin-bottom: 0">
-  <label>Save As: </label>
+  <label>{{getStrategy().title ? getStrategy().title : "Save As"}}: </label>
   <input type="text" class="form-control" ng-model="filename" />
 </div>
 <div id="elfinder" ng-init="init()" style="padding-bottom: 68px; padding-top: 112px"/>

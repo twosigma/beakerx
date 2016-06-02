@@ -388,17 +388,16 @@
             }).data();
           }
           var out = $scope.exportTo(data, 'csv');
-          bkHelper.selectFile(function(n) {
-            var suffix = '.csv';
-            if (n === undefined) {
-              return;
+
+          bkHelper.showFileSaveDialog({
+            extension: "csv",
+            title: 'Select name for CSV file to save',
+            saveButtonTitle : 'Save'
+          }).then(function (ret) {
+            if (ret.uri) {
+              return bkHelper.saveFile(ret.uri, out, true);
             }
-            if (n.indexOf(suffix, n.length - suffix.length) === -1) {
-              n = n + suffix;
-            }
-            // TODO check for error, prompt for overwrite
-            return bkHelper.saveFile(n, out, true);
-          } , 'Select name for CSV file to save', 'csv', 'Save');
+          });
         };
 
         // reset table state

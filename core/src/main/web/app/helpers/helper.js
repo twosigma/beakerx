@@ -826,9 +826,6 @@
       setFileSaver: function(uriType, fileSaver) {
         return bkCoreManager.setFileSaver(uriType, fileSaver);
       },
-      showDefaultSavingFileChooser: function(initPath, saveButtonTitle) {
-        return bkCoreManager.showDefaultSavingFileChooser(initPath, saveButtonTitle);
-      },
       showFileSaveDialog: function(data) {
         return bkCoreManager.showFileSaveDialog(data);
       },
@@ -855,22 +852,6 @@
       },
       getFileSystemFileChooserStrategy: function() {
         return bkCoreManager.getFileSystemFileChooserStrategy();
-      },
-      selectFile: function(callback, title, extension, closebtn) {
-        var strategy = bkCoreManager.getFileSystemFileChooserStrategy();
-        strategy.treeViewfs.extFilter = [ extension ];
-        strategy.ext = extension;
-        strategy.title = title;
-        strategy.closebtn = closebtn;
-        bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getLocalDrives()]).then(function (values) {
-          if (bkUtils.serverOS.isWindows()) {
-            strategy.localDrives = values[1];
-          }
-          return bkCoreManager.showModalDialog(
-              callback,
-              JST['template/opennotebook']({homedir: values[0], extension: extension}),
-              strategy);
-        });
       },
 
       // eval utils

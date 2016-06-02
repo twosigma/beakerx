@@ -7,6 +7,7 @@
 
 # MIME type			Extension
 application/beaker-notebook bkr
+application/x-ipynb+json ipynb
 application/andrew-inset ez
 application/chemtool cht
 application/dicom dcm

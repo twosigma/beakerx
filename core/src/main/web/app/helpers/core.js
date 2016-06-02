@@ -407,84 +407,6 @@
         $sessionStorage.importedNotebook = notebook;
         $location.path("/session/import").search({});
       },
-      showDefaultSavingFileChooser: function(initPath, saveButtonTitle) {
-        var self = this;
-        var deferred = bkUtils.newDeferred();
-        var requests = [bkUtils.getHomeDirectory(), bkUtils.getStartUpDirectory(),
-          bkUtils.getLocalDrives()];
-        bkUtils.all(requests).then(function(values) {
-          var homeDir = values[0];
-          var localDrives = values[2];
-          var fileChooserStrategy = self.getFileSystemFileChooserStrategy();
-          fileChooserStrategy.localDrives = localDrives;
-          fileChooserStrategy.input = initPath;
-          fileChooserStrategy.convertRelativePath = function (path) {
-            if (path == null) {
-              return path;
-            }
-            var result = path;
-            if (result === '~') {
-              result = homeDir + "/"
-            } else if (_.startsWith(result, '~/')) {
-              result = result.replace('~', homeDir);
-            } else if (!_.startsWith(result, '/') && !result.match(/^\w+:\\/)) {
-              result = homeDir + "/" + result;
-            }
-            return result;
-          };
-          fileChooserStrategy.getResult = function () {
-            if (_.isEmpty(this.input)) {
-              return "";
-            }
-            var result = this.convertRelativePath(this.input);
-            if (!_.endsWith(result, '.bkr')
-                && !_.endsWith(result, '/')) {
-              result = result + ".bkr";
-            }
-            return result;
-          };
-          fileChooserStrategy.newFolder = function(path) {
-            var self = this;
-            this.showSpinner = true;
-            path = this.convertRelativePath(path);
-            bkUtils.httpPost("../beaker/rest/file-io/createDirectory", {path: path})
-              .success(function (list) {
-
-                self.manualName = "";
-                self.input = path+'/';
-
-                $rootScope.$broadcast("MAKE_NEW_DIR",{
-                  path: path
-                });
-                self.showSpinner = false;
-              }).error(function (response) {
-                self.showSpinner = false;
-                console.log(response);
-              });
-          };
-          fileChooserStrategy.getSaveBtnDisabled = function() {
-            return _.isEmpty(this.input) || _.endsWith(this.input, '/');
-          };
-          fileChooserStrategy.treeViewfs.applyExtFilter = false;
-          saveButtonTitle = saveButtonTitle || "Save";
-          var fileChooserTemplate = JST['template/savenotebook']({
-            homedir: homeDir,
-            saveButtonTitle: saveButtonTitle
-          });
-          var fileChooserResultHandler = function (chosenFilePath) {
-            deferred.resolve({
-              uri: chosenFilePath,
-              uriType: LOCATION_FILESYS
-            });
-          };
-
-          self.showModalDialog(
-              fileChooserResultHandler,
-              fileChooserTemplate,
-              fileChooserStrategy);
-        });
-        return deferred.promise;
-      },
 
       codeMirrorOptions: function(scope, notebookCellOp) {
 
@@ -838,6 +760,7 @@
         var  FileSaveStrategy = function () {
           var newStrategy = this;
           newStrategy.initUri = data.initUri;
+          newStrategy.title = data.title;
           newStrategy.saveButtonTitle = data.saveButtonTitle;
           newStrategy.treeViewfs = {
             applyExtFilter: true,
@@ -861,12 +784,10 @@
               uri: result.uri,
               uriType: result.uriType
             });
-            data.callback(result);
           }, function () {
-            //Trigger when modal is dismissed
-            data.callback();
+            deferred.reject();
           }).catch(function () {
-          console.log('error!!!!')
+          deferred.reject();
         });
         return deferred.promise;
       },
@@ -1215,7 +1136,7 @@
     };
   });
 
-  module.controller('fileOpenDialogCtrl', function ($scope, $rootScope, $uibModalInstance, angularUtils, modalDialogOp) {
+  module.controller('fileOpenDialogCtrl', function ($scope, $rootScope, $uibModalInstance, bkUtils,  modalDialogOp) {
 
     var elfinder;
 
@@ -1230,13 +1151,8 @@
 
     $scope.mime = function () {
       if ($scope.getStrategy().treeViewfs.applyExtFilter === true) {
-        if ($scope.getStrategy().treeViewfs.extension === 'bkr') {
-          return ['directory', 'application/beaker-notebook'];
-        } else if ($scope.getStrategy().treeViewfs.extension === 'py') {
-          return ['directory', 'text/x-python'];
-        }
+        return bkUtils.mime($scope.getStrategy().treeViewfs.extension);
       }
-
       return [];
     };
 
@@ -1366,13 +1282,8 @@
 
     $scope.mime = function () {
       if ($scope.getStrategy().treeViewfs.applyExtFilter === true) {
-        if ($scope.getStrategy().treeViewfs.extension === 'bkr') {
-          return ['directory', 'application/beaker-notebook'];
-        } else if ($scope.getStrategy().treeViewfs.extension === 'py') {
-          return ['directory', 'text/x-python'];
-        }
+        return bkUtils.mime($scope.getStrategy().treeViewfs.extension);
       }
-
       return [];
     };
 

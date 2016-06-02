@@ -117,6 +117,9 @@ bk-section-cell {
   .code-cell-input {
     padding: $grid-row-height*2 $grid-gutter-width $grid-row-height;
     position: relative;
+    &.input-hidden {
+      padding-bottom: $grid-row-height + 6 //to fit initialization indicator
+    }
 
     .advanced-mode & {
       padding: 8px $grid-gutter-width;
@@ -182,15 +185,14 @@ bk-section-cell {
     position:     absolute;
     background:   rgba(255, 255, 255, 0.5);
     z-index:      1;
+    right:      0;
 
     &:not(.input-hidden) {
       bottom:     6px;
-      right:      0;
     }
 
     &.input-hidden {
-      top:        16px;
-      left:       132px;
+      bottom:     0px;
       .advanced-mode & {
         display:  none;
       }

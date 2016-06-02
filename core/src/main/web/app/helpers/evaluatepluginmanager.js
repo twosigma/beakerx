@@ -19,7 +19,7 @@
 (function() {
   'use strict';
   var module = angular.module('bk.evaluatePluginManager', ['bk.utils']);
-  module.factory('bkEvaluatePluginManager', function(bkUtils, $uibModal) {
+  module.factory('bkEvaluatePluginManager', function(bkUtils, $sce, $uibModal) {
     var nameToUrlMap = {};
     var nameToVisualParams = {};
     var plugins = {};
@@ -121,7 +121,12 @@
               backdropClick: true,
               windowClass: 'beaker-sandbox',
               backdropClass: 'beaker-sandbox',
-              template: JST['helpers/plugin-load-error']({pluginId: pluginId})});
+              template: JST['helpers/plugin-load-error'](
+                {
+                  errorMessage: $sce.trustAsHtml(bkHelper.getPluginStartFailedMessage(pluginId))
+                }
+              )
+            });
             deferred.reject(reason);
           };
 

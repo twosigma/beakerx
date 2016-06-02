@@ -20,4 +20,16 @@
 @pluginDescriptions@
     };
   };
+
+  window.beakerRegister.evaluatorStartFailedMessage = "" +
+      "<p>Failed to start ${pluginId}.</p>\n" +
+      "<p>Did you install it according to the instructions\n" +
+      "on <a target=\"_blank\" href=\"http://beakernotebook.com/getting-started#${pluginId}\">BeakerNotebook.com</a>?\n" +
+      "</p>\n" +
+      "<p>If you already have it, then <a target=\"_blank\"\n" +
+      "href=\"https://github.com/twosigma/beaker-notebook/wiki/Language-Preferences\">edit\n" +
+      "your preferences file</a> to help Beaker find it on your system, and\n" +
+      "then restart Beaker and try again.\n" +
+      "</p>\n" +
+      "<p>Any other languages in your notebook should still work.</p>";
 })();

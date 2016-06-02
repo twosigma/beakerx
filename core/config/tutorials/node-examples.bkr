@@ -68,6 +68,8 @@
             "evaluator": "Node",
             "input": {
                 "body": [
+                    "if(server) server.close();",
+                    "",
                     "var count = 0;",
                     "var server = http.createServer(function (request, response) {",
                     "  response.setHeader(\"Access-Control-Allow-Origin\", \"*\"); // See Issue #1397",
@@ -148,6 +150,75 @@
             },
             "evaluatorReader": true,
             "lineCount": 17
+        },
+        {
+         "id": "sectiontd8GQg",
+         "type": "section",
+         "title": "ExpressJS Server Using Require",
+         "level": 1,
+         "evaluatorReader": false,
+         "collapsed": false
+        },
+        {
+         "id": "markdownf1vLqX",
+         "type": "markdown",
+         "body": [
+             "You can load node modules using **require** function. It accepts module name/path string as an argument, so you have two options using it:",
+             " 1. pass absolute or relative path to module installed, e.g. `require('/home/user/node_modules/module_name')`  - and Node will just go there and use this module",
+             " 2. use module name as an argument for *require*. In this case node will be looking for module in:",
+             "     * global paths. You can configure it with **NODE_PATH** environment variable - just set it to the folder where your node modules are installed",
+             "     * parent directory of current module plus '/node_modules'. If it is not found there, then it moves to the parent directory, and so on, until the root of the file system is reached.",
+             "     ",
+             "In following Node cell, we use *require* method, passing ExpressJS module name to it. It will be found by Node, because Beaker has this module installed in its `core/node_modules` directory, which is some levels higher in FS hierarchy than Node plugin."
+         ],
+         "evaluatorReader": false
+        },
+        {
+         "id": "codeyG2ERW",
+         "type": "code",
+         "evaluator": "Node",
+         "input": {
+             "body": [
+                 "if(expressServer) expressServer.close(); // stopping old server if it exists",
+                 "",
+                 "var express = require('express');",
+                 "var app = express();",
+                 "",
+                 "app.get('/', function (req, res) {",
+                 "  res.send('Hello from <b>ExpressJS</b> server');",
+                 "});",
+                 "",
+                 "var expressServer = app.listen(3210);",
+                 "",
+                 "'started'"
+             ]
+         },
+         "output": {
+             "state": {},
+             "selectedType": "Text",
+             "height": 36
+         },
+         "evaluatorReader": true,
+         "lineCount": 12
+        },
+        {
+         "id": "codeTBLcVV",
+         "type": "code",
+         "evaluator": "HTML",
+         "input": {
+             "body": [
+                 "<iframe src=\"http://localhost:3210/\"></iframe>"
+             ]
+         },
+         "output": {
+             "state": {},
+             "selectedType": "BeakerDisplay",
+             "elapsedTime": 0,
+             "height": 177
+         },
+         "evaluatorReader": true,
+         "lineCount": 1,
+         "tags": "result-container"
         }
     ],
     "namespace": {

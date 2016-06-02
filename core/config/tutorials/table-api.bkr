@@ -15423,107 +15423,12 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 25,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "m3",
-                            "y30",
-                            "y1",
-                            "m6",
-                            "y2",
-                            "y10",
-                            "y3",
-                            "time",
-                            "y5",
-                            "y7"
-                        ],
-                        "actualtype": [
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            8,
-                            "4.4",
-                            "4.4"
-                        ],
-                        "actualalign": [
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "C",
-                            "R",
-                            "R"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10
-                        ],
-                        "getCellSho": [
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [
-                            {
-                                "style": "FULL_ROW",
-                                "colInd": 1,
-                                "type": "HeatmapHighlighter",
-                                "minVal": 0.011428571428571429,
-                                "maxVal": 8.17,
-                                "minColor": "#5da5da",
-                                "maxColor": "#f15854"
-                            }
-                        ],
-                        "tableFilter": "",
-                        "showFilter": false,
-                        "columnSearchActive": false,
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "formatForTimes": {},
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": [],
-                        "headerFontSize": null,
-                        "dataFontSize": null,
-                        "fontColor": [],
-                        "headersVertical": false
-                    }
-                },
+                "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
                 "shellId": "337ae309-dae0-4f75-ad23-6806b42cbbbd",
                 "elapsedTime": 903,
-                "height": 776,
+                "height": 813,
                 "result": {
                     "hasDoubleClickAction": false,
                     "contextMenuItems": [],
@@ -20279,7 +20184,7 @@
                     ]
                 }
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 10
         },
         {
@@ -20311,68 +20216,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 25,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "a",
-                            "b",
-                            "c"
-                        ],
-                        "actualtype": [
-                            2,
-                            2,
-                            2
-                        ],
-                        "actualalign": [
-                            "R",
-                            "R",
-                            "R"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "getCellSho": [
-                            true,
-                            true,
-                            true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [
-                            {
-                                "style": "SINGLE_COLUMN",
-                                "colInd": 3,
-                                "type": "ValueHighlighter",
-                                "colors": [
-                                    "#FFFF0000",
-                                    "#FF00FF00",
-                                    "#FF00FF00"
-                                ]
-                            }
-                        ],
-                        "tableFilter": "",
-                        "showFilter": false,
-                        "columnSearchActive": false,
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "formatForTimes": {},
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": [],
-                        "headerFontSize": null,
-                        "dataFontSize": null,
-                        "fontColor": [],
-                        "headersVertical": false
-                    }
-                },
+                "state": {},
                 "result": {
                     "hasDoubleClickAction": false,
                     "contextMenuItems": [],
@@ -20437,9 +20281,9 @@
                 "pluginName": "Groovy",
                 "shellId": "337ae309-dae0-4f75-ad23-6806b42cbbbd",
                 "elapsedTime": 1513,
-                "height": 156
+                "height": 193
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 12
         },
         {
@@ -20468,122 +20312,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 25,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "m3",
-                            "y30",
-                            "y1",
-                            "m6",
-                            "y2",
-                            "y10",
-                            "y3",
-                            "time",
-                            "y5",
-                            "y7"
-                        ],
-                        "actualtype": [
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            8,
-                            "4.4",
-                            "4.4"
-                        ],
-                        "actualalign": [
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "R",
-                            "C",
-                            "R",
-                            "R"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10
-                        ],
-                        "getCellSho": [
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [
-                            {
-                                "style": "FULL_ROW",
-                                "colInd": 1,
-                                "type": "HeatmapHighlighter",
-                                "minVal": 0,
-                                "maxVal": 8,
-                                "minColor": "#FFC800",
-                                "maxColor": "#FFAFAF"
-                            },
-                            {
-                                "style": "SINGLE_COLUMN",
-                                "colInd": 3,
-                                "type": "ThreeColorHeatmapHighlighter",
-                                "minVal": 4,
-                                "maxVal": 8,
-                                "minColor": "#F76A6A",
-                                "maxColor": "#64BD7A",
-                                "midVal": 6,
-                                "midColor": "#EFDA52"
-                            },
-                            {
-                                "style": "SINGLE_COLUMN",
-                                "colInd": 4,
-                                "type": "HeatmapHighlighter",
-                                "minVal": 6,
-                                "maxVal": 8,
-                                "minColor": "#000000",
-                                "maxColor": "#FFAFAF"
-                            }
-                        ],
-                        "tableFilter": "",
-                        "showFilter": false,
-                        "columnSearchActive": false,
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "formatForTimes": {},
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": [],
-                        "headerFontSize": null,
-                        "dataFontSize": null,
-                        "fontColor": [],
-                        "headersVertical": false
-                    }
-                },
+                "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
                 "shellId": "337ae309-dae0-4f75-ad23-6806b42cbbbd",
@@ -25362,9 +25091,9 @@
                         ]
                     ]
                 },
-                "height": 776
+                "height": 813
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 9
         },
         {
@@ -25586,6 +25315,11 @@
                     "display3.addContextMenuItem(\"negate\") { row, col, tableDisplay ->",
                     "   tableDisplay.values[row][col] = -tableDisplay.values[row][col]",
                     "}",
+                    "",
+                    "//run tagged cell on action",
+                    "display3.addContextMenuItem(\"run misc_formatting\", \"misc_formatting\");",
+                    "//display3.setDoubleClickAction(\"misc_formatting\");",
+                    "",
                     "display3"
                 ]
             },
@@ -25643,14 +25377,18 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "337ae309-dae0-4f75-ad23-6806b42cbbbd",
-                "elapsedTime": 1020,
+                "shellId": "a548ebf0-f3ab-4169-a537-d065d0eb3f11",
+                "elapsedTime": 686,
                 "height": 156,
                 "result": {
                     "hasDoubleClickAction": true,
+                    "doubleClickTag": null,
                     "contextMenuItems": [
                         "negate"
                     ],
+                    "contextMenuTags": {
+                        "run misc_formatting": "misc_formatting"
+                    },
                     "type": "TableDisplay",
                     "columnNames": [
                         "a",
@@ -25700,7 +25438,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 16,
+            "lineCount": 21,
             "initialization": true
         },
         {
@@ -25843,12 +25581,14 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "337ae309-dae0-4f75-ad23-6806b42cbbbd",
-                "elapsedTime": 1039,
+                "shellId": "a548ebf0-f3ab-4169-a537-d065d0eb3f11",
+                "elapsedTime": 731,
                 "height": 274,
                 "result": {
                     "hasDoubleClickAction": false,
+                    "doubleClickTag": null,
                     "contextMenuItems": [],
+                    "contextMenuTags": {},
                     "type": "TableDisplay",
                     "columnNames": [
                         "firstCol",
@@ -25948,7 +25688,7 @@
             },
             "evaluatorReader": true,
             "lineCount": 38,
-            "initialization": true
+            "tags": "misc_formatting"
         }
     ],
     "namespace": {

@@ -283,9 +283,9 @@
                   'Etc/GMT-14|GMT-14:00']);
   //jscs:disable
   beakerRegister.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS',
-    '$rootScope','$timeout', 'cellHighlighters', 'tableService',
+    '$rootScope','$timeout', 'cellHighlighters', 'tableService', 'bkSessionManager', 'bkCoreManager',
     function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS,
-             $rootScope, $timeout, cellHighlighters, tableService) {
+             $rootScope, $timeout, cellHighlighters, tableService, bkSessionManager, bkCoreManager) {
   //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
     var ROW_HEIGHT = 27;
@@ -1287,8 +1287,8 @@
             }
           });
 
+          scope.contextMenuItems = {};
           if (!_.isEmpty(model.contextMenuItems)) {
-            scope.contextMenuItems = {};
             _.forEach(model.contextMenuItems, function (item) {
               scope.contextMenuItems[item] = {
                 name: item,
@@ -1301,6 +1301,17 @@
                     scope.model.getEvaluatorId()).then(function () {
                     scope.update = true;
                   });
+                }
+              }
+            });
+          }
+
+          if (!_.isEmpty(model.contextMenuTags)) {
+            _.forOwn(model.contextMenuTags, function (tag, name) {
+              scope.contextMenuItems[name] = {
+                name: name,
+                callback: function (itemKey, options) {
+                  scope.evaluateTagCell(tag);
                 }
               }
             });
@@ -1808,6 +1819,18 @@
               'vertical-align': ''
             });
             headerRows.css({'height': ''});
+          }
+        };
+
+        scope.evaluateTagCell = function (tag) {
+          var cellOp = bkSessionManager.getNotebookCellOp();
+          var result;
+          if (cellOp.hasUserTag(tag)) {
+            result = cellOp.getCellsWithUserTag(tag);
+            bkCoreManager.getBkApp().evaluateRoot(result)
+              .catch(function () {
+                console.log('Evaluation failed: ' + tag);
+              });
           }
         };
 
@@ -2371,6 +2394,10 @@
                   scope.model.getEvaluatorId()).then(function () {
                   scope.update = true;
                 });
+              }
+
+              if (!_.isEmpty(model.doubleClickTag)) {
+                scope.evaluateTagCell(model.doubleClickTag);
               }
 
               e.stopPropagation();

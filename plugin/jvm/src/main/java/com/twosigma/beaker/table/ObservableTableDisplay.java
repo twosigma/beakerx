@@ -26,7 +26,9 @@ import java.util.Set;
 
 public abstract class ObservableTableDisplay extends Observable implements Cloneable, Serializable {
   private Object doubleClickListener;
+  private String doubleClickTag;
   private Map<String, Object> contextMenuListeners = new HashMap<>();
+  private Map<String, String> contextMenuTags = new HashMap<>();
 
   @Override
   public synchronized void setChanged() {
@@ -34,7 +36,17 @@ public abstract class ObservableTableDisplay extends Observable implements Clone
   }
 
   public void setDoubleClickAction(Object listener) {
+    this.doubleClickTag = null;
     this.doubleClickListener = listener;
+  }
+
+  public void setDoubleClickAction(String tagName) {
+    this.doubleClickListener = null;
+    this.doubleClickTag = tagName;
+  }
+
+  public String getDoubleClickTag() {
+    return doubleClickTag;
   }
 
   public void fireDoubleClick(List<Object> params) {
@@ -56,8 +68,16 @@ public abstract class ObservableTableDisplay extends Observable implements Clone
     this.contextMenuListeners.put(name, closure);
   }
 
+  public void addContextMenuItem(String name, String tagName){
+    this.contextMenuTags.put(name, tagName);
+  }
+
   public Set<String> getContextMenuItems () {
     return this.contextMenuListeners.keySet();
+  }
+
+  public Map<String, String> getContextMenuTags() {
+    return contextMenuTags;
   }
 
   public void fireContextMenuClick(String name, List<Object> params) {

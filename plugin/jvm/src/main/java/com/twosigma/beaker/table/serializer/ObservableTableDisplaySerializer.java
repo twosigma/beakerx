@@ -21,7 +21,9 @@ public abstract class ObservableTableDisplaySerializer<T extends ObservableTable
     tableObjectManagerProvider.get().registerTableDisplay(id, tableDisplay);
     jgen.writeStringField("update_id", id);
     jgen.writeBooleanField("hasDoubleClickAction", tableDisplay.hasDoubleClickAction());
+    jgen.writeStringField("doubleClickTag", tableDisplay.getDoubleClickTag());
     jgen.writeObjectField("contextMenuItems", tableDisplay.getContextMenuItems());
+    jgen.writeObjectField("contextMenuTags", tableDisplay.getContextMenuTags());
   }
 
 }

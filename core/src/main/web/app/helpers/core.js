@@ -1192,7 +1192,6 @@
               ['copy', 'cut', 'paste'],
               ['rm'],
               ['duplicate', 'rename'],
-              ['extract', 'archive'],
               ['view', 'sort']
             ],
             contextmenu : {
@@ -1320,7 +1319,6 @@
             ['copy', 'cut', 'paste'],
             ['rm'],
             ['duplicate', 'rename'],
-            ['extract', 'archive'],
             ['view', 'sort']
           ],
           contextmenu : {

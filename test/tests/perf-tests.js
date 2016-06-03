@@ -28,7 +28,7 @@ describe('performance notebook', function() {
     beakerPO = new BPO();
     browser.get(beakerPO.baseURL);
     browser.waitForAngular().then(function() {
-      beakerPO.openFile(path.join(__dirname, '../', 'notebooks/performance_notebook.bkr')).then(function() {return startTime = Date.now();});
+      browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:..%2Ftest%2Fnotebooks%2Fperformance_notebook.bkr&readOnly=true").then(function() {return startTime = Date.now();});
       perfRunner.start();
       perfRunner.stop();
       perfRunner.getStats().then(function(stats) {

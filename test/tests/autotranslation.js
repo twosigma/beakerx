@@ -30,7 +30,7 @@ describe('autotranslation', function() {
   });
 
   it('handles JVM notebook', function() {
-    beakerPO.openFile(path.join(__dirname, '../', 'notebooks/jvm-autotranslation-test.bkr'));
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:..%2Ftest%2Fnotebooks%2Fjvm-autotranslation-test.bkr&readOnly=true");
     beakerPO.waitForInstantiationCells('waitForInstantiationCell');
 
     beakerPO.waitForCellOutputByIdCell('maintest');

@@ -36,23 +36,23 @@ var config = {
     }));
   },
   specs: [
-    'tests/tutorials/groovy_plotting/category-plot-tutorial.js',
-    'tests/tutorials/groovy_plotting/charting-tutorial.js',
-    'tests/tutorials/groovy_plotting/heatmap-tutorial.js',
-    'tests/tutorials/groovy_plotting/treemap-tutorial.js',
-    'tests/tutorials/groovy_plotting/charting-tutorial2.js',
-    'tests/tutorials/groovy_plotting/histogram-tutorial.js',
-    'tests/tutorials/groovy_plotting/levelsOfDetail-tutorial.js',
-    'tests/tutorials/language_demos/sql-tutorial.js',
-    'tests/tutorials/language_demos/java-tutorial.js',
-    'tests/tutorials/language_demos/groovy-tutorial.js',
-    'tests/tutorials/language_demos/clojure-tutorial.js',
-    'tests/tutorials/language_demos/python-tutorial.js',
-    'tests/tutorials/language_demos/jscript-tutorial.js',
-    'tests/tutorials/language_demos/R-tutorial.js',
-    'tests/tutorials/language_demos/nodejs-tutorial.js',
+    //'tests/tutorials/groovy_plotting/category-plot-tutorial.js',
+    //'tests/tutorials/groovy_plotting/charting-tutorial.js',
+    //'tests/tutorials/groovy_plotting/heatmap-tutorial.js',
+    //'tests/tutorials/groovy_plotting/treemap-tutorial.js',
+    //'tests/tutorials/groovy_plotting/charting-tutorial2.js',
+    //'tests/tutorials/groovy_plotting/histogram-tutorial.js',
+    //'tests/tutorials/groovy_plotting/levelsOfDetail-tutorial.js',
+    //'tests/tutorials/language_demos/sql-tutorial.js',
+    //'tests/tutorials/language_demos/java-tutorial.js',
+    //'tests/tutorials/language_demos/groovy-tutorial.js',
+    //'tests/tutorials/language_demos/clojure-tutorial.js',
+    //'tests/tutorials/language_demos/python-tutorial.js',
+    //'tests/tutorials/language_demos/jscript-tutorial.js',
+    //'tests/tutorials/language_demos/R-tutorial.js',
+    //'tests/tutorials/language_demos/nodejs-tutorial.js',
     'tests/tables.js',
-    'tests/tutorials/feature_overview/text-tutorial.js'
+    //'tests/tutorials/feature_overview/text-tutorial.js'
   ]
 };
 

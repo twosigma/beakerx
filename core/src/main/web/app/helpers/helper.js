@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
+  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, $uibModal,  bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -73,6 +73,8 @@
     $rootScope.$on("defaultEvaluatorChanged", function (event, data) {
       defaultEvaluator = data;
     });
+
+
 
       var bkHelper = {
 
@@ -329,7 +331,7 @@
             // Format this accordingly!
             var routeParams = {
               uri: path
-            }
+            };
             if (uriType) {
               routeParams.type = uriType;
             }
@@ -342,21 +344,20 @@
             bkHelper.openWindow(bkUtils.getBaseUrl() + '/open?' + jQuery.param(routeParams), 'notebook');
           });
         } else {
-          var strategy = bkHelper.getFileSystemFileChooserStrategy();
-          strategy.treeViewfs.extFilter = [ext];
-          bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getLocalDrives()]).then(function(values) {
-            if (bkUtils.serverOS.isWindows()) {
-              strategy.localDrives = values[1];
-            }
-            bkCoreManager.showModalDialog(
-                bkHelper.openNotebook,
-                JST['template/opennotebook']({homedir: values[0], extension: '.' + ext}),
-                strategy,
-                uriType,
-                readOnly,
-                format
+            var  FileOpenStrategy = function () {
+              var newStrategy = this;
+              newStrategy.treeViewfs = {
+                applyExtFilter: true,
+                extension: ext
+              };
+            };
+            bkCoreManager.showFileOpenDialog(
+              function (selected) {
+                if (selected && selected.path)
+                bkHelper.openNotebook(selected.path, uriType, readOnly, format);
+              },
+              new FileOpenStrategy()
             );
-          });
         }
       },
       Electron: bkElectron,
@@ -444,7 +445,7 @@
           return false;
         }
       },
-      saveNotebook: function() {
+        saveNotebook: function() {
         if (getCurrentApp() && getCurrentApp().saveNotebook) {
           return getCurrentApp().saveNotebook();
         } else {
@@ -825,8 +826,8 @@
       setFileSaver: function(uriType, fileSaver) {
         return bkCoreManager.setFileSaver(uriType, fileSaver);
       },
-      showDefaultSavingFileChooser: function(initPath, saveButtonTitle) {
-        return bkCoreManager.showDefaultSavingFileChooser(initPath, saveButtonTitle);
+      showFileSaveDialog: function(data) {
+        return bkCoreManager.showFileSaveDialog(data);
       },
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();
@@ -851,22 +852,6 @@
       },
       getFileSystemFileChooserStrategy: function() {
         return bkCoreManager.getFileSystemFileChooserStrategy();
-      },
-      selectFile: function(callback, title, extension, closebtn) {
-        var strategy = bkCoreManager.getFileSystemFileChooserStrategy();
-        strategy.treeViewfs.extFilter = [ extension ];
-        strategy.ext = extension;
-        strategy.title = title;
-        strategy.closebtn = closebtn;
-        bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getLocalDrives()]).then(function (values) {
-          if (bkUtils.serverOS.isWindows()) {
-            strategy.localDrives = values[1];
-          }
-          return bkCoreManager.showModalDialog(
-              callback,
-              JST['template/opennotebook']({homedir: values[0], extension: extension}),
-              strategy);
-        });
       },
 
       // eval utils

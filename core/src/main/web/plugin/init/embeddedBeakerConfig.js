@@ -218,13 +218,7 @@
                        tooltip: "Open a bkr notebook file",
                        sortorder: 110,
                        action: function() {
-                           bkHelper.showModalDialog(
-                               function(originalUrl) {
-                                 bkHelper.openNotebook(originalUrl);
-                               },
-                               JST['template/opennotebook']({homedir: homeDir, extension: '.bkr'}),
-                               bkHelper.getFileSystemFileChooserStrategy()
-                           );
+                           bkHelper.openWithDialog('bkr');
                        }
                      }
                    ]

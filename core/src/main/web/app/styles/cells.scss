@@ -117,9 +117,6 @@ bk-section-cell {
   .code-cell-input {
     padding: $grid-row-height*2 $grid-gutter-width $grid-row-height;
     position: relative;
-    &.input-hidden {
-      padding-bottom: $grid-row-height
-    }
 
     .advanced-mode & {
       padding: 8px $grid-gutter-width;

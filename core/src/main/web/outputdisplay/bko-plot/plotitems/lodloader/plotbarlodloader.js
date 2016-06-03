@@ -294,9 +294,9 @@
       }
     };
 
-    PlotBarLodLoader.prototype.createTip = function(ele, g) {
+    PlotBarLodLoader.prototype.createTip = function(ele, g, model) {
       if (this.lodOn === false) {
-        return this.plotter.createTip(ele);
+        return this.plotter.createTip(ele, g, model);
       }
       var xAxis = this.xAxis,
           yAxis = this.yAxis;

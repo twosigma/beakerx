@@ -79,7 +79,8 @@
           avg : avg,
           x : (sl + sr) / 2,
           y : avg,
-          hash : h
+          hash : h,
+          count: qret.cnt
         };
         ret.push(ele);
       }

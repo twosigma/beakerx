@@ -1163,66 +1163,66 @@
     $scope.init = function () {
       var $elfinder = $('#elfinder');
       elfinder = $elfinder.elfinder({
-          url: '../beaker/connector',
-          useBrowserHistory: false,
-          resizable: false,
-          onlyMimes: $scope.mime(),
-          getFileCallback: function(url) {
-            $scope.open();
-          },
-          handlers: {
-            select: function (event, elfinderInstance) {
-              if (event.data.selected && event.data.selected.length > 0) {
-                selected.file = elfinderInstance.file(event.data.selected[0]);
-                selected.path = elfinderInstance.path(event.data.selected[0]);
+        url: '../beaker/connector',
+        useBrowserHistory: false,
+        resizable: false,
+        onlyMimes: $scope.mime(),
+        getFileCallback: function (url) {
+          $scope.open();
+        },
+        handlers: {
+          select: function (event, elfinderInstance) {
+            if (event.data.selected && event.data.selected.length > 0) {
+              selected.file = elfinderInstance.file(event.data.selected[0]);
+              selected.path = elfinderInstance.path(event.data.selected[0]);
 
-              } else {
-                selected.file = null;
-                selected.path = null;
-              }
-              $scope.$apply();
+            } else {
+              selected.file = null;
+              selected.path = null;
             }
-          },
-          defaultView: 'icons',
-          uiOptions: {
-            // toolbar configuration
-            toolbar: [
-              ['back', 'forward'],
-              ['mkdir'],
-              ['copy', 'cut', 'paste'],
-              ['rm'],
-              ['duplicate', 'rename'],
-              ['view', 'sort']
-            ],
-            contextmenu : {
-              // navbarfolder menu
-              navbar : ['copy', 'cut', 'paste', 'duplicate', '|', 'rm',],
-
-              // current directory menu
-              cwd    : ['reload', 'back', '|', 'mkdir', 'paste' ],
-
-              // current directory file menu
-              files  : [
-                'copy', 'cut', 'paste', 'duplicate', '|',
-                'rm', '|', 'archive', 'extract'
-              ]
-            },
-
-            // navbar options
-            navbar: {
-              minWidth: 150,
-              maxWidth: 1200
-            },
-
-            // directories tree options
-            tree: {
-              // expand current root on init
-              openRootOnLoad: false,
-              // auto load current dir parents
-              syncTree: true
-            }
+            $scope.$apply();
           }
-        }).elfinder('instance');
+        },
+        defaultView: 'icons',
+        contextmenu: {
+          // navbarfolder menu
+          navbar: ['copy', 'cut', 'paste', 'duplicate', '|', 'rm'],
+
+          // current directory menu
+          cwd: ['reload', 'back', '|', 'mkdir', 'paste'],
+
+          // current directory file menu
+          files: [
+            'copy', 'cut', 'paste', 'duplicate', '|',
+            'rm'
+          ]
+        },
+        uiOptions: {
+          // toolbar configuration
+          toolbar: [
+            ['back', 'forward'],
+            ['mkdir'],
+            ['copy', 'cut', 'paste'],
+            ['rm'],
+            ['duplicate', 'rename'],
+            ['view', 'sort']
+          ],
+
+          // navbar options
+          navbar: {
+            minWidth: 150,
+            maxWidth: 1200
+          },
+
+          // directories tree options
+          tree: {
+            // expand current root on init
+            openRootOnLoad: false,
+            // auto load current dir parents
+            syncTree: true
+          }
+        }
+      }).elfinder('instance');
 
 
       $elfinder.css("width", '100%');
@@ -1311,6 +1311,19 @@
           }
         },
         defaultView: 'icons',
+        contextmenu : {
+          // navbarfolder menu
+          navbar : ['copy', 'cut', 'paste', 'duplicate', '|', 'rm'],
+
+          // current directory menu
+          cwd    : ['reload', 'back', '|', 'mkdir', 'paste' ],
+
+          // current directory file menu
+          files  : [
+            'copy', 'cut', 'paste', 'duplicate', '|',
+            'rm'
+          ]
+        },
         uiOptions: {
           // toolbar configuration
           toolbar: [
@@ -1321,20 +1334,6 @@
             ['duplicate', 'rename'],
             ['view', 'sort']
           ],
-          contextmenu : {
-            // navbarfolder menu
-            navbar : ['copy', 'cut', 'paste', 'duplicate', '|', 'rm',],
-
-            // current directory menu
-            cwd    : ['reload', 'back', '|', 'mkdir', 'paste' ],
-
-            // current directory file menu
-            files  : [
-              'copy', 'cut', 'paste', 'duplicate', '|',
-              'rm', '|', 'archive', 'extract'
-            ]
-          },
-
           // directories tree options
           tree: {
             // expand current root on init

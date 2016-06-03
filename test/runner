@@ -47,9 +47,5 @@ if not result:
 os.killpg(os.getpgid(beaker.pid), signal.SIGTERM)
 os.killpg(os.getpgid(webcontrol.pid), signal.SIGTERM)
 
-response = urllib2.urlopen('http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer')
-html = response.read()
-
-
 if result2:
     sys.exit(20)

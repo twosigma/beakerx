@@ -182,17 +182,13 @@ bk-section-cell {
     position:     absolute;
     background:   rgba(255, 255, 255, 0.5);
     z-index:      1;
-
-    &:not(.input-hidden) {
-      bottom:     6px;
-      right:      0;
-    }
+    right: 0px;
+    bottom: 6px;
 
     &.input-hidden {
-      top:        16px;
-      left:       132px;
+      bottom: 18px;
       .advanced-mode & {
-        display:  none;
+        bottom: 6px;
       }
     }
   }

@@ -152,73 +152,127 @@
             "lineCount": 17
         },
         {
-         "id": "sectiontd8GQg",
-         "type": "section",
-         "title": "ExpressJS Server Using Require",
-         "level": 1,
-         "evaluatorReader": false,
-         "collapsed": false
+            "id": "sectiontd8GQg",
+            "type": "section",
+            "title": "Chat with Socket.io",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
         },
         {
-         "id": "markdownf1vLqX",
-         "type": "markdown",
-         "body": [
-             "You can load node modules using **require** function. It accepts module name/path string as an argument, so you have two options using it:",
-             " 1. pass absolute or relative path to module installed, e.g. `require('/home/user/node_modules/module_name')`  - and Node will just go there and use this module",
-             " 2. use module name as an argument for *require*. In this case node will be looking for module in:",
-             "     * global paths. You can configure it with **NODE_PATH** environment variable - just set it to the folder where your node modules are installed",
-             "     * parent directory of current module plus '/node_modules'. If it is not found there, then it moves to the parent directory, and so on, until the root of the file system is reached.",
-             "     ",
-             "In following Node cell, we use *require* method, passing ExpressJS module name to it. It will be found by Node, because Beaker has this module installed in its `core/node_modules` directory, which is some levels higher in FS hierarchy than Node plugin."
-         ],
-         "evaluatorReader": false
+            "id": "markdownf1vLqX",
+            "type": "markdown",
+            "body": [
+                "You can load node modules using **require** function. It accepts module name/path string as an argument, so you can load packages by their relative or absolute path or by their name. Loading packages by name, you would probably like to specify path where your packages are installed. In language manager we have \"Modules path\" property for this purpose.     ",
+                "In following Node cell, we use *require* method to load some modules. **Socket.io** package isn't bundled with Beaker so you have to install it manually using `npm install socket.io` and specify installation path in Node plugin's settings."
+            ],
+            "evaluatorReader": false
         },
         {
-         "id": "codeyG2ERW",
-         "type": "code",
-         "evaluator": "Node",
-         "input": {
-             "body": [
-                 "if(expressServer) expressServer.close(); // stopping old server if it exists",
-                 "",
-                 "var express = require('express');",
-                 "var app = express();",
-                 "",
-                 "app.get('/', function (req, res) {",
-                 "  res.send('Hello from <b>ExpressJS</b> server');",
-                 "});",
-                 "",
-                 "var expressServer = app.listen(3210);",
-                 "",
-                 "'started'"
-             ]
-         },
-         "output": {
-             "state": {},
-             "selectedType": "Text",
-             "height": 36
-         },
-         "evaluatorReader": true,
-         "lineCount": 12
+            "id": "codeCPioL1",
+            "type": "code",
+            "evaluator": "Node",
+            "input": {
+                "body": [
+                    "if(closable) closable.close();",
+                    "if(io) io.close();",
+                    "var app = require('express')();",
+                    "var http = require('http').Server(app);",
+                    "var io = require('socket.io')(http);",
+                    "",
+                    "app.get('/', function(req, res){",
+                    "  res.send(htmlResponse);",
+                    "});",
+                    "",
+                    "var index = 1;",
+                    "io.on('connection', function(socket){",
+                    "  var userName = 'user' + index++;",
+                    "  socket.emit('hello', userName);",
+                    "  socket.on('chat message', function(msg){",
+                    "    io.emit('chat message', {user: userName, text: msg});",
+                    "  });",
+                    "});",
+                    "",
+                    "var closable = http.listen(7788);",
+                    "'running'"
+                ]
+            },
+            "output": {},
+            "evaluatorReader": true,
+            "lineCount": 21
         },
         {
-         "id": "codeTBLcVV",
-         "type": "code",
-         "evaluator": "HTML",
-         "input": {
-             "body": [
-                 "<iframe src=\"http://localhost:3210/\"></iframe>"
-             ]
-         },
-         "output": {
-             "state": {},
-             "selectedType": "BeakerDisplay",
-             "elapsedTime": 0,
-             "height": 177
-         },
-         "evaluatorReader": true,
-         "lineCount": 1,
-         "tags": "result-container"
+            "id": "codeTBLcVV",
+            "type": "code",
+            "evaluator": "HTML",
+            "input": {
+                "body": [
+                    "<iframe src=\"http://localhost:7788\" width=600 height=400></iframe>",
+                    "<iframe src=\"http://localhost:7788\" width=600 height=400></iframe>"
+                ]
+            },
+            "output": {},
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "tags": "result-container"
+        },
+        {
+            "id": "codeyG2ERW",
+            "type": "code",
+            "evaluator": "Node",
+            "input": {
+                "body": [
+                    "var htmlResponse = \"<!doctype html>\" +",
+                    "    \"<html>\" +",
+                    "    \"  <head>\" +",
+                    "    \"    <title>Socket.IO chat</title>\" +",
+                    "    \"    <style>\" +",
+                    "    \"      * { margin: 0; padding: 0; box-sizing: border-box; }\" +",
+                    "    \"      body { font: 13px Helvetica, Arial; }\" +",
+                    "    \"      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }\" +",
+                    "    \"      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }\" +",
+                    "    \"      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }\" +",
+                    "    \"      #messages { list-style-type: none; margin: 0; padding: 0; }\" +",
+                    "    \"      #messages li { padding: 5px 10px; }\" +",
+                    "    \"      #messages li:nth-child(odd) { background: #eee; }\" +",
+                    "    \"    </style>\" +",
+                    "    \"  </head>\" +",
+                    "    \"  <body>\" +",
+                    "    \"    <ul id=\\\"messages\\\"></ul>\" +",
+                    "    \"    <form action=\\\"\\\">\" +",
+                    "    \"      <input id=\\\"m\\\" autocomplete=\\\"off\\\" /><button>Send</button>\" +",
+                    "    \"    </form>\" +",
+                    "    \"    <script src=\\\"https://cdn.socket.io/socket.io-1.2.0.js\\\"></script>\" +",
+                    "    \"    <script src=\\\"http://code.jquery.com/jquery-1.11.1.js\\\"></script>\" +",
+                    "    \"    <script>\" +",
+                    "    \"      var socket = io();\" +",
+                    "    \"      $('form').submit(function(){\" +",
+                    "    \"        socket.emit('chat message', $('#m').val());\" +",
+                    "    \"        $('#m').val('');\" +",
+                    "    \"        return false;\" +",
+                    "    \"      });\" +",
+                    "    \"      var selfName = '';\" + ",
+                    "    \"      socket.on('hello', function (name) {\" +           ",
+                    "    \"        selfName = name;\" +           ",
+                    "    \"      });\" +           ",
+                    "    \"      socket.on('chat message', function(msg){\" +",
+                    "    \"        $('#messages').append($('<li>').text((msg.user === selfName ? 'me' : msg.user) + ': ' + msg.text));\" +",
+                    "    \"      });\" +",
+                    "    \"    </script>\" +",
+                    "    \"  </body>\" +",
+                    "    \"</html>\";"
+                ],
+                "hidden": true
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "height": 55,
+                "result": "undefined"
+            },
+            "evaluatorReader": true,
+            "lineCount": 39,
+            "initialization": true
         }
     ],
     "namespace": {

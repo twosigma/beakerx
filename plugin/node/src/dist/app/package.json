@@ -5,10 +5,13 @@
     "main": "node.js",
     "author": "",
     "dependencies": {
-        "express": "3.4.8",
-        "lodash": "2.4.1",
-        "when": "2.8.0",
-        "node-uuid": "1.4.1",
-        "ws": "0.4.30"
+        "express": "4.13.4",
+        "body-parser": "1.15.1",
+        "basicauth-middleware": "1.1.0",
+        "lodash": "4.13.1",
+        "when": "3.7.7",
+        "node-uuid": "1.4.7",
+        "ws": "1.1.0",
+        "app-module-path": "1.1.0"
     }
 }

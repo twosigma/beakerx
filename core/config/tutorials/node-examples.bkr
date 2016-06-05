@@ -39,7 +39,8 @@
                 "cm": {
                     "mode": "javascript"
                 }
-            }
+            },
+            "modulePath": ""
         }
     ],
     "cells": [
@@ -87,7 +88,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "result": "server started",
-                "height": 56
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 11
@@ -110,7 +111,7 @@
                     "innertype": "Html",
                     "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<div id=\"message\">Hello from Node 101</div>"
                 },
-                "height": 55
+                "height": 35
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -146,7 +147,7 @@
                 "result": "14.44ms per HTTP call",
                 "pluginName": "JavaScript",
                 "elapsedTime": 1514,
-                "height": 56
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 17
@@ -163,8 +164,13 @@
             "id": "markdownf1vLqX",
             "type": "markdown",
             "body": [
-                "You can load node modules using **require** function. It accepts module name/path string as an argument, so you can load packages by their relative or absolute path or by their name. Loading packages by name, you would probably like to specify path where your packages are installed. In language manager we have \"Modules path\" property for this purpose.     ",
-                "In following Node cell, we use *require* method to load some modules. **Socket.io** package isn't bundled with Beaker so you have to install it manually using `npm install socket.io` and specify installation path in Node plugin's settings."
+                "You can load node modules using **require** function.",
+                "It takes a module name or path as an argument, so you can load packages from anywhere in the filesystem, or by name.",
+                "In order to use names, you should set the location of a `node_modules` directory in the Language Manager in the *Modules path* field.",
+                "",
+                "In following Node example, we use *require* method to load some modules.",
+                "**Socket.io** package isn't bundled with Beaker so you have to install it with `npm install socket.io` in a terminal where the `NODE_PATH` environment variable has been set to match the value in the Language Manger.",
+                "Usually the *Modules path* in Language Manager is NODE_PATH with `/node_modules` appended to it. "
             ],
             "evaluatorReader": false
         },
@@ -174,8 +180,8 @@
             "evaluator": "Node",
             "input": {
                 "body": [
-                    "if(closable) closable.close();",
-                    "if(io) io.close();",
+                    "if (closable) closable.close();",
+                    "if (io) io.close();",
                     "var app = require('express')();",
                     "var http = require('http').Server(app);",
                     "var io = require('socket.io')(http);",
@@ -197,7 +203,12 @@
                     "'running'"
                 ]
             },
-            "output": {},
+            "output": {
+                "state": {},
+                "result": "running",
+                "selectedType": "Text",
+                "height": 36
+            },
             "evaluatorReader": true,
             "lineCount": 21
         },
@@ -211,7 +222,17 @@
                     "<iframe src=\"http://localhost:7788\" width=600 height=400></iframe>"
                 ]
             },
-            "output": {},
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<iframe src=\"http://localhost:7788\" width=\"600\" height=\"400\"></iframe>\n<iframe src=\"http://localhost:7788\" width=\"600\" height=\"400\"></iframe>"
+                },
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 0,
+                "height": 423
+            },
             "evaluatorReader": true,
             "lineCount": 2,
             "tags": "result-container"
@@ -267,7 +288,7 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "height": 55,
+                "height": 36,
                 "result": "undefined"
             },
             "evaluatorReader": true,

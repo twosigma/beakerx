@@ -1,0 +1,123 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "HTML",
+            "plugin": "HTML",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            },
+            "languageVersion": "ES2015"
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.KeyboardCodes\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectionqDPBlC",
+            "type": "section",
+            "title": "Turning Notebooks into Libraries",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownQiZGxK",
+            "type": "markdown",
+            "body": [
+                "Reusing code between and among notebooks is useful for automating and abstracting work flows.",
+                "Beaker supports reuse with a `loadLibrary` method that reads the code from another notebook, and runs all the code cells that have the *initialization* flag set.",
+                "",
+                "The libraries are ordinary notebooks referred to by URI.  Because only the initialization cells are run, the other cells can contain documentation, examples, and tests."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeeYVHl2",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// Load init cells from other notebooks.  This cell itself is also an init cell.",
+                    "beaker.loadLibrary([\"file:config/tutorials/base_lib.bkr\",",
+                    "                    \"file:config/tutorials/specific_lib.bkr\"]);"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "loading library file:config/tutorials/base_lib.bkr\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "base lib loading\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "loading library file:config/tutorials/specific_lib.bkr\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "loading specific lib\noutput from all the loading libs appears, and the total number of cells run is returned:\n"
+                        }
+                    ],
+                    "payload": 2
+                },
+                "selectedType": "Results",
+                "pluginName": "JavaScript",
+                "elapsedTime": 1273,
+                "height": 118
+            },
+            "evaluatorReader": true,
+            "lineCount": 3,
+            "initialization": true
+        },
+        {
+            "id": "codeohgvXK",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// Use the libraries",
+                    "specific_fn(base_fn(\"mission control... \"))"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "base calling mission control... base calling mission control... base calling mission control... ",
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "8264cca8-124c-43ae-a977-3ed71fed32fc",
+                "elapsedTime": 834,
+                "height": 36
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        }
+    ],
+    "namespace": {}
+}

@@ -430,9 +430,6 @@
         },
         set: function(v) {
           _v = v;
-          if (!_.isEmpty(_v)) {
-            bkRecentMenu.recordRecentDocument(generateRecentDocumentItem());
-          }
         }
       };
     })();
@@ -796,6 +793,12 @@
       return angular.toJson(data);
     };
 
+    var recordRecentNotebook = function () {
+      if (_notebookUri.get()) {
+        bkRecentMenu.recordRecentDocument(generateRecentDocumentItem());
+      }
+    };
+
     var generateSaveData = function() {
       return {
         uriType: _uriType,
@@ -922,6 +925,7 @@
         bkNotebookManager.init(this);
         connectcontrol(sessionId);
         bkSession.backup(_sessionId, generateBackupData());
+        recordRecentNotebook();
       },
       clear: function() {
         disconnectcontrol(_sessionId);
@@ -968,6 +972,10 @@
         _readOnly = readOnly;
         _format = format;
         _notebookUri.set(notebookUri);
+      },
+      recordRecentNotebook: recordRecentNotebook,
+      updateRecentDocument: function (oldUrl) {
+        bkRecentMenu.updateRecentDocument(oldUrl, generateRecentDocumentItem());
       },
       getNotebookPath: function() {
         if (_notebookUri.get()) {

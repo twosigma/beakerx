@@ -146,3 +146,16 @@ core/src/main/web/vendor/bower_components/vivagraphjs/dist/vivagraph.js
 core/src/main/web/vendor/bower_components/vivagraphjs/CHANGELOG
 core/src/main/web/vendor/bower_components/vivagraphjs/gulpfile.js
 core/src/main/web/vendor/bower_components/vivagraphjs/README.md
+
+core/src/main/web/vendor/bower_components/jQuery-contextMenu/documentation
+core/src/main/web/vendor/bower_components/jQuery-contextMenu/src
+core/src/main/web/vendor/bower_components/jQuery-contextMenu/test
+core/src/main/web/vendor/bower_components/jQuery-contextMenu/.bower.json
+core/src/main/web/vendor/bower_components/jQuery-contextMenu/contextMenu.jquery.json
+core/src/main/web/vendor/bower_components/jQuery-contextMenu/dist/font
+core/src/main/web/vendor/bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min.css
+core/src/main/web/vendor/bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min.css.map
+core/src/main/web/vendor/bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min.js
+core/src/main/web/vendor/bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min.js.map
+core/src/main/web/vendor/bower_components/jQuery-contextMenu/dist/jquery.ui.position.js
+core/src/main/web/vendor/bower_components/jQuery-contextMenu/dist/jquery.ui.position.min.js

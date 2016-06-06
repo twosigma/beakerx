@@ -124,7 +124,10 @@
       var idxInRightClone = colInd - (colsLength - fixedCols.s.rightColumns);
       jqInput = $(rightFixedHeader).find('.filterRow th:eq(' + idxInRightClone + ') .filter-input');
     } else {
-      jqInput = $(dtSettings.aoHeader[1][colInd].cell).find('.filter-input');
+      var header = dtSettings.aoHeader[1][colInd];
+      if (header) {
+        jqInput = $(header.cell).find('.filter-input');
+      }
     }
     return jqInput;
   };
@@ -166,9 +169,10 @@
       var $$ = {};
       var variables = "var $ = undefined;";
       _.forEach(settings.aoColumns, function (column, index) {
-        $$[column.sTitle] = row[index];
-        if (isValidJSIdentifier(column.sTitle)) {
-          variables += ('var ' + column.sTitle + '=' + formatValue(row[index]) + ';');
+        var title = $(column.sTitle).text();
+        $$[title] = row[index];
+        if (isValidJSIdentifier(title)) {
+          variables += ('var ' + title + '=' + formatValue(row[index]) + ';');
         }
       });
 
@@ -278,8 +282,10 @@
                   'Etc/GMT-13|GMT-13:00',
                   'Etc/GMT-14|GMT-14:00']);
   //jscs:disable
-  beakerRegister.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS', '$rootScope','$timeout',
-    function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS, $rootScope, $timeout) {
+  beakerRegister.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', 'GLOBALS',
+    '$rootScope','$timeout', 'cellHighlighters', 'tableService', 'bkSessionManager', 'bkCoreManager',
+    function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval, GLOBALS,
+             $rootScope, $timeout, cellHighlighters, tableService, bkSessionManager, bkCoreManager) {
   //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
     var ROW_HEIGHT = 27;
@@ -288,6 +294,14 @@
     var MIN_ROWS_FOR_PAGING = DEFAULT_PAGE_LENGTH;
     var FC_LEFT_SEPARATOR_CLASS = 'left-fix-col-separator';
     var FC_RIGHT_SEPARATOR_CLASS = 'right-fix-col-separator';
+    var TIME_UNIT_FORMATS = {
+      DATETIME:     { title: 'datetime', format: 'YYYY-MM-DD HH:mm:ss.SSS ZZ' },
+      DAYS:         { title: 'date', format: 'YYYY-MM-DD' },
+      HOURS:        { title: 'hours', format: 'YYYY-MM-DD HH:mm ZZ' },
+      MINUTES:      { title: 'minutes', format: 'HH:mm ZZ' },
+      SECONDS:      { title: 'seconds', format: 'HH:mm:ss ZZ' },
+      MILLISECONDS: { title: 'milliseconds', format: 'HH:mm:ss.SSS ZZ' }
+    };
     return {
       template: JST['bko-tabledisplay/output-table'],
       controller: function($scope, $uibModal) {
@@ -493,13 +507,19 @@
 
           var table = $scope.table;
           var cLength = [];
-          for (var i = 1; i <= $scope.columns.length; i++) {
+          for (var i = 1; i < $scope.columns.length; i++) {
             cLength.push(i);
           }
           table.columns(cLength).visible(visible);
         };
 
+        $scope.getColumnIndexByColName = function (columnName) { // takes into account colorder and index column
+          var initInd = $scope.columnNames.indexOf(columnName) + 1;
+          return !_.isEmpty($scope.colorder) ? $scope.colorder.indexOf(initInd) : initInd;
+        };
+
         $scope.getColumnByInitialIndex = function(index){
+          if (!$scope.table) { return null; }
           if ($scope.colorder){
             index = $scope.colorder.indexOf(index);
           }
@@ -514,7 +534,8 @@
           }
         };
         $scope.isColumnVisible = function (initialIndex) {
-          return $scope.getColumnByInitialIndex(initialIndex).visible();
+          var column = $scope.getColumnByInitialIndex(initialIndex);
+          return column && column.visible();
         };
 
         $scope.doUsePagination = function () {
@@ -553,7 +574,7 @@
                 $scope.getCellDispOpts.push($scope.allDoubleTypes);
               } else if ($scope.types[order - 1] === 'integer') {
                 $scope.getCellDispOpts.push($scope.allIntTypes);
-              } else if ($scope.types[order - 1] === 'time') {
+              } else if ($scope.types[order - 1] === 'time' || $scope.types[order - 1] === 'datetime') {
                 $scope.getCellDispOpts.push($scope.allTimeTypes);
               } else if ($scope.types[order - 1] === 'boolean') {
                 $scope.getCellDispOpts.push($scope.allBoolTypes);
@@ -585,8 +606,10 @@
             }
           });
           $.each($scope.colreorg.s.dt.aoColumns, function (i, column) {
-            $scope.getColumnFilter($scope.table.column(column.idx + ":visible"))
-              .closest('th').attr('data-column-index', i);
+            var filter = $scope.getColumnFilter($scope.table.column(column.idx + ":visible"));
+            if (filter) {
+              filter.closest('th').attr('data-column-index', i);
+            }
           });
         };
 
@@ -674,19 +697,20 @@
             });
         };
 
-        $scope.updateFixedColumnsSeparator = function(){
+        $scope.updateFixedColumnsSeparator = function () {
           if ($scope.table) {
-            var getHeader = function(thIndex){
+            var getHeader = function (thIndex) {
               return $($scope.table.header()).find('tr').find('th:eq(' + thIndex + ')');
             };
-            var updateColumn = function(columnIndex, cssClass){
+            var updateColumn = function (columnIndex, cssClass) {
               var column = $scope.table.column(columnIndex);
+              if (!column.visible()) { return; }
               var columnHeader = getHeader($(column.header()).index());
               $(column.nodes()).addClass(cssClass);
               columnHeader.addClass(cssClass);
             };
             updateColumn($scope.pagination.fixLeft, FC_LEFT_SEPARATOR_CLASS);
-            if($scope.pagination.fixRight){
+            if ($scope.pagination.fixRight) {
               updateColumn($scope.columns.length - $scope.pagination.fixRight, FC_RIGHT_SEPARATOR_CLASS);
             }
           }
@@ -715,9 +739,7 @@
         {type: 7, name: 'exponential 15'},
         {type: 8, name: 'datetime'},
         {type: 9, name: 'boolean'},
-        {type: 10, name: 'html'},
-        {type: 11, name: 'date'},
-        {type: 12, name: 'time'}];
+        {type: 10, name: 'html'}];
         $scope.allConverters = {
           // string
           0: function(value, type, full, meta) {
@@ -756,7 +778,20 @@
           // double
           3: function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
-              return parseFloat(value);
+              var doubleValue = parseFloat(value);
+              var colFormat = $scope.stringFormatForColumn[$(meta.settings.aoColumns[meta.col].sTitle).text()];
+              var typeFormat = $scope.stringFormatForType.double;
+              var format = colFormat && colFormat.type === 'decimal' ? colFormat : typeFormat;
+              if (format && format.type === 'decimal') {
+                var precision = doubleValue.toString().split('.')[1];
+                if (precision && precision.length >= format.maxDecimals){
+                  return doubleValue.toFixed(format.maxDecimals);
+                } else {
+                  return doubleValue.toFixed(format.minDecimals);
+                }
+              } else {
+                return doubleValue;
+              }
             }
             if (type === 'sort') {
               return NaN;
@@ -791,11 +826,13 @@
               return $scope.timeStrings[meta.row];
             }
             if (type === 'display') {
+              var format = _.isEmpty($scope.formatForTimes) ?
+                TIME_UNIT_FORMATS.DATETIME.format : TIME_UNIT_FORMATS[$scope.formatForTimes].format;
               if (_.isObject(value) && value.type === 'Date') {
-                return bkUtils.formatTimestamp(value.timestamp, $scope.tz, 'YYYYMMDD HH:mm:ss.SSS ZZ');
+                return bkUtils.formatTimestamp(value.timestamp, $scope.tz, format);
               }
               var milli = value / 1000 / 1000;
-              return bkUtils.formatTimestamp(milli, $scope.tz, 'YYYYMMDD HH:mm:ss.SSS ZZ');
+              return bkUtils.formatTimestamp(milli, $scope.tz, format);
             }
             return value;
           },
@@ -809,36 +846,11 @@
           // html
           10: function(value, type, full, meta) {
             return value;
-          },
-          // date
-          11: function(value, type, full, meta) {
-            var time;
-            var tz;
-            if ($scope.timeStrings) {
-              return $scope.timeStrings[meta.row];
-            }
-            if (type === 'display') {
-              if (_.isObject(value) && value.type === 'Date') {
-                bkUtils.formatTimestamp(value.timestamp, $scope.tz, 'YYYY-MM-DD');
-              }
-              var milli = value / 1000 / 1000;
-              bkUtils.formatTimestamp(milli, $scope.tz, 'YYYY-MM-DD');
-            }
-            return value;
-          },
-          // time
-          12: function(value, type, full, meta) {
-            var time;
-            var tz;
-            if ($scope.timeStrings) {
-              return $scope.timeStrings[meta.row];
-            }
-            if (_.isObject(value) && value.type === 'Date') {
-              return bkUtils.formatTimestamp(value.timestamp, $scope.tz, 'HH:mm:ss.SSS ZZ');
-            }
-            var milli = value / 1000 / 1000;
-            return bkUtils.formatTimestamp(milli, $scope.tz, 'HH:mm:ss.SSS ZZ');
           }
+        };
+        $scope.valueFormatter = function(value, type, full, meta) {
+          var columnName = $scope.columnNames[meta.col - 1];
+          return $scope.stringFormatForColumn[columnName].values[columnName][meta.row];
         };
         $scope.isDoubleWithPrecision = function(type){
           var parts = type.toString().split(".");
@@ -864,13 +876,11 @@
         }
         $scope.allStringTypes = [{type: 0, name: 'string'}, {type: 10, name: 'html'}];
         $scope.allTimeTypes   = [{type: 8, name: 'datetime'},
-                                 {type: 0, name: 'string'},
-                                 {type: 11, name: 'date'},
-                                 {type: 12, name: 'time'}];
+                                 {type: 0, name: 'string'}];
         $scope.allIntTypes    = [{type: 0, name: 'string'},
         {type: 1, name: 'integer'},
         {type: 2, name: 'formatted integer'},
-        {type: 8, name: 'time'}];
+        {type: 8, name: 'datetime'}];
         $scope.allDoubleTypes = [{type: 0, name: 'string'},
         {type: 3, name: 'double'},
         {type: 4, name: 'double with precision'},
@@ -906,6 +916,8 @@
         };
       },
       link: function(scope, element) {
+
+        var cellModel;
 
         var unregisterOutputExpandEventListener = angular.noop; // used for deregistering listener
 
@@ -976,6 +988,14 @@
             scope.removeFilterListeners();
             $(scope.table.table().container()).find('.dataTables_scrollHead').off('scroll');
             $(element).find(".bko-table-use-pagination").remove();
+
+            $.contextMenu('destroy', {
+              selector: '#' + scope.id + ' tbody td'
+            });
+            $.contextMenu('destroy', {
+              selector: '#' + scope.id +'_wrapper thead'
+            });
+            $(document).off('contextmenu.bko-dt-header', '#' + scope.id +'_wrapper thead th');
 
             if (all) {
               scope.table.destroy(true);
@@ -1112,33 +1132,101 @@
             if (typeof scope.pagination.fixRight === 'boolean') {
               scope.pagination.fixRight = 0;
             }
-            scope.barsOnColumn        = scope.savedstate.barsOnColumn || {};
-            scope.heatmapOnColumn     = scope.savedstate.heatmapOnColumn || {};
-            scope.tableFilter         = scope.savedstate.tableFilter || '';
-            scope.columnFilter        = scope.savedstate.columnFilter || [];
-            scope.showFilter          = scope.savedstate.showFilter;
-            scope.columnSearchActive  = scope.savedstate.columnSearchActive;
-            scope.columnWidth         = scope.savedstate.columnWidth || [];
-            scope.tableOrder          = scope.savedstate.tableOrder;
+            scope.barsOnColumn          = scope.savedstate.barsOnColumn || {};
+            scope.cellHighlightersData  = scope.savedstate.cellHighlightersData || {};
+            scope.tableFilter           = scope.savedstate.tableFilter || '';
+            scope.columnFilter          = scope.savedstate.columnFilter || [];
+            scope.showFilter            = scope.savedstate.showFilter;
+            scope.columnSearchActive    = scope.savedstate.columnSearchActive;
+            scope.columnWidth           = scope.savedstate.columnWidth || [];
+            scope.tableOrder            = scope.savedstate.tableOrder;
+            scope.formatForTimes        = scope.savedstate.formatForTimes;
+            scope.stringFormatForType   = scope.savedstate.stringFormatForType || {};
+            scope.stringFormatForColumn = scope.savedstate.stringFormatForColumn || {};
+            scope.tooltips = scope.savedstate.tooltips || [];
+            scope.dataFontSize = scope.savedstate.dataFontSize;
+            scope.headerFontSize = scope.savedstate.headerFontSize;
+            scope.fontColor = scope.savedstate.fontColor;
+            scope.headersVertical = scope.savedstate.headersVertical;
 
             scope.savedstate  = undefined;
           } else {
-            scope.colorder          = undefined;
-            scope.getCellSho        = undefined;
-            scope.barsOnColumn      = {}; //map: col index -> show bars
-            scope.heatmapOnColumn   = {}; //map: col index -> show heatmap
+            if (!_.isEmpty(model.columnsVisible) && _.isEmpty(model.columnOrder)) {
+              scope.getCellSho = [];
+              _.forEach(scope.columnNames, function(columnName){
+                var visible = model.columnsVisible.hasOwnProperty(columnName) ? model.columnsVisible[columnName] : true;
+                scope.getCellSho.push(visible);
+              });
+            } else {
+              scope.getCellSho = undefined;
+            }
+
+            if (!_.isEmpty(model.columnOrder)) {
+              scope.colorder = [0];
+              scope.getCellSho = [];
+              _.forEach(model.columnOrder, function (columnName) {
+                scope.colorder.push(scope.columnNames.indexOf(columnName) + 1);
+              });
+              _.forEach(scope.columnNames, function (columnName) {
+                var colIndex = model.columnOrder.indexOf(columnName);
+                var visible = colIndex > -1;
+                scope.getCellSho.push(visible);
+                if (!visible) {
+                  scope.colorder.push(scope.columnNames.indexOf(columnName) + 1);
+                }
+              });
+            } else {
+              scope.colorder = undefined;
+            }
+
+            scope.barsOnColumn = {}; //map: col index -> show bars
+            if (!_.isEmpty(model.rendererForType)) {
+              _.forEach(scope.types, function (type, index) {
+                var renderer = model.rendererForType[type];
+                if (renderer) {
+                  scope.applyColumnRenderer(index, renderer);
+                }
+              });
+            }
+            _.forOwn(model.rendererForColumn, function (renderer, columnName) {
+              scope.applyColumnRenderer(scope.getColumnIndexByColName(columnName) - 1, renderer);
+            });
+
+            scope.cellHighlightersData = model.cellHighlighters ? _.map(model.cellHighlighters, function(highlighter){
+              return _.extend({colInd: scope.getColumnIndexByColName(highlighter.colName)}, highlighter);
+            }) : {};
             scope.tableFilter       = '';
             scope.columnFilter      = [];
             scope.showFilter        = false;
             scope.columnSearchActive = false;
             scope.columnWidth       = [];
             scope.tableOrder        = undefined;
+            var columnsFrozen = [];
+            _.forOwn(model.columnsFrozen, function (frozen, columnName) {
+              if (frozen) {
+                columnsFrozen.push(scope.getColumnIndexByColName(columnName));
+              }
+            });
+            var columnsFrozenRight = [];
+            _.forOwn(model.columnsFrozenRight, function (frozen, columnName) {
+              if (frozen) {
+                columnsFrozenRight.push(scope.getColumnIndexByColName(columnName));
+              }
+            });
             scope.pagination = {
               'use' : true,
               'rowsToDisplay' : DEFAULT_PAGE_LENGTH,
-              'fixLeft' : 0,
-              'fixRight' : 0
+              'fixLeft' : !_.isEmpty(columnsFrozen) ? Math.max.apply(null, columnsFrozen) : 0,
+              'fixRight' : !_.isEmpty(columnsFrozenRight) ? scope.columnNames.length - Math.min.apply(null, columnsFrozenRight) + 1 : 0,
             };
+            scope.formatForTimes        = model.stringFormatForTimes || {};
+            scope.stringFormatForType   = model.stringFormatForType || {};
+            scope.stringFormatForColumn = model.stringFormatForColumn || {};
+            scope.tooltips              = model.tooltips || [];
+            scope.dataFontSize          = model.dataFontSize;
+            scope.headerFontSize        = model.headerFontSize;
+            scope.fontColor             = model.fontColor;
+            scope.headersVertical       = model.headersVertical;
           }
           // auto compute types
           if (scope.actualtype === undefined || scope.actualtype.length === 0) {
@@ -1146,14 +1234,22 @@
             scope.actualalign = [];
             for (i = 0; i < scope.columnNames.length; i++) {
               if (scope.types !== undefined) {
-                if (scope.types[i] === 'time') {
+                var stringFormatForColumn =  scope.stringFormatForColumn[scope.columnNames[i]];
+                if (stringFormatForColumn && stringFormatForColumn.type === 'value'){
+                  scope.actualtype.push(0);
+                  scope.actualalign.push('L');
+                } else if (scope.types[i] === 'time' || scope.types[i] === 'datetime') {
                   scope.actualtype.push(8);
                   scope.actualalign.push('C');
                 } else if (scope.types[i] === 'integer') {
                   scope.actualtype.push(2);
                   scope.actualalign.push('R');
                 } else if (scope.types[i] === 'double') {
-                  scope.actualtype.push('4.4');
+                  if (scope.stringFormatForType.double || stringFormatForColumn) {
+                    scope.actualtype.push(3);
+                  } else {
+                    scope.actualtype.push('4.4');
+                  }
                   scope.actualalign.push('R');
                 } else {
                   scope.actualtype.push(0);
@@ -1164,7 +1260,63 @@
                 scope.actualalign.push('L');
               }
             }
+
+            if (!_.isEmpty(model.alignmentForType)) {
+              _.forEach(model.types, function (type, index) {
+                var alignment = model.alignmentForType[type];
+                if(alignment){
+                  scope.actualalign[index] = alignment;
+                }
+              });
+            }
+
+            _.forOwn(model.alignmentForColumn, function (alignment, columnName) {
+              scope.actualalign[scope.columnNames.indexOf(columnName)] = alignment;
+            });
           }
+
+          // cell highlighters
+          scope.cellHighlighters = {}; //map: col index -> highlighter
+          _.forEachRight(scope.cellHighlightersData, function (highlighter) {
+            if (!highlighter) { return; }
+            if(_.isEmpty(scope.cellHighlighters[highlighter.colInd])){
+              var jsHighlighter = cellHighlighters.createHighlighter(highlighter.type, highlighter);
+              if (jsHighlighter) {
+                scope.cellHighlighters[highlighter.colInd] = jsHighlighter;
+              }
+            }
+          });
+
+          scope.contextMenuItems = {};
+          if (!_.isEmpty(model.contextMenuItems)) {
+            _.forEach(model.contextMenuItems, function (item) {
+              scope.contextMenuItems[item] = {
+                name: item,
+                callback: function (itemKey, options) {
+                  var index = scope.table.cell(options.$trigger.get(0)).index();
+                  tableService.onContextMenu(model['update_id'],
+                    itemKey,
+                    index.row,
+                    index.column - 1,
+                    scope.model.getEvaluatorId()).then(function () {
+                    scope.update = true;
+                  });
+                }
+              }
+            });
+          }
+
+          if (!_.isEmpty(model.contextMenuTags)) {
+            _.forOwn(model.contextMenuTags, function (tag, name) {
+              scope.contextMenuItems[name] = {
+                name: name,
+                callback: function (itemKey, options) {
+                  scope.evaluateTagCell(tag);
+                }
+              }
+            });
+          }
+
           scope.doCreateData(model);
           scope.doCreateTable(model);
           $(document.body).off('click.bko-dt-container', scope.containerClickFunction);
@@ -1173,14 +1325,15 @@
 
         scope.doCreateData = function(model) {
           // create a dummy column to keep server ordering if not already present
+          var values = model.hasOwnProperty('filteredValues') ? model.filteredValues : model.values;
           if (!scope.hasIndex) {
             var data = [];
             var r;
             var selected = [];
-            for (r = 0; r < model.values.length; r++) {
+            for (r = 0; r < values.length; r++) {
               var row = [];
               row.push(r);
-              data.push(row.concat(model.values[r]));
+              data.push(row.concat(values[r]));
               selected.push(false);
             }
             scope.data = data;
@@ -1189,9 +1342,9 @@
             var data = [];
             var r;
             var selected = [];
-            for (r = 0; r < model.values.length; r++) {
+            for (r = 0; r < values.length; r++) {
               var row = [];
-              data.push(row.concat(model.values[r]));
+              data.push(row.concat(values[r]));
               selected.push(false);
             }
             scope.data = data;
@@ -1299,14 +1452,12 @@
           for (var colInd = 0; colInd < scope.columns.length; colInd++) {
             var max = scope.table.column(colInd).data().max();
             var min = scope.table.column(colInd).data().min();
-            var colorScale = d3.scale.linear()
-              .domain([min, (min + max) / 2, max])
-              .range(['#f76a6a', '#efda52', '#64bd7a']);
             scope.table.column(colInd).nodes().each(function (td) {
               var value = $(td).text();
-              if($.isNumeric(value)){
+              if ($.isNumeric(value)) {
                 $(td).empty();
-                if(scope.barsOnColumn[scope.colorder[colInd]]){
+                var barsRenderer = scope.barsOnColumn[scope.colorder[colInd]];
+                if (barsRenderer) {
                   var cellDiv = $("<div></div>", {
                     "class": "dt-cell-div"
                   });
@@ -1321,22 +1472,20 @@
                     "width": percent + "%"
                   });
                   cellDiv.append(barsBkg);
+                  if (!barsRenderer.includeText) {
+                    textSpan.hide();
+                  }
                   cellDiv.append(textSpan);
                   $(td).append(cellDiv);
-                }else{
+                } else {
                   $(td).text(value);
                 }
               }
             });
-            scope.table.column(colInd).nodes().each(function (td) {
-              var value = $(td).text();
-              if($.isNumeric(value)){
-                var color = scope.heatmapOnColumn[scope.colorder[colInd]] ? colorScale(value) : "";
-                $(td).css({
-                  "background-color": color
-                });
-              }
-            });
+            var cellHighlighter = scope.cellHighlighters[colInd];
+            if (cellHighlighter) {
+              cellHighlighter.doHighlight(scope.table);
+            }
           }
         };
 
@@ -1380,12 +1529,30 @@
         };
 
         scope.showHideBars = function (column) {
-          scope.barsOnColumn[column] = !!!scope.barsOnColumn[column];
+          if (scope.barsOnColumn[column]) {
+            delete scope.barsOnColumn[column];
+          } else {
+            scope.barsOnColumn[column] = {includeText: true};
+          }
           _.defer(function () { scope.table.draw(false);  });
         };
-        scope.showHideHeatmap = function (column) {
-          scope.heatmapOnColumn[column] = !!!scope.heatmapOnColumn[column];
+
+        scope.showHideHighlighter = function(column, highlighterType){
+          var highlighter = scope.cellHighlighters[column];
+          if (!highlighter || !(highlighter instanceof highlighterType)) {
+            if (highlighter) {
+              highlighter.removeHighlight(scope.table);
+            }
+            scope.cellHighlighters[column] = new highlighterType({colInd: column});
+          } else {
+            highlighter.removeHighlight(scope.table);
+            delete scope.cellHighlighters[column];
+          }
           _.defer(function () { scope.table.draw(false);  });
+        };
+
+        scope.showHideHeatmap = function (column) {
+          scope.showHideHighlighter(column, cellHighlighters.HeatmapHighlighter);
         };
 
         scope.columnHasFormat = function (column, format) {
@@ -1408,6 +1575,11 @@
               scope.actualtype[i] = scope.getActualTypeByPrecision(precision);
             }
           }
+          scope.applyChanges();
+        };
+
+        scope.changeTimeFormat = function (timeUnit) {
+          scope.formatForTimes = timeUnit;
           scope.applyChanges();
         };
 
@@ -1597,6 +1769,71 @@
           scope.onKeyListeners = {};//map: col index -> listener function
         };
 
+        scope.applyColumnRenderer = function(colIndex, renderer){
+          switch (renderer.type) {
+            case 'DataBars':
+              scope.barsOnColumn[colIndex + 1] = {includeText: renderer.includeText};
+              break;
+            //other renderers here
+          }
+        };
+
+        scope.updateHeaderLayout = function () {
+          if (scope.table) {
+            scope.updateHeaderFontSize();
+            scope.rotateHeader();
+          }
+        };
+
+        scope.updateHeaderFontSize = function () {
+          if (scope.headerFontSize) {
+            $(scope.table.table().container()).find('thead tr:not(".filterRow") th').css({'font-size': scope.headerFontSize});
+          }
+        };
+
+        scope.rotateHeader = function () {
+          var headerRows = $(scope.table.table().container())
+            .find('.DTFC_LeftHeadWrapper, .DTFC_RightHeadWrapper, .dataTables_scrollHead')
+            .find('thead tr:not(".filterRow")');
+          var headerCols = headerRows.find('th');
+          var headerTexts = headerCols.find('span.header-text');
+          var headerTextMaxWidth = Math.max.apply(null, headerTexts.map(function () {
+            return $(this).width();
+          }).get());
+          var lineHeight = parseFloat(headerTexts.css('line-height'));
+          if (scope.headersVertical) {
+            headerTexts.addClass('rotate');
+            var padding = 10;
+            headerTexts.css('transform', 'rotate(270deg) translateX(-' + (lineHeight - padding) + 'px)');
+            headerCols.css({
+              'height': headerTextMaxWidth + padding + 'px',
+              'max-width': lineHeight,
+              'vertical-align': 'bottom'
+            });
+          } else {
+            headerTexts.removeClass('rotate');
+            headerTexts.css('transform', '');
+            headerCols.css({
+              'height': '',
+              'max-width': '',
+              'vertical-align': ''
+            });
+            headerRows.css({'height': ''});
+          }
+        };
+
+        scope.evaluateTagCell = function (tag) {
+          var cellOp = bkSessionManager.getNotebookCellOp();
+          var result;
+          if (cellOp.hasUserTag(tag)) {
+            result = cellOp.getCellsWithUserTag(tag);
+            bkCoreManager.getBkApp().evaluateRoot(result)
+              .catch(function () {
+                console.log('Evaluation failed: ' + tag);
+              });
+          }
+        };
+
         scope.doCreateTable = function(model) {
           var cols = [];
           var i;
@@ -1607,6 +1844,10 @@
             var items = [];
 
             _.each(types, function(obj) {
+              if (obj.type === 8) { //datetime
+                items = items.concat(getTimeSubitems());
+                return;
+              }
               var item = {
                 title: obj.name,
                 isChecked: function(container) {
@@ -1646,6 +1887,28 @@
                   var container = el.closest('.bko-header-menu');
                   var colIdx = container.data('columnIndex');
                   scope.changePrecision(scope.colorder[colIdx] - 1, precision);
+                }
+              };
+
+              items.push(item);
+            });
+
+            return items;
+          };
+
+          var getTimeSubitems = function() {
+            var items = [];
+
+            _.forOwn(TIME_UNIT_FORMATS, function(value, unit) {
+              var item = {
+                title: value.title,
+                isChecked: function(container) {
+                  var colIdx = container.data('columnIndex');
+                  return scope.actualtype[scope.colorder[colIdx] - 1] === 8 &&
+                    (unit === scope.formatForTimes || unit == 'DATETIME' && _.isEmpty(scope.formatForTimes));
+                },
+                action: function(el) {
+                  scope.changeTimeFormat(unit);
                 }
               };
 
@@ -1816,7 +2079,8 @@
                 separator: true,
                 isChecked: function(container) {
                   var colIdx = container.data('columnIndex');
-                  return scope.heatmapOnColumn[scope.colorder[colIdx]] === true;
+                  var highlighter = scope.cellHighlighters[scope.colorder[colIdx]];
+                  return highlighter && highlighter instanceof cellHighlighters.HeatmapHighlighter;
                 },
                 action: function(el) {
                   var container = el.closest('.bko-header-menu');
@@ -1860,6 +2124,11 @@
 
           // build configuration
           var converter = scope.allConverters[1];
+          var createdCell = function (td, cellData, rowData, row, col) {
+            if (scope.dataFontSize) {
+              $(td).css({'font-size': scope.dataFontSize});
+            }
+          };
           if (scope.hasIndex) {
             for (var i = 0; i < scope.allTypes.length; i++) {
               if (scope.allTypes[i].name === scope.indexType) {
@@ -1867,25 +2136,45 @@
                 break;
               }
             }
-            cols.push({'title' : scope.indexName, 'className': 'dtright', 'render': converter});
+            cols.push({'title' : scope.indexName, 'className': 'dtright', 'render': converter, createdCell: createdCell});
           } else {
-            cols.push({'title': '    ', 'className': 'dtright', 'render': converter});
+            cols.push({'title': '    ', 'className': 'dtright', 'render': converter, createdCell: createdCell});
           }
 
           for (i = 0; i < scope.columnNames.length; i++) {
             var type = scope.actualtype[i];
             var al = scope.actualalign[i];
             var col = {
-              'title' : scope.columnNames[i],
+              'title' : '<span class="header-text">' + scope.columnNames[i] +'</span>',
               'header': { 'menu': headerMenuItems }
             };
+            col.createdCell = function (td, cellData, rowData, row, col) {
+              if(!_.isEmpty(scope.tooltips)){
+                $(td).attr('title', scope.tooltips[row][col - 1]);
+              }
+              if (scope.dataFontSize) {
+                $(td).css({'font-size': scope.dataFontSize});
+              }
+              if (!_.isEmpty(scope.fontColor)) {
+                var color = scope.fontColor[row][col - 1];
+                var color_opacity = parseInt(color.substr(1, 2), 16) / 255;
+                $(td).css({
+                  'color': "#" + color.substr(3),
+                  'opacity': color_opacity
+                });
+              }
+            };
+
             if (al === 'R') {
               col.className = 'dtright';
             } else if (al === 'C') {
               col.className = 'dtcenter';
             }
 
-            if (scope.isDoubleWithPrecision(type)) {
+            var stringFormatForColumn = scope.stringFormatForColumn[scope.columnNames[i]];
+            if (stringFormatForColumn && stringFormatForColumn.type === 'value' && type === 0){
+              col.render = scope.valueFormatter;
+            } else if (scope.isDoubleWithPrecision(type)) {
               col.render = scope.doubleWithPrecisionConverters[scope.getDoublePrecision(type)];
             } else if (scope.allConverters[type] !== undefined) {
               col.render = scope.allConverters[type];
@@ -1966,12 +2255,51 @@
             }
           }
           scope.fixcreated = false;
+          if (!_.isEmpty(scope.contextMenuItems)) {
+            $.contextMenu({
+              selector: id +' tbody td',
+              items: scope.contextMenuItems
+            });
+          }
+
+          var rotateMenuItem = {
+            callback: function (itemKey, options) {
+              scope.headersVertical = !!!scope.headersVertical;
+              scope.rotateHeader();
+              scope.table.draw();
+            }
+          };
+          $.contextMenu({
+            selector: id +'_wrapper thead',
+            zIndex: 3, //to be over fixed headers
+            items: {
+              verticalHeaders: _.extend({}, rotateMenuItem, {
+                name: 'vertical headers',
+                visible: function(key, opt){
+                  return !!!scope.headersVertical;
+                }
+              }),
+              horizontalHeaders: _.extend({}, rotateMenuItem, {
+                name: 'horizontal headers',
+                visible: function(key, opt){
+                  return !!scope.headersVertical;
+                }
+              })
+            }
+          });
+
+          $(document).on('contextmenu.bko-dt-header', id +'_wrapper thead th', function(){
+            $(this).blur();
+          });
 
           bkHelper.timeout(function() {
             // we must wait for the DOM elements to appear
             $(id).parents('.dataTables_scroll').find('th, td')
               .removeClass(FC_LEFT_SEPARATOR_CLASS + ' ' + FC_RIGHT_SEPARATOR_CLASS);
             scope.table = $(id).DataTable(init);
+
+            scope.updateHeaderLayout();
+
             scope.table.settings()[0].oScroll.iBarWidth = scope.scrollbarWidth;
             scope.renderMenu = true;
             if (!scope.colorder) {
@@ -1980,7 +2308,7 @@
             scope.colreorg = new $.fn.dataTable.ColReorder($(id), {
               'order': scope.colorder,
               'fnReorderCallback': function() {
-                if (scope.colreorg === undefined) {
+                if (scope.colreorg === undefined || scope.colreorg.s == null) {
                   return;
                 }
                 scope.colorder = scope.colreorg.fnOrder().slice(0);
@@ -2030,11 +2358,12 @@
                 }
               }
 
-              var currentCell = $(scope.table.cells(function (idx, data, node) {
+              var currentCell = scope.table.cells(function (idx, data, node) {
                 return idx.column === colIdx && idx.row ===  rowIdx;
-              }).nodes());
+              });
+              var currentCellNodes = $(currentCell.nodes());
 
-              var isCurrentCellSelected = currentCell.hasClass('selected');
+              var isCurrentCellSelected = currentCellNodes.hasClass('selected');
 
               if (scope.selected[rowIdx]) {
                 scope.selected[rowIdx] = false;
@@ -2051,10 +2380,24 @@
                 });
               }
               if (!isCurrentCellSelected) {
-                currentCell.addClass('selected');
+                currentCellNodes.addClass('selected');
                 if(iPos === undefined) {
                   scope.selectFixedColumnCell($(this), true);
                 }
+              }
+
+              if (model.hasDoubleClickAction) {
+                var index = currentCell.indexes()[0];
+                tableService.onDoubleClick(model['update_id'],
+                  index.row,
+                  index.column - 1,
+                  scope.model.getEvaluatorId()).then(function () {
+                  scope.update = true;
+                });
+              }
+
+              if (!_.isEmpty(model.doubleClickTag)) {
+                scope.evaluateTagCell(model.doubleClickTag);
               }
 
               e.stopPropagation();
@@ -2111,6 +2454,10 @@
               })
               .on('column-visibility.dt', function (e, settings, column, state) {
                 scope.getCellSho[scope.colorder[column] - 1] = state;
+                setTimeout(function(){
+                  scope.updateHeaderLayout();
+                  scope.table.draw(false);
+                }, 0);
               });
 
             function updateSize() {
@@ -2250,8 +2597,10 @@
             if (scope.barsOnColumn !== undefined) {
               state.barsOnColumn = scope.barsOnColumn;
             }
-            if (scope.heatmapOnColumn !== undefined) {
-              state.heatmapOnColumn = scope.heatmapOnColumn;
+            if (scope.cellHighlighters !== undefined) {
+              state.cellHighlightersData = _.map(scope.cellHighlighters, function(highlighter, colInd){
+                return highlighter;
+              });
             }
             if (scope.tableFilter !== undefined) {
               state.tableFilter = scope.tableFilter;
@@ -2272,6 +2621,38 @@
               state.tableOrder = scope.tableOrder.slice(0);
             }
 
+            if (scope.formatForTimes !== undefined) {
+              state.formatForTimes = scope.formatForTimes;
+            }
+
+            if (scope.stringFormatForType !== undefined) {
+              state.stringFormatForType = scope.stringFormatForType;
+            }
+
+            if (scope.stringFormatForColumn !== undefined) {
+              state.stringFormatForColumn = scope.stringFormatForColumn;
+            }
+
+            if (scope.tooltips !== undefined) {
+              state.tooltips = scope.tooltips;
+            }
+
+            if (scope.headerFontSize !== undefined) {
+              state.headerFontSize = scope.headerFontSize;
+            }
+
+            if (scope.dataFontSize !== undefined) {
+              state.dataFontSize = scope.dataFontSize;
+            }
+
+            if (scope.fontColor !== undefined) {
+              state.fontColor = scope.fontColor;
+            }
+
+            if (scope.headersVertical !== undefined) {
+              state.headersVertical = scope.headersVertical;
+            }
+
             scope.model.setDumpState({datatablestate: state});
           }
         });
@@ -2286,8 +2667,15 @@
         var tableChanged = false;
 
         scope.$watch('getCellModel()', function(m) {
-          scope.init(m, true);
-          tableChanged = true;
+          if(!angular.equals(m, cellModel)){
+            cellModel = m;
+            if (scope.update) {
+              scope.applyChanges();
+            } else {
+              scope.init(m, true);
+            }
+            tableChanged = true;
+          }
         });
 
         scope.$on('beaker.section.toggled', function(e, isCollapsed) {
@@ -2301,9 +2689,11 @@
         scope.updateDTMenu = function(){
           if(scope.table){
             var orderInfo = scope.table.order()[0];
-            scope.isIndexColumnDesc = orderInfo[0] === 0 && orderInfo[1] === 'desc';
-            if (!(scope.$$phase || $rootScope.$$phase)) {
-              scope.$apply();
+            if (orderInfo) {
+              scope.isIndexColumnDesc = orderInfo[0] === 0 && orderInfo[1] === 'desc';
+              if (!(scope.$$phase || $rootScope.$$phase)) {
+                scope.$apply();
+              }
             }
           }
         };

@@ -23,11 +23,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class FsItemFilterUtils {
-  public static FsItemFilter FILTER_ALL    = item -> true;
-  public static FsItemFilter FILTER_FOLDER = FsItem::isFolder;
+  public static FsItemFilter FILTER_ALL = new FsItemFilter() {
+    @Override
+    public boolean accepts(FsItem item) {
+      return false;
+    }
+  };
+
+  public static FsItemFilter FILTER_FOLDER = new FsItemFilter() {
+    @Override
+    public boolean accepts(FsItem item) {
+      return item.isFolder();
+    }
+  };
 
   public static FsItemFilter createFileNameKeywordFilter(final String keyword) {
-    return item -> item.getName().contains(keyword);
+    return new FsItemFilter() {
+      @Override
+      public boolean accepts(FsItem item) {
+        return item.getName().contains(keyword);
+      }
+    };
   }
 
   public static FsItemEx[] filterFiles(FsItemEx[] sourceFiles,

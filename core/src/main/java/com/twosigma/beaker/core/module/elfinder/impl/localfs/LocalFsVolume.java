@@ -23,6 +23,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,26 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocalFsVolume implements FsVolume {
-
-  /**
-   * Used to calculate total file size when walking the tree.
-   */
-  private static class FileSizeFileVisitor extends SimpleFileVisitor<Path> {
-
-    private long totalSize;
-
-    public long getTotalSize() {
-      return totalSize;
-    }
-
-    @Override
-    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
-      throws IOException {
-      totalSize += file.toFile().length();
-      return FileVisitResult.CONTINUE;
-    }
-
-  }
 
   private String name;
   private File   rootDir;
@@ -182,10 +163,17 @@ public class LocalFsVolume implements FsVolume {
     return null;
   }
 
+
   @Override
   public boolean hasChildFolder(FsItem fsi) {
-    File   file      = asFile(fsi);
-    File[] listFiles = asFile(fsi).listFiles(File::isDirectory);
+    File file = asFile(fsi);
+    File[] listFiles = file.listFiles(new FileFilter() {
+
+      @Override
+      public boolean accept(File arg0) {
+        return arg0.isDirectory();
+      }
+    });
     return file.isDirectory()
       && listFiles != null && listFiles.length > 0;
   }

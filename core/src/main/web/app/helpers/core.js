@@ -1343,6 +1343,7 @@
         useBrowserHistory: false,
         onlyMimes: $scope.mime(),
         getFileCallback: function (file) {
+          $scope.save();
         },
         handlers: {
           select: function (event, elfinderInstance) {

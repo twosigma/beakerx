@@ -33,6 +33,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -125,11 +127,17 @@ public class ConnectorController {
 
           listFiles.add((FileItemStream) Proxy.newProxyInstance(this.getClass().getClassLoader(),
                                                                 new Class[]{FileItemStream.class},
-                                                                (proxy, method, args) -> {
-                                                                  if ("openStream".equals(method.getName())) {
-                                                                    return new ByteArrayInputStream(bs);
+                                                                new InvocationHandler() {
+                                                                  @Override
+                                                                  public Object invoke(Object proxy,
+                                                                                       Method method, Object[] args)
+                                                                    throws Throwable {
+                                                                    if ("openStream".equals(method.getName())) {
+                                                                      return new ByteArrayInputStream(bs);
+                                                                    }
+
+                                                                    return method.invoke(item, args);
                                                                   }
-                                                                  return method.invoke(item, args);
                                                                 }));
         }
       }
@@ -140,43 +148,48 @@ public class ConnectorController {
     Object proxyInstance =
       Proxy.newProxyInstance(this.getClass().getClassLoader(),
                              new Class[]{HttpServletRequest.class},
-                             (arg0, arg1, arg2) -> {
-                               // we replace getParameter() and getParameterValues()
-                               // methods
-                               if ("getParameter".equals(arg1.getName())) {
-                                 String paramName = (String) arg2[0];
-                                 return requestParams.get(paramName);
-                               }
-
-                               if ("getParameterValues".equals(arg1.getName())) {
-                                 String paramName = (String) arg2[0];
-
-                                 // normalize name 'key[]' to 'key'
-                                 if (paramName.endsWith("[]"))
-                                   paramName = paramName.substring(0,
-                                                                   paramName.length() - 2);
-
-                                 if (requestParams.containsKey(paramName))
-                                   return new String[]{requestParams.get(paramName)};
-
-                                 // if contains key[1], key[2]...
-                                 int          i           = 0;
-                                 List<String> paramValues = new ArrayList<>();
-                                 while (true) {
-                                   String name2 = String.format("%s[%d]",
-                                                                paramName, i++);
-                                   if (requestParams.containsKey(name2)) {
-                                     paramValues.add(requestParams.get(name2));
-                                   } else {
-                                     break;
-                                   }
+                             new InvocationHandler() {
+                               @Override
+                               public Object invoke(Object arg0, Method arg1, Object[] arg2)
+                                 throws Throwable {
+                                 // we replace getParameter() and getParameterValues()
+                                 // methods
+                                 if ("getParameter".equals(arg1.getName())) {
+                                   String paramName = (String) arg2[0];
+                                   return requestParams.get(paramName);
                                  }
 
-                                 return paramValues.isEmpty() ? new String[0] : paramValues.toArray(
-                                   new String[paramValues.size()]);
-                               }
+                                 if ("getParameterValues".equals(arg1.getName())) {
+                                   String paramName = (String) arg2[0];
 
-                               return arg1.invoke(request, arg2);
+                                   // normalize name 'key[]' to 'key'
+                                   if (paramName.endsWith("[]"))
+                                     paramName = paramName.substring(0,
+                                                                     paramName.length() - 2);
+
+                                   if (requestParams.containsKey(paramName))
+                                     return new String[]{requestParams
+                                                           .get(paramName)};
+
+                                   // if contains key[1], key[2]...
+                                   int          i           = 0;
+                                   List<String> paramValues = new ArrayList<String>();
+                                   while (true) {
+                                     String name2 = String.format("%s[%d]",
+                                                                  paramName, i++);
+                                     if (requestParams.containsKey(name2)) {
+                                       paramValues.add(requestParams.get(name2));
+                                     } else {
+                                       break;
+                                     }
+                                   }
+
+                                   return paramValues.isEmpty() ? new String[0]
+                                     : paramValues.toArray(new String[paramValues.size()]);
+                                 }
+
+                                 return arg1.invoke(request, arg2);
+                               }
                              });
     return (HttpServletRequest) proxyInstance;
   }

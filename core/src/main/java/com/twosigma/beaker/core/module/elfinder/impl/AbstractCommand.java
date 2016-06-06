@@ -106,7 +106,7 @@ public abstract class AbstractCommand implements Command {
 
   protected Object[] files2JsonArray(HttpServletRequest request,
                                      Collection<FsItemEx> list) throws IOException {
-    return files2JsonArray(request, list.toArray(new FsItemEx[0]));
+    return files2JsonArray(request, list.toArray(new FsItemEx[list.size()]));
   }
 
   protected Object[] files2JsonArray(HttpServletRequest request,

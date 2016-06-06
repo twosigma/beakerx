@@ -53,6 +53,17 @@
         221	: "CLOSE_BRAKET",
         222	: "SINGLE_QUOTE"
       };
+
+      function fireClickEvent(a) {
+        if (document.createEvent) {
+          var evObj = document.createEvent('MouseEvents');
+          evObj.initEvent('click', true, false);
+          a.dispatchEvent(evObj);
+        } else if (document.createEventObject) {
+          a.fireEvent('onclick' + evt, document.createEventObject());
+        }
+      }
+
     return {
 
       safeWidth: function(e){
@@ -568,7 +579,7 @@
         var a = document.createElement('a');
         a.href = url;
         a.download = fileName;
-        a.click();
+        fireClickEvent(a);
         a.remove();
       },
 
@@ -637,9 +648,10 @@
         + ((includeMargin === true ) ? this.getComputedStyle(e, 'margin-left') + this.getComputedStyle(e, 'margin-right') : 0);
       },
 
-      getComputedStyle: function(e, style) {
+      getComputedStyle: function(e, style, defaultValue) {
         if (!e || e.length === 0)
           return null;
+        defaultValue = defaultValue || 0;
         var getValue = function(e){
           var value = window.getComputedStyle(e.get()[0], null).getPropertyValue(style).match(/\d+/);
           if (!value || value.length === 0 )
@@ -655,7 +667,7 @@
           value = getValue(e);
           hiddenParent.addClass("ng-hide");
         }
-        return parseInt(value);
+        return parseInt(value) || defaultValue;
       },
 
       getActualCss: function(jqelement, jqFunction, jqFunctionParams) {

@@ -45,6 +45,7 @@ describe('Histogram Tutorial', function() {
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
         beakerPO.checkPlotIsPresentByIdCell(idCell);
         expect(beakerPO.getPlotMaingByIdCell(idCell).all(by.css('rect')).count()).toBe(25);
+        beakerPO.checkSaveAsSvgPngByIdCell(idCell, "plot");
     });
 
     it('Wide Histogram with Manual Parameters', function () {

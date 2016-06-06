@@ -270,7 +270,10 @@
             datatype: "json",
             url: "../beaker/rest/recent-menu/removeItem",
             data: {item: angular.toJson({
-              uri: doc.tooltip
+              uri: doc.meta.uri,
+              type: doc.meta.type,
+              readOnly: doc.meta.readOnly,
+              format: doc.meta.format
             })}
           });
           req.done(callback);

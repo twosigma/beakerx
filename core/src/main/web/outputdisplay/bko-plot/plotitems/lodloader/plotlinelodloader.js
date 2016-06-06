@@ -25,12 +25,12 @@
       this.format(lodthresh);
     };
     // class constants
-    PlotLineLodLoader.prototype.lodTypes = ["line", "box", "river"];
-    PlotLineLodLoader.prototype.lodSteps = [1, 10, 3];
+    PlotLineLodLoader.prototype.lodTypes = ["box", "river"];
+    PlotLineLodLoader.prototype.lodSteps = [10, 3];
 
     PlotLineLodLoader.prototype.format = function() {
       // create plot type index
-      this.lodTypeIndex =  (this.datacopy.lod_filter) ? this.lodTypes.indexOf(this.datacopy.lod_filter) : 2;
+      this.lodTypeIndex =  (this.datacopy.lod_filter) ? this.lodTypes.indexOf(this.datacopy.lod_filter) : 1;
       this.lodType = this.lodTypes[this.lodTypeIndex];
 
       // create the plotters
@@ -82,11 +82,11 @@
 
     PlotLineLodLoader.prototype.applyLodType = function(type) {
       if (!this.datacopy.lod_filter) {
-        this.lodType = type;
         this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
         if (this.lodTypeIndex === -1) {
           this.lodTypeIndex = 0;
         }
+        this.lodType = this.lodTypes[this.lodTypeIndex];
         this.createLodPlotter();
       }
     };

@@ -25,8 +25,8 @@
       this.format(lodthresh);
     };
     // class constants
-    PlotBarLodLoader.prototype.lodTypes = ["bar", "box"];
-    PlotBarLodLoader.prototype.lodSteps = [3, 10];
+    PlotBarLodLoader.prototype.lodTypes = ["box"];
+    PlotBarLodLoader.prototype.lodSteps = [10];
 
     PlotBarLodLoader.prototype.format = function() {
       // create plot type index
@@ -94,11 +94,11 @@
 
     PlotBarLodLoader.prototype.applyLodType = function(type) {
       if (!this.datacopy.lod_filter) {
-        this.lodType = type;
         this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
         if (this.lodTypeIndex === -1) {
           this.lodTypeIndex = 0;
         }
+        this.lodType = this.lodTypes[this.lodTypeIndex];
         this.createLodPlotter();
       }
     };

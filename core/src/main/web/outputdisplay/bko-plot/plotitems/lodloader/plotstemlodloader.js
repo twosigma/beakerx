@@ -26,8 +26,8 @@
       this.format(lodthresh);
     };
     // class constants
-    PlotStemLodLoader.prototype.lodTypes = ["stem", "stem+", "box"];
-    PlotStemLodLoader.prototype.lodSteps = [5, 10, 10];
+    PlotStemLodLoader.prototype.lodTypes = ["box"];
+    PlotStemLodLoader.prototype.lodSteps = [10];
 
     PlotStemLodLoader.prototype.format = function() {
       // create plot type index
@@ -95,11 +95,11 @@
 
     PlotStemLodLoader.prototype.applyLodType = function(type) {
       if (!this.datacopy.lod_filter) {
-        this.lodType = type;
         this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
         if (this.lodTypeIndex === -1) {
           this.lodTypeIndex = 0;
         }
+        this.lodType = this.lodTypes[this.lodTypeIndex];
         this.createLodPlotter();
       }
     };

@@ -472,7 +472,7 @@
                     "outputdata": [
                         {
                             "type": "out",
-                            "value": "com.twosigma.beaker.jvm.object.TableDisplay\n"
+                            "value": "com.twosigma.beaker.table.TableDisplay\n"
                         }
                     ],
                     "payload": {
@@ -939,7 +939,7 @@
             "input": {
                 "body": [
                     "// Store a DataTable, an Image and a Matrix in the beaker object",
-                    "beaker.dt = new com.twosigma.beaker.jvm.object.TableDisplay([ [1,2],[4,5] ], ['a','b'], ['integer','integer'])",
+                    "beaker.dt = new com.twosigma.beaker.table.TableDisplay([ [1,2],[4,5] ], ['a','b'], ['integer','integer'])",
                     "",
                     "import java.awt.image.BufferedImage",
                     "BufferedImage i = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)",

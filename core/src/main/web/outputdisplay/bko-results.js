@@ -18,8 +18,8 @@
  */
 (function() {
   'use strict';
-  beakerRegister.bkoDirective("Results", ["$interval", "$compile", "bkOutputDisplayFactory", function(
-      $interval, $compile, bkOutputDisplayFactory) {
+  beakerRegister.bkoDirective("Results", ["$interval", "$compile", "bkOutputDisplayFactory", "bkAnsiColorHelper", "$sce", function(
+      $interval, $compile, bkOutputDisplayFactory, bkAnsiColorHelper, $sce) {
     return {
       template: JST['mainapp/components/notebook/output-results'],
       link: function(scope, element, attrs) {
@@ -40,6 +40,11 @@
         };
         scope.isShowOutput = function() {
           return scope.model.isShowOutput();
+        };
+        scope.colorizeIfNeeded = function (text) {
+          return bkAnsiColorHelper.hasAnsiColors(text)
+            ? $sce.trustAsHtml(bkAnsiColorHelper.convertToHtml(text))
+            : _.escape(text);
         };
 
         scope.isShowMenu = function() { return false; };

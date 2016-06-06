@@ -61,8 +61,14 @@
               (function() {
                 try {
                   var item = angular.fromJson(items[i]);
-                  _recentMenu.push({
+                    _recentMenu.push({
                     name: getShortName(item.uri),
+                    meta:{
+                      uri: item.uri,
+                      type: item.type,
+                      readOnly: item.readOnly,
+                      format: item.format
+                    },
                     action: function(newWindow) {
                       _pathOpener.open(item.uri, item.type, item.readOnly, item.format, newWindow);
                     },
@@ -73,6 +79,12 @@
                   var item = items[i];
                   _recentMenu.push({
                     name: getShortName(item),
+                    meta:{
+                      uri: item.uri,
+                      type: item.type,
+                      readOnly: item.readOnly,
+                      format: item.format
+                    },
                     action: function() {
                       _pathOpener.open(item);
                     },

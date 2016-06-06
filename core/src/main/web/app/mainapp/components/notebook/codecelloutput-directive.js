@@ -290,7 +290,7 @@
               }
             },
             {
-              name: "Delete",
+              name: "Delete Output",
               action: function() {
                 $scope.model.result = undefined;
               }

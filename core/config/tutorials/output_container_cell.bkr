@@ -14364,7 +14364,7 @@
             "input": {
                 "body": [
                     "def o = new OutputContainer()",
-                    "o.setLayoutManager(new GridOutputContainerLayoutManager()) // 2 columns",
+                    "o.setLayoutManager(new GridOutputContainerLayoutManager(2)) // 2 columns",
                     "o << plot1 << plot2 << plot3 << table"
                 ]
             },

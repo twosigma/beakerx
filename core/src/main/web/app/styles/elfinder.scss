@@ -139,6 +139,24 @@
 .elfinder-contextmenu .ui-state-hover { background: #3875d7; color:#fff; }
 .elfinder-contextmenu .ui-state-hover .elfinder-contextmenu-arrow { background-image:url('../img/arrows-active.png'); }
 
-.elfinder-contextmenu{
+.elfinder-contextmenu {
   z-index: 10001 !important;
+  .elfinder-contextmenu-item span {
+    font-size: inherit !important;
+    font-family: inherit;
+  }
 }
+
+.elfinder-cwd-icon-beaker {
+  background-image: url("../../static/favicon.png") !important;
+  -webkit-background-size: cover; /* For WebKit*/
+  -moz-background-size: cover; /* Mozilla*/
+  -o-background-size: cover; /* Opera*/
+  background-size: cover; /* Generic*/
+}
+
+.elfinder-button-icon-copypath {
+  background-position: 0 -240px;
+}
+
+

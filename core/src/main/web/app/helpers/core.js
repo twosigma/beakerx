@@ -1136,7 +1136,7 @@
     };
   });
 
-  module.controller('fileOpenDialogCtrl', function ($scope, $rootScope, $uibModalInstance, bkUtils,  modalDialogOp) {
+  module.controller('fileOpenDialogCtrl', function ($scope, $rootScope, $uibModalInstance, bkCoreManager, bkUtils,  modalDialogOp) {
 
     var elfinder;
 
@@ -1162,6 +1162,25 @@
 
     $scope.init = function () {
       var $elfinder = $('#elfinder');
+
+      elFinder.prototype._options.commands.push('copypath');
+      elFinder.prototype._options.contextmenu.files.push('copypath');
+      elFinder.prototype._options.contextmenu.cwd.push('copypath');
+      elFinder.prototype.i18.en.messages['cmdcopypath'] = 'Copy Path';
+      elFinder.prototype.commands.copypath = function() {
+        this.exec = function(hashes) {
+          bkCoreManager.show1ButtonModal(
+            "<p><input type='text' autofocus onfocus='this.select();' style='width: 100%' value='"+elfinder.path(hashes[0])+"'></p>",
+            "Copy to clipboard: "+ (bkHelper.isMacOS ? "&#x2318;" : "Ctrl") + "+C");
+
+        }
+        this.getstate = function() {
+          //return 0 to enable, -1 to disable icon access
+          return 0;
+        }
+      };
+
+
       elfinder = $elfinder.elfinder({
         url: '../beaker/connector',
         useBrowserHistory: false,
@@ -1193,7 +1212,7 @@
 
           // current directory file menu
           files: [
-            'copy', 'cut', 'paste', 'duplicate', '|',
+            'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
             'rm'
           ]
         },
@@ -1224,6 +1243,14 @@
         }
       }).elfinder('instance');
 
+
+      var orig_mime2class =  elfinder.mime2class;
+      elfinder.mime2class = function(mime){
+        if (mime === 'application/beaker-notebook'){
+          return 'elfinder-cwd-icon-beaker';
+        }
+        return orig_mime2class(mime);
+      };
 
       $elfinder.css("width", '100%');
       $elfinder.css("height", '100%');
@@ -1292,6 +1319,24 @@
 
     $scope.init = function () {
       var $elfinder = $('#elfinder');
+
+      elFinder.prototype._options.commands.push('copypath');
+      elFinder.prototype._options.contextmenu.files.push('copypath');
+      elFinder.prototype._options.contextmenu.cwd.push('copypath');
+      elFinder.prototype.i18.en.messages['cmdcopypath'] = 'Copy Path';
+      elFinder.prototype.commands.copypath = function() {
+        this.exec = function(hashes) {
+          bkCoreManager.show1ButtonModal(
+            "<p><input type='text' autofocus onfocus='this.select();' style='width: 100%' value='"+elfinder.path(hashes[0])+"'></p>",
+            "Copy to clipboard: "+ (bkHelper.isMacOS ? "&#x2318;" : "Ctrl") + "+C");
+
+        }
+        this.getstate = function() {
+          //return 0 to enable, -1 to disable icon access
+          return 0;
+        }
+      };
+
       elfinder = $elfinder.elfinder({
         url: '../beaker/connector',
         resizable: false,
@@ -1320,7 +1365,7 @@
 
           // current directory file menu
           files  : [
-            'copy', 'cut', 'paste', 'duplicate', '|',
+            'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
             'rm'
           ]
         },
@@ -1343,6 +1388,14 @@
           }
         }
       }).elfinder('instance');
+
+      var orig_mime2class =  elfinder.mime2class;
+      elfinder.mime2class = function(mime){
+        if (mime === 'application/beaker-notebook'){
+          return 'elfinder-cwd-icon-beaker';
+        }
+        return orig_mime2class(mime);
+      };
 
       $elfinder.css("width", '100%');
       $elfinder.css("height", '100%');

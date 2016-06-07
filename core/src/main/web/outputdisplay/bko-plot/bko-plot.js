@@ -1184,7 +1184,10 @@
                     "msg_lodoff",
                     function() {
                       _.forEach(dataIds, function (dataId) {
-                        scope.stdmodel.data[dataId].toggleLod(scope);
+                        var loadLoader = scope.stdmodel.data[dataId];
+                        if (loadLoader.toggleLod) {
+                          loadLoader.toggleLod(scope);
+                        }
                       });
                       scope.update();
                       scope.setMergedLodHint(dataIds, legendLineId);
@@ -1193,7 +1196,7 @@
                   var hasChanged = false;
                   _.forEach(dataIds, function (dataId) {
                     var loadLoader = scope.stdmodel.data[dataId];
-                    if (loadLoader.lodType === lodType) { return; }
+                    if (!loadLoader.lodType || loadLoader.lodType === lodType) { return; }
                     loadLoader.clear(scope);
                     loadLoader.applyLodType(lodType);
                     loadLoader.zoomLevelChanged(scope);

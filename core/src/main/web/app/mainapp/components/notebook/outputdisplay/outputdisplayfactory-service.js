@@ -185,14 +185,6 @@
       "TreeMap": ["Plot", "Text"],
       "Plotly": ["Plotly", "Text"]
     };
-
-    function mapResultType(result) {
-      if (result.payload && result.payload.type === 'HiddenOutputCell') {
-        return result.payload.type;
-      }
-      return result.type;
-    }
-
     var factory = {
       add: function(type, impl) {
         if (types.length > MAX_CAPACITY) {
@@ -249,8 +241,7 @@
           if (result === undefined) {
             return ["Hidden"];
           }
-          var resultType = mapResultType(result);
-          if (!resultType) {
+          if (!result.type) {
             var ret = ["Text", "Html", "Latex"];
             if (isJSON(result)) {
               ret.push("Json", "Vega");
@@ -265,8 +256,8 @@
             }
             return ret;
           }
-          if (resultType2DisplayTypesMap.hasOwnProperty(resultType)) {
-            return resultType2DisplayTypesMap[resultType];
+          if (resultType2DisplayTypesMap.hasOwnProperty(result.type)) {
+            return resultType2DisplayTypesMap[result.type];
           } else {
             return ["Text"];
           }

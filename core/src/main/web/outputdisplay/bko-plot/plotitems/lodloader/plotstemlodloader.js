@@ -94,14 +94,12 @@
     };
 
     PlotStemLodLoader.prototype.applyLodType = function(type) {
-      if (!this.datacopy.lod_filter) {
-        this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
-        if (this.lodTypeIndex === -1) {
-          this.lodTypeIndex = 0;
-        }
-        this.lodType = this.lodTypes[this.lodTypeIndex];
-        this.createLodPlotter();
+      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+      if (this.lodTypeIndex === -1) {
+        this.lodTypeIndex = 0;
       }
+      this.lodType = this.lodTypes[this.lodTypeIndex];
+      this.createLodPlotter();
     };
 
     PlotStemLodLoader.prototype.createLodPlotter = function() {

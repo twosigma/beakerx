@@ -73,13 +73,6 @@
       this.lodplotter.setZoomHash(hash);
     };
 
-    PlotPointLodLoader.prototype.switchLodType = function(scope) {
-      this.clear(scope);  // must clear first before changing lodType
-      this.lodTypeIndex = (this.lodTypeIndex + 1) % this.lodTypes.length;
-      this.lodType = this.lodTypes[this.lodTypeIndex];
-      this.createLodPlotter();
-    };
-
     PlotPointLodLoader.prototype.createLodPlotter = function() {
       var data = {};
       _.extend(data, this.datacopy);
@@ -176,14 +169,12 @@
     };
 
     PlotPointLodLoader.prototype.applyLodType = function(type) {
-      if (!this.datacopy.lod_filter) {
-        this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
-        if (this.lodTypeIndex === -1) {
-          this.lodTypeIndex = 0;
-        }
-        this.lodType = this.lodTypes[this.lodTypeIndex];
-        this.createLodPlotter();
+      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+      if (this.lodTypeIndex === -1) {
+        this.lodTypeIndex = 0;
       }
+      this.lodType = this.lodTypes[this.lodTypeIndex];
+      this.createLodPlotter();
     };
 
     PlotPointLodLoader.prototype.createSampler = function() {

@@ -27,26 +27,33 @@
           lodthresh = 1500;
         }
         var size = item.elements ?  item.elements.length : 0;
+        var shouldApplyLod = size >= lodthresh;
+        if (shouldApplyLod) {
+          if (item.isUnorderedItem === true) {
+            console.warn("x values are not monotonic, LOD is disabled");
+            shouldApplyLod = false;
+          }
+        }
         var plotitem;
         switch (item.type) {
           case "line":
-            plotitem = size >= lodthresh ?
+            plotitem = shouldApplyLod ?
               new PlotLineLodLoader(item, lodthresh) : new PlotLine(item);
             break;
           case "bar":
-            plotitem = size >= lodthresh ?
+            plotitem = shouldApplyLod ?
               new PlotBarLodLoader(item, lodthresh) : new PlotBar(item);
             break;
           case "stem":
-            plotitem = size >= lodthresh ?
+            plotitem = shouldApplyLod ?
               new PlotStemLodLoader(item, lodthresh) : new PlotStem(item);
             break;
           case "area":
-            plotitem = size >= lodthresh ?
+            plotitem = shouldApplyLod ?
               new PlotAreaLodLoader(item, lodthresh) : new PlotArea(item);
             break;
           case "point":
-            plotitem = size >= lodthresh ?
+            plotitem = shouldApplyLod ?
               new PlotPointLodLoader(item, lodthresh) : new PlotPoint(item);
             break;
           case "constline":

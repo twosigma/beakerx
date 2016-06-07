@@ -742,7 +742,12 @@
           backdrop: true,
           keyboard: true,
           backdropClick: true,
-          size: 'lg'
+          size: 'lg',
+          resolve: {
+            strategy: function () {
+              return strategy;
+            }
+          }
         });
         dd.result.then(
           function (result) {
@@ -757,6 +762,12 @@
 
       showFileSaveDialog: function(data) {
         var deferred = bkUtils.newDeferred();
+
+        if ((!data.extension || data.extension.trim().length === 0) && data.initUri) {
+          var filename = data.initUri.substring(data.initUri.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/') + 1);
+          data.extension = filename.substring(filename.lastIndexOf('.') + 1);
+        }
+
         var  FileSaveStrategy = function () {
           var newStrategy = this;
           newStrategy.initUri = data.initUri;
@@ -767,7 +778,6 @@
             extension: data.extension
           };
         };
-        modalDialogOp.setStrategy(new FileSaveStrategy());
         var dd = $uibModal.open({
           templateUrl: "app/template/filesave.jst.html",
           controller: 'fileSaveDialogCtrl',
@@ -776,7 +786,12 @@
           backdrop: true,
           keyboard: true,
           backdropClick: true,
-          size: 'lg'
+          size: 'lg',
+          resolve: {
+            strategy: function () {
+              return new FileSaveStrategy();
+            }
+          }
         });
         dd.result.then(
           function (result) {
@@ -1136,7 +1151,7 @@
     };
   });
 
-  module.controller('fileOpenDialogCtrl', function ($scope, $rootScope, $uibModalInstance, bkCoreManager, bkUtils,  modalDialogOp) {
+  module.controller('fileOpenDialogCtrl', function ($scope, $rootScope, $uibModalInstance, bkCoreManager, bkUtils,  strategy) {
 
     var elfinder;
 
@@ -1146,7 +1161,7 @@
     };
 
     $scope.getStrategy = function () {
-      return modalDialogOp.getStrategy();
+      return strategy;
     };
 
     $scope.mime = function () {
@@ -1281,9 +1296,11 @@
       }
     });
 
+
+
   });
 
-  module.controller('fileSaveDialogCtrl', function ($scope, $rootScope, $uibModalInstance, bkUtils, GLOBALS, modalDialogOp) {
+  module.controller('fileSaveDialogCtrl', function ($scope, $rootScope, $uibModalInstance, bkUtils, GLOBALS, strategy) {
 
     var elfinder;
 
@@ -1303,7 +1320,8 @@
     $scope.filename = null;
 
     $scope.getStrategy = function () {
-      return modalDialogOp.getStrategy();
+      return strategy;
+
     };
 
     $scope.mime = function () {
@@ -1336,7 +1354,6 @@
           return 0;
         }
       };
-
       elfinder = $elfinder.elfinder({
         url: '../beaker/connector',
         resizable: false,
@@ -1423,10 +1440,11 @@
           }
         }
 
-        $uibModalInstance.close({
+        var result = {
           uri: addTrailingSlash(elfinder.path(elfinder.cwd().hash), bkUtils.serverOS.isWindows()) + filename,
           uriType: GLOBALS.FILE_LOCATION.FILESYS
-        });
+        };
+        $uibModalInstance.close(result);
       }
     };
 

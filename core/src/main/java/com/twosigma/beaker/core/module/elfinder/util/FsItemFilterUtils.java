@@ -26,7 +26,7 @@ public abstract class FsItemFilterUtils {
   public static FsItemFilter FILTER_ALL = new FsItemFilter() {
     @Override
     public boolean accepts(FsItem item) {
-      return false;
+      return true;
     }
   };
 

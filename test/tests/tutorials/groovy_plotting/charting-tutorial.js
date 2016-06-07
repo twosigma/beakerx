@@ -125,7 +125,7 @@ describe('Charting Tutorial', function (done) {
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1).element(by.tagName('circle')).isPresent()).toBe(true);
   });
-  /*
+
   it('Scatter Plot', function() {
     var idCell = "code0gsBBt";
     beakerPO.scrollToBkCellByIdCell(idCell);
@@ -195,6 +195,6 @@ describe('Charting Tutorial', function (done) {
     beakerPO.checkPlotIsPresentByIdCell(idCell);
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('polygon')).isPresent()).toBe(true);
     expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1).element(by.tagName('polygon')).isPresent()).toBe(true);
-  });   */
+  });
 
 });

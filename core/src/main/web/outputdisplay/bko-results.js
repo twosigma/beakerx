@@ -26,6 +26,9 @@
         scope.hasPayload = function() {
           return scope.model.getCellModel().payload !== undefined;
         };
+        scope.isPayloadHidden = function () {
+          return !!scope.getPayload() && scope.getPayload().type == 'HiddenOutputCell';
+        };
         scope.getPayload = function() {
           return scope.model.getCellModel().payload;
         };

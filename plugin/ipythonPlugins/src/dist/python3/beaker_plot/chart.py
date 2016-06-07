@@ -84,7 +84,7 @@ class XYChart(AbstractChart):
         self.add(elem)
     elif isinstance(item, YAxis):
       self.rangeAxes.append(item)
-    return self;
+    return self
 
 
 class Plot(XYChart):
@@ -130,6 +130,10 @@ class CombinedPlot(BaseObject):
         self.add(elem, 1)
     else:
       raise Exception('CombinedPlot takes XYChart or List of XYChart')
+
+    if len(self.plots) == 1:
+      self.plot_type=self.plots[0].type
+
 
     return self
 

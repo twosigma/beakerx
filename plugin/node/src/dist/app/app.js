@@ -1,6 +1,8 @@
 'use strict';
 
 var express = require('express');
+var bodyParser = require('body-parser');
+var basicauth = require('basicauth-middleware');
 var http = require('http');
 var uuid = require('node-uuid');
 var vm = require('vm');
@@ -16,12 +18,12 @@ var sandbox = {
 
 var context = new vm.createContext(sandbox);
 
-console.log('Server Starting')
+console.log('Server Starting');
 
-app.use(express.json());       // to support JSON-encoded bodies
-app.use(express.urlencoded()); // to support URL-encoded bodies
+app.use(bodyParser.json());       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({ extended: false })); // to support URL-encoded bodies
 
-app.use(express.basicAuth('beaker', process.env.beaker_plugin_password));
+app.use(basicauth('beaker', process.env.beaker_plugin_password));
 
 // route for testing service is alive
 app.get('/pulse', function(request, response){
@@ -44,6 +46,15 @@ app.post('/evaluate', function(request, response){
         response.statusCode = 422;
     }
     response.send(evaluationResult.evaluation.toString());
+});
+
+app.post('/add-module-path', function (request, response) {
+    var shellID = request.body.shellID;
+    var pathParam =  decodeURIComponent(request.body.path);
+    pathParam.split('\n').forEach(function (eachPath) {
+        require('app-module-path').addPath(eachPath);
+    });
+    response.send('ok');
 });
 
 function processCode(code) {

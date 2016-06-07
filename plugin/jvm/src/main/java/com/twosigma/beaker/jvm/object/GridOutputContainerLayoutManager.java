@@ -16,6 +16,9 @@
 package com.twosigma.beaker.jvm.object;
 
 public class GridOutputContainerLayoutManager extends AbstractGridLayoutManager {
+  public GridOutputContainerLayoutManager() {
+    this(2);
+  }
   public GridOutputContainerLayoutManager(int columns) {
     super(columns);
   }

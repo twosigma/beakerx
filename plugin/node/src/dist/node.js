@@ -94,6 +94,21 @@ define(function(require, exports, module) {
         autocomplete: function (code, cpos, cb) {
             console.log("Autocomplete Called: Not implemented");
         },
+        addModulePath: function () {
+          if(!this.settings.modulePath) {
+            return;
+          }
+          bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
+          bkHelper.httpPost(bkHelper.serverUrl(serviceBase + '/add-module-path'), {
+            shellId: this.settings.shellID,
+            path: this.settings.modulePath
+          }).success(function() {
+            bkHelper.hideLanguageManagerSpinner();
+          }).error(function(err) {
+            bkHelper.hideLanguageManagerSpinner(err);
+            bkHelper.show1ButtonModal('ERROR: ' + err, 'Failed to add module path');
+          });
+        },
         exit: function (cb) {
             console.log("Exit Called");
             var self = this;
@@ -104,7 +119,9 @@ define(function(require, exports, module) {
                 data: { shellID: self.settings.shellID }
             }).done(cb);
         },
-        spec: {}
+        spec: {
+          modulePath: {type: 'settableString', action: 'addModulePath', name: 'Modules path'}
+        }
     };
 
     var shellReadyDeferred = bkHelper.newDeferred();
@@ -123,6 +140,7 @@ define(function(require, exports, module) {
                     }
                     settings.shellID = id;
                     self.settings = settings;
+                    self.addModulePath();
                     if (doneCB) {
                       doneCB(self);
                     }

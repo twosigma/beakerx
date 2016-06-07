@@ -621,6 +621,12 @@
       inheritsFrom(SimpleTimePlot, TimePlot);
       //add prototype methods here
 
+      var setPlotType = function(combinedPlot){
+        if (combinedPlot && combinedPlot.plots && combinedPlot.plots.length > 0){
+          combinedPlot.plot_type = combinedPlot.plots[0].type;
+        }
+      };
+
       var CombinedPlot = function (data){
         if (!data) { data = {}; }
         _.extend(this, {
@@ -633,6 +639,7 @@
           "weights": getValue(data, 'weights', [])
         });
         this.version = 'groovy';
+        setPlotType(this);
       };
       //add prototype methods here
       CombinedPlot.prototype.add = function (item, weight) {
@@ -646,6 +653,7 @@
         } else {
           throw new Error("CombinedPlot takes XYChart or List of XYChart");
         }
+        setPlotType(this);
         return this;
       };
 

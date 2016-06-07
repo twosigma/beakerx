@@ -1194,6 +1194,7 @@
                   _.forEach(dataIds, function (dataId) {
                     var loadLoader = scope.stdmodel.data[dataId];
                     if (loadLoader.lodType === lodType) { return; }
+                    loadLoader.clear(scope);
                     loadLoader.applyLodType(lodType);
                     loadLoader.zoomLevelChanged(scope);
                     hasChanged = true;

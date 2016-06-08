@@ -11,9 +11,12 @@ var request = require('request');
 var _ = require('lodash');
 var Q = require('q');
 
+var BeakerObject = require('./beaker-object.js');
+
 var app = express();
 var beakerCorePort = process.env.beaker_core_port;
 var urlBase = "http://127.0.0.1:" + beakerCorePort + "/rest/namespace";
+var ctrlUrlBase = "http://127.0.0.1:" + beakerCorePort + "/rest/notebookctrl";
 var auth = "Basic " + new require('buffer').Buffer("beaker:" + process.env.beaker_core_password).toString('base64');
 
 var port = process.argv[2];
@@ -64,7 +67,7 @@ app.post('/evaluate', function (request, response) {
     } else {
       response.statusCode = 422;
     }
-    response.send(transformResult(result));
+    response.send(JSON.stringify(require('./transformation.js').transform(result)));
   }, function (error) {
     response.statusCode = 401;
     response.send(error);
@@ -102,76 +105,17 @@ function processCode(code, shell) {
   return returnValue;
 }
 
-function transformResult(result) {
-  return JSON.stringify(result);
-}
-
 var createSandbox = function (shellID) {
-  var session;
-  var addSession = function (args) {
-    _.extend(args, {session: session});
-    return args;
-  };
-
-  function set4(name, value, unset) {
-    var form = addSession({
-      name: name,
-      sync: true
-    });
-    if (!unset) {
-      form.value = JSON.stringify(value);
-    }
-    return doPost(urlBase + '/set', form).then(function () {
-      return value;
-    });
-  }
-
   return {
     require: require,
     http: http,
     Q: Q,
+
+    DataFrame: require('./transformation.js').DataFrame,
+
     setSession: function (v) {
-      session = v;
+      this.beaker.setSession(v);
     },
-    beaker: {
-      get: function (name) {
-        return doGet(urlBase + "/get", addSession({name: name, session: session}));
-      },
-      set: function (name, value) {
-        return set4(name, value);
-      }
-    }
+    beaker: BeakerObject(urlBase, ctrlUrlBase, auth)
   };
 };
-
-function doPost(url, form) {
-  return Q.promise(function (resolve, reject) {
-    request({
-      url: url,
-      method: 'POST',
-      form: form,
-      headers: {
-        "Authorization": auth
-      }
-    }, function (error, r, body) {
-      if (body === 'ok') resolve('');
-      reject();
-    });
-  });
-}
-
-function doGet(url, qs) {
-  return Q.Promise(function (resolve, reject) {
-    request.get({
-      url: url,
-      qs: qs,
-      headers: {
-        "Authorization": auth
-      }
-    }, function (error, r, body) {
-      if (error) reject(error);
-      var result = JSON.parse(body);
-      resolve(result.value);
-    });
-  });
-}

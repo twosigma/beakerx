@@ -120,6 +120,10 @@
     }
   }
 
+  .modal-open.has-scroll {
+    margin-right: $scrollbar-width;
+  }
+
   button.close {
     background:   transparent;
     border:       0;

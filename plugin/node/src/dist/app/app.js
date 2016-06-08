@@ -7,8 +7,8 @@ var basicauth = require('basicauth-middleware');
 var http = require('http');
 var uuid = require('node-uuid');
 var vm = require('vm');
-var urlencode = require('urlencode');
 var request = require('request');
+var _ = require('lodash');
 var Q = require('q');
 
 var app = express();
@@ -108,6 +108,24 @@ function transformResult(result) {
 
 var createSandbox = function (shellID) {
   var session;
+  var addSession = function (args) {
+    _.extend(args, {session: session});
+    return args;
+  };
+
+  function set4(name, value, unset) {
+    var form = addSession({
+      name: name,
+      sync: true
+    });
+    if (!unset) {
+      form.value = JSON.stringify(value);
+    }
+    return doPost(urlBase + '/set', form).then(function () {
+      return value;
+    });
+  }
+
   return {
     require: require,
     http: http,
@@ -117,41 +135,43 @@ var createSandbox = function (shellID) {
     },
     beaker: {
       get: function (name) {
-        return Q.Promise(function (resolve, reject) {
-          var args = "name=" + urlencode(name, "ISO-8859-1") + "&session=" + urlencode(session, "ISO-8859-1");
-          request.get({
-            url: urlBase + "/get?" + args,
-            headers: {
-              "Authorization": auth
-            }
-          }, function (error, r, body) {
-            if (error) reject(error);
-            var result = JSON.parse(body);
-            resolve(result.value);
-          });
-        });
+        return doGet(urlBase + "/get", addSession({name: name, session: session}));
       },
       set: function (name, value) {
-        return Q.promise(function (resolve, reject) {
-          var form = {
-            name: name,
-            session: session,
-            sync: true,
-            value: JSON.stringify(value)
-          };
-          request({
-            url: urlBase + '/set',
-            method: 'POST',
-            form: form,
-            headers: {
-              "Authorization": auth
-            }
-          }, function (error, r, body) {
-            if(body === 'ok') resolve(value);
-            reject();
-          });
-        });
+        return set4(name, value);
       }
     }
   };
 };
+
+function doPost(url, form) {
+  return Q.promise(function (resolve, reject) {
+    request({
+      url: url,
+      method: 'POST',
+      form: form,
+      headers: {
+        "Authorization": auth
+      }
+    }, function (error, r, body) {
+      if (body === 'ok') resolve('');
+      reject();
+    });
+  });
+}
+
+function doGet(url, qs) {
+  return Q.Promise(function (resolve, reject) {
+    request.get({
+      url: url,
+      qs: qs,
+      headers: {
+        "Authorization": auth
+      }
+    }, function (error, r, body) {
+      if (error) reject(error);
+      var result = JSON.parse(body);
+      resolve(result.value);
+    });
+  });
+}

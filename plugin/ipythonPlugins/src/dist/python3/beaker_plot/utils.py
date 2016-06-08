@@ -97,6 +97,14 @@ def getColor(color):
   else:
     return color
 
+def padYs(g, gMax):
+  currentSize = len(g.y)
+  maxSize = len(gMax.y)
+  diff = maxSize - currentSize
+  if (diff > 0):
+    lastY = g.y[currentSize - 1]
+    g.y = g.y + [lastY] * diff
+    g.x = g.x + gMax.x[currentSize:]
 
 class ObjectEncoder(json.JSONEncoder):
   def default(self, obj):

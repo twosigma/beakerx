@@ -24,7 +24,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.KeyboardCodes\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "imports": "graxxia.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.KeyboardCodes\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\njava.util.concurrent.TimeUnit\ncom.twosigma.beaker.table.*\ncom.twosigma.beaker.table.format.*\ncom.twosigma.beaker.table.renderer.*\ncom.twosigma.beaker.table.highlight.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -133,11 +133,12 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "Plot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 93,
+                "elapsedTime": 52,
                 "height": 568
             },
             "evaluatorReader": true,
@@ -262,8 +263,8 @@
                         {
                             "type": "YAxis",
                             "label": "Right yAxis",
-                            "lower_margin": 0.05,
-                            "upper_margin": 0.05
+                            "lower_margin": 0,
+                            "upper_margin": 0
                         }
                     ],
                     "x_lower_margin": 0.05,
@@ -343,11 +344,12 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "Plot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 51,
+                "elapsedTime": 63,
                 "height": 548
             },
             "evaluatorReader": true,
@@ -450,7 +452,7 @@
                         "visible": true,
                         "x": [],
                         "type": "Crosshair",
-                        "color": "#ff8c1d17",
+                        "color": "#FF1F77B4",
                         "style": "DOT",
                         "width": 2
                     },
@@ -533,11 +535,12 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "Plot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 29,
+                "elapsedTime": 173,
                 "height": 522
             },
             "evaluatorReader": true,
@@ -747,11 +750,12 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "Plot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 51,
+                "elapsedTime": 195,
                 "height": 522
             },
             "evaluatorReader": true,
@@ -905,11 +909,12 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "Plot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 22,
+                "elapsedTime": 181,
                 "height": 522
             },
             "evaluatorReader": true,
@@ -1009,17 +1014,17 @@
                         {
                             "visible": true,
                             "x": [
-                                1460377339274,
-                                1460380939274,
-                                1460384539274,
-                                1460388139274,
-                                1460391739274,
-                                1460395339274,
-                                1460398939274,
-                                1460402539274,
-                                1460406139274,
-                                1460409739274,
-                                1460413339274
+                                1465306566473,
+                                1465310166473,
+                                1465313766473,
+                                1465317366473,
+                                1465320966473,
+                                1465324566473,
+                                1465328166473,
+                                1465331766473,
+                                1465335366473,
+                                1465338966473,
+                                1465342566473
                             ],
                             "y": [
                                 0,
@@ -1049,11 +1054,12 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "TimePlot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 47,
+                "elapsedTime": 196,
                 "height": 522
             },
             "evaluatorReader": true,
@@ -1150,17 +1156,17 @@
                         {
                             "visible": true,
                             "x": [
-                                "1460377339485000000",
-                                "1460377339485000007",
-                                "1460377339485000014",
-                                "1460377339485000021",
-                                "1460377339485000028",
-                                "1460377339485000035",
-                                "1460377339485000042",
-                                "1460377339485000049",
-                                "1460377339485000056",
-                                "1460377339485000063",
-                                "1460377339485000070"
+                                "1465306567165000000",
+                                "1465306567165000007",
+                                "1465306567165000014",
+                                "1465306567165000021",
+                                "1465306567165000028",
+                                "1465306567165000035",
+                                "1465306567165000042",
+                                "1465306567165000049",
+                                "1465306567165000056",
+                                "1465306567165000063",
+                                "1465306567165000070"
                             ],
                             "y": [
                                 0,
@@ -1189,11 +1195,12 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "NanoPlot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 41,
+                "elapsedTime": 185,
                 "height": 522
             },
             "evaluatorReader": true,
@@ -1270,7 +1277,7 @@
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 22,
+                "elapsedTime": 191,
                 "result": {
                     "init_width": 640,
                     "init_height": 200,
@@ -1348,6 +1355,7 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "Plot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "height": 268
@@ -2720,11 +2728,12 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "TimePlot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 36,
+                "elapsedTime": 179,
                 "height": 522
             },
             "evaluatorReader": true,
@@ -4098,11 +4107,12 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "TimePlot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 33,
+                "elapsedTime": 176,
                 "height": 522
             },
             "evaluatorReader": true,
@@ -5677,7 +5687,7 @@
                             "x_upper_bound": 0,
                             "log_x": false,
                             "x_log_base": 10,
-                            "type": "Plot"
+                            "type": "TimePlot"
                         },
                         {
                             "init_width": 640,
@@ -6388,18 +6398,19 @@
                             "x_upper_bound": 0,
                             "log_x": false,
                             "x_log_base": 10,
-                            "type": "Plot"
+                            "type": "TimePlot"
                         }
                     ],
                     "weights": [
                         3,
                         1
                     ],
-                    "version": "groovy"
+                    "version": "groovy",
+                    "plot_type": "TimePlot"
                 },
                 "selectedType": "CombinedPlot",
                 "pluginName": "JavaScript",
-                "elapsedTime": 144,
+                "elapsedTime": 198,
                 "height": 553
             },
             "evaluatorReader": true,
@@ -6435,9 +6446,9 @@
                 "result": "ok",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "9c23fde0-1760-4993-9285-0bcac1ac35f2",
-                "elapsedTime": 662,
-                "height": 51,
+                "shellId": "22b64536-f933-4ed3-9a58-6f7dd18f538c",
+                "elapsedTime": 3575,
+                "height": 53,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -11172,319 +11183,1258 @@
             ]
         },
         "time": [
-            633744000000,
-            636163200000,
-            638841600000,
-            641433600000,
-            644112000000,
-            646704000000,
-            649382400000,
-            652060800000,
-            654652800000,
-            657331200000,
-            659923200000,
-            662601600000,
-            665280000000,
-            667699200000,
-            670377600000,
-            672969600000,
-            675648000000,
-            678240000000,
-            680918400000,
-            683596800000,
-            686188800000,
-            688867200000,
-            691459200000,
-            694137600000,
-            696816000000,
-            699321600000,
-            702000000000,
-            704592000000,
-            707270400000,
-            709862400000,
-            712540800000,
-            715219200000,
-            717811200000,
-            720489600000,
-            723081600000,
-            725760000000,
-            728438400000,
-            730857600000,
-            733536000000,
-            736128000000,
-            738806400000,
-            741398400000,
-            744076800000,
-            746755200000,
-            749347200000,
-            752025600000,
-            754617600000,
-            757296000000,
-            759974400000,
-            762393600000,
-            765072000000,
-            767664000000,
-            770342400000,
-            772934400000,
-            775612800000,
-            778291200000,
-            780883200000,
-            783561600000,
-            786153600000,
-            788832000000,
-            791510400000,
-            793929600000,
-            796608000000,
-            799200000000,
-            801878400000,
-            804470400000,
-            807148800000,
-            809827200000,
-            812419200000,
-            815097600000,
-            817689600000,
-            820368000000,
-            823046400000,
-            825552000000,
-            828230400000,
-            830822400000,
-            833500800000,
-            836092800000,
-            838771200000,
-            841449600000,
-            844041600000,
-            846720000000,
-            849312000000,
-            851990400000,
-            854668800000,
-            857088000000,
-            859766400000,
-            862358400000,
-            865036800000,
-            867628800000,
-            870307200000,
-            872985600000,
-            875577600000,
-            878256000000,
-            880848000000,
-            883526400000,
-            886204800000,
-            888624000000,
-            891302400000,
-            893894400000,
-            896572800000,
-            899164800000,
-            901843200000,
-            904521600000,
-            907113600000,
-            909792000000,
-            912384000000,
-            915062400000,
-            917740800000,
-            920160000000,
-            922838400000,
-            925430400000,
-            928108800000,
-            930700800000,
-            933379200000,
-            936057600000,
-            938649600000,
-            941328000000,
-            943920000000,
-            946598400000,
-            949276800000,
-            951782400000,
-            954460800000,
-            957052800000,
-            959731200000,
-            962323200000,
-            965001600000,
-            967680000000,
-            970272000000,
-            972950400000,
-            975542400000,
-            978220800000,
-            980899200000,
-            983318400000,
-            985996800000,
-            988588800000,
-            991267200000,
-            993859200000,
-            996537600000,
-            999216000000,
-            1001808000000,
-            1004486400000,
-            1007078400000,
-            1009756800000,
-            1012435200000,
-            1014854400000,
-            1017532800000,
-            1020124800000,
-            1022803200000,
-            1025395200000,
-            1028073600000,
-            1030752000000,
-            1033344000000,
-            1036022400000,
-            1038614400000,
-            1041292800000,
-            1043971200000,
-            1046390400000,
-            1049068800000,
-            1051660800000,
-            1054339200000,
-            1056931200000,
-            1059609600000,
-            1062288000000,
-            1064880000000,
-            1067558400000,
-            1070150400000,
-            1072828800000,
-            1075507200000,
-            1078012800000,
-            1080691200000,
-            1083283200000,
-            1085961600000,
-            1088553600000,
-            1091232000000,
-            1093910400000,
-            1096502400000,
-            1099180800000,
-            1101772800000,
-            1104451200000,
-            1107129600000,
-            1109548800000,
-            1112227200000,
-            1114819200000,
-            1117497600000,
-            1120089600000,
-            1122768000000,
-            1125446400000,
-            1128038400000,
-            1130716800000,
-            1133308800000,
-            1135987200000,
-            1138665600000,
-            1141084800000,
-            1143763200000,
-            1146355200000,
-            1149033600000,
-            1151625600000,
-            1154304000000,
-            1156982400000,
-            1159574400000,
-            1162252800000,
-            1164844800000,
-            1167523200000,
-            1170201600000,
-            1172620800000,
-            1175299200000,
-            1177891200000,
-            1180569600000,
-            1183161600000,
-            1185840000000,
-            1188518400000,
-            1191110400000,
-            1193788800000,
-            1196380800000,
-            1199059200000,
-            1201737600000,
-            1204243200000,
-            1206921600000,
-            1209513600000,
-            1212192000000,
-            1214784000000,
-            1217462400000,
-            1220140800000,
-            1222732800000,
-            1225411200000,
-            1228003200000,
-            1230681600000,
-            1233360000000,
-            1235779200000,
-            1238457600000,
-            1241049600000,
-            1243728000000,
-            1246320000000,
-            1248998400000,
-            1251676800000,
-            1254268800000,
-            1256947200000,
-            1259539200000,
-            1262217600000,
-            1264896000000,
-            1267315200000,
-            1269993600000,
-            1272585600000,
-            1275264000000,
-            1277856000000,
-            1280534400000,
-            1283212800000,
-            1285804800000,
-            1288483200000,
-            1291075200000,
-            1293753600000,
-            1296432000000,
-            1298851200000,
-            1301529600000,
-            1304121600000,
-            1306800000000,
-            1309392000000,
-            1312070400000,
-            1314748800000,
-            1317340800000,
-            1320019200000,
-            1322611200000,
-            1325289600000,
-            1327968000000,
-            1330473600000,
-            1333152000000,
-            1335744000000,
-            1338422400000,
-            1341014400000,
-            1343692800000,
-            1346371200000,
-            1348963200000,
-            1351641600000,
-            1354233600000,
-            1356912000000,
-            1359590400000,
-            1362009600000,
-            1364688000000,
-            1367280000000,
-            1369958400000,
-            1372550400000,
-            1375228800000,
-            1377907200000,
-            1380499200000,
-            1383177600000,
-            1385769600000,
-            1388448000000,
-            1391126400000,
-            1393545600000,
-            1396224000000,
-            1398816000000,
-            1401494400000,
-            1404086400000,
-            1406764800000,
-            1409443200000,
-            1412035200000,
-            1414713600000,
-            1417305600000,
-            1419984000000,
-            1422662400000,
-            1425081600000,
-            1427760000000,
-            1430352000000,
-            1433030400000,
-            1435622400000,
-            1438300800000,
-            1440979200000,
-            1443571200000,
-            1446249600000,
-            1448841600000,
-            1451520000000,
-            1454198400000
+            {
+                "type": "Date",
+                "timestamp": 633744000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 636163200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 638841600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 641433600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 644112000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 646704000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 649382400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 652060800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 654652800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 657331200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 659923200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 662601600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 665280000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 667699200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 670377600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 672969600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 675648000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 678240000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 680918400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 683596800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 686188800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 688867200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 691459200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 694137600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 696816000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 699321600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 702000000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 704592000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 707270400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 709862400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 712540800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 715219200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 717811200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 720489600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 723081600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 725760000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 728438400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 730857600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 733536000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 736128000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 738806400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 741398400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 744076800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 746755200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 749347200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 752025600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 754617600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 757296000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 759974400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 762393600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 765072000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 767664000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 770342400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 772934400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 775612800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 778291200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 780883200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 783561600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 786153600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 788832000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 791510400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 793929600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 796608000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 799200000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 801878400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 804470400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 807148800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 809827200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 812419200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 815097600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 817689600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 820368000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 823046400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 825552000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 828230400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 830822400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 833500800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 836092800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 838771200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 841449600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 844041600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 846720000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 849312000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 851990400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 854668800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 857088000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 859766400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 862358400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 865036800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 867628800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 870307200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 872985600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 875577600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 878256000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 880848000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 883526400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 886204800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 888624000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 891302400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 893894400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 896572800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 899164800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 901843200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 904521600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 907113600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 909792000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 912384000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 915062400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 917740800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 920160000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 922838400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 925430400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 928108800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 930700800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 933379200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 936057600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 938649600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 941328000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 943920000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 946598400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 949276800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 951782400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 954460800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 957052800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 959731200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 962323200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 965001600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 967680000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 970272000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 972950400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 975542400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 978220800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 980899200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 983318400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 985996800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 988588800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 991267200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 993859200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 996537600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 999216000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1001808000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1004486400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1007078400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1009756800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1012435200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1014854400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1017532800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1020124800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1022803200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1025395200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1028073600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1030752000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1033344000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1036022400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1038614400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1041292800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1043971200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1046390400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1049068800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1051660800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1054339200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1056931200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1059609600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1062288000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1064880000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1067558400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1070150400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1072828800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1075507200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1078012800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1080691200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1083283200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1085961600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1088553600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1091232000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1093910400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1096502400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1099180800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1101772800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1104451200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1107129600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1109548800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1112227200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1114819200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1117497600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1120089600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1122768000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1125446400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1128038400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1130716800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1133308800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1135987200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1138665600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1141084800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1143763200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1146355200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1149033600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1151625600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1154304000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1156982400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1159574400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1162252800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1164844800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1167523200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1170201600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1172620800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1175299200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1177891200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1180569600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1183161600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1185840000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1188518400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1191110400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1193788800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1196380800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1199059200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1201737600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1204243200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1206921600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1209513600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1212192000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1214784000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1217462400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1220140800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1222732800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1225411200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1228003200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1230681600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1233360000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1235779200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1238457600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1241049600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1243728000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1246320000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1248998400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1251676800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1254268800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1256947200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1259539200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1262217600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1264896000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1267315200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1269993600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1272585600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1275264000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1277856000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1280534400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1283212800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1285804800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1288483200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1291075200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1293753600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1296432000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1298851200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1301529600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1304121600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1306800000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1309392000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1312070400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1314748800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1317340800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1320019200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1322611200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1325289600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1327968000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1330473600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1333152000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1335744000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1338422400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1341014400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1343692800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1346371200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1348963200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1351641600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1354233600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1356912000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1359590400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1362009600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1364688000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1367280000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1369958400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1372550400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1375228800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1377907200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1380499200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1383177600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1385769600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1388448000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1391126400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1393545600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1396224000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1398816000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1401494400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1404086400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1406764800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1409443200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1412035200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1414713600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1417305600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1419984000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1422662400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1425081600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1427760000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1430352000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1433030400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1435622400000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1438300800000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1440979200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1443571200000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1446249600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1448841600000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1451520000000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1454198400000
+            }
         ],
         "m3": [
             7.898095238095237,

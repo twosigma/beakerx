@@ -228,18 +228,20 @@ class XYStacker(BaseObject):
     if graphicsList is None or len(graphicsList) == 1:
       return graphicsList
     else:
+      maxel = graphicsList[0]
+      for i in range(1, len(graphicsList)):
+        if len(graphicsList[i].y) > len(maxel.y):
+          maxel = graphicsList[i]
+      padYs(graphicsList[0], maxel)
       stackedList = [graphicsList[0]]
-      ysSize = len(graphicsList[0].y)
       for gIndex in range(1, len(graphicsList)):
         current = graphicsList[gIndex]
+        padYs(current, maxel)
         previous = graphicsList[gIndex - 1]
         currentYs = current.y
         previousYs = previous.y
 
-        if ysSize != len(currentYs):
-          raise Exception('Plot items that are added to XYStack should have the same length coordinates')
-
-        for yIndex in range(ysSize):
+        for yIndex in range(len(currentYs)):
           currentYs[yIndex] = currentYs[yIndex] + previousYs[yIndex]
 
         current.bases = previousYs

@@ -87,11 +87,12 @@ public class ConnectorServlet extends HttpServlet {
     } else {
       LocalFsVolume rootVolume = createLocalFsVolume("/", new File("/"));
       rootVolume.setCssCls("elfinder-navbar-root-local");
+
       fsService.addVolume("A",
-                          rootVolume);
-      fsService.addVolume("B",
                           createLocalFsVolume(userHomeDir,
                                               new File(userHomeDir)));
+      fsService.addVolume("B",
+                          rootVolume);
     }
 
 

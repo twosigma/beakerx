@@ -9,7 +9,7 @@ html {
   }
 
   .modal-open.has-scroll {
-    margin-right: 17px;
+    margin-right: $scrollbar-width;
   }
 
   $fixed-header-height: 112px;

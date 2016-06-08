@@ -8,6 +8,10 @@ html {
     border-bottom-width: 0;
   }
 
+  .modal-open.has-scroll {
+    margin-right: 17px;
+  }
+
   $fixed-header-height: 112px;
   $fixed-footer-height: 130px;
 

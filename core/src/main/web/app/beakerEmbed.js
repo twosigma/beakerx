@@ -165,7 +165,7 @@
 //      }
     });
 
-    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkHelper, bkDragAndDropHelper) {
+    beaker.run(function($rootScope, $location, $route, $document, bkUtils, bkCoreManager, bkHelper, bkDragAndDropHelper) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {
@@ -235,6 +235,9 @@
         }
       });
       bkCoreManager.addImportInput();
+      $rootScope.hasScroll = function () {
+        return window.innerHeight < document.body.clientHeight;
+      };
       $document.bind('drop dragover', function (e) {
         e.preventDefault();
       });

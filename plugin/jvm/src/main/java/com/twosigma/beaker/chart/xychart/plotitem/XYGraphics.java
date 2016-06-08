@@ -59,6 +59,15 @@ abstract public class XYGraphics extends Graphics {
     reinit();
   }
 
+  public void setToolTip(List<String> toolTips) {
+    toolTipBuilder = null;
+    for(Object tooltip : toolTips){
+      if(!(tooltip == null || tooltip instanceof String)){
+        throw new IllegalArgumentException("Tooltips should be the list of strings");
+      }
+    }
+    this.toolTips = toolTips;
+  }
 
   public void setX(List<Object> xs) {
     this.xs = new ArrayList<>();

@@ -32,6 +32,7 @@ public abstract class BasedXYGraphics extends XYGraphics {
       throw new IllegalArgumentException(
         "setBase takes Number or List of Number");
     }
+    super.setBase(base);
   }
 
   private void setBases(List<Number> bases) {

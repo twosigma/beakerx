@@ -1458,7 +1458,7 @@
             "class" : "plot-coverbox",
             "x" : W - scope.layout.rightLayoutMargin,
             "y" : 0,
-            "width" : scope.stdmodel.yAxisR ? scope.layout.rightLayoutMargin : 0,
+            "width" : scope.stdmodel.yAxisR ? scope.layout.rightLayoutMargin : 10,
             "height" : H
           });
 

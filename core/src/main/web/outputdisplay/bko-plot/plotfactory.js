@@ -20,7 +20,7 @@
   var retfunc = function (PlotAxis, PlotLine, PlotBar, PlotStem, PlotArea, PlotPoint,
                           PlotConstline, PlotConstband, PlotText, PlotTreeMapNode,
                           PlotLineLodLoader, PlotBarLodLoader, PlotStemLodLoader, PlotAreaLodLoader,
-                          PlotPointLodLoader, HeatMap) {
+                          PlotPointLodLoader, HeatMap, plotUtils) {
     return {
       createPlotItem : function(item, lodthresh) {
         if (!lodthresh){
@@ -29,9 +29,13 @@
         var size = item.elements ?  item.elements.length : 0;
         var shouldApplyLod = size >= lodthresh;
         if (shouldApplyLod) {
-          if (item.isUnorderedItem === true) {
-            console.warn("x values are not monotonic, LOD is disabled");
-            shouldApplyLod = false;
+          var eles = item.elements;
+          for (var j = 1; j < eles.length; j++) {
+            if (plotUtils.lt(eles[j].x, eles[j - 1].x)) {
+              console.warn("x values are not monotonic, LOD is disabled");
+              shouldApplyLod = false;
+              break;
+            }
           }
         }
         var plotitem;
@@ -139,6 +143,6 @@
     ['PlotAxis', 'PlotLine', 'PlotBar', 'PlotStem', 'PlotArea', 'PlotPoint',
       'PlotConstline', 'PlotConstband', 'PlotText', 'PlotTreeMapNode',
       'PlotLineLodLoader', 'PlotBarLodLoader', 'PlotStemLodLoader', 'PlotAreaLodLoader',
-      'PlotPointLodLoader', 'HeatMap',
+      'PlotPointLodLoader', 'HeatMap', 'plotUtils',
       retfunc]);
 })();

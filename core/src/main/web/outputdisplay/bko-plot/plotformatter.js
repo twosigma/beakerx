@@ -543,8 +543,8 @@
         if (model.type === 'TreeMap') {
           this.formatTreeMapModel(newmodel);
         } else {
-          this.sortModel(newmodel);
           this.formatModel(newmodel); // fill in null entries, compute y2, etc.
+          this.sortModel(newmodel);
 
           // at this point, data is in standard format (log is applied as well)
 

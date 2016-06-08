@@ -836,7 +836,10 @@ var BeakerPageObject = function() {
   }
 
   this.checkSaveAsSvgPngByIdCell = function(idCell, filename){
-    var dir = path.join(this.getUserHome(), "Downloads");
+    var dir = path.join(__dirname, '../' ,"tmp");
+    if(!fs.existsSync(dir)){
+      fs.mkdirSync(dir);
+    }
     var list = fs.readdirSync(dir);
     list.forEach(function(file) {
       file = path.join(dir, file);
@@ -846,16 +849,19 @@ var BeakerPageObject = function() {
       }
     });
 
-    this.clickCellMenuSavePlotAs(idCell, 'SVG')
+    this.clickCellMenuSavePlotAs(idCell, 'SVG');
     var filenameSvg = path.join(dir, (filename + ".svg"));
     browser.wait(fs.existsSync.bind(this, filenameSvg), 10000).then(function(){
       expect(fs.statSync(filenameSvg).isFile() && fs.existsSync(filenameSvg)).toBe(true);
+      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
     });
 
-    this.clickCellMenuSavePlotAs(idCell, 'PNG')
+    this.scrollHeaderElement();
+    this.clickCellMenuSavePlotAs(idCell, 'PNG');
     var filenamePng = path.join(dir, (filename + ".png"));
     browser.wait(fs.existsSync.bind(this, filenamePng), 10000).then(function(){
       expect(fs.statSync(filenamePng).isFile() && fs.existsSync(filenamePng)).toBe(true);
+      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
     });
   }
 
@@ -864,7 +870,9 @@ var BeakerPageObject = function() {
     browser.wait(this.EC.presenceOf(element.all(by.css('bk-notebook > ul.dropdown-menu')).get(0)), 10000);
     var savePlotAs = element.all(by.css('bk-notebook > ul.dropdown-menu')).get(0).element(by.cssContainingText('li', 'Save Plot As'));
     browser.actions().mouseMove(savePlotAs).perform();
-    savePlotAs.element(by.cssContainingText('li', fileExt)).click();
+    var subMenu = savePlotAs.element(by.cssContainingText('a', fileExt));
+    browser.actions().mouseMove(subMenu).perform();
+    subMenu.click();
   }
 
 };

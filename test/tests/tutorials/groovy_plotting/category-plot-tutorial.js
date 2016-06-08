@@ -44,7 +44,10 @@ describe('Category Plots (Bar Charts)', function (done) {
       beakerPO.checkPlotIsPresentByIdCell(idCell);
       beakerPO.checkSize(beakerPO.getPlotSvgByIdCell(idCell, 0), 400, 200);
     });
+  });
 
+});
+    /*
     it('Title and Axis Labels', function () {
       var idCell = "codedWtzu7";
       beakerPO.scrollToBkCellByIdCell(idCell);
@@ -464,4 +467,4 @@ describe('Category Plots (Bar Charts)', function (done) {
     });
   });
 
-});
+});         */

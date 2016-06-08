@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+var helper = require('./helper.js');
+
 var config = {
   seleniumAddress: 'http://localhost:4444/wd/hub',
   framework: 'jasmine2',
@@ -23,12 +25,7 @@ var config = {
     defaultTimeoutInterval: 100000,
     print: function() {}
   },
-
-  capabilities: {
-    shardTestFiles: true,
-    maxInstances: 3,
-    browserName: 'firefox'
-  },
+  getMultiCapabilities: helper.getFirefoxProfile,
   onPrepare: function() {
     var SpecReporter = require('jasmine-spec-reporter');
     jasmine.getEnv().addReporter(new SpecReporter({

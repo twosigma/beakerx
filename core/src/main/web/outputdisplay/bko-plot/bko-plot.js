@@ -1279,6 +1279,16 @@
               scope.jqcontainer.css("margin-left", legendContainer.width() + margin);
             }
           }
+
+          if (legendContainer.length) {
+            var legenddraggable = legendContainer.find(".plot-legenddraggable");
+            if (legendContainer.get(0).scrollHeight > legendContainer.get(0).clientHeight) {
+              legenddraggable.addClass("hasScroll");
+            } else {
+              legenddraggable.removeClass("hasScroll");
+            }
+          }
+
         };
 
         scope.highlightElements = function(legendId, highlight){

@@ -732,8 +732,17 @@
         return bkNotebookCellModelManager;
       },
 
-      showFileOpenDialog: function(callback, strategy) {
-        modalDialogOp.setStrategy(strategy);
+      showFileOpenDialog: function(extension) {
+        var deferred = bkUtils.newDeferred();
+        var  FileOpenStrategy = function () {
+          var newStrategy = this;
+          newStrategy.treeViewfs = {
+            applyExtFilter: true,
+            showHiddenFiles: true,
+            extension: extension
+          };
+        };
+
         var dd = $uibModal.open({
           templateUrl: "app/template/fileopen.jst.html",
           controller: 'fileOpenDialogCtrl',
@@ -745,19 +754,19 @@
           size: 'lg',
           resolve: {
             strategy: function () {
-              return strategy;
+              return new FileOpenStrategy();
             }
           }
         });
         dd.result.then(
           function (result) {
-            callback(result);
+            deferred.resolve(result);
           }, function () {
-            //Trigger when modal is dismissed
-            callback();
+            deferred.reject();
           }).catch(function () {
+          deferred.reject();
         });
-        return dd;
+        return deferred.promise;
       },
 
       showFileSaveDialog: function(data) {
@@ -775,6 +784,7 @@
           newStrategy.saveButtonTitle = data.saveButtonTitle;
           newStrategy.treeViewfs = {
             applyExtFilter: true,
+            showHiddenFiles: true,
             extension: data.extension
           };
         };
@@ -1171,6 +1181,13 @@
       return [];
     };
 
+    $scope.mime = function () {
+      if ($scope.getStrategy().treeViewfs.applyExtFilter === true) {
+        return bkUtils.mime($scope.getStrategy().treeViewfs.extension);
+      }
+      return [];
+    };
+
     $scope.ready = function () {
       return selected.file && selected.file.mime !== 'directory';
     };
@@ -1178,85 +1195,29 @@
     $scope.init = function () {
       var $elfinder = $('#elfinder');
 
-      elFinder.prototype._options.commands.push('copypath');
-      elFinder.prototype._options.contextmenu.files.push('copypath');
-      elFinder.prototype._options.contextmenu.cwd.push('copypath');
-      elFinder.prototype.i18.en.messages['cmdcopypath'] = 'Copy Path';
-      elFinder.prototype.commands.copypath = function() {
-        this.exec = function(hashes) {
-          bkCoreManager.show1ButtonModal(
-            "<p><input type='text' autofocus onfocus='this.select();' style='width: 100%' value='"+elfinder.path(hashes[0])+"'></p>",
-            "Copy to clipboard: "+ (bkHelper.isMacOS ? "&#x2318;" : "Ctrl") + "+C");
+      var selectCallback = function (event, elfinderInstance) {
+        if (event.data.selected && event.data.selected.length > 0) {
+          selected.file = elfinderInstance.file(event.data.selected[0]);
+          selected.path = elfinderInstance.path(event.data.selected[0]);
 
+        } else {
+          selected.file = null;
+          selected.path = null;
         }
-        this.getstate = function() {
-          //return 0 to enable, -1 to disable icon access
-          return 0;
-        }
+        $scope.$apply();
       };
 
+      var getFileCallback = function (url) {
+        $scope.open();
+      };
 
-      elfinder = $elfinder.elfinder({
-        url: '../beaker/connector',
-        useBrowserHistory: false,
-        resizable: false,
-        onlyMimes: $scope.mime(),
-        getFileCallback: function (url) {
-          $scope.open();
-        },
-        handlers: {
-          select: function (event, elfinderInstance) {
-            if (event.data.selected && event.data.selected.length > 0) {
-              selected.file = elfinderInstance.file(event.data.selected[0]);
-              selected.path = elfinderInstance.path(event.data.selected[0]);
+      var elfinderOptions = bkHelper.elfinderOptions(getFileCallback,
+        selectCallback,
+        $scope.mime(),
+        $scope.getStrategy().treeViewfs.showHiddenFiles);
 
-            } else {
-              selected.file = null;
-              selected.path = null;
-            }
-            $scope.$apply();
-          }
-        },
-        defaultView: 'icons',
-        contextmenu: {
-          // navbarfolder menu
-          navbar: ['copy', 'cut', 'paste', 'duplicate', '|', 'rm'],
 
-          // current directory menu
-          cwd: ['reload', 'back', '|', 'mkdir', 'paste'],
-
-          // current directory file menu
-          files: [
-            'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
-            'rm'
-          ]
-        },
-        uiOptions: {
-          // toolbar configuration
-          toolbar: [
-            ['back', 'forward'],
-            ['mkdir'],
-            ['copy', 'cut', 'paste'],
-            ['rm'],
-            ['duplicate', 'rename'],
-            ['view', 'sort']
-          ],
-
-          // navbar options
-          navbar: {
-            minWidth: 150,
-            maxWidth: 1200
-          },
-
-          // directories tree options
-          tree: {
-            // expand current root on init
-            openRootOnLoad: false,
-            // auto load current dir parents
-            syncTree: true
-          }
-        }
-      }).elfinder('instance');
+      elfinder =  bkHelper.elfinder($elfinder, elfinderOptions);
 
 
       var orig_mime2class =  elfinder.mime2class;
@@ -1292,6 +1253,15 @@
     }, function () {
       if (elfinder) {
         elfinder.options.onlyMimes = $scope.mime();
+        elfinder.exec('reload');
+      }
+    });
+
+    $scope.$watch(function (scope) {
+      return scope.getStrategy().treeViewfs.showHiddenFiles
+    }, function () {
+      if (elfinder) {
+        elfinder.options.showHiddenFiles = $scope.getStrategy().treeViewfs.showHiddenFiles;
         elfinder.exec('reload');
       }
     });
@@ -1338,78 +1308,30 @@
     $scope.init = function () {
       var $elfinder = $('#elfinder');
 
-      elFinder.prototype._options.commands.push('copypath');
-      elFinder.prototype._options.contextmenu.files.push('copypath');
-      elFinder.prototype._options.contextmenu.cwd.push('copypath');
-      elFinder.prototype.i18.en.messages['cmdcopypath'] = 'Copy Path';
-      elFinder.prototype.commands.copypath = function() {
-        this.exec = function(hashes) {
-          bkCoreManager.show1ButtonModal(
-            "<p><input type='text' autofocus onfocus='this.select();' style='width: 100%' value='"+elfinder.path(hashes[0])+"'></p>",
-            "Copy to clipboard: "+ (bkHelper.isMacOS ? "&#x2318;" : "Ctrl") + "+C");
+      var selectCallback = function (event, elfinderInstance) {
+        if (event.data.selected && event.data.selected.length > 0) {
+          var file = elfinderInstance.file(event.data.selected[0]);
+          if (file.mime !== 'directory')
+            $scope.filename = file.name;
 
         }
-        this.getstate = function() {
-          //return 0 to enable, -1 to disable icon access
-          return 0;
-        }
+        $scope.$apply();
       };
-      elfinder = $elfinder.elfinder({
-        url: '../beaker/connector',
-        resizable: false,
-        useBrowserHistory: false,
-        onlyMimes: $scope.mime(),
-        getFileCallback: function (file) {
-          $scope.save();
-        },
-        handlers: {
-          select: function (event, elfinderInstance) {
-            if (event.data.selected && event.data.selected.length > 0) {
-              var file = elfinderInstance.file(event.data.selected[0]);
-              if (file.mime !== 'directory')
-                $scope.filename = file.name;
 
-            }
-            $scope.$apply();
-          }
-        },
-        defaultView: 'icons',
-        contextmenu : {
-          // navbarfolder menu
-          navbar : ['copy', 'cut', 'paste', 'duplicate', '|', 'rm'],
+      var getFileCallback = function (url) {
+        $scope.save();
+      };
 
-          // current directory menu
-          cwd    : ['reload', 'back', '|', 'mkdir', 'paste' ],
+      var elfinderOptions = bkHelper.elfinderOptions(getFileCallback,
+        selectCallback,
+        $scope.mime(),
+        $scope.getStrategy().treeViewfs.showHiddenFiles);
 
-          // current directory file menu
-          files  : [
-            'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
-            'rm'
-          ]
-        },
-        uiOptions: {
-          // toolbar configuration
-          toolbar: [
-            ['back', 'forward'],
-            ['mkdir'],
-            ['copy', 'cut', 'paste'],
-            ['rm'],
-            ['duplicate', 'rename'],
-            ['view', 'sort']
-          ],
-          // directories tree options
-          tree: {
-            // expand current root on init
-            openRootOnLoad: false,
-            // auto load current dir parents
-            syncTree: true
-          }
-        }
-      }).elfinder('instance');
+      elfinder =  bkHelper.elfinder($elfinder, elfinderOptions);
 
-      var orig_mime2class =  elfinder.mime2class;
-      elfinder.mime2class = function(mime){
-        if (mime === 'application/beaker-notebook'){
+      var orig_mime2class = elfinder.mime2class;
+      elfinder.mime2class = function (mime) {
+        if (mime === 'application/beaker-notebook') {
           return 'elfinder-cwd-icon-beaker';
         }
         return orig_mime2class(mime);
@@ -1418,13 +1340,13 @@
       $elfinder.css("width", '100%');
       $elfinder.css("height", '100%');
 
-      $( ".modal-content" ).resizable({
-        resize: function( event, ui ) {
+      $(".modal-content").resizable({
+        resize: function (event, ui) {
           $elfinder.trigger('resize');
         }
       });
 
-      if ( $scope.getStrategy().initUri){
+      if ($scope.getStrategy().initUri) {
         $scope.filename = $scope.getStrategy().initUri.substring($scope.getStrategy().initUri.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/') + 1);
         $scope.getStrategy().treeViewfs.extension = $scope.filename.substring($scope.filename.lastIndexOf('.') + 1);
       }
@@ -1610,4 +1532,6 @@
   function getImageFileTypePattern() {
     return "image/((png)|(jpg)|(jpeg))";
   }
+
+
 })();

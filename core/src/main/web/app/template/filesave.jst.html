@@ -25,6 +25,12 @@
      <input class="beforeCheckbox" id="extensionFilter"type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter">
      <label ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show .{{ getStrategy().treeViewfs.extension }} files only</label>
    </span>
+   <span style="float:left; position:relative;">&nbsp;</span>
+   <span style="float:left; position:relative;" >
+     <input class="beforeCheckbox" id="showHiddenFiles" type="checkbox" style="vertical-align:top;"
+            ng-model="getStrategy().treeViewfs.showHiddenFiles">
+     <label ng-click="getStrategy().treeViewfs.showHiddenFiles = !getStrategy().treeViewfs.showHiddenFiles">show hidden files</label>
+   </span>
   <button ng-click="cancel()" class="btn btn-default">Cancel</button>
   <button ng-click="save()" ng-disabled="!ready()" class="btn btn-primary modal-submit">{{getStrategy().saveButtonTitle ? getStrategy().saveButtonTitle : "Save"}}</button>
 </div>

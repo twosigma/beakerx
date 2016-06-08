@@ -19,6 +19,7 @@ import com.twosigma.beaker.core.module.elfinder.impl.AbstractJsonCommand;
 import com.twosigma.beaker.core.module.elfinder.service.Command;
 import com.twosigma.beaker.core.module.elfinder.impl.FsItemEx;
 import com.twosigma.beaker.core.module.elfinder.service.FsService;
+import com.twosigma.beaker.core.module.elfinder.util.FsItemFilterUtils;
 import org.json.JSONObject;
 
 import javax.servlet.ServletContext;
@@ -36,7 +37,7 @@ public class ParentsCommand extends AbstractJsonCommand implements Command {
     String                hash   = fsi.getHash();
     while (!fsi.isRoot()) {
       fsi = fsi.getParent();
-      super.addSubfolders(files, fsi);
+      super.addChildren(files, fsi, FsItemFilterUtils.createFolderFilterFromRequest(request));
     }
     files.remove(hash);
 

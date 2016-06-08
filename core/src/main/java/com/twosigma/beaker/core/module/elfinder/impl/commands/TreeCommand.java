@@ -19,6 +19,7 @@ import com.twosigma.beaker.core.module.elfinder.impl.AbstractJsonCommand;
 import com.twosigma.beaker.core.module.elfinder.service.Command;
 import com.twosigma.beaker.core.module.elfinder.impl.FsItemEx;
 import com.twosigma.beaker.core.module.elfinder.service.FsService;
+import com.twosigma.beaker.core.module.elfinder.util.FsItemFilterUtils;
 import org.json.JSONObject;
 
 import javax.servlet.ServletContext;
@@ -34,7 +35,7 @@ public class TreeCommand extends AbstractJsonCommand implements Command {
 
     Map<String, FsItemEx> files = new HashMap<String, FsItemEx>();
     FsItemEx              fsi   = super.findItem(fsService, target);
-    super.addSubfolders(files, fsi);
+    super.addChildren(files, fsi, FsItemFilterUtils.createFolderFilterFromRequest(request));
 
     json.put("tree", files2JsonArray(request, files.values()));
   }

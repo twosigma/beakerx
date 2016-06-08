@@ -19,23 +19,18 @@ import com.twosigma.beaker.core.module.elfinder.impl.FsItemEx;
 import com.twosigma.beaker.core.module.elfinder.service.FsItem;
 import com.twosigma.beaker.core.module.elfinder.service.FsItemFilter;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class FsItemFilterUtils {
-  public static FsItemFilter FILTER_ALL = new FsItemFilter() {
+  public static        FsItemFilter FILTER_ALL  = new FsItemFilter() {
     @Override
     public boolean accepts(FsItem item) {
       return true;
     }
   };
 
-  public static FsItemFilter FILTER_FOLDER = new FsItemFilter() {
-    @Override
-    public boolean accepts(FsItem item) {
-      return item.isFolder();
-    }
-  };
 
   public static FsItemFilter createFileNameKeywordFilter(final String keyword) {
     return new FsItemFilter() {
@@ -57,29 +52,41 @@ public abstract class FsItemFilterUtils {
     return filtered.toArray(new FsItemEx[filtered.size()]);
   }
 
-  /**
-   * returns a FsItemFilter according to given mimeFilters
-   *
-   * @param mimeFilters An array of MIME types, if <code>null</code> no filtering is done
-   * @return A filter that only accepts the supplied MIME types.
-   */
-  public static FsItemFilter createMimeFilter(final String[] mimeFilters) {
-    if (mimeFilters == null || mimeFilters.length == 0)
-      return FILTER_ALL;
+  public static FsItemFilter createFolderFilterFromRequest(HttpServletRequest request) {
+    Boolean showHiddenFiles = Boolean.valueOf(request.getParameter("showHiddenFiles"));
+    return new FsItemFilter() {
+      @Override
+      public boolean accepts(FsItem item) {
+        return item.isFolder() && (Boolean.TRUE.equals(showHiddenFiles) || !item.isHidden());
+      }
+    };
+  }
+
+  public static FsItemFilter createFilterFromRequest(HttpServletRequest request) {
+    String[] onlyMimes       = request.getParameterValues("mimes[]");
+    Boolean  showHiddenFiles = Boolean.valueOf(request.getParameter("showHiddenFiles"));
+    if (onlyMimes == null && (Boolean.TRUE.equals(showHiddenFiles) || showHiddenFiles == null))
+      return FsItemFilterUtils.FILTER_ALL;
 
     return new FsItemFilter() {
       @Override
       public boolean accepts(FsItem item) {
-        String mimeType = item.getMimeType().toUpperCase();
 
-        for (String mf : mimeFilters) {
-          mf = mf.toUpperCase();
-          if (mimeType.startsWith(mf + "/") || mimeType.equals(mf))
+        if (Boolean.TRUE.equals(showHiddenFiles) || !item.isHidden()){
+          if (onlyMimes == null)
             return true;
+
+          String mimeType = item.getMimeType().toUpperCase();
+          for (String mf : onlyMimes) {
+            mf = mf.toUpperCase();
+            if (mimeType.startsWith(mf + "/") || mimeType.equals(mf))
+              return true;
+          }
         }
         return false;
       }
     };
   }
+
 
 }

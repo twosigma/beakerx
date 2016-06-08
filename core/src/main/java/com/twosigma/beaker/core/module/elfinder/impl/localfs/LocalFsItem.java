@@ -53,6 +53,11 @@ public class LocalFsItem implements FsItem {
     return volume.getMimeType(this);
   }
 
+  @Override
+  public boolean isHidden() {
+    return volume.isHidden(this);
+  }
+
   public void setFile(File file) {
     this.file = file;
   }

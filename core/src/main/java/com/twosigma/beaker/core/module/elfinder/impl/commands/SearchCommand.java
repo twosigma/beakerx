@@ -33,6 +33,6 @@ public class SearchCommand extends AbstractJsonCommand
       "files",
       files2JsonArray(request, FsItemFilterUtils.filterFiles(
         fsService.find(FsItemFilterUtils.createFileNameKeywordFilter(request.getParameter("q"))),
-        super.getRequestedFilter(request))));
+        FsItemFilterUtils.createFilterFromRequest(request))));
   }
 }

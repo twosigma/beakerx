@@ -1216,7 +1216,7 @@ window.elFinder = function(node, opts) {
 			o        = this.options,
 			dfrd     = $.Deferred(),
 			// request data
-			data     = $.extend({}, o.customData, {mimes : o.onlyMimes}, options.data || options),
+			data     = $.extend({}, o.customData, {mimes : o.onlyMimes},  {showHiddenFiles : o.showHiddenFiles}, options.data || options),
 			// command name
 			cmd      = data.cmd,
 			// call default fail callback (display error dialog) ?

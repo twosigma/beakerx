@@ -20,6 +20,7 @@ import com.twosigma.beaker.core.module.elfinder.service.Command;
 import com.twosigma.beaker.core.module.elfinder.impl.FsItemEx;
 import com.twosigma.beaker.core.module.elfinder.service.FsItemFilter;
 import com.twosigma.beaker.core.module.elfinder.service.FsService;
+import com.twosigma.beaker.core.module.elfinder.util.FsItemFilterUtils;
 import org.json.JSONObject;
 
 import javax.servlet.ServletContext;
@@ -36,7 +37,7 @@ public class MkfileCommand extends AbstractJsonCommand
     FsItemEx dir    = new FsItemEx(fsi, name);
     dir.createFile();
     // if the new file is allowed to be display?
-    FsItemFilter filter = getRequestedFilter(request);
+    FsItemFilter filter = FsItemFilterUtils.createFilterFromRequest(request);
     json.put(
       "added",
       filter.accepts(dir) ? new Object[]{getFsItemInfo(request, dir)}

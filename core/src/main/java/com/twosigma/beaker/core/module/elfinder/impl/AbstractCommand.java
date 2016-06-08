@@ -17,6 +17,7 @@ package com.twosigma.beaker.core.module.elfinder.impl;
 
 import com.twosigma.beaker.core.module.elfinder.service.CommandExecutionContext;
 import com.twosigma.beaker.core.module.elfinder.service.Command;
+import com.twosigma.beaker.core.module.elfinder.service.FsItem;
 import com.twosigma.beaker.core.module.elfinder.service.FsItemFilter;
 import com.twosigma.beaker.core.module.elfinder.service.FsService;
 import com.twosigma.beaker.core.module.elfinder.util.FsItemFilterUtils;
@@ -38,30 +39,11 @@ import java.util.logging.Logger;
 public abstract class AbstractCommand implements Command {
   public static Logger LOGGER = Logger.getLogger(AbstractCommand.class.getName());
 
-  protected FsItemFilter getRequestedFilter(HttpServletRequest request) {
-    String[] onlyMimes = request.getParameterValues("mimes[]");
-    if (onlyMimes == null)
-      return FsItemFilterUtils.FILTER_ALL;
-
-    return FsItemFilterUtils.createMimeFilter(onlyMimes);
-  }
-
   protected void addChildren(Map<String, FsItemEx> map, FsItemEx fsi,
-                             String[] mimeFilters) throws IOException {
-    FsItemFilter filter = FsItemFilterUtils.createMimeFilter(mimeFilters);
-    addChildren(map, fsi, filter);
-  }
-
-  private void addChildren(Map<String, FsItemEx> map, FsItemEx fsi,
                            FsItemFilter filter) throws IOException {
     for (FsItemEx f : fsi.listChildren(filter)) {
       map.put(f.getHash(), f);
     }
-  }
-
-  protected void addSubfolders(Map<String, FsItemEx> map, FsItemEx fsi)
-    throws IOException {
-    addChildren(map, fsi, FsItemFilterUtils.FILTER_FOLDER);
   }
 
   protected void createAndCopy(FsItemEx src, FsItemEx dst) throws IOException {

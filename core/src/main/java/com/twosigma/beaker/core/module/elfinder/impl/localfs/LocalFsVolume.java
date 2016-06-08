@@ -112,6 +112,11 @@ public class LocalFsVolume implements FsVolume {
     return MimeTypesUtils.UNKNOWN_MIME_TYPE;
   }
 
+  @Override
+  public boolean isHidden(FsItem fsi) {
+    return asFile(fsi).isHidden();
+  }
+
   public String getName() {
     return name;
   }
@@ -200,7 +205,7 @@ public class LocalFsVolume implements FsVolume {
       list.add(fromFile(c));
     }
 
-    return list.toArray(new FsItem[0]);
+    return list.toArray(new FsItem[list.size()]);
   }
 
   @Override

@@ -344,20 +344,10 @@
             bkHelper.openWindow(bkUtils.getBaseUrl() + '/open?' + jQuery.param(routeParams), 'notebook');
           });
         } else {
-            var  FileOpenStrategy = function () {
-              var newStrategy = this;
-              newStrategy.treeViewfs = {
-                applyExtFilter: true,
-                extension: ext
-              };
-            };
-            bkCoreManager.showFileOpenDialog(
-              function (selected) {
-                if (selected && selected.path)
+            bkCoreManager.showFileOpenDialog(ext).then(function(selected){
+              if (selected && selected.path)
                 bkHelper.openNotebook(selected.path, uriType, readOnly, format);
-              },
-              new FileOpenStrategy()
-            );
+            });
         }
       },
       Electron: bkElectron,
@@ -1245,6 +1235,86 @@
           document.documentElement.style.overflow = '';
         }
         cm.refresh();
+      },
+
+      elfinder: function($elfinder, elfinderOptions){
+        var elfinder;
+        elFinder.prototype._options.commands.push('copypath');
+        elFinder.prototype._options.contextmenu.files.push('copypath');
+        elFinder.prototype._options.contextmenu.cwd.push('copypath');
+        elFinder.prototype.i18.en.messages['cmdcopypath'] = 'Copy Path';
+        elFinder.prototype.commands.copypath = function() {
+          this.exec = function(hashes) {
+            bkCoreManager.show1ButtonModal(
+              "<p><input type='text' autofocus onfocus='this.select();' style='width: 100%' value='"+elfinder.path(hashes[0])+"'></p>",
+              "Copy to clipboard: "+ (bkHelper.isMacOS ? "&#x2318;" : "Ctrl") + "+C");
+
+          };
+          this.getstate = function() {
+            //return 0 to enable, -1 to disable icon access
+            return 0;
+          }
+        };
+        elfinder = $elfinder.elfinder(elfinderOptions).elfinder('instance');
+        return elfinder;
+      },
+
+      elfinderOptions: function (getFileCallback, selectCallback, mime, showHiddenFiles) {
+
+        return {
+          url: '../beaker/connector',
+          useBrowserHistory: false,
+          resizable: false,
+          onlyMimes: mime,
+          showHiddenFiles: showHiddenFiles,
+          getFileCallback: function (url) {
+            getFileCallback(url);
+          },
+          handlers: {
+            select: function (event, elfinderInstance) {
+              selectCallback(event, elfinderInstance);
+            }
+          },
+          defaultView: 'icons',
+          contextmenu: {
+            // navbarfolder menu
+            navbar: ['copy', 'cut', 'paste', 'duplicate', '|', 'rm'],
+
+            // current directory menu
+            cwd: ['reload', 'back', '|', 'mkdir', 'paste'],
+
+            // current directory file menu
+            files: [
+              'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
+              'rm'
+            ]
+          },
+          uiOptions: {
+            // toolbar configuration
+            toolbar: [
+              ['back', 'forward'],
+              ['mkdir'],
+              ['copy', 'cut', 'paste'],
+              ['rm'],
+              ['duplicate', 'rename'],
+              ['view', 'sort']
+            ],
+
+            // navbar options
+            navbar: {
+              minWidth: 150,
+              maxWidth: 1200
+            },
+
+            // directories tree options
+            tree: {
+              // expand current root on init
+              openRootOnLoad: false,
+              // auto load current dir parents
+              syncTree: true
+            }
+          }
+        }
       },
 
       isElectron: bkUtils.isElectron,

@@ -37,6 +37,8 @@ public interface FsVolume {
 
   String getMimeType(FsItem fsi);
 
+  boolean isHidden(FsItem fsi);
+
   String getName();
 
   String getName(FsItem fsi);

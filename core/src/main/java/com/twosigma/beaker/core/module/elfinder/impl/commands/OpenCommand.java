@@ -20,6 +20,7 @@ import com.twosigma.beaker.core.module.elfinder.service.Command;
 import com.twosigma.beaker.core.module.elfinder.impl.FsItemEx;
 import com.twosigma.beaker.core.module.elfinder.service.FsService;
 import com.twosigma.beaker.core.module.elfinder.service.FsVolume;
+import com.twosigma.beaker.core.module.elfinder.util.FsItemFilterUtils;
 import org.json.JSONObject;
 
 import javax.servlet.ServletContext;
@@ -46,14 +47,14 @@ public class OpenCommand extends AbstractJsonCommand implements
       for (FsVolume v : fsService.getVolumes()) {
         FsItemEx root = new FsItemEx(v.getRoot(), fsService);
         files.put(root.getHash(), root);
-        addSubfolders(files, root);
+        addChildren(files, root, FsItemFilterUtils.createFolderFilterFromRequest(request));
       }
     }
 
     FsItemEx cwd = findCwd(fsService, target);
     files.put(cwd.getHash(), cwd);
-    String[] onlyMimes = request.getParameterValues("mimes[]");
-    addChildren(files, cwd, onlyMimes);
+
+    addChildren(files, cwd, FsItemFilterUtils.createFilterFromRequest(request));
 
     json.put("files", files2JsonArray(request, files.values()));
     json.put("cwd", getFsItemInfo(request, cwd));

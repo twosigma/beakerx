@@ -20,6 +20,7 @@ import com.twosigma.beaker.core.module.elfinder.service.Command;
 import com.twosigma.beaker.core.module.elfinder.impl.FsItemEx;
 import com.twosigma.beaker.core.module.elfinder.service.FsItemFilter;
 import com.twosigma.beaker.core.module.elfinder.service.FsService;
+import com.twosigma.beaker.core.module.elfinder.util.FsItemFilterUtils;
 import org.apache.commons.fileupload.FileItemStream;
 import org.json.JSONObject;
 
@@ -42,7 +43,7 @@ public class UploadCommand extends AbstractJsonCommand
     String   target = request.getParameter("target");
     FsItemEx dir    = super.findItem(fsService, target);
 
-    FsItemFilter filter = getRequestedFilter(request);
+    FsItemFilter filter = FsItemFilterUtils.createFilterFromRequest(request);
     for (FileItemStream fis : listFiles) {
       java.nio.file.Path p       = java.nio.file.Paths.get(fis.getName());
       FsItemEx           newFile = new FsItemEx(dir, p.getFileName().toString());

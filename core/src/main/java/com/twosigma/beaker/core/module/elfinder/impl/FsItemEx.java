@@ -138,6 +138,11 @@ public class FsItemEx implements FsItem {
     return v.getMimeType(f);
   }
 
+  @Override
+  public boolean isHidden() {
+    return v.isHidden(f);
+  }
+
   public boolean isLocked(FsItemEx fsi) throws IOException {
     return s.getSecurityChecker().isLocked(s, f);
   }
@@ -175,7 +180,7 @@ public class FsItemEx implements FsItem {
   }
 
   public List<FsItemEx> listChildren(FsItemFilter filter) {
-    List<FsItemEx> list = new ArrayList<FsItemEx>();
+    List<FsItemEx> list = new ArrayList<>();
     for (FsItem child : v.listChildren(f)) {
       FsItemEx childEx = new FsItemEx(child, s);
       if (filter.accepts(childEx)) {

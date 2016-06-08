@@ -19,6 +19,7 @@ import com.twosigma.beaker.core.module.elfinder.impl.AbstractJsonCommand;
 import com.twosigma.beaker.core.module.elfinder.service.Command;
 import com.twosigma.beaker.core.module.elfinder.impl.FsItemEx;
 import com.twosigma.beaker.core.module.elfinder.service.FsService;
+import com.twosigma.beaker.core.module.elfinder.util.FsItemFilterUtils;
 import org.json.JSONObject;
 
 import javax.servlet.ServletContext;
@@ -32,10 +33,9 @@ public class LsCommand extends AbstractJsonCommand implements
   public void execute(FsService fsService, HttpServletRequest request,
                       ServletContext servletContext, JSONObject json) throws Exception {
     String                target    = request.getParameter("target");
-    String[]              onlyMimes = request.getParameterValues("mimes[]");
     Map<String, FsItemEx> files     = new HashMap<String, FsItemEx>();
     FsItemEx              fsi       = super.findItem(fsService, target);
-    super.addChildren(files, fsi, onlyMimes);
+    super.addChildren(files, fsi, FsItemFilterUtils.createFilterFromRequest(request));
 
     json.put("list", files2JsonArray(request, files.values()));
   }

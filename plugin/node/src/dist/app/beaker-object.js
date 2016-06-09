@@ -13,8 +13,6 @@ module.exports = function (urlBase, ctrlUrlBase, auth) {
   var _session;
 
   function doPost(url, form) {
-    console.log('url : ' + url);
-    console.log('form: ' + util.inspect(form));
     return Q.promise(function (resolve, reject) {
       request({
         url: url,
@@ -24,8 +22,6 @@ module.exports = function (urlBase, ctrlUrlBase, auth) {
           "Authorization": _auth
         }
       }, function (error, r, body) {
-        console.log(error);
-        console.log(body);
         if (body === 'ok') resolve('');
         reject();
       });
@@ -33,8 +29,6 @@ module.exports = function (urlBase, ctrlUrlBase, auth) {
   }
 
   function doGet(url, qs, responseTransformer) {
-    console.log('url: ' + url);
-    console.log('qs : ' + util.inspect(qs));
     responseTransformer = responseTransformer || defaultReponseTransformer;
     return Q.Promise(function (resolve, reject) {
       request.get({
@@ -44,8 +38,6 @@ module.exports = function (urlBase, ctrlUrlBase, auth) {
           "Authorization": auth
         }
       }, function (error, r, body) {
-        console.log(error);
-        console.log(body);
         if (error) reject(error);
         var result = JSON.parse(body);
         resolve(responseTransformer(result));

@@ -8,23 +8,22 @@ var http = require('http');
 var uuid = require('node-uuid');
 var vm = require('vm');
 var request = require('request');
-var _ = require('lodash');
+var Buffer = require('buffer').Buffer;
 var Q = require('q');
 
-var BeakerObject = require('./beaker-object.js');
+var beakerObject = require('./beaker-object.js');
+var transformation = require('./transformation.js');
 
 var app = express();
 var beakerCorePort = process.env.beaker_core_port;
 var urlBase = "http://127.0.0.1:" + beakerCorePort + "/rest/namespace";
 var ctrlUrlBase = "http://127.0.0.1:" + beakerCorePort + "/rest/notebookctrl";
-var auth = "Basic " + new require('buffer').Buffer("beaker:" + process.env.beaker_core_password).toString('base64');
+var auth = "Basic " + new Buffer("beaker:" + process.env.beaker_core_password).toString('base64');
 
 var port = process.argv[2];
 var host = process.argv[3];
 
 var shells = {};
-
-console.log('Server Starting');
 
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({extended: false})); // to support URL-encoded bodies
@@ -67,10 +66,11 @@ app.post('/evaluate', function (request, response) {
     } else {
       response.statusCode = 422;
     }
-    response.send(JSON.stringify(require('./transformation.js').transform(result)));
+    var transformed = transformation.transform(result);
+    response.send(JSON.stringify(transformed));
   }, function (error) {
     response.statusCode = 401;
-    response.send(error);
+    response.send(error.toString());
   });
 });
 
@@ -105,7 +105,7 @@ function processCode(code, shell) {
   return returnValue;
 }
 
-var createSandbox = function (shellID) {
+var createSandbox = function () {
   return {
     require: require,
     http: http,
@@ -116,6 +116,6 @@ var createSandbox = function (shellID) {
     setSession: function (v) {
       this.beaker.setSession(v);
     },
-    beaker: BeakerObject(urlBase, ctrlUrlBase, auth)
+    beaker: beakerObject(urlBase, ctrlUrlBase, auth)
   };
 };

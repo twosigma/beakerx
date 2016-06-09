@@ -26,8 +26,8 @@
       this.format(lodthresh);
     };
     // class constants
-    PlotStemLodLoader.prototype.lodTypes = ["stem", "stem+", "box"];
-    PlotStemLodLoader.prototype.lodSteps = [5, 10, 10];
+    PlotStemLodLoader.prototype.lodTypes = ["box"];
+    PlotStemLodLoader.prototype.lodSteps = [10];
 
     PlotStemLodLoader.prototype.format = function() {
       // create plot type index
@@ -94,14 +94,12 @@
     };
 
     PlotStemLodLoader.prototype.applyLodType = function(type) {
-      if (!this.datacopy.lod_filter) {
-        this.lodType = type;
-        this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
-        if (this.lodTypeIndex === -1) {
-          this.lodTypeIndex = 0;
-        }
-        this.createLodPlotter();
+      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+      if (this.lodTypeIndex === -1) {
+        this.lodTypeIndex = 0;
       }
+      this.lodType = this.lodTypes[this.lodTypeIndex];
+      this.createLodPlotter();
     };
 
     PlotStemLodLoader.prototype.createLodPlotter = function() {
@@ -326,6 +324,7 @@
       }
       tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
       tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
+      tip.count = plotUtils.getTipString(ele.count, yAxis, true);
       if (this.lodType === "stem") {
         tip.avg_yTop = plotUtils.getTipStringPercent(ele.max, yAxis, 6);
         tip.avg_yBtm = plotUtils.getTipStringPercent(ele.min, yAxis, 6);

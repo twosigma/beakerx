@@ -89,15 +89,17 @@
         }
 
         var hashid = this.id + "_" + this.zoomHash + "_" + ele.hash + gid;
+        var w = Number((x2 - x - this.widthShrink * 2).toFixed(fixed));
+        var hasOneEl = ele.count === 1;
         var prop = {
           "id" : hashid,
           "idx" : this.index,
           "ele" : ele,
           "g" : gid,
           "x" : x + this.widthShrink,
-          "y" : y,
-          "w" : Number((x2 - x - this.widthShrink * 2).toFixed(fixed)),
-          "h" : Number((y2 - y).toFixed(fixed)),
+          "y" : hasOneEl ? y - w/2 : y,
+          "w" : w,
+          "h" : hasOneEl ? w : Number((y2 - y).toFixed(fixed)),
           "x2" : Number((x2 - this.widthShrink).toFixed(fixed))
         };
         if (this.avgOn === true) {
@@ -168,17 +170,20 @@
 
       if (this.avgOn === true) {
         var clr = props.st == null ? "black" : props.st;
+        var avgeles = _.filter(eleprops, function(eleprop){
+          return eleprop.ele.count > 1;
+        });
         // draw avg lines
         groupsvg.selectAll("line")
           .data(eleprops, function(d) { return d.id + "l"; }).exit().remove();
         groupsvg.selectAll("line")
-          .data(eleprops, function(d) { return d.id + "l"; }).enter().append("line")
+          .data(avgeles, function(d) { return d.id + "l"; }).enter().append("line")
           .attr("id", function(d) { return d.id + "l"; })
           .attr("class", this.plotClassAvgLine)
           .style("stroke", clr)
           .style("stroke-opacity", props.st_op);
         groupsvg.selectAll("line")
-          .data(eleprops, function(d) { return d.id + "l"; })
+          .data(avgeles, function(d) { return d.id + "l"; })
           .attr("x1", function(d) { return d.x; })
           .attr("x2", function(d) { return d.x2; })
           .attr("y1", function(d) { return d.ym; })

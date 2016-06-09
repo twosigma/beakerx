@@ -22,7 +22,7 @@
     "big.js": "~2.5.1",
     "markdown-it": "6.0.1",
     "acorn": "0.3.1",
-    "katex-build": "~0.5.1",
+    "katex": "0.6.0",
     "scrollin": "~0.3.0",
     "datatables-fixedcolumns": "3.1.0",
     "datatables-colreorder": "1.1.3",

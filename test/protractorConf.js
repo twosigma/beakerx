@@ -36,7 +36,7 @@ var config = {
     }));
   },
   specs: [
-    //'tests/easyform.js',
+    'tests/easyform.js',
     'tests/landing-page.js',
     'tests/notebook.js',
     'tests/code-cell.js',

@@ -324,6 +324,7 @@
       }
       tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
       tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
+      tip.count = plotUtils.getTipString(ele.count, yAxis, true);
       if (this.lodType === "stem") {
         tip.avg_yTop = plotUtils.getTipStringPercent(ele.max, yAxis, 6);
         tip.avg_yBtm = plotUtils.getTipStringPercent(ele.min, yAxis, 6);

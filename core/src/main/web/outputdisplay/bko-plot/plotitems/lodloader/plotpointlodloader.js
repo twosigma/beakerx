@@ -249,7 +249,7 @@
         tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis, 6);
         tip.count = plotUtils.getTipString(ele.count, yAxis, true);
       } else {
-        tip.x = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
+        tip.x = plotUtils.getTipStringPercent(ele.x, xAxis, 6);
         tip.y = plotUtils.getTipString(ele._max, yAxis, true);
       }
       return plotUtils.createTipString(tip);

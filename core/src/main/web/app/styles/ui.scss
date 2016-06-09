@@ -138,4 +138,24 @@ ul {
   color: #ccc;
 }
 
+::-webkit-scrollbar {
+  width: $scrollbar-width;
+  height: $scrollbar-width;
+}
 
+::-webkit-scrollbar-track-piece {
+  background-color: #fbfbfb;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 1px solid #bbb;
+  background-color: #ccc;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}

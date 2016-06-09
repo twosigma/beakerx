@@ -137,9 +137,9 @@
           }
 
           // error when trying to load an unknown language
-          if (!(settings.name in bkEvaluatePluginManager.getKnownEvaluatorPlugins())) {
+          if (!(settings.plugin in bkEvaluatePluginManager.getKnownEvaluatorPlugins())) {
             bkCoreManager.show1ButtonModal(
-              "Language \"" + settings.name + "\" could not be found.","ERROR",null,"OK"
+              "Language \"" + settings.plugin + "\" could not be found.","ERROR",null,"OK"
             );
             return null;
           }

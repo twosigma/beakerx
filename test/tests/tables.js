@@ -218,6 +218,7 @@ describe('Beaker Tables', function () {
         });
       });
 
+      var allRowsCount = 50;
       it('should display All rows', function (done) {
         var section = 'Table with pagination';
         browser.driver.manage().window().maximize();
@@ -229,14 +230,14 @@ describe('Beaker Tables', function () {
             browser.actions().mouseMove(rowsToShowMenu).perform();
             var showAll = beakerPO.getDataTableSubMenuItem(rowsToShowMenu, 'All');
             showAll.element(by.css('a[ng-click="changePageLength(length)"]')).click().then(function () {
-              expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 50)).toBe(true);
+              expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), allRowsCount)).toBe(true);
             });
             done();
           });
         });
       });
 
-      it('should select All rows', function (done) {
+      it('should select all rows', function (done) {
         var section = 'Table with pagination';
         beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
           beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
@@ -245,7 +246,23 @@ describe('Beaker Tables', function () {
           selectAllMenu.element(by.css('a[ng-click="doSelectAll()"]')).click();
           beakerPO.getDataTablesTBodyByIdCell(v).each(function (row, index) {
             beakerPO.checkClass(row, 'selected');
-            if(index === 49){
+            if(index === allRowsCount-1){
+              done();
+            }
+          });
+        });
+      });
+
+      it('should deselect all rows', function (done) {
+        var section = 'Table with pagination';
+        beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          beakerPO.getDataTableMenuToggle(section).click();
+          var deselectAllMenu = beakerPO.getDataTableMenuItem(section, 'Deselect All');
+          deselectAllMenu.element(by.css('a[ng-click="doDeselectAll()"]')).click();
+          beakerPO.getDataTablesTBodyByIdCell(v).each(function (row, index) {
+            expect(beakerPO.hasClass(row, 'selected')).toBe(false);
+            if(index === allRowsCount-1){
               done();
             }
           });

@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 'use strict';
 
 var util = require('util');
@@ -13,11 +29,13 @@ var Q = require('q');
 
 var beakerObject = require('./beaker-object.js');
 var transformation = require('./transformation.js');
+var log = require('./logging.js');
 
 var app = express();
 var beakerCorePort = process.env.beaker_core_port;
 var urlBase = "http://127.0.0.1:" + beakerCorePort + "/rest/namespace";
 var ctrlUrlBase = "http://127.0.0.1:" + beakerCorePort + "/rest/notebookctrl";
+var utilUrlBase = "http://127.0.0.1:" + beakerCorePort + "/rest/util";
 var auth = "Basic " + new Buffer("beaker:" + process.env.beaker_core_password).toString('base64');
 
 var port = process.argv[2];
@@ -25,12 +43,14 @@ var host = process.argv[3];
 
 var shells = {};
 
-console.log('Server Starting');
+console.log('Server Starting'); // important line - PluginServiceLocator determines when node has started by this line in output
 
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({extended: false})); // to support URL-encoded bodies
 
 app.use(basicauth('beaker', process.env.beaker_plugin_password));
+
+// log.setEnabled(true);
 
 // route for testing service is alive
 app.get('/pulse', function (request, response) {
@@ -68,6 +88,7 @@ app.post('/evaluate', function (request, response) {
     } else {
       response.statusCode = 422;
     }
+    log('result: ' + util.inspect(result));
     var transformed = transformation.transform(result);
     response.send(JSON.stringify(transformed));
   }, function (error) {
@@ -118,6 +139,6 @@ var createSandbox = function () {
     setSession: function (v) {
       this.beaker.setSession(v);
     },
-    beaker: beakerObject(urlBase, ctrlUrlBase, auth)
+    beaker: beakerObject(urlBase, ctrlUrlBase, utilUrlBase, auth)
   };
 };

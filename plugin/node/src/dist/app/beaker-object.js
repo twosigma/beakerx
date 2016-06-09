@@ -1,18 +1,43 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 var Q = require('q');
 var _ = require('lodash');
 var util = require('util');
 var request = require('request');
 
 var transformation = require('./transformation.js');
+var log = require('./logging.js');
 
-module.exports = function (urlBase, ctrlUrlBase, auth) {
+module.exports = function (urlBase, ctrlUrlBase, utilUrlBase, auth) {
 
   var _urlBase = urlBase;
   var _ctrlUrlBase = ctrlUrlBase;
+  var _utilUrlBase = utilUrlBase;
   var _auth = auth;
   var _session;
 
-  function doPost(url, form) {
+  function doPost(url, form, callback) {
+    callback = callback || function (body, error, resolve, reject) {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(body);
+      }
+    };
     return Q.promise(function (resolve, reject) {
       request({
         url: url,
@@ -22,8 +47,9 @@ module.exports = function (urlBase, ctrlUrlBase, auth) {
           "Authorization": _auth
         }
       }, function (error, r, body) {
-        if (body === 'ok') resolve('');
-        reject();
+        log('body : ' + util.inspect(body));
+        log('error: ' + util.inspect(error));
+        callback(body, error, resolve, reject)
       });
     });
   }
@@ -46,7 +72,7 @@ module.exports = function (urlBase, ctrlUrlBase, auth) {
   }
 
   function defaultReponseTransformer (response) {
-    return response ? response.value : undefined;
+    return response;
   }
 
   function set4(name, value, unset) {
@@ -57,14 +83,25 @@ module.exports = function (urlBase, ctrlUrlBase, auth) {
     if (!unset) {
       form.value = JSON.stringify(value);
     }
-    return doPost(_urlBase + '/set', form).then(function () {
+    return doPost(_urlBase + '/set', form, function (body, error, resolve, reject) {
+      if (body === 'ok') {
+        resolve(body);
+      } else {
+        reject(error || body);
+      }
+    }).then(function () {
       return value;
     });
   }
 
   var addSession = function (args) {
+    args = args || {};
     _.extend(args, {session: _session});
     return args;
+  };
+
+  var evaluationResultsCallback = function (result) {
+    return transformation.transformBack(JSON.parse(result));
   };
 
   var beakerPrototype = {
@@ -84,10 +121,10 @@ module.exports = function (urlBase, ctrlUrlBase, auth) {
       return set4(name, null, true);
     },
     evaluate: function (filter) {
-      return doPost(_ctrlUrlBase + "/evaluate", addSession({filter: filter}));
+      return doPost(_ctrlUrlBase + "/evaluate", addSession({filter: filter})).then(evaluationResultsCallback);
     },
     evaluateCode: function (evaluator, code) {
-      return doPost(_ctrlUrlBase + "/evaluateCode", addSession({evaluator: evaluator, code: code}));
+      return doPost(_ctrlUrlBase + "/evaluateCode", addSession({evaluator: evaluator, code: code})).then(evaluationResultsCallback);
     },
     showStatus: function (msg) {
       return doPost(_ctrlUrlBase + "/showStatus", addSession({msg: msg}));
@@ -99,7 +136,25 @@ module.exports = function (urlBase, ctrlUrlBase, auth) {
       return doPost(_ctrlUrlBase + "/showTransientStatus", addSession({msg: msg}));
     },
     getEvaluators: function () {
-      return doGet(_ctrlUrlBase + "/getEvaluators", addSession({}), function (result) { return result; });
+      return doGet(_ctrlUrlBase + "/getEvaluators", addSession());
+    },
+    getVersion: function () {
+      return doGet(_utilUrlBase + "/version", addSession());
+    },
+    getVersionNumber: function () {
+      return doGet(_utilUrlBase + "/getVersionInfo", addSession(), function (result) { return result.version; });
+    },
+    getCodeCells: function (filter) {
+      return doGet(_ctrlUrlBase + "/getCodeCells", addSession({filter: filter}));
+    },
+    setCodeCellBody: function (name, body) {
+      return doPost(_ctrlUrlBase + "/setCodeCellBody", addSession({name: name, body: body}));
+    },
+    setCodeCellEvaluator: function (name, evaluator) {
+      return doPost(_ctrlUrlBase + "/setCodeCellEvaluator", addSession({name: name, evaluator: evaluator}));
+    },
+    setCodeCellTags: function (name, tags) {
+      return doPost(_ctrlUrlBase + "/setCodeCellTags", addSession({name: name, tags: tags}));
     }
   };
 

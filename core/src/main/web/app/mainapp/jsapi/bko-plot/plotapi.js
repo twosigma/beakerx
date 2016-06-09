@@ -42,6 +42,17 @@
         return color;
       };
 
+      var padYs = function (graphics, graphicsWithMaxElements) {
+        var currentSize = graphics.y.length;
+        var maxSize = graphicsWithMaxElements.y.length;
+        var diff = maxSize - currentSize;
+        if (diff > 0) {
+          var lastY = graphics.y[currentSize - 1];
+          graphics.y = graphics.y.concat(_.range(lastY, lastY + diff, 0));
+          graphics.x = graphics.x.concat(graphicsWithMaxElements.x.slice(currentSize, maxSize + 1));
+        }
+      };
+
       //utils//
       var StrokeType = function () { };
       StrokeType.NONE = 'NONE';
@@ -340,17 +351,20 @@
       XYStacker.stack = function (graphicsList) {
         if(_.isEmpty(graphicsList) || graphicsList.length === 1) { return graphicsList; }
 
+        var graphicsWithMaxElements = _.max(graphicsList, function (obj) {
+          return obj.y.length;
+        });
+
+        padYs(graphicsList[0], graphicsWithMaxElements);
         var stackedList = [graphicsList[0]];
-        var ysSize = graphicsList[0].y.length;
         for (var gIndex = 1; gIndex < graphicsList.length; gIndex++) {
           var current = graphicsList[gIndex];
+          padYs(current, graphicsWithMaxElements);
           var previous = graphicsList[gIndex - 1];
           var currentYs = current.y;
           var previousYs = previous.y;
-          if (ysSize !== currentYs.length) {
-            throw new Error("Plot items that are added to XYStack should have the same length coordinates");
-          }
-          for (var yIndex = 0; yIndex < ysSize; yIndex++) {
+
+          for (var yIndex = 0; yIndex < currentYs.length; yIndex++) {
             currentYs[yIndex] = currentYs[yIndex] + previousYs[yIndex];
           }
           current.bases = previousYs;
@@ -607,6 +621,12 @@
       inheritsFrom(SimpleTimePlot, TimePlot);
       //add prototype methods here
 
+      var setPlotType = function(combinedPlot){
+        if (combinedPlot && combinedPlot.plots && combinedPlot.plots.length > 0){
+          combinedPlot.plot_type = combinedPlot.plots[0].type;
+        }
+      };
+
       var CombinedPlot = function (data){
         if (!data) { data = {}; }
         _.extend(this, {
@@ -619,6 +639,7 @@
           "weights": getValue(data, 'weights', [])
         });
         this.version = 'groovy';
+        setPlotType(this);
       };
       //add prototype methods here
       CombinedPlot.prototype.add = function (item, weight) {
@@ -632,6 +653,7 @@
         } else {
           throw new Error("CombinedPlot takes XYChart or List of XYChart");
         }
+        setPlotType(this);
         return this;
       };
 

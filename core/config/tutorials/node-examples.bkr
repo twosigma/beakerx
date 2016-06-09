@@ -39,7 +39,8 @@
                 "cm": {
                     "mode": "javascript"
                 }
-            }
+            },
+            "modulePath": ""
         }
     ],
     "cells": [
@@ -68,6 +69,8 @@
             "evaluator": "Node",
             "input": {
                 "body": [
+                    "if(server) server.close();",
+                    "",
                     "var count = 0;",
                     "var server = http.createServer(function (request, response) {",
                     "  response.setHeader(\"Access-Control-Allow-Origin\", \"*\"); // See Issue #1397",
@@ -85,7 +88,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "result": "server started",
-                "height": 56
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 11
@@ -108,7 +111,7 @@
                     "innertype": "Html",
                     "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<div id=\"message\">Hello from Node 101</div>"
                 },
-                "height": 55
+                "height": 35
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -144,10 +147,153 @@
                 "result": "14.44ms per HTTP call",
                 "pluginName": "JavaScript",
                 "elapsedTime": 1514,
-                "height": 56
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 17
+        },
+        {
+            "id": "sectiontd8GQg",
+            "type": "section",
+            "title": "Chat with Socket.io",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownf1vLqX",
+            "type": "markdown",
+            "body": [
+                "You can load node modules using **require** function.",
+                "It takes a module name or path as an argument, so you can load packages from anywhere in the filesystem, or by name.",
+                "In order to use names, you should set the location of a `node_modules` directory in the Language Manager in the *Modules path* field.",
+                "",
+                "In following Node example, we use *require* method to load some modules.",
+                "**Socket.io** package isn't bundled with Beaker so you have to install it with `npm install socket.io` in a terminal where the `NODE_PATH` environment variable has been set to match the value in the Language Manger.",
+                "Usually the *Modules path* in Language Manager is NODE_PATH with `/node_modules` appended to it. "
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeCPioL1",
+            "type": "code",
+            "evaluator": "Node",
+            "input": {
+                "body": [
+                    "if (closable) closable.close();",
+                    "if (io) io.close();",
+                    "var app = require('express')();",
+                    "var http = require('http').Server(app);",
+                    "var io = require('socket.io')(http);",
+                    "",
+                    "app.get('/', function(req, res){",
+                    "  res.send(htmlResponse);",
+                    "});",
+                    "",
+                    "var index = 1;",
+                    "io.on('connection', function(socket){",
+                    "  var userName = 'user' + index++;",
+                    "  socket.emit('hello', userName);",
+                    "  socket.on('chat message', function(msg){",
+                    "    io.emit('chat message', {user: userName, text: msg});",
+                    "  });",
+                    "});",
+                    "",
+                    "var closable = http.listen(7788);",
+                    "'running'"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "running",
+                "selectedType": "Text",
+                "height": 36
+            },
+            "evaluatorReader": true,
+            "lineCount": 21
+        },
+        {
+            "id": "codeTBLcVV",
+            "type": "code",
+            "evaluator": "HTML",
+            "input": {
+                "body": [
+                    "<iframe src=\"http://localhost:7788\" width=600 height=400></iframe>",
+                    "<iframe src=\"http://localhost:7788\" width=600 height=400></iframe>"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<iframe src=\"http://localhost:7788\" width=\"600\" height=\"400\"></iframe>\n<iframe src=\"http://localhost:7788\" width=\"600\" height=\"400\"></iframe>"
+                },
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 0,
+                "height": 423
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "tags": "result-container"
+        },
+        {
+            "id": "codeyG2ERW",
+            "type": "code",
+            "evaluator": "Node",
+            "input": {
+                "body": [
+                    "var htmlResponse = \"<!doctype html>\" +",
+                    "    \"<html>\" +",
+                    "    \"  <head>\" +",
+                    "    \"    <title>Socket.IO chat</title>\" +",
+                    "    \"    <style>\" +",
+                    "    \"      * { margin: 0; padding: 0; box-sizing: border-box; }\" +",
+                    "    \"      body { font: 13px Helvetica, Arial; }\" +",
+                    "    \"      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }\" +",
+                    "    \"      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }\" +",
+                    "    \"      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }\" +",
+                    "    \"      #messages { list-style-type: none; margin: 0; padding: 0; }\" +",
+                    "    \"      #messages li { padding: 5px 10px; }\" +",
+                    "    \"      #messages li:nth-child(odd) { background: #eee; }\" +",
+                    "    \"    </style>\" +",
+                    "    \"  </head>\" +",
+                    "    \"  <body>\" +",
+                    "    \"    <ul id=\\\"messages\\\"></ul>\" +",
+                    "    \"    <form action=\\\"\\\">\" +",
+                    "    \"      <input id=\\\"m\\\" autocomplete=\\\"off\\\" /><button>Send</button>\" +",
+                    "    \"    </form>\" +",
+                    "    \"    <script src=\\\"https://cdn.socket.io/socket.io-1.2.0.js\\\"></script>\" +",
+                    "    \"    <script src=\\\"http://code.jquery.com/jquery-1.11.1.js\\\"></script>\" +",
+                    "    \"    <script>\" +",
+                    "    \"      var socket = io();\" +",
+                    "    \"      $('form').submit(function(){\" +",
+                    "    \"        socket.emit('chat message', $('#m').val());\" +",
+                    "    \"        $('#m').val('');\" +",
+                    "    \"        return false;\" +",
+                    "    \"      });\" +",
+                    "    \"      var selfName = '';\" + ",
+                    "    \"      socket.on('hello', function (name) {\" +           ",
+                    "    \"        selfName = name;\" +           ",
+                    "    \"      });\" +           ",
+                    "    \"      socket.on('chat message', function(msg){\" +",
+                    "    \"        $('#messages').append($('<li>').text((msg.user === selfName ? 'me' : msg.user) + ': ' + msg.text));\" +",
+                    "    \"      });\" +",
+                    "    \"    </script>\" +",
+                    "    \"  </body>\" +",
+                    "    \"</html>\";"
+                ],
+                "hidden": true
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "height": 36,
+                "result": "undefined"
+            },
+            "evaluatorReader": true,
+            "lineCount": 39,
+            "initialization": true
         }
     ],
     "namespace": {

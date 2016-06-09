@@ -18,6 +18,7 @@ package com.twosigma.beaker.groovy.module;
 import com.twosigma.beaker.groovy.rest.ChartRest;
 import com.twosigma.beaker.groovy.rest.EasyFormRest;
 import com.twosigma.beaker.groovy.rest.GroovyShellRest;
+import com.twosigma.beaker.groovy.rest.TableDisplayRest;
 import com.twosigma.beaker.jvm.rest.ReadyRest;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
@@ -44,5 +45,6 @@ public class URLConfigModule extends ServletModule {
     bind(ReadyRest.class);
     bind(EasyFormRest.class);
     bind(ChartRest.class);
+    bind(TableDisplayRest.class);
   }
 }

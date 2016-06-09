@@ -338,7 +338,7 @@
             "input": {
                 "body": [
                     "// dataframe - 5",
-                    "def a = new com.twosigma.beaker.jvm.object.TableDisplay([ [1,2],[4,5] ], ['a','b'], ['integer','integer'])",
+                    "def a = new com.twosigma.beaker.table.TableDisplay([ [1,2],[4,5] ], ['a','b'], ['integer','integer'])",
                     "beaker.v5 = a",
                     "a"
                 ]

@@ -66,20 +66,29 @@
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
           $scope.model.resetShareMenuItems(newItems);
         });
-        var model = $scope.model.getCellModel();
-        model.getSvgToSave = function(){
-          return $scope.getSvgToSave();
+        $scope.fillCellModelWithPlotMethods = function () {
+          var model = $scope.model.getCellModel();
+          if(model.hasPlotSpecificMethods) {
+            return;
+          }
+          model.getSvgToSave = function () {
+            return $scope.getSvgToSave();
+          };
+          model.saveAsSvg = function () {
+            return $scope.saveAsSvg();
+          };
+          model.saveAsPng = function () {
+            return $scope.saveAsPng();
+          };
+          model.updateLegendPosition = function () {
+            return $scope.updateLegendPosition();
+          };
+          model.hasPlotSpecificMethods = true;
         };
-        model.saveAsSvg = function(){
-          return $scope.saveAsSvg();
-        };
-        model.saveAsPng = function(){
-          return $scope.saveAsPng();
-        };
-        model.updateLegendPosition = function(){
-          return $scope.updateLegendPosition();
-        };
-
+        $scope.$watch("model.getCellModel()", function () {
+          $scope.fillCellModelWithPlotMethods();
+        });
+        $scope.fillCellModelWithPlotMethods();
       },
       link : function(scope, element, attrs) {
         // rendering code
@@ -1432,7 +1441,7 @@
             "class" : "plot-coverbox",
             "x" : W - scope.layout.rightLayoutMargin,
             "y" : 0,
-            "width" : scope.stdmodel.yAxisR ? scope.layout.rightLayoutMargin : 0,
+            "width" : scope.stdmodel.yAxisR ? scope.layout.rightLayoutMargin : 10,
             "height" : H
           });
 

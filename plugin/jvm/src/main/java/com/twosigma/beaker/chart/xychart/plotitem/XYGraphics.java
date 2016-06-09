@@ -22,6 +22,7 @@ import com.twosigma.beaker.chart.Graphics;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
@@ -35,6 +36,7 @@ abstract public class XYGraphics extends Graphics {
   private   Class       plotType;
   private   Filter      lodFilter;
   private   Object      toolTipBuilder;
+  private   List<String> toolTips;
 
   protected List<Number> getBases(){
     return null;
@@ -44,68 +46,28 @@ abstract public class XYGraphics extends Graphics {
     return null;
   }
 
+  protected void setBase(Object base) {
+    reinit();
+  }
+
   public List<String> getToolTips() {
-    if (toolTipBuilder == null)
-      return null;
-    List<String> toolTip = new ArrayList<>();
-
-    try {
-      Class<?> clazz = toolTipBuilder.getClass();
-      Method getMaximumNumberOfParameters = clazz.getMethod("getMaximumNumberOfParameters");
-      getMaximumNumberOfParameters.setAccessible(true);
-      int numberOfParameters = (int) getMaximumNumberOfParameters.invoke(toolTipBuilder);
-
-      for (int i = 0; i < xs.size(); i++) {
-        Number x = xs.get(i);
-        Number y = ys.get(i);
-
-        Method call;
-        if (numberOfParameters == 1) {
-          call = clazz.getMethod("call", Object.class);
-          call.setAccessible(true);
-          toolTip.add((String) call.invoke(toolTipBuilder, x));
-        } else if (numberOfParameters == 2) {
-          call = clazz.getMethod("call", Object.class, Object.class);
-          call.setAccessible(true);
-          toolTip.add((String) call.invoke(toolTipBuilder, x, y));
-        } else if (numberOfParameters == 3) {
-          call = clazz.getMethod("call", Object.class, Object.class, Object.class);
-          call.setAccessible(true);
-          toolTip.add((String) call.invoke(toolTipBuilder, x, y, i));
-        } else if (numberOfParameters == 4) {
-          call = clazz.getMethod("call", Object.class, Object.class, Object.class, Object.class);
-          call.setAccessible(true);
-          toolTip.add((String) call.invoke(toolTipBuilder,
-                                           x,
-                                           y,
-                                           i,
-                                           getBases() != null ? getBases().get(i) : getBase()));
-        } else if (numberOfParameters == 5) {
-          call = clazz.getMethod("call",
-                                 Object.class,
-                                 Object.class,
-                                 Object.class,
-                                 Object.class,
-                                 Object.class);
-          call.setAccessible(true);
-          toolTip.add((String) call.invoke(toolTipBuilder,
-                                           x,
-                                           y,
-                                           i,
-                                           getBases() != null ? getBases().get(i) : getBase(),
-                                           displayName));
-        }
-      }
-    } catch (Throwable x) {
-      throw new RuntimeException("Can not create tooltips.", x);
-    }
-    return toolTip;
+    return toolTips;
   }
 
   public void setToolTip(Object toolTip) {
     toolTipBuilder = toolTip;
+    reinit();
   }
 
+  public void setToolTip(List<String> toolTips) {
+    toolTipBuilder = null;
+    for(Object tooltip : toolTips){
+      if(!(tooltip == null || tooltip instanceof String)){
+        throw new IllegalArgumentException("Tooltips should be the list of strings");
+      }
+    }
+    this.toolTips = toolTips;
+  }
 
   public void setX(List<Object> xs) {
     this.xs = new ArrayList<>();
@@ -127,6 +89,7 @@ abstract public class XYGraphics extends Graphics {
 //        }
       }
     }
+    reinit();
   }
 
   public List<Number> getX() {
@@ -138,6 +101,7 @@ abstract public class XYGraphics extends Graphics {
 
   public void setY(List<Number> ys) {
     this.ys = new ArrayList<Number>(ys);//to make it serializable
+    reinit();
   }
 
   public List<Number> getY() {
@@ -146,6 +110,7 @@ abstract public class XYGraphics extends Graphics {
 
   public void setDisplayName(String displayName) {
     this.displayName = displayName;
+    reinit();
   }
 
   public String getDisplayName() {
@@ -232,5 +197,39 @@ abstract public class XYGraphics extends Graphics {
 
   public void setPlotType(Class plotType) {
     this.plotType = plotType;
+  }
+
+  private void reinit() {
+    if (toolTipBuilder == null) return;
+
+    List<String> toolTip = new ArrayList<>();
+
+    try {
+      for (int i = 0; i < xs.size(); i++) {
+        toolTip.add((String) runClosure(toolTipBuilder, new Object[]{
+          xs.get(i),
+          ys.get(i),
+          i,
+          getBases() != null ? getBases().get(i) : getBase(),
+          displayName}));
+      }
+    } catch (Throwable x) {
+      throw new RuntimeException("Can not create tooltips.", x);
+    }
+
+    this.toolTips = toolTip;
+  }
+
+  private Object runClosure(Object closure, Object... params) throws Exception{
+    Class<?> clazz = closure.getClass();
+    Method getMaximumNumberOfParameters = clazz.getMethod("getMaximumNumberOfParameters");
+    getMaximumNumberOfParameters.setAccessible(true);
+    int numberOfParameters = (int) getMaximumNumberOfParameters.invoke(closure);
+    Method call;
+    Class<Object>[] paramTypes = new Class[numberOfParameters];
+    Arrays.fill(paramTypes, Object.class);
+    call = clazz.getMethod("call", paramTypes);
+    call.setAccessible(true);
+    return call.invoke(closure, Arrays.copyOfRange(params, 0, numberOfParameters));
   }
 }

@@ -212,7 +212,7 @@ var BeakerPageObject = function() {
   };
 
   this.getEvaluateButton = function() {
-    return element(by.className('evaluate-script'));
+    return element(by.css('a.evaluate-script[ng-click="evaluate($event)"]'));
   };
 
   this.languageManagerCloseButton = element(by.className('language-manager-close-button'));

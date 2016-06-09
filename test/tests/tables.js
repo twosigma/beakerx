@@ -269,6 +269,32 @@ describe('Beaker Tables', function () {
         });
       });
 
+      it('should reverse rows selection', function (done) {
+        var section = 'Table with pagination';
+        var selectedRows = [0, 3, 5];
+        beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+
+          for (var i = 0; i < selectedRows.length; i++) {
+            beakerPO.getDTRow(v, selectedRows[i]).click();
+          }
+
+          beakerPO.getDataTablesTBodyByIdCell(v).each(function (row, index) {
+            expect(beakerPO.hasClass(row, 'selected')).toBe(selectedRows.indexOf(index) !== -1);
+          });
+
+          beakerPO.getDataTableMenuToggle(section).click();
+          var reverseSelectionMenu = beakerPO.getDataTableMenuItem(section, 'Reverse Selection');
+          reverseSelectionMenu.element(by.css('a[ng-click="doReverseSelection()"]')).click();
+          beakerPO.getDataTablesTBodyByIdCell(v).each(function (row, index) {
+            expect(beakerPO.hasClass(row, 'selected')).toBe(selectedRows.indexOf(index) === -1);
+            if(index === allRowsCount-1){
+              done();
+            }
+          });
+        });
+      });
+
     });
 
   });

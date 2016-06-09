@@ -554,6 +554,10 @@ var BeakerPageObject = function() {
     return this.getDTFCLeftHeader(cellId).all(by.css('th')).get(colInd);
   };
 
+  this.getDTRow = function (cellId, rowInd) {
+    return this.getDataTablesTBodyByIdCell(cellId).get(rowInd);
+  };
+
   this.scrollDataTableHorizontally = function (cellId, x) {
     browser.executeScript("$('bk-code-cell-output[cell-id=" + cellId + "').find('.dataTables_scrollBody').scrollLeft(" + x + ");");
   };

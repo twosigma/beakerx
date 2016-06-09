@@ -236,6 +236,22 @@ describe('Beaker Tables', function () {
         });
       });
 
+      it('should select All rows', function (done) {
+        var section = 'Table with pagination';
+        beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          beakerPO.getDataTableMenuToggle(section).click();
+          var selectAllMenu = beakerPO.getDataTableMenuItem(section, 'Select All');
+          selectAllMenu.element(by.css('a[ng-click="doSelectAll()"]')).click();
+          beakerPO.getDataTablesTBodyByIdCell(v).each(function (row, index) {
+            beakerPO.checkClass(row, 'selected');
+            if(index === 49){
+              done();
+            }
+          });
+        });
+      });
+
     });
 
   });

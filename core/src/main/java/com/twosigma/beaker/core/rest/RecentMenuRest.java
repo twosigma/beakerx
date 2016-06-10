@@ -76,10 +76,14 @@ public class RecentMenuRest {
     return new ArrayList<>(this.recentDocuments);
   }
 
-  private void addRecentDocument(String json) {
+  private void removeRecentDocument(String json) {
     if (this.recentDocuments.contains(json)) {
       this.recentDocuments.remove(json);
     }
+  }
+
+  private void addRecentDocument(String json) {
+    removeRecentDocument(json);
     this.recentDocuments.addFirst(json);
   }
 
@@ -112,9 +116,8 @@ public class RecentMenuRest {
 
   @POST
   @Path("removeItem")
-  public void removeItem(@FormParam("item") String item) throws IOException {
-    final String s = item.replace("{", "").replace("}", "");
-    this.recentDocuments.removeIf(doc->doc.contains(s));
+  public void removeItem(@FormParam("item") String json) throws IOException {
+    removeRecentDocument(json);
     recordToFile();
   }
 

@@ -17,23 +17,9 @@
   <h1>Language Error</h1>
 </div>
 <div class="modal-body">
-
-<p>Failed to start ${pluginId}.</p>
-
-<p>Did you install it according to the instructions
-on <a target="_blank" href="http://beakernotebook.com/getting-started#${pluginId}">BeakerNotebook.com</a>?
-</p>
-
-<p>If you already have it, then <a target="_blank"
-href="https://github.com/twosigma/beaker-notebook/wiki/Language-Preferences">edit
-your preferences file</a> to help Beaker find it on your system, and
-then restart Beaker and try again.
-</p>
-
-<p>Any other languages in your notebook should still work.</p>
-
+  ${errorMessage}
 </div>
 
 <div class="modal-footer bkr">
-  <button class="beaker-btn active" ng-click='$close()'>OK</button>
+  <button class="btn btn-default" ng-click='$close()'>OK</button>
 </div>

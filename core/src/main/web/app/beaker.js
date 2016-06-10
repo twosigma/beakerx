@@ -270,7 +270,10 @@
             datatype: "json",
             url: "../beaker/rest/recent-menu/removeItem",
             data: {item: angular.toJson({
-              uri: doc.tooltip
+              uri: doc.meta.uri,
+              type: doc.meta.type,
+              readOnly: doc.meta.readOnly,
+              format: doc.meta.format
             })}
           });
           req.done(callback);
@@ -405,6 +408,9 @@
         }
       });
       bkCoreManager.addImportInput();
+      $rootScope.hasScroll = function () {
+        return window.innerHeight < document.body.clientHeight;
+      };
       $document.bind('drop dragover', function (e) {
         e.preventDefault();
       });

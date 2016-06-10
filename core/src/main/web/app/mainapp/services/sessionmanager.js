@@ -793,6 +793,12 @@
       return angular.toJson(data);
     };
 
+    var recordRecentNotebook = function () {
+      if (_notebookUri.get()) {
+        bkRecentMenu.recordRecentDocument(generateRecentDocumentItem());
+      }
+    };
+
     var generateSaveData = function() {
       return {
         uriType: _uriType,
@@ -919,7 +925,7 @@
         bkNotebookManager.init(this);
         connectcontrol(sessionId);
         bkSession.backup(_sessionId, generateBackupData());
-        bkRecentMenu.recordRecentDocument(generateRecentDocumentItem());
+        recordRecentNotebook();
       },
       clear: function() {
         disconnectcontrol(_sessionId);
@@ -967,9 +973,7 @@
         _format = format;
         _notebookUri.set(notebookUri);
       },
-      recordRecentNotebook: function () {
-        bkRecentMenu.recordRecentDocument(generateRecentDocumentItem());
-      },
+      recordRecentNotebook: recordRecentNotebook,
       updateRecentDocument: function (oldUrl) {
         bkRecentMenu.updateRecentDocument(oldUrl, generateRecentDocumentItem());
       },

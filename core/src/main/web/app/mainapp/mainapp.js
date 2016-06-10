@@ -1328,7 +1328,7 @@
           };
           var params = {
             msgBody: "Beaker server disconnected. Further edits will not be saved.<br>" +
-            "Save current notebook as a file?",
+            "Download a copy of the current notebook?",
             msgHeader: "Disconnected",
             dismissAction: dismissAction,
             buttons: [
@@ -1347,7 +1347,7 @@
                 cssClass: "btn-primary modal-submit"
               },
               {
-                text: "Save",
+                text: "Download",
                 action: function() {
                   // "Save", save the notebook as a file on the client side
                   bkSessionManager.dumpDisplayStatus();

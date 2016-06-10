@@ -19,11 +19,19 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('HeatMap Tutorial', function (done) {
+describe('HeatMap Tutorial', function () {
 
-    beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&readOnly=true").then(done);
-    beakerPO.waitUntilLoadingFinished();
+    beforeAll(function(done) {
+        beakerPO = new BeakerPageObject();
+        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&readOnly=true").then(done);
+        beakerPO.waitUntilLoadingFinished();
+        browser.driver.manage().window().maximize();
+    });
+
+    afterAll(function(done){
+        beakerPO.createScreenshot('heatmapTutorial1');
+        done();
+    });
 
     it('Basic HeatMap Example', function () {
         var idCell = "codeFh3TtJ";

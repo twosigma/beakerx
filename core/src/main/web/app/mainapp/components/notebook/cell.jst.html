@@ -27,10 +27,13 @@
       <div class="cell-menu-item expand-contract" ng-if="cellmodel.type=='code'" ng-click="toggleCellInput()" ng-class="cellmodel.input.hidden && 'collapsed'"
            title="{{cellmodel.input.hidden ? 'show' : 'hide'}} cell input"></div>
       <div class="dropdown dropdown-promoted advanced-only" ng-if="isCodeCell()" style="float: right;">
-        <div ng-if="!cellmodel.evaluatorReader" class="loading-state">
+        <div ng-if="!cellmodel.evaluatorReader && !hasFaultyEvaluator()" class="loading-state">
           <i class='fa fa-refresh fa-spin'></i>
         </div>
-        <bk-code-cell-input-menu ng-show="cellmodel.evaluatorReader"></bk-code-cell-input-menu>
+        <div ng-if="hasFaultyEvaluator()" class="loading-state">
+          <i class='fa fa-exclamation-triangle' title="failed to load {{cellmodel.evaluator}}" ng-if="hasFaultyEvaluator()"></i>
+        </div>
+        <bk-code-cell-input-menu ng-show="cellmodel.evaluatorReader" ng-if="!hasFaultyEvaluator()"></bk-code-cell-input-menu>
       </div>
       <div class="cell-menu-item evaluate" ng-if="isMarkdownCell()" title="run cell"></div>
       <div class="cell-menu-item evaluate" ng-click="evaluate($event)" ng-if="isCodeCell()" title="run cell"></div>

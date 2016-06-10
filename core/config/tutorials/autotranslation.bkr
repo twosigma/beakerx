@@ -41,8 +41,7 @@
                     "mode": "javascript",
                     "background": "#FFE0F0"
                 }
-            },
-            "languageVersion": "ES2015"
+            }
         },
         {
             "name": "R",
@@ -61,16 +60,7 @@
                     "mode": "groovy"
                 }
             },
-            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*\njava.util.concurrent.TimeUnit\ncom.twosigma.beaker.chart.KeyboardCodes\ncom.twosigma.beaker.table.*\ncom.twosigma.beaker.table.format.*\ncom.twosigma.beaker.table.renderer.*\ncom.twosigma.beaker.table.highlight.*"
-        },
-        {
-            "name": "Node",
-            "plugin": "Node",
-            "view": {
-                "cm": {
-                    "mode": "javascript"
-                }
-            }
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*"
         }
     ],
     "cells": [
@@ -205,26 +195,6 @@
             },
             "evaluatorReader": true,
             "lineCount": 1
-        },
-        {
-            "id": "codeFI1OSI",
-            "type": "code",
-            "evaluator": "Node",
-            "input": {
-                "body": [
-                    "beaker.get('x').then(function (x) {",
-                    "  return x + ' ' + x.toLowerCase();",
-                    "})"
-                ]
-            },
-            "output": {
-                "state": {},
-                "result": "Strings work fine strings work fine",
-                "selectedType": "Text",
-                "height": 36
-            },
-            "evaluatorReader": true,
-            "lineCount": 3
         },
         {
             "id": "markdownUSyGLw",
@@ -393,10 +363,10 @@
         {
             "id": "codeKBVTUw",
             "type": "code",
-            "evaluator": "Node",
+            "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "beaker.set('zz', 13)"
+                    "beaker.zz = 13"
                 ]
             },
             "output": {
@@ -422,10 +392,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 657,
+                "elapsedTime": 612,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "3f31c5c9-82cd-4265-8ab0-3c88960dd577",
+                "shellId": "d1cd407a-c651-4259-874a-d9a5cadcacc1",
                 "dataresult": [
                     13
                 ],
@@ -560,7 +530,7 @@
                         "subtype": "TableDisplay"
                     }
                 },
-                "height": 205
+                "height": 235
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -599,12 +569,6 @@
                             "C",
                             "D"
                         ],
-                        "actualtype": [
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4"
-                        ],
                         "actualalign": [
                             "R",
                             "R",
@@ -623,15 +587,7 @@
                             true,
                             true,
                             true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [],
-                        "tableFilter": "",
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": []
+                        ]
                     }
                 },
                 "pluginName": "R",
@@ -699,131 +655,10 @@
                         "double"
                     ]
                 },
-                "height": 187
+                "height": 217
             },
             "evaluatorReader": true,
             "lineCount": 1
-        },
-        {
-            "id": "code9H8UuT",
-            "type": "code",
-            "evaluator": "Node",
-            "input": {
-                "body": [
-                    "beaker.get('df').then(function (df) {",
-                    "  df.removeColumn('A');",
-                    "  return df;",
-                    "})"
-                ]
-            },
-            "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 25,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "B",
-                            "C",
-                            "D"
-                        ],
-                        "actualtype": [
-                            "4.4",
-                            "4.4",
-                            "4.4"
-                        ],
-                        "actualalign": [
-                            "R",
-                            "R",
-                            "R"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "getCellSho": [
-                            true,
-                            true,
-                            true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [],
-                        "tableFilter": "",
-                        "showFilter": false,
-                        "columnSearchActive": false,
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "formatForTimes": {},
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": []
-                    }
-                },
-                "result": {
-                    "type": "TableDisplay",
-                    "subtype": "TableDisplay",
-                    "hasIndex": "true",
-                    "values": [
-                        [
-                            0,
-                            1.3403737949108694,
-                            -1.8093038308317297,
-                            0.7314949257860343
-                        ],
-                        [
-                            1,
-                            -0.15316644779749056,
-                            0.07518116294565699,
-                            0.8394534684592403
-                        ],
-                        [
-                            2,
-                            0.4486777038888142,
-                            -0.8731502422498962,
-                            -0.8805117226587005
-                        ],
-                        [
-                            3,
-                            0.31358544968028784,
-                            -0.6876577604225309,
-                            -0.2944982344402664
-                        ],
-                        [
-                            4,
-                            -0.7158716195012167,
-                            0.9761187323490753,
-                            -0.00456341627450638
-                        ],
-                        [
-                            5,
-                            0.3302452527273567,
-                            -0.1368218260762554,
-                            -0.4690409789772111
-                        ]
-                    ],
-                    "types": [
-                        "integer",
-                        "double",
-                        "double",
-                        "double"
-                    ],
-                    "columnNames": [
-                        "Index",
-                        "B",
-                        "C",
-                        "D"
-                    ]
-                },
-                "selectedType": "Table",
-                "height": 187
-            },
-            "evaluatorReader": true,
-            "lineCount": 4
         },
         {
             "id": "codeIkZtDp",
@@ -849,10 +684,6 @@
                             "X1",
                             "X2"
                         ],
-                        "actualtype": [
-                            "4.4",
-                            "4.4"
-                        ],
                         "actualalign": [
                             "R",
                             "R"
@@ -865,15 +696,7 @@
                         "getCellSho": [
                             true,
                             true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [],
-                        "tableFilter": "",
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": []
+                        ]
                     }
                 },
                 "pluginName": "R",
@@ -945,7 +768,7 @@
                         "double"
                     ]
                 },
-                "height": 275
+                "height": 325
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -1043,7 +866,7 @@
                         ]
                     }
                 },
-                "height": 293
+                "height": 343
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -1130,7 +953,7 @@
             "output": {
                 "state": {},
                 "result": "",
-                "selectedType": "Text",
+                "selectedType": "Hidden",
                 "pluginName": "Groovy",
                 "shellId": "0e227975-f530-406c-b1ca-d97b3690d67e",
                 "elapsedTime": 3336,
@@ -1162,10 +985,6 @@
                             "a",
                             "b"
                         ],
-                        "actualtype": [
-                            2,
-                            2
-                        ],
                         "actualalign": [
                             "R",
                             "R"
@@ -1178,15 +997,7 @@
                         "getCellSho": [
                             true,
                             true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [],
-                        "tableFilter": "",
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": []
+                        ]
                     }
                 },
                 "result": {
@@ -1215,7 +1026,7 @@
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
                 "elapsedTime": 30,
-                "height": 99
+                "height": 109
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -1271,12 +1082,6 @@
                             "c2",
                             "c3"
                         ],
-                        "actualtype": [
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4"
-                        ],
                         "actualalign": [
                             "R",
                             "R",
@@ -1295,15 +1100,7 @@
                             true,
                             true,
                             true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [],
-                        "tableFilter": "",
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": []
+                        ]
                     }
                 },
                 "result": {
@@ -1345,114 +1142,10 @@
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
                 "elapsedTime": 24,
-                "height": 121
+                "height": 136
             },
             "evaluatorReader": true,
             "lineCount": 2
-        },
-        {
-            "id": "codesVVqyj",
-            "type": "code",
-            "evaluator": "Node",
-            "input": {
-                "body": [
-                    "beaker.get('matrix')"
-                ]
-            },
-            "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 25,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "c0",
-                            "c1",
-                            "c2",
-                            "c3"
-                        ],
-                        "actualtype": [
-                            "4.4",
-                            "4.4",
-                            "4.4",
-                            "4.4"
-                        ],
-                        "actualalign": [
-                            "R",
-                            "R",
-                            "R",
-                            "R"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
-                        "getCellSho": [
-                            true,
-                            true,
-                            true,
-                            true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [],
-                        "tableFilter": "",
-                        "showFilter": false,
-                        "columnSearchActive": false,
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "formatForTimes": {},
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": []
-                    }
-                },
-                "result": {
-                    "type": "TableDisplay",
-                    "values": [
-                        [
-                            1.5,
-                            2,
-                            3,
-                            0.3
-                        ],
-                        [
-                            4,
-                            5,
-                            6,
-                            7
-                        ],
-                        [
-                            7,
-                            8,
-                            9,
-                            10.3
-                        ]
-                    ],
-                    "subtype": "Matrix",
-                    "columnNames": [
-                        "c0",
-                        "c1",
-                        "c2",
-                        "c3"
-                    ],
-                    "types": [
-                        "double",
-                        "double",
-                        "double",
-                        "double"
-                    ]
-                },
-                "selectedType": "Table",
-                "height": 121
-            },
-            "evaluatorReader": true,
-            "lineCount": 1
         }
     ],
     "namespace": {

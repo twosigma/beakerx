@@ -393,12 +393,7 @@ function transformBack(v) {
   return v.map(transformBack);
 }
 
-// end of copy-pasted code
-
-exports.DataFrame = DataFrame;
-exports.transform = transform;
-exports.transformBack = transformBack;
-exports.isCircularObject = function(node, parents) {
+function isCircularObject(node, parents) {
   parents = parents || [];
   if (!node || typeof node != "object"){
     return false;
@@ -417,4 +412,11 @@ exports.isCircularObject = function(node, parents) {
   }
   parents.pop(node);
   return false;
-};
+}
+
+// end of copy-pasted code
+
+exports.DataFrame = DataFrame;
+exports.transform = transform;
+exports.transformBack = transformBack;
+exports.isCircularObject = isCircularObject;

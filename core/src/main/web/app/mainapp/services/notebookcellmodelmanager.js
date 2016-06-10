@@ -309,6 +309,19 @@
               });
             }
           },
+          insertLast: function(cell, quietly) {
+            if (!_.isObject(cell)) {
+              throw 'unacceptable';
+            }
+
+            cells.push(cell);
+            recreateCellMap();
+            if (!quietly) {
+              $timeout(function () {
+                $rootScope.$broadcast('beaker.cell.added', cell);
+              });
+            }
+          },
           insertAfter: function(id, cell, quietly) {
             if (!_.isObject(cell)) {
               throw 'unacceptable';

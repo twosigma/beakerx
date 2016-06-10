@@ -41,6 +41,7 @@
   module.directive('bkCodeCell', function(
       bkUtils,
       bkEvaluatorManager,
+      bkEvaluatePluginManager,
       bkCellMenuPluginManager,
       bkSessionManager,
       bkCoreManager,
@@ -225,8 +226,12 @@
         };
 
         $scope.getEvaluator = function() {
+          if (!($scope.cellmodel.evaluator in bkEvaluatePluginManager.getKnownEvaluatorPlugins())) {
+            return "fail";
+          }
           return bkEvaluatorManager.getEvaluator($scope.cellmodel.evaluator);
         };
+
         $scope.updateUI = function(evaluator) {
           if(!$scope.cm) {
             return;

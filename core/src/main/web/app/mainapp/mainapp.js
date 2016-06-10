@@ -34,6 +34,7 @@
                                              'bk.cellMenuPluginManager',
                                              'bk.notebookVersionManager',
                                              'bk.evaluatorManager',
+                                             'bk.evaluatePluginManager',
                                              'bk.evaluateJobManager',
                                              'bk.notebookRouter',
                                              'bk.notebook',
@@ -60,6 +61,7 @@
       bkCellMenuPluginManager,
       bkNotebookVersionManager,
       bkEvaluatorManager,
+      bkEvaluatePluginManager,
       bkEvaluateJobManager,
       bkElectron,
       $location,
@@ -132,6 +134,14 @@
           // set shell id to null, so it won't try to find an existing shell with the id
           if (alwaysCreateNewEvaluator) {
             settings.shellID = null;
+          }
+
+          // error when trying to load an unknown language
+          if (!(settings.plugin in bkEvaluatePluginManager.getKnownEvaluatorPlugins())) {
+            bkCoreManager.show1ButtonModal(
+              "Language \"" + settings.plugin + "\" could not be found.","ERROR",null,"OK"
+            );
+            return null;
           }
 
           return bkEvaluatorManager.newEvaluator(settings)
@@ -287,6 +297,9 @@
             if (notebookModel && notebookModel.evaluators) {
               var promises = _.map(notebookModel.evaluators, function(ev) {
                 return addEvaluator(ev, !isExistingSession);
+              });
+              promises = _.filter(promises, function(el) {
+                el != null
               });
               bkUtils.all(promises).then(function() {
                 if (!isExistingSession) {

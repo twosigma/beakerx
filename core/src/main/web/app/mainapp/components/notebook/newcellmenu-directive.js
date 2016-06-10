@@ -37,7 +37,7 @@
         var menu = $(element).find('.new-cell');
         var fade = function (opacity) {
           if (!$scope.isLarge) {
-            menu.animate({opacity: opacity}, 200);
+            menu.stop().fadeTo(200, opacity);
           }
         };
         menu.on('mouseenter.cellmenu-fade', function () { fade(1); });

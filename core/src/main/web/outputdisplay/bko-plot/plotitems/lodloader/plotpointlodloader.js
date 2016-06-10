@@ -25,12 +25,12 @@
       this.format(lodthresh);
     };
     // class constants
-    PlotPointLodLoader.prototype.lodTypes = ["point", "box"];
-    PlotPointLodLoader.prototype.lodSteps = [3, 10];
+    PlotPointLodLoader.prototype.lodTypes = ["box"];
+    PlotPointLodLoader.prototype.lodSteps = [10];
 
     PlotPointLodLoader.prototype.format = function() {
       // create plot type index
-      this.lodTypeIndex =  (this.datacopy.lod_filter) ? this.lodTypes.indexOf(this.datacopy.lod_filter) : 1;
+      this.lodTypeIndex =  (this.datacopy.lod_filter) ? this.lodTypes.indexOf(this.datacopy.lod_filter) : 0;
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
       // create the plotters
@@ -71,13 +71,6 @@
     PlotPointLodLoader.prototype.applyZoomHash = function(hash) {
       this.zoomHash = hash;
       this.lodplotter.setZoomHash(hash);
-    };
-
-    PlotPointLodLoader.prototype.switchLodType = function(scope) {
-      this.clear(scope);  // must clear first before changing lodType
-      this.lodTypeIndex = (this.lodTypeIndex + 1) % this.lodTypes.length;
-      this.lodType = this.lodTypes[this.lodTypeIndex];
-      this.createLodPlotter();
     };
 
     PlotPointLodLoader.prototype.createLodPlotter = function() {
@@ -176,14 +169,12 @@
     };
 
     PlotPointLodLoader.prototype.applyLodType = function(type) {
-      if (!this.datacopy.lod_filter) {
-        this.lodType = type;
-        this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
-        if (this.lodTypeIndex === -1) {
-          this.lodTypeIndex = 0;
-        }
-        this.createLodPlotter();
+      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+      if (this.lodTypeIndex === -1) {
+        this.lodTypeIndex = 0;
       }
+      this.lodType = this.lodTypes[this.lodTypeIndex];
+      this.createLodPlotter();
     };
 
     PlotPointLodLoader.prototype.createSampler = function() {
@@ -250,11 +241,17 @@
       if (this.legend != null) {
         tip.title = this.legend + " (" + sub + ")";
       }
-      tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
-      tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
-      tip.max = plotUtils.getTipString(ele._max, yAxis, true);
-      tip.min = plotUtils.getTipString(ele._min, yAxis, true);
-      tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis, 6);
+      if (ele.count > 1) {
+        tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
+        tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
+        tip.max = plotUtils.getTipString(ele._max, yAxis, true);
+        tip.min = plotUtils.getTipString(ele._min, yAxis, true);
+        tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis, 6);
+        tip.count = plotUtils.getTipString(ele.count, yAxis, true);
+      } else {
+        tip.x = plotUtils.getTipStringPercent(ele.x, xAxis, 6);
+        tip.y = plotUtils.getTipString(ele._max, yAxis, true);
+      }
       return plotUtils.createTipString(tip);
     };
 

@@ -408,6 +408,9 @@
         }
       });
       bkCoreManager.addImportInput();
+      $rootScope.hasScroll = function () {
+        return window.innerHeight < document.body.clientHeight;
+      };
       $document.bind('drop dragover', function (e) {
         e.preventDefault();
       });

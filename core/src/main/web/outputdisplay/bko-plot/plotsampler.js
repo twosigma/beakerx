@@ -69,6 +69,15 @@
         }
         // prevent segtree from being modified
         var avg = qret.sum / qret.cnt;
+        var count = 0;
+        var index;
+        _.forEach(this.xs, function (x, i) {
+          if (x >= sl && x < sr) {
+            count++;
+            index = i;
+          }
+        });
+        if(!count){ continue; }
         var ele = {
           min : qret.min,
           max : qret.max,
@@ -77,9 +86,10 @@
           xl : sl,
           xr : sr,
           avg : avg,
-          x : (sl + sr) / 2,
+          x : count === 1 ? this.xs[index] : (sl + sr) / 2,
           y : avg,
-          hash : h
+          hash : h,
+          count: count
         };
         ret.push(ele);
       }

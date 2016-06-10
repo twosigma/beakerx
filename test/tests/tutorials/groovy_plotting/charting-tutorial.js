@@ -24,7 +24,7 @@ describe('Charting Tutorial', function (done) {
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true")
         .then(done)
-        .then(beakerPO.waitUntilLoadingCellOutput());
+        .then(beakerPO.waitUntilLoadingCellOutput);
 
   /**
    * Testing
@@ -38,7 +38,7 @@ describe('Charting Tutorial', function (done) {
     var idCell = "code42QbvS";
     beakerPO.checkPlotIsPresentByIdCell(idCell, 0);
     beakerPO.checkPlotIsPresentByIdCell(idCell, 1);
-
+    beakerPO.createScreenshot('customPlotExample');
     beakerPO.checkLegendIsPresentByIdCell(idCell, 0);
 
     expect(beakerPO.getCodeCellOutputCombplotTitleByIdCell(idCell)).toBe("US Treasuries");

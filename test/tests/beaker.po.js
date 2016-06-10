@@ -435,7 +435,7 @@ var BeakerPageObject = function() {
       containerIdx = 0;
     this.scrollToCodeCellOutputByIdCell(codeCellOutputId);
     this.scrollHeaderElement();
-    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + codeCellOutputId + ']'), 10000));
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + codeCellOutputId + ']'), 20000));
     expect(this.getPlotMaingByIdCell(codeCellOutputId, containerIdx).isPresent()).toBe(true);
   };
 

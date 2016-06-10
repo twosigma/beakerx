@@ -22,9 +22,8 @@ var beakerPO;
 describe('Charting Tutorial', function (done) {
 
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true")
-        .then(done)
-        .then(beakerPO.waitUntilLoadingCellOutput);
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true").then(done);
+    beakerPO.waitUntilLoadingCellOutput();
 
   /**
    * Testing

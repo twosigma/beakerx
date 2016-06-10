@@ -323,7 +323,8 @@
           $scope.model.resetShareMenuItems(newItems);
         });
 
-        $scope.exportTo = function(data, format) {
+        $scope.exportTo = function(rows, format) {
+          var data = rows.data();
           var i;
           var j;
           var startingColumnIndex = 1;
@@ -359,7 +360,7 @@
             var columnTitle
                 = (hasIndex && i === startingColumnIndex)
                 ? "Index"
-                : fix($scope.columns[order].title);
+                : fix($($scope.columns[order].title).text());
             out = out + qot + columnTitle + qot;
           }
           out = out + eol;
@@ -379,7 +380,12 @@
               }
               var d = row[j];
               if ($scope.columns[order].render !== undefined) {
-                d = $scope.columns[order].render(d, 'display');
+                d = $scope.columns[order].render(d, 'display', null,
+                  {
+                    settings: $scope.table.settings()[0],
+                    row: rows[0][i],
+                    col: order
+                  });
               }
               d = d + '';
               out = out + qot + (d !== undefined && d !== null ? fix(d) : '') + qot;
@@ -390,18 +396,18 @@
         };
 
         $scope.doCSVExport = function(all) {
-          var data;
+          var rows;
           var isFiltered = function (index) {
             return $scope.table.settings()[0].aiDisplay.indexOf(index) > -1;
           };
           if (!all) {
-            data = $scope.table.rows(isFiltered).data();
+            rows = $scope.table.rows(isFiltered);
           } else {
-            data = $scope.table.rows(function(index, data, node) {
+            rows = $scope.table.rows(function(index, data, node) {
               return $scope.selected[index] && isFiltered(index);
-            }).data();
+            });
           }
-          var out = $scope.exportTo(data, 'csv');
+          var out = $scope.exportTo(rows, 'csv');
           bkHelper.selectFile(function(n) {
             var suffix = '.csv';
             if (n === undefined) {
@@ -467,13 +473,13 @@
               var isFiltered = function (index) {
                 return $scope.table.settings()[0].aiDisplay.indexOf(index) > -1;
               };
-              var data = $scope.table.rows(function(index, data, node) {
+              var rows = $scope.table.rows(function(index, data, node) {
                 return isFiltered(index) && $scope.selected[index];
-              }).data();
-              if (data === undefined || data.length === 0) {
-                data = $scope.table.rows(isFiltered).data();
+              });
+              if (rows === undefined || rows.indexes().length === 0) {
+                rows = $scope.table.rows(isFiltered);
               }
-              var out = $scope.exportTo(data, 'tabs');
+              var out = $scope.exportTo(rows, 'tabs');
               return out;
             };
             var executeCopy = function (text) {
@@ -2529,13 +2535,13 @@
 
         scope.menuToggle = function() {
           var getTableData = function() {
-            var data = scope.table.rows(function(index, data, node) {
+            var rows = scope.table.rows(function(index, data, node) {
               return scope.selected[index];
-            }).data();
-            if (data === undefined || data.length === 0) {
-              data = scope.table.rows().data();
+            });
+            if (rows === undefined || rows.indexes().length === 0) {
+              rows = scope.table.rows();
             }
-            var out = scope.exportTo(data, 'tabs');
+            var out = scope.exportTo(rows, 'tabs');
             return out;
           };
 

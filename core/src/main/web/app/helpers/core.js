@@ -1161,11 +1161,13 @@
     };
   });
 
-  module.controller('fileOpenDialogCtrl', function ($scope, $rootScope, $uibModalInstance, bkCoreManager, bkUtils,  strategy) {
+  module.controller('fileOpenDialogCtrl', function ($scope, $rootScope, $uibModalInstance, $timeout, bkCoreManager, bkUtils,  strategy) {
 
     var elfinder;
 
-    var selected = {
+    var hashes2Open = [];
+
+    $scope.selected = {
       file: null,
       path: null
     };
@@ -1189,7 +1191,12 @@
     };
 
     $scope.ready = function () {
-      return selected.file && selected.file.mime !== 'directory';
+      return $scope.selected.file && $scope.selected.file.mime !== 'directory';
+    };
+
+    var setFromHash = function(hash){
+      $scope.selected.file = elfinder.file(hash);
+      $scope.selected.path = elfinder.path(hash).replace('//', '/');
     };
 
     $scope.init = function () {
@@ -1197,22 +1204,26 @@
 
       var selectCallback = function (event, elfinderInstance) {
         if (event.data.selected && event.data.selected.length > 0) {
-          selected.file = elfinderInstance.file(event.data.selected[0]);
-          selected.path = elfinderInstance.path(event.data.selected[0]);
-
-        } else {
-          selected.file = null;
-          selected.path = null;
+          $timeout(function(){
+            setFromHash(event.data.selected[0]);
+          }, 0);
         }
-        $scope.$apply();
       };
-
+      var openCallback = function (event, elfinderInstance) {
+        if (hashes2Open.length > 0) {
+          _open_( hashes2Open.pop());
+        }
+        $timeout(function () {
+          setFromHash(elfinderInstance.cwd().hash);
+        }, 0);
+      };
       var getFileCallback = function (url) {
         $scope.open();
       };
 
       var elfinderOptions = bkHelper.elfinderOptions(getFileCallback,
         selectCallback,
+        openCallback,
         $scope.mime(),
         $scope.getStrategy().treeViewfs.showHiddenFiles);
 
@@ -1236,11 +1247,33 @@
           $elfinder.trigger('resize');
         }
       });
+
+      $timeout(function(){
+        setFromHash(elfinder.cwd().hash);
+      }, 1000);
+    };
+
+
+    var _open_ = function(hash){
+      var file = elfinder.file(hash);
+      if (file && file.mime === 'directory' && $scope.mime().indexOf(file.mime) !== -1){
+        setFromHash(hash);
+        $scope.open();
+      }else{
+        elfinder.exec('open', hashes2Open.pop());
+      }
+    };
+
+    $scope.onkeypress= function(keyEvent) {
+      if (keyEvent.which === 13){
+        hashes2Open = bkHelper.path2hash(elfinder, $scope.selected.path);
+        _open_( hashes2Open.pop());
+      }
     };
 
     $scope.open = function () {
       if ($scope.ready()) {
-        $uibModalInstance.close(selected);
+        $uibModalInstance.close($scope.selected);
       }
     };
 
@@ -1266,8 +1299,16 @@
       }
     });
 
-
-
+    $scope.$watch(function (scope) {
+      if (elfinder)
+      return elfinder.cwd().hash;
+    }, function () {
+      if (elfinder) {
+        $timeout(function () {
+          setFromHash(elfinder.cwd().hash);
+        }, 0);
+      }
+    });
   });
 
   module.controller('fileSaveDialogCtrl', function ($scope, $rootScope, $uibModalInstance, bkUtils, GLOBALS, strategy) {
@@ -1288,6 +1329,7 @@
     };
 
     $scope.filename = null;
+    $scope.selection = null;
 
     $scope.getStrategy = function () {
       return strategy;
@@ -1313,6 +1355,8 @@
           var file = elfinderInstance.file(event.data.selected[0]);
           if (file.mime !== 'directory')
             $scope.filename = file.name;
+
+          $scope.selection = file.path;
 
         }
         $scope.$apply();

@@ -1259,7 +1259,79 @@
         return elfinder;
       },
 
-      elfinderOptions: function (getFileCallback, selectCallback, mime, showHiddenFiles) {
+      //http://stackoverflow.com/questions/7370943/retrieving-binary-file-content-using-javascript-base64-encode-it-and-reverse-de
+      base64Encode: function(str) {
+        var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        var out = "", i = 0, len = str.length, c1, c2, c3;
+        while (i < len) {
+          c1 = str.charCodeAt(i++) & 0xff;
+          if (i == len) {
+            out += CHARS.charAt(c1 >> 2);
+            out += CHARS.charAt((c1 & 0x3) << 4);
+            out += "==";
+            break;
+          }
+          c2 = str.charCodeAt(i++);
+          if (i == len) {
+            out += CHARS.charAt(c1 >> 2);
+            out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+            out += CHARS.charAt((c2 & 0xF) << 2);
+            out += "=";
+            break;
+          }
+          c3 = str.charCodeAt(i++);
+          out += CHARS.charAt(c1 >> 2);
+          out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+          out += CHARS.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
+          out += CHARS.charAt(c3 & 0x3F);
+        }
+        return out;
+      },
+
+      path2hash : function (elfinder, path){
+
+        var cwd = elfinder.cwd();
+        var phash = cwd.phash;
+        var file = elfinder.file(cwd.hash);
+        while (phash){
+          file = elfinder.file(phash);
+          phash = file.phash;
+        }
+
+        var _hash_ = function (path) {
+          path = path.replace(file.name, '');
+          var base = bkHelper.base64Encode(path);
+          return file.hash + base
+              .replace(/\+/g, "_P")
+              .replace(/\-/g, "_M")
+              .replace(/\\/g, "_S")
+              .replace(/\./g, "_D")
+              .replace(/=/g, "_E");
+        };
+
+        var _cached_ = function(hash){
+          var files = elfinder.files();
+          var _hashes = Object.keys(files);
+          for (var i=0; i< _hashes.length; i++){
+            var _hash = _hashes[i];
+            if (_hash === hash)
+              return true;
+          }
+          return false;
+        };
+        var hash = _hash_(path);
+        var hashes = [];
+        hashes.push(hash);
+
+        while(!_cached_(hash)){
+          path = path.substring(0, path.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/'));
+          hash = _hash_(path);
+          hashes.push(hash);
+        }
+        return hashes;
+      },
+
+      elfinderOptions: function (getFileCallback, selectCallback, openCallback, mime, showHiddenFiles) {
 
         return {
           url: '../beaker/connector',
@@ -1268,11 +1340,17 @@
           onlyMimes: mime,
           showHiddenFiles: showHiddenFiles,
           getFileCallback: function (url) {
-            getFileCallback(url);
+            if (getFileCallback)
+              getFileCallback(url);
           },
           handlers: {
             select: function (event, elfinderInstance) {
-              selectCallback(event, elfinderInstance);
+              if (selectCallback)
+                selectCallback(event, elfinderInstance);
+            },
+            open: function (event, elfinderInstance) {
+              if (openCallback)
+                openCallback(event, elfinderInstance);
             }
           },
           defaultView: 'icons',

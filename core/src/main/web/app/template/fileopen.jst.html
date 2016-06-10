@@ -14,8 +14,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-
-<div id="elfinder" ng-init="init()" style="width: 100% !important; height: 100% !important; padding-bottom: 68px"/>
+<div class="modal-header fixed form-group property language-option clearfix" style="padding: 20px;margin-bottom: 0">
+  <label>Select: </label>
+  <input type="text" class="form-control" ng-keypress="onkeypress($event)" ng-model="selected.path" />
+</div>
+<div id="elfinder" ng-init="init()" style="width: 100% !important; height: 100% !important; padding-bottom: 68px; padding-top: 112px"/>
 <div class="modal-footer fixed" style="height: 68px;">
   <span style="float:left; position:relative;" ng-if="getStrategy().treeViewfs.extension !== undefined">
      <input class="beforeCheckbox" id="extensionFilter" type="checkbox" style="vertical-align:top;"

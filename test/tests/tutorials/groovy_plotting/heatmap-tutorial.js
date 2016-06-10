@@ -73,6 +73,7 @@ describe('HeatMap Tutorial', function (done) {
         expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Custom Gradient Example");
         expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')).toBeNull();
         browser.actions().mouseMove(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0'))).perform().then(function(){
+            beakerPO.createScreenshot('heatmapTooltip');
             expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')).not.toBeNull();
         });
     });

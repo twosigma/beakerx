@@ -380,6 +380,12 @@
               }
             }
           },
+          'Shift-Ctrl-A': function(cm) {
+            scope.appendCodeCell();
+          },
+          'Shift-Cmd-A': function(cm) {
+            scope.appendCodeCell();
+          },
           'Shift-Ctrl-E': function(cm) {
             scope.popupMenu();
             element.find('.inputcellmenu').find('li').find('a')[0].focus();

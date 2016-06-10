@@ -904,6 +904,13 @@
         return bkCoreManager.showLanguageManager();
       },
       appendCodeCell: function () {
+
+        if (document.activeElement &&
+          document.activeElement.parentElement.offsetParent &&
+          document.activeElement.parentElement.offsetParent.classList.value.indexOf('CodeMirror') !== -1)
+          return;
+
+
         var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var cells = notebookCellOp.getAllCodeCells();

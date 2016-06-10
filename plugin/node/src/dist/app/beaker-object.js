@@ -54,8 +54,12 @@ module.exports = function (urlBase, ctrlUrlBase, utilUrlBase, auth) {
     });
   }
 
-  function doGet(url, qs, responseTransformer) {
-    responseTransformer = responseTransformer || defaultReponseTransformer;
+  function doGet(url, qs, callback, responseTransformer) {
+    callback = callback || function (body, error, resolve, reject) {
+        responseTransformer = responseTransformer || defaultReponseTransformer;
+        if (error) reject(error);
+        resolve(responseTransformer(JSON.parse(body)));
+      };
     return Q.Promise(function (resolve, reject) {
       request.get({
         url: url,
@@ -64,9 +68,7 @@ module.exports = function (urlBase, ctrlUrlBase, utilUrlBase, auth) {
           "Authorization": auth
         }
       }, function (error, r, body) {
-        if (error) reject(error);
-        var result = JSON.parse(body);
-        resolve(responseTransformer(result));
+        callback(body, error, resolve, reject);
       });
     });
   }
@@ -109,7 +111,7 @@ module.exports = function (urlBase, ctrlUrlBase, utilUrlBase, auth) {
       _session = session;
     },
     get: function (name) {
-      return doGet(_urlBase + "/get", addSession({name: name}), function (result) {
+      return doGet(_urlBase + "/get", addSession({name: name}), null, function (result) {
         var mapped = transformation.transformBack(result);
         return mapped ? mapped.value : mapped;
       });
@@ -139,10 +141,14 @@ module.exports = function (urlBase, ctrlUrlBase, utilUrlBase, auth) {
       return doGet(_ctrlUrlBase + "/getEvaluators", addSession());
     },
     getVersion: function () {
-      return doGet(_utilUrlBase + "/version", addSession());
+      return doGet(_utilUrlBase + "/version", addSession(), function (body, error, resolve, reject) {
+        error && reject(error) || resolve(body);
+      });
     },
     getVersionNumber: function () {
-      return doGet(_utilUrlBase + "/getVersionInfo", addSession(), function (result) { return result.version; });
+      return doGet(_utilUrlBase + "/getVersionInfo", addSession(), null, function (result) {
+        return result.version;
+      });
     },
     getCodeCells: function (filter) {
       return doGet(_ctrlUrlBase + "/getCodeCells", addSession({filter: filter}));

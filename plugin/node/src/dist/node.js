@@ -82,12 +82,13 @@ define(function(require, exports, module) {
                 bkHelper.refreshRootScope();
                 deferred.resolve(ret);
             }).fail(function(xhr, textStatus, error) {
-                modelOutput.result = {
+              var errorText = xhr.status !== 502 ? xhr.responseText : error;
+              modelOutput.result = {
                     type: "BeakerDisplay",
                     innertype: "Error",
-                    object: xhr.responseText
+                    object: errorText
                 };
-                deferred.reject(xhr.responseText);
+                deferred.reject(errorText);
             });
           return deferred.promise;
         },

@@ -398,3 +398,23 @@ function transformBack(v) {
 exports.DataFrame = DataFrame;
 exports.transform = transform;
 exports.transformBack = transformBack;
+exports.isCircularObject = function(node, parents) {
+  parents = parents || [];
+  if (!node || typeof node != "object"){
+    return false;
+  }
+  parents.push(node);
+  for (var key in node) {
+    var value = node[key];
+    if (value && typeof value == "object") {
+      if (parents.indexOf(value)>=0) {
+        return true;
+      }
+      if (isCircularObject(value, parents)) {
+        return true;
+      }
+    }
+  }
+  parents.pop(node);
+  return false;
+};

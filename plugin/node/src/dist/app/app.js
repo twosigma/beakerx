@@ -25,6 +25,7 @@ var uuid = require('node-uuid');
 var vm = require('vm');
 var request = require('request');
 var Buffer = require('buffer').Buffer;
+var trycatch = require('trycatch')
 var Q = require('q');
 
 var beakerObject = require('./beaker-object.js');
@@ -74,14 +75,8 @@ app.post('/session', function (request, response) {
   response.send('ok');
 });
 
-app.post('/evaluate', function (request, response) {
-  var shellID = request.body.shellID;
-  var code = decodeURIComponent(request.body.code);
-  if(!shells[shellID]) {
-    response.statusCode = 401;
-    response.send('cant find shell ' + shellID);
-  }
-  var evaluationResult = processCode(code, shells[shellID]);
+function execute(code, shell, response) {
+  var evaluationResult = processCode(code, shell);
   Q.when(evaluationResult.evaluation, function (result) {
     if (evaluationResult.processed) {
       response.statusCode = 200;
@@ -89,11 +84,36 @@ app.post('/evaluate', function (request, response) {
       response.statusCode = 422;
     }
     log('result: ' + util.inspect(result));
-    var transformed = transformation.transform(result);
-    response.send(JSON.stringify(transformed));
+    try {
+      var transformed;
+      if(transformation.isCircularObject(result)) {
+        transformed = "ERROR: circular objects are not supported";
+      } else {
+        transformed = transformation.transform(result);
+      }
+      response.send(JSON.stringify(transformed));
+    } catch (e) {
+      response.statusCode = 500;
+      response.send(e.message + '\n' + e.stack);
+    }
   }, function (error) {
-    response.statusCode = 401;
+    response.statusCode = 500;
     response.send(error.toString());
+  });
+}
+app.post('/evaluate', function (request, response) {
+  var shellID = request.body.shellID;
+  var code = decodeURIComponent(request.body.code);
+  var shell = shells[shellID];
+  if(!shell) {
+    response.statusCode = 401;
+    response.send('cant find shell ' + shellID);
+  }
+  trycatch(function () {
+    execute(code, shell, response);
+  }, function (err) {
+    response.statusCode = 500;
+    response.send(err.message);
   });
 });
 

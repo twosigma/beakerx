@@ -15,6 +15,7 @@
         "app-module-path": "1.1.0",
         "urlencode": "1.1.0",
         "request": "latest",
-        "q": "latest"
+        "q": "latest",
+        "trycatch": "latest"
     }
 }

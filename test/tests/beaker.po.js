@@ -638,6 +638,14 @@ var BeakerPageObject = function() {
     expect(tBody.get(0).getText()).toBe(firstRow);
   }
 
+  this.getDataTableFilterRow = function (cellId) {
+    return this.getDataTablesScrollHeadByIdCell(cellId).element(by.css('.filterRow'));
+  };
+
+  this.getDataTableSearchField = function (cellId) {
+    return this.getDTFCLeftHeader(cellId).all(by.css('.filterRow th')).get(0);
+  };
+
   this.checkCellOutputText = function(codeCellOutputIdx, outputText){
     expect(this.getCodeCellOutputByIndex(codeCellOutputIdx).element(By.css('pre')).getText()).toBe(outputText);
   }

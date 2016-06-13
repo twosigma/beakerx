@@ -353,6 +353,37 @@ describe('Beaker Tables', function () {
         });
       });
 
+      var tableSearchSection = 'Table search';
+      var showTableSearch = function () {
+        var section = tableSearchSection;
+        var tableSearchMenu = beakerPO.getDataTableMenuItem(tableSearchSection, 'Search...');
+        beakerPO.getCodeOutputCellIdBySectionTitle(tableSearchSection).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          beakerPO.getDataTableMenuToggle(section).click();
+          tableSearchMenu.element(by.css('a[ng-click="doShowFilter(table.column(0), true)"]')).click();
+        });
+      };
+      it('should show table search', function (done) {
+        beakerPO.getCodeOutputCellIdBySectionTitle(tableSearchSection).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          showTableSearch();
+          expect(beakerPO.getDataTableSearchField(v).element(by.tagName('input')).getInnerHtml())
+            .toBe(browser.driver.switchTo().activeElement().getInnerHtml());
+          done();
+        });
+      });
+
+      it('should hide empty search row on blur', function (done) {
+        beakerPO.getCodeOutputCellIdBySectionTitle(tableSearchSection).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          showTableSearch();
+          expect(beakerPO.getDataTableFilterRow(v).isDisplayed()).toBe(true);
+          beakerPO.getDataTablesScrollBodyByIdCell(v).click();
+          expect(beakerPO.getDataTableFilterRow(v).isDisplayed()).toBe(false);
+          done();
+        });
+      });
+
     });
 
   });

@@ -14,26 +14,35 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<div class="modal-header fixed form-group property language-option clearfix" style="padding: 20px;margin-bottom: 0">
-  <label>Select: </label>
-  <input type="text" class="form-control" ng-keypress="onkeypress($event)" ng-model="selected.path" />
+<div class="modal-header fixed form-group property language-option clearfix"
+     style="padding: 0px;margin-bottom: 0 ; height: 20px;">
+  <input type="text" class="form-control" ng-keypress="onkey($event)" ng-model="selected.path"/>
 </div>
-<div id="elfinder" ng-init="init()" style="width: 100% !important; height: 100% !important; padding-bottom: 68px; padding-top: 112px"/>
+<div id="elfinder" ng-init="init()"
+     style="width: 100% !important; height: 100% !important; padding-bottom: 68px; padding-top: 32px"/>
+
 <div class="modal-footer fixed" style="height: 68px;">
   <span style="float:left; position:relative;" ng-if="getStrategy().treeViewfs.extension !== undefined">
-     <input class="beforeCheckbox" id="extensionFilter" type="checkbox" style="vertical-align:top;"
+     <input class="beforeCheckbox" id="extensionFilter" type="checkbox" style="vertical-align:middle;"
             ng-model="getStrategy().treeViewfs.applyExtFilter">
      <label ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show .{{
        getStrategy().treeViewfs.extension }} files only</label>
    </span>
   <span style="float:left; position:relative;">&nbsp;</span>
-  <span style="float:left; position:relative;" >
+  <span style="float:left; position:relative;">
      <input class="beforeCheckbox" id="showHiddenFiles" type="checkbox" style="vertical-align:top;"
             ng-model="getStrategy().treeViewfs.showHiddenFiles">
-     <label ng-click="getStrategy().treeViewfs.showHiddenFiles = !getStrategy().treeViewfs.showHiddenFiles">show hidden files</label>
+     <label ng-click="getStrategy().treeViewfs.showHiddenFiles = !getStrategy().treeViewfs.showHiddenFiles">show hidden
+       files</label>
    </span>
+
   <button ng-click="cancel()" class="btn btn-default">Cancel</button>
-  <button ng-click="open()" ng-disabled="!ready()" class="btn btn-primary modal-submit">Open</button>
+  <button  ng-click="ok()" ng-disabled="!isReady"
+           class="btn btn-primary modal-submit">{{getStrategy().okButtonTitle ?
+    getStrategy().okButtonTitle : "Ok"}}
+  </button>
+
+
 </div>
 
 

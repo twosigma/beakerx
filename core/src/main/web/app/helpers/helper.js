@@ -345,8 +345,8 @@
           });
         } else {
             bkCoreManager.showFileOpenDialog(ext).then(function(selected){
-              if (selected && selected.path)
-                bkHelper.openNotebook(selected.path, uriType, readOnly, format);
+              if (selected && selected.uri)
+                bkHelper.openNotebook(selected.uri, uriType, readOnly, format);
             });
         }
       },

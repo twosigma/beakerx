@@ -118,6 +118,27 @@ public class FileIORest {
   }
 
   @GET
+  @Path("analysePath")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Map<String, Object> analysePath(@QueryParam("path") String path) {
+
+    Map<String, Object> result = new HashMap<>();
+    File file = new File(path);
+    if (file.exists()) {
+      result.put("exist", true);
+      result.put("isDirectory", file.isDirectory());
+    }else{
+      result.put("exist", false);
+      java.nio.file.Path parent = Paths.get(path).getParent();
+      if (Files.exists(parent)){
+        result.put("parent", parent.toString());
+      }
+    }
+    return result;
+  }
+
+
+  @GET
   @Path("getStartUpDirectory")
   @Produces(MediaType.TEXT_PLAIN)
   public String getStartUpDirectory() {

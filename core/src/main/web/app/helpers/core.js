@@ -62,6 +62,19 @@
       return path.split('/').pop() !== '';
     }
 
+    var  FileChooserStrategy = function (data) {
+      var newStrategy = this;
+      newStrategy.type = data.type;
+      newStrategy.initUri = data.initUri;
+      newStrategy.title = data.title;
+      newStrategy.okButtonTitle = data.okButtonTitle;
+      newStrategy.treeViewfs = {
+        applyExtFilter: true,
+        showHiddenFiles: false,
+        extension: data.extension
+      };
+    };
+
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
       newStrategy.manualName = '';
@@ -734,18 +747,17 @@
 
       showFileOpenDialog: function(extension) {
         var deferred = bkUtils.newDeferred();
-        var  FileOpenStrategy = function () {
-          var newStrategy = this;
-          newStrategy.treeViewfs = {
-            applyExtFilter: true,
-            showHiddenFiles: true,
-            extension: extension
-          };
+
+        var data = {
+          type: 'OPEN',
+          title:'Select',
+          okButtonTitle : 'Open',
+          extension: extension
         };
 
         var dd = $uibModal.open({
-          templateUrl: "app/template/fileopen.jst.html",
-          controller: 'fileOpenDialogCtrl',
+          templateUrl: "app/template/filedialog.jst.html",
+          controller: 'fileDialogCtrl',
           windowClass: 'beaker-sandbox',
           backdropClass: 'beaker-sandbox',
           backdrop: true,
@@ -754,13 +766,16 @@
           size: 'lg',
           resolve: {
             strategy: function () {
-              return new FileOpenStrategy();
+              return new FileChooserStrategy(data);
             }
           }
         });
         dd.result.then(
           function (result) {
-            deferred.resolve(result);
+            deferred.resolve({
+              uri: result,
+              uriType: GLOBALS.FILE_LOCATION.FILESYS
+            });
           }, function () {
             deferred.reject();
           }).catch(function () {
@@ -776,21 +791,13 @@
           var filename = data.initUri.substring(data.initUri.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/') + 1);
           data.extension = filename.substring(filename.lastIndexOf('.') + 1);
         }
+        data.type="SAVE";
+        data.title = "Save As";
+        data.okButtonTitle = "Save";
 
-        var  FileSaveStrategy = function () {
-          var newStrategy = this;
-          newStrategy.initUri = data.initUri;
-          newStrategy.title = data.title;
-          newStrategy.saveButtonTitle = data.saveButtonTitle;
-          newStrategy.treeViewfs = {
-            applyExtFilter: true,
-            showHiddenFiles: true,
-            extension: data.extension
-          };
-        };
         var dd = $uibModal.open({
-          templateUrl: "app/template/filesave.jst.html",
-          controller: 'fileSaveDialogCtrl',
+          templateUrl: "app/template/filedialog.jst.html",
+          controller: 'fileDialogCtrl',
           windowClass: 'beaker-sandbox',
           backdropClass: 'beaker-sandbox',
           backdrop: true,
@@ -799,15 +806,15 @@
           size: 'lg',
           resolve: {
             strategy: function () {
-              return new FileSaveStrategy();
+              return new FileChooserStrategy(data);
             }
           }
         });
         dd.result.then(
           function (result) {
             deferred.resolve({
-              uri: result.uri,
-              uriType: result.uriType
+              uri: result,
+              uriType: GLOBALS.FILE_LOCATION.FILESYS
             });
           }, function () {
             deferred.reject();
@@ -1161,16 +1168,16 @@
     };
   });
 
-  module.controller('fileOpenDialogCtrl', function ($scope, $rootScope, $uibModalInstance, $timeout, bkCoreManager, bkUtils,  strategy) {
+  module.controller('fileDialogCtrl', function ($scope, $rootScope, $uibModalInstance, $timeout, bkCoreManager, bkUtils, strategy) {
 
     var elfinder;
-
     var hashes2Open = [];
 
     $scope.selected = {
-      file: null,
       path: null
     };
+
+    $scope.isReady = false;
 
     $scope.getStrategy = function () {
       return strategy;
@@ -1183,19 +1190,8 @@
       return [];
     };
 
-    $scope.mime = function () {
-      if ($scope.getStrategy().treeViewfs.applyExtFilter === true) {
-        return bkUtils.mime($scope.getStrategy().treeViewfs.extension);
-      }
-      return [];
-    };
-
-    $scope.ready = function () {
-      return $scope.selected.file && $scope.selected.file.mime !== 'directory';
-    };
 
     var setFromHash = function(hash){
-      $scope.selected.file = elfinder.file(hash);
       $scope.selected.path = elfinder.path(hash).replace('//', '/');
     };
 
@@ -1211,14 +1207,14 @@
       };
       var openCallback = function (event, elfinderInstance) {
         if (hashes2Open.length > 0) {
-          _open_( hashes2Open.pop());
+          elfinder.exec('open', hashes2Open.pop());
         }
         $timeout(function () {
           setFromHash(elfinderInstance.cwd().hash);
         }, 0);
       };
       var getFileCallback = function (url) {
-        $scope.open();
+        $scope.ok();
       };
 
       var elfinderOptions = bkHelper.elfinderOptions(getFileCallback,
@@ -1227,9 +1223,7 @@
         $scope.mime(),
         $scope.getStrategy().treeViewfs.showHiddenFiles);
 
-
       elfinder =  bkHelper.elfinder($elfinder, elfinderOptions);
-
 
       var orig_mime2class =  elfinder.mime2class;
       elfinder.mime2class = function(mime){
@@ -1248,32 +1242,45 @@
         }
       });
 
-      $timeout(function(){
+      $timeout(function () {
         setFromHash(elfinder.cwd().hash);
       }, 1000);
     };
 
 
-    var _open_ = function(hash){
-      var file = elfinder.file(hash);
-      if (file && file.mime === 'directory' && $scope.mime().indexOf(file.mime) !== -1){
-        setFromHash(hash);
-        $scope.open();
-      }else{
-        elfinder.exec('open', hashes2Open.pop());
-      }
-    };
-
-    $scope.onkeypress= function(keyEvent) {
+    $scope.onkey= function(keyEvent) {
       if (keyEvent.which === 13){
-        hashes2Open = bkHelper.path2hash(elfinder, $scope.selected.path);
-        _open_( hashes2Open.pop());
+        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"),{path: $scope.selected.path})
+          .success(function(result){
+            if (result.exist === true) {
+              if (result.isDirectory === true){
+                hashes2Open = bkHelper.path2hash(elfinder, $scope.selected.path);
+                elfinder.exec('open', hashes2Open.pop());
+              }else{
+                $scope.ok(true);
+              }
+            } else {
+              if ($scope.getStrategy().type === "SAVE") {
+                  if (result.parent){
+                    $scope.ok(true);
+                  }
+              }
+            }
+          });
       }
     };
-
-    $scope.open = function () {
-      if ($scope.ready()) {
-        $uibModalInstance.close($scope.selected);
+    $scope.ok = function (skipReady) {
+      if (skipReady === true || $scope.isReady) {
+        if ($scope.getStrategy().type === "SAVE") {
+          var filename = $scope.selected.path.substring($scope.selected.path.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/') + 1);
+          var extension = $scope.getStrategy().treeViewfs.extension;
+          if (extension !== undefined && extension.length > 0) {
+            if (filename.indexOf(extension) === -1 || filename.lastIndexOf(extension) != filename.length - extension.length) {
+              $scope.selected.path += "." + extension;
+            }
+          }
+        }
+        $uibModalInstance.close($scope.selected.path);
       }
     };
 
@@ -1300,133 +1307,25 @@
     });
 
     $scope.$watch(function (scope) {
-      if (elfinder)
-      return elfinder.cwd().hash;
+        if (elfinder)
+          return $scope.selected.path;
     }, function () {
-      if (elfinder) {
-        $timeout(function () {
-          setFromHash(elfinder.cwd().hash);
-        }, 0);
-      }
-    });
-  });
-
-  module.controller('fileSaveDialogCtrl', function ($scope, $rootScope, $uibModalInstance, bkUtils, GLOBALS, strategy) {
-
-    var elfinder;
-
-    var addTrailingSlash = function(str, isWindows) {
-      if (isWindows) {
-        if (!_.endsWith(str, '\\')) {
-          str = str + '\\';
-        }
-      } else {
-        if (!_.endsWith(str, '/')) {
-          str = str + '/';
-        }
-      }
-      return str;
-    };
-
-    $scope.filename = null;
-    $scope.selection = null;
-
-    $scope.getStrategy = function () {
-      return strategy;
-
-    };
-
-    $scope.mime = function () {
-      if ($scope.getStrategy().treeViewfs.applyExtFilter === true) {
-        return bkUtils.mime($scope.getStrategy().treeViewfs.extension);
-      }
-      return [];
-    };
-
-    $scope.ready = function () {
-      return elfinder.path(elfinder.cwd().hash) && ($scope.filename && $scope.filename.trim().length > 0)? true : false;
-    };
-
-    $scope.init = function () {
-      var $elfinder = $('#elfinder');
-
-      var selectCallback = function (event, elfinderInstance) {
-        if (event.data.selected && event.data.selected.length > 0) {
-          var file = elfinderInstance.file(event.data.selected[0]);
-          if (file.mime !== 'directory')
-            $scope.filename = file.name;
-
-          $scope.selection = file.path;
-
-        }
-        $scope.$apply();
-      };
-
-      var getFileCallback = function (url) {
-        $scope.save();
-      };
-
-      var elfinderOptions = bkHelper.elfinderOptions(getFileCallback,
-        selectCallback,
-        $scope.mime(),
-        $scope.getStrategy().treeViewfs.showHiddenFiles);
-
-      elfinder =  bkHelper.elfinder($elfinder, elfinderOptions);
-
-      var orig_mime2class = elfinder.mime2class;
-      elfinder.mime2class = function (mime) {
-        if (mime === 'application/beaker-notebook') {
-          return 'elfinder-cwd-icon-beaker';
-        }
-        return orig_mime2class(mime);
-      };
-
-      $elfinder.css("width", '100%');
-      $elfinder.css("height", '100%');
-
-      $(".modal-content").resizable({
-        resize: function (event, ui) {
-          $elfinder.trigger('resize');
-        }
-      });
-
-      if ($scope.getStrategy().initUri) {
-        $scope.filename = $scope.getStrategy().initUri.substring($scope.getStrategy().initUri.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/') + 1);
-        $scope.getStrategy().treeViewfs.extension = $scope.filename.substring($scope.filename.lastIndexOf('.') + 1);
-      }
-    };
-
-    $scope.save = function () {
-      if ($scope.ready()) {
-        var filename = $scope.filename.trim();
-        var extension = $scope.getStrategy().treeViewfs.extension;
-        if (extension !== undefined && extension.length > 0) {
-          if (filename.indexOf(extension) != filename.length - extension.length) {
-            filename += "." + extension;
+      bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"), {path: $scope.selected.path})
+        .success(function (result) {
+          if (result.exist === true) {
+            $scope.isReady = result.isDirectory !== true;
+          } else {
+            if ($scope.getStrategy().type === "SAVE") {
+              $scope.isReady = result.parent ? true : false;
+            }else{
+              $scope.isReady = false;
+            }
           }
-        }
-
-        var result = {
-          uri: addTrailingSlash(elfinder.path(elfinder.cwd().hash), bkUtils.serverOS.isWindows()) + filename,
-          uriType: GLOBALS.FILE_LOCATION.FILESYS
-        };
-        $uibModalInstance.close(result);
-      }
-    };
-
-    $scope.cancel = function () {
-      $uibModalInstance.dismiss('cancel');
-    };
-
-    $scope.$watch(function (scope) {
-      return scope.getStrategy().treeViewfs.applyExtFilter
-    }, function () {
-      if (elfinder) {
-        elfinder.options.onlyMimes = $scope.mime();
-        elfinder.exec('reload');
-      }
+        });
     });
   });
+
+
 
   module.controller('modalDialogCtrl', function($scope, $rootScope, $uibModalInstance, modalDialogOp,
                                                 bkUtils) {

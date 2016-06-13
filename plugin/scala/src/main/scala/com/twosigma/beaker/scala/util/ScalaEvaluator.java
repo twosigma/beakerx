@@ -37,7 +37,7 @@ import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang3.tuple.Pair;
+import com.twosigma.beaker.table.serializer.TableDisplayDeSerializer;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
@@ -52,7 +52,7 @@ import com.google.inject.Provider;
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.jvm.object.TableDisplay;
+import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
 import com.twosigma.beaker.jvm.serialization.ObjectSerializer;
@@ -689,7 +689,7 @@ public class ScalaEvaluator {
     @SuppressWarnings("unchecked")
     @Override
     public Object deserialize(JsonNode n, ObjectMapper mapper) {
-      org.apache.commons.lang3.tuple.Pair<String, Object> deserializeObject = TableDisplay.DeSerializer.getDeserializeObject(parent, n, mapper);
+      org.apache.commons.lang3.tuple.Pair<String, Object> deserializeObject = TableDisplayDeSerializer.getDeserializeObject(parent, n, mapper);
       String subtype  = deserializeObject.getLeft();
       if (subtype != null && subtype.equals(TableDisplay.DICTIONARY_SUBTYPE)) {
         return scala.collection.JavaConverters.mapAsScalaMapConverter((Map<String, Object>) deserializeObject.getRight()).asScala().toMap(Predef.<Tuple2<String, Object>>conforms());

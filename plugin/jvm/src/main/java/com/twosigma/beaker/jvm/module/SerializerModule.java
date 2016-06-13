@@ -104,7 +104,7 @@ import com.twosigma.beaker.jvm.object.OutputContainerCell;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.SimpleLayoutManager;
 import com.twosigma.beaker.jvm.object.TabbedOutputContainerLayoutManager;
-import com.twosigma.beaker.jvm.object.TableDisplay;
+import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.jvm.object.UpdatableEvaluationResult;
 import com.twosigma.beaker.jvm.object.DashboardLayoutManager;
 import com.twosigma.beaker.jvm.serialization.BeakerCodeCellList;
@@ -140,6 +140,26 @@ import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
 import com.twosigma.beaker.shared.NamespaceBinding;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
+import com.twosigma.beaker.table.TableDisplayAlignmentProvider;
+import com.twosigma.beaker.table.format.DecimalStringFormat;
+import com.twosigma.beaker.table.format.TimeStringFormat;
+import com.twosigma.beaker.table.format.ValueStringFormat;
+import com.twosigma.beaker.table.highlight.HeatmapHighlighter;
+import com.twosigma.beaker.table.highlight.ThreeColorHeatmapHighlighter;
+import com.twosigma.beaker.table.highlight.UniqueEntriesHighlighter;
+import com.twosigma.beaker.table.highlight.ValueHighlighter;
+import com.twosigma.beaker.table.renderer.DataBarsRenderer;
+import com.twosigma.beaker.table.serializer.DataBarsRendererSerializer;
+import com.twosigma.beaker.table.serializer.DecimalStringFormatSerializer;
+import com.twosigma.beaker.table.serializer.HeatmapHighlighterSerializer;
+import com.twosigma.beaker.table.serializer.TableDisplayAlignmentSerializer;
+import com.twosigma.beaker.table.serializer.TableDisplayDeSerializer;
+import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
+import com.twosigma.beaker.table.serializer.ThreeColorHeatmapHighlighterSerializer;
+import com.twosigma.beaker.table.serializer.TimeStringFormatSerializer;
+import com.twosigma.beaker.table.serializer.UniqueEntriesHighlighterSerializer;
+import com.twosigma.beaker.table.serializer.ValueHighlighterSerializer;
+import com.twosigma.beaker.table.serializer.ValueStringFormatSerializer;
 import net.sf.jtreemap.swing.TreeMapNode;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
@@ -185,7 +205,7 @@ public class SerializerModule extends AbstractModule {
   public BeakerObjectConverter getObjectSerializer(Injector injector) {
     BeakerObjectConverter serializer = injector.getInstance(PlotObjectSerializer.class);
     try {
-      serializer.addTypeDeserializer(new TableDisplay.DeSerializer(serializer));
+      serializer.addTypeDeserializer(new TableDisplayDeSerializer(serializer));
       serializer.addTypeDeserializer(new BeakerCodeCell.DeSerializer(serializer));
       serializer.addTypeDeserializer(new BeakerProgressUpdate.DeSerializer(serializer));
       serializer.addTypeDeserializer(new SimpleEvaluationObject.DeSerializer(serializer));
@@ -230,7 +250,17 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(BeakerProgressUpdate.class, injector.getInstance(BeakerProgressUpdate.Serializer.class));
       module.addSerializer(BeakerCodeCell.class, injector.getInstance(BeakerCodeCell.Serializer.class));
 
-      module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplay.Serializer.class));
+      module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplaySerializer.class));
+      module.addSerializer(DecimalStringFormat.class, injector.getInstance(DecimalStringFormatSerializer.class));
+      module.addSerializer(TimeStringFormat.class, injector.getInstance(TimeStringFormatSerializer.class));
+      module.addSerializer(ValueStringFormat.class, injector.getInstance(ValueStringFormatSerializer.class));
+      module.addSerializer(DataBarsRenderer.class, injector.getInstance(DataBarsRendererSerializer.class));
+      module.addSerializer(TableDisplayAlignmentProvider.class, injector.getInstance(TableDisplayAlignmentSerializer.class));
+      module.addSerializer(HeatmapHighlighter.class, injector.getInstance(HeatmapHighlighterSerializer.class));
+      module.addSerializer(ThreeColorHeatmapHighlighter.class, injector.getInstance(ThreeColorHeatmapHighlighterSerializer.class));
+      module.addSerializer(UniqueEntriesHighlighter.class, injector.getInstance(UniqueEntriesHighlighterSerializer.class));
+      module.addSerializer(ValueHighlighter.class, injector.getInstance(ValueHighlighterSerializer.class));
+
       module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainerSerializer.class));
       module.addSerializer(OutputContainerCell.class, injector.getInstance(OutputContainerCellSerializer.class));
       module.addSerializer(OutputCell.State.class, injector.getInstance(OutputCellStateSerializer.class));

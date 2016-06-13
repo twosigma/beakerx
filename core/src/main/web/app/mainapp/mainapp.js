@@ -34,6 +34,7 @@
                                              'bk.cellMenuPluginManager',
                                              'bk.notebookVersionManager',
                                              'bk.evaluatorManager',
+                                             'bk.evaluatePluginManager',
                                              'bk.evaluateJobManager',
                                              'bk.notebookRouter',
                                              'bk.notebook',
@@ -60,6 +61,7 @@
       bkCellMenuPluginManager,
       bkNotebookVersionManager,
       bkEvaluatorManager,
+      bkEvaluatePluginManager,
       bkEvaluateJobManager,
       bkElectron,
       $location,
@@ -132,6 +134,14 @@
           // set shell id to null, so it won't try to find an existing shell with the id
           if (alwaysCreateNewEvaluator) {
             settings.shellID = null;
+          }
+
+          // error when trying to load an unknown language
+          if (!(settings.plugin in bkEvaluatePluginManager.getKnownEvaluatorPlugins())) {
+            bkCoreManager.show1ButtonModal(
+              "Language \"" + settings.plugin + "\" could not be found.","ERROR",null,"OK"
+            );
+            return null;
           }
 
           return bkEvaluatorManager.newEvaluator(settings)
@@ -288,10 +298,12 @@
               var promises = _.map(notebookModel.evaluators, function(ev) {
                 return addEvaluator(ev, !isExistingSession);
               });
+              promises = _.filter(promises, function(el) {
+                el != null
+              });
               bkUtils.all(promises).then(function() {
                 if (!isExistingSession) {
                   bkUtils.log("open", {
-                    uri: notebookUri,
                     uriType: uriType,
                     format: format,
                     maxCellLevel: _.max(notebookModel.cells, function(cell) {
@@ -318,7 +330,6 @@
 
             if (!isExistingSession) {
               bkUtils.log("open", {
-                uri: notebookUri,
                 uriType: uriType,
                 format: format,
                 maxCellLevel: _.max(notebookModel.cells, function(cell) {
@@ -474,6 +485,7 @@
           var saveDone = function(ret) {
             bkSessionManager.setNotebookModelEdited(false);
             bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
+            bkSessionManager.recordRecentNotebook();
             updateSessionStore(ret.uri, ret.uriType, false);
             showTransientStatusMessage("Saved");
           };
@@ -487,10 +499,14 @@
             }
           };
 
-          var renameDone = function(ret) {
-            bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
-            updateSessionStore(ret.uri, ret.uriType, false);
-            showTransientStatusMessage("Renamed");
+          var getRenameDoneCallback = function() {
+            var oldUrl = bkSessionManager.getNotebookPath();
+            return function (ret) {
+              bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
+              bkSessionManager.updateRecentDocument(oldUrl);
+              updateSessionStore(ret.uri, ret.uriType, false);
+              showTransientStatusMessage("Renamed");
+            }
           };
 
           var renameFailed = function (msg) {
@@ -598,7 +614,7 @@
                 return;
               }
               showLoadingStatusMessage("Renaming");
-              return bkFileManipulation.renameNotebook(notebookUri, uriType).then(renameDone, renameFailed);
+              return bkFileManipulation.renameNotebook(notebookUri, uriType).then(getRenameDoneCallback(), renameFailed);
             },
             saveNotebookAs: function(notebookUri, uriType) {
               if (_.isEmpty(notebookUri)) {
@@ -1325,7 +1341,7 @@
           };
           var params = {
             msgBody: "Beaker server disconnected. Further edits will not be saved.<br>" +
-            "Save current notebook as a file?",
+            "Download a copy of the current notebook?",
             msgHeader: "Disconnected",
             dismissAction: dismissAction,
             buttons: [
@@ -1344,7 +1360,7 @@
                 cssClass: "btn-primary modal-submit"
               },
               {
-                text: "Save",
+                text: "Download",
                 action: function() {
                   // "Save", save the notebook as a file on the client side
                   bkSessionManager.dumpDisplayStatus();

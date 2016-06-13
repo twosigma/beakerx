@@ -163,10 +163,10 @@ copyStuff.dependsOn copyBootStrapFonts
 task updatePackages
 
 task (copyKatex, type: Copy) {
-	inputs.dir 'src/main/web/vendor/bower_components/katex-build/'
-	outputs.dir 'src/main/web/app/vendor/katex-build/'
-	from 'src/main/web/vendor/bower_components/katex-build/'
-	into 'src/main/web/app/vendor/katex-build/'
+	inputs.dir 'src/main/web/vendor/bower_components/katex/'
+	outputs.dir 'src/main/web/app/vendor/katex/'
+	from 'src/main/web/vendor/bower_components/katex/'
+	into 'src/main/web/app/vendor/katex/'
 	exclude '**.json'
 }
 

@@ -78,6 +78,8 @@
         return deferred.promise;
       },
       getEvaluator: function(evaluatorId) {
+        if (!(evaluatorId in evaluators))
+          return null;
         return evaluators[evaluatorId];
       },
       waitEvaluator: function(evaluatorId) {

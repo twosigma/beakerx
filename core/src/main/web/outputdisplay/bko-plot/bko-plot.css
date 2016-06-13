@@ -138,24 +138,19 @@
 }
 
 .plot-legendlod {
-  width: 5px;
-  height: 5px;
-  border-radius : 5px;
   margin: 0px 5px;
-  display: inline-block;
 }
-
-.plot-legendlodhint {
-  font-size: 0.7em;
-  vertical-align: middle;
+.plot-legendlodtype {
+  color: #73be3b;
   cursor: pointer;
   display: inline-block;
+  background: url("../images/down@2x.png") no-repeat center right;
+  padding-right: 13px;
+  background-size: 8px;
 }
-
-.plot-legendlodauto {
-  font-size: 0.7em;
-  vertical-align: middle;
-  cursor: pointer;
+.plot-legendlodtype:hover {
+  color: #73be3b;
+  text-decoration: none;
 }
 
 .plot-plotlegendcontainer {
@@ -178,7 +173,10 @@
 }
 
 .plot-legendscrollablecontainer .plot-legenddraggable {
-  padding: .25em 23px 0 .25em;
+  padding: .25em .25em 0 .25em
+}
+.plot-legendscrollablecontainer .plot-legenddraggable.hasScroll {
+  padding-right: 23px
 }
 
 .plot-legendline{

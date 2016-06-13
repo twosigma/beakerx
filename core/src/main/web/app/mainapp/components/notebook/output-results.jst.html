@@ -16,7 +16,7 @@
 -->
 <ul ng-if="hasOutputData()" class="list-unstyled">
   <li ng-repeat="i in outputdata">
-    <pre ng-class='i.type === "out" ? "text-info" : "text-warning"'>{{ i.value }}</pre>
+    <pre ng-bind-html="colorizeIfNeeded(i.value)" ng-class='i.type === "out" ? "text-info" : "text-warning"'></pre>
   </li>
 </ul>
-<bk-code-cell-output ng-if='hasPayload()' model='payload'></bk-code-cell-output>
+<bk-code-cell-output ng-if='hasPayload() && !isPayloadHidden()' model='payload'></bk-code-cell-output>

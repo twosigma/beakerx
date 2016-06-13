@@ -20,21 +20,8 @@
     height: $scrollbar-width;
   }
 
-  ::-webkit-scrollbar-thumb {
-    border-radius: 2px;
-  }
-
   ::-webkit-scrollbar-track-piece {
     background-color: $std-btn-bg;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    border: 1px solid #bbb;
-    background-color: #ccc;
-  }
-
-  ::-webkit-scrollbar-corner {
-    background-color: transparent;
   }
 
   body, html, .well, .languages, .code-cell-input, .modal-header, .modal-body, .modal-footer, .row {
@@ -118,6 +105,10 @@
       background:   $std-hover-bg;
       border-color: $std-hover-border;
     }
+  }
+
+  .modal-open.has-scroll {
+    margin-right: $scrollbar-width;
   }
 
   button.close {

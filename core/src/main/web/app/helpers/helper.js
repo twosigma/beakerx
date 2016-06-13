@@ -706,6 +706,24 @@
       getVersionString: function () {
         return window.beakerRegister.versionString;
       },
+      getPluginStartFailedMessage: function (pluginId) {
+        var template;
+        if(window.beakerRegister.evaluatorStartFailedMessage) {
+          template = window.beakerRegister.evaluatorStartFailedMessage;
+        } else {
+          template = "<p>Failed to start ${pluginId}.</p>\n" +
+                    "<p>Did you install it according to the instructions\n" +
+                    "on <a target=\"_blank\" href=\"http://beakernotebook.com/getting-started#${pluginId}\">BeakerNotebook.com</a>?\n" +
+                    "</p>\n" +
+                    "<p>If you already have it, then <a target=\"_blank\"\n" +
+                    "href=\"https://github.com/twosigma/beaker-notebook/wiki/Language-Preferences\">edit\n" +
+                    "your preferences file</a> to help Beaker find it on your system, and\n" +
+                    "then restart Beaker and try again.\n" +
+                    "</p>\n" +
+                    "<p>Any other languages in your notebook should still work.</p>";
+        }
+        return template.split('${pluginId}').join(pluginId);
+      },
       // bk-notebook
       refreshBkNotebook: function () {
         var bkNotebook = getBkNotebookWidget();
@@ -886,14 +904,16 @@
         return bkCoreManager.showLanguageManager();
       },
       appendCodeCell: function () {
+
+        if (document.activeElement &&
+          document.activeElement.parentElement.offsetParent &&
+          document.activeElement.parentElement.offsetParent.classList.value.indexOf('CodeMirror') !== -1)
+          return;
+
+
         var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
-        var cells = notebookCellOp.getAllCodeCells();
-        if (cells === undefined || (!_.isArray(cells) && cells.length === 0)) {
-          return null;
-        }
-        var index = cells.length;
-        notebookCellOp.insertAt(index, newCell);
+        notebookCellOp.insertLast(newCell);
         bkUtils.refreshRootScope();
         this.go2LastCodeCell();
       },

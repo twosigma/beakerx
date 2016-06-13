@@ -17,7 +17,7 @@ package com.twosigma.beaker.kdb;
 
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.jvm.object.TableDisplay;
+import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import kx.c;

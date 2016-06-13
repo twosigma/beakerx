@@ -45,7 +45,7 @@
   <link rel="stylesheet" href="app/dist/ipython.min.css" />
 
   <!--  we include katex styles here so it can require its font files relatively -->
-  <link rel="stylesheet" href="app/vendor/katex-build/katex.min.css" />
+  <link rel="stylesheet" href="app/vendor/katex/dist/katex.min.css" />
 
   <!-- htmlbuild:vendorjs -->
   <script src="vendor/bower_components/lodash/lodash.js"></script>
@@ -101,18 +101,19 @@
   <script src="vendor/bower_components/request-frame/dist/request-frame.min.js"></script>
   <script src="vendor/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <script src="vendor/bower_components/bootstrap-sass/assets/javascripts/bootstrap.js"></script>
+  <script src="vendor/bower_components/ansi_up/ansi_up.js"></script>
   <script src="vendor/bower_components/moment/min/moment.min.js"></script>
   <script src="vendor/bower_components/moment-timezone/builds/moment-timezone-with-data.min.js"></script>
   <script src="vendor/zeroclipboard-2.2.0/dist/ZeroClipboard.js"></script>
-  <script src="vendor/bower_components/katex-build/katex.min.js"></script>
-  <script src="vendor/bower_components/katex-build/contrib/auto-render.min.js"></script>
-  <script src="vendor/bower_components/ansi_up/ansi_up.js"></script>
+  <script src="vendor/bower_components/katex/dist/katex.min.js"></script>
+  <script src="vendor/bower_components/katex/dist/contrib/auto-render.min.js"></script>
   <script src="vendor/bower_components/angular-gravatar/build/angular-gravatar.js"></script>
   <script src="vendor/bower_components/ng-file-upload/ng-file-upload.js"></script>
   <script src="vendor/bower_components/datetimepicker/jquery.datetimepicker.js"></script>
   <script src="vendor/babel/babel.min.js"></script>
   <script src="vendor/bower_components/jquery-throttle-debounce/jquery.ba-throttle-debounce.min.js"></script>
   <script src="vendor/bower_components/angular-ui-select/dist/select.js"></script>
+  <script src="vendor/bower_components/jQuery-contextMenu/dist/jquery.contextMenu.js"></script>
   <!-- endbuild -->
 
   <!-- htmlbuild:embedremove -->
@@ -221,7 +222,8 @@
 <body ngf-drop="fileDropped($file, $event)"
       ngf-drag-over-class="{accept: 'dragover', reject: 'dragover-invalid'}"
       accept="application/json,application/text"
-      ngf-pattern="'/{{getImportNotebookPattern()}}/'">
+      ngf-pattern="'/{{getImportNotebookPattern()}}/'"
+      ng-class="{'has-scroll': hasScroll()}">
   <ng-view class="beaker-sandbox"></ng-view>
 </body>
 </html>

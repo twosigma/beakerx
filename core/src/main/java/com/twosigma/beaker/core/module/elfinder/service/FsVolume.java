@@ -47,6 +47,8 @@ public interface FsVolume {
 
   String getPath(FsItem fsi) throws IOException;
 
+  String getFullPath(FsItem fsi) throws IOException;
+
   FsItem getRoot();
 
   String getCssCls();

@@ -1191,8 +1191,17 @@
     };
 
 
-    var setFromHash = function(hash){
-      $scope.selected.path = elfinder.path(hash).replace('//', '/');
+    var setFromHash = function (hash, timeout) {
+      var action = function(){
+        $scope.selected.path = elfinder.file(hash).fullpath.replace('//', '/');
+      };
+      if (timeout !== undefined && timeout !== null){
+        $timeout(function () {
+          action(hash);
+        }, timeout);
+      }else{
+        action(hash);
+      }
     };
 
     $scope.init = function () {
@@ -1200,18 +1209,14 @@
 
       var selectCallback = function (event, elfinderInstance) {
         if (event.data.selected && event.data.selected.length > 0) {
-          $timeout(function(){
-            setFromHash(event.data.selected[0]);
-          }, 0);
+            setFromHash(event.data.selected[0], 0);
         }
       };
       var openCallback = function (event, elfinderInstance) {
         if (hashes2Open.length > 0) {
           elfinder.exec('open', hashes2Open.pop());
         }
-        $timeout(function () {
-          setFromHash(elfinderInstance.cwd().hash);
-        }, 0);
+        setFromHash(elfinderInstance.cwd().hash, 0);
       };
       var getFileCallback = function (url) {
         $scope.ok();
@@ -1242,31 +1247,36 @@
         }
       });
 
-      $timeout(function () {
-        setFromHash(elfinder.cwd().hash);
-      }, 1000);
+      if ($scope.getStrategy().initUri && $scope.getStrategy().initUri.length > 0) {
+        $timeout(function () {
+          $scope.selected.path = $scope.getStrategy().initUri;
+        }, 1000);
+      }
+
     };
 
 
     $scope.onkey= function(keyEvent) {
       if (keyEvent.which === 13){
-        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"),{path: $scope.selected.path})
-          .success(function(result){
-            if (result.exist === true) {
-              if (result.isDirectory === true){
-                hashes2Open = bkHelper.path2hash(elfinder, $scope.selected.path);
-                elfinder.exec('open', hashes2Open.pop());
-              }else{
-                $scope.ok(true);
-              }
-            } else {
-              if ($scope.getStrategy().type === "SAVE") {
-                  if (result.parent){
+        if ($scope.selected.path) {
+          bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"), {path: $scope.selected.path})
+            .success(function (result) {
+              if (result.exist === true) {
+                if (result.isDirectory === true) {
+                  hashes2Open = bkHelper.path2hash(elfinder, $scope.selected.path);
+                  elfinder.exec('open', hashes2Open.pop());
+                } else {
+                  $scope.ok(true);
+                }
+              } else {
+                if ($scope.getStrategy().type === "SAVE") {
+                  if (result.parent) {
                     $scope.ok(true);
                   }
+                }
               }
-            }
-          });
+            });
+        }
       }
     };
     $scope.ok = function (skipReady) {
@@ -1307,21 +1317,24 @@
     });
 
     $scope.$watch(function (scope) {
-        if (elfinder)
-          return $scope.selected.path;
+      if (elfinder)
+        return $scope.selected.path;
     }, function () {
-      bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"), {path: $scope.selected.path})
-        .success(function (result) {
-          if (result.exist === true) {
-            $scope.isReady = result.isDirectory !== true;
-          } else {
-            if ($scope.getStrategy().type === "SAVE") {
-              $scope.isReady = result.parent ? true : false;
-            }else{
-              $scope.isReady = false;
+      if ($scope.selected.path) {
+        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"), {path: $scope.selected.path})
+          .success(function (result) {
+            if (result.exist === true) {
+              $scope.isReady = result.isDirectory !== true;
+            } else {
+              if ($scope.getStrategy().type === "SAVE") {
+                $scope.isReady = result.parent ? true : false;
+              } else {
+                $scope.isReady = false;
+              }
             }
-          }
-        });
+          });
+      } else
+        $scope.isReady = false;
     });
   });
 

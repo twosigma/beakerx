@@ -102,6 +102,10 @@ public class FsItemEx implements FsItem {
     return v.getPath(f);
   }
 
+  public String getFullPath() throws IOException {
+    return v.getFullPath(f);
+  }
+
   public long getSize() throws IOException {
     return v.getSize(f);
   }
@@ -146,6 +150,8 @@ public class FsItemEx implements FsItem {
   public boolean isLocked(FsItemEx fsi) throws IOException {
     return s.getSecurityChecker().isLocked(s, f);
   }
+
+
 
   public boolean isReadable(FsItemEx fsi) throws IOException {
     return s.getSecurityChecker().isReadable(s, f);

@@ -130,6 +130,7 @@ public abstract class AbstractCommand implements Command {
     info.put("read", fsi.isReadable(fsi) ? 1 : 0);
     info.put("write", fsi.isWritable(fsi) ? 1 : 0);
     info.put("locked", fsi.isLocked(fsi) ? 1 : 0);
+    info.put("fullpath", fsi.getFullPath());
 
     //TODO: request.getRequestURL() is not correct
 //    if (fsi.getMimeType().startsWith("image")) {

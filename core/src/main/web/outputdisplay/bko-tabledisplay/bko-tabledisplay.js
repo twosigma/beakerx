@@ -353,7 +353,7 @@
 
           for (i = startingColumnIndex; i < $scope.columns.length; i++) {
             order = $scope.colorder[i];
-            if (!$scope.table.column(order).visible()) {
+            if (!$scope.table.column(i).visible()) {
               continue;
             }
             if (out !== '') {
@@ -372,7 +372,7 @@
             var some = false;
             for (j = startingColumnIndex; j < row.length; j++) {
               order = $scope.colorder[j];
-              if (!$scope.table.column(order).visible()) {
+              if (!$scope.table.column(j).visible()) {
                 continue;
               }
               if (!some) {

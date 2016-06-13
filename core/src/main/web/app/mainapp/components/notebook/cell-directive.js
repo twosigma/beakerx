@@ -29,7 +29,13 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('bkCell', function(bkUtils, bkSessionManager, bkCoreManager, bkEvaluatorManager) {
+  module.directive('bkCell', function(
+      bkUtils,
+      bkSessionManager,
+      bkCoreManager,
+      bkEvaluatorManager,
+      bkEvaluatePluginManager) {
+    
     return {
       restrict: 'E',
       template: JST['mainapp/components/notebook/cell'](),
@@ -147,6 +153,10 @@
         $scope.deleteCell = function() {
           notebookCellOp.delete($scope.cellmodel.id, true);
           bkSessionManager.setNotebookModelEdited(true);
+        };
+
+        $scope.hasFaultyEvaluator = function() {
+          return !($scope.cellmodel.evaluator in bkEvaluatePluginManager.getKnownEvaluatorPlugins());
         };
 
         $scope.getEvaluators = function() {

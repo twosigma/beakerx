@@ -325,6 +325,8 @@
 
         $scope.exportTo = function(rows, format) {
           var data = rows.data();
+          var settings = $scope.table.settings()[0];
+          var rowIndexes = rows[0];
           var i;
           var j;
           var startingColumnIndex = 1;
@@ -382,8 +384,8 @@
               if ($scope.columns[order].render !== undefined) {
                 d = $scope.columns[order].render(d, 'display', null,
                   {
-                    settings: $scope.table.settings()[0],
-                    row: rows[0][i],
+                    settings: settings,
+                    row: rowIndexes[i],
                     col: order
                   });
               }

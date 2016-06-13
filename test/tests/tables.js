@@ -304,6 +304,55 @@ describe('Beaker Tables', function () {
         });
       });
 
+      var clickShowColumnMenuItem = function (section, colName) {
+        var showColumnMenu = beakerPO.getDataTableMenuItem(section, 'Show Column');
+        var colMenuItem = beakerPO.getDataTableSubMenuItem(showColumnMenu, colName);
+        colMenuItem.element(by.css('a[ng-click="showColumn($index+1, $event)"]')).click();
+      };
+
+      it('should hide all columns', function (done) {
+        var section = 'Show/Hide columns';
+        var hideAllColumnsMenu = beakerPO.getDataTableMenuItem(section, 'Hide All Columns');
+
+        beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          beakerPO.getDataTableMenuToggle(section).click();
+          hideAllColumnsMenu.element(by.css('a[ng-click="toggleColumnsVisibility(false)"]')).click();
+          beakerPO.checkDataTableHeadByIdCell(v, '');
+          done();
+        });
+
+      });
+
+      it('should show all columns', function (done) {
+        var section = 'Show/Hide columns';
+        var showAllColumnsMenu = beakerPO.getDataTableMenuItem(section, 'Show All Columns');
+
+        beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          beakerPO.getDataTableMenuToggle(section).click();
+          showAllColumnsMenu.element(by.css('a[ng-click="toggleColumnsVisibility(true)"]')).click();
+          beakerPO.checkDataTableHeadByIdCell(v, 'first\nsecond\nthird');
+          done();
+        });
+
+      });
+
+      it('should show only second column', function (done) {
+        var section = 'Show/Hide columns';
+        var showColumnMenu = beakerPO.getDataTableMenuItem(section, 'Show Column');
+
+        beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          beakerPO.getDataTableMenuToggle(section).click();
+          browser.actions().mouseMove(showColumnMenu).perform();
+          clickShowColumnMenuItem(section, 'first');
+          clickShowColumnMenuItem(section, 'third');
+          beakerPO.checkDataTableHeadByIdCell(v, 'second');
+          done();
+        });
+      });
+
     });
 
   });

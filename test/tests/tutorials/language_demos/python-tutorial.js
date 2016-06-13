@@ -36,7 +36,7 @@ describe('Python Tutorial', function () {
     afterAll(function(done){
         beakerPO.createScreenshot('pythonTutorial');
         done();
-    })
+    });
 
     it('IPython can load', function () {
         var self = this;

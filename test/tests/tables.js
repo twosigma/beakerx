@@ -253,13 +253,19 @@ describe('Beaker Tables', function () {
         });
       });
 
+      var deselectRows = function (sectionTitle) {
+        beakerPO.getCodeOutputCellIdBySectionTitle(sectionTitle).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          beakerPO.getDataTableMenuToggle(sectionTitle).click();
+          var deselectAllMenu = beakerPO.getDataTableMenuItem(sectionTitle, 'Deselect All');
+          deselectAllMenu.element(by.css('a[ng-click="doDeselectAll()"]')).click();
+        });
+      };
+
       it('should deselect all rows', function (done) {
         var section = 'Table with pagination';
+        deselectRows(section);
         beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
-          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
-          beakerPO.getDataTableMenuToggle(section).click();
-          var deselectAllMenu = beakerPO.getDataTableMenuItem(section, 'Deselect All');
-          deselectAllMenu.element(by.css('a[ng-click="doDeselectAll()"]')).click();
           beakerPO.getDataTablesTBodyByIdCell(v).each(function (row, index) {
             expect(beakerPO.hasClass(row, 'selected')).toBe(false);
             if(index === allRowsCount-1){
@@ -269,20 +275,23 @@ describe('Beaker Tables', function () {
         });
       });
 
+      var selectRows = function (rowsToSelect, sectionTitle) {
+        beakerPO.getCodeOutputCellIdBySectionTitle(sectionTitle).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          for (var i = 0; i < rowsToSelect.length; i++) {
+            beakerPO.getDTRow(v, rowsToSelect[i]).click();
+          }
+        });
+      };
+
       it('should reverse rows selection', function (done) {
         var section = 'Table with pagination';
         var selectedRows = [0, 3, 5];
+        selectRows(selectedRows, section);
         beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
-          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
-
-          for (var i = 0; i < selectedRows.length; i++) {
-            beakerPO.getDTRow(v, selectedRows[i]).click();
-          }
-
           beakerPO.getDataTablesTBodyByIdCell(v).each(function (row, index) {
             expect(beakerPO.hasClass(row, 'selected')).toBe(selectedRows.indexOf(index) !== -1);
           });
-
           beakerPO.getDataTableMenuToggle(section).click();
           var reverseSelectionMenu = beakerPO.getDataTableMenuItem(section, 'Reverse Selection');
           reverseSelectionMenu.element(by.css('a[ng-click="doReverseSelection()"]')).click();

@@ -29,7 +29,8 @@
         </div>
         <a href="#"
            class="btn btn-default evaluate-script advanced-hide"
-           ng-click="evaluate($event)"
+           ng-class="isCellRunning() && 'disabled'"
+           ng-click="isCellRunning() || evaluate($event)"
            eat-click>
           {{ isJobCancellable() ? 'Stop' : 'Run' }}
         </a>

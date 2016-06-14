@@ -181,6 +181,9 @@
                 console.log('Evaluation failed');
               });
         };
+        $scope.isCellRunning = function () {
+          return bkCoreManager.getBkApp().isRunning($scope.cellmodel.id);
+        }
         var editedListener = function(newValue, oldValue) {
           if (newValue !== oldValue) {
             bkSessionManager.setNotebookModelEdited(true);

@@ -130,7 +130,7 @@ public class FileIORest {
     }else{
       result.put("exist", false);
       java.nio.file.Path parent = Paths.get(path).getParent();
-      if (parent != null && Files.exists(parent)){
+      if (parent != null && new File(parent.toString()).exists()){
         result.put("parent", parent.toString());
       }
     }

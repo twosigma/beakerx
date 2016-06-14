@@ -190,6 +190,9 @@
                 }
                 return summary.join(', ');
                 break;
+              case 'Progress':
+                return null;
+                break;
             }
             return type;
           }

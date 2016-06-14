@@ -131,6 +131,9 @@
         };
 
         $scope.evaluate = function($event) {
+          if($scope.isCellRunning()) {
+            return;
+          }
           if ($event) {
             $event.stopPropagation();
           }

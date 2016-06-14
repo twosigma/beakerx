@@ -24,17 +24,6 @@ bk-new-cell-menu {
     margin-left: 0 !important; //overriding bootstrap default
   }
 
-  .new-cell {
-    transition:0.2s linear all;
-    opacity: 0;
-  }
-
-  &:hover, &.only-child, &.large {
-    .new-cell {
-      opacity: 1;
-    }
-  }
-
   &.large .fa-sort-down {
     position: relative;
     top: -2px;

@@ -41,6 +41,7 @@
   module.directive('bkCodeCell', function(
       bkUtils,
       bkEvaluatorManager,
+      bkEvaluatePluginManager,
       bkCellMenuPluginManager,
       bkSessionManager,
       bkCoreManager,
@@ -225,8 +226,12 @@
         };
 
         $scope.getEvaluator = function() {
+          if (!($scope.cellmodel.evaluator in bkEvaluatePluginManager.getKnownEvaluatorPlugins())) {
+            return "fail";
+          }
           return bkEvaluatorManager.getEvaluator($scope.cellmodel.evaluator);
         };
+
         $scope.updateUI = function(evaluator) {
           if(!$scope.cm) {
             return;
@@ -379,6 +384,12 @@
                 bkHelper.setFullScreen(cm, false);
               }
             }
+          },
+          'Shift-Ctrl-A': function(cm) {
+            scope.appendCodeCell();
+          },
+          'Shift-Cmd-A': function(cm) {
+            scope.appendCodeCell();
           },
           'Shift-Ctrl-E': function(cm) {
             scope.popupMenu();

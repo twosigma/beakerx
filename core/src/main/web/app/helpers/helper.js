@@ -879,14 +879,16 @@
         return bkCoreManager.showLanguageManager();
       },
       appendCodeCell: function () {
+
+        if (document.activeElement &&
+          document.activeElement.parentElement.offsetParent &&
+          document.activeElement.parentElement.offsetParent.classList.value.indexOf('CodeMirror') !== -1)
+          return;
+
+
         var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
-        var cells = notebookCellOp.getAllCodeCells();
-        if (cells === undefined || (!_.isArray(cells) && cells.length === 0)) {
-          return null;
-        }
-        var index = cells.length;
-        notebookCellOp.insertAt(index, newCell);
+        notebookCellOp.insertLast(newCell);
         bkUtils.refreshRootScope();
         this.go2LastCodeCell();
       },

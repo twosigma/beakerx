@@ -425,6 +425,28 @@ describe('Beaker Tables', function () {
             });
           });
         });
+
+        it('should have clear icon', function () {
+          var clearIcon = getClearIcon(beakerPO.getDataTableSearchField(cellId));
+          expect(beakerPO.hasClass(clearIcon, 'fa-times')).toBe(true);
+        });
+
+        it('should be empty after clear icon click', function () {
+          var searchInput = beakerPO.getDataTableSearchInput(cellId);
+          searchInput.sendKeys('2');
+          expect(searchInput.getAttribute('value')).toEqual('2');
+          var clearIcon = getClearIcon(beakerPO.getDataTableSearchField(cellId));
+          clearIcon.click();
+          expect(searchInput.getAttribute('value')).toEqual('');
+        });
+
+        it('should update search results on clear', function () {
+          var searchInput = beakerPO.getDataTableSearchInput(cellId);
+          searchInput.sendKeys('2');
+          beakerPO.checkDataTableBodyByIdCell(cellId, 1, '2 a2 b2 c2');
+          getClearIcon(beakerPO.getDataTableSearchField(cellId)).click();
+          beakerPO.checkDataTableBodyByIdCell(cellId, 5, '0 a0 b0 c0');
+        });
       });
     });
   });

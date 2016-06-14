@@ -736,7 +736,7 @@ window.elFinder = function(node, opts) {
 		},
 		stop       : function(e, ui) {
 			var files;
-			$(this).draggable('instance') && $(this).draggable('option', { refreshPositions : false });
+			$(this).draggable('option', { refreshPositions : false });
 			self.draggingUiHelper = null;
 			self.trigger('focus').trigger('dragstop');
 			if (! ui.helper.data('droped')) {
@@ -749,12 +749,14 @@ window.elFinder = function(node, opts) {
 			var element = this.id ? $(this) : $(this).parents('[id]:first'),
 				helper  = $('<div class="elfinder-drag-helper"><span class="elfinder-drag-helper-icon-status"/></div>'),
 				icon    = function(f) {
-					var mime = f.mime, i;
-					i = '<div class="elfinder-cwd-icon '+self.mime2class(mime)+' ui-corner-all"/>';
-					if (f.tmb && f.tmb !== 1) {
-						i = $(i).css('background', "url('"+self.option('tmbUrl')+f.tmb+"') center center no-repeat").get(0).outerHTML;
+					if (f) {
+						var mime = f.mime, i;
+						i = '<div class="elfinder-cwd-icon ' + self.mime2class(mime) + ' ui-corner-all"/>';
+						if (f.tmb && f.tmb !== 1) {
+							i = $(i).css('background', "url('" + self.option('tmbUrl') + f.tmb + "') center center no-repeat").get(0).outerHTML;
+						}
+						return i;
 					}
-					return i;
 				},
 				hashes, l, ctr;
 			
@@ -8358,7 +8360,7 @@ $.fn.elfindercwd = function(fm, options) {
 							}
 						})
 						.on('dragstart', function(e) {
-							var dt = e.dataTransfer || e.originalEvent.dataTransfer || null;
+							var dt = e.dataTransfer || (e.originalEvent && e.originalEvent.dataTransfer) || null;
 							helper = null;
 							if (dt && !fm.UA.IE) {
 								var p = this.id ? $(this) : $(this).parents('[id]:first'),

@@ -1356,6 +1356,7 @@
           useBrowserHistory: false,
           resizable: false,
           onlyMimes: mime,
+          dragUploadAllow: false,
           showHiddenFiles: showHiddenFiles,
           getFileCallback: function (url) {
             if (getFileCallback)

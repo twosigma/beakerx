@@ -646,6 +646,10 @@ var BeakerPageObject = function() {
     return this.getDTFCLeftHeader(cellId).all(by.css('.filterRow th')).get(0);
   };
 
+  this.getDataTableSearchInput = function (cellId) {
+    return this.getDataTableSearchField(cellId).element(by.css('.filter-input'));
+  };
+
   this.checkCellOutputText = function(codeCellOutputIdx, outputText){
     expect(this.getCodeCellOutputByIndex(codeCellOutputIdx).element(By.css('pre')).getText()).toBe(outputText);
   }

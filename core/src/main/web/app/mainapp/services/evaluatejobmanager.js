@@ -244,6 +244,9 @@
     })();
 
     return {
+      isRunning: function (cellId) {
+        return jobQueue.isRunning(cellId);
+      },
       // evaluate a cell (as a subcell of currently running cell)
       evaluate: function(cell, notick) {
         var parent = jobQueue.getCurrentJob();

@@ -131,6 +131,9 @@
         };
 
         $scope.evaluate = function($event) {
+          if($scope.isCellRunning()) {
+            return;
+          }
           if ($event) {
             $event.stopPropagation();
           }
@@ -249,6 +252,10 @@
         $scope.isCodeCell = function() {
           return $scope.cellmodel.type == 'code';
         };
+        
+        $scope.isCellRunning = function () {
+          return bkCoreManager.getBkApp().isRunning($scope.cellmodel.id);
+        }
       }
     };
   });

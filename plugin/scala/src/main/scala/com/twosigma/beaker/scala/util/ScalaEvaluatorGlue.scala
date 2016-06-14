@@ -69,12 +69,7 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
   } 
   
   private def getOut: Any = {
-    val lvo = interpreter.valueOfTerm(interpreter.mostRecentVar);
-    lvo match {
-      case None => baos.toString();
-      case Some(ResetState("reset")) => baos.toString();
-      case Some(value) => value;
-    }
+    interpreter.lastRequest.lineRep.call("$result")
   }
   
   def addImport(name : String): Boolean = {

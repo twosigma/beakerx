@@ -249,6 +249,10 @@
         $scope.isCodeCell = function() {
           return $scope.cellmodel.type == 'code';
         };
+        
+        $scope.isCellRunning = function () {
+          return bkCoreManager.getBkApp().isRunning($scope.cellmodel.id);
+        }
       }
     };
   });

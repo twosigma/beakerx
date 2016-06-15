@@ -19,10 +19,10 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Charting Tutorial', function (done) {
+describe('Catalog of Plot APIs and Features (part 2)', function (done) {
 
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true")
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fplot-features.bkr&readOnly=true")
         .then(done)
         .then(beakerPO.waitUntilLoadingCellOutput());
 

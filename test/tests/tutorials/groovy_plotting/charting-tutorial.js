@@ -19,23 +19,32 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Charting Tutorial', function (done) {
+describe('Charting Tutorial', function () {
 
+  beforeAll(function(done) {
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true")
-        .then(done)
-        .then(beakerPO.waitUntilLoadingCellOutput());
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true").then(done);
+    beakerPO.waitUntilLoadingCellOutput();
+    browser.driver.manage().window().maximize();
+  });
+
+  afterAll(function(done){
+    beakerPO.createScreenshot('chartingTutorial1');
+    done();
+  });
 
   it('Custom Plot Example', function () {
     var idCell = "code42QbvS";
     beakerPO.checkPlotIsPresentByIdCell(idCell, 0);
     beakerPO.checkPlotIsPresentByIdCell(idCell, 1);
-
+    beakerPO.createScreenshot('customPlotExample');
     beakerPO.checkLegendIsPresentByIdCell(idCell, 0);
 
     expect(beakerPO.getCodeCellOutputCombplotTitleByIdCell(idCell)).toBe("US Treasuries");
     expect(beakerPO.getCodeCellOutputContainerYLabelByIdCell(idCell, 0)).toBe("Interest Rate");
     expect(beakerPO.getCodeCellOutputContainerYLabelByIdCell(idCell, 1)).toBe("Spread");
+
+    beakerPO.checkSaveAsSvgPngByIdCell(idCell, "US Treasuries");
 
     /**
      * def p1 = new TimePlot(yLabel: "Interest Rate", crosshair: ch)

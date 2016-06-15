@@ -40,6 +40,8 @@ describe('Catalog of Plot APIs and Features (part 2)', function (done) {
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-constline');
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 2), 'plot-constline');
+
+        beakerPO.checkSaveAsSvgPngByIdCell(idCell, "plot");
     });
 
     it('Constant Bands', function() {

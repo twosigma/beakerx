@@ -78,24 +78,28 @@ define(function(require, exports, module) {
                 url: bkHelper.serverUrl(serviceBase + "/evaluate"),
                 data: {shellID: self.settings.shellID, code: encodeURIComponent(code)}
             }).done(function(ret) {
-                modelOutput.result = ret;
+                modelOutput.result = JSON.parse(ret);
                 bkHelper.refreshRootScope();
                 deferred.resolve(ret);
             }).fail(function(xhr, textStatus, error) {
-                modelOutput.result = {
+              var errorText = xhr.status !== 502 ? xhr.responseText : error;
+              modelOutput.result = {
                     type: "BeakerDisplay",
                     innertype: "Error",
-                    object: xhr.responseText
+                    object: errorText
                 };
-                deferred.reject(xhr.responseText);
+                deferred.reject(errorText);
             });
           return deferred.promise;
         },
         autocomplete: function (code, cpos, cb) {
             console.log("Autocomplete Called: Not implemented");
         },
-        addModulePath: function () {
+        addModulePath: function (callback) {
           if(!this.settings.modulePath) {
+            if (callback) {
+              callback();
+            }
             return;
           }
           bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
@@ -104,9 +108,22 @@ define(function(require, exports, module) {
             path: this.settings.modulePath
           }).success(function() {
             bkHelper.hideLanguageManagerSpinner();
+            if (callback) {
+              callback();
+            }
           }).error(function(err) {
             bkHelper.hideLanguageManagerSpinner(err);
             bkHelper.show1ButtonModal('ERROR: ' + err, 'Failed to add module path');
+          });
+        },
+        setSessionId: function (callback) {
+          return bkHelper.httpPost(bkHelper.serverUrl(serviceBase + '/session'), {
+            shellID: this.settings.shellID,
+            session: bkHelper.getSessionId()
+          }).success(function () {
+            if (callback) {
+              callback();
+            }
           });
         },
         exit: function (cb) {
@@ -140,10 +157,13 @@ define(function(require, exports, module) {
                     }
                     settings.shellID = id;
                     self.settings = settings;
-                    self.addModulePath();
-                    if (doneCB) {
-                      doneCB(self);
-                    }
+                    self.setSessionId(function () {
+                      self.addModulePath(function () {
+                        if (doneCB) {
+                          doneCB(self);
+                        }
+                      });
+                    });
                 };
                 if (!settings.shellID) {
                     settings.shellID = "";

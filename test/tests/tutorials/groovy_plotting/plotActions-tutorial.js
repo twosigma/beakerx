@@ -33,7 +33,7 @@ describe('Histogram Tutorial', function() {
     });
 
     describe('onClick action', function(){
-        it('should change legend name', function () {
+        it('Should change legend name', function () {
             var idCell = "code6YRkpO";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
@@ -47,7 +47,7 @@ describe('Histogram Tutorial', function() {
 
         });
 
-        it('should change opacity', function () {
+        it('Should change opacity', function () {
             var idCell = "codepCGwVI";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
@@ -61,6 +61,34 @@ describe('Histogram Tutorial', function() {
             });
         });
 
+        it('Random Demo Data', function () {
+            var idCell = "codehjGu00";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.getBkCellByIdCell(idCell).element(by.css('div[ng-click="toggleCellInput()"]')).click();
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+        });
+
+        it('LOD plots actions', function () {
+            var idCell = "code7FW6Gt";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+        });
+    });
+
+    it('Run tag on click', function () {
+        var idCell = "codemgwFTf";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
+        beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).click().then(function(){
+            beakerPO.waitUntilLoadingFinished();
+        });
+    });
+
+    it('Should display coordinates', function () {
+        var idCell = "codexI1Q85";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Results');
+        beakerPO.checkSubString( beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('pre')), 'You clicked on orange Points (element with coordinates [1,1])');
     });
 
 });

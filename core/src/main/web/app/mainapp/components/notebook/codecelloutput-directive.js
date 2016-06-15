@@ -142,6 +142,38 @@
             return items + ' ' + (items > 1 ? itemTitle + 's' : itemTitle);
           }
 
+          function strip(html) {
+            var div = document.createElement('div');
+            div.innerHTML = html;
+            var scripts = div.getElementsByTagName('script');
+            var i = scripts.length;
+            while (i--) {
+              scripts[i].parentNode.removeChild(scripts[i]);
+            }
+            return div.textContent || div.innerText || "";
+          }
+
+          function firstString(str) {
+            if (str) {
+              var arr = str.split('\n');
+              for (var i = 0; i < arr.length; i++) {
+                if (arr[i].length > 0)
+                  return arr[i]
+              }
+            }
+            return '';
+          }
+
+          function firstNChars(str, count) {
+            if (str) {
+              if (str.length > count){
+                str = str.substr(0, count);
+              }
+             return str.replace(/\n/g, "");
+            }
+            return '';
+          }
+
           function getOutputSummary(type, result) {
             type = type || 'Text';
             switch (type) {
@@ -193,6 +225,10 @@
               case 'Progress':
                 return null;
                 break;
+              case 'Text':
+                return firstString('' + result);
+              case 'Html':
+                return firstNChars(strip(result.object), 1000);
             }
             return type;
           }

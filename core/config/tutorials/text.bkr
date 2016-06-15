@@ -96,6 +96,7 @@
                 "In fact, many basic HTML elements work, like super&lt;sup&gt;scripts&lt;/sup&gt; for super<sup>scripts</sup>.",
                 "",
                 "The native emoticon UI (cmd-control-space on Mac) works: 🌀🌻.",
+                "On Windows (starting from version 8) emoji is integrated into the virtual keyboard. There’s an emoticon button (a smiling face) next to Space and Ctrl turning the keyboard into an emoji picker.",
                 "You can also write emoji with unicode in decimal HTML style: &#127752;&#128516;&#10024;.",
                 "In fact you can write any [unicode](http://unicode-table.com/) with decimal HTML:  &#9730;&#9835;."
             ],

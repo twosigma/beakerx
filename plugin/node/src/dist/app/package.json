@@ -12,6 +12,10 @@
         "when": "3.7.7",
         "node-uuid": "1.4.7",
         "ws": "1.1.0",
-        "app-module-path": "1.1.0"
+        "app-module-path": "1.1.0",
+        "urlencode": "1.1.0",
+        "request": "latest",
+        "q": "latest",
+        "trycatch": "latest"
     }
 }

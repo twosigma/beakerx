@@ -715,6 +715,9 @@
               }
               return true;
             },
+            isRunning: function (cellId) {
+              return bkEvaluateJobManager.isRunning(cellId);
+            },
             evaluate: function(toEval) {
               var cellOp = bkSessionManager.getNotebookCellOp();
               // toEval can be a tagName (string), either "initialization", name of an evaluator or user defined tag

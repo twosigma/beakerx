@@ -226,7 +226,7 @@
                 return null;
                 break;
               case 'Text':
-                return firstString('' + result);
+                return firstString((typeof result === 'string') ? result : JSON.stringify(result));
               case 'Html':
                 return firstNChars(strip(result.object), 1000);
             }

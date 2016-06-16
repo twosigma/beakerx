@@ -130,6 +130,14 @@
           }
         };
 
+        $scope.toggleMarkdown = function() {
+          if ($scope.cellmodel.hidden) {
+            delete $scope.cellmodel.hidden;
+          } else {
+            $scope.cellmodel.hidden = true;
+          }
+        };
+
         $scope.evaluate = function($event) {
           if($scope.isCellRunning()) {
             return;
@@ -236,12 +244,16 @@
         };
 
         $scope.getCellSummary = function () {
+          var body = '';
           if($scope.isCodeCell()) {
-            var body = $scope.cellmodel.input.body;
-            var lines = body.split('\n');
-            if(lines.length > 0) {
-              return lines[0];
-            }
+            body = $scope.cellmodel.input.body;
+          }
+          if($scope.isMarkdownCell()){
+            body = $scope.cellmodel.body;
+          }
+          var lines = body.split('\n');
+          if(lines.length > 0) {
+            return lines[0];
           }
         };
 
@@ -255,7 +267,16 @@
         
         $scope.isCellRunning = function () {
           return bkCoreManager.getBkApp().isRunning($scope.cellmodel.id);
-        }
+        };
+
+        $scope.isCellHidden = function () {
+          return $scope.isCodeCell() ? $scope.cellmodel.input.hidden :
+            $scope.isMarkdownCell() ? $scope.cellmodel.hidden : false;
+        };
+
+        $scope.shouldShowSummary = function () {
+          return $scope.isCellHidden() && !$scope.isLocked();
+        };
       }
     };
   });

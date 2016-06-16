@@ -19,7 +19,7 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Histogram Tutorial', function() {
+describe('Plot actions Tutorial', function() {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();

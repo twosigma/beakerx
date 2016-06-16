@@ -32,8 +32,8 @@ describe('EasyForm', function () {
 
   function evaluate(code) {
     beakerPO.setCellInput(code)
-        .then(beakerPO.evaluateCell())
-        .then(beakerPO.waitForCellOutput());
+        .then(function(){ beakerPO.evaluateCell(); })
+        .then(function(){ beakerPO.waitForCellOutput(); });
   }
 
   function testUndoRedo(code, selector) {
@@ -41,9 +41,9 @@ describe('EasyForm', function () {
 
     var e = element(by.css(selector));
 
-    e.sendKeys("TEST").then(
-        expect(e.getAttribute('value')).toEqual("TEST")
-    );
+    e.sendKeys("A").then(function(){
+        expect(e.getAttribute('value')).toEqual("A");
+    });
 
     //TEST UNDO
     if (os.type() === 'Darwin') {
@@ -55,7 +55,7 @@ describe('EasyForm', function () {
       e.sendKeys("\uE009z");
     }
     expect(e.getAttribute('value')).toEqual("");
-
+    beakerPO.createScreenshot('easyFormUndoRedo');
     //TEST REDO
     //SHIFT:        '\uE008',
     if (os.type() === 'Darwin') {
@@ -65,8 +65,8 @@ describe('EasyForm', function () {
       //CONTROL:      '\uE009',
       e.sendKeys("\uE008\uE009z");
     }
-    expect(e.getAttribute('value')).toEqual("TEST");
-  }
+    expect(e.getAttribute('value')).toEqual("A");
+}
 
   beforeEach(function (done) {
     beakerPO = new BeakerPageObject();
@@ -148,7 +148,6 @@ describe('EasyForm', function () {
     testUndoRedo(code, 'bk-output-display  .text-field');
   });
 
-})
-;
+});
 
 

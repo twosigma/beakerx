@@ -96,7 +96,7 @@
         }
       },
       "Html": {
-        template: "<div></div>",
+        template: "<div class='output-padding'></divoutput-padding>",
         controller: function($scope, bkCellMenuPluginManager) {
           $scope.getShareMenuPlugin = function() {
             return bkCellMenuPluginManager.getPlugin("bko-html");

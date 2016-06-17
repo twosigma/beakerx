@@ -27,7 +27,7 @@
 
     var impls = {
         "Text": {
-          template: "<pre>{{getText()}}</pre>",
+          template: "<pre style='word-break: keep-all;'>{{getText()}}</pre>",
           controller: function($scope) {
             $scope.getText = function() {
               var model = $scope.model.getCellModel();

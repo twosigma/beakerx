@@ -138,6 +138,11 @@
           }
         };
 
+        $scope.toggleSection = function() {
+          $scope.cellmodel.collapsed = !$scope.cellmodel.collapsed;
+          $scope.$broadcast('beaker.section.toggled', $scope.cellmodel.collapsed);
+        };
+
         $scope.evaluate = function($event) {
           if($scope.isCellRunning()) {
             return;
@@ -264,6 +269,10 @@
         $scope.isCodeCell = function() {
           return $scope.cellmodel.type == 'code';
         };
+
+        $scope.isSectionCell = function() {
+          return $scope.cellmodel.type == 'section';
+        };
         
         $scope.isCellRunning = function () {
           return bkCoreManager.getBkApp().isRunning($scope.cellmodel.id);
@@ -271,11 +280,31 @@
 
         $scope.isCellHidden = function () {
           return $scope.isCodeCell() ? $scope.cellmodel.input.hidden :
-            $scope.isMarkdownCell() ? $scope.cellmodel.hidden : false;
+            $scope.isMarkdownCell() ? $scope.cellmodel.hidden :
+            $scope.isSectionCell ? $scope.cellmodel.collapsed : false;
         };
 
         $scope.shouldShowSummary = function () {
-          return $scope.isCellHidden() && !$scope.isLocked();
+          return !$scope.isSectionCell() && $scope.isCellHidden() && !$scope.isLocked();
+        };
+
+        $scope.wideMenu = function () {
+          return $scope.isCellHidden() && !$scope.isSectionCell();
+        };
+
+        $scope.collapseCellMenu = {
+          'code' : {
+            click: $scope.toggleCellInput,
+            tooltip: 'cell input'
+          },
+          'markdown' : {
+            click: $scope.toggleMarkdown,
+            tooltip: 'text'
+          },
+          'section' : {
+            click: $scope.toggleSection,
+            tooltip: 'section'
+          }
         };
       }
     };

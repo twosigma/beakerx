@@ -34,6 +34,8 @@ import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.EnumSet;
@@ -258,6 +260,21 @@ public class GeneralUtilsImpl implements GeneralUtils {
   @Override
   public void copyIfSrcExistsAndTargetDoesnt(URI srcFile, URI targetFile) throws IOException {
     this.copyIfSrcExistsAndTargetDoesnt(castToPath(srcFile), castToPath(targetFile));
+  }
+
+  @Override
+  public void setPermissions(String path, PosixFilePermission... perms) throws IOException {
+    Files.setPosixFilePermissions(castToPath(path), new HashSet<>(Arrays.asList(perms)));
+  }
+
+  @Override
+  public void setPermissions(Path path, PosixFilePermission... perms) throws IOException {
+    Files.setPosixFilePermissions(path, new HashSet<>(Arrays.asList(perms)));
+  }
+
+  @Override
+  public void setPermissions(File file, PosixFilePermission... perms) throws IOException {
+    setPermissions(file.toPath(), perms);
   }
 
   private Path castToPath(Object locator) {

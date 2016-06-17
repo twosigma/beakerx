@@ -394,8 +394,10 @@
                 if(!that.s.isMousedown) {
                     //Once the mouse has entered the cell add mouse move event to see if the mouse is over resize handle
                     $(nTh).off('mousemove.ColResizeHandle').on('mousemove.ColResizeHandle', function (e) {
-                        e.preventDefault();
-                        that._fnResizeHandleCheck.call(that, e, nTh);
+                        if (!$(e.target).is(":focus")) {
+                            e.preventDefault();
+                            that._fnResizeHandleCheck.call(that, e, nTh);
+                        }
                     });
                 }
             },

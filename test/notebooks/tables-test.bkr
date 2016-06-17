@@ -75,12 +75,15 @@
                             true
                         ],
                         "barsOnColumn": {},
-                        "heatmapOnColumn": {},
+                        "cellHighlightersData": [],
                         "tableFilter": "",
                         "showFilter": false,
                         "columnSearchActive": false,
                         "columnFilter": [],
-                        "columnWidth": []
+                        "columnWidth": [],
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
                     }
                 },
                 "result": {
@@ -175,12 +178,15 @@
                             true
                         ],
                         "barsOnColumn": {},
-                        "heatmapOnColumn": {},
+                        "cellHighlightersData": [],
                         "tableFilter": "",
                         "showFilter": false,
                         "columnSearchActive": false,
                         "columnFilter": [],
-                        "columnWidth": []
+                        "columnWidth": [],
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
                     }
                 },
                 "result": {
@@ -288,12 +294,15 @@
                             true
                         ],
                         "barsOnColumn": {},
-                        "heatmapOnColumn": {},
+                        "cellHighlightersData": [],
                         "tableFilter": "",
                         "showFilter": false,
                         "columnSearchActive": false,
                         "columnFilter": [],
-                        "columnWidth": []
+                        "columnWidth": [],
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
                     }
                 },
                 "result": {
@@ -387,12 +396,15 @@
                             true
                         ],
                         "barsOnColumn": {},
-                        "heatmapOnColumn": {},
+                        "cellHighlightersData": [],
                         "tableFilter": "",
                         "showFilter": false,
                         "columnSearchActive": false,
                         "columnFilter": [],
-                        "columnWidth": []
+                        "columnWidth": [],
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
                     }
                 },
                 "result": {
@@ -503,12 +515,15 @@
                             true
                         ],
                         "barsOnColumn": {},
-                        "heatmapOnColumn": {},
+                        "cellHighlightersData": [],
                         "tableFilter": "",
                         "showFilter": false,
                         "columnSearchActive": false,
                         "columnFilter": [],
-                        "columnWidth": []
+                        "columnWidth": [],
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
                     }
                 },
                 "result": {
@@ -725,6 +740,242 @@
                 "pluginName": "JavaScript",
                 "elapsedTime": 69,
                 "height": 776
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "sectionTkhWoE",
+            "type": "section",
+            "title": "Show/Hide columns",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "code9jmduM",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var table = []",
+                    "for(var i=0; i<5; i++){",
+                    "  table.push({first: 'a' + i, second: 'b' + i, third: 'c' + i});",
+                    "}",
+                    "table"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "first",
+                            "second",
+                            "third"
+                        ],
+                        "actualtype": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "subtype": "ListOfMaps",
+                    "columnNames": [
+                        "first",
+                        "second",
+                        "third"
+                    ],
+                    "values": [
+                        [
+                            "a0",
+                            "b0",
+                            "c0"
+                        ],
+                        [
+                            "a1",
+                            "b1",
+                            "c1"
+                        ],
+                        [
+                            "a2",
+                            "b2",
+                            "c2"
+                        ],
+                        [
+                            "a3",
+                            "b3",
+                            "c3"
+                        ],
+                        [
+                            "a4",
+                            "b4",
+                            "c4"
+                        ]
+                    ],
+                    "types": [
+                        "string",
+                        "string",
+                        "string"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 146,
+                "height": 210
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "sectionjCSZyx",
+            "type": "section",
+            "title": "Table search",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeCesOvu",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var table = []",
+                    "for(var i=0; i<5; i++){",
+                    "  table.push({first: 'a' + i, second: 'b' + i, third: 'c' + i});",
+                    "}",
+                    "table"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "first",
+                            "second",
+                            "third"
+                        ],
+                        "actualtype": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "subtype": "ListOfMaps",
+                    "columnNames": [
+                        "first",
+                        "second",
+                        "third"
+                    ],
+                    "values": [
+                        [
+                            "a0",
+                            "b0",
+                            "c0"
+                        ],
+                        [
+                            "a1",
+                            "b1",
+                            "c1"
+                        ],
+                        [
+                            "a2",
+                            "b2",
+                            "c2"
+                        ],
+                        [
+                            "a3",
+                            "b3",
+                            "c3"
+                        ],
+                        [
+                            "a4",
+                            "b4",
+                            "c4"
+                        ]
+                    ],
+                    "types": [
+                        "string",
+                        "string",
+                        "string"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 44,
+                "height": 210
             },
             "evaluatorReader": true,
             "lineCount": 5

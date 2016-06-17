@@ -46,6 +46,8 @@ describe('TreeMap Tutorial', function () {
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
         beakerPO.checkPlotIsPresentByIdCell(idCell);
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.id("plotTitle")).getText()).toBe("Simple TreeChart");
+        beakerPO.checkSaveAsSvgPngByIdCell(idCell, "Simple TreeChart");
     });
 
     it('Mode.SQUARIFY', function(){

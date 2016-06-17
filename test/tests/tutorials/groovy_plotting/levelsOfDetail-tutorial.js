@@ -42,6 +42,9 @@ describe('Groovy Plotting', function () {
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
         expect(beakerPO.getPlotMaingByIdCell(idCell).isPresent()).toBe(true);
+
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.id("plotTitle")).getText()).toBe("Drunken Sailor Walks");
+        beakerPO.checkSaveAsSvgPngByIdCell(idCell, "Drunken Sailor Walks");
     });
 
 });

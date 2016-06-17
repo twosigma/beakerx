@@ -42,6 +42,10 @@
       bkElectron,
       bkPlotApi) {
 
+    // we have copypasted piece of code from this line up to the end of 'transformBack' method in
+    // plugin/node/src/dist/app/transformation.js. If you make some changes there, please bring them
+    // to Node plugin too
+
     var ImageIcon = function(data) {
       if (data === undefined || data.type !== "ImageIcon") {
         this.imageData = [];

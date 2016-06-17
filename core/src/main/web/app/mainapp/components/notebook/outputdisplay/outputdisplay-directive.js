@@ -53,7 +53,7 @@
             });
           }
           var directiveName = bkOutputDisplayFactory.getDirectiveName(type);
-          element.html("<div " + directiveName + " model='model'></div>");
+          element.html("<div class='output-padding'" + directiveName + " model='model'></div>");
           $compile(element.contents())(childScope);
         };
         scope.$watch("type", function(newType, oldType) {

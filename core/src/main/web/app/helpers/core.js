@@ -244,7 +244,8 @@
       },
       showFileChooser: function (initUri) {
         return bkCoreManager.showFileSaveDialog({
-          initUri: initUri
+          initUri: initUri,
+          extension: 'bkr'
         });
       }
     };
@@ -1173,11 +1174,43 @@
     var elfinder;
     var hashes2Open = [];
 
+    var addTrailingSlash = function(str, isWindows) {
+      if (isWindows) {
+        if (!_.endsWith(str, '\\')) {
+          str = str + '\\';
+        }
+      } else {
+        if (!_.endsWith(str, '/')) {
+          str = str + '/';
+        }
+      }
+      return str;
+    };
+
     $scope.selected = {
       path: null
     };
 
-    $scope.isReady = false;
+    $scope.isReady = function () {
+      var deferred = bkUtils.newDeferred();
+      if ($scope.selected.path) {
+        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"), {path: $scope.selected.path})
+          .success(function (result) {
+            if (result.exist === true) {
+              deferred.resolve(result.isDirectory !== true);
+            } else {
+              if ($scope.getStrategy().type === "SAVE") {
+                deferred.resolve(result.parent ? true : false);
+              } else {
+                deferred.resolve(false);
+              }
+            }
+          });
+      } else {
+        deferred.resolve(false);
+      }
+      return deferred.promise;
+    };
 
     $scope.getStrategy = function () {
       return strategy;
@@ -1192,8 +1225,10 @@
 
 
     var setFromHash = function (hash, timeout) {
-      var action = function(){
+      var action = function () {
         $scope.selected.path = elfinder.file(hash).fullpath.replace('//', '/');
+        if (elfinder.file(hash).mime === 'directory')
+          $scope.selected.path = addTrailingSlash($scope.selected.path, bkUtils.serverOS.isWindows());
       };
       if (timeout !== undefined && timeout !== null){
         $timeout(function () {
@@ -1279,19 +1314,29 @@
         }
       }
     };
-    $scope.ok = function (skipReady) {
-      if (skipReady === true || $scope.isReady) {
-        if ($scope.getStrategy().type === "SAVE") {
-          var filename = $scope.selected.path.substring($scope.selected.path.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/') + 1);
-          var extension = $scope.getStrategy().treeViewfs.extension;
-          if (extension !== undefined && extension.length > 0) {
-            if (filename.indexOf(extension) === -1 || filename.lastIndexOf(extension) != filename.length - extension.length) {
-              $scope.selected.path += "." + extension;
-            }
+
+    var ok = function(){
+      if ($scope.getStrategy().type === "SAVE") {
+        var filename = $scope.selected.path.substring($scope.selected.path.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/') + 1);
+        var extension = $scope.getStrategy().treeViewfs.extension;
+        if (extension !== undefined && extension.length > 0) {
+          if (filename.indexOf(extension) === -1 || filename.lastIndexOf(extension) != filename.length - extension.length) {
+            $scope.selected.path += "." + extension;
           }
         }
-        $uibModalInstance.close($scope.selected.path);
       }
+      $uibModalInstance.close($scope.selected.path);
+    };
+
+    $scope.ok = function (skipReady) {
+      if (skipReady === true){
+        ok();
+      }
+      $scope.isReady().then(function(isReady){
+        if (isReady === true){
+          ok();
+        }
+      });
     };
 
     $scope.cancel = function () {
@@ -1316,26 +1361,6 @@
       }
     });
 
-    $scope.$watch(function (scope) {
-      if (elfinder)
-        return $scope.selected.path;
-    }, function () {
-      if ($scope.selected.path) {
-        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"), {path: $scope.selected.path})
-          .success(function (result) {
-            if (result.exist === true) {
-              $scope.isReady = result.isDirectory !== true;
-            } else {
-              if ($scope.getStrategy().type === "SAVE") {
-                $scope.isReady = result.parent ? true : false;
-              } else {
-                $scope.isReady = false;
-              }
-            }
-          });
-      } else
-        $scope.isReady = false;
-    });
   });
 
 

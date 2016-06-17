@@ -561,6 +561,10 @@ var BeakerPageObject = function() {
     return this.getDTFCLeftHeader(cellId).all(by.css('th')).get(colInd);
   };
 
+  this.getDTRow = function (cellId, rowInd) {
+    return this.getDataTablesTBodyByIdCell(cellId).get(rowInd);
+  };
+
   this.scrollDataTableHorizontally = function (cellId, x) {
     browser.executeScript("$('bk-code-cell-output[cell-id=" + cellId + "').find('.dataTables_scrollBody').scrollLeft(" + x + ");");
   };
@@ -640,6 +644,18 @@ var BeakerPageObject = function() {
     expect(tBody.count()).toBe(rowsCount);
     expect(tBody.get(0).getText()).toBe(firstRow);
   }
+
+  this.getDataTableFilterRow = function (cellId) {
+    return this.getDataTablesScrollHeadByIdCell(cellId).element(by.css('.filterRow'));
+  };
+
+  this.getDataTableSearchField = function (cellId) {
+    return this.getDTFCLeftHeader(cellId).all(by.css('.filterRow th')).get(0);
+  };
+
+  this.getDataTableSearchInput = function (cellId) {
+    return this.getDataTableSearchField(cellId).element(by.css('.filter-input'));
+  };
 
   this.checkCellOutputText = function(codeCellOutputIdx, outputText){
     expect(this.getCodeCellOutputByIndex(codeCellOutputIdx).element(By.css('pre')).getText()).toBe(outputText);

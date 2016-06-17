@@ -389,6 +389,9 @@
                     col: order
                   });
               }
+              if (d == null) {
+                d = '';
+              }
               d = d + '';
               out = out + qot + (d !== undefined && d !== null ? fix(d) : '') + qot;
             }

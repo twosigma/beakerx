@@ -27,7 +27,7 @@
 
     var impls = {
         "Text": {
-          template: "<pre class='output-padding'>{{getText()}}</pre>",
+          template: "<pre>{{getText()}}</pre>",
           controller: function($scope) {
             $scope.getText = function() {
               var model = $scope.model.getCellModel();

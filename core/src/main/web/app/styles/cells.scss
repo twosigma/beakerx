@@ -55,7 +55,13 @@ bk-markdown-editable .CodeMirror {
 }
 
 .output-padding{
-  padding-top: 18px !important;
+  pre:first-child:before {
+    content: ' ';
+    display: block;
+    float: right;
+    height: 10px;
+    width:42px;
+  }
 }
 
 .output-stats-padding{

@@ -25,6 +25,7 @@ import java.lang.Exception;
 import java.math.BigInteger;
 import java.net.UnknownHostException;
 import java.net.InetAddress;
+import java.nio.file.attribute.PosixFilePermission;
 import java.security.SecureRandom;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -155,9 +156,15 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
     String varDir = this.dotDir + "/var";
     utils.ensureDirectoryExists(varDir);
+    utils.setPermissions(varDir, PosixFilePermission.OWNER_READ,
+                                 PosixFilePermission.OWNER_WRITE,
+                                 PosixFilePermission.OWNER_EXECUTE);
     this.recentNotebooksFileUrl = varDir + "/recentNotebooks";
     this.sessionBackupDir = varDir + "/sessionBackups";
     utils.ensureDirectoryExists(this.sessionBackupDir);
+    utils.setPermissions(this.sessionBackupDir, PosixFilePermission.OWNER_READ,
+                                                PosixFilePermission.OWNER_WRITE,
+                                                PosixFilePermission.OWNER_EXECUTE);
 
     this.pluginLocations = new HashMap<>();
     this.pluginOptions = pref.getPluginOptions();

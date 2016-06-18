@@ -47,6 +47,8 @@ import java.util.Set;
  */
 public class GeneralUtilsImpl implements GeneralUtils {
 
+  public static final Logger LOGGER = Logger.getLogger(GeneralUtilsImpl.class.getName());
+
   private boolean isWindows() {
     return System.getProperty("os.name").contains("Windows");
   }  
@@ -62,16 +64,14 @@ public class GeneralUtilsImpl implements GeneralUtils {
     try {
       Runtime.getRuntime().exec(cmd);
     } catch (IOException e) {
-      Logger.getLogger(GeneralUtilsImpl.class.getName())
-          .log(Level.INFO, "ERROR opening url {0}", url);
+      LOGGER.log(Level.INFO, "ERROR opening url {0}", url);
     }
   }
 
   private String readFile(Path path, boolean isSuppressLogging) {
     if (path == null) {
       if (isSuppressLogging) {
-        Logger.getLogger(GeneralUtilsImpl.class.getName())
-            .log(Level.INFO, "ERROR locating file {0}", path);
+        LOGGER.log(Level.INFO, "ERROR locating file {0}", path);
       }
       return null;
     }
@@ -80,8 +80,7 @@ public class GeneralUtilsImpl implements GeneralUtils {
       encoded = Files.readAllBytes(path);
     } catch (IOException ex) {
       if (isSuppressLogging) {
-        Logger.getLogger(GeneralUtilsImpl.class.getName())
-            .log(Level.INFO, "ERROR reading file {0}", path);
+        LOGGER.log(Level.INFO, "ERROR reading file {0}", path);
       }
       return null;
     }
@@ -135,8 +134,7 @@ public class GeneralUtilsImpl implements GeneralUtils {
     try {
       Files.move(castToPath(oldFile), castToPath(newFile), StandardCopyOption.ATOMIC_MOVE);
     } catch (AtomicMoveNotSupportedException e) {
-      Logger.getLogger(GeneralUtilsImpl.class.getName())
-          .log(Level.INFO,
+      LOGGER.log(Level.INFO,
               "Renaming from {0} to {1}. Atomic move not supported. Maybe target filesystem differs.",
               new Object[]{oldFile, newFile});
       Files.move(castToPath(oldFile), castToPath(newFile), StandardCopyOption.REPLACE_EXISTING);
@@ -183,8 +181,7 @@ public class GeneralUtilsImpl implements GeneralUtils {
       try {
         Files.copy(copyFromIfMissing, targetFile, StandardCopyOption.REPLACE_EXISTING);
       } catch (IOException e) {
-        Logger.getLogger(GeneralUtilsImpl.class.getName())
-          .log(Level.INFO, "ERROR copying from {0} to {1}", new Object[]{copyFromIfMissing, targetFile});
+        LOGGER.log(Level.INFO, "ERROR copying from {0} to {1}", new Object[]{copyFromIfMissing, targetFile});
         throw e;
       }
     } else {
@@ -264,12 +261,16 @@ public class GeneralUtilsImpl implements GeneralUtils {
 
   @Override
   public void setPermissions(String path, PosixFilePermission... perms) throws IOException {
-    Files.setPosixFilePermissions(castToPath(path), new HashSet<>(Arrays.asList(perms)));
+    setPermissions(castToPath(path), perms);
   }
 
   @Override
   public void setPermissions(Path path, PosixFilePermission... perms) throws IOException {
-    Files.setPosixFilePermissions(path, new HashSet<>(Arrays.asList(perms)));
+    try {
+      Files.setPosixFilePermissions(path, new HashSet<>(Arrays.asList(perms)));
+    } catch (UnsupportedOperationException e) {
+      LOGGER.log(Level.INFO, "ERROR setting file permissions: file system does not support the PosixFileAttributeView");
+    }
   }
 
   @Override

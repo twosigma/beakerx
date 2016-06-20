@@ -14,37 +14,45 @@
  *  limitations under the License.
  */
 
+
 var BeakerPageObject = require('../../beaker.po.js');
+var path = require('path');
 var beakerPO;
 
 describe('Working with d3.js', function (done) {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();
-        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fp5.bkr&readOnly=true").then(done);
+        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fd3.bkr&readOnly=true").then(done);
         beakerPO.waitUntilLoadingCellOutput();
         browser.driver.manage().window().maximize();
     });
 
     afterAll(function(done){
-        beakerPO.createScreenshot('p5jsTutorial');
+        beakerPO.createScreenshot('d3jsTutorial');
         done();
     });
 
-    it('Should display p5.js example', function () {
-        var idCell = "codexJibGW";
+    it('Should generate a random graph', function () {
+        var idCell = "codejwoVEJ";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.collapseCellMenuByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Html');
-        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('div#sketch > canvas')).isPresent()).not.toBe(true);
-
-        beakerPO.scrollToBkCellByIdCell("codeJMbuKV");
-        beakerPO.runBkCellDefaultButtonByIdCell("codeJMbuKV");
-
-        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
-        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('div#sketch > canvas')).isPresent()).toBe(true);
-        beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('div#sketch > canvas')).click();
+        beakerPO.runCellWithoutDisplayResultByIdCell(idCell);
     });
 
+    it('Should show graph', function () {
+        var idCell = "codegxgnTN";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Html');
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('div#fdg > svg')).isPresent()).not.toBe(true);
+
+        idCell = "codeIVmT2r";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+
+        idCell = "codegxgnTN";
+        browser.wait(beakerPO.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']'), 20000));
+        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('div#fdg > svg')).isPresent()).toBe(true);
+    });
 
 });

@@ -41,7 +41,7 @@ describe('JavaScript Tutorial', function () {
 
             idCell = "codeace4aM";
             beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
+            beakerPO.runBkCellDefaultButtonByIdCell(idCell);
 
             idCell = "code31H2LG";
             beakerPO.scrollToCodeCellOutputByIdCell(idCell);

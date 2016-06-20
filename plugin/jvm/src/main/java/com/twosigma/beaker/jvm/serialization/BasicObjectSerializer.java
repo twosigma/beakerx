@@ -148,6 +148,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     addTypeConversion("java.util.concurrent.atomic.AtomicLong", TYPE_INTEGER);
     addTypeConversion("java.math.BigDecimal", TYPE_DOUBLE);
     addTypeConversion("java.math.BigInteger", TYPE_BIGINT);
+    addTypeConversion("org.codehaus.groovy.runtime.GStringImpl", TYPE_STRING);
 
     addTypeSerializer(new PrimitiveTypeSerializer());
     addTypeSerializer(new ListOfPrimitiveTypeMapsSerializer(this));

@@ -13,7 +13,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div ng-show="mode=='edit'" ng-click="$event.stopPropagation()" class="codemirror-wrapper">
-  <textarea></textarea>
+<div class="markdown-area" ng-class="{'markdown-hidden': cellmodel.hidden}">
+  <div class="markdown-content">
+    <div ng-show="mode=='edit'" ng-click="$event.stopPropagation()" class="codemirror-wrapper">
+      <textarea></textarea>
+    </div>
+    <div ng-click="edit($event)" class="markup" ng-show="mode=='preview'"></div>
+  </div>
 </div>
-<div ng-click="edit($event)" class="markup" ng-show="mode=='preview'"></div>

@@ -333,6 +333,10 @@ background-color: rgb(205, 223, 214);
 .CodeMirror.cm-fat-cursor {
   padding-bottom: 25px;
   margin-bottom: -15px;
+  .advanced-mode & {
+    padding-bottom: 28px;
+    margin-bottom: -8px;
+  }
 }
 
 .vertical-align {

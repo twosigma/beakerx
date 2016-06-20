@@ -1329,6 +1329,10 @@
     };
 
     $scope.ok = function (skipReady) {
+      //elfinder.trigger("filter_cwd", {
+      //  filter: 'beaker'
+      //});
+      elfinder.filter_cwd("TEST");
       if (skipReady === true){
         ok();
       }
@@ -1340,6 +1344,9 @@
     };
 
     $scope.cancel = function () {
+      //elfinder.trigger("filter_cwd", {
+      //  filter: null
+      //});
       $uibModalInstance.dismiss('cancel');
     };
 

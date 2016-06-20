@@ -4823,6 +4823,12 @@ elFinder.prototype = {
 	navId2Hash : function(id) {
 		return typeof(id) == 'string' ? id.substr(this.navPrefix.length) : false;
 	},
+
+
+	filter_cwd : function(filter) {
+		render();
+		return alert(filter);
+	},
 	
 	cwdHash2Id : function(hash) {
 		return this.cwdPrefix + hash;
@@ -8176,7 +8182,7 @@ $.fn.elfindercwd = function(fm, options) {
 			 * @param  Array  files
 			 * @return void
 			 */
-			content = function(files, any) {
+			content = function(files, any, filter) {
 				var phash = fm.cwd().hash; 
 
 				cwdParents = fm.parents(phash);
@@ -8202,8 +8208,10 @@ $.fn.elfindercwd = function(fm, options) {
 				}
 
 				list && cwd.html('<table><thead><tr class="ui-state-default'+(fm.UA.Touch? ' elfinder-touch' : '')+'"><td class="elfinder-cwd-view-th-name">'+msg.name+'</td>'+customColsNameBuild()+'</tr></thead><tbody/></table>');
-		
-				buffer = $.map(files, function(f) { return any || f.phash == phash ? f : null; });
+
+				buffer = $.map(files, function (f) {
+					return any || (f.phash == phash && (filter ? f.name.indexOf(filter) !== -1 ? true : false : true)) ? f : null;
+				});
 				
 				buffer = fm.sortFiles(buffer);
 		
@@ -8650,6 +8658,10 @@ $.fn.elfindercwd = function(fm, options) {
 			})
 			.bind('open', function(e) {
 				content(e.data.files);
+				resize();
+			})
+			.bind('filter_cwd', function(e) {
+				content(fm.files(), undefined, e.data.filter);
 				resize();
 			})
 			.bind('search', function(e) {

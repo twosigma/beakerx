@@ -88,6 +88,16 @@ bk-markdown-cell bk-markdown-editable {
   display: block;
 }
 
+bk-markdown-editable .markdown-area.markdown-hidden {
+  padding-top: $grid-row-height*2;
+  .advanced-mode & {
+    padding-top: 34px;
+  }
+  .markdown-content {
+    display: none;
+  }
+}
+
 bk-markdown-cell bk-markdown-editable, .bkcell.code-cell-area, .textcell-wrapper {
   border: solid 1px $cell-border;
   background-color: white;

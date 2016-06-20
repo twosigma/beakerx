@@ -35,7 +35,7 @@ describe('Groovy Plotting', function () {
     it('Levels of Detail', function () {
         var idCell = "coden9MEmJ";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.getBkCellByIdCell(idCell).element(by.css('div[ng-click="toggleCellInput()"]')).click();
+        beakerPO.getBkCellByIdCell(idCell).element(by.css('div[ng-click="collapseCellMenu[cellmodel.type].click()"]')).click();
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
 
         idCell = "codeDyDWm8";

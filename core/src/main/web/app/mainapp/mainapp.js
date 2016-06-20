@@ -30,6 +30,7 @@
                                              'bk.session',
                                              'bk.sessionManager',
                                              'bk.notebookCellModelManager',
+                                             'bk.windowsManager',
                                              'bk.menuPluginManager',
                                              'bk.cellMenuPluginManager',
                                              'bk.notebookVersionManager',
@@ -60,6 +61,7 @@
       bkNotebookCellModelManagerFactory,
       bkCellMenuPluginManager,
       bkNotebookVersionManager,
+      bkWindowsManager,
       bkEvaluatorManager,
       bkEvaluatePluginManager,
       bkEvaluateJobManager,
@@ -342,6 +344,32 @@
             clrLoadingStatusMessage("Loading notebook");
             $scope.loading = false;
           };
+
+          function checkIfNotebookAlreadyOpened(notebookUri, openNotebook) {
+            function reportAndOpen() {
+              bkWindowsManager.reportOpenedNotebook(notebookUri);
+              openNotebook();
+            }
+            if (bkWindowsManager.isNotebookOpen(notebookUri)) {
+              if (bkUtils.isElectron) {
+                bkWindowsManager.activateOtherWindow(notebookUri);
+              } else {
+                var deactivateOtherCb = function () {
+                  bkWindowsManager.disconnectWindow(notebookUri);
+                  reportAndOpen();
+                };
+                var goToControlPanel = function () {
+                  bkCoreManager.gotoControlPanel();
+                };
+                bkHelper.show2ButtonModal(
+                  "This notebook is already open in another window. Do you want to deactivate the other window?",
+                  "Notebook is open", deactivateOtherCb, goToControlPanel, "Yes", "No");
+              }
+            } else {
+              reportAndOpen();
+            }
+          }
+
           return {
             openUri: function(target, sessionId, retry, retryCountMax) {
               if (!target.uri) {
@@ -387,13 +415,15 @@
                 fileLoader.load(target.uri).then(function(fileContentAsString) {
                   var notebookModel = importer.import(fileContentAsString);
                   notebookModel = bkNotebookVersionManager.open(notebookModel);
-                  loadNotebookModelAndResetSession(
+                  checkIfNotebookAlreadyOpened(target.uri, function () {
+                    loadNotebookModelAndResetSession(
                       target.uri,
                       target.type,
                       target.readOnly,
                       target.format,
                       notebookModel, false, sessionId, false);
-                  setDocumentTitle();
+                    setDocumentTitle();
+                  });
                 }).catch(function(data, status, headers, config) {
                   bkHelper.show1ButtonModal(data, "Open Failed", function() {
                     bkCoreManager.gotoControlPanel();
@@ -409,16 +439,18 @@
               showLoadingStatusMessage("Loading notebook");
               bkSession.load(sessionId).then(function(session) {
                 var notebookUri = session.notebookUri;
-                var uriType = session.uriType;
-                var readOnly = session.readOnly;
-                var format = session.format;
-                var notebookModel = angular.fromJson(session.notebookModelJson);
-                var edited = session.edited;
-                bkSessionManager.updateNotebookUri(notebookUri, uriType, readOnly, format);
-                $timeout(function() {
-                  loadNotebookModelAndResetSession(
-                    notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, true);
-                }, 0);
+                checkIfNotebookAlreadyOpened(notebookUri, function () {
+                  var uriType = session.uriType;
+                  var readOnly = session.readOnly;
+                  var format = session.format;
+                  var notebookModel = angular.fromJson(session.notebookModelJson);
+                  var edited = session.edited;
+                  bkSessionManager.updateNotebookUri(notebookUri, uriType, readOnly, format);
+                  $timeout(function() {
+                    loadNotebookModelAndResetSession(
+                      notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, true);
+                  }, 0);
+                });
               });
             },
             fromImport: function(sessionId) {
@@ -1142,7 +1174,9 @@
         };
         var startAutoBackup = function() {
           stopAutoBackup();
-          intervalID = setInterval(bkSessionManager.backup, 60 * 1000);
+          if(!bkSessionManager.isForceDisconnected()) {
+            intervalID = setInterval(bkSessionManager.backup, 60 * 1000);
+          }
         };
         $scope.getMenus = function() {
           return bkMenuPluginManager.getMenus();
@@ -1152,6 +1186,25 @@
             bkElectron.updateMenus(bkMenuPluginManager.getMenus());
           });
         }
+        var disconnectCallback = function () {
+          stopAutoBackup();
+          bkSessionManager.forceDisconnect();
+          bkHelper.show2ButtonModal("This notebook was opened in another window, and has been disconnected.",
+            "Disconnected", function () {
+              bkSessionManager.dumpDisplayStatus();
+              var timeoutPromise = $timeout(function() {
+                bkUtils.saveAsClientFile(
+                  bkSessionManager.getSaveData().notebookModelAsString,
+                  "notebook.bkr");
+              }, 1);
+              timeoutPromise.then(function() {
+                bkCoreManager.gotoControlPanel();
+              })
+            }, function () {
+              bkCoreManager.gotoControlPanel();
+            }, "Download copy", "Close");
+        };
+        bkWindowsManager.init(disconnectCallback);
 
         var keydownHandler = function(e) {
           if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
@@ -1239,6 +1292,7 @@
           stopAutoBackup();
           bkCoreManager.setBkAppImpl(null);
           $(document).unbind('keydown', keydownHandler);
+          bkWindowsManager.destroy();
           window.onbeforeunload = null;
           bkUtils.removeConnectedStatusListener();
           if ($scope.reconnectFailedListenerUnsubscribe) {
@@ -1265,6 +1319,7 @@
           if (bkUtils.isMiddleClick(event)) {
             window.open($location.absUrl() + '/beaker');
           } else {
+            bkWindowsManager.reportNotebookClosed();
             bkCoreManager.gotoControlPanel();
           }
         };

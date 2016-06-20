@@ -18,6 +18,7 @@ package com.twosigma.beaker.core.module;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.twosigma.beaker.core.module.config.BeakerConfigPref;
+import com.twosigma.beaker.core.rest.ClientWindowsService;
 import com.twosigma.beaker.core.rest.FileIORest;
 import com.twosigma.beaker.core.rest.HttpProxyRest;
 import com.twosigma.beaker.core.rest.LoginRest;
@@ -77,6 +78,7 @@ public class URLConfigModule extends ServletModule {
 
     bind(OutputLogService.class).asEagerSingleton();
     bind(NamespaceService.class).asEagerSingleton();
+    bind(ClientWindowsService.class).asEagerSingleton();
 
     // REST binding
     bind(UtilRest.class);

@@ -444,6 +444,7 @@
     var _sessionId = null;
     var _edited = false;
     var _needsBackup = false;
+    var _forceDisconnected = false;
     var _saveDir = bkUtils.getHomeDirectory();
 
     var BeakerObject = function(nbmodel) {
@@ -930,6 +931,7 @@
         connectcontrol(sessionId);
         bkSession.backup(_sessionId, generateBackupData());
         recordRecentNotebook();
+        _forceDisconnected = false;
       },
       clear: function() {
         disconnectcontrol(_sessionId);
@@ -1060,6 +1062,12 @@
           }
           this.setNotebookModelEdited(true);
         }
+      },
+      forceDisconnect: function () {
+        _forceDisconnected = true;
+      },
+      isForceDisconnected: function () {
+        return _forceDisconnected;
       },
       evaluatorUnused: function(plugin) {
         var n = _.find(_notebookModel.get().cells, function (c) {

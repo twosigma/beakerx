@@ -330,6 +330,11 @@ background-color: rgb(205, 223, 214);
   opacity: 0.5;
 }
 
+.CodeMirror.cm-fat-cursor {
+  padding-bottom: 25px;
+  margin-bottom: -15px;
+}
+
 .vertical-align {
   display: flex;
   align-items: center;

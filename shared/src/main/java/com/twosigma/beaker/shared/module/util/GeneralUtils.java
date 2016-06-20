@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermission;
 
 /**
  * BasicUtils
@@ -114,5 +115,9 @@ public interface GeneralUtils {
   public void copyIfSrcExistsAndTargetDoesnt(File srcFile, File targetFile) throws IOException;
   public void copyIfSrcExistsAndTargetDoesnt(String srcFile, String targetFile) throws IOException;
   public void copyIfSrcExistsAndTargetDoesnt(URI srcFile, URI targetFile) throws IOException;
+
+  public void setPermissions(String path, PosixFilePermission... perms) throws IOException;
+  public void setPermissions(Path path, PosixFilePermission... perms) throws IOException;
+  public void setPermissions(File file, PosixFilePermission... perms) throws IOException;
 
 }

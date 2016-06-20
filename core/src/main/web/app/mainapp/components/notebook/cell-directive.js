@@ -130,6 +130,19 @@
           }
         };
 
+        $scope.toggleMarkdown = function() {
+          if ($scope.cellmodel.hidden) {
+            delete $scope.cellmodel.hidden;
+          } else {
+            $scope.cellmodel.hidden = true;
+          }
+        };
+
+        $scope.toggleSection = function() {
+          $scope.cellmodel.collapsed = !$scope.cellmodel.collapsed;
+          $scope.$broadcast('beaker.section.toggled', $scope.cellmodel.collapsed);
+        };
+
         $scope.evaluate = function($event) {
           if($scope.isCellRunning()) {
             return;
@@ -236,12 +249,16 @@
         };
 
         $scope.getCellSummary = function () {
+          var body = '';
           if($scope.isCodeCell()) {
-            var body = $scope.cellmodel.input.body;
-            var lines = body.split('\n');
-            if(lines.length > 0) {
-              return lines[0];
-            }
+            body = $scope.cellmodel.input.body;
+          }
+          if($scope.isMarkdownCell()){
+            body = $scope.cellmodel.body;
+          }
+          var lines = body.split('\n');
+          if(lines.length > 0) {
+            return lines[0];
           }
         };
 
@@ -252,10 +269,43 @@
         $scope.isCodeCell = function() {
           return $scope.cellmodel.type == 'code';
         };
+
+        $scope.isSectionCell = function() {
+          return $scope.cellmodel.type == 'section';
+        };
         
         $scope.isCellRunning = function () {
           return bkCoreManager.getBkApp().isRunning($scope.cellmodel.id);
-        }
+        };
+
+        $scope.isCellHidden = function () {
+          return $scope.isCodeCell() ? $scope.cellmodel.input.hidden :
+            $scope.isMarkdownCell() ? $scope.cellmodel.hidden :
+            $scope.isSectionCell ? $scope.cellmodel.collapsed : false;
+        };
+
+        $scope.shouldShowSummary = function () {
+          return !$scope.isSectionCell() && $scope.isCellHidden() && !$scope.isLocked();
+        };
+
+        $scope.wideMenu = function () {
+          return $scope.isCellHidden() && !$scope.isSectionCell();
+        };
+
+        $scope.collapseCellMenu = {
+          'code' : {
+            click: $scope.toggleCellInput,
+            tooltip: 'cell input'
+          },
+          'markdown' : {
+            click: $scope.toggleMarkdown,
+            tooltip: 'text'
+          },
+          'section' : {
+            click: $scope.toggleSection,
+            tooltip: 'section'
+          }
+        };
       }
     };
   });

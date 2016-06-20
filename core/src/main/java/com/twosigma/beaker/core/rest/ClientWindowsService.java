@@ -1,3 +1,18 @@
+/*
+ *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
@@ -20,11 +35,10 @@ import java.util.Map;
 @Service
 @Singleton
 public class ClientWindowsService implements ServerSession.RemoveListener {
-  public static final String WINDOWS_UPDATE = "/windows/update";
+  private static final String WINDOWS_UPDATE = "/windows/update";
   private BayeuxServer bayeux;
   private LocalSession localSession;
-
-  Map<String, NotebookInfo> infoMap = new HashMap<>();
+  private Map<String, NotebookInfo> infoMap = new HashMap<>();
 
   @Inject
   public ClientWindowsService(BayeuxServer bayeuxServer) {

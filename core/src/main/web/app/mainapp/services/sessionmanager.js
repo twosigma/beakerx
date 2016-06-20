@@ -1065,6 +1065,7 @@
       },
       forceDisconnect: function () {
         _forceDisconnected = true;
+        return bkSession.close(_sessionId);
       },
       isForceDisconnected: function () {
         return _forceDisconnected;

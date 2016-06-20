@@ -158,7 +158,7 @@ public class DynamicClassLoaderSimple extends ClassLoader {
     Enumeration<URL> c;
     c = getParent().getResources(name);
     //System.out.println("get resources "+name);
-    if (c == null && myloader != null) {
+    if ((c == null || !c.hasMoreElements()) && myloader != null) {
       try {
         c = myloader.getResources(name);
       } catch(IOException e) {        

@@ -466,7 +466,7 @@
         }, {top: -GLOBALS.CELL_INSTANTIATION_DISTANCE});
 
         scope.focus = function() {
-          scope.cm.focus();
+          if (scope.cm) scope.cm.focus();
         };
 
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);

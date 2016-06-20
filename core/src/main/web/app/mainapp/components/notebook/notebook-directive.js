@@ -116,6 +116,9 @@
             delete this._focusables[cellId];
             this._focusables[cellId] = null;
           },
+          getNotebookNewCellFactory: function () {
+            return bkSessionManager.getNotebookNewCellFactory();
+          },
           getFocusable: function (cellId) {
             return this._focusables[cellId];
           },

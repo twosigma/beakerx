@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
@@ -90,6 +91,12 @@ public class RecentMenuRest {
   private void recordToFile() throws IOException {
     this.utils.saveFile(this.recentDocumentsFile,
         StringUtils.join(reverseView(this.recentDocuments), "\n"));
+    try {
+      utils.setPermissions(this.recentDocumentsFile, PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
+    } catch (IOException e) {
+      Logger.getLogger(RecentMenuRest.class.getName()).log(Level.WARNING,
+        "Unable to set permissions to recent document", e);
+    }
   }
 
   private static List<String> reverseView(Deque<String> input) {

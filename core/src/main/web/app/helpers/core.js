@@ -530,6 +530,14 @@
           return nextCell;
         };
 
+        var appendCodeCell = function() {
+          var thisCellId = scope.cellmodel.id;
+          var evaluatorName = scope.cellmodel.evaluator;
+          var newCell = scope.bkNotebook.getNotebookNewCellFactory().newCodeCell(evaluatorName);
+          notebookCellOp.appendAfter(thisCellId, newCell);
+          bkUtils.refreshRootScope();
+        };
+
         var moveFocusDown = function() {
           // move focus to next code cell
           var thisCellId = scope.cellmodel.id;
@@ -570,8 +578,12 @@
           scope.$apply();
         };
 
-        var evaluateAndGoDown = function() {
+        var evaluateAndGoDown = function () {
           scope.evaluate();
+          var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
+          if (!nextCell) {
+            appendCodeCell();
+          }
           goToNextCodeCell();
         };
 

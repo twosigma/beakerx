@@ -1187,6 +1187,30 @@
       return str;
     };
 
+    var getFilename = function(path){
+      var filename = path.substring(path.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/') + 1);
+      return filename.trim().length > 0 ? filename.trim() : null;
+    };
+
+    var getParent = function(path){
+      return path.substring(0, path.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/'))
+    };
+
+    var setFromHash = function (hash, timeout) {
+      var action = function () {
+        $scope.selected.path = elfinder.file(hash).fullpath.replace('//', '/');
+        if (elfinder.file(hash).mime === 'directory')
+          $scope.selected.path = addTrailingSlash($scope.selected.path, bkUtils.serverOS.isWindows());
+      };
+      if (timeout !== undefined && timeout !== null){
+        $timeout(function () {
+          action(hash);
+        }, timeout);
+      }else{
+        action(hash);
+      }
+    };
+
     $scope.selected = {
       path: null
     };
@@ -1224,20 +1248,7 @@
     };
 
 
-    var setFromHash = function (hash, timeout) {
-      var action = function () {
-        $scope.selected.path = elfinder.file(hash).fullpath.replace('//', '/');
-        if (elfinder.file(hash).mime === 'directory')
-          $scope.selected.path = addTrailingSlash($scope.selected.path, bkUtils.serverOS.isWindows());
-      };
-      if (timeout !== undefined && timeout !== null){
-        $timeout(function () {
-          action(hash);
-        }, timeout);
-      }else{
-        action(hash);
-      }
-    };
+
 
     $scope.init = function () {
       var $elfinder = $('#elfinder');
@@ -1287,12 +1298,10 @@
           $scope.selected.path = $scope.getStrategy().initUri;
         }, 1000);
       }
-
     };
 
-
     $scope.onkey= function(keyEvent) {
-      if (keyEvent.which === 13){
+      if (keyEvent.which === 13) {//Enter
         if ($scope.selected.path) {
           bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"), {path: $scope.selected.path})
             .success(function (result) {
@@ -1312,12 +1321,53 @@
               }
             });
         }
+      } else if (keyEvent.which === 9) {//Tab
+        var parentPath = elfinder.path(elfinder.cwd().hash);
+        if (parentPath === getParent($scope.selected.path)){
+          var filename = getFilename($scope.selected.path);
+          var volume = bkHelper.getVolume(elfinder);
+          var possible_files = [];
+          // Get the keys
+          var keys = Object.keys(elfinder.files());
+          for (var i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            if (key.indexOf(volume.hash) === 0) {
+              var file = elfinder.files()[key];
+              if (parentPath ===  getParent(file.fullpath)) {
+                if (getFilename(file.fullpath).indexOf(filename) === 0) {
+                  possible_files.push(file);
+                }
+              }
+            }
+          }
+          if (possible_files.length === 1) {
+            $timeout(function () {
+              $scope.selected.path = possible_files[0].fullpath;
+              if (possible_files[0].mime === 'directory') {
+                hashes2Open = bkHelper.path2hash(elfinder, $scope.selected.path);
+                elfinder.exec('open', hashes2Open.pop());
+              }
+            }, 0);
+          }
+        }
+        keyEvent.preventDefault();
+      } else {
+        $timeout(function () {
+          var parent = getParent( $scope.selected.path);
+          if (elfinder.path(elfinder.cwd().hash) === parent){
+              $timeout(function () {
+              elfinder.trigger("filter_cwd", {
+                filter: getFilename($scope.selected.path)
+              });
+            }, 300);
+          }
+        }, 0);
       }
     };
 
     var ok = function(){
       if ($scope.getStrategy().type === "SAVE") {
-        var filename = $scope.selected.path.substring($scope.selected.path.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/') + 1);
+        var filename = getFilename($scope.selected.path);
         var extension = $scope.getStrategy().treeViewfs.extension;
         if (extension !== undefined && extension.length > 0) {
           if (filename.indexOf(extension) === -1 || filename.lastIndexOf(extension) != filename.length - extension.length) {
@@ -1329,10 +1379,6 @@
     };
 
     $scope.ok = function (skipReady) {
-      //elfinder.trigger("filter_cwd", {
-      //  filter: 'beaker'
-      //});
-      elfinder.filter_cwd("TEST");
       if (skipReady === true){
         ok();
       }
@@ -1344,9 +1390,6 @@
     };
 
     $scope.cancel = function () {
-      //elfinder.trigger("filter_cwd", {
-      //  filter: null
-      //});
       $uibModalInstance.dismiss('cancel');
     };
 

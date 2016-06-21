@@ -4824,11 +4824,6 @@ elFinder.prototype = {
 		return typeof(id) == 'string' ? id.substr(this.navPrefix.length) : false;
 	},
 
-
-	filter_cwd : function(filter) {
-		render();
-		return alert(filter);
-	},
 	
 	cwdHash2Id : function(hash) {
 		return this.cwdPrefix + hash;
@@ -8210,7 +8205,7 @@ $.fn.elfindercwd = function(fm, options) {
 				list && cwd.html('<table><thead><tr class="ui-state-default'+(fm.UA.Touch? ' elfinder-touch' : '')+'"><td class="elfinder-cwd-view-th-name">'+msg.name+'</td>'+customColsNameBuild()+'</tr></thead><tbody/></table>');
 
 				buffer = $.map(files, function (f) {
-					return any || (f.phash == phash && (filter ? f.name.indexOf(filter) !== -1 ? true : false : true)) ? f : null;
+					return any || (f.phash == phash && (filter ? f.name.indexOf(filter) === 0 ? true : false : true)) ? f : null;
 				});
 				
 				buffer = fm.sortFiles(buffer);

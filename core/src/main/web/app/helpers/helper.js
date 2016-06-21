@@ -1326,15 +1326,20 @@
         return out;
       },
 
-      path2hash : function (elfinder, path){
-
+      getVolume : function(elfinder)  {
         var cwd = elfinder.cwd();
         var phash = cwd.phash;
         var file = elfinder.file(cwd.hash);
-        while (phash){
+        while (phash) {
           file = elfinder.file(phash);
           phash = file.phash;
         }
+        return file;
+      },
+
+      path2hash : function (elfinder, path){
+
+        var file = bkHelper.getVolume(elfinder);
 
         var _hash_ = function (path) {
           path = path.replace(file.name, '');

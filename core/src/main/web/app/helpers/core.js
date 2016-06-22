@@ -1184,9 +1184,17 @@
   module.controller('fileDialogCtrl', function ($scope, $rootScope, $uibModalInstance, $timeout, bkCoreManager, bkUtils, strategy) {
 
     var elfinder;
-    var hashes2Open = [];
 
-    var addTrailingSlash = function(str, isWindows) {
+    var state = {
+      hashes2Open: [],
+      tabClicked : false,
+      go2Path: function (path) {
+        state.hashes2Open = bkHelper.path2hash(elfinder, path);
+        elfinder.exec('open', state.hashes2Open.pop());
+      }
+    };
+
+    var addTrailingSlash = function (str, isWindows) {
       if (isWindows) {
         if (!_.endsWith(str, '\\')) {
           str = str + '\\';
@@ -1199,12 +1207,12 @@
       return str;
     };
 
-    var getFilename = function(path){
+    var getFilename = function (path) {
       var filename = path.substring(path.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/') + 1);
       return filename.trim().length > 0 ? filename.trim() : null;
     };
 
-    var getParent = function(path){
+    var getParent = function (path) {
       return path.substring(0, path.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/'))
     };
 
@@ -1214,11 +1222,11 @@
         if (elfinder.file(hash).mime === 'directory')
           $scope.selected.path = addTrailingSlash($scope.selected.path, bkUtils.serverOS.isWindows());
       };
-      if (timeout !== undefined && timeout !== null){
+      if (timeout !== undefined && timeout !== null) {
         $timeout(function () {
           action(hash);
         }, timeout);
-      }else{
+      } else {
         action(hash);
       }
     };
@@ -1260,19 +1268,17 @@
     };
 
 
-
-
     $scope.init = function () {
       var $elfinder = $('#elfinder');
 
       var selectCallback = function (event, elfinderInstance) {
         if (event.data.selected && event.data.selected.length > 0) {
-            setFromHash(event.data.selected[0], 0);
+          setFromHash(event.data.selected[0], 0);
         }
       };
       var openCallback = function (event, elfinderInstance) {
-        if (hashes2Open.length > 0) {
-          elfinder.exec('open', hashes2Open.pop());
+        if (state.hashes2Open.length > 0) {
+          elfinder.exec('open', state.hashes2Open.pop());
         }
         setFromHash(elfinderInstance.cwd().hash, 0);
       };
@@ -1286,11 +1292,11 @@
         $scope.mime(),
         $scope.getStrategy().treeViewfs.showHiddenFiles);
 
-      elfinder =  bkHelper.elfinder($elfinder, elfinderOptions);
+      elfinder = bkHelper.elfinder($elfinder, elfinderOptions);
 
-      var orig_mime2class =  elfinder.mime2class;
-      elfinder.mime2class = function(mime){
-        if (mime === 'application/beaker-notebook'){
+      var orig_mime2class = elfinder.mime2class;
+      elfinder.mime2class = function (mime) {
+        if (mime === 'application/beaker-notebook') {
           return 'elfinder-cwd-icon-beaker';
         }
         return orig_mime2class(mime);
@@ -1299,8 +1305,8 @@
       $elfinder.css("width", '100%');
       $elfinder.css("height", '100%');
 
-      $( ".modal-content" ).resizable({
-        resize: function( event, ui ) {
+      $(".modal-content").resizable({
+        resize: function (event, ui) {
           $elfinder.trigger('resize');
         }
       });
@@ -1312,72 +1318,121 @@
       }
     };
 
-    $scope.onkey= function(keyEvent) {
-      if (keyEvent.which === 13) {//Enter
-        if ($scope.selected.path) {
-          bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"), {path: $scope.selected.path})
-            .success(function (result) {
-              if (result.exist === true) {
-                if (result.isDirectory === true) {
-                  hashes2Open = bkHelper.path2hash(elfinder, $scope.selected.path);
-                  elfinder.exec('open', hashes2Open.pop());
-                } else {
-                  $scope.ok(true);
-                }
+    var onEnter = function (keyEvent) {
+      state.tabClicked = false;
+      if ($scope.selected.path) {
+        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"), {path: $scope.selected.path})
+          .success(function (result) {
+            if (result.exist === true) {
+              if (result.isDirectory === true) {
+                state.go2Path($scope.selected.path);
               } else {
-                if ($scope.getStrategy().type === "SAVE") {
-                  if (result.parent) {
-                    $scope.ok(true);
-                  }
-                }
+                $scope.ok(true);
               }
-            });
-        }
-      } else if (keyEvent.which === 9) {//Tab
-        var parentPath = elfinder.path(elfinder.cwd().hash);
-        if (parentPath === getParent($scope.selected.path)){
-          var filename = getFilename($scope.selected.path);
-          var volume = bkHelper.getVolume(elfinder);
-          var possible_files = [];
-          // Get the keys
-          var keys = Object.keys(elfinder.files());
-          for (var i = 0; i < keys.length; i++) {
-            var key = keys[i];
-            if (key.indexOf(volume.hash) === 0) {
-              var file = elfinder.files()[key];
-              if (parentPath ===  getParent(file.fullpath)) {
-                if (getFilename(file.fullpath).indexOf(filename) === 0) {
-                  possible_files.push(file);
+            } else {
+              if ($scope.getStrategy().type === "SAVE") {
+                if (result.parent) {
+                  $scope.ok(true);
                 }
               }
             }
-          }
-          if (possible_files.length === 1) {
-            $timeout(function () {
-              $scope.selected.path = possible_files[0].fullpath;
-              if (possible_files[0].mime === 'directory') {
-                hashes2Open = bkHelper.path2hash(elfinder, $scope.selected.path);
-                elfinder.exec('open', hashes2Open.pop());
-              }
-            }, 0);
-          }
-        }
-        keyEvent.preventDefault();
-      } else {
-        $timeout(function () {
-          var parent = getParent( $scope.selected.path);
-          if (elfinder.path(elfinder.cwd().hash) === parent){
-              $timeout(function () {
-              elfinder.trigger("filter_cwd", {
-                filter: getFilename($scope.selected.path)
-              });
-            }, 300);
-          }
-        }, 0);
+          });
       }
     };
 
-    var ok = function(){
+    function sharedStart(array) {
+      var A = array.concat().sort(),
+        a1 = A[0], a2 = A[A.length - 1], L = a1.length, i = 0;
+      while (i < L && a1.charAt(i) === a2.charAt(i)) i++;
+      return a1.substring(0, i);
+    }
+
+    var onTab = function (keyEvent) {
+      var parentPath = elfinder.path(elfinder.cwd().hash);
+      if (parentPath === getParent($scope.selected.path)) {
+        var filename = getFilename($scope.selected.path);
+        var volume = bkHelper.getVolume(elfinder);
+        var possible_files = [];
+        // Get the keys
+        var keys = Object.keys(elfinder.files());
+        for (var i = 0; i < keys.length; i++) {
+          var key = keys[i];
+          if (key.indexOf(volume.hash) === 0) {
+            var file = elfinder.files()[key];
+            if (parentPath === getParent(file.fullpath)) {
+              if (getFilename(file.fullpath).indexOf(filename) === 0) {
+                possible_files.push(file);
+              }
+            }
+          }
+        }
+        if (possible_files.length === 1) {
+          state.tabClicked = true;
+          $timeout(function () {
+            $scope.selected.path = possible_files[0].fullpath;
+            if (possible_files[0].mime === 'directory') {
+              state.go2Path($scope.selected.path);
+            }
+          }, 0);
+        } else {
+          $timeout(function () {
+            $scope.selected.path = addTrailingSlash(getParent($scope.selected.path)) +
+              sharedStart(_.map(possible_files, function (e) {
+                return e.name;
+              }));
+          }, 0);
+        }
+      }
+      keyEvent.preventDefault();
+    };
+
+    var onSlash = function (keyEvent) {
+      state.tabClicked = false;
+      state.go2Path($scope.selected.path);
+    };
+
+    var onBackspace= function (keyEvent) {
+      if (state.tabClicked === true){
+        $timeout(function () {
+          $scope.selected.path = addTrailingSlash(getParent($scope.selected.path));
+        }, 0);
+      }
+      state.tabClicked = false;
+    };
+
+    var onKey = function (keyEvent) {
+      state.tabClicked = false;
+      $timeout(function () {
+        var parent = getParent($scope.selected.path);
+        if (elfinder.path(elfinder.cwd().hash) === parent) {
+          $timeout(function () {
+            elfinder.trigger("filter_cwd", {
+              filter: getFilename($scope.selected.path)
+            });
+          }, 300);
+        }
+      }, 0);
+    };
+
+    $scope.onkey = function (keyEvent) {
+      if (keyEvent.which === 13) {
+        onEnter(keyEvent);
+      } else if (keyEvent.which === 9) {
+        onTab(keyEvent)
+      } else if (keyEvent.which === 191) {
+        if (!bkUtils.serverOS.isWindows())
+          onSlash(keyEvent);
+      } else if (keyEvent.which === 220) {
+        if (bkUtils.serverOS.isWindows())
+          onSlash(keyEvent);
+      } else if (keyEvent.which === 8) {
+        onBackspace(keyEvent);
+      } else {
+        onKey(keyEvent);
+      }
+    };
+
+    var ok = function () {
       if ($scope.getStrategy().type === "SAVE") {
         var filename = getFilename($scope.selected.path);
         var extension = $scope.getStrategy().treeViewfs.extension;
@@ -1391,11 +1446,11 @@
     };
 
     $scope.ok = function (skipReady) {
-      if (skipReady === true){
+      if (skipReady === true) {
         ok();
       }
-      $scope.isReady().then(function(isReady){
-        if (isReady === true){
+      $scope.isReady().then(function (isReady) {
+        if (isReady === true) {
           ok();
         }
       });

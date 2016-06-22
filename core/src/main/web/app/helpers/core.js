@@ -1396,6 +1396,8 @@
         $timeout(function () {
           $scope.selected.path = addTrailingSlash(getParent($scope.selected.path));
         }, 0);
+      }else{
+        onKey(keyEvent);
       }
       state.tabClicked = false;
     };

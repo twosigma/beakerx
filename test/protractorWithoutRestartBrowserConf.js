@@ -57,6 +57,7 @@ var config = {
     'tests/tutorials/language_demos/nodejs-tutorial.js',
     'tests/tutorials/standard_visual_api/d3js-tutorial.js',
     'tests/tables.js',
+    'tests/tutorials/feature_overview/beakerObject-tutorial.js',
     'tests/tutorials/feature_overview/text-tutorial.js'
   ]
 };

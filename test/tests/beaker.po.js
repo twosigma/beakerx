@@ -891,5 +891,8 @@ var BeakerPageObject = function() {
     subMenu.click();
   }
 
+  this.checkEvaluatorByIdCell = function(idCell, langName){
+    expect(this.getBkCellByIdCell(idCell).element(by.css('.evaluator')).getAttribute('evaluator-type')).toBe(langName);
+  }
 };
 module.exports = BeakerPageObject;

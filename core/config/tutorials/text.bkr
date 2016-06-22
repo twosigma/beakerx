@@ -157,7 +157,7 @@
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
                 "elapsedTime": 28,
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -233,7 +233,7 @@
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 0,
                 "state": {},
-                "height": 161
+                "height": 181
             },
             "evaluatorReader": true,
             "lineCount": 16
@@ -441,7 +441,7 @@
                 },
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 0,
-                "height": 70
+                "height": 90
             },
             "evaluatorReader": true,
             "lineCount": 85
@@ -504,18 +504,10 @@
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 8,
                 "state": {},
-                "height": 92
+                "height": 61
             },
-            "evaluatorReader": false,
+            "evaluatorReader": true,
             "lineCount": 3
-        },
-        {
-            "id": "markdownd77HDf",
-            "type": "markdown",
-            "body": [
-                ""
-            ],
-            "evaluatorReader": false
         }
     ],
     "namespace": {

@@ -1135,6 +1135,21 @@
               "type": "markdown",
               "body": ""
             };
+          },
+          newSameTypeCell: function (cell) {
+            var newCell;
+            switch(cell.type){
+              case 'code':
+                newCell = this.newCodeCell(cell.evaluator);
+                break;
+              case 'markdown':
+                newCell = this.newMarkdownCell();
+                break;
+              case 'section':
+                newCell = this.newSectionCell(cell.level);
+                break;
+            }
+            return newCell;
           }
         };
       },

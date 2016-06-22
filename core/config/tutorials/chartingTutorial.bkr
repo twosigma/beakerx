@@ -6765,11 +6765,11 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "def f = new java.text.SimpleDateFormat(\"yyyy MMM dd\")",
-                    "lehmanDate = f.parse(\"2008 Sep 15\")",
-                    "bubbleBottomDate = f.parse(\"2002 Oct 09\")",
-                    "inversion1 = [f.parse(\"2000 Jul 22\"), f.parse(\"2001 Feb 16\")]",
-                    "inversion2 = [f.parse(\"2006 Aug 01\"), f.parse(\"2007 Jun 07\")]",
+                    "def f = new java.text.SimpleDateFormat(\"yyyy MM dd\")",
+                    "lehmanDate = f.parse(\"2008 09 15\")",
+                    "bubbleBottomDate = f.parse(\"2002 10 09\")",
+                    "inversion1 = [f.parse(\"2000 07 22\"), f.parse(\"2001 02 16\")]",
+                    "inversion2 = [f.parse(\"2006 08 01\"), f.parse(\"2007 06 07\")]",
                     "\"ok\""
                 ]
             },

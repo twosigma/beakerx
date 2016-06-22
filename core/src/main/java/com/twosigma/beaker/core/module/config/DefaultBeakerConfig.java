@@ -151,6 +151,9 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
     this.userFolder = this.dotDir + "/web";
     utils.ensureDirectoryExists(userFolder);
+    utils.setPermissions(this.userFolder, PosixFilePermission.OWNER_READ,
+                                          PosixFilePermission.OWNER_WRITE,
+                                          PosixFilePermission.OWNER_EXECUTE);
 
     this.preferencesDefaultNotebook = pref.getDefaultNotebookUrl();
 

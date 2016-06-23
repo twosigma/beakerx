@@ -1317,9 +1317,7 @@
           $scope.selected.path = $scope.getStrategy().initUri;
         }, 1000);
       }
-
-      $('#file-dlg-selected-path').trigger('click');
-
+      elfinder.trigger('disable');
     };
 
     var onEnter = function (keyEvent) {

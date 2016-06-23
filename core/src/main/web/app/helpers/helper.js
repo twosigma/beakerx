@@ -94,6 +94,12 @@
         }
         return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Cmd + Shift + A
       },
+      isAppendTextCellShortcut: function (e){
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 89);// Ctrl + Shift + Y
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 89);// Cmd + Shift + Y
+      },
       isInsertCellAboveShortcut: function (e){
         if (this.isMacOS){
           return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 85);// Ctrl + Shift + U
@@ -952,6 +958,18 @@
           notebookCellOp.insertAfter(currentCellId, newCell);
         } else {
           newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
+          notebookCellOp.insertLast(newCell);
+        }
+        bkUtils.refreshRootScope();
+        this.go2Cell(newCell.id);
+      },
+      appendTextCell: function () {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var newCell = bkSessionManager.getNotebookNewCellFactory().newMarkdownCell();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        if (currentCellId) {
+          notebookCellOp.insertAfter(currentCellId, newCell);
+        } else {
           notebookCellOp.insertLast(newCell);
         }
         bkUtils.refreshRootScope();

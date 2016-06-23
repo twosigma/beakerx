@@ -62,7 +62,7 @@ describe('Plot actions Tutorial', function() {
         it('Random Demo Data', function () {
             var idCell = "codehjGu00";
             beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.getBkCellByIdCell(idCell).element(by.css('div[ng-click="collapseCellMenu[cellmodel.type].click()"]')).click();
+            beakerPO.collapseCellMenuByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
         });
         it('LOD plots actions', function () {

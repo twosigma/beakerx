@@ -14,37 +14,37 @@
  *  limitations under the License.
  */
 
-
 var BeakerPageObject = require('../../beaker.po.js');
-var path = require('path');
 var beakerPO;
 
-describe('Groovy Plotting', function () {
+describe('Processing with p5.js', function (done) {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();
-        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FlevelsOfDetail.bkr&readOnly=true").then(done);
+        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fp5.bkr&readOnly=true").then(done);
         beakerPO.waitUntilLoadingCellOutput();
+        browser.driver.manage().window().maximize();
     });
 
     afterAll(function(done){
-        beakerPO.createScreenshot('levelsOfDetailTutorial');
+        beakerPO.createScreenshot('p5jsTutorial');
         done();
     });
 
-    it('Levels of Detail', function () {
-        var idCell = "coden9MEmJ";
+    it('Should display p5.js example', function () {
+        var idCell = "codexJibGW";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.collapseCellMenuByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Html');
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('div#sketch > canvas')).isPresent()).not.toBe(true);
 
-        idCell = "codeDyDWm8";
-        beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
-        expect(beakerPO.getPlotMaingByIdCell(idCell).isPresent()).toBe(true);
+        beakerPO.scrollToBkCellByIdCell("codeJMbuKV");
+        beakerPO.runBkCellDefaultButtonByIdCell("codeJMbuKV");
 
-        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.id("plotTitle")).getText()).toBe("Drunken Sailor Walks");
-        beakerPO.checkSaveAsSvgPngByIdCell(idCell, "Drunken Sailor Walks");
+        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('div#sketch > canvas')).isPresent()).toBe(true);
+        beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('div#sketch > canvas')).click();
     });
+
 
 });

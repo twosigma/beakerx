@@ -482,13 +482,14 @@ define(function(require, exports, module) {
         var TorchShell = function(settings, doneCB, ecb) {
           var self = this;
           var setShellIdCB = function(shellID) {
+            var isNewShell = (shellID !== settings.shellID);
             settings.shellID = shellID;
             if (!("setup" in settings)) {
               settings.setup = defaultSetup;
             }
             self.settings = settings;
             var finish = function () {
-              if (bkHelper.hasSessionId()) {
+              if (bkHelper.hasSessionId() && isNewShell) {
                 self.evaluate(self.initCode(), {}).then(function () {
                   if (doneCB) {
                     doneCB(self);

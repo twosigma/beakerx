@@ -2217,6 +2217,7 @@
               'emptyTable': 'empty table'
             },
             'preDrawCallback': function(settings) {
+              scope.updateTableWidth();
               if(scope.table){
                 //allow cell's text be truncated when column is resized to a very small
                 scope.table.columns().every(function(i){
@@ -2469,6 +2470,9 @@
                   scope.updateHeaderLayout();
                   scope.table.draw(false);
                 }, 0);
+              })
+              .on( 'column-sizing.dt', function ( e, settings ) {
+                scope.updateTableWidth();
               });
 
             function updateSize() {
@@ -2719,6 +2723,11 @@
             dtRow = node;
           }
           return dtRow;
+        };
+
+        scope.updateTableWidth = function () {
+          var me = $('#' + scope.id);
+          me.css('width', me.outerWidth());
         };
 
       }

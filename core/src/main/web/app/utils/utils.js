@@ -334,6 +334,13 @@
         };
         return _.isUndefined(metadata) ? notebook : _.extend(notebook, {metadata: metadata});
       },
+      getFileLastModifiedTime: function (path) {
+        var deferred = angularUtils.newDeferred();
+        angularUtils.httpGet(serverUrl("beaker/rest/file-io/getLastModifiedTime"), {path: path})
+          .success(deferred.resolve)
+          .error(deferred.reject);
+        return deferred.promise;
+      },
       loadFile: function(path) {
         var deferred = angularUtils.newDeferred();
         angularUtils.httpGet(serverUrl("beaker/rest/file-io/load"), {path: path})

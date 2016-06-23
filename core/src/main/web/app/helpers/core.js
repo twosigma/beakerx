@@ -205,17 +205,22 @@
     _fileLoaders[LOCATION_FILESYS] = {
       load: function(uri) {
         return bkUtils.loadFile(uri);
+      },
+      getLastModifiedTime: function (uri) {
+        return bkUtils.getFileLastModifiedTime(uri);
       }
     };
     _fileLoaders[LOCATION_HTTP] = {
       load: function(uri) {
         return bkUtils.loadHttp(uri);
-      }
+      },
+      getLastModifiedTime: function (uri) { return 0; }
     };
     _fileLoaders[LOCATION_AJAX] = {
       load: function(uri) {
         return bkUtils.loadAjax(uri);
-      }
+      },
+      getLastModifiedTime: function (uri) { return 0; }
     };
 
     // fileSavers are responsible for saving various formats into bkr

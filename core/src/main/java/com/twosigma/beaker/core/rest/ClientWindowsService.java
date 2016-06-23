@@ -29,9 +29,11 @@ import org.cometd.bayeux.server.ServerMessage;
 import org.cometd.bayeux.server.ServerSession;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 @Service
 @Singleton
 public class ClientWindowsService implements ServerSession.RemoveListener {
@@ -56,8 +58,8 @@ public class ClientWindowsService implements ServerSession.RemoveListener {
       infoMap.put(session.getId(), notebookInfo);
     }
 
-    notebookInfo.setNotebookUri(String.valueOf(msg.getDataAsMap().get("notebookUri")));
     notebookInfo.setWindowId(String.valueOf(msg.getDataAsMap().get("windowId")));
+    notebookInfo.setSessionId(String.valueOf(msg.getDataAsMap().get("sessionId")));
 
     notifyFrontend();
   }
@@ -99,16 +101,8 @@ public class ClientWindowsService implements ServerSession.RemoveListener {
 
   @JsonAutoDetect
   private class NotebookInfo {
-    private String notebookUri;
     private String windowId;
-
-    public void setNotebookUri(String notebookUri) {
-      this.notebookUri = notebookUri;
-    }
-
-    public String getNotebookUri() {
-      return notebookUri;
-    }
+    private String sessionId;
 
     public void setWindowId(String windowId) {
       this.windowId = windowId;
@@ -116,6 +110,14 @@ public class ClientWindowsService implements ServerSession.RemoveListener {
 
     public String getWindowId() {
       return windowId;
+    }
+
+    public String getSessionId() {
+      return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+      this.sessionId = sessionId;
     }
   }
 }

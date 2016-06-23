@@ -138,6 +138,29 @@
         return deferred.promise;
       };
 
+      var checkShouldSaveAtTheSameLocation = function () {
+        var deferred = bkUtils.newDeferred();
+        if(!bkSessionManager.isSavable()) {
+          deferred.resolve(false);
+        } else {
+          // otherwise we should check if file has been modified since notebook was opened
+          bkSessionManager.checkFileModifiedSinceOpened().then(function (modified) {
+            if(modified) {
+              bkHelper.show2ButtonModal(
+                "The file was modified since the time it was loaded. Would you like to save it to another location or override existing file?",
+                "File was modified", function () {
+                  deferred.resolve(false);
+                }, function () {
+                  deferred.resolve(true);
+                }, "Save As", "Override");
+            } else {
+              deferred.resolve(true);
+            }
+          }, deferred.reject)
+        }
+        return deferred.promise;
+      };
+
       var _savePromptIfOverwrite = function (deferred, uri, uriType) {
         var fileSaver = bkCoreManager.getFileSaver(uriType);
         bkSessionManager.dumpDisplayStatus();
@@ -191,60 +214,58 @@
           return deferred.promise;
         },
         saveNotebook: function (saveFailed) {
-          var thenable;
-          if (bkSessionManager.isSavable()) {
-            bkSessionManager.dumpDisplayStatus();
-            thenable = $timeout(function () {
-              var saveData = bkSessionManager.getSaveData();
-              var deferred = bkUtils.newDeferred();
-              var fileSaver = bkCoreManager.getFileSaver(saveData.uriType);
-              var content = saveData.notebookModelAsString;
-              fileSaver.save(saveData.notebookUri, content, true).then(function () {
-                deferred.resolve({uri: saveData.notebookUri, uriType: saveData.uriType});
-              }, function (reason) {
-                deferred.reject(reason);
-              });
-              return deferred.promise;
-            }, 1);
-          } else {
-            if (bkUtils.isElectron) {
-              var Dialog = bkElectron.Dialog;
-              var thisWindow = bkElectron.thisWindow;
-              var deferred = bkUtils.newDeferred();
-              bkUtils.getWorkingDirectory().then(function (defaultPath) {
-                var options = {
-                  title: 'Save Beaker Notebook',
-                  defaultPath: defaultPath,
-                  filters: [
-                    { name: 'Beaker Notebook Files', extensions: ['bkr'] }
-                  ]
-                };
-                var path = Dialog.showSaveDialog(thisWindow, options);
-                if (path === undefined) {
-                  saveFailed('cancelled');
-                  return;
-                }
-                bkUtils.httpPost('rest/file-io/setWorkingDirectory', { dir: path });
-                var ret = {
-                  uri: path,
-                  uriType: 'file'
-                };
-                bkSessionManager.dumpDisplayStatus();
+          var deferred = bkUtils.newDeferred();
+          checkShouldSaveAtTheSameLocation().then(function (saveToTheSameLocation) {
+            if(saveToTheSameLocation) {
+              bkSessionManager.dumpDisplayStatus();
+              $timeout(function () {
                 var saveData = bkSessionManager.getSaveData();
-                var fileSaver = bkCoreManager.getFileSaver(ret.uriType);
+                var fileSaver = bkCoreManager.getFileSaver(saveData.uriType);
                 var content = saveData.notebookModelAsString;
-                fileSaver.save(ret.uri, content, true).then(function () {
-                  deferred.resolve(ret);
+                fileSaver.save(saveData.notebookUri, content, true).then(function () {
+                  deferred.resolve({uri: saveData.notebookUri, uriType: saveData.uriType});
                 }, function (reason) {
                   deferred.reject(reason);
                 });
-              });
-              thenable = deferred.promise;
+              }, 1);
             } else {
-              thenable = savePromptChooseUri();
+              if (bkUtils.isElectron) {
+                var Dialog = bkElectron.Dialog;
+                var thisWindow = bkElectron.thisWindow;
+                bkUtils.getWorkingDirectory().then(function (defaultPath) {
+                  var options = {
+                    title: 'Save Beaker Notebook',
+                    defaultPath: defaultPath,
+                    filters: [
+                      { name: 'Beaker Notebook Files', extensions: ['bkr'] }
+                    ]
+                  };
+                  var path = Dialog.showSaveDialog(thisWindow, options);
+                  if (path === undefined) {
+                    saveFailed('cancelled');
+                    return;
+                  }
+                  bkUtils.httpPost('rest/file-io/setWorkingDirectory', { dir: path });
+                  var ret = {
+                    uri: path,
+                    uriType: 'file'
+                  };
+                  bkSessionManager.dumpDisplayStatus();
+                  var saveData = bkSessionManager.getSaveData();
+                  var fileSaver = bkCoreManager.getFileSaver(ret.uriType);
+                  var content = saveData.notebookModelAsString;
+                  fileSaver.save(ret.uri, content, true).then(function () {
+                    deferred.resolve(ret);
+                  }, function (reason) {
+                    deferred.reject(reason);
+                  });
+                });
+              } else {
+                savePromptChooseUri().then(deferred.resolve, deferred.reject);
+              }
             }
-          }
-          return thenable;
+          }, deferred.reject);
+          return deferred.promise;
         }
       };
       return service;

@@ -345,17 +345,17 @@
             $scope.loading = false;
           };
 
-          function checkIfNotebookAlreadyOpened(notebookUri, openNotebook) {
+          function checkIfNotebookAlreadyOpened(sessionId, openNotebook) {
             function reportAndOpen() {
-              bkWindowsManager.reportOpenedNotebook(notebookUri);
+              bkWindowsManager.reportOpenedNotebook(sessionId);
               openNotebook();
             }
-            if (bkWindowsManager.isNotebookOpen(notebookUri)) {
+            if (bkWindowsManager.isNotebookOpen(sessionId)) {
               if (bkUtils.isElectron) {
-                bkWindowsManager.activateOtherWindow(notebookUri);
+                bkWindowsManager.activateOtherWindow(sessionId);
               } else {
                 var deactivateOtherCb = function () {
-                  bkWindowsManager.disconnectWindow(notebookUri);
+                  bkWindowsManager.disconnectWindow(sessionId);
                   reportAndOpen();
                 };
                 var goToControlPanel = function () {
@@ -415,7 +415,7 @@
                 fileLoader.load(target.uri).then(function(fileContentAsString) {
                   var notebookModel = importer.import(fileContentAsString);
                   notebookModel = bkNotebookVersionManager.open(notebookModel);
-                  checkIfNotebookAlreadyOpened(target.uri, function () {
+                  checkIfNotebookAlreadyOpened(sessionId, function () {
                     loadNotebookModelAndResetSession(
                       target.uri,
                       target.type,
@@ -439,7 +439,7 @@
               showLoadingStatusMessage("Loading notebook");
               bkSession.load(sessionId).then(function(session) {
                 var notebookUri = session.notebookUri;
-                checkIfNotebookAlreadyOpened(notebookUri, function () {
+                checkIfNotebookAlreadyOpened(sessionId, function () {
                   var uriType = session.uriType;
                   var readOnly = session.readOnly;
                   var format = session.format;
@@ -460,10 +460,12 @@
               var readOnly = true;
               var format = null;
               var importer = bkCoreManager.getNotebookImporter('bkr');
-              var notebookModel = importer.import(notebook);
-              notebookModel = bkNotebookVersionManager.open(notebook);
-              loadNotebookModelAndResetSession(
+              checkIfNotebookAlreadyOpened(sessionId, function () {
+                var notebookModel = importer.import(notebook);
+                notebookModel = bkNotebookVersionManager.open(notebook);
+                loadNotebookModelAndResetSession(
                   notebookUri, uriType, readOnly, format, notebookModel, false, sessionId, false);
+              })
             },
             emptyNotebook: function(sessionId) {
               var notebookModel =
@@ -473,9 +475,11 @@
               var uriType = null;
               var readOnly = true;
               var format = null;
-              notebookModel = bkNotebookVersionManager.open(notebookModel);
-              loadNotebookModelAndResetSession(
+              checkIfNotebookAlreadyOpened(sessionId, function () {
+                notebookModel = bkNotebookVersionManager.open(notebookModel);
+                loadNotebookModelAndResetSession(
                   notebookUri, uriType, readOnly, format, notebookModel, false, sessionId, false);
+              })
             },
             defaultNotebook: function(sessionId) {
               bkUtils.getDefaultNotebook().then(function(notebookModel) {
@@ -483,11 +487,13 @@
                 var uriType = null;
                 var readOnly = true;
                 var format = null;
-                var importer = bkCoreManager.getNotebookImporter('bkr');
-                notebookModel = importer.import(notebookModel);
-                notebookModel = bkNotebookVersionManager.open(notebookModel);
-                loadNotebookModelAndResetSession(
+                checkIfNotebookAlreadyOpened(sessionId, function () {
+                  var importer = bkCoreManager.getNotebookImporter('bkr');
+                  notebookModel = importer.import(notebookModel);
+                  notebookModel = bkNotebookVersionManager.open(notebookModel);
+                  loadNotebookModelAndResetSession(
                     notebookUri, uriType, readOnly, format, notebookModel, false, sessionId, false);
+                })
               });
             }
           };
@@ -518,6 +524,7 @@
             bkSessionManager.setNotebookModelEdited(false);
             bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
             bkSessionManager.recordRecentNotebook();
+            bkSessionManager.checkLastModifiedTime();
             updateSessionStore(ret.uri, ret.uriType, false);
             showTransientStatusMessage("Saved");
           };

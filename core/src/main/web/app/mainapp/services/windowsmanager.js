@@ -22,8 +22,8 @@
     var _windows = {};
     var _subscriptions = [];
 
-    var findWindowId = function (notebookUri) {
-      var found = _.find(_windows, {notebookUri: notebookUri});
+    var findWindowId = function (sessionId) {
+      var found = _.find(_windows, {sessionId: sessionId});
       return found ? found.windowId : null;
     };
 
@@ -37,31 +37,41 @@
 
     return {
       init: function (disconnectCallback) {
+        var self = this;
         _subscriptions.push($.cometd.subscribe('/windows/update', function (msg) {
           if (msg.data.windows) {
             _windows = msg.data.windows;
             console.log('received windows list update ' + _.size(_windows));
+            console.log(_windows);
           }
         }));
         _subscriptions.push($.cometd.subscribe('/windows/close', function (msg) {
           if (thisWindow(msg) && disconnectCallback) {
             disconnectCallback();
+            self.reportNotebookClosed();
           }
         }));
         $.cometd.publish('/service/windows/check', {windowId: getWindowId()});
       },
-      reportOpenedNotebook: function (notebookUri) {
-        if (notebookUri) {
-          $.cometd.publish('/service/windows/report', {windowId: getWindowId(), notebookUri: notebookUri});
+      reportOpenedNotebook: function (sessionId) {
+        if (sessionId) {
+          $.cometd.publish('/service/windows/report', 
+            {
+              windowId: getWindowId(),
+              sessionId: sessionId
+            }
+          );
         }
       },
-      isNotebookOpen: function (notebookUri) {
+      isNotebookOpen: function (sessionId) {
         return _.some(_windows, function (window) {
-          return window.notebookUri == notebookUri && window.windowId !== _windowId;
+          return window.sessionId === sessionId && window.windowId !== _windowId;
         })
       },
-      disconnectWindow: function (notebookUri) {
-        _.forEach(_.filter(_windows,  {notebookUri: notebookUri}), function (window) {
+      disconnectWindow: function (sessionId) {
+        _.forEach(_.filter(_windows,  function (window) {
+          return !!sessionId && sessionId === window.sessionId; 
+        }), function (window) {
           if (window.windowId !== getWindowId()) {
             $.cometd.publish('/windows/close', {windowId: window.windowId});
           }
@@ -78,8 +88,8 @@
         }
       },
       // just for electron version
-      activateOtherWindow: function (notebookUri) {
-        bkElectron.IPC.send('activate-window', {windowId: findWindowId(notebookUri)});
+      activateOtherWindow: function (sessionId) {
+        bkElectron.IPC.send('activate-window', {windowId: findWindowId(sessionId)});
         bkElectron.thisWindow.destroy();
       }
     };

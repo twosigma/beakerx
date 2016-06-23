@@ -2530,7 +2530,6 @@
 
             scope.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
             scope.fixcols.fnRedrawLayout();
-            $rootScope.$emit('beaker.resize');
 
             setTimeout(function(){
               if (!scope.table) { return; }
@@ -2557,7 +2556,6 @@
               if (scope.showFilter) {
                 scope.doShowFilter(null, scope.columnSearchActive);
               }
-              $rootScope.$emit('beaker.resize');
 
             }, 0);
 

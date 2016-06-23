@@ -942,18 +942,20 @@
         return bkCoreManager.showLanguageManager();
       },
       appendCodeCell: function () {
-
-        if (document.activeElement &&
-          document.activeElement.parentElement.offsetParent &&
-          document.activeElement.parentElement.offsetParent.classList.value.indexOf('CodeMirror') !== -1)
-          return;
-
-
-        var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
-        notebookCellOp.insertLast(newCell);
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        var newCell;
+        if (currentCellId) {
+          var cell = notebookCellOp.getCell(currentCellId);
+          var evaluator = cell.type === 'code' ? cell.evaluator : defaultEvaluator;
+          newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(evaluator);
+          notebookCellOp.insertAfter(currentCellId, newCell);
+        } else {
+          newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
+          notebookCellOp.insertLast(newCell);
+        }
         bkUtils.refreshRootScope();
-        this.go2LastCodeCell();
+        this.go2Cell(newCell.id);
       },
       insertCellAbove: function () {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();

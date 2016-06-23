@@ -258,16 +258,6 @@
         $scope.$watch('getEvaluator()', function(newValue, oldValue) {
           $scope.updateUI(newValue);
         });
-        $scope.appendCodeCell = function(evaluatorName) {
-          var thisCellId = $scope.cellmodel.id;
-          if (!evaluatorName) {
-            // if no evaluator specified, use the current evaluator
-            evaluatorName = $scope.cellmodel.evaluator;
-          }
-          var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(evaluatorName);
-          notebookCellOp.appendAfter(thisCellId, newCell);
-          bkUtils.refreshRootScope();
-        };
 
         $scope.cellmenu.addItem({
           name: 'Show input cell',
@@ -390,12 +380,6 @@
                 bkHelper.setFullScreen(cm, false);
               }
             }
-          },
-          'Shift-Ctrl-A': function(cm) {
-            scope.appendCodeCell();
-          },
-          'Shift-Cmd-A': function(cm) {
-            scope.appendCodeCell();
           },
           'Shift-Ctrl-E': function(cm) {
             scope.popupMenu();

@@ -1273,6 +1273,7 @@
 
       var selectCallback = function (event, elfinderInstance) {
         if (event.data.selected && event.data.selected.length > 0) {
+          elfinder.trigger('enable');
           setFromHash(event.data.selected[0], 0);
         }
       };
@@ -1316,6 +1317,9 @@
           $scope.selected.path = $scope.getStrategy().initUri;
         }, 1000);
       }
+
+      $('#file-dlg-selected-path').trigger('click');
+
     };
 
     var onEnter = function (keyEvent) {
@@ -1479,6 +1483,17 @@
         elfinder.exec('reload');
       }
     });
+
+    var unregister = $scope.$watch(function (scope) {
+        return scope.selected.path
+      },
+      function (newValue, oldValue) {
+        if ((!oldValue || oldValue.length === 0) && (newValue && newValue.length > 0)) {
+          document.getElementById("file-dlg-selected-path").setSelectionRange(newValue.length - 1, newValue.length - 1);
+          unregister();
+        }
+      }
+    );
 
   });
 

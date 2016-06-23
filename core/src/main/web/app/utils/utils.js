@@ -215,7 +215,7 @@
       },
       spinUntilReady: function(url) {
         var deferred = angularUtils.newDeferred();
-        var timeRemaining = 30 * 1000;
+        var timeRemaining = 60 * 1000;
         var maxInterval = 1000;
         var interval = 10;
         console.log("note: probing until backend is ready, an error here is normal");

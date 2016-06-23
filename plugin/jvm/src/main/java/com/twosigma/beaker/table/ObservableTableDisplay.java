@@ -15,6 +15,8 @@
  */
 package com.twosigma.beaker.table;
 
+import com.twosigma.beaker.table.action.TableActionDetails;
+
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -29,6 +31,7 @@ public abstract class ObservableTableDisplay extends Observable implements Clone
   private String doubleClickTag;
   private Map<String, Object> contextMenuListeners = new HashMap<>();
   private Map<String, String> contextMenuTags = new HashMap<>();
+  private TableActionDetails details;
 
   @Override
   public synchronized void setChanged() {
@@ -78,6 +81,14 @@ public abstract class ObservableTableDisplay extends Observable implements Clone
 
   public Map<String, String> getContextMenuTags() {
     return contextMenuTags;
+  }
+
+  public void setDetails(TableActionDetails details) {
+    this.details = details;
+  }
+
+  public TableActionDetails getDetails() {
+    return this.details;
   }
 
   public void fireContextMenuClick(String name, List<Object> params) {

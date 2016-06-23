@@ -17,6 +17,7 @@ package com.twosigma.beaker.groovy.rest;
 
 import com.google.inject.Singleton;
 import com.twosigma.beaker.table.ObservableTableDisplay;
+import com.twosigma.beaker.table.action.TableActionDetails;
 import com.twosigma.beaker.table.action.TableDisplayObjectManager;
 import org.apache.cxf.common.util.CollectionUtils;
 
@@ -39,13 +40,22 @@ public class TableDisplayRest {
   @Inject
   private TableDisplayObjectManager tableDisplayObjectManager;
 
+  @POST
+  @Path("actiondetails/{tableId}")
+  public void setActionDetails(@PathParam("tableId") String tableId,
+                               TableActionDetails details) throws IOException, InterruptedException {
+    ObservableTableDisplay tableDisplay = tableDisplayObjectManager.getTableDisplay(tableId);
+    if (tableDisplay != null) {
+      tableDisplay.setDetails(details);
+    }
+  }
 
   @POST
   @Path("ondoubleclick/{tableId}")
   public void onClick(@PathParam("tableId") String tableId,
                       List<Object> params) throws IOException, InterruptedException {
     ObservableTableDisplay tableDisplay = tableDisplayObjectManager.getTableDisplay(tableId);
-    if(tableDisplay != null){
+    if (tableDisplay != null) {
       tableDisplay.fireDoubleClick(params);
       tableDisplay.setChanged();
       tableDisplay.notifyObservers();

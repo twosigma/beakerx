@@ -1399,6 +1399,9 @@
       if (state.tabClicked === true){
         $timeout(function () {
           $scope.selected.path = addTrailingSlash(getParent($scope.selected.path));
+          elfinder.trigger("filter_cwd", {
+            filter: getFilename($scope.selected.path)
+          });
         }, 0);
       }else{
         onKey(keyEvent);

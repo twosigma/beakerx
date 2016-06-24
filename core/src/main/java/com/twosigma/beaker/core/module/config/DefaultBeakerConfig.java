@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -185,7 +186,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.random = new SecureRandom();
     // protect the core server
     this.authCookie = randomString(255);
-    String password = randomString(100);
+    String userPassword = pref.getPassword();
+    String password = StringUtils.isEmpty(userPassword) ? randomString(100) : userPassword;
     this.passwordHash = hash(password);
     this.password = password;
 

@@ -51,6 +51,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.server.Server;
 
 /**
@@ -235,7 +236,7 @@ public class Main {
       System.out.println("\nBeaker hash " + bkConfig.getHash());
       System.out.println("Beaker listening on " + initUrl);
     }
-    if (publicServer && password == null) {
+    if (publicServer && StringUtils.isEmpty(password)) {
       System.out.println("Submit this password: " + bkConfig.getPassword());
     }
     System.out.println("");

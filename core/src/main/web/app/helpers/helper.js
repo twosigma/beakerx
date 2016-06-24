@@ -100,7 +100,7 @@
         }
         return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 89);// Cmd + Shift + Y
       },
-      isInsertCellAboveShortcut: function (e){
+      isInsertCodeCellAboveShortcut: function (e){
         if (this.isMacOS){
           return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 85);// Ctrl + Shift + U
         }
@@ -975,13 +975,14 @@
         bkUtils.refreshRootScope();
         this.go2Cell(newCell.id);
       },
-      insertCellAbove: function () {
+      insertCodeCellAbove: function () {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
         var newCell;
         if (currentCellId) {
           var cell = notebookCellOp.getCell(currentCellId);
-          newCell = bkSessionManager.getNotebookNewCellFactory().newSameTypeCell(cell);
+          var evaluator = cell.type === 'code' ? cell.evaluator : defaultEvaluator;
+          newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(evaluator);
           notebookCellOp.insertBefore(currentCellId, newCell);
         } else {
           newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);

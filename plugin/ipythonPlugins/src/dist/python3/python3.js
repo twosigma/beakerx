@@ -454,7 +454,7 @@ define(function(require, exports, module) {
               }, function(err) {
                 bkHelper.hideLanguageManagerSpinner(err);
                 deferred.reject(err);
-                bkHelper.show1ButtonModal('ERROR: ' + err, PLUGIN_NAME + ' kernel restart failed');
+                bkHelper.showErrorModal('ERROR: ' + err[0], PLUGIN_NAME + ' kernel restart failed', err[1]);
               });
             } else {
               setTimeout(waitForKernel, 50);
@@ -573,8 +573,7 @@ define(function(require, exports, module) {
                   }}, function(err) {
                     var errorHtml =
                       'See <a target="_blank" href="https://github.com/twosigma/beaker-notebook/wiki/Python-Mismatch-Errors">our wiki</a> for how to handle this.';
-                    bkHelper.show1ButtonModal('ERROR: '+err[0].replace('_beaker_python_mismatch_', errorHtml),
-                                              'Python3 initialization failed');
+                    bkHelper.showErrorModal('ERROR: ' + err[0].replace('_beaker_python_mismatch_', errorHtml), 'Python3 initialization failed', err[1]);  
                     if (doneCB) {
                       doneCB(self);
                     }});

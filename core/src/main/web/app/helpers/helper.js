@@ -896,6 +896,9 @@
       showModalDialog: function(callback, template, strategy) {
         return bkCoreManager.showModalDialog(callback, template, strategy).result;
       },
+      showErrorModal: function (msgBody, msgHeader, errorDetails, callback) {
+        return bkCoreManager.showErrorModal(msgBody, msgHeader, errorDetails, callback);
+      },
       show1ButtonModal: function(msgBody, msgHeader, callback) {
         return bkCoreManager.show1ButtonModal(msgBody, msgHeader, callback);
       },

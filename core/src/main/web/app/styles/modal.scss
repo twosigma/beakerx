@@ -43,6 +43,11 @@ html {
     padding: 10px 25px;
   }
 
+  .modal-body .modal-error-details {
+    font-family: $font-family-mono;
+    white-space: pre;
+  }
+
   .modal-footer {
     border-width: 0;
   }

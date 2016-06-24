@@ -1189,6 +1189,11 @@
               bkHelper.appendCodeCell()
             });
             return false;
+          } else if (bkHelper.isAppendTextCellShortcut(e)) {
+            bkUtils.fcall(function() {
+              bkHelper.appendTextCell();
+            });
+            return false;
           } else if (bkHelper.isInsertCodeCellAboveShortcut(e)) {
             bkUtils.fcall(function() {
               bkHelper.insertCodeCellAbove();

@@ -96,6 +96,12 @@
         }
         return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Cmd + Shift + A
       },
+      isInsertCellAboveShortcut: function (e){
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 85);// Ctrl + Shift + U
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 85);// Cmd + Shift + U
+      },
       isSaveNotebookShortcut: function (e){
         if (this.isMacOS){
           return e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83);// Cmd + s
@@ -681,6 +687,20 @@
           return [];
         }
       },
+      go2FirstCell: function() {
+        if (getCurrentApp() && getCurrentApp().go2FirstCell) {
+          getCurrentApp().go2FirstCell();
+        } else {
+          return [];
+        }
+      },
+      go2Cell: function(cellId) {
+        if (getCurrentApp() && getCurrentApp().go2Cell) {
+          getCurrentApp().go2Cell(cellId);
+        } else {
+          return [];
+        }
+      },
       getCodeCells: function(filter) {
         if (getCurrentApp() && getCurrentApp().getCodeCells) {
           return getCurrentApp().getCodeCells(filter);
@@ -909,6 +929,21 @@
         notebookCellOp.insertLast(newCell);
         bkUtils.refreshRootScope();
         this.go2LastCodeCell();
+      },
+      insertCellAbove: function () {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        var newCell;
+        if (currentCellId) {
+          var cell = notebookCellOp.getCell(currentCellId);
+          newCell = bkSessionManager.getNotebookNewCellFactory().newSameTypeCell(cell);
+          notebookCellOp.insertBefore(currentCellId, newCell);
+        } else {
+          newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
+          notebookCellOp.insertFirst(newCell);
+        }
+        bkUtils.refreshRootScope();
+        this.go2Cell(newCell.id);
       },
       showPublishForm: function() {
         return bkCoreManager.showPublishForm();

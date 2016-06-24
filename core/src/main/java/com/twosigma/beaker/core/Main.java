@@ -51,6 +51,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.server.Server;
 
 /**
@@ -96,6 +97,7 @@ public class Main {
     opts.addOption(null, "use-ssl-cert", true, "Enable SSL - requires path to cert file (both SSL options should be used)");
     opts.addOption(null, "use-ssl-key", true, "Enable SSL - requires path to key file (both SSL options should be used)");
     opts.addOption(null, "require-password", false, "Ask for password when connecting");
+    opts.addOption(null, "password", true, "Password for public server");
     opts.addOption(null, "listen-interface", true, "Interface to listen on - requires ip address or '*'");
     opts.addOption(null, "portable", false, "Configuration and runtime files located in application instead of user home directory.");
     opts.addOption(null, "show-zombie-logging", false, "Show distracting logging by clients of previous server instances.");
@@ -178,6 +180,7 @@ public class Main {
         options.getOptionValue("use-ssl-key") : null;
     final Boolean publicServer = options.hasOption("public-server");
     final Boolean requirePassword = options.hasOption("require-password");
+    final String password = options.hasOption("password") ? options.getOptionValue("password") : null;
     final String listenInterface = options.hasOption("listen-interface") ?
         options.getOptionValue("listen-interface") : null;
     final Boolean portable = options.hasOption("portable");
@@ -195,6 +198,7 @@ public class Main {
         useHttpsCert,
         useHttpsKey,
         requirePassword,
+        password,
         listenInterface,
         portable,
         showZombieLogging);
@@ -232,7 +236,7 @@ public class Main {
       System.out.println("\nBeaker hash " + bkConfig.getHash());
       System.out.println("Beaker listening on " + initUrl);
     }
-    if (publicServer) {
+    if (publicServer && StringUtils.isEmpty(password)) {
       System.out.println("Submit this password: " + bkConfig.getPassword());
     }
     System.out.println("");
@@ -248,6 +252,7 @@ public class Main {
       final String useHttpsCert,
       final String useHttpsKey,
       final Boolean requirePassword,
+      final String password,
       final String listenInterface,
       final Boolean portable,
       final Boolean showZombieLogging) {
@@ -283,7 +288,12 @@ public class Main {
       public Boolean getRequirePassword() {
         return requirePassword;
       }
-      
+
+      @Override
+      public String getPassword() {
+        return password;
+      }
+
       @Override
       public String getUseHttpsCert() {
         return useHttpsCert;

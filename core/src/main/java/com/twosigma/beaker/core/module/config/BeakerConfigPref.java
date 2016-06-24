@@ -39,6 +39,7 @@ public interface BeakerConfigPref {
   public Integer getPortBase();
   public Boolean getPublicServer();
   public Boolean getRequirePassword();
+  public String getPassword();
   public String getUseHttpsCert();
   public String getUseHttpsKey();
   public String getListenInterface();

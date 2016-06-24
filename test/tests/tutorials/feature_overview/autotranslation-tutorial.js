@@ -127,22 +127,26 @@ describe('Autotranslation Tutorial', function (done) {
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Results');
             beakerPO.checkEvaluatorByIdCell(idCell, "Groovy");
             expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('bk-output-display[type="Table"]')).isPresent()).toBe(true);
+            beakerPO.checkDtContainerByIdCell(idCell);
         });
         it('Should display table (R)', function () {
             var idCell = "codej0d66h";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+            beakerPO.checkDtContainerByIdCell(idCell);
             beakerPO.checkEvaluatorByIdCell(idCell, "R");
 
             idCell = "codeIkZtDp";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+            beakerPO.checkDtContainerByIdCell(idCell);
             beakerPO.checkEvaluatorByIdCell(idCell, "R");
         });
         it('Should display table (IPython)', function () {
             var idCell = "codeNYJvKz";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+            beakerPO.checkDtContainerByIdCell(idCell);
             beakerPO.checkEvaluatorByIdCell(idCell, "IPython");
         });
         it('dataFrame.toString() (JavaScript)', function () {
@@ -158,8 +162,29 @@ describe('Autotranslation Tutorial', function (done) {
         it('Initialise table, image, matrix (Groovy)', function () {
             var idCell = "code16S3aP";
             beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.runCellWithoutDisplayResultByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
             beakerPO.checkEvaluatorByIdCell(idCell, "Groovy");
+        });
+        it('Should display table (JavaScript)', function () {
+            var idCell = "codeXtRVUM";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+            beakerPO.checkDtContainerByIdCell(idCell);
+            beakerPO.checkEvaluatorByIdCell(idCell, "JavaScript");
+        });
+        it('Should display image (JavaScript)', function () {
+            var idCell = "codeEMqWcS";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Image');
+            expect(beakerPO.checkImageByIdCell(idCell));
+            beakerPO.checkEvaluatorByIdCell(idCell, "JavaScript");
+        });
+        it('Should display matrix (JavaScript)', function () {
+            var idCell = "codewMaJxB";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+            beakerPO.checkDtContainerByIdCell(idCell);
+            beakerPO.checkEvaluatorByIdCell(idCell, "JavaScript");
         });
     });
 

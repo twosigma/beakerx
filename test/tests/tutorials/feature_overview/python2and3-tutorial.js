@@ -42,6 +42,19 @@ describe('Simultaneous Python2 and Python3', function (done) {
         var idCell = "codeH4pCp3";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+        beakerPO.checkDtContainerByIdCell(idCell);
         beakerPO.checkEvaluatorByIdCell(idCell, "Python3");
+    });
+    it('Should display Bubble Plot', function () {
+        var idCell = "codePwwWMS";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Html');
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('#bubblediv > svg')).isPresent()).toBe(false);
+
+        beakerPO.scrollToBkCellByIdCell("codeBw4fE9");
+        beakerPO.clickCodeCellInputButtonByIdCell("codeBw4fE9", 'Text');
+
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('#bubblediv > svg')).isPresent()).toBe(true);
     });
 });

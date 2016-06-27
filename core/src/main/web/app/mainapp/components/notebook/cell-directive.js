@@ -256,10 +256,7 @@
           if($scope.isMarkdownCell()){
             body = $scope.cellmodel.body;
           }
-          var lines = body.split('\n');
-          if(lines.length > 0) {
-            return lines[0];
-          }
+          return body.replace(/\n/g, ' ');
         };
 
         $scope.isMarkdownCell = function() {

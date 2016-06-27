@@ -885,6 +885,29 @@
             "<div class='modal-body'><p>" + msgBody + "</p></div>" ;
         return this.showModalDialog(null, template);
       },
+      showErrorModal: function (msgBody, msgHeader, errorDetails, callback) {
+        if(!errorDetails) {
+          return this.show1ButtonModal(msgBody, msgHeader, callback);
+        }
+        if(bkUtils.isElectron) {
+          return bkElectron.Dialog.showMessageBox({
+            type: 'error',
+            buttons: ['OK'],
+            title: msgHeader,
+            message: msgBody,
+            detail: errorDetails
+          }, callback);
+        } else {
+          return this.showModalDialog(callback,
+            "<div class='modal-header'>" +
+            "<h1>" + msgHeader + "</h1>" +
+            "</div>" +
+            "<div class='modal-body'><p>" + msgBody + "</p><div class='modal-error-details'>" + errorDetails + "</div></div>" +
+            '<div class="modal-footer">' +
+            "   <button class='btn btn-primary' ng-click='close(\"OK\")'>Close</button>" +
+            "</div>");
+        }
+      },
       show1ButtonModal: function(msgBody, msgHeader, callback, btnText, btnClass) {
         if (!msgHeader || msgBody.toLowerCase().indexOf(msgHeader.toLowerCase()) !== -1) {
           msgHeader = "Oops...";

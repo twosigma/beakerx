@@ -1196,11 +1196,9 @@
     } else if (window.beakerRegister === undefined || window.beakerRegister.prefsPreset === undefined) {
       bkCoreManager._prefs.fs_order_by = 'uri';
       bkCoreManager._prefs.fs_reverse = false;
-      bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);      
     } else {
       bkCoreManager._prefs.fs_order_by = window.beakerRegister.prefsPreset.fs_order_by;
       bkCoreManager._prefs.fs_reverse = window.beakerRegister.prefsPreset.fs_reverse;
-      bkCoreManager._prefs.setTheme(window.beakerRegister.prefsPreset.theme);            
     }
     return bkCoreManager;
   });

@@ -49,9 +49,6 @@
         scope.getElapsedTime = function() {
           return bkUtils.formatTimeString(scope.elapsed);
         };
-        scope.getElapsedTimeStyle = function () {
-          return {width: (50 + this.getElapsedTime().length * 10) + 'px'};
-        };
         scope.getMessage = function() {
           return scope.model.getCellModel().message;
         };

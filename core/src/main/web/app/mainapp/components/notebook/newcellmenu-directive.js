@@ -33,6 +33,22 @@
         $scope.hideOpenMenus = function() {
           $(document).trigger('click.bs.dropdown.data-api');
         };
+
+        var menu = $(element).find('.new-cell');
+        var fade = function (opacity) {
+          if (!$scope.isLarge) {
+            menu.stop().fadeTo(200, opacity);
+          }
+        };
+        menu.on('mouseenter.cellmenu-fade', function () { fade(1); });
+        menu.on('mouseleave.cellmenu-fade', function () { fade(0); });
+        $scope.$on('$destroy', function () {
+          menu.off('mouseenter.cellmenu-fade mouseleave.cellmenu-fade');
+        });
+
+        $scope.$watch('isLarge', function(newValue){
+          menu.css('opacity', newValue ? 1 : 0);
+        });
       },
       controller: function($scope, $rootScope, GLOBALS) {
         var newCellFactory = bkSessionManager.getNotebookNewCellFactory();

@@ -38,6 +38,7 @@ dependencies {
    */
   runtime group: 'mysql', name: 'mysql-connector-java',  version: '5.1.29'
   runtime group: 'com.h2database', name: 'h2', version: '1.4.189'
+  runtime group: 'org.postgresql', name: 'postgresql', version: '9.4.1208'
 }
 
 

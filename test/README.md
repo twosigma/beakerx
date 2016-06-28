@@ -55,3 +55,7 @@ Enclosed are a set of tests powered by protractor.
 ### Check the tests
 
 *  after executing tests ./test/screenshots/ directory contains screenshots of tests
+
+### Test of downloaded file
+* ./test/tmp this is a directory for downloaded files
+* ./test/helper.js this is a script to setup firefox profile  

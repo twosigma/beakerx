@@ -421,7 +421,7 @@ define(function(require, exports, module) {
               }, function(err) {
                 bkHelper.hideLanguageManagerSpinner(err);
                 deferred.reject(err);
-                bkHelper.show1ButtonModal('ERROR: ' + err, PLUGIN_NAME + ' kernel restart failed');
+                bkHelper.showErrorModal('ERROR: ' + err[0], PLUGIN_NAME + ' kernel restart failed', err[1]);
               });
             } else {
               setTimeout(waitForKernel, 50);
@@ -466,18 +466,19 @@ define(function(require, exports, module) {
         var IRubyShell = function(settings, doneCB, ecb) {
           var self = this;
           var setShellIdCB = function(shellID) {
+            var isNewShell = (shellID !== settings.shellID);
             settings.shellID = shellID;
             if (!("setup" in settings)) {
               settings.setup = defaultSetup;
             }
             self.settings = settings;
             var finish = function () {
-              if (bkHelper.hasSessionId()) {
+              if (bkHelper.hasSessionId() && isNewShell) {
                 self.evaluate(self.initCode(), {}).then(function () {
                   if (doneCB) {
                     doneCB(self);
                   }}, function(err) {
-                    bkHelper.show1ButtonModal('ERROR: '+err[0],'iRuby initialization failed');
+                    bkHelper.showErrorModal('ERROR: ' + err[0], 'iRuby initialization failed', err[1]);
                     if (doneCB) {
                       doneCB(self);
                     }});

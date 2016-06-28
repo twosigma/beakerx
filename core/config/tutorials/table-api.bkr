@@ -25689,6 +25689,170 @@
             "evaluatorReader": true,
             "lineCount": 38,
             "tags": "misc_formatting"
+        },
+        {
+            "id": "sectionJzuyz7",
+            "type": "section",
+            "title": "Run tags",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeYEb1OS",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "display = new TableDisplay([",
+                    "   [a:1, b:2, c:3],",
+                    "   [a:4, b:5, c:6],",
+                    "   [a:7, b:8, c:5]",
+                    "])",
+                    "//run tagged cell on action",
+                    "display.addContextMenuItem(\"run tagged_cell\", \"tagged_cell\");",
+                    "display.setDoubleClickAction(\"tagged_cell\");",
+                    "",
+                    "display"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "a",
+                            "b",
+                            "c"
+                        ],
+                        "actualtype": [
+                            2,
+                            2,
+                            2
+                        ],
+                        "actualalign": [
+                            "R",
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": [],
+                        "headerFontSize": null,
+                        "dataFontSize": null,
+                        "fontColor": [],
+                        "headersVertical": false
+                    }
+                },
+                "result": {
+                    "hasDoubleClickAction": false,
+                    "doubleClickTag": "tagged_cell",
+                    "contextMenuItems": [],
+                    "contextMenuTags": {
+                        "run tagged_cell": "tagged_cell"
+                    },
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "a",
+                        "b",
+                        "c"
+                    ],
+                    "types": [
+                        "integer",
+                        "integer",
+                        "integer"
+                    ],
+                    "subtype": "ListOfMaps",
+                    "stringFormatForTimes": null,
+                    "stringFormatForType": {},
+                    "stringFormatForColumn": {},
+                    "rendererForType": {},
+                    "rendererForColumn": {},
+                    "alignmentForType": {},
+                    "alignmentForColumn": {},
+                    "columnsFrozen": {},
+                    "columnsFrozenRight": {},
+                    "columnsVisible": {},
+                    "columnOrder": [],
+                    "cellHighlighters": [],
+                    "tooltips": [],
+                    "dataFontSize": null,
+                    "headerFontSize": null,
+                    "fontColor": [],
+                    "headersVertical": false,
+                    "values": [
+                        [
+                            1,
+                            2,
+                            3
+                        ],
+                        [
+                            4,
+                            5,
+                            6
+                        ],
+                        [
+                            7,
+                            8,
+                            5
+                        ]
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "d88e51a4-ea08-4cad-95ca-06e02900617d",
+                "elapsedTime": 743,
+                "height": 121
+            },
+            "evaluatorReader": true,
+            "lineCount": 10,
+            "initialization": true
+        },
+        {
+            "id": "codeC8S3M3",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def details = display.details",
+                    "switch(details.actionType){",
+                    "  case 'DOUBLE_CLICK':",
+                    "  print (\"You clicked on the cell [\" + details.row + \", \" + details.col + \"]\")",
+                    "    break;",
+                    "  case 'CONTEXT_MENU_CLICK':",
+                    "   print (\"You selected context menu '\" + details.contextMenuItem + \"' on the cell [\" + details.row + \", \" + details.col + \"]\")",
+                    "  break;",
+                    "}"
+                ]
+            },
+            "output": {},
+            "evaluatorReader": true,
+            "lineCount": 9,
+            "tags": "tagged_cell"
         }
     ],
     "namespace": {

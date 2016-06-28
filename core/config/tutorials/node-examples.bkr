@@ -294,10 +294,298 @@
             "evaluatorReader": true,
             "lineCount": 39,
             "initialization": true
+        },
+        {
+            "id": "sectionlDfyQl",
+            "type": "section",
+            "title": "Autotranslation examples",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownF0TJ5D",
+            "type": "markdown",
+            "body": [
+                "Function **get**(*name*) returns promise. This promise will be resolved with the value of variable.",
+                "",
+                "Function **set**(*name*, *value*) returns promise, which will be resolved at the moment when variable is set."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeDTvhx9",
+            "type": "code",
+            "evaluator": "Node",
+            "input": {
+                "body": [
+                    "beaker.set('squares', [1, 2, 3, 4, 5].map(function (value) {",
+                    "  return [value, value * value];",
+                    "}))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "c0",
+                            "c1"
+                        ],
+                        "actualtype": [
+                            "4.4",
+                            "4.4"
+                        ],
+                        "actualalign": [
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "getCellSho": [
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "values": [
+                        [
+                            1,
+                            1
+                        ],
+                        [
+                            2,
+                            4
+                        ],
+                        [
+                            3,
+                            9
+                        ],
+                        [
+                            4,
+                            16
+                        ],
+                        [
+                            5,
+                            25
+                        ]
+                    ],
+                    "subtype": "Matrix",
+                    "columnNames": [
+                        "c0",
+                        "c1"
+                    ],
+                    "types": [
+                        "double",
+                        "double"
+                    ]
+                },
+                "selectedType": "Table",
+                "height": 165
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codetbGdCk",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.squares.push([6, 36]);",
+                    "beaker.squares.push([7, 49]);",
+                    "beaker.squares"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "c0",
+                            "c1"
+                        ],
+                        "actualtype": [
+                            "4.4",
+                            "4.4"
+                        ],
+                        "actualalign": [
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "getCellSho": [
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "values": [
+                        [
+                            1,
+                            1
+                        ],
+                        [
+                            2,
+                            4
+                        ],
+                        [
+                            3,
+                            9
+                        ],
+                        [
+                            4,
+                            16
+                        ],
+                        [
+                            5,
+                            25
+                        ],
+                        [
+                            6,
+                            36
+                        ],
+                        [
+                            6,
+                            36
+                        ],
+                        [
+                            7,
+                            49
+                        ]
+                    ],
+                    "subtype": "Matrix",
+                    "columnNames": [
+                        "c0",
+                        "c1"
+                    ],
+                    "types": [
+                        "double",
+                        "double"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 27,
+                "height": 231
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codeq0vt2s",
+            "type": "code",
+            "evaluator": "Node",
+            "input": {
+                "body": [
+                    "beaker.get('squares').then(function (squares) {",
+                    "  return squares.map(function (s) {",
+                    "    return s[0] + ' * ' + s[0] + ' == ' + s[1];",
+                    "  }).join('\\n');",
+                    "})"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "1 * 1 == 1\n2 * 2 == 4\n3 * 3 == 9\n4 * 4 == 16\n5 * 5 == 25\n6 * 6 == 36\n6 * 6 == 36\n7 * 7 == 49",
+                "selectedType": "Text",
+                "height": 148
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
         }
     ],
     "namespace": {
-        "0": null
+        "0": null,
+        "squares": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    1,
+                    1
+                ],
+                [
+                    2,
+                    4
+                ],
+                [
+                    3,
+                    9
+                ],
+                [
+                    4,
+                    16
+                ],
+                [
+                    5,
+                    25
+                ],
+                [
+                    6,
+                    36
+                ],
+                [
+                    6,
+                    36
+                ],
+                [
+                    7,
+                    49
+                ]
+            ],
+            "subtype": "Matrix",
+            "columnNames": [
+                "c0",
+                "c1"
+            ],
+            "types": [
+                "double",
+                "double"
+            ]
+        }
     },
     "metadata": {
         "publication-id": "560b4be1-2d91-497b-b84b-ec91cc2d5e17"

@@ -76,6 +76,11 @@ div.CodeMirror {
   }
 }
 
+.CodeMirror-dialog-bottom {
+  position: static;
+  margin-left: calc(23px - .8em)
+}
+
 /* This is for datatables customization */
 tbody tr {
   &, &.odd, &.even {

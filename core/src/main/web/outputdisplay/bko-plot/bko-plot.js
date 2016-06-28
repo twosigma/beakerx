@@ -30,7 +30,8 @@
                          bkUtils,
                          GradientLegend,
                          bkoChartExtender,
-                         plotService) {
+                         plotService,
+                         $compile) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -1035,6 +1036,24 @@
           return legendContainer;
         };
 
+        scope.getLodLabel = function(lodType) {
+          var label;
+          switch(lodType){
+            case 'box':
+              label = 'group into boxes';
+              break;
+            case 'river':
+              label = 'group into river';
+              break;
+            case 'off':
+              label = 'no grouping';
+              break;
+            default:
+              label = lodType;
+          }
+          return label;
+        };
+
         scope.renderLegends = function() {
           // legend redraw is controlled by legendDone
           if (scope.legendableItem === 0 ||
@@ -1098,6 +1117,7 @@
               .appendTo($(unit));
           }
 
+          scope.lodTypeMenuItems = {};
           for (var id in scope.legendMergedLines) {
             if (!scope.legendMergedLines.hasOwnProperty(id)) { continue; }
             var line = scope.legendMergedLines[id];
@@ -1148,26 +1168,13 @@
               .attr("for", "legendcheck_" + id)
               .attr("class", "plot-label")
               .text(line.legend);
-            var lodhint = $("<span></span>").appendTo(unit)
-                .attr("id", "hint_" + id);
 
             if (line.isLodItem === true) {
-              var light = $("<span></span>").appendTo(lodhint)
-                .attr("id", "light")
-                .attr("class", "plot-legendlod");
-              var type = $("<span></span>").appendTo(lodhint)
-                .attr("id", "type")
-                .attr("class", "plot-legendlodhint")
-                .css("min-width", "3em");
-              var auto = $("<span></span>").appendTo(lodhint)
-                .attr("id", "auto")
-                .attr("class", "plot-legendlodauto")
-                .css("min-width", "2em");
-              scope.setMergedLodHint(line.lodDataIds, id);
-              lodhint.on('mousedown', {"dataIds": line.lodDataIds, "id": id}, function(e) {
-                var dataIds = e.data.dataIds;
-                e.stopPropagation();
-                if (e.which === 3) {
+
+              var applyLodType = function (lodType, legendLineId) {
+                var dataIds = scope.legendMergedLines[legendLineId].dataIds;
+
+                if (lodType === 'off') {
                   if (scope.getMergedLodInfo(dataIds).lodType === "off") { return; }
                   scope.removePipe.push("msg_lodoff");
                   scope.renderMessage("LOD is being turned off. Are you sure?",
@@ -1176,40 +1183,64 @@
                     "PROCEED (left click) / CANCEL (right click)"],
                     "msg_lodoff",
                     function() {
-                      for (var j = 0; j < dataIds.length; j++) {
-                        scope.stdmodel.data[dataIds[j]].toggleLod(scope);
-                      }
+                      _.forEach(dataIds, function (dataId) {
+                        var loadLoader = scope.stdmodel.data[dataId];
+                        if (loadLoader.toggleLod) {
+                          loadLoader.toggleLod(scope);
+                        }
+                      });
                       scope.update();
-                      scope.setMergedLodHint(dataIds, e.data.id);
+                      scope.setMergedLodHint(dataIds, legendLineId);
                     }, null);
-                }
-              });
-              type.on('mousedown', {"dataIds": line.lodDataIds, "id": id}, function(e) {
-                if (e.which === 3) { return; }
-                var dataIds = e.data.dataIds;
-                for (var j = 0; j < dataIds.length; j++) {
-                  var dat = scope.stdmodel.data[dataIds[j]];
-                  if (dat.lodType === "off") {
-                    dat.toggleLod(scope);
-                  } else {
-                    dat.switchLodType(scope);
+                } else {
+                  var hasChanged = false;
+                  _.forEach(dataIds, function (dataId) {
+                    var loadLoader = scope.stdmodel.data[dataId];
+                    if (!loadLoader.lodType || loadLoader.lodType === lodType) { return; }
+                    loadLoader.clear(scope);
+                    loadLoader.applyLodType(lodType);
+                    loadLoader.zoomLevelChanged(scope);
+                    hasChanged = true;
+                  });
+                  if (hasChanged) {
+                    scope.update();
+                    scope.setMergedLodHint(dataIds, legendLineId);
                   }
-                  dat.zoomLevelChanged(scope);
                 }
-                scope.update();
-                scope.setMergedLodHint(dataIds, e.data.id);
-              });
-              auto.on('mousedown', {"dataIds": line.lodDataIds, "id": id}, function(e) {
-                if (e.which === 3) { return; }
-                var dataIds = e.data.dataIds;
-                for (var j = 0; j < dataIds.length; j++) {
-                  var dat = scope.stdmodel.data[dataIds[j]];
-                  if (dat.lodType === "off") return;
-                  dat.toggleLodAuto(scope);
+              };
+
+              var createLodTypeMenuItem = function(lodType, lineId){
+                return {
+                  lodType: lodType,
+                  lineId: lineId,
+                  name: scope.getLodLabel(lodType),
+                  action: function(){
+                    applyLodType(this.lodType, this.lineId);
+                  }
                 }
-                scope.update();
-                scope.setMergedLodHint(dataIds, e.data.id);
+              };
+
+              var lodTypeMenuItems = [];
+              _.forEach(line.dataIds, function(dataId){
+                var graphics = scope.stdmodel.data[dataId];
+                _.forEach(graphics.lodTypes, function(lodType){
+                  if(!_.some(lodTypeMenuItems, {lodType: lodType})){
+                    lodTypeMenuItems.push(createLodTypeMenuItem(lodType, id));
+                  }
+                });
               });
+              lodTypeMenuItems.push(createLodTypeMenuItem('off', id));
+
+              var lodhint = $(
+                '<div class="dropdown dropdown-promoted" data-toggle="dropdown" style="float: right; width: auto;">' +
+                '<a class="dropdown-toggle plot-legendlodtype" data-toggle="dropdown"></a>' +
+                '<bk-dropdown-menu menu-items="lodTypeMenuItems[\'' + id + '\']" submenu-classes="drop-right"></bk-dropdown-menu>' +
+                '</div>'
+              );
+              scope.lodTypeMenuItems[id] = lodTypeMenuItems;
+              unit.append($compile(lodhint)(scope));
+              lodhint.attr("id", "hint_" + id).attr("class", "plot-legendlod");
+              scope.setMergedLodHint(line.lodDataIds, id);
             }
           }
 
@@ -1248,6 +1279,16 @@
               scope.jqcontainer.css("margin-left", legendContainer.width() + margin);
             }
           }
+
+          if (legendContainer.length) {
+            var legenddraggable = legendContainer.find(".plot-legenddraggable");
+            if (legendContainer.get(0).scrollHeight > legendContainer.get(0).clientHeight) {
+              legenddraggable.addClass("hasScroll");
+            } else {
+              legenddraggable.removeClass("hasScroll");
+            }
+          }
+
         };
 
         scope.highlightElements = function(legendId, highlight){
@@ -1291,22 +1332,8 @@
           var lodInfo = scope.getMergedLodInfo(lodDataIds);
           var legend = scope.jqlegendcontainer.find("#legends");
           var hint = legend.find("#hint_" + legendLineId);
-          var light = hint.find("#light"),
-              type = hint.find("#type"),
-              auto = hint.find("#auto");
-          // lod hint light
-          light.attr("title",
-            lodInfo.lodOn === true ? "LOD is on" : "")
-          .css("background-color",
-            lodInfo.lodOn === true ? "red" : "gray")
-          .css("border",
-            lodInfo.lodOn === true ? "1px solid red" : "1px solid gray");
-          // lod hint text
-          type.css("color", lodInfo.lodOn === true ? "red" : "gray")
-            .text(lodInfo.lodType);
-          // lod auto hint
-          auto.css("color", lodInfo.lodOn === true ? "red" : "gray")
-            .text(lodInfo.lodType === "off" ? "" : (lodInfo.lodAuto === true ? "auto" : "on"));
+          var type = hint.find(".dropdown-toggle");
+          type.text(lodInfo.lodType);
         };
         scope.toggleVisibility = function(e) {
           var id = e.target.id.split("_")[1], data = scope.stdmodel.data, line;
@@ -2161,5 +2188,6 @@
     "GradientLegend",
     "bkoChartExtender",
     "plotService",
+    "$compile",
     retfunc]);
 })();

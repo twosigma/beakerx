@@ -54,6 +54,21 @@ bk-markdown-editable .CodeMirror {
   line-height: 25px;
 }
 
+.output-padding{
+  pre:first-child:before {
+    content: ' ';
+    display: block;
+    float: right;
+    height: 10px;
+    width:70px;
+  }
+}
+
+.output-stats-padding{
+  padding-top: 3px;
+  padding-right: 70px !important;
+}
+
 bk-section-cell, bk-markdown-cell {
   .codemirror-wrapper > .CodeMirror {
     font-family: inherit;
@@ -72,6 +87,16 @@ bk-code-cell .CodeMirror pre {
 
 bk-markdown-cell bk-markdown-editable {
   display: block;
+}
+
+bk-markdown-editable .markdown-area.markdown-hidden {
+  padding-top: $grid-row-height*2;
+  .advanced-mode & {
+    padding-top: 34px;
+  }
+  .markdown-content {
+    display: none;
+  }
 }
 
 bk-markdown-cell bk-markdown-editable, .bkcell.code-cell-area, .textcell-wrapper {

@@ -52,7 +52,7 @@ describe('SQL Tutorial', function (done) {
     it('Autotranslate Output of Query', function(){
         var idCell = "codeYmDlEC";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
+        beakerPO.runBkCellDefaultButtonByIdCell(idCell);
 
         idCell = "codeDbiIzh";
         beakerPO.scrollToBkCellByIdCell(idCell);

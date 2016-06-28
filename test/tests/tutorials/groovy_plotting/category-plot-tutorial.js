@@ -33,6 +33,8 @@ describe('Category Plots (Bar Charts)', function (done) {
       beakerPO.checkPlotIsPresentByIdCell(idCell);
       beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-bar');
       beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-bar');
+
+      beakerPO.checkSaveAsSvgPngByIdCell(idCell, "plot");
     });
 
     it('Size', function () {

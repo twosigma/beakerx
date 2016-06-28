@@ -35,13 +35,16 @@ describe('Groovy Plotting', function () {
     it('Levels of Detail', function () {
         var idCell = "coden9MEmJ";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.getBkCellByIdCell(idCell).element(by.css('div[ng-click="toggleCellInput()"]')).click();
+        beakerPO.collapseCellMenuByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
 
         idCell = "codeDyDWm8";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
         expect(beakerPO.getPlotMaingByIdCell(idCell).isPresent()).toBe(true);
+
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.id("plotTitle")).getText()).toBe("Drunken Sailor Walks");
+        beakerPO.checkSaveAsSvgPngByIdCell(idCell, "Drunken Sailor Walks");
     });
 
 });

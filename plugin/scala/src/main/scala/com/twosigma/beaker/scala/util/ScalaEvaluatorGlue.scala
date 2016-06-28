@@ -66,14 +66,19 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     var b: ArgumentCompleter =new ArgumentCompleter(new JLineDelimiter, scalaToJline(c.completer));
     b.setStrict(false);
     b;
-  } 
-  
+  }
+
   private def getOut: Any = {
-    val lvo = interpreter.valueOfTerm(interpreter.mostRecentVar);
-    lvo match {
-      case None => baos.toString();
-      case Some(ResetState("reset")) => baos.toString();
-      case Some(value) => value;
+    try {
+      interpreter.lastRequest.lineRep.call("$result")
+    } catch {
+      case e: Exception =>
+        val lvo = interpreter.valueOfTerm(interpreter.mostRecentVar)
+        lvo match {
+          case None => baos.toString();
+          case Some(ResetState("reset")) => baos.toString();
+          case Some(value) => value;
+        }
     }
   }
   

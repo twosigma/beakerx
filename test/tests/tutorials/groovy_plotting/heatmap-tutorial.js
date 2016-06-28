@@ -19,11 +19,19 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('HeatMap Tutorial', function (done) {
+describe('HeatMap Tutorial', function () {
 
-    beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&readOnly=true").then(done);
-    beakerPO.waitUntilLoadingFinished();
+    beforeAll(function(done) {
+        beakerPO = new BeakerPageObject();
+        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fheatmap.bkr&readOnly=true").then(done);
+        beakerPO.waitUntilLoadingFinished();
+        browser.driver.manage().window().maximize();
+    });
+
+    afterAll(function(done){
+        beakerPO.createScreenshot('heatmapTutorial1');
+        done();
+    });
 
     it('Basic HeatMap Example', function () {
         var idCell = "codeFh3TtJ";
@@ -36,6 +44,7 @@ describe('HeatMap Tutorial', function (done) {
                 expect(parseInt(plotTop)).toBeLessThan(parseInt(legendTop));
             });
         });
+        beakerPO.checkSaveAsSvgPngByIdCell(idCell, "plot");
     });
 
     it('Title, Labels and Legend', function () {
@@ -71,6 +80,7 @@ describe('HeatMap Tutorial', function (done) {
         expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_1')).getCssValue('fill')).toBe('rgb(179, 179, 0)');
         expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Custom Gradient Example");
         expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')).toBeNull();
+        beakerPO.createScreenshot('heatmapTooltip');
         browser.actions().mouseMove(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0'))).perform().then(function(){
             expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('filter')).not.toBeNull();
         });

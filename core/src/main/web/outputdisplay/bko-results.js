@@ -18,8 +18,8 @@
  */
 (function() {
   'use strict';
-  beakerRegister.bkoDirective("Results", ["$interval", "$compile", "bkOutputDisplayFactory", "bkAnsiColorHelper", "$sce", function(
-      $interval, $compile, bkOutputDisplayFactory, bkAnsiColorHelper, $sce) {
+  beakerRegister.bkoDirective("Results", ["$interval", "$compile", "bkOutputDisplayFactory", "bkAnsiColorHelper", "$sce",
+    function($interval, $compile, bkOutputDisplayFactory, bkAnsiColorHelper, $sce) {
     return {
       template: JST['mainapp/components/notebook/output-results'],
       link: function(scope, element, attrs) {
@@ -45,20 +45,20 @@
           return scope.model.isShowOutput();
         };
         scope.colorizeIfNeeded = function (text) {
-          return bkAnsiColorHelper.hasAnsiColors(text)
-            ? $sce.trustAsHtml(bkAnsiColorHelper.convertToHtml(text))
-            : _.escape(text);
+          return $sce.trustAsHtml(bkAnsiColorHelper.hasAnsiColors(text) 
+            ? bkAnsiColorHelper.convertToHtml(text) 
+            : _.escape(text));
         };
 
         scope.isShowMenu = function() { return false; };
         scope.showoutput = scope.model.isShowOutput();
-        
+
         scope.payload = {
-            result : undefined,
-            isShowOutput : function() {
-              return scope.showoutput;
-            }
-        }
+          result: undefined,
+          isShowOutput: function () {
+            return scope.showoutput;
+          }
+        };
         
         scope.$watch('getPayload()', function() {
           if (scope.hasPayload()) {

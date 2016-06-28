@@ -34,6 +34,7 @@
                                              'bk.cellMenuPluginManager',
                                              'bk.notebookVersionManager',
                                              'bk.evaluatorManager',
+                                             'bk.evaluatePluginManager',
                                              'bk.evaluateJobManager',
                                              'bk.notebookRouter',
                                              'bk.notebook',
@@ -60,6 +61,7 @@
       bkCellMenuPluginManager,
       bkNotebookVersionManager,
       bkEvaluatorManager,
+      bkEvaluatePluginManager,
       bkEvaluateJobManager,
       bkElectron,
       $location,
@@ -132,6 +134,14 @@
           // set shell id to null, so it won't try to find an existing shell with the id
           if (alwaysCreateNewEvaluator) {
             settings.shellID = null;
+          }
+
+          // error when trying to load an unknown language
+          if (!(settings.plugin in bkEvaluatePluginManager.getKnownEvaluatorPlugins())) {
+            bkCoreManager.show1ButtonModal(
+              "Language \"" + settings.plugin + "\" could not be found.","ERROR",null,"OK"
+            );
+            return null;
           }
 
           return bkEvaluatorManager.newEvaluator(settings)
@@ -287,6 +297,9 @@
             if (notebookModel && notebookModel.evaluators) {
               var promises = _.map(notebookModel.evaluators, function(ev) {
                 return addEvaluator(ev, !isExistingSession);
+              });
+              promises = _.filter(promises, function(el) {
+                el != null
               });
               bkUtils.all(promises).then(function() {
                 if (!isExistingSession) {
@@ -702,6 +715,9 @@
               }
               return true;
             },
+            isRunning: function (cellId) {
+              return bkEvaluateJobManager.isRunning(cellId);
+            },
             evaluate: function(toEval) {
               var cellOp = bkSessionManager.getNotebookCellOp();
               // toEval can be a tagName (string), either "initialization", name of an evaluator or user defined tag
@@ -926,6 +942,21 @@
                 var cell = cells[cells.length-1];
                 go(cell.id);
               }
+            },
+            go2FirstCell: function () {
+              var cellOp = bkSessionManager.getNotebookCellOp();
+              var cells = cellOp.getCells();
+
+              if (cells === undefined || (!_.isArray(cells) && cells.length === 0)) {
+                return null;
+              }
+              if (_.isArray(cells) && cells.length > 0) {
+                var cell = cells[0];
+                go(cell.id);
+              }
+            },
+            go2Cell: function(cellId) {
+              go(cellId);
             },
             go2FirstErrorCodeCell: function () {
               var cellOp = bkSessionManager.getNotebookCellOp();
@@ -1158,8 +1189,17 @@
               bkHelper.appendCodeCell()
             });
             return false;
-          }
-          else if (e.which === 116) { // F5
+          } else if (bkHelper.isAppendTextCellShortcut(e)) {
+            bkUtils.fcall(function() {
+              bkHelper.appendTextCell();
+            });
+            return false;
+          } else if (bkHelper.isInsertCodeCellAboveShortcut(e)) {
+            bkUtils.fcall(function() {
+              bkHelper.insertCodeCellAbove();
+            });
+            return false;
+          } else if (e.which === 116) { // F5
             bkHelper.runAllCellsInNotebook();
             return false;
           } else if (bkHelper.isLanguageManagerShortcut(e)) {

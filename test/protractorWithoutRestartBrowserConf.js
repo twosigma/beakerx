@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+var helper = require('./helper.js');
+
 var config = {
   seleniumAddress: 'http://localhost:4444/wd/hub',
   framework: 'jasmine2',
@@ -23,12 +25,12 @@ var config = {
     defaultTimeoutInterval: 100000,
     print: function() {}
   },
-
   capabilities: {
     shardTestFiles: true,
     maxInstances: 3,
     browserName: 'firefox'
   },
+  getMultiCapabilities: helper.getFirefoxProfile,
   onPrepare: function() {
     var SpecReporter = require('jasmine-spec-reporter');
     jasmine.getEnv().addReporter(new SpecReporter({
@@ -38,11 +40,13 @@ var config = {
   specs: [
     'tests/tutorials/groovy_plotting/category-plot-tutorial.js',
     'tests/tutorials/groovy_plotting/charting-tutorial.js',
+    'tests/tutorials/groovy_plotting/plot-features-tutorial.js',
     'tests/tutorials/groovy_plotting/heatmap-tutorial.js',
     'tests/tutorials/groovy_plotting/treemap-tutorial.js',
-    'tests/tutorials/groovy_plotting/charting-tutorial2.js',
+    'tests/tutorials/groovy_plotting/plot-features-tutorial2.js',
     'tests/tutorials/groovy_plotting/histogram-tutorial.js',
     'tests/tutorials/groovy_plotting/levelsOfDetail-tutorial.js',
+    'tests/tutorials/groovy_plotting/plotActions-tutorial.js',
     'tests/tutorials/language_demos/sql-tutorial.js',
     'tests/tutorials/language_demos/java-tutorial.js',
     'tests/tutorials/language_demos/groovy-tutorial.js',
@@ -51,7 +55,11 @@ var config = {
     'tests/tutorials/language_demos/jscript-tutorial.js',
     'tests/tutorials/language_demos/R-tutorial.js',
     'tests/tutorials/language_demos/nodejs-tutorial.js',
+    'tests/tutorials/standard_visual_api/d3js-tutorial.js',
+    'tests/tutorials/standard_visual_api/p5js-tutorial.js',
     'tests/tables.js',
+    'tests/tutorials/feature_overview/autotranslation-tutorial.js',
+    'tests/tutorials/feature_overview/beakerObject-tutorial.js',
     'tests/tutorials/feature_overview/text-tutorial.js'
   ]
 };

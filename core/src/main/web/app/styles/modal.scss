@@ -8,6 +8,10 @@ html {
     border-bottom-width: 0;
   }
 
+  .modal-open.has-scroll {
+    margin-right: $scrollbar-width;
+  }
+
   $fixed-header-height: 112px;
   $fixed-footer-height: 130px;
 
@@ -37,6 +41,11 @@ html {
   .modal-body.error-title {
     background-color: rgba(225, 0, 0, 0.5);
     padding: 10px 25px;
+  }
+
+  .modal-body .modal-error-details {
+    font-family: $font-family-mono;
+    white-space: pre;
   }
 
   .modal-footer {

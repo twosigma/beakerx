@@ -93,7 +93,11 @@
                 "",
                 "You can write unicode with your native keyboard, or copy-and-paste unicode characters in: 玻璃.",
                 "Plus you can enter HTML entities like &amp;dagger; for &dagger;.",
-                "In fact, many basic HTML elements work, like super&lt;sup&gt;scripts&lt;/sup&gt; for super<sup>scripts</sup>."
+                "In fact, many basic HTML elements work, like super&lt;sup&gt;scripts&lt;/sup&gt; for super<sup>scripts</sup>.",
+                "",
+                "The native emoticon UI {{ (beaker.client.mac) ? \"(&#x2318;control-space)\" : \"\"}} works: 🌀🌻. {{ (beaker.client.windows) ? \"Emoji are available from the [virtual keyboard](https://www.emojibase.com/emojis-on-windows).\" : \"\"}}",
+                "You can also write emoji with unicode in decimal HTML style: &#127752;&#128516;&#10024;.",
+                "In fact you can write any [unicode](http://unicode-table.com/) with decimal HTML:  &#9835;&#9730;."
             ],
             "evaluatorReader": false,
             "mode": "preview"
@@ -153,7 +157,7 @@
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
                 "elapsedTime": 28,
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -229,7 +233,7 @@
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 0,
                 "state": {},
-                "height": 161
+                "height": 181
             },
             "evaluatorReader": true,
             "lineCount": 16
@@ -437,7 +441,7 @@
                 },
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 0,
-                "height": 70
+                "height": 90
             },
             "evaluatorReader": true,
             "lineCount": 85
@@ -500,18 +504,10 @@
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 8,
                 "state": {},
-                "height": 41
+                "height": 61
             },
             "evaluatorReader": true,
             "lineCount": 3
-        },
-        {
-            "id": "markdownd77HDf",
-            "type": "markdown",
-            "body": [
-                ""
-            ],
-            "evaluatorReader": false
         }
     ],
     "namespace": {

@@ -19,10 +19,10 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Charting Tutorial', function (done) {
+describe('Catalog of Plot APIs and Features (part 2)', function (done) {
 
     beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true")
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fplot-features.bkr&readOnly=true")
         .then(done)
         .then(beakerPO.waitUntilLoadingCellOutput());
 
@@ -40,6 +40,8 @@ describe('Charting Tutorial', function (done) {
         expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).element(by.tagName('circle')).isPresent()).toBe(true);
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-constline');
         beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 2), 'plot-constline');
+
+        beakerPO.checkSaveAsSvgPngByIdCell(idCell, "plot");
     });
 
     it('Constant Bands', function() {

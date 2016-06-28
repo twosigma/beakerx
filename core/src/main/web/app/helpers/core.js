@@ -592,6 +592,14 @@
           return nextCell;
         };
 
+        var appendCodeCell = function() {
+          var thisCellId = scope.cellmodel.id;
+          var evaluatorName = scope.cellmodel.evaluator;
+          var newCell = scope.bkNotebook.getNotebookNewCellFactory().newCodeCell(evaluatorName);
+          notebookCellOp.appendAfter(thisCellId, newCell);
+          bkUtils.refreshRootScope();
+        };
+
         var moveFocusDown = function() {
           // move focus to next code cell
           var thisCellId = scope.cellmodel.id;
@@ -632,8 +640,12 @@
           scope.$apply();
         };
 
-        var evaluateAndGoDown = function() {
+        var evaluateAndGoDown = function () {
           scope.evaluate();
+          var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
+          if (!nextCell) {
+            appendCodeCell();
+          }
           goToNextCodeCell();
         };
 
@@ -733,6 +745,10 @@
           bkHelper.setFullScreen(cm, !bkHelper.isFullScreen(cm));
         };
 
+        CodeMirror.commands.save = function (){
+	        bkHelper.saveNotebook();
+        };
+        
         var keys = {
             "Up" : goUpOrMoveFocusUp,
             "Down" : goDownOrMoveFocusDown,
@@ -872,6 +888,29 @@
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" ;
         return this.showModalDialog(null, template);
+      },
+      showErrorModal: function (msgBody, msgHeader, errorDetails, callback) {
+        if(!errorDetails) {
+          return this.show1ButtonModal(msgBody, msgHeader, callback);
+        }
+        if(bkUtils.isElectron) {
+          return bkElectron.Dialog.showMessageBox({
+            type: 'error',
+            buttons: ['OK'],
+            title: msgHeader,
+            message: msgBody,
+            detail: errorDetails
+          }, callback);
+        } else {
+          return this.showModalDialog(callback,
+            "<div class='modal-header'>" +
+            "<h1>" + msgHeader + "</h1>" +
+            "</div>" +
+            "<div class='modal-body'><p>" + msgBody + "</p><div class='modal-error-details'>" + errorDetails + "</div></div>" +
+            '<div class="modal-footer">' +
+            "   <button class='btn btn-primary' ng-click='close(\"OK\")'>Close</button>" +
+            "</div>");
+        }
       },
       show1ButtonModal: function(msgBody, msgHeader, callback, btnText, btnClass) {
         if (!msgHeader || msgBody.toLowerCase().indexOf(msgHeader.toLowerCase()) !== -1) {

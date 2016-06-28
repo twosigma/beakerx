@@ -212,7 +212,7 @@ var BeakerPageObject = function() {
   };
 
   this.getEvaluateButton = function() {
-    return element(by.className('evaluate-script'));
+    return element(by.css('a.evaluate-script[ng-click="evaluate($event)"]'));
   };
 
   this.languageManagerCloseButton = element(by.className('language-manager-close-button'));
@@ -434,9 +434,16 @@ var BeakerPageObject = function() {
     if (!containerIdx)
       containerIdx = 0;
     this.scrollToCodeCellOutputByIdCell(codeCellOutputId);
-    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + codeCellOutputId + ']'), 10000));
+    this.scrollHeaderElement();
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + codeCellOutputId + ']'), 20000));
     expect(this.getPlotMaingByIdCell(codeCellOutputId, containerIdx).isPresent()).toBe(true);
   };
+
+  this.scrollHeaderElement = function(){
+    element(by.css('header')).getCssValue('height').then(function(height){
+      browser.executeScript("window.scrollBy(0, -" + parseInt(height) + ");");
+    });
+  }
 
   this.getPlotMaingByIdCell = function (codeCellOutputId, containerIdx) {
     return this.getPlotSvgByIdCell(codeCellOutputId, containerIdx).element(By.id('maing'));
@@ -554,6 +561,10 @@ var BeakerPageObject = function() {
     return this.getDTFCLeftHeader(cellId).all(by.css('th')).get(colInd);
   };
 
+  this.getDTRow = function (cellId, rowInd) {
+    return this.getDataTablesTBodyByIdCell(cellId).get(rowInd);
+  };
+
   this.scrollDataTableHorizontally = function (cellId, x) {
     browser.executeScript("$('bk-code-cell-output[cell-id=" + cellId + "').find('.dataTables_scrollBody').scrollLeft(" + x + ");");
   };
@@ -633,6 +644,18 @@ var BeakerPageObject = function() {
     expect(tBody.count()).toBe(rowsCount);
     expect(tBody.get(0).getText()).toBe(firstRow);
   }
+
+  this.getDataTableFilterRow = function (cellId) {
+    return this.getDataTablesScrollHeadByIdCell(cellId).element(by.css('.filterRow'));
+  };
+
+  this.getDataTableSearchField = function (cellId) {
+    return this.getDTFCLeftHeader(cellId).all(by.css('.filterRow th')).get(0);
+  };
+
+  this.getDataTableSearchInput = function (cellId) {
+    return this.getDataTableSearchField(cellId).element(by.css('.filter-input'));
+  };
 
   this.checkCellOutputText = function(codeCellOutputIdx, outputText){
     expect(this.getCodeCellOutputByIndex(codeCellOutputIdx).element(By.css('pre')).getText()).toBe(outputText);
@@ -767,7 +790,7 @@ var BeakerPageObject = function() {
     if(!timeOut){
       timeOut = 25000;
     }
-    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
+    this.runBkCellDefaultButtonByIdCell(idCell);
     browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']')), 5000)
         .then(browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="' + outputType + '"]')), timeOut)
             .then(
@@ -820,9 +843,69 @@ var BeakerPageObject = function() {
       timeOut = 25000;
     }
     this.scrollToBkCellByIdCell(idCell);
-    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
+    this.runBkCellDefaultButtonByIdCell(idCell);
     browser.wait(this.EC.not(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']'))), timeOut);
   }
 
+  this.getUserHome = function() {
+    return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+  }
+
+  this.checkSaveAsSvgPngByIdCell = function(idCell, filename){
+    var dir = path.join(__dirname, '../' ,"tmp");
+    if(!fs.existsSync(dir)){
+      fs.mkdirSync(dir);
+    }
+    var list = fs.readdirSync(dir);
+    list.forEach(function(file) {
+      file = path.join(dir, file);
+      var stat = fs.statSync(file)
+      if (stat && stat.isFile()){
+        fs.unlinkSync(file);
+      }
+    });
+
+    this.clickCellMenuSavePlotAs(idCell, 'SVG');
+    var filenameSvg = path.join(dir, (filename + ".svg"));
+    browser.wait(fs.existsSync.bind(this, filenameSvg), 10000).then(function(){
+      expect(fs.statSync(filenameSvg).isFile() && fs.existsSync(filenameSvg)).toBe(true);
+      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+    });
+
+    this.scrollHeaderElement();
+    this.clickCellMenuSavePlotAs(idCell, 'PNG');
+    var filenamePng = path.join(dir, (filename + ".png"));
+    browser.wait(fs.existsSync.bind(this, filenamePng), 10000).then(function(){
+      expect(fs.statSync(filenamePng).isFile() && fs.existsSync(filenamePng)).toBe(true);
+      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+    });
+  }
+
+  this.clickCellMenuSavePlotAs = function(idCell, fileExt){
+    this.getCodeCellOutputByIdCell(idCell).element(by.css('.cell-menu-item.cell-dropdown.dropdown-toggle')).click();
+    browser.wait(this.EC.presenceOf(element.all(by.css('bk-notebook > ul.dropdown-menu')).get(0)), 10000);
+    var savePlotAs = element.all(by.css('bk-notebook > ul.dropdown-menu')).get(0).element(by.cssContainingText('li', 'Save Plot As'));
+    browser.actions().mouseMove(savePlotAs).perform();
+    var subMenu = savePlotAs.element(by.cssContainingText('a', fileExt));
+    browser.actions().mouseMove(subMenu).perform();
+    subMenu.click();
+  }
+
+  this.runBkCellDefaultButtonByIdCell = function(idCell){
+    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
+  }
+
+  this.collapseCellMenuByIdCell = function(idCell){
+    var self = this;
+    element(by.css('div[ng-click="collapseCellMenu[cellmodel.type].click()"].collapsed')).isPresent().then(function(collapsed){
+      if(collapsed){
+        self.getBkCellByIdCell(idCell).element(by.css('div[ng-click="collapseCellMenu[cellmodel.type].click()"]')).click();
+      }
+    });
+  }
+
+  this.checkEvaluatorByIdCell = function(idCell, langName){
+    expect(this.getBkCellByIdCell(idCell).element(by.css('.evaluator')).getAttribute('evaluator-type')).toBe(langName);
+  }
 };
 module.exports = BeakerPageObject;

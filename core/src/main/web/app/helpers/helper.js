@@ -94,6 +94,18 @@
         }
         return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Cmd + Shift + A
       },
+      isAppendTextCellShortcut: function (e){
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 89);// Ctrl + Shift + Y
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 89);// Cmd + Shift + Y
+      },
+      isInsertCodeCellAboveShortcut: function (e){
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 85);// Ctrl + Shift + U
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 85);// Cmd + Shift + U
+      },
       isSaveNotebookShortcut: function (e){
         if (this.isMacOS){
           return e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83);// Cmd + s
@@ -555,6 +567,24 @@
             linkify: true,
             typographer: true
           });
+
+          // Remember old renderer, if overridden, or proxy to default renderer
+          var defaultRender = md.renderer.rules.link_open || function (tokens, idx, options, env, self) {
+              return self.renderToken(tokens, idx, options);
+            };
+
+          md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+            // check if 'target' attr has already been added
+            var aIndex = tokens[idx].attrIndex('target');
+            if (aIndex < 0) {
+              tokens[idx].attrPush(['target', '_blank']); //add new attribute
+            } else {
+              tokens[idx].attrs[aIndex][1] = '_blank'; //replace value of existing attr
+            }
+            // pass token to default renderer.
+            return defaultRender(tokens, idx, options, env, self);
+          };
+
           var result = md.render(unescapedGtCharacter);
           markupDeferred.resolve(result);
         };
@@ -675,6 +705,20 @@
       go2LastCodeCell: function() {
         if (getCurrentApp() && getCurrentApp().go2LastCodeCell) {
           getCurrentApp().go2LastCodeCell();
+        } else {
+          return [];
+        }
+      },
+      go2FirstCell: function() {
+        if (getCurrentApp() && getCurrentApp().go2FirstCell) {
+          getCurrentApp().go2FirstCell();
+        } else {
+          return [];
+        }
+      },
+      go2Cell: function(cellId) {
+        if (getCurrentApp() && getCurrentApp().go2Cell) {
+          getCurrentApp().go2Cell(cellId);
         } else {
           return [];
         }
@@ -859,6 +903,9 @@
       showModalDialog: function(callback, template, strategy) {
         return bkCoreManager.showModalDialog(callback, template, strategy).result;
       },
+      showErrorModal: function (msgBody, msgHeader, errorDetails, callback) {
+        return bkCoreManager.showErrorModal(msgBody, msgHeader, errorDetails, callback);
+      },
       show1ButtonModal: function(msgBody, msgHeader, callback) {
         return bkCoreManager.show1ButtonModal(msgBody, msgHeader, callback);
       },
@@ -911,16 +958,48 @@
         return bkCoreManager.showLanguageManager();
       },
       appendCodeCell: function () {
-        var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
-        var cells = notebookCellOp.getAllCodeCells();
-        if (cells === undefined || (!_.isArray(cells) && cells.length === 0)) {
-          return null;
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        var newCell;
+        if (currentCellId) {
+          var cell = notebookCellOp.getCell(currentCellId);
+          var evaluator = cell.type === 'code' ? cell.evaluator : defaultEvaluator;
+          newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(evaluator);
+          notebookCellOp.insertAfter(currentCellId, newCell);
+        } else {
+          newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
+          notebookCellOp.insertLast(newCell);
         }
-        var index = cells.length;
-        notebookCellOp.insertAt(index, newCell);
         bkUtils.refreshRootScope();
-        this.go2LastCodeCell();
+        this.go2Cell(newCell.id);
+      },
+      appendTextCell: function () {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var newCell = bkSessionManager.getNotebookNewCellFactory().newMarkdownCell();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        if (currentCellId) {
+          notebookCellOp.insertAfter(currentCellId, newCell);
+        } else {
+          notebookCellOp.insertLast(newCell);
+        }
+        bkUtils.refreshRootScope();
+        this.go2Cell(newCell.id);
+      },
+      insertCodeCellAbove: function () {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        var newCell;
+        if (currentCellId) {
+          var cell = notebookCellOp.getCell(currentCellId);
+          var evaluator = cell.type === 'code' ? cell.evaluator : defaultEvaluator;
+          newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(evaluator);
+          notebookCellOp.insertBefore(currentCellId, newCell);
+        } else {
+          newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
+          notebookCellOp.insertFirst(newCell);
+        }
+        bkUtils.refreshRootScope();
+        this.go2Cell(newCell.id);
       },
       showPublishForm: function() {
         return bkCoreManager.showPublishForm();

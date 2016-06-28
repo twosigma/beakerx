@@ -16,8 +16,12 @@
 
 (function() {
   'use strict';
-  var module = angular.module('bk.evaluateJobManager', ['bk.utils', 'bk.evaluatorManager']);
-  module.factory('bkEvaluateJobManager', function(bkUtils, bkEvaluatorManager, $timeout) {
+  var module = angular.module(
+    'bk.evaluateJobManager',
+    ['bk.utils', 'bk.evaluatorManager', 'bk.evaluatePluginManager']
+  );
+  module.factory('bkEvaluateJobManager', function(
+    bkUtils, bkEvaluatorManager, bkEvaluatePluginManager, $timeout) {
 
     var outputMap = { };
 
@@ -51,6 +55,14 @@
       var running = {};
 
       var evaluateJob = function(job) {
+        // check if job language is unknown
+        if (!(job.evaluatorId in bkEvaluatePluginManager.getKnownEvaluatorPlugins())) {
+          job.output.result = errorMessage('Language "' + job.evaluatorId + '" is unknown and could not be evaluated.');
+          return new Promise(function(resolve, reject) {
+            reject('ERROR');
+          });
+        }
+
         job.evaluator = bkEvaluatorManager.getEvaluator(job.evaluatorId);
         if (job.evaluator) {
           bkUtils.log("evaluate", {
@@ -232,6 +244,9 @@
     })();
 
     return {
+      isRunning: function (cellId) {
+        return jobQueue.isRunning(cellId);
+      },
       // evaluate a cell (as a subcell of currently running cell)
       evaluate: function(cell, notick) {
         var parent = jobQueue.getCurrentJob();

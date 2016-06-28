@@ -28,12 +28,18 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.attribute.PosixFilePermission;
+import java.security.SecureRandom;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 /**
  * DefaultBeakerConfig
@@ -137,14 +143,23 @@ class DefaultBeakerConfig implements BeakerConfig {
 
     this.userFolder = this.dotDir + "/web";
     utils.ensureDirectoryExists(userFolder);
+    utils.setPermissions(this.userFolder, PosixFilePermission.OWNER_READ,
+                                          PosixFilePermission.OWNER_WRITE,
+                                          PosixFilePermission.OWNER_EXECUTE);
 
     this.preferencesDefaultNotebook = pref.getDefaultNotebookUrl();
 
     String varDir = this.dotDir + "/var";
     utils.ensureDirectoryExists(varDir);
+    utils.setPermissions(varDir, PosixFilePermission.OWNER_READ,
+                                 PosixFilePermission.OWNER_WRITE,
+                                 PosixFilePermission.OWNER_EXECUTE);
     this.recentNotebooksFileUrl = varDir + "/recentNotebooks";
     this.sessionBackupDir = varDir + "/sessionBackups";
     utils.ensureDirectoryExists(this.sessionBackupDir);
+    utils.setPermissions(this.sessionBackupDir, PosixFilePermission.OWNER_READ,
+                                                PosixFilePermission.OWNER_WRITE,
+                                                PosixFilePermission.OWNER_EXECUTE);
 
     this.pluginLocations = new HashMap<>();
     this.pluginOptions = pref.getPluginOptions();
@@ -162,7 +177,8 @@ class DefaultBeakerConfig implements BeakerConfig {
     this.random = new SecureRandom();
     // protect the core server
     this.authCookie = randomString(255);
-    String password = randomString(100);
+    String userPassword = pref.getPassword();
+    String password = StringUtils.isEmpty(userPassword) ? randomString(100) : userPassword;
     this.passwordHash = hash(password);
     this.password = password;
     this.authToken = pref.getAuthToken();

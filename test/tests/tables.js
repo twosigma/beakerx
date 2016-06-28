@@ -218,6 +218,7 @@ describe('Beaker Tables', function () {
         });
       });
 
+      var allRowsCount = 50;
       it('should display All rows', function (done) {
         var section = 'Table with pagination';
         browser.driver.manage().window().maximize();
@@ -229,14 +230,224 @@ describe('Beaker Tables', function () {
             browser.actions().mouseMove(rowsToShowMenu).perform();
             var showAll = beakerPO.getDataTableSubMenuItem(rowsToShowMenu, 'All');
             showAll.element(by.css('a[ng-click="changePageLength(length)"]')).click().then(function () {
-              expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 50)).toBe(true);
+              expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), allRowsCount)).toBe(true);
             });
             done();
           });
         });
       });
 
-    });
+      it('should select all rows', function (done) {
+        var section = 'Table with pagination';
+        beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          beakerPO.getDataTableMenuToggle(section).click();
+          var selectAllMenu = beakerPO.getDataTableMenuItem(section, 'Select All');
+          selectAllMenu.element(by.css('a[ng-click="doSelectAll()"]')).click();
+          beakerPO.getDataTablesTBodyByIdCell(v).each(function (row, index) {
+            beakerPO.checkClass(row, 'selected');
+            if(index === allRowsCount-1){
+              done();
+            }
+          });
+        });
+      });
 
+      var deselectRows = function (sectionTitle) {
+        beakerPO.getCodeOutputCellIdBySectionTitle(sectionTitle).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          beakerPO.getDataTableMenuToggle(sectionTitle).click();
+          var deselectAllMenu = beakerPO.getDataTableMenuItem(sectionTitle, 'Deselect All');
+          deselectAllMenu.element(by.css('a[ng-click="doDeselectAll()"]')).click();
+        });
+      };
+
+      it('should deselect all rows', function (done) {
+        var section = 'Table with pagination';
+        deselectRows(section);
+        beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.getDataTablesTBodyByIdCell(v).each(function (row, index) {
+            expect(beakerPO.hasClass(row, 'selected')).toBe(false);
+            if(index === allRowsCount-1){
+              done();
+            }
+          });
+        });
+      });
+
+      var selectRows = function (rowsToSelect, sectionTitle) {
+        beakerPO.getCodeOutputCellIdBySectionTitle(sectionTitle).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          for (var i = 0; i < rowsToSelect.length; i++) {
+            beakerPO.getDTRow(v, rowsToSelect[i]).click();
+          }
+        });
+      };
+
+      it('should reverse rows selection', function (done) {
+        var section = 'Table with pagination';
+        var selectedRows = [0, 3, 5];
+        selectRows(selectedRows, section);
+        beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.getDataTablesTBodyByIdCell(v).each(function (row, index) {
+            expect(beakerPO.hasClass(row, 'selected')).toBe(selectedRows.indexOf(index) !== -1);
+          });
+          beakerPO.getDataTableMenuToggle(section).click();
+          var reverseSelectionMenu = beakerPO.getDataTableMenuItem(section, 'Reverse Selection');
+          reverseSelectionMenu.element(by.css('a[ng-click="doReverseSelection()"]')).click();
+          beakerPO.getDataTablesTBodyByIdCell(v).each(function (row, index) {
+            expect(beakerPO.hasClass(row, 'selected')).toBe(selectedRows.indexOf(index) === -1);
+            if(index === allRowsCount-1){
+              done();
+            }
+          });
+        });
+      });
+
+      var clickShowColumnMenuItem = function (section, colName) {
+        var showColumnMenu = beakerPO.getDataTableMenuItem(section, 'Show Column');
+        var colMenuItem = beakerPO.getDataTableSubMenuItem(showColumnMenu, colName);
+        colMenuItem.element(by.css('a[ng-click="showColumn($index+1, $event)"]')).click();
+      };
+
+      it('should hide all columns', function (done) {
+        var section = 'Show/Hide columns';
+        var hideAllColumnsMenu = beakerPO.getDataTableMenuItem(section, 'Hide All Columns');
+
+        beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          beakerPO.getDataTableMenuToggle(section).click();
+          hideAllColumnsMenu.element(by.css('a[ng-click="toggleColumnsVisibility(false)"]')).click();
+          beakerPO.checkDataTableHeadByIdCell(v, '');
+          done();
+        });
+
+      });
+
+      it('should show all columns', function (done) {
+        var section = 'Show/Hide columns';
+        var showAllColumnsMenu = beakerPO.getDataTableMenuItem(section, 'Show All Columns');
+
+        beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          beakerPO.getDataTableMenuToggle(section).click();
+          showAllColumnsMenu.element(by.css('a[ng-click="toggleColumnsVisibility(true)"]')).click();
+          beakerPO.checkDataTableHeadByIdCell(v, 'first\nsecond\nthird');
+          done();
+        });
+
+      });
+
+      it('should show only second column', function (done) {
+        var section = 'Show/Hide columns';
+        var showColumnMenu = beakerPO.getDataTableMenuItem(section, 'Show Column');
+
+        beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
+          beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
+          beakerPO.getDataTableMenuToggle(section).click();
+          browser.actions().mouseMove(showColumnMenu).perform();
+          clickShowColumnMenuItem(section, 'first');
+          clickShowColumnMenuItem(section, 'third');
+          beakerPO.checkDataTableHeadByIdCell(v, 'second');
+          done();
+        });
+      });
+
+      describe('Table Search', function () {
+        var tableSearchSection = 'Table search';
+        var cellId;
+        var showTableSearch = function (section) {
+          var tableSearchMenu = beakerPO.getDataTableMenuItem(section, 'Search...');
+          beakerPO.getDataTableMenuToggle(section).click();
+          tableSearchMenu.element(by.css('a[ng-click="doShowFilter(table.column(0), true)"]')).click();
+        };
+        var clickOutsideHeader = function(cellId){
+          beakerPO.getDataTablesScrollBodyByIdCell(cellId).click();
+        };
+        var getClearIcon = function (searchField) {
+          return searchField.element(by.css('.clear-filter'));
+        };
+
+        beforeAll(function (done) {
+          beakerPO.getCodeOutputCellIdBySectionTitle(tableSearchSection).then(function (id) {
+            cellId = id;
+            beakerPO.waitCodeCellOutputTablePresentByIdCell(cellId);
+            done();
+          });
+        });
+
+        beforeEach(function (done) {
+          showTableSearch(tableSearchSection);
+          beakerPO.getDataTableSearchInput(cellId).clear();
+          done();
+        });
+
+        it('should have focus on opening', function () {
+          expect(beakerPO.getDataTableSearchInput(cellId).getInnerHtml())
+            .toBe(browser.driver.switchTo().activeElement().getInnerHtml());
+        });
+
+        it('should have search icon', function () {
+          var searchIcon = beakerPO.getDataTableSearchField(cellId).element(by.css('.filter-icon'));
+          expect(beakerPO.hasClass(searchIcon, 'fa-search')).toBe(true);
+          expect(beakerPO.hasClass(searchIcon, 'fa-filter')).toBe(false);
+        });
+
+        it('should be hidden on blur if row is empty', function () {
+          beakerPO.getDataTableSearchInput(cellId).clear();
+          expect(beakerPO.getDataTableFilterRow(cellId).isDisplayed()).toBe(true);
+          clickOutsideHeader(cellId);
+          expect(beakerPO.getDataTableFilterRow(cellId).isDisplayed()).toBe(false);
+        });
+
+        it('should not be hidden on blur if row is not empty', function () {
+          beakerPO.getDataTableSearchInput(cellId).sendKeys('2');
+          clickOutsideHeader(cellId);
+          expect(beakerPO.getDataTableFilterRow(cellId).isDisplayed()).toBe(true);
+        });
+
+        it('should find "2 a2 b2 c2" row', function () {
+          beakerPO.getDataTableSearchInput(cellId).sendKeys('2');
+          beakerPO.checkDataTableBodyByIdCell(cellId, 1, '2 a2 b2 c2');
+        });
+
+        it('should grow on typing', function (done) {
+          var input = beakerPO.getDataTableSearchInput(cellId);
+          var iconsWidth = 30;
+          var padding = 15;
+          input.sendKeys('222222222222222');
+          var lengthEl = beakerPO.getDataTableSearchField(cellId).element(by.css('.hidden-length'));
+          browser.executeScript('return $(arguments[0]).width()', lengthEl.getWebElement()).then(function(width){
+            var expectedWidth = width + iconsWidth + padding;
+            input.getSize().then(function(inputSize){
+              expect(inputSize.width).toEqual(expectedWidth);
+              done();
+            });
+          });
+        });
+
+        it('should have clear icon', function () {
+          var clearIcon = getClearIcon(beakerPO.getDataTableSearchField(cellId));
+          expect(beakerPO.hasClass(clearIcon, 'fa-times')).toBe(true);
+        });
+
+        it('should be empty after clear icon click', function () {
+          var searchInput = beakerPO.getDataTableSearchInput(cellId);
+          searchInput.sendKeys('2');
+          expect(searchInput.getAttribute('value')).toEqual('2');
+          var clearIcon = getClearIcon(beakerPO.getDataTableSearchField(cellId));
+          clearIcon.click();
+          expect(searchInput.getAttribute('value')).toEqual('');
+        });
+
+        it('should update search results on clear', function () {
+          var searchInput = beakerPO.getDataTableSearchInput(cellId);
+          searchInput.sendKeys('2');
+          beakerPO.checkDataTableBodyByIdCell(cellId, 1, '2 a2 b2 c2');
+          getClearIcon(beakerPO.getDataTableSearchField(cellId)).click();
+          beakerPO.checkDataTableBodyByIdCell(cellId, 5, '0 a0 b0 c0');
+        });
+      });
+    });
   });
 });

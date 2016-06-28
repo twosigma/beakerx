@@ -25,8 +25,8 @@
       this.format(lodthresh);
     };
     // class constants
-    PlotBarLodLoader.prototype.lodTypes = ["bar", "box"];
-    PlotBarLodLoader.prototype.lodSteps = [3, 10];
+    PlotBarLodLoader.prototype.lodTypes = ["box"];
+    PlotBarLodLoader.prototype.lodSteps = [10];
 
     PlotBarLodLoader.prototype.format = function() {
       // create plot type index
@@ -93,14 +93,12 @@
     };
 
     PlotBarLodLoader.prototype.applyLodType = function(type) {
-      if (!this.datacopy.lod_filter) {
-        this.lodType = type;
-        this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
-        if (this.lodTypeIndex === -1) {
-          this.lodTypeIndex = 0;
-        }
-        this.createLodPlotter();
+      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+      if (this.lodTypeIndex === -1) {
+        this.lodTypeIndex = 0;
       }
+      this.lodType = this.lodTypes[this.lodTypeIndex];
+      this.createLodPlotter();
     };
 
     PlotBarLodLoader.prototype.createLodPlotter = function() {
@@ -294,9 +292,9 @@
       }
     };
 
-    PlotBarLodLoader.prototype.createTip = function(ele, g) {
+    PlotBarLodLoader.prototype.createTip = function(ele, g, model) {
       if (this.lodOn === false) {
-        return this.plotter.createTip(ele);
+        return this.plotter.createTip(ele, g, model);
       }
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
@@ -311,9 +309,14 @@
         tip.avg_yTop = plotUtils.getTipStringPercent(ele.max, yAxis, 6);
         tip.avg_yBtm = plotUtils.getTipStringPercent(ele.min, yAxis, 6);
       } else if (this.lodType === "box") {
-        tip.max = plotUtils.getTipString(ele._max, yAxis, true);
-        tip.min = plotUtils.getTipString(ele._min, yAxis, true);
-        tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis, 6);
+        if (ele.count > 1) {
+          tip.max = plotUtils.getTipString(ele._max, yAxis, true);
+          tip.min = plotUtils.getTipString(ele._min, yAxis, true);
+          tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis, 6);
+          tip.count = plotUtils.getTipString(ele.count, yAxis, true);
+        } else {
+          tip.y = plotUtils.getTipString(ele._max, yAxis, true);
+        }
       }
       return plotUtils.createTipString(tip);
     };

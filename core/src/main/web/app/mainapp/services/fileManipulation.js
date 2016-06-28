@@ -147,12 +147,12 @@
           bkSessionManager.checkFileModifiedSinceOpened().then(function (modified) {
             if(modified) {
               bkHelper.show2ButtonModal(
-                "The file was modified since the time it was loaded. Would you like to save it to another location or override existing file?",
+                "The file was modified since the time it was loaded. Would you like to save it to another location or overwrite existing file?",
                 "File was modified", function () {
                   deferred.resolve(false);
                 }, function () {
                   deferred.resolve(true);
-                }, "Save As", "Override");
+                }, "Save As", "Overwrite");
             } else {
               deferred.resolve(true);
             }

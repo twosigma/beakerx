@@ -1329,6 +1329,7 @@
         $scope.$on("$destroy", onDestroy);
         window.onbeforeunload = function(e) {
           bkSessionManager.backup();
+          bkWindowsManager.reportNotebookClosed();
           if (bkSessionManager.isNotebookModelEdited()) {
             return "Your notebook has been edited but not saved, if you close the page your changes may be lost";
           }

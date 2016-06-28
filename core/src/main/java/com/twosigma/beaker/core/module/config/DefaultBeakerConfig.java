@@ -31,15 +31,10 @@ import java.net.UnknownHostException;
 import java.nio.file.attribute.PosixFilePermission;
 import java.security.SecureRandom;
 import java.nio.file.Paths;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 /**
  * DefaultBeakerConfig

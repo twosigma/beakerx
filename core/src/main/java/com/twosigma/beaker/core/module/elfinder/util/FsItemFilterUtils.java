@@ -53,7 +53,7 @@ public abstract class FsItemFilterUtils {
   }
 
   public static FsItemFilter createFolderFilterFromRequest(HttpServletRequest request) {
-    Boolean showHiddenFiles = Boolean.valueOf(request.getParameter("showHiddenFiles"));
+    final Boolean showHiddenFiles = Boolean.valueOf(request.getParameter("showHiddenFiles"));
     return new FsItemFilter() {
       @Override
       public boolean accepts(FsItem item) {
@@ -63,8 +63,8 @@ public abstract class FsItemFilterUtils {
   }
 
   public static FsItemFilter createFilterFromRequest(HttpServletRequest request) {
-    String[] onlyMimes       = request.getParameterValues("mimes[]");
-    Boolean  showHiddenFiles = Boolean.valueOf(request.getParameter("showHiddenFiles"));
+    final String[] onlyMimes       = request.getParameterValues("mimes[]");
+    final Boolean  showHiddenFiles = Boolean.valueOf(request.getParameter("showHiddenFiles"));
     if (onlyMimes == null && (Boolean.TRUE.equals(showHiddenFiles) || showHiddenFiles == null))
       return FsItemFilterUtils.FILTER_ALL;
 

@@ -382,6 +382,11 @@ describe('Beaker Tables', function () {
           done();
         });
 
+        afterEach(function (done) {
+          clickOutsideHeader(cellId);
+          done();
+        });
+
         it('should have focus on opening', function () {
           expect(beakerPO.getDataTableSearchInput(cellId).getInnerHtml())
             .toBe(browser.driver.switchTo().activeElement().getInnerHtml());
@@ -446,6 +451,22 @@ describe('Beaker Tables', function () {
           beakerPO.checkDataTableBodyByIdCell(cellId, 1, '2 a2 b2 c2');
           getClearIcon(beakerPO.getDataTableSearchField(cellId)).click();
           beakerPO.checkDataTableBodyByIdCell(cellId, 5, '0 a0 b0 c0');
+        });
+
+        it('should be cleared and shrunk on ESC', function (done) {
+          var searchInput = beakerPO.getDataTableSearchInput(cellId);
+          var initSize = searchInput.getSize();
+          searchInput.sendKeys('22222222222222');
+          expect(searchInput.getAttribute('value')).toEqual('22222222222222');
+          searchInput.click();
+          searchInput.sendKeys(protractor.Key.ESCAPE);
+          setTimeout(function(){
+            expect(searchInput.getAttribute('value')).toEqual('');
+            setTimeout(function(){
+              expect(searchInput.getSize()).toEqual(initSize);
+              done();
+            }, 0);
+          }, 0);
         });
       });
     });

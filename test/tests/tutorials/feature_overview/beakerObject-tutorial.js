@@ -66,7 +66,7 @@ describe('The Beaker Object Tutorial', function (done) {
             var idCell = "coderACA1q";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'OutputContainer');
-            var liVar = beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('li.outputcontainer-li'));
+            var liVar = beakerPO.getLiOutputcontainerByIdCell(idCell);
             expect(liVar.count()).toBe(2);
             expect(liVar.get(0).element(by.css('b')).getText()).toBe("y");
             expect(liVar.get(0).element(by.css('pre')).getText()).toBe("[1,1,2,3,5,8]");
@@ -82,15 +82,15 @@ describe('The Beaker Object Tutorial', function (done) {
             idCell = "coderACA1q";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'OutputContainer');
-            var liVar = beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('li.outputcontainer-li'));
+            var liVar = beakerPO.getLiOutputcontainerByIdCell(idCell);
             expect(liVar.count()).toBe(1);
             expect(liVar.get(0).element(by.css('b')).getText()).toBe("y");
         });
         it('Should rename y to z (by menu)', function () {
-            idCell = "coderACA1q";
+            var idCell = "coderACA1q";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'OutputContainer');
-            var liVar = beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('li.outputcontainer-li'));
+            var liVar = beakerPO.getLiOutputcontainerByIdCell(idCell);
             expect(liVar.get(0).element(by.css('b')).getText()).toBe("y");
 
             liVar.get(0).element(by.css('a.dropdown-toggle')).click();
@@ -101,13 +101,13 @@ describe('The Beaker Object Tutorial', function (done) {
                 element(by.css('input#property-name')).sendKeys('z');
                 element(by.css('div.modal-footer button[ng-click="save()"]')).click();
             });
-            expect(beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('li.outputcontainer-li')).get(0).element(by.css('b')).getText()).toBe("z");
+            expect(beakerPO.getLiOutputcontainerByIdCell(idCell).get(0).element(by.css('b')).getText()).toBe("z");
         });
         it('Should delete z (by menu)', function () {
             idCell = "coderACA1q";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'OutputContainer');
-            var liVar = beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('li.outputcontainer-li'));
+            var liVar = beakerPO.getLiOutputcontainerByIdCell(idCell);
             expect(liVar.get(0).element(by.css('b')).getText()).toBe("z");
 
             liVar.get(0).element(by.css('a.dropdown-toggle')).click();
@@ -115,7 +115,7 @@ describe('The Beaker Object Tutorial', function (done) {
             browser.actions().mouseMove(deleteElem).perform();
             deleteElem.click().then(function(){
                 beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'OutputContainer');
-                expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('li.outputcontainer-li')).isPresent()).toBe(false);
+                expect(beakerPO.getLiOutputcontainerByIdCell(idCell).isPresent()).toBe(false);
             });
         });
     });

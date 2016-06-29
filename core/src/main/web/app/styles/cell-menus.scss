@@ -54,6 +54,10 @@ bk-new-cell-menu {
   display: none;
 }
 
+.locked-cell-menu  {
+  display: inherit !important;
+}
+
 .toggle-menu {
   top: $grid-row-height - 5px;
   right: 1px;

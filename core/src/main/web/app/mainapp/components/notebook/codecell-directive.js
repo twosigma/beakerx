@@ -259,6 +259,10 @@
           $scope.updateUI(newValue);
         });
 
+        $scope.isLockedCell = function() {
+          return $scope.cellmodel.locked;
+        };
+
         $scope.cellmenu.addItem({
           name: 'Show input cell',
           isChecked: function() {
@@ -270,6 +274,9 @@
             } else {
               $scope.cellmodel.input.hidden = true;
             }
+          },
+          locked: function () {
+            return $scope.isLockedCell();
           }
         });
         $scope.cellmenu.addItem({
@@ -290,6 +297,8 @@
           return $scope.cellmodel.initialization;
         };
 
+
+
         $scope.cellmenu.addItem({
           name: 'Initialization Cell',
           isChecked: function() {
@@ -302,6 +311,27 @@
               $scope.cellmodel.initialization = true;
             }
             notebookCellOp.reset();
+          },
+          locked: function () {
+            return $scope.isLockedCell();
+          }
+        });
+
+        $scope.isFuck = function() {
+          return $scope.cellmodel.initialization;
+        };
+
+        $scope.cellmenu.addItem({
+          name: 'Lock Cell',
+          isChecked: function() {
+            return $scope.isLockedCell();
+          },
+          action: function() {
+            if ($scope.isLockedCell()) {
+              $scope.cellmodel.locked = undefined;
+            } else {
+              $scope.cellmodel.locked = true;
+            }
           }
         });
 
@@ -320,6 +350,9 @@
             } else {
               $scope.cellmodel.wordWrapDisabled = true;
             }
+          },
+          locked: function () {
+            return $scope.isLockedCell();
           }
         });
 
@@ -328,6 +361,9 @@
           action: function() {
             bkCoreManager.showFullModalDialog(function cb(r) { } ,
                 'app/mainapp/dialogs/codecelloptions.jst.html', 'CodeCellOptionsController', $scope.cellmodel);
+          },
+          locked: function () {
+            return $scope.isLockedCell();
           }
         });
 

@@ -206,10 +206,17 @@
           return !notebookCellOp['isPossibleTo' + _.capitalize(moveMethod) + 'Down']($scope.cellmodel.id);
         };
 
+        $scope.isLockedCell = function() {
+          return $scope.cellmodel.locked;
+        };
+
         $scope.cellview.menu.addItem({
           name: 'Delete cell',
           shortcut: ['Ctrl-Alt-D', 'Alt-Cmd-Backspace'],
-          action: $scope.deleteCell
+          action: $scope.deleteCell,
+          locked: function () {
+            return $scope.isLockedCell();
+          }
         });
 
         $scope.cellview.menu.addItem({
@@ -230,6 +237,9 @@
           name: 'Cut',
           action: function() {
             notebookCellOp.cut($scope.cellmodel.id);
+          },
+          locked: function () {
+            return $scope.isLockedCell();
           }
         });
 
@@ -288,6 +298,9 @@
         $scope.wideMenu = function () {
           return $scope.isCellHidden() && !$scope.isSectionCell();
         };
+
+
+
 
         $scope.collapseCellMenu = {
           'code' : {

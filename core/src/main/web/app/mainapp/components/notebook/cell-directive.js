@@ -244,6 +244,20 @@
         });
 
         $scope.cellview.menu.addItem({
+          name: 'Lock Cell',
+          isChecked: function() {
+            return $scope.isLockedCell();
+          },
+          action: function() {
+            if ($scope.isLockedCell()) {
+              $scope.cellmodel.locked = undefined;
+            } else {
+              $scope.cellmodel.locked = true;
+            }
+          }
+        });
+
+        $scope.cellview.menu.addItem({
           name: 'Paste (append after)',
           disabled: function() {
             return !notebookCellOp.clipboard;
@@ -272,6 +286,8 @@
         $scope.isMarkdownCell = function() {
           return $scope.cellmodel.type === 'markdown';
         };
+
+
 
         $scope.isCodeCell = function() {
           return $scope.cellmodel.type == 'code';

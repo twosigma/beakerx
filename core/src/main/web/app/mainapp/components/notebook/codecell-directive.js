@@ -317,23 +317,7 @@
           }
         });
 
-        $scope.isFuck = function() {
-          return $scope.cellmodel.initialization;
-        };
 
-        $scope.cellmenu.addItem({
-          name: 'Lock Cell',
-          isChecked: function() {
-            return $scope.isLockedCell();
-          },
-          action: function() {
-            if ($scope.isLockedCell()) {
-              $scope.cellmodel.locked = undefined;
-            } else {
-              $scope.cellmodel.locked = true;
-            }
-          }
-        });
 
         $scope.isWordWrap = function () {
           return !$scope.cellmodel.wordWrapDisabled;

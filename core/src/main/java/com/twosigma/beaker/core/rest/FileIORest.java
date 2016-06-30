@@ -31,12 +31,15 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -136,6 +139,23 @@ public class FileIORest {
     }
     return result;
   }
+
+  @GET
+  @Path("getPosixFilePermissions")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Object getPosixFilePermissions(@QueryParam("path") String path) throws IOException {
+    path = removePrefix(path);
+    return Files.getPosixFilePermissions(Paths.get(path));
+  }
+
+//  @POST
+//  @Path("setPosixFilePermissions")
+//  public void setPosixFilePermissions(
+//    @FormParam("path") String path,
+//    @FormParam("permissions") String[] permissions) throws IOException {
+//    System.out.println(permissions);
+////    Files.setPosixFilePermissions(Paths.get(path), (Set<PosixFilePermission>) permissions);
+//  }
 
 
   @GET

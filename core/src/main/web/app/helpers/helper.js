@@ -1312,6 +1312,12 @@
 
       elfinder: function($elfinder, elfinderOptions){
         var elfinder;
+
+        elFinder.prototype.i18.en.messages['cmdeditpermissions'] = 'Edit Permissions';
+        elFinder.prototype._options.commands.push('editpermissions');
+        elFinder.prototype._options.contextmenu.files.push('copypath');
+        elFinder.prototype._options.contextmenu.cwd.push('editpermissions');
+
         elFinder.prototype._options.commands.push('copypath');
         elFinder.prototype._options.contextmenu.files.push('copypath');
         elFinder.prototype._options.contextmenu.cwd.push('copypath');
@@ -1435,7 +1441,7 @@
           defaultView: 'icons',
           contextmenu: {
             // navbarfolder menu
-            navbar: ['copy', 'cut', 'paste', 'duplicate', '|', 'rm'],
+            navbar: ['copy', 'cut', 'paste', 'duplicate', '|', 'rm', '|', 'editpermissions'],
 
             // current directory menu
             cwd: ['reload', 'back', '|', 'mkdir', 'paste'],
@@ -1443,7 +1449,7 @@
             // current directory file menu
             files: [
               'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
-              'rm'
+              'rm', '|', 'editpermissions'
             ]
           },
           uiOptions: {
@@ -1454,7 +1460,8 @@
               ['copy', 'cut', 'paste'],
               ['rm'],
               ['duplicate', 'rename'],
-              ['view', 'sort']
+              ['view', 'sort'],
+              ['editpermissions']
             ],
 
             // navbar options

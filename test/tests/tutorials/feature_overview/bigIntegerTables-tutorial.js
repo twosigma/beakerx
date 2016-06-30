@@ -1,4 +1,3 @@
-//Beaker file:config/tutorials/bigIntegerTables.bkr
 /*
  *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *

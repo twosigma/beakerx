@@ -60,6 +60,7 @@ var config = {
     'tests/tables.js',
     'tests/tutorials/feature_overview/autotranslation-tutorial.js',
     'tests/tutorials/feature_overview/beakerObject-tutorial.js',
+    'tests/tutorials/feature_overview/bigIntegerTables-tutorial.js',
     'tests/tutorials/feature_overview/text-tutorial.js'
   ]
 };

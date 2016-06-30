@@ -32,4 +32,50 @@ describe('Large Integers in Tables and Autotranslation', function (done) {
         done();
     });
 
+    var valueLong = "";
+    it('Should display 64-bit Longs', function () {
+        var idCell = "codeaOmhaj";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+        beakerPO.getDataTablesColumnByIdCell(idCell, 1).getText().then(function(value){
+            valueLong = value;
+            expect(value.length).toBe(19);
+            for(var i = 0; i < value.length; i++){
+                expect(isFinite(value.substring(i, i+1))).toBe(true);
+            }
+        });
+    });
+
+    var valueBigNum = "";
+    it('Should display BigNums', function () {
+        var idCell = "codeoVvVNi";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+        beakerPO.getDataTablesColumnByIdCell(idCell, 1).getText().then(function(value){
+            valueBigNum = value;
+            expect(value.length).toBe(19);
+            for(var i = 0; i < value.length; i++){
+                expect(isFinite(value.substring(i, i+1))).toBe(true);
+            }
+        });
+    });
+
+    it('Autotranslation of 64-bit Longs', function () {
+        var idCell = "codelBVsT5";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+        beakerPO.getDataTablesColumnByIdCell(idCell, 3).getText().then(function(value){
+            expect(value).toBe(valueLong);
+        });
+    });
+
+    it('Autotranslation of BigNums', function () {
+        var idCell = "codeWmOT3I";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+        beakerPO.getDataTablesColumnByIdCell(idCell, 3).getText().then(function(value){
+            expect(value).toBe(valueBigNum);
+        });
+    });
+
 });

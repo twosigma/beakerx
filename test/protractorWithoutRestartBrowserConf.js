@@ -59,6 +59,7 @@ var config = {
     'tests/tutorials/standard_visual_api/p5js-tutorial.js',
     'tests/tables.js',
     'tests/tutorials/feature_overview/autotranslation-tutorial.js',
+    'tests/tutorials/feature_overview/codeReuse-tutorial.js',
     'tests/tutorials/feature_overview/beakerObject-tutorial.js',
     'tests/tutorials/feature_overview/outputContainer-tutorial.js',
     'tests/tutorials/feature_overview/text-tutorial.js'

@@ -27,8 +27,10 @@
       <span>Opened on</span>
       {{session.openedDate | date:'medium'}}
       <br>
-      <span>Last edited</span>
-      {{session.lastEdited | date:'medium'}}
+      <div ng-if="session.lastEdited !== undefined && session.lastEdited !== null &&session.lastEdited !== ''">
+	      <span>Last edited</span>
+	      {{session.lastEdited | date:'medium'}}
+	  </div>
     </div>
 
   </li>

@@ -54,8 +54,12 @@ bk-new-cell-menu {
   display: none;
 }
 
-.locked-cell-menu  {
-  display: inherit !important;
+.locked-cell-menu{
+  display: block !important;
+  opacity: 0;
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .toggle-menu {

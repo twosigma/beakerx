@@ -460,13 +460,9 @@ describe('Beaker Tables', function () {
           expect(searchInput.getAttribute('value')).toEqual('22222222222222');
           searchInput.click();
           searchInput.sendKeys(protractor.Key.ESCAPE);
-          setTimeout(function(){
-            expect(searchInput.getAttribute('value')).toEqual('');
-            setTimeout(function(){
-              expect(searchInput.getSize()).toEqual(initSize);
-              done();
-            }, 0);
-          }, 0);
+          expect(searchInput.getAttribute('value')).toEqual('');
+          expect(searchInput.getSize()).toEqual(initSize);
+          done();
         });
 
         it('should hide search row', function () {

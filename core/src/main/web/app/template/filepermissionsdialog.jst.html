@@ -1,0 +1,46 @@
+<!--
+
+  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<div class="modal-header">
+  <h1>{{getStrategy().title}}</h1>
+</div>
+<div class="modal-body row" >
+
+    <div class="col-sm-4">Owner</div>
+    <div class="col-sm-4">Group</div>
+    <div class="col-sm-4">Others</div>
+
+    <div class="col-sm-4"><input ng-model="model.OWNER_READ" type="checkbox">Read</div>
+    <div class="col-sm-4"><input ng-model="model.OWNER_WRITE" type="checkbox">Read</div>
+    <div class="col-sm-4"><input ng-model="model.OWNER_EXECUTE" type="checkbox">Read</div>
+
+    <div class="col-sm-4"><input ng-model="model.GROUP_READ" type="checkbox">Write</div>
+    <div class="col-sm-4"><input ng-model="model.GROUP_WRITE" type="checkbox">Write</div>
+    <div class="col-sm-4"><input ng-model="model.GROUP_EXECUTE" type="checkbox">Write</div>
+
+    <div class="col-sm-4"><input ng-model="model.OTHERS_READ" type="checkbox">Execute</div>
+    <div class="col-sm-4"><input ng-model="model.OTHERS_WRITE" type="checkbox">Execute</div>
+    <div class="col-sm-4"><input ng-model="model.OTHERS_EXECUTE" type="checkbox">Execute</div>
+
+</div>
+<div class="modal-footer">
+  <button ng-click="cancel()" class="btn btn-default">Cancel</button>
+  <button  ng-click="ok()"
+           class="btn btn-primary modal-submit">{{getStrategy().okButtonTitle ? getStrategy().okButtonTitle : "Ok"}}
+  </button>
+</div>
+

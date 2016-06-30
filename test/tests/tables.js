@@ -468,6 +468,16 @@ describe('Beaker Tables', function () {
             }, 0);
           }, 0);
         });
+
+        it('should hide search row', function () {
+          beakerPO.getDataTableSearchInput(cellId).sendKeys('2');
+          beakerPO.getDataTableMenuToggle(tableSearchSection).click();
+          var hideFilterMenu = beakerPO.getDataTableMenuItem(tableSearchSection, 'Hide Filter');
+          hideFilterMenu.element(by.css('a[ng-click="hideFilter()"]')).click();
+          expect(beakerPO.getDataTableFilterRow(cellId).isDisplayed()).toBe(false);
+          beakerPO.checkDataTableBodyByIdCell(cellId, 5, '0 a0 b0 c0');
+        });
+
       });
     });
   });

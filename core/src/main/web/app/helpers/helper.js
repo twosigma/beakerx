@@ -124,6 +124,18 @@
         }
         return e.altKey && (e.which === 82); // Alt + r
       },
+      isRaiseSectionLevelShortcut: function (e) {
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 190);// Ctrl + Shift + >
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 190);// Cmd + Shift + >
+      },
+      isLowerSectionLevelShortcut: function (e) {
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 188);// Ctrl + Shift + <
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 188);// Cmd + Shift + <
+      },
 
       //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
       // Firefox 1.0+
@@ -993,6 +1005,28 @@
         }
         bkUtils.refreshRootScope();
         this.go2Cell(newCell.id);
+      },
+      raiseSectionLevel: function () {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        if (currentCellId) {
+          var cell = notebookCellOp.getCell(currentCellId);
+          if (cell.type === 'section' && cell.level > 1) {
+            cell.level--;
+            notebookCellOp.reset();
+          }
+        }
+      },
+      lowerSectionLevel: function () {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        if (currentCellId) {
+          var cell = notebookCellOp.getCell(currentCellId);
+          if (cell.type === 'section' && cell.level < 4) {
+            cell.level++;
+            notebookCellOp.reset();
+          }
+        }
       },
       showPublishForm: function() {
         return bkCoreManager.showPublishForm();

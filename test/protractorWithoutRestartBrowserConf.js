@@ -62,6 +62,7 @@ var config = {
     'tests/tutorials/feature_overview/codeReuse-tutorial.js',
     'tests/tutorials/feature_overview/beakerObject-tutorial.js',
     'tests/tutorials/feature_overview/outputContainer-tutorial.js',
+    'tests/tutorials/feature_overview/bigIntegerTables-tutorial.js',
     'tests/tutorials/feature_overview/text-tutorial.js'
   ]
 };

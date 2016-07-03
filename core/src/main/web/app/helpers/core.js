@@ -690,8 +690,8 @@
         var keys = {
             "Up" : goUpOrMoveFocusUp,
             "Down" : goDownOrMoveFocusDown,
-            "Ctrl-S": "save",
-            "Cmd-S": "save",
+            "Ctrl-S": false, // no need to handle this shortcut on CM level
+            "Cmd-S": false,
             "Alt-Down": moveFocusDown,
             "Alt-J": moveFocusDown,
             "Alt-Up": moveFocusUp,

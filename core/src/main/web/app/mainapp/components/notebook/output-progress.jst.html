@@ -14,23 +14,25 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<div ng-if='elapsed > 200'>
-  <div style="float: left">
+<div ng-if='elapsed > 200' style="white-space: nowrap; overflow: hidden;">
+  <div style="display: inline-block;">
     <i class='fa fa-refresh fa-spin fa-lg'></i>
-    <span> &nbsp; Elapsed: {{getElapsedTime()}} &nbsp; </span>
+    <span class='elapsed-time'> &nbsp; Elapsed: {{getElapsedTime()}} &nbsp; </span>
     <i class='fa fa-times-circle fa-lg text-danger cursor_hand'
        ng-click='cancel()' ng-if='isCancellable()' title='cancel'></i>
   </div>
-  <div class="progress" style="width: 150px; float: left; margin-left: 30px;" ng-if='hasProgressBar()'>
-	<div class="progress-bar" role="progressbar"
-                     aria-valuenow="{{getProgressBar()}}" aria-valuemin="0" aria-valuemax="100"
-                     style="width: {{getProgressBar()}}%;">
-	    {{getProgressBar()}} %
-	</div>
+  <div class="progress" style="display: inline-block; width: 150px; margin-left: 30px; margin-bottom: -5px;"
+       ng-if='hasProgressBar()'>
+    <div class="progress-bar" role="progressbar"
+         aria-valuenow="{{getProgressBar()}}" aria-valuemin="0" aria-valuemax="100"
+         style="width: {{getProgressBar()}}%; display: inline-block;">
+      {{getProgressBar()}} %
+    </div>
   </div>
-  <div ng-if='hasMessage()' style="float: left; margin-left: 30px;">{{getMessage()}}</div><br/>
+  <div ng-if='hasMessage()' style="margin-left: 30px; display: inline-block;">{{getMessage()}}</div>
+  <br/>
 </div>
-<div ng-if='hasPayload() || hasOutputData()' >
+<div ng-if='hasPayload() || hasOutputData()'>
   <hr>
   <bk-code-cell-output model='outputDisplayModel'></bk-code-cell-output>
 </div>

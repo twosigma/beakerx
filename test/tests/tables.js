@@ -24,7 +24,7 @@ describe('Beaker Tables', function () {
   beforeAll(function (done) {
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL);
-    beakerPO.openFile(path.join(__dirname, '../', 'notebooks/tables-test.bkr'));
+    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:..%2Ftest%2Fnotebooks%2Ftables-test.bkr&readOnly=true");
     beakerPO.waitUntilLoadingFinished().then(done);
   });
 

@@ -42,6 +42,8 @@
           } else {
             deferred.resolve(ret);
           }
+        }, function(){
+          deferred.reject("cancelled");
         });
         return deferred.promise;
       };

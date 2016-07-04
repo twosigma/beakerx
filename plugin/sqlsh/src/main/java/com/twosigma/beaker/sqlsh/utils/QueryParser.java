@@ -16,53 +16,49 @@
 package com.twosigma.beaker.sqlsh.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 public class QueryParser {
+  private static final List<ParsingState> PARSING_STATES = Arrays.asList(
+      new ParsingState("'", "'", false), // string literal
+      new ParsingState("/*", "*/", true),
+      new LineCommentParsingState("--"),
+      new LineCommentParsingState("%%")
+  );
+
 
   public static List<String> split(String script) {
-    script = deleteInterval("/*", "*/", script);
 
-    Scanner scanner = new Scanner(script);
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder(script);
 
-    while (scanner.hasNextLine()) {
-      String line = scanner.nextLine();
-      line.trim();
-      //ignore comments #
-      int commentIndex = line.indexOf('#');
-      if (commentIndex != -1) {
-        if (line.startsWith("#")) {
-          line = new String("");
+    ParsingState currentState = null;
+    int stateStart = -1;
+    for(int i = 0; i < sb.length();) {
+      if (currentState != null) {
+        if (currentState.isEnd(sb, i)) {
+          if (currentState.mustBeDeleted()) {
+            int stateEnd = currentState.skipEnd(i);
+            sb = new StringBuilder().append(sb.substring(0, stateStart)).append(sb.substring(stateEnd));
+            i = stateStart;
+          } else {
+            i = currentState.skipEnd(i);
+          }
+          currentState = null;
         } else {
-          line = line.substring(0, commentIndex - 1);
+          i++;
         }
-      }
-      //ignore comments --
-      commentIndex = line.indexOf("--");
-      if (commentIndex != -1) {
-        if (line.startsWith("--")) {
-          line = new String("");
+      } else {
+        ParsingState state = getSuitableState(sb, i);
+        if (state != null) {
+          currentState = state;
+          stateStart = i;
+          i = state.skipStart(i);
         } else {
-          line = line.substring(0, commentIndex - 1);
+          i++;
         }
-      }
-      //ignore comments %%
-      commentIndex = line.indexOf("%%");
-      if (commentIndex != -1) {
-        if (line.startsWith("%%")) {
-          line = new String("");
-        } else {
-          line = line.substring(0, commentIndex - 1);
-        }
-      }
-
-      if (line != null) {
-        sb.append(line).append(" ");
       }
     }
-    scanner.close();
 
     //ToDo replace to custom splitter - need for ignore 'xx;yy' etc.
     String[] splittedQueries = sb.toString().split(";");
@@ -76,22 +72,57 @@ public class QueryParser {
     return listOfQueries;
   }
 
-  private static String deleteInterval(String start, String end, String source) {
-    int startIndex = source.indexOf(start);
-    while (startIndex >= 0) {
-      int endIndex = source.indexOf(end);
-      if (endIndex != -1) {
-        if (endIndex < startIndex) {
-          break;
-        }
-        source = source.substring(0, startIndex) + source.substring(endIndex + 2);
-      } else {
-        break;
+  private static ParsingState getSuitableState(StringBuilder line, int index) {
+    for (ParsingState eachState : PARSING_STATES) {
+      if (eachState.isStart(line, index)) {
+        return eachState;
       }
+    }
+    return null;
+  }
 
-      startIndex = source.indexOf(start);
+  private static class LineCommentParsingState extends ParsingState {
+
+    public LineCommentParsingState(String start) {
+      super(start, "\n", true);
+    }
+  }
+
+  private static class ParsingState {
+    private String start;
+    private String end;
+    private boolean mustBeDeleted;
+
+    public ParsingState(String start, String end, boolean mustBeDeleted) {
+      this.start = start;
+      this.end = end;
+      this.mustBeDeleted = mustBeDeleted;
     }
 
-    return source;
+    public boolean isStart(StringBuilder line, int index) {
+      return isAtPosition(line, index, start);
+    }
+
+    public int skipStart(int index) {
+      return index + start.length();
+    }
+
+    public boolean isEnd(StringBuilder line, int index) {
+      return isAtPosition(line, index, end);
+    }
+
+    public int skipEnd(int index) {
+      return index + end.length();
+    }
+
+    private boolean isAtPosition(StringBuilder line, int index, String element) {
+      int endIndex = index + element.length();
+      return line.length() >= endIndex &&
+          line.substring(index, endIndex).equals(element);
+    }
+
+    public boolean mustBeDeleted() {
+      return mustBeDeleted;
+    }
   }
 }

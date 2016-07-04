@@ -45,6 +45,11 @@ bk-code-cell-output {
     }
   }
 
+  span.elapsed-time {
+    display: inline-block;
+    min-width: 190px;
+  }
+
 }
 
 .markup, .dataTables_scrollBody {

@@ -62,6 +62,19 @@
       return path.split('/').pop() !== '';
     }
 
+    var  FileChooserStrategy = function (data) {
+      var newStrategy = this;
+      newStrategy.type = data.type;
+      newStrategy.initUri = data.initUri;
+      newStrategy.title = data.title;
+      newStrategy.okButtonTitle = data.okButtonTitle;
+      newStrategy.treeViewfs = {
+        applyExtFilter: true,
+        showHiddenFiles: false,
+        extension: data.extension
+      };
+    };
+
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
       newStrategy.manualName = '';
@@ -229,8 +242,11 @@
       rename: function(oldUri, newUri, overwrite) {
         return bkUtils.renameFile(oldUri, newUri, overwrite);
       },
-      showFileChooser: function(initUri) {
-        return bkCoreManager.showDefaultSavingFileChooser(initUri);
+      showFileChooser: function (initUri) {
+        return bkCoreManager.showFileSaveDialog({
+          initUri: initUri,
+          extension: 'bkr'
+        });
       }
     };
 
@@ -404,84 +420,6 @@
       importNotebook: function(notebook) {
         $sessionStorage.importedNotebook = notebook;
         $location.path("/session/import").search({});
-      },
-      showDefaultSavingFileChooser: function(initPath, saveButtonTitle) {
-        var self = this;
-        var deferred = bkUtils.newDeferred();
-        var requests = [bkUtils.getHomeDirectory(), bkUtils.getStartUpDirectory(),
-          bkUtils.getLocalDrives()];
-        bkUtils.all(requests).then(function(values) {
-          var homeDir = values[0];
-          var localDrives = values[2];
-          var fileChooserStrategy = self.getFileSystemFileChooserStrategy();
-          fileChooserStrategy.localDrives = localDrives;
-          fileChooserStrategy.input = initPath;
-          fileChooserStrategy.convertRelativePath = function (path) {
-            if (path == null) {
-              return path;
-            }
-            var result = path;
-            if (result === '~') {
-              result = homeDir + "/"
-            } else if (_.startsWith(result, '~/')) {
-              result = result.replace('~', homeDir);
-            } else if (!_.startsWith(result, '/') && !result.match(/^\w+:\\/)) {
-              result = homeDir + "/" + result;
-            }
-            return result;
-          };
-          fileChooserStrategy.getResult = function () {
-            if (_.isEmpty(this.input)) {
-              return "";
-            }
-            var result = this.convertRelativePath(this.input);
-            if (!_.endsWith(result, '.bkr')
-                && !_.endsWith(result, '/')) {
-              result = result + ".bkr";
-            }
-            return result;
-          };
-          fileChooserStrategy.newFolder = function(path) {
-            var self = this;
-            this.showSpinner = true;
-            path = this.convertRelativePath(path);
-            bkUtils.httpPost("../beaker/rest/file-io/createDirectory", {path: path})
-              .success(function (list) {
-
-                self.manualName = "";
-                self.input = path+'/';
-
-                $rootScope.$broadcast("MAKE_NEW_DIR",{
-                  path: path
-                });
-                self.showSpinner = false;
-              }).error(function (response) {
-                self.showSpinner = false;
-                console.log(response);
-              });
-          };
-          fileChooserStrategy.getSaveBtnDisabled = function() {
-            return _.isEmpty(this.input) || _.endsWith(this.input, '/');
-          };
-          fileChooserStrategy.treeViewfs.applyExtFilter = false;
-          saveButtonTitle = saveButtonTitle || "Save";
-          var fileChooserTemplate = JST['template/savenotebook']({
-            homedir: homeDir,
-            saveButtonTitle: saveButtonTitle
-          });
-          var fileChooserResultHandler = function (chosenFilePath) {
-            deferred.resolve({
-              uri: chosenFilePath,
-              uriType: LOCATION_FILESYS
-            });
-          };
-
-          self.showModalDialog(
-              fileChooserResultHandler,
-              fileChooserTemplate,
-              fileChooserStrategy);
-        });
-        return deferred.promise;
       },
 
       codeMirrorOptions: function(scope, notebookCellOp) {
@@ -745,11 +683,15 @@
           bkHelper.setFullScreen(cm, !bkHelper.isFullScreen(cm));
         };
 
+        CodeMirror.commands.save = function (){
+	        bkHelper.saveNotebook();
+        };
+        
         var keys = {
             "Up" : goUpOrMoveFocusUp,
             "Down" : goDownOrMoveFocusDown,
-            "Ctrl-S": "save",
-            "Cmd-S": "save",
+            "Ctrl-S": false, // no need to handle this shortcut on CM level
+            "Cmd-S": false,
             "Alt-Down": moveFocusDown,
             "Alt-J": moveFocusDown,
             "Alt-Up": moveFocusUp,
@@ -819,6 +761,86 @@
       getNotebookCellManager: function() {
         return bkNotebookCellModelManager;
       },
+
+      showFileOpenDialog: function(extension) {
+        var deferred = bkUtils.newDeferred();
+
+        var data = {
+          type: 'OPEN',
+          title:'Select',
+          okButtonTitle : 'Open',
+          extension: extension
+        };
+
+        var dd = $uibModal.open({
+          templateUrl: "app/template/filedialog.jst.html",
+          controller: 'fileDialogCtrl',
+          windowClass: 'beaker-sandbox',
+          backdropClass: 'beaker-sandbox',
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          size: 'lg',
+          resolve: {
+            strategy: function () {
+              return new FileChooserStrategy(data);
+            }
+          }
+        });
+        dd.result.then(
+          function (result) {
+            deferred.resolve({
+              uri: result,
+              uriType: GLOBALS.FILE_LOCATION.FILESYS
+            });
+          }, function () {
+            deferred.reject();
+          }).catch(function () {
+          deferred.reject();
+        });
+        return deferred.promise;
+      },
+
+      showFileSaveDialog: function(data) {
+        var deferred = bkUtils.newDeferred();
+
+        if ((!data.extension || data.extension.trim().length === 0) && data.initUri) {
+          var filename = data.initUri.substring(data.initUri.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/') + 1);
+          data.extension = filename.substring(filename.lastIndexOf('.') + 1);
+        }
+        data.type="SAVE";
+        data.title = "Save As";
+        data.okButtonTitle = "Save";
+
+        var dd = $uibModal.open({
+          templateUrl: "app/template/filedialog.jst.html",
+          controller: 'fileDialogCtrl',
+          windowClass: 'beaker-sandbox',
+          backdropClass: 'beaker-sandbox',
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          size: 'lg',
+          resolve: {
+            strategy: function () {
+              return new FileChooserStrategy(data);
+            }
+          }
+        });
+        dd.result.then(
+          function (result) {
+            deferred.resolve({
+              uri: result,
+              uriType: GLOBALS.FILE_LOCATION.FILESYS
+            });
+          }, function () {
+            deferred.reject();
+          }).catch(function () {
+          deferred.reject();
+        });
+        return deferred.promise;
+      },
+
       showModalDialog: function(callback, template, strategy, uriType, readOnly, format) {
         var options = {
           windowClass: 'beaker-sandbox',
@@ -1186,6 +1208,325 @@
     };
   });
 
+  module.controller('fileDialogCtrl', function ($scope, $rootScope, $uibModalInstance, $timeout, bkCoreManager, bkUtils, strategy) {
+
+    var elfinder;
+
+    var state = {
+      hashes2Open: [],
+      tabClicked : false,
+      go2Path: function (path) {
+        state.hashes2Open = bkHelper.path2hash(elfinder, path);
+        elfinder.exec('open', state.hashes2Open.pop());
+      }
+    };
+
+    var addTrailingSlash = function (str, isWindows) {
+      if (isWindows) {
+        if (!_.endsWith(str, '\\')) {
+          str = str + '\\';
+        }
+      } else {
+        if (!_.endsWith(str, '/')) {
+          str = str + '/';
+        }
+      }
+      return str;
+    };
+
+    var getFilename = function (path) {
+      var filename = path.substring(path.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/') + 1);
+      return filename.trim().length > 0 ? filename.trim() : null;
+    };
+
+    var getParent = function (path) {
+      return path.substring(0, path.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/'))
+    };
+
+    var setFromHash = function (hash, timeout) {
+      var action = function () {
+        $scope.selected.path = elfinder.file(hash).fullpath.replace('//', '/');
+        if (elfinder.file(hash).mime === 'directory')
+          $scope.selected.path = addTrailingSlash($scope.selected.path, bkUtils.serverOS.isWindows());
+      };
+      if (timeout !== undefined && timeout !== null) {
+        $timeout(function () {
+          action(hash);
+        }, timeout);
+      } else {
+        action(hash);
+      }
+    };
+
+    $scope.selected = {
+      path: null
+    };
+
+    $scope.isReady = function () {
+      var deferred = bkUtils.newDeferred();
+      if ($scope.selected.path) {
+        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"), {path: $scope.selected.path})
+          .success(function (result) {
+            if (result.exist === true) {
+              deferred.resolve(result.isDirectory !== true);
+            } else {
+              if ($scope.getStrategy().type === "SAVE") {
+                deferred.resolve(result.parent ? true : false);
+              } else {
+                deferred.resolve(false);
+              }
+            }
+          });
+      } else {
+        deferred.resolve(false);
+      }
+      return deferred.promise;
+    };
+
+    $scope.getStrategy = function () {
+      return strategy;
+    };
+
+    $scope.mime = function () {
+      if ($scope.getStrategy().treeViewfs.applyExtFilter === true) {
+        return bkUtils.mime($scope.getStrategy().treeViewfs.extension);
+      }
+      return [];
+    };
+
+
+    $scope.init = function () {
+      var $elfinder = $('#elfinder');
+
+      var selectCallback = function (event, elfinderInstance) {
+        if (event.data.selected && event.data.selected.length > 0) {
+          elfinder.trigger('enable');
+          setFromHash(event.data.selected[0], 0);
+        }
+      };
+      var openCallback = function (event, elfinderInstance) {
+        if (state.hashes2Open.length > 0) {
+          elfinder.exec('open', state.hashes2Open.pop());
+        }
+        setFromHash(elfinderInstance.cwd().hash, 0);
+      };
+      var getFileCallback = function (url) {
+        $scope.ok();
+      };
+
+      var elfinderOptions = bkHelper.elfinderOptions(getFileCallback,
+        selectCallback,
+        openCallback,
+        $scope.mime(),
+        $scope.getStrategy().treeViewfs.showHiddenFiles);
+
+      elfinder = bkHelper.elfinder($elfinder, elfinderOptions);
+
+      var orig_mime2class = elfinder.mime2class;
+      elfinder.mime2class = function (mime) {
+        if (mime === 'application/beaker-notebook') {
+          return 'elfinder-cwd-icon-beaker';
+        }
+        return orig_mime2class(mime);
+      };
+
+      $elfinder.css("width", '100%');
+      $elfinder.css("height", '100%');
+
+      $(".modal-content").resizable({
+        resize: function (event, ui) {
+          $elfinder.trigger('resize');
+        }
+      });
+
+      if ($scope.getStrategy().initUri && $scope.getStrategy().initUri.length > 0) {
+        $timeout(function () {
+          $scope.selected.path = $scope.getStrategy().initUri;
+        }, 1000);
+      }
+      elfinder.trigger('disable');
+    };
+
+    var onEnter = function (keyEvent) {
+      state.tabClicked = false;
+      if ($scope.selected.path) {
+        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"), {path: $scope.selected.path})
+          .success(function (result) {
+            if (result.exist === true) {
+              if (result.isDirectory === true) {
+                state.go2Path($scope.selected.path);
+              } else {
+                $scope.ok(true);
+              }
+            } else {
+              if ($scope.getStrategy().type === "SAVE") {
+                if (result.parent) {
+                  $scope.ok(true);
+                }
+              }
+            }
+          });
+      }
+    };
+
+    function sharedStart(array) {
+      var A = array.concat().sort(),
+        a1 = A[0], a2 = A[A.length - 1], L = a1.length, i = 0;
+      while (i < L && a1.charAt(i) === a2.charAt(i)) i++;
+      return a1.substring(0, i);
+    }
+
+    var onTab = function (keyEvent) {
+      var parentPath = elfinder.path(elfinder.cwd().hash);
+      if (parentPath === getParent($scope.selected.path)) {
+        var filename = getFilename($scope.selected.path);
+        var volume = bkHelper.getVolume(elfinder);
+        var possible_files = [];
+        // Get the keys
+        var keys = Object.keys(elfinder.files());
+        for (var i = 0; i < keys.length; i++) {
+          var key = keys[i];
+          if (key.indexOf(volume.hash) === 0) {
+            var file = elfinder.files()[key];
+            if (parentPath === getParent(file.fullpath)) {
+              if (getFilename(file.fullpath).indexOf(filename) === 0) {
+                possible_files.push(file);
+              }
+            }
+          }
+        }
+        if (possible_files.length === 1) {
+          state.tabClicked = true;
+          $timeout(function () {
+            $scope.selected.path = possible_files[0].fullpath;
+            if (possible_files[0].mime === 'directory') {
+              state.go2Path($scope.selected.path);
+            }
+          }, 0);
+        } else {
+          $timeout(function () {
+            $scope.selected.path = addTrailingSlash(getParent($scope.selected.path)) +
+              sharedStart(_.map(possible_files, function (e) {
+                return e.name;
+              }));
+          }, 0);
+        }
+      }
+      keyEvent.preventDefault();
+    };
+
+    var onSlash = function (keyEvent) {
+      state.tabClicked = false;
+      state.go2Path($scope.selected.path);
+    };
+
+    var onBackspace= function (keyEvent) {
+      if (state.tabClicked === true){
+        $timeout(function () {
+          $scope.selected.path = addTrailingSlash(getParent($scope.selected.path));
+          elfinder.trigger("filter_cwd", {
+            filter: getFilename($scope.selected.path)
+          });
+        }, 0);
+      }else{
+        onKey(keyEvent);
+      }
+      state.tabClicked = false;
+    };
+
+    var onKey = function (keyEvent) {
+      state.tabClicked = false;
+      $timeout(function () {
+        var parent = getParent($scope.selected.path);
+        if (elfinder.path(elfinder.cwd().hash) === parent) {
+          $timeout(function () {
+            elfinder.trigger("filter_cwd", {
+              filter: getFilename($scope.selected.path)
+            });
+          }, 300);
+        }
+      }, 0);
+    };
+
+    $scope.onkey = function (keyEvent) {
+      if (keyEvent.which === 13) {
+        onEnter(keyEvent);
+      } else if (keyEvent.which === 9) {
+        onTab(keyEvent)
+      } else if (keyEvent.which === 191) {
+        if (!bkUtils.serverOS.isWindows())
+          onSlash(keyEvent);
+      } else if (keyEvent.which === 220) {
+        if (bkUtils.serverOS.isWindows())
+          onSlash(keyEvent);
+      } else if (keyEvent.which === 8) {
+        onBackspace(keyEvent);
+      } else {
+        onKey(keyEvent);
+      }
+    };
+
+    var ok = function () {
+      if ($scope.getStrategy().type === "SAVE") {
+        var filename = getFilename($scope.selected.path);
+        var extension = $scope.getStrategy().treeViewfs.extension;
+        if (extension !== undefined && extension.length > 0) {
+          if (filename.indexOf(extension) === -1 || filename.lastIndexOf(extension) != filename.length - extension.length) {
+            $scope.selected.path += "." + extension;
+          }
+        }
+      }
+      $uibModalInstance.close($scope.selected.path);
+    };
+
+    $scope.ok = function (skipReady) {
+      if (skipReady === true) {
+        ok();
+      }
+      $scope.isReady().then(function (isReady) {
+        if (isReady === true) {
+          ok();
+        }
+      });
+    };
+
+    $scope.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+
+    $scope.$watch(function (scope) {
+      return scope.getStrategy().treeViewfs.applyExtFilter
+    }, function () {
+      if (elfinder) {
+        elfinder.options.onlyMimes = $scope.mime();
+        elfinder.exec('reload');
+      }
+    });
+
+    $scope.$watch(function (scope) {
+      return scope.getStrategy().treeViewfs.showHiddenFiles
+    }, function () {
+      if (elfinder) {
+        elfinder.options.showHiddenFiles = $scope.getStrategy().treeViewfs.showHiddenFiles;
+        elfinder.exec('reload');
+      }
+    });
+
+    var unregister = $scope.$watch(function (scope) {
+        return scope.selected.path
+      },
+      function (newValue, oldValue) {
+        if ((!oldValue || oldValue.length === 0) && (newValue && newValue.length > 0)) {
+          document.getElementById("file-dlg-selected-path").setSelectionRange(newValue.length - 1, newValue.length - 1);
+          unregister();
+        }
+      }
+    );
+
+  });
+
+
+
   module.controller('modalDialogCtrl', function($scope, $rootScope, $uibModalInstance, modalDialogOp,
                                                 bkUtils) {
     $scope.getStrategy = function() {
@@ -1334,4 +1675,6 @@
   function getImageFileTypePattern() {
     return "image/((png)|(jpg)|(jpeg))";
   }
+
+
 })();

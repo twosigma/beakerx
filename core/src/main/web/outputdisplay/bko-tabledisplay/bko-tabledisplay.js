@@ -645,7 +645,8 @@
           return $scope.table.column($scope.getColumnIndexByCellNode(filterNode) + ':visible');
         };
 
-        $scope.columnFilterFn = function(){
+        $scope.columnFilterFn = function (e) {
+          if (e.keyCode === 27 || e.keyCode === 13) { return; }
           if ($(this).hasClass('table-filter')) {
             $scope.tableFilter = this.value;
             if ($scope.columnSearchActive) {
@@ -690,6 +691,7 @@
                   $scope.onFilterBlur($(this), this);
                   break;
                 case 27: //esc
+                  event.preventDefault();
                   $scope.clearFilter(column, $(this));
                   $scope.updateFilterWidth($(this), column);
                   break;

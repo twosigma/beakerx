@@ -382,6 +382,11 @@ describe('Beaker Tables', function () {
           done();
         });
 
+        afterEach(function (done) {
+          clickOutsideHeader(cellId);
+          done();
+        });
+
         it('should have focus on opening', function () {
           expect(beakerPO.getDataTableSearchInput(cellId).getInnerHtml())
             .toBe(browser.driver.switchTo().activeElement().getInnerHtml());
@@ -447,6 +452,16 @@ describe('Beaker Tables', function () {
           getClearIcon(beakerPO.getDataTableSearchField(cellId)).click();
           beakerPO.checkDataTableBodyByIdCell(cellId, 5, '0 a0 b0 c0');
         });
+
+        it('should hide search row', function () {
+          beakerPO.getDataTableSearchInput(cellId).sendKeys('2');
+          beakerPO.getDataTableMenuToggle(tableSearchSection).click();
+          var hideFilterMenu = beakerPO.getDataTableMenuItem(tableSearchSection, 'Hide Filter');
+          hideFilterMenu.element(by.css('a[ng-click="hideFilter()"]')).click();
+          expect(beakerPO.getDataTableFilterRow(cellId).isDisplayed()).toBe(false);
+          beakerPO.checkDataTableBodyByIdCell(cellId, 5, '0 a0 b0 c0');
+        });
+
       });
     });
   });

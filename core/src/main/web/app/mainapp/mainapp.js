@@ -1208,6 +1208,16 @@
           } else if(bkHelper.isResetEnvironmentShortcut(e)) {
             bkHelper.resetAllKernelsInNotebook();
             return false;
+          } else if (bkHelper.isRaiseSectionLevelShortcut(e)) {
+            bkUtils.fcall(function() {
+              bkHelper.raiseSectionLevel();
+            });
+            return false;
+          } else if (bkHelper.isLowerSectionLevelShortcut(e)) {
+            bkUtils.fcall(function() {
+              bkHelper.lowerSectionLevel();
+            });
+            return false;
           } else if (bkUtils.isElectron) {
             var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
             // Command H
@@ -1308,7 +1318,7 @@
           } else {
             initUri = null;
           }
-          bkHelper.showDefaultSavingFileChooser(initUri, saveButtonTitle).then(function(ret) {
+          bkHelper.showFileSaveDialog({initUri: initUri, saveButtonTitle: saveButtonTitle}).then(function (ret) {
             if (ret.uri) {
               return saveFn(ret.uri, ret.uriType);
             }

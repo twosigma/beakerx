@@ -38,6 +38,7 @@
     "angular-ui-select": "0.16.1",
     "vis": "4.16.1",
     "vivagraphjs": "latest",
+    "elfinder": "2.1.11",
     "jQuery-contextMenu": "2.1.1"
   }
 }

@@ -138,6 +138,21 @@
         bkTrack.log(event, obj);
       },
 
+      mime: function (extension) {
+
+        if (extension === 'bkr') {
+          return ['directory', 'application/beaker-notebook'];
+        } else if (extension === 'py') {
+          return ['directory', 'text/x-python'];
+        } else if (extension === 'csv') {
+          return ['directory', 'text/x-comma-separated-values'];
+        }else if (extension === 'ipynb') {
+          return ['directory', 'application/x-ipynb+json'];
+        }
+
+        return [];
+      },
+
       // wrap commonUtils
       generateId: function(length) {
         return commonUtils.generateId(length);

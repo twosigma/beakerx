@@ -154,22 +154,22 @@ public class SQLShellRest {
     @POST
     @Path("isPaswordNeeded")
     public Boolean isPaswordNeeded(
-            @FormParam("shellId") String shellId){
-        if (!this.shells.containsKey(shellId)) {
-            return null;
-        }
-        return this.shells.get(shellId).isPaswordNeeded();
+    		@FormParam("shellId") String shellId){
+    	if (!this.shells.containsKey(shellId)) {
+    		return null;
+    	}
+    	return this.shells.get(shellId).isPaswordNeeded();
     }
     
     @POST
     @Path("setShellPassword")
     public void setShellPassword(
-            @FormParam("shellId") String shellId,
-            @FormParam("password") String password){
-        if (!this.shells.containsKey(shellId)) {
-            return;
-        }
-        this.shells.get(shellId).setShellPassword(password);
+    		@FormParam("shellId") String shellId,
+    		@FormParam("password") String password){
+    	if (!this.shells.containsKey(shellId)) {
+    		return;
+    	}
+    	this.shells.get(shellId).setShellPassword(password);
     }
 
 }

@@ -46,82 +46,76 @@ define(function(require, exports, module) {
     },
     
     evaluateWithPassword : function(code, modelOutput, refreshObj) {
-
+    	if (SqlShCancelFunction) {
+    		deferred.reject("An evaluation is already in progress");
+    		return deferred.promise;
+    	}
+    	var self = this;
+    	bkHelper.setupProgressOutput(modelOutput);
         
-        if (SqlShCancelFunction) {
-          deferred.reject("An evaluation is already in progress");
-          return deferred.promise;
-        }
-        var self = this;
-        bkHelper.setupProgressOutput(modelOutput);
-        
-        $.ajax({
-            type: "POST",
-            datatype: "json",
-            url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/evaluate"),
-            data: {shellId: self.settings.shellID, code: code}
-          }).done(function(ret) {
-            SqlShCancelFunction = function () {
-              $.ajax({
-                type: "POST",
-                datatype: "json",
-                url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/cancelExecution"),
-                data: {shellId: self.settings.shellID}
-              }).done(function (ret) {
-                console.log("done cancelExecution",ret);
-              });
-              bkHelper.setupCancellingOutput(modelOutput);
-            }
-            var onEvalStatusUpdate = function(evaluation) {
-              if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
-                cometdUtil.unsubscribe(evaluation.update_id);
-                SqlShCancelFunction = null;
-                if (evaluation.status === "ERROR")
-                  deferred.reject(evaluation.payload);
-                else
-                  deferred.resolve(evaluation.payload);
-              }
-              if (refreshObj !== undefined)
-                refreshObj.outputRefreshed();
-              else
-                bkHelper.refreshRootScope();
-            };
-            onEvalStatusUpdate(ret);
-            if (ret.update_id) {
-              cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
-            }
-          });
+    	$.ajax({
+    		type: "POST",
+    		datatype: "json",
+    		url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/evaluate"),
+    		data: {shellId: self.settings.shellID, code: code}
+    	}).done(function(ret) {
+    		SqlShCancelFunction = function () {
+    			$.ajax({
+    				type: "POST",
+    				datatype: "json",
+    				url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/cancelExecution"),
+    				data: {shellId: self.settings.shellID}
+    			}).done(function (ret) {
+    				console.log("done cancelExecution",ret);
+    			});
+    			bkHelper.setupCancellingOutput(modelOutput);
+    		}
+    		var onEvalStatusUpdate = function(evaluation) {
+    			if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
+    				cometdUtil.unsubscribe(evaluation.update_id);
+    				SqlShCancelFunction = null;
+    				if (evaluation.status === "ERROR")
+    					deferred.reject(evaluation.payload);
+    				else
+    					deferred.resolve(evaluation.payload);
+    			}
+    			if (refreshObj !== undefined)
+    				refreshObj.outputRefreshed();
+    			else
+    				bkHelper.refreshRootScope();
+    		};
+    		onEvalStatusUpdate(ret);
+    		if (ret.update_id) {
+    			cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
+    		}
+    	});
     },
     
-    
     evaluate: function(code, modelOutput, refreshObj) {
-        var self = this;
-        var deferred = Q.defer();
+    	var self = this;
+    	var deferred = Q.defer();
     	return isPaswordNeeded(self.settings.shellID).success(function(ret) {
-    	  if(ret){
-    		  bkHelper.show2ButtonModal(
-    				  'Enter the password <input type="password" id="password_field" ng-model="self.password"></input>',
-    				  'Enter the password for database',
-    				  function() {
-    					  var myEl = angular.element( document.querySelector( '#password_field' ) );
-    					  return setShellPassword(self.settings.shellID, myEl.val()).success(function() {
-    						  self.evaluateWithPassword(code, modelOutput,refreshObj);
+    		if(ret){
+    			bkHelper.show2ButtonModal(
+    					'Enter the password <input type="password" id="password_field" ng-model="self.password"></input>',
+    					'Enter the password for database',
+    					function() {
+    						var myEl = angular.element( document.querySelector( '#password_field' ) );
+    						return setShellPassword(self.settings.shellID, myEl.val()).success(function() {
+    							self.evaluateWithPassword(code, modelOutput,refreshObj);
     				          return deferred.promise;
     					  })
     				  },
-                      function() {
-    					  console.log("Cancel");
-    					  bkHelper.printCanceledAnsver(modelOutput);
-    			          return deferred.promise;
-                      },
-                      "Ok", "Cancel", "", ""); 
-    		  
-    	      	
-    	  }else{
-    	  	  self.evaluateWithPassword(code, modelOutput,refreshObj);
-              return deferred.promise;
-    	  }
-
+    				  function() {
+    				  	console.log("Cancel");
+    				  	bkHelper.printCanceledAnsver(modelOutput);
+    				  	return deferred.promise;
+    				  },
+    				  "Ok", "Cancel", "", ""); 
+    		}else{
+    			self.evaluateWithPassword(code, modelOutput,refreshObj);
+    			return deferred.promise;
+    		}
     });
 
     },

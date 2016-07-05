@@ -246,11 +246,11 @@ public class SQLEvaluator {
   }
   
   public boolean isPaswordNeeded() {
-	  return askForPassword && this.password == null || this.password.isEmpty();
+	  return askForPassword && (this.password == null || this.password.isEmpty());
   }
 
   protected String getDefaultConnectionString(){
-	  String ret = defaultConnectionString;
+  	String ret = defaultConnectionString;
 	  boolean firstOption = true;
 	  if(this.user != null && !this.user.isEmpty()){
 		  ret += firstOption ? "?" : "&";

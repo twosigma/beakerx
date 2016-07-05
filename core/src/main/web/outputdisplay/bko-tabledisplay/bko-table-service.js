@@ -25,12 +25,13 @@
           params
         );
         defer.then(
-          function () { },
+          undefined,
           function () { console.error('send ' + action + ' event error'); });
         return defer;
       } else {
         var defer = bkHelper.newDeferred();
         setTimeout(function () {
+          console.error('send ' + action + ' event error, evaluator ' + evaluatorId + 'is not found');
           defer.reject();
         }, 0);
         return defer.promise;
@@ -42,6 +43,9 @@
       },
       onContextMenu: function (tableId, menuKey, row, column, evaluatorId) {
         return onAction('oncontextmenu', tableId, [menuKey, row, column], evaluatorId);
+      },
+      setActionDetails: function (tableId, evaluatorId, params) {
+        return onAction('actiondetails', tableId, params, evaluatorId);
       }
     };
   };

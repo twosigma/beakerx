@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
+  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, $uibModal,  bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -74,6 +74,8 @@
       defaultEvaluator = data;
     });
 
+
+
       var bkHelper = {
 
       isNewNotebookShortcut: function (e){
@@ -94,7 +96,13 @@
         }
         return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Cmd + Shift + A
       },
-      isInsertCellAboveShortcut: function (e){
+      isAppendTextCellShortcut: function (e){
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 89);// Ctrl + Shift + Y
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 89);// Cmd + Shift + Y
+      },
+      isInsertCodeCellAboveShortcut: function (e){
         if (this.isMacOS){
           return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 85);// Ctrl + Shift + U
         }
@@ -117,6 +125,18 @@
           return e.ctrlKey && (e.which === 82); // Alt + r
         }
         return e.altKey && (e.which === 82); // Alt + r
+      },
+      isRaiseSectionLevelShortcut: function (e) {
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 190);// Ctrl + Shift + >
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 190);// Cmd + Shift + >
+      },
+      isLowerSectionLevelShortcut: function (e) {
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 188);// Ctrl + Shift + <
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 188);// Cmd + Shift + <
       },
 
       //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
@@ -335,7 +355,7 @@
             // Format this accordingly!
             var routeParams = {
               uri: path
-            }
+            };
             if (uriType) {
               routeParams.type = uriType;
             }
@@ -348,21 +368,10 @@
             bkHelper.openWindow(bkUtils.getBaseUrl() + '/open?' + jQuery.param(routeParams), 'notebook');
           });
         } else {
-          var strategy = bkHelper.getFileSystemFileChooserStrategy();
-          strategy.treeViewfs.extFilter = [ext];
-          bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getLocalDrives()]).then(function(values) {
-            if (bkUtils.serverOS.isWindows()) {
-              strategy.localDrives = values[1];
-            }
-            bkCoreManager.showModalDialog(
-                bkHelper.openNotebook,
-                JST['template/opennotebook']({homedir: values[0], extension: '.' + ext}),
-                strategy,
-                uriType,
-                readOnly,
-                format
-            );
-          });
+            bkCoreManager.showFileOpenDialog(ext).then(function(selected){
+              if (selected && selected.uri)
+                bkHelper.openNotebook(selected.uri, uriType, readOnly, format);
+            });
         }
       },
       Electron: bkElectron,
@@ -450,7 +459,7 @@
           return false;
         }
       },
-      saveNotebook: function() {
+        saveNotebook: function() {
         if (getCurrentApp() && getCurrentApp().saveNotebook) {
           return getCurrentApp().saveNotebook();
         } else {
@@ -881,14 +890,17 @@
       setFileSaver: function(uriType, fileSaver) {
         return bkCoreManager.setFileSaver(uriType, fileSaver);
       },
-      showDefaultSavingFileChooser: function(initPath, saveButtonTitle) {
-        return bkCoreManager.showDefaultSavingFileChooser(initPath, saveButtonTitle);
+      showFileSaveDialog: function(data) {
+        return bkCoreManager.showFileSaveDialog(data);
       },
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();
       },
       showModalDialog: function(callback, template, strategy) {
         return bkCoreManager.showModalDialog(callback, template, strategy).result;
+      },
+      showErrorModal: function (msgBody, msgHeader, errorDetails, callback) {
+        return bkCoreManager.showErrorModal(msgBody, msgHeader, errorDetails, callback);
       },
       show1ButtonModal: function(msgBody, msgHeader, callback) {
         return bkCoreManager.show1ButtonModal(msgBody, msgHeader, callback);
@@ -908,22 +920,6 @@
       getFileSystemFileChooserStrategy: function() {
         return bkCoreManager.getFileSystemFileChooserStrategy();
       },
-      selectFile: function(callback, title, extension, closebtn) {
-        var strategy = bkCoreManager.getFileSystemFileChooserStrategy();
-        strategy.treeViewfs.extFilter = [ extension ];
-        strategy.ext = extension;
-        strategy.title = title;
-        strategy.closebtn = closebtn;
-        bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getLocalDrives()]).then(function (values) {
-          if (bkUtils.serverOS.isWindows()) {
-            strategy.localDrives = values[1];
-          }
-          return bkCoreManager.showModalDialog(
-              callback,
-              JST['template/opennotebook']({homedir: values[0], extension: extension}),
-              strategy);
-        });
-      },
 
       // eval utils
       locatePluginService: function(id, locator) {
@@ -942,26 +938,41 @@
         return bkCoreManager.showLanguageManager();
       },
       appendCodeCell: function () {
-
-        if (document.activeElement &&
-          document.activeElement.parentElement.offsetParent &&
-          document.activeElement.parentElement.offsetParent.classList.value.indexOf('CodeMirror') !== -1)
-          return;
-
-
-        var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
-        var notebookCellOp = bkSessionManager.getNotebookCellOp();
-        notebookCellOp.insertLast(newCell);
-        bkUtils.refreshRootScope();
-        this.go2LastCodeCell();
-      },
-      insertCellAbove: function () {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
         var newCell;
         if (currentCellId) {
           var cell = notebookCellOp.getCell(currentCellId);
-          newCell = bkSessionManager.getNotebookNewCellFactory().newSameTypeCell(cell);
+          var evaluator = cell.type === 'code' ? cell.evaluator : defaultEvaluator;
+          newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(evaluator);
+          notebookCellOp.insertAfter(currentCellId, newCell);
+        } else {
+          newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
+          notebookCellOp.insertLast(newCell);
+        }
+        bkUtils.refreshRootScope();
+        this.go2Cell(newCell.id);
+      },
+      appendTextCell: function () {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var newCell = bkSessionManager.getNotebookNewCellFactory().newMarkdownCell();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        if (currentCellId) {
+          notebookCellOp.insertAfter(currentCellId, newCell);
+        } else {
+          notebookCellOp.insertLast(newCell);
+        }
+        bkUtils.refreshRootScope();
+        this.go2Cell(newCell.id);
+      },
+      insertCodeCellAbove: function () {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        var newCell;
+        if (currentCellId) {
+          var cell = notebookCellOp.getCell(currentCellId);
+          var evaluator = cell.type === 'code' ? cell.evaluator : defaultEvaluator;
+          newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(evaluator);
           notebookCellOp.insertBefore(currentCellId, newCell);
         } else {
           newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
@@ -969,6 +980,28 @@
         }
         bkUtils.refreshRootScope();
         this.go2Cell(newCell.id);
+      },
+      raiseSectionLevel: function () {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        if (currentCellId) {
+          var cell = notebookCellOp.getCell(currentCellId);
+          if (cell.type === 'section' && cell.level > 1) {
+            cell.level--;
+            notebookCellOp.reset();
+          }
+        }
+      },
+      lowerSectionLevel: function () {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        if (currentCellId) {
+          var cell = notebookCellOp.getCell(currentCellId);
+          if (cell.type === 'section' && cell.level < 4) {
+            cell.level++;
+            notebookCellOp.reset();
+          }
+        }
       },
       showPublishForm: function() {
         return bkCoreManager.showPublishForm();
@@ -1333,6 +1366,170 @@
           document.documentElement.style.overflow = '';
         }
         cm.refresh();
+      },
+
+      elfinder: function($elfinder, elfinderOptions){
+        var elfinder;
+        elFinder.prototype._options.commands.push('copypath');
+        elFinder.prototype._options.contextmenu.files.push('copypath');
+        elFinder.prototype._options.contextmenu.cwd.push('copypath');
+        elFinder.prototype.i18.en.messages['cmdcopypath'] = 'Copy Path';
+        elFinder.prototype.commands.copypath = function() {
+          this.exec = function(hashes) {
+            bkCoreManager.show1ButtonModal(
+              "<p><input type='text' autofocus onfocus='this.select();' style='width: 100%' value='"+elfinder.path(hashes[0])+"'></p>",
+              "Copy to clipboard: "+ (bkHelper.isMacOS ? "&#x2318;" : "Ctrl") + "+C");
+
+          };
+          this.getstate = function() {
+            //return 0 to enable, -1 to disable icon access
+            return 0;
+          }
+        };
+        elfinder = $elfinder.elfinder(elfinderOptions).elfinder('instance');
+        return elfinder;
+      },
+
+      //http://stackoverflow.com/questions/7370943/retrieving-binary-file-content-using-javascript-base64-encode-it-and-reverse-de
+      base64Encode: function(str) {
+        var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        var out = "", i = 0, len = str.length, c1, c2, c3;
+        while (i < len) {
+          c1 = str.charCodeAt(i++) & 0xff;
+          if (i == len) {
+            out += CHARS.charAt(c1 >> 2);
+            out += CHARS.charAt((c1 & 0x3) << 4);
+            out += "==";
+            break;
+          }
+          c2 = str.charCodeAt(i++);
+          if (i == len) {
+            out += CHARS.charAt(c1 >> 2);
+            out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+            out += CHARS.charAt((c2 & 0xF) << 2);
+            out += "=";
+            break;
+          }
+          c3 = str.charCodeAt(i++);
+          out += CHARS.charAt(c1 >> 2);
+          out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+          out += CHARS.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
+          out += CHARS.charAt(c3 & 0x3F);
+        }
+        return out;
+      },
+
+      getVolume : function(elfinder)  {
+        var cwd = elfinder.cwd();
+        var phash = cwd.phash;
+        var file = elfinder.file(cwd.hash);
+        while (phash) {
+          file = elfinder.file(phash);
+          phash = file.phash;
+        }
+        return file;
+      },
+
+      path2hash : function (elfinder, path){
+
+        var file = bkHelper.getVolume(elfinder);
+
+        var _hash_ = function (path) {
+          path = path.replace(file.name, '');
+          var base = bkHelper.base64Encode(path);
+          return file.hash + base
+              .replace(/\+/g, "_P")
+              .replace(/\-/g, "_M")
+              .replace(/\\/g, "_S")
+              .replace(/\./g, "_D")
+              .replace(/=/g, "_E");
+        };
+
+        var _cached_ = function(hash){
+          var files = elfinder.files();
+          var _hashes = Object.keys(files);
+          for (var i=0; i< _hashes.length; i++){
+            var _hash = _hashes[i];
+            if (_hash === hash)
+              return true;
+          }
+          return false;
+        };
+        var hash = _hash_(path);
+        var hashes = [];
+        hashes.push(hash);
+
+        while(!_cached_(hash)){
+          path = path.substring(0, path.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/'));
+          hash = _hash_(path);
+          hashes.push(hash);
+        }
+        return hashes;
+      },
+
+      elfinderOptions: function (getFileCallback, selectCallback, openCallback, mime, showHiddenFiles) {
+
+        return {
+          url: '../beaker/connector',
+          useBrowserHistory: false,
+          resizable: false,
+          onlyMimes: mime,
+          dragUploadAllow: false,
+          showHiddenFiles: showHiddenFiles,
+          getFileCallback: function (url) {
+            if (getFileCallback)
+              getFileCallback(url);
+          },
+          handlers: {
+            select: function (event, elfinderInstance) {
+              if (selectCallback)
+                selectCallback(event, elfinderInstance);
+            },
+            open: function (event, elfinderInstance) {
+              if (openCallback)
+                openCallback(event, elfinderInstance);
+            }
+          },
+          defaultView: 'icons',
+          contextmenu: {
+            // navbarfolder menu
+            navbar: ['copy', 'cut', 'paste', 'duplicate', '|', 'rm'],
+
+            // current directory menu
+            cwd: ['reload', 'back', '|', 'mkdir', 'paste'],
+
+            // current directory file menu
+            files: [
+              'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
+              'rm'
+            ]
+          },
+          uiOptions: {
+            // toolbar configuration
+            toolbar: [
+              ['back', 'forward'],
+              ['mkdir'],
+              ['copy', 'cut', 'paste'],
+              ['rm'],
+              ['duplicate', 'rename'],
+              ['view', 'sort']
+            ],
+
+            // navbar options
+            navbar: {
+              minWidth: 150,
+              maxWidth: 1200
+            },
+
+            // directories tree options
+            tree: {
+              // expand current root on init
+              openRootOnLoad: false,
+              // auto load current dir parents
+              syncTree: true
+            }
+          }
+        }
       },
 
       isElectron: bkUtils.isElectron,

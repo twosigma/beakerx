@@ -258,15 +258,9 @@
         $scope.$watch('getEvaluator()', function(newValue, oldValue) {
           $scope.updateUI(newValue);
         });
-        $scope.appendCodeCell = function(evaluatorName) {
-          var thisCellId = $scope.cellmodel.id;
-          if (!evaluatorName) {
-            // if no evaluator specified, use the current evaluator
-            evaluatorName = $scope.cellmodel.evaluator;
-          }
-          var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(evaluatorName);
-          notebookCellOp.appendAfter(thisCellId, newCell);
-          bkUtils.refreshRootScope();
+
+        $scope.isLockedCell = function() {
+          return $scope.cellmodel.locked;
         };
 
         $scope.cellmenu.addItem({
@@ -280,6 +274,9 @@
             } else {
               $scope.cellmodel.input.hidden = true;
             }
+          },
+          locked: function () {
+            return $scope.isLockedCell();
           }
         });
         $scope.cellmenu.addItem({
@@ -300,6 +297,8 @@
           return $scope.cellmodel.initialization;
         };
 
+
+
         $scope.cellmenu.addItem({
           name: 'Initialization Cell',
           isChecked: function() {
@@ -312,8 +311,13 @@
               $scope.cellmodel.initialization = true;
             }
             notebookCellOp.reset();
+          },
+          locked: function () {
+            return $scope.isLockedCell();
           }
         });
+
+
 
         $scope.isWordWrap = function () {
           return !$scope.cellmodel.wordWrapDisabled;
@@ -330,6 +334,9 @@
             } else {
               $scope.cellmodel.wordWrapDisabled = true;
             }
+          },
+          locked: function () {
+            return $scope.isLockedCell();
           }
         });
 
@@ -338,6 +345,9 @@
           action: function() {
             bkCoreManager.showFullModalDialog(function cb(r) { } ,
                 'app/mainapp/dialogs/codecelloptions.jst.html', 'CodeCellOptionsController', $scope.cellmodel);
+          },
+          locked: function () {
+            return $scope.isLockedCell();
           }
         });
 
@@ -390,12 +400,6 @@
                 bkHelper.setFullScreen(cm, false);
               }
             }
-          },
-          'Shift-Ctrl-A': function(cm) {
-            scope.appendCodeCell();
-          },
-          'Shift-Cmd-A': function(cm) {
-            scope.appendCodeCell();
           },
           'Shift-Ctrl-E': function(cm) {
             scope.popupMenu();

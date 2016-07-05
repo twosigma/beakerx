@@ -1249,9 +1249,14 @@
               bkHelper.appendCodeCell()
             });
             return false;
-          } else if (bkHelper.isInsertCellAboveShortcut(e)) {
+          } else if (bkHelper.isAppendTextCellShortcut(e)) {
             bkUtils.fcall(function() {
-              bkHelper.insertCellAbove();
+              bkHelper.appendTextCell();
+            });
+            return false;
+          } else if (bkHelper.isInsertCodeCellAboveShortcut(e)) {
+            bkUtils.fcall(function() {
+              bkHelper.insertCodeCellAbove();
             });
             return false;
           } else if (e.which === 116) { // F5
@@ -1262,6 +1267,16 @@
             return false;
           } else if(bkHelper.isResetEnvironmentShortcut(e)) {
             bkHelper.resetAllKernelsInNotebook();
+            return false;
+          } else if (bkHelper.isRaiseSectionLevelShortcut(e)) {
+            bkUtils.fcall(function() {
+              bkHelper.raiseSectionLevel();
+            });
+            return false;
+          } else if (bkHelper.isLowerSectionLevelShortcut(e)) {
+            bkUtils.fcall(function() {
+              bkHelper.lowerSectionLevel();
+            });
             return false;
           } else if (bkUtils.isElectron) {
             var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
@@ -1366,7 +1381,7 @@
           } else {
             initUri = null;
           }
-          bkHelper.showDefaultSavingFileChooser(initUri, saveButtonTitle).then(function(ret) {
+          bkHelper.showFileSaveDialog({initUri: initUri, saveButtonTitle: saveButtonTitle}).then(function (ret) {
             if (ret.uri) {
               return saveFn(ret.uri, ret.uriType);
             }

@@ -108,7 +108,7 @@ describe('Groovy Tutorial', function () {
 
             idCell = "codeKIMiDC";
             beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
+            beakerPO.runBkCellDefaultButtonByIdCell(idCell);
             browser.wait(beakerPO.EC.presenceOf($('div.outputlogcontainer')), 10000)
                 .then(function(isPresent){
                         expect(isPresent).toBe(true);

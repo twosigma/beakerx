@@ -206,10 +206,17 @@
           return !notebookCellOp['isPossibleTo' + _.capitalize(moveMethod) + 'Down']($scope.cellmodel.id);
         };
 
+        $scope.isLockedCell = function() {
+          return $scope.cellmodel.locked;
+        };
+
         $scope.cellview.menu.addItem({
           name: 'Delete cell',
           shortcut: ['Ctrl-Alt-D', 'Alt-Cmd-Backspace'],
-          action: $scope.deleteCell
+          action: $scope.deleteCell,
+          locked: function () {
+            return $scope.isLockedCell();
+          }
         });
 
         $scope.cellview.menu.addItem({
@@ -230,6 +237,23 @@
           name: 'Cut',
           action: function() {
             notebookCellOp.cut($scope.cellmodel.id);
+          },
+          locked: function () {
+            return $scope.isLockedCell();
+          }
+        });
+
+        $scope.cellview.menu.addItem({
+          name: 'Lock Cell',
+          isChecked: function() {
+            return $scope.isLockedCell();
+          },
+          action: function() {
+            if ($scope.isLockedCell()) {
+              $scope.cellmodel.locked = undefined;
+            } else {
+              $scope.cellmodel.locked = true;
+            }
           }
         });
 
@@ -256,15 +280,14 @@
           if($scope.isMarkdownCell()){
             body = $scope.cellmodel.body;
           }
-          var lines = body.split('\n');
-          if(lines.length > 0) {
-            return lines[0];
-          }
+          return body.replace(/\n/g, ' ');
         };
 
         $scope.isMarkdownCell = function() {
           return $scope.cellmodel.type === 'markdown';
         };
+
+
 
         $scope.isCodeCell = function() {
           return $scope.cellmodel.type == 'code';
@@ -291,6 +314,9 @@
         $scope.wideMenu = function () {
           return $scope.isCellHidden() && !$scope.isSectionCell();
         };
+
+
+
 
         $scope.collapseCellMenu = {
           'code' : {

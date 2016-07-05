@@ -95,22 +95,22 @@
                         return fileSaver.save(session.notebookUri, notebookModelAsString, true);
                       }
 
-                      return bkCoreManager.showDefaultSavingFileChooser()
-                      .then(function(pathInfo) {
-                        if (!pathInfo.uri) {
-                          return bkUtils.newDeferred().reject({
-                            cause: 'Save cancelled'
-                          });
-                        }
+                      return bkCoreManager.showFileSaveDialog({})
+                        .then(function (pathInfo) {
+                          if (!pathInfo.uri) {
+                            return bkUtils.newDeferred().reject({
+                              cause: 'Save cancelled'
+                            });
+                          }
 
-                        return saveMostRecentNotebookContents(session.id, pathInfo, format)
-                        .catch(function(error) {
-                          return bkUtils.newDeferred().reject({
-                            cause: 'error saving to file',
-                            error: error
-                          });
+                          return saveMostRecentNotebookContents(session.id, pathInfo, format)
+                            .catch(function (error) {
+                              return bkUtils.newDeferred().reject({
+                                cause: 'error saving to file',
+                                error: error
+                              });
+                            });
                         });
-                      });
                     };
 
                     var savingFailedHandler = function(info) {

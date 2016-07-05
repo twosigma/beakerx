@@ -453,18 +453,6 @@ describe('Beaker Tables', function () {
           beakerPO.checkDataTableBodyByIdCell(cellId, 5, '0 a0 b0 c0');
         });
 
-        it('should be cleared and shrunk on ESC', function (done) {
-          var searchInput = beakerPO.getDataTableSearchInput(cellId);
-          var initSize = searchInput.getSize();
-          searchInput.sendKeys('22222222222222');
-          expect(searchInput.getAttribute('value')).toEqual('22222222222222');
-          searchInput.click();
-          searchInput.sendKeys(protractor.Key.ESCAPE);
-          expect(searchInput.getAttribute('value')).toEqual('');
-          expect(searchInput.getSize()).toEqual(initSize);
-          done();
-        });
-
         it('should hide search row', function () {
           beakerPO.getDataTableSearchInput(cellId).sendKeys('2');
           beakerPO.getDataTableMenuToggle(tableSearchSection).click();

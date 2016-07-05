@@ -1120,6 +1120,15 @@
           };
         modelOutput.result = progressObj;
       },
+      
+      printCanceledAnsver: function(modelOutput) {
+          var progressObj = {
+              type: "BeakerDisplay",
+              innertype: "Error",
+              object: "Execution was canceled."
+            };
+          modelOutput.result = progressObj;
+        },
 
       setupCancellingOutput: function(modelOutput) {
         if (modelOutput.result.type !== "BeakerDisplay" || modelOutput.result.innertype !== "Progress")

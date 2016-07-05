@@ -141,12 +141,35 @@ public class SQLShellRest {
             @FormParam("shellId") String shellId,
             @FormParam("classPath") String classPath,
             @FormParam("defaultDatasource") String defaultDatasource,
-            @FormParam("datasources") String datasorces)
+            @FormParam("datasources") String datasorces,
+            @FormParam("user") String user,
+            @FormParam("askForPassword") boolean askForPassword)
             throws MalformedURLException, IOException {
         if (!this.shells.containsKey(shellId)) {
             return;
         }
-        this.shells.get(shellId).setShellOptions(classPath, defaultDatasource, datasorces);
+        this.shells.get(shellId).setShellOptions(classPath, defaultDatasource, datasorces, user, askForPassword);
+    }
+    
+    @POST
+    @Path("isPaswordNeeded")
+    public Boolean isPaswordNeeded(
+            @FormParam("shellId") String shellId){
+        if (!this.shells.containsKey(shellId)) {
+            return null;
+        }
+        return this.shells.get(shellId).isPaswordNeeded();
+    }
+    
+    @POST
+    @Path("setShellPassword")
+    public void setShellPassword(
+            @FormParam("shellId") String shellId,
+            @FormParam("password") String password){
+        if (!this.shells.containsKey(shellId)) {
+            return;
+        }
+        this.shells.get(shellId).setShellPassword(password);
     }
 
 }

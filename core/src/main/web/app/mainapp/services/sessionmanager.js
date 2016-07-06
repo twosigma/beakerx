@@ -22,7 +22,6 @@
     'bk.utils',
     'bk.session',
     'bk.notebookManager',
-    'bk.core',
     'bk.notebookCellModelManager',
     'bk.notebookNamespaceModelManager',
     'bk.recentMenu',
@@ -38,7 +37,6 @@
       bkNotebookCellModelManager,
       bkNotebookCellModelManagerFactory,
       bkNotebookNamespaceModelManager,
-      bkCoreManager,
       bkEvaluatorManager,
       bkRecentMenu,
       bkElectron,
@@ -446,8 +444,6 @@
     var _sessionId = null;
     var _edited = false;
     var _needsBackup = false;
-    var _forceDisconnected = false;
-    var _lastModifiedTime = 0;
     var _saveDir = bkUtils.getHomeDirectory();
 
     var BeakerObject = function(nbmodel) {
@@ -864,14 +860,6 @@
           delete _subscriptions[sessionId];
         }
       };
-    
-      var _checkLastModifiedTime = function () {
-        if (_notebookUri.get()) {
-          bkUtils.newPromise(bkCoreManager.getFileLoader(_uriType).getLastModifiedTime(_notebookUri.get())).then(function (value) {
-            _lastModifiedTime = value;
-          });
-        }
-      };
 
     return {
       reset: function(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId) {
@@ -905,7 +893,6 @@
         bkSession.backup(_sessionId, generateBackupData());
         bkNotebookManager.init(this);
       },
-      checkLastModifiedTime: _checkLastModifiedTime,
       setSessionId: function(sessionId) {
         if (!sessionId) {
           sessionId = bkUtils.generateId(6);
@@ -936,7 +923,6 @@
         _notebookModel.set(notebookModel);
         bkHelper.initBeakerPrefs();
         _sessionId = sessionId;
-        _checkLastModifiedTime();
 
         _needsBackup = _edited;
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
@@ -944,7 +930,6 @@
         connectcontrol(sessionId);
         bkSession.backup(_sessionId, generateBackupData());
         recordRecentNotebook();
-        _forceDisconnected = false;
       },
       clear: function() {
         disconnectcontrol(_sessionId);
@@ -1016,13 +1001,6 @@
       isSavable: function() {
         return _notebookUri && !_readOnly;
       },
-      checkFileModifiedSinceOpened: function () {
-        var saveData = this.getSaveData();
-        var fileLoader = bkCoreManager.getFileLoader(saveData.uriType);
-        return bkUtils.newPromise(fileLoader.getLastModifiedTime(saveData.notebookUri)).then(function (lastModifiedTime) {
-          return lastModifiedTime > _lastModifiedTime;
-        });
-      },
       /*
        * This function triggers all display implementations to save the current output status.
        * This save is asynchronous and happens in the current digest loop.
@@ -1082,12 +1060,6 @@
           }
           this.setNotebookModelEdited(true);
         }
-      },
-      forceDisconnect: function () {
-        _forceDisconnected = true;
-      },
-      isForceDisconnected: function () {
-        return _forceDisconnected;
       },
       evaluatorUnused: function(plugin) {
         var n = _.find(_notebookModel.get().cells, function (c) {

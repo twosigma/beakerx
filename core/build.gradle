@@ -123,6 +123,11 @@ dependencies {
   compile group: 'org.jvnet.winp', name: 'winp', version: '1.18'
   compile group: 'org.samba.jcifs', name: 'jcifs', version: '1.3.3'
   runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.6'
+
+  compile group: 'org.json', name: 'json', version: '20090211'
+  compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.3.1'
+  compile group: 'commons-io', name: 'commons-io', version: '2.4'
+
   compile project(':shared')
 }
 
@@ -224,6 +229,10 @@ task (copyJQueryUIImages, type: Copy) {
     into 'src/main/web/app/dist/images/'
 }
 
+task (copyElFinderImages, type: Copy) {
+  from 'src/main/web/vendor/bower_components/elfinder/img/'
+  into 'src/main/web/app/img/'
+}
 
 import org.apache.tools.ant.filters.ReplaceTokens
 task addevalplugins(dependsOn: []) {
@@ -244,6 +253,7 @@ task copyVendorStuff
 copyVendorStuff.dependsOn copyKatex
 copyVendorStuff.dependsOn copyRequireJS
 copyVendorStuff.dependsOn copyJQueryUIImages
+copyVendorStuff.dependsOn copyElFinderImages
 copyVendorStuff.dependsOn copyGGVis
 copyVendorStuff.dependsOn copyDiagrammer
 copyVendorStuff.dependsOn copyPlotly

@@ -69,6 +69,7 @@ task generateJavadoc(type: Javadoc) {
     windowTitle = 'API Documentation'
     docTitle = "API Documentation"
     bottom = "Copyright 2014 TWO SIGMA OPEN SOURCE, LLC"
+    noTimestamp = true
   }
 }
 

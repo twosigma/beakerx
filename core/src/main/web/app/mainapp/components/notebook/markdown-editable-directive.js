@@ -118,10 +118,18 @@
             scope.cm.refresh(); // CM should recalculate line heights
           }
         });
-
+        
+        CodeMirror.defineMode("smartMarkdownMode", function(config) {
+        	  return CodeMirror.multiplexingMode(
+        	    CodeMirror.getMode(config, "markdown"),
+        	    {open: "$", close: "$",  mode: CodeMirror.getMode(config, "stex"),  delimStyle: "delimit"},
+        	    {open: "{{", close: "}}",  mode: CodeMirror.getMode(config, "javascript"),  delimStyle: "delimit"}
+        	  );
+        	});
+        
         var codeMirrorOptions = _.extend(bkCoreManager.codeMirrorOptions(scope, notebookCellOp), {
           lineNumbers: false,
-          mode: "markdown",
+          mode: "smartMarkdownMode",
           smartIndent: false
         });
         _.extend(codeMirrorOptions.extraKeys, {

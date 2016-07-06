@@ -19,8 +19,7 @@
   var module = angular.module('bk.controlPanel');
 
   module.directive('bkControlPanel', function(
-        bkUtils, bkHelper, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack, bkElectron, connectionManager,
-        bkRecentMenu, bkWindowsManager, $location) {
+        bkUtils, bkHelper, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack, bkElectron, connectionManager, bkRecentMenu, $location) {
     return {
       restrict: 'E',
       template: JST['controlpanel/controlpanel'](),
@@ -172,7 +171,6 @@
 
         var onDestroy = function() {
           $(document).unbind('keydown', keydownHandler);
-          bkWindowsManager.destroy();
         };
         $scope.$on('$destroy', onDestroy);
 
@@ -193,7 +191,6 @@
         $.cometd.subscribe('/sessionChange', function(reply){
           $scope.reloadSessionsList();
         });
-        bkWindowsManager.init();
 
         $scope.isSessionsListEmpty = function() {
           return _.isEmpty($scope.sessions);

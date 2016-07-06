@@ -67,14 +67,6 @@ module.exports = (function() {
     windowRef.focus();
   });
 
-  ipc.on('activate-window', function (event, msg) {
-    var windowId = parseInt(msg.windowId);
-    var windowRef = BrowserWindow.fromId(windowId);
-    if(windowRef) {
-      windowRef.focus();
-    }
-  });
-
   var primaryDisplay = electronScreen.getPrimaryDisplay();
   var defaultOptions = {
     width: primaryDisplay.bounds.width * windowRelativeWidth,

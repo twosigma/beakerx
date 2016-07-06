@@ -24,7 +24,7 @@
   var module = angular.module('bk.controlPanel');
 
   module.directive('bkControlPanelSessionItem', function(
-      bkUtils, bkSession, bkCoreManager, bkRecentMenu, bkEvaluatePluginManager) {
+      bkUtils, bkSession, bkCoreManager, bkRecentMenu, bkEvaluatePluginManager, bkWindowsManager) {
 
     function saveMostRecentNotebookContents(sessionId, pathInfo, format) {
       var deferred = bkUtils.newDeferred();
@@ -70,6 +70,7 @@
               }
             }
             return bkSession.close(session.id).then(function() {
+              bkWindowsManager.disconnectWindow(session.id);
               $scope.reloadSessionsList();
             });
 

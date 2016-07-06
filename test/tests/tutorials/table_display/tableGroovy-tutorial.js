@@ -69,8 +69,6 @@ describe('Table Display (Groovy API)', function (done) {
             beakerPO.checkSubString(arrTd.get(3), '8.11952', 0, 7);
             beakerPO.checkSubString(arrTd.get(5), '8.085238', 0, 8);
         });
-
-
         describe('Сell highlighters', function() {
             it('Color the entire table like a heatmap based on column value', function () {
                 var idCell = "codeWyrMwb";
@@ -123,7 +121,6 @@ describe('Table Display (Groovy API)', function (done) {
                 expect(arrTd20.get(3).getCssValue('background-color')).toBe('rgba(241, 194, 87, 1)');
                 beakerPO.checkSubString(arrTd20.get(4), '5.4790', 0, 6);
                 expect(arrTd20.get(4).getCssValue('background-color')).toBe('rgba(0, 0, 0, 1)');
-
             });
             it('UniqueEntriesHighlighter', function () {
                 var idCell = "code2KwSKV";
@@ -147,8 +144,7 @@ describe('Table Display (Groovy API)', function (done) {
                 beakerPO.checkSubString(arrTd1.get(2), '4', 0, 1);
                 expect(arrTd1.get(2).getCssValue('background-color')).toBe(rgb1);
             });
-       });
-
+        });
         it('Adding custom actions', function () {
             var idCell = "codex9hziv";
             beakerPO.scrollToBkCellByIdCell(idCell);
@@ -178,6 +174,39 @@ describe('Table Display (Groovy API)', function (done) {
                 beakerPO.waitUntilLoadingFinished();
             });
         });
+        it('Misc formatting', function () {
+            var idCell = "code0Xkn1E";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+            beakerPO.checkDtContainerByIdCell(idCell);
+            var arrTd = getArrayTdElements(idCell, 0);
+            expect(arrTd.count()).toBe(4);
+            beakerPO.checkSubString(arrTd.get(1), '1', 0, 1);
+            expect(arrTd.get(1).getCssValue('color')).toBe('rgba(192, 192, 192, 1)');
+            expect(arrTd.get(1).getCssValue('font-size')).toBe('15px');
+            expect(arrTd.get(1).getAttribute('title')).toBe('The value is: 1');
 
+            var thHeader = beakerPO.getDataTablesTHeadByIdCell(idCell).get(0).all(by.css('th'));
+            expect(thHeader.get(1).getCssValue('vertical-align')).toBe('bottom');
+            expect(thHeader.get(1).getCssValue('font-size')).toBe('30px');
+        });
+        it('Run tags', function () {
+            var idCell = "codeYEb1OS";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+            beakerPO.checkDtContainerByIdCell(idCell);
+            var arrTd0 = getArrayTdElements(idCell, 0);
+            expect(arrTd0.count()).toBe(4);
+            beakerPO.checkSubString(arrTd0.get(2), '2', 0, 1);
+            browser.actions().doubleClick(arrTd0.get(2)).perform().then(function(){
+                beakerPO.waitUntilLoadingFinished();
+            });
+
+            idCell = "codeC8S3M3";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Results');
+            beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+            beakerPO.checkCellOutputTextByIdCell(idCell, 'You clicked on the cell [0, 1]');
+        });
     });
 });

@@ -72,6 +72,9 @@
 
 div.CodeMirror {
   span.CodeMirror-matchingbracket {
+    color: inherit;
+  }
+  &.CodeMirror-focused span.CodeMirror-matchingbracket {
     color: #40BF40;
   }
 }

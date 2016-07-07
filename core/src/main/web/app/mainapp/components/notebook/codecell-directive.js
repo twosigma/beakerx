@@ -443,7 +443,7 @@
               //codecomplete is up, skip
               return;
             }
-            if(document.hasFocus()){
+            if(document.hasFocus() && scope.cm.somethingSelected()){
               scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
             }
           });

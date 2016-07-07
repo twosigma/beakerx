@@ -92,6 +92,7 @@ public class ConnectionStringHolder {
 						int equalIndex = parameter.indexOf(EQUAL_SIGN);
 						if(equalIndex > -1){
 							ret = parameter.substring(equalIndex + 1, parameter.length());
+							break;
 						}
 					}
 				}

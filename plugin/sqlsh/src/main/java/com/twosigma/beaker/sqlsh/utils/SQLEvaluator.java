@@ -15,44 +15,37 @@
  */
 package com.twosigma.beaker.sqlsh.utils;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Scanner;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beaker.sqlsh.autocomplete.SqlAutocomplete;
 
-import javax.management.QueryEval;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.file.FileSystems;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public class SQLEvaluator {
-	
-  public static final String USER_CONNECTION_KEY = "user";
-  public static final String PASSWORD_CONNECTION_KEY = "password";
 
   protected final String shellId;
   protected final String sessionId;
   protected final String packageId;
-  
-  protected String user;
-  protected String password;
-  protected boolean askForPassword;
 
   protected List<String> classPath = new ArrayList<>();
   protected String currentClassPath = "";
-  private Map<String, String> namedConnectionString = new HashMap<>();
-  private String defaultConnectionString;
+  private Map<String, ConnectionStringHolder> namedConnectionString = new HashMap<>();
+  private ConnectionStringHolder defaultConnectionString;
 
   protected final BeakerCellExecutor executor;
   volatile protected boolean exit;
@@ -104,7 +97,7 @@ public class SQLEvaluator {
   }
 
   protected SqlAutocomplete createSqlAutocomplete(ClasspathScanner c) {
-    return new SqlAutocomplete(c, jdbcClient, sessionId, getDefaultConnectionString(), namedConnectionString);
+    return new SqlAutocomplete(c, jdbcClient, sessionId, defaultConnectionString, namedConnectionString);
   }
 
   public List<String> autocomplete(String code, int caretPosition) {
@@ -193,7 +186,7 @@ public class SQLEvaluator {
     @Override
     public void run() {
       try {
-        simpleEvaluationObject.finished(queryExecutor.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient, getDefaultConnectionString(), namedConnectionString));
+        simpleEvaluationObject.finished(queryExecutor.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient, defaultConnectionString, namedConnectionString));
       } catch (SQLException e) {
         simpleEvaluationObject.error(e.toString());
       } catch (ThreadDeath e) {
@@ -207,19 +200,14 @@ public class SQLEvaluator {
     }
   }
 
-  public void setShellOptions(String cp, String defaultDatasource, String datasources, String user, Boolean askForPassword) throws IOException {
+  public void setShellOptions(String cp, String defaultDatasource, String datasources) throws IOException {
     currentClassPath = cp;
     if (cp.isEmpty())
       classPath = new ArrayList<String>();
     else
       classPath = Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"));
 
-    this.defaultConnectionString = defaultDatasource;
-    this.user = user; 
-    this.askForPassword = askForPassword;
-    if(!this.askForPassword){
-    	this.password = null;
-    }
+    this.defaultConnectionString = new ConnectionStringHolder(defaultDatasource);
     this.namedConnectionString = new HashMap<>();
     Scanner sc = new Scanner(datasources);
     while (sc.hasNext()) {
@@ -234,34 +222,53 @@ public class SQLEvaluator {
       if (value.startsWith("\"") && value.endsWith("\"")) {
         value = value.substring(1, value.length() - 1);
       }
-      namedConnectionString.put(name, value);
+      namedConnectionString.put(name, new ConnectionStringHolder(value));
     }
 
     resetEnvironment();
   }
   
-  public void setShellPassword(String password) {
-	  this.password = password;
+  public void setShellUserPassword(String namedConnection, String user, String password) {
+	  if(namedConnection != null && !namedConnection.isEmpty()){
+	  	if(this.namedConnectionString != null){
+		  	ConnectionStringHolder holder = this.namedConnectionString.get(namedConnection);
+		  	if(holder != null){
+		  		if(password != null && !password.isEmpty()){
+		  			holder.setPassword(password);
+		  		}
+		  		if(user != null && !user.isEmpty()){
+		  			holder.setUser(user);
+		  		}
+		  		holder.setShowDialog(password == null || password.isEmpty() || user == null || user.isEmpty());
+		  	}
+		  }
+	  }else{
+	  	if(password != null && !password.isEmpty()){
+	  		defaultConnectionString.setPassword(password);
+	  	}
+	  	if(user != null && !user.isEmpty()){
+	  		defaultConnectionString.setUser(user);
+	  	}
+	  	defaultConnectionString.setShowDialog(password == null || password.isEmpty() || user == null || user.isEmpty());
+	  }
 	  resetEnvironment();
   }
   
-  public boolean isPaswordNeeded() {
-	  return askForPassword && (this.password == null || this.password.isEmpty());
-  }
+  public List<ConnectionStringBean> getListOfConnectiononWhoNeedDialog() {
+  	List<ConnectionStringBean> ret = new ArrayList<>();
 
-  protected String getDefaultConnectionString(){
-  	String ret = defaultConnectionString;
-	  boolean firstOption = true;
-	  if(this.user != null && !this.user.isEmpty()){
-		  ret += firstOption ? "?" : "&";
-		  firstOption = false;
-		  ret += USER_CONNECTION_KEY + "=" + this.user;
+  	if(this.defaultConnectionString.isShowDialog()){
+  		ret.add(new ConnectionStringBean(null, defaultConnectionString.getConnectionString(), defaultConnectionString.getUser()));
+  	}
+  	
+  	if(this.namedConnectionString != null){
+  		for (Entry<String, ConnectionStringHolder> cbh : namedConnectionString.entrySet()) {
+  			if(cbh.getValue().isShowDialog()){
+  				ret.add(new ConnectionStringBean(cbh.getKey(), cbh.getValue().getConnectionString(), cbh.getValue().getUser()));
+  			}
+  		}
 	  }
-	  if(this.password != null && !this.password.isEmpty()){
-		  ret += firstOption ? "?" : "&";
-		  firstOption = false;
-		  ret += PASSWORD_CONNECTION_KEY + "=" + this.password;
-	  }
+	  
 	  return ret;
   }
   

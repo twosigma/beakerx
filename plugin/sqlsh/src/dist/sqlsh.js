@@ -45,7 +45,7 @@ define(function(require, exports, module) {
           });
     },
     
-    evaluateWithPassword : function(code, modelOutput, refreshObj) {
+    evaluateWithPassword : function(code, modelOutput, refreshObj, deferred) {
     	if (SqlShCancelFunction) {
     		deferred.reject("An evaluation is already in progress");
     		return deferred.promise;
@@ -94,31 +94,99 @@ define(function(require, exports, module) {
     evaluate: function(code, modelOutput, refreshObj) {
     	var self = this;
     	var deferred = Q.defer();
-    	return isPaswordNeeded(self.settings.shellID).success(function(ret) {
-    		if(ret){
-    			bkHelper.show2ButtonModal(
-    					'Enter the password <input type="password" id="password_field" ng-model="self.password"></input>',
-    					'Enter the password for database',
-    					function() {
-    						var myEl = angular.element( document.querySelector( '#password_field' ) );
-    						return setShellPassword(self.settings.shellID, myEl.val()).success(function() {
-    							self.evaluateWithPassword(code, modelOutput,refreshObj);
-    				          return deferred.promise;
-    					  })
-    				  },
-    				  function() {
-    				  	console.log("Cancel");
-    				  	bkHelper.printCanceledAnsver(modelOutput);
-    				  	return deferred.promise;
-    				  },
-    				  "Ok", "Cancel", "", ""); 
+    	return getListOfConnectiononWhoNeedDialog(self.settings.shellID).success(function(ret) {
+    		
+    		if(ret.length > 0){
+    			for (var i=0; i<ret.length; i++) {
+    				
+    				var html = '<h3>Enter data for</h3>';
+    				if(ret[i].connectionName == null){
+    					html += '<input id="connection_name" type="hidden"/>';
+    				}else{
+    					html += '<input id="connection_name" type="hidden" value="' + ret[i].connectionName + '" />';
+    				}
+    				html += '<table class="table">';
+    				html += '  <tbody>';
+    				html += '    <tr>';
+    				html += '      <td>';
+    				if(ret[i].connectionName == null){
+    					html += 'Default data source';
+    				}else{
+    					html += 'Named data source';
+    				}
+    				html += '      </td>';
+    				html += '      <td>';
+    				if(ret[i].connectionName != null){
+    					html += ret[i].connectionName;
+    				}
+    				html += '      </td>';
+    				html += '    </tr>';
+    				html += '    <tr>';
+    				html += '      <td>';
+    				html += 'Connection string';
+    				html += '      </td>';
+    				html += '      <td>';
+    				html += ret[i].connectionString;
+    				html += '      </td>';
+    				html += '    </tr>';
+    				html += '    <tr>';
+    				html += '      <td>';
+    				html += 'User';
+    				html += '      </td>';
+    				html += '      <td>';
+  					if(ret[i].user == null){
+  						html += '<input type="text" id="user_field" class="field" placeholder="User"></input>';
+  					}else{
+  						html += '<input type="text" id="user_field" value="' + ret[i].user + '" class="field" placeholder="User"></input>';
+  					}
+    				html += '      </td>';
+    				html += '    </tr>';
+    				html += '    <tr>';
+    				html += '      <td>';
+    				html += 'Password';
+    				html += '      </td>';
+    				html += '      <td>';
+    				html += '<input type="password" id="password_field" placeholder="Password"></input>';
+    				html += '      </td>';
+    				html += '    </tr>';
+    				html += '  </tbody>';
+    				html += '</table>';
+    				
+      			bkHelper.show2ButtonModal(
+      					html,
+      					'Enter data for database',
+      					function() {
+      						
+      						var passwordEL = angular.element( document.querySelector( '#password_field' ) );
+      						var userEL = angular.element( document.querySelector( '#user_field' ) );
+      						var connectionEL = angular.element( document.querySelector( '#connection_name' ) );
+      						
+      						return setShellUserPassword(
+      								self.settings.shellID,
+      								connectionEL.val(),
+      								userEL.val(),
+      								passwordEL.val()
+      						).success(function() {
+      							self.evaluateWithPassword(code, modelOutput,refreshObj, deferred);
+      							return deferred.promise;
+      						})
+      				  },
+      				  function() {
+      				  	bkHelper.printCanceledAnsver(modelOutput);
+      				  	return deferred.promise;
+      				  },
+      				  "Ok", "Cancel", "", ""); 
+    			}
     		}else{
-    			self.evaluateWithPassword(code, modelOutput,refreshObj);
+    			self.evaluateWithPassword(code, modelOutput,refreshObj, deferred);
     			return deferred.promise;
     		}
-    });
+    	});
 
     },
+    
+    
+    
     interrupt: function() {
       this.cancelExecution();
     },
@@ -180,9 +248,7 @@ define(function(require, exports, module) {
         shellId: this.settings.shellID,
         classPath: this.settings.classPath,
         defaultDatasource: this.settings.defaultDatasource,
-        datasources: this.settings.datasources,
-        user: this.settings.user,
-        askForPassword: this.settings.askForPassword
+        datasources: this.settings.datasources
        }).success(function() {
         if (cb && _.isFunction(cb)) {
           cb();
@@ -197,8 +263,6 @@ define(function(require, exports, module) {
       defaultDatasource:  {type: "settableString", action: "updateShell", name: "Default data source"},
       datasources:  {type: "settableString", action: "updateShell", name: "Named data sources"},
       classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
-      user:   {type: "settableString", action: "updateShell", name: "User"},
-      askForPassword:   {type: "settableBoolean", action: "updateShell", name: "Ask for wassword"},
       reset:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
       killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
     },
@@ -208,15 +272,17 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
 
   
-  var setShellPassword = function(shellID, password) {
-      return bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/setShellPassword"), {
+  var setShellUserPassword = function(shellID, namedConnection, user, password) {
+      return bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/setShellUserPassword"), {
           shellId: shellID,
+          namedConnection: namedConnection,
+          user: user,
           password:password
          })
   }
   
-  var isPaswordNeeded = function(shellID) {
-      return bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/isPaswordNeeded"), {
+  var getListOfConnectiononWhoNeedDialog = function(shellID) {
+      return bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/getListOfConnectiononWhoNeedDialog"), {
           shellId: shellID
          }).success(function(ret) {
           return ret;

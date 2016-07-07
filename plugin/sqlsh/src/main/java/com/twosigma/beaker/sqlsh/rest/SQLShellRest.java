@@ -17,6 +17,7 @@ package com.twosigma.beaker.sqlsh.rest;
 
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.sqlsh.utils.ConnectionStringBean;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -141,35 +142,35 @@ public class SQLShellRest {
             @FormParam("shellId") String shellId,
             @FormParam("classPath") String classPath,
             @FormParam("defaultDatasource") String defaultDatasource,
-            @FormParam("datasources") String datasorces,
-            @FormParam("user") String user,
-            @FormParam("askForPassword") boolean askForPassword)
+            @FormParam("datasources") String datasorces)
             throws MalformedURLException, IOException {
         if (!this.shells.containsKey(shellId)) {
             return;
         }
-        this.shells.get(shellId).setShellOptions(classPath, defaultDatasource, datasorces, user, askForPassword);
+        this.shells.get(shellId).setShellOptions(classPath, defaultDatasource, datasorces);
     }
     
     @POST
-    @Path("isPaswordNeeded")
-    public Boolean isPaswordNeeded(
+    @Path("getListOfConnectiononWhoNeedDialog")
+    public List<ConnectionStringBean> getListOfConnectiononWhoNeedDialog(
     		@FormParam("shellId") String shellId){
     	if (!this.shells.containsKey(shellId)) {
     		return null;
     	}
-    	return this.shells.get(shellId).isPaswordNeeded();
+    	return this.shells.get(shellId).getListOfConnectiononWhoNeedDialog();
     }
     
     @POST
-    @Path("setShellPassword")
-    public void setShellPassword(
+    @Path("setShellUserPassword")
+    public void setShellUserPassword(
     		@FormParam("shellId") String shellId,
+    		@FormParam("namedConnection") String namedConnection,
+    		@FormParam("user") String user,
     		@FormParam("password") String password){
     	if (!this.shells.containsKey(shellId)) {
     		return;
     	}
-    	this.shells.get(shellId).setShellPassword(password);
+    	this.shells.get(shellId).setShellUserPassword(namedConnection, user, password);
     }
 
 }

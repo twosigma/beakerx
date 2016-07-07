@@ -434,15 +434,19 @@ class Beaker:
             raise NameError(reply)
 
     def get(self, var):
-        req = urllib.request.Request('http://' + self.core_url + '/rest/namespace/get?' +
-                                     urllib.parse.urlencode({
-                    'name': var,
-                    'session':self.session_id}))
-        conn = self._beaker_url_opener.open(req)
-        result = json.loads(conn.read().decode())
+        result = self._getRaw(var)
         if not result['defined']:
             raise NameError('name \'' + var + '\' is not defined in notebook namespace')
         return transformBack(result['value'])
+
+    def _getRaw(self, var):
+        req = urllib.request.Request('http://' + self.core_url + '/rest/namespace/get?' +
+                                     urllib.parse.urlencode({
+                                         'name': var,
+                                         'session':self.session_id}))
+        conn = self._beaker_url_opener.open(req)
+        result = json.loads(conn.read().decode())
+        return result
 
     def set_session(self, id):
         self.session_id = id
@@ -453,6 +457,12 @@ class Beaker:
 
     def set(self, var, val):
         return self.set4(var, val, False, True)
+
+    def unset(self, var):
+        return self.set4(var, None, True, True)
+
+    def isDefined(self, var):
+        return self._getRaw(var)['defined']
 
     def createOutputContainer(self):
         return OutputContainer()
@@ -559,3 +569,9 @@ class Beaker:
 
     def __getattr__(self, name):
         return self.get(name)
+
+    def __contains__(self, name):
+        return self.isDefined(name)
+
+    def __delattr__(self, name):
+        return self.unset(name)

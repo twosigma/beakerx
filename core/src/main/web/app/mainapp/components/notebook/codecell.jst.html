@@ -16,11 +16,11 @@
 
 <div class='evaluator' evaluator-type="{{ cellmodel.evaluator }}" ng-class="{
     'evaluator-ready': cellmodel.evaluatorReader,
-    'locked': isLocked(),
+    'locked': isLocked()||isLockedCell(),
     'empty': isEmpty()
   }">
   <div class="bkcell code-cell-area">
-    <div class="code-cell-input" ng-mousedown="backgroundClick($event)" ng-hide-ex="isLocked()" after-hide="afterHide()" after-show="afterShow()" ng-class="{'input-hidden': cellmodel.input.hidden}">
+    <div class="code-cell-input" ng-mousedown="backgroundClick($event)" ng-hide-ex="isLocked() || isLockedCell()" after-hide="afterHide()" after-show="afterShow()" ng-class="{'input-hidden': cellmodel.input.hidden}">
       <div class="code-cell-input-content">
         <bk-code-cell-input-menu class="advanced-hide"></bk-code-cell-input-menu>
         <div ng-mousedown="$event.stopPropagation()">

@@ -1209,13 +1209,21 @@
             bkHelper.resetAllKernelsInNotebook();
             return false;
           } else if (bkHelper.isRaiseSectionLevelShortcut(e)) {
+            bkSessionManager.setNotebookModelEdited(true);
             bkUtils.fcall(function() {
               bkHelper.raiseSectionLevel();
             });
             return false;
           } else if (bkHelper.isLowerSectionLevelShortcut(e)) {
+            bkSessionManager.setNotebookModelEdited(true);
             bkUtils.fcall(function() {
               bkHelper.lowerSectionLevel();
+            });
+            return false;
+          } else if (bkHelper.isInsertAfterSectionShortcut(e)){
+            bkSessionManager.setNotebookModelEdited(true);
+            bkUtils.fcall(function(){
+              bkHelper.insertNewSectionWithLevel(String.fromCharCode(e.which));
             });
             return false;
           } else if (bkUtils.isElectron) {

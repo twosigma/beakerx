@@ -138,6 +138,14 @@
         }
         return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 188);// Cmd + Shift + <
       },
+      isInsertAfterSectionShortcut: function(e) {
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && e.altKey && !e.shiftKey &&
+            ((e.which>=49) && (e.which<=52));// alt + Shift + 1...4
+        }
+        return e.ctrlKey && e.altKey && !e.shiftKey &&
+          ((e.which>=49) && (e.which<=52));// alt + Shift + 1...
+      },
 
       //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
       // Firefox 1.0+
@@ -1002,6 +1010,22 @@
             notebookCellOp.reset();
           }
         }
+      },
+      insertNewSectionWithLevel: function (level) {
+        bkSessionManager.setNotebookModelEdited(true);
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        var newCell;
+        if (currentCellId){
+          var cell = notebookCellOp.getCell(currentCellId);
+          newCell = bkSessionManager.getNotebookNewCellFactory().newSectionCell(level);
+          notebookCellOp.insertAfter(currentCellId, newCell);
+        } else {
+          newCell = bkSessionManager.getNotebookNewCellFactory().newSectionCell(level);
+          notebookCellOp.insertFirst(newCell);
+        }
+        bkUtils.refreshRootScope();
+        this.go2Cell(newCell.id);
       },
       showPublishForm: function() {
         return bkCoreManager.showPublishForm();

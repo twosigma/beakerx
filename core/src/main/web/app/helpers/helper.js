@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, $uibModal,  bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
+  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -74,9 +74,7 @@
       defaultEvaluator = data;
     });
 
-
-
-      var bkHelper = {
+    var bkHelper = {
 
       isNewNotebookShortcut: function (e){
         if (this.isMacOS){
@@ -138,6 +136,15 @@
         }
         return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 188);// Cmd + Shift + <
       },
+      isInsertAfterSectionShortcut: function(e) {
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && e.altKey && !e.shiftKey &&
+            ((e.which>=49) && (e.which<=52));// alt + Shift + 1...4
+        }
+        return e.ctrlKey && e.altKey && !e.shiftKey &&
+          ((e.which>=49) && (e.which<=52));// alt + Shift + 1...4
+      },
+
 
       //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
       // Firefox 1.0+
@@ -150,8 +157,8 @@
       guid: function () {
         function s4() {
           return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
+          .toString(16)
+          .substring(1);
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
           s4() + '-' + s4() + s4() + s4();
@@ -355,7 +362,7 @@
             // Format this accordingly!
             var routeParams = {
               uri: path
-            };
+            }
             if (uriType) {
               routeParams.type = uriType;
             }
@@ -368,10 +375,10 @@
             bkHelper.openWindow(bkUtils.getBaseUrl() + '/open?' + jQuery.param(routeParams), 'notebook');
           });
         } else {
-            bkCoreManager.showFileOpenDialog(ext).then(function(selected){
-              if (selected && selected.uri)
-                bkHelper.openNotebook(selected.uri, uriType, readOnly, format);
-            });
+          bkCoreManager.showFileOpenDialog(ext).then(function(selected) {
+            if (selected && selected.uri)
+              bkHelper.openNotebook(selected.uri, uriType, readOnly, format);
+          });
         }
       },
       Electron: bkElectron,
@@ -459,7 +466,7 @@
           return false;
         }
       },
-        saveNotebook: function() {
+      saveNotebook: function() {
         if (getCurrentApp() && getCurrentApp().saveNotebook) {
           return getCurrentApp().saveNotebook();
         } else {
@@ -528,7 +535,7 @@
         } else {
           return false;
         }
-      },        
+      },
       typeset: function(element) {
         try {
           renderMathInElement(element[0], {
@@ -541,10 +548,10 @@
           });
         } catch(err) {
           bkHelper.show1ButtonModal(err.message + '<br>See: ' +
-              '<a target="_blank" href="http://khan.github.io/KaTeX/">KaTeX website</a> and its ' +
-              '<a target="_blank" href="https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX">' +
-              'list of supported functions</a>.',
-              "KaTex error");
+            '<a target="_blank" href="http://khan.github.io/KaTeX/">KaTeX website</a> and its ' +
+            '<a target="_blank" href="https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX">' +
+            'list of supported functions</a>.',
+            "KaTex error");
         }
       },
       markupCellContent: function(cellContent, evaluateFn) {
@@ -598,15 +605,15 @@
             markIt(cellContent);
           } else {
             evaluateFn("JavaScript", results[index][1]).then(
-                function (r) {
-                  cellContent = cellContent.replace(results[index][0], r);
-                },
-                function (r) {
-                  cellContent = cellContent.replace(results[index][0], "<font color='red'>" + "Error: **" + r.object[0] + "**" + "</font>");
-                }
+              function (r) {
+                cellContent = cellContent.replace(results[index][0], r);
+              },
+              function (r) {
+                cellContent = cellContent.replace(results[index][0], "<font color='red'>" + "Error: **" + r.object[0] + "**" + "</font>");
+              }
             ).finally(function () {
-                  evaluateCode(index + 1);
-                }
+                evaluateCode(index + 1);
+              }
             );
           }
         };
@@ -759,15 +766,15 @@
           template = window.beakerRegister.evaluatorStartFailedMessage;
         } else {
           template = "<p>Failed to start ${pluginId}.</p>\n" +
-                    "<p>Did you install it according to the instructions\n" +
-                    "on <a target=\"_blank\" href=\"http://beakernotebook.com/getting-started#${pluginId}\">BeakerNotebook.com</a>?\n" +
-                    "</p>\n" +
-                    "<p>If you already have it, then <a target=\"_blank\"\n" +
-                    "href=\"https://github.com/twosigma/beaker-notebook/wiki/Language-Preferences\">edit\n" +
-                    "your preferences file</a> to help Beaker find it on your system, and\n" +
-                    "then restart Beaker and try again.\n" +
-                    "</p>\n" +
-                    "<p>Any other languages in your notebook should still work.</p>";
+            "<p>Did you install it according to the instructions\n" +
+            "on <a target=\"_blank\" href=\"http://beakernotebook.com/getting-started#${pluginId}\">BeakerNotebook.com</a>?\n" +
+            "</p>\n" +
+            "<p>If you already have it, then <a target=\"_blank\"\n" +
+            "href=\"https://github.com/twosigma/beaker-notebook/wiki/Language-Preferences\">edit\n" +
+            "your preferences file</a> to help Beaker find it on your system, and\n" +
+            "then restart Beaker and try again.\n" +
+            "</p>\n" +
+            "<p>Any other languages in your notebook should still work.</p>";
         }
         return template.split('${pluginId}').join(pluginId);
       },
@@ -890,8 +897,8 @@
       setFileSaver: function(uriType, fileSaver) {
         return bkCoreManager.setFileSaver(uriType, fileSaver);
       },
-      showFileSaveDialog: function(data) {
-        return bkCoreManager.showFileSaveDialog(data);
+      showDefaultSavingFileChooser: function(initPath, saveButtonTitle) {
+        return bkCoreManager.showDefaultSavingFileChooser(initPath, saveButtonTitle);
       },
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();
@@ -907,12 +914,12 @@
       },
       show2ButtonModal: function(msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt) {
         return bkCoreManager.show2ButtonModal(
-            msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt);
+          msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt);
       },
       show3ButtonModal: function(
-          msgBody, msgHeader, yesCB, noCB, cancelCB, yesBtnTxt, noBtnTxt, cancelBtnTxt) {
+        msgBody, msgHeader, yesCB, noCB, cancelCB, yesBtnTxt, noBtnTxt, cancelBtnTxt) {
         return bkCoreManager.show3ButtonModal(
-            msgBody, msgHeader, yesCB, noCB, cancelCB, yesBtnTxt, noBtnTxt, cancelBtnTxt);
+          msgBody, msgHeader, yesCB, noCB, cancelCB, yesBtnTxt, noBtnTxt, cancelBtnTxt);
       },
       showMultipleButtonsModal: function(params) {
         return bkCoreManager.showMultipleButtonsModal(params);
@@ -981,7 +988,8 @@
         bkUtils.refreshRootScope();
         this.go2Cell(newCell.id);
       },
-      raiseSectionLevel: function () {
+      raiseSectionLevel: function() {
+        bkSessionManager.setNotebookModelEdited(true);
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
         if (currentCellId) {
@@ -992,7 +1000,8 @@
           }
         }
       },
-      lowerSectionLevel: function () {
+      lowerSectionLevel: function() {
+        bkSessionManager.setNotebookModelEdited(true);
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
         if (currentCellId) {
@@ -1002,6 +1011,22 @@
             notebookCellOp.reset();
           }
         }
+      },
+      insertNewSectionWithLevel: function(level) {
+        bkSessionManager.setNotebookModelEdited(true);
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        var newCell;
+        if (currentCellId){
+          var cell = notebookCellOp.getCell(currentCellId);
+          newCell = bkSessionManager.getNotebookNewCellFactory().newSectionCell(level);
+          notebookCellOp.insertAfter(currentCellId, newCell);
+        } else {
+          newCell = bkSessionManager.getNotebookNewCellFactory().newSectionCell(level);
+          notebookCellOp.insertFirst(newCell);
+        }
+        bkUtils.refreshRootScope();
+        this.go2Cell(newCell.id);
       },
       showPublishForm: function() {
         return bkCoreManager.showPublishForm();
@@ -1032,10 +1057,12 @@
 
         for(var i = 0; i < cells.length; i++){
           var cell = cells[i];
-          if (cell.type === 'section') { continue; }
-          var elem = $("bk-cell[cellid='" + cell.id +"']");
-          var body = elem.find( "bk-output-display[type='Html'] div div" );
-          if(body.length > 0){
+          if (cell.type === 'section'){
+            continue;
+          }
+          var elem = $("bk-cell[cellid='" + cell.id + "']");
+          var body = elem.find("bk-output-display[type='Html'] div div");
+          if (body.length>0){
 
             // 2.5) search for any canvas elements in body and replace each with an image.
             body = convertCanvasToImage(body[0]);
@@ -1118,15 +1145,15 @@
       // language plugin utilities
       setupProgressOutput: function(modelOutput) {
         var progressObj = {
-            type: "BeakerDisplay",
-            innertype: "Progress",
-            object: {
-              message: "submitting ...",
-              startTime: new Date().getTime(),
-              outputdata: [],
-              payload: undefined
-            }
-          };
+          type: "BeakerDisplay",
+          innertype: "Progress",
+          object: {
+            message: "submitting ...",
+            startTime: new Date().getTime(),
+            outputdata: [],
+            payload: undefined
+          }
+        };
         modelOutput.result = progressObj;
       },
 
@@ -1141,11 +1168,11 @@
         // XXX should not be needed but when progress meter is shown at same time
         // display is broken without this, you get "OUTPUT" instead of any lines of text.
         this.refreshRootScope();
-      },  
+      },
       receiveEvaluationUpdate: function(modelOutput, evaluation, pluginName, shellId) {
         var beakerObj = bkHelper.getBeakerObject().beakerObj;
         var maxNumOfLines = beakerObj.prefs
-            && beakerObj.prefs.outputLineLimit ? beakerObj.prefs.outputLineLimit : 1000;
+        && beakerObj.prefs.outputLineLimit ? beakerObj.prefs.outputLineLimit : 1000;
 
         if (modelOutput.result !== undefined)
           modelOutput.result.status = evaluation.status;
@@ -1245,7 +1272,11 @@
             };
           } else {
             // wrapper display with standard output and error
-            modelOutput.result = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : { type: "BeakerDisplay", innertype: "Error", object: evaluation.payload } };
+            modelOutput.result = {
+              type: "Results",
+              outputdata: modelOutput.result.object.outputdata,
+              payload: {type: "BeakerDisplay", innertype: "Error", object: evaluation.payload}
+            };
           }
         } else if (evaluation.status === "RUNNING") {
           if (evaluation.message === undefined)
@@ -1259,69 +1290,69 @@
       },
       getUpdateService: function() {
         var cometdUtil = {
-            initialized: false,
-            subscriptions: { },
-            init: function(pluginName, serviceBase) {
-              if (!this.initialized) {
-                this.cometd = new $.Cometd();
-                this.cometd.init(bkUtils.serverUrl(serviceBase + "/cometd/"));
-                var self = this;
-                this.hlistener = this.cometd.addListener('/meta/handshake', function(message) {
-                  if (window.bkDebug) console.log(pluginName+'/meta/handshake');
-                  if (message.successful) {
-                    this.cometd.batch(function() {
-                      var k;
-                      for (k in Object.keys(self.subscriptions))
-                      {
-                        self.subscriptions[k] = self.cometd.resubscribe(self.subscriptions[k]);
-                      }
-                    });
-                  }
-                });
-                this.initialized = true;
-              }
-            },
-            destroy: function() {
-              if (this.initialized) {
-                this.cometd.removeListener(this.hlistener);
-                var k;
-                for (k in Object.keys(this.subscriptions))
-                {
-                  this.cometd.unsubscribe(this.subscriptions[k]);
+          initialized: false,
+          subscriptions: { },
+          init: function(pluginName, serviceBase) {
+            if (!this.initialized) {
+              this.cometd = new $.Cometd();
+              this.cometd.init(bkUtils.serverUrl(serviceBase + "/cometd/"));
+              var self = this;
+              this.hlistener = this.cometd.addListener('/meta/handshake', function(message) {
+                if (window.bkDebug) console.log(pluginName+'/meta/handshake');
+                if (message.successful) {
+                  this.cometd.batch(function() {
+                    var k;
+                    for (k in Object.keys(self.subscriptions))
+                    {
+                      self.subscriptions[k] = self.cometd.resubscribe(self.subscriptions[k]);
+                    }
+                  });
                 }
-              }
+              });
               this.initialized = true;
-              this.cometd = null;
-              this.subscriptions = { };
-            },
-            subscribe: function(update_id, callback) {
-              if (!update_id)
-                return;
-              if (window.bkDebug) console.log('subscribe to '+update_id);
-              if (this.subscriptions[update_id]) {
-                this.cometd.unsubscribe(this.subscriptions[update_id]);
-                this.subscriptions[update_id] = null;
-              }
-              var cb = function(ret) {
-                callback(ret.data);
-              };
-              var s = this.cometd.subscribe('/object_update/' + update_id, cb);
-              this.subscriptions[update_id] = s;
-            },
-            unsubscribe: function(update_id) {
-              if (!update_id)
-                return;
-              if (window.bkDebug) console.log('unsubscribe from '+update_id);
-              if (this.subscriptions[update_id]) {
-                this.cometd.unsubscribe(this.subscriptions[update_id]);
-                this.subscriptions[update_id] = null;
-              }
-            },
-            issubscribed: function(update_id) {
-              if (!update_id)
-                return false;
-              return this.subscriptions[update_id] !== null;
             }
+          },
+          destroy: function() {
+            if (this.initialized) {
+              this.cometd.removeListener(this.hlistener);
+              var k;
+              for (k in Object.keys(this.subscriptions))
+              {
+                this.cometd.unsubscribe(this.subscriptions[k]);
+              }
+            }
+            this.initialized = true;
+            this.cometd = null;
+            this.subscriptions = { };
+          },
+          subscribe: function(update_id, callback) {
+            if (!update_id)
+              return;
+            if (window.bkDebug) console.log('subscribe to '+update_id);
+            if (this.subscriptions[update_id]) {
+              this.cometd.unsubscribe(this.subscriptions[update_id]);
+              this.subscriptions[update_id] = null;
+            }
+            var cb = function(ret) {
+              callback(ret.data);
+            };
+            var s = this.cometd.subscribe('/object_update/' + update_id, cb);
+            this.subscriptions[update_id] = s;
+          },
+          unsubscribe: function(update_id) {
+            if (!update_id)
+              return;
+            if (window.bkDebug) console.log('unsubscribe from '+update_id);
+            if (this.subscriptions[update_id]) {
+              this.cometd.unsubscribe(this.subscriptions[update_id]);
+              this.subscriptions[update_id] = null;
+            }
+          },
+          issubscribed: function(update_id) {
+            if (!update_id)
+              return false;
+            return this.subscriptions[update_id] !== null;
+          }
         };
         return cometdUtil;
       },
@@ -1368,7 +1399,7 @@
         cm.refresh();
       },
 
-      elfinder: function($elfinder, elfinderOptions){
+      elfinder: function($elfinder, elfinderOptions) {
         var elfinder;
         elFinder.prototype._options.commands.push('copypath');
         elFinder.prototype._options.contextmenu.files.push('copypath');
@@ -1377,8 +1408,8 @@
         elFinder.prototype.commands.copypath = function() {
           this.exec = function(hashes) {
             bkCoreManager.show1ButtonModal(
-              "<p><input type='text' autofocus onfocus='this.select();' style='width: 100%' value='"+elfinder.path(hashes[0])+"'></p>",
-              "Copy to clipboard: "+ (bkHelper.isMacOS ? "&#x2318;" : "Ctrl") + "+C");
+              "<p><input type='text' autofocus onfocus='this.select();' style='width: 100%' value='" + elfinder.path(hashes[0]) + "'></p>",
+              "Copy to clipboard: " + (bkHelper.isMacOS ? "&#x2318;" : "Ctrl") + "+C");
 
           };
           this.getstate = function() {
@@ -1394,16 +1425,16 @@
       base64Encode: function(str) {
         var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
         var out = "", i = 0, len = str.length, c1, c2, c3;
-        while (i < len) {
+        while(i<len) {
           c1 = str.charCodeAt(i++) & 0xff;
-          if (i == len) {
+          if (i == len){
             out += CHARS.charAt(c1 >> 2);
             out += CHARS.charAt((c1 & 0x3) << 4);
             out += "==";
             break;
           }
           c2 = str.charCodeAt(i++);
-          if (i == len) {
+          if (i == len){
             out += CHARS.charAt(c1 >> 2);
             out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
             out += CHARS.charAt((c2 & 0xF) << 2);
@@ -1419,36 +1450,36 @@
         return out;
       },
 
-      getVolume : function(elfinder)  {
+      getVolume: function(elfinder) {
         var cwd = elfinder.cwd();
         var phash = cwd.phash;
         var file = elfinder.file(cwd.hash);
-        while (phash) {
+        while(phash) {
           file = elfinder.file(phash);
           phash = file.phash;
         }
         return file;
       },
 
-      path2hash : function (elfinder, path){
+      path2hash: function(elfinder, path) {
 
         var file = bkHelper.getVolume(elfinder);
 
-        var _hash_ = function (path) {
+        var _hash_ = function(path) {
           path = path.replace(file.name, '');
           var base = bkHelper.base64Encode(path);
           return file.hash + base
-              .replace(/\+/g, "_P")
-              .replace(/\-/g, "_M")
-              .replace(/\\/g, "_S")
-              .replace(/\./g, "_D")
-              .replace(/=/g, "_E");
+            .replace(/\+/g, "_P")
+            .replace(/\-/g, "_M")
+            .replace(/\\/g, "_S")
+            .replace(/\./g, "_D")
+            .replace(/=/g, "_E");
         };
 
-        var _cached_ = function(hash){
+        var _cached_ = function(hash) {
           var files = elfinder.files();
           var _hashes = Object.keys(files);
-          for (var i=0; i< _hashes.length; i++){
+          for(var i = 0; i<_hashes.length; i++){
             var _hash = _hashes[i];
             if (_hash === hash)
               return true;
@@ -1459,7 +1490,7 @@
         var hashes = [];
         hashes.push(hash);
 
-        while(!_cached_(hash)){
+        while(!_cached_(hash)) {
           path = path.substring(0, path.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/'));
           hash = _hash_(path);
           hashes.push(hash);
@@ -1467,7 +1498,7 @@
         return hashes;
       },
 
-      elfinderOptions: function (getFileCallback, selectCallback, openCallback, mime, showHiddenFiles) {
+      elfinderOptions: function(getFileCallback, selectCallback, openCallback, mime, showHiddenFiles) {
 
         return {
           url: '../beaker/connector',
@@ -1476,16 +1507,16 @@
           onlyMimes: mime,
           dragUploadAllow: false,
           showHiddenFiles: showHiddenFiles,
-          getFileCallback: function (url) {
+          getFileCallback: function(url) {
             if (getFileCallback)
               getFileCallback(url);
           },
           handlers: {
-            select: function (event, elfinderInstance) {
+            select: function(event, elfinderInstance) {
               if (selectCallback)
                 selectCallback(event, elfinderInstance);
             },
-            open: function (event, elfinderInstance) {
+            open: function(event, elfinderInstance) {
               if (openCallback)
                 openCallback(event, elfinderInstance);
             }

@@ -22,26 +22,26 @@
 (function() {
   'use strict';
   var module = angular.module('bk.mainApp', [
-                                             'ngRoute',
-                                             'bk.utils',
-                                             'bk.commonUi',
-                                             'bk.core',
-                                             'bk.globals',
-                                             'bk.session',
-                                             'bk.sessionManager',
-                                             'bk.notebookCellModelManager',
-                                             'bk.menuPluginManager',
-                                             'bk.cellMenuPluginManager',
-                                             'bk.notebookVersionManager',
-                                             'bk.evaluatorManager',
-                                             'bk.evaluatePluginManager',
-                                             'bk.evaluateJobManager',
-                                             'bk.notebookRouter',
-                                             'bk.notebook',
-                                             'bk.electron',
-                                             'bk.connectionManager',
-                                             'bk.fileManipulation'
-                                             ]);
+    'ngRoute',
+    'bk.utils',
+    'bk.commonUi',
+    'bk.core',
+    'bk.globals',
+    'bk.session',
+    'bk.sessionManager',
+    'bk.notebookCellModelManager',
+    'bk.menuPluginManager',
+    'bk.cellMenuPluginManager',
+    'bk.notebookVersionManager',
+    'bk.evaluatorManager',
+    'bk.evaluatePluginManager',
+    'bk.evaluateJobManager',
+    'bk.notebookRouter',
+    'bk.notebook',
+    'bk.electron',
+    'bk.connectionManager',
+    'bk.fileManipulation'
+  ]);
 
   /**
    * bkApp
@@ -49,23 +49,23 @@
    * - menus + plugins + notebook(notebook model + evaluator)
    */
   module.directive('bkMainApp', function(
-      $timeout,
-      $sessionStorage,
-      $rootScope,
-      bkUtils,
-      bkCoreManager,
-      bkSession,
-      bkSessionManager,
-      bkMenuPluginManager,
-      bkNotebookCellModelManagerFactory,
-      bkCellMenuPluginManager,
-      bkNotebookVersionManager,
-      bkEvaluatorManager,
-      bkEvaluatePluginManager,
-      bkEvaluateJobManager,
-      bkElectron,
-      $location,
-      bkFileManipulation) {
+    $timeout,
+    $sessionStorage,
+    $rootScope,
+    bkUtils,
+    bkCoreManager,
+    bkSession,
+    bkSessionManager,
+    bkMenuPluginManager,
+    bkNotebookCellModelManagerFactory,
+    bkCellMenuPluginManager,
+    bkNotebookVersionManager,
+    bkEvaluatorManager,
+    bkEvaluatePluginManager,
+    bkEvaluateJobManager,
+    bkElectron,
+    $location,
+    bkFileManipulation) {
 
     return {
       restrict: 'E',
@@ -153,9 +153,9 @@
                 if (value.type === "action") {
                   actionItems.push({
                     name: value.name ? value.name : value.action,
-                        action: function() {
-                          evaluator.perform(key);
-                        }
+                    action: function() {
+                      evaluator.perform(key);
+                    }
                   });
                 }
               });
@@ -169,10 +169,9 @@
           });
         };
 
-        var loadNotebook = (function() {
-          var loadNotebookModelAndResetSession = function(
-              notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId,
-              isExistingSession) {
+        var loadNotebook = (function(){
+          var loadNotebookModelAndResetSession = function(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId,
+                                                          isExistingSession){
             // check if the notebook has to load plugins from an external source
             var r = new RegExp('^(?:[a-z]+:)?//', 'i');
             if (notebookModel && notebookModel.evaluators) {
@@ -208,20 +207,19 @@
           var promptIfInsecure = function(urlList) {
             var deferred = bkUtils.newDeferred();
             bkCoreManager.show2ButtonModal(
-                "This notebook is asking to load the following plugins from external servers:<br/>" + urlList+
-                " <br/>How do you want to handle these external plugins?",
-                "Warning: external plugins detected",
-                function() {
-                  deferred.reject();
-                },
-                function() {
-                  deferred.resolve();
-                }, "Disable", "Load", "", "btn-danger");
+              "This notebook is asking to load the following plugins from external servers:<br/>" + urlList+
+              " <br/>How do you want to handle these external plugins?",
+              "Warning: external plugins detected",
+              function() {
+                deferred.reject();
+              },
+              function() {
+                deferred.resolve();
+              }, "Disable", "Load", "", "btn-danger");
             return deferred.promise;
           };
-          var _loadNotebookModelAndResetSession = function(
-              notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId,
-              isExistingSession) {
+          var _loadNotebookModelAndResetSession = function(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId,
+                                                           isExistingSession){
 
             showLoadingStatusMessage("Loading notebook");
             $scope.loading = true;
@@ -242,7 +240,7 @@
                       } else if(bkUtils.beginsWith(name,"Latex")) {
                         notebookModel.cells[i].evaluator = "TeX";
                       } else if(bkUtils.beginsWith(name,"TeX")) {
-                          notebookModel.cells[i].evaluator = "TeX";
+                        notebookModel.cells[i].evaluator = "TeX";
                       } else if(bkUtils.beginsWith(name,"JavaScript")) {
                         notebookModel.cells[i].evaluator = "JavaScript";
                       } else if(bkUtils.beginsWith(name,"Groovy")) {
@@ -285,8 +283,8 @@
             sessionId = bkSessionManager.setSessionId(sessionId);
 
             bkSessionManager.setup(
-                notebookUri, uriType, readOnly, format,
-                notebookModel, edited, sessionId);
+              notebookUri, uriType, readOnly, format,
+              notebookModel, edited, sessionId);
 
             var mustwait;
             if (!isExistingSession && bkHelper.hasCodeCell("initialization")) {
@@ -313,14 +311,14 @@
                   });
 
                   bkHelper.evaluateRoot("initialization")
-                    .then(function () {
-                      if(mustwait !== undefined)
-                        mustwait.close();
-                      }, function () {
-                        if(mustwait !== undefined)
-                          mustwait.close();
-                        bkCoreManager.show1ButtonModal("Notebook initialization failed","ERROR",null,"OK");
-                      });
+                  .then(function () {
+                    if(mustwait !== undefined)
+                      mustwait.close();
+                  }, function () {
+                    if(mustwait !== undefined)
+                      mustwait.close();
+                    bkCoreManager.show1ButtonModal("Notebook initialization failed","ERROR",null,"OK");
+                  });
                 }
               });
               clrLoadingStatusMessage("Loading notebook");
@@ -337,7 +335,9 @@
                 }).level,
                 cellCount: notebookModel.cells.length
               });
-              bkHelper.evaluateRoot("initialization").then(function () { if(mustwait !== undefined) mustwait.close(); });
+              bkHelper.evaluateRoot("initialization").then(function(){
+                if (mustwait !== undefined) mustwait.close();
+              });
             }
             clrLoadingStatusMessage("Loading notebook");
             $scope.loading = false;
@@ -377,8 +377,8 @@
                   clrLoadingStatusMessage("Opening URI");
                   $scope.loading = false;
                   bkCoreManager.show1ButtonModal("Failed to open " + target.uri +
-                      " because format " + target.format +
-                      " was not recognized.", "Open Failed", function() {
+                    " because format " + target.format +
+                    " was not recognized.", "Open Failed", function() {
                     bkCoreManager.gotoControlPanel();
                   });
                 }
@@ -388,11 +388,11 @@
                   var notebookModel = importer.import(fileContentAsString);
                   notebookModel = bkNotebookVersionManager.open(notebookModel);
                   loadNotebookModelAndResetSession(
-                      target.uri,
-                      target.type,
-                      target.readOnly,
-                      target.format,
-                      notebookModel, false, sessionId, false);
+                    target.uri,
+                    target.type,
+                    target.readOnly,
+                    target.format,
+                    notebookModel, false, sessionId, false);
                   setDocumentTitle();
                 }).catch(function(data, status, headers, config) {
                   bkHelper.show1ButtonModal(data, "Open Failed", function() {
@@ -431,7 +431,7 @@
               var notebookModel = importer.import(notebook);
               notebookModel = bkNotebookVersionManager.open(notebook);
               loadNotebookModelAndResetSession(
-                  notebookUri, uriType, readOnly, format, notebookModel, false, sessionId, false);
+                notebookUri, uriType, readOnly, format, notebookModel, false, sessionId, false);
             },
             emptyNotebook: function(sessionId) {
               var notebookModel =
@@ -443,7 +443,7 @@
               var format = null;
               notebookModel = bkNotebookVersionManager.open(notebookModel);
               loadNotebookModelAndResetSession(
-                  notebookUri, uriType, readOnly, format, notebookModel, false, sessionId, false);
+                notebookUri, uriType, readOnly, format, notebookModel, false, sessionId, false);
             },
             defaultNotebook: function(sessionId) {
               bkUtils.getDefaultNotebook().then(function(notebookModel) {
@@ -455,7 +455,7 @@
                 notebookModel = importer.import(notebookModel);
                 notebookModel = bkNotebookVersionManager.open(notebookModel);
                 loadNotebookModelAndResetSession(
-                    notebookUri, uriType, readOnly, format, notebookModel, false, sessionId, false);
+                  notebookUri, uriType, readOnly, format, notebookModel, false, sessionId, false);
               });
             }
           };
@@ -535,15 +535,15 @@
             } else {
               var notebookTitle = bkSessionManager.getNotebookTitle();
               bkHelper.show3ButtonModal(
-                  "Do you want to save " + notebookTitle + "?",
-                  "Confirm close",
-                  function() {
-                    _impl.saveNotebook().then(closeSession);
-                  },
-                  function() {
-                    closeSession();
-                  },
-                  null, "Save", "Don't save"
+                "Do you want to save " + notebookTitle + "?",
+                "Confirm close",
+                function() {
+                  _impl.saveNotebook().then(closeSession);
+                },
+                function() {
+                  closeSession();
+                },
+                null, "Save", "Don't save"
               );
             }
           };
@@ -551,13 +551,14 @@
           function closeNotebook(destroy) {
             if (bkEvaluateJobManager.isAnyInProgress() ) {
               bkCoreManager.show2ButtonModal(
-                  "All running and pending cells will be cancelled.",
-                  "Warning!",
-                  function() {
-                    bkEvaluateJobManager.cancelAll().then(function() {
+                "All running and pending cells will be cancelled.",
+                "Warning!",
+                function() {
+                  bkEvaluateJobManager.cancelAll().then(function() {
                       _impl._closeNotebook(destroy);
                     }
-                  ); });
+                  );
+                });
             } else
               _closeNotebook(destroy);
           };
@@ -822,7 +823,11 @@
                 evaluator: evaluator,
                 input: { body: code },
                 output: outcontainer
-              }).then(function() { deferred.resolve(outcontainer.result); }, function(err) { deferred.reject(err); });
+              }).then(function(){
+                deferred.resolve(outcontainer.result);
+              }, function(err){
+                deferred.reject(err);
+              });
               return deferred.promise;
             },
             loadSingleLibrary: function (path, modelOutput) {
@@ -846,7 +851,8 @@
                     }
                   });
                   var executedCells = 0;
-                  function evaluateNext() {
+
+                  function evaluateNext(){
                     var innerDeferred = bkHelper.newDeferred();
                     if (toEval.length > 0) {
                       executedCells++;
@@ -1118,12 +1124,14 @@
         })();
         bkCoreManager.setBkAppImpl(_impl);
 
-        var setDocumentTitle = function() {
-          if ($scope.allowDocumentRenaming === 'false') { return; }
+        var setDocumentTitle = function(){
+          if ($scope.allowDocumentRenaming === 'false'){
+            return;
+          }
 
           var edited = $scope.isEdited(),
-              filename = $scope.filename(),
-              title;
+            filename = $scope.filename(),
+            title;
 
           title = filename;
           if (edited) {
@@ -1216,6 +1224,11 @@
           } else if (bkHelper.isLowerSectionLevelShortcut(e)) {
             bkUtils.fcall(function() {
               bkHelper.lowerSectionLevel();
+            });
+            return false;
+          } else if (bkHelper.isInsertAfterSectionShortcut(e)){
+            bkUtils.fcall(function(){
+              bkHelper.insertNewSectionWithLevel(String.fromCharCode(e.which));
             });
             return false;
           } else if (bkUtils.isElectron) {
@@ -1318,8 +1331,11 @@
           } else {
             initUri = null;
           }
-          bkHelper.showFileSaveDialog({initUri: initUri, saveButtonTitle: saveButtonTitle}).then(function (ret) {
-            if (ret.uri) {
+          bkHelper.showFileSaveDialog({
+            initUri: initUri,
+            saveButtonTitle: saveButtonTitle
+          }).then(function(ret){
+            if (ret.uri){
               return saveFn(ret.uri, ret.uriType);
             }
           });
@@ -1345,26 +1361,26 @@
           if (bkEvaluateJobManager.isAnyInProgress() && next.indexOf("force=yes") === -1) {
             event.preventDefault();
             bkCoreManager.show2ButtonModal(
-                "All running and pending cells will be cancelled.",
-                "Warning!",
-                function() {
-                  bkEvaluateJobManager.cancelAll().then(function() {
-                    bkSessionManager.backup().then(function() {
-                      bkSessionManager.clear();
-                      var routeParams = {force: "yes"};
-                      var splits = decodeURIComponent(next.split("#")[1]).split("?");
-                      var path = splits[0];
-                      var search = splits[1];
-                      if (search) {
-                        var vars = search.split('&').forEach(function(v) {
-                          var pair = v.split('=');
-                          routeParams[pair[0]] = pair[1];
-                        });
-                      }
-                      $location.path(path).search(routeParams);
-                    });
+              "All running and pending cells will be cancelled.",
+              "Warning!",
+              function() {
+                bkEvaluateJobManager.cancelAll().then(function() {
+                  bkSessionManager.backup().then(function() {
+                    bkSessionManager.clear();
+                    var routeParams = {force: "yes"};
+                    var splits = decodeURIComponent(next.split("#")[1]).split("?");
+                    var path = splits[0];
+                    var search = splits[1];
+                    if (search) {
+                      var vars = search.split('&').forEach(function(v) {
+                        var pair = v.split('=');
+                        routeParams[pair[0]] = pair[1];
+                      });
+                    }
+                    $location.path(path).search(routeParams);
                   });
-                }
+                });
+              }
             );
           }
         });

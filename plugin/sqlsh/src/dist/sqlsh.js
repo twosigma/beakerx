@@ -99,7 +99,7 @@ define(function(require, exports, module) {
     		if(ret.length > 0){
     			for (var i=0; i<ret.length; i++) {
     				
-    				var html = '<h3>Enter data for</h3>';
+    				var html = '';//'<h3>SQL Login</h3>';
     				if(ret[i].connectionName == null){
     					html += '<input id="connection_name" type="hidden"/>';
     				}else{
@@ -154,7 +154,7 @@ define(function(require, exports, module) {
     				
       			bkHelper.show2ButtonModal(
       					html,
-      					'Enter data for database',
+      					'<h3>SQL Login</h3>',
       					function() {
       						
       						var passwordEL = angular.element( document.querySelector( '#password_field' ) );

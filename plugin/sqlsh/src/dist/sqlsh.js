@@ -99,7 +99,7 @@ define(function(require, exports, module) {
     		if(ret.length > 0){
     			for (var i=0; i<ret.length; i++) {
     				
-    				var html = '';//'<h3>SQL Login</h3>';
+    				var html = '';
     				if(ret[i].connectionName == null){
     					html += '<input id="connection_name" type="hidden"/>';
     				}else{

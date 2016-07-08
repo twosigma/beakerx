@@ -1154,7 +1154,7 @@
         modelOutput.result = progressObj;
       },
       
-      printCanceledAnsver: function(modelOutput) {
+      printCanceledAnswer: function(modelOutput) {
       	var progressObj = {
       			type: "BeakerDisplay",
       			innertype: "Error",

@@ -46,146 +46,138 @@ define(function(require, exports, module) {
     },
     
     evaluateWithPassword : function(code, modelOutput, refreshObj, deferred) {
-    	if (SqlShCancelFunction) {
-    		deferred.reject("An evaluation is already in progress");
-    		return deferred.promise;
-    	}
-    	var self = this;
-    	bkHelper.setupProgressOutput(modelOutput);
-        
-    	$.ajax({
-    		type: "POST",
-    		datatype: "json",
-    		url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/evaluate"),
-    		data: {shellId: self.settings.shellID, code: code}
-    	}).done(function(ret) {
-    		SqlShCancelFunction = function () {
-    			$.ajax({
-    				type: "POST",
-    				datatype: "json",
-    				url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/cancelExecution"),
-    				data: {shellId: self.settings.shellID}
-    			}).done(function (ret) {
-    				console.log("done cancelExecution",ret);
-    			});
-    			bkHelper.setupCancellingOutput(modelOutput);
-    		}
-    		var onEvalStatusUpdate = function(evaluation) {
-    			if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
-    				cometdUtil.unsubscribe(evaluation.update_id);
-    				SqlShCancelFunction = null;
-    				if (evaluation.status === "ERROR")
-    					deferred.reject(evaluation.payload);
-    				else
-    					deferred.resolve(evaluation.payload);
-    			}
-    			if (refreshObj !== undefined)
-    				refreshObj.outputRefreshed();
-    			else
-    				bkHelper.refreshRootScope();
-    		};
-    		onEvalStatusUpdate(ret);
-    		if (ret.update_id) {
-    			cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
-    		}
-    	});
-    },
-    
-    evaluate: function(code, modelOutput, refreshObj) {
-    	var self = this;
-    	var deferred = Q.defer();
-    	return getListOfConnectiononWhoNeedDialog(self.settings.shellID).success(function(ret) {
-    		
-    		if(ret.length > 0){
-    			for (var i=0; i<ret.length; i++) {
-    				
-    				var html = '';
-    				if(ret[i].connectionName == null){
-    					html += '<input id="connection_name" type="hidden"/>';
-    				}else{
-    					html += '<input id="connection_name" type="hidden" value="' + ret[i].connectionName + '" />';
-    				}
-    				html += '<table class="table">';
-    				html += '  <tbody>';
-    				html += '    <tr>';
-    				html += '      <td>';
-    				if(ret[i].connectionName == null){
-    					html += 'Default data source';
-    				}else{
-    					html += 'Named data source';
-    				}
-    				html += '      </td>';
-    				html += '      <td>';
-    				if(ret[i].connectionName != null){
-    					html += ret[i].connectionName;
-    				}
-    				html += '      </td>';
-    				html += '    </tr>';
-    				html += '    <tr>';
-    				html += '      <td>';
-    				html += 'Connection string';
-    				html += '      </td>';
-    				html += '      <td>';
-    				html += ret[i].connectionString;
-    				html += '      </td>';
-    				html += '    </tr>';
-    				html += '    <tr>';
-    				html += '      <td>';
-    				html += 'User';
-    				html += '      </td>';
-    				html += '      <td>';
-  					if(ret[i].user == null){
-  						html += '<input type="text" id="user_field" class="field" placeholder="User"></input>';
-  					}else{
-  						html += '<input type="text" id="user_field" value="' + ret[i].user + '" class="field" placeholder="User"></input>';
-  					}
-    				html += '      </td>';
-    				html += '    </tr>';
-    				html += '    <tr>';
-    				html += '      <td>';
-    				html += 'Password';
-    				html += '      </td>';
-    				html += '      <td>';
-    				html += '<input type="password" id="password_field" placeholder="Password"></input>';
-    				html += '      </td>';
-    				html += '    </tr>';
-    				html += '  </tbody>';
-    				html += '</table>';
-    				
-      			bkHelper.show2ButtonModal(
-      					html,
-      					'<h3>SQL Login</h3>',
-      					function() {
-      						
-      						var passwordEL = angular.element( document.querySelector( '#password_field' ) );
-      						var userEL = angular.element( document.querySelector( '#user_field' ) );
-      						var connectionEL = angular.element( document.querySelector( '#connection_name' ) );
-      						
-      						return setShellUserPassword(
-      								self.settings.shellID,
-      								connectionEL.val(),
-      								userEL.val(),
-      								passwordEL.val()
-      						).success(function() {
-      							self.evaluateWithPassword(code, modelOutput,refreshObj, deferred);
-      							return deferred.promise;
-      						})
-      				  },
-      				  function() {
-      				  	bkHelper.printCanceledAnsver(modelOutput);
-      				  	return deferred.promise;
-      				  },
-      				  "Ok", "Cancel", "", ""); 
-    			}
-    		}else{
-    			self.evaluateWithPassword(code, modelOutput,refreshObj, deferred);
-    			return deferred.promise;
-    		}
-    	});
+      if (SqlShCancelFunction) {
+        deferred.reject("An evaluation is already in progress");
+        return deferred.promise;
+      }
+      var self = this;
+      bkHelper.setupProgressOutput(modelOutput);
 
+      $.ajax({
+        type : "POST",
+        datatype : "json",
+        url : bkHelper.serverUrl(serviceBase + "/rest/sqlsh/evaluate"),
+        data : {
+          shellId : self.settings.shellID,
+          code : code
+        }
+      }).done(function(ret) {
+        SqlShCancelFunction = function() {
+          $.ajax({
+            type : "POST",
+            datatype : "json",
+            url : bkHelper.serverUrl(serviceBase + "/rest/sqlsh/cancelExecution"),
+            data : {
+              shellId : self.settings.shellID
+            }
+          }).done(function(ret) {
+            console.log("done cancelExecution", ret);
+          });
+          bkHelper.setupCancellingOutput(modelOutput);
+        }
+        var onEvalStatusUpdate = function(evaluation) {
+          if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
+            cometdUtil.unsubscribe(evaluation.update_id);
+            SqlShCancelFunction = null;
+            if (evaluation.status === "ERROR")
+              deferred.reject(evaluation.payload);
+            else
+              deferred.resolve(evaluation.payload);
+          }
+          if (refreshObj !== undefined)
+            refreshObj.outputRefreshed();
+          else
+            bkHelper.refreshRootScope();
+        };
+        onEvalStatusUpdate(ret);
+        if (ret.update_id) {
+          cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
+        }
+      });
     },
     
-    
+    evaluate : function(code, modelOutput, refreshObj) {
+      var self = this;
+      var deferred = Q.defer();
+      return getListOfConnectiononWhoNeedDialog(self.settings.shellID).success(function(ret) {
+
+        if (ret.length > 0) {
+          for (var i = 0; i < ret.length; i++) {
+
+            var html = '';
+            if (ret[i].connectionName == null) {
+              html += '<input id="connection_name" type="hidden"/>';
+            } else {
+              html += '<input id="connection_name" type="hidden" value="' + ret[i].connectionName + '" />';
+            }
+            html += '<table class="table">';
+            html += '  <tbody>';
+            html += '    <tr>';
+            html += '      <td>';
+            if (ret[i].connectionName == null) {
+              html += 'Default data source';
+            } else {
+              html += 'Named data source';
+            }
+            html += '      </td>';
+            html += '      <td>';
+            if (ret[i].connectionName != null) {
+              html += ret[i].connectionName;
+            }
+            html += '      </td>';
+            html += '    </tr>';
+            html += '    <tr>';
+            html += '      <td>';
+            html += 'Connection string';
+            html += '      </td>';
+            html += '      <td>';
+            html += ret[i].connectionString;
+            html += '      </td>';
+            html += '    </tr>';
+            html += '    <tr>';
+            html += '      <td>';
+            html += 'User';
+            html += '      </td>';
+            html += '      <td>';
+            if (ret[i].user == null) {
+              html += '<input type="text" id="user_field" class="field" placeholder="User"></input>';
+            } else {
+              html += '<input type="text" id="user_field" value="' + ret[i].user + '" class="field" placeholder="User"></input>';
+            }
+            html += '      </td>';
+            html += '    </tr>';
+            html += '    <tr>';
+            html += '      <td>';
+            html += 'Password';
+            html += '      </td>';
+            html += '      <td>';
+            html += '<input type="password" id="password_field" placeholder="Password"></input>';
+            html += '      </td>';
+            html += '    </tr>';
+            html += '  </tbody>';
+            html += '</table>';
+
+            bkHelper.show2ButtonModal(html, '<h3>SQL Login</h3>', function() {
+
+              var passwordEL = angular.element(document.querySelector('#password_field'));
+              var userEL = angular.element(document.querySelector('#user_field'));
+              var connectionEL = angular.element(document.querySelector('#connection_name'));
+
+              return setShellUserPassword(self.settings.shellID, connectionEL.val(), userEL.val(), passwordEL.val()).success(function() {
+                self.evaluateWithPassword(code, modelOutput, refreshObj, deferred);
+                return deferred.promise;
+              })
+            }, function() {
+              bkHelper.printCanceledAnswer(modelOutput);
+              return deferred.promise;
+            }, "Ok", "Cancel", "", "");
+          }
+        } else {
+          self.evaluateWithPassword(code, modelOutput, refreshObj, deferred);
+          return deferred.promise;
+        }
+      });
+    },
     
     interrupt: function() {
       this.cancelExecution();

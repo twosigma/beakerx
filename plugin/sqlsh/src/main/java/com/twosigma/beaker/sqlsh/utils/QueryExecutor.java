@@ -39,12 +39,13 @@ public class QueryExecutor {
     this.jdbcClient = jdbcClient;
   }
 
-  public synchronized Object executeQuery(String script, NamespaceClient namespaceClient, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) throws SQLException, IOException, ReadVariableException {
+  public synchronized Object executeQuery(String script, NamespaceClient namespaceClient, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString)
+      throws SQLException, IOException, ReadVariableException {
 
     BeakerParser beakerParser = new BeakerParser(script, namespaceClient, defaultConnectionString, namedConnectionString);
 
     DataSource ds = jdbcClient.getDataSource(beakerParser.getDbURI());
-    
+
     boolean isConnectionExeption = true;
 
     try (Connection connection = ds.getConnection();) {
@@ -59,39 +60,41 @@ public class QueryExecutor {
         for (BeakerInputVar parameter : queryLine.getInputVars()) {
           if (parameter.isAll()) {
             basicIterationArray = parameter;
-            if(parameter.getErrorMessage() != null) throw new ReadVariableException(parameter.getErrorMessage());
-            //ToDo make recursively iteration over several arrays
+            if (parameter.getErrorMessage() != null)
+              throw new ReadVariableException(parameter.getErrorMessage());
+            // ToDo make recursively iteration over several arrays
             break;
           }
         }
 
         try {
-					if (basicIterationArray != null) {
-					  int l;
-					  Object obj;
-					  try {
-					    obj = namespaceClient.get(basicIterationArray.objectName);
-					  } catch (Exception e) {
-					    throw new ReadVariableException(basicIterationArray.objectName, e);
-					  }
-					  if (obj instanceof List) {
-					    l = ((List) obj).size();
-					  } else if (obj.getClass().isArray()) {
-					    l = Array.getLength(obj);
-					  } else break;
+          if (basicIterationArray != null) {
+            int l;
+            Object obj;
+            try {
+              obj = namespaceClient.get(basicIterationArray.objectName);
+            } catch (Exception e) {
+              throw new ReadVariableException(basicIterationArray.objectName, e);
+            }
+            if (obj instanceof List) {
+              l = ((List) obj).size();
+            } else if (obj.getClass().isArray()) {
+              l = Array.getLength(obj);
+            } else
+              break;
 
-					  for (int i = 0; i < l; i++) {
-					    QueryResult queryResult = executeQuery(i, queryLine, connection, namespaceClient);
-					    adoptResult(queryLine, queryResult, resultsForOutputCell, resultsForNamspace);
-					  }
-					} else {
-					  QueryResult queryResult = executeQuery(-1, queryLine, connection, namespaceClient);
-					  adoptResult(queryLine, queryResult, resultsForOutputCell, resultsForNamspace);
-					}
-				} catch (Exception e) {
-					isConnectionExeption = false;
-					throw e;
-				}
+            for (int i = 0; i < l; i++) {
+              QueryResult queryResult = executeQuery(i, queryLine, connection, namespaceClient);
+              adoptResult(queryLine, queryResult, resultsForOutputCell, resultsForNamspace);
+            }
+          } else {
+            QueryResult queryResult = executeQuery(-1, queryLine, connection, namespaceClient);
+            adoptResult(queryLine, queryResult, resultsForOutputCell, resultsForNamspace);
+          }
+        } catch (Exception e) {
+          isConnectionExeption = false;
+          throw e;
+        }
       }
       connection.commit();
 
@@ -114,13 +117,12 @@ public class QueryExecutor {
       } else {
         return null;
       }
-      
-    } 
-    catch (Exception e) {
-    	if(beakerParser.getConnectionStringUsed() != null && isConnectionExeption){
-       	beakerParser.getConnectionStringUsed().setShowDialog(true);
-    	}
-    	throw e;
+
+    } catch (Exception e) {
+      if (beakerParser.getConnectionStringUsed() != null && isConnectionExeption) {
+        beakerParser.getConnectionStringUsed().setShowDialog(true);
+      }
+      throw e;
     } finally {
       statement = null;
     }
@@ -167,7 +169,8 @@ public class QueryExecutor {
       this.statement = statement;
       int n = 1;
       for (BeakerInputVar parameter : queryLine.getInputVars()) {
-        if(parameter.getErrorMessage() != null) throw new ReadVariableException(parameter.getErrorMessage());
+        if (parameter.getErrorMessage() != null)
+          throw new ReadVariableException(parameter.getErrorMessage());
         Object obj;
         try {
           obj = namespaceClient.get(parameter.objectName);
@@ -232,11 +235,13 @@ public class QueryExecutor {
       }
 
     } catch (SQLException e) {
-      //Logger.getLogger(QueryExecutor.class.getName()).log(Level.SEVERE, null, e);
+      // Logger.getLogger(QueryExecutor.class.getName()).log(Level.SEVERE, null,
+      // e);
       try {
         conn.rollback();
       } catch (Exception e1) {
-        //Logger.getLogger(QueryExecutor.class.getName()).log(Level.SEVERE, null, e1);
+        // Logger.getLogger(QueryExecutor.class.getName()).log(Level.SEVERE,
+        // null, e1);
       }
 
       throw e;
@@ -291,7 +296,7 @@ public class QueryExecutor {
         connection.rollback();
       }
     } catch (SQLException e) {
-      //do nothing
+      // do nothing
     }
   }
 

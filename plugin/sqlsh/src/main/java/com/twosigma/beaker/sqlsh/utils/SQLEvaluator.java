@@ -136,9 +136,9 @@ public class SQLEvaluator {
     public WorkerThread() {
       super("sqlsh worker");
     }
-        /*
-        * This thread performs all the evaluation
-        */
+    /*
+     * This thread performs all the evaluation
+     */
 
     public void run() {
       JobDescriptor job;
@@ -227,49 +227,49 @@ public class SQLEvaluator {
 
     resetEnvironment();
   }
-  
-  public void setShellUserPassword(String namedConnection, String user, String password) {
-	  if(namedConnection != null && !namedConnection.isEmpty()){
-	  	if(this.namedConnectionString != null){
-		  	ConnectionStringHolder holder = this.namedConnectionString.get(namedConnection);
-		  	if(holder != null){
-		  		if(password != null && !password.isEmpty()){
-		  			holder.setPassword(password);
-		  		}
-		  		if(user != null && !user.isEmpty()){
-		  			holder.setUser(user);
-		  		}
-		  		holder.setShowDialog(password == null || password.isEmpty() || user == null || user.isEmpty());
-		  	}
-		  }
-	  }else{
-	  	if(password != null && !password.isEmpty()){
-	  		defaultConnectionString.setPassword(password);
-	  	}
-	  	if(user != null && !user.isEmpty()){
-	  		defaultConnectionString.setUser(user);
-	  	}
-	  	defaultConnectionString.setShowDialog(password == null || password.isEmpty() || user == null || user.isEmpty());
-	  }
-	  resetEnvironment();
-  }
-  
-  public List<ConnectionStringBean> getListOfConnectiononWhoNeedDialog() {
-  	List<ConnectionStringBean> ret = new ArrayList<>();
 
-  	if(this.defaultConnectionString.isShowDialog()){
-  		ret.add(new ConnectionStringBean(null, defaultConnectionString.getConnectionString(), defaultConnectionString.getUser()));
-  	}
-  	
-  	if(this.namedConnectionString != null){
-  		for (Entry<String, ConnectionStringHolder> cbh : namedConnectionString.entrySet()) {
-  			if(cbh.getValue().isShowDialog()){
-  				ret.add(new ConnectionStringBean(cbh.getKey(), cbh.getValue().getConnectionString(), cbh.getValue().getUser()));
-  			}
-  		}
-	  }
-	  
-	  return ret;
+  public void setShellUserPassword(String namedConnection, String user, String password) {
+    if (namedConnection != null && !namedConnection.isEmpty()) {
+      if (this.namedConnectionString != null) {
+        ConnectionStringHolder holder = this.namedConnectionString.get(namedConnection);
+        if (holder != null) {
+          if (password != null && !password.isEmpty()) {
+            holder.setPassword(password);
+          }
+          if (user != null && !user.isEmpty()) {
+            holder.setUser(user);
+          }
+          holder.setShowDialog(password == null || password.isEmpty() || user == null || user.isEmpty());
+        }
+      }
+    } else {
+      if (password != null && !password.isEmpty()) {
+        defaultConnectionString.setPassword(password);
+      }
+      if (user != null && !user.isEmpty()) {
+        defaultConnectionString.setUser(user);
+      }
+      defaultConnectionString.setShowDialog(password == null || password.isEmpty() || user == null || user.isEmpty());
+    }
+    resetEnvironment();
   }
-  
+
+  public List<ConnectionStringBean> getListOfConnectiononWhoNeedDialog() {
+    List<ConnectionStringBean> ret = new ArrayList<>();
+
+    if (this.defaultConnectionString.isShowDialog()) {
+      ret.add(new ConnectionStringBean(null, defaultConnectionString.getConnectionString(), defaultConnectionString.getUser()));
+    }
+
+    if (this.namedConnectionString != null) {
+      for (Entry<String, ConnectionStringHolder> cbh : namedConnectionString.entrySet()) {
+        if (cbh.getValue().isShowDialog()) {
+          ret.add(new ConnectionStringBean(cbh.getKey(), cbh.getValue().getConnectionString(), cbh.getValue().getUser()));
+        }
+      }
+    }
+
+    return ret;
+  }
+
 }

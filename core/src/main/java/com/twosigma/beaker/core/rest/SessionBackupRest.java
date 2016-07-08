@@ -218,9 +218,11 @@ public class SessionBackupRest {
       @FormParam("edited") boolean edited) {
 
     Session session = this.sessions.get(sessionID);
-    if (session != null)
+    if (session != null){
       session.edited = edited;
       session.lastEdited = System.currentTimeMillis();
+    }
+    refreshFrontend();
   }
 
   @GET

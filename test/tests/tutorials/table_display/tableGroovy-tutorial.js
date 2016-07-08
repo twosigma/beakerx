@@ -24,6 +24,7 @@ describe('Table Display (Groovy API)', function (done) {
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Ftable-api.bkr&readOnly=true").then(done);
         beakerPO.waitUntilLoadingCellOutput();
+        browser.driver.manage().window().maximize();
     });
 
     afterAll(function(done){
@@ -39,7 +40,7 @@ describe('Table Display (Groovy API)', function (done) {
         it('Built-in formatters', function () {
             var idCell = "codeaWwWKg";
             beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table', 'tableGroovyBuiltInFormatters', 60000);
             beakerPO.checkDtContainerByIdCell(idCell);
             beakerPO.checkDataTableHeadByIdCell(idCell, 'm3\ny30\ny1\nm6\ny2\ny10\ny3\ntime\ny5\ny7');
             beakerPO.checkDataTableBodyByIdCell(idCell, 25, '0 8 8.258571 7.920952 7.956190 8.085238 8.206667 :) 1990-01-31 8.119524 8.196190');

@@ -14,21 +14,18 @@
  *  limitations under the License.
  */
 /**
- * Module bk.helper
- * The bkHelper should be a subset of bkCore utilities that are exposed for
- * usages external to Beaker.
+ * Module bk.helper The bkHelper should be a subset of bkCore utilities that are
+ * exposed for usages external to Beaker.
  */
 (function() {
   'use strict';
   var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.debug', 'bk.electron', 'bk.publication']);
   /**
-   * bkHelper
-   * - should be the only thing plugins depend on to interact with general beaker stuffs (other than
-   * conforming to the API spec)
-   * - except plugins, nothing should depends on bkHelper
-   * - we've made this global. We should revisit this decision and figure out the best way to load
-   *   plugins dynamically
-   * - it mostly should just be a subset of bkUtil
+   * bkHelper - should be the only thing plugins depend on to interact with
+   * general beaker stuffs (other than conforming to the API spec) - except
+   * plugins, nothing should depends on bkHelper - we've made this global. We
+   * should revisit this decision and figure out the best way to load plugins
+   * dynamically - it mostly should just be a subset of bkUtil
    */
   module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, $uibModal,  bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
     var getCurrentApp = function() {
@@ -86,31 +83,48 @@
       },
       isNewDefaultNotebookShortcut: function (e){
         if (this.isMacOS){
-          return e.ctrlKey && e.shiftKey && (e.which === 78);// Ctrl + Shift + n
+          return e.ctrlKey && e.shiftKey && (e.which === 78);// Ctrl + Shift +
+                                                              // n
         }
         return e.altKey && e.shiftKey && (e.which === 78);// Cmd + Shift + n
       },
       isAppendCodeCellShortcut: function (e){
         if (this.isMacOS){
-          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Ctrl + Shift + A
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Ctrl
+                                                                                        // +
+                                                                                        // Shift
+                                                                                        // + A
         }
-        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Cmd + Shift + A
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Cmd +
+                                                                        // Shift
+                                                                        // + A
       },
       isAppendTextCellShortcut: function (e){
         if (this.isMacOS){
-          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 89);// Ctrl + Shift + Y
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 89);// Ctrl
+                                                                                        // +
+                                                                                        // Shift
+                                                                                        // + Y
         }
-        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 89);// Cmd + Shift + Y
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 89);// Cmd +
+                                                                        // Shift
+                                                                        // + Y
       },
       isInsertCodeCellAboveShortcut: function (e){
         if (this.isMacOS){
-          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 85);// Ctrl + Shift + U
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 85);// Ctrl
+                                                                                        // +
+                                                                                        // Shift
+                                                                                        // + U
         }
-        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 85);// Cmd + Shift + U
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 85);// Cmd +
+                                                                        // Shift
+                                                                        // + U
       },
       isSaveNotebookShortcut: function (e){
         if (this.isMacOS){
-          return e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83);// Cmd + s
+          return e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83);// Cmd
+                                                                          // + s
         }
         return e.ctrlKey && !e.altKey && (e.which === 83);// Ctrl + s
       },
@@ -118,7 +132,7 @@
         if (this.isMacOS) {
           return e.ctrlKey && (e.which === 76);// Ctrl + l
         }
-        return e.altKey && (e.which === 76);//Alt + l
+        return e.altKey && (e.which === 76);// Alt + l
       },
       isResetEnvironmentShortcut: function (e) {
         if (this.isMacOS) {
@@ -128,15 +142,27 @@
       },
       isRaiseSectionLevelShortcut: function (e) {
         if (this.isMacOS){
-          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 190);// Ctrl + Shift + >
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 190);// Ctrl
+                                                                                          // +
+                                                                                          // Shift
+                                                                                          // + >
         }
-        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 190);// Cmd + Shift + >
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 190);// Cmd
+                                                                          // +
+                                                                          // Shift
+                                                                          // + >
       },
       isLowerSectionLevelShortcut: function (e) {
         if (this.isMacOS){
-          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 188);// Ctrl + Shift + <
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 188);// Ctrl
+                                                                                          // +
+                                                                                          // Shift
+                                                                                          // + <
         }
-        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 188);// Cmd + Shift + <
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 188);// Cmd
+                                                                          // +
+                                                                          // Shift
+                                                                          // + <
       },
       isInsertAfterSectionShortcut: function(e) {
         if (this.isMacOS){
@@ -147,7 +173,8 @@
           ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
       },
 
-      //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+      // see
+      // http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
       // Firefox 1.0+
       isFirefox: typeof InstallTrigger !== 'undefined',
       // At least Safari 3+: "[object HTMLElementConstructor]"
@@ -581,9 +608,10 @@
             // check if 'target' attr has already been added
             var aIndex = tokens[idx].attrIndex('target');
             if (aIndex < 0) {
-              tokens[idx].attrPush(['target', '_blank']); //add new attribute
+              tokens[idx].attrPush(['target', '_blank']); // add new attribute
             } else {
-              tokens[idx].attrs[aIndex][1] = '_blank'; //replace value of existing attr
+              tokens[idx].attrs[aIndex][1] = '_blank'; // replace value of
+                                                        // existing attr
             }
             // pass token to default renderer.
             return defaultRender(tokens, idx, options, env, self);
@@ -1061,7 +1089,8 @@
           var body = elem.find( "bk-output-display[type='Html'] div div" );
           if(body.length > 0){
 
-            // 2.5) search for any canvas elements in body and replace each with an image.
+            // 2.5) search for any canvas elements in body and replace each with
+            // an image.
             body = convertCanvasToImage(body[0]);
 
             // 2) convert that part of the DOM to a string
@@ -1080,37 +1109,38 @@
         bkHelper.stripOutBeakerPrefs(notebookModelCopy);
         bkHelper.stripOutBeakerLanguageManagerSettings(notebookModelCopy);
         bkHelper.stripOutBeakerClient(notebookModelCopy);
-        delete notebookModelCopy.evaluationSequenceNumber; //remove evaluation counter
+        delete notebookModelCopy.evaluationSequenceNumber; // remove evaluation
+                                                            // counter
         if (notebookModelCopy.cells) {
           for (var i = 0; i < notebookModelCopy.cells.length; i++) {
             var currentCell = notebookModelCopy.cells[i];
             if (currentCell && currentCell.output) {
 
-              //save output height
+              // save output height
               var cellId = currentCell.id;
               var output = $("[cellid=" + cellId + "] div.code-cell-output");
               if (output && output[0]) {
                 currentCell.output.height = output[0].offsetHeight;
               }
 
-              //Save running cells as interrupted
+              // Save running cells as interrupted
               if (currentCell.output.result && currentCell.output.result.innertype === 'Progress') {
                 currentCell.output.result.innertype = 'Error';
                 currentCell.output.result.object = 'Interrupted, saved while running.'
               }
 
-              //remove update_id to avoid subscribing to a nonexistent object
+              // remove update_id to avoid subscribing to a nonexistent object
               if (currentCell.output.result) {
                 delete currentCell.output.result.update_id;
               }
 
-              //remove evaluation counter
+              // remove evaluation counter
               delete currentCell.output.evaluationSequenceNumber;
             }
           }
         }
 
-        //strip out the shell IDs
+        // strip out the shell IDs
         _.each(notebookModelCopy.evaluators, function(evaluator) {
           if (_.isObject(evaluator)) delete evaluator.shellID;
         });
@@ -1156,9 +1186,9 @@
       
       printCanceledAnswer: function(modelOutput) {
         var progressObj = {
-            type: "BeakerDisplay",
-            innertype: "Error",
-            object: "Execution was canceled."
+          type: "BeakerDisplay",
+          innertype: "Error",
+          object: "Execution was canceled."
         };
         modelOutput.result = progressObj;
       },
@@ -1171,8 +1201,10 @@
       printEvaluationProgress: function (modelOutput, text, outputType) {
         this.receiveEvaluationUpdate(modelOutput,
           {outputdata:[{type:outputType, value: text+"\n"}]}, "JavaScript");
-        // XXX should not be needed but when progress meter is shown at same time
-        // display is broken without this, you get "OUTPUT" instead of any lines of text.
+        // XXX should not be needed but when progress meter is shown at same
+        // time
+        // display is broken without this, you get "OUTPUT" instead of any lines
+        // of text.
         this.refreshRootScope();
       },  
       receiveEvaluationUpdate: function(modelOutput, evaluation, pluginName, shellId) {
@@ -1415,7 +1447,7 @@
 
           };
           this.getstate = function() {
-            //return 0 to enable, -1 to disable icon access
+            // return 0 to enable, -1 to disable icon access
             return 0;
           }
         };
@@ -1423,7 +1455,7 @@
         return elfinder;
       },
 
-      //http://stackoverflow.com/questions/7370943/retrieving-binary-file-content-using-javascript-base64-encode-it-and-reverse-de
+      // http://stackoverflow.com/questions/7370943/retrieving-binary-file-content-using-javascript-base64-encode-it-and-reverse-de
       base64Encode: function(str) {
         var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
         var out = "", i = 0, len = str.length, c1, c2, c3;

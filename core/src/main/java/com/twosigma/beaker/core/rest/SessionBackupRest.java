@@ -54,7 +54,6 @@ import org.cometd.bayeux.server.ServerChannel;
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class SessionBackupRest {
-	
   private final File backupDirectory;
   private final GeneralUtils utils;
   private BayeuxServer bayeux;
@@ -145,15 +144,14 @@ public class SessionBackupRest {
       @FormParam("format") String format,
       @FormParam("notebookModelJson") String notebookModelJson,
       @FormParam("edited") boolean edited) {
-	  
     Session previous = this.sessions.get(sessionId);
     long openedDate;
     Long lastEdited = null;
     if (previous != null) {
-    	openedDate = previous.openedDate;
-    	lastEdited = previous.lastEdited;
+      openedDate = previous.openedDate;
+      lastEdited = previous.lastEdited;
     } else {
-    	openedDate = System.currentTimeMillis();
+      openedDate = System.currentTimeMillis();
     }
     this.sessions.put(sessionId, new Session(
         notebookUri, uriType, readOnly, format, notebookModelJson, edited, openedDate, lastEdited));

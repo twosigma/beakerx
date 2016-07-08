@@ -16,16 +16,19 @@
 
 package com.twosigma.beaker.sqlsh.utils;
 
-import java.util.StringTokenizer;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 
 public class ConnectionStringHolder {
 
   public static final String USER_CONNECTION_KEY = "user";
   public static final String PASSWORD_CONNECTION_KEY = "password";
   public static final String KEY_FOR_DISPLAY_INPUT_DIALOG = "<prompt>";
-  public static final String EQUAL_SIGN = "=";
-  public static final String QUESTION_SIGN = "?";
-  public static final String AND_SIGN = "&";
+  public static final char EQUAL_SIGN = '=';
+  public static final char QUESTION_SIGN = '?';
+  public static final char AND_SIGN = '&';
 
   private String connectionString;
   private String user;
@@ -92,29 +95,14 @@ public class ConnectionStringHolder {
       }
     }
   }
-
+  
   protected static String getProperty(String property, String connectionString) {
     String ret = null;
     if (property != null && !property.isEmpty() && connectionString != null && !connectionString.isEmpty()) {
-      int beginIndex = connectionString.indexOf(QUESTION_SIGN);
-
-      if (beginIndex > -1) {
-
-        beginIndex += QUESTION_SIGN.length();
-        String temp = connectionString.substring(beginIndex).trim();
-
-        StringTokenizer tokens = new StringTokenizer(temp, QUESTION_SIGN + AND_SIGN);
-
-        while (tokens.hasMoreTokens()) {
-          String parameter = tokens.nextToken().trim();
-          beginIndex = parameter.indexOf(property);
-          if (beginIndex == 0) {
-            int equalIndex = parameter.indexOf(EQUAL_SIGN);
-            if (equalIndex > -1) {
-              ret = parameter.substring(equalIndex + 1, parameter.length());
-              break;
-            }
-          }
+      for (NameValuePair param : URLEncodedUtils.parse(connectionString, StandardCharsets.UTF_8, QUESTION_SIGN, AND_SIGN)) {
+        if(property.equals(param.getName())){
+          ret = param.getValue();
+          break;
         }
       }
     }

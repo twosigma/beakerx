@@ -47,11 +47,18 @@ describe('Progress Reporting API', function (done) {
             });
     };
 
+    function checkProgressTopBar(idCell, label){
+        browser.wait(beakerPO.EC.presenceOf(element(by.cssContainingText('div.navbar-text', label))), 5000).then(
+            function(result){return true;},
+            function(error){
+                expect(error).toBe('progress top Beaker bar should display ' + label);
+            });
+    };
+
     it('Display progress by Groovy', function () {
         var idCell = "codeXnQmyX";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
-        var printElem = beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('li > pre'));
         checkProgressMessage(idCell, 'starting');
         checkProgressBar(idCell, '20 %');
         checkProgressMessage(idCell, 'started');
@@ -62,6 +69,47 @@ describe('Progress Reporting API', function (done) {
         checkProgressBar(idCell, '80 %');
         checkProgressMessage(idCell, 'about to finish');
         browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('pre', 'finished'))), 5000);
+    });
+
+    it('Display progress by JavaScript', function () {
+        var idCell = "codeOw6722";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress', 'progressJScript', 40000);
+        checkProgressMessage(idCell, 'working');
+        checkProgressBar(idCell, '20 %');
+        checkProgressMessage(idCell, 'working');
+        checkProgressBar(idCell, '40 %');
+        checkProgressMessage(idCell, 'still working');
+        checkProgressBar(idCell, '60 %');
+        checkProgressMessage(idCell, 'still working');
+        checkProgressBar(idCell, '80 %');
+        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('pre', 'FINISHED (finally)'))), 5000);
+    });
+
+    it('Display progress by Java', function () {
+        var idCell = "codefgkSlJ";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
+        checkProgressMessage(idCell, 'starting');
+        checkProgressBar(idCell, '20 %');
+        checkProgressMessage(idCell, 'started');
+        checkProgressBar(idCell, '40 %');
+        checkProgressMessage(idCell, 'begin');
+        checkProgressBar(idCell, '60 %');
+        checkProgressMessage(idCell, 'middle');
+        checkProgressBar(idCell, '80 %');
+        checkProgressMessage(idCell, 'about to finish');
+    });
+
+    it('Display progress on top Beaker bar', function () {
+        var idCell = "codeJg1qDx";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
+        checkProgressTopBar(idCell, 'working at 20');
+        checkProgressTopBar(idCell, 'working at 40');
+        checkProgressTopBar(idCell, 'still working at 60');
+        checkProgressTopBar(idCell, 'still working at 80');
+        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('pre', 'FINISHED (finally)'))), 5000);
     });
 
 });

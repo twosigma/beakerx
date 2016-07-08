@@ -29,12 +29,13 @@
                     "mode": "javascript",
                     "background": "#FFE0F0"
                 }
-            }
+            },
+            "languageVersion": "ES2015"
         },
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*\njava.util.concurrent.TimeUnit\ncom.twosigma.beaker.chart.KeyboardCodes\ncom.twosigma.beaker.table.*\ncom.twosigma.beaker.table.format.*\ncom.twosigma.beaker.table.renderer.*\ncom.twosigma.beaker.table.highlight.*",
             "view": {
                 "cm": {
                     "mode": "groovy"
@@ -44,7 +45,7 @@
         {
             "name": "Java",
             "plugin": "Java",
-            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*",
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.jvm.object.*\njava.util.concurrent.TimeUnit\ncom.twosigma.beaker.table.*\ncom.twosigma.beaker.table.format.*\ncom.twosigma.beaker.table.renderer.*\ncom.twosigma.beaker.table.highlight.*",
             "view": {
                 "cm": {
                     "mode": "text/x-java"
@@ -103,7 +104,7 @@
                 "result": "finished",
                 "pluginName": "Groovy",
                 "shellId": "af93786d-81ab-408c-9901-2d33fd75d1b1",
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 12
@@ -137,11 +138,13 @@
                     "  if (count >= 100) {",
                     "    d.resolve(\"FINISHED (finally)\");",
                     "  } else {",
-                    "    beaker.timeout(operation,1500);",
+                    "    //beaker.timeout(operation,1500);",
+                    "    setTimeout(operation,1500);",
                     "  }",
                     "}",
                     "",
-                    "beaker.timeout(operation,1500);",
+                    "//beaker.timeout(operation,1500);",
+                    "setTimeout(operation,1500);",
                     "",
                     "d"
                 ]
@@ -151,11 +154,11 @@
                 "selectedType": "Text",
                 "result": "FINISHED (finally)",
                 "pluginName": "JavaScript",
-                "elapsedTime": 15037,
-                "height": 36
+                "elapsedTime": 15065,
+                "height": 56
             },
             "evaluatorReader": true,
-            "lineCount": 19
+            "lineCount": 21
         },
         {
             "id": "markdownzCBhZP",
@@ -193,7 +196,7 @@
                     "",
                     "while(count < 5) {",
                     "  try {",
-                    "    Thread.sleep(2500);",
+                    "    Thread.sleep(1500);",
                     "  } catch(Exception e) { }",
                     "  yList.clear();",
                     "  yList.add(2*count);",
@@ -207,6 +210,7 @@
                     "  NamespaceClient.getBeaker().showProgressUpdate(messages[count],count*20,p);",
                     "  count ++;",
                     "}",
+                    "Thread.sleep(1500);",
                     "",
                     "yList.clear();",
                     "yList.add(2*count);",
@@ -289,7 +293,7 @@
                     "tips": {}
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 14258,
+                "elapsedTime": 9783,
                 "result": {
                     "type": "Plot",
                     "init_width": 640,
@@ -310,8 +314,8 @@
                             "label": "",
                             "auto_range": true,
                             "auto_range_includes_zero": false,
-                            "lower_margin": 0.05,
-                            "upper_margin": 0.05,
+                            "lower_margin": 0,
+                            "upper_margin": 0,
                             "lower_bound": 0,
                             "upper_bound": 0,
                             "use_log": false,
@@ -322,8 +326,8 @@
                     "x_upper_margin": 0.05,
                     "y_auto_range": true,
                     "y_auto_range_includes_zero": false,
-                    "y_lower_margin": 0.05,
-                    "y_upper_margin": 0.05,
+                    "y_lower_margin": 0,
+                    "y_upper_margin": 0,
                     "y_lower_bound": 0,
                     "y_upper_bound": 0,
                     "log_y": false,
@@ -332,6 +336,11 @@
                     "omit_checkboxes": false,
                     "graphics_list": [
                         {
+                            "type": "Bars",
+                            "uid": "f6868c43-abb4-431b-9a32-355310d6d058",
+                            "visible": true,
+                            "yAxis": null,
+                            "hasClickAction": false,
                             "x": [
                                 0,
                                 1,
@@ -344,16 +353,18 @@
                                 20,
                                 8
                             ],
-                            "visible": true,
                             "display_name": "",
-                            "yAxis": null,
-                            "type": "Bars",
                             "base": 0,
                             "width": 0.5,
                             "color": null,
                             "outline_color": null
                         },
                         {
+                            "type": "Bars",
+                            "uid": "f6868c43-abb4-431b-9a32-355310d6d058",
+                            "visible": true,
+                            "yAxis": null,
+                            "hasClickAction": false,
                             "x": [
                                 0,
                                 1,
@@ -366,16 +377,18 @@
                                 20,
                                 8
                             ],
-                            "visible": true,
                             "display_name": "",
-                            "yAxis": null,
-                            "type": "Bars",
                             "base": 0,
                             "width": 0.5,
                             "color": null,
                             "outline_color": null
                         },
                         {
+                            "type": "Bars",
+                            "uid": "f6868c43-abb4-431b-9a32-355310d6d058",
+                            "visible": true,
+                            "yAxis": null,
+                            "hasClickAction": false,
                             "x": [
                                 0,
                                 1,
@@ -388,16 +401,18 @@
                                 20,
                                 8
                             ],
-                            "visible": true,
                             "display_name": "",
-                            "yAxis": null,
-                            "type": "Bars",
                             "base": 0,
                             "width": 0.5,
                             "color": null,
                             "outline_color": null
                         },
                         {
+                            "type": "Bars",
+                            "uid": "f6868c43-abb4-431b-9a32-355310d6d058",
+                            "visible": true,
+                            "yAxis": null,
+                            "hasClickAction": false,
                             "x": [
                                 0,
                                 1,
@@ -410,16 +425,18 @@
                                 20,
                                 8
                             ],
-                            "visible": true,
                             "display_name": "",
-                            "yAxis": null,
-                            "type": "Bars",
                             "base": 0,
                             "width": 0.5,
                             "color": null,
                             "outline_color": null
                         },
                         {
+                            "type": "Bars",
+                            "uid": "f6868c43-abb4-431b-9a32-355310d6d058",
+                            "visible": true,
+                            "yAxis": null,
+                            "hasClickAction": false,
                             "x": [
                                 0,
                                 1,
@@ -432,16 +449,18 @@
                                 20,
                                 8
                             ],
-                            "visible": true,
                             "display_name": "",
-                            "yAxis": null,
-                            "type": "Bars",
                             "base": 0,
                             "width": 0.5,
                             "color": null,
                             "outline_color": null
                         },
                         {
+                            "type": "Bars",
+                            "uid": "f6868c43-abb4-431b-9a32-355310d6d058",
+                            "visible": true,
+                            "yAxis": null,
+                            "hasClickAction": false,
                             "x": [
                                 0,
                                 1,
@@ -454,10 +473,7 @@
                                 20,
                                 8
                             ],
-                            "visible": true,
                             "display_name": "",
-                            "yAxis": null,
-                            "type": "Bars",
                             "base": 0,
                             "width": 0.5,
                             "color": null,
@@ -472,14 +488,15 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10,
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "pluginName": "Java",
-                "shellId": "e3c3c480-bfd0-4a68-8841-3ca59de90092",
-                "height": 529
+                "shellId": "0e5cdce1-a78e-4748-a631-af059444c5e1",
+                "height": 548
             },
             "evaluatorReader": true,
-            "lineCount": 45
+            "lineCount": 46
         },
         {
             "id": "markdownjrQufg",
@@ -536,10 +553,10 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "elapsedTime": 15269,
+                "elapsedTime": 61833,
                 "result": "FINISHED (finally)",
                 "pluginName": "JavaScript",
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 25

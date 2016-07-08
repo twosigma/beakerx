@@ -479,7 +479,7 @@ public class PluginServiceLocatorRest {
       String[] env = buildEnv(pluginId, password);
 
       if (windows()) {
-	String python = this.config.getInstallDirectory() + "\\python\\python";
+        String python = this.config.getInstallDirectory() + "\\python\\python";
         fullCommand.add(0, python);
       }
       System.out.println("Running");

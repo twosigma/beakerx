@@ -140,11 +140,11 @@
       },
       isInsertAfterSectionShortcut: function(e) {
         if (this.isMacOS){
-          return e.metaKey && !e.ctrlKey && e.altKey && !e.shiftKey &&
-            ((e.which>=49) && (e.which<=52));// alt + Shift + 1...4
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey &&
+            ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
         }
-        return e.ctrlKey && e.altKey && !e.shiftKey &&
-          ((e.which>=49) && (e.which<=52));// alt + Shift + 1...
+        return e.ctrlKey && !e.altKey && e.shiftKey &&
+          ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
       },
 
       //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser

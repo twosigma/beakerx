@@ -133,7 +133,7 @@ public class LocalFsVolume implements FsVolume {
 
   @Override
   public String getPath(FsItem fsi) throws IOException {
-    String fullPath     = asFile(fsi).getCanonicalPath();
+    String fullPath = getFullPath(fsi);
     String rootPath     = rootDir.getCanonicalPath();
     String relativePath = fullPath.substring(rootPath.length());
     return relativePath.replace('\\', '/');
@@ -141,7 +141,8 @@ public class LocalFsVolume implements FsVolume {
 
   @Override
   public String getFullPath(FsItem fsi) throws IOException {
-    return asFile(fsi).getCanonicalPath();
+    File file = asFile(fsi);
+    return isLinkToAnotherVolume(fsi) ? file.getAbsolutePath() : file.getCanonicalPath();
   }
 
   @Override
@@ -264,5 +265,9 @@ public class LocalFsVolume implements FsVolume {
   @Override
   public void setCssCls(String csscls) {
     this.csscls = csscls;
+  }
+
+  private boolean isLinkToAnotherVolume(FsItem fsi) throws IOException {
+    return !asFile(fsi).getCanonicalPath().startsWith(rootDir.getCanonicalPath());
   }
 }

@@ -125,7 +125,7 @@ public abstract class AbstractCommand implements Command {
     Map<String, Object> info = new HashMap<String, Object>();
     info.put("hash", fsi.getHash());
     info.put("mime", fsi.getMimeType());
-    info.put("ts", fsi.getLastModified());
+    info.put("ts", fsi.getLastModified() / 1000); // client will multiply this value by 1000, so we have to divide it now
     info.put("size", fsi.getSize());
     info.put("read", fsi.isReadable(fsi) ? 1 : 0);
     info.put("write", fsi.isWritable(fsi) ? 1 : 0);

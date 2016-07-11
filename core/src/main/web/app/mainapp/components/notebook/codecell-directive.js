@@ -403,23 +403,21 @@
           },
           'Shift-Ctrl-E': function(cm) {
             scope.popupMenu();
-            if (true === !!bkHelper.getBkNotebookViewModel().isAdvancedMode()) {
-             var inputMenuDiv = element.parents('.bkcell.code.bkr').find('.toggle-menu').first();
-             var menu = inputMenuDiv.find('.dropdown.advanced-only').first();
-             menu.find('.inputcellmenu').find('li').find('a')[0].focus();
-            } else {
-              element.find('.inputcellmenu').find('li').find('a')[0].focus();
+            var parent = element;
+            if (bkHelper.getBkNotebookViewModel().isAdvancedMode()) {
+              var inputMenuDivAdvanced = element.parents('.bkcell.code.bkr').find('.toggle-menu').first();
+              parent = inputMenuDivAdvanced.find('.dropdown.advanced-only').first();
             }
+            parent.find('.inputcellmenu').find('li').find('a')[0].focus();
           },
           'Shift-Cmd-E': function(cm) {
             scope.popupMenu();
+            var parent = element;
             if (bkHelper.getBkNotebookViewModel().isAdvancedMode()) {
-             var inputMenuDiv = element.parents('.bkcell.code.bkr').find('.toggle-menu').first();
-             var menu = inputMenuDiv.find('.dropdown.advanced-only').first();
-             menu.find('.inputcellmenu').find('li').find('a')[0].focus();
-            } else {
-              element.find('.inputcellmenu').find('li').find('a')[0].focus();
+              var inputMenuDivAdvanced = element.parents('.bkcell.code.bkr').find('.toggle-menu').first();
+              parent = inputMenuDivAdvanced.find('.dropdown.advanced-only').first();
             }
+            parent.find('.inputcellmenu').find('li').find('a')[0].focus();
           },
           'Ctrl-Alt-H': function(cm) { // cell hide
             scope.cellmodel.input.hidden = true;
@@ -554,14 +552,12 @@
 
         var inputMenuDiv = element.find('.bkcell').first();
         scope.popupMenu = function(event) {
+          var menu = inputMenuDiv.find('.dropdown').first();
           if (bkHelper.getBkNotebookViewModel().isAdvancedMode()) {
             var inputMenuDivAdvanced = element.parents('.bkcell.code.bkr').find('.toggle-menu').first();
-            var menuAdvanced = inputMenuDivAdvanced.find('.dropdown.advanced-only').first();
-            menuAdvanced.find('.dropdown-toggle').first().dropdown('toggle');
-          } else {
-            var menu = inputMenuDiv.find('.dropdown').first();
-            menu.find('.dropdown-toggle').first().dropdown('toggle');
+            menu = inputMenuDivAdvanced.find('.dropdown.advanced-only').first();
           }
+          menu.find('.dropdown-toggle').first().dropdown('toggle');
         };
 
         if (scope.isInitializationCell()) {

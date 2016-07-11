@@ -104,73 +104,21 @@ define(function(require, exports, module) {
         if (ret.length > 0) {
           for (var i = 0; i < ret.length; i++) {
 
-            var html = '';
-            if (ret[i].connectionName == null) {
-              html += '<input id="connection_name" type="hidden"/>';
-            } else {
-              html += '<input id="connection_name" type="hidden" value="' + ret[i].connectionName + '" />';
-            }
-            html += '<table class="table">';
-            html += '  <tbody>';
-            html += '    <tr>';
-            html += '      <td>';
-            if (ret[i].connectionName == null) {
-              html += 'Default data source';
-            } else {
-              html += 'Named data source';
-            }
-            html += '      </td>';
-            html += '      <td>';
-            if (ret[i].connectionName != null) {
-              html += ret[i].connectionName;
-            }
-            html += '      </td>';
-            html += '    </tr>';
-            html += '    <tr>';
-            html += '      <td>';
-            html += 'Connection string';
-            html += '      </td>';
-            html += '      <td>';
-            html += ret[i].connectionString;
-            html += '      </td>';
-            html += '    </tr>';
-            html += '    <tr>';
-            html += '      <td>';
-            html += 'User';
-            html += '      </td>';
-            html += '      <td>';
-            if (ret[i].user == null) {
-              html += '<input type="text" id="user_field" class="field" placeholder="User"></input>';
-            } else {
-              html += '<input type="text" id="user_field" value="' + ret[i].user + '" class="field" placeholder="User"></input>';
-            }
-            html += '      </td>';
-            html += '    </tr>';
-            html += '    <tr>';
-            html += '      <td>';
-            html += 'Password';
-            html += '      </td>';
-            html += '      <td>';
-            html += '<input type="password" id="password_field" placeholder="Password"></input>';
-            html += '      </td>';
-            html += '    </tr>';
-            html += '  </tbody>';
-            html += '</table>';
-
-            bkHelper.show2ButtonModal(html, '<h3>SQL Login</h3>', function() {
-
-              var passwordEL = angular.element(document.querySelector('#password_field'));
-              var userEL = angular.element(document.querySelector('#user_field'));
-              var connectionEL = angular.element(document.querySelector('#connection_name'));
-
-              return setShellUserPassword(self.settings.shellID, connectionEL.val(), userEL.val(), passwordEL.val()).success(function() {
-                self.evaluateWithPassword(code, modelOutput, refreshObj, deferred);
-                return deferred.promise;
-              })
+            bkHelper.showSQLLoginModalDialog(ret[i].connectionName, 
+                ret[i].connectionString, 
+                ret[i].user, 
+                function(sqlConnectionData) {
+                  return setShellUserPassword(self.settings.shellID, 
+                    sqlConnectionData.connectionName, 
+                    sqlConnectionData.user, 
+                    sqlConnectionData.password
+                  ).success(function() {
+                    self.evaluateWithPassword(code, modelOutput, refreshObj, deferred);
+                    return deferred.promise;
+                  })
             }, function() {
-              bkHelper.printCanceledAnswer(modelOutput);
-              return deferred.promise;
-            }, "Ok", "Cancel", "", "");
+            });
+            
           }
         } else {
           self.evaluateWithPassword(code, modelOutput, refreshObj, deferred);

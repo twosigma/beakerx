@@ -935,6 +935,9 @@
       showModalDialog: function(callback, template, strategy) {
         return bkCoreManager.showModalDialog(callback, template, strategy).result;
       },
+      showSQLLoginModalDialog: function(connectionName, connectionString, user, okCB, cancelCB) {
+        return bkCoreManager.showSQLLoginModalDialog(connectionName, connectionString, user, okCB, cancelCB);
+      },
       showErrorModal: function (msgBody, msgHeader, errorDetails, callback) {
         return bkCoreManager.showErrorModal(msgBody, msgHeader, errorDetails, callback);
       },

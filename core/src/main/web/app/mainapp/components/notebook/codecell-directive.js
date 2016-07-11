@@ -403,11 +403,23 @@
           },
           'Shift-Ctrl-E': function(cm) {
             scope.popupMenu();
-            element.find('.inputcellmenu').find('li').find('a')[0].focus();
+            if (true === !!bkHelper.getBkNotebookViewModel().isAdvancedMode()) {
+             var inputMenuDiv = element.parents('.bkcell.code.bkr').find('.toggle-menu').first();
+             var menu = inputMenuDiv.find('.dropdown.advanced-only').first();
+             menu.find('.inputcellmenu').find('li').find('a')[0].focus();
+            } else {
+              element.find('.inputcellmenu').find('li').find('a')[0].focus();
+            }
           },
           'Shift-Cmd-E': function(cm) {
             scope.popupMenu();
-            element.find('.inputcellmenu').find('li').find('a')[0].focus();
+            if (bkHelper.getBkNotebookViewModel().isAdvancedMode()) {
+             var inputMenuDiv = element.parents('.bkcell.code.bkr').find('.toggle-menu').first();
+             var menu = inputMenuDiv.find('.dropdown.advanced-only').first();
+             menu.find('.inputcellmenu').find('li').find('a')[0].focus();
+            } else {
+              element.find('.inputcellmenu').find('li').find('a')[0].focus();
+            }
           },
           'Ctrl-Alt-H': function(cm) { // cell hide
             scope.cellmodel.input.hidden = true;
@@ -542,8 +554,14 @@
 
         var inputMenuDiv = element.find('.bkcell').first();
         scope.popupMenu = function(event) {
-          var menu = inputMenuDiv.find('.dropdown').first();
-          menu.find('.dropdown-toggle').first().dropdown('toggle');
+          if (bkHelper.getBkNotebookViewModel().isAdvancedMode()) {
+            var inputMenuDivAdvanced = element.parents('.bkcell.code.bkr').find('.toggle-menu').first();
+            var menuAdvanced = inputMenuDivAdvanced.find('.dropdown.advanced-only').first();
+            menuAdvanced.find('.dropdown-toggle').first().dropdown('toggle');
+          } else {
+            var menu = inputMenuDiv.find('.dropdown').first();
+            menu.find('.dropdown-toggle').first().dropdown('toggle');
+          }
         };
 
         if (scope.isInitializationCell()) {

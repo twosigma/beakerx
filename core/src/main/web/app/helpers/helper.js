@@ -94,7 +94,7 @@
         if (this.isMacOS){
           return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Ctrl + Shift + A
         }
-        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Cmd + Shift + A
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Cmd +/ Shift + A
       },
       isAppendTextCellShortcut: function (e){
         if (this.isMacOS){
@@ -147,7 +147,7 @@
           ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
       },
 
-      //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+      // see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
       // Firefox 1.0+
       isFirefox: typeof InstallTrigger !== 'undefined',
       // At least Safari 3+: "[object HTMLElementConstructor]"
@@ -1157,7 +1157,7 @@
         modelOutput.result = progressObj;
       },
       
-      printCanceledAnsver: function(modelOutput) {
+      printCanceledAnswer: function(modelOutput) {
         var progressObj = {
           type: "BeakerDisplay",
           innertype: "Error",

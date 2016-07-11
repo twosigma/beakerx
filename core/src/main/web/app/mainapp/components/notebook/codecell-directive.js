@@ -438,15 +438,6 @@
           scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
           scope.cm.on('change', changeHandler);
-          scope.cm.on('blur', function () {
-            if ($('.CodeMirror-hint').length > 0) {
-              //codecomplete is up, skip
-              return;
-            }
-            if(document.hasFocus() && scope.cm.somethingSelected()){
-              scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
-            }
-          });
           scope.cm.on('gutterClick', onGutterClick);
           bkDragAndDropHelper.configureDropEventHandlingForCodeMirror(scope.cm, function () {
             return scope.cm.getOption('mode') === 'htmlmixed';

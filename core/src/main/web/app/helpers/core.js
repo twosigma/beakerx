@@ -1308,7 +1308,7 @@
         if (state.hashes2Open.length > 0) {
           elfinder.exec('open', state.hashes2Open.pop());
         }
-        setFromHash(elfinderInstance.cwd().hash, 0);
+        setFromHash(elfinderInstance.cwd().hash, 100);
       };
       var getFileCallback = function (url) {
         $scope.ok();

@@ -54,9 +54,10 @@ bk-new-cell-menu {
   display: none;
 }
 
-.locked-cell-menu{
+.locked-cell-menu {
   display: block !important;
   opacity: 0;
+  transition: all 0.3s ease;
   &:hover {
     opacity: 1;
   }
@@ -66,7 +67,7 @@ bk-new-cell-menu {
   top: $grid-row-height - 5px;
   right: 1px;
   position: absolute;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgb(255, 255, 255);
   padding-right: $grid-gutter-width;
   z-index: 1;
   &.wide {

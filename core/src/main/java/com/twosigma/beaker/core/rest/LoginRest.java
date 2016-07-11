@@ -54,12 +54,12 @@ public class LoginRest {
   @Path("login")
   @Produces(MediaType.TEXT_HTML)
   public Response login(@FormParam("password") String password,
-			@FormParam("origin") String origin)
+                        @FormParam("origin") String origin)
       throws UnknownHostException
   {
     String cookie = config.getAuthCookie();
     if (password != null && origin != null &&
-	hash(password).equals(config.getPasswordHash())) {
+        hash(password).equals(config.getPasswordHash())) {
       return Response.seeOther(URI.create(origin + "/beaker/"))
         .cookie(new NewCookie("BeakerAuth", cookie, "/", null, null,
                               NewCookie.DEFAULT_MAX_AGE, true)).build();

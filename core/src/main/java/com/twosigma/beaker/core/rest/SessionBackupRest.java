@@ -19,6 +19,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
+import com.twosigma.beaker.shared.module.util.GeneralUtilsImpl;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -52,7 +54,6 @@ import org.cometd.bayeux.server.ServerChannel;
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class SessionBackupRest {
-
   private final File backupDirectory;
   private final GeneralUtils utils;
   private BayeuxServer bayeux;
@@ -74,6 +75,7 @@ public class SessionBackupRest {
     String format;
     String notebookModelJson;
     long openedDate;  // millis
+    Long lastEdited;  // millis
     boolean edited;
 
     private Session(
@@ -83,7 +85,8 @@ public class SessionBackupRest {
         String format,
         String notebookModelJson,
         boolean edited,
-        long openedDate) {
+        long openedDate,
+        Long lastEdited) {
       this.notebookUri = notebookUri;
       this.uriType = uriType;
       this.readOnly = readOnly;
@@ -91,6 +94,7 @@ public class SessionBackupRest {
       this.notebookModelJson = notebookModelJson;
       this.edited = edited;
       this.openedDate = openedDate;
+      this.lastEdited = lastEdited;
     }
   }
 
@@ -141,14 +145,16 @@ public class SessionBackupRest {
       @FormParam("notebookModelJson") String notebookModelJson,
       @FormParam("edited") boolean edited) {
     Session previous = this.sessions.get(sessionId);
-    long date;
+    long openedDate;
+    Long lastEdited = null;
     if (previous != null) {
-      date = previous.openedDate;
+      openedDate = previous.openedDate;
+      lastEdited = previous.lastEdited;
     } else {
-      date = System.currentTimeMillis();
+      openedDate = System.currentTimeMillis();
     }
     this.sessions.put(sessionId, new Session(
-        notebookUri, uriType, readOnly, format, notebookModelJson, edited, date));
+        notebookUri, uriType, readOnly, format, notebookModelJson, edited, openedDate, lastEdited));
 
     // Notify client of changes in session
     refreshFrontend();
@@ -210,8 +216,11 @@ public class SessionBackupRest {
       @FormParam("edited") boolean edited) {
 
     Session session = this.sessions.get(sessionID);
-    if (session != null)
+    if (session != null){
       session.edited = edited;
+      session.lastEdited = System.currentTimeMillis();
+    }
+    refreshFrontend();
   }
 
   @GET
@@ -233,6 +242,7 @@ public class SessionBackupRest {
       jgen.writeObjectField("format", session.format);
       jgen.writeObjectField("notebookModelJson", session.notebookModelJson);
       jgen.writeObjectField("openedDate", session.openedDate);
+      jgen.writeObjectField("lastEdited", session.lastEdited);
       jgen.writeObjectField("edited", session.edited);
       jgen.writeEndObject();
     }

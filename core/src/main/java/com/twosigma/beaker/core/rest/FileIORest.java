@@ -31,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -224,6 +225,16 @@ public class FileIORest {
     } catch (Throwable t) {
       throw new FileOpenException(ExceptionUtils.getStackTrace(t));
     }
+  }
+
+  @GET
+  @Path("getLastModifiedTime")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String getLastModifiedTime(@QueryParam("path") String path) throws IOException {
+    java.nio.file.Path filePath = Paths.get(removePrefix(path));
+    return String.valueOf(Files.exists(filePath)
+        ? Files.readAttributes(filePath, BasicFileAttributes.class).lastModifiedTime().toMillis()
+        : 0);
   }
 
   @GET

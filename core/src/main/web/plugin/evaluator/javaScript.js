@@ -437,6 +437,7 @@ define(function(require, exports, module) {
         type: "settableSelect",
         remote: "https://api.cdnjs.com/libraries",
         action: "loadAllLibraries",
+        itemTooltip: "'v.' + $item.version + '. ' + $item.description",
         spinner: true
       },
       scripts: {

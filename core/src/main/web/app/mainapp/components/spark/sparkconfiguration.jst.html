@@ -28,7 +28,7 @@
         <span class="plugin-status plugin-error">●</span>
         SparkContext encountered an error
       </span>
-      <span ng-if="isOffline()">
+      <span ng-if="isOffline() && !isFailed()">
         <span class="plugin-status plugin-known">●</span>
         SparkContext has not been started
       </span>
@@ -183,18 +183,6 @@
               </td>
 
             </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">akka_loglevel</label></td>
-              <td>
-                <select class="form-control">
-                  <option>ERROR</option>
-                  <option>WARNING</option>
-                  <option>DEBUG</option>
-                  <option>INFO</option>
-                </select>
-              </td>
-            </tr>
 
             <tr>
               <td><label class="col-sm-1 form-control-label">skip_verify</label></td>
@@ -202,13 +190,6 @@
                 <input type="checkbox" />
               </td> 
 
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">use_scintilla</label></td>
-              <td>
-                <input type="checkbox" />
-              </td>
             </tr>
 
             <tr>
@@ -233,13 +214,6 @@
               </td> 
 
             </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">twosigma_home</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td>
-            </tr>
 
             <tr>
               <td><label class="col-sm-1 form-control-label">app_name</label></td>
@@ -257,279 +231,9 @@
             </tr>
 
             <tr>
-              <td><label class="col-sm-1 form-control-label">hdfs_conf</label></td>
-              <td>
-                <input type="text" class="form-control" value="simcluster.tgz" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">jdk_version</label></td>
-              <td>
-                <input type="text" class="form-control" value="1.7.0_60b" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">hadoop_version</label></td>
-              <td>
-                <input type="text" class="form-control" value="2.6.0-cdh5.4.4jco" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">bootstrap_hadoop_version</label></td>
-              <td>
-                <input type="text" class="form-control" value="2.6.0-cdh5.4.4jco" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">spark_version</label></td>
-              <td>
-                <input type="text" class="form-control" value="1.6.1-40-gc9a4627" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">scala_version</label></td>
-              <td>
-                <input type="text" class="form-control" value="2.11" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">universehash</label></td>
-              <td>
-                <input type="text" class="form-control" value="e948591a5e5e83acd9390606357b29a6bdfa8e53" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">scintilla_deployment</label></td>
-              <td>
-                <input type="text" class="form-control" value="/opt/ts/services/mca.pyspark.ts_mca_scintilla" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">hdfs_bootstrap_dir</label></td>
-              <td>
-                <input type="text" class="form-control" value="os.path.expanduser(~/.hdfsbootstrap)" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">krb_opts</label></td>
-              <td>
-                <input type="text" class="form-control" value="-Djava.security.krb5.conf=/etc/krb5.conf -Djavax.security.auth.useSubjectCredsOnly=false -Dsun.security.jgss.lib=/opt/mitkrb5/lib/libgssapi_krb5.so -Dsun.security.jgss.native=true" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">executor_hadoop_conf</label></td>
-              <td>
-                <input type="text" class="form-control" value="/opt/ts/services/miniconda.ext_public_miniconda/config/hdfs-client" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">executor_hadoop_command</label></td>
-              <td>
-                <input type="text" class="form-control" value="/opt/ts/services/miniconda.ext_public_miniconda/bin/hadoop" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">executor_java_home</label></td>
-              <td>
-                <input type="text" class="form-control" value="/opt/ts/services/sim.java.ext_vendor_sun_jdk_1_7_0_60b/dist" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">riemann_host</label></td>
-              <td>
-                <input type="text" class="form-control" value="mca-spark.riemann.app.twosigma.com" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">riemann_port</label></td>
-              <td>
-                <input type="text" class="form-control" value="5555" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">riemann_period</label></td>
-              <td>
-                <input type="text" class="form-control" value="30" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">riemann_unit</label></td>
-              <td>
-                <input type="text" class="form-control" value="SECONDS" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">conda_env_path</label></td>
-              <td>
-                <input type="text" class="form-control" value="os.path.join(_MCA_PYSPARK_DEPLOYMENT, dist)" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">executor_conda_env_path</label></td>
-              <td>
-                <input type="text" class="form-control" value="-XX:MaxPermSize=512m" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">extra_jpype_options</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">notebook</label></td>
-              <td>
-                <input type="checkbox" />
-              </td>
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">disable_sasl_encryption</label></td>
-              <td>
-                <input type="checkbox" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">extra_notebook_options</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">notebook_dir</label></td>
-              <td>
-                <input type="text" class="form-control" value="os.path.expanduser(~/.ipython/notebooks)" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">jar</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">class</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">additional_args</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">py_files</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">script</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">pull_spark_url</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">pull_spark_executor_directory</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">serve_via_rsync</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">docker_registry</label></td>
-              <td>
-                <input type="text" class="form-control" value="docker-registry.tsawssimfarm.cdft1.twosigma.com:5000" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">docker_image</label></td>
-              <td>
-                <input type="text" class="form-control" value="spark_20160509" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">toree_version</label></td>
-              <td>
-                <input type="text" class="form-control" value="0.1.0.dev4-SNAPSHOT" />
-              </td>
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">sandbox_viewers</label></td>
-              <td>
-                <input type="text" class="form-control" value="{}@TWOSIGMA.COM.format(getpass.getuser())" />
-              </td> 
-            </tr>
-
-            <tr>
               <td><label class="col-sm-1 form-control-label">App name</label></td>
               <td>
-                <input type="text" class="form-control" value="Spark-App-01" />
+                <input type="text" class="form-control" value="beaker" />
               </td>
             </tr>
 

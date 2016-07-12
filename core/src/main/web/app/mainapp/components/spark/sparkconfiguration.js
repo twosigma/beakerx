@@ -43,7 +43,8 @@
     };
 
     $scope.isConnected = function() {
-      return bkSparkContextManager.isConnected() && !bkSparkContextManager.isDisconnecting() && !bkSparkContextManager.isConnecting();
+      return bkSparkContextManager.isConnected() && !bkSparkContextManager.isDisconnecting()
+        && !bkSparkContextManager.isConnecting() && !bkSparkContextManager.isFailing();
     };
 
     $scope.isConnecting = function() {

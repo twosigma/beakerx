@@ -187,6 +187,13 @@
         $scope.isCellRunning = function () {
           return bkCoreManager.getBkApp().isRunning($scope.cellmodel.id);
         };
+
+        $scope.cancel = function(){
+          if($scope.isCellRunning()){
+            bkCoreManager.getBkApp().cancel();
+          }
+        };
+
         var editedListener = function(newValue, oldValue) {
           if (newValue !== oldValue) {
             bkSessionManager.setNotebookModelEdited(true);

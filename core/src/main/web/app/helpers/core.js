@@ -675,6 +675,11 @@
           autocompleteService.backspace(cursor, cm);
         };
 
+        var cancel = function(){
+          scope.cancel();
+          scope.$apply();
+        };
+
         var isFullScreen = function (cm) {
           return bkHelper.isFullScreen(cm);
         };
@@ -711,6 +716,8 @@
             "Cmd-Alt-Down": moveCellDown,
             "Ctrl-Alt-D": deleteCell,
             "Cmd-Alt-Backspace": deleteCell,
+            "Ctrl-C": cancel,
+            "Cmd-C": cancel,
             "Tab": tab,
             "Backspace": backspace,
             "Ctrl-/": "toggleComment",

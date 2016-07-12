@@ -1,0 +1,161 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.spark-configuration {
+  display: table;
+
+  input[type=text] {
+    padding: 10px 6px;
+    height: 26px;
+  }
+
+  td {
+    padding-bottom: 10px;
+  }
+
+  input[type=checkbox] {
+    margin-top: 10px;
+  }
+
+  .form-control-label {
+    width: 190px;
+  }
+
+  .spacing {
+    width: 5%;
+    display: table-cell;
+  }
+
+  .col-sm-2 {
+    display: table-cell;
+    width: auto;
+    float: none;
+  }
+
+  .col-sm-1 {
+    display: table-cell;
+    float: none;
+  }
+
+  .row {
+    display: table;
+    width: 100%;
+  }
+
+  .short-config {
+    width: 10%;
+  }
+
+  td.spark-label {
+    width: 190px;
+  }
+
+  .form-control {
+    padding: 4px 6px;
+    height: 28px;
+  }
+
+  hr {
+    border-top: 1px solid #ddd;
+    left: 0;
+    right: 0;
+    position: absolute;
+    margin-top: -20px;
+  }
+
+  .advanced-options {
+    padding-top: 20px;
+  }
+
+  .form-commands {
+    margin-top: 10px;
+  }
+}
+
+h1.spark-configuration {
+  float: left;
+}
+
+.spark-configuration.template-selector {
+  float: right;
+  margin-top: -24px;
+}
+
+.spark-configuration.status-line {
+  float: left;
+  margin-left: 20px;
+  margin-top: -6px;
+}
+
+.spark-progress {
+  margin-top: 15px;
+
+  .spark-job-name {
+    float: left;
+    margin-right: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 2px;
+  }
+
+  table {
+    margin: 0 auto;
+  }
+
+  td {
+    padding-bottom: 10px;
+  }
+
+  .spark-stage-name {
+    width: 70px;
+    margin: 0;
+    padding-top: 4px;
+  }
+
+  .spark-stage-progress {
+    position: relative;
+  }
+
+  .progress, .progress-bar {
+    margin: 0;
+    text-align: right;
+    padding-right: 4px;
+    z-index: 500;
+    position: relative;
+  }
+
+  .total-progress {
+    padding-right: 0 !important;
+    position: relative;
+  }
+
+  .spark-tasks-total {
+    top: 2px;
+    right: 4px;
+    position: absolute;
+    z-index: 1;
+  }
+
+  .spark-tasks-error {
+    background-color: #cc051c;
+  }
+  .spark-tasks-completed {
+    background-color: #74cc41;
+  }
+  .spark-tasks-active {
+    background-color: #337ab7;
+  }
+}

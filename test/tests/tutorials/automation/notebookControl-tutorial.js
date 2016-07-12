@@ -59,31 +59,28 @@ describe('Notebook Control API', function (done) {
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
         beakerPO.checkEvaluatorByIdCell(idCell, "Groovy");
     });
-    it("AAA cell is tagged 'mytag'", function () {
-        var idCell = "codePLMc93";
-        beakerPO.scrollToBkCellByIdCell(idCell);
-        checkTagOption(idCell, 'mytag');
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
-        beakerPO.checkCellOutputTextByIdCell(idCell, "AAA this cell is also evaluated");
-    });
-    it("BBB cell is not tagged 'mytag'", function () {
-        var idCell = "codeQSVv2P";
-        beakerPO.scrollToBkCellByIdCell(idCell);
-        checkTagOption(idCell, '');
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
-        beakerPO.checkCellOutputTextByIdCell(idCell, "BBB this cell is NOT evaluated - it is not tagged 'mytag'");
-    });
-    it("CCC cell is tagged 'mytag'", function () {
-        var idCell = "code3FNleS";
-        beakerPO.scrollToBkCellByIdCell(idCell);
-        checkTagOption(idCell, 'mytag');
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
-        beakerPO.checkCellOutputTextByIdCell(idCell, "CCC this cell is evaluated");
-    });
     it("Should display every cell with the tag 'mytag'", function () {
         var idCell = "codezSGiYV";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
         beakerPO.checkCellOutputTextByIdCell(idCell, "got 2 results: AAA this cell is also evaluated,CCC this cell is evaluated");
+    });
+    it("AAA cell is is evaluated", function () {
+        var idCell = "codePLMc93";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        checkTagOption(idCell, 'mytag');
+        beakerPO.checkCellOutputTextByIdCell(idCell, "AAA this cell is also evaluated");
+    });
+    it("BBB cell is not is evaluated", function () {
+        var idCell = "codeQSVv2P";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        checkTagOption(idCell, '');
+        expect(element(by.css('bk-code-cell-output[cell-id=' + idCell + ']')).isPresent()).toBe(false);
+    });
+    it("CCC cell is is evaluated", function () {
+        var idCell = "code3FNleS";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        checkTagOption(idCell, 'mytag');
+        beakerPO.checkCellOutputTextByIdCell(idCell, "CCC this cell is evaluated");
     });
 });

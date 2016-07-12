@@ -20,7 +20,7 @@
  */
 ( function() {
   'use strict';
-  var retfunc = function($sce) {
+  var retfunc = function($sce, $rootScope) {
     var CELL_TYPE = "bko-plotly";
     return {
       template: '<div><iframe srcdoc="{{getHtml()}}" ' +
@@ -49,10 +49,22 @@
         scope.getHtml = function() {
           return $sce.trustAsHtml(scope.html);
         };
+
+        var debouncedOnResize = _.debounce(onResize, 100);
+        var iframeEl = element.find('iframe').on('resize', debouncedOnResize);
+
+        function onResize() {
+          $rootScope.$emit('beaker.resize');
+        }
+        
+        scope.$on('$destroy', function() {
+          iframeEl.off('resize', debouncedOnResize);
+        });
       }
     };
   };
   beakerRegister.bkoDirective("Plotly", [
     '$sce',
+    '$rootScope',
     retfunc]);
 })();

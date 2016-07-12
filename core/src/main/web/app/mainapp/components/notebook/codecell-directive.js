@@ -444,6 +444,7 @@
               return;
             }
             if(document.hasFocus()){
+              // This is involved in issue #4397, but we do not have a good fix.
               scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
             }
           });

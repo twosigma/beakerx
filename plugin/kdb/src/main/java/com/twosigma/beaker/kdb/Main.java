@@ -41,6 +41,9 @@ import static java.util.logging.Level.*;
  * Run the kdb plugin.
  */
 public class Main {
+
+  private static final Logger logger = Logger.getLogger(Main.class.getName());
+
   private static final Logger guiceLogger = Logger.getLogger(GuiceComponentProviderFactory.class.getName());
   private static final Logger webLogger   = Logger.getLogger(WebApplicationImpl.class.getName());
 
@@ -66,7 +69,7 @@ public class Main {
       try {
         logManager.readConfiguration(new FileInputStream(System.getenv("beaker_logger_file")));
       } catch (IOException exception) {
-        System.err.println("Error in loading configuration: " + exception);
+        logger.log(WARNING, "Error in loading configuration: " + exception);
       }
     } else {
       Logger.getLogger("com.sun.jersey").setLevel(OFF);

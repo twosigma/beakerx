@@ -20,11 +20,16 @@ import java.util.ArrayList;
 import java.io.FileOutputStream;
 import java.io.BufferedOutputStream;
 import java.io.ObjectOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.twosigma.beaker.NamespaceClient;
 import org.apache.http.client.ClientProtocolException;
 
 public class CppKernel {
+
+  private static final Logger logger = Logger.getLogger(CppKernel.class.getName());
+
   public native void cInit(NamespaceClient nc);
   public native boolean cLoad(String fileName);
   public native Object cLoadAndRun(String fileName, String type);
@@ -44,9 +49,9 @@ public class CppKernel {
     try {
       ret = nc.get(name);
     } catch (ClientProtocolException ex){
-      System.out.println("Client Protocol Exception");
+      logger.log(Level.WARNING, "Client Protocol Exception");
     } catch (IOException ex){
-      System.out.println("IOException!");
+      logger.log(Level.WARNING, "IOException!");
     }
     return ret;
   }
@@ -55,10 +60,10 @@ public class CppKernel {
     try {
       nc.set(name, value);
     } catch (ClientProtocolException ex){
-      System.out.println("Client Protocol Exception");
+      logger.log(Level.WARNING, "Client Protocol Exception");
       return 0;
     } catch (IOException ex){
-      System.out.println("IOException!");
+      logger.log(Level.WARNING, "IOException!");
       return 0;
     }
     return 1;
@@ -80,7 +85,7 @@ public class CppKernel {
       output.writeObject(ret);
       output.close();
     } catch(IOException ex){
-      System.out.println("Could not load file");
+      logger.log(Level.WARNING, "Could not load file");
       return 1;
     }
 

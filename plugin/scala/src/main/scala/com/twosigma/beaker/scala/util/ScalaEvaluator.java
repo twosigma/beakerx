@@ -342,7 +342,7 @@ public class ScalaEvaluator {
             if (logger.isLoggable(Level.FINEST))
               logger.finest("importing : "+imp);
             if(!shell.addImport(imp))
-              System.err.println("ERROR: cannot add import '"+imp+"'");
+              logger.log(Level.WARNING, "ERROR: cannot add import '"+imp+"'");
           }
         }
       }
@@ -369,7 +369,7 @@ public class ScalaEvaluator {
           "}\n" 
           );
       if(r!=null && !r.isEmpty()) {
-        System.err.println("ERROR creating beaker object: "+r);
+        logger.log(Level.WARNING, "ERROR creating beaker object: "+r);
       }
     }
   }
@@ -406,7 +406,7 @@ public class ScalaEvaluator {
           imp = imp.substring(0,imp.length()-1) + "_";
         if(!imp.isEmpty()) {
           if(!acshell.addImport(imp))
-            System.err.println("ERROR: cannot add import '"+imp+"'");
+            logger.log(Level.WARNING, "ERROR: cannot add import '"+imp+"'");
         }
       }
     }
@@ -431,7 +431,7 @@ public class ScalaEvaluator {
         "}\n" 
         );
     if(r!=null && !r.isEmpty()) {
-      System.err.println("ERROR creating beaker beaker: "+r);
+      logger.log(Level.WARNING, "ERROR creating beaker beaker: "+r);
     }
 
   }

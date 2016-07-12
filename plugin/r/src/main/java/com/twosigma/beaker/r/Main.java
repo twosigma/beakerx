@@ -17,7 +17,9 @@ package com.twosigma.beaker.r;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -36,6 +38,8 @@ import org.eclipse.jetty.server.Server;
  * In the main function, create modules and perform initialization.
  */
 public class Main {
+
+  private static final Logger logger = Logger.getLogger(Main.class.getName());
 
   private static final java.util.logging.Logger GuiceComponentProviderFactoryLogger =
       java.util.logging.Logger.getLogger(com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory.class.getName());
@@ -56,7 +60,7 @@ public class Main {
     try {
       Runtime.getRuntime().exec(command).waitFor();
     } catch (Exception e) {
-      System.out.println(e);
+      logger.log(Level.WARNING, e.getMessage());
       System.exit(1);
     }
   }
@@ -74,7 +78,7 @@ public class Main {
       try {
         logManager.readConfiguration(new FileInputStream(System.getenv("beaker_logger_file")));
       } catch (IOException exception) {
-        System.err.println("Error in loading configuration: " + exception);
+        logger.log(Level.WARNING, "Error in loading configuration: " + exception.getMessage());
       }
     } else {
       java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);

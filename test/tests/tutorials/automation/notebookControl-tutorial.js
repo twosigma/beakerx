@@ -31,47 +31,59 @@ describe('Notebook Control API', function (done) {
         done();
     });
 
-    it('simulate long running asynchronous operations', function () {
+    function checkTagOption(idCell, tagValue){
+        beakerPO.getBkCellByIdCell(idCell).all(by.css('.cell-menu-item.cell-dropdown.dropdown-toggle')).get(0).click();
+        browser.wait(beakerPO.EC.presenceOf(element.all(by.css('bk-notebook > ul.dropdown-menu')).get(0)), 10000);
+        element.all(by.css('bk-notebook > ul.dropdown-menu')).get(0).element(by.cssContainingText('a', 'Options...')).click();
+        browser.wait(beakerPO.EC.visibilityOf(element(by.css('div.modal-body'))), 10000);
+        var tagInput = element(by.model('cellTags'));
+        expect(tagInput.getAttribute('value')).toBe(tagValue);
+        element(by.cssContainingText('button', 'Cancel')).click();
+    }
+
+    it('Should display "FINISHED finally"', function () {
         var idCell = "codetdETS1";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
-
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+        beakerPO.checkCellOutputTextByIdCell(idCell, "FINISHED finally");
     });
-    it('evaluates a groovy expression', function () {
+    it('Should display "30" (JavaScript)', function () {
         var idCell = "codeaZA46g";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
-
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+        beakerPO.checkEvaluatorByIdCell(idCell, "JavaScript");
     });
-    it('create groups of cells', function () {
-        var idCell = "codezSGiYV";
-        beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
-
-    });
-    it('Should display "15129"', function () {
+    it('Should display "15129" (Groovy)', function () {
         var idCell = "codesHGHnD";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
-
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+        beakerPO.checkEvaluatorByIdCell(idCell, "Groovy");
     });
-    it('Shoul display "AAA this cell is also evaluated"', function () {
+    it("AAA cell is tagged 'mytag'", function () {
         var idCell = "codePLMc93";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
-
+        checkTagOption(idCell, 'mytag');
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+        beakerPO.checkCellOutputTextByIdCell(idCell, "AAA this cell is also evaluated");
     });
-    it('Should display nothing', function () {
-        var idCell = "";
+    it("BBB cell is not tagged 'mytag'", function () {
+        var idCell = "codeQSVv2P";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
-
+        checkTagOption(idCell, '');
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+        beakerPO.checkCellOutputTextByIdCell(idCell, "BBB this cell is NOT evaluated - it is not tagged 'mytag'");
     });
-    it('CCC this cell is evaluated', function () {
-        var idCell = "";
+    it("CCC cell is tagged 'mytag'", function () {
+        var idCell = "code3FNleS";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
-
+        checkTagOption(idCell, 'mytag');
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+        beakerPO.checkCellOutputTextByIdCell(idCell, "CCC this cell is evaluated");
     });
-
+    it("Should display every cell with the tag 'mytag'", function () {
+        var idCell = "codezSGiYV";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+        beakerPO.checkCellOutputTextByIdCell(idCell, "got 2 results: AAA this cell is also evaluated,CCC this cell is evaluated");
+    });
 });

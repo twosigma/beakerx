@@ -249,6 +249,7 @@
             return $scope.isLockedCell();
           },
           action: function() {
+            bkSessionManager.setNotebookModelEdited(true);
             if ($scope.isLockedCell()) {
               $scope.cellmodel.locked = undefined;
             } else {

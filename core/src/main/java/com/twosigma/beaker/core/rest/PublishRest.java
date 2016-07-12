@@ -19,6 +19,8 @@ import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.POST;
@@ -42,6 +44,8 @@ import org.json.simple.JSONValue;
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class PublishRest {
+
+  private static final Logger logger = Logger.getLogger(PublishRest.class.getName());
 
   private final String gistUrl;
   private final String sharingUrl;
@@ -74,7 +78,7 @@ public class PublishRest {
     String githubUrl = (String) parsed.get("html_url");
     int slash = githubUrl.lastIndexOf("/");
     if (slash < 0) {
-      System.err.println("no slash found in github url: " + githubUrl);
+      logger.log(Level.WARNING, "no slash found in github url: " + githubUrl);
       return githubUrl;
     }
     return this.sharingUrl + githubUrl.substring(slash);

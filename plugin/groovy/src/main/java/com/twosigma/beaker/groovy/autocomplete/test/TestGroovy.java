@@ -13,9 +13,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 class TestGroovy {
+
+	private static final Logger logger = Logger.getLogger(TestGroovy.class.getName());
 
 	public static boolean profile = false;
 	public static boolean notree = false;
@@ -50,11 +54,11 @@ class TestGroovy {
 				doFiles(inputFiles, cps);
 			}
 			else {
-				System.err.println("Usage: java Main <directory or file name>");
+				logger.log(Level.WARNING, "Usage: java Main <directory or file name>");
 			}
 		}
 		catch(Exception e) {
-			System.err.println("exception: "+e);
+			logger.log(Level.WARNING, "exception: "+e);
 			e.printStackTrace(System.err);   // so we can get stack trace
 		}
 	}
@@ -99,7 +103,7 @@ class TestGroovy {
                       source = source.substring(0, cursor);
                       //System.out.println("--> '"+source+"' "+cursor);
 				    } else {
-				      System.out.println("ERROR computing cursor");
+				      logger.log(Level.WARNING, "ERROR computing cursor");
 				      cursor = 0;
 				    }
 				  } else {
@@ -112,16 +116,16 @@ class TestGroovy {
 					expect = line.substring(8);
 					String result = parseFile(source,cursor,cps);
 					if(!expect.equals(result))
-						System.out.println("ERROR: expecting \""+expect+"\" but got \""+result+"\"");
+						logger.log(Level.WARNING, "ERROR: expecting \""+expect+"\" but got \""+result+"\"");
 					else
-						System.out.println("PASS");
+						logger.info("PASS");
 				}
 			}
 		 
 			br.close();
 		}
 		long parserStop = System.currentTimeMillis();
-		System.out.println("Total lexer+parser time " + (parserStop - parserStart) + "ms.");
+		logger.info("Total lexer+parser time " + (parserStop - parserStart) + "ms.");
 	}
 
 	public static String parseFile(String f, int cursor, GroovyClasspathScanner cps) {

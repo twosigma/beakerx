@@ -54,6 +54,9 @@ import org.cometd.bayeux.server.ServerChannel;
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class SessionBackupRest {
+
+  private static final Logger logger = Logger.getLogger(SessionBackupRest.class.getName());
+
   private final File backupDirectory;
   private final GeneralUtils utils;
   private BayeuxServer bayeux;
@@ -118,7 +121,7 @@ public class SessionBackupRest {
       Map<String, Object> data = new HashMap<String, Object>();
       sessionChangeChannel.publish(this.localSession, data, null);
     } else {
-      System.out.println("Warning: Caught NPE of unknown origin. frontend");
+      logger.info("Warning: Caught NPE of unknown origin. frontend");
     }
   }
 
@@ -130,7 +133,7 @@ public class SessionBackupRest {
       data.put("id", sessionid);
       sessionChangeChannel.publish(this.localSession, data, null);
     } else {
-      System.out.println("Warning: Caught NPE of unknown origin. electron");
+      logger.log(Level.WARNING, "Warning: Caught NPE of unknown origin. electron");
     }
   }
 

@@ -17,6 +17,7 @@ package com.twosigma.beaker.cpp.utils;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import com.twosigma.beaker.cpp.autocomplete.CPP14Parser;
 import com.twosigma.beaker.cpp.autocomplete.CPP14BaseListener;
@@ -25,6 +26,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 
 public class Extractor extends CPP14BaseListener {
+
+  private static final Logger logger = Logger.getLogger(Extractor.class.getName());
+
   public int beakerMainLastToken;
   public String returnType = "none";
   // Top level function declarations are at depth 4 in the AST
@@ -130,13 +134,13 @@ public class Extractor extends CPP14BaseListener {
       ParserRuleContext virtSpecSeq = ctx.virtspecifierseq();
       ParserRuleContext attrSpecSeq = ctx.attributespecifierseq();
       if ((paramsList != null) && (paramsList.parameterdeclarationlist() != null)) {
-        System.out.println("The beaker_main function must have zero or one paramters.");
+        logger.info("The beaker_main function must have zero or one paramters.");
         return;
       } else if (attrSpecSeq != null) {
-        System.out.println("The beaker_main function must not have attributes.");
+        logger.info("The beaker_main function must not have attributes.");
         return;
       } else if (virtSpecSeq != null) {
-        System.out.println("The beaker_main function cannot be virtual.");
+        logger.info("The beaker_main function cannot be virtual.");
         return;
       }
 
@@ -145,7 +149,7 @@ public class Extractor extends CPP14BaseListener {
         if (isSupported(type)){
           returnType = type;
         } else {
-          System.out.println("Beaker cannot recognize the return type of your cell.");
+          logger.info("Beaker cannot recognize the return type of your cell.");
         }
       }
     }

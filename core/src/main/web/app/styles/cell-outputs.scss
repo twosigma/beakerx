@@ -50,6 +50,23 @@ bk-code-cell-output {
     min-width: 190px;
   }
 
+  .progress-notification-dropdown {
+    display: inline-block;
+
+    .progress-notification-menu-toggle {
+      color: inherit;
+      cursor: pointer;
+      background: url(../images/down@2x.png) no-repeat center right;
+      padding-right: 13px;
+      background-size: 8px;
+    }
+
+    .dropdown-menu {
+      position: fixed;
+      left: auto;
+      top: auto;
+    }
+  }
 }
 
 .markup, .dataTables_scrollBody {

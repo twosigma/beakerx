@@ -33,7 +33,19 @@
         type: "@",
         model: "=" // assume ref to model doesn't change after directive is created
       },
-      link: function(scope, element) {
+      require: ['bkOutputDisplay', '^bkCodeCellOutput'],
+      controllerAs: 'outputDisplayCtrl',
+      controller: function ($scope) {
+        this.notifyWhenDone = false;
+        this.toggleNotifyWhenDone = function () {
+          this.notifyWhenDone = !this.notifyWhenDone;
+        };
+        this.isNotifyWhenDone = function () {
+          return this.notifyWhenDone;
+        };
+      },
+      link: function(scope, element, attr, controllers) {
+        var ctrl = controllers[0], codeCellOutputCtrl = controllers[1];
         var childScope = null;
         var refresh = function(type) {
           if (childScope) {
@@ -57,6 +69,10 @@
           $compile(element.contents())(childScope);
         };
         scope.$watch("type", function(newType, oldType) {
+          if(shouldShowNotification(oldType)) {
+            showNotification();
+          }
+
           refresh(newType);
         });
         scope.$on("outputDisplayFactoryUpdated", function(event, what) {
@@ -69,6 +85,41 @@
             childScope.$destroy();
           }
         });
+
+        function shouldShowNotification(oldType) {
+          return ctrl.notifyWhenDone && (oldType === 'Progress');
+        }
+        
+        function showNotification() {
+          ctrl.notifyWhenDone = false;
+          checkPermissionsForNotification().then(function (granted) {
+            if (granted) {
+              var outputSummary = codeCellOutputCtrl.getOutputSummary();
+              var options = {
+                body: outputSummary ? outputSummary : 'no output',
+                icon: '/static/favicon.png',
+                tag: 'beakerCellEvaluationDone'
+              };
+              var notification = new Notification("Evaluation completed", options);
+              notification.onclick = function () {
+                notification.close();
+                window.focus();
+              };
+            }
+          });
+        }
+        
+        function checkPermissionsForNotification() {
+          var deferred = bkUtils.newDeferred();
+          if (Notification.permission === "granted") {
+            deferred.resolve(true);
+          } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission(function (permission) {
+              deferred.resolve(permission === "granted");
+            });
+          }
+          return deferred.promise;
+        }
       }
     };
   });

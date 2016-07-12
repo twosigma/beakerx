@@ -40,7 +40,8 @@
                                              'bk.notebook',
                                              'bk.electron',
                                              'bk.connectionManager',
-                                             'bk.fileManipulation'
+                                             'bk.fileManipulation',
+                                             'bk.sparkContextManager'
                                              ]);
 
   /**
@@ -65,7 +66,8 @@
       bkEvaluateJobManager,
       bkElectron,
       $location,
-      bkFileManipulation) {
+      bkFileManipulation,
+      bkSparkContextManager) {
 
     return {
       restrict: 'E',
@@ -1458,6 +1460,15 @@
             startAutoBackup();
           }
         });
+
+        $scope.usesSpark = function() {
+          var notebookModel = bkHelper.getNotebookModel();
+          if (!notebookModel || !notebookModel.evaluators)
+            return false;
+          return _.filter(notebookModel.evaluators, function(evaluator) {
+            return "useSpark" in evaluator && evaluator["useSpark"];
+          }).length > 0;
+        };
 
         setDocumentTitle();
 

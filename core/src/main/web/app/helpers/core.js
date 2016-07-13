@@ -46,6 +46,7 @@
       $location,
       $sessionStorage,
       $q,
+      $timeout,
       bkUtils,
       bkRecentMenu,
       bkNotebookCellModelManager,
@@ -1196,27 +1197,42 @@
       }
     };
 
-    bkUtils.getBeakerPreference('fs-order-by').then(function (fs_order_by) {
-      bkCoreManager._prefs.fs_order_by = !fs_order_by || fs_order_by.length === 0 ? 'uri' : fs_order_by;
-    }).catch(function (response) {
-      console.log(response);
+    if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
+      bkUtils.getBeakerPreference('fs-order-by').then(function (fs_order_by) {
+        bkCoreManager._prefs.fs_order_by = !fs_order_by || fs_order_by.length === 0 ? 'uri' : fs_order_by;
+      }).catch(function (response) {
+        console.log(response);
+        bkCoreManager._prefs.fs_order_by = 'uri';
+      });
+
+      bkUtils.getBeakerPreference('fs-reverse').then(function (fs_reverse) {
+        bkCoreManager._prefs.fs_reverse = !fs_reverse || fs_reverse.length === 0 ? false : fs_reverse;
+      }).catch(function (response) {
+        console.log(response);
+        bkCoreManager._prefs.fs_reverse = false;
+      });
+      bkUtils.getBeakerPreference('theme').then(function (theme) {
+        bkCoreManager._prefs.setTheme(_.includes(_.values(GLOBALS.THEMES), theme) ? theme : GLOBALS.THEMES.DEFAULT);
+        $rootScope.$broadcast('beaker.theme.set', theme);
+      }).catch(function (response) {
+        console.log(response);
+        bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);
+      });
+    } else if (window.beakerRegister === undefined || window.beakerRegister.prefsPreset === undefined) {
       bkCoreManager._prefs.fs_order_by = 'uri';
-    });
-
-    bkUtils.getBeakerPreference('fs-reverse').then(function (fs_reverse) {
-      bkCoreManager._prefs.fs_reverse = !fs_reverse || fs_reverse.length === 0 ? false : fs_reverse;
-    }).catch(function (response) {
-      console.log(response);
       bkCoreManager._prefs.fs_reverse = false;
-    });
-
-    bkUtils.getBeakerPreference('theme').then(function (theme) {
-      bkCoreManager._prefs.setTheme(_.includes(_.values(GLOBALS.THEMES), theme) ? theme : GLOBALS.THEMES.DEFAULT);
-      $rootScope.$broadcast('beaker.theme.set', theme);
-    }).catch(function (response) {
-      console.log(response);
-      bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);
-    });
+      $timeout(function() {
+        // there's a race condition in calling setTheme during bootstrap
+        bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);
+      }, 100);
+    } else {
+      bkCoreManager._prefs.fs_order_by = window.beakerRegister.prefsPreset.fs_order_by;
+      bkCoreManager._prefs.fs_reverse = window.beakerRegister.prefsPreset.fs_reverse;
+      $timeout(function() {
+        // there's a race condition in calling setTheme during bootstrap
+        bkCoreManager._prefs.setTheme(window.beakerRegister.prefsPreset.theme);
+      }, 100);
+    }
 
     return bkCoreManager;
   });

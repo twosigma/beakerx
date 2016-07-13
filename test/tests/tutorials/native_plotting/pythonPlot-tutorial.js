@@ -22,7 +22,7 @@ describe('Native Plotting in Python', function () {
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FpythonChartingAPI.bkr&readOnly=true").then(done);
-        beakerPO.waitUntilLoadingFinished()();
+        beakerPO.waitUntilLoadingFinished();
     });
 
     afterAll(function(done){

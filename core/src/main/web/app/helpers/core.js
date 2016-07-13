@@ -675,6 +675,11 @@
           autocompleteService.backspace(cursor, cm);
         };
 
+        var cancel = function() {
+          scope.cancel();
+          scope.$apply();
+        };
+
         var isFullScreen = function (cm) {
           return bkHelper.isFullScreen(cm);
         };
@@ -710,6 +715,7 @@
             "Ctrl-Alt-Down": moveCellDown,
             "Cmd-Alt-Down": moveCellDown,
             "Ctrl-Alt-D": deleteCell,
+            "Ctrl-C": cancel,
             "Cmd-Alt-Backspace": deleteCell,
             "Tab": tab,
             "Backspace": backspace,
@@ -840,6 +846,25 @@
         });
         return deferred.promise;
       },
+
+      showSparkConfiguration: (function() {
+        var sparkConfigurationInstance;
+
+        return function() {
+          var options = {
+            windowClass: 'beaker-sandbox',
+            backdropClass: 'beaker-sandbox',
+            backdrop: true,
+            keyboard: true,
+            backdropClick: true,
+            controller: 'sparkConfigurationCtrl',
+            template: JST['mainapp/components/spark/sparkconfiguration']()
+          };
+
+          sparkConfigurationInstance = $uibModal.open(options);
+          return sparkConfigurationInstance.result;
+        };
+      })(),
 
       showModalDialog: function(callback, template, strategy, uriType, readOnly, format) {
         var options = {

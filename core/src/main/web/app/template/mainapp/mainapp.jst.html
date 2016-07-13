@@ -33,6 +33,7 @@
         <a href="#" role="button" class="dropdown-toggle" ng-class="m.classNames" data-toggle="dropdown">{{m.name}}</a>
         <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
       </li>
+      <bk-spark-menu ng-if="usesSpark()"></bk-spark-menu>
     </ul>
     <p ng-if="isEdited()" class="navbar-text text-success pull-right">edited</p>
     <p ng-if="isDisconnected()" class="navbar-text pull-right">

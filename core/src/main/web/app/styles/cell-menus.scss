@@ -69,7 +69,7 @@ bk-new-cell-menu {
   position: absolute;
   background: rgb(255, 255, 255);
   padding-right: $grid-gutter-width;
-  z-index: inherit;
+  z-index: 1;
   &.wide {
     width: 100%;
     overflow: hidden;

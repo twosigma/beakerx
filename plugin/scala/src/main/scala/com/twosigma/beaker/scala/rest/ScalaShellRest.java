@@ -20,9 +20,6 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.scala.util.ScalaEvaluator;
-import com.twosigma.beaker.scala.util.SparkContextManagerObj;
-
-import com.twosigma.beaker.jvm.object.SparkProgressService;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -53,9 +50,6 @@ public class ScalaShellRest {
   private final static Logger logger = Logger.getLogger(ScalaShellRest.class.getName());
       
   public ScalaShellRest() throws IOException {}
-
-  @Inject
-  private SparkProgressService progressService;
 
   @GET
   @Path("ready")
@@ -170,55 +164,6 @@ public class ScalaShellRest {
       return;
     }
     this.shells.get(shellId).setShellOptions(classPath, imports, outDir);
-  }
-
-  @GET
-  @Path("sparkUiPort")
-  @Produces(MediaType.TEXT_PLAIN)
-  public String sparkUiPort() {
-    return SparkContextManagerObj.getConfiguration().get("spark.ui.port");
-  } 
-
-  @POST
-  @Path("startSparkContext")
-  @Produces(MediaType.TEXT_PLAIN)
-  public String startSparkContext(
-    @FormParam("shellId") String shellId,
-    @FormParam("configuration") String configuration)
-      throws InterruptedException {
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    Map<String, String> config = new HashMap<String, String>();
-    try {
-      config = objectMapper.readValue(
-        configuration,
-        objectMapper.getTypeFactory().constructMapType(HashMap.class, String.class, String.class));
-      logger.info("Configuration:\n" + Arrays.toString(config.entrySet().toArray()));
-    } catch (IOException e) {
-      logger.log(Level.SEVERE, "Error while deserializing Spark configuration.", e);
-    }
-
-    if(!SparkContextManagerObj.isRunning()) {
-      SparkContextManagerObj.configure(config);
-      SparkContextManagerObj.start(progressService);
-    }
-
-    evaluate(
-      shellId,
-      "import com.twosigma.beaker.plugin.scala.utils.SparkContextManagerObj\n" +
-      "var sc = SparkContextManagerObj.getContext\n" // TODO use desired SC alias from config settings
-    );
-
-    return SparkContextManagerObj.getConfiguration().get("spark.ui.port");
-  }
-
-  @POST
-  @Path("stopSparkContext")
-  @Produces(MediaType.TEXT_PLAIN)
-  public String stopSparkContext(@FormParam("shellId") String shellId) {
-    if(SparkContextManagerObj.isRunning())
-      SparkContextManagerObj.stop();
-    return "ok";
   }
 
 }

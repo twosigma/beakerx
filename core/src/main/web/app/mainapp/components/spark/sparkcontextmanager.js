@@ -103,7 +103,8 @@
         serviceBase = ret;
         console.log('The service base is', ret);
         var evaluator = bkEvaluatorManager.getEvaluator(PLUGIN_NAME);
-        shellId = evaluator.settings.shellID;
+        if (typeof evaluator !== 'undefined')
+          shellId = evaluator.settings.shellID;
         console.log('Setting up comet connection to', bkHelper.serverUrl(serviceBase));
 
         $.cometd.init({

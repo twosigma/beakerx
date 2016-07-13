@@ -20,6 +20,8 @@ import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beaker.sqlsh.autocomplete.SqlAutocomplete;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.management.QueryEval;
 
@@ -33,10 +35,10 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SQLEvaluator {
+
+  private final static Logger logger = LoggerFactory.getLogger(SQLEvaluator.class.getName());
 
   protected final String shellId;
   protected final String sessionId;
@@ -148,7 +150,7 @@ public class SQLEvaluator {
         try {
           syncObject.acquire();
         } catch (InterruptedException e) {
-          Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+          logger.error(e.getMessage());
         }
 
         if (exit) {
@@ -194,7 +196,7 @@ public class SQLEvaluator {
       } catch (ReadVariableException e) {
         simpleEvaluationObject.error(e.getMessage());
       } catch (Throwable e) {
-        Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+        logger.error(e.getMessage());
         simpleEvaluationObject.error(e.toString());
       }
     }
@@ -214,7 +216,7 @@ public class SQLEvaluator {
       String line = sc.nextLine();
       int i = line.indexOf('=');
       if (i < 1 || i == line.length() - 1) {
-        Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Error in datasource line, this line will be ignored: {0}.", line);
+        logger.warn("Error in datasource line, this line will be ignored: {}.", line);
         continue;
       }
       String name = line.substring(0, i).trim();

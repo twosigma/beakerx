@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.concurrent.SynchronousQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.annotation.Listener;
@@ -34,13 +32,15 @@ import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerChannel;
 import org.cometd.bayeux.server.ServerMessage;
 import org.cometd.bayeux.server.ServerSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Service
 @Singleton
 public class NotebookControlService {
 
-  private static final Logger logger = Logger.getLogger(NotebookControlService.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(NotebookControlService.class.getName());
 
   private BayeuxServer bayeux;
   private LocalSession localSession;
@@ -87,7 +87,7 @@ public class NotebookControlService {
     data.put("arg0", filter);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      logger.log(Level.WARNING, "NotebookControlService.evaluate(): channel not found for session " + session);
+      logger.warn("NotebookControlService.evaluate(): channel not found for session {}", session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -103,7 +103,7 @@ public class NotebookControlService {
     data.put("arg1", code);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      logger.log(Level.WARNING, "NotebookControlService.evaluateCode(): channel not found for session " + session);
+      logger.warn("NotebookControlService.evaluateCode(): channel not found for session {}", session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -118,7 +118,7 @@ public class NotebookControlService {
     data.put("arg0", msg);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      logger.log(Level.WARNING, "NotebookControlService.showStatus(): channel not found for session " + session);
+      logger.warn("NotebookControlService.showStatus(): channel not found for session {}", session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -133,7 +133,7 @@ public class NotebookControlService {
     data.put("arg0", msg);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      logger.log(Level.WARNING, "NotebookControlService.clearStatus(): channel not found for session " + session);
+      logger.warn("NotebookControlService.clearStatus(): channel not found for session {}", session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -148,8 +148,7 @@ public class NotebookControlService {
     data.put("arg0", msg);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      logger.log(Level.WARNING, "NotebookControlService.showTransientStatus(): channel not found for session " +
-        session);
+      logger.warn("NotebookControlService.showTransientStatus(): channel not found for session {}", session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -163,7 +162,7 @@ public class NotebookControlService {
     data.put("numargs", 0);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      logger.log(Level.WARNING, "NotebookControlService.getEvaluators(): channel not found for session " + session);
+      logger.warn("NotebookControlService.getEvaluators(): channel not found for session {}", session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -178,7 +177,7 @@ public class NotebookControlService {
     data.put("arg0", filter);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      logger.log(Level.WARNING, "NotebookControlService.getCodeCells(): channel not found for session " + session);
+      logger.warn("NotebookControlService.getCodeCells(): channel not found for session {}", session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -194,7 +193,7 @@ public class NotebookControlService {
     data.put("arg1", body);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      logger.log(Level.WARNING, "NotebookControlService.setCodeCellBody(): channel not found for session " + session);
+      logger.warn("NotebookControlService.setCodeCellBody(): channel not found for session {}", session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -210,8 +209,7 @@ public class NotebookControlService {
     data.put("arg1", evaluator);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      logger.log(Level.WARNING, "NotebookControlService.setCodeCellEvaluator(): channel not found for session " +
-        session);
+      logger.warn("NotebookControlService.setCodeCellEvaluator(): channel not found for session {}", session);
       return null;
     }
     channel.publish(this.localSession, data, null);
@@ -227,7 +225,7 @@ public class NotebookControlService {
     data.put("arg1", tags);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      logger.log(Level.WARNING, "NotebookControlService.setCodeCellTags(): channel not found for session " + session);
+      logger.warn("NotebookControlService.setCodeCellTags(): channel not found for session {}", session);
       return null;
     }
     channel.publish(this.localSession, data, null);

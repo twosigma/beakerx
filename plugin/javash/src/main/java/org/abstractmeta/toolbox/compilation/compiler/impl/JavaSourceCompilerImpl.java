@@ -22,14 +22,14 @@ import org.abstractmeta.toolbox.compilation.compiler.registry.JavaFileObjectRegi
 import org.abstractmeta.toolbox.compilation.compiler.registry.impl.JavaFileObjectRegistryImpl;
 import org.abstractmeta.toolbox.compilation.compiler.util.ClassPathUtil;
 import org.abstractmeta.toolbox.compilation.compiler.util.URIUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.tools.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Provides implementation of JavaSourceCompiler interface.
@@ -62,7 +62,7 @@ import java.util.logging.Logger;
 
 public class JavaSourceCompilerImpl implements JavaSourceCompiler {
 
-    private final Logger logger = Logger.getLogger(JavaSourceCompilerImpl.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(JavaSourceCompilerImpl.class.getName());
 
     private static final List<String> CLASS_PATH_OPTIONS = new ArrayList<String>(Arrays.asList("cp", "classpath"));
     private static final String CLASS_PATH_DELIMITER = ClassPathUtil.getClassPathSeparator();
@@ -96,7 +96,7 @@ public class JavaSourceCompilerImpl implements JavaSourceCompiler {
             throw createCompilationErrorException(registry, diagnostics);
         }
         if (getDiagnosticCountByType(diagnostics, Diagnostic.Kind.WARNING) > 0) {
-            logger.log(Level.WARNING, getDiagnosticString(registry, diagnostics));
+            logger.warn(getDiagnosticString(registry, diagnostics));
         }
         result.addClassPathEntries(compilationUnit.getClassPathsEntries());
         return result;

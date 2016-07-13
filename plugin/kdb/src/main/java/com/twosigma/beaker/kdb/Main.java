@@ -29,6 +29,7 @@ import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import org.eclipse.jetty.server.Server;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -42,7 +43,7 @@ import static java.util.logging.Level.*;
  */
 public class Main {
 
-  private static final Logger logger = Logger.getLogger(Main.class.getName());
+  private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Main.class.getName());
 
   private static final Logger guiceLogger = Logger.getLogger(GuiceComponentProviderFactory.class.getName());
   private static final Logger webLogger   = Logger.getLogger(WebApplicationImpl.class.getName());
@@ -69,7 +70,7 @@ public class Main {
       try {
         logManager.readConfiguration(new FileInputStream(System.getenv("beaker_logger_file")));
       } catch (IOException exception) {
-        logger.log(WARNING, "Error in loading configuration: " + exception);
+        logger.warn("Error in loading configuration: {}", exception.getMessage());
       }
     } else {
       Logger.getLogger("com.sun.jersey").setLevel(OFF);

@@ -33,13 +33,14 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.eclipse.jetty.server.Server;
+import org.slf4j.LoggerFactory;
 
 /**
  * In the main function, create modules and perform initialization.
  */
 public class Main {
 
-  private static final Logger logger = Logger.getLogger(Main.class.getName());
+  private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Main.class.getName());
 
   private static final Logger GuiceComponentProviderFactoryLogger =
           Logger.getLogger(com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory.class.getName());
@@ -59,7 +60,7 @@ public class Main {
       try {
         logManager.readConfiguration(new FileInputStream(System.getenv("beaker_logger_file")));
       } catch (IOException exception) {
-        logger.log(Level.WARNING, "Error in loading configuration: " + exception);
+        logger.warn("Error in loading configuration: " + exception);
       }
     } else {
       java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);

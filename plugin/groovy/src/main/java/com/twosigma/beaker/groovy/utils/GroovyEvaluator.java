@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,10 +49,12 @@ import com.twosigma.beaker.jvm.utils.BeakerPrefsUtils;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GroovyEvaluator {
 
-  private static final Logger logger = Logger.getLogger(GroovyEvaluator.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(GroovyEvaluator.class.getName());
 
   private static final String STATIC_WORD_WITH_SPACE = "static ";
   private static final String DOT_STAR_POSTFIX = ".*";
@@ -329,7 +329,7 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
           }
         } catch(Throwable e) {
           if(e instanceof GroovyNotFoundException) {
-            logger.log(Level.WARNING, e.getLocalizedMessage());
+            logger.warn(e.getLocalizedMessage());
             if(j != null) {
               j.outputObject.error(e.getLocalizedMessage());
             }
@@ -382,8 +382,8 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
           result = instance.run();
            
           if(LOCAL_DEV) { 
-            logger.info("Result: " + result);
-            logger.info("Variables: " + scriptBinding.getVariables());
+            logger.info("Result: {}", result);
+            logger.info("Variables: {}", scriptBinding.getVariables());
           }
             
           theOutput.finished(result);
@@ -391,7 +391,7 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
         } catch(Throwable e) {
           
           if(LOCAL_DEV) {
-              logger.log(Level.WARNING, e.getMessage());
+              logger.warn(e.getMessage());
               e.printStackTrace();
           }
           

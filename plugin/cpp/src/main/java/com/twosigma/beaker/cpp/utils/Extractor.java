@@ -17,17 +17,18 @@ package com.twosigma.beaker.cpp.utils;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 import com.twosigma.beaker.cpp.autocomplete.CPP14Parser;
 import com.twosigma.beaker.cpp.autocomplete.CPP14BaseListener;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Extractor extends CPP14BaseListener {
 
-  private static final Logger logger = Logger.getLogger(Extractor.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(Extractor.class.getName());
 
   public int beakerMainLastToken;
   public String returnType = "none";

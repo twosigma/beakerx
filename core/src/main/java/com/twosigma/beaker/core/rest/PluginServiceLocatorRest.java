@@ -27,6 +27,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.jvnet.winp.WinProcess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -62,8 +64,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -75,7 +75,7 @@ import java.util.logging.Logger;
 @Singleton
 public class PluginServiceLocatorRest {
 
-  private static final Logger logger = Logger.getLogger(PluginServiceLocatorRest.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(PluginServiceLocatorRest.class.getName());
 
   // these 3 times are in millis
   private static final int RESTART_ENSURE_RETRY_MAX_WAIT = 30*1000;
@@ -519,7 +519,7 @@ public class PluginServiceLocatorRest {
     try {
       spinCheck(url);
     } catch (Throwable t) {
-      logger.log(Level.WARNING, "time out plugin =" + pluginId);
+      logger.warn("time out plugin = {}", pluginId);
       this.plugins.remove(pluginId);
       if (windows()) {
         new WinProcess(proc).killRecursively();
@@ -712,7 +712,7 @@ public class PluginServiceLocatorRest {
       // XXX should allow name to be set by user in bkConfig
       hostName = InetAddress.getLocalHost().getHostName();
     } catch (UnknownHostException e) {
-      logger.log(Level.WARNING, "warning: UnknownHostException from InetAddress.getLocalHost().getHostName(), ignored");
+      logger.warn("warning: UnknownHostException from InetAddress.getLocalHost().getHostName(), ignored");
     }
     if (this.listenInterface != null && !this.listenInterface.equals("*")) {
       hostName = this.listenInterface;

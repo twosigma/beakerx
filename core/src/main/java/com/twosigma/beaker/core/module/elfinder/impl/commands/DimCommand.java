@@ -50,20 +50,20 @@ public class DimCommand extends AbstractJsonCommand implements Command {
         json.put("dim", String.format("%dx%d", width, height));
       } catch (IOException ioe) {
         String message = "Failed load image to get dimensions: " + item.getPath();
-        LOGGER.warning(message);
+        LOGGER.warn(message);
 
       } finally {
         if (inputStream != null) {
           try {
             inputStream.close();
           } catch (IOException ioe) {
-            LOGGER.severe("Failed to close stream to: " + item.getPath() + "\n" + ioe);
+            LOGGER.error("Failed to close stream to: " + item.getPath() + "\n" + ioe);
           }
         }
       }
 
     } else {
-      LOGGER.warning("dim command called on non-image: " + item.getPath());
+      LOGGER.warn("dim command called on non-image: " + item.getPath());
     }
   }
 }

@@ -15,13 +15,14 @@
  */
 package com.twosigma.beaker.core.rest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * StreamGobbler
@@ -29,7 +30,7 @@ import java.util.logging.Logger;
  */
 public class StreamGobbler extends Thread {
 
-  private static final Logger logger = Logger.getLogger(StreamGobbler.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(StreamGobbler.class.getName());
 
   private static volatile boolean shutdownInprogress = false;
 
@@ -95,7 +96,7 @@ public class StreamGobbler extends Thread {
           logger.info(this.name + "-" + this.type + ">" + line);
         } else {
           if (this.type.equals("stderr")) {
-            logger.log(Level.WARNING, line);
+            logger.warn(line);
           } else {
             logger.info(line);
           }

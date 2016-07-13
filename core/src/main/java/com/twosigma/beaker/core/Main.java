@@ -53,13 +53,14 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.server.Server;
+import org.slf4j.LoggerFactory;
 
 /**
  * In the main function, create modules and perform initialization.
  */
 public class Main {
 
-  private static final Logger logger = Logger.getLogger(Main.class.getName());
+  private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Main.class.getName());
 
   private static final Logger GuiceComponentProviderFactoryLogger =
           Logger.getLogger(com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory.class.getName());
@@ -163,7 +164,7 @@ public class Main {
       out.println(pid);
       out.close();
     } else {
-      logger.log(Level.WARNING, "warning, could not determine PID");
+      logger.warn("warning, could not determine PID");
     }
   }
 
@@ -352,7 +353,7 @@ public class Main {
       logger.info("Port range " + base + "-" + (base + width - 1) + " taken, searching...");
       base += width;
       if (tries++ > 10) {
-        logger.log(Level.SEVERE, "can't find open port.");
+        logger.error("can't find open port.");
         System.exit(1);
       }
     }

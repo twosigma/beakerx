@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.concurrent.SynchronousQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.twosigma.beaker.shared.module.BkWebSocketListener;
 import com.twosigma.beaker.shared.module.BkWebSocketTransport;
@@ -51,7 +51,7 @@ import org.cometd.websocket.server.WebSocketTransport;
 @Singleton
 public class NamespaceService {
 
-  private static final Logger logger = Logger.getLogger(NamespaceService.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(NamespaceService.class.getName());
 
   private BayeuxServer bayeux;
   private LocalSession localSession;
@@ -121,7 +121,7 @@ public class NamespaceService {
     data.put("name", name);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      logger.log(Level.WARNING, "NamespaceService.get(): channel not found for session " + session);
+      logger.warn("NamespaceService.get(): channel not found for session {}", session);
       return null;
     }
     getNames(session).add(name);
@@ -149,7 +149,7 @@ public class NamespaceService {
     data.put("sync", sync);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-      logger.log(Level.WARNING, "NamespaceService.set(): channel not found for session " + session);
+      logger.warn("NamespaceService.set(): channel not found for session {}", session);
       return;
     }
     getNames(session).add(name);

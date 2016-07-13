@@ -24,12 +24,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import clojure.lang.PersistentVector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ClojureCollectionDeserializer implements ObjectDeserializer {
+
+  private final static Logger logger = LoggerFactory.getLogger(ClojureCollectionDeserializer.class.getName());
+
   private final BeakerObjectConverter parent;
 
   public ClojureCollectionDeserializer(BeakerObjectConverter p) {
@@ -48,7 +51,7 @@ public class ClojureCollectionDeserializer implements ObjectDeserializer {
       try {
         list.add(parent.deserialize(n.get(i), mapper));
       } catch (Exception e) {
-        Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+        logger.error(e.getMessage());
       }
     }
     Collection collection = PersistentVector.create(list);

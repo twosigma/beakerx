@@ -15,12 +15,14 @@
  */
 package com.twosigma.beaker.jvm.object;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class OutputContainer {
-  public final static Logger LOGGER = Logger.getLogger(OutputContainer.class.getName());
+  public final static Logger LOGGER = LoggerFactory.getLogger(OutputContainer.class.getName());
 
   private final List<Object> items;
   private final List<String>                 labels        = new ArrayList<>();

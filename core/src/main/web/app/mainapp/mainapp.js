@@ -40,7 +40,8 @@
                                              'bk.notebook',
                                              'bk.electron',
                                              'bk.connectionManager',
-                                             'bk.fileManipulation'
+                                             'bk.fileManipulation',
+                                             'bk.sparkContextManager'
                                              ]);
 
   /**
@@ -65,7 +66,8 @@
       bkEvaluateJobManager,
       bkElectron,
       $location,
-      bkFileManipulation) {
+      bkFileManipulation,
+      bkSparkContextManager) {
 
     return {
       restrict: 'E',
@@ -718,6 +720,11 @@
             isRunning: function (cellId) {
               return bkEvaluateJobManager.isRunning(cellId);
             },
+
+            cancel: function() {
+              return bkEvaluateJobManager.cancel();
+            },
+
             evaluate: function(toEval) {
               var cellOp = bkSessionManager.getNotebookCellOp();
               // toEval can be a tagName (string), either "initialization", name of an evaluator or user defined tag
@@ -1458,6 +1465,15 @@
             startAutoBackup();
           }
         });
+
+        $scope.usesSpark = function() {
+          var notebookModel = bkHelper.getNotebookModel();
+          if (!notebookModel || !notebookModel.evaluators)
+            return false;
+          return _.filter(notebookModel.evaluators, function(evaluator) {
+            return "useSpark" in evaluator && evaluator["useSpark"];
+          }).length > 0;
+        };
 
         setDocumentTitle();
 

@@ -106,7 +106,9 @@
             scope.width = ui.size.width;
             scope.height = ui.size.height;
             _.extend(scope.plotSize, ui.size);
-            scope.setDumpState(scope.dumpState());
+            if (scope.setDumpState !== undefined) {
+              scope.setDumpState(scope.dumpState());
+            }
 
             scope.jqsvg.css({"width": scope.width, "height": scope.height});
             scope.jqplottitle.css({"width": scope.width });
@@ -1896,7 +1898,9 @@
           if (scope.doNotLoadState !== true && savedstate !== undefined && savedstate.plotSize !== undefined) {
             scope.loadState(savedstate);
           } else {
-            scope.setDumpState(scope.dumpState());
+            if (scope.setDumpState !== undefined) {
+              scope.setDumpState(scope.dumpState());
+            }
           }
           scope.doNotLoadState = false;
 
@@ -2003,7 +2007,9 @@
           if (!scope.model.isShowOutput || (scope.model.isShowOutput && scope.model.isShowOutput() === true)) {
             scope.plotSize.width = scope.getCellWidth();
             scope.plotSize.height = scope.getCellHeight();
-            scope.setDumpState(scope.dumpState());
+            if (scope.setDumpState !== undefined) {
+              scope.setDumpState(scope.dumpState());
+            }
           }
         };
 
@@ -2030,7 +2036,9 @@
         };
         scope.$watch('getTheme()', function(newValue, oldValue) {
           if(newValue !== oldValue) {
-            scope.model.setDumpState(scope.dumpState());
+            if (scope.model.setDumpState !== undefined) {
+              scope.model.setDumpState(scope.dumpState());
+            }
             scope.legendDone = false;
             scope.init();
           }

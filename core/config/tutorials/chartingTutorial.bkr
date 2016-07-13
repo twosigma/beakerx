@@ -3829,8 +3829,7 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10,
-                    "tips": {},
-                    "hasPlotSpecificMethods": true
+                    "tips": {}
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
@@ -6472,8 +6471,7 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10,
-                    "tips": {},
-                    "hasPlotSpecificMethods": true
+                    "tips": {}
                 },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",

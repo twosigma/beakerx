@@ -31,31 +31,42 @@ describe('Notebook Reflection API', function (done) {
         done();
     });
 
-    it("returns all code cells that have the tag 'mytag'", function () {
-        var idCell = "codeQi2Ect";
-        beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
-    });
     describe('Settings the code and running other cells', function(){
         var idCellToChange = "celltochange";
 
-        it('Change to "This is the new content"', function () {
+        it('Change to the new content', function () {
             var idCell = "code8FSM5W";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.runBkCellDefaultButtonByIdCell(idCell);
 
             beakerPO.scrollToBkCellByIdCell(idCellToChange);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCellToChange, 'Html');
+            expect(element(by.css('bk-code-cell-output[cell-id=' + idCellToChange + '] bk-output-display[type="Html"]')).isPresent()).toBe(true);
             expect(beakerPO.getCodeCellOutputByIdCell(idCellToChange).element(By.css('h2')).getText()).toBe('This is the new content');
         });
-        it('Change to "This is the old content"', function () {
+        it("beaker.getCodeCells('mytag') should contains 'This is the new content'", function () {
+            var idCell = "codeQi2Ect";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+            beakerPO.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText().then(function(value){
+                expect(value.lastIndexOf('<h2>This is the new content</h2>')).toBeGreaterThan(-1);
+            });
+        });
+        it('Change to the old content', function () {
             var idCell = "codehkOSaq";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.runBkCellDefaultButtonByIdCell(idCell);
 
             beakerPO.scrollToBkCellByIdCell(idCellToChange);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCellToChange, 'Text');
+            expect(element(by.css('bk-code-cell-output[cell-id=' + idCellToChange + '] bk-output-display[type="Text"]')).isPresent()).toBe(true);
             beakerPO.checkCellOutputTextByIdCell(idCellToChange, 'This is the old content');
+        });
+        it("beaker.getCodeCells('mytag') should contains 'This is the old content'", function () {
+            var idCell = "codeQi2Ect";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+            beakerPO.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText().then(function(value){
+                expect(value.lastIndexOf('"output":"This is the old content"')).toBeGreaterThan(-1);;
+            });
         });
     });
 

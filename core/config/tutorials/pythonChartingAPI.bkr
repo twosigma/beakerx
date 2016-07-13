@@ -144,7 +144,6 @@
                     "x_lower_margin": 0.05,
                     "graphics_list": [],
                     "constant_bands": [],
-                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
@@ -359,7 +358,6 @@
                         }
                     ],
                     "constant_bands": [],
-                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
@@ -553,7 +551,6 @@
                     "x_lower_bound": 0,
                     "use_tool_tip": true,
                     "constant_bands": [],
-                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
@@ -887,7 +884,6 @@
                     "x_lower_bound": 0,
                     "use_tool_tip": true,
                     "constant_bands": [],
-                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
@@ -1041,7 +1037,6 @@
                     "x_lower_bound": 0,
                     "use_tool_tip": true,
                     "constant_bands": [],
-                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
@@ -1201,7 +1196,6 @@
                     "x_lower_bound": 0,
                     "use_tool_tip": true,
                     "constant_bands": [],
-                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
@@ -2581,7 +2575,6 @@
                     "use_tool_tip": true,
                     "domain_axis_label": "Time",
                     "constant_bands": [],
-                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
@@ -3964,7 +3957,6 @@
                         }
                     ],
                     "constant_bands": [],
-                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",

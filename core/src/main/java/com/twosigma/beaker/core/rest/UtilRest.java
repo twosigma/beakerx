@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.QueryParam;
@@ -58,6 +60,8 @@ import org.json.simple.parser.ParseException;
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class UtilRest {
+
+  private static final Logger logger = Logger.getLogger(UtilRest.class.getName());
 
   private final BeakerConfig bkConfig;
   private final GeneralUtils utils;
@@ -152,7 +156,7 @@ public class UtilRest {
     java.nio.file.Path defaultNotebookFile = Paths.get(defaultNotebookUrl);
     String content = this.utils.readFile(defaultNotebookFile);
     if (content == null) {
-      System.out.println("Warning, default notebook is empty");
+      logger.log(Level.WARNING, "Warning, default notebook is empty");
       return "";
     }
 

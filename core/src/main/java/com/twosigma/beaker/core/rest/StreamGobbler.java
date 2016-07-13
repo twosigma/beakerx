@@ -20,12 +20,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * StreamGobbler
  * takes a stream from a evaluator process and write to outputLog
  */
 public class StreamGobbler extends Thread {
+
+  private static final Logger logger = Logger.getLogger(StreamGobbler.class.getName());
 
   private static volatile boolean shutdownInprogress = false;
 
@@ -88,19 +92,19 @@ public class StreamGobbler extends Thread {
         }
 
         if (this.name != null) {
-          System.out.println(this.name + "-" + this.type + ">" + line);
+          logger.info(this.name + "-" + this.type + ">" + line);
         } else {
           if (this.type.equals("stderr")) {
-            System.err.println(line);
+            logger.log(Level.WARNING, line);
           } else {
-            System.out.println(line);
+            logger.info(line);
           }
         }
 
         if (this.outputLogService != null) {
           if (this.isStillWaiting) {
             if (line.indexOf(this.waitfor) > 0) {
-              System.out.println(this.name + "-" + this.type + " waiting over");
+              logger.info(this.name + "-" + this.type + " waiting over");
               this.isStillWaiting = false;
             }
           } else {

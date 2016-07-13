@@ -17,6 +17,7 @@
 package com.twosigma.beaker.groovy.autocomplete;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.twosigma.beaker.autocomplete.AutocompleteCandidate;
 import com.twosigma.beaker.autocomplete.AutocompleteRegistry;
@@ -25,6 +26,8 @@ import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.groovy.autocomplete.GroovyParser.ImportStatementContext;
 
 public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
+
+  private static final Logger logger = Logger.getLogger(GroovyImportDeclarationCompletion.class.getName());
 
   private int cursor;
   private String text;
@@ -57,7 +60,7 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
         String st = ctx.getText();
         if(st.startsWith("import"))
           st = st.substring(6).trim();
-        if(GroovyCompletionTypes.debug) System.out.println("wants next package name for "+st);
+        if(GroovyCompletionTypes.debug) logger.info("wants next package name for "+st);
         String [] txtv = (st+"X").split("\\.");
         txtv[txtv.length-1] = "";
         AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
@@ -69,7 +72,7 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
         String st = ctx.getText();
         if(st.startsWith("import"))
           st = st.substring(6).trim();
-        if(GroovyCompletionTypes.debug) System.out.println("wants to finish package name for "+st);
+        if(GroovyCompletionTypes.debug) logger.info("wants to finish package name for "+st);
         String [] txtv = st.split("\\.");
         AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
         addQuery(c);
@@ -81,7 +84,7 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
       String st = ctx.getText();
       if(st.startsWith("import"))
         st = st.substring(6).trim();
-      if(GroovyCompletionTypes.debug) System.out.println("adding import for "+st);
+      if(GroovyCompletionTypes.debug) logger.info("adding import for "+st);
       // is this imports using '*' ?
       if (st.endsWith(".*")) {
         String [] txtv = st.split("\\.");
@@ -96,7 +99,7 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
             l.addChildren(new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, s));
             registry.addCandidate(new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, s));
             classUtils.defineClassShortName(s, st+"."+s);
-            if(GroovyCompletionTypes.debug)  System.out.println("define "+s+" "+st+"."+s);
+            if(GroovyCompletionTypes.debug)  logger.info("define "+s+" "+st+"."+s);
           }
           registry.addCandidate(c);
         }

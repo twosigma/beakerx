@@ -96,6 +96,8 @@
     };
 
     $rootScope.$watch('getEvaluator()', function(newValue, oldValue) {
+      if (typeof newValue === 'undefined' || newValue == null)
+        return;
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
         recordOutput: "true"
@@ -103,7 +105,7 @@
         serviceBase = ret;
         console.log('The service base is', ret);
         var evaluator = bkEvaluatorManager.getEvaluator(PLUGIN_NAME);
-        if (typeof evaluator !== 'undefined')
+        if (typeof evaluator !== 'undefined' && evaluator != null)
           shellId = evaluator.settings.shellID;
         console.log('Setting up comet connection to', bkHelper.serverUrl(serviceBase));
 

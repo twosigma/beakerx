@@ -1365,7 +1365,7 @@
 
       var orig_mime2class = elfinder.mime2class;
       elfinder.mime2class = function (mime) {
-        if (mime === 'application/beaker-notebook') {
+        if (mime === 'Beaker-Notebook') {
           return 'elfinder-cwd-icon-beaker';
         }
         return orig_mime2class(mime);

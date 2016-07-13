@@ -1664,6 +1664,53 @@
     return dragAndDropHelper;
   });
 
+  module.factory('bkNotificationService', function (bkUtils) {
+    var _notificationSound = null;
+    
+    function checkPermissionsForNotification() {
+      var deferred = bkUtils.newDeferred();
+      if (Notification.permission === "granted") {
+        deferred.resolve(true);
+      } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission(function (permission) {
+          deferred.resolve(permission === "granted");
+        });
+      }
+      return deferred.promise;
+    }
+    
+    function playNotificationSound() {
+      if(!_notificationSound) {
+        _notificationSound = new Audio('app/sound/notification.wav');
+      }
+      _notificationSound.play();
+    }
+
+    return {
+      checkPermissions: checkPermissionsForNotification,
+      showNotification: function (title, body, tag) {
+        checkPermissionsForNotification().then(function (granted) {
+          if (granted) {
+            var options = {
+              body: body,
+              icon: '/static/favicon.png'
+            };
+            if(tag) {
+              options.tag = tag;
+            }
+            var notification = new Notification(title, options);
+            notification.onclick = function () {
+              notification.close();
+              window.focus();
+            };
+            //we need to play sound this way because notification's 'options.sound' parameter is not supported yet
+            playNotificationSound();
+          }
+        });
+      }
+    };
+  });
+
   function getImportNotebookFileTypePattern() {
     return "^((?!image\/((png)|(jpg)|(jpeg))).)*?$";
   }

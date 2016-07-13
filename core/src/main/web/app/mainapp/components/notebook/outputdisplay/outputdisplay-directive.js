@@ -16,7 +16,7 @@
 (function() {
   "use strict";
   var module = angular.module('bk.outputDisplay');
-  module.directive('bkOutputDisplay', function($compile, bkOutputDisplayFactory, bkUtils) {
+  module.directive('bkOutputDisplay', function($compile, bkOutputDisplayFactory, bkUtils, bkNotificationService) {
     var getResultType = function(model) {
       if (model && model.getCellModel()) {
         if (_.isString(model.getCellModel())) {
@@ -92,33 +92,9 @@
         
         function showNotification() {
           ctrl.notifyWhenDone = false;
-          checkPermissionsForNotification().then(function (granted) {
-            if (granted) {
-              var outputSummary = codeCellOutputCtrl.getOutputSummary();
-              var options = {
-                body: outputSummary ? outputSummary : 'no output',
-                icon: '/static/favicon.png',
-                tag: 'beakerCellEvaluationDone'
-              };
-              var notification = new Notification("Evaluation completed", options);
-              notification.onclick = function () {
-                notification.close();
-                window.focus();
-              };
-            }
-          });
-        }
-        
-        function checkPermissionsForNotification() {
-          var deferred = bkUtils.newDeferred();
-          if (Notification.permission === "granted") {
-            deferred.resolve(true);
-          } else if (Notification.permission !== 'denied') {
-            Notification.requestPermission(function (permission) {
-              deferred.resolve(permission === "granted");
-            });
-          }
-          return deferred.promise;
+          bkNotificationService.showNotification('Evaluation completed',
+            codeCellOutputCtrl.getOutputSummary() || 'no output',
+            'beakerCellEvaluationDone');
         }
       }
     };

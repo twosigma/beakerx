@@ -18,8 +18,8 @@
  */
 (function() {
   'use strict';
-  beakerRegister.bkoDirective("Progress", ["$interval", "$compile", "$rootScope", "bkEvaluateJobManager", "bkUtils", "bkOutputDisplayFactory", function(
-      $interval, $compile, $rootScope, bkEvaluateJobManager, bkUtils, bkOutputDisplayFactory) {
+  beakerRegister.bkoDirective("Progress", ["$interval", "$compile", "$rootScope", "bkEvaluateJobManager", "bkUtils", "bkNotificationService", "bkOutputDisplayFactory", function(
+      $interval, $compile, $rootScope, bkEvaluateJobManager, bkUtils, bkNotificationService, bkOutputDisplayFactory) {
     return {
       template: JST['mainapp/components/notebook/output-progress'],
       require: '^bkOutputDisplay',
@@ -83,6 +83,9 @@
           return bkEvaluateJobManager.isCancellable();
         };
         scope.toggleNotifyWhenDone = function () {
+          if(!scope.isNotifyWhenDone()) {
+            bkNotificationService.checkPermissions();
+          }
           outputDisplayCtrl.toggleNotifyWhenDone();
         };
         scope.isNotifyWhenDone = function () {

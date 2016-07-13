@@ -18,9 +18,11 @@ package com.twosigma.beaker.shared.rest.filter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.security.Principal;
-import java.util.logging.Logger;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -36,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 @Singleton
 public class OwnerFilter implements Filter {
 
-  private static final Logger logger = Logger.getLogger(OwnerFilter.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(OwnerFilter.class.getName());
 
   private final String user;
 

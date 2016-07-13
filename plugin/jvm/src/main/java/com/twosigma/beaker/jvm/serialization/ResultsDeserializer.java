@@ -15,18 +15,17 @@
  */
 package com.twosigma.beaker.jvm.serialization;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * This class is used to deserialize output data that contain standard output or error in the notebook
  */
 
 public class ResultsDeserializer implements ObjectDeserializer {
-  private final static Logger logger = Logger.getLogger(ResultsDeserializer.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(ResultsDeserializer.class.getName());
   private final BeakerObjectConverter parent;
 
   public ResultsDeserializer(BeakerObjectConverter p) {
@@ -47,7 +46,7 @@ public class ResultsDeserializer implements ObjectDeserializer {
         o = parent.deserialize(n.get("payload"), mapper);
       }      
     } catch (Exception e) {
-      logger.log(Level.SEVERE, "exception deserializing Results ", e);
+      logger.error("exception deserializing Results ", e);
     }
     return o;
 

@@ -33,7 +33,6 @@ import java.lang.reflect.*;
 import java.nio.file.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Logger;
 import java.util.regex.*;
 import java.io.File;
 
@@ -57,10 +56,12 @@ import com.twosigma.beaker.cpp.utils.Extractor;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Lexer;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Parser;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Listener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CppEvaluator {
 
-  private static final Logger logger = Logger.getLogger(CppEvaluator.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(CppEvaluator.class.getName());
 
   protected final String shellId;
   protected final String sessionId;

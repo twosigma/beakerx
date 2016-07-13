@@ -21,13 +21,14 @@ package com.twosigma.beaker.r.module;
  * SimpleEvaluationObject, otherwise just pass it on as output.
  */
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Logger;
 
 public class ROutputHandler extends Thread {
 
@@ -37,7 +38,7 @@ public class ROutputHandler extends Thread {
   private SimpleEvaluationObject dest;
   private final String beginMagic;
   private final String endMagic;
-  private final static Logger logger = Logger.getLogger(ROutputHandler.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(ROutputHandler.class.getName());
   private final Semaphore capsem = new Semaphore(0);
   
   public ROutputHandler(InputStream stream, String beginMagic, String endMagic) {
@@ -71,10 +72,10 @@ public class ROutputHandler extends Thread {
       String line = null;
       while ((line = br.readLine()) != null) {
         if (line.indexOf(this.beginMagic) >= 0) {
-          logger.fine("begin capturing");
+          logger.debug("begin capturing");
           this.recording = true;
         } else if ((line.indexOf(this.endMagic) >= 0) && this.dest!=null) {        
-          logger.fine("end capturing: '"+this.captured+"'");
+          logger.debug("end capturing: '"+this.captured+"'");
           this.recording = false;
           capsem.release();
         } else if (this.recording) {

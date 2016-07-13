@@ -33,8 +33,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import clojure.lang.RT;
 import clojure.lang.Var;
@@ -43,8 +41,13 @@ import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ClojureEvaluator {
+
+  private final static Logger logger = LoggerFactory.getLogger(ClojureEvaluator.class.getName());
+
   protected final String shellId;
   protected final String sessionId;
   protected List<String> classPath;
@@ -107,7 +110,7 @@ public class ClojureEvaluator {
                                  String.format("%1$s_%2$s", loadFunctionPrefix, shellId));
       clojure.lang.Compiler.load(new StringReader(clojureInitScript));
     } catch (IOException e) {
-      Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+      logger.error(e.getMessage());
     }
 
     exit = false;
@@ -150,7 +153,7 @@ public class ClojureEvaluator {
           loader.loadClass(s);
           clojureLoadString.invoke(String.format("(import '%s)", s));
         } catch (Exception e) {
-          Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+          logger.error(e.getMessage());
         }
     }
 
@@ -159,7 +162,7 @@ public class ClojureEvaluator {
         try {
           clojureLoadString.invoke(String.format("(require '%s)", s));
         } catch (Exception e) {
-          Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+          logger.error(e.getMessage());
         }
     }
 
@@ -209,7 +212,7 @@ public class ClojureEvaluator {
             j.outputObject.error("... cancelled!");
           }
         } catch (Throwable e) {
-          Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+          logger.error(e.getMessage());
         }
       }
     }

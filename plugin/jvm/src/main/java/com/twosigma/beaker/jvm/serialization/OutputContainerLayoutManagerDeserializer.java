@@ -23,7 +23,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public abstract class OutputContainerLayoutManagerDeserializer<T extends OutputContainerLayoutManager> implements ObjectDeserializer {
   protected final BeakerObjectConverter parent;
@@ -43,7 +42,7 @@ public abstract class OutputContainerLayoutManagerDeserializer<T extends OutputC
         layout.setBorderDisplayed( n.get("borderDisplayed").asBoolean());
       }
     } catch (Exception e) {
-      OutputContainer.LOGGER.log(Level.SEVERE, "exception deserializing OutputContainerLayoutManager ", e);
+      OutputContainer.LOGGER.error("exception deserializing OutputContainerLayoutManager ", e);
     }
     return layout;
   }

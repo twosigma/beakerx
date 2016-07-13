@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -46,6 +44,8 @@ import org.codehaus.jackson.map.SerializerProvider;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The service that backs up session to file that offers a RESTful API
@@ -55,7 +55,7 @@ import org.cometd.bayeux.server.ServerChannel;
 @Singleton
 public class SessionBackupRest {
 
-  private static final Logger logger = Logger.getLogger(SessionBackupRest.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(SessionBackupRest.class.getName());
 
   private final File backupDirectory;
   private final GeneralUtils utils;
@@ -133,7 +133,7 @@ public class SessionBackupRest {
       data.put("id", sessionid);
       sessionChangeChannel.publish(this.localSession, data, null);
     } else {
-      logger.log(Level.WARNING, "Warning: Caught NPE of unknown origin. electron");
+      logger.warn("Warning: Caught NPE of unknown origin. electron");
     }
   }
 
@@ -165,7 +165,7 @@ public class SessionBackupRest {
     try {
       recordToFile(sessionId, notebookUri, notebookModelJson);
     } catch (IOException | InterruptedException ex) {
-      Logger.getLogger(SessionBackupRest.class.getName()).log(Level.SEVERE, null, ex);
+      logger.error(ex.getMessage());
     }
   }
 

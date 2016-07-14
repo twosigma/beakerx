@@ -101,7 +101,9 @@ h1.spark-configuration {
 }
 
 .spark-progress {
-  margin-top: 15px;
+  .spark-spacing {
+    padding-top: 15px;
+  }
 
   .spark-job-name {
     float: left;

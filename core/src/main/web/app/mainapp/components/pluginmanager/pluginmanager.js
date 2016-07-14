@@ -39,6 +39,7 @@
     $scope.discardChanges = function() {
       $scope.$broadcast(GLOBALS.EVENTS.DISCARD_LANGUAGE_SETTINGS);
     };
+    window.discardPluginManagerChanges = $scope.discardChanges;
 
     $scope.navigateToModifiedTab = function() {
       $scope.$broadcast(GLOBALS.EVENTS.HIGHLIGHT_EDITED_LANGUAGE_SETTINGS);

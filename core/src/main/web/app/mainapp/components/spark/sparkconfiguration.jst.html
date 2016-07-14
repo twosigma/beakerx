@@ -1,0 +1,247 @@
+<!--
+    Copyright 2016 TWO SIGMA OPEN SOURCE, LLC
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+  -->
+  <div class="modal-header">
+    <h1 class="spark-configuration">Spark Configuration</h1>
+    <div class="spark-configuration status-line">
+      <span ng-if="isConnecting()">
+        <span class="plugin-status plugin-loading">●</span>
+        SparkContext is starting...
+      </span>
+      <span ng-if="!$scope.isConnected() && isDisconnecting()">
+        <span class="plugin-status plugin-loading">●</span>
+        SparkContext is stopping...
+      </span>
+      <span ng-if="isFailed()">
+        <span class="plugin-status plugin-error">●</span>
+        SparkContext encountered an error
+      </span>
+      <span ng-if="isOffline() && !isFailed()">
+        <span class="plugin-status plugin-known">●</span>
+        SparkContext has not been started
+      </span>
+      <span ng-if="isConnected() && running() <= 0">
+        <span class="plugin-status plugin-active">●</span>
+        SparkContext has been started, no jobs are running
+      </span>
+      <span ng-if="isConnected() && running() == 1">
+        <span class="plugin-status plugin-active">●</span>
+        SparkContext has been started, one job is running
+      </span>
+      <span ng-if="isConnected() && running() > 1">
+        <span class="plugin-status plugin-active">●</span>
+        SparkContext has been started, {{running()}} jobs are running
+      </span>
+    </div>
+    <br style="clear:both" />
+    <div class="spark-configuration template-selector">
+      <form class="form-inline">
+        <div class="form-group">
+          <select class="form-control" ng-disabled="!isOffline()">
+            <option>small</option>
+            <option>medium</option>
+            <option>big</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <fieldset class="spark-configuration">
+      <form>
+        <table border="0" width="100%">
+          <tr>
+            <td><label class="col-sm-1 form-control-label">Executor cores</label></td>
+            <td>
+              <input type="text" class="form-control" ng-model="configuration.executorCores.value" maxlength="3" ng-disabled="!isOffline()" />
+            </td>
+
+            <td class="spacing"></td>
+
+            <td><label class="col-sm-1 form-control-label">Executor Memory (GB)</label></td>
+            <td>
+              <input type="text" class="form-control" ng-model="configuration.executorMemory.value" maxlength="3" ng-disabled="!isOffline()" />
+            </td>
+          </tr>
+
+          <tr>
+            <td><label class="col-sm-1 form-control-label">Datacenter</label></td>
+            <td>
+              <select class="form-control" ng-model="configuration.datacenter.value" ng-options="option for option in ::configuration.datacenter.options" ng-disabled="!isOffline()">
+              </select>
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
+
+        <div class="advanced-options" ng-if="showAdvanced">
+
+          <hr />
+
+          <table border="0" width="100%">
+            <tr>
+              <td width="35%"><label class="col-sm-1 form-control-label">Verbose</label></td>
+              <td>
+                <input type="checkbox" class="checkbox" />
+              </td>
+
+            </tr>
+            <tr>
+
+              <td><label class="col-sm-1 form-control-label">Debug</label></td>
+              <td>
+                <input type="checkbox" />
+              </td>
+            </tr>
+
+            <tr>
+              <td><label class="col-sm-1 form-control-label">Driver Memory (GB)</label></td>
+              <td>
+                <input type="text" class="form-control" value="1" />
+              </td>
+
+            </tr>
+            <tr>
+
+              <td><label class="col-sm-1 form-control-label">SparkContext alias</label></td>
+              <td>
+                <input type="text" class="form-control" value="sc" />
+              </td> 
+            </tr>
+
+            <tr>
+              <td><label class="col-sm-1 form-control-label">priority</label></td>
+              <td>
+                <input type="text" class="form-control" value="75" />
+              </td>          
+
+            </tr>
+            <tr>
+
+              <td><label class="col-sm-1 form-control-label">min_resource_ratio</label></td>
+              <td>
+                <input type="text" class="form-control" value="" />
+              </td>
+            </tr>
+
+            <tr>
+              <td><label class="col-sm-1 form-control-label">additional_jars</label></td>
+              <td>
+                <input type="text" class="form-control" value="" />
+              </td> 
+
+            </tr>
+            <tr>
+
+              <td><label class="col-sm-1 form-control-label">ld_libraries</label></td>
+              <td>
+                <input type="text" class="form-control" value="" />
+              </td> 
+            </tr>
+
+
+            <tr>
+              <td><label class="col-sm-1 form-control-label">ld_library_dirs</label></td>
+              <td>
+                <input type="text" class="form-control" value="" />
+              </td> 
+
+            </tr>
+            <tr>
+
+              <td><label class="col-sm-1 form-control-label">logfile</label></td>
+              <td>
+                <input type="text" class="form-control" value="" />
+              </td>
+            </tr>
+
+
+            <tr>
+              <td><label class="col-sm-1 form-control-label">loglevel</label></td>
+              <td>
+                <select class="form-control">
+                  <option>ERROR</option>
+                  <option>WARNING</option>
+                  <option>DEBUG</option>
+                  <option>INFO</option>
+                </select>
+              </td>
+
+            </tr>
+
+            <tr>
+              <td><label class="col-sm-1 form-control-label">executor_java_options</label></td>
+              <td>
+                <input type="text" class="form-control" value="" />
+              </td> 
+
+            </tr>
+            <tr>
+
+              <td><label class="col-sm-1 form-control-label">driver_java_options</label></td>
+              <td>
+                <input type="text" class="form-control" value="" />
+              </td>
+            </tr>
+
+            <tr>
+              <td><label class="col-sm-1 form-control-label">spark_conf</label></td>
+              <td>
+                <input type="text" class="form-control" value="" />
+              </td> 
+
+            </tr>
+
+            <tr>
+              <td><label class="col-sm-1 form-control-label">app_name</label></td>
+              <td>
+                <input type="text" class="form-control" value="" />
+              </td> 
+
+            </tr>
+
+            <tr>
+              <td><label class="col-sm-1 form-control-label">App name</label></td>
+              <td>
+                <input type="text" class="form-control" value="beaker" />
+              </td>
+            </tr>
+
+          </table>
+        </div>
+
+        <div class="form-commands">
+          <a href="#" ng-if="!showAdvanced" ng-click="toggleAdvanced()" eat-click>Advanced settings...</a>
+          <a href="#" ng-if="showAdvanced" ng-click="toggleAdvanced()" eat-click>Hide advanced settings</a>
+        </div>
+      </form>
+    </fieldset>
+  </div>
+  <div class="modal-footer">
+    <button ng-click="doClose()" class="btn btn-default" title="Closes this dialog without saving any changes">Cancel</button>
+    <button disabled ng-if="isConnecting()" class="btn btn-primary" title="Creating SparkContext, please wait">
+      <span class="fa fa-refresh fa-spin"></span>
+      Starting...
+    </button>
+    <button disabled ng-if="isDisconnecting()" class="btn btn-primary" title="Closing SparkContext, please wait">
+      <span class="fa fa-refresh fa-spin"></span>
+      Stopping...
+    </button>
+    <button ng-click="start()" ng-if="!isConnected() && !isConnecting() && !isDisconnecting()" class="btn btn-primary" title="Create SparkContext">Start</button>
+    <button ng-click="stop()" ng-if="isConnected() && !isConnecting() && !isDisconnecting()" class="btn btn-primary" title="Close SparkContext">Stop</button>
+  </div>

@@ -187,6 +187,13 @@
         $scope.isCellRunning = function () {
           return bkCoreManager.getBkApp().isRunning($scope.cellmodel.id);
         };
+
+        $scope.cancel = function() {
+          if($scope.isCellRunning()) {
+            bkCoreManager.getBkApp().cancel();
+          }
+        };
+
         var editedListener = function(newValue, oldValue) {
           if (newValue !== oldValue) {
             bkSessionManager.setNotebookModelEdited(true);
@@ -403,11 +410,21 @@
           },
           'Shift-Ctrl-E': function(cm) {
             scope.popupMenu();
-            element.find('.inputcellmenu').find('li').find('a')[0].focus();
+            var parent = element;
+            if (bkHelper.getBkNotebookViewModel().isAdvancedMode()) {
+              var inputMenuDivAdvanced = element.parents('.bkcell.code.bkr').find('.toggle-menu').first();
+              parent = inputMenuDivAdvanced.find('.dropdown.advanced-only').first();
+            }
+            parent.find('.inputcellmenu').find('li').find('a')[0].focus();
           },
           'Shift-Cmd-E': function(cm) {
             scope.popupMenu();
-            element.find('.inputcellmenu').find('li').find('a')[0].focus();
+            var parent = element;
+            if (bkHelper.getBkNotebookViewModel().isAdvancedMode()) {
+              var inputMenuDivAdvanced = element.parents('.bkcell.code.bkr').find('.toggle-menu').first();
+              parent = inputMenuDivAdvanced.find('.dropdown.advanced-only').first();
+            }
+            parent.find('.inputcellmenu').find('li').find('a')[0].focus();
           },
           'Ctrl-Alt-H': function(cm) { // cell hide
             scope.cellmodel.input.hidden = true;
@@ -544,6 +561,10 @@
         var inputMenuDiv = element.find('.bkcell').first();
         scope.popupMenu = function(event) {
           var menu = inputMenuDiv.find('.dropdown').first();
+          if (bkHelper.getBkNotebookViewModel().isAdvancedMode()) {
+            var inputMenuDivAdvanced = element.parents('.bkcell.code.bkr').find('.toggle-menu').first();
+            menu = inputMenuDivAdvanced.find('.dropdown.advanced-only').first();
+          }
           menu.find('.dropdown-toggle').first().dropdown('toggle');
         };
 

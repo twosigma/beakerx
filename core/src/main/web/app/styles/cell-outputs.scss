@@ -48,8 +48,21 @@ bk-code-cell-output {
   span.elapsed-time {
     display: inline-block;
     min-width: 190px;
+    margin-left: 30px;
   }
 
+  .progress-notification-dropdown {
+    display: inline-block;
+    position: absolute;
+
+    .progress-notification-menu-toggle {
+      color: inherit;
+      cursor: pointer;
+      background: url(../images/down@2x.png) no-repeat center right;
+      padding-right: 13px;
+      background-size: 8px;
+    }
+  }
 }
 
 .markup, .dataTables_scrollBody {

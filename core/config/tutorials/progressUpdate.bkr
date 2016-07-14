@@ -486,7 +486,6 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10,
-                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "pluginName": "Java",

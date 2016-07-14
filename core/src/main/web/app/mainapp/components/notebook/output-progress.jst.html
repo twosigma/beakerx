@@ -15,8 +15,19 @@
   limitations under the License.
 -->
 <div ng-if='elapsed > 200' style="white-space: nowrap; overflow-x: hidden;">
-  <div style="display: inline-block; margin-left: 2px;">
-    <i class='fa fa-refresh fa-spin fa-lg'></i>
+  <div style="display: inline-block; margin: 2px 0 0 2px;">
+    <div class="dropdown progress-notification-dropdown">
+      <a class="dropdown-toggle progress-notification-menu-toggle" data-toggle="dropdown" data-target="#"
+         role="button" aria-haspopup="true" aria-expanded="false">
+        <i class='fa fa-refresh fa-spin fa-lg'></i>
+      </a>
+      <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+        <li>
+          <a href="#" tabindex="-1" ng-click="toggleNotifyWhenDone()" eat-click>Notify when done</a>
+          <i class="glyphicon glyphicon-ok" ng-show="isNotifyWhenDone()"></i>
+        </li>
+      </ul>
+    </div>
     <span class='elapsed-time'> &nbsp; Elapsed: {{getElapsedTime()}} &nbsp; </span>
     <i class='fa fa-times-circle fa-lg text-danger cursor_hand'
        ng-click='cancel()' ng-if='isCancellable()' title='cancel'></i>
@@ -31,6 +42,7 @@
   </div>
   <div ng-if='hasMessage()' style="margin-left: 30px; display: inline-block;">{{getMessage()}}</div>
   <br/>
+  <bk-spark-progress></bk-spark-progress>
 </div>
 <div ng-if='hasPayload() || hasOutputData()'>
   <hr>

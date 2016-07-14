@@ -46,6 +46,7 @@
       $location,
       $sessionStorage,
       $q,
+      $timeout,
       bkUtils,
       bkRecentMenu,
       bkNotebookCellModelManager,
@@ -675,6 +676,11 @@
           autocompleteService.backspace(cursor, cm);
         };
 
+        var cancel = function() {
+          scope.cancel();
+          scope.$apply();
+        };
+
         var isFullScreen = function (cm) {
           return bkHelper.isFullScreen(cm);
         };
@@ -710,6 +716,7 @@
             "Ctrl-Alt-Down": moveCellDown,
             "Cmd-Alt-Down": moveCellDown,
             "Ctrl-Alt-D": deleteCell,
+            "Ctrl-C": cancel,
             "Cmd-Alt-Backspace": deleteCell,
             "Tab": tab,
             "Backspace": backspace,
@@ -840,6 +847,25 @@
         });
         return deferred.promise;
       },
+
+      showSparkConfiguration: (function() {
+        var sparkConfigurationInstance;
+
+        return function() {
+          var options = {
+            windowClass: 'beaker-sandbox',
+            backdropClass: 'beaker-sandbox',
+            backdrop: true,
+            keyboard: true,
+            backdropClick: true,
+            controller: 'sparkConfigurationCtrl',
+            template: JST['mainapp/components/spark/sparkconfiguration']()
+          };
+
+          sparkConfigurationInstance = $uibModal.open(options);
+          return sparkConfigurationInstance.result;
+        };
+      })(),
 
       showModalDialog: function(callback, template, strategy, uriType, readOnly, format) {
         var options = {
@@ -1171,27 +1197,42 @@
       }
     };
 
-    bkUtils.getBeakerPreference('fs-order-by').then(function (fs_order_by) {
-      bkCoreManager._prefs.fs_order_by = !fs_order_by || fs_order_by.length === 0 ? 'uri' : fs_order_by;
-    }).catch(function (response) {
-      console.log(response);
+    if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
+      bkUtils.getBeakerPreference('fs-order-by').then(function (fs_order_by) {
+        bkCoreManager._prefs.fs_order_by = !fs_order_by || fs_order_by.length === 0 ? 'uri' : fs_order_by;
+      }).catch(function (response) {
+        console.log(response);
+        bkCoreManager._prefs.fs_order_by = 'uri';
+      });
+
+      bkUtils.getBeakerPreference('fs-reverse').then(function (fs_reverse) {
+        bkCoreManager._prefs.fs_reverse = !fs_reverse || fs_reverse.length === 0 ? false : fs_reverse;
+      }).catch(function (response) {
+        console.log(response);
+        bkCoreManager._prefs.fs_reverse = false;
+      });
+      bkUtils.getBeakerPreference('theme').then(function (theme) {
+        bkCoreManager._prefs.setTheme(_.includes(_.values(GLOBALS.THEMES), theme) ? theme : GLOBALS.THEMES.DEFAULT);
+        $rootScope.$broadcast('beaker.theme.set', theme);
+      }).catch(function (response) {
+        console.log(response);
+        bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);
+      });
+    } else if (window.beakerRegister === undefined || window.beakerRegister.prefsPreset === undefined) {
       bkCoreManager._prefs.fs_order_by = 'uri';
-    });
-
-    bkUtils.getBeakerPreference('fs-reverse').then(function (fs_reverse) {
-      bkCoreManager._prefs.fs_reverse = !fs_reverse || fs_reverse.length === 0 ? false : fs_reverse;
-    }).catch(function (response) {
-      console.log(response);
       bkCoreManager._prefs.fs_reverse = false;
-    });
-
-    bkUtils.getBeakerPreference('theme').then(function (theme) {
-      bkCoreManager._prefs.setTheme(_.includes(_.values(GLOBALS.THEMES), theme) ? theme : GLOBALS.THEMES.DEFAULT);
-      $rootScope.$broadcast('beaker.theme.set', theme);
-    }).catch(function (response) {
-      console.log(response);
-      bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);
-    });
+      $timeout(function() {
+        // there's a race condition in calling setTheme during bootstrap
+        bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);
+      }, 100);
+    } else {
+      bkCoreManager._prefs.fs_order_by = window.beakerRegister.prefsPreset.fs_order_by;
+      bkCoreManager._prefs.fs_reverse = window.beakerRegister.prefsPreset.fs_reverse;
+      $timeout(function() {
+        // there's a race condition in calling setTheme during bootstrap
+        bkCoreManager._prefs.setTheme(window.beakerRegister.prefsPreset.theme);
+      }, 100);
+    }
 
     return bkCoreManager;
   });
@@ -1324,7 +1365,7 @@
 
       var orig_mime2class = elfinder.mime2class;
       elfinder.mime2class = function (mime) {
-        if (mime === 'application/beaker-notebook') {
+        if (mime === 'Beaker-Notebook') {
           return 'elfinder-cwd-icon-beaker';
         }
         return orig_mime2class(mime);
@@ -1662,6 +1703,53 @@
       isImageFile: isImageFile
     };
     return dragAndDropHelper;
+  });
+
+  module.factory('bkNotificationService', function (bkUtils) {
+    var _notificationSound = null;
+    
+    function checkPermissionsForNotification() {
+      var deferred = bkUtils.newDeferred();
+      if (Notification.permission === "granted") {
+        deferred.resolve(true);
+      } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission(function (permission) {
+          deferred.resolve(permission === "granted");
+        });
+      }
+      return deferred.promise;
+    }
+    
+    function playNotificationSound() {
+      if(!_notificationSound) {
+        _notificationSound = new Audio('app/sound/notification.wav');
+      }
+      _notificationSound.play();
+    }
+
+    return {
+      checkPermissions: checkPermissionsForNotification,
+      showNotification: function (title, body, tag) {
+        checkPermissionsForNotification().then(function (granted) {
+          if (granted) {
+            var options = {
+              body: body,
+              icon: '/static/favicon.png'
+            };
+            if(tag) {
+              options.tag = tag;
+            }
+            var notification = new Notification(title, options);
+            notification.onclick = function () {
+              notification.close();
+              window.focus();
+            };
+            //we need to play sound this way because notification's 'options.sound' parameter is not supported yet
+            playNotificationSound();
+          }
+        });
+      }
+    };
   });
 
   function getImportNotebookFileTypePattern() {

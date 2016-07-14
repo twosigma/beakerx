@@ -18,8 +18,8 @@
  */
 (function() {
   'use strict';
-  beakerRegister.bkoDirective("GGVis", ["$interval", "$compile", "$sce", "bkOutputDisplayFactory", function(
-      $interval, $compile, $sce, bkOutputDisplayFactory) {
+  beakerRegister.bkoDirective("GGVis", ["$interval", "$compile", "$sce", "$rootScope", "bkOutputDisplayFactory", function(
+      $interval, $compile, $sce, $rootScope, bkOutputDisplayFactory) {
     return {
       template: '<div><iframe srcdoc="{{getStuff()}}" style="height: 450px; width: 650px; resize: both; overflow: auto; border: 0;"></iframe></div>',
       link: function(scope, element, attrs) {
@@ -67,6 +67,16 @@
           scope.showoutput = newval;
         });
 
+        var debouncedOnResize = _.debounce(onResize, 100);
+        var iframeEl = element.find('iframe').on('resize', debouncedOnResize);
+
+        function onResize() {
+          $rootScope.$emit('beaker.resize');
+        }
+        
+        scope.$on('$destroy', function() {
+          iframeEl.off('resize', debouncedOnResize);
+        });
       }
     };
   }]);

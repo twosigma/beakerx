@@ -1,0 +1,55 @@
+<!--
+    Copyright 2016 TWO SIGMA OPEN SOURCE, LLC
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<div class="spark-progress">
+  <a href="{{jobUrl()}}" class="spark-job-name" title="Show native Spark UI of this job" ng-show="jobId != null" target="_blank">Spark Job {{jobId}}</a>
+  <table border="0" width="80%">
+    <tr ng-repeat="stage in stages">
+      <td class="spark-stage-name">
+        <a href="{{stage.url}}" target="_blank">Stage {{stage.id}}</a>
+      </td>
+      <td class="spark-stage-progress">   
+        <div class="total-progress progress" title="{{stage.total}} executed tasks">
+          <span class="spark-tasks-total">{{stage.total}}</span>
+          <div class="progress-bar spark-tasks-error" role="progressbar"
+              aria-valuenow="{{stage.failedP}}"
+              aria-valuemin="0" aria-valuemax="100"
+              style="width: {{stage.failedP}}%;"
+              title="failed tasks"
+              ng-show="stage.failed">
+              {{stage.failed}}
+          </div>
+          <div class="progress-bar spark-tasks-completed" role="progressbar"
+              aria-valuenow="{{stage.completedP}}"
+              aria-valuemin="0" aria-valuemax="100"
+              style="width: {{stage.completedP}}%;"
+              title="completed tasks"
+              ng-show="stage.completed">
+              {{stage.completed}}
+          </div>
+          <div class="progress-bar spark-tasks-active" role="progressbar"
+              aria-valuenow="{{stage.activeP}}"
+              aria-valuemin="0" aria-valuemax="100"
+              style="width: {{stage.activeP}}%;"
+              title="active tasks"
+              ng-show="stage.active">
+              {{stage.active}}
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>

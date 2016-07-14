@@ -952,6 +952,9 @@
       showLanguageManager: function () {
         return bkCoreManager.showLanguageManager();
       },
+      showSparkConfiguration: function () {
+        return bkCoreManager.showSparkConfiguration();
+      },
       appendCodeCell: function () {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var currentCellId = $(':focus').parents('bk-cell').attr('cellid');

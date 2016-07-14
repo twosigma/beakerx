@@ -160,3 +160,10 @@ core/src/main/web/vendor/bower_components/jQuery-contextMenu/dist/jquery.context
 core/src/main/web/vendor/bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min.js.map
 core/src/main/web/vendor/bower_components/jQuery-contextMenu/dist/jquery.ui.position.js
 core/src/main/web/vendor/bower_components/jQuery-contextMenu/dist/jquery.ui.position.min.js
+
+plugin/jvm/src/main/java/net/sf/jtreemap/swing/DefaultValue.java
+plugin/jvm/src/main/java/net/sf/jtreemap/swing/README.md
+plugin/jvm/src/main/java/net/sf/jtreemap/swing/TreeMapNode.java
+plugin/jvm/src/main/java/net/sf/jtreemap/swing/TreeMapNodeBuilder.java
+plugin/jvm/src/main/java/net/sf/jtreemap/swing/Value.java
+plugin/jvm/src/main/java/net/sf/jtreemap/swing/ValuePercent.java

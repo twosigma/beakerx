@@ -716,7 +716,6 @@
             "Ctrl-Alt-Down": moveCellDown,
             "Cmd-Alt-Down": moveCellDown,
             "Ctrl-Alt-D": deleteCell,
-            "Ctrl-C": cancel,
             "Cmd-Alt-Backspace": deleteCell,
             "Tab": tab,
             "Backspace": backspace,
@@ -728,6 +727,12 @@
             "Shift-Cmd-F": reformat,
             "Alt-F11": setFullScreen
         };
+
+        if(bkHelper.isMacOS){
+          keys["Ctrl-C"] = cancel;
+        }else{
+          keys["Alt-C"] = cancel;
+        }
 
         if (codeMirrorExtension.extraKeys !== undefined) {
           _.extend(keys, codeMirrorExtension.extraKeys);

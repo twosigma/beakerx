@@ -61,7 +61,6 @@ var config = {
     'tests/tutorials/automation/notebook-reflection-tutorial.js',
     'tests/tables.js',
     'tests/tutorials/native_plotting/jscriptPlot-tutorial.js',
-    'tests/tutorials/native_plotting/pythonPlot-tutorial.js',
     'tests/tutorials/table_display/tableGroovy-tutorial.js',
     'tests/tutorials/feature_overview/autotranslation-tutorial.js',
     'tests/tutorials/feature_overview/codeReuse-tutorial.js',

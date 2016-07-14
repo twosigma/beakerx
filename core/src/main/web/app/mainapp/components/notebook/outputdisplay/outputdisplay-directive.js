@@ -137,7 +137,7 @@
               case 'Text':
                 return firstString((typeof result === 'string') ? result : JSON.stringify(result));
               case 'Html':
-                return firstNChars(strip(result.object), 1000);
+                return firstNChars(strip(result), 1000);
             }
             return type;
           }

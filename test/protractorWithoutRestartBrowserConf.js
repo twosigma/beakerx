@@ -59,6 +59,7 @@ var config = {
     'tests/tutorials/standard_visual_api/p5js-tutorial.js',
     'tests/tutorials/automation/progress-reporting-tutorial.js',
     'tests/tutorials/automation/notebookControl-tutorial.js',
+    'tests/tutorials/automation/notebook-reflection-tutorial.js',
     'tests/tables.js',
     'tests/tutorials/table_display/tableGroovy-tutorial.js',
     'tests/tutorials/feature_overview/autotranslation-tutorial.js',

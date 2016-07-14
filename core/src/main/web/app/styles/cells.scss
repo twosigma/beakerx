@@ -157,7 +157,7 @@ bk-section-cell {
   }
 
   .code-cell-output {
-    padding: $grid-row-height $grid-gutter-width 0px;
+    padding: $grid-row-height $grid-gutter-width;
     position: relative;
     border-top: solid 1px #CCC;
     box-sizing: content-box;

@@ -397,7 +397,8 @@
                       notebookModel, false, sessionId, false);
                   setDocumentTitle();
                 }).catch(function(data, status, headers, config) {
-                  bkHelper.show1ButtonModal(data, "Open Failed", function() {
+                  var message = typeof(data) === 'string' ? data : "Not a valid Beaker notebook";
+                  bkHelper.show1ButtonModal(message, "Open Failed", function() {
                     bkCoreManager.gotoControlPanel();
                   });
                 }).finally(function() {

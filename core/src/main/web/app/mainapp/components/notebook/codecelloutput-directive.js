@@ -135,7 +135,7 @@
           return type;
         };
 
-        $scope.getOutputSummary = function () {
+        $scope.getOutputSummary = this.getOutputSummary = function () {
           var result = $scope.getOutputResult();
 
           function getItemsText(itemTitle, items) {

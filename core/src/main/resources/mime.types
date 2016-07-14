@@ -6,8 +6,8 @@
 # registry is at <ftp://ftp.iana.org/assignments/media-types/>.
 
 # MIME type			Extension
-application/beaker-notebook bkr
-application/x-ipynb+json ipynb
+Beaker-Notebook bkr
+IPython-Notebook ipynb
 application/andrew-inset ez
 application/chemtool cht
 application/dicom dcm

@@ -1753,6 +1753,15 @@
             playNotificationSound();
           }
         });
+      },
+      sendEmailNotification: function (title, body) {
+        var url = bkUtils.getEvaluationFinishedNotificationUrl();
+        if (!!url) {
+          bkUtils.httpGet(url, {
+            title: title,
+            body: body
+          });
+        }
       }
     };
   });

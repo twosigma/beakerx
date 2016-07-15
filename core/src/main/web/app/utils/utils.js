@@ -539,6 +539,10 @@
     hideLanguageManagerSpinner: function(error) {
       angularUtils.hideLanguageManagerSpinner(error);
     },
+    getEvaluationFinishedNotificationUrl: function () {
+      return window.beakerRegister === undefined || !window.beakerRegister.evaluationFinishedNotificationUrl
+        ? null : window.beakerRegister.evaluationFinishedNotificationUrl;
+    },
     // Electron: require('remote')
     isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
 

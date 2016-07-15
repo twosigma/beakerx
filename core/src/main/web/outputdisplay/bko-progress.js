@@ -82,14 +82,15 @@
         scope.isCancellable = function() {
           return bkEvaluateJobManager.isCancellable();
         };
-        scope.toggleNotifyWhenDone = function () {
-          if(!scope.isNotifyWhenDone()) {
-            bkNotificationService.checkPermissions();
-          }
-          outputDisplayCtrl.toggleNotifyWhenDone();
+        outputDisplayCtrl.initAvailableNotificationMethods();
+        scope.getAvailableNotificationMethods = function () {
+          return outputDisplayCtrl.getAvailableNotificationMethods();
         };
-        scope.isNotifyWhenDone = function () {
-          return outputDisplayCtrl.isNotifyWhenDone();
+        scope.toggleNotifyWhenDone = function (notificationMethod) {
+          outputDisplayCtrl.toggleNotifyWhenDone(notificationMethod);
+        };
+        scope.isNotifyWhenDone = function (notificationMethod) {
+          return outputDisplayCtrl.isNotifyWhenDone(notificationMethod);
         };
         scope.$on("$destroy", function() {
           $interval.cancel(intervalPromise);

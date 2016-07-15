@@ -962,6 +962,22 @@
         } else {
           return keyCodeMap[keyCode];
         }
+      },
+      getSavePlotAsContextMenuItems: function (scope) {
+        return [
+          {
+            name: 'Save as PNG',
+            callback: function () {
+              scope.saveAsPng();
+            }
+          },
+          {
+            name: 'Save as SVG',
+            callback: function () {
+              scope.saveAsSvg();
+            }
+          }
+        ];
       }
     };
   };

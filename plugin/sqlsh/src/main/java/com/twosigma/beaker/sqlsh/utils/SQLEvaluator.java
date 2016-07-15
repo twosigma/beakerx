@@ -15,26 +15,26 @@
  */
 package com.twosigma.beaker.sqlsh.utils;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Scanner;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beaker.sqlsh.autocomplete.SqlAutocomplete;
-
-import javax.management.QueryEval;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.file.FileSystems;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SQLEvaluator {
 
@@ -44,8 +44,8 @@ public class SQLEvaluator {
 
   protected List<String> classPath = new ArrayList<>();
   protected String currentClassPath = "";
-  private Map<String, String> namedConnectionString = new HashMap<>();
-  private String defaultConnectionString;
+  private Map<String, ConnectionStringHolder> namedConnectionString = new HashMap<>();
+  private ConnectionStringHolder defaultConnectionString;
 
   protected final BeakerCellExecutor executor;
   volatile protected boolean exit;
@@ -207,8 +207,8 @@ public class SQLEvaluator {
     else
       classPath = Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"));
 
-    defaultConnectionString = defaultDatasource;
-    namedConnectionString = new HashMap<>();
+    this.defaultConnectionString = new ConnectionStringHolder(defaultDatasource);
+    this.namedConnectionString = new HashMap<>();
     Scanner sc = new Scanner(datasources);
     while (sc.hasNext()) {
       String line = sc.nextLine();
@@ -222,11 +222,54 @@ public class SQLEvaluator {
       if (value.startsWith("\"") && value.endsWith("\"")) {
         value = value.substring(1, value.length() - 1);
       }
-      namedConnectionString.put(name, value);
+      namedConnectionString.put(name, new ConnectionStringHolder(value));
     }
 
     resetEnvironment();
   }
 
-}
+  public void setShellUserPassword(String namedConnection, String user, String password) {
+    if (namedConnection != null && !namedConnection.isEmpty()) {
+      if (this.namedConnectionString != null) {
+        ConnectionStringHolder holder = this.namedConnectionString.get(namedConnection);
+        if (holder != null) {
+          if (password != null && !password.isEmpty()) {
+            holder.setPassword(password);
+          }
+          if (user != null && !user.isEmpty()) {
+            holder.setUser(user);
+          }
+          holder.setShowDialog(password == null || password.isEmpty() || user == null || user.isEmpty());
+        }
+      }
+    } else {
+      if (password != null && !password.isEmpty()) {
+        defaultConnectionString.setPassword(password);
+      }
+      if (user != null && !user.isEmpty()) {
+        defaultConnectionString.setUser(user);
+      }
+      defaultConnectionString.setShowDialog(password == null || password.isEmpty() || user == null || user.isEmpty());
+    }
+    resetEnvironment();
+  }
 
+  public List<ConnectionStringBean> getListOfConnectiononWhoNeedDialog() {
+    List<ConnectionStringBean> ret = new ArrayList<>();
+
+    if (this.defaultConnectionString.isShowDialog()) {
+      ret.add(new ConnectionStringBean(null, defaultConnectionString.getConnectionString(), defaultConnectionString.getUser()));
+    }
+
+    if (this.namedConnectionString != null) {
+      for (Entry<String, ConnectionStringHolder> cbh : namedConnectionString.entrySet()) {
+        if (cbh.getValue().isShowDialog()) {
+          ret.add(new ConnectionStringBean(cbh.getKey(), cbh.getValue().getConnectionString(), cbh.getValue().getUser()));
+        }
+      }
+    }
+
+    return ret;
+  }
+
+}

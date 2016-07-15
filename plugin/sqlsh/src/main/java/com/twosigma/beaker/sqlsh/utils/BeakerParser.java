@@ -35,14 +35,16 @@ public class BeakerParser {
 
   private NamespaceClient client;
   private String dbURI;
+  private ConnectionStringHolder connectionStringUsed;
+
   private Map<String, String> inputs = new HashMap<>();
   private Set<String> outputs = new HashSet<>();
-  private Map<String, String> namedConnectionString;
-  private String defaultConnectionString;
+  private Map<String, ConnectionStringHolder> namedConnectionString;
+  private ConnectionStringHolder defaultConnectionString;
 
   private List<BeakerParseResult> results = new ArrayList<>();
 
-  public BeakerParser(String script, NamespaceClient client, String defaultConnectionString, Map<String, String> namedConnectionString) throws IOException, DBConnectionException {
+  public BeakerParser(String script, NamespaceClient client, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) throws IOException, DBConnectionException {
     this.client = client;
     this.defaultConnectionString = defaultConnectionString;
     this.namedConnectionString = namedConnectionString;
@@ -133,6 +135,8 @@ public class BeakerParser {
       line.trim();
       int commentIndex = line.indexOf("%%");
       if (commentIndex != -1 && line.startsWith("%%")) {
+        
+        connectionStringUsed = null;
         vars.add(line);
 
         if (line.indexOf(DB_URI_VAR) > 0) {
@@ -146,7 +150,8 @@ public class BeakerParser {
             String var = value.substring(start + 2, end).trim();
             dbURI = client.get(var).toString();
           } else {
-            dbURI = namedConnectionString.get(value);
+            dbURI = namedConnectionString.get(value).getConnectionStringWithUserPassword();
+            connectionStringUsed = namedConnectionString.get(value);
             if (dbURI == null)
               throw new DBConnectionException(value, new SQLException("Named connection witn name " + value + " not found"));
           }
@@ -168,7 +173,10 @@ public class BeakerParser {
         }
       }
     }
-    if (dbURI == null) dbURI = defaultConnectionString;
+    if (dbURI == null){
+      dbURI = defaultConnectionString.getConnectionStringWithUserPassword();
+      connectionStringUsed = defaultConnectionString;
+    } 
   }
 
   public String getDbURI() {
@@ -177,6 +185,10 @@ public class BeakerParser {
 
   public void setDbURI(String dbURI) {
     this.dbURI = dbURI;
+  }
+  
+  public ConnectionStringHolder getConnectionStringUsed() {
+    return connectionStringUsed;
   }
 
   public List<BeakerParseResult> getResults() {

@@ -60,6 +60,7 @@ var config = {
     'tests/tutorials/automation/progress-reporting-tutorial.js',
     'tests/tutorials/automation/notebookControl-tutorial.js',
     'tests/tutorials/automation/notebook-reflection-tutorial.js',
+    'tests/tutorials/automation/dashboard-tutorial.js',
     'tests/tables.js',
     'tests/tutorials/native_plotting/jscriptPlot-tutorial.js',
     'tests/tutorials/table_display/tableGroovy-tutorial.js',

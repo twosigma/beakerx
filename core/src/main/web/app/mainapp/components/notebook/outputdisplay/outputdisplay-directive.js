@@ -35,12 +35,33 @@
       },
       controllerAs: 'outputDisplayCtrl',
       controller: function ($scope) {
-        this.notifyWhenDone = false;
-        this.toggleNotifyWhenDone = function () {
-          this.notifyWhenDone = !this.notifyWhenDone;
+        var evaluationCompleteNotificationMethods = [];
+        this.initAvailableNotificationMethods = function () {
+          evaluationCompleteNotificationMethods = [{
+            title: 'Notify when done',
+            checkPermissions: function () {
+              bkNotificationService.checkPermissions();
+            },
+            action: bkNotificationService.showNotification
+          }];
+          if (bkUtils.getEvaluationFinishedNotificationUrl() != null) {
+            evaluationCompleteNotificationMethods.push({
+              title: 'Send email when done',
+              action: bkNotificationService.sendEmailNotification
+            });
+          }
         };
-        this.isNotifyWhenDone = function () {
-          return this.notifyWhenDone;
+        this.getAvailableNotificationMethods = function () {
+          return evaluationCompleteNotificationMethods;
+        };
+        this.toggleNotifyWhenDone = function (notificationMethod) {
+          notificationMethod.selected = !notificationMethod.selected;
+          if(notificationMethod.selected && notificationMethod.checkPermissions) {
+            notificationMethod.checkPermissions();
+          }
+        };
+        this.isNotifyWhenDone = function (notificationMethod) {
+          return notificationMethod.selected;
         };
 
         $scope.model.getOutputSummary = function () {
@@ -168,8 +189,11 @@
           $compile(element.contents())(childScope);
         };
         scope.$watch("type", function(newType, oldType) {
-          if(shouldShowNotification(oldType)) {
-            showNotification();
+          if(evaluationFinished(oldType)) {
+            _.filter(ctrl.getAvailableNotificationMethods(), 'selected').forEach(function (notificationMethod) {
+              notificationMethod.action.call(notificationMethod, 'Evaluation completed',
+                scope.model.getOutputSummary() || 'no output', 'beakerCellEvaluationDone')
+            })
           }
 
           refresh(newType);
@@ -185,15 +209,8 @@
           }
         });
 
-        function shouldShowNotification(oldType) {
-          return ctrl.notifyWhenDone && (oldType === 'Progress');
-        }
-        
-        function showNotification() {
-          ctrl.notifyWhenDone = false;
-          bkNotificationService.showNotification('Evaluation completed',
-            scope.model.getOutputSummary() || 'no output',
-            'beakerCellEvaluationDone');
+        function evaluationFinished(oldType) {
+          return oldType === 'Progress';
         }
       }
     };

@@ -128,6 +128,7 @@
           } else {
             $scope.cellmodel.input.hidden = true;
           }
+          bkSessionManager.setNotebookModelEdited(true);
         };
 
         $scope.toggleMarkdown = function() {
@@ -136,11 +137,13 @@
           } else {
             $scope.cellmodel.hidden = true;
           }
+          bkSessionManager.setNotebookModelEdited(true);
         };
 
         $scope.toggleSection = function() {
           $scope.cellmodel.collapsed = !$scope.cellmodel.collapsed;
           $scope.$broadcast('beaker.section.toggled', $scope.cellmodel.collapsed);
+          bkSessionManager.setNotebookModelEdited(true);
         };
 
         $scope.evaluate = function($event) {

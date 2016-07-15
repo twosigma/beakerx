@@ -174,6 +174,7 @@
             } else {
               $scope.$parent.cellmodel.output.hidden = true;
             }
+            bkSessionManager.setNotebookModelEdited(true);
           }
         };
 

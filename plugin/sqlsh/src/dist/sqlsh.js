@@ -114,6 +114,7 @@ define(function(require, exports, module) {
                     return deferred.promise;
                   })
             }, function() {
+              bkHelper.printCanceledAnswer(modelOutput);
             });
             
           }

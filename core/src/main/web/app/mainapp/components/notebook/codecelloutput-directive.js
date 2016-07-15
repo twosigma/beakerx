@@ -135,106 +135,6 @@
           return type;
         };
 
-        $scope.getOutputSummary = this.getOutputSummary = function () {
-          var result = $scope.getOutputResult();
-
-          function getItemsText(itemTitle, items) {
-            return items + ' ' + (items > 1 ? itemTitle + 's' : itemTitle);
-          }
-
-          function strip(html) {
-            var div = document.createElement('div');
-            div.innerHTML = html;
-            var scripts = div.getElementsByTagName('script');
-            var i = scripts.length;
-            while (i--) {
-              scripts[i].parentNode.removeChild(scripts[i]);
-            }
-            return div.textContent || div.innerText || "";
-          }
-
-          function firstString(str) {
-            if (str) {
-              var arr = str.split('\n');
-              for (var i = 0; i < arr.length; i++) {
-                if (arr[i].length > 0)
-                  return arr[i]
-              }
-            }
-            return '';
-          }
-
-          function firstNChars(str, count) {
-            if (str) {
-              if (str.length > count){
-                str = str.substr(0, count);
-              }
-             return str.replace(/\n/g, "");
-            }
-            return '';
-          }
-
-          function getOutputSummary(type, result) {
-            type = type || 'Text';
-            switch (type) {
-              case 'CombinedPlot':
-                if (result.plots && result.plots.length > 0) {
-                  return result.plots.length + ' plots';
-                }
-                break;
-              case 'Plot':
-                if (result.graphics_list && result.graphics_list.length > 0) {
-                  var items = result.graphics_list.length;
-                  return 'a plot with ' + getItemsText('item', items);
-                }
-                break;
-              case 'OutputContainer':
-                if(result.items) {
-                  return 'Container with ' + getItemsText('item', result.items.length);
-                }
-                break;
-              case 'Table':
-              case 'TableDisplay':
-                return 'a table with ' + result.values.length + ' rows and ' + result.columnNames.length + ' columns';
-              case 'Results':
-                var out = 0, err = 0;
-                if (result.outputdata && result.outputdata.length > 0) {
-                  _.forEach(result.outputdata, function (outputLine) {
-                    if (outputLine.type === 'err') {
-                      err++;
-                    } else {
-                      out++;
-                    }
-                  })
-                }
-                var summary = [];
-                var getLinesSummary = function (num, s) {
-                  return num + ' ' + (num > 1 ? 'lines' : 'line') + ' of ' + s;
-                };
-                if (out > 0) {
-                  summary.push(getLinesSummary(out, 'stdout'));
-                }
-                if (err > 0) {
-                  summary.push(getLinesSummary(err, 'stderr'));
-                }
-                if(result.payload) {
-                  summary.push(getOutputSummary(result.payload.type, result.payload));
-                }
-                return summary.join(', ');
-                break;
-              case 'Progress':
-                return null;
-                break;
-              case 'Text':
-                return firstString((typeof result === 'string') ? result : JSON.stringify(result));
-              case 'Html':
-                return firstNChars(strip(result.object), 1000);
-            }
-            return type;
-          }
-          return result !== undefined && getOutputSummary(result.innertype || result.type, result);
-        };
-
         $scope.$watch('getOutputDisplayType()', function() {
             $scope.outputCellMenuModel.refreshMenu();
         });
@@ -274,6 +174,7 @@
             } else {
               $scope.$parent.cellmodel.output.hidden = true;
             }
+            bkSessionManager.setNotebookModelEdited(true);
           }
         };
 
@@ -284,7 +185,11 @@
         };
         
         $scope.isShowOutputSummary = function () {
-          return !$scope.isExpanded() && !bkSessionManager.isNotebookLocked();
+          return !$scope.isExpanded() && !bkSessionManager.isNotebookLocked() && $scope.outputDisplayModel.getOutputSummary;
+        };
+        
+        $scope.getOutputSummary = function () {
+          return $scope.outputDisplayModel.getOutputSummary ? $scope.outputDisplayModel.getOutputSummary() : ''; 
         };
 
         $scope.getAdditionalMenuItems = function() {

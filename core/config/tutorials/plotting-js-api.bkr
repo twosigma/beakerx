@@ -133,6 +133,7 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "Plot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
@@ -343,6 +344,7 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "Plot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
@@ -533,6 +535,7 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "Plot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
@@ -747,6 +750,7 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "Plot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
@@ -905,6 +909,7 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "Plot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
@@ -1049,6 +1054,7 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "TimePlot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
@@ -1189,6 +1195,7 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "NanoPlot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
@@ -1348,6 +1355,7 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "Plot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "height": 268
@@ -2720,6 +2728,7 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "TimePlot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",
@@ -4098,6 +4107,7 @@
                     "log_x": false,
                     "x_log_base": 10,
                     "type": "TimePlot",
+                    "hasPlotSpecificMethods": true,
                     "tips": {}
                 },
                 "selectedType": "Plot",

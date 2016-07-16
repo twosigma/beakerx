@@ -16,7 +16,7 @@
 (function() {
   "use strict";
   var module = angular.module('bk.outputDisplay');
-  module.directive('bkOutputDisplay', function($compile, bkOutputDisplayFactory, bkUtils, bkNotificationService) {
+  module.directive('bkOutputDisplay', function($compile, bkOutputDisplayFactory, bkUtils) {
     var getResultType = function(model) {
       if (model && model.getCellModel()) {
         if (_.isString(model.getCellModel())) {
@@ -33,19 +33,7 @@
         type: "@",
         model: "=" // assume ref to model doesn't change after directive is created
       },
-      require: ['bkOutputDisplay', '^bkCodeCellOutput'],
-      controllerAs: 'outputDisplayCtrl',
-      controller: function ($scope) {
-        this.notifyWhenDone = false;
-        this.toggleNotifyWhenDone = function () {
-          this.notifyWhenDone = !this.notifyWhenDone;
-        };
-        this.isNotifyWhenDone = function () {
-          return this.notifyWhenDone;
-        };
-      },
-      link: function(scope, element, attr, controllers) {
-        var ctrl = controllers[0], codeCellOutputCtrl = controllers[1];
+      link: function(scope, element) {
         var childScope = null;
         var refresh = function(type) {
           if (childScope) {
@@ -69,10 +57,6 @@
           $compile(element.contents())(childScope);
         };
         scope.$watch("type", function(newType, oldType) {
-          if(shouldShowNotification(oldType)) {
-            showNotification();
-          }
-
           refresh(newType);
         });
         scope.$on("outputDisplayFactoryUpdated", function(event, what) {
@@ -85,17 +69,6 @@
             childScope.$destroy();
           }
         });
-
-        function shouldShowNotification(oldType) {
-          return ctrl.notifyWhenDone && (oldType === 'Progress');
-        }
-        
-        function showNotification() {
-          ctrl.notifyWhenDone = false;
-          bkNotificationService.showNotification('Evaluation completed',
-            codeCellOutputCtrl.getOutputSummary() || 'no output',
-            'beakerCellEvaluationDone');
-        }
       }
     };
   });

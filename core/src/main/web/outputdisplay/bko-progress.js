@@ -18,12 +18,11 @@
  */
 (function() {
   'use strict';
-  beakerRegister.bkoDirective("Progress", ["$interval", "$compile", "$rootScope", "bkEvaluateJobManager", "bkUtils", "bkNotificationService", "bkOutputDisplayFactory", function(
-      $interval, $compile, $rootScope, bkEvaluateJobManager, bkUtils, bkNotificationService, bkOutputDisplayFactory) {
+  beakerRegister.bkoDirective("Progress", ["$interval", "$compile", "$rootScope", "bkEvaluateJobManager", "bkUtils", "bkOutputDisplayFactory", function(
+      $interval, $compile, $rootScope, bkEvaluateJobManager, bkUtils, bkOutputDisplayFactory) {
     return {
       template: JST['mainapp/components/notebook/output-progress'],
-      require: '^bkOutputDisplay',
-      link: function(scope, element, attrs, outputDisplayCtrl) {
+      link: function(scope, element, attrs) {
         scope.elapsed = 0;
         var computeElapsed = function() {
           var now = new Date().getTime();
@@ -81,15 +80,6 @@
         };
         scope.isCancellable = function() {
           return bkEvaluateJobManager.isCancellable();
-        };
-        scope.toggleNotifyWhenDone = function () {
-          if(!scope.isNotifyWhenDone()) {
-            bkNotificationService.checkPermissions();
-          }
-          outputDisplayCtrl.toggleNotifyWhenDone();
-        };
-        scope.isNotifyWhenDone = function () {
-          return outputDisplayCtrl.isNotifyWhenDone();
         };
         scope.$on("$destroy", function() {
           $interval.cancel(intervalPromise);

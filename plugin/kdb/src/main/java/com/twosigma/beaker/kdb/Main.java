@@ -29,6 +29,7 @@ import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import org.eclipse.jetty.server.Server;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;

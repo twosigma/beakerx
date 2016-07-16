@@ -34,6 +34,8 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.HttpVersion;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RESTful API for publishing to the web.

@@ -49,6 +49,8 @@ import com.twosigma.beaker.jvm.utils.BeakerPrefsUtils;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GroovyEvaluator {
 

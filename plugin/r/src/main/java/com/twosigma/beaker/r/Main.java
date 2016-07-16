@@ -31,6 +31,7 @@ import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
 
 import org.eclipse.jetty.server.Server;
+import org.slf4j.LoggerFactory;
 
 /**
  * In the main function, create modules and perform initialization.

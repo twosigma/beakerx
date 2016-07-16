@@ -23,6 +23,8 @@ import java.io.ObjectOutputStream;
 
 import com.twosigma.beaker.NamespaceClient;
 import org.apache.http.client.ClientProtocolException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CppKernel {
   public native void cInit(NamespaceClient nc);

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 import java.util.Set;
 
 import com.twosigma.beaker.chart.Color;
@@ -34,13 +33,15 @@ import com.twosigma.beaker.table.format.ValueStringFormat;
 import com.twosigma.beaker.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beaker.table.highlight.ValueHighlighter;
 import com.twosigma.beaker.table.renderer.TableDisplayCellRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TableDisplay extends ObservableTableDisplay {
   public static final String TABLE_DISPLAY_SUBTYPE = "TableDisplay";
   public static final String LIST_OF_MAPS_SUBTYPE = "ListOfMaps";
   public static final String MATRIX_SUBTYPE = "Matrix";
   public static final String DICTIONARY_SUBTYPE = "Dictionary";
-  private final static Logger logger = Logger.getLogger(TableDisplay.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(TableDisplay.class.getName());
   private final List<List<?>> values;
   private final List<String> columns;
   private final List<String> classes;

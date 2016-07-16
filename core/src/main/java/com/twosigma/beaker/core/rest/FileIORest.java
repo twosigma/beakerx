@@ -37,8 +37,6 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -54,6 +52,8 @@ import jcifs.util.MimeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * for file I/O (save and load)
@@ -63,13 +63,15 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 @Singleton
 public class FileIORest {
 
+  private final static Logger logger = LoggerFactory.getLogger(FileIORest.class.getName());
+
   private static final MimeMap MIME_MAP;
   static {
     MimeMap mimeMap = null;
     try {
       mimeMap = new MimeMap();
     } catch (IOException ex) {
-      Logger.getLogger(FileIORest.class.getName()).log(Level.SEVERE, null, ex);
+      logger.error(ex.getMessage());
     }
     MIME_MAP = mimeMap;
   }

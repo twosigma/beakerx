@@ -34,8 +34,6 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.twosigma.beaker.table.serializer.TableDisplayDeSerializer;
 import org.codehaus.jackson.JsonGenerator;
@@ -43,6 +41,8 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import scala.Predef;
 import scala.Tuple2;
 import scala.collection.Iterable;
@@ -60,7 +60,7 @@ import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import scala.collection.JavaConverters;
 
 public class ScalaEvaluator {
-  private final static Logger logger = Logger.getLogger(ScalaEvaluator.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(ScalaEvaluator.class.getName());
   
   protected String shellId;
   protected String sessionId;
@@ -95,8 +95,7 @@ public class ScalaEvaluator {
   }
 
   public void initialize(String id, String sId) {
-    if (logger.isLoggable(Level.FINE))
-      logger.fine("id: "+id +", sId: "+sId);
+    logger.debug("id: {}, sId: {}", id, sId);
     shellId = id;
     sessionId = sId;
     classPath = new ArrayList<String>();
@@ -205,8 +204,7 @@ public class ScalaEvaluator {
       ArrayList<String> r2 = new ArrayList<String>();
       for(CharSequence c : ret)
         r2.add(c.toString());
-      if (logger.isLoggable(Level.FINEST))
-        logger.finest("return: "+r2);
+        logger.debug("return: {}", r2);
       return r2;
     }
     return null;
@@ -232,7 +230,7 @@ public class ScalaEvaluator {
       NamespaceClient nc = null;
 
       while(!exit) {
-        logger.finest("looping");
+        logger.debug("looping");
         try {
           // wait for work
           syncObject.acquire();
@@ -311,7 +309,7 @@ public class ScalaEvaluator {
      */
     protected ClassLoader newClassLoader() throws MalformedURLException
     {
-      logger.fine("creating new loader");
+      logger.debug("creating new loader");
 
       loader_cp = "";
       for (int i = 0; i < classPath.size(); i++) {
@@ -327,7 +325,7 @@ public class ScalaEvaluator {
 
     protected void newEvaluator() throws MalformedURLException
     {
-      logger.fine("creating new evaluator");
+      logger.debug("creating new evaluator");
       shell = new ScalaEvaluatorGlue(newClassLoader(),
         loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), outDir);
 
@@ -339,15 +337,14 @@ public class ScalaEvaluator {
           if (imp.endsWith(".*"))
             imp = imp.substring(0,imp.length()-1) + "_";
           if(!imp.isEmpty()) {
-            if (logger.isLoggable(Level.FINEST))
-              logger.finest("importing : "+imp);
+            logger.debug("importing : {}", imp);
             if(!shell.addImport(imp))
               System.err.println("ERROR: cannot add import '"+imp+"'");
           }
         }
       }
 
-      logger.fine("creating beaker object");
+      logger.debug("creating beaker object");
 
       // ensure object is created
       NamespaceClient.getBeaker(sessionId);
@@ -377,7 +374,7 @@ public class ScalaEvaluator {
   
   protected ClassLoader newAutoCompleteClassLoader() throws MalformedURLException
   {
-    logger.fine("creating new autocomplete loader");
+    logger.debug("creating new autocomplete loader");
     acloader_cp = "";
     for (int i = 0; i < classPath.size(); i++) {
       acloader_cp += classPath.get(i);
@@ -393,7 +390,7 @@ public class ScalaEvaluator {
 
   protected void newAutoCompleteEvaluator() throws MalformedURLException
   {
-    logger.fine("creating new autocomplete evaluator");
+    logger.debug("creating new autocomplete evaluator");
     acshell = new ScalaEvaluatorGlue(newAutoCompleteClassLoader(),
       acloader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), outDir);
 
@@ -474,7 +471,7 @@ public class ScalaEvaluator {
 
     @Override
     public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.fine("list of maps");
+      logger.debug("list of maps");
       // convert this 'on the fly' to a datatable
       Collection<?> col = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) obj);
       List<Map<?,?>> tab = new ArrayList<Map<?,?>>();
@@ -522,7 +519,7 @@ public class ScalaEvaluator {
 
     @Override
     public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.fine("collection of collections");
+      logger.debug("collection of collections");
       
       Collection<?> m = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) obj);
       int max = 0;
@@ -584,7 +581,7 @@ public class ScalaEvaluator {
 
     @Override
     public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.fine("primitive type map");
+      logger.debug("primitive type map");
       
       List<String> columns = new ArrayList<String>();
       columns.add("Key");
@@ -626,7 +623,7 @@ public class ScalaEvaluator {
 
     @Override
     public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.fine("collection");
+      logger.debug("collection");
       // convert this 'on the fly' to an array of objects
       Collection<?> c = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) obj);
       jgen.writeStartArray();
@@ -653,7 +650,7 @@ public class ScalaEvaluator {
 
     @Override
     public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.fine("generic map");
+      logger.debug("generic map");
       // convert this 'on the fly' to a map of objects
       Map<?, ?> m = scala.collection.JavaConversions.mapAsJavaMap((scala.collection.Map<?, ?>) obj);
       
@@ -734,13 +731,12 @@ public class ScalaEvaluator {
     public Object deserialize(JsonNode n, ObjectMapper mapper) {
       List<Object> o = new ArrayList<Object>();
       try {
-        logger.fine("using custom array deserializer");
+        logger.debug("using custom array deserializer");
         for(int i=0; i<n.size(); i++) {
           o.add(parent.deserialize(n.get(i), mapper));
         }
       } catch (Exception e) {
-        if (logger.isLoggable(Level.SEVERE))
-          logger.log(Level.SEVERE, "exception deserializing Collection ", e);
+          logger.error("exception deserializing Collection {}", e.getMessage());
         o = null;
       }
       if (o!=null)
@@ -765,15 +761,14 @@ public class ScalaEvaluator {
     public Object deserialize(JsonNode n, ObjectMapper mapper) {
       HashMap<String, Object> o = new HashMap<String,Object>();
       try {
-        logger.fine("using custom map deserializer");
+        logger.debug("using custom map deserializer");
         Iterator<Entry<String, JsonNode>> e = n.getFields();
         while(e.hasNext()) {
           Entry<String, JsonNode> ee = e.next();
           o.put(ee.getKey(), parent.deserialize(ee.getValue(),mapper));
         }
       } catch (Exception e) {
-        if (logger.isLoggable(Level.SEVERE))
-          logger.log(Level.SEVERE, "exception deserializing Map ", e);
+        logger.error("exception deserializing Map {}", e.getMessage());
         o = null;
       }
       if (o!=null)

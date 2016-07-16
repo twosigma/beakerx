@@ -23,6 +23,8 @@ import com.twosigma.beaker.autocomplete.AutocompleteRegistry;
 import com.twosigma.beaker.autocomplete.ClassUtils;
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.groovy.autocomplete.GroovyParser.ImportStatementContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
 

@@ -56,6 +56,8 @@ import com.twosigma.beaker.cpp.utils.Extractor;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Lexer;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Parser;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Listener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CppEvaluator {
   protected final String shellId;

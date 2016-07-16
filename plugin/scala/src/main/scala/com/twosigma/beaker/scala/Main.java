@@ -32,6 +32,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.eclipse.jetty.server.Server;
+import org.slf4j.LoggerFactory;
 
 /**
  * In the main function, create modules and perform initialization.

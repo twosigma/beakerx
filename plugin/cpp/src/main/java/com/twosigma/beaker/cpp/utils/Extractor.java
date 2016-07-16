@@ -23,6 +23,8 @@ import com.twosigma.beaker.cpp.autocomplete.CPP14BaseListener;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Extractor extends CPP14BaseListener {
   public int beakerMainLastToken;

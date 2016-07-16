@@ -2,6 +2,8 @@ package com.twosigma.beaker.groovy.autocomplete.test;
 
 import com.twosigma.beaker.groovy.autocomplete.GroovyAutocomplete;
 import com.twosigma.beaker.groovy.autocomplete.GroovyClasspathScanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;

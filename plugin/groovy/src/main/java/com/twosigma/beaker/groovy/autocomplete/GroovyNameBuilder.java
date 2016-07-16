@@ -31,6 +31,8 @@ import com.twosigma.beaker.groovy.autocomplete.GroovyParser.MapConstructorContex
 import com.twosigma.beaker.groovy.autocomplete.GroovyParser.NewInstanceRuleContext;
 import com.twosigma.beaker.groovy.autocomplete.GroovyParser.PathExpressionContext;
 import com.twosigma.beaker.groovy.autocomplete.GroovyParser.TypeDeclarationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GroovyNameBuilder extends GroovyAbstractListener{
   private AutocompleteRegistry registry;

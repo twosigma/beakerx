@@ -18,6 +18,9 @@ package com.twosigma.beaker.shared.rest.filter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.security.Principal;
 import javax.servlet.Filter;

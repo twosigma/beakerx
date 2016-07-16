@@ -2,6 +2,8 @@ package com.twosigma.beaker.javash.autocomplete.test;
 
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.javash.autocomplete.JavaAutocomplete;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;

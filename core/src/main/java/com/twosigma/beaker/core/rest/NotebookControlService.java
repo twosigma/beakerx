@@ -32,6 +32,8 @@ import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerChannel;
 import org.cometd.bayeux.server.ServerMessage;
 import org.cometd.bayeux.server.ServerSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Service

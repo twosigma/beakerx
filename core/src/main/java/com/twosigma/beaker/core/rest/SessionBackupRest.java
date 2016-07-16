@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class SessionBackupRest {
 
-  private static final Logger logger = LoggerFactory.getLogger(SessionBackupRest.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(SessionBackupRest.class.getName());
 
   private final File backupDirectory;
   private final GeneralUtils utils;

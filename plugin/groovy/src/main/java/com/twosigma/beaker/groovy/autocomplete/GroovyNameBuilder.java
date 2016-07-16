@@ -34,7 +34,6 @@ import com.twosigma.beaker.groovy.autocomplete.GroovyParser.TypeDeclarationConte
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class GroovyNameBuilder extends GroovyAbstractListener{
 
   private static final Logger logger = LoggerFactory.getLogger(GroovyNameBuilder.class.getName());

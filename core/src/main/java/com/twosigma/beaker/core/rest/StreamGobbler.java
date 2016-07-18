@@ -30,6 +30,8 @@ import java.io.PrintWriter;
  */
 public class StreamGobbler extends Thread {
 
+  private static final Logger logger = LoggerFactory.getLogger(StreamGobbler.class.getName());
+
   private static volatile boolean shutdownInprogress = false;
 
   private final InputStream is;
@@ -91,19 +93,19 @@ public class StreamGobbler extends Thread {
         }
 
         if (this.name != null) {
-          System.out.println(this.name + "-" + this.type + ">" + line);
+          logger.info(this.name + "-" + this.type + ">" + line);
         } else {
           if (this.type.equals("stderr")) {
-            System.err.println(line);
+            logger.warn(line);
           } else {
-            System.out.println(line);
+            logger.info(line);
           }
         }
 
         if (this.outputLogService != null) {
           if (this.isStillWaiting) {
             if (line.indexOf(this.waitfor) > 0) {
-              System.out.println(this.name + "-" + this.type + " waiting over");
+              logger.info(this.name + "-" + this.type + " waiting over");
               this.isStillWaiting = false;
             }
           } else {

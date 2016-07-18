@@ -61,6 +61,8 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class UtilRest {
 
+  private static final Logger logger = LoggerFactory.getLogger(UtilRest.class.getName());
+
   private final BeakerConfig bkConfig;
   private final GeneralUtils utils;
 
@@ -154,7 +156,7 @@ public class UtilRest {
     java.nio.file.Path defaultNotebookFile = Paths.get(defaultNotebookUrl);
     String content = this.utils.readFile(defaultNotebookFile);
     if (content == null) {
-      System.out.println("Warning, default notebook is empty");
+      logger.warn("Warning, default notebook is empty");
       return "";
     }
 

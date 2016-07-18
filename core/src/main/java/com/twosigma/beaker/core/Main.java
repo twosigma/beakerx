@@ -60,6 +60,8 @@ import org.slf4j.LoggerFactory;
  */
 public class Main {
 
+  private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Main.class.getName());
+
   private static final Logger GuiceComponentProviderFactoryLogger =
           Logger.getLogger(com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory.class.getName());
   private static final Logger WebApplicationImplLogger =
@@ -162,7 +164,7 @@ public class Main {
       out.println(pid);
       out.close();
     } else {
-      System.err.println("warning, could not determine PID");
+      logger.warn("warning, could not determine PID");
     }
   }
 
@@ -232,15 +234,14 @@ public class Main {
     final String initUrl = bkConfig.getBaseURL();
     if (openBrowser) {
       injector.getInstance(GeneralUtils.class).openUrl(initUrl);
-      System.out.println("\nConnecting to " + initUrl);
+      logger.info("Connecting to " + initUrl);
     } else {
-      System.out.println("\nBeaker hash " + bkConfig.getHash());
-      System.out.println("Beaker listening on " + initUrl);
+      logger.info("Beaker hash " + bkConfig.getHash());
+      logger.info("Beaker listening on " + initUrl);
     }
     if (publicServer && StringUtils.isEmpty(password)) {
-      System.out.println("Submit this password: " + bkConfig.getPassword());
+      logger.info("Submit this password: " + bkConfig.getPassword());
     }
-    System.out.println("");
   }
 
   private static BeakerConfigPref createBeakerCoreConfigPref(
@@ -349,10 +350,10 @@ public class Main {
     int tries = 0;
     int base = start.intValue();
     while (!portRangeAvailable(base, width)) {
-      System.out.println("Port range " + base + "-" + (base + width - 1) + " taken, searching...");
+      logger.info("Port range " + base + "-" + (base + width - 1) + " taken, searching...");
       base += width;
       if (tries++ > 10) {
-        System.err.println("can't find open port.");
+        logger.error("can't find open port.");
         System.exit(1);
       }
     }

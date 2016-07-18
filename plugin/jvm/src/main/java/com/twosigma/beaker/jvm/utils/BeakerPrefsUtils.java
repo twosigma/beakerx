@@ -24,6 +24,8 @@ import java.util.Map;
 
 public class BeakerPrefsUtils {
 
+  private static final Logger logger = LoggerFactory.getLogger(BeakerPrefsUtils.class.getName());
+
   private final static String PREFS_NAME = "prefs";
   private final static String USE_OUTPUT_PANEL_KEY = "useOutputPanel";
 
@@ -42,7 +44,7 @@ public class BeakerPrefsUtils {
         }
       }
     } catch (IOException e) {
-      System.err.println("Can't retrieve \"useOutputPanel\" option from beaker object.");
+      logger.warn("Can't retrieve \"useOutputPanel\" option from beaker object.");
     }
     return optionValue;
   }

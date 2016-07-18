@@ -177,11 +177,13 @@ public class DefaultFsService implements FsService {
     char vid = 'A';
     for (FsVolume volume : volumes) {
       volumeMap.put("" + vid, volume);
+      logger.info(String.format("mounted %s: %s", "" + vid, volume));
       vid++;
     }
   }
 
   public void addVolume(String name, FsVolume fsVolume) {
     volumeMap.put(name, fsVolume);
+    logger.info(String.format("mounted %s: %s", name, fsVolume));
   }
 }

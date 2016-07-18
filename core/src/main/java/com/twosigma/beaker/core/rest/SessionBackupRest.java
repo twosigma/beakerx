@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class SessionBackupRest {
 
-  private final static Logger logger = LoggerFactory.getLogger(SessionBackupRest.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(SessionBackupRest.class.getName());
 
   private final File backupDirectory;
   private final GeneralUtils utils;
@@ -121,7 +121,7 @@ public class SessionBackupRest {
       Map<String, Object> data = new HashMap<String, Object>();
       sessionChangeChannel.publish(this.localSession, data, null);
     } else {
-      System.out.println("Warning: Caught NPE of unknown origin. frontend");
+      logger.info("Warning: Caught NPE of unknown origin. frontend");
     }
   }
 
@@ -133,7 +133,7 @@ public class SessionBackupRest {
       data.put("id", sessionid);
       sessionChangeChannel.publish(this.localSession, data, null);
     } else {
-      System.out.println("Warning: Caught NPE of unknown origin. electron");
+      logger.warn("Warning: Caught NPE of unknown origin. electron");
     }
   }
 

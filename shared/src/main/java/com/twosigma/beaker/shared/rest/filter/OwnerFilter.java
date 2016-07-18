@@ -38,6 +38,8 @@ import javax.servlet.http.HttpServletResponse;
 @Singleton
 public class OwnerFilter implements Filter {
 
+  private static final Logger logger = LoggerFactory.getLogger(OwnerFilter.class.getName());
+
   private final String user;
 
   @Inject
@@ -59,7 +61,7 @@ public class OwnerFilter implements Filter {
     }
 
     // Invalid user
-    System.out.println("returning 401");
+    logger.info("returning 401");
     response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     response.setContentLength(0);
   }

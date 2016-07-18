@@ -45,6 +45,8 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class PublishRest {
 
+  private static final Logger logger = LoggerFactory.getLogger(PublishRest.class.getName());
+
   private final String gistUrl;
   private final String sharingUrl;
   
@@ -76,7 +78,7 @@ public class PublishRest {
     String githubUrl = (String) parsed.get("html_url");
     int slash = githubUrl.lastIndexOf("/");
     if (slash < 0) {
-      System.err.println("no slash found in github url: " + githubUrl);
+      logger.warn("no slash found in github url: {}", githubUrl);
       return githubUrl;
     }
     return this.sharingUrl + githubUrl.substring(slash);

@@ -178,11 +178,13 @@
             $event.stopPropagation();
           }
 
+          var deferred = bkUtils.newDeferred();
           $scope.cellmodel.output.state = {};
-          bkCoreManager.getBkApp().evaluateRoot($scope.cellmodel).
-              catch(function(data) {
-                console.log('Evaluation failed');
-              });
+          bkCoreManager.getBkApp().evaluateRoot($scope.cellmodel).then(deferred.resolve, function (error) {
+            console.log('Evaluation failed');
+            deferred.reject(error);
+          });
+          return deferred.promise;
         };
         $scope.isCellRunning = function () {
           return bkCoreManager.getBkApp().isRunning($scope.cellmodel.id);

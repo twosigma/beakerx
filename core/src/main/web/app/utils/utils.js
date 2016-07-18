@@ -31,7 +31,7 @@
    * - it also serves the purpose of hiding underneath utils: commonUtils/angularUtils/...
    *    from other parts of beaker
    */
-  module.factory('bkUtils', function(commonUtils, angularUtils, bkTrack, cometdUtils, $localStorage) {
+  module.factory('bkUtils', function($rootScope, commonUtils, angularUtils, bkTrack, cometdUtils, $localStorage) {
 
     function endsWith(str, suffix) {
       return str.indexOf(suffix, str.length - suffix.length) !== -1;
@@ -149,6 +149,7 @@
 
       // wrap trackingService
       log: function(event, obj) {
+        obj["version"] = $rootScope.getVersion();
         bkTrack.log(event, obj);
       },
 

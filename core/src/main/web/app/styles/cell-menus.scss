@@ -52,6 +52,7 @@ bk-new-cell-menu {
 
 .locked .toggle-menu {
   display: none;
+  z-index: 1;
 }
 
 .locked-cell-menu {

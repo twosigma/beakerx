@@ -83,8 +83,8 @@
         $scope.totalCells = 0;
         $scope.completedCells = 0;
         
-        $scope.compiling  = function() {
-          return bkEvaluateJobManager.isAnyInProgress();
+        $scope.isShowProgressBar  = function() {
+          return bkEvaluateJobManager.isAnyInProgress() && $scope.totalCells > 1;
         }
         
         $scope.getProgressBar  = function() {

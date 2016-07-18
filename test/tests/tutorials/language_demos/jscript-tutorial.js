@@ -69,6 +69,11 @@ describe('JavaScript Tutorial', function () {
                 beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
                 beakerPO.checkTablesRowsByIdCell(idCell, 5);
             });
+            it('Save as csv', function () {
+                var idCell = "codeq2N3Fu";
+                beakerPO.scrollToBkCellByIdCell(idCell);
+                beakerPO.checkSaveAsCsvByIdCell(idCell, 'tableJs');
+            });
             it('should add row', function(){
                 var idCell = "codebUXwTB";
                 beakerPO.scrollToBkCellByIdCell(idCell);

@@ -51,7 +51,6 @@ define(function(require, exports, module) {
         return deferred.promise;
       }
       var self = this;
-      bkHelper.setupProgressOutput(modelOutput);
 
       $.ajax({
         type: "POST",
@@ -93,36 +92,55 @@ define(function(require, exports, module) {
       });
     },
     
+    
     evaluate : function(code, modelOutput, refreshObj) {
+
       var self = this;
       var deferred = Q.defer();
-      return getListOfConnectiononWhoNeedDialog(self.settings.shellID).success(function(ret) {
+      
+      var promise = new Promise(function(resolve, reject) {
+        
+        getListOfConnectiononWhoNeedDialog(self.settings.shellID).success(function(ret) {
 
-        if (ret.length > 0) {
-          for (var i = 0; i < ret.length; i++) {
+          if (ret.length > 0) {
+            for (var i = 0; i < ret.length; i++) {
 
-            bkHelper.showSQLLoginModalDialog(ret[i].connectionName, 
-                ret[i].connectionString, 
-                ret[i].user, 
-                function(sqlConnectionData) {
-                  return setShellUserPassword(self.settings.shellID, 
-                    sqlConnectionData.connectionName, 
-                    sqlConnectionData.user, 
-                    sqlConnectionData.password
-                  ).success(function() {
-                    self.evaluateWithPassword(code, modelOutput, refreshObj, deferred);
-                    return deferred.promise;
-                  })
-            }, function() {
-              bkHelper.printCanceledAnswer(modelOutput);
-            });
-            
+              bkHelper.showSQLLoginModalDialog(ret[i].connectionName, 
+                  ret[i].connectionString, 
+                  ret[i].user, 
+                  function(sqlConnectionData) {
+                    setShellUserPassword(self.settings.shellID, 
+                      sqlConnectionData.connectionName, 
+                      sqlConnectionData.user, 
+                      sqlConnectionData.password
+                    ).success(function() {
+                      resolve("OK");
+                    })
+              }, function() {
+                resolve("CANCEL");
+              });
+              
+            }
+          } else {
+            resolve("OK");
           }
-        } else {
-          self.evaluateWithPassword(code, modelOutput, refreshObj, deferred);
-          return deferred.promise;
-        }
+        });
+        
       });
+      
+      promise.then(
+          result => {
+            if(result == "OK"){
+              bkHelper.setupProgressOutput(modelOutput);
+              self.evaluateWithPassword(code, modelOutput, refreshObj, deferred);
+            }else{
+              bkHelper.printCanceledAnswer(modelOutput);
+              deferred.reject();
+            }
+          }
+      );
+      
+      return deferred.promise;
     },
     
     interrupt: function() {

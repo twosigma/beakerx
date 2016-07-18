@@ -580,12 +580,13 @@
         };
 
         var evaluateAndGoDown = function () {
-          scope.evaluate();
-          var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
-          if (!nextCell) {
-            appendCodeCell();
-          }
-          goToNextCodeCell();
+          bkUtils.newPromise(scope.evaluate()).then(function () {
+            var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
+            if (!nextCell) {
+              appendCodeCell();
+            }
+            goToNextCodeCell();
+          });
         };
 
         var reformat = function (cm) {

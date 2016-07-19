@@ -96,9 +96,30 @@ public class ConnectorServlet extends HttpServlet {
     }
 
     // warm up files cache by user.home
-    new File(userHomeDir).listFiles();
+    new FileListing(userHomeDir).start();
 
     return fsService;
+  }
+
+  private class FileListing extends Thread {
+
+    private final String dir;
+
+    FileListing(final String dir) {
+      super();
+      this.dir = dir;
+    }
+
+    @Override
+    public void run() {
+      final File[] files = new File(dir).listFiles();
+      if (null != files) {
+        for (final File file: files) {
+          file.lastModified();
+        }
+      }
+    }
+
   }
 
   private LocalFsVolume createLocalFsVolume(String name, File rootDir) {

@@ -38,7 +38,7 @@ var config = {
     }));
   },
   specs: [
-    'tests/tutorials/groovy_plotting/category-plot-tutorial.js',
+ /*   'tests/tutorials/groovy_plotting/category-plot-tutorial.js',
     'tests/tutorials/groovy_plotting/charting-tutorial.js',
     'tests/tutorials/groovy_plotting/plot-features-tutorial.js',
     'tests/tutorials/groovy_plotting/heatmap-tutorial.js',
@@ -61,15 +61,16 @@ var config = {
     'tests/tutorials/automation/notebookControl-tutorial.js',
     'tests/tutorials/automation/notebook-reflection-tutorial.js',
     'tests/tutorials/automation/dashboard-tutorial.js',
-    'tests/tables.js',
-    'tests/tutorials/native_plotting/jscriptPlot-tutorial.js',
+    'tests/tables.js', */
+    'tests/autocomplete.js',
+ /*   'tests/tutorials/native_plotting/jscriptPlot-tutorial.js',
     'tests/tutorials/table_display/tableGroovy-tutorial.js',
     'tests/tutorials/feature_overview/autotranslation-tutorial.js',
     'tests/tutorials/feature_overview/codeReuse-tutorial.js',
     'tests/tutorials/feature_overview/beakerObject-tutorial.js',
     'tests/tutorials/feature_overview/outputContainer-tutorial.js',
     'tests/tutorials/feature_overview/bigIntegerTables-tutorial.js',
-    'tests/tutorials/feature_overview/text-tutorial.js'
+    'tests/tutorials/feature_overview/text-tutorial.js'     */
   ]
 };
 

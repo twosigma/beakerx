@@ -36,7 +36,7 @@ var config = {
     }));
   },
   specs: [
-    'tests/easyform.js',
+  /*  'tests/easyform.js',
     'tests/landing-page.js',
     'tests/notebook.js',
     'tests/code-cell.js',
@@ -44,7 +44,7 @@ var config = {
     'tests/cell-menu.js',
     'tests/language-manager.js',
     'tests/vim-mode.js',
-    'tests/autotranslation.js'
+    'tests/autotranslation.js'  */
   ]
 };
 

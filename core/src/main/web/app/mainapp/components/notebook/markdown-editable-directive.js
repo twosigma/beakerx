@@ -51,6 +51,7 @@
           if (scope.cellmodel[contentAttribute] !== cm.getValue()) {
             scope.cellmodel[contentAttribute] = cm.getValue();
           }
+          bkSessionManager.setNotebookModelEdited(true);
         };
 
         scope.bkNotebook = getBkNotebookWidget();

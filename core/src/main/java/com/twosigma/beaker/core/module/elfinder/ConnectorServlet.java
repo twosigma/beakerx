@@ -25,7 +25,6 @@ import com.twosigma.beaker.core.module.elfinder.impl.DefaultFsServiceConfig;
 import com.twosigma.beaker.core.module.elfinder.impl.FsSecurityCheckForAll;
 import com.twosigma.beaker.core.module.elfinder.impl.StaticFsServiceFactory;
 import com.twosigma.beaker.core.module.elfinder.impl.localfs.LocalFsVolume;
-import com.twosigma.beaker.core.module.elfinder.service.FsVolume;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;

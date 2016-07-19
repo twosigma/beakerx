@@ -17,30 +17,31 @@
 
 <div class="modal-header">
   <h1>{{getStrategy().title}}</h1>
+  <div class="permission-path">{{getStrategy().path}}</div>
 </div>
-<div class="modal-body row" >
+<div class="modal-body row permissions">
 
-    <div class="col-sm-4">Owner</div>
-    <div class="col-sm-4">Group</div>
-    <div class="col-sm-4">Others</div>
+  <div class="col-sm-4 group">Owner</div>
+  <div class="col-sm-4 group">Group</div>
+  <div class="col-sm-4 group">Others</div>
 
-    <div class="col-sm-4"><input ng-model="model.OWNER_READ" type="checkbox">Read</div>
-    <div class="col-sm-4"><input ng-model="model.OWNER_WRITE" type="checkbox">Read</div>
-    <div class="col-sm-4"><input ng-model="model.OWNER_EXECUTE" type="checkbox">Read</div>
+  <label class="col-sm-4"><input ng-model="model.OWNER_READ" type="checkbox">Read</label>
+  <label class="col-sm-4"><input ng-model="model.GROUP_READ" type="checkbox">Read</label>
+  <label class="col-sm-4"><input ng-model="model.OTHERS_READ" type="checkbox">Read</label>
 
-    <div class="col-sm-4"><input ng-model="model.GROUP_READ" type="checkbox">Write</div>
-    <div class="col-sm-4"><input ng-model="model.GROUP_WRITE" type="checkbox">Write</div>
-    <div class="col-sm-4"><input ng-model="model.GROUP_EXECUTE" type="checkbox">Write</div>
+  <label class="col-sm-4"><input ng-model="model.OWNER_WRITE" type="checkbox">Write</label>
+  <label class="col-sm-4"><input ng-model="model.GROUP_WRITE" type="checkbox">Write</label>
+  <label class="col-sm-4"><input ng-model="model.OTHERS_WRITE" type="checkbox">Write</label>
 
-    <div class="col-sm-4"><input ng-model="model.OTHERS_READ" type="checkbox">Execute</div>
-    <div class="col-sm-4"><input ng-model="model.OTHERS_WRITE" type="checkbox">Execute</div>
-    <div class="col-sm-4"><input ng-model="model.OTHERS_EXECUTE" type="checkbox">Execute</div>
+  <label class="col-sm-4"><input ng-model="model.OWNER_EXECUTE" type="checkbox">Execute</label>
+  <label class="col-sm-4"><input ng-model="model.GROUP_EXECUTE" type="checkbox">Execute</label>
+  <label class="col-sm-4"><input ng-model="model.OTHERS_EXECUTE" type="checkbox">Execute</label>
 
 </div>
 <div class="modal-footer">
   <button ng-click="cancel()" class="btn btn-default">Cancel</button>
-  <button  ng-click="ok()"
-           class="btn btn-primary modal-submit">{{getStrategy().okButtonTitle ? getStrategy().okButtonTitle : "Ok"}}
+  <button ng-click="ok()"
+          class="btn btn-primary modal-submit">{{getStrategy().okButtonTitle ? getStrategy().okButtonTitle : "Ok"}}
   </button>
 </div>
 

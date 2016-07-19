@@ -80,6 +80,7 @@
       var newStrategy = this;
       newStrategy.permissions = data.permissions;
       newStrategy.title = data.title;
+      newStrategy.path = data.path;
       newStrategy.okButtonTitle = data.okButtonTitle;
     };
 
@@ -782,12 +783,13 @@
         return bkNotebookCellModelManager;
       },
 
-      showFilePermissionsDialog: function(permissions) {
+      showFilePermissionsDialog: function(path, permissions) {
         var deferred = bkUtils.newDeferred();
 
         var data = {
           permissions: permissions,
-          title:'Permissions'
+          title:'Permissions',
+          path: path
         };
 
         var dd = $uibModal.open({
@@ -1306,49 +1308,14 @@
     };
 
     $scope.model = {
-      /**
-       * Read permission, owner.
-       */
       OWNER_READ: strategy.permissions.indexOf('OWNER_READ') !== -1,
-
-      /**
-       * Write permission, owner.
-       */
       OWNER_WRITE: strategy.permissions.indexOf('OWNER_WRITE') !== -1,
-
-      /**
-       * Execute/search permission, owner.
-       */
       OWNER_EXECUTE: strategy.permissions.indexOf('OWNER_EXECUTE') !== -1,
-
-      /**
-       * Read permission, group.
-       */
       GROUP_READ: strategy.permissions.indexOf('GROUP_READ') !== -1,
-
-      /**
-       * Write permission, group.
-       */
       GROUP_WRITE: strategy.permissions.indexOf('GROUP_WRITE') !== -1,
-
-      /**
-       * Execute/search permission, group.
-       */
       GROUP_EXECUTE: strategy.permissions.indexOf('GROUP_EXECUTE') !== -1,
-
-      /**
-       * Read permission, others.
-       */
       OTHERS_READ: strategy.permissions.indexOf('OTHERS_READ') !== -1,
-
-      /**
-       * Write permission, others.
-       */
       OTHERS_WRITE: strategy.permissions.indexOf('OTHERS_WRITE') !== -1,
-
-      /**
-       * Execute/search permission, others.
-       */
       OTHERS_EXECUTE: strategy.permissions.indexOf('OTHERS_EXECUTE') !== -1,
 
       asSet: function () {
@@ -1367,7 +1334,7 @@
     };
 
 
-    $rootScope.ok = function () {
+    $scope.ok = function () {
       $uibModalInstance.close($scope.model.asSet());
     };
 
@@ -1470,12 +1437,15 @@
 
       elFinder.prototype.commands.editpermissions = function() {
         this.exec = function (hashes) {
-          bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/getPosixFilePermissions"), {path: $scope.selected.path})
-            .success(function (permissions) {
-              bkCoreManager.showFilePermissionsDialog(permissions).then(function(result){
-                bkUtils.httpPost('beaker/rest/file-io/setPosixFilePermissions', {
+          var path = $scope.selected.path;
+          bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/getPosixFilePermissions"), {path: path})
+            .then(function (response) {
+              bkCoreManager.showFilePermissionsDialog(path, response.data).then(function(result){
+                bkUtils.httpPost('rest/file-io/setPosixFilePermissions', {
                   path: $scope.selected.path,
-                  permissions: permissions
+                  permissions: result.permissions
+                }).catch(function (response) {
+                  bkHelper.show1ButtonModal(response.data, 'Permissions change filed');
                 })
               });
             })

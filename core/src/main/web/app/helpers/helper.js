@@ -1501,6 +1501,40 @@
       },
 
       elfinderOptions: function (getFileCallback, selectCallback, openCallback, mime, showHiddenFiles) {
+        
+        function getNavbarMenuItems() {
+          var items = ['copy', 'cut', 'paste', 'duplicate', '|', 'rm'];
+          if(!bkUtils.serverOS.isWindows()) {
+            items.push('|', 'editpermissions');
+          }
+          return items;
+        }
+        
+        function getToolbarItems() {
+          var toolbar = [
+            ['back', 'forward'],
+            ['mkdir'],
+            ['copy', 'cut', 'paste'],
+            ['rm'],
+            ['duplicate', 'rename'],
+            ['view', 'sort']
+          ];
+          if(!bkUtils.serverOS.isWindows()) {
+            toolbar.push(['editpermissions']);
+          }
+          return toolbar;
+        }
+        
+        function getFileContextMenuItems() {
+          var items = [
+            'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
+            'rm'
+          ];
+          if(!bkUtils.serverOS.isWindows()) {
+            items.push('|', 'editpermissions');
+          }
+          return items;
+        }
 
         return {
           url: '../beaker/connector',
@@ -1526,28 +1560,17 @@
           defaultView: 'icons',
           contextmenu: {
             // navbarfolder menu
-            navbar: ['copy', 'cut', 'paste', 'duplicate', '|', 'rm', '|', 'editpermissions'],
+            navbar: getNavbarMenuItems(),
 
             // current directory menu
             cwd: ['reload', 'back', '|', 'mkdir', 'paste'],
 
             // current directory file menu
-            files: [
-              'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
-              'rm', '|', 'editpermissions'
-            ]
+            files: getFileContextMenuItems()
           },
           uiOptions: {
             // toolbar configuration
-            toolbar: [
-              ['back', 'forward'],
-              ['mkdir'],
-              ['copy', 'cut', 'paste'],
-              ['rm'],
-              ['duplicate', 'rename'],
-              ['view', 'sort'],
-              ['editpermissions']
-            ],
+            toolbar: getToolbarItems(),
 
             // navbar options
             navbar: {

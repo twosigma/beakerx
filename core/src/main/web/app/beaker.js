@@ -321,7 +321,7 @@
       }
     });
 
-    beakerModule.run(function($rootScope, $location, $route, $document, bkUtils, bkCoreManager, bkHelper, bkElectron, bkDragAndDropHelper) {
+    beakerModule.run(function($rootScope, $location, $route, $document, bkUtils, bkCoreManager, bkHelper, bkElectron, bkDragAndDropHelper, bkSparkContextManager) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {
@@ -436,6 +436,7 @@
       for (var i in window.beakerRegister.postHelperHooks) {
         window.beakerRegister.postHelperHooks[i]();
       }
+      window.bkSparkContextManager = bkSparkContextManager;
     });
 
     beakerModule.run(function(bkEvaluatePluginManager) {

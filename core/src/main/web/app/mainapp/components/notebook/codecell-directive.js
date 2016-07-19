@@ -178,15 +178,24 @@
             $event.stopPropagation();
           }
 
+          var deferred = bkUtils.newDeferred();
           $scope.cellmodel.output.state = {};
-          bkCoreManager.getBkApp().evaluateRoot($scope.cellmodel).
-              catch(function(data) {
-                console.log('Evaluation failed');
-              });
+          bkCoreManager.getBkApp().evaluateRoot($scope.cellmodel).then(deferred.resolve, function (error) {
+            console.log('Evaluation failed');
+            deferred.reject(error);
+          });
+          return deferred.promise;
         };
         $scope.isCellRunning = function () {
           return bkCoreManager.getBkApp().isRunning($scope.cellmodel.id);
         };
+
+        $scope.cancel = function() {
+          if($scope.isCellRunning()) {
+            bkCoreManager.getBkApp().cancel();
+          }
+        };
+
         var editedListener = function(newValue, oldValue) {
           if (newValue !== oldValue) {
             bkSessionManager.setNotebookModelEdited(true);
@@ -258,15 +267,9 @@
         $scope.$watch('getEvaluator()', function(newValue, oldValue) {
           $scope.updateUI(newValue);
         });
-        $scope.appendCodeCell = function(evaluatorName) {
-          var thisCellId = $scope.cellmodel.id;
-          if (!evaluatorName) {
-            // if no evaluator specified, use the current evaluator
-            evaluatorName = $scope.cellmodel.evaluator;
-          }
-          var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(evaluatorName);
-          notebookCellOp.appendAfter(thisCellId, newCell);
-          bkUtils.refreshRootScope();
+
+        $scope.isLockedCell = function() {
+          return $scope.cellmodel.locked;
         };
 
         $scope.cellmenu.addItem({
@@ -280,6 +283,9 @@
             } else {
               $scope.cellmodel.input.hidden = true;
             }
+          },
+          locked: function () {
+            return $scope.isLockedCell();
           }
         });
         $scope.cellmenu.addItem({
@@ -300,6 +306,8 @@
           return $scope.cellmodel.initialization;
         };
 
+
+
         $scope.cellmenu.addItem({
           name: 'Initialization Cell',
           isChecked: function() {
@@ -312,8 +320,13 @@
               $scope.cellmodel.initialization = true;
             }
             notebookCellOp.reset();
+          },
+          locked: function () {
+            return $scope.isLockedCell();
           }
         });
+
+
 
         $scope.isWordWrap = function () {
           return !$scope.cellmodel.wordWrapDisabled;
@@ -330,6 +343,9 @@
             } else {
               $scope.cellmodel.wordWrapDisabled = true;
             }
+          },
+          locked: function () {
+            return $scope.isLockedCell();
           }
         });
 
@@ -338,6 +354,9 @@
           action: function() {
             bkCoreManager.showFullModalDialog(function cb(r) { } ,
                 'app/mainapp/dialogs/codecelloptions.jst.html', 'CodeCellOptionsController', $scope.cellmodel);
+          },
+          locked: function () {
+            return $scope.isLockedCell();
           }
         });
 
@@ -391,19 +410,23 @@
               }
             }
           },
-          'Shift-Ctrl-A': function(cm) {
-            scope.appendCodeCell();
-          },
-          'Shift-Cmd-A': function(cm) {
-            scope.appendCodeCell();
-          },
           'Shift-Ctrl-E': function(cm) {
             scope.popupMenu();
-            element.find('.inputcellmenu').find('li').find('a')[0].focus();
+            var parent = element;
+            if (bkHelper.getBkNotebookViewModel().isAdvancedMode()) {
+              var inputMenuDivAdvanced = element.parents('.bkcell.code.bkr').find('.toggle-menu').first();
+              parent = inputMenuDivAdvanced.find('.dropdown.advanced-only').first();
+            }
+            parent.find('.inputcellmenu').find('li').find('a')[0].focus();
           },
           'Shift-Cmd-E': function(cm) {
             scope.popupMenu();
-            element.find('.inputcellmenu').find('li').find('a')[0].focus();
+            var parent = element;
+            if (bkHelper.getBkNotebookViewModel().isAdvancedMode()) {
+              var inputMenuDivAdvanced = element.parents('.bkcell.code.bkr').find('.toggle-menu').first();
+              parent = inputMenuDivAdvanced.find('.dropdown.advanced-only').first();
+            }
+            parent.find('.inputcellmenu').find('li').find('a')[0].focus();
           },
           'Ctrl-Alt-H': function(cm) { // cell hide
             scope.cellmodel.input.hidden = true;
@@ -440,6 +463,7 @@
               return;
             }
             if(document.hasFocus()){
+              // This is involved in issue #4397, but we do not have a good fix.
               scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
             }
           });
@@ -539,6 +563,10 @@
         var inputMenuDiv = element.find('.bkcell').first();
         scope.popupMenu = function(event) {
           var menu = inputMenuDiv.find('.dropdown').first();
+          if (bkHelper.getBkNotebookViewModel().isAdvancedMode()) {
+            var inputMenuDivAdvanced = element.parents('.bkcell.code.bkr').find('.toggle-menu').first();
+            menu = inputMenuDivAdvanced.find('.dropdown.advanced-only').first();
+          }
           menu.find('.dropdown-toggle').first().dropdown('toggle');
         };
 

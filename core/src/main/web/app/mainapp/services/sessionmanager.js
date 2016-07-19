@@ -27,7 +27,8 @@
     'bk.recentMenu',
     'bk.evaluatorManager',
     'bk.electron',
-    'bk.plotapi'
+    'bk.plotapi',
+    'bk.categoryplotapi'
   ]);
 
   module.factory('bkSessionManager', function(
@@ -40,7 +41,8 @@
       bkEvaluatorManager,
       bkRecentMenu,
       bkElectron,
-      bkPlotApi) {
+      bkPlotApi,
+      bkCategoryPlotApi) {
 
     // we have copypasted piece of code from this line up to the end of 'transformBack' method in
     // plugin/node/src/dist/app/transformation.js. If you make some changes there, please bring them
@@ -344,6 +346,9 @@
       if (bkPlotApi.instanceOfPlotApi(v) && norecurse === undefined) {
         return _.cloneDeep(v);
       }
+      if (bkCategoryPlotApi.instanceOfCategoryPlotApi(v) && norecurse === undefined) {
+        return _.cloneDeep(v);
+      }
 
       if (_.isObject(v) && isDictionary(v) && norecurse === undefined) {
         var o = {}
@@ -444,7 +449,6 @@
     var _sessionId = null;
     var _edited = false;
     var _needsBackup = false;
-    var _saveDir = bkUtils.getHomeDirectory();
 
     var BeakerObject = function(nbmodel) {
       this.knownBeakerVars = { };
@@ -531,6 +535,7 @@
         Object.defineProperty(this.beakerObj, 'getVersionNumber', { value: bkHelper.getVersionNumber, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'getVersion', { value: bkHelper.getVersionString, writeable: false, enumerable: true });
         _.extend(this.beakerObj, bkPlotApi.list());
+        _.extend(this.beakerObj, bkCategoryPlotApi.list());
         this.predefined = Object.keys(this.beakerObj);
       }
       this._beaker_model_output_result = modelOutput.result; // XXX obviated by next line
@@ -1135,21 +1140,6 @@
               "type": "markdown",
               "body": ""
             };
-          },
-          newSameTypeCell: function (cell) {
-            var newCell;
-            switch(cell.type){
-              case 'code':
-                newCell = this.newCodeCell(cell.evaluator);
-                break;
-              case 'markdown':
-                newCell = this.newMarkdownCell();
-                break;
-              case 'section':
-                newCell = this.newSectionCell(cell.level);
-                break;
-            }
-            return newCell;
           }
         };
       },

@@ -52,15 +52,24 @@ bk-new-cell-menu {
 
 .locked .toggle-menu {
   display: none;
+  z-index: 1;
+}
+
+.locked-cell-menu {
+  display: block !important;
+  opacity: 0;
+  transition: all 0.3s ease;
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .toggle-menu {
   top: $grid-row-height - 5px;
   right: 1px;
   position: absolute;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgb(255, 255, 255);
   padding-right: $grid-gutter-width;
-  z-index: 1;
   &.wide {
     width: 100%;
     overflow: hidden;
@@ -78,6 +87,7 @@ bk-new-cell-menu {
   height:     24px;
   padding:    0 15px;
   position: relative;
+  z-index: 1;
 }
 
 .cell-status-item {

@@ -77,6 +77,7 @@
           }
           if (bkHelper.isNotebookLocked()) return;
           if (event && event.target.tagName === "A") return; // Don't edit if clicking a link
+          if (scope.$parent.isLockedCell()) return;
 
           scope.mode = 'edit';
 
@@ -118,10 +119,18 @@
             scope.cm.refresh(); // CM should recalculate line heights
           }
         });
-
+        
+        CodeMirror.defineMode("smartMarkdownMode", function(config) {
+        	  return CodeMirror.multiplexingMode(
+        	    CodeMirror.getMode(config, "markdown"),
+        	    {open: "$", close: "$",  mode: CodeMirror.getMode(config, "stex"),  delimStyle: "delimit"},
+        	    {open: "{{", close: "}}",  mode: CodeMirror.getMode(config, "javascript"),  delimStyle: "delimit"}
+        	  );
+        	});
+        
         var codeMirrorOptions = _.extend(bkCoreManager.codeMirrorOptions(scope, notebookCellOp), {
           lineNumbers: false,
-          mode: "markdown",
+          mode: "smartMarkdownMode",
           smartIndent: false
         });
         _.extend(codeMirrorOptions.extraKeys, {

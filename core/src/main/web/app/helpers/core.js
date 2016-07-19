@@ -46,6 +46,7 @@
       $location,
       $sessionStorage,
       $q,
+      $timeout,
       bkUtils,
       bkRecentMenu,
       bkNotebookCellModelManager,
@@ -586,12 +587,13 @@
         };
 
         var evaluateAndGoDown = function () {
-          scope.evaluate();
-          var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
-          if (!nextCell) {
-            appendCodeCell();
-          }
-          goToNextCodeCell();
+          bkUtils.newPromise(scope.evaluate()).then(function () {
+            var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
+            if (!nextCell) {
+              appendCodeCell();
+            }
+            goToNextCodeCell();
+          });
         };
 
         var reformat = function (cm) {
@@ -682,6 +684,11 @@
           autocompleteService.backspace(cursor, cm);
         };
 
+        var cancel = function() {
+          scope.cancel();
+          scope.$apply();
+        };
+
         var isFullScreen = function (cm) {
           return bkHelper.isFullScreen(cm);
         };
@@ -690,11 +697,15 @@
           bkHelper.setFullScreen(cm, !bkHelper.isFullScreen(cm));
         };
 
+        CodeMirror.commands.save = function (){
+	        bkHelper.saveNotebook();
+        };
+        
         var keys = {
             "Up" : goUpOrMoveFocusUp,
             "Down" : goDownOrMoveFocusDown,
-            "Ctrl-S": "save",
-            "Cmd-S": "save",
+            "Ctrl-S": false, // no need to handle this shortcut on CM level
+            "Cmd-S": false,
             "Alt-Down": moveFocusDown,
             "Alt-J": moveFocusDown,
             "Alt-Up": moveFocusUp,
@@ -724,6 +735,12 @@
             "Shift-Cmd-F": reformat,
             "Alt-F11": setFullScreen
         };
+
+        if(bkHelper.isMacOS){
+          keys["Ctrl-C"] = cancel;
+        }else{
+          keys["Alt-C"] = cancel;
+        }
 
         if (codeMirrorExtension.extraKeys !== undefined) {
           _.extend(keys, codeMirrorExtension.extraKeys);
@@ -880,6 +897,25 @@
         return deferred.promise;
       },
 
+      showSparkConfiguration: (function() {
+        var sparkConfigurationInstance;
+
+        return function() {
+          var options = {
+            windowClass: 'beaker-sandbox',
+            backdropClass: 'beaker-sandbox',
+            backdrop: true,
+            keyboard: true,
+            backdropClick: true,
+            controller: 'sparkConfigurationCtrl',
+            template: JST['mainapp/components/spark/sparkconfiguration']()
+          };
+
+          sparkConfigurationInstance = $uibModal.open(options);
+          return sparkConfigurationInstance.result;
+        };
+      })(),
+
       showModalDialog: function(callback, template, strategy, uriType, readOnly, format) {
         var options = {
           windowClass: 'beaker-sandbox',
@@ -945,6 +981,29 @@
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" ;
         return this.showModalDialog(null, template);
+      },
+      showErrorModal: function (msgBody, msgHeader, errorDetails, callback) {
+        if(!errorDetails) {
+          return this.show1ButtonModal(msgBody, msgHeader, callback);
+        }
+        if(bkUtils.isElectron) {
+          return bkElectron.Dialog.showMessageBox({
+            type: 'error',
+            buttons: ['OK'],
+            title: msgHeader,
+            message: msgBody,
+            detail: errorDetails
+          }, callback);
+        } else {
+          return this.showModalDialog(callback,
+            "<div class='modal-header'>" +
+            "<h1>" + msgHeader + "</h1>" +
+            "</div>" +
+            "<div class='modal-body'><p>" + msgBody + "</p><div class='modal-error-details'>" + errorDetails + "</div></div>" +
+            '<div class="modal-footer">' +
+            "   <button class='btn btn-primary' ng-click='close(\"OK\")'>Close</button>" +
+            "</div>");
+        }
       },
       show1ButtonModal: function(msgBody, msgHeader, callback, btnText, btnClass) {
         if (!msgHeader || msgBody.toLowerCase().indexOf(msgHeader.toLowerCase()) !== -1) {
@@ -1187,27 +1246,42 @@
       }
     };
 
-    bkUtils.getBeakerPreference('fs-order-by').then(function (fs_order_by) {
-      bkCoreManager._prefs.fs_order_by = !fs_order_by || fs_order_by.length === 0 ? 'uri' : fs_order_by;
-    }).catch(function (response) {
-      console.log(response);
+    if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
+      bkUtils.getBeakerPreference('fs-order-by').then(function (fs_order_by) {
+        bkCoreManager._prefs.fs_order_by = !fs_order_by || fs_order_by.length === 0 ? 'uri' : fs_order_by;
+      }).catch(function (response) {
+        console.log(response);
+        bkCoreManager._prefs.fs_order_by = 'uri';
+      });
+
+      bkUtils.getBeakerPreference('fs-reverse').then(function (fs_reverse) {
+        bkCoreManager._prefs.fs_reverse = !fs_reverse || fs_reverse.length === 0 ? false : fs_reverse;
+      }).catch(function (response) {
+        console.log(response);
+        bkCoreManager._prefs.fs_reverse = false;
+      });
+      bkUtils.getBeakerPreference('theme').then(function (theme) {
+        bkCoreManager._prefs.setTheme(_.includes(_.values(GLOBALS.THEMES), theme) ? theme : GLOBALS.THEMES.DEFAULT);
+        $rootScope.$broadcast('beaker.theme.set', theme);
+      }).catch(function (response) {
+        console.log(response);
+        bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);
+      });
+    } else if (window.beakerRegister === undefined || window.beakerRegister.prefsPreset === undefined) {
       bkCoreManager._prefs.fs_order_by = 'uri';
-    });
-
-    bkUtils.getBeakerPreference('fs-reverse').then(function (fs_reverse) {
-      bkCoreManager._prefs.fs_reverse = !fs_reverse || fs_reverse.length === 0 ? false : fs_reverse;
-    }).catch(function (response) {
-      console.log(response);
       bkCoreManager._prefs.fs_reverse = false;
-    });
-
-    bkUtils.getBeakerPreference('theme').then(function (theme) {
-      bkCoreManager._prefs.setTheme(_.includes(_.values(GLOBALS.THEMES), theme) ? theme : GLOBALS.THEMES.DEFAULT);
-      $rootScope.$broadcast('beaker.theme.set', theme);
-    }).catch(function (response) {
-      console.log(response);
-      bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);
-    });
+      $timeout(function() {
+        // there's a race condition in calling setTheme during bootstrap
+        bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);
+      }, 100);
+    } else {
+      bkCoreManager._prefs.fs_order_by = window.beakerRegister.prefsPreset.fs_order_by;
+      bkCoreManager._prefs.fs_reverse = window.beakerRegister.prefsPreset.fs_reverse;
+      $timeout(function() {
+        // there's a race condition in calling setTheme during bootstrap
+        bkCoreManager._prefs.setTheme(window.beakerRegister.prefsPreset.theme);
+      }, 100);
+    }
 
     return bkCoreManager;
   });
@@ -1440,7 +1514,7 @@
 
       var orig_mime2class = elfinder.mime2class;
       elfinder.mime2class = function (mime) {
-        if (mime === 'application/beaker-notebook') {
+        if (mime === 'Beaker-Notebook') {
           return 'elfinder-cwd-icon-beaker';
         }
         return orig_mime2class(mime);
@@ -1778,6 +1852,62 @@
       isImageFile: isImageFile
     };
     return dragAndDropHelper;
+  });
+
+  module.factory('bkNotificationService', function (bkUtils) {
+    var _notificationSound = null;
+    
+    function checkPermissionsForNotification() {
+      var deferred = bkUtils.newDeferred();
+      if (Notification.permission === "granted") {
+        deferred.resolve(true);
+      } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission(function (permission) {
+          deferred.resolve(permission === "granted");
+        });
+      }
+      return deferred.promise;
+    }
+    
+    function playNotificationSound() {
+      if(!_notificationSound) {
+        _notificationSound = new Audio('app/sound/notification.wav');
+      }
+      _notificationSound.play();
+    }
+
+    return {
+      checkPermissions: checkPermissionsForNotification,
+      showNotification: function (title, body, tag) {
+        checkPermissionsForNotification().then(function (granted) {
+          if (granted) {
+            var options = {
+              body: body,
+              icon: '/static/favicon.png'
+            };
+            if(tag) {
+              options.tag = tag;
+            }
+            var notification = new Notification(title, options);
+            notification.onclick = function () {
+              notification.close();
+              window.focus();
+            };
+            //we need to play sound this way because notification's 'options.sound' parameter is not supported yet
+            playNotificationSound();
+          }
+        });
+      },
+      sendEmailNotification: function (title, body) {
+        var url = bkUtils.getEvaluationFinishedNotificationUrl();
+        if (!!url) {
+          bkUtils.httpGet(url, {
+            title: title,
+            body: body
+          });
+        }
+      }
+    };
   });
 
   function getImportNotebookFileTypePattern() {

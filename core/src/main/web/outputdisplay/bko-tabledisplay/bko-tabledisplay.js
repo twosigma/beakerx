@@ -401,29 +401,28 @@
         };
 
         $scope.doCSVExport = function(all) {
-          var rows;
+          var data;
           var isFiltered = function (index) {
             return $scope.table.settings()[0].aiDisplay.indexOf(index) > -1;
           };
           if (!all) {
-            rows = $scope.table.rows(isFiltered);
+            data = $scope.table.rows(isFiltered).data();
           } else {
-            rows = $scope.table.rows(function(index, data, node) {
+            data = $scope.table.rows(function(index, data, node) {
               return $scope.selected[index] && isFiltered(index);
-            });
+            }).data();
           }
-          var out = $scope.exportTo(rows, 'csv');
-          bkHelper.selectFile(function(n) {
-            var suffix = '.csv';
-            if (n === undefined) {
-              return;
+          var out = $scope.exportTo(data, 'csv');
+
+          bkHelper.showFileSaveDialog({
+            extension: "csv",
+            title: 'Select name for CSV file to save',
+            saveButtonTitle : 'Save'
+          }).then(function (ret) {
+            if (ret.uri) {
+              return bkHelper.saveFile(ret.uri, out, true);
             }
-            if (n.indexOf(suffix, n.length - suffix.length) === -1) {
-              n = n + suffix;
-            }
-            // TODO check for error, prompt for overwrite
-            return bkHelper.saveFile(n, out, true);
-          } , 'Select name for CSV file to save', 'csv', 'Save');
+          });
         };
 
         // reset table state
@@ -645,7 +644,8 @@
           return $scope.table.column($scope.getColumnIndexByCellNode(filterNode) + ':visible');
         };
 
-        $scope.columnFilterFn = function(){
+        $scope.columnFilterFn = function (e) {
+          if (e.keyCode === 27 || e.keyCode === 13) { return; }
           if ($(this).hasClass('table-filter')) {
             $scope.tableFilter = this.value;
             if ($scope.columnSearchActive) {
@@ -690,6 +690,7 @@
                   $scope.onFilterBlur($(this), this);
                   break;
                 case 27: //esc
+                  event.preventDefault();
                   $scope.clearFilter(column, $(this));
                   $scope.updateFilterWidth($(this), column);
                   break;
@@ -1322,7 +1323,18 @@
               scope.contextMenuItems[name] = {
                 name: name,
                 callback: function (itemKey, options) {
-                  scope.evaluateTagCell(tag);
+                  var index = scope.table.cell(options.$trigger.get(0)).index();
+                  var params = {
+                    actionType: 'CONTEXT_MENU_CLICK',
+                    contextMenuItem: itemKey,
+                    row: index.row,
+                    col: index.column - 1
+                  };
+                  tableService.setActionDetails(model['update_id'],
+                                                scope.model.getEvaluatorId(),
+                                                params).then(function () {
+                    scope.evaluateTagCell(tag);
+                  });
                 }
               }
             });
@@ -2398,8 +2410,8 @@
                 }
               }
 
+              var index = currentCell.indexes()[0];
               if (model.hasDoubleClickAction) {
-                var index = currentCell.indexes()[0];
                 tableService.onDoubleClick(model['update_id'],
                   index.row,
                   index.column - 1,
@@ -2409,7 +2421,16 @@
               }
 
               if (!_.isEmpty(model.doubleClickTag)) {
-                scope.evaluateTagCell(model.doubleClickTag);
+                var params = {
+                  actionType: 'DOUBLE_CLICK',
+                  row: index.row,
+                  col: index.column - 1
+                };
+                tableService.setActionDetails(model['update_id'],
+                                              scope.model.getEvaluatorId(),
+                                              params).then(function () {
+                  scope.evaluateTagCell(model.doubleClickTag);
+                });
               }
 
               e.stopPropagation();
@@ -2510,6 +2531,7 @@
 
             scope.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
             scope.fixcols.fnRedrawLayout();
+            $rootScope.$emit('beaker.resize');
 
             setTimeout(function(){
               if (!scope.table) { return; }
@@ -2536,6 +2558,7 @@
               if (scope.showFilter) {
                 scope.doShowFilter(null, scope.columnSearchActive);
               }
+              $rootScope.$emit('beaker.resize');
 
             }, 0);
 

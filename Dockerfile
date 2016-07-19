@@ -40,9 +40,12 @@ RUN su -m beaker -c "julia --eval 'Pkg.add(\"IJulia\")'" && \
     su -m beaker -c "julia --eval 'Pkg.add(\"Requests\")'" && \
     su -m beaker -c "julia --eval 'Pkg.add(\"Gadfly\")'"
 RUN su -m beaker -c "julia --eval 'Pkg.rm(\"IJulia\")'" && \
-    su -m beaker -c "julia --eval 'Pkg.add(\"IJulia\")'"
+    su -m beaker -c "julia --eval 'Pkg.add(\"IJulia\")'" && \
+    su -m beaker -c "julia --eval 'import ZMQ'" && \
+    su -m beaker -c "julia --eval 'import Nettle'"
 
-RUN cp -r /home/beaker/.local/share/jupyter/kernels/julia-0.4 /usr/local/share/jupyter/kernels/
+RUN cp -r /home/beaker/.local/share/jupyter/kernels/julia-0.4 \
+          /usr/local/share/jupyter/kernels/
 
 RUN mkdir -p /home/beaker/.beaker/v1/config && \
     echo '{"pref-format" : "1", "languages" : {"Python3" : {"path": "/home/beaker/py3k/bin"}}}' > /home/beaker/.beaker/v1/config/beaker.pref.json

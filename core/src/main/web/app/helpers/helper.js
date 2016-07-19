@@ -96,7 +96,13 @@
         }
         return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 65);// Cmd + Shift + A
       },
-      isInsertCellAboveShortcut: function (e){
+      isAppendTextCellShortcut: function (e){
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 89);// Ctrl + Shift + Y
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 89);// Cmd + Shift + Y
+      },
+      isInsertCodeCellAboveShortcut: function (e){
         if (this.isMacOS){
           return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 85);// Ctrl + Shift + U
         }
@@ -119,6 +125,26 @@
           return e.ctrlKey && (e.which === 82); // Alt + r
         }
         return e.altKey && (e.which === 82); // Alt + r
+      },
+      isRaiseSectionLevelShortcut: function (e) {
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 190);// Ctrl + Shift + >
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 190);// Cmd + Shift + >
+      },
+      isLowerSectionLevelShortcut: function (e) {
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 188);// Ctrl + Shift + <
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 188);// Cmd + Shift + <
+      },
+      isInsertAfterSectionShortcut: function(e) {
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey &&
+            ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey &&
+          ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
       },
 
       //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
@@ -881,6 +907,9 @@
       showModalDialog: function(callback, template, strategy) {
         return bkCoreManager.showModalDialog(callback, template, strategy).result;
       },
+      showErrorModal: function (msgBody, msgHeader, errorDetails, callback) {
+        return bkCoreManager.showErrorModal(msgBody, msgHeader, errorDetails, callback);
+      },
       show1ButtonModal: function(msgBody, msgHeader, callback) {
         return bkCoreManager.show1ButtonModal(msgBody, msgHeader, callback);
       },
@@ -916,30 +945,86 @@
       showLanguageManager: function () {
         return bkCoreManager.showLanguageManager();
       },
-      appendCodeCell: function () {
-
-        if (document.activeElement &&
-          document.activeElement.parentElement.offsetParent &&
-          document.activeElement.parentElement.offsetParent.classList.value.indexOf('CodeMirror') !== -1)
-          return;
-
-
-        var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
-        var notebookCellOp = bkSessionManager.getNotebookCellOp();
-        notebookCellOp.insertLast(newCell);
-        bkUtils.refreshRootScope();
-        this.go2LastCodeCell();
+      showSparkConfiguration: function () {
+        return bkCoreManager.showSparkConfiguration();
       },
-      insertCellAbove: function () {
+      appendCodeCell: function () {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
         var newCell;
         if (currentCellId) {
           var cell = notebookCellOp.getCell(currentCellId);
-          newCell = bkSessionManager.getNotebookNewCellFactory().newSameTypeCell(cell);
+          var evaluator = cell.type === 'code' ? cell.evaluator : defaultEvaluator;
+          newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(evaluator);
+          notebookCellOp.insertAfter(currentCellId, newCell);
+        } else {
+          newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
+          notebookCellOp.insertLast(newCell);
+        }
+        bkUtils.refreshRootScope();
+        this.go2Cell(newCell.id);
+      },
+      appendTextCell: function () {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var newCell = bkSessionManager.getNotebookNewCellFactory().newMarkdownCell();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        if (currentCellId) {
+          notebookCellOp.insertAfter(currentCellId, newCell);
+        } else {
+          notebookCellOp.insertLast(newCell);
+        }
+        bkUtils.refreshRootScope();
+        this.go2Cell(newCell.id);
+      },
+      insertCodeCellAbove: function () {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        var newCell;
+        if (currentCellId) {
+          var cell = notebookCellOp.getCell(currentCellId);
+          var evaluator = cell.type === 'code' ? cell.evaluator : defaultEvaluator;
+          newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(evaluator);
           notebookCellOp.insertBefore(currentCellId, newCell);
         } else {
           newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(defaultEvaluator);
+          notebookCellOp.insertFirst(newCell);
+        }
+        bkUtils.refreshRootScope();
+        this.go2Cell(newCell.id);
+      },
+      raiseSectionLevel: function () {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        if (currentCellId) {
+          var cell = notebookCellOp.getCell(currentCellId);
+          if (cell.type === 'section' && cell.level > 1) {
+            cell.level--;
+            notebookCellOp.reset();
+          }
+        }
+      },
+      lowerSectionLevel: function () {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        if (currentCellId) {
+          var cell = notebookCellOp.getCell(currentCellId);
+          if (cell.type === 'section' && cell.level < 4) {
+            cell.level++;
+            notebookCellOp.reset();
+          }
+        }
+      },
+      insertNewSectionWithLevel: function (level) {
+        bkSessionManager.setNotebookModelEdited(true);
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        var newCell;
+        if (currentCellId){
+          var cell = notebookCellOp.getCell(currentCellId);
+          newCell = bkSessionManager.getNotebookNewCellFactory().newSectionCell(level);
+          notebookCellOp.insertAfter(currentCellId, newCell);
+        } else {
+          newCell = bkSessionManager.getNotebookNewCellFactory().newSectionCell(level);
           notebookCellOp.insertFirst(newCell);
         }
         bkUtils.refreshRootScope();

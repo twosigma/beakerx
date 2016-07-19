@@ -73,6 +73,7 @@
 
   .path {
     margin-bottom: 6px;
+    word-wrap: break-word;
   }
 
   .session {
@@ -100,5 +101,11 @@
   .notebook-link {
     display: block;
     color: #333333;
+    word-wrap: break-word;
   }
+}
+
+.pull-left{
+  float: left !important;
+  width: 95%;
 }

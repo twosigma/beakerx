@@ -897,15 +897,15 @@ var BeakerPageObject = function() {
   this.checkSaveTableAsCsv = function(self, dir, filename){
     browser.wait(this.EC.presenceOf(element(by.css('input#file-dlg-selected-path'))), 10000).then(function(){
       browser.wait(self.EC.not(self.EC.presenceOf(element(by.css('div.elfinder-notify-open')))), 20000).then(function(){
+        self.createScreenshot(filename);
         var arrPath = dir.split(path.sep);
         arrPath.forEach(function(item, i, arrPath) {
           element(by.cssContainingText('span', item)).isPresent().then(function(present){
-            if(present){
-              element(by.cssContainingText('span', item)).click();
-            }
-            else{
-              element(by.cssContainingText('span', item.toUpperCase())).click();
-            }
+            self.hasClass(element(by.cssContainingText('span', item)), 'elfinder-navbar-expanded').then(function(expand){
+              if(present && !expand){
+                element(by.cssContainingText('span', item)).click();
+              }
+            })
           })
         });
         element(by.id('file-dlg-selected-path')).sendKeys(filename);

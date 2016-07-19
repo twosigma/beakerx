@@ -38,7 +38,7 @@
           "<canvas></canvas>" +
           "<div id='plotTitle' class='plot-title'></div>" +
           "<div id='plotLegendContainer' class='plot-plotlegendcontainer' oncontextmenu='return false;'>" +
-          "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
+          "<div class='plot-plotcontainer' oncontextmenu='return false;'>" +
           "<svg id='svgg'>"  +
           "<defs>" +
             "<marker id='Triangle' class='text-line-style' viewBox='0 0 10 10' refX='1' refY='5' markerWidth='6' markerHeight='6' orient='auto'>" +
@@ -93,7 +93,7 @@
       },
       link : function(scope, element, attrs) {
         // rendering code
-        element.find("#plotContainer").resizable({
+        element.find(".plot-plotcontainer").resizable({
           maxWidth : element.width(), // no wider than the width of the cell
           minWidth : 450,
           minHeight: 150,
@@ -129,6 +129,16 @@
           });
         };
 
+        scope.id = 'bko-plot-' + bkUtils.generateId(6);
+        element.find('.plot-plotcontainer').attr('id', scope.id);
+        if (!scope.model.disableContextMenu) {
+          $.contextMenu({
+            selector: '#' + scope.id,
+            zIndex: 3,
+            items: plotUtils.getSavePlotAsContextMenuItems(scope) 
+          });
+        }
+
         scope.initLayout = function() {
           var model = scope.stdmodel;
 
@@ -137,10 +147,10 @@
             .addClass("ui-icon-grip-diagonal-se");
 
           // hook container to use jquery interaction
-          scope.container = d3.select(element[0]).select("#plotContainer");
-          scope.jqcontainer = element.find("#plotContainer");
+          scope.container = d3.select(element[0]).select(".plot-plotcontainer");
+          scope.jqcontainer = element.find(".plot-plotcontainer");
           scope.jqlegendcontainer = element.find("#plotLegendContainer");
-          scope.svg = d3.select(element[0]).select("#plotContainer svg");
+          scope.svg = d3.select(element[0]).select(".plot-plotcontainer svg");
           scope.jqsvg = element.find("#svgg");
           scope.canvas = element.find("canvas")[0];
 
@@ -2027,6 +2037,7 @@
           scope.svg.selectAll("*").remove();
           scope.jqlegendcontainer.find("#plotLegend").remove();
           scope.removeOnKeyListeners();
+          $.contextMenu('destroy', { selector: '#' + scope.id});
         });
 
         scope.getSvgToSave = function() {

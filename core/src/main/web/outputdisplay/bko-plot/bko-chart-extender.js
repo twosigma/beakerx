@@ -23,7 +23,7 @@
 			extend: function (scope, element, attrs) {
 
 				// rendering code
-				element.find("#plotContainer").resizable({
+				element.find(".plot-plotcontainer").resizable({
 					maxWidth: element.width(), // no wider than the width of the cell
 					minWidth: 450,
 					minHeight: 150,
@@ -105,10 +105,10 @@
 						.addClass("ui-icon-grip-diagonal-se");
 
 					// hook container to use jquery interaction
-					scope.container = d3.select(element[0]).select("#plotContainer");
-					scope.jqcontainer = element.find("#plotContainer");
+					scope.container = d3.select(element[0]).select(".plot-plotcontainer");
+					scope.jqcontainer = element.find(".plot-plotcontainer");
 					scope.jqlegendcontainer = element.find("#plotLegendContainer");
-					scope.svg = d3.select(element[0]).select("#plotContainer svg");
+					scope.svg = d3.select(element[0]).select(".plot-plotcontainer svg");
 					scope.jqsvg = element.find("svg");
 					scope.canvas = element.find("canvas")[0];
 

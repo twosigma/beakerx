@@ -39,7 +39,7 @@
         <bk-code-cell-input-menu ng-show="cellmodel.evaluatorReader" ng-if="!hasFaultyEvaluator()"></bk-code-cell-input-menu>
       </div>
       <div class="cell-menu-item evaluate" ng-if="!isLockedCell() && isMarkdownCell()" title="run cell"></div>
-      <div ng-if="!isLockedCell()" class="cell-menu-item evaluate" ng-class="isCellRunning() && 'disabled'" ng-click="evaluate($event)" ng-if="isCodeCell()" title="run cell"></div>
+      <div class="cell-menu-item evaluate" ng-if="!isLockedCell() && isCodeCell()"  ng-class="isCellRunning() && 'disabled'" ng-click="evaluate($event)" title="run cell"></div>
       <div class="cell-menu-item evaluate" ng-if="!isLockedCell() &&  cellmodel.type === 'section'" ng-click="evaluate($event)" title="run all cells in section"></div>
       <div class="cell-status-item loading-state advanced-hide" ng-if="!isLockedCell() && isCodeCell() && !cellmodel.evaluatorReader && !hasFaultyEvaluator()">Initializing {{cellmodel.evaluator}}
         <i class='fa fa-refresh fa-spin'></i>

@@ -462,7 +462,7 @@ var BeakerPageObject = function() {
   this.getPlotContainerByIdCell = function (codeCellOutputId, containerIdx) {
     if (!containerIdx)
       containerIdx = 0;
-    return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(by.css('#plotContainer'));
+    return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(by.css('.plot-plotcontainer'));
   };
 
   this.getPlotSvgElementByIndexByIdCell = function (codeCellOutputId, containerIdx, elementIndex) {

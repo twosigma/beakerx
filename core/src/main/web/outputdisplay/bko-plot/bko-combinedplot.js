@@ -21,13 +21,13 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils, combinedplotFormatter, bkCellMenuPluginManager, plotService) {
+  var retfunc = function(plotUtils, combinedplotFormatter, bkCellMenuPluginManager, plotService, bkUtils) {
     var CELL_TYPE = "bko-combinedplot";
     return {
       template :
           "<canvas></canvas>" +
           "<div id='combplotTitle' class='plot-title'></div>" +
-          "<div id='combplotContainer' class='combplot-plotcontainer'>" +
+          "<div class='combplot-plotcontainer'>" +
           "<bk-output-display type='Plot' ng-repeat='m in models' model='m' class='nocollapsing-margins'>" +
           "</bk-output-display>" +
           "</div>",
@@ -50,6 +50,14 @@
       link : function(scope, element, attrs) {
         scope.canvas = element.find("canvas")[0];
         scope.canvas.style.display="none";
+
+        scope.id = 'bko-plot-' + bkUtils.generateId(6);
+        element.find('.combplot-plotcontainer').attr('id', scope.id);
+        $.contextMenu({
+          selector: '#' + scope.id,
+          zIndex: 3,
+          items: plotUtils.getSavePlotAsContextMenuItems(scope)
+        });
 
         scope.initLayout = function() {
           var model = scope.stdmodel;
@@ -91,6 +99,7 @@
             var pl = {
               model : plotmodel,
               state : { },
+              disableContextMenu: true,
               getCellModel : function() {
                 return this.model;
               },
@@ -122,7 +131,7 @@
               updateMargin : function() {
                 // if any of plots has left-positioned legend we should update left margin (with max value)
                 // for all plots (to adjust vertical position)
-                var plots = element.find("#plotContainer");
+                var plots = element.find(".plot-plotcontainer");
                 var maxMargin = 0;
 
                 plots.each(function() {
@@ -255,6 +264,9 @@
         scope.$watch('getCellModel()', function() {
           scope.init();
         });
+        scope.$on('$destroy', function() {
+          $.contextMenu('destroy', { selector: '#' + scope.id});
+        });
 
         scope.getSvgToSave = function() {
           var plots = scope.stdmodel.plots;
@@ -304,5 +316,5 @@
     };
   };
   beakerRegister.bkoDirective("CombinedPlot",
-      ["plotUtils", "combinedplotFormatter", "bkCellMenuPluginManager", "plotService", retfunc]);
+      ["plotUtils", "combinedplotFormatter", "bkCellMenuPluginManager", "plotService", "bkUtils", retfunc]);
 })();

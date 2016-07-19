@@ -25,6 +25,7 @@ import com.twosigma.beaker.core.module.elfinder.impl.DefaultFsServiceConfig;
 import com.twosigma.beaker.core.module.elfinder.impl.FsSecurityCheckForAll;
 import com.twosigma.beaker.core.module.elfinder.impl.StaticFsServiceFactory;
 import com.twosigma.beaker.core.module.elfinder.impl.localfs.LocalFsVolume;
+import com.twosigma.beaker.core.module.elfinder.service.FsVolume;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -93,6 +94,9 @@ public class ConnectorServlet extends HttpServlet {
                                               new File(userHomeDir)));
       fsService.addVolume("B",
                           rootVolume);
+
+      // warm up files cache by root dir
+    new FileListing("/").start();
     }
 
     // warm up files cache by user.home
@@ -112,7 +116,9 @@ public class ConnectorServlet extends HttpServlet {
 
     @Override
     public void run() {
-      final File[] files = new File(dir).listFiles();
+      final File root = new File(dir);
+      root.lastModified();
+      final File[] files = root.listFiles();
       if (null != files) {
         for (final File file: files) {
           file.lastModified();

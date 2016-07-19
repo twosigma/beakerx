@@ -93,9 +93,6 @@ public class ConnectorServlet extends HttpServlet {
                                               new File(userHomeDir)));
       fsService.addVolume("B",
                           rootVolume);
-
-      // warm up files cache by root dir
-    new FileListing("/").start();
     }
 
     // warm up files cache by user.home

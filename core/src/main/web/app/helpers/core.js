@@ -79,6 +79,8 @@
     var  FilePermissionsStrategy = function (data) {
       var newStrategy = this;
       newStrategy.permissions = data.permissions;
+      newStrategy.owner = data.owner;
+      newStrategy.group = data.group;
       newStrategy.title = data.title;
       newStrategy.path = data.path;
       newStrategy.okButtonTitle = data.okButtonTitle;
@@ -783,11 +785,13 @@
         return bkNotebookCellModelManager;
       },
 
-      showFilePermissionsDialog: function(path, permissions) {
+      showFilePermissionsDialog: function(path, permissionsSettings) {
         var deferred = bkUtils.newDeferred();
 
         var data = {
-          permissions: permissions,
+          permissions: permissionsSettings.permissions,
+          owner: permissionsSettings.owner,
+          group: permissionsSettings.group,
           title:'Permissions',
           path: path
         };
@@ -809,9 +813,7 @@
         });
         dd.result.then(
           function (result) {
-            deferred.resolve({
-              permissions: result
-            });
+            deferred.resolve(result);
           }, function () {
             deferred.reject();
           }).catch(function () {
@@ -1306,6 +1308,17 @@
     $scope.getStrategy = function () {
       return strategy;
     };
+    
+    $scope.ownerEdit = false;
+    $scope.groupEdit = false;
+
+    $scope.editOwner = function () {
+      $scope.ownerEdit = true;
+    };
+
+    $scope.editGroup = function () {
+      $scope.groupEdit = true;
+    };
 
     $scope.model = {
       OWNER_READ: strategy.permissions.indexOf('OWNER_READ') !== -1,
@@ -1317,25 +1330,32 @@
       OTHERS_READ: strategy.permissions.indexOf('OTHERS_READ') !== -1,
       OTHERS_WRITE: strategy.permissions.indexOf('OTHERS_WRITE') !== -1,
       OTHERS_EXECUTE: strategy.permissions.indexOf('OTHERS_EXECUTE') !== -1,
+      
+      owner: strategy.owner,
+      group: strategy.group,
 
-      asSet: function () {
-        var result = [];
-        if (this.OWNER_READ === true) result.push('OWNER_READ');
-        if (this.OWNER_WRITE === true) result.push('OWNER_WRITE');
-        if (this.OWNER_EXECUTE === true) result.push('OWNER_EXECUTE');
-        if (this.GROUP_READ === true) result.push('GROUP_READ');
-        if (this.GROUP_WRITE === true) result.push('GROUP_WRITE');
-        if (this.GROUP_EXECUTE === true)  result.push('GROUP_EXECUTE');
-        if (this.OTHERS_READ === true) result.push('OTHERS_READ');
-        if (this.OTHERS_WRITE === true) result.push('OTHERS_WRITE');
-        if (this.OTHERS_EXECUTE === true) result.push('OTHERS_EXECUTE');
-        return result;
+      collectResult: function () {
+        var permissions = [];
+        if (this.OWNER_READ === true) permissions.push('OWNER_READ');
+        if (this.OWNER_WRITE === true) permissions.push('OWNER_WRITE');
+        if (this.OWNER_EXECUTE === true) permissions.push('OWNER_EXECUTE');
+        if (this.GROUP_READ === true) permissions.push('GROUP_READ');
+        if (this.GROUP_WRITE === true) permissions.push('GROUP_WRITE');
+        if (this.GROUP_EXECUTE === true)  permissions.push('GROUP_EXECUTE');
+        if (this.OTHERS_READ === true) permissions.push('OTHERS_READ');
+        if (this.OTHERS_WRITE === true) permissions.push('OTHERS_WRITE');
+        if (this.OTHERS_EXECUTE === true) permissions.push('OTHERS_EXECUTE');
+        return {
+          permissions: permissions,
+          owner: this.owner,
+          group: this.group
+        };
       }
     };
 
 
     $scope.ok = function () {
-      $uibModalInstance.close($scope.model.asSet());
+      $uibModalInstance.close($scope.model.collectResult());
     };
 
     $scope.cancel = function () {
@@ -1438,13 +1458,20 @@
       elFinder.prototype.commands.editpermissions = function() {
         this.exec = function (hashes) {
           var path = $scope.selected.path;
-          bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/getPosixFilePermissions"), {path: path})
+          bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/getPosixFileOwnerAndPermissions"), {path: path})
             .then(function (response) {
               bkCoreManager.showFilePermissionsDialog(path, response.data).then(function(result){
-                bkUtils.httpPost('rest/file-io/setPosixFilePermissions', {
+                var postData = {
                   path: $scope.selected.path,
                   permissions: result.permissions
-                }).catch(function (response) {
+                };
+                if(result.owner !== response.data.owner) {
+                  postData.owner = result.owner;
+                }
+                if(result.group !== response.data.group) {
+                  postData.group = result.group;
+                }
+                bkUtils.httpPost('rest/file-io/setPosixFileOwnerAndPermissions', postData).catch(function (response) {
                   bkHelper.show1ButtonModal(response.data, 'Permissions change filed');
                 })
               });

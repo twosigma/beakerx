@@ -19,23 +19,46 @@
   <h1>{{getStrategy().title}}</h1>
   <div class="permission-path">{{getStrategy().path}}</div>
 </div>
-<div class="modal-body row permissions">
+<div class="modal-body permissions">
 
-  <div class="col-sm-4 group">Owner</div>
-  <div class="col-sm-4 group">Group</div>
-  <div class="col-sm-4 group">Others</div>
+  <div class="col-sm-4">
+    <div class="row group">Owner</div>
 
-  <label class="col-sm-4"><input ng-model="model.OWNER_READ" type="checkbox">Read</label>
-  <label class="col-sm-4"><input ng-model="model.GROUP_READ" type="checkbox">Read</label>
-  <label class="col-sm-4"><input ng-model="model.OTHERS_READ" type="checkbox">Read</label>
+    <div class="row"><label><input ng-model="model.OWNER_READ" type="checkbox">Read</label></div>
+    <div class="row"><label><input ng-model="model.OWNER_WRITE" type="checkbox">Write</label></div>
+    <div class="row"><label><input ng-model="model.OWNER_EXECUTE" type="checkbox">Execute</label></div>
+  </div>
 
-  <label class="col-sm-4"><input ng-model="model.OWNER_WRITE" type="checkbox">Write</label>
-  <label class="col-sm-4"><input ng-model="model.GROUP_WRITE" type="checkbox">Write</label>
-  <label class="col-sm-4"><input ng-model="model.OTHERS_WRITE" type="checkbox">Write</label>
+  <div class="col-sm-4">
+    <div class="row group">Group</div>
 
-  <label class="col-sm-4"><input ng-model="model.OWNER_EXECUTE" type="checkbox">Execute</label>
-  <label class="col-sm-4"><input ng-model="model.GROUP_EXECUTE" type="checkbox">Execute</label>
-  <label class="col-sm-4"><input ng-model="model.OTHERS_EXECUTE" type="checkbox">Execute</label>
+    <div class="row"><label><input ng-model="model.GROUP_READ" type="checkbox">Read</label></div>
+    <div class="row"><label><input ng-model="model.GROUP_WRITE" type="checkbox">Write</label></div>
+    <div class="row"><label><input ng-model="model.GROUP_EXECUTE" type="checkbox">Execute</label></div>
+  </div>
+
+  <div class="col-sm-4">
+    <div class="row group">Others</div>
+
+    <div class="row"><label><input ng-model="model.OTHERS_READ" type="checkbox">Read</label></div>
+    <div class="row"><label><input ng-model="model.OTHERS_WRITE" type="checkbox">Write</label></div>
+    <div class="row"><label><input ng-model="model.OTHERS_EXECUTE" type="checkbox">Execute</label></div>
+  </div>
+
+  <div class="row" style="margin-top: 5px;">
+    <div class="col-sm-3"><label for="owner"><strong>Owner:</strong>&nbsp;</label></div>
+    <div class="col-sm-9">
+      <a     ng-hide="ownerEdit" ng-click="editOwner()" href="#" title="Edit" eat-click>{{getStrategy().owner}}</a>
+      <input ng-show="ownerEdit" type="text" ng-model="model.owner" id="owner" />
+    </div>
+  </div>
+  <div class="row" style="margin-top: 5px;">
+    <div class="col-sm-3"><label for="group"><strong>Group:</strong>&nbsp;</label></div>
+    <div class="col-sm-9">
+      <a     ng-hide="groupEdit" ng-click="editGroup()" href="#" title="Edit" eat-click>{{getStrategy().group}}</a>
+      <input ng-show="groupEdit" type="text" ng-model="model.group" id="group" />
+    </div>
+  </div>
 
 </div>
 <div class="modal-footer">

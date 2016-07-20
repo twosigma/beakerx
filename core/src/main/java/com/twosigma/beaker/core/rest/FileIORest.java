@@ -43,9 +43,15 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.FileSystemException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFileAttributeView;
+import java.nio.file.attribute.PosixFileAttributes;
 import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.UserPrincipal;
+import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -53,6 +59,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -144,13 +151,17 @@ public class FileIORest {
   }
 
   @GET
-  @Path("getPosixFilePermissions")
+  @Path("getPosixFileOwnerAndPermissions")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getPosixFilePermissions(@QueryParam("path") String pathString) throws IOException {
+  public Response getPosixFileOwnerAndPermissions(@QueryParam("path") String pathString) throws IOException {
     pathString = removePrefix(pathString);
     java.nio.file.Path path = Paths.get(pathString);
     if(Files.exists(path)) {
-      return status(OK).entity(Files.getPosixFilePermissions(path)).build();
+      Map<String, Object> response = new HashMap<>();
+      response.put("permissions", Files.getPosixFilePermissions(path));
+      response.put("owner", Files.getOwner(path, LinkOption.NOFOLLOW_LINKS).getName());
+      response.put("group", Files.readAttributes(path, PosixFileAttributes.class, LinkOption.NOFOLLOW_LINKS).group().getName());
+      return status(OK).entity(response).build();
     } else {
       return status(BAD_REQUEST).build();
     }
@@ -158,17 +169,27 @@ public class FileIORest {
 
   @POST
   @Consumes("application/x-www-form-urlencoded")
-  @Path("setPosixFilePermissions")
+  @Path("setPosixFileOwnerAndPermissions")
   @Produces(MediaType.TEXT_PLAIN)
   public Response setPosixFilePermissions(
-    @FormParam("path") String path,
+    @FormParam("path") String pathString,
+    @FormParam("owner") String owner,
+    @FormParam("group") String group,
     @FormParam("permissions[]") List<String> permissions) throws IOException {
-    HashSet<PosixFilePermission> filePermissions = new HashSet<>();
-    for (String permission : permissions) {
-      filePermissions.add(PosixFilePermission.valueOf(permission));
-    }
+    HashSet<PosixFilePermission> filePermissions = getPosixFilePermissions(permissions);
     try {
-      Files.setPosixFilePermissions(Paths.get(path), filePermissions);
+      java.nio.file.Path path = Paths.get(pathString);
+
+      Files.setPosixFilePermissions(path, filePermissions);
+
+      UserPrincipalLookupService userPrincipalLookupService = FileSystems.getDefault().getUserPrincipalLookupService();
+      if (StringUtils.isNoneBlank(owner)) {
+        Files.setOwner(path, userPrincipalLookupService.lookupPrincipalByName(owner));
+      }
+      if (StringUtils.isNoneBlank(group)) {
+        Files.getFileAttributeView(path, PosixFileAttributeView.class, LinkOption.NOFOLLOW_LINKS)
+            .setGroup(userPrincipalLookupService.lookupPrincipalByGroupName(group));
+      }
       return status(OK).build();
     } catch (FileSystemException e) {
       return status(INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
@@ -463,6 +484,14 @@ public class FileIORest {
     }
 
     return  s.toArray(new String[s.size()]);
+  }
+
+  private HashSet<PosixFilePermission> getPosixFilePermissions(List<String> permissions) {
+    HashSet<PosixFilePermission> filePermissions = new HashSet<>();
+    for (String permission : permissions) {
+      filePermissions.add(PosixFilePermission.valueOf(permission));
+    }
+    return filePermissions;
   }
 
   private static class DirectoryCreationException extends WebApplicationException {

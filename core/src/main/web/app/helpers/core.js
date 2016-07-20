@@ -315,6 +315,9 @@
           bkHelper.setThemeToBeakerObject();
         },
         getTheme: function () {
+          if (this.theme === undefined) {
+            return "default";
+          }
           return this.theme;
         },
         setFSOrderBy: function (fs_order_by) {

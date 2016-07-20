@@ -103,6 +103,7 @@ public class ConnectorServlet extends HttpServlet {
 
   private class FileListing extends Thread {
 
+    private static final int LEVEL = 1;
     private final String dir;
 
     FileListing(final String dir) {
@@ -112,12 +113,25 @@ public class ConnectorServlet extends HttpServlet {
 
     @Override
     public void run() {
-      final File[] files = new File(dir).listFiles();
-      if (null != files) {
-        for (final File file: files) {
-          file.lastModified();
-        }
+      final File root = new File(dir);
+      getMetaInfo(root);
+      listFiles(root.listFiles(), 0);
+    }
+
+    private void listFiles(final File[] files, int level) {
+      if (level > LEVEL) {
+        return;
       }
+      for (final File file : files) {
+        if (file.isDirectory()) {
+          listFiles(file.listFiles(), ++level);
+        }
+        getMetaInfo(file);
+      }
+    }
+
+    private void getMetaInfo(final File file) {
+      file.lastModified();
     }
 
   }

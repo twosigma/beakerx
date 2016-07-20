@@ -30,9 +30,9 @@ with open(os.devnull, "w") as fnull:
 
 beaker = subprocess.Popen(["../core/beaker.command", "-open-browser", "false"], stdout=subprocess.PIPE, preexec_fn=os.setsid)
 
-for line in iter(beaker.stderr.readline, ''):
+for line in iter(beaker.stdout.readline, ''):
     print(">>>" + line.strip())
-    if line.startswith('[main] INFO com.twosigma.beaker.core.Main - Beaker listening on'):
+    if line.startswith('Beaker listening on'):
         break
 
 result = os.system("./node_modules/protractor-flake/bin/protractor-flake --node-bin node --max-attempts=3 -- protractorConf.js");

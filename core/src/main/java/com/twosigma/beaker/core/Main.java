@@ -234,14 +234,15 @@ public class Main {
     final String initUrl = bkConfig.getBaseURL();
     if (openBrowser) {
       injector.getInstance(GeneralUtils.class).openUrl(initUrl);
-      logger.info("Connecting to " + initUrl);
+      System.out.println("\nConnecting to " + initUrl);
     } else {
-      logger.info("Beaker hash " + bkConfig.getHash());
-      logger.info("Beaker listening on " + initUrl);
+      System.out.println("\nBeaker hash " + bkConfig.getHash());
+      System.out.println("Beaker listening on " + initUrl);
     }
     if (publicServer && StringUtils.isEmpty(password)) {
-      logger.info("Submit this password: " + bkConfig.getPassword());
+      System.out.println("Submit this password: " + bkConfig.getPassword());
     }
+    System.out.println("");
   }
 
   private static BeakerConfigPref createBeakerCoreConfigPref(
@@ -350,7 +351,7 @@ public class Main {
     int tries = 0;
     int base = start.intValue();
     while (!portRangeAvailable(base, width)) {
-      logger.info("Port range " + base + "-" + (base + width - 1) + " taken, searching...");
+      System.out.println("Port range " + base + "-" + (base + width - 1) + " taken, searching...");
       base += width;
       if (tries++ > 10) {
         logger.error("can't find open port.");

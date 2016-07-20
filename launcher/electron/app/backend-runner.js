@@ -53,10 +53,10 @@ module.exports = (function() {
 
       rl.on('line', function(line) {
         console.log(line); // Pipe backend's stdout to electron's stdout
-        if (line.startsWith('Beaker hash')) {
-          _hash = line.split(' ')[2];
-        } else if (line.startsWith('Beaker listening on')) {
-          _url = line.split(' ')[3];
+        if (line.startsWith('[main] INFO com.twosigma.beaker.core.Main - Beaker hash')) {
+          _hash = line.split(' ')[6];
+        } else if (line.startsWith('[main] INFO com.twosigma.beaker.core.Main - Beaker listening on')) {
+          _url = line.split(' ')[7];
           _local = true;
           _running = true;
           eventEmitter.emit('ready', {

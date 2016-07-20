@@ -103,7 +103,7 @@ public class ConnectorServlet extends HttpServlet {
 
   private class FileListing extends Thread {
 
-    private static final int LEVEL = 2;
+    private static final int LEVEL = 1;
     private final String dir;
 
     FileListing(final String dir) {

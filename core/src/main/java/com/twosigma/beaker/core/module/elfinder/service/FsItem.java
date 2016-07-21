@@ -19,6 +19,7 @@ public interface FsItem {
   String getName();
   FsVolume getVolume();
   boolean isFolder();
+  Boolean isChildFolderFound();
   boolean isHidden();
   String getMimeType();
 }

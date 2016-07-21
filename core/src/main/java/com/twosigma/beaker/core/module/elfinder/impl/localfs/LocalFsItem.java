@@ -23,6 +23,7 @@ import java.io.File;
 public class LocalFsItem implements FsItem {
   private File     file;
   private FsVolume volume;
+  private Boolean hasChildFolders;
 
   public LocalFsItem(LocalFsVolume volume, File file) {
     super();
@@ -45,7 +46,12 @@ public class LocalFsItem implements FsItem {
 
   @Override
   public boolean isFolder() {
-    return false;
+    return file.isDirectory();
+  }
+
+  @Override
+  public Boolean isChildFolderFound() {
+    return this.hasChildFolders;
   }
 
   @Override
@@ -64,5 +70,9 @@ public class LocalFsItem implements FsItem {
 
   public void setVolume(FsVolume volume) {
     this.volume = volume;
+  }
+
+  public void setHasChildFolders(boolean hasChildFolders) {
+    this.hasChildFolders = hasChildFolders;
   }
 }

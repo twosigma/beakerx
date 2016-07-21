@@ -16,23 +16,13 @@
 
 var BeakerPageObject = require('./beaker.po.js');
 var path = require('path');
+var beakerPO;
 
 describe('notebook', function() {
-  function activateLanguage(language) {
-    beakerPO.activateLanguageInManager(language);
-    beakerPO.waitForPlugin(language);
-    beakerPO.languageManagerCloseButton.click();
-  };
-
-  function insertCellOfType(language) {
-    browser.wait(beakerPO.EC.presenceOf(beakerPO.cellEvaluatorMenu), 10000);
-    beakerPO.cellEvaluatorMenu.click();
-    beakerPO.cellEvaluatorMenuItem(language).click();
-  }
 
   function evalInLanguage(language, code, expected, done) {
-    activateLanguage(language);
-    insertCellOfType(language);
+    beakerPO.activateLanguage(language);
+    beakerPO.insertCellOfType(language);
     beakerPO.setCellInput(code);
     beakerPO.evaluateCell();
     beakerPO.waitForCellOutput();
@@ -54,8 +44,8 @@ describe('notebook', function() {
       beakerPO.insertCellButton.click();
       beakerPO.notebookMenu.click();
       beakerPO.languageManagerMenuItem.click();
-      activateLanguage('Groovy');
-      insertCellOfType('Groovy');
+      beakerPO.activateLanguage('Groovy');
+      beakerPO.insertCellOfType('Groovy');
       beakerPO.setCellInput('new Plot()')
       beakerPO.evaluateCell();
     });

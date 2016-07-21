@@ -200,6 +200,18 @@ var BeakerPageObject = function() {
     }.bind(this));
   };
 
+  this.activateLanguage = function(language) {
+    this.activateLanguageInManager(language);
+    this.waitForPlugin(language);
+    this.languageManagerCloseButton.click();
+  };
+
+  this.insertCellOfType = function(language) {
+    browser.wait(this.EC.presenceOf(this.cellEvaluatorMenu), 10000);
+    this.cellEvaluatorMenu.click();
+    this.cellEvaluatorMenuItem(language).click();
+  }
+
   this.languageManager = element(by.className('plugin-manager'));
   this.languageManagerButtonKnown = function(language) {
     return element(by.css('.plugin-manager .' + language + ' .plugin-known'));

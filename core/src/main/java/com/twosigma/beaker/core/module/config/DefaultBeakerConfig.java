@@ -18,24 +18,23 @@ package com.twosigma.beaker.core.module.config;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.Exception;
 import java.math.BigInteger;
-import java.net.UnknownHostException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.file.attribute.PosixFilePermission;
 import java.security.SecureRandom;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
+import java.util.Map;
 
 /**
  * DefaultBeakerConfig
@@ -44,19 +43,14 @@ import org.json.simple.JSONValue;
  * values and the input of BeakerConfigPref
  */
 @Singleton
-public class DefaultBeakerConfig implements BeakerConfig {
+class DefaultBeakerConfig implements BeakerConfig {
 
   private final String installDir;
   private final String [] searchDirs;
   private final String pluginDir;
   private final String dotDir;
-  private final String nginxDir;
-  private final String nginxBinDir;
-  private final String nginxStaticDir;
-  private final String nginxServDir;
-  private final String nginxExtraRules;
+  private final String currentServDirectory;
   private final String userFolder;
-  private final Map<String, String> nginxPluginRules;
   private final Boolean useKerberos;
   private final Boolean publicServer;
   private final String authCookie;
@@ -77,6 +71,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String hash;
   private final String gist_server;
   private final String sharing_server;
+  private final String authToken;
   private JSONObject prefs;
   private final String useHttpsCert;
   private final String useHttpsKey;
@@ -84,6 +79,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String listenInterface;
   private SecureRandom random;
   private Boolean showZombieLogging;
+  private String defaultSslCertPassword;
 
   private String hash(String password) {
     return DigestUtils.sha512Hex(password + getPasswordSalt());
@@ -95,7 +91,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
   @Inject
   public DefaultBeakerConfig(BeakerConfigPref pref, GeneralUtils utils)
-    throws UnknownHostException, IOException, InterruptedException
+    throws IOException, InterruptedException
   {
 
     this.installDir = System.getProperty("user.dir");
@@ -114,22 +110,12 @@ public class DefaultBeakerConfig implements BeakerConfig {
     }
     this.pluginDir = this.installDir + "/config/plugins/eval";
     utils.ensureDirectoryExists(this.dotDir);
-    this.nginxDir = this.installDir + "/nginx";
-    if (System.getProperty("beaker.nginx.bin.dir") != null) {
-      this.nginxBinDir = System.getProperty("beaker.nginx.bin.dir");
-    } else {
-      this.nginxBinDir = ""; // assuming nginx is available in PATH
-    }
-    this.nginxServDir = utils.createTempDirectory(this.dotDir, "nginx");
-    this.nginxStaticDir = this.installDir + "/src/main/web";
-    this.nginxExtraRules = "";
-    this.nginxPluginRules = new HashMap<>();
+    this.currentServDirectory = utils.createTempDirectory(this.dotDir, "serv");
 
     String configDir = this.dotDir + "/config";
     utils.ensureDirectoryExists(configDir);
 
-    final String defaultConfigFile = this.installDir + "/config/beaker.conf.json";
-    this.configFileUrl = defaultConfigFile;
+    this.configFileUrl = this.installDir + "/config/beaker.conf.json";
 
     final String defaultPreferenceFile = this.installDir + "/config/beaker.pref.json";
     final String preferenceFile = configDir + "/beaker.pref.json";
@@ -190,23 +176,19 @@ public class DefaultBeakerConfig implements BeakerConfig {
     String password = StringUtils.isEmpty(userPassword) ? randomString(100) : userPassword;
     this.passwordHash = hash(password);
     this.password = password;
+    this.authToken = pref.getAuthToken();
+    this.defaultSslCertPassword = randomString(255);
 
     if (this.publicServer && (this.useHttpsCert == null || this.useHttpsKey == null))  {
-      String cert = this.nginxServDir + "/ssl_cert.pem";
-      String tmp = this.nginxServDir + "/cert.tmp";
-      PrintWriter pw = new PrintWriter(tmp);
-      for (int i = 0; i < 10; i++)
-        pw.printf("\n");
-      pw.close();
+      String cert = getDefaultSslCertPath();
       // XXX I am baffled as to why using sh and this pipe is
       // necessary, but if you just exec openssl and write into its
       // stdin then it hangs.
+      String certPassword = StringUtils.isBlank(this.useHttpsKey) ? this.defaultSslCertPassword : this.useHttpsKey;
       String[] cmd = {"sh", "-c",
-                      "cat " + tmp +
-                      " | openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout "
-                      + cert + " -out " + cert};
-      Process proc = Runtime.getRuntime().exec(cmd);
-      proc.waitFor();
+          "keytool -keystore " + cert + " -alias beaker -genkey -keyalg RSA -noprompt -dname CN=Beaker" +
+              " -storepass " + certPassword + " -keypass " + certPassword + ""};
+      Runtime.getRuntime().exec(cmd).waitFor();
     }
 
     this.version = utils.readFile(this.installDir + "/config/version");
@@ -235,38 +217,13 @@ public class DefaultBeakerConfig implements BeakerConfig {
   }
 
   @Override
-  public String getNginxDirectory() {
-    return this.nginxDir;
-  }
-
-  @Override
-  public String getNginxBinDirectory() {
-    return this.nginxBinDir;
-  }
-
-  @Override
-  public String getNginxStaticDirectory() {
-    return this.nginxStaticDir;
-  }
-
-  @Override
-  public String getNginxServDirectory() {
-    return this.nginxServDir;
-  }
-
-  @Override
-  public String getNginxExtraRules() {
-    return this.nginxExtraRules;
+  public String getCurrentServDirectory() {
+    return this.currentServDirectory;
   }
 
   @Override
   public String getUserFolder() {
     return this.userFolder;
-  }
-
-  @Override
-  public Map<String, String> getNginxPluginRules() {
-    return this.nginxPluginRules;
   }
 
   @Override
@@ -439,6 +396,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
   }
 
   @Override
+  public String getAuthToken() {
+    return authToken;
+  }
+
+  @Override
   public String getPluginPath(String plugin) {
     String result = null;
     try {
@@ -451,17 +413,26 @@ public class DefaultBeakerConfig implements BeakerConfig {
     return result;
   }
 
+  @Override
+  public Boolean getShowZombieLogging() {
+    return this.showZombieLogging;
+  }
+
+  @Override
+  public String getDefaultSslCertPath() {
+    return this.currentServDirectory + "/ssl_cert.jks";
+  }
+
+  public String getDefaultSslCertPassword() {
+    return this.defaultSslCertPassword;
+  }
+
   public Object getPluginPrefs() {
     return this.prefs.get("languages");
   }
 
   public void setPluginPrefs(JSONObject newPrefs) {
     this.prefs = newPrefs;
-  }
-
-  @Override
-  public Boolean getShowZombieLogging() {
-    return this.showZombieLogging;
   }
 
   private void addOption(String plugin, String option) {

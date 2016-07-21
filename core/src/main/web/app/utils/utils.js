@@ -100,28 +100,14 @@
       var isUnix = false;
       var osName = 'unknown';
 
-      if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
-        angularUtils.httpGet(serverUrl("beaker/rest/util/version"))
-          .success(function (result) {
-            isWindows = _isWindows(result);
-            isMacOS = _isMacOS(result);
-            isLinux = _isLinux(result);
-            isUnix = _isUnix(result);
-            osName = _osName(result);
-          });
-      } else if (window.beakerRegister === undefined || window.beakerRegister.prefsPreset === undefined) {
-        isWindows = false;
-        isMacOS = false;
-        isLinux = true;
-        isUnix = false;
-        osName = "Linux";
-      } else {
-        isWindows = window.beakerRegister.prefsPreset.isWindows;
-        isMacOS = window.beakerRegister.prefsPreset.isMacOS;
-        isLinux = window.beakerRegister.prefsPreset.isLinux;
-        isUnix = window.beakerRegister.prefsPreset.isUnix;
-        osName = window.beakerRegister.prefsPreset.osName;
-      }
+      angularUtils.httpGet(serverUrl("beaker/rest/util/version"))
+        .success(function (result) {
+          isWindows = _isWindows(result);
+          isMacOS = _isMacOS(result);
+          isLinux = _isLinux(result);
+          isUnix = _isUnix(result);
+          osName = _osName(result);
+        });
       return {
         isWindows: function(){
           return isWindows;
@@ -156,13 +142,13 @@
       mime: function (extension) {
 
         if (extension === 'bkr') {
-          return ['directory', 'Beaker-Notebook'];
+          return ['directory', 'application/beaker-notebook'];
         } else if (extension === 'py') {
           return ['directory', 'text/x-python'];
         } else if (extension === 'csv') {
           return ['directory', 'text/x-comma-separated-values'];
         }else if (extension === 'ipynb') {
-          return ['directory', 'IPython-Notebook'];
+          return ['directory', 'application/x-ipynb+json'];
         }
 
         return [];

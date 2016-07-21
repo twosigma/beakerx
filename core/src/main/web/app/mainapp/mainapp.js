@@ -40,8 +40,7 @@
                                              'bk.notebook',
                                              'bk.electron',
                                              'bk.connectionManager',
-                                             'bk.fileManipulation',
-                                             'bk.sparkContextManager'
+                                             'bk.fileManipulation'
                                              ]);
 
   /**
@@ -66,8 +65,7 @@
       bkEvaluateJobManager,
       bkElectron,
       $location,
-      bkFileManipulation,
-      bkSparkContextManager) {
+      bkFileManipulation) {
 
     return {
       restrict: 'E',
@@ -737,15 +735,7 @@
             isRunning: function (cellId) {
               return bkEvaluateJobManager.isRunning(cellId);
             },
-
-            cancel: function() {
-              return bkEvaluateJobManager.cancel();
-            },
-
             evaluate: function(toEval) {
-              if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.evaluate !== undefined) {
-                window.beakerRegister.hooks.evaluate('', toEval);
-              }
               var cellOp = bkSessionManager.getNotebookCellOp();
               // toEval can be a tagName (string), either "initialization", name of an evaluator or user defined tag
               // or a cellID (string)
@@ -789,9 +779,6 @@
               }
             },
             evaluateRoot: function(toEval) {
-              if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.evaluate !== undefined) {
-                window.beakerRegister.hooks.evaluate('root', toEval);
-              }
               var cellOp = bkSessionManager.getNotebookCellOp();
               // toEval can be a tagName (string), either "initialization", name of an evaluator or user defined tag
               // or a cellID (string)
@@ -854,9 +841,6 @@
               }
             },
             evaluateCellCode: function(cell, code) {
-              if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.evaluate !== undefined) {
-                window.beakerRegister.hooks.evaluate('cell', cell, code);
-              }
               // cell: cellModel
               // code: code to evaluate
               if (cell == null || typeof cell !== 'object' || _.isArray(cell)) {
@@ -866,9 +850,6 @@
               return bkEvaluateJobManager.evaluateCellCode(cell, code);
             },
             evaluateCode: function(evaluator, code) {
-              if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.evaluate !== undefined) {
-                window.beakerRegister.hooks.evaluate('code', evaluator, code);
-              }
               var outcontainer = { };
               var deferred = bkHelper.newDeferred();
               evalCodeId++;
@@ -1513,15 +1494,6 @@
             startAutoBackup();
           }
         });
-
-        $scope.usesSpark = function() {
-          var notebookModel = bkHelper.getNotebookModel();
-          if (!notebookModel || !notebookModel.evaluators)
-            return false;
-          return _.filter(notebookModel.evaluators, function(evaluator) {
-            return "useSpark" in evaluator && evaluator["useSpark"];
-          }).length > 0;
-        };
 
         setDocumentTitle();
 

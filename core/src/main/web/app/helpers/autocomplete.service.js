@@ -21,13 +21,12 @@
   var completionActive = false;
   var currentDocumentation = {};
   var autocompleteParameters = true;
-  if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
-    bkUtils.getBeakerPreference('autocomplete-parameters').then(function(autocompleteParametersPref) {
-      if (autocompleteParametersPref === "false") {
-        autocompleteParameters = false;
-      }
-    });
-  }
+
+  bkUtils.getBeakerPreference('autocomplete-parameters').then(function(autocompleteParametersPref) {
+    if (autocompleteParametersPref === "false") {
+      autocompleteParameters = false;
+    }
+  });
   var showAutocomplete = function(cm, scope) {
     if (autocompleteParametersService.isActive()) {
       autocompleteParametersService.nextParameter();

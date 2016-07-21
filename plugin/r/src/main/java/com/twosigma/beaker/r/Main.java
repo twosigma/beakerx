@@ -30,6 +30,7 @@ import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
 
+import org.cometd.server.BayeuxServerImpl;
 import org.eclipse.jetty.server.Server;
 
 /**
@@ -96,6 +97,7 @@ public class Main {
     rrest.setCorePort(corePort);
 
     Server server = injector.getInstance(Server.class);
+    injector.getInstance(BayeuxServerImpl.class);
     server.start();
   }
 }

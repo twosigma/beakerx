@@ -67,14 +67,9 @@
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
           $scope.model.resetShareMenuItems(newItems);
         });
-        
-        function modelHasPlotSpecificMethods(model) {
-          return model.getSvgToSave && model.saveAsSvg && model.saveAsPng && model.updateLegendPosition;
-        }
-
         $scope.fillCellModelWithPlotMethods = function () {
           var model = $scope.model.getCellModel();
-          if(modelHasPlotSpecificMethods(model)) {
+          if(model.hasPlotSpecificMethods) {
             return;
           }
           model.getSvgToSave = function () {
@@ -89,6 +84,7 @@
           model.updateLegendPosition = function () {
             return $scope.updateLegendPosition();
           };
+          model.hasPlotSpecificMethods = true;
         };
         $scope.$watch("model.getCellModel()", function () {
           $scope.fillCellModelWithPlotMethods();

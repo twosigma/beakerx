@@ -22,6 +22,7 @@ define(function(require, exports, module) {
   var PLUGIN_NAME = 'C++';
   var COMMAND = 'cpp/cppPlugin';
   var serviceBase = null;
+  var servicePort = null;
   var cometdUtil = bkHelper.getUpdateService();
   var CppCancelFunction = null;
 
@@ -182,7 +183,8 @@ define(function(require, exports, module) {
       waitfor: 'Started SelectChannelConnector',
       recordOutput: 'true'
     }).success(function(ret) {
-      serviceBase = ret;
+      serviceBase = ret.baseUrl;
+      servicePort = ret.port;
       bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + '/rest/cpp/ready')).then(function() {
         if (window.languageServiceBase == undefined) {
           window.languageServiceBase = {};

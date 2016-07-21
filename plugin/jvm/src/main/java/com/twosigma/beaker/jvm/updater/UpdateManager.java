@@ -32,6 +32,7 @@ import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.BayeuxServer.SubscriptionListener;
 import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerChannel;
+import org.cometd.bayeux.server.ServerMessage;
 import org.cometd.bayeux.server.ServerSession;
 
 @Singleton
@@ -105,7 +106,7 @@ public class UpdateManager implements SubscriptionListener {
   }
 
   @Override
-  public void subscribed(ServerSession session, ServerChannel channel) {
+  public void subscribed(ServerSession session, ServerChannel channel, ServerMessage message) {
     String id = getId(channel);
     if (id == null) {
       return;
@@ -140,7 +141,7 @@ public class UpdateManager implements SubscriptionListener {
   }
 
   @Override
-  public void unsubscribed(ServerSession session, ServerChannel channel) {
+  public void unsubscribed(ServerSession session, ServerChannel channel, ServerMessage message) {
     String id = getId(channel);
     if (id == null) {
       return;

@@ -24,7 +24,6 @@ import com.twosigma.beaker.core.module.WebServerModule;
 import com.twosigma.beaker.core.module.config.DefaultBeakerConfigModule;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.core.module.config.BeakerConfigPref;
-import com.twosigma.beaker.core.rest.PluginServiceLocatorRest;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import com.twosigma.beaker.shared.module.util.GeneralUtilsModule;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
@@ -101,7 +100,7 @@ public class Main {
     opts.addOption(null, "listen-interface", true, "Interface to listen on - requires ip address or '*'");
     opts.addOption(null, "portable", false, "Configuration and runtime files located in application instead of user home directory.");
     opts.addOption(null, "show-zombie-logging", false, "Show distracting logging by clients of previous server instances.");
-    
+
     CommandLine line = parser.parse(opts, args);
     if (line.hasOption("help")) {
       new HelpFormatter().printHelp("beaker.command", opts);
@@ -156,7 +155,7 @@ public class Main {
     int at = name.indexOf("@");
     if (at > 0) {
       String pid = name.substring(0, at);
-      String dir = bkConfig.getNginxServDirectory();
+      String dir = bkConfig.getCurrentServDirectory();
       PrintWriter out = new PrintWriter(dir + "/pid");
       out.println(pid);
       out.close();
@@ -214,11 +213,7 @@ public class Main {
         new WebServerModule(),
         new SerializerModule(),
         new GuiceCometdModule(),
-        new URLConfigModule(beakerCorePref));
-
-    PluginServiceLocatorRest processStarter = injector.getInstance(PluginServiceLocatorRest.class);
-    processStarter.setAuthToken(beakerCorePref.getAuthToken());
-    processStarter.start();
+        new URLConfigModule());
 
     BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
 
@@ -259,7 +254,7 @@ public class Main {
     return new BeakerConfigPref() {
 
       private String authToken;
-            
+
       public String getAuthToken() {
         if (null != this.authToken) {
           return this.authToken;
@@ -359,20 +354,18 @@ public class Main {
   }
 
   private static boolean portAvailable(int port) {
-
     ServerSocket ss = null;
     try {
       InetAddress address = InetAddress.getByName("127.0.0.1");
       ss = new ServerSocket(port, 1, address);
       ss.setReuseAddress(true);
       return true;
-    } catch (IOException e) {
+    } catch (IOException ignore) {
     } finally {
       if (ss != null) {
         try {
           ss.close();
-        } catch (IOException e) {
-          /* should not be thrown */
+        } catch (IOException ignore) {
         }
       }
     }

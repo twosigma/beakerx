@@ -128,7 +128,8 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10,
-                    "tips": {}
+                    "tips": {},
+                    "hasPlotSpecificMethods": true
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 743,
@@ -285,7 +286,8 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10,
-                    "tips": {}
+                    "tips": {},
+                    "hasPlotSpecificMethods": true
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 745,
@@ -546,7 +548,8 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10,
-                    "tips": {}
+                    "tips": {},
+                    "hasPlotSpecificMethods": true
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 744,
@@ -744,7 +747,8 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10,
-                    "tips": {}
+                    "tips": {},
+                    "hasPlotSpecificMethods": true
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 700,
@@ -925,7 +929,8 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10,
-                    "tips": {}
+                    "tips": {},
+                    "hasPlotSpecificMethods": true
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 749,
@@ -1095,7 +1100,8 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10,
-                    "tips": {}
+                    "tips": {},
+                    "hasPlotSpecificMethods": true
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 768,
@@ -1339,7 +1345,8 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10,
-                    "tips": {}
+                    "tips": {},
+                    "hasPlotSpecificMethods": true
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 774,
@@ -1617,7 +1624,8 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10,
-                    "tips": {}
+                    "tips": {},
+                    "hasPlotSpecificMethods": true
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 793,
@@ -1797,7 +1805,8 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10,
-                    "tips": {}
+                    "tips": {},
+                    "hasPlotSpecificMethods": true
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 729,
@@ -1969,7 +1978,8 @@
                     "x_upper_bound": 0,
                     "log_x": false,
                     "x_log_base": 10,
-                    "tips": {}
+                    "tips": {},
+                    "hasPlotSpecificMethods": true
                 },
                 "selectedType": "Plot",
                 "elapsedTime": 783,

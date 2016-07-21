@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.core.module;
 
+import com.google.inject.Provider;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.twosigma.beaker.core.module.config.BeakerConfigPref;
@@ -32,8 +33,6 @@ import com.twosigma.beaker.core.rest.PublishRest;
 import com.twosigma.beaker.core.rest.RecentMenuRest;
 import com.twosigma.beaker.core.rest.SessionBackupRest;
 import com.twosigma.beaker.core.rest.UtilRest;
-import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;
-import org.cometd.server.JacksonJSONContextServer;
 
 import java.util.HashMap;
 
@@ -41,12 +40,6 @@ import java.util.HashMap;
  * The module for configuring servlets, REST binding.
  */
 public class URLConfigModule extends ServletModule {
-
-  private String authToken;
-
-  public URLConfigModule(BeakerConfigPref pref) {
-    authToken = pref.getAuthToken();
-  }
 
   @SuppressWarnings("serial")
   @Override
@@ -58,12 +51,12 @@ public class URLConfigModule extends ServletModule {
       }
     });
 
-    bind(GuiceCometdServlet.class);
-    serve("/cometd-" + this.authToken + "/*").with(GuiceCometdServlet.class, new HashMap<String, String>() {
-      {
-        put("jsonContext", JacksonJSONContextServer.class.getCanonicalName());
-      }
-    });
+//    bind(GuiceCometdServlet.class);
+//    serve("/cometd-" + this.authToken + "/*").with(GuiceCometdServlet.class, new HashMap<String, String>() {
+//      {
+//        put("jsonContext", JacksonJSONContextServer.class.getCanonicalName());
+//      }
+//    });
 
     try {
       Thread.sleep(10000);

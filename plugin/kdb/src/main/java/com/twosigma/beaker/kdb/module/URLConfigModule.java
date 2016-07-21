@@ -19,8 +19,6 @@ import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.twosigma.beaker.jvm.rest.ReadyRest;
 import com.twosigma.beaker.kdb.rest.KdbRest;
-import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;
-import org.cometd.server.JacksonJSONContextServer;
 
 import java.util.HashMap;
 
@@ -33,11 +31,6 @@ public class URLConfigModule extends ServletModule {
   protected void configureServlets() {
     bind(GuiceContainer.class);
     serve("/rest/*").with(GuiceContainer.class, new HashMap<String, String>());
-
-    bind(GuiceCometdServlet.class);
-    serve("/cometd/*").with(GuiceCometdServlet.class, new HashMap<String, String>() {{
-        put("jsonContext", JacksonJSONContextServer.class.getCanonicalName());
-    }});
 
     // REST binding
     bind(KdbRest.class);

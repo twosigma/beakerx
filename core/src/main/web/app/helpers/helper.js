@@ -247,6 +247,13 @@
       getBaseUrl: function () {
         return bkUtils.getBaseUrl();
       },
+      getPort: function() {
+        var port = location.port || (location.protocol === 'https:' ? '443' : '80');
+        return parseInt(port);
+      },
+      getCoreJettyPort: function () {
+        return this.getPort() + 1;
+      },
       openNotebookInNewWindow: function (notebookUri, uriType, readOnly, format) {
         var params = {
           'uri': notebookUri
@@ -944,9 +951,6 @@
       },
       showLanguageManager: function () {
         return bkCoreManager.showLanguageManager();
-      },
-      showSparkConfiguration: function () {
-        return bkCoreManager.showSparkConfiguration();
       },
       appendCodeCell: function () {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();

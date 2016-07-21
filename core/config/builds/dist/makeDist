@@ -26,7 +26,7 @@ if os.path.exists(zip_name + '.zip'):
     os.remove(zip_name + '.zip')
 os.mkdir(zip_name)
 if sys.platform == 'darwin' or sys.platform == 'linux2':
-    contents = ['config', 'src/main/web', 'build/install/core', 'nginx', 'LICENSE', 'beaker.command']
+    contents = ['config', 'src/main/web', 'build/install/core', 'LICENSE', 'beaker.command']
     for f in contents:
         path = f.split('/')
         if len(path) > 1:

@@ -18,12 +18,11 @@
  */
 (function() {
   'use strict';
-  beakerRegister.bkoDirective("Progress", ["$interval", "$compile", "$rootScope", "bkEvaluateJobManager", "bkUtils", "bkNotificationService", "bkOutputDisplayFactory", function(
-      $interval, $compile, $rootScope, bkEvaluateJobManager, bkUtils, bkNotificationService, bkOutputDisplayFactory) {
+  beakerRegister.bkoDirective("Progress", ["$interval", "$compile", "$rootScope", "bkEvaluateJobManager", "bkUtils", "bkOutputDisplayFactory", function(
+      $interval, $compile, $rootScope, bkEvaluateJobManager, bkUtils, bkOutputDisplayFactory) {
     return {
       template: JST['mainapp/components/notebook/output-progress'],
-      require: '^bkOutputDisplay',
-      link: function(scope, element, attrs, outputDisplayCtrl) {
+      link: function(scope, element, attrs) {
         scope.elapsed = 0;
         var computeElapsed = function() {
           var now = new Date().getTime();
@@ -81,16 +80,6 @@
         };
         scope.isCancellable = function() {
           return bkEvaluateJobManager.isCancellable();
-        };
-        outputDisplayCtrl.initAvailableNotificationMethods();
-        scope.getAvailableNotificationMethods = function () {
-          return outputDisplayCtrl.getAvailableNotificationMethods();
-        };
-        scope.toggleNotifyWhenDone = function (notificationMethod) {
-          outputDisplayCtrl.toggleNotifyWhenDone(notificationMethod);
-        };
-        scope.isNotifyWhenDone = function (notificationMethod) {
-          return outputDisplayCtrl.isNotifyWhenDone(notificationMethod);
         };
         scope.$on("$destroy", function() {
           $interval.cancel(intervalPromise);

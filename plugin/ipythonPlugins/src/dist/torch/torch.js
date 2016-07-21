@@ -27,6 +27,7 @@ define(function(require, exports, module) {
   var _theCancelFunction = null;
   var gotError = false;
   var serviceBase = null;
+  var servicePort = null;
   var ipyVersion = false;
   var myTorch = null;
   var now = function() {
@@ -476,9 +477,10 @@ define(function(require, exports, module) {
       myTorch = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : ((ipyVersion == '3') ? IPython3 : IPython));
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
-        nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2"
+        proxyRules: (ipyVersion == '1') ? "ipython1" : "ipython2"
       }).success(function(ret) {
-        serviceBase = ret;
+        serviceBase = ret.baseUrl;
+        servicePort = ret.port;
         var TorchShell = function(settings, doneCB, ecb) {
           var self = this;
           var setShellIdCB = function(shellID) {

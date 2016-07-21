@@ -27,6 +27,7 @@ import org.json.simple.JSONObject;
  * stores run-time configuration used by Beaker
  */
 public interface BeakerConfig {
+
   /**
    * The Beaker core directory
    * @return
@@ -47,41 +48,19 @@ public interface BeakerConfig {
    * @return
    */
   public String getDotDirectory();
+
   /**
-   * where to locate beaker specific nginx configs and scripts
+   * the root of server
    * @return
    */
-  public String getNginxDirectory();
-  /**
-   * where to locate nginx executable
-   * @return
-   */
-  public String getNginxBinDirectory();
-  /**
-   * where the static files are for the nginx server
-   * @return
-   */
-  public String getNginxStaticDirectory();
-  /**
-   * the root of nginx server
-   * @return
-   */
-  public String getNginxServDirectory();
-  /**
-   * extra enginx rules to be appended to nginx.conf
-   * @return
-   */
-  public String getNginxExtraRules();
+  public String getCurrentServDirectory();
+
   /**
    * folder the user can use for storage
    * @return
    */
   public String getUserFolder();
-  /**
-   * optional/extra/override nginx plugin rules
-   * @return
-   */
-  public Map<String, String> getNginxPluginRules();
+
   /**
    * Public Server
    * @return
@@ -218,6 +197,12 @@ public interface BeakerConfig {
    */
   public String getSharingServerUrl();
 
+  /*
+  *  XSRF-TOKEN
+  *  @return XSRF-TOKEN, generated at start
+  * */
+  String getAuthToken();
+
   /**
    * Path to find a backend.
    * @return
@@ -229,4 +214,8 @@ public interface BeakerConfig {
   public void setPluginPrefs(JSONObject prefs);
 
   public Boolean getShowZombieLogging();
+
+  String getDefaultSslCertPath();
+
+  String getDefaultSslCertPassword();
 }

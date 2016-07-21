@@ -17,11 +17,9 @@ package com.twosigma.beaker.sqlsh.module;
 
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;
 import com.twosigma.beaker.sqlsh.rest.SQLShellRest;
 
 import java.util.HashMap;
-import org.cometd.server.JacksonJSONContextServer;
 
 /**
  * The module for configuring servlets, REST binding.
@@ -36,13 +34,6 @@ public class URLConfigModule extends ServletModule {
     serve("/rest/*").with(GuiceContainer.class, new HashMap<String, String>() {
       {
         // put config that is normally in web.xml here
-      }
-    });
-
-    bind(GuiceCometdServlet.class);
-    serve("/cometd/*").with(GuiceCometdServlet.class, new HashMap<String, String>() {
-      {
-        put("jsonContext", JacksonJSONContextServer.class.getCanonicalName());
       }
     });
 

@@ -32,10 +32,9 @@ RUN add-apt-repository -y ppa:webupd8team/java && \
     add-apt-repository -y ppa:staticfloat/julia-deps  && \
     add-apt-repository -y ppa:chris-lea/node.js && \
     add-apt-repository -y ppa:cwchien/gradle && \
-    add-apt-repository -y ppa:nginx/stable && \
     add-apt-repository -y ppa:brightbox/ruby-ng
 
-RUN apt-get update && apt-get install -y nginx gradle-2.4 python g++ make git
+RUN apt-get update && apt-get install -y gradle-2.4 python g++ make git
 
 ##########
 #  C++   #

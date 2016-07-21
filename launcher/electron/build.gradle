@@ -146,10 +146,6 @@ task makeDist (dependsOn:[':beaker:build', 'unzipPython']) << {
     into './dist/build/install/core'
   }
   copy {
-    from '../../core/nginx'
-    into './dist/nginx'
-  }
-  copy {
     from '../../core/LICENSE'
     into './dist/'
   }

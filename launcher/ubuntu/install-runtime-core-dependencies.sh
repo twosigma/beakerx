@@ -19,8 +19,3 @@ sudo add-apt-repository --yes ppa:webupd8team/java
 sudo apt-get update
 sudo apt-get install -y oracle-java8-installer # javac -v = 1.8.XXX
 
-# nginx
-sudo add-apt-repository --yes ppa:nginx/stable
-sudo apt-get update
-sudo apt-get install -y nginx
-

@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import java.util.Arrays;
 import java.util.ArrayList;
 
+import org.cometd.server.BayeuxServerImpl;
 import org.eclipse.jetty.server.Server;
 
 /**
@@ -80,6 +81,7 @@ public class Main {
           new GuiceCometdModule());
 
       Server server = injector.getInstance(Server.class);
+      injector.getInstance(BayeuxServerImpl.class);
       server.start();
       BeakerStdOutErrHandler.init();
     } else {

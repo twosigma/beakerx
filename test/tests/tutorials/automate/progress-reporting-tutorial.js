@@ -66,8 +66,6 @@ describe('Progress Reporting API', function (done) {
         checkProgressMessage(idCell, 'begin');
         checkProgressBar(idCell, '60 %');
         checkProgressMessage(idCell, 'middle');
-        checkProgressBar(idCell, '80 %');
-        checkProgressMessage(idCell, 'about to finish');
         browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('pre', 'finished'))), 10000);
     });
 

@@ -96,9 +96,44 @@ public class ConnectorServlet extends HttpServlet {
     }
 
     // warm up files cache by user.home
-    new File(userHomeDir).listFiles();
+    new FileListing(userHomeDir).start();
 
     return fsService;
+  }
+
+  private class FileListing extends Thread {
+
+    private static final int LEVEL = 1;
+    private final String dir;
+
+    FileListing(final String dir) {
+      super();
+      this.dir = dir;
+    }
+
+    @Override
+    public void run() {
+      final File root = new File(dir);
+      getMetaInfo(root);
+      listFiles(root.listFiles(), 0);
+    }
+
+    private void listFiles(final File[] files, int level) {
+      if (level > LEVEL) {
+        return;
+      }
+      for (final File file : files) {
+        if (file.isDirectory()) {
+          listFiles(file.listFiles(), ++level);
+        }
+        getMetaInfo(file);
+      }
+    }
+
+    private void getMetaInfo(final File file) {
+      file.lastModified();
+    }
+
   }
 
   private LocalFsVolume createLocalFsVolume(String name, File rootDir) {

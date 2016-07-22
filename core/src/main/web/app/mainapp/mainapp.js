@@ -67,7 +67,9 @@
       bkElectron,
       $location,
       bkFileManipulation,
-      bkSparkContextManager) {
+      bkSparkContextManager,
+      bkNotificationService
+      ) {
 
     return {
       restrict: 'E',
@@ -84,13 +86,50 @@
         
         $scope.totalCells = 0;
         $scope.completedCells = 0;
+        $scope.evaluationCompleteNotificationMethods = [];
+        $scope.runnAllRuning = false;
+        
+        $scope.initAvailableNotificationMethods = function () {
+          $scope.evaluationCompleteNotificationMethods = bkNotificationService.initAvailableNotificationMethods();
+        };
+        
+        $scope.initAvailableNotificationMethods();
+        
+        $scope.getAvailableNotificationMethods = function () {
+          return $scope.evaluationCompleteNotificationMethods;
+        }
+        
+        $scope.notifyThatRunAllFinished = function () {
+          _.filter($scope.evaluationCompleteNotificationMethods, 'selected').forEach(function (notificationMethod) {
+            notificationMethod.action.call(notificationMethod,'Evaluation completed', 'Run all finished');
+            $scope.initAvailableNotificationMethods(); //clear boolean flags
+          });
+        }
         
         $scope.isShowProgressBar  = function() {
-          return bkEvaluateJobManager.isAnyInProgress() && $scope.totalCells > 1;
+          $scope.runnAllRuning = bkEvaluateJobManager.isAnyInProgress() && $scope.totalCells > 1;
+          return $scope.runnAllRuning;
         }
+
+        $scope.$watch("runnAllRuning", function(newType, oldType) {
+          if(newType === false && oldType === true){ // there are some "false" , "false" events
+            $scope.notifyThatRunAllFinished();
+          }
+        });
         
         $scope.getProgressBar  = function() {
           return Math.round(100/$scope.totalCells * $scope.completedCells);
+        }
+
+        $scope.toggleNotifyWhenDone = function (notificationMethod) {
+          notificationMethod.selected = !notificationMethod.selected;
+          if(notificationMethod.selected && notificationMethod.checkPermissions) {
+            notificationMethod.checkPermissions();
+          }
+        }
+        
+        $scope.isNotifyWhenDone = function (notificationMethod) {
+          return notificationMethod.selected;
         }
         
         $scope.cancel  = function() {
@@ -830,6 +869,7 @@
               }
               
               $scope.completedCells = 0;
+              $scope.runnAllRuning = false;
               
               if (!_.isArray(toEval)) {
                 

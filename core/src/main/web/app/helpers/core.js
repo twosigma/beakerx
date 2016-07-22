@@ -1745,38 +1745,68 @@
       }
       _notificationSound.play();
     }
+    
+    function sendEmailNotification(title, body) {
+      var url = bkUtils.getEvaluationFinishedNotificationUrl();
+      if (!!url) {
+        bkUtils.httpGet(url, {
+          title: title,
+          body: body
+        });
+      }
+    }
+    
+    function showNotification(title, body, tag) {
+      checkPermissionsForNotification().then(function (granted) {
+        if (granted) {
+          var options = {
+            body: body,
+            icon: '/static/favicon.png'
+          };
+          if(tag) {
+            options.tag = tag;
+          }
+          var notification = new Notification(title, options);
+          notification.onclick = function () {
+            notification.close();
+            window.focus();
+          };
+          //we need to play sound this way because notification's 'options.sound' parameter is not supported yet
+          playNotificationSound();
+        }
+      });
+    }
+
+    function initAvailableNotificationMethods() {
+      
+      var evaluationCompleteNotificationMethods = [];
+      
+      evaluationCompleteNotificationMethods = [{
+        title: 'Notify when done',
+        checkPermissions: function () {
+          checkPermissionsForNotification();
+        },
+        action: showNotification
+      }];
+      if (bkUtils.getEvaluationFinishedNotificationUrl() != null) {
+        evaluationCompleteNotificationMethods.push({
+          title: 'Send email when done',
+          action: sendEmailNotification
+        });
+      }
+      
+      return evaluationCompleteNotificationMethods;
+    }
+    
+    function getAvailableNotificationMethods() {
+      return evaluationCompleteNotificationMethods;
+    }
 
     return {
       checkPermissions: checkPermissionsForNotification,
-      showNotification: function (title, body, tag) {
-        checkPermissionsForNotification().then(function (granted) {
-          if (granted) {
-            var options = {
-              body: body,
-              icon: '/static/favicon.png'
-            };
-            if(tag) {
-              options.tag = tag;
-            }
-            var notification = new Notification(title, options);
-            notification.onclick = function () {
-              notification.close();
-              window.focus();
-            };
-            //we need to play sound this way because notification's 'options.sound' parameter is not supported yet
-            playNotificationSound();
-          }
-        });
-      },
-      sendEmailNotification: function (title, body) {
-        var url = bkUtils.getEvaluationFinishedNotificationUrl();
-        if (!!url) {
-          bkUtils.httpGet(url, {
-            title: title,
-            body: body
-          });
-        }
-      }
+      initAvailableNotificationMethods: initAvailableNotificationMethods,
+      sendEmailNotification: sendEmailNotification,
+      showNotification: showNotification
     };
   });
 

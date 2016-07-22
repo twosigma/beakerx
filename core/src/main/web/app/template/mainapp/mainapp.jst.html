@@ -32,12 +32,23 @@
         </div>
       </div>
     </div>
+
     <div class="navbar-text text-white loadingmsg" ng-if="loading || !!loadingmsg">
-      <span class="loading-spin">
+      <a data-toggle="dropdown" class="loading-spin dtmenu" ng-if="isShowProgressBar()">
        <i class='fa fa-refresh fa-spin text-white'></i>
-      </span>
+      </a>
+      <ul class="dropdown-menu" ng-if="isShowProgressBar()">
+        <li ng-repeat="notificationMethod in getAvailableNotificationMethods()" >
+          <a ng-click="toggleNotifyWhenDone(notificationMethod)">{{notificationMethod.title}}</a>
+          <i class="glyphicon glyphicon-ok bkr ng-hide" ng-show="isNotifyWhenDone(notificationMethod)" style="color: #333333"></i>
+        </li>
+      </ul>
+      <a ng-if="!isShowProgressBar()">
+        <i class='fa fa-refresh fa-spin text-white'></i>
+      </a>
       {{loadingmsg}}
     </div>
+    
   </div>
   <div class="navbar navbar-default">
     <ul class="nav navbar-nav">

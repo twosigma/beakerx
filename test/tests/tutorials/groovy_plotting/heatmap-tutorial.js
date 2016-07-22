@@ -44,7 +44,6 @@ describe('HeatMap Tutorial', function () {
                 expect(parseInt(plotTop)).toBeLessThan(parseInt(legendTop));
             });
         });
-        beakerPO.checkSaveAsSvgPngByIdCell(idCell, "plot");
     });
 
     it('Title, Labels and Legend', function () {

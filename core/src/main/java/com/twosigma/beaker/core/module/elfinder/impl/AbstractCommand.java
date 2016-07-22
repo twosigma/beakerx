@@ -141,7 +141,7 @@ public abstract class AbstractCommand implements Command {
       info.put("phash", fsi.getParent().getHash());
     }
     if (fsi.isFolder()) {
-      info.put("dirs", fsi.hasChildFolder() ? 1 : 0);
+      info.put("dirs", 1);
     }
     String url = fsi.getURL();
     if (url != null) {

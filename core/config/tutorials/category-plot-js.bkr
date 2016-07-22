@@ -1,0 +1,3873 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "HTML",
+            "plugin": "HTML",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            },
+            "languageVersion": "ES2015"
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectionZnIzWy",
+            "type": "section",
+            "title": "JavaScript Category Plots",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "sectionjo702s",
+            "type": "section",
+            "title": "Input values",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeOIGMoM",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var bars = new beaker.CategoryBars({value: [[1, 2, 3], [1, 3, 5]]})",
+                    "new beaker.CategoryPlot().add(bars)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    1,
+                                    3,
+                                    5
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 36,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "sectionxobzlv",
+            "type": "section",
+            "title": "Setting Size",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "code14Fndm",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var cplot = new beaker.CategoryPlot({initWidth: 400, initHeight: 200})",
+                    "var bars = new beaker.CategoryBars({value:[[1, 2, 3], [1, 3, 5]]})",
+                    "cplot.add(bars)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 400,
+                        "height": 200
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 400,
+                    "init_height": 200,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    1,
+                                    3,
+                                    5
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 27,
+                "height": 242
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "sectionI6G5xs",
+            "type": "section",
+            "title": "Title and Axis Labels",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codey8TxUg",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var cplot = new beaker.CategoryPlot({title: \"Hello CategoryPlot!\",",
+                    "                             xLabel: \"Categories\",",
+                    "                             yLabel: \"Values\"})",
+                    "cplot.add(new beaker.CategoryBars({value:[[1, 2, 3], [1, 3, 5]]}))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": "Hello CategoryPlot!",
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "domain_axis_label": "Categories",
+                    "y_label": "Values",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    1,
+                                    3,
+                                    5
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 21,
+                "height": 548
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
+        },
+        {
+            "id": "sectionh4ap1Z",
+            "type": "section",
+            "title": "Category Names",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeu7sfvi",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var cplot = new beaker.CategoryPlot({categoryNames: [\"Helium\", \"Neon\", \"Argon\"]})",
+                    "cplot.add(new beaker.CategoryBars({value: [[1, 2, 3], [1, 3, 5]]}))"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    1,
+                                    3,
+                                    5
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [
+                        "Helium",
+                        "Neon",
+                        "Argon"
+                    ],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 107,
+                "height": 51
+            },
+            "evaluatorReader": false,
+            "lineCount": 2
+        },
+        {
+            "id": "sectionGCmIUE",
+            "type": "section",
+            "title": "Series Names",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "code0scVH2",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "new beaker.CategoryPlot().add(new beaker.CategoryBars({value: [[1, 2, 3], [1, 3, 5]],",
+                    "                                       seriesNames: [\"Gas\", \"Liquid\"]}))"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "seriesNames": [
+                                "Gas",
+                                "Liquid"
+                            ],
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    1,
+                                    3,
+                                    5
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 94,
+                "height": 51
+            },
+            "evaluatorReader": false,
+            "lineCount": 2
+        },
+        {
+            "id": "sectionipJTi1",
+            "type": "section",
+            "title": "Legend",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeuqPWlN",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var bars = new beaker.CategoryBars({value: [[1, 2], [3, 4], [5, 6], [7, 8]],",
+                    "                            seriesNames: [\"Gas\", null, \"\", \"Liquid\"]})",
+                    "new beaker.CategoryPlot({showLegend: true}).add(bars)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 4,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "show_legend": true,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "seriesNames": [
+                                "Gas",
+                                null,
+                                "",
+                                "Liquid"
+                            ],
+                            "value": [
+                                [
+                                    1,
+                                    2
+                                ],
+                                [
+                                    3,
+                                    4
+                                ],
+                                [
+                                    5,
+                                    6
+                                ],
+                                [
+                                    7,
+                                    8
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 35,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "section5Ihsxb",
+            "type": "section",
+            "title": "Orientation",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codevlFhyb",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var plot = new beaker.CategoryPlot({orientation: beaker.PlotOrientationType.HORIZONTAL})",
+                    "plot.add(new beaker.CategoryBars({value:[[1, 2, 3], [1, 3, 5]]}))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4731428571428571,
+                        "yr": 0.5401904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.06704761904761913
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4731428571428571,
+                        "yr": 0.5401904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.06704761904761913
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    1,
+                                    3,
+                                    5
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "HORIZONTAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 17,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "sectionjfpdPp",
+            "type": "section",
+            "title": "Category Label Orientation",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeiAN19G",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var plot = new beaker.CategoryPlot({categoryNames: [\"Acid\", \"Neutral\", \"Base\"], ",
+                    "                            categoryNamesLabelAngle: -1/4 * Math.PI})",
+                    "plot.add(new beaker.CategoryBars({value: [[1, 2, 3], [4, 5, 6]]}))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    6
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [
+                        "Acid",
+                        "Neutral",
+                        "Base"
+                    ],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": -0.7853981633974483,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 27,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "sectionPlMDV5",
+            "type": "section",
+            "title": "Category Margin",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "code55FcXQ",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "new beaker.CategoryPlot({categoryMargin: 2}).add(new beaker.CategoryBars({value: [[1, 2, 3], [4, 5, 6]]}))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    6
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 19,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "sectionAnCOdW",
+            "type": "section",
+            "title": "Single Series (Histogram)",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeC3l1sp",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var bars = new beaker.CategoryBars({value: [1,2,3,4,2]})",
+                    "new beaker.CategoryPlot().add(bars)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null
+                    ],
+                    "lodType": [
+                        null
+                    ],
+                    "lodAuto": [
+                        null
+                    ],
+                    "zoomHash": [
+                        null
+                    ],
+                    "showItem": [
+                        true
+                    ],
+                    "visibleItem": 1,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3,
+                                    4,
+                                    2
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 17,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "sectionA2ohrL",
+            "type": "section",
+            "title": "Graphics Properties",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "sectionzs3CeR",
+            "type": "section",
+            "title": "Single Color",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "code69KFVL",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var bars = new beaker.CategoryBars({value: [[1, 2], [3, 4], [5, 6]], color: beaker.Color.pink})",
+                    "new beaker.CategoryPlot().add(bars)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 3,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2
+                                ],
+                                [
+                                    3,
+                                    4
+                                ],
+                                [
+                                    5,
+                                    6
+                                ]
+                            ],
+                            "color": "#ffffafaf",
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 32,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "sectionkZXXWV",
+            "type": "section",
+            "title": "Color per Series",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codepCF8C7",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var colors = [beaker.Color.red, beaker.Color.gray, beaker.Color.blue]",
+                    "var bars = new beaker.CategoryBars({value: [[1, 2], [3, 4], [5, 6]], color: colors})",
+                    "new beaker.CategoryPlot().add(bars)"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2
+                                ],
+                                [
+                                    3,
+                                    4
+                                ],
+                                [
+                                    5,
+                                    6
+                                ]
+                            ],
+                            "colors": [
+                                "#ffff0000",
+                                "#ff808080",
+                                "#ff0000ff"
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 99,
+                "height": 51
+            },
+            "evaluatorReader": false,
+            "lineCount": 3
+        },
+        {
+            "id": "sectionfP9SLB",
+            "type": "section",
+            "title": "Color per Item",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeEifggz",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var colors = [[beaker.Color.red, beaker.Color.gray],",
+                    "              [beaker.Color.gray, beaker.Color.gray],",
+                    "              [beaker.Color.blue, beaker.Color.pink]]",
+                    "var bars = new beaker.CategoryBars({value: [[1, 2], [3, 4], [5, 6]], color: colors})",
+                    "new beaker.CategoryPlot().add(bars)"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2
+                                ],
+                                [
+                                    3,
+                                    4
+                                ],
+                                [
+                                    5,
+                                    6
+                                ]
+                            ],
+                            "colors": [
+                                [
+                                    "#ffff0000",
+                                    "#ff808080"
+                                ],
+                                [
+                                    "#ff808080",
+                                    "#ff808080"
+                                ],
+                                [
+                                    "#ff0000ff",
+                                    "#ffffafaf"
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 121,
+                "height": 51
+            },
+            "evaluatorReader": false,
+            "lineCount": 5
+        },
+        {
+            "id": "sectionMzMMXG",
+            "type": "section",
+            "title": "Heterogeneous Lists Work",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeug6Fon",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var colors = [beaker.Color.pink, [beaker.Color.red, beaker.Color.gray, beaker.Color.blue]]",
+                    "var bars = new beaker.CategoryBars({value: [[1, 2, 3], [4, 5, 6]], color: colors})",
+                    "new beaker.CategoryPlot().add(bars)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    6
+                                ]
+                            ],
+                            "colors": [
+                                "#ffffafaf",
+                                [
+                                    "#ffff0000",
+                                    "#ff808080",
+                                    "#ff0000ff"
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 17,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "sectionb8lY74",
+            "type": "section",
+            "title": "CategoryBars",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "sectionyt5A5n",
+            "type": "section",
+            "title": "Base",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeHoaUyq",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var bars = new beaker.CategoryBars({value: [[1, 2, 3], [4, 5, 6]], base: -2})",
+                    "new beaker.CategoryPlot().add(bars)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    6
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": -2,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 17,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "code3EhGkL",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var bars = new beaker.CategoryBars({value: [[1, 2,  3], [4, 5, 4]], base: [-1, -3]})",
+                    "new beaker.CategoryPlot().add(bars)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    4
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "bases": [
+                                -1,
+                                -3
+                            ],
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 17,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codeg1H6pg",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var bars = new beaker.CategoryBars({value: [[1, 2, 3], [4, 5, 6]],",
+                    "                            base: [[0, 1, 1], [-4, -5, -6]]})",
+                    "new beaker.CategoryPlot().add(bars)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    6
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "bases": [
+                                [
+                                    0,
+                                    1,
+                                    1
+                                ],
+                                [
+                                    -4,
+                                    -5,
+                                    -6
+                                ]
+                            ],
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 19,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "sectionngJTov",
+            "type": "section",
+            "title": "Widths",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeTgRbLD",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var bars = new beaker.CategoryBars({value: [[1, 2, 3], [4, 5, 6]],",
+                    "                            width: [[0.3, 0.6, 1.7], 1.0]})",
+                    "new beaker.CategoryPlot().add(bars)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    6
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "widths": [
+                                [
+                                    0.3,
+                                    0.6,
+                                    1.7
+                                ],
+                                1
+                            ],
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 19,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "sectionLZy44W",
+            "type": "section",
+            "title": "Outline, Fill, etc",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeQOduQS",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var bars = new beaker.CategoryBars({value: [[1, 2, 3], [4, 5, 6]],",
+                    "                            fill: [[true, true, false], [true, false, true]],",
+                    "                            drawOutline: [[true, false, true], [true, true, false]],",
+                    "                            outlineColor: [beaker.Color.black, beaker.Color.red]})",
+                    "new beaker.CategoryPlot().add(bars)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    6
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline_colors": [
+                                "#ff000000",
+                                "#ffff0000"
+                            ],
+                            "fills": [
+                                [
+                                    true,
+                                    true,
+                                    false
+                                ],
+                                [
+                                    true,
+                                    false,
+                                    true
+                                ]
+                            ],
+                            "outlines": [
+                                [
+                                    true,
+                                    false,
+                                    true
+                                ],
+                                [
+                                    true,
+                                    true,
+                                    false
+                                ]
+                            ]
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 19,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "sectionBQd0SG",
+            "type": "section",
+            "title": "CenterSeries",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeXywkNq",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var bars = new beaker.CategoryBars({value: [[1, 2, 3], [4, 5, 8], [10, 9, 10]],",
+                    "                           base: [0, [1, 2, 3], [4, 5, 8]],",
+                    "                           centerSeries: true,",
+                    "                           itemLabel: [[1, 3, 6], [2, 3, 4], [3, 5, 2]]})",
+                    "new beaker.CategoryPlot().add(bars)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904761,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.052380952380952306,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 3,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904761,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.052380952380952306,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": true,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    8
+                                ],
+                                [
+                                    10,
+                                    9,
+                                    10
+                                ]
+                            ],
+                            "itemLabels": [
+                                [
+                                    1,
+                                    3,
+                                    6
+                                ],
+                                [
+                                    2,
+                                    3,
+                                    4
+                                ],
+                                [
+                                    3,
+                                    5,
+                                    2
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "bases": [
+                                0,
+                                [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    8
+                                ]
+                            ],
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 19,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "sectionmCTnXW",
+            "type": "section",
+            "title": "CategoryStems",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeIv3zq2",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var ss = [beaker.StrokeType.DASH, beaker.StrokeType.LONGDASH]",
+                    "var cs = [beaker.Color.black, beaker.Color.red]",
+                    "new beaker.CategoryPlot().add(new beaker.CategoryStems({value: [[1, 2, 4], [4, 5, 8]], color: cs, style: ss}))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904761,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.052380952380952306,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904761,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.052380952380952306,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    4
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    8
+                                ]
+                            ],
+                            "colors": [
+                                "#ff000000",
+                                "#ffff0000"
+                            ],
+                            "type": "CategoryStems",
+                            "styles": [
+                                "DASH",
+                                "LONGDASH"
+                            ]
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 19,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "sectionC9E0DF",
+            "type": "section",
+            "title": "CategoryPoints",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeaN5IGi",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "new beaker.CategoryPlot().add(new beaker.CategoryPoints({value: [[1, 2, 4], [4, 5, 8]]}))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904761,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.052380952380952306,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904761,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.052380952380952306,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    4
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    8
+                                ]
+                            ],
+                            "type": "CategoryPoints",
+                            "size": 6,
+                            "shape": "DEFAULT"
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 15,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "sectionn5fUPj",
+            "type": "section",
+            "title": "CategoryLines",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codepvPbiX",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var ss = [beaker.StrokeType.DASH, beaker.StrokeType.DOT]",
+                    "new beaker.CategoryPlot().add(new beaker.CategoryLines({value: [[1, 2, 4], [4, 5, 8]], style: ss,",
+                    "                                        seriesNames:[\"Lanthanide\", \"Actinide\"]}))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904761,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.052380952380952306,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 2,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904761,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.052380952380952306,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "seriesNames": [
+                                "Lanthanide",
+                                "Actinide"
+                            ],
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    4
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    8
+                                ]
+                            ],
+                            "type": "CategoryLines",
+                            "styles": [
+                                "DASH",
+                                "DOT"
+                            ]
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 16,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "sectionfzfcdP",
+            "type": "section",
+            "title": "Combination Examples",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeKjIBhM",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var s1 = [1, 2, 4]",
+                    "var s2 = [4, 5, 8]",
+                    "var lines = new beaker.CategoryLines({value: [s1, s2], centerSeries: true})",
+                    "var points = new beaker.CategoryPoints({value: [s1, s2], centerSeries: true})",
+                    "var stems = new beaker.CategoryStems({value:[s1], base: [s2], style: beaker.StrokeType.DOT, color: beaker.Color.gray})",
+                    "new beaker.CategoryPlot().add(lines).add(points).add(stems)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 5,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": true,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    4
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    8
+                                ]
+                            ],
+                            "type": "CategoryLines",
+                            "style": "SOLID"
+                        },
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": true,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    4
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    8
+                                ]
+                            ],
+                            "type": "CategoryPoints",
+                            "size": 6,
+                            "shape": "DEFAULT"
+                        },
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1,
+                                    2,
+                                    4
+                                ]
+                            ],
+                            "color": "#ff808080",
+                            "type": "CategoryStems",
+                            "bases": [
+                                [
+                                    4,
+                                    5,
+                                    8
+                                ]
+                            ],
+                            "style": "DOT"
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 21,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 6
+        },
+        {
+            "id": "codelRz4G4",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var plot = new beaker.CategoryPlot({initWidth: 500, initHeight: 400,",
+                    "                            title: \"Bar Chart Demo\",",
+                    "                            xLabel: \"Alkali\", yLabel: \"Temperature ° Celcius\",",
+                    "                            categoryNames:[\"Lithium\", \"Sodium\", \"Potassium\", \"Rubidium\"]})",
+                    "var s1 = [[10, 15, 13, 7], [22, 18, 28, 17]]",
+                    "var high = [[12.4, 19.5, 15.1, 8.2], [24.3, 23.3, 30.1, 18.2]]",
+                    "var low = [[7.6, 10.5, 10.9, 5.8], [19.7, 12.7, 25.9, 15.8]]",
+                    "var color = [new beaker.Color(247, 150, 70), beaker.Color.orange, new beaker.Color(155, 187, 89)]",
+                    "plot.add(new beaker.CategoryBars({value: s1, color: color, seriesNames: [\"Solid\", \"Liquid\"]}))",
+                    "plot.add(new beaker.CategoryStems({value: high, base: low, color: color[2]}))",
+                    "plot.add(new beaker.CategoryPoints({value: high, outlineColor: color[2], size:12}))",
+                    "plot.add(new beaker.CategoryPoints({value: low, outlineColor: color[2], size:12}))"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "init_width": 500,
+                    "init_height": 400,
+                    "chart_title": "Bar Chart Demo",
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "domain_axis_label": "Alkali",
+                    "y_label": "Temperature ° Celcius",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "seriesNames": [
+                                "Solid",
+                                "Liquid"
+                            ],
+                            "value": [
+                                [
+                                    10,
+                                    15,
+                                    13,
+                                    7
+                                ],
+                                [
+                                    22,
+                                    18,
+                                    28,
+                                    17
+                                ]
+                            ],
+                            "colors": [
+                                "#fff79646",
+                                "#ffffc800",
+                                "#ff9bbb59"
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        },
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    12.4,
+                                    19.5,
+                                    15.1,
+                                    8.2
+                                ],
+                                [
+                                    24.3,
+                                    23.3,
+                                    30.1,
+                                    18.2
+                                ]
+                            ],
+                            "color": "#ff9bbb59",
+                            "type": "CategoryStems",
+                            "bases": [
+                                [
+                                    7.6,
+                                    10.5,
+                                    10.9,
+                                    5.8
+                                ],
+                                [
+                                    19.7,
+                                    12.7,
+                                    25.9,
+                                    15.8
+                                ]
+                            ],
+                            "style": "SOLID"
+                        },
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    12.4,
+                                    19.5,
+                                    15.1,
+                                    8.2
+                                ],
+                                [
+                                    24.3,
+                                    23.3,
+                                    30.1,
+                                    18.2
+                                ]
+                            ],
+                            "type": "CategoryPoints",
+                            "size": 12,
+                            "shape": "DEFAULT",
+                            "outline_color": "#ff9bbb59"
+                        },
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    7.6,
+                                    10.5,
+                                    10.9,
+                                    5.8
+                                ],
+                                [
+                                    19.7,
+                                    12.7,
+                                    25.9,
+                                    15.8
+                                ]
+                            ],
+                            "type": "CategoryPoints",
+                            "size": 12,
+                            "shape": "DEFAULT",
+                            "outline_color": "#ff9bbb59"
+                        }
+                    ],
+                    "categoryNames": [
+                        "Lithium",
+                        "Sodium",
+                        "Potassium",
+                        "Rubidium"
+                    ],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 117,
+                "height": 51
+            },
+            "evaluatorReader": false,
+            "lineCount": 12
+        },
+        {
+            "id": "sectionOj04X8",
+            "type": "section",
+            "title": "Multiple Y Axes",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeGdVQno",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var p = new beaker.CategoryPlot({title: \"Multiple Y Axes Demo\",",
+                    "                         yLabel: \"Price\",",
+                    "                         categoryNames: [\"Q1\", \"Q2\", \"Q3\", \"Q4\"]})",
+                    "p.add(new beaker.YAxis({label: \"Volume\", upperMargin: 1}))",
+                    "p.add(new beaker.CategoryBars({value: [[1500, 2200, 2500, 4000]], width: 0.6,",
+                    "                      color: beaker.Color.PINK, yAxis: \"Volume\", showItemLabel: true,",
+                    "                      labelPosition: beaker.LabelPositionType.VALUE_INSIDE}))",
+                    "p.add(new beaker.CategoryLines({value: [[5, 2, 3.5, 4]], color: beaker.Color.GRAY,",
+                    "                       showItemLabel:true}))",
+                    "p.add(new beaker.CategoryPoints({value:[[5, 2, 3.5, 4]], color: beaker.Color.GRAY}))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.46944444444444444,
+                        "xr": 0.5305555555555554,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.061111111111111005,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 3,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.46944444444444444,
+                        "xr": 0.5305555555555554,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.061111111111111005,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": "Multiple Y Axes Demo",
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "y_label": "Price",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        },
+                        {
+                            "type": "YAxis",
+                            "label": "Volume",
+                            "lower_margin": 0,
+                            "upper_margin": 1
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "yAxis": "Volume",
+                            "showItemLabel": true,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    1500,
+                                    2200,
+                                    2500,
+                                    4000
+                                ]
+                            ],
+                            "color": "#ffffafaf",
+                            "type": "CategoryBars",
+                            "labelPosition": "VALUE_INSIDE",
+                            "base": 0,
+                            "width": 0.6,
+                            "outline": false
+                        },
+                        {
+                            "visible": true,
+                            "showItemLabel": true,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    5,
+                                    2,
+                                    3.5,
+                                    4
+                                ]
+                            ],
+                            "color": "#ff808080",
+                            "type": "CategoryLines",
+                            "style": "SOLID"
+                        },
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    5,
+                                    2,
+                                    3.5,
+                                    4
+                                ]
+                            ],
+                            "color": "#ff808080",
+                            "type": "CategoryPoints",
+                            "size": 6,
+                            "shape": "DEFAULT"
+                        }
+                    ],
+                    "categoryNames": [
+                        "Q1",
+                        "Q2",
+                        "Q3",
+                        "Q4"
+                    ],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 18,
+                "height": 548
+            },
+            "evaluatorReader": true,
+            "lineCount": 10
+        },
+        {
+            "id": "sectionnr93uA",
+            "type": "section",
+            "title": "Item Labels",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codevJYxyk",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "new beaker.CategoryPlot().add(new beaker.CategoryStems({value:[[-3, 2, 4], [4, 5, 8]],",
+                    "                                        width: 10, showItemLabel: true}))"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.47380952380952385,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095236,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": true,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    -3,
+                                    2,
+                                    4
+                                ],
+                                [
+                                    4,
+                                    5,
+                                    8
+                                ]
+                            ],
+                            "type": "CategoryStems",
+                            "width": 10,
+                            "style": "SOLID"
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 17,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "sectionnx9yRX",
+            "type": "section",
+            "title": "Label Position",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeYm73o6",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var bars = new beaker.CategoryBars({value: [[-5, 2, 3], [1, 3, 5]],",
+                    "                            showItemLabel: true})",
+                    "new beaker.CategoryPlot().add(bars)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": true,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    -5,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    1,
+                                    3,
+                                    5
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 21,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codee50Fp5",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var bars = new beaker.CategoryBars({value: [[-5, 2, 3], [1, 3, 5]],",
+                    "                            labelPosition: beaker.LabelPositionType.BASE_OUTSIDE,",
+                    "                            showItemLabel: true})",
+                    "new beaker.CategoryPlot().add(bars)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": true,
+                            "center_series": false,
+                            "use_tool_tip": true,
+                            "value": [
+                                [
+                                    -5,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    1,
+                                    3,
+                                    5
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "BASE_OUTSIDE",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 20,
+                "height": 522
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
+        },
+        {
+            "id": "sectionHYzXsJ",
+            "type": "section",
+            "title": "Disable ToolTips",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeSLhHbt",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var plot = new beaker.CategoryPlot({title: \"Move mouse cursor over bars\"})",
+                    "var bars = new beaker.CategoryBars({value: [[-5, 2, 3], [1, 3, 5]], useToolTip: false})",
+                    "plot.add(bars)"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true
+                    ],
+                    "visibleItem": 2,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "tips": {}
+                },
+                "result": {
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": "Move mouse cursor over bars",
+                    "use_tool_tip": true,
+                    "legend_position": {
+                        "position": "TOP_RIGHT"
+                    },
+                    "legend_layout": "VERTICAL",
+                    "version": "groovy",
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "label": ""
+                        }
+                    ],
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "omit_checkboxes": false,
+                    "type": "CategoryPlot",
+                    "graphics_list": [
+                        {
+                            "visible": true,
+                            "showItemLabel": false,
+                            "center_series": false,
+                            "use_tool_tip": false,
+                            "value": [
+                                [
+                                    -5,
+                                    2,
+                                    3
+                                ],
+                                [
+                                    1,
+                                    3,
+                                    5
+                                ]
+                            ],
+                            "type": "CategoryBars",
+                            "labelPosition": "CENTER",
+                            "base": 0,
+                            "outline": false
+                        }
+                    ],
+                    "categoryNames": [],
+                    "orientation": "VERTICAL",
+                    "category_margin": 0.2,
+                    "categoryNamesLabelAngle": 0,
+                    "tips": {}
+                },
+                "selectedType": "Plot",
+                "pluginName": "JavaScript",
+                "elapsedTime": 19,
+                "height": 548
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        }
+    ],
+    "namespace": {}
+}

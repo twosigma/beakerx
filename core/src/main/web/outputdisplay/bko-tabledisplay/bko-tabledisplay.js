@@ -400,17 +400,18 @@
           return out;
         };
 
-        $scope.doCSVExport = function(all) {
+        $scope.doCSVExport = function(selectedRows) {
+          debugger;
           var data;
           var isFiltered = function (index) {
             return $scope.table.settings()[0].aiDisplay.indexOf(index) > -1;
           };
-          if (!all) {
+          if (!selectedRows) {
             data = $scope.table.rows(isFiltered).data();
           } else {
             data = $scope.table.rows(function(index, data, node) {
               return $scope.selected[index] && isFiltered(index);
-            }).data();
+            });
           }
           var out = $scope.exportTo(data, 'csv');
 
@@ -424,7 +425,7 @@
             }
           });
         };
-
+        
         // reset table state
         $scope.doResetAll = function () {
           $scope.table.state.clear();

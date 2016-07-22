@@ -22,9 +22,9 @@
         <i class='fa fa-refresh fa-spin fa-lg'></i>
       </a>
       <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-        <li>
-          <a href="#" tabindex="-1" ng-click="toggleNotifyWhenDone()" eat-click>Notify when done</a>
-          <i class="glyphicon glyphicon-ok" ng-show="isNotifyWhenDone()"></i>
+        <li ng-repeat="notificationMethod in getAvailableNotificationMethods()">
+          <a href="#" tabindex="-1" ng-click="toggleNotifyWhenDone(notificationMethod)" eat-click>{{notificationMethod.title}}</a>
+          <i class="glyphicon glyphicon-ok" ng-show="isNotifyWhenDone(notificationMethod)"></i>
         </li>
       </ul>
     </div>

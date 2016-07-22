@@ -52,6 +52,7 @@ bk-new-cell-menu {
 
 .locked .toggle-menu {
   display: none;
+  z-index: 1;
 }
 
 .locked-cell-menu {
@@ -71,7 +72,6 @@ bk-new-cell-menu {
   padding-right: $grid-gutter-width;
   &.wide {
     width: 100%;
-    overflow: hidden;
     background: none;
   }
   .mini-cell-stats {

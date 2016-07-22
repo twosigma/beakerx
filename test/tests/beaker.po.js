@@ -462,7 +462,7 @@ var BeakerPageObject = function() {
   this.getPlotContainerByIdCell = function (codeCellOutputId, containerIdx) {
     if (!containerIdx)
       containerIdx = 0;
-    return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(by.css('#plotContainer'));
+    return this.getPlotLegendContainerByIdCell(codeCellOutputId, containerIdx).element(by.css('.plot-plotcontainer'));
   };
 
   this.getPlotSvgElementByIndexByIdCell = function (codeCellOutputId, containerIdx, elementIndex) {
@@ -852,18 +852,7 @@ var BeakerPageObject = function() {
   }
 
   this.checkSaveAsSvgPngByIdCell = function(idCell, filename){
-    var dir = path.join(__dirname, '../' ,"tmp");
-    if(!fs.existsSync(dir)){
-      fs.mkdirSync(dir);
-    }
-    var list = fs.readdirSync(dir);
-    list.forEach(function(file) {
-      file = path.join(dir, file);
-      var stat = fs.statSync(file)
-      if (stat && stat.isFile()){
-        fs.unlinkSync(file);
-      }
-    });
+    var dir = this.clearTmpDir();
 
     this.clickCellMenuSavePlotAs(idCell, 'SVG');
     var filenameSvg = path.join(dir, (filename + ".svg"));
@@ -889,6 +878,61 @@ var BeakerPageObject = function() {
     var subMenu = savePlotAs.element(by.cssContainingText('a', fileExt));
     browser.actions().mouseMove(subMenu).perform();
     subMenu.click();
+  }
+
+  this.checkSaveAsCsvByIdCell = function(idCell, filename){
+    var self = this;
+    var dir = this.clearTmpDir();
+    // Save All as csv
+    this.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="menuToggle()"]')).click()
+        .then(self.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="doCSVExport(false)"]')).click);
+    this.checkSaveTableAsCsv(self, dir, filename + "All.csv");
+    // Save Selected as csv
+    this.getDataTablesTBodyByIdCell(idCell).get(0).all(by.css('td')).get(0).click();
+    this.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="menuToggle()"]')).click()
+        .then(self.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="doCSVExport(true)"]')).click);
+    this.checkSaveTableAsCsv(self, dir, filename + "Selected.csv");
+  }
+
+  this.checkSaveTableAsCsv = function(self, dir, filename){
+    browser.wait(this.EC.presenceOf(element(by.css('input#file-dlg-selected-path'))), 10000).then(function(){
+      browser.wait(self.EC.not(self.EC.presenceOf(element(by.css('div.elfinder-notify-open')))), 20000).then(function(){
+        self.createScreenshot(filename);
+        var arrPath = dir.split(path.sep);
+        arrPath.forEach(function(item, i, arrPath) {
+          element(by.cssContainingText('span', item)).isPresent().then(function(present){
+            self.hasClass(element(by.cssContainingText('span', item)), 'elfinder-navbar-expanded').then(function(expand){
+              if(present && !expand){
+                element(by.cssContainingText('span', item)).click();
+              }
+            })
+          })
+        });
+        element(by.id('file-dlg-selected-path')).sendKeys(filename);
+        element(by.cssContainingText('button', 'Save')).click();
+        var filenameCsv = path.join(dir, (filename));
+        browser.wait(fs.existsSync.bind(this, filenameCsv), 10000).then(function(){
+          expect(fs.statSync(filenameCsv).isFile() && fs.existsSync(filenameCsv)).toBe(true);
+          browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+        });
+      });
+    });
+  }
+
+  this.clearTmpDir = function(){
+    var dir = path.join(__dirname, '../' ,"tmp");
+    if(!fs.existsSync(dir)){
+      fs.mkdirSync(dir);
+    }
+    var list = fs.readdirSync(dir);
+    list.forEach(function(file) {
+      file = path.join(dir, file);
+      var stat = fs.statSync(file)
+      if (stat && stat.isFile()){
+        fs.unlinkSync(file);
+      }
+    });
+    return dir;
   }
 
   this.runBkCellDefaultButtonByIdCell = function(idCell){

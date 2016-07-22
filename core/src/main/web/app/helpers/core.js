@@ -580,12 +580,13 @@
         };
 
         var evaluateAndGoDown = function () {
-          scope.evaluate();
-          var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
-          if (!nextCell) {
-            appendCodeCell();
-          }
-          goToNextCodeCell();
+          bkUtils.newPromise(scope.evaluate()).then(function () {
+            var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
+            if (!nextCell) {
+              appendCodeCell();
+            }
+            goToNextCodeCell();
+          });
         };
 
         var reformat = function (cm) {
@@ -1348,7 +1349,15 @@
     };
 
     var getParent = function (path) {
-      return path.substring(0, path.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/'))
+      var parentEndIndex = path.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/') + 1;
+      if(parentEndIndex > 1) {
+        parentEndIndex--; //trim trailing slash for non-root path
+      }
+      return path.substring(0, parentEndIndex);
+    };
+
+    var isRoot = function (path) {
+      return path === getParent(path);
     };
 
     var setFromHash = function (hash, timeout) {
@@ -1484,8 +1493,13 @@
       return a1.substring(0, i);
     }
 
+    function getCurrentFolder() {
+      var path = elfinder.path(elfinder.cwd().hash);
+      return path.startsWith('//') ? path.substring(1) : path;
+    }
+
     var onTab = function (keyEvent) {
-      var parentPath = elfinder.path(elfinder.cwd().hash);
+      var parentPath = getCurrentFolder();
       if (parentPath === getParent($scope.selected.path)) {
         var filename = getFilename($scope.selected.path);
         var volume = bkHelper.getVolume(elfinder);
@@ -1496,7 +1510,7 @@
           var key = keys[i];
           if (key.indexOf(volume.hash) === 0) {
             var file = elfinder.files()[key];
-            if (parentPath === getParent(file.fullpath)) {
+            if (parentPath === getParent(file.fullpath) && !isRoot(file.fullpath)) {
               if (getFilename(file.fullpath).indexOf(filename) === 0) {
                 possible_files.push(file);
               }
@@ -1546,7 +1560,7 @@
       state.tabClicked = false;
       $timeout(function () {
         var parent = getParent($scope.selected.path);
-        if (elfinder.path(elfinder.cwd().hash) === parent) {
+        if (getCurrentFolder() === parent) {
           $timeout(function () {
             elfinder.trigger("filter_cwd", {
               filter: getFilename($scope.selected.path)
@@ -1844,6 +1858,15 @@
             playNotificationSound();
           }
         });
+      },
+      sendEmailNotification: function (title, body) {
+        var url = bkUtils.getEvaluationFinishedNotificationUrl();
+        if (!!url) {
+          bkUtils.httpGet(url, {
+            title: title,
+            body: body
+          });
+        }
       }
     };
   });

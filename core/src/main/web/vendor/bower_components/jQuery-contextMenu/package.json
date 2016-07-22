@@ -1,7 +1,7 @@
 {
   "name": "jquery-contextmenu",
   "title": "jQuery.contextMenu()",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "author": {
     "name": "Björn Brala",
     "url": "http://www.swis.nl"
@@ -11,19 +11,17 @@
     "jquery": ">=1.8.2"
   },
   "devDependencies": {
-    "dalek-browser-chrome": "0.0.11",
-    "dalekjs": "0.0.9",
-    "doctoc": "^0.15.0",
+    "doctoc": "^1.0.0",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.0.1",
     "gulp-concat": "~2.6.0",
-    "gulp-consolidate": "^0.1.2",
+    "gulp-consolidate": "^0.2.0",
     "gulp-csscomb": "^3.0.6",
-    "gulp-csslint": "^0.2.0",
+    "gulp-csslint": "^0.3.0",
     "gulp-debug": "^2.1.2",
     "gulp-dest": "^0.2.2",
     "gulp-htmlcomb": "0.1.0",
-    "gulp-iconfont": "^5.0.1",
+    "gulp-iconfont": "^8.0.0",
     "gulp-jscs": "^3.0.2",
     "gulp-jshint": "^2.0.0",
     "gulp-load-plugins": "^1.0.0-rc.1",
@@ -35,11 +33,11 @@
     "gulp-sourcemaps": "~1.6.0",
     "gulp-uglify": "^1.1.0",
     "karma": "^0.13.9",
-    "karma-chrome-launcher": "^0.2.0",
-    "karma-phantomjs-launcher": "^0.2.1",
-    "karma-qunit": "^0.1.4",
-    "lodash": "^3.10.1",
-    "qunitjs": "^1.15.0",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "karma-qunit": "^1.0.0",
+    "lodash": "^4.13.1",
+    "qunitjs": "^2.0.0-rc1",
     "jshint": "^2.8.0"
   },
   "description": "Management facility for context menus. Developed for a large number of triggering objects. HTML5 Polyfill",
@@ -90,8 +88,7 @@
     "dist/font/context-menu-icons.woff2"
   ],
   "scripts": {
-    "test": "npm run test-unit && npm run test-integration",
-    "test-unit": "./node_modules/karma/bin/karma start",
-    "test-integration": "dalek test/integration/*.js -l 2"
+    "test": "npm run test-unit",
+    "test-unit": "./node_modules/karma/bin/karma start"
   }
 }

@@ -37,7 +37,7 @@
       <a data-toggle="dropdown" class="loading-spin dtmenu" ng-if="isShowProgressBar()">
        <i class='fa fa-refresh fa-spin text-white'></i>
       </a>
-      <ul class="dropdown-menu" ng-if="isShowProgressBar()">
+      <ul class="dropdown-menu" ng-if="isShowProgressBar()"  style="left: inherit; top: inherit;">
         <li ng-repeat="notificationMethod in getAvailableNotificationMethods()" >
           <a ng-click="toggleNotifyWhenDone(notificationMethod)">{{notificationMethod.title}}</a>
           <i class="glyphicon glyphicon-ok bkr ng-hide" ng-show="isNotifyWhenDone(notificationMethod)" style="color: #333333"></i>

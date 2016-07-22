@@ -32,6 +32,12 @@ function insertNewCell(language){
     return bkcell;
 }
 
+function selectItem(itemName){
+    var item = element(by.cssContainingText('li.CodeMirror-hint', itemName));
+    item.click();
+    browser.actions().doubleClick(item).perform();
+}
+
 describe('Autocomplete', function() {
     beforeAll(function(done) {
         beakerPO = new BeakerPageObject();
@@ -50,52 +56,60 @@ describe('Autocomplete', function() {
         beakerPO.languageManagerMenuItem.click();
     });
 
-    it('JavaScript cell', function() {
+    it('Should hint "toUpperCase" (JavaScript cell)', function() {
         insertNewCell('JavaScript');
         browser.actions().sendKeys("\'test\'.").perform();
         checkAutotranslate('toUpperCase');
+        selectItem('toUpperCase');
     });
 
-    it('HTML cell', function() {
+    it('Should hint "<html" (HTML cell)', function() {
         insertNewCell('HTML');
         browser.actions().sendKeys("<h").perform();
         checkAutotranslate('<html');
+        selectItem('<html');
     });
 
-    it('Groovy cell', function() {
+    it('Should hint "toUpperCase()" (Groovy cell)', function() {
         insertNewCell('Groovy');
         browser.actions().sendKeys("String str = \'test\';\nstr.to").perform();
         checkAutotranslate('toUpperCase()');
+        selectItem('toUpperCase()');
     });
 
-    it('IPython cell', function() {
+    it('Should hint "infty" (IPython cell)', function() {
         insertNewCell('IPython');
-        browser.actions().sendKeys("p").perform();
-        checkAutotranslate('pi');
+        browser.actions().sendKeys("in").perform();
+        checkAutotranslate('infty');
+        selectItem('infty');
     });
 
-    it('R cell', function() {
+    it('Should hint "rnorm" (R cell)', function() {
         insertNewCell('R');
         browser.actions().sendKeys("rn").perform();
         checkAutotranslate('rnorm');
+        selectItem('rnorm');
     });
 
-    it('SQL cell', function() {
+    it('Should hint "SELECT" (SQL cell)', function() {
         insertNewCell('SQL');
         browser.actions().sendKeys("se").perform();
         checkAutotranslate('SELECT');
+        selectItem('SELECT');
     });
 
-    it('Java cell', function() {
+    it('Should hint "package" (Java cell)', function() {
         insertNewCell('Java');
         browser.actions().sendKeys("p").perform();
         checkAutotranslate('package');
+        selectItem('package');
     });
 
-    it('Clojure cell', function() {
-        var bkcell = insertNewCell('Clojure');
+    it('Should hint "declare" (Clojure cell)', function() {
+        insertNewCell('Clojure');
         browser.actions().sendKeys("de").perform();
-        checkAutotranslate('defn');
+        checkAutotranslate('declare');
+        selectItem('declare');
     });
 
 });

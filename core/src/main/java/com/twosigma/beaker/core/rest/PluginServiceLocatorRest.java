@@ -938,7 +938,7 @@ public class PluginServiceLocatorRest {
         try {
           Files.copy(Paths.get(getDefaultExtensionPath()), Paths.get(getTargetExtensionPath()), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-          e.printStackTrace();
+          //e.printStackTrace();
         }
       }
     }

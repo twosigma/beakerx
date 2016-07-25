@@ -446,7 +446,7 @@ public class PluginServiceLocatorRest {
       if (nginxRules.startsWith("ipython")) {
         generateIPythonConfig(pluginId, port, password, command);
 
-        if (isIPython4(getIPythonVersion(pluginId, command))) {
+        if (isIPython4OrNewer(getIPythonVersion(pluginId, command))) {
           new JupyterWidgetsExtensionProcessor(pluginId, this.pluginDir).copyJupyterExtensionIfExists();
         }
       }
@@ -914,8 +914,8 @@ public class PluginServiceLocatorRest {
     outputGobbler.start();
   }
 
-  private boolean isIPython4(String iPythonVersion) {
-    return iPythonVersion != null && iPythonVersion.startsWith("4.");
+  private boolean isIPython4OrNewer(String iPythonVersion) {
+    return iPythonVersion != null && (iPythonVersion.startsWith("4.") || iPythonVersion.startsWith("5."));
   }
 
   private class JupyterWidgetsExtensionProcessor {

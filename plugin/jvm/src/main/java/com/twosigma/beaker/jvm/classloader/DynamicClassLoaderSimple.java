@@ -31,10 +31,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.cxf.helpers.IOUtils;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DynamicClassLoaderSimple extends ClassLoader {
+
+  private final static Logger logger = LoggerFactory.getLogger(DynamicClassLoaderSimple.class.getName());
+
   private URLClassLoader myloader;
   private String outDir;
   protected final Map<String, Class<?>> classes;
@@ -50,7 +53,7 @@ public class DynamicClassLoaderSimple extends ClassLoader {
       try {
         urlList.add(Paths.get(dir).toUri().toURL());
       } catch (MalformedURLException e) {
-        Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+        logger.error(e.getMessage());
       }
     }
     myloader = new URLClassLoader(urlList.toArray(new URL[urlList.size()]), null);

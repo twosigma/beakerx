@@ -16,18 +16,19 @@
 package com.twosigma.beaker.kdb.utils;
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.logging.Logger;
 
 public class KdbOutputHandler extends Thread {
 
   private final InputStream stream;
   private SimpleEvaluationObject dest;
-  private final static Logger logger = Logger.getLogger(KdbOutputHandler.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(KdbOutputHandler.class.getName());
   
   public KdbOutputHandler(InputStream stream) {
     this.stream = stream;
@@ -46,7 +47,7 @@ public class KdbOutputHandler extends Thread {
         if (this.dest!= null) {
           this.dest.appendOutput(line+"\n");
         } else  if(!line.isEmpty()) {
-          logger.info("Output line not captured: '"+line+"'");
+          logger.info("Output line not captured: '{}'", line);
         }
       }
     } catch (IOException ioe) {

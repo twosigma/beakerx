@@ -34,6 +34,8 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -47,8 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class BasicObjectSerializer implements BeakerObjectConverter {
 
@@ -61,7 +61,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
   public static final String TYPE_TIME    = "time";
   public static final String TYPE_SELECT  = "select";
 
-  private final static Logger logger = Logger.getLogger(BasicObjectSerializer.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(BasicObjectSerializer.class.getName());
 
   protected final Map<String, String>      types;
   protected final List<String>             knownBeakerTypes;
@@ -198,14 +198,14 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         (obj instanceof BeakerProgressUpdate) ||
         (obj instanceof EasyForm) ||
         (obj instanceof Color)) {
-        logger.fine("basic object");
+        logger.debug("basic object");
         jgen.writeObject(obj);
       } else
         return runThreadSerializers(obj, jgen, expand) || runConfiguredSerializers(obj,
                                                                                    jgen,
                                                                                    expand);
     } catch (Exception e) {
-      logger.log(Level.SEVERE,"exception in serialization",e);
+      logger.error("exception in serialization", e);
       return false;
     }
     return true;
@@ -217,11 +217,11 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     for (ObjectSerializer s : threadSerializers.get()) {
       try {
         if (s.canBeUsed(obj, expand) && s.writeObject(obj, jgen, expand)) {
-          logger.finest("used thread serialization");
+          logger.debug("used thread serialization");
           return true;
         }
       } catch (Exception e) {
-        logger.log(Level.SEVERE,"exception in thread serialization",e);
+        logger.error("exception in thread serialization", e);
       }
     }
     return false;
@@ -233,7 +233,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         if (s.canBeUsed(obj, expand) && s.writeObject(obj, jgen, expand))
           return true;
       } catch (Exception e) {
-        logger.log(Level.SEVERE,"exception in serialization",e);
+        logger.error("exception in serialization",e);
       }
     }
     return false;
@@ -252,12 +252,12 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
           if (d.canBeUsed(n)) {
             obj = d.deserialize(n, mapper);
             if (obj != null) {
-              logger.finest("used thread deserialization");
+              logger.debug("used thread deserialization");
               break;
             }
           }
         } catch (Exception e) {
-          logger.log(Level.SEVERE,"exception in thread deserialization",e);
+          logger.error("exception in thread deserialization",e);
           obj = null;
         }
       }
@@ -269,22 +269,22 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         if (d.canBeUsed(n)) {
           obj = d.deserialize(n, mapper);
           if (obj != null) {
-            logger.finest("used custom deserialization");
+            logger.debug("used custom deserialization");
             break;
           }
         }
       } catch (Exception e) {
-        logger.log(Level.SEVERE,"exception in deserialization",e);
+        logger.error("exception in deserialization",e);
         obj = null;
       }
     }
     
     if (obj==null) {
-      logger.finest("using standard deserialization");
+      logger.debug("using standard deserialization");
       try {
         obj = mapper.readValue(n, Object.class);
       } catch (Exception e) {
-        logger.log(Level.SEVERE,"exception in auto deserialization",e);
+        logger.error("exception in auto deserialization",e);
         obj = null;
       }
     }
@@ -382,7 +382,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
 
     @Override
     public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.fine("list of maps");
+      logger.debug("list of maps");
       try {
         // convert this 'on the fly' to a datatable
         @SuppressWarnings("unchecked")
@@ -405,7 +405,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
 
     @Override
     public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.fine("collection of collections");
+      logger.debug("collection of collections");
       
       Collection<?> m = (Collection<?>) obj;
       int max = 0;
@@ -447,7 +447,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
 
     @Override
     public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.fine("primitive type map");
+      logger.debug("primitive type map");
       
       Map<?,?> m = (Map<?,?>) obj;
       
@@ -489,7 +489,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
 
     @Override
     public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.fine("array");
+      logger.debug("array");
       // write out an array of objects.
       jgen.writeStartArray();
       final int length = Array.getLength(obj);
@@ -518,7 +518,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
 
     @Override
     public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.fine("collection");
+      logger.debug("collection");
       // convert this 'on the fly' to an array of objects
       Collection<?> c = (Collection<?>) obj;
       jgen.writeStartArray();
@@ -545,7 +545,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
 
     @Override
     public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.fine("generic map");
+      logger.debug("generic map");
       // convert this 'on the fly' to a map of objects
       Map<?,?> m = (Map<?,?>) obj;
 

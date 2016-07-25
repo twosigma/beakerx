@@ -50,7 +50,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.UserPrincipal;
 import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,14 +58,13 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static javax.ws.rs.core.Response.Status.OK;
 import static javax.ws.rs.core.Response.status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * for file I/O (save and load)
@@ -76,13 +74,15 @@ import static javax.ws.rs.core.Response.status;
 @Singleton
 public class FileIORest {
 
+  private final static Logger logger = LoggerFactory.getLogger(FileIORest.class.getName());
+
   private static final MimeMap MIME_MAP;
   static {
     MimeMap mimeMap = null;
     try {
       mimeMap = new MimeMap();
     } catch (IOException ex) {
-      Logger.getLogger(FileIORest.class.getName()).log(Level.SEVERE, null, ex);
+      logger.error(ex.getMessage());
     }
     MIME_MAP = mimeMap;
   }

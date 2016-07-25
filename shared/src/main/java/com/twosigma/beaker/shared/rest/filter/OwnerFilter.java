@@ -18,6 +18,9 @@ package com.twosigma.beaker.shared.rest.filter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.security.Principal;
 import javax.servlet.Filter;
@@ -34,6 +37,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Singleton
 public class OwnerFilter implements Filter {
+
+  private static final Logger logger = LoggerFactory.getLogger(OwnerFilter.class.getName());
 
   private final String user;
 
@@ -56,7 +61,7 @@ public class OwnerFilter implements Filter {
     }
 
     // Invalid user
-    System.out.println("returning 401");
+    logger.info("returning 401");
     response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     response.setContentLength(0);
   }

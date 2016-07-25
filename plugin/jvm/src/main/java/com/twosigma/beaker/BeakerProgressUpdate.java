@@ -17,8 +17,6 @@
 package com.twosigma.beaker;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
@@ -31,9 +29,11 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BeakerProgressUpdate {
-  private final static Logger logger = Logger.getLogger(BeakerProgressUpdate.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(BeakerProgressUpdate.class.getName());
   public final String message;
   public final int progressBar;
   public final Object payload;
@@ -163,7 +163,7 @@ public class BeakerProgressUpdate {
         
         o = new BeakerProgressUpdate(message,progressBar,payload);
       } catch (Exception e) {
-        logger.log(Level.SEVERE, "exception deserializing BeakerProgressUpdate ", e);
+        logger.error("exception deserializing BeakerProgressUpdate ", e);
       }
       return o;
     }

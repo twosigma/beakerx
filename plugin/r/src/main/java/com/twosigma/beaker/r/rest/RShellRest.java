@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -38,6 +36,8 @@ import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.r.utils.RServerEvaluator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
 
@@ -53,11 +53,11 @@ public class RShellRest {
   private final Map<String, RServerEvaluator> shells = new HashMap<>();
   private final Provider<BeakerObjectConverter> objectSerializerProvider;
 
-  private final static Logger logger = Logger.getLogger(RShellRest.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(RShellRest.class.getName());
       
   @Inject
   public RShellRest(Provider<BeakerObjectConverter> osp) {
-    logger.fine("created");
+    logger.debug("created");
     objectSerializerProvider = osp;
     objectSerializerProvider.get().addTypeConversion("org.rosuda.REngine.REXPFactor", BasicObjectSerializer.TYPE_SELECT);
     objectSerializerProvider.get().addTypeConversion("org.rosuda.REngine.REXPInteger", BasicObjectSerializer.TYPE_INTEGER);
@@ -69,7 +69,7 @@ public class RShellRest {
   // set the port used for communication with the Core server
   public void setCorePort(int c) throws IOException
   {
-    logger.fine("core port = "+c);
+    logger.debug("core port = {}", c);
     corePort = c;
   }
 
@@ -87,7 +87,7 @@ public class RShellRest {
       @FormParam("sessionId") String sessionId) 
           throws InterruptedException, MalformedURLException
   {
-    logger.fine("shellid="+shellId+" sessionId="+sessionId);
+    logger.debug("shellid={} sessionId={}", shellId, sessionId);
 
     // if the shell does not already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
@@ -103,18 +103,18 @@ public class RShellRest {
   @Path("evaluate")
   public SimpleEvaluationObject evaluate(@FormParam("shellID") String shellId,
       @FormParam("code") String code) throws InterruptedException {
-    logger.fine("shellID="+shellId+" code='"+code+"'");
+    logger.debug("shellID={} code='{}",shellId, code);
     SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
     obj.started();
     if(!this.shells.containsKey(shellId)) {
-      logger.severe("cannot find shell... this should never happen");
+      logger.error("cannot find shell... this should never happen");
       obj.error("Cannot find shell");
       return obj;
     }
     try {
       this.shells.get(shellId).evaluate(obj, code);
     } catch (Exception e) {
-      logger.log(Level.SEVERE, "evaluate throw an exception ... this should never happen", e);
+      logger.error("evaluate throw an exception ... this should never happen {}", e.getMessage());
       obj.error(e.toString());
       return obj;
     }
@@ -124,9 +124,9 @@ public class RShellRest {
   @POST
   @Path("resetEnvironment")
   public void resetEnvironment(@FormParam("shellID") String shellId) {
-    logger.fine("shellID="+shellId);
+    logger.debug("shellID={}", shellId);
     if(!this.shells.containsKey(shellId)) {
-      logger.severe(format("cannot find shell with shellId = %s", shellId));
+      logger.error(format("cannot find shell with shellId = %s", shellId));
       return;
     }
     RServerEvaluator evaluator = this.shells.get(shellId);
@@ -140,10 +140,10 @@ public class RShellRest {
       @FormParam("shellID") String shellId,
       @FormParam("code") String code,
       @FormParam("caretPosition") int caretPosition) throws InterruptedException {
-    logger.fine("shellID="+shellId+" code='"+code+"' pos="+caretPosition);
+    logger.debug("shellID="+shellId+" code='"+code+"' pos="+caretPosition);
 
     if(!this.shells.containsKey(shellId)) {
-      logger.severe("cannot find shell... this should never happen");
+      logger.error("cannot find shell... this should never happen");
       return null;
     }
     return this.shells.get(shellId).autocomplete(code, caretPosition);
@@ -152,9 +152,9 @@ public class RShellRest {
   @POST
   @Path("exit")
   public void exit(@FormParam("shellID") String shellId) {
-    logger.fine("shellID="+shellId);
+    logger.debug("shellID="+shellId);
     if(!this.shells.containsKey(shellId)) {
-      logger.severe("cannot find shell... this should never happen");
+      logger.error("cannot find shell... this should never happen");
       return;
     }
     this.shells.get(shellId).exit();
@@ -164,9 +164,9 @@ public class RShellRest {
   @POST
   @Path("interrupt")
   public void interrupt(@FormParam("shellID") String shellId) {
-    logger.fine("shellID="+shellId);
+    logger.debug("shellID="+shellId);
     if(!this.shells.containsKey(shellId)) {
-      logger.severe("cannot find shell... this should never happen");
+      logger.error("cannot find shell... this should never happen");
       return;
     }
     this.shells.get(shellId).cancelExecution();

@@ -200,6 +200,18 @@ var BeakerPageObject = function() {
     }.bind(this));
   };
 
+  this.activateLanguage = function(language) {
+    this.activateLanguageInManager(language);
+    this.waitForPlugin(language);
+    this.languageManagerCloseButton.click();
+  };
+
+  this.insertCellOfType = function(language) {
+    browser.wait(this.EC.presenceOf(this.cellEvaluatorMenu), 10000);
+    this.cellEvaluatorMenu.click();
+    this.cellEvaluatorMenuItem(language).click();
+  }
+
   this.languageManager = element(by.className('plugin-manager'));
   this.languageManagerButtonKnown = function(language) {
     return element(by.css('.plugin-manager .' + language + ' .plugin-known'));
@@ -216,16 +228,16 @@ var BeakerPageObject = function() {
   };
 
   this.languageManagerCloseButton = element(by.className('language-manager-close-button'));
-  this.insertCellButton = element(by.className('insert-cell'));
+  this.insertCellButton = element.all(by.className('insert-cell')).get(0);
   this.deleteCellButton = element(by.className('delete-cell'));
   this.evaluateButton = this.getEvaluateButton();
   this.modalDialogYesButton = element(by.css('.modal .yes'));
   this.modalDialogNoButton = element(by.css('.modal .no'));
   this.modalDialogCancelButton = element(by.css('.modal .cancel'));
 
-  this.cellEvaluatorMenu = element(by.css('.code-cell-area .cell-evaluator-menu'));
+  this.cellEvaluatorMenu = element.all(by.css('.code-cell-area .cell-evaluator-menu')).get(0);
   this.cellEvaluatorMenuItem = function(language) {
-    return element(by.css('.code-cell-area .' + language + '-menuitem'));
+    return element.all(by.css('.code-cell-area .' + language + '-menuitem')).get(0);
   };
   this.cellEvaluatorDisplay = element(by.css('.code-cell-area .cell-evaluator-menu b'));
 

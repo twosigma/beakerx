@@ -32,7 +32,7 @@ describe('Progress Reporting API', function (done) {
     });
 
     function checkProgressBar(idCell, label){
-        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div.progress-bar', label))), 5000).then(
+        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div.progress-bar', label))), 10000).then(
             function(result){return true;},
             function(error){
                 expect(error).toBe('progress bar should display ' + label);
@@ -40,7 +40,7 @@ describe('Progress Reporting API', function (done) {
     };
 
     function checkProgressMessage(idCell, label){
-        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div[ng-if="hasMessage()"]', label))), 5000).then(
+        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div[ng-if="hasMessage()"]', label))), 10000).then(
             function(result){return true;},
             function(error){
                 expect(error).toBe('progress message should display ' + label);
@@ -48,7 +48,7 @@ describe('Progress Reporting API', function (done) {
     };
 
     function checkProgressTopBar(idCell, label){
-        browser.wait(beakerPO.EC.presenceOf(element(by.cssContainingText('div.navbar-text', label))), 5000).then(
+        browser.wait(beakerPO.EC.presenceOf(element(by.cssContainingText('div.navbar-text', label))), 10000).then(
             function(result){return true;},
             function(error){
                 expect(error).toBe('progress top Beaker bar should display ' + label);
@@ -68,7 +68,7 @@ describe('Progress Reporting API', function (done) {
         checkProgressMessage(idCell, 'middle');
         checkProgressBar(idCell, '80 %');
         checkProgressMessage(idCell, 'about to finish');
-        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('pre', 'finished'))), 5000);
+        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('pre', 'finished'))), 10000);
     });
 
     it('Display progress by JavaScript', function () {

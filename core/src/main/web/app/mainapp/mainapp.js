@@ -93,12 +93,6 @@
           $scope.evaluationCompleteNotificationMethods = bkNotificationService.initAvailableNotificationMethods();
         };
         
-        $scope.initAvailableNotificationMethods();
-        
-        $scope.getAvailableNotificationMethods = function () {
-          return $scope.evaluationCompleteNotificationMethods;
-        }
-        
         $scope.notifyThatRunAllFinished = function () {
           _.filter($scope.evaluationCompleteNotificationMethods, 'selected').forEach(function (notificationMethod) {
             notificationMethod.action.call(notificationMethod,'Evaluation completed', 'Run all finished');
@@ -870,6 +864,7 @@
               
               $scope.completedCells = 0;
               $scope.runnAllRuning = false;
+              $scope.initAvailableNotificationMethods();
               
               if (!_.isArray(toEval)) {
                 

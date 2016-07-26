@@ -401,7 +401,6 @@
         };
 
         $scope.doCSVExport = function(selectedRows) {
-          debugger;
           var data;
           var isFiltered = function (index) {
             return $scope.table.settings()[0].aiDisplay.indexOf(index) > -1;

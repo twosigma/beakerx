@@ -23,6 +23,8 @@ import com.twosigma.beaker.core.module.elfinder.service.FsService;
 import com.twosigma.beaker.core.module.elfinder.util.FsItemFilterUtils;
 import com.twosigma.beaker.core.module.elfinder.util.FsServiceUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -34,10 +36,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public abstract class AbstractCommand implements Command {
-  public static Logger LOGGER = Logger.getLogger(AbstractCommand.class.getName());
+  public static Logger LOGGER = LoggerFactory.getLogger(AbstractCommand.class.getName());
 
   protected void addChildren(Map<String, FsItemEx> map, FsItemEx fsi,
                            FsItemFilter filter) throws IOException {
@@ -140,7 +141,7 @@ public abstract class AbstractCommand implements Command {
       info.put("phash", fsi.getParent().getHash());
     }
     if (fsi.isFolder()) {
-      info.put("dirs", fsi.hasChildFolder() ? 1 : 0);
+      info.put("dirs", 1);
     }
     String url = fsi.getURL();
     if (url != null) {

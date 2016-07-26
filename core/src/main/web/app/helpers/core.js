@@ -76,6 +76,16 @@
       };
     };
 
+    var  FilePermissionsStrategy = function (data) {
+      var newStrategy = this;
+      newStrategy.permissions = data.permissions;
+      newStrategy.owner = data.owner;
+      newStrategy.group = data.group;
+      newStrategy.title = data.title;
+      newStrategy.path = data.path;
+      newStrategy.okButtonTitle = data.okButtonTitle;
+    };
+
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
       newStrategy.manualName = '';
@@ -775,6 +785,43 @@
         return bkNotebookCellModelManager;
       },
 
+      showFilePermissionsDialog: function(path, permissionsSettings) {
+        var deferred = bkUtils.newDeferred();
+
+        var data = {
+          permissions: permissionsSettings.permissions,
+          owner: permissionsSettings.owner,
+          group: permissionsSettings.group,
+          title:'Permissions',
+          path: path
+        };
+
+        var dd = $uibModal.open({
+          templateUrl: "app/template/filepermissionsdialog.jst.html",
+          controller: 'filePermissionsDialogCtrl',
+          windowClass: 'beaker-sandbox',
+          backdropClass: 'beaker-sandbox',
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          size: 'sm',
+          resolve: {
+            strategy: function () {
+              return new FilePermissionsStrategy(data);
+            }
+          }
+        });
+        dd.result.then(
+          function (result) {
+            deferred.resolve(result);
+          }, function () {
+            deferred.reject();
+          }).catch(function () {
+          deferred.reject();
+        });
+        return deferred.promise;
+      },
+
       showFileOpenDialog: function(extension) {
         var deferred = bkUtils.newDeferred();
 
@@ -1255,6 +1302,70 @@
     };
   });
 
+  module.controller('filePermissionsDialogCtrl', function ($scope, $rootScope, $uibModalInstance,
+                                                           bkUtils, strategy) {
+
+    $scope.getStrategy = function () {
+      return strategy;
+    };
+    
+    $scope.ownerEdit = false;
+    $scope.groupEdit = false;
+
+    $scope.editOwner = function () {
+      $scope.ownerEdit = true;
+    };
+
+    $scope.editGroup = function () {
+      $scope.groupEdit = true;
+    };
+
+    $scope.model = {
+      OWNER_READ: strategy.permissions.indexOf('OWNER_READ') !== -1,
+      OWNER_WRITE: strategy.permissions.indexOf('OWNER_WRITE') !== -1,
+      OWNER_EXECUTE: strategy.permissions.indexOf('OWNER_EXECUTE') !== -1,
+      GROUP_READ: strategy.permissions.indexOf('GROUP_READ') !== -1,
+      GROUP_WRITE: strategy.permissions.indexOf('GROUP_WRITE') !== -1,
+      GROUP_EXECUTE: strategy.permissions.indexOf('GROUP_EXECUTE') !== -1,
+      OTHERS_READ: strategy.permissions.indexOf('OTHERS_READ') !== -1,
+      OTHERS_WRITE: strategy.permissions.indexOf('OTHERS_WRITE') !== -1,
+      OTHERS_EXECUTE: strategy.permissions.indexOf('OTHERS_EXECUTE') !== -1,
+      
+      owner: strategy.owner,
+      group: strategy.group,
+
+      collectResult: function () {
+        var permissions = [];
+        if (this.OWNER_READ === true) permissions.push('OWNER_READ');
+        if (this.OWNER_WRITE === true) permissions.push('OWNER_WRITE');
+        if (this.OWNER_EXECUTE === true) permissions.push('OWNER_EXECUTE');
+        if (this.GROUP_READ === true) permissions.push('GROUP_READ');
+        if (this.GROUP_WRITE === true) permissions.push('GROUP_WRITE');
+        if (this.GROUP_EXECUTE === true)  permissions.push('GROUP_EXECUTE');
+        if (this.OTHERS_READ === true) permissions.push('OTHERS_READ');
+        if (this.OTHERS_WRITE === true) permissions.push('OTHERS_WRITE');
+        if (this.OTHERS_EXECUTE === true) permissions.push('OTHERS_EXECUTE');
+        return {
+          permissions: permissions,
+          owner: this.owner,
+          group: this.group
+        };
+      }
+    };
+
+
+    $scope.ok = function () {
+      $uibModalInstance.close($scope.model.collectResult());
+    };
+
+    $scope.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+
+  });
+
+
+
   module.controller('fileDialogCtrl', function ($scope, $rootScope, $uibModalInstance, $timeout, bkCoreManager, bkUtils, strategy) {
 
     var elfinder;
@@ -1351,6 +1462,35 @@
 
 
     $scope.init = function () {
+
+      elFinder.prototype.commands.editpermissions = function() {
+        this.exec = function (hashes) {
+          var path = $scope.selected.path;
+          bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/getPosixFileOwnerAndPermissions"), {path: path})
+            .then(function (response) {
+              bkCoreManager.showFilePermissionsDialog(path, response.data).then(function(result){
+                var postData = {
+                  path: $scope.selected.path,
+                  permissions: result.permissions
+                };
+                if(result.owner !== response.data.owner) {
+                  postData.owner = result.owner;
+                }
+                if(result.group !== response.data.group) {
+                  postData.group = result.group;
+                }
+                bkUtils.httpPost('rest/file-io/setPosixFileOwnerAndPermissions', postData).catch(function (response) {
+                  bkHelper.show1ButtonModal(response.data, 'Permissions change filed');
+                })
+              });
+            })
+        };
+        this.getstate = function (hashes) {
+          //return 0 to enable, -1 to disable icon access
+          return $scope.selected.path && $scope.selected.path.length > 0 && !bkUtils.serverOS.isWindows() ? 0 : -1;
+        }
+      };
+
       var $elfinder = $('#elfinder');
 
       var selectCallback = function (event, elfinderInstance) {

@@ -21,6 +21,8 @@ import com.twosigma.beaker.table.TableDisplay;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.dbcp2.BasicDataSource;
+
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -42,13 +44,15 @@ public class QueryExecutor {
   public synchronized Object executeQuery(String script, NamespaceClient namespaceClient, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString)
       throws SQLException, IOException, ReadVariableException {
 
-    BeakerParser beakerParser = new BeakerParser(script, namespaceClient, defaultConnectionString, namedConnectionString);
+    BeakerParser beakerParser = new BeakerParser(script, namespaceClient, defaultConnectionString, namedConnectionString, jdbcClient);
 
-    DataSource ds = jdbcClient.getDataSource(beakerParser.getDbURI());
-
+    BasicDataSource ds = jdbcClient.getDataSource(beakerParser.getDbURI().getConnectionString());
+    ds.setUsername(beakerParser.getDbURI().getUser());
+    ds.setPassword(beakerParser.getDbURI().getPassword());
+    
     boolean isConnectionExeption = true;
 
-    try (Connection connection = ds.getConnection();) {
+    try (Connection connection = ds.getConnection()) {
       this.connection = connection;
       connection.setAutoCommit(false);
       List<Object> resultsForOutputCell = new ArrayList<>();
@@ -118,8 +122,8 @@ public class QueryExecutor {
       }
 
     } catch (Exception e) {
-      if (beakerParser.getConnectionStringUsed() != null && isConnectionExeption) {
-        beakerParser.getConnectionStringUsed().setShowDialog(true);
+      if (beakerParser.getDbURI() != null && isConnectionExeption) {
+        beakerParser.getDbURI().setShowDialog(true);
       }
       throw e;
     } finally {

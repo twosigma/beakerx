@@ -17,6 +17,7 @@
 package com.twosigma.beaker.sqlsh.autocomplete.db;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -38,9 +39,9 @@ public class DbExplorerFactory {
     final NamespaceClient namespaceClient = NamespaceClient.getBeaker(sessionId);
     final BeakerParser beakerParser;
     try {
-      beakerParser = new BeakerParser(txt, namespaceClient, defaultConnectionString, namedConnectionString);
+      beakerParser = new BeakerParser(txt, namespaceClient, defaultConnectionString, namedConnectionString, jdbcClient);
 
-      final String uri = beakerParser.getDbURI();
+      final String uri = beakerParser.getDbURI().getConnectionString();
 
       if (uri != null) {
         final DataSource ds = jdbcClient.getDataSource(uri);
@@ -53,6 +54,8 @@ public class DbExplorerFactory {
     } catch (IOException e) {
       e.printStackTrace();
     } catch (DBConnectionException e) {
+      e.printStackTrace();
+    } catch (SQLException e) {
       e.printStackTrace();
     }
 

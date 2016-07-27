@@ -21,6 +21,7 @@ import com.twosigma.beaker.sqlsh.utils.ConnectionStringBean;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -143,7 +144,7 @@ public class SQLShellRest {
             @FormParam("classPath") String classPath,
             @FormParam("defaultDatasource") String defaultDatasource,
             @FormParam("datasources") String datasorces)
-            throws MalformedURLException, IOException {
+            throws MalformedURLException, IOException, SQLException {
         if (!this.shells.containsKey(shellId)) {
             return;
         }

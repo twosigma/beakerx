@@ -33,9 +33,10 @@ public class BeakerParser {
   public static final String VAR_VALUE_START = "${";
   public static final String VAR_VALUE_END = "}";
 
+  protected final JDBCClient jdbcClient;
+  
   private NamespaceClient client;
-  private String dbURI;
-  private ConnectionStringHolder connectionStringUsed;
+  private ConnectionStringHolder dbURI;
 
   private Map<String, String> inputs = new HashMap<>();
   private Set<String> outputs = new HashSet<>();
@@ -44,8 +45,9 @@ public class BeakerParser {
 
   private List<BeakerParseResult> results = new ArrayList<>();
 
-  public BeakerParser(String script, NamespaceClient client, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) throws IOException, DBConnectionException {
+  public BeakerParser(String script, NamespaceClient client, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString, JDBCClient jdbcClient) throws IOException, SQLException {
     this.client = client;
+    this.jdbcClient = jdbcClient;
     this.defaultConnectionString = defaultConnectionString;
     this.namedConnectionString = namedConnectionString;
 
@@ -124,7 +126,7 @@ public class BeakerParser {
     result.setResultQuery(sql);
   }
 
-  private void parseVar(String script) throws IOException, DBConnectionException {
+  private void parseVar(String script) throws IOException, SQLException {
     List<String> vars = new ArrayList<>();
     Scanner scanner = new Scanner(script);
     StringBuffer sb = new StringBuffer();
@@ -136,7 +138,6 @@ public class BeakerParser {
       int commentIndex = line.indexOf("%%");
       if (commentIndex != -1 && line.startsWith("%%")) {
         
-        connectionStringUsed = null;
         vars.add(line);
 
         if (line.indexOf(DB_URI_VAR) > 0) {
@@ -145,13 +146,13 @@ public class BeakerParser {
           int end = value.indexOf(VAR_VALUE_END, start);
 
           if (value.startsWith("\"") && value.endsWith("\"")) {
-            dbURI = value.substring(1, value.length() - 1);
+            dbURI = new ConnectionStringHolder(value.substring(1, value.length() - 1), jdbcClient);
+
           } else if (start >= 0 && end > 0) {
             String var = value.substring(start + 2, end).trim();
-            dbURI = client.get(var).toString();
+            dbURI = new ConnectionStringHolder(client.get(var).toString(), jdbcClient);
           } else {
-            dbURI = namedConnectionString.get(value).getConnectionStringWithUserPassword();
-            connectionStringUsed = namedConnectionString.get(value);
+            dbURI = namedConnectionString.get(value);
             if (dbURI == null)
               throw new DBConnectionException(value, new SQLException("Named connection witn name " + value + " not found"));
           }
@@ -174,21 +175,12 @@ public class BeakerParser {
       }
     }
     if (dbURI == null){
-      dbURI = defaultConnectionString.getConnectionStringWithUserPassword();
-      connectionStringUsed = defaultConnectionString;
+      dbURI = defaultConnectionString;
     } 
   }
 
-  public String getDbURI() {
+  public ConnectionStringHolder getDbURI() {
     return dbURI;
-  }
-
-  public void setDbURI(String dbURI) {
-    this.dbURI = dbURI;
-  }
-  
-  public ConnectionStringHolder getConnectionStringUsed() {
-    return connectionStringUsed;
   }
 
   public List<BeakerParseResult> getResults() {

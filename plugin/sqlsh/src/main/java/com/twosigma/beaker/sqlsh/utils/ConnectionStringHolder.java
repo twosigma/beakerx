@@ -17,7 +17,11 @@
 package com.twosigma.beaker.sqlsh.utils;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Driver;
+import java.sql.DriverPropertyInfo;
+import java.sql.SQLException;
 
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 
@@ -27,15 +31,17 @@ public class ConnectionStringHolder {
   public static final String PASSWORD_CONNECTION_KEY = "password";
   public static final String KEY_FOR_DISPLAY_INPUT_DIALOG = "<prompt>";
   public static final char EQUAL_SIGN = '=';
-  public static final char QUESTION_SIGN = '?';
-  public static final char AND_SIGN = '&';
+  
+  public static final char [] SEPARATORS = new char[]{'?', '&', ';' , '/' , '\\'};
 
+  private JDBCClient jdbcClient;
   private String connectionString;
   private String user;
   private String password;
   private boolean showDialog;
 
-  public ConnectionStringHolder(String connectionString) {
+  public ConnectionStringHolder(String connectionString, JDBCClient jdbcClient) throws SQLException {
+    this.jdbcClient = jdbcClient;
     setConnectionString(connectionString);
   }
 
@@ -66,61 +72,64 @@ public class ConnectionStringHolder {
   public String getConnectionString() {
     return connectionString;
   }
-
-  public void setConnectionString(String connectionString) {
-    int beginIndex = connectionString.indexOf(QUESTION_SIGN);
-    if (beginIndex > -1) {
-      this.connectionString = connectionString.substring(0, beginIndex);
-    } else {
-      this.connectionString = connectionString;
-    }
-
-    String user = getProperty(USER_CONNECTION_KEY, connectionString);
-    if (user != null) {
-      if (KEY_FOR_DISPLAY_INPUT_DIALOG.equals(user)) {
-        showDialog = true;
-      } else {
-        this.user = user;
-      }
-
-      String password = getProperty(PASSWORD_CONNECTION_KEY, connectionString);
-      if (password != null) {
-        if (KEY_FOR_DISPLAY_INPUT_DIALOG.equals(password)) {
+  
+  public void setConnectionString(String connectionString) throws SQLException {
+    
+    this.connectionString = connectionString;
+    
+    if(connectionString != null && !connectionString.isEmpty()){
+      BasicDataSource ds = jdbcClient.getDataSource(connectionString);
+      
+      String user = getProperty(USER_CONNECTION_KEY, connectionString, ds.getDriver());
+      if (user != null) {
+        if (KEY_FOR_DISPLAY_INPUT_DIALOG.equals(user)) {
           showDialog = true;
         } else {
-          this.password = password;
+          this.user = user;
         }
-      } else {
-        showDialog = true;
+
+        String password = getProperty(PASSWORD_CONNECTION_KEY, connectionString);
+        if (password != null) {
+          if (KEY_FOR_DISPLAY_INPUT_DIALOG.equals(password)) {
+            showDialog = true;
+          } else {
+            this.password = password;
+          }
+        } else {
+          showDialog = true;
+        }
       }
     }
   }
-  
-  protected static String getProperty(String property, String connectionString) {
+
+  protected static String getProperty(String property, String connectionString, Driver dbDriver) throws SQLException{
     String ret = null;
-    if (property != null && !property.isEmpty() && connectionString != null && !connectionString.isEmpty()) {
-      for (NameValuePair param : URLEncodedUtils.parse(connectionString, StandardCharsets.UTF_8, QUESTION_SIGN, AND_SIGN)) {
-        if(property.equals(param.getName())){
-          ret = param.getValue();
+    if(property != null && !property.isEmpty() && dbDriver != null && connectionString != null && !connectionString.isEmpty()){
+      for (DriverPropertyInfo dpi : dbDriver.getPropertyInfo(connectionString, null)) {
+        if(property.equalsIgnoreCase(dpi.name.trim())){
+          ret = dpi.value;
           break;
         }
       }
     }
     return ret;
   }
-
-  protected String getConnectionStringWithUserPassword() {
-    String ret = connectionString;
-    boolean firstOption = true;
-    if (this.user != null && !this.user.isEmpty()) {
-      ret += firstOption ? QUESTION_SIGN : AND_SIGN;
-      firstOption = false;
-      ret += USER_CONNECTION_KEY + EQUAL_SIGN + this.user;
-    }
-    if (this.password != null && !this.password.isEmpty()) {
-      ret += firstOption ? QUESTION_SIGN : AND_SIGN;
-      firstOption = false;
-      ret += PASSWORD_CONNECTION_KEY + EQUAL_SIGN + this.password;
+  
+  /**
+   * MSSQL driver do not return password, so we need to parse it manually
+   * @param property
+   * @param connectionString
+   * @return
+   */
+  protected static String getProperty(String property, String connectionString) {
+    String ret = null;
+    if (property != null && !property.isEmpty() && connectionString != null && !connectionString.isEmpty()) {
+      for (NameValuePair param : URLEncodedUtils.parse(connectionString, StandardCharsets.UTF_8, SEPARATORS)) {
+        if(property.equals(param.getName())){
+          ret = param.getValue();
+          break;
+        }
+      }
     }
     return ret;
   }

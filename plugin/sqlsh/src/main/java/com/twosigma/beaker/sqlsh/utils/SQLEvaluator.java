@@ -200,14 +200,16 @@ public class SQLEvaluator {
     }
   }
 
-  public void setShellOptions(String cp, String defaultDatasource, String datasources) throws IOException {
+  public void setShellOptions(String cp, String defaultDatasource, String datasources) throws IOException, SQLException {
     currentClassPath = cp;
     if (cp.isEmpty())
       classPath = new ArrayList<String>();
     else
       classPath = Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"));
+    
+    jdbcClient.loadDrivers(classPath);
 
-    this.defaultConnectionString = new ConnectionStringHolder(defaultDatasource);
+    this.defaultConnectionString = new ConnectionStringHolder(defaultDatasource, jdbcClient);
     this.namedConnectionString = new HashMap<>();
     Scanner sc = new Scanner(datasources);
     while (sc.hasNext()) {
@@ -222,7 +224,7 @@ public class SQLEvaluator {
       if (value.startsWith("\"") && value.endsWith("\"")) {
         value = value.substring(1, value.length() - 1);
       }
-      namedConnectionString.put(name, new ConnectionStringHolder(value));
+      namedConnectionString.put(name, new ConnectionStringHolder(value, jdbcClient));
     }
 
     resetEnvironment();

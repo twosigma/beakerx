@@ -90,4 +90,21 @@
       </tr>
     </thead>
   </table>
+
+  <table ng-if="isPreviewMode()" class="dataTable display preview" ng-click="showRealTable()" >
+    <thead>
+      <tr>
+        <!--<th class="index"></th>-->
+        <th ng-repeat="c in columnNames">{{c}}</th>
+      </tr>
+    </thead>
+    <tbody ng-if="isPreviewMode()">
+      <tr ng-repeat="row in getPreviewRows() track by $index" ng-class="{'odd': $even, 'even': $odd}">
+        <td ng-class="{'index': $index === 0}" ng-repeat="value in row track by $index">
+          {{::formatPreviewValue(value, $parent.$index, $index)}}
+          <!--{{value}}-->
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>

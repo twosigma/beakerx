@@ -268,3 +268,17 @@ $fix-col-separator-width: 3px;
   text-align: left;
 }
 
+.dataTable.preview {
+  border-bottom: 1px solid $border-color;
+  width: auto;
+
+  td,th {
+    padding-left: 40px;
+
+    &.index {
+      width: 38px;
+      border-right: 2px solid $border-color;
+      padding-left: 20px;
+    }
+  }
+}

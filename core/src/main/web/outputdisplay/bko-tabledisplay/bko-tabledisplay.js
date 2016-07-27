@@ -425,10 +425,40 @@
           });
         };
 
+        var previewMode = true;
+        $scope.isPreviewMode = function () {
+          return previewMode;
+        };
+
+        $scope.showRealTable = function () {
+          previewMode = false;
+          $scope.init($scope.getCellModel(), true);
+        };
+
+        $scope.getPreviewRows = function () {
+          var data = $scope.getCellModel().values;
+          if(!$scope.tempColumns) {
+            $scope.tempColumns = [];
+            $scope.columnNames.forEach(function (title) {
+              $scope.tempColumns.push({sTitle: title});
+            })
+          }
+          return !data ? [] : data.slice(0, Math.min(25, data.length));
+        };
+
+        $scope.formatPreviewValue = function (value, rowIndex, columnIndex) {
+          var stringFormatForColumn = $scope.stringFormatForColumn[$scope.columnNames[columnIndex]];
+          var renderer = $scope.getRenderer(stringFormatForColumn, $scope.actualtype[columnIndex]);
+          return renderer(value, 'display', [], {col: renderer === $scope.valueFormatter ? columnIndex + 1 : columnIndex,
+            row: rowIndex, settings: {aoColumns: $scope.tempColumns}});
+        };
+        
         // reset table state
         $scope.doResetAll = function () {
           $scope.table.state.clear();
-          $scope.init($scope.getCellModel(), false);
+          if (!$scope.isPreviewMode()) {
+            $scope.init($scope.getCellModel(), false);
+          }
         };
 
         // these are the menu actions
@@ -1341,9 +1371,11 @@
           }
 
           scope.doCreateData(model);
-          scope.doCreateTable(model);
-          $(document.body).off('click.bko-dt-container', scope.containerClickFunction);
-          $(document.body).on('click.bko-dt-container', scope.containerClickFunction);
+          if (!scope.isPreviewMode()) {
+            scope.doCreateTable(model);
+            $(document.body).off('click.bko-dt-container', scope.containerClickFunction);
+            $(document.body).on('click.bko-dt-container', scope.containerClickFunction);
+          }
         };
 
         scope.doCreateData = function(model) {
@@ -1857,6 +1889,18 @@
           }
         };
 
+        scope.getRenderer = function (stringFormatForColumn, type) {
+          var render;
+          if (stringFormatForColumn && stringFormatForColumn.type === 'value' && type === 0) {
+            render = scope.valueFormatter;
+          } else if (scope.isDoubleWithPrecision(type)) {
+            render = scope.doubleWithPrecisionConverters[scope.getDoublePrecision(type)];
+          } else if (scope.allConverters[type] !== undefined) {
+            render = scope.allConverters[type];
+          }
+          return render;
+        };
+
         scope.doCreateTable = function(model) {
           var cols = [];
           var i;
@@ -2195,13 +2239,7 @@
             }
 
             var stringFormatForColumn = scope.stringFormatForColumn[scope.columnNames[i]];
-            if (stringFormatForColumn && stringFormatForColumn.type === 'value' && type === 0){
-              col.render = scope.valueFormatter;
-            } else if (scope.isDoubleWithPrecision(type)) {
-              col.render = scope.doubleWithPrecisionConverters[scope.getDoublePrecision(type)];
-            } else if (scope.allConverters[type] !== undefined) {
-              col.render = scope.allConverters[type];
-            }
+            col.render = scope.getRenderer(stringFormatForColumn, type);
             if (scope.getCellSho) {
               col.visible = scope.getCellSho[i];
             }

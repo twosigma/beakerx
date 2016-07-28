@@ -87,7 +87,7 @@
         $scope.totalCells = 0;
         $scope.completedCells = 0;
         $scope.evaluationCompleteNotificationMethods = [];
-        $scope.runnAllRuning = false;
+        $scope.runAllRunning = false;
         
         $scope.initAvailableNotificationMethods = function () {
           $scope.evaluationCompleteNotificationMethods = bkNotificationService.initAvailableNotificationMethods();
@@ -104,13 +104,13 @@
         }
         
         $scope.isShowProgressBar  = function() {
-          return $scope.runnAllRuning && $scope.totalCells > 1;
+          return $scope.runAllRunning && $scope.totalCells > 1;
         }
 
         $scope.$watch("isRunAllFinished()", function(newType, oldType) {
           if(newType === false && oldType === true){ // there are some "false" , "false" events
               $timeout(function(){
-                $scope.runnAllRuning = false;
+                $scope.runAllRunning = false;
               }, 2000); 
             
             $scope.notifyThatRunAllFinished();
@@ -869,7 +869,7 @@
               }
               
               $scope.completedCells = 0;
-              $scope.runnAllRuning = true;
+              $scope.runAllRunning = true;
               $scope.initAvailableNotificationMethods();
               
               if (!_.isArray(toEval)) {

@@ -95,7 +95,7 @@
         'datacenter',
         'dft',
         'Datacenter',
-        ['dft', 'aws', 'pubcloud', 'pit', 'local']
+        window.beakerRegister.sparkDatacenters || ['aws', 'local']
       ),
       advanced: {
         persistent: new ConfigurationBoolean(

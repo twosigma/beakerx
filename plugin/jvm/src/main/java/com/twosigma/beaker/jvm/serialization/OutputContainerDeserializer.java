@@ -69,7 +69,7 @@ public class OutputContainerDeserializer implements ObjectDeserializer {
         ((OutputContainer)o).setLayoutManager((OutputContainerLayoutManager) layout);
       }
     } catch (Exception e) {
-      OutputContainer.LOGGER.log(Level.SEVERE, "exception deserializing OutputContainer ", e);
+      OutputContainer.LOGGER.error("exception deserializing OutputContainer ", e);
     }
     return o;
   }

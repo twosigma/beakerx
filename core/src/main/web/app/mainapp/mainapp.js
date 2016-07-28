@@ -67,7 +67,9 @@
       bkElectron,
       $location,
       bkFileManipulation,
-      bkSparkContextManager) {
+      bkSparkContextManager,
+      bkNotificationService
+      ) {
 
     return {
       restrict: 'E',
@@ -81,6 +83,59 @@
         isOpen: '@open'
       },
       controller: function($scope, $timeout, connectionManager, GLOBALS) {
+        
+        $scope.totalCells = 0;
+        $scope.completedCells = 0;
+        $scope.evaluationCompleteNotificationMethods = [];
+        $scope.runAllRunning = false;
+        
+        $scope.initAvailableNotificationMethods = function () {
+          $scope.evaluationCompleteNotificationMethods = bkNotificationService.initAvailableNotificationMethods();
+        };
+        
+        $scope.notifyThatRunAllFinished = function () {
+          _.filter($scope.evaluationCompleteNotificationMethods, 'selected').forEach(function (notificationMethod) {
+            notificationMethod.action.call(notificationMethod,'Evaluation completed', 'Run all finished');
+          });
+        }
+                
+        $scope.isRunAllFinished  = function() {
+          return bkEvaluateJobManager.isAnyInProgress();
+        }
+        
+        $scope.isShowProgressBar  = function() {
+          return $scope.runAllRunning && $scope.totalCells > 1;
+        }
+
+        $scope.$watch("isRunAllFinished()", function(newType, oldType) {
+          if(newType === false && oldType === true){ // there are some "false" , "false" events
+              $timeout(function(){
+                $scope.runAllRunning = false;
+              }, 2000); 
+            
+            $scope.notifyThatRunAllFinished();
+          }
+        });
+        
+        $scope.getProgressBar  = function() {
+          return Math.round(100/$scope.totalCells * $scope.completedCells);
+        }
+
+        $scope.toggleNotifyWhenDone = function (notificationMethod) {
+          notificationMethod.selected = !notificationMethod.selected;
+          if(notificationMethod.selected && notificationMethod.checkPermissions) {
+            notificationMethod.checkPermissions();
+          }
+        }
+        
+        $scope.isNotifyWhenDone = function (notificationMethod) {
+          return notificationMethod.selected;
+        }
+        
+        $scope.cancel  = function() {
+          bkEvaluateJobManager.cancelAll();
+        }
+      
         var showLoadingStatusMessage = function(message, nodigest) {
           if (bkHelper.isElectron) {
             bkElectron.setStatus(message);
@@ -397,7 +452,8 @@
                       notebookModel, false, sessionId, false);
                   setDocumentTitle();
                 }).catch(function(data, status, headers, config) {
-                  bkHelper.show1ButtonModal(data, "Open Failed", function() {
+                  var message = typeof(data) === 'string' ? data : "Not a valid Beaker notebook";
+                  bkHelper.show1ButtonModal(message, "Open Failed", function() {
                     bkCoreManager.gotoControlPanel();
                   });
                 }).finally(function() {
@@ -720,7 +776,15 @@
             isRunning: function (cellId) {
               return bkEvaluateJobManager.isRunning(cellId);
             },
+
+            cancel: function() {
+              return bkEvaluateJobManager.cancel();
+            },
+
             evaluate: function(toEval) {
+              if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.evaluate !== undefined) {
+                window.beakerRegister.hooks.evaluate('', toEval);
+              }
               var cellOp = bkSessionManager.getNotebookCellOp();
               // toEval can be a tagName (string), either "initialization", name of an evaluator or user defined tag
               // or a cellID (string)
@@ -764,6 +828,9 @@
               }
             },
             evaluateRoot: function(toEval) {
+              if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.evaluate !== undefined) {
+                window.beakerRegister.hooks.evaluate('root', toEval);
+              }
               var cellOp = bkSessionManager.getNotebookCellOp();
               // toEval can be a tagName (string), either "initialization", name of an evaluator or user defined tag
               // or a cellID (string)
@@ -800,13 +867,37 @@
                 showTransientStatusMessage("ERROR: cannot find anything to evaluate");
                 return "cannot find anything to evaluate";
               }
+              
+              $scope.completedCells = 0;
+              $scope.runAllRunning = true;
+              $scope.initAvailableNotificationMethods();
+              
               if (!_.isArray(toEval)) {
-                return bkEvaluateJobManager.evaluateRoot(toEval);
+                
+                $scope.totalCells = 1;
+                var ret = bkEvaluateJobManager.evaluateRoot(toEval).then(function() {
+                  $scope.completedCells++;
+                 });
+
+                return ret;
               } else {
-                return bkEvaluateJobManager.evaluateRootAll(toEval);
+                
+                $scope.totalCells = toEval.length;
+     
+                var promiseList =  bkEvaluateJobManager.evaluateRootAllPomises(toEval);
+                
+                for (var i = 0; i < promiseList.length; i++) {
+                  promiseList[i].then(function() {
+                    $scope.completedCells++;
+                   });
+                }
+                return bkUtils.all(promiseList);
               }
             },
             evaluateCellCode: function(cell, code) {
+              if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.evaluate !== undefined) {
+                window.beakerRegister.hooks.evaluate('cell', cell, code);
+              }
               // cell: cellModel
               // code: code to evaluate
               if (cell == null || typeof cell !== 'object' || _.isArray(cell)) {
@@ -816,6 +907,9 @@
               return bkEvaluateJobManager.evaluateCellCode(cell, code);
             },
             evaluateCode: function(evaluator, code) {
+              if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.evaluate !== undefined) {
+                window.beakerRegister.hooks.evaluate('code', evaluator, code);
+              }
               var outcontainer = { };
               var deferred = bkHelper.newDeferred();
               evalCodeId++;

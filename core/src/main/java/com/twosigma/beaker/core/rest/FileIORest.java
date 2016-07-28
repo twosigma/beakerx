@@ -20,26 +20,11 @@ import com.google.inject.Singleton;
 import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
+import jcifs.util.MimeMap;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.AccessDeniedException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -49,11 +34,37 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.FileSystemException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFileAttributeView;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.UserPrincipalLookupService;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import jcifs.util.MimeMap;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
+import static javax.ws.rs.core.Response.Status.OK;
+import static javax.ws.rs.core.Response.status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * for file I/O (save and load)
@@ -63,13 +74,15 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 @Singleton
 public class FileIORest {
 
+  private final static Logger logger = LoggerFactory.getLogger(FileIORest.class.getName());
+
   private static final MimeMap MIME_MAP;
   static {
     MimeMap mimeMap = null;
     try {
       mimeMap = new MimeMap();
     } catch (IOException ex) {
-      Logger.getLogger(FileIORest.class.getName()).log(Level.SEVERE, null, ex);
+      logger.error(ex.getMessage());
     }
     MIME_MAP = mimeMap;
   }
@@ -135,6 +148,52 @@ public class FileIORest {
       }
     }
     return result;
+  }
+
+  @GET
+  @Path("getPosixFileOwnerAndPermissions")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getPosixFileOwnerAndPermissions(@QueryParam("path") String pathString) throws IOException {
+    pathString = removePrefix(pathString);
+    java.nio.file.Path path = Paths.get(pathString);
+    if(Files.exists(path)) {
+      Map<String, Object> response = new HashMap<>();
+      response.put("permissions", Files.getPosixFilePermissions(path));
+      response.put("owner", Files.getOwner(path, LinkOption.NOFOLLOW_LINKS).getName());
+      response.put("group", Files.readAttributes(path, PosixFileAttributes.class, LinkOption.NOFOLLOW_LINKS).group().getName());
+      return status(OK).entity(response).build();
+    } else {
+      return status(BAD_REQUEST).build();
+    }
+  }
+
+  @POST
+  @Consumes("application/x-www-form-urlencoded")
+  @Path("setPosixFileOwnerAndPermissions")
+  @Produces(MediaType.TEXT_PLAIN)
+  public Response setPosixFilePermissions(
+    @FormParam("path") String pathString,
+    @FormParam("owner") String owner,
+    @FormParam("group") String group,
+    @FormParam("permissions[]") List<String> permissions) throws IOException {
+    HashSet<PosixFilePermission> filePermissions = getPosixFilePermissions(permissions);
+    try {
+      java.nio.file.Path path = Paths.get(pathString);
+
+      Files.setPosixFilePermissions(path, filePermissions);
+
+      UserPrincipalLookupService userPrincipalLookupService = FileSystems.getDefault().getUserPrincipalLookupService();
+      if (StringUtils.isNoneBlank(owner)) {
+        Files.setOwner(path, userPrincipalLookupService.lookupPrincipalByName(owner));
+      }
+      if (StringUtils.isNoneBlank(group)) {
+        Files.getFileAttributeView(path, PosixFileAttributeView.class, LinkOption.NOFOLLOW_LINKS)
+            .setGroup(userPrincipalLookupService.lookupPrincipalByGroupName(group));
+      }
+      return status(OK).build();
+    } catch (FileSystemException e) {
+      return status(INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
   }
 
 
@@ -427,9 +486,17 @@ public class FileIORest {
     return  s.toArray(new String[s.size()]);
   }
 
+  private HashSet<PosixFilePermission> getPosixFilePermissions(List<String> permissions) {
+    HashSet<PosixFilePermission> filePermissions = new HashSet<>();
+    for (String permission : permissions) {
+      filePermissions.add(PosixFilePermission.valueOf(permission));
+    }
+    return filePermissions;
+  }
+
   private static class DirectoryCreationException extends WebApplicationException {
     public DirectoryCreationException(String stackTrace) {
-      super(Response.status(Responses.PRECONDITION_FAILED)
+      super(status(Responses.PRECONDITION_FAILED)
           .entity("<h1>Directory Creation Failed</h1><pre>" + stackTrace + "</pre>")
           .type("text/plain")
           .build());
@@ -438,7 +505,7 @@ public class FileIORest {
 
   private static class FileSaveException extends WebApplicationException {
     public FileSaveException(String stackTrace) {
-      super(Response.status(Responses.PRECONDITION_FAILED)
+      super(status(Responses.PRECONDITION_FAILED)
           .entity("<h1>Save failed</h1><pre>" + stackTrace + "</pre>")
           .type("text/plain")
           .build());
@@ -447,7 +514,7 @@ public class FileIORest {
 
   private static class FileOpenException extends WebApplicationException {
     public FileOpenException(String stackTrace) {
-      super(Response.status(Responses.PRECONDITION_FAILED)
+      super(status(Responses.PRECONDITION_FAILED)
           .entity("<h1>Open failed</h1><pre>" + stackTrace + "</pre>")
           .type("text/plain")
           .build());
@@ -456,28 +523,28 @@ public class FileIORest {
 
   private static class FileAlreadyExistsAndIsDirectoryException extends WebApplicationException {
     public FileAlreadyExistsAndIsDirectoryException() {
-      super(Response.status(Responses.PRECONDITION_FAILED)
+      super(status(Responses.PRECONDITION_FAILED)
           .entity("isDirectory").type("text/plain").build());
     }
   }
 
   private static class FileAlreadyExistsException extends WebApplicationException {
     public FileAlreadyExistsException() {
-      super(Response.status(Responses.CONFLICT)
+      super(status(Responses.CONFLICT)
           .entity("exists").type("text/plain").build());
     }
   }
 
   private static class FileDoesntExistException extends WebApplicationException {
     public FileDoesntExistException(String message) {
-      super(Response.status(Responses.NOT_FOUND)
+      super(status(Responses.NOT_FOUND)
           .entity(message).type("text/plain").build());
     }
   }
 
   private static class FileAccessDeniedException extends WebApplicationException {
     public FileAccessDeniedException(String message) {
-      super(Response.status(Responses.NOT_ACCEPTABLE)
+      super(status(Responses.NOT_ACCEPTABLE)
         .entity(message).type("text/plain").build());
     }
   }

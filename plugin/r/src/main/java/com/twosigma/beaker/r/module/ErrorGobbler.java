@@ -19,9 +19,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.logging.Logger;
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ErrorGobbler that takes a stream from a evaluator process and write to session and cell output area
@@ -30,7 +31,7 @@ public class ErrorGobbler extends Thread {
 
   private final InputStream inputStream;
   private SimpleEvaluationObject dest;
-  private final static Logger logger = Logger.getLogger(ErrorGobbler.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(ErrorGobbler.class.getName());
   
   public ErrorGobbler(InputStream is) {
     inputStream = is;
@@ -50,7 +51,7 @@ public class ErrorGobbler extends Thread {
         if (this.dest != null) {
           this.dest.appendError(line+"\n");
         } else if(!line.isEmpty()) {
-          logger.info("Error line not captured: '"+line+"'");
+          logger.info("Error line not captured: '{}'", line);
         }
       }
     } catch (IOException ioe) {

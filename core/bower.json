@@ -39,6 +39,9 @@
     "vis": "4.16.1",
     "vivagraphjs": "latest",
     "elfinder": "2.1.11",
-    "jQuery-contextMenu": "2.1.1"
+    "jQuery-contextMenu": "2.2.0"
+  },
+  "resolutions": {
+    "jquery": ">= 1.7.2"
   }
 }

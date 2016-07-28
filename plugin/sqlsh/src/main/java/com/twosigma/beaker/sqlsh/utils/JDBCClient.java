@@ -28,12 +28,14 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JDBCClient {
+
+  private final static Logger logger = LoggerFactory.getLogger(JDBCClient.class.getName());
 
   private Map<String, BasicDataSource> dsMap = new HashMap<>();
   private Set<Driver> drivers = new HashSet<>();
@@ -87,7 +89,7 @@ public class JDBCClient {
           try {
             urlSet.add(toURL(s));
           } catch (MalformedURLException e) {
-            Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
+            logger.error(e.getMessage());
           }
         }
       }
@@ -101,7 +103,7 @@ public class JDBCClient {
           try {
             urlSet.add(toURL(path));
           } catch (MalformedURLException e) {
-            Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
+            logger.error(e.getMessage());
           }
         }
       }
@@ -116,7 +118,7 @@ public class JDBCClient {
           drivers.add(d);
         }
       } catch (Throwable t) {
-        Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, t);
+        logger.error(t.getMessage());
       }
     }
   }
@@ -129,7 +131,7 @@ public class JDBCClient {
       try {
         url = Paths.get(s).toUri().toURL();
       } catch (Exception e) {
-        Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
+        logger.error(e.getMessage());
       }
 
     }

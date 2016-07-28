@@ -400,32 +400,31 @@
           return out;
         };
 
-        $scope.doCSVExport = function(all) {
-          var rows;
+        $scope.doCSVExport = function(selectedRows) {
+          var data;
           var isFiltered = function (index) {
             return $scope.table.settings()[0].aiDisplay.indexOf(index) > -1;
           };
-          if (!all) {
-            rows = $scope.table.rows(isFiltered);
+          if (!selectedRows) {
+            data = $scope.table.rows(isFiltered).data();
           } else {
-            rows = $scope.table.rows(function(index, data, node) {
+            data = $scope.table.rows(function(index, data, node) {
               return $scope.selected[index] && isFiltered(index);
             });
           }
-          var out = $scope.exportTo(rows, 'csv');
-          bkHelper.selectFile(function(n) {
-            var suffix = '.csv';
-            if (n === undefined) {
-              return;
-            }
-            if (n.indexOf(suffix, n.length - suffix.length) === -1) {
-              n = n + suffix;
-            }
-            // TODO check for error, prompt for overwrite
-            return bkHelper.saveFile(n, out, true);
-          } , 'Select name for CSV file to save', 'csv', 'Save');
-        };
+          var out = $scope.exportTo(data, 'csv');
 
+          bkHelper.showFileSaveDialog({
+            extension: "csv",
+            title: 'Select name for CSV file to save',
+            saveButtonTitle : 'Save'
+          }).then(function (ret) {
+            if (ret.uri) {
+              return bkHelper.saveFile(ret.uri, out, true);
+            }
+          });
+        };
+        
         // reset table state
         $scope.doResetAll = function () {
           $scope.table.state.clear();

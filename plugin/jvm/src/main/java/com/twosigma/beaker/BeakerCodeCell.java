@@ -17,8 +17,6 @@
 package com.twosigma.beaker;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
@@ -31,9 +29,11 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BeakerCodeCell {
-  private final static Logger logger = Logger.getLogger(BeakerCodeCell.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(BeakerCodeCell.class.getName());
   
   private String cellId;
   private String evaluatorId;
@@ -130,7 +130,7 @@ public class BeakerCodeCell {
         o.setoutput(output);
         o.settags(tags);
       } catch (Exception e) {
-        logger.log(Level.SEVERE, "exception deserializing BeakerCodeCell ", e);
+        logger.error("exception deserializing BeakerCodeCell ", e);
         e.printStackTrace();
       }
       return o;

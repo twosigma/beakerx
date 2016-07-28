@@ -660,12 +660,14 @@
       //Plots//
 
       var api = {
+        AbstractChart: AbstractChart,
         Plot: Plot,
         TimePlot: TimePlot,
         NanoPlot: NanoPlot,
         SimpleTimePlot: SimpleTimePlot,
         CombinedPlot: CombinedPlot,
         YAxis: YAxis,
+        Graphics: Graphics,
         Line: Line,
         Bars: Bars,
         Points: Points,
@@ -698,7 +700,10 @@
       };
       return {
         list: list,
-        instanceOfPlotApi: instanceOfPlotApi
+        instanceOfPlotApi: instanceOfPlotApi,
+        inheritsFrom: inheritsFrom,
+        getValue: getValue,
+        getColor: getColor
       }
     }
   ]);

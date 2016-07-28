@@ -40,11 +40,10 @@ describe('HeatMap Tutorial', function () {
         beakerPO.checkPlotIsPresentByIdCell(idCell);
         beakerPO.checkLegendIsPresentByIdCell(idCell);
         beakerPO.getPlotLegendContainerByIdCell(idCell).element(by.css('#plotLegend')).getCssValue('top').then(function(legendTop){
-            beakerPO.getPlotLegendContainerByIdCell(idCell).element(by.css('#plotContainer')).getCssValue('top').then(function(plotTop){
+            beakerPO.getPlotLegendContainerByIdCell(idCell).element(by.css('.plot-plotcontainer')).getCssValue('top').then(function(plotTop){
                 expect(parseInt(plotTop)).toBeLessThan(parseInt(legendTop));
             });
         });
-        beakerPO.checkSaveAsSvgPngByIdCell(idCell, "plot");
     });
 
     it('Title, Labels and Legend', function () {
@@ -57,7 +56,7 @@ describe('HeatMap Tutorial', function () {
         expect(beakerPO.getCodeCellOutputContainerYLabelByIdCell(idCell)).toBe("Y Label");
         expect(beakerPO.getCodeCellOutputContainerTitleByIdCell(idCell)).toBe("Heatmap Second Example");
         beakerPO.getPlotLegendContainerByIdCell(idCell).element(by.css('#plotLegend')).getCssValue('top').then(function(legendTop){
-            beakerPO.getPlotLegendContainerByIdCell(idCell).element(by.css('#plotContainer')).getCssValue('top').then(function(plotTop){
+            beakerPO.getPlotLegendContainerByIdCell(idCell).element(by.css('.plot-plotcontainer')).getCssValue('top').then(function(plotTop){
                 expect(parseInt(legendTop)).toBeLessThan(parseInt(plotTop));
             });
         });

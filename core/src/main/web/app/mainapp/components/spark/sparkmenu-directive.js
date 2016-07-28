@@ -24,7 +24,7 @@
   var module = angular.module('bk.core');
 
   module.directive('bkSparkMenu', 
-    function($compile, $timeout, bkSparkContextManager, GLOBALS, bkUtils, bkSessionManager) {
+    function($compile, $timeout, $uibModal, bkSparkContextManager, GLOBALS, bkUtils, bkSessionManager) {
 
     return {
       restrict: 'E',
@@ -38,11 +38,11 @@
         };
 
         scope.statusClass = function() {
-          if (bkSparkContextManager.isFailing())
+          if (bkSparkContextManager.isAvailable() && bkSparkContextManager.isFailing())
             return 'plugin-error';
           if (bkSparkContextManager.isConnecting() || bkSparkContextManager.isDisconnecting())
             return 'plugin-loading';
-          if (bkSparkContextManager.isConnected())
+          if (bkSparkContextManager.isAvailable() && bkSparkContextManager.isConnected())
             return 'plugin-active';
           return 'plugin-known';
         };
@@ -69,6 +69,21 @@
 
         scope.stop = function() {
           bkSparkContextManager.disconnect();
+        };
+
+        scope.showSparkProperties = function() {
+          var options = {
+            windowClass: 'beaker-sandbox',
+            backdropClass: 'beaker-sandbox',
+            backdrop: true,
+            keyboard: true,
+            backdropClick: true,
+            controller: 'sparkPropertiesCtrl',
+            template: JST['mainapp/components/spark/sparkproperties']()
+          };
+
+          var sparkPropertiesInstance = $uibModal.open(options);
+          return sparkPropertiesInstance.result;
         };
 
         scope.showSparkUi = function() {

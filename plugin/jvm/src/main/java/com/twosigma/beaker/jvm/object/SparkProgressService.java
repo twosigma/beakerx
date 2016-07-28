@@ -51,12 +51,15 @@ public class SparkProgressService {
   private BayeuxServer bayeux;
   private LocalSession localSession;
 
-  private volatile Map<Integer, StageProgress> progress = new HashMap<>();
+  private volatile List<JobProgress> progress = new ArrayList<>();
   private int activeJobId;
   private String activeAppName;
   private Map<Integer, List<Long>> activeTasks = new HashMap<>();
   private Map<Integer, List<Long>> failedTasks = new HashMap<>();
   private Map<Integer, List<Long>> succeededTasks = new HashMap<>();
+  private Map<Integer, StageProgress> stages = new HashMap<>();
+  private List<Integer> jobs = new ArrayList<>();
+  private Map<Integer, List<Integer>> stagesPerJob = new HashMap<>();
 
   @Inject
   public SparkProgressService(BayeuxServer bayeuxServer) {
@@ -66,14 +69,21 @@ public class SparkProgressService {
   }
 
   public void reportProgress() {
-    ServerChannel channel = this.bayeux.createChannelIfAbsent("/sparkStageProgress").getReference();
-    for (Map.Entry<Integer, StageProgress> entry : progress.entrySet()) {
-      int stageId = entry.getKey();
-      StageProgress sp = entry.getValue();      
-      // update number of tasks
-      sp.setActiveTasks(activeTasks.getOrDefault(stageId, new ArrayList<Long>()).size());
-      sp.setFailedTasks(failedTasks.getOrDefault(stageId, new ArrayList<Long>()).size());
-      sp.setSucceededTasks(succeededTasks.getOrDefault(stageId, new ArrayList<Long>()).size());
+    ServerChannel channel = this.bayeux.createChannelIfAbsent("/sparkJobProgress").getReference();
+    progress.clear();
+    for (Integer jobId : jobs) {
+      JobProgress jp = new JobProgress(jobId, false);
+      for (Integer stageId : stagesPerJob.get(jobId)) {
+        StageProgress sp = stages.get(stageId);
+        if (sp.isRunning())
+          jp.setRunning(true);
+        // update number of tasks
+        sp.setActiveTasks(activeTasks.getOrDefault(stageId, new ArrayList<Long>()).size());
+        sp.setFailedTasks(failedTasks.getOrDefault(stageId, new ArrayList<Long>()).size());
+        sp.setSucceededTasks(succeededTasks.getOrDefault(stageId, new ArrayList<Long>()).size());
+        jp.getStages().add(sp);
+      }
+      progress.add(jp);
     }
 
     if (channel != null) {
@@ -81,12 +91,18 @@ public class SparkProgressService {
     }
   }
 
-  public Map<Integer, StageProgress> getProgress() {
+  public List<JobProgress> getProgress() {
     return this.progress;
   }
 
   public void clear() {
-    this.progress = new HashMap<>();
+    this.progress.clear();
+    this.jobs.clear();
+    this.stagesPerJob.clear();
+    this.activeTasks.clear();
+    this.failedTasks.clear();
+    this.succeededTasks.clear();
+    this.stages.clear();
   }
 
 
@@ -111,35 +127,32 @@ public class SparkProgressService {
 
 
   public void jobStart(int jobId) {
-    clear();
     activeJobId = jobId;
-    ServerChannel channel = this.bayeux.createChannelIfAbsent("/sparkJobProgress").getReference();
-    if (channel != null) {
-      channel.publish(this.localSession, new JobProgress(jobId, true), null);
+    if (!jobs.contains(jobId)) {
+      jobs.add(jobId);
+      stagesPerJob.put(jobId, new ArrayList<Integer>());
     }
   }
 
   public void jobEnd(int jobId) {
     if (jobId != activeJobId)
       logger.warning(String.format("Spark job %d was not registered as active.", jobId));
-    
-    clear();
-    ServerChannel channel = this.bayeux.createChannelIfAbsent("/sparkJobProgress").getReference();
-    if (channel != null) {
-      channel.publish(this.localSession, new JobProgress(jobId, false), null);
-    }
   }
 
 
   public void stageStart(int stageId, int numTasks) {
-    if (progress.containsKey(stageId))
+    if (stages.containsKey(stageId))
       logger.warning(String.format("Spark stage %d already exists and will be started.", stageId));
 
     StageProgress sp = new StageProgress();
     sp.setStageId(stageId);
     sp.setRunning(true);
     sp.setTotalTasks(numTasks);
-    progress.put(stageId, sp);
+    stages.put(stageId, sp);
+
+    List<Integer> sts = stagesPerJob.getOrDefault(activeJobId, new ArrayList<Integer>());
+    sts.add(stageId);
+    stagesPerJob.put(activeJobId, sts);
 
     activeTasks.put(stageId, new ArrayList<Long>());
     failedTasks.put(stageId, new ArrayList<Long>());
@@ -149,14 +162,14 @@ public class SparkProgressService {
   }
 
   public void stageEnd(int stageId, String failureReason) {
-    if (!progress.containsKey(stageId))
+    if (!stages.containsKey(stageId))
       logger.warning(String.format("Spark stage %d could not be found for stage progress reporting.", stageId));
     
-    StageProgress sp = progress.getOrDefault(stageId, new StageProgress());
+    StageProgress sp = stages.getOrDefault(stageId, new StageProgress());
     sp.setStageId(stageId);
     sp.setRunning(false);
     sp.setFailureReason(failureReason);
-    progress.put(stageId, sp);
+    stages.put(stageId, sp);
 
     reportProgress();
   }
@@ -182,7 +195,7 @@ public class SparkProgressService {
 
 
   public void taskStart(int stageId, long taskId) {
-    if (!progress.containsKey(stageId)) {
+    if (!stages.containsKey(stageId)) {
       logger.warning(String.format("Spark stage %d could not be found for task progress reporting.", stageId));
       return;
     }
@@ -196,7 +209,7 @@ public class SparkProgressService {
   }
 
   public void taskEnd(int stageId, long taskId, boolean failed) {
-    if (!progress.containsKey(stageId)) {
+    if (!stages.containsKey(stageId)) {
       logger.warning(String.format("Spark stage %d could not be found for task progress reporting.", stageId));
       return;
     }
@@ -218,6 +231,10 @@ public class SparkProgressService {
     reportProgress();
   }
 
+
+  /*
+   * Classes for JSON serialization
+   */
 
   @JsonAutoDetect
   public static class ApplicationProgress {
@@ -256,34 +273,45 @@ public class SparkProgressService {
   @JsonAutoDetect
   public static class JobProgress {
 
-    private int jobId;
+    private int id;
     private boolean running;
+    private ArrayList<StageProgress> stages;
 
     public boolean isRunning() {
       return running;
     }
 
-    public int getJobId() {
-      return jobId;
+    public int getId() {
+      return id;
     }
 
-    public void setJobId(int jobId) {
-      this.jobId = jobId;
+    public void setId(int id) {
+      this.id = id;
     }
 
-    public void setRunnning(boolean running) {
+    public void setRunning(boolean running) {
       this.running = running;
+    }
+
+    public ArrayList<StageProgress> getStages() {
+      return this.stages;
+    }
+
+    public void setStages(ArrayList<StageProgress> stages) {
+      this.stages = stages;
     }
 
     public JobProgress() {
+      this.stages = new ArrayList<StageProgress>();
     }
 
     public JobProgress(
-        int jobId,
+        int id,
         boolean running) {
 
-      this.jobId = jobId;
+      this.id = id;
       this.running = running;
+      this.stages = new ArrayList<StageProgress>();
     }
   }
 

@@ -15,20 +15,26 @@
  */
 package com.twosigma.beaker.sqlsh.utils;
 
-import com.twosigma.beaker.NamespaceClient;
-import com.twosigma.beaker.jvm.object.OutputContainer;
-import com.twosigma.beaker.table.TableDisplay;
-
-import javax.sql.DataSource;
-
-import org.apache.commons.dbcp2.BasicDataSource;
-
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.commons.dbcp2.BasicDataSource;
+
+import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.jvm.object.OutputContainer;
+import com.twosigma.beaker.table.TableDisplay;
 
 public class QueryExecutor {
 
@@ -46,13 +52,19 @@ public class QueryExecutor {
 
     BeakerParser beakerParser = new BeakerParser(script, namespaceClient, defaultConnectionString, namedConnectionString, jdbcClient);
 
-    BasicDataSource ds = jdbcClient.getDataSource(beakerParser.getDbURI().getConnectionString());
-    ds.setUsername(beakerParser.getDbURI().getUser());
-    ds.setPassword(beakerParser.getDbURI().getPassword());
-    
+    BasicDataSource ds = jdbcClient.getDataSource(beakerParser.getDbURI().getActualConnectionString());
+
+    Properties info = new Properties();
+    if (beakerParser.getDbURI().getUser() != null) {
+      info.put("user", beakerParser.getDbURI().getUser());
+    }
+    if (beakerParser.getDbURI().getPassword() != null) {
+      info.put("password", beakerParser.getDbURI().getPassword());
+    }
+
     boolean isConnectionExeption = true;
 
-    try (Connection connection = ds.getConnection()) {
+    try (Connection connection = ds.getDriver().connect(beakerParser.getDbURI().getActualConnectionString(), info)) {
       this.connection = connection;
       connection.setAutoCommit(false);
       List<Object> resultsForOutputCell = new ArrayList<>();

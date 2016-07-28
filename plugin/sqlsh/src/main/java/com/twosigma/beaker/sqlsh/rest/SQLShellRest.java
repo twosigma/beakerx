@@ -144,7 +144,7 @@ public class SQLShellRest {
             @FormParam("classPath") String classPath,
             @FormParam("defaultDatasource") String defaultDatasource,
             @FormParam("datasources") String datasorces)
-            throws MalformedURLException, IOException, SQLException {
+            throws MalformedURLException, IOException {
         if (!this.shells.containsKey(shellId)) {
             return;
         }

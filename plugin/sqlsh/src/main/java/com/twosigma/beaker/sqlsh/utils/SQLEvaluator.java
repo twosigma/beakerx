@@ -204,7 +204,7 @@ public class SQLEvaluator {
     }
   }
 
-  public void setShellOptions(String cp, String defaultDatasource, String datasources) throws IOException, SQLException {
+  public void setShellOptions(String cp, String defaultDatasource, String datasources) throws IOException {
     currentClassPath = cp;
     if (cp.isEmpty())
       classPath = new ArrayList<String>();

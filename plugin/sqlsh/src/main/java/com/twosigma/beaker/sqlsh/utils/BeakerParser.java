@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
+import org.apache.http.client.ClientProtocolException;
+
 public class BeakerParser {
   public static final String DB_URI_VAR = "beakerDB";
   public static final String INPUTS_VAR = "inputs";
@@ -126,7 +128,7 @@ public class BeakerParser {
     result.setResultQuery(sql);
   }
 
-  private void parseVar(String script) throws IOException, SQLException {
+  private void parseVar(String script) throws IOException, DBConnectionException {
     List<String> vars = new ArrayList<>();
     Scanner scanner = new Scanner(script);
     StringBuffer sb = new StringBuffer();

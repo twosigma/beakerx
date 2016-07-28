@@ -41,7 +41,7 @@ public class DbExplorerFactory {
     try {
       beakerParser = new BeakerParser(txt, namespaceClient, defaultConnectionString, namedConnectionString, jdbcClient);
 
-      final String uri = beakerParser.getDbURI().getConnectionString();
+      final String uri = beakerParser.getDbURI().getActualConnectionString();
 
       if (uri != null) {
         final DataSource ds = jdbcClient.getDataSource(uri);

@@ -40,7 +40,7 @@ public class ConnectionStringHolder {
   private String password;
   private boolean showDialog;
 
-  public ConnectionStringHolder(String connectionString, JDBCClient jdbcClient) throws SQLException {
+  public ConnectionStringHolder(String connectionString, JDBCClient jdbcClient) {
     this.jdbcClient = jdbcClient;
     setConnectionString(connectionString);
   }
@@ -73,14 +73,28 @@ public class ConnectionStringHolder {
     return connectionString;
   }
   
-  public void setConnectionString(String connectionString) throws SQLException {
+  public String getActualConnectionString() {
+    return removeParameter(connectionString, USER_CONNECTION_KEY, PASSWORD_CONNECTION_KEY);
+  }
+
+  public void setConnectionString(String connectionString) {
     
     this.connectionString = connectionString;
     
     if(connectionString != null && !connectionString.isEmpty()){
-      BasicDataSource ds = jdbcClient.getDataSource(connectionString);
       
-      String user = getProperty(USER_CONNECTION_KEY, connectionString, ds.getDriver());
+      BasicDataSource ds = null;
+      String user = null;
+      try {
+        ds = jdbcClient.getDataSource(connectionString);
+      } catch (SQLException e) {}
+
+      if(ds!= null){
+        user = getProperty(USER_CONNECTION_KEY, connectionString, ds.getDriver());
+      }if(user == null){
+        user = getProperty(USER_CONNECTION_KEY, connectionString);
+      }
+       
       if (user != null) {
         if (KEY_FOR_DISPLAY_INPUT_DIALOG.equals(user)) {
           showDialog = true;
@@ -99,18 +113,21 @@ public class ConnectionStringHolder {
           showDialog = true;
         }
       }
+      
     }
   }
 
-  protected static String getProperty(String property, String connectionString, Driver dbDriver) throws SQLException{
+  protected static String getProperty(String property, String connectionString, Driver dbDriver){
     String ret = null;
     if(property != null && !property.isEmpty() && dbDriver != null && connectionString != null && !connectionString.isEmpty()){
-      for (DriverPropertyInfo dpi : dbDriver.getPropertyInfo(connectionString, null)) {
-        if(property.equalsIgnoreCase(dpi.name.trim())){
-          ret = dpi.value;
-          break;
+      try {
+        for (DriverPropertyInfo dpi : dbDriver.getPropertyInfo(connectionString, null)) {
+          if(property.equalsIgnoreCase(dpi.name.trim())){
+            ret = dpi.value;
+            break;
+          }
         }
-      }
+      } catch (SQLException e) {}
     }
     return ret;
   }
@@ -133,5 +150,30 @@ public class ConnectionStringHolder {
     }
     return ret;
   }
-
+  
+  public static void main(String[] args) {
+     String test = "jdbc:postgresql://127.0.0.1:5432/postgres?user=<prompt>&password=<prompt>";
+     System.out.println(removeParameter(test, USER_CONNECTION_KEY, PASSWORD_CONNECTION_KEY));
+  }
+  
+  protected static String removeParameter(String connectionString, String ... parameters) {
+    String ret = connectionString;
+    for (String parameter : parameters) {
+      int index = ret.indexOf(parameter + EQUAL_SIGN);
+      if(index > -1){
+        int parameterEnd = ret.length();
+        for (char c : SEPARATORS) {
+          int temp = ret.indexOf(c, index);
+          if(temp > -1){
+            parameterEnd = Math.min(temp, parameterEnd);
+          }
+        }
+        String toRet = ret.substring(0, index);
+        toRet += ret.substring(parameterEnd, ret.length());
+        ret = toRet;
+      }
+    }
+    return ret;
+  }
+  
 }

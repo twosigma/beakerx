@@ -23,7 +23,7 @@
       </div>
       <div class="cell-menu-item move-cell-down" ng-click="moveCellDown()" ng-class="moveCellDownDisabled() && 'disabled'" title="move cell down"></div>
       <div class="cell-menu-item move-cell-up" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() && 'disabled'" title="move cell up"></div>
-      <div class="cell-menu-item delete-cell" ng-if="!isLockedCell()" ng-click="deleteCell()" title="delete cell1"></div>
+      <div class="cell-menu-item delete-cell" ng-if="!isLockedCell()" ng-click="deleteCell()" title="{{isSectionCell() ? 'Delete heading and keep contents' : 'Delete cell'}}"></div>
       <div class="cell-menu-item expand-contract"
            ng-if="!isLockedCell() && collapseCellMenu[cellmodel.type]"
            ng-click="collapseCellMenu[cellmodel.type].click()"

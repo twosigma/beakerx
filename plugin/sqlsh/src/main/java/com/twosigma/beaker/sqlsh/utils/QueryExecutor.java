@@ -33,7 +33,7 @@ public class QueryExecutor {
   protected final JDBCClient jdbcClient;
 
   private Connection connection;
-  private PreparedStatement statement;
+  private Statement statement;
 
   public QueryExecutor(JDBCClient jdbcClient) {
     this.jdbcClient = jdbcClient;
@@ -146,13 +146,30 @@ public class QueryExecutor {
     }
   }
 
+  protected static String setObject(String sql, Object value){
+    String ret;
+    int index = sql.indexOf('?');
+    if(index > -1){
+      String begin = sql.substring(0, index);
+      String end = sql.substring(index + 1, sql.length());
+      if(value instanceof String){
+        ret = begin + "\'" + value + "\'" + end;
+      }else{
+        ret = begin + value + end;
+      }
+    }else{
+      ret = sql;
+    }
+    return ret;
+  }
+
   private QueryResult executeQuery(int currentIterationIndex, BeakerParseResult queryLine, Connection conn, NamespaceClient namespaceClient) throws SQLException, ReadVariableException {
 
     QueryResult queryResult = new QueryResult();
-
-    try (PreparedStatement statement = conn.prepareStatement(queryLine.getResultQuery())) {
+    String sql = queryLine.getResultQuery();
+    
+    try (Statement statement = conn.createStatement()) {
       this.statement = statement;
-      int n = 1;
       for (BeakerInputVar parameter : queryLine.getInputVars()) {
         if(parameter.getErrorMessage() != null) throw new ReadVariableException(parameter.getErrorMessage());
         Object obj;
@@ -160,9 +177,9 @@ public class QueryExecutor {
           obj = namespaceClient.get(parameter.objectName);
 
           if (!parameter.isArray() && !parameter.isObject()) {
-            statement.setObject(n, obj);
+            sql = setObject(sql, obj);
           } else if (!parameter.isArray() && parameter.isObject()) {
-            statement.setObject(n, getValue(obj, parameter.getFieldName()));
+            sql = setObject(sql, getValue(obj, parameter.getFieldName()));
           } else if (parameter.isArray()) {
             int index;
             if (currentIterationIndex > 0 && parameter.isAll()) {
@@ -172,27 +189,26 @@ public class QueryExecutor {
             }
             if (!parameter.isObject()) {
               if (obj instanceof List) {
-                statement.setObject(n, ((List) obj).get(index));
+                sql = setObject(sql, ((List) obj).get(index));
               } else if (obj.getClass().isArray()) {
                 Object arrayElement = Array.get(obj, index);
-                statement.setObject(n, arrayElement);
+                sql = setObject(sql, arrayElement);
               }
             } else {
               if (obj instanceof List) {
-                statement.setObject(n, getValue(((List) obj).get(index), parameter.getFieldName()));
+                sql = setObject(sql, getValue(((List) obj).get(index), parameter.getFieldName()));
               } else if (obj.getClass().isArray()) {
                 Object arrayElement = Array.get(obj, index);
-                statement.setObject(n, getValue(arrayElement, parameter.getFieldName()));
+                sql = setObject(sql, getValue(arrayElement, parameter.getFieldName()));
               }
             }
           }
-          n++;
         } catch (Exception e) {
           throw new ReadVariableException(parameter.objectName, e);
         }
       }
 
-      boolean hasResultSet = statement.execute();
+      boolean hasResultSet = statement.execute(sql);
       if (hasResultSet) {
         ResultSet rs = statement.getResultSet();
 

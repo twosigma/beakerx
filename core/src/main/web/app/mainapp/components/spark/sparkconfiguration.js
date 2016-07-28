@@ -42,24 +42,10 @@
       $uibModalInstance.close("ok");
     };
 
-    $scope.isConnected = function() {
-      return bkSparkContextManager.isConnected() && !bkSparkContextManager.isDisconnecting() && !bkSparkContextManager.isConnecting();
-    };
-
-    $scope.isConnecting = function() {
-      return bkSparkContextManager.isConnecting();
-    };
-
-    $scope.isFailing = function() {
-      return bkSparkContextManager.isFailing();
-    };
-
-    $scope.isDisconnecting = function() {
-      return bkSparkContextManager.isDisconnecting();
-    };
-
-    $scope.isOffline = function() {
-      return !$scope.isConnected() && !$scope.isConnecting() && !$scope.isDisconnecting();
+    $scope.isDisabled = function() {
+      return bkSparkContextManager.isFailing() || bkSparkContextManager.isConnected() ||
+        bkSparkContextManager.isConnecting() || bkSparkContextManager.isDisconnecting() ||
+        !bkSparkContextManager.isAvailable();
     };
 
     $scope.start = function() {

@@ -27,7 +27,7 @@
     
     var PLUGIN_NAME = "Scala";
     var COMMAND = "scala/scalaPlugin";
-    var serviceBase = undefined;
+    var serviceBase = null;
     var uiPort = 4040;
     var shellId = undefined;
 
@@ -37,9 +37,15 @@
     $rootScope.error = '';
     $rootScope.running = 0;
 
+    $rootScope.sparkConf = null;
+
+    $rootScope.jobsPerCell = {};
+    $rootScope.activeCell = null;
+
     function ConfigurationString(id, value, name, customSerializer) {
       this.id = id;
       this.value = value;
+      this.type = 'string';
       this.name = typeof name === 'string' ? name : id;
       if (typeof customSerializer === 'function')
         this.serializer = customSerializer;
@@ -49,6 +55,18 @@
       this.serializedValue = function() {
         return this.serializer(this.value);
       };
+    }
+
+    function ConfigurationChoice(id, value, name, options) {
+      ConfigurationString.apply(this, [id, value, name]);
+      this.options = typeof options === 'object' ?
+        options : [value];
+      this.type = 'choice';
+    }
+
+    function ConfigurationBoolean(id, value, name) {
+      ConfigurationString.apply(this, [id, value, name]);
+      this.type = 'boolean';
     }
 
     function integerSerializer(min, max, suffix) {
@@ -61,12 +79,6 @@
       };
     }
 
-    function ConfigurationChoice(id, value, name, options) {
-      ConfigurationString.apply(this, [id, value, name]);
-      this.options = typeof options === 'object' ?
-        options : [value];
-    }
-
     $rootScope.configurationObjects = {
       executorCores: new ConfigurationString(
         'spark.executor.cores',
@@ -76,18 +88,101 @@
       ),
       executorMemory: new ConfigurationString(
         'spark.executor.memory',
-        '8',
-        'Executor memory',
-        integerSerializer(1, 128, 'g')
+        '8g',
+        'Executor memory'
       ),
       datacenter: new ConfigurationChoice(
-        'master',
+        'datacenter',
         'dft',
         'Datacenter',
         ['dft', 'aws', 'pubcloud', 'pit', 'local']
       ),
       advanced: {
-        // ...
+        persistent: new ConfigurationBoolean(
+          'persistent',
+          false,
+          'Persistent'
+        ),
+        sc: new ConfigurationString(
+          'sparkContextAlias',
+          'sc',
+          'SparkContext alias'
+        ),
+        sqlContext: new ConfigurationString(
+          'sqlContextAlias',
+          'sqlContext',
+          'SQLContext alias'
+        )
+      }
+    };
+
+    function readConfiguration(config, applyOnSuccess) {
+      var r = {
+        configurationObjects: jQuery.extend(true, {}, $rootScope.configurationObjects),
+        uiPort: null,
+        sparkConf: null,
+        success: false
+      }
+      try {
+        r.configurationObjects.advanced.sc.value = config["sparkContextAlias"];
+        r.configurationObjects.advanced.sqlContext.value = config["sqlContextAlias"];
+        r.configurationObjects.advanced.persistent.value = config["persistent"];
+        r.sparkConf = config["sparkConf"];
+        r.configurationObjects.executorCores.value = r.sparkConf["spark.executor.cores"];
+        r.configurationObjects.executorMemory.value = r.sparkConf["spark.executor.memory"];
+        r.configurationObjects.datacenter.value = config["datacenter"];
+        r.uiPort = parseInt(r.sparkConf["spark.ui.port"]);
+
+        if (applyOnSuccess) {
+          $rootScope.configurationObjects = r.configurationObjects;
+          uiPort = r.uiPort;
+          $rootScope.sparkConf = r.sparkConf;
+        }
+
+        r.success = true;
+      } catch (e) {
+        console.warn("Failed to deserialize configuration:", e);
+      }
+      return r;
+    }
+
+    function Stage(id, total, failed, completed, active) {
+      this.total = total;
+      this.id = id;
+      this.url = bkSparkContextManager.sparkUiUrl() + '/stages/stage/?id=' + id + '&attempt=0';
+      this.failed = failed;
+      this.completed = completed;
+      this.active = active;
+
+      if (this.total > 0) {
+        this.failedP = Math.min(100, this.failed / this.total * 100);
+        this.completedP = Math.min(100, this.completed / this.total * 100);
+        this.activeP = Math.min(100, this.active / this.total * 100);
+      }
+      else {
+        this.failedP = 0;
+        this.completedP = 0;
+        this.activeP = 0;
+      }
+    };
+
+    function Job(id, stageObjects, stages, running) {
+      this.id = id;
+      this.stages = stageObjects;
+      this.running = running;
+      if (id == null)
+        this.url = null;
+      else
+        this.url = bkSparkContextManager.sparkUiUrl() + '/jobs/job/?id=' + id;
+      this.totalTasks = 0;
+      this.failedTasks = 0;
+      this.succeededTasks = 0;
+      this.activeTasks = 0;
+      for (var index in stages) {
+        this.totalTasks += stages[index].totalTasks;
+        this.failedTasks += stages[index].failedTasks;
+        this.activeTasks += stages[index].activeTasks;
+        this.succeededTasks += stages[index].succeededTasks;
       }
     };
     
@@ -95,34 +190,74 @@
       return bkEvaluatorManager.getEvaluator(PLUGIN_NAME);
     };
 
+    var appSubscription = null, jobSubscription = null;
+
+    // retrieve service base to send http requests
     $rootScope.$watch('getEvaluator()', function(newValue, oldValue) {
-      if (typeof newValue === 'undefined' || newValue == null)
+      if (typeof newValue === 'undefined' || newValue == null) {
+        serviceBase = null;
         return;
+      }
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
         recordOutput: "true"
       }).success(function(ret) {
         serviceBase = ret;
-        console.log('The service base is', ret);
         var evaluator = bkEvaluatorManager.getEvaluator(PLUGIN_NAME);
         if (typeof evaluator !== 'undefined' && evaluator != null)
           shellId = evaluator.settings.shellID;
-        console.log('Setting up comet connection to', bkHelper.serverUrl(serviceBase));
 
         $.cometd.init({
           url: bkHelper.serverUrl(serviceBase) + '/cometd/'
         });
-        $.cometd.subscribe('/sparkStageProgress', function(progress) {
-          console.log("Spark stage progress", progress);
-        });
-        $.cometd.subscribe('/sparkAppProgress', function(progress) {
+        appSubscription = $.cometd.subscribe('/sparkAppProgress', function(progress) {
           console.log("Spark app progress", progress);
         });
-        $.cometd.subscribe('/sparkJobProgress', function(progress) {
-          console.log("Spark job progress", progress);
-          $rootScope.running += progress.data.running ? 1 : -1;
-          $rootScope.running = Math.max(0, $rootScope.running);
+        jobSubscription = $.cometd.subscribe('/sparkJobProgress', function(progress) {
+          $rootScope.running = 0;
+          for (var index in progress.data) {
+            $rootScope.running += progress.data[index].running ? 1 : 0;
+          }
+          if ($rootScope.activeCell != null) {
+            var jobs = [];
+            for (var jindex in progress.data) {
+              var j = progress.data[jindex];
+              var stages = [];
+              for (var sindex in j.stages) {
+                var s = j.stages[sindex];
+                stages.push(new Stage(
+                  s.stageId,
+                  s.totalTasks,
+                  s.failedTasks,
+                  s.succeededTasks,
+                  s.activeTasks));
+              }
+              jobs.push(new Job(
+                j.id,
+                stages,
+                j.stages,
+                j.running));
+            }
+            $rootScope.jobsPerCell[$rootScope.activeCell] = jobs;
+          }
+
           $rootScope.$digest();
+        });
+
+        // get current Spark status (has the context already been started?)
+        bkHelper.httpGet(
+          bkHelper.serverUrl(serviceBase + "/rest/scalash/configuration"))
+        .success(function(ret) {
+          if (ret === "offline")
+            return;
+          var confReadResult = readConfiguration(ret, true);
+          if (confReadResult.success) {
+            $rootScope.connecting = false;
+            $rootScope.connected = true;
+            $rootScope.running = 0;
+            console.log("SparkContext already started, port:", uiPort);
+          }
+          bkHelper.clearStatus("Creating Spark context");
         });
       }).error(function(ret) {
         serviceBase = undefined;
@@ -130,9 +265,14 @@
       });
     });
 
+    $rootScope.$on('$destroy', function() {
+      $.cometd.unsubscribe(appSubscription);
+      $.cometd.unsubscribe(jobSubscription);
+    });
+
     return {
       isAvailable: function() {
-        return serviceBase !== undefined;
+        return serviceBase != null;
       },
       isConnecting: function() {
         return $rootScope.connecting;
@@ -170,14 +310,28 @@
             configuration: JSON.stringify(this.configuration())
           }
         ).success(function(ret) {
-          console.log("done startSparkContext", ret);
+          var confReadResult = readConfiguration(ret, true);
+          if (!confReadResult.success)
+            return;
+
+          console.log("done startSparkContext, port:", uiPort);
           $rootScope.connecting = false;
           $rootScope.connected = true;
           $rootScope.running = 0;
-          uiPort = parseInt(ret);
+          $rootScope.error = '';
+          $rootScope.jobsPerCell = {};
           bkHelper.clearStatus("Creating Spark context");
         }).error(function(ret) {
-          $rootScope.error = 'ERROR';
+          if (ret == null) {
+            // connection issue, Spark is just not available
+            serviceBase = null;
+            $rootScope.error = '';
+          }
+          else {
+            // something erroneous happened
+            console.error("SparkContext could not be started.", ret);
+            $rootScope.error = 'ERROR';
+          }
           bkHelper.clearStatus("Creating Spark context");
           $rootScope.connecting = false;
           $rootScope.running = 0;
@@ -198,9 +352,19 @@
           $rootScope.disconnecting = false;
           $rootScope.connected = false;
           $rootScope.running = 0;
+          $rootScope.error = '';
           bkHelper.clearStatus("Stopping Spark context");
         }).error(function(ret) {
-          $rootScope.error = 'ERROR';
+          if (ret == null) {
+            // connection issue, Spark is just not available
+            serviceBase = null;
+            $rootScope.error = '';
+          }
+          else {
+            // something erroneous happened
+            console.error("SparkContext could not be stopped.", ret);
+            $rootScope.error = 'ERROR';
+          }
           bkHelper.clearStatus("Stopping Spark context");
           $rootScope.disconnecting = false;
           $rootScope.running = 0;
@@ -231,10 +395,25 @@
           config[obj.id] = obj.serializedValue();
         }
         for (var key in $rootScope.configurationObjects.advanced) {
-          var obj = $rootScope.configurationObjects[key];
+          var obj = $rootScope.configurationObjects.advanced[key];
           config[obj.id] = obj.serializedValue();
         }
         return config;
+      },
+      sparkConf: function() {
+        return $rootScope.sparkConf;
+      },
+      getJobsPerCell: function(cellId) {
+        if (cellId in $rootScope.jobsPerCell)
+          return $rootScope.jobsPerCell[cellId];
+        return null;
+      },
+      setJobsPerCell: function(cellId, jobs) {
+        $rootScope.jobsPerCell[cellId] = jobs;
+      },
+      registerCell: function(cellId) {
+        $rootScope.jobsPerCell[cellId] = [];
+        $rootScope.activeCell = cellId;
       }
     };
   });

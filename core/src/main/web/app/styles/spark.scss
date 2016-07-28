@@ -14,6 +14,10 @@
  *  limitations under the License.
  */
 
+ .spark-menu.disabled {
+  pointer-events: none;
+ }
+
 .spark-configuration {
   display: table;
 
@@ -139,6 +143,10 @@ h1.spark-configuration {
     position: relative;
   }
 
+  .progress-bar {
+    line-height: 21px;
+  }
+
   .total-progress {
     padding-right: 0 !important;
     position: relative;
@@ -159,5 +167,60 @@ h1.spark-configuration {
   }
   .spark-tasks-active {
     background-color: #337ab7;
+  }
+}
+
+.spark-jobs {
+  .panel-heading {
+    cursor: pointer;
+    position: relative;
+  }
+
+  .panel-title {
+    cursor: pointer;
+    pointer-events: none;
+  }
+
+  .fa {
+    pointer-events: none;
+    margin-right: 5px;
+  }
+
+  .spark-job-name {
+    margin-left: 8px;
+    pointer-events: none;
+  }
+
+  .spark-job-status {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    margin-left: -40px;
+    pointer-events: none;
+  }
+
+  .spark-job-status-animated {
+    top: 10px !important;
+  }
+
+  .spark-job-link {
+    float: right;
+    pointer-events: auto;
+  }
+}
+
+.spark-jobs-controls {
+  position: absolute;
+  right: 24px;
+  top: 14px;
+}
+
+.spark-properties {
+  th {
+    font-weight: normal;
+  }
+
+  pre {
+    max-width: 380px;
   }
 }

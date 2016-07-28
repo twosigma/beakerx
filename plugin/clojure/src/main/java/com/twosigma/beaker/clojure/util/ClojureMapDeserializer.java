@@ -25,10 +25,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import clojure.lang.PersistentArrayMap;
+import org.slf4j.LoggerFactory;
 
 public class ClojureMapDeserializer implements ObjectDeserializer {
   private final BeakerObjectConverter parent;
@@ -51,7 +50,7 @@ public class ClojureMapDeserializer implements ObjectDeserializer {
         Map.Entry<String, JsonNode> ee = entries.next();
         map.put(ee.getKey(), parent.deserialize(ee.getValue(), mapper));
       } catch (Exception e) {
-        Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+        LoggerFactory.getLogger(this.getClass().getName()).error(e.getMessage());
       }
     }
     return PersistentArrayMap.create(map);

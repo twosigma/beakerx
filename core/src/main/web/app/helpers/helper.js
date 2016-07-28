@@ -1407,6 +1407,12 @@
 
       elfinder: function($elfinder, elfinderOptions){
         var elfinder;
+
+        elFinder.prototype.i18.en.messages['cmdeditpermissions'] = 'Edit Permissions';
+        elFinder.prototype._options.commands.push('editpermissions');
+        elFinder.prototype._options.contextmenu.files.push('copypath');
+        elFinder.prototype._options.contextmenu.cwd.push('editpermissions');
+
         elFinder.prototype._options.commands.push('copypath');
         elFinder.prototype._options.contextmenu.files.push('copypath');
         elFinder.prototype._options.contextmenu.cwd.push('copypath');
@@ -1505,6 +1511,40 @@
       },
 
       elfinderOptions: function (getFileCallback, selectCallback, openCallback, mime, showHiddenFiles) {
+        
+        function getNavbarMenuItems() {
+          var items = ['copy', 'cut', 'paste', 'duplicate', '|', 'rm'];
+          if(!bkUtils.serverOS.isWindows()) {
+            items.push('|', 'editpermissions');
+          }
+          return items;
+        }
+        
+        function getToolbarItems() {
+          var toolbar = [
+            ['back', 'forward'],
+            ['mkdir'],
+            ['copy', 'cut', 'paste'],
+            ['rm'],
+            ['duplicate', 'rename'],
+            ['view', 'sort']
+          ];
+          if(!bkUtils.serverOS.isWindows()) {
+            toolbar.push(['editpermissions']);
+          }
+          return toolbar;
+        }
+        
+        function getFileContextMenuItems() {
+          var items = [
+            'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
+            'rm'
+          ];
+          if(!bkUtils.serverOS.isWindows()) {
+            items.push('|', 'editpermissions');
+          }
+          return items;
+        }
 
         return {
           url: '../beaker/connector',
@@ -1530,27 +1570,17 @@
           defaultView: 'icons',
           contextmenu: {
             // navbarfolder menu
-            navbar: ['copy', 'cut', 'paste', 'duplicate', '|', 'rm'],
+            navbar: getNavbarMenuItems(),
 
             // current directory menu
             cwd: ['reload', 'back', '|', 'mkdir', 'paste'],
 
             // current directory file menu
-            files: [
-              'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
-              'rm'
-            ]
+            files: getFileContextMenuItems()
           },
           uiOptions: {
             // toolbar configuration
-            toolbar: [
-              ['back', 'forward'],
-              ['mkdir'],
-              ['copy', 'cut', 'paste'],
-              ['rm'],
-              ['duplicate', 'rename'],
-              ['view', 'sort']
-            ],
+            toolbar: getToolbarItems(),
 
             // navbar options
             navbar: {

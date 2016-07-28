@@ -17,7 +17,9 @@ package com.twosigma.beaker.r;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -31,11 +33,14 @@ import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
 
 import org.eclipse.jetty.server.Server;
+import org.slf4j.LoggerFactory;
 
 /**
  * In the main function, create modules and perform initialization.
  */
 public class Main {
+
+  private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Main.class.getName());
 
   private static final java.util.logging.Logger GuiceComponentProviderFactoryLogger =
       java.util.logging.Logger.getLogger(com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory.class.getName());
@@ -56,7 +61,7 @@ public class Main {
     try {
       Runtime.getRuntime().exec(command).waitFor();
     } catch (Exception e) {
-      System.out.println(e);
+      logger.warn(e.getMessage());
       System.exit(1);
     }
   }
@@ -74,7 +79,7 @@ public class Main {
       try {
         logManager.readConfiguration(new FileInputStream(System.getenv("beaker_logger_file")));
       } catch (IOException exception) {
-        System.err.println("Error in loading configuration: " + exception);
+        logger.warn("Error in loading configuration: {}", exception.getMessage());
       }
     } else {
       java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);

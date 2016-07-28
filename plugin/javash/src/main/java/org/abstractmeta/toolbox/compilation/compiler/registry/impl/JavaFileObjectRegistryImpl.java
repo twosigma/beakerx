@@ -17,6 +17,8 @@ package org.abstractmeta.toolbox.compilation.compiler.registry.impl;
 
 
 import org.abstractmeta.toolbox.compilation.compiler.registry.JavaFileObjectRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.tools.JavaFileObject;
 import java.net.URI;
@@ -25,7 +27,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 /**
  * Provides default implementation of JavaFileObjectRegistry.
@@ -35,7 +36,7 @@ import java.util.logging.Logger;
 
 public class JavaFileObjectRegistryImpl implements JavaFileObjectRegistry {
 
-    private final Logger logger = Logger.getLogger(JavaFileObjectRegistryImpl.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(JavaFileObjectRegistryImpl.class.getName());
     private final Map<URI, JavaFileObject> javaFileObjects = new ConcurrentHashMap<URI, JavaFileObject>();
 
     @Override

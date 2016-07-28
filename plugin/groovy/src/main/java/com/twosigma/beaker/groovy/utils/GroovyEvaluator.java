@@ -49,8 +49,12 @@ import com.twosigma.beaker.jvm.utils.BeakerPrefsUtils;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GroovyEvaluator {
+
+  private static final Logger logger = LoggerFactory.getLogger(GroovyEvaluator.class.getName());
 
   private static final String STATIC_WORD_WITH_SPACE = "static ";
   private static final String DOT_STAR_POSTFIX = ".*";
@@ -325,7 +329,7 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
           }
         } catch(Throwable e) {
           if(e instanceof GroovyNotFoundException) {
-            System.err.println(e.getLocalizedMessage());
+            logger.warn(e.getLocalizedMessage());
             if(j != null) {
               j.outputObject.error(e.getLocalizedMessage());
             }
@@ -378,8 +382,8 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
           result = instance.run();
            
           if(LOCAL_DEV) { 
-            System.out.println("Result: " + result); 
-            System.out.println("Variables: " + scriptBinding.getVariables());
+            logger.info("Result: {}", result);
+            logger.info("Variables: {}", scriptBinding.getVariables());
           }
             
           theOutput.finished(result);
@@ -387,7 +391,7 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
         } catch(Throwable e) {
           
           if(LOCAL_DEV) {
-              System.err.println(e);
+              logger.warn(e.getMessage());
               e.printStackTrace();
           }
           

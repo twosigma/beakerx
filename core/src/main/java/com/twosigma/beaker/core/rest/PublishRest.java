@@ -34,6 +34,8 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.HttpVersion;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RESTful API for publishing to the web.
@@ -42,6 +44,8 @@ import org.json.simple.JSONValue;
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class PublishRest {
+
+  private static final Logger logger = LoggerFactory.getLogger(PublishRest.class.getName());
 
   private final String gistUrl;
   private final String sharingUrl;
@@ -74,7 +78,7 @@ public class PublishRest {
     String githubUrl = (String) parsed.get("html_url");
     int slash = githubUrl.lastIndexOf("/");
     if (slash < 0) {
-      System.err.println("no slash found in github url: " + githubUrl);
+      logger.warn("no slash found in github url: {}", githubUrl);
       return githubUrl;
     }
     return this.sharingUrl + githubUrl.substring(slash);

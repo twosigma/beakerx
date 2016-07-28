@@ -27,6 +27,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.jvnet.winp.WinProcess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -72,6 +74,9 @@ import java.util.concurrent.ExecutionException;
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class PluginServiceLocatorRest {
+
+  private static final Logger logger = LoggerFactory.getLogger(PluginServiceLocatorRest.class.getName());
+
   // these 3 times are in millis
   private static final int RESTART_ENSURE_RETRY_MAX_WAIT = 30*1000;
   private static final int RESTART_ENSURE_RETRY_INTERVAL = 10;
@@ -257,9 +262,9 @@ public class PluginServiceLocatorRest {
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
       public void run() {
-        System.out.println("\nshutting down beaker");
+        logger.info("shutting down beaker");
         shutdown();
-        System.out.println("done, exiting");
+        logger.info("done, exiting");
       }
     });
 
@@ -316,7 +321,7 @@ public class PluginServiceLocatorRest {
 
   private void startReverseProxy() throws InterruptedException, IOException {
     generateNginxConfig();
-    System.out.println("starting nginx instance (" + this.nginxDir +")");
+    logger.info("starting nginx instance (" + this.nginxDir +")");
     Process proc = Runtime.getRuntime().exec(this.nginxCommand, this.nginxEnv);
     startGobblers(proc, "nginx", null, null);
     this.nginxProc = proc;
@@ -421,8 +426,7 @@ public class PluginServiceLocatorRest {
       
     PluginConfig pConfig = this.plugins.get(pluginId);
     if (pConfig != null && pConfig.isStarted()) {
-      System.out.println("plugin service " + pluginId +
-          " already started at" + pConfig.getBaseUrl());
+      logger.info("plugin service " + pluginId + " already started at" + pConfig.getBaseUrl());
       return buildResponse(pConfig.getBaseUrl(), false);
     }
 
@@ -446,7 +450,7 @@ public class PluginServiceLocatorRest {
       if (nginxRules.startsWith("ipython")) {
         generateIPythonConfig(pluginId, port, password, command);
 
-        if (isIPython4(getIPythonVersion(pluginId, command))) {
+        if (isIPython4OrNewer(getIPythonVersion(pluginId, command))) {
           new JupyterWidgetsExtensionProcessor(pluginId, this.pluginDir).copyJupyterExtensionIfExists();
         }
       }
@@ -482,9 +486,9 @@ public class PluginServiceLocatorRest {
         String python = this.config.getInstallDirectory() + "\\python\\python";
         fullCommand.add(0, python);
       }
-      System.out.println("Running");
+      logger.info("Running");
       for (int i = 0; i < fullCommand.size(); i++) {
-        System.out.println(i + ": " + fullCommand.get(i));
+        logger.info(i + ": " + fullCommand.get(i));
       }
       proc = Runtime.getRuntime().exec(listToArray(fullCommand), env);
     }
@@ -496,9 +500,9 @@ public class PluginServiceLocatorRest {
       BufferedReader br = new BufferedReader(ir);
       String line = "";
       while ((line = br.readLine()) != null) {
-        System.out.println("looking on " + startedIndicatorStream + " found:" + line);
+        logger.info("looking on " + startedIndicatorStream + " found:" + line);
         if (line.indexOf(startedIndicator) >= 0) {
-          System.out.println("Acknowledge " + pluginId + " plugin started due to "+startedIndicator);
+          logger.info("Acknowledge " + pluginId + " plugin started due to "+startedIndicator);
           break;
         }
       }
@@ -515,7 +519,7 @@ public class PluginServiceLocatorRest {
     try {
       spinCheck(url);
     } catch (Throwable t) {
-      System.err.println("time out plugin =" + pluginId);
+      logger.warn("time out plugin = {}", pluginId);
       this.plugins.remove(pluginId);
       if (windows()) {
         new WinProcess(proc).killRecursively();
@@ -526,7 +530,7 @@ public class PluginServiceLocatorRest {
     }
 
     pConfig.setProcess(proc);
-    System.out.println("Done starting " + pluginId);
+    logger.info("Done starting " + pluginId);
 
     return buildResponse(pConfig.getBaseUrl(), true);
   }
@@ -708,7 +712,7 @@ public class PluginServiceLocatorRest {
       // XXX should allow name to be set by user in bkConfig
       hostName = InetAddress.getLocalHost().getHostName();
     } catch (UnknownHostException e) {
-      System.err.println("warning: UnknownHostException from InetAddress.getLocalHost().getHostName(), ignored");
+      logger.warn("warning: UnknownHostException from InetAddress.getLocalHost().getHostName(), ignored");
     }
     if (this.listenInterface != null && !this.listenInterface.equals("*")) {
       hostName = this.listenInterface;
@@ -914,8 +918,8 @@ public class PluginServiceLocatorRest {
     outputGobbler.start();
   }
 
-  private boolean isIPython4(String iPythonVersion) {
-    return iPythonVersion != null && iPythonVersion.startsWith("4.");
+  private boolean isIPython4OrNewer(String iPythonVersion) {
+    return iPythonVersion != null && (iPythonVersion.startsWith("4.") || iPythonVersion.startsWith("5."));
   }
 
   private class JupyterWidgetsExtensionProcessor {
@@ -934,7 +938,7 @@ public class PluginServiceLocatorRest {
         try {
           Files.copy(Paths.get(getDefaultExtensionPath()), Paths.get(getTargetExtensionPath()), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-          e.printStackTrace();
+          //e.printStackTrace();
         }
       }
     }

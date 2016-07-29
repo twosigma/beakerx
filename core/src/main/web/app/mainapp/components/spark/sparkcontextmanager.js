@@ -245,9 +245,10 @@
         });
 
         // get current Spark status (has the context already been started?)
-        bkHelper.httpGet(
-          bkHelper.serverUrl(serviceBase + "/rest/scalash/configuration"))
-        .success(function(ret) {
+        bkHelper.httpPost(
+          bkHelper.serverUrl(serviceBase + "/rest/scalash/configuration"),
+          { shellId: shellId }
+        ).success(function(ret) {
           if (ret === "offline")
             return;
           var confReadResult = readConfiguration(ret, true);
@@ -256,6 +257,11 @@
             $rootScope.connected = true;
             $rootScope.running = 0;
             console.log("SparkContext already started, port:", uiPort);
+          } else {
+            $rootScope.connecting = false;
+            $rootScope.connected = false;
+            $rootScope.running = 0;
+            $rootScope.error = 'Error during configuration deserialization';
           }
           bkHelper.clearStatus("Creating Spark context");
         });
@@ -292,6 +298,9 @@
       isRunning: function() {
         return $rootScope.running > 0;
       },
+      getError: function() {
+        return $rootScope.error;
+      },
       connect: function() {
         if ($rootScope.connected)
           return;
@@ -311,15 +320,17 @@
           }
         ).success(function(ret) {
           var confReadResult = readConfiguration(ret, true);
-          if (!confReadResult.success)
-            return;
-
-          console.log("done startSparkContext, port:", uiPort);
+          if (confReadResult.success) {
+            console.log("done startSparkContext, port:", uiPort);
+            $rootScope.connected = true;
+            $rootScope.error = '';
+            $rootScope.jobsPerCell = {};
+          } else {
+            $rootScope.connected = false;
+            $rootScope.error = 'Error during configuration deserialization';
+          }
           $rootScope.connecting = false;
-          $rootScope.connected = true;
           $rootScope.running = 0;
-          $rootScope.error = '';
-          $rootScope.jobsPerCell = {};
           bkHelper.clearStatus("Creating Spark context");
         }).error(function(ret) {
           if (ret == null) {

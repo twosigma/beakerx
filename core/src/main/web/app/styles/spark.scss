@@ -87,6 +87,23 @@
   .form-commands {
     margin-top: 10px;
   }
+
+  .spark-property {
+    .spark-property-key {
+      padding-right: 12px;
+      padding-left: 4px;      
+    }
+
+    .spark-property-value {
+      width: 90%;
+    }
+
+    .fa-times {      
+      float: right;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+  }
 }
 
 h1.spark-configuration {

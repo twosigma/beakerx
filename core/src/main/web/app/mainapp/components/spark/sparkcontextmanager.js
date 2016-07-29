@@ -409,10 +409,19 @@
           var obj = $rootScope.configurationObjects.advanced[key];
           config[obj.id] = obj.serializedValue();
         }
+        for (var key in $rootScope.sparkConf) {
+          config[key] = $rootScope.sparkConf[key];
+        }
         return config;
       },
       sparkConf: function() {
         return $rootScope.sparkConf;
+      },
+      setSparkConf: function(conf) {
+        $rootScope.sparkConf = conf;
+      },
+      setSparkConfProperty: function(key, value) {
+        $rootScope.sparkConf[key] = value;
       },
       getJobsPerCell: function(cellId) {
         if (cellId in $rootScope.jobsPerCell)

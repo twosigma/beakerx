@@ -16,44 +16,46 @@
 <div class="modal-header">
   <h3>SQL Login</h3>
 </div>
-<div class="modal-body">
-  <p>
-    <table class="table">
-      <tbody>
-        <tr>
-          <td ng-if="sqlConnectionData.connectionName == null" colspan="2" style="border-top:none">
-            Default data source
-           </td>
-          <td ng-if="sqlConnectionData.connectionName != null" style="border-top:none">
-            Named data source
-           </td>
-          <td ng-if="sqlConnectionData.connectionName != null" style="border-top:none">
-            {{sqlConnectionData.connectionName}}
-           </td>
-        </tr>
-        <tr>
-          <td style="border-top:none" colspan="2">
-            <div ng-if="sqlConnectionData.connectionString.length > 75">
-              {{sqlConnectionData.connectionString | limitTo:75}} ...
-            </div>
-            <div ng-if="sqlConnectionData.connectionString.length <= 75">
-              {{sqlConnectionData.connectionString}}
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>User</td>
-          <td><input type="text" id="user_field" ng-model="sqlConnectionData.user" class="field" placeholder="User"></input></td>
-        </tr>
-        <tr>
-          <td style="border-top:none">Password</td>
-          <td style="border-top:none"><input type="password" id="password_field" placeholder="Password" ng-model="sqlConnectionData.password"></input></td>
-        </tr>
-      </tbody>
-    </table>
-  </p>
-</div>
-<div class="modal-footer">
-  <button class="yes btn btn-default" ng-click="okFunction()">OK</button>
-  <button class="cancel btn btn-default" ng-click="cancelFunction()">Cancel</button>
-</div>
+<form ng-submit="okFunction()">
+  <div class="modal-body">
+    <p>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td ng-if="sqlConnectionData.connectionName == null" colspan="2" style="border-top:none">
+              Default data source
+             </td>
+            <td ng-if="sqlConnectionData.connectionName != null" style="border-top:none">
+              Named data source
+             </td>
+            <td ng-if="sqlConnectionData.connectionName != null" style="border-top:none">
+              {{sqlConnectionData.connectionName}}
+             </td>
+          </tr>
+          <tr>
+            <td style="border-top:none" colspan="2">
+              <div ng-if="sqlConnectionData.connectionString.length > 75">
+                {{sqlConnectionData.connectionString | limitTo:75}} ...
+              </div>
+              <div ng-if="sqlConnectionData.connectionString.length <= 75">
+                {{sqlConnectionData.connectionString}}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>User</td>
+            <td><input type="text" id="user_field" ng-model="sqlConnectionData.user" class="field" placeholder="User"></input></td>
+          </tr>
+          <tr>
+            <td style="border-top:none">Password</td>
+            <td style="border-top:none"><input type="password" id="password_field" placeholder="Password" ng-model="sqlConnectionData.password"></input></td>
+          </tr>
+        </tbody>
+      </table>
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button class="yes btn btn-default" ng-click="okFunction()">OK</button>
+    <button class="cancel btn btn-default" ng-click="cancelFunction()">Cancel</button>
+  </div>
+</form>

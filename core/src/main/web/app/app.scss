@@ -33,6 +33,7 @@
 @import "styles/newcell-menu";
 @import "styles/theme/ambiance";
 @import "styles/elfinder";
+@import "styles/spark";
 
 root {
   display: block;
@@ -340,7 +341,6 @@ background-color: rgb(205, 223, 214);
   width: auto;
   height: auto;
 }
-
 
 .ansi-black-fg, .ansi-black-bg {color: black}
 .ansi-red-fg, .ansi-red-bg {color: red}

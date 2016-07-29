@@ -51,6 +51,7 @@
           if (scope.cellmodel[contentAttribute] !== cm.getValue()) {
             scope.cellmodel[contentAttribute] = cm.getValue();
           }
+          bkSessionManager.setNotebookModelEdited(true);
         };
 
         scope.bkNotebook = getBkNotebookWidget();
@@ -77,6 +78,7 @@
           }
           if (bkHelper.isNotebookLocked()) return;
           if (event && event.target.tagName === "A") return; // Don't edit if clicking a link
+          if (scope.$parent.isLockedCell()) return;
 
           scope.mode = 'edit';
 

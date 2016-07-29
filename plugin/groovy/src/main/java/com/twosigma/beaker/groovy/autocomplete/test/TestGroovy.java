@@ -2,6 +2,8 @@ package com.twosigma.beaker.groovy.autocomplete.test;
 
 import com.twosigma.beaker.groovy.autocomplete.GroovyAutocomplete;
 import com.twosigma.beaker.groovy.autocomplete.GroovyClasspathScanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,6 +18,8 @@ import java.util.List;
 
 
 class TestGroovy {
+
+	private static final Logger logger = LoggerFactory.getLogger(TestGroovy.class.getName());
 
 	public static boolean profile = false;
 	public static boolean notree = false;
@@ -50,11 +54,11 @@ class TestGroovy {
 				doFiles(inputFiles, cps);
 			}
 			else {
-				System.err.println("Usage: java Main <directory or file name>");
+				logger.warn("Usage: java Main <directory or file name>");
 			}
 		}
 		catch(Exception e) {
-			System.err.println("exception: "+e);
+			logger.warn("exception: {}", e.getMessage());
 			e.printStackTrace(System.err);   // so we can get stack trace
 		}
 	}
@@ -99,7 +103,7 @@ class TestGroovy {
                       source = source.substring(0, cursor);
                       //System.out.println("--> '"+source+"' "+cursor);
 				    } else {
-				      System.out.println("ERROR computing cursor");
+				      logger.warn("ERROR computing cursor");
 				      cursor = 0;
 				    }
 				  } else {
@@ -112,16 +116,16 @@ class TestGroovy {
 					expect = line.substring(8);
 					String result = parseFile(source,cursor,cps);
 					if(!expect.equals(result))
-						System.out.println("ERROR: expecting \""+expect+"\" but got \""+result+"\"");
+						logger.warn("ERROR: expecting \"{}\" but got \"{}\"", expect, result);
 					else
-						System.out.println("PASS");
+						logger.info("PASS");
 				}
 			}
 		 
 			br.close();
 		}
 		long parserStop = System.currentTimeMillis();
-		System.out.println("Total lexer+parser time " + (parserStop - parserStart) + "ms.");
+		logger.info("Total lexer+parser time {}ms.", (parserStop - parserStart));
 	}
 
 	public static String parseFile(String f, int cursor, GroovyClasspathScanner cps) {

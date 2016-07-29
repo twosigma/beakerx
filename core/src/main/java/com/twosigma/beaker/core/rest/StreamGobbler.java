@@ -15,6 +15,9 @@
  */
 package com.twosigma.beaker.core.rest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +29,8 @@ import java.io.PrintWriter;
  * takes a stream from a evaluator process and write to outputLog
  */
 public class StreamGobbler extends Thread {
+
+  private static final Logger logger = LoggerFactory.getLogger(StreamGobbler.class.getName());
 
   private static volatile boolean shutdownInprogress = false;
 
@@ -77,31 +82,30 @@ public class StreamGobbler extends Thread {
       PrintWriter pw = null;
       String line = null;
       while ((line = br.readLine()) != null) {
-    	// HACK to remove useless messages from Java plugin.
-    	// These come from third party libraries....
-      	if (line.matches(".*(version 'RELEASE_6' from|compile).*")) continue;
-    	if (line.matches("^\\s*$")) continue;
-    	// remove nginx 
-    	if (line.matches(".*GET /.*/ready .*")) continue;
-    	
+        // HACK to remove useless messages from Java plugin.
+        // These come from third party libraries....
+        if (line.matches(".*(version 'RELEASE_6' from|compile).*")) continue;
+        if (line.matches("^\\s*$")) continue;
+        // remove nginx 
+        if (line.matches(".*GET /.*/ready .*")) continue;
         if (pw != null) {
           pw.println(line);
         }
 
         if (this.name != null) {
-          System.out.println(this.name + "-" + this.type + ">" + line);
+          logger.info(this.name + "-" + this.type + ">" + line);
         } else {
           if (this.type.equals("stderr")) {
-            System.err.println(line);
+            logger.warn(line);
           } else {
-            System.out.println(line);
+            logger.info(line);
           }
         }
 
         if (this.outputLogService != null) {
           if (this.isStillWaiting) {
             if (line.indexOf(this.waitfor) > 0) {
-              System.out.println(this.name + "-" + this.type + " waiting over");
+              logger.info(this.name + "-" + this.type + " waiting over");
               this.isStillWaiting = false;
             }
           } else {

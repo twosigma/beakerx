@@ -14,8 +14,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<div ng-class="isLocked() && 'locked'" class="bkcell {{cellmodel.type}}">
-  <div class="toggle-menu" ng-class="{'wide' : wideMenu()}">
+<div ng-class="(isLocked() || isLockedCell()) && 'locked'" class="bkcell {{cellmodel.type}}">
+  <div class="toggle-menu" ng-class="{'locked-cell-menu': isLockedCell() && 'locked-cell-menu', 'wide' : wideMenu()}">
     <div class="toggle-menu-items">
       <div class="dropdown dropdown-promoted" data-toggle="dropdown" style="float: right;">
         <div class="cell-menu-item cell-dropdown dropdown-toggle" title="cell menu"></div>
@@ -23,13 +23,13 @@
       </div>
       <div class="cell-menu-item move-cell-down" ng-click="moveCellDown()" ng-class="moveCellDownDisabled() && 'disabled'" title="move cell down"></div>
       <div class="cell-menu-item move-cell-up" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() && 'disabled'" title="move cell up"></div>
-      <div class="cell-menu-item delete-cell" ng-click="deleteCell()" title="delete cell1"></div>
+      <div class="cell-menu-item delete-cell" ng-if="!isLockedCell()" ng-click="deleteCell()" title="{{isSectionCell() ? 'Delete heading and keep contents' : 'Delete cell'}}"></div>
       <div class="cell-menu-item expand-contract"
-           ng-if="collapseCellMenu[cellmodel.type]"
+           ng-if="!isLockedCell() && collapseCellMenu[cellmodel.type]"
            ng-click="collapseCellMenu[cellmodel.type].click()"
            ng-class="isCellHidden() && 'collapsed'"
            title="{{isCellHidden() ? 'show' : 'hide'}} {{collapseCellMenu[cellmodel.type].tooltip}}"></div>
-      <div class="dropdown dropdown-promoted advanced-only" ng-if="isCodeCell()" style="float: right;">
+      <div class="dropdown dropdown-promoted advanced-only" ng-if="isCodeCell() && !isLockedCell()" style="float: right;">
         <div ng-if="!cellmodel.evaluatorReader && !hasFaultyEvaluator()" class="loading-state">
           <i class='fa fa-refresh fa-spin'></i>
         </div>
@@ -38,17 +38,17 @@
         </div>
         <bk-code-cell-input-menu ng-show="cellmodel.evaluatorReader" ng-if="!hasFaultyEvaluator()"></bk-code-cell-input-menu>
       </div>
-      <div class="cell-menu-item evaluate" ng-if="isMarkdownCell()" title="run cell"></div>
-      <div class="cell-menu-item evaluate" ng-class="isCellRunning() && 'disabled'" ng-click="evaluate($event)" ng-if="isCodeCell()" title="run cell"></div>
-      <div class="cell-menu-item evaluate" ng-if="::cellmodel.type === 'section'" ng-click="evaluate($event)" title="run all cells in section"></div>
-      <div class="cell-status-item loading-state advanced-hide" ng-if="isCodeCell() && !cellmodel.evaluatorReader && !hasFaultyEvaluator()">Initializing {{cellmodel.evaluator}}
+      <div class="cell-menu-item evaluate" ng-if="!isLockedCell() && isMarkdownCell()" title="run cell"></div>
+      <div class="cell-menu-item evaluate" ng-if="!isLockedCell() && isCodeCell()"  ng-class="isCellRunning() && 'disabled'" ng-click="evaluate($event)" title="run cell"></div>
+      <div class="cell-menu-item evaluate" ng-if="!isLockedCell() &&  cellmodel.type === 'section'" ng-click="evaluate($event)" title="run all cells in section"></div>
+      <div class="cell-status-item loading-state advanced-hide" ng-if="!isLockedCell() && isCodeCell() && !cellmodel.evaluatorReader && !hasFaultyEvaluator()">Initializing {{cellmodel.evaluator}}
         <i class='fa fa-refresh fa-spin'></i>
       </div>
-      <div class="cell-status-item loading-state advanced-hide" ng-if="isCodeCell() && hasFaultyEvaluator()">Failed to load {{cellmodel.evaluator}}
+      <div ng-hide="isLockedCell()" class="cell-status-item loading-state advanced-hide" ng-if="!isLockedCell() && isCodeCell() && hasFaultyEvaluator()">Failed to load {{cellmodel.evaluator}}
         <i class='fa fa-exclamation-triangle'></i>
       </div>
     </div>
-    <div ng-if="shouldShowSummary()" class="mini-cell-stats">
+    <div ng-if="shouldShowSummary() && !isLockedCell()" class="mini-cell-stats">
       <span ng-if="isCodeCell()">
       {{cellmodel.evaluator}} &nbsp;
       ({{cellmodel.lineCount}} lines) &nbsp;&nbsp;
@@ -56,7 +56,7 @@
       {{getCellSummary()}}
     </div>
   </div>
-  <div ng-if="isDebugging()">
+  <div ng-if="isDebugging() && !isLockedCell()">
     [Debug]: cell Id = {{cellmodel.id}}, parent = {{getParentId()}}, level = {{cellmodel.level}}
     <a ng-click="toggleShowDebugInfo()" ng-hide="isShowDebugInfo()">show more</a>
     <a ng-click="toggleShowDebugInfo()" ng-show="isShowDebugInfo()">show less</a>

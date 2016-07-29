@@ -15,16 +15,16 @@
  */
 package com.twosigma.beaker.jvm.serialization;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.twosigma.beaker.chart.Color;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ColorDeserializer implements ObjectDeserializer {
-  private final static Logger logger = Logger.getLogger(ColorDeserializer.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(ColorDeserializer.class.getName());
 
   public ColorDeserializer(BeakerObjectConverter p) {
     p.addKnownBeakerType("Color");
@@ -45,7 +45,7 @@ public class ColorDeserializer implements ObjectDeserializer {
                     (int)( i        & 0xFF),
                     (int)((i >> 24) & 0xFF));
     } catch (Exception e) {
-      logger.log(Level.SEVERE, "exception deserializing Color ", e);
+      logger.error("exception deserializing Color {}", e.getMessage());
     }
     return o;
   }

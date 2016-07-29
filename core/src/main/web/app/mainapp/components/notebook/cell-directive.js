@@ -69,6 +69,14 @@
             addItem: function(menuItem) {
               this.items.push(menuItem);
             },
+            changeSortOrder: function(opts) {
+              var item = _.findWhere(this.items,
+                {name: opts.name}
+              );
+              if(item){
+                item.sortorder = opts.sortorder;
+              }
+            },
             addItemToHead: function(menuItem) {
               this.items.splice(0, 0, menuItem);
             },
@@ -128,6 +136,7 @@
           } else {
             $scope.cellmodel.input.hidden = true;
           }
+          bkSessionManager.setNotebookModelEdited(true);
         };
 
         $scope.toggleMarkdown = function() {
@@ -136,11 +145,13 @@
           } else {
             $scope.cellmodel.hidden = true;
           }
+          bkSessionManager.setNotebookModelEdited(true);
         };
 
         $scope.toggleSection = function() {
           $scope.cellmodel.collapsed = !$scope.cellmodel.collapsed;
           $scope.$broadcast('beaker.section.toggled', $scope.cellmodel.collapsed);
+          bkSessionManager.setNotebookModelEdited(true);
         };
 
         $scope.evaluate = function($event) {
@@ -206,14 +217,51 @@
           return !notebookCellOp['isPossibleTo' + _.capitalize(moveMethod) + 'Down']($scope.cellmodel.id);
         };
 
+        $scope.isLockedCell = function() {
+          return $scope.cellmodel.locked;
+        };
+
         $scope.cellview.menu.addItem({
-          name: 'Delete cell',
-          shortcut: ['Ctrl-Alt-D', 'Alt-Cmd-Backspace'],
-          action: $scope.deleteCell
+          name: 'Lock Cell',
+          sortorder: 110,
+          isChecked: function() {
+            return $scope.isLockedCell();
+          },
+          action: function() {
+            bkSessionManager.setNotebookModelEdited(true);
+            if ($scope.isLockedCell()) {
+              $scope.cellmodel.locked = undefined;
+            } else {
+              $scope.cellmodel.locked = true;
+            }
+          }
+        });
+
+        $scope.cellview.menu.addItem({
+          name: 'Cut',
+          sortorder: 150,
+          action: function() {
+            notebookCellOp.cut($scope.cellmodel.id);
+          },
+          locked: function () {
+            return $scope.isLockedCell();
+          }
+        });
+
+        $scope.cellview.menu.addItem({
+          name: 'Paste (append after)',
+          sortorder: 160,
+          disabled: function() {
+            return !notebookCellOp.clipboard;
+          },
+          action: function() {
+            notebookCellOp.paste($scope.cellmodel.id);
+          }
         });
 
         $scope.cellview.menu.addItem({
           name: 'Move up',
+          sortorder: 210,
           shortcut: ['Ctrl-Alt-Up', 'Alt-Cmd-Up'],
           action: $scope.moveCellUp,
           disabled: $scope.moveCellUpDisabled
@@ -221,25 +269,19 @@
 
         $scope.cellview.menu.addItem({
           name: 'Move down',
+          sortorder: 220,
           shortcut: ['Ctrl-Alt-Down', 'Alt-Cmd-Down'],
           action: $scope.moveCellDown,
           disabled: $scope.moveCellDownDisabled
         });
 
         $scope.cellview.menu.addItem({
-          name: 'Cut',
-          action: function() {
-            notebookCellOp.cut($scope.cellmodel.id);
-          }
-        });
-
-        $scope.cellview.menu.addItem({
-          name: 'Paste (append after)',
-          disabled: function() {
-            return !notebookCellOp.clipboard;
-          },
-          action: function() {
-            notebookCellOp.paste($scope.cellmodel.id);
+          name: 'Delete cell',
+          sortorder: 230,
+          shortcut: ['Ctrl-Alt-D', 'Alt-Cmd-Backspace'],
+          action: $scope.deleteCell,
+          locked: function () {
+            return $scope.isLockedCell();
           }
         });
 
@@ -262,6 +304,8 @@
         $scope.isMarkdownCell = function() {
           return $scope.cellmodel.type === 'markdown';
         };
+
+
 
         $scope.isCodeCell = function() {
           return $scope.cellmodel.type == 'code';
@@ -288,6 +332,9 @@
         $scope.wideMenu = function () {
           return $scope.isCellHidden() && !$scope.isSectionCell();
         };
+
+
+
 
         $scope.collapseCellMenu = {
           'code' : {

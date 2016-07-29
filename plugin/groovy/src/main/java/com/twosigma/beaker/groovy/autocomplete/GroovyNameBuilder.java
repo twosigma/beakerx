@@ -31,8 +31,13 @@ import com.twosigma.beaker.groovy.autocomplete.GroovyParser.MapConstructorContex
 import com.twosigma.beaker.groovy.autocomplete.GroovyParser.NewInstanceRuleContext;
 import com.twosigma.beaker.groovy.autocomplete.GroovyParser.PathExpressionContext;
 import com.twosigma.beaker.groovy.autocomplete.GroovyParser.TypeDeclarationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GroovyNameBuilder extends GroovyAbstractListener{
+
+  private static final Logger logger = LoggerFactory.getLogger(GroovyNameBuilder.class.getName());
+
   private AutocompleteRegistry registry;
   private ClassUtils classUtils;
   
@@ -52,7 +57,7 @@ public class GroovyNameBuilder extends GroovyAbstractListener{
           String typpen = ctx.getChild(3).getChild(0).getText().trim();
           AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(1).getText());
           registry.addCandidate(c);
-          if(GroovyCompletionTypes.debug) System.out.println("define variable of type "+ctx.getChild(1).getText()+" "+typpen);
+          if(GroovyCompletionTypes.debug) logger.info("define variable of type "+ctx.getChild(1).getText()+" "+typpen);
           if(classUtils.getVariableType(typpen)!=null) {
             classUtils.defineVariable(ctx.getChild(1).getText(), classUtils.getVariableType(typpen));
           }
@@ -62,7 +67,7 @@ public class GroovyNameBuilder extends GroovyAbstractListener{
             String ttype = t.getText().trim();
             AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(1).getText());
             registry.addCandidate(c);
-            if(GroovyCompletionTypes.debug) System.out.println("define variable of type "+ctx.getChild(1).getText()+" "+ttype);
+            if(GroovyCompletionTypes.debug) logger.info("define variable of type "+ctx.getChild(1).getText()+" "+ttype);
             if(ttype!=null)
               classUtils.defineVariable(ctx.getChild(1).getText(), ttype);
           }
@@ -83,7 +88,7 @@ public class GroovyNameBuilder extends GroovyAbstractListener{
           }
           AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(1).getText());
           registry.addCandidate(c);
-          if(GroovyCompletionTypes.debug) System.out.println("define variable of type "+ctx.getChild(1).getText()+" "+typpen);
+          if(GroovyCompletionTypes.debug) logger.info("define variable of type "+ctx.getChild(1).getText()+" "+typpen);
           if(typpen!=null)
             classUtils.defineVariable(ctx.getChild(1).getText(), typpen);
         }
@@ -101,7 +106,7 @@ public class GroovyNameBuilder extends GroovyAbstractListener{
         String typpen = ctx.getChild(2).getChild(0).getText().trim();
         AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(0).getText());
         registry.addCandidate(c);
-        if(GroovyCompletionTypes.debug) System.out.println("define variable of type "+ctx.getChild(0).getText()+" "+typpen);
+        if(GroovyCompletionTypes.debug) logger.info("define variable of type "+ctx.getChild(0).getText()+" "+typpen);
         if(classUtils.getVariableType(typpen)!=null) {
             classUtils.defineVariable(ctx.getChild(0).getText(), classUtils.getVariableType(typpen));
         }
@@ -111,7 +116,7 @@ public class GroovyNameBuilder extends GroovyAbstractListener{
           String ttype = t.getText().trim();
           AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(0).getText());
           registry.addCandidate(c);
-          if(GroovyCompletionTypes.debug) System.out.println("define variable of type "+ctx.getChild(0).getText()+" "+ttype);
+          if(GroovyCompletionTypes.debug) logger.info("define variable of type "+ctx.getChild(0).getText()+" "+ttype);
           if(ttype!=null)
             classUtils.defineVariable(ctx.getChild(0).getText(), ttype);
         }
@@ -126,7 +131,7 @@ public class GroovyNameBuilder extends GroovyAbstractListener{
         }
         AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(0).getText());
         registry.addCandidate(c);
-        if(GroovyCompletionTypes.debug) System.out.println("define variable of type "+ctx.getChild(0).getText()+" "+typpen);
+        if(GroovyCompletionTypes.debug) logger.info("define variable of type "+ctx.getChild(0).getText()+" "+typpen);
         if(typpen!=null)
           classUtils.defineVariable(ctx.getChild(0).getText(), typpen);
       }

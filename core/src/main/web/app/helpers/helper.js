@@ -138,6 +138,14 @@
         }
         return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 188);// Cmd + Shift + <
       },
+      isInsertAfterSectionShortcut: function(e) {
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey &&
+            ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
+        }
+        return e.ctrlKey && !e.altKey && e.shiftKey &&
+          ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
+      },
 
       //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
       // Firefox 1.0+
@@ -937,6 +945,9 @@
       showLanguageManager: function () {
         return bkCoreManager.showLanguageManager();
       },
+      showSparkConfiguration: function () {
+        return bkCoreManager.showSparkConfiguration();
+      },
       appendCodeCell: function () {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
@@ -1002,6 +1013,22 @@
             notebookCellOp.reset();
           }
         }
+      },
+      insertNewSectionWithLevel: function (level) {
+        bkSessionManager.setNotebookModelEdited(true);
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        var newCell;
+        if (currentCellId){
+          var cell = notebookCellOp.getCell(currentCellId);
+          newCell = bkSessionManager.getNotebookNewCellFactory().newSectionCell(level);
+          notebookCellOp.insertAfter(currentCellId, newCell);
+        } else {
+          newCell = bkSessionManager.getNotebookNewCellFactory().newSectionCell(level);
+          notebookCellOp.insertFirst(newCell);
+        }
+        bkUtils.refreshRootScope();
+        this.go2Cell(newCell.id);
       },
       showPublishForm: function() {
         return bkCoreManager.showPublishForm();
@@ -1370,6 +1397,12 @@
 
       elfinder: function($elfinder, elfinderOptions){
         var elfinder;
+
+        elFinder.prototype.i18.en.messages['cmdeditpermissions'] = 'Edit Permissions';
+        elFinder.prototype._options.commands.push('editpermissions');
+        elFinder.prototype._options.contextmenu.files.push('copypath');
+        elFinder.prototype._options.contextmenu.cwd.push('editpermissions');
+
         elFinder.prototype._options.commands.push('copypath');
         elFinder.prototype._options.contextmenu.files.push('copypath');
         elFinder.prototype._options.contextmenu.cwd.push('copypath');
@@ -1468,6 +1501,40 @@
       },
 
       elfinderOptions: function (getFileCallback, selectCallback, openCallback, mime, showHiddenFiles) {
+        
+        function getNavbarMenuItems() {
+          var items = ['copy', 'cut', 'paste', 'duplicate', '|', 'rm'];
+          if(!bkUtils.serverOS.isWindows()) {
+            items.push('|', 'editpermissions');
+          }
+          return items;
+        }
+        
+        function getToolbarItems() {
+          var toolbar = [
+            ['back', 'forward'],
+            ['mkdir'],
+            ['copy', 'cut', 'paste'],
+            ['rm'],
+            ['duplicate', 'rename'],
+            ['view', 'sort']
+          ];
+          if(!bkUtils.serverOS.isWindows()) {
+            toolbar.push(['editpermissions']);
+          }
+          return toolbar;
+        }
+        
+        function getFileContextMenuItems() {
+          var items = [
+            'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
+            'rm'
+          ];
+          if(!bkUtils.serverOS.isWindows()) {
+            items.push('|', 'editpermissions');
+          }
+          return items;
+        }
 
         return {
           url: '../beaker/connector',
@@ -1493,27 +1560,17 @@
           defaultView: 'icons',
           contextmenu: {
             // navbarfolder menu
-            navbar: ['copy', 'cut', 'paste', 'duplicate', '|', 'rm'],
+            navbar: getNavbarMenuItems(),
 
             // current directory menu
             cwd: ['reload', 'back', '|', 'mkdir', 'paste'],
 
             // current directory file menu
-            files: [
-              'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
-              'rm'
-            ]
+            files: getFileContextMenuItems()
           },
           uiOptions: {
             // toolbar configuration
-            toolbar: [
-              ['back', 'forward'],
-              ['mkdir'],
-              ['copy', 'cut', 'paste'],
-              ['rm'],
-              ['duplicate', 'rename'],
-              ['view', 'sort']
-            ],
+            toolbar: getToolbarItems(),
 
             // navbar options
             navbar: {

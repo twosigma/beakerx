@@ -167,18 +167,18 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.module.SimpleModule;
 import org.cometd.bayeux.server.BayeuxServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The Guice module as the registry of mapping from classes to serializers
  */
 public class SerializerModule extends AbstractModule {
-  private final static Logger logger = Logger.getLogger(SerializerModule.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(SerializerModule.class.getName());
   
   @Override
   protected void configure() {
@@ -226,7 +226,7 @@ public class SerializerModule extends AbstractModule {
       serializer.addTypeDeserializer(new DashboardLayoutManagerDeserializer(serializer));
 
       } catch(Exception e) {
-      logger.log(Level.SEVERE, "exception while creating ObjectSerializer", e);
+      logger.error("exception while creating ObjectSerializer", e);
     }
     return serializer;
   }
@@ -329,7 +329,7 @@ public class SerializerModule extends AbstractModule {
 
       NamespaceClient.setInjector(injector);
     } catch(Exception e) {
-      logger.log(Level.SEVERE, "exception while creating ObjectMapper", e);
+      logger.error("exception while creating ObjectMapper", e);
     }
     return mapper;
   }

@@ -31,7 +31,7 @@
    * - it also serves the purpose of hiding underneath utils: commonUtils/angularUtils/...
    *    from other parts of beaker
    */
-  module.factory('bkUtils', function(commonUtils, angularUtils, bkTrack, cometdUtils, $localStorage) {
+  module.factory('bkUtils', function($rootScope, commonUtils, angularUtils, bkTrack, cometdUtils, $localStorage) {
 
     function endsWith(str, suffix) {
       return str.indexOf(suffix, str.length - suffix.length) !== -1;
@@ -100,14 +100,28 @@
       var isUnix = false;
       var osName = 'unknown';
 
-      angularUtils.httpGet(serverUrl("beaker/rest/util/version"))
-        .success(function (result) {
-          isWindows = _isWindows(result);
-          isMacOS = _isMacOS(result);
-          isLinux = _isLinux(result);
-          isUnix = _isUnix(result);
-          osName = _osName(result);
-        });
+      if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
+        angularUtils.httpGet(serverUrl("beaker/rest/util/version"))
+          .success(function (result) {
+            isWindows = _isWindows(result);
+            isMacOS = _isMacOS(result);
+            isLinux = _isLinux(result);
+            isUnix = _isUnix(result);
+            osName = _osName(result);
+          });
+      } else if (window.beakerRegister === undefined || window.beakerRegister.prefsPreset === undefined) {
+        isWindows = false;
+        isMacOS = false;
+        isLinux = true;
+        isUnix = false;
+        osName = "Linux";
+      } else {
+        isWindows = window.beakerRegister.prefsPreset.isWindows;
+        isMacOS = window.beakerRegister.prefsPreset.isMacOS;
+        isLinux = window.beakerRegister.prefsPreset.isLinux;
+        isUnix = window.beakerRegister.prefsPreset.isUnix;
+        osName = window.beakerRegister.prefsPreset.osName;
+      }
       return {
         isWindows: function(){
           return isWindows;
@@ -135,19 +149,20 @@
 
       // wrap trackingService
       log: function(event, obj) {
+        obj["version"] = $rootScope.getVersion();
         bkTrack.log(event, obj);
       },
 
       mime: function (extension) {
 
         if (extension === 'bkr') {
-          return ['directory', 'application/beaker-notebook'];
+          return ['directory', 'Beaker-Notebook'];
         } else if (extension === 'py') {
           return ['directory', 'text/x-python'];
         } else if (extension === 'csv') {
           return ['directory', 'text/x-comma-separated-values'];
         }else if (extension === 'ipynb') {
-          return ['directory', 'application/x-ipynb+json'];
+          return ['directory', 'IPython-Notebook'];
         }
 
         return [];
@@ -524,6 +539,10 @@
     },
     hideLanguageManagerSpinner: function(error) {
       angularUtils.hideLanguageManagerSpinner(error);
+    },
+    getEvaluationFinishedNotificationUrl: function () {
+      return window.beakerRegister === undefined || !window.beakerRegister.evaluationFinishedNotificationUrl
+        ? null : window.beakerRegister.evaluationFinishedNotificationUrl;
     },
     // Electron: require('remote')
     isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,

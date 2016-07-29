@@ -33,9 +33,13 @@ import org.cometd.bayeux.server.BayeuxServer.SubscriptionListener;
 import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerChannel;
 import org.cometd.bayeux.server.ServerSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class UpdateManager implements SubscriptionListener {
+
+  private static final Logger logger = LoggerFactory.getLogger(UpdateManager.class.getName());
 
   private static final Pattern PATTERN = Pattern.compile("^/object_update/((\\w|-)+)$");
 
@@ -135,7 +139,7 @@ public class UpdateManager implements SubscriptionListener {
       }
       updater.deliverUpdate(obj);
     } else {
-      System.out.println("Client is trying to subscribe to nonexisting object " + id);
+      logger.info("Client is trying to subscribe to non-existing object {}", id);
     }
   }
 

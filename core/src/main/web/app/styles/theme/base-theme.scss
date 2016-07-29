@@ -283,7 +283,7 @@
     }
   }
 
-  #plotContainer {
+  .plot-plotcontainer {
     background: #1a1a1a;
   }
 
@@ -320,7 +320,7 @@
     stroke: $cell-border;
   }
 
-  #combplotContainer, #plotLegend, #plotLegendContainer {
+  .combplot-plotcontainer, #plotLegend, #plotLegendContainer {
     background: $main-theme-panel-background;
   }
 

@@ -19,6 +19,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
+import com.twosigma.beaker.shared.module.util.GeneralUtilsImpl;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -26,8 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -44,6 +44,8 @@ import org.codehaus.jackson.map.SerializerProvider;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The service that backs up session to file that offers a RESTful API
@@ -52,6 +54,8 @@ import org.cometd.bayeux.server.ServerChannel;
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class SessionBackupRest {
+
+  private final static Logger logger = LoggerFactory.getLogger(SessionBackupRest.class.getName());
 
   private final File backupDirectory;
   private final GeneralUtils utils;
@@ -74,6 +78,7 @@ public class SessionBackupRest {
     String format;
     String notebookModelJson;
     long openedDate;  // millis
+    Long lastEdited;  // millis
     boolean edited;
 
     private Session(
@@ -83,7 +88,8 @@ public class SessionBackupRest {
         String format,
         String notebookModelJson,
         boolean edited,
-        long openedDate) {
+        long openedDate,
+        Long lastEdited) {
       this.notebookUri = notebookUri;
       this.uriType = uriType;
       this.readOnly = readOnly;
@@ -91,6 +97,7 @@ public class SessionBackupRest {
       this.notebookModelJson = notebookModelJson;
       this.edited = edited;
       this.openedDate = openedDate;
+      this.lastEdited = lastEdited;
     }
   }
 
@@ -114,7 +121,7 @@ public class SessionBackupRest {
       Map<String, Object> data = new HashMap<String, Object>();
       sessionChangeChannel.publish(this.localSession, data, null);
     } else {
-      System.out.println("Warning: Caught NPE of unknown origin. frontend");
+      logger.info("Warning: Caught NPE of unknown origin. frontend");
     }
   }
 
@@ -126,7 +133,7 @@ public class SessionBackupRest {
       data.put("id", sessionid);
       sessionChangeChannel.publish(this.localSession, data, null);
     } else {
-      System.out.println("Warning: Caught NPE of unknown origin. electron");
+      logger.warn("Warning: Caught NPE of unknown origin. electron");
     }
   }
 
@@ -141,14 +148,16 @@ public class SessionBackupRest {
       @FormParam("notebookModelJson") String notebookModelJson,
       @FormParam("edited") boolean edited) {
     Session previous = this.sessions.get(sessionId);
-    long date;
+    long openedDate;
+    Long lastEdited = null;
     if (previous != null) {
-      date = previous.openedDate;
+      openedDate = previous.openedDate;
+      lastEdited = previous.lastEdited;
     } else {
-      date = System.currentTimeMillis();
+      openedDate = System.currentTimeMillis();
     }
     this.sessions.put(sessionId, new Session(
-        notebookUri, uriType, readOnly, format, notebookModelJson, edited, date));
+        notebookUri, uriType, readOnly, format, notebookModelJson, edited, openedDate, lastEdited));
 
     // Notify client of changes in session
     refreshFrontend();
@@ -156,7 +165,7 @@ public class SessionBackupRest {
     try {
       recordToFile(sessionId, notebookUri, notebookModelJson);
     } catch (IOException | InterruptedException ex) {
-      Logger.getLogger(SessionBackupRest.class.getName()).log(Level.SEVERE, null, ex);
+      logger.error(ex.getMessage());
     }
   }
 
@@ -210,8 +219,11 @@ public class SessionBackupRest {
       @FormParam("edited") boolean edited) {
 
     Session session = this.sessions.get(sessionID);
-    if (session != null)
+    if (session != null){
       session.edited = edited;
+      session.lastEdited = System.currentTimeMillis();
+    }
+    refreshFrontend();
   }
 
   @GET
@@ -233,6 +245,7 @@ public class SessionBackupRest {
       jgen.writeObjectField("format", session.format);
       jgen.writeObjectField("notebookModelJson", session.notebookModelJson);
       jgen.writeObjectField("openedDate", session.openedDate);
+      jgen.writeObjectField("lastEdited", session.lastEdited);
       jgen.writeObjectField("edited", session.edited);
       jgen.writeEndObject();
     }

@@ -17,8 +17,6 @@ package com.twosigma.beaker.jvm.object;
 
 import java.io.IOException;
 import java.util.Observable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
@@ -32,9 +30,11 @@ import com.google.inject.Provider;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UpdatableEvaluationResult extends Observable {
-  private final static Logger logger = Logger.getLogger(UpdatableEvaluationResult.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(UpdatableEvaluationResult.class.getName());
   private Object value;
 
   public UpdatableEvaluationResult(Object value) {
@@ -108,7 +108,7 @@ public class UpdatableEvaluationResult extends Observable {
         
         o = new UpdatableEvaluationResult(payload);
       } catch (Exception e) {
-        logger.log(Level.SEVERE, "exception deserializing UpdatableEvaluationResult ", e);
+        logger.error("exception deserializing UpdatableEvaluationResult ", e);
       }
       return o;
     }

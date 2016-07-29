@@ -1032,6 +1032,7 @@
         }, function(result) {
           //Trigger when modal is dismissed
           removeSubmitListener();
+          cancelCB();
         }).catch(function() {
           removeSubmitListener();
         });

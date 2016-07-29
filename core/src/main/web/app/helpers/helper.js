@@ -1163,7 +1163,7 @@
         var progressObj = {
           type: "BeakerDisplay",
           innertype: "Error",
-          object: "Execution was canceled."
+          object: "No password provided."
         };
         modelOutput.result = progressObj;
       },

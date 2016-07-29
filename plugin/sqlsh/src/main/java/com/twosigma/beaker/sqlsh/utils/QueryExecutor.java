@@ -54,17 +54,24 @@ public class QueryExecutor {
 
     BasicDataSource ds = jdbcClient.getDataSource(beakerParser.getDbURI().getActualConnectionString());
 
-    Properties info = new Properties();
-    if (beakerParser.getDbURI().getUser() != null) {
+    Properties info = null;
+    if (beakerParser.getDbURI().getUser() != null && !beakerParser.getDbURI().getUser().isEmpty()) {
+      if(info == null){
+        info = new Properties();
+      }
       info.put("user", beakerParser.getDbURI().getUser());
     }
-    if (beakerParser.getDbURI().getPassword() != null) {
+    if (beakerParser.getDbURI().getPassword() != null && !beakerParser.getDbURI().getPassword().isEmpty()) {
+      if(info == null){
+        info = new Properties();
+      }
       info.put("password", beakerParser.getDbURI().getPassword());
     }
-
+    
     boolean isConnectionExeption = true;
 
-    try (Connection connection = ds.getDriver().connect(beakerParser.getDbURI().getActualConnectionString(), info)) {
+    // Workaround for "h2database" : do not work correctly with empty or null "Properties"
+    try (Connection connection = info != null ? ds.getDriver().connect(beakerParser.getDbURI().getActualConnectionString(), info) : ds.getConnection()) {
       this.connection = connection;
       connection.setAutoCommit(false);
       List<Object> resultsForOutputCell = new ArrayList<>();

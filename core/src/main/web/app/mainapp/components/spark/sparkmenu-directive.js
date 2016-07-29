@@ -47,6 +47,10 @@
           return 'plugin-known';
         };
 
+        scope.getError = function() {
+          return bkSparkContextManager.getError();
+        };
+
         scope.isConnected = function() {
           return bkSparkContextManager.isConnected();
         };
@@ -79,7 +83,8 @@
             keyboard: true,
             backdropClick: true,
             controller: 'sparkPropertiesCtrl',
-            template: JST['mainapp/components/spark/sparkproperties']()
+            template: JST['mainapp/components/spark/sparkproperties'](),
+            size: 'lg'
           };
 
           var sparkPropertiesInstance = $uibModal.open(options);

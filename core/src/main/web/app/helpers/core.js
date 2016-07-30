@@ -976,69 +976,6 @@
 
         return dd;
       },
-      
-      showSQLLoginModalDialog: function(
-          connectionName,
-          connectionString,
-          user,
-          okCB, 
-          cancelCB) {
-        
-        var options = {
-            windowClass: 'beaker-sandbox',
-            backdropClass: 'beaker-sandbox',
-            backdrop: true,
-            keyboard: true,
-            backdropClick: true,
-            controller: 'SQLLoginController',
-            templateUrl: 'app/helpers/sql-login-template.jst.html',
-            resolve: {
-              connectionName: function () {
-                return connectionName;
-              },
-              connectionString : function () {
-                return connectionString;
-              },
-              user : function () {
-                return user;
-              }
-            }
-        };
-
-        var attachSubmitListener = function() {
-          $document.on('keydown.modal', function (e) {
-            if (e.which === 13) {
-              var modal_submit = $('.modal .modal-submit');
-              if (modal_submit.length > 0)
-                modal_submit[0].click();
-            }
-          });
-        };
-        
-        var removeSubmitListener = function() {
-          $document.off('keydown.modal');
-        };
-        attachSubmitListener();
-        
-        var dd = $uibModal.open(options);
-        dd.result.then(function(result) {
-          if (okCB && (result != -1)) {
-            okCB(result);
-          }else{
-            cancelCB();
-          }
-          //Trigger when modal is closed
-          removeSubmitListener();
-        }, function(result) {
-          //Trigger when modal is dismissed
-          removeSubmitListener();
-          cancelCB();
-        }).catch(function() {
-          removeSubmitListener();
-        });
-        return dd;
-      },
-      
       show0ButtonModal: function(msgBody, msgHeader) {
         if (!msgHeader) {
           msgHeader = "Oops...";
@@ -1811,35 +1748,6 @@
         });
       }
     };
-  });
-  
-  module.controller('SQLLoginController', function($scope, $rootScope, $uibModalInstance, modalDialogOp, bkUtils, connectionName, connectionString, user) {
-    
-    $scope.sqlConnectionData = {
-      connectionName: connectionName,
-      connectionString: connectionString,
-      user: user,
-      password: null
-    }
-    
-    $scope.cancelFunction = function() {
-      $uibModalInstance.close(-1);
-    };
-    
-    $scope.okFunction = function() {
-      $uibModalInstance.close($scope.sqlConnectionData);
-    };
-    
-    $scope.getStrategy = function() {
-      return modalDialogOp.getStrategy();
-    };
-    $scope.isWindows = function() {
-      return bkUtils.isWindows;
-    };
-    $rootScope.$on('modal.submit', function() {
-      $scope.close($scope.getStrategy().getResult());
-    });
-
   });
 
   /**

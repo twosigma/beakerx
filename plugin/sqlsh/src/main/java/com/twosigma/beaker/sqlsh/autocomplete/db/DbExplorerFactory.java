@@ -17,14 +17,12 @@
 package com.twosigma.beaker.sqlsh.autocomplete.db;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.sqlsh.utils.BeakerParser;
-import com.twosigma.beaker.sqlsh.utils.ConnectionStringHolder;
 import com.twosigma.beaker.sqlsh.utils.DBConnectionException;
 import com.twosigma.beaker.sqlsh.utils.JDBCClient;
 
@@ -34,14 +32,17 @@ public class DbExplorerFactory {
   // private static final String VENDOR_JDBC_ORACLE = "jdbc:oracle:";
   // private static final String VENDOR_JDBC_MSSQL = "jdbc:sqlserver:";
 
-  public static DbInfo getDbInfo(String txt, JDBCClient jdbcClient, String sessionId, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) {
+  public static DbInfo getDbInfo(String txt, JDBCClient jdbcClient, String sessionId,
+                                 String defaultConnectionString,
+                                 Map<String, String> namedConnectionString) {
 
     final NamespaceClient namespaceClient = NamespaceClient.getBeaker(sessionId);
     final BeakerParser beakerParser;
     try {
-      beakerParser = new BeakerParser(txt, namespaceClient, defaultConnectionString, namedConnectionString, jdbcClient);
+      beakerParser = new BeakerParser(txt, namespaceClient,
+                                      defaultConnectionString, namedConnectionString);
 
-      final String uri = beakerParser.getDbURI().getActualConnectionString();
+      final String uri = beakerParser.getDbURI();
 
       if (uri != null) {
         final DataSource ds = jdbcClient.getDataSource(uri);
@@ -54,8 +55,6 @@ public class DbExplorerFactory {
     } catch (IOException e) {
       e.printStackTrace();
     } catch (DBConnectionException e) {
-      e.printStackTrace();
-    } catch (SQLException e) {
       e.printStackTrace();
     }
 

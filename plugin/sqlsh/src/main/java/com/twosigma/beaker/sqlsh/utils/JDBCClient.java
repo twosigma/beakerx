@@ -44,7 +44,7 @@ public class JDBCClient {
     loadDrivers(null);
   }
 
-  public BasicDataSource getDataSource(String uri) throws DBConnectionException {
+  public DataSource getDataSource(String uri) throws DBConnectionException {
     synchronized (this) {
       try {
 

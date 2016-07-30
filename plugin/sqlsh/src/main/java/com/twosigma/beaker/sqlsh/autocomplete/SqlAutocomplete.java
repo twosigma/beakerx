@@ -27,7 +27,6 @@ import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.sqlsh.autocomplete.db.DbCache;
 import com.twosigma.beaker.sqlsh.autocomplete.db.DbExplorerFactory;
 import com.twosigma.beaker.sqlsh.autocomplete.db.DbInfo;
-import com.twosigma.beaker.sqlsh.utils.ConnectionStringHolder;
 import com.twosigma.beaker.sqlsh.utils.JDBCClient;
 
 public class SqlAutocomplete {
@@ -52,13 +51,13 @@ public class SqlAutocomplete {
 
   private final JDBCClient jdbcClient;
   private final String sessionId;
-  private ConnectionStringHolder defaultConnectionString;
-  private final Map<String, ConnectionStringHolder> namedConnectionString;
+  String defaultConnectionString;
+  private final Map<String, String> namedConnectionString;
   private final DbCache cache; 
 
 
 
-  public SqlAutocomplete(ClasspathScanner _cps, JDBCClient jdbcClient, String sessionId, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) {
+  public SqlAutocomplete(ClasspathScanner _cps, JDBCClient jdbcClient, String sessionId, String defaultConnectionString, Map<String, String> namedConnectionString) {
     super();
     this.jdbcClient = jdbcClient;
     this.sessionId = sessionId;

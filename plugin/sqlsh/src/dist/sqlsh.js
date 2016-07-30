@@ -44,30 +44,30 @@ define(function(require, exports, module) {
             ecb("failed to create shell");
           });
     },
-    
-    evaluateWithPassword : function(code, modelOutput, refreshObj, deferred) {
+    evaluate: function(code, modelOutput,refreshObj) {
+      var deferred = Q.defer();
+      
       if (SqlShCancelFunction) {
         deferred.reject("An evaluation is already in progress");
         return deferred.promise;
       }
-      var self = this;
 
+      var self = this;
+      bkHelper.setupProgressOutput(modelOutput);
       $.ajax({
         type: "POST",
         datatype: "json",
         url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/evaluate"),
         data: {shellId: self.settings.shellID, code: code}
       }).done(function(ret) {
-        SqlShCancelFunction = function() {
+        SqlShCancelFunction = function () {
           $.ajax({
-            type : "POST",
-            datatype : "json",
-            url : bkHelper.serverUrl(serviceBase + "/rest/sqlsh/cancelExecution"),
-            data : {
-              shellId : self.settings.shellID
-            }
-          }).done(function(ret) {
-            console.log("done cancelExecution", ret);
+            type: "POST",
+            datatype: "json",
+            url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/cancelExecution"),
+            data: {shellId: self.settings.shellID}
+          }).done(function (ret) {
+            console.log("done cancelExecution",ret);
           });
           bkHelper.setupCancellingOutput(modelOutput);
         }
@@ -90,59 +90,8 @@ define(function(require, exports, module) {
           cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
         }
       });
-    },
-    
-    
-    evaluate : function(code, modelOutput, refreshObj) {
-
-      var self = this;
-      var deferred = Q.defer();
-      
-      var promise = new Promise(function(resolve, reject) {
-        
-        getListOfConnectiononWhoNeedDialog(self.settings.shellID).success(function(ret) {
-
-          if (ret.length > 0) {
-            for (var i = 0; i < ret.length; i++) {
-
-              bkHelper.showSQLLoginModalDialog(ret[i].connectionName, 
-                  ret[i].connectionString, 
-                  ret[i].user, 
-                  function(sqlConnectionData) {
-                    setShellUserPassword(self.settings.shellID, 
-                      sqlConnectionData.connectionName, 
-                      sqlConnectionData.user, 
-                      sqlConnectionData.password
-                    ).success(function() {
-                      resolve("OK");
-                    })
-              }, function() {
-                resolve("CANCEL");
-              });
-              
-            }
-          } else {
-            resolve("OK");
-          }
-        });
-        
-      });
-      
-      promise.then(
-          result => {
-            if(result == "OK"){
-              bkHelper.setupProgressOutput(modelOutput);
-              self.evaluateWithPassword(code, modelOutput, refreshObj, deferred);
-            }else{
-              bkHelper.printCanceledAnswer(modelOutput);
-              deferred.reject();
-            }
-          }
-      );
-      
       return deferred.promise;
     },
-    
     interrupt: function() {
       this.cancelExecution();
     },
@@ -227,26 +176,7 @@ define(function(require, exports, module) {
   var defaultImports = [];
   var shellReadyDeferred = bkHelper.newDeferred();
 
-  
-  var setShellUserPassword = function(shellID, namedConnection, user, password) {
-      return bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/setShellUserPassword"), {
-          shellId: shellID,
-          namedConnection: namedConnection,
-          user: user,
-          password:password
-         })
-  }
-  
-  var getListOfConnectiononWhoNeedDialog = function(shellID) {
-      return bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/getListOfConnectiononWhoNeedDialog"), {
-          shellId: shellID
-         }).success(function(ret) {
-          return ret;
-        })
-   };
-  
   var init = function() {
-
     bkHelper.locatePluginService(PLUGIN_NAME, {
       command: COMMAND,
       waitfor: "Started SelectChannelConnector",
@@ -263,7 +193,7 @@ define(function(require, exports, module) {
         }
         window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
         cometdUtil.init(PLUGIN_NAME, serviceBase);
-        
+
         var SqlShell = function(settings, doneCB, ecb) {
           var self = this;
           var setShellIdCB = function(id) {

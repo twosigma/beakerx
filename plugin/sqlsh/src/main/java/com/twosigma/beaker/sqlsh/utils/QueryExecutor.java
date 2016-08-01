@@ -15,18 +15,26 @@
  */
 package com.twosigma.beaker.sqlsh.utils;
 
-import com.twosigma.beaker.NamespaceClient;
-import com.twosigma.beaker.jvm.object.OutputContainer;
-import com.twosigma.beaker.table.TableDisplay;
-
-import javax.sql.DataSource;
-
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.commons.dbcp2.BasicDataSource;
+
+import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.jvm.object.OutputContainer;
+import com.twosigma.beaker.table.TableDisplay;
 
 public class QueryExecutor {
 
@@ -39,13 +47,31 @@ public class QueryExecutor {
     this.jdbcClient = jdbcClient;
   }
 
-  public synchronized Object executeQuery(String script, NamespaceClient namespaceClient, String defaultConnectionString, Map<String, String> namedConnectionString) throws SQLException, IOException, ReadVariableException {
+  public synchronized Object executeQuery(String script, NamespaceClient namespaceClient, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString)
+      throws SQLException, IOException, ReadVariableException {
 
-    BeakerParser beakerParser = new BeakerParser(script, namespaceClient, defaultConnectionString, namedConnectionString);
+    BeakerParser beakerParser = new BeakerParser(script, namespaceClient, defaultConnectionString, namedConnectionString, jdbcClient);
 
-    DataSource ds = jdbcClient.getDataSource(beakerParser.getDbURI());
+    BasicDataSource ds = jdbcClient.getDataSource(beakerParser.getDbURI().getActualConnectionString());
 
-    try (Connection connection = ds.getConnection();) {
+    Properties info = null;
+    if (beakerParser.getDbURI().getUser() != null && !beakerParser.getDbURI().getUser().isEmpty()) {
+      if(info == null){
+        info = new Properties();
+      }
+      info.put("user", beakerParser.getDbURI().getUser());
+    }
+    if (beakerParser.getDbURI().getPassword() != null && !beakerParser.getDbURI().getPassword().isEmpty()) {
+      if(info == null){
+        info = new Properties();
+      }
+      info.put("password", beakerParser.getDbURI().getPassword());
+    }
+    
+    boolean isConnectionExeption = true;
+
+    // Workaround for "h2database" : do not work correctly with empty or null "Properties"
+    try (Connection connection = info != null ? ds.getDriver().connect(beakerParser.getDbURI().getActualConnectionString(), info) : ds.getConnection()) {
       this.connection = connection;
       connection.setAutoCommit(false);
       List<Object> resultsForOutputCell = new ArrayList<>();
@@ -63,27 +89,33 @@ public class QueryExecutor {
           }
         }
 
-        if (basicIterationArray != null) {
-          int l;
-          Object obj;
-          try {
-            obj = namespaceClient.get(basicIterationArray.objectName);
-          } catch (Exception e) {
-            throw new ReadVariableException(basicIterationArray.objectName, e);
-          }
-          if (obj instanceof List) {
-            l = ((List) obj).size();
-          } else if (obj.getClass().isArray()) {
-            l = Array.getLength(obj);
-          } else break;
+        try {
+          if (basicIterationArray != null) {
+            int l;
+            Object obj;
+            try {
+              obj = namespaceClient.get(basicIterationArray.objectName);
+            } catch (Exception e) {
+              throw new ReadVariableException(basicIterationArray.objectName, e);
+            }
+            if (obj instanceof List) {
+              l = ((List) obj).size();
+            } else if (obj.getClass().isArray()) {
+              l = Array.getLength(obj);
+            } else
+              break;
 
-          for (int i = 0; i < l; i++) {
-            QueryResult queryResult = executeQuery(i, queryLine, connection, namespaceClient);
+            for (int i = 0; i < l; i++) {
+              QueryResult queryResult = executeQuery(i, queryLine, connection, namespaceClient);
+              adoptResult(queryLine, queryResult, resultsForOutputCell, resultsForNamspace);
+            }
+          } else {
+            QueryResult queryResult = executeQuery(-1, queryLine, connection, namespaceClient);
             adoptResult(queryLine, queryResult, resultsForOutputCell, resultsForNamspace);
           }
-        } else {
-          QueryResult queryResult = executeQuery(-1, queryLine, connection, namespaceClient);
-          adoptResult(queryLine, queryResult, resultsForOutputCell, resultsForNamspace);
+        } catch (Exception e) {
+          isConnectionExeption = false;
+          throw e;
         }
       }
       connection.commit();
@@ -108,6 +140,11 @@ public class QueryExecutor {
         return null;
       }
 
+    } catch (Exception e) {
+      if (beakerParser.getDbURI() != null && isConnectionExeption) {
+        beakerParser.getDbURI().setShowDialog(true);
+      }
+      throw e;
     } finally {
       statement = null;
     }

@@ -623,6 +623,41 @@
 
         return markupDeferred.promise;
       },
+      evaluateJSinHTML: function(code, evaluateFn) {
+        var markupDeferred = bkHelper.newDeferred();
+        if (!evaluateFn) {
+          evaluateFn = this.evaluateCode;
+        }
+
+        var results = [], re = /{{([^}]+)}}/g, text;
+
+        while (text = re.exec(code)) {
+          if (results.indexOf(text) === -1)
+            results.push(text);
+        }
+        
+        var evaluateCode = function (index) {
+          if (index === results.length) {
+            markupDeferred.resolve(code);
+          } else {
+            evaluateFn("JavaScript", results[index][1]).then(
+                function (r) {
+                  code = code.replace(results[index][0], r);
+                },
+                function (r) {
+                  code = code.replace(results[index][0], "<font color='red'>" + "Error: **" + r.object[0] + "**" + "</font>");
+                }
+            ).finally(function () {
+                  evaluateCode(index + 1);
+                }
+            );
+          }
+        };
+
+        evaluateCode(0);
+
+        return markupDeferred.promise;
+      },
       getEvaluatorMenuItems: function() {
         if (getCurrentApp() && getCurrentApp().getEvaluatorMenuItems) {
           return getCurrentApp().getEvaluatorMenuItems();

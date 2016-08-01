@@ -1537,7 +1537,7 @@
         }
 
         return {
-          url: '../beaker/connector',
+          url: bkHelper.serverUrl('beaker/connector'),
           useBrowserHistory: false,
           resizable: false,
           onlyMimes: mime,

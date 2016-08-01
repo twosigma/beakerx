@@ -14,7 +14,10 @@
     limitations under the License.
   -->
   <div class="modal-header">
-    <h1 class="spark-configuration">Spark Configuration</h1>
+    <h1 class="spark-configuration">
+      Spark Configuration
+      <span ng-if="edited()">*</span>
+    </h1>
     <div class="spark-configuration status-line">
       <bk-spark-status></bk-spark-status>
     </div>
@@ -84,147 +87,15 @@
               </td>
             </tr>
 
-
-
-            <tr>
-              <td width="35%"><label class="col-sm-1 form-control-label">Verbose</label></td>
-              <td>
-                <input type="checkbox" class="checkbox" />
+            <tr ng-repeat="property in sparkConf" class="spark-property">
+              <td width="35%" class="spark-property-key">
+                <input type="text" class="form-control" ng-model="property.key" ng-disabled="isDisabled()" placeholder="spark.property">
               </td>
-
-            </tr>
-            <tr>
-              <td width="35%"><label class="col-sm-1 form-control-label">Persistent</label></td>
               <td>
-                <input type="checkbox" class="checkbox" />
-              </td>
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">Debug</label></td>
-              <td>
-                <input type="checkbox" />
+                <span class="fa fa-times" title="Remove Spark property" ng-click="removeSparkConfProperty(property)" ng-disabled="isDisabled()" eat-click ng-if="property.key !== ''"></span>
+                <input type="text" class="form-control spark-property-value" ng-model="property.value" ng-disabled="isDisabled()">
               </td>
             </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">Driver Memory (GB)</label></td>
-              <td>
-                <input type="text" class="form-control" value="1" />
-              </td>
-
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">SparkContext alias</label></td>
-              <td>
-                <input type="text" class="form-control" value="sc" />
-              </td> 
-            </tr>
-            
-            <tr>
-              <td><label class="col-sm-1 form-control-label">SQLContext alias</label></td>
-              <td>
-                <input type="text" class="form-control" value="sqlContext" />
-              </td> 
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">priority</label></td>
-              <td>
-                <input type="text" class="form-control" value="75" />
-              </td>   
-            </tr>
-            <tr>
-              <td><label class="col-sm-1 form-control-label">min_resource_ratio</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">additional_jars</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td>
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">ld_libraries</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-            </tr>
-
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">ld_library_dirs</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">logfile</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td>
-            </tr>
-
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">loglevel</label></td>
-              <td>
-                <select class="form-control">
-                  <option>ERROR</option>
-                  <option>WARNING</option>
-                  <option>DEBUG</option>
-                  <option>INFO</option>
-                </select>
-              </td>
-
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">executor_java_options</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">driver_java_options</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">spark_conf</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">app_name</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">App name</label></td>
-              <td>
-                <input type="text" class="form-control" value="beaker" />
-              </td>
-            </tr>
-
           </table>
         </div>
 

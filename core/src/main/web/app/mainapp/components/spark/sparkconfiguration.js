@@ -95,6 +95,16 @@
       $scope.loadSparkConf();
     };
 
+    $scope.isFixedProperty = function(propertyKey) {
+      if (propertyKey === '')
+        return false;
+      for (var i = 0; i < $scope.originalSparkConf.length; ++i) {
+        if ($scope.originalSparkConf[i].key === propertyKey)
+          return true;
+      }
+      return false;
+    };
+
     $scope.showAdvanced = false;
     $scope.toggleAdvanced = function() {
       $scope.showAdvanced = !$scope.showAdvanced;

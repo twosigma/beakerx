@@ -77,6 +77,14 @@
                 item.sortorder = opts.sortorder;
               }
             },
+            addSeparator: function(itemName) {
+              var item = _.findWhere(this.items,
+                {name: itemName}
+              );
+              if(item){
+                item.separator = true;
+              }
+            },
             addItemToHead: function(menuItem) {
               this.items.splice(0, 0, menuItem);
             },

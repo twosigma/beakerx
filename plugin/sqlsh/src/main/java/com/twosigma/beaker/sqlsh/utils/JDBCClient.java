@@ -16,18 +16,21 @@
 
 package com.twosigma.beaker.sqlsh.utils;
 
-import javax.sql.DataSource;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
-import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.Set;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
@@ -44,7 +47,7 @@ public class JDBCClient {
     loadDrivers(null);
   }
 
-  public DataSource getDataSource(String uri) throws DBConnectionException {
+  public BasicDataSource getDataSource(String uri) throws DBConnectionException {
     synchronized (this) {
       try {
 

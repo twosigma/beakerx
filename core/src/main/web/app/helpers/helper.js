@@ -936,6 +936,9 @@
       showFileSaveDialog: function(data) {
         return bkCoreManager.showFileSaveDialog(data);
       },
+      showSQLLoginModalDialog: function(connectionName, connectionString, user, okCB, cancelCB) {
+        return bkCoreManager.showSQLLoginModalDialog(connectionName, connectionString, user, okCB, cancelCB);
+      },
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();
       },
@@ -1191,7 +1194,14 @@
           };
         modelOutput.result = progressObj;
       },
-
+      printCanceledAnswer: function(modelOutput) {
+        var progressObj = {
+          type: "BeakerDisplay",
+          innertype: "Error",
+          object: "No password provided."
+        };
+        modelOutput.result = progressObj;
+      },
       setupCancellingOutput: function(modelOutput) {
         if (modelOutput.result.type !== "BeakerDisplay" || modelOutput.result.innertype !== "Progress")
           setupProgressOutput(modelOutput);

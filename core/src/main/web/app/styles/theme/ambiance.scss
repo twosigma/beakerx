@@ -89,7 +89,9 @@ $ui-icons: url('../images/ambiance/ui-icons_ambiance_256x240.png');
 .beaker-theme-ambiance {
   @extend .base-theme;
 
-  input[type="checkbox"], input[type="radio"] {
-    visibility: visible;
+  .permissions {
+    input[type="checkbox"], input[type="radio"] {
+      visibility: visible;
+    }
   }
 }

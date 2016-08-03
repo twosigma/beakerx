@@ -16,12 +16,13 @@
   <div class="modal-header">
     <h1 class="spark-configuration">
       Spark Configuration
-      <span ng-if="edited()">*</span>
+      <b ng-if="edited()">*</b>
     </h1>
-    <div class="spark-configuration status-line">
+    <div class="spark-configuration status-line" style="float:right">
       <bk-spark-status></bk-spark-status>
     </div>
     <br style="clear:both" />
+    <!--
     <div class="spark-configuration template-selector">
       <form class="form-inline">
         <div class="form-group">
@@ -33,9 +34,13 @@
         </div>
       </form>
     </div>
+    -->
   </div>
 
   <div class="modal-body">
+    <div class="alert alert-danger" ng-if="error() !== ''">
+      {{error()}}
+    </div>
     <fieldset class="spark-configuration">
       <form>
         <table border="0" width="100%">

@@ -153,7 +153,7 @@ public class QueryExecutor {
       String begin = sql.substring(0, index);
       String end = sql.substring(index + 1, sql.length());
       if(value instanceof String){
-        ret = begin + "'" + replaseString(((String) value), "'", "\'", 0) + "'" + end;
+        ret = begin + "'" + replaseString(((String) value), "'", "''", 0) + "'" + end;
       }else{
         ret = begin + value + end;
       }

@@ -81,6 +81,10 @@
       };
     }
 
+    function responseContainsError(response) {
+      return typeof response === "string" && response.toLowerCase().indexOf('error') >= 0;
+    }
+
     $rootScope.configurationObjects = {
       executorCores: new ConfigurationString(
         'spark.executor.cores',
@@ -264,7 +268,7 @@
             $rootScope.connected = false;
             $rootScope.running = 0;
 
-            if (typeof ret === "string" && ret.toLowerCase().indexOf('error') >= 0)
+            if (responseContainsError(ret))
               $rootScope.error = ret;
             else
               $rootScope.error = 'Error during configuration deserialization';
@@ -333,7 +337,7 @@
             $rootScope.jobsPerCell = {};
           } else {
             $rootScope.connected = false;
-            if (typeof ret === "string" && ret.toLowerCase().indexOf('error') >= 0)
+            if (responseContainsError(ret))
               $rootScope.error = ret;
             else
               $rootScope.error = 'Error during configuration deserialization';
@@ -364,7 +368,7 @@
           else {
             // something erroneous happened
             console.error("SparkContext could not be started.", ret);
-            if (typeof ret === "string" && ret.toLowerCase().indexOf('error') >= 0)
+            if (responseContainsError(ret))
               $rootScope.error = ret;
             else
               $rootScope.error = 'Error: SparkContext could not be started.';
@@ -401,7 +405,7 @@
           else {
             // something erroneous happened
             console.error("SparkContext could not be stopped.", ret);
-            if (typeof ret === "string" && ret.toLowerCase().indexOf('error') >= 0)
+            if (responseContainsError(ret))
               $rootScope.error = ret;
             else
               $rootScope.error = 'Error: SparkContext could not be stopped.';

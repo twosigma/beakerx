@@ -399,6 +399,29 @@
           }
           return out;
         };
+        
+        $scope.doCSVDownload = function(selectedRows) {
+          var data;
+          var filename;
+          var isFiltered = function (index) {
+            return $scope.table.settings()[0].aiDisplay.indexOf(index) > -1;
+          };
+          if (!selectedRows) {
+            filename = 'all_rows';
+            data = $scope.table.rows(isFiltered).data();
+          } else {
+            filename = 'selected_rows';
+            data = $scope.table.rows(function(index, data, node) {
+              return $scope.selected[index] && isFiltered(index);
+            });
+          }
+          var anchor = angular.element('<a/>');
+          anchor.attr({
+            href: 'data:attachment/csv;charset=utf-8,' + $scope.exportTo(data, 'csv'),
+            target: '_blank',
+            download: filename + '.csv'
+          })[0].click();  
+        };
 
         $scope.doCSVExport = function(selectedRows) {
           var data;

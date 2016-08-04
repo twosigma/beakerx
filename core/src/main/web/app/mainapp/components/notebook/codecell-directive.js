@@ -396,6 +396,11 @@
           name: "Publish...",
           sortorder: 170
         });
+        
+        $scope.cellmenu.addSeparator("Cut");
+
+        $scope.cellmenu.addSeparator("Run");
+        
       },
       link: function(scope, element) {
         scope.showDebug = false;

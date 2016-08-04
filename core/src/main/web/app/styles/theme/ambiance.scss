@@ -88,14 +88,4 @@ $ui-icons: url('../images/ambiance/ui-icons_ambiance_256x240.png');
 
 .beaker-theme-ambiance {
   @extend .base-theme;
-
-  .permissions {
-    input[type="checkbox"], input[type="radio"] {
-      visibility: visible;
-    }
-  }
-
-  input[type="checkbox"]:checked ~ label:after {
-    content: "\2713";
-  }
 }

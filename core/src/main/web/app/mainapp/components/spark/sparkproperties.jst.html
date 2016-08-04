@@ -28,6 +28,18 @@
       <td><pre>{{value}}</pre></td>
     </tr>
   </table>
+
+  <hr />
+
+  <div class="spark-jobids">
+    <h3>{{jobIdSectionTitle}}</h3>
+    <div ng-if="jobIds.length === 0" class="alert alert-info">
+      No job IDs are available.
+    </div>
+    <ul ng-if="jobIds.length > 0">
+      <li ng-repeat="jobId in jobIds">{{jobId}}</li>
+    </ul>
+  </div>
 </div>
 
 <div class="modal-footer">

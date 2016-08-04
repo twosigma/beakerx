@@ -32,5 +32,8 @@
     $scope.doClose = function() {
       $uibModalInstance.close("ok");
     };
+
+    $scope.jobIds = bkSparkContextManager.jobIds();
+    $scope.jobIdSectionTitle = window.beakerRegister.sparkJobSectionTitle || "Spark Job IDs";
   }]);
 })();

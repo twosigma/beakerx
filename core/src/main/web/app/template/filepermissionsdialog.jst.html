@@ -24,25 +24,70 @@
   <div class="col-sm-4">
     <div class="row group">Owner</div>
 
-    <div class="row"><label><input ng-model="model.OWNER_READ" type="checkbox">Read</label></div>
-    <div class="row"><label><input ng-model="model.OWNER_WRITE" type="checkbox">Write</label></div>
-    <div class="row"><label><input ng-model="model.OWNER_EXECUTE" type="checkbox">Execute</label></div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.OWNER_READ" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label>Read</label>
+      </span>
+    </div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.OWNER_WRITE" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label>Write</label>
+        </span>
+    </div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.OWNER_EXECUTE" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label>Execute</label>
+      </span>
+    </div>
   </div>
 
   <div class="col-sm-4">
     <div class="row group">Group</div>
 
-    <div class="row"><label><input ng-model="model.GROUP_READ" type="checkbox">Read</label></div>
-    <div class="row"><label><input ng-model="model.GROUP_WRITE" type="checkbox">Write</label></div>
-    <div class="row"><label><input ng-model="model.GROUP_EXECUTE" type="checkbox">Execute</label></div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.GROUP_READ" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label>Read</label>
+      </span>
+    </div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.GROUP_WRITE" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label>Write</label>
+      </span>
+    </div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.GROUP_EXECUTE" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" `/>
+        <label>Execute</label>
+      </span>
+    </div>
   </div>
 
   <div class="col-sm-4">
     <div class="row group">Others</div>
 
-    <div class="row"><label><input ng-model="model.OTHERS_READ" type="checkbox">Read</label></div>
-    <div class="row"><label><input ng-model="model.OTHERS_WRITE" type="checkbox">Write</label></div>
-    <div class="row"><label><input ng-model="model.OTHERS_EXECUTE" type="checkbox">Execute</label></div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.OTHERS_READ" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label>Read</label>
+      </span>
+    </div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.OTHERS_WRITE" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label>Write</label>
+      </span>
+    </div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.OTHERS_EXECUTE" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label>Execute</label>
+      </span>
+    </div>
   </div>
 
   <div class="row" style="margin-top: 5px;">

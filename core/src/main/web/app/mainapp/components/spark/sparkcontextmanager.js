@@ -42,7 +42,7 @@
     $rootScope.jobsPerCell = {};
     $rootScope.activeCell = null;
 
-    $rootScope.jobIds = [];
+    $rootScope.executorIds = [];
 
     function ConfigurationString(id, value, name, customSerializer) {
       this.id = id;
@@ -246,7 +246,7 @@
             }
             $rootScope.jobsPerCell[$rootScope.activeCell] = jobs;
           }          
-          $rootScope.jobIds = progress.data.jobIds;
+          $rootScope.executorIds = progress.data.executorIds;
           $rootScope.$digest();
         });
 
@@ -344,20 +344,20 @@
           }
           $rootScope.connecting = false;
           $rootScope.running = 0;
-          $rootScope.jobIds = [];
+          $rootScope.executorIds = [];
           bkHelper.clearStatus("Creating Spark context");
 
-          // get Spark job IDs
+          // get Spark executor IDs
           bkHelper
-            .httpGet(bkHelper.serverUrl(serviceBase + "/rest/scalash/sparkJobIds"))
+            .httpGet(bkHelper.serverUrl(serviceBase + "/rest/scalash/sparkExecutorIds"))
             .success(function(ret) {
               if (ret instanceof Array)
-                $rootScope.jobIds = ret;
+                $rootScope.executorIds = ret;
               else
-                console.warn("Error while deserializing Spark job IDs. Given:", ret);
+                console.warn("Error while deserializing Spark executor IDs. Given:", ret);
             })
             .error(function(ret) {
-              console.warn("Error while retrieving Spark job IDs:", ret);
+              console.warn("Error while retrieving Spark executor IDs:", ret);
             });
         }).error(function(ret) {
           if (ret == null) {
@@ -376,7 +376,7 @@
           bkHelper.clearStatus("Creating Spark context");
           $rootScope.connecting = false;
           $rootScope.running = 0;
-          $rootScope.jobIds = [];
+          $rootScope.executorIds = [];
         });
       },
       disconnect: function() {
@@ -469,8 +469,8 @@
         $rootScope.jobsPerCell[cellId] = [];
         $rootScope.activeCell = cellId;
       },
-      jobIds: function() {
-        return $rootScope.jobIds;
+      executorIds: function() {
+        return $rootScope.executorIds;
       }
     };
   });

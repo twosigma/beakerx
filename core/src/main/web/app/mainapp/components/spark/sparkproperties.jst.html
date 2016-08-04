@@ -31,13 +31,13 @@
 
   <hr />
 
-  <div class="spark-jobids">
-    <h3>{{jobIdSectionTitle}}</h3>
-    <div ng-if="jobIds.length === 0" class="alert alert-info">
-      No job IDs are available.
+  <div class="spark-executorids">
+    <h3>{{executorIdSectionTitle}}</h3>
+    <div ng-if="executorIds.length === 0" class="alert alert-info">
+      No executor IDs are available.
     </div>
-    <ul ng-if="jobIds.length > 0">
-      <li ng-repeat="jobId in jobIds">{{jobId}}</li>
+    <ul ng-if="executorIds.length > 0">
+      <li ng-repeat="executorId in executorIds">{{executorId}}</li>
     </ul>
   </div>
 </div>

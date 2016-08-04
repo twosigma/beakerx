@@ -120,6 +120,8 @@ describe('Beaker Tables', function () {
         'Copy to Clipboard',
         'Save All as CSV',
         'Save Selected as CSV',
+        'Download All as CSV',
+        'Download Selected as CSV',
         'Show All Columns',
         'Show Column',
         'Hide All Columns',

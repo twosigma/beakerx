@@ -42,6 +42,8 @@
     $rootScope.jobsPerCell = {};
     $rootScope.activeCell = null;
 
+    $rootScope.jobIds = [];
+
     function ConfigurationString(id, value, name, customSerializer) {
       this.id = id;
       this.value = value;
@@ -77,6 +79,10 @@
           return String(min) + suffix;        
         return String(Math.min(max, Math.max(min, i))) + suffix;
       };
+    }
+
+    function responseContainsError(response) {
+      return typeof response === "string" && response.toLowerCase().indexOf('error') >= 0;
     }
 
     $rootScope.configurationObjects = {
@@ -215,13 +221,13 @@
         });
         jobSubscription = $.cometd.subscribe('/sparkJobProgress', function(progress) {
           $rootScope.running = 0;
-          for (var index in progress.data) {
-            $rootScope.running += progress.data[index].running ? 1 : 0;
+          for (var index in progress.data.jobs) {
+            $rootScope.running += progress.data.jobs[index].running ? 1 : 0;
           }
           if ($rootScope.activeCell != null) {
             var jobs = [];
-            for (var jindex in progress.data) {
-              var j = progress.data[jindex];
+            for (var jindex in progress.data.jobs) {
+              var j = progress.data.jobs[jindex];
               var stages = [];
               for (var sindex in j.stages) {
                 var s = j.stages[sindex];
@@ -239,8 +245,8 @@
                 j.running));
             }
             $rootScope.jobsPerCell[$rootScope.activeCell] = jobs;
-          }
-
+          }          
+          $rootScope.jobIds = progress.data.jobIds;
           $rootScope.$digest();
         });
 
@@ -261,7 +267,11 @@
             $rootScope.connecting = false;
             $rootScope.connected = false;
             $rootScope.running = 0;
-            $rootScope.error = 'Error during configuration deserialization';
+
+            if (responseContainsError(ret))
+              $rootScope.error = ret;
+            else
+              $rootScope.error = 'Error during configuration deserialization';
           }
           bkHelper.clearStatus("Creating Spark context");
         });
@@ -327,11 +337,28 @@
             $rootScope.jobsPerCell = {};
           } else {
             $rootScope.connected = false;
-            $rootScope.error = 'Error during configuration deserialization';
+            if (responseContainsError(ret))
+              $rootScope.error = ret;
+            else
+              $rootScope.error = 'Error during configuration deserialization';
           }
           $rootScope.connecting = false;
           $rootScope.running = 0;
+          $rootScope.jobIds = [];
           bkHelper.clearStatus("Creating Spark context");
+
+          // get Spark job IDs
+          bkHelper
+            .httpGet(bkHelper.serverUrl(serviceBase + "/rest/scalash/sparkJobIds"))
+            .success(function(ret) {
+              if (ret instanceof Array)
+                $rootScope.jobIds = ret;
+              else
+                console.warn("Error while deserializing Spark job IDs. Given:", ret);
+            })
+            .error(function(ret) {
+              console.warn("Error while retrieving Spark job IDs:", ret);
+            });
         }).error(function(ret) {
           if (ret == null) {
             // connection issue, Spark is just not available
@@ -341,11 +368,15 @@
           else {
             // something erroneous happened
             console.error("SparkContext could not be started.", ret);
-            $rootScope.error = 'ERROR';
+            if (responseContainsError(ret))
+              $rootScope.error = ret;
+            else
+              $rootScope.error = 'Error: SparkContext could not be started.';
           }
           bkHelper.clearStatus("Creating Spark context");
           $rootScope.connecting = false;
           $rootScope.running = 0;
+          $rootScope.jobIds = [];
         });
       },
       disconnect: function() {
@@ -374,7 +405,10 @@
           else {
             // something erroneous happened
             console.error("SparkContext could not be stopped.", ret);
-            $rootScope.error = 'ERROR';
+            if (responseContainsError(ret))
+              $rootScope.error = ret;
+            else
+              $rootScope.error = 'Error: SparkContext could not be stopped.';
           }
           bkHelper.clearStatus("Stopping Spark context");
           $rootScope.disconnecting = false;
@@ -434,6 +468,9 @@
       registerCell: function(cellId) {
         $rootScope.jobsPerCell[cellId] = [];
         $rootScope.activeCell = cellId;
+      },
+      jobIds: function() {
+        return $rootScope.jobIds;
       }
     };
   });

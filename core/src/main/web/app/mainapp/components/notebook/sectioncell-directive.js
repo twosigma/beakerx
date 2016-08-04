@@ -256,8 +256,7 @@
           name: "Publish...",
           sortorder: 170
         });
-
-
+        
         $scope.cellview.menu.changeSortOrder({
           name: "Move up",
           sortorder: 220
@@ -283,6 +282,11 @@
           name: 'Delete section and all sub-sections',
           sortorder: 250
         });
+
+        $scope.cellview.menu.addSeparator("Cut");
+
+        $scope.cellview.menu.addSeparator("Run all");
+
       }
     };
   });

@@ -28,7 +28,7 @@
   </span>
   <span ng-if="isAvailable() && isFailing()">
     <span class="plugin-status plugin-error">●</span>
-    SparkContext encountered an error
+    SparkContext encountered an error <span class="fa fa-question-circle" title="{{error()}}"></span>
   </span>
   <span ng-if="isAvailable() && isOffline() && !isFailing()">
     <span class="plugin-status plugin-known">●</span>

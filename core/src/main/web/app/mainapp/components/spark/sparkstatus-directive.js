@@ -47,6 +47,10 @@
             return bkSparkContextManager.isFailing();
           };
 
+          scope.error = function() {
+            return bkSparkContextManager.getError();
+          };
+
           scope.isDisconnecting = function() {
             return !bkSparkContextManager.isFailing() && bkSparkContextManager.isDisconnecting();
           };

@@ -2233,6 +2233,7 @@
             'stateSave': true,
             'processing': true,
             'autoWidth': true,
+            'ordering': !!scope.tableOrder,
             'order': scope.tableOrder ? _.cloneDeep(scope.tableOrder) : [[0, 'asc']],
             'scrollX': '10%',
             'searching': true,

@@ -623,6 +623,41 @@
 
         return markupDeferred.promise;
       },
+      evaluateJSinHTML: function(code, evaluateFn) {
+        var markupDeferred = bkHelper.newDeferred();
+        if (!evaluateFn) {
+          evaluateFn = this.evaluateCode;
+        }
+
+        var results = [], re = /{{([^}]+)}}/g, text;
+
+        while (text = re.exec(code)) {
+          if (results.indexOf(text) === -1)
+            results.push(text);
+        }
+        
+        var evaluateCode = function (index) {
+          if (index === results.length) {
+            markupDeferred.resolve(code);
+          } else {
+            evaluateFn("JavaScript", results[index][1]).then(
+                function (r) {
+                  code = code.replace(results[index][0], r);
+                },
+                function (r) {
+                  code = code.replace(results[index][0], "<font color='red'>" + "Error: **" + r.object[0] + "**" + "</font>");
+                }
+            ).finally(function () {
+                  evaluateCode(index + 1);
+                }
+            );
+          }
+        };
+
+        evaluateCode(0);
+
+        return markupDeferred.promise;
+      },
       getEvaluatorMenuItems: function() {
         if (getCurrentApp() && getCurrentApp().getEvaluatorMenuItems) {
           return getCurrentApp().getEvaluatorMenuItems();
@@ -901,6 +936,9 @@
       showFileSaveDialog: function(data) {
         return bkCoreManager.showFileSaveDialog(data);
       },
+      showSQLLoginModalDialog: function(connectionName, connectionString, user, okCB, cancelCB) {
+        return bkCoreManager.showSQLLoginModalDialog(connectionName, connectionString, user, okCB, cancelCB);
+      },
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();
       },
@@ -1156,7 +1194,14 @@
           };
         modelOutput.result = progressObj;
       },
-
+      printCanceledAnswer: function(modelOutput) {
+        var progressObj = {
+          type: "BeakerDisplay",
+          innertype: "Error",
+          object: "No password provided."
+        };
+        modelOutput.result = progressObj;
+      },
       setupCancellingOutput: function(modelOutput) {
         if (modelOutput.result.type !== "BeakerDisplay" || modelOutput.result.innertype !== "Progress")
           setupProgressOutput(modelOutput);
@@ -1537,7 +1582,7 @@
         }
 
         return {
-          url: '../beaker/connector',
+          url: bkHelper.serverUrl('beaker/connector'),
           useBrowserHistory: false,
           resizable: false,
           onlyMimes: mime,

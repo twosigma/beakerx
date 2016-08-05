@@ -211,7 +211,7 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
         expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('script')).getAttribute('innerHTML')).toBe('\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n');
 
         var elemP = beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('div p'));
-        beakerPO.checkSubStringIfDisplayed(elemP.get(0), 'The usual text formatting tags work, like for emphasis.');
+        beakerPO.checkSubStringIfDisplayed(elemP.get(0), 'The usual text formatting tags work,', 0, 36);
         beakerPO.checkSubStringIfDisplayed(elemP.get(1), 'But you can also create interactive elements:', 0, 45);
         beakerPO.checkSubStringIfDisplayed(elemP.get(1).element(by.css('button')), 'What is a beaker?');
         beakerPO.checkSubStringIfDisplayed(elemP.get(2), 'You can combine HTML and JavaScript cells to program interactive applications within Beaker.');

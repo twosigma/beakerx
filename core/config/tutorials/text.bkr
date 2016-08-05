@@ -207,7 +207,7 @@
             "input": {
                 "body": [
                     "<p>",
-                    "  The usual text formatting tags work, like <em> for <em>emphasis</em>.",
+                    "  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.",
                     "</p>",
                     "<p>",
                     "  But you can also create interactive elements:<br/>",
@@ -228,7 +228,7 @@
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<p>\n  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.\n</p>\n<p>\n  But you can also create interactive elements:<br>\n  <button class=\"btn btn-default\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">\n  \tWhat is a beaker?\n  </button>\n</p>\n<p>\n  You can combine HTML and JavaScript cells to program interactive applications within Beaker.\n</p>\n<p>\n  Click the contracting arrows in the menu of buttons at the top-right of this cell to hide\n  the HTML source text and only see the formatted results.\n</p>"
+                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<p>\n  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.\n</p>\n<p>\n  But you can also create interactive elements:<br>\n  <button class=\"btn btn-default\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">\n    What is a beaker?\n  </button>\n</p>\n<p>\n  You can combine HTML and JavaScript cells to program interactive applications within Beaker.\n</p>\n<p>\n  Click the contracting arrows in the menu of buttons at the top-right of this cell to hide\n  the HTML source text and only see the formatted results.\n</p>"
                 },
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 0,
@@ -504,9 +504,9 @@
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 8,
                 "state": {},
-                "height": 61
+                "height": 135
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 3
         }
     ],

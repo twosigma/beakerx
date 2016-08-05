@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-define('services/kernels/comm', [
+define('kernel/comm', [
     'jquery',
     'base/js/utils',
 ], function($, utils) {

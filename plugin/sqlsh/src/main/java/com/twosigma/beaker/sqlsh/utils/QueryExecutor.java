@@ -15,37 +15,63 @@
  */
 package com.twosigma.beaker.sqlsh.utils;
 
-import com.twosigma.beaker.NamespaceClient;
-import com.twosigma.beaker.jvm.object.OutputContainer;
-import com.twosigma.beaker.table.TableDisplay;
-
-import javax.sql.DataSource;
-
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.commons.dbcp2.BasicDataSource;
+
+import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.jvm.object.OutputContainer;
+import com.twosigma.beaker.table.TableDisplay;
 
 public class QueryExecutor {
 
   protected final JDBCClient jdbcClient;
 
   private Connection connection;
-  private PreparedStatement statement;
+  private Statement statement;
 
   public QueryExecutor(JDBCClient jdbcClient) {
     this.jdbcClient = jdbcClient;
   }
 
-  public synchronized Object executeQuery(String script, NamespaceClient namespaceClient, String defaultConnectionString, Map<String, String> namedConnectionString) throws SQLException, IOException, ReadVariableException {
+  public synchronized Object executeQuery(String script, NamespaceClient namespaceClient, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString)
+      throws SQLException, IOException, ReadVariableException {
 
-    BeakerParser beakerParser = new BeakerParser(script, namespaceClient, defaultConnectionString, namedConnectionString);
+    BeakerParser beakerParser = new BeakerParser(script, namespaceClient, defaultConnectionString, namedConnectionString, jdbcClient);
 
-    DataSource ds = jdbcClient.getDataSource(beakerParser.getDbURI());
+    BasicDataSource ds = jdbcClient.getDataSource(beakerParser.getDbURI().getActualConnectionString());
 
-    try (Connection connection = ds.getConnection();) {
+    Properties info = null;
+    if (beakerParser.getDbURI().getUser() != null && !beakerParser.getDbURI().getUser().isEmpty()) {
+      if(info == null){
+        info = new Properties();
+      }
+      info.put("user", beakerParser.getDbURI().getUser());
+    }
+    if (beakerParser.getDbURI().getPassword() != null && !beakerParser.getDbURI().getPassword().isEmpty()) {
+      if(info == null){
+        info = new Properties();
+      }
+      info.put("password", beakerParser.getDbURI().getPassword());
+    }
+    
+    boolean isConnectionExeption = true;
+
+    // Workaround for "h2database" : do not work correctly with empty or null "Properties"
+    try (Connection connection = info != null ? ds.getDriver().connect(beakerParser.getDbURI().getActualConnectionString(), info) : ds.getConnection()) {
       this.connection = connection;
       connection.setAutoCommit(false);
       List<Object> resultsForOutputCell = new ArrayList<>();
@@ -63,27 +89,33 @@ public class QueryExecutor {
           }
         }
 
-        if (basicIterationArray != null) {
-          int l;
-          Object obj;
-          try {
-            obj = namespaceClient.get(basicIterationArray.objectName);
-          } catch (Exception e) {
-            throw new ReadVariableException(basicIterationArray.objectName, e);
-          }
-          if (obj instanceof List) {
-            l = ((List) obj).size();
-          } else if (obj.getClass().isArray()) {
-            l = Array.getLength(obj);
-          } else break;
+        try {
+          if (basicIterationArray != null) {
+            int l;
+            Object obj;
+            try {
+              obj = namespaceClient.get(basicIterationArray.objectName);
+            } catch (Exception e) {
+              throw new ReadVariableException(basicIterationArray.objectName, e);
+            }
+            if (obj instanceof List) {
+              l = ((List) obj).size();
+            } else if (obj.getClass().isArray()) {
+              l = Array.getLength(obj);
+            } else
+              break;
 
-          for (int i = 0; i < l; i++) {
-            QueryResult queryResult = executeQuery(i, queryLine, connection, namespaceClient);
+            for (int i = 0; i < l; i++) {
+              QueryResult queryResult = executeQuery(i, queryLine, connection, namespaceClient);
+              adoptResult(queryLine, queryResult, resultsForOutputCell, resultsForNamspace);
+            }
+          } else {
+            QueryResult queryResult = executeQuery(-1, queryLine, connection, namespaceClient);
             adoptResult(queryLine, queryResult, resultsForOutputCell, resultsForNamspace);
           }
-        } else {
-          QueryResult queryResult = executeQuery(-1, queryLine, connection, namespaceClient);
-          adoptResult(queryLine, queryResult, resultsForOutputCell, resultsForNamspace);
+        } catch (Exception e) {
+          isConnectionExeption = false;
+          throw e;
         }
       }
       connection.commit();
@@ -108,6 +140,11 @@ public class QueryExecutor {
         return null;
       }
 
+    } catch (Exception e) {
+      if (beakerParser.getDbURI() != null && isConnectionExeption) {
+        beakerParser.getDbURI().setShowDialog(true);
+      }
+      throw e;
     } finally {
       statement = null;
     }
@@ -146,13 +183,30 @@ public class QueryExecutor {
     }
   }
 
+  protected static String setObject(String sql, Object value){
+    String ret;
+    int index = sql.indexOf('?');
+    if(index > -1){
+      String begin = sql.substring(0, index);
+      String end = sql.substring(index + 1, sql.length());
+      if(value instanceof String){
+        ret = begin + "\'" + value + "\'" + end;
+      }else{
+        ret = begin + value + end;
+      }
+    }else{
+      ret = sql;
+    }
+    return ret;
+  }
+
   private QueryResult executeQuery(int currentIterationIndex, BeakerParseResult queryLine, Connection conn, NamespaceClient namespaceClient) throws SQLException, ReadVariableException {
 
     QueryResult queryResult = new QueryResult();
-
-    try (PreparedStatement statement = conn.prepareStatement(queryLine.getResultQuery())) {
+    String sql = queryLine.getResultQuery();
+    
+    try (Statement statement = conn.createStatement()) {
       this.statement = statement;
-      int n = 1;
       for (BeakerInputVar parameter : queryLine.getInputVars()) {
         if(parameter.getErrorMessage() != null) throw new ReadVariableException(parameter.getErrorMessage());
         Object obj;
@@ -160,9 +214,9 @@ public class QueryExecutor {
           obj = namespaceClient.get(parameter.objectName);
 
           if (!parameter.isArray() && !parameter.isObject()) {
-            statement.setObject(n, obj);
+            sql = setObject(sql, obj);
           } else if (!parameter.isArray() && parameter.isObject()) {
-            statement.setObject(n, getValue(obj, parameter.getFieldName()));
+            sql = setObject(sql, getValue(obj, parameter.getFieldName()));
           } else if (parameter.isArray()) {
             int index;
             if (currentIterationIndex > 0 && parameter.isAll()) {
@@ -172,27 +226,26 @@ public class QueryExecutor {
             }
             if (!parameter.isObject()) {
               if (obj instanceof List) {
-                statement.setObject(n, ((List) obj).get(index));
+                sql = setObject(sql, ((List) obj).get(index));
               } else if (obj.getClass().isArray()) {
                 Object arrayElement = Array.get(obj, index);
-                statement.setObject(n, arrayElement);
+                sql = setObject(sql, arrayElement);
               }
             } else {
               if (obj instanceof List) {
-                statement.setObject(n, getValue(((List) obj).get(index), parameter.getFieldName()));
+                sql = setObject(sql, getValue(((List) obj).get(index), parameter.getFieldName()));
               } else if (obj.getClass().isArray()) {
                 Object arrayElement = Array.get(obj, index);
-                statement.setObject(n, getValue(arrayElement, parameter.getFieldName()));
+                sql = setObject(sql, getValue(arrayElement, parameter.getFieldName()));
               }
             }
           }
-          n++;
         } catch (Exception e) {
           throw new ReadVariableException(parameter.objectName, e);
         }
       }
 
-      boolean hasResultSet = statement.execute();
+      boolean hasResultSet = statement.execute(sql);
       if (hasResultSet) {
         ResultSet rs = statement.getResultSet();
 

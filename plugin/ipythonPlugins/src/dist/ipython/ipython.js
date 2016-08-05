@@ -517,7 +517,7 @@ define(function(require, exports, module) {
       return '';
     }
     start += sectionName.length + 1;
-    stop = documentation.lastIndexOf('\n', documentation.indexOf(':', start));
+    var stop = documentation.lastIndexOf('\n', documentation.indexOf(':', start));
     if (stop === -1) {
       return documentation.substr(start);
     }
@@ -565,6 +565,7 @@ define(function(require, exports, module) {
         require('base/js/utils');
         require('notebook/js/keyboardmanager');
         require('notebook/js/outputarea');
+        require('jupyter-js-widgets');
         events = require('base/js/events');
       }
       if (events) {
@@ -682,6 +683,7 @@ define(function(require, exports, module) {
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/events.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/serialize.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/session.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/jupyter-js-widgets.js"),
                                ], onSuccess, onFail);
           }
         }).error(function() {

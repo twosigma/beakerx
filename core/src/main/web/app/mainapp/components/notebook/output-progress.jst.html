@@ -42,7 +42,7 @@
   </div>
   <div ng-if='hasMessage()' style="margin-left: 30px; display: inline-block;">{{getMessage()}}</div>
   <br/>
-  <bk-spark-progress></bk-spark-progress>
+  <bk-spark-progress ng-if='usesSpark()'></bk-spark-progress>
 </div>
 <div ng-if='hasPayload() || hasOutputData()'>
   <hr>

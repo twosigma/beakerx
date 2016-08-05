@@ -16,19 +16,15 @@
  
  package com.twosigma.beaker.scala.util;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import scala.tools.nsc.Settings;
-import scala.tools.nsc.interpreter.Results.Error;
-import scala.tools.nsc.interpreter.Results.Success;
-import scala.tools._ 
-    import nsc.interpreter.{Completion, CompletionAware, IMain, 
-JLineCompletion, JLineDelimiter, JList, Parsed, Results, IR} 
-    import Completion.{Candidates, ScalaCompleter} 
+import java.util.ArrayList
 
-import jline.console.completer.{Completer, ArgumentCompleter} 
-import java.util.ArrayList;
-import com.twosigma.beaker.jvm.`object`.SimpleEvaluationObject;
-import scala.collection.JavaConversions._
+import com.twosigma.beaker.jvm.`object`.SimpleEvaluationObject
+
+import scala.tools.jline_embedded.console.completer.Completer
+import scala.tools.nsc.Settings
+import scala.tools.nsc.interpreter.Completion.{Candidates, ScalaCompleter}
+import scala.tools.nsc.interpreter.Results.Success
+import scala.tools.nsc.interpreter.{IMain, JList, PresentationCompilerCompleter}
 
 case class ResetState(val state: String);
 
@@ -45,15 +41,16 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     s;
   }
   private val baos = new java.io.ByteArrayOutputStream();
-  
-  private def scalaToJline(tc: ScalaCompleter): Completer = new Completer {
-    def complete(_buf: String, cursor: Int, candidates: JList[CharSequence]): Int = {
-      val buf   = if (_buf == null) "" else _buf
-      val Candidates(newCursor, newCandidates) = tc.complete(buf, cursor)
-      newCandidates foreach (candidates add _)
-      newCursor
+
+  private def scalaToJline(completion: ScalaCompleter): Completer =
+    new Completer {
+      def complete(_buf: String, cursor: Int, candidates: JList[CharSequence]): Int = {
+        val buf = if (_buf == null) "" else _buf
+        val Candidates(newCursor, newCandidates) = completion.complete(buf, cursor)
+        newCandidates foreach (candidates add _)
+        newCursor
+      }
     }
-  }
   
   var interpreter = {
     var i = new IMain(settings, new java.io.PrintWriter(baos));
@@ -61,12 +58,7 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     i;
   }
   
-  val completer = {
-    var c = new JLineCompletion(interpreter);
-    var b: ArgumentCompleter =new ArgumentCompleter(new JLineDelimiter, scalaToJline(c.completer));
-    b.setStrict(false);
-    b;
-  }
+  val completer = scalaToJline(new PresentationCompilerCompleter(interpreter))
 
   private def getOut: Any = {
     try {

@@ -13,13 +13,13 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<li class="dropdown" ng-class="isInactive() ? 'disabled' : 'bkr'">
-  <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
+<li class="dropdown spark-menu" ng-class="isInactive() ? 'disabled' : 'bkr'">
+  <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown" title="{{getError()}}">
     <span class="plugin-status" ng-class="statusClass()">●</span>
     Spark Cluster
   </a>
   <ul class="bkr dropdown-menu bkr" role="menu" aria-labelledby="dropdownMenu" ng-show="!isInactive()">    
-    <li ng-class="isConnecting() || isConnected() || isDisconnected() ? 'disabled' : 'bkr'">
+    <li ng-class="isConnecting() || isConnected() || isDisconnecting() ? 'disabled' : 'bkr'">
       <a href="#" ng-if="!isConnecting()" ng-click="start()" title="Create Spark context" eat-click>
         Start
       </a>
@@ -29,7 +29,7 @@
       </a>
     </li>
 
-    <li ng-class="isConnecting() || !isConnected() || isDisconnected() ? 'disabled' : 'bkr'">
+    <li ng-class="isConnecting() || !isConnected() || isDisconnecting() ? 'disabled' : 'bkr'">
       <a href="#" ng-click="stop()" ng-if="!isDisconnecting()" title="Close Spark context" eat-click style="border-bottom:1px solid #ccc">
         Stop
       </a>
@@ -42,6 +42,12 @@
     <li>
       <a href="#" ng-click="showSparkConfiguration()" title="Configure the Spark cluster" eat-click>
         Configure...
+      </a>
+    </li>
+
+    <li ng-class="isConnected() ? 'bkr' : 'disabled'">
+      <a href="#" ng-click="showSparkProperties()" title="View the properties of the SparkConf object" eat-click>
+        Spark properties...
       </a>
     </li>
 

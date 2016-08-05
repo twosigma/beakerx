@@ -101,7 +101,7 @@
     <tbody ng-if="isPreviewMode()">
       <tr ng-repeat="row in getPreviewRows() track by $index" ng-class="{'odd': $even, 'even': $odd}">
         <td ng-class="{'index': $index === 0}" ng-repeat="value in row track by $index">
-          {{::formatPreviewValue(value, $parent.$index, $index)}}
+          {{value}}
           <!--{{value}}-->
         </td>
       </tr>

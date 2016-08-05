@@ -31,16 +31,18 @@
     var uiPort = 4040;
     var shellId = undefined;
 
-    $rootScope.connected = false;
-    $rootScope.connecting = false;
-    $rootScope.disconnecting = false;
-    $rootScope.error = '';
-    $rootScope.running = 0;
+    var connected = false;
+    var connecting = false;
+    var disconnecting = false;
+    var error = '';
+    var running = 0;
 
-    $rootScope.sparkConf = null;
+    var sparkConf = null;
 
-    $rootScope.jobsPerCell = {};
-    $rootScope.activeCell = null;
+    var jobsPerCell = {};
+    var activeCell = null;
+
+    var executorIds = [];
 
     function ConfigurationString(id, value, name, customSerializer) {
       this.id = id;
@@ -79,7 +81,11 @@
       };
     }
 
-    $rootScope.configurationObjects = {
+    function responseContainsError(response) {
+      return typeof response === "string" && response.toLowerCase().indexOf('error') >= 0;
+    }
+
+    var configurationObjects = {
       executorCores: new ConfigurationString(
         'spark.executor.cores',
         '10',
@@ -118,7 +124,7 @@
 
     function readConfiguration(config, applyOnSuccess) {
       var r = {
-        configurationObjects: jQuery.extend(true, {}, $rootScope.configurationObjects),
+        configurationObjects: jQuery.extend(true, {}, configurationObjects),
         uiPort: null,
         sparkConf: null,
         success: false
@@ -134,9 +140,9 @@
         r.uiPort = parseInt(r.sparkConf["spark.ui.port"]);
 
         if (applyOnSuccess) {
-          $rootScope.configurationObjects = r.configurationObjects;
+          configurationObjects = r.configurationObjects;
           uiPort = r.uiPort;
-          $rootScope.sparkConf = r.sparkConf;
+          sparkConf = r.sparkConf;
         }
 
         r.success = true;
@@ -214,14 +220,14 @@
           console.log("Spark app progress", progress);
         });
         jobSubscription = $.cometd.subscribe('/sparkJobProgress', function(progress) {
-          $rootScope.running = 0;
-          for (var index in progress.data) {
-            $rootScope.running += progress.data[index].running ? 1 : 0;
+          running = 0;
+          for (var index in progress.data.jobs) {
+            running += progress.data.jobs[index].running ? 1 : 0;
           }
-          if ($rootScope.activeCell != null) {
+          if (activeCell != null) {
             var jobs = [];
-            for (var jindex in progress.data) {
-              var j = progress.data[jindex];
+            for (var jindex in progress.data.jobs) {
+              var j = progress.data.jobs[jindex];
               var stages = [];
               for (var sindex in j.stages) {
                 var s = j.stages[sindex];
@@ -238,9 +244,9 @@
                 j.stages,
                 j.running));
             }
-            $rootScope.jobsPerCell[$rootScope.activeCell] = jobs;
-          }
-
+            jobsPerCell[activeCell] = jobs;
+          }          
+          executorIds = progress.data.executorIds;
           $rootScope.$digest();
         });
 
@@ -253,15 +259,19 @@
             return;
           var confReadResult = readConfiguration(ret, true);
           if (confReadResult.success) {
-            $rootScope.connecting = false;
-            $rootScope.connected = true;
-            $rootScope.running = 0;
+            connecting = false;
+            connected = true;
+            running = 0;
             console.log("SparkContext already started, port:", uiPort);
           } else {
-            $rootScope.connecting = false;
-            $rootScope.connected = false;
-            $rootScope.running = 0;
-            $rootScope.error = 'Error during configuration deserialization';
+            connecting = false;
+            connected = false;
+            running = 0;
+
+            if (responseContainsError(ret))
+              error = ret;
+            else
+              error = 'Error during configuration deserialization';
           }
           bkHelper.clearStatus("Creating Spark context");
         });
@@ -281,35 +291,35 @@
         return serviceBase != null;
       },
       isConnecting: function() {
-        return $rootScope.connecting;
+        return connecting;
       },
       isDisconnecting: function() {
-        return $rootScope.disconnecting;
+        return disconnecting;
       },
       isFailing: function() {
-        return $rootScope.error.length > 0;
+        return error.length > 0;
       },
       isConnected: function() {
-        return $rootScope.connected;
+        return connected;
       },
       runningJobs: function() {
-        return $rootScope.running;
+        return running;
       },
       isRunning: function() {
-        return $rootScope.running > 0;
+        return running > 0;
       },
       getError: function() {
-        return $rootScope.error;
+        return error;
       },
       connect: function() {
-        if ($rootScope.connected)
+        if (connected)
           return;
 
         bkHelper.showStatus(
           "Creating Spark context",
           bkHelper.serverUrl(serviceBase + "/rest/scalash/startSparkContext")
         );
-        $rootScope.connecting = true;
+        connecting = true;
         
         console.log('Setting up SparkContext using configuration', this.configuration());
         bkHelper.httpPost(
@@ -322,118 +332,145 @@
           var confReadResult = readConfiguration(ret, true);
           if (confReadResult.success) {
             console.log("done startSparkContext, port:", uiPort);
-            $rootScope.connected = true;
-            $rootScope.error = '';
-            $rootScope.jobsPerCell = {};
+            connected = true;
+            error = '';
+            jobsPerCell = {};
           } else {
-            $rootScope.connected = false;
-            $rootScope.error = 'Error during configuration deserialization';
+            connected = false;
+            if (responseContainsError(ret))
+              error = ret;
+            else
+              error = 'Error during configuration deserialization';
           }
-          $rootScope.connecting = false;
-          $rootScope.running = 0;
+          connecting = false;
+          running = 0;
+          executorIds = [];
           bkHelper.clearStatus("Creating Spark context");
+
+          // get Spark executor IDs
+          bkHelper
+            .httpGet(bkHelper.serverUrl(serviceBase + "/rest/scalash/sparkExecutorIds"))
+            .success(function(ret) {
+              if (ret instanceof Array)
+                executorIds = ret;
+              else
+                console.warn("Error while deserializing Spark executor IDs. Given:", ret);
+            })
+            .error(function(ret) {
+              console.warn("Error while retrieving Spark executor IDs:", ret);
+            });
         }).error(function(ret) {
           if (ret == null) {
             // connection issue, Spark is just not available
             serviceBase = null;
-            $rootScope.error = '';
+            error = '';
           }
           else {
             // something erroneous happened
             console.error("SparkContext could not be started.", ret);
-            $rootScope.error = 'ERROR';
+            if (responseContainsError(ret))
+              error = ret;
+            else
+              error = 'Error: SparkContext could not be started.';
           }
           bkHelper.clearStatus("Creating Spark context");
-          $rootScope.connecting = false;
-          $rootScope.running = 0;
+          connecting = false;
+          running = 0;
+          executorIds = [];
         });
       },
       disconnect: function() {
-        if (!$rootScope.connected)
+        if (!connected)
           return;
 
         bkHelper.showStatus("Stopping Spark context");
-        $rootScope.disconnecting = true;
+        disconnecting = true;
 
         bkHelper.httpPost(
           bkHelper.serverUrl(serviceBase + "/rest/scalash/stopSparkContext"),
           {shellId: shellId}
         ).success(function(ret) {
           console.log("done stopSparkContext", ret);
-          $rootScope.disconnecting = false;
-          $rootScope.connected = false;
-          $rootScope.running = 0;
-          $rootScope.error = '';
+          disconnecting = false;
+          connected = false;
+          running = 0;
+          error = '';
           bkHelper.clearStatus("Stopping Spark context");
         }).error(function(ret) {
           if (ret == null) {
             // connection issue, Spark is just not available
             serviceBase = null;
-            $rootScope.error = '';
+            error = '';
           }
           else {
             // something erroneous happened
             console.error("SparkContext could not be stopped.", ret);
-            $rootScope.error = 'ERROR';
+            if (responseContainsError(ret))
+              error = ret;
+            else
+              error = 'Error: SparkContext could not be stopped.';
           }
           bkHelper.clearStatus("Stopping Spark context");
-          $rootScope.disconnecting = false;
-          $rootScope.running = 0;
+          disconnecting = false;
+          running = 0;
         });
       },
       sparkUiUrl: function() {
         return 'http://' + window.location.hostname + ':' + uiPort;
       },
       openSparkUi: function() {
-        if (!$rootScope.connected)
+        if (!connected)
           return;
         var win = window.open(this.sparkUiUrl(), '_blank');
         win.focus();
       },
       configurationObjects: function() {
-        return $rootScope.configurationObjects;
+        return configurationObjects;
       },
       setConfigurationObjects: function(config) {
-        $rootScope.configurationObjects = config;
+        configurationObjects = config;
       },
       configuration: function() {
         // serialize configuration objects to plain string dictionary
         var config = {};
-        for (var key in $rootScope.configurationObjects) {
+        for (var key in configurationObjects) {
           if (key === 'advanced')
             continue;
-          var obj = $rootScope.configurationObjects[key];
+          var obj = configurationObjects[key];
           config[obj.id] = obj.serializedValue();
         }
-        for (var key in $rootScope.configurationObjects.advanced) {
-          var obj = $rootScope.configurationObjects.advanced[key];
+        for (var key in configurationObjects.advanced) {
+          var obj = configurationObjects.advanced[key];
           config[obj.id] = obj.serializedValue();
         }
-        for (var key in $rootScope.sparkConf) {
-          config[key] = $rootScope.sparkConf[key];
+        for (var key in sparkConf) {
+          config[key] = sparkConf[key];
         }
         return config;
       },
       sparkConf: function() {
-        return $rootScope.sparkConf;
+        return sparkConf;
       },
       setSparkConf: function(conf) {
-        $rootScope.sparkConf = conf;
+        sparkConf = conf;
       },
       setSparkConfProperty: function(key, value) {
-        $rootScope.sparkConf[key] = value;
+        sparkConf[key] = value;
       },
       getJobsPerCell: function(cellId) {
-        if (cellId in $rootScope.jobsPerCell)
-          return $rootScope.jobsPerCell[cellId];
+        if (cellId in jobsPerCell)
+          return jobsPerCell[cellId];
         return null;
       },
       setJobsPerCell: function(cellId, jobs) {
-        $rootScope.jobsPerCell[cellId] = jobs;
+        jobsPerCell[cellId] = jobs;
       },
       registerCell: function(cellId) {
-        $rootScope.jobsPerCell[cellId] = [];
-        $rootScope.activeCell = cellId;
+        jobsPerCell[cellId] = [];
+        activeCell = cellId;
+      },
+      executorIds: function() {
+        return executorIds;
       }
     };
   });

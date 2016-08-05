@@ -24,26 +24,73 @@
   <div class="col-sm-4">
     <div class="row group">Owner</div>
 
-    <div class="row"><label><input ng-model="model.OWNER_READ" type="checkbox">Read</label></div>
-    <div class="row"><label><input ng-model="model.OWNER_WRITE" type="checkbox">Write</label></div>
-    <div class="row"><label><input ng-model="model.OWNER_EXECUTE" type="checkbox">Execute</label></div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.OWNER_READ" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label ng-click="model.OWNER_READ = !model.OWNER_READ">Read</label>
+      </span>
+    </div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.OWNER_WRITE" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label ng-click="model.OWNER_WRITE = !model.OWNER_WRITE">Write</label>
+        </span>
+    </div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.OWNER_EXECUTE" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label ng-click="model.OWNER_EXECUTE = !model.OWNER_EXECUTE">Execute</label>
+      </span>
+    </div>
   </div>
 
   <div class="col-sm-4">
     <div class="row group">Group</div>
 
-    <div class="row"><label><input ng-model="model.GROUP_READ" type="checkbox">Read</label></div>
-    <div class="row"><label><input ng-model="model.GROUP_WRITE" type="checkbox">Write</label></div>
-    <div class="row"><label><input ng-model="model.GROUP_EXECUTE" type="checkbox">Execute</label></div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.GROUP_READ" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label data-ng-click="model.GROUP_READ = !model.GROUP_READ">Read</label>
+      </span>
+    </div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.GROUP_WRITE" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label ng-click="model.GROUP_WRITE = !model.GROUP_WRITE">Write</label>
+      </span>
+    </div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.GROUP_EXECUTE" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label ng-click="model.GROUP_EXECUTE = !model.GROUP_EXECUTE">Execute</label>
+      </span>
+    </div>
   </div>
 
   <div class="col-sm-4">
     <div class="row group">Others</div>
 
-    <div class="row"><label><input ng-model="model.OTHERS_READ" type="checkbox">Read</label></div>
-    <div class="row"><label><input ng-model="model.OTHERS_WRITE" type="checkbox">Write</label></div>
-    <div class="row"><label><input ng-model="model.OTHERS_EXECUTE" type="checkbox">Execute</label></div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.OTHERS_READ" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label ng-click="model.OTHERS_READ = !model.OTHERS_READ">Read</label>
+      </span>
+    </div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.OTHERS_WRITE" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label ng-click="model.OTHERS_WRITE = !model.OTHERS_WRITE">Write</label>
+      </span>
+    </div>
+    <div class="row">
+      <span style="float: left; position: relative;">
+        <input ng-model="model.OTHERS_EXECUTE" type="checkbox" class="beforeCheckbox ng-pristine ng-untouched ng-valid ng-not-empty" />
+        <label ng-click="model.OTHERS_EXECUTE = !model.OTHERS_EXECUTE">Execute</label>
+      </span>
+    </div>
   </div>
+  
+  <br />
 
   <div class="row" style="margin-top: 5px;">
     <div class="col-sm-3"><label for="owner"><strong>Owner:</strong>&nbsp;</label></div>

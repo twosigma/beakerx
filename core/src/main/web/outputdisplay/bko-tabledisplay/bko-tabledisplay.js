@@ -436,12 +436,16 @@
         };
 
         $scope.getPreviewRows = function () {
-          var data = $scope.getCellModel().values;
+          var model = $scope.getCellModel();
+          var data = model.values;
+
+          $scope.tempColumns = [];
+          $scope.columnNames = model.columnNames;
+
           if(!$scope.tempColumns) {
-            $scope.tempColumns = [];
-            $scope.columnNames.forEach(function (title) {
+            model.columnNames.forEach(function (title) {
               $scope.tempColumns.push({sTitle: title});
-            })
+            });
           }
           return !data ? [] : data.slice(0, Math.min(25, data.length));
         };

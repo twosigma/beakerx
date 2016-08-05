@@ -33,7 +33,7 @@
       $uibModalInstance.close("ok");
     };
 
-    $scope.jobIds = bkSparkContextManager.jobIds();
-    $scope.jobIdSectionTitle = window.beakerRegister.sparkJobSectionTitle || "Spark Job IDs";
+    $scope.executorIds = bkSparkContextManager.executorIds();
+    $scope.executorIdSectionTitle = window.beakerRegister.sparkExecutorSectionTitle || "Executor IDs";
   }]);
 })();

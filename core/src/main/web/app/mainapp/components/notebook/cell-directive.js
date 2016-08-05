@@ -228,6 +228,15 @@
         $scope.isLockedCell = function() {
           return $scope.cellmodel.locked;
         };
+        
+        $scope.lockUnlockCell = function() {
+          bkSessionManager.setNotebookModelEdited(true);
+          if ($scope.isLockedCell()) {
+            $scope.cellmodel.locked = undefined;
+          } else {
+            $scope.cellmodel.locked = true;
+          }
+        };
 
         $scope.cellview.menu.addItem({
           name: 'Lock Cell',
@@ -235,14 +244,7 @@
           isChecked: function() {
             return $scope.isLockedCell();
           },
-          action: function() {
-            bkSessionManager.setNotebookModelEdited(true);
-            if ($scope.isLockedCell()) {
-              $scope.cellmodel.locked = undefined;
-            } else {
-              $scope.cellmodel.locked = true;
-            }
-          }
+          action: $scope.lockUnlockCell
         });
 
         $scope.cellview.menu.addItem({

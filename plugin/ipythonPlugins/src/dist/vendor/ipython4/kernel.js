@@ -4,7 +4,7 @@
 define('services/kernels/kernel', [
     'jquery',
     'base/js/utils',
-    'kernel/comm',
+    'services/kernels/comm',
     'kernel/serialize',
     'base/js/namespace',
     'base/js/events'

@@ -33,6 +33,15 @@ describe('JavaScript Tutorial', function () {
         done();
     });
 
+    describe('Autocomplete', function(){
+        it('Should hint "toUpperCase" ', function() {
+            beakerPO.insertNewDefaultCell('JavaScript');
+            browser.actions().sendKeys("\'test\'.").perform();
+            beakerPO.checkAutocomplete('toUpperCase');
+            beakerPO.selectItem('toUpperCase');
+        });
+    });
+
     describe('JavaScript Examples', function () {
 
         it('The Game of Life', function () {

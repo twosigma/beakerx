@@ -32,6 +32,15 @@ describe('Groovy Tutorial', function () {
         done();
     });
 
+    describe('Autocomplete', function(){
+        it('Should hint "toUpperCase()" ', function() {
+            beakerPO.insertNewDefaultCell('Groovy');
+            browser.actions().sendKeys("String str = \'test\';\nstr.to").perform();
+            beakerPO.checkAutocomplete('toUpperCase()');
+            beakerPO.selectItem('toUpperCase()');
+        });
+    });
+
     describe('Groovy examples', function () {
 
         it('Initializing variable', function () {

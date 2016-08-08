@@ -967,5 +967,25 @@ var BeakerPageObject = function() {
   this.getLiOutputcontainerByIdCell = function(idCell) {
     return this.getCodeCellOutputByIdCell(idCell).all(by.css('li.outputcontainer-li'));
   }
+
+  this.checkAutocomplete = function(nameHint) {
+    browser.actions().sendKeys(protractor.Key.chord(protractor.Key.CONTROL, protractor.Key.SPACE)).perform().then(function(){
+      expect(element(by.cssContainingText('li.CodeMirror-hint', nameHint)).isPresent()).toBe(true);
+    });
+  };
+
+  this.insertNewDefaultCell = function(language){
+    element.all(by.css('button[ng-click="newDefaultCodeCell()"]')).get(0).click();
+    this.insertCellOfType(language);
+    var bkcell = element.all(by.css('bk-cell')).get(0);
+    bkcell.element(by.css('div.CodeMirror-code')).click();
+    return bkcell;
+  }
+
+  this.selectItem = function(itemName){
+    var item = element(by.cssContainingText('li.CodeMirror-hint', itemName));
+    item.click();
+    browser.actions().doubleClick(item).perform();
+  }
 };
 module.exports = BeakerPageObject;

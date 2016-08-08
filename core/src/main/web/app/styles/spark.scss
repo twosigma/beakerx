@@ -116,7 +116,7 @@ h1.spark-configuration {
 }
 
 .spark-configuration.status-line {
-  float: left;
+  float: right;
   margin-left: 20px;
   margin-top: -6px;
 }
@@ -132,6 +132,7 @@ h1.spark-configuration {
     font-size: 16px;
     font-weight: bold;
     margin: 2px;
+    width: 170px;
   }
 
   table {
@@ -240,4 +241,8 @@ h1.spark-configuration {
   pre {
     max-width: 530px;
   }
+}
+
+.plugin-error .fa-question-circle {
+  cursor: help;
 }

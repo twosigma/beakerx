@@ -28,6 +28,18 @@
       <td><pre>{{value}}</pre></td>
     </tr>
   </table>
+
+  <hr />
+
+  <div class="spark-executorids">
+    <h3>{{executorIdSectionTitle}}</h3>
+    <div ng-if="executorIds.length === 0" class="alert alert-info">
+      No executor IDs are available.
+    </div>
+    <ul ng-if="executorIds.length > 0">
+      <li ng-repeat="executorId in executorIds">{{executorId}}</li>
+    </ul>
+  </div>
 </div>
 
 <div class="modal-footer">

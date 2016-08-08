@@ -34,6 +34,10 @@
     var BLACKLISTED_SPARK_PROPERTIES = [
       'spark.executor.cores', 'spark.executor.memory', 'spark.master', 'spark.ui.port'
     ];
+    if (window.beakerRegister.additionalHiddenSparkProperties != null) {
+      BLACKLISTED_SPARK_PROPERTIES = BLACKLISTED_SPARK_PROPERTIES.concat(
+        window.beakerRegister.additionalHiddenSparkProperties);
+    }
 
     // copy settings from SparkContextManager
     $scope.configuration = angular.copy(bkSparkContextManager.configurationObjects());
@@ -53,7 +57,7 @@
     $scope.loadSparkConf();
 
 
-    var digestPlaceholder = true;
+    var digestPlaceholder = true; // used for avoiding endless digestion
     $scope.$watch('sparkConf', function(newValue, oldValue) {
       if (!digestPlaceholder) {
         digestPlaceholder = true;
@@ -138,6 +142,10 @@
 
     $scope.running = function() {
       return bkSparkContextManager.runningJobs();
+    };
+
+    $scope.error = function() {
+      return bkSparkContextManager.getError();
     };
 
     $scope.closePermitted = false;

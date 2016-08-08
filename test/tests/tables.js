@@ -50,11 +50,11 @@ describe('Beaker Tables', function () {
       });
     });
 
-    it('should be sorted by 1 column (asc)', function (done) {
+    it('should be sorted by server', function (done) {
       beakerPO.getCodeOutputCellIdBySectionTitle('Table with Index column').then(function (v) {
         beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
         beakerPO.checkClass(beakerPO.getDataTablesColumnByIdCell(v, 0), 'sorting_1');
-        beakerPO.checkDataTableBodyByIdCell(v, 5, '0 strange 95000000.0000');
+        beakerPO.checkDataTableBodyByIdCell(v, 1, '0 strange 95000000.0000');
         done();
       });
     });

@@ -32,5 +32,8 @@
     $scope.doClose = function() {
       $uibModalInstance.close("ok");
     };
+
+    $scope.executorIds = bkSparkContextManager.executorIds();
+    $scope.executorIdSectionTitle = window.beakerRegister.sparkExecutorSectionTitle || "Executor IDs";
   }]);
 })();

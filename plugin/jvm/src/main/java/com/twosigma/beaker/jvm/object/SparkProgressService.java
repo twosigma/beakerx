@@ -51,7 +51,7 @@ public class SparkProgressService {
   private BayeuxServer bayeux;
   private LocalSession localSession;
 
-  private volatile List<JobProgress> progress = new ArrayList<>();
+  private volatile SparkProgress progress = new SparkProgress();
   private int activeJobId;
   private String activeAppName;
   private Map<Integer, List<Long>> activeTasks = new HashMap<>();
@@ -60,6 +60,8 @@ public class SparkProgressService {
   private Map<Integer, StageProgress> stages = new HashMap<>();
   private List<Integer> jobs = new ArrayList<>();
   private Map<Integer, List<Integer>> stagesPerJob = new HashMap<>();
+
+  private List<String> executorIds = new ArrayList<String>();
 
   @Inject
   public SparkProgressService(BayeuxServer bayeuxServer) {
@@ -83,15 +85,16 @@ public class SparkProgressService {
         sp.setSucceededTasks(succeededTasks.getOrDefault(stageId, new ArrayList<Long>()).size());
         jp.getStages().add(sp);
       }
-      progress.add(jp);
+      progress.getJobs().add(jp);
     }
 
     if (channel != null) {
+      progress.setExecutorIds(executorIds);
       channel.publish(this.localSession, progress, null);
     }
   }
 
-  public List<JobProgress> getProgress() {
+  public SparkProgress getProgress() {
     return this.progress;
   }
 
@@ -126,17 +129,26 @@ public class SparkProgressService {
   }
 
 
-  public void jobStart(int jobId) {
+  public void jobStart(int jobId, List<String> executorIds) {
     activeJobId = jobId;
     if (!jobs.contains(jobId)) {
       jobs.add(jobId);
       stagesPerJob.put(jobId, new ArrayList<Integer>());
     }
+    if (!executorIds.isEmpty()) {
+      this.executorIds.clear();
+      this.executorIds.addAll(executorIds);
+    }
   }
 
-  public void jobEnd(int jobId) {
+  public void jobEnd(int jobId, List<String> executorIds) {
     if (jobId != activeJobId)
       logger.warning(String.format("Spark job %d was not registered as active.", jobId));
+
+    if (!executorIds.isEmpty()) {
+      this.executorIds.clear();
+      this.executorIds.addAll(executorIds);
+    }
   }
 
 
@@ -276,6 +288,7 @@ public class SparkProgressService {
     private int id;
     private boolean running;
     private ArrayList<StageProgress> stages;
+    private ArrayList<String> executorIds;
 
     public boolean isRunning() {
       return running;
@@ -301,8 +314,17 @@ public class SparkProgressService {
       this.stages = stages;
     }
 
+    public ArrayList<String> getExecutorIds() {
+      return this.executorIds;
+    }
+
+    public void setExecutorIds(ArrayList<String> executorIds) {
+      this.executorIds = executorIds;
+    }
+
     public JobProgress() {
       this.stages = new ArrayList<StageProgress>();
+      this.executorIds = new ArrayList<String>();
     }
 
     public JobProgress(
@@ -312,6 +334,7 @@ public class SparkProgressService {
       this.id = id;
       this.running = running;
       this.stages = new ArrayList<StageProgress>();
+      this.executorIds = new ArrayList<String>();
     }
   }
 
@@ -406,6 +429,49 @@ public class SparkProgressService {
       this.failedTasks = failedTasks;
       this.activeTasks = activeTasks;
       this.running = running;
+    }
+  }
+
+  @JsonAutoDetect
+  public static class SparkProgress {
+
+    private List<JobProgress> jobs;
+    private List<String> executorIds;
+
+    public List<JobProgress> getJobs() {
+      return this.jobs;
+    }
+
+    public void setJobs(List<JobProgress> jobs) {
+      this.jobs = jobs;
+    }
+
+    public List<String> getExecutorIds() {
+      return this.executorIds;
+    }
+
+    public void setExecutorIds(List<String> executorIds) {
+      this.executorIds.clear();
+      this.executorIds.addAll(executorIds);
+    }
+
+    public void clear() {
+      this.jobs.clear();
+      this.executorIds.clear();
+      this.executorIds.add("Cleared progress");
+    }
+
+    public SparkProgress() {
+      this.jobs = new ArrayList<>();
+      this.executorIds = new ArrayList<>();
+    }
+
+    public SparkProgress(
+        List<JobProgress> jobs,
+        List<String> executorIds) {
+
+      this.jobs = jobs;
+      this.executorIds = executorIds;
     }
   }
 }

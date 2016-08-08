@@ -21,9 +21,11 @@
         <div class="cell-menu-item cell-dropdown dropdown-toggle" title="cell menu"></div>
         <bk-dropdown-menu menu-items="cellview.menu.items" submenu-classes="drop-left"></bk-dropdown-menu>
       </div>
+      
+      <div class="cell-menu-item fa fa-unlock" style="color: #a1a1a1; padding: 5px;" ng-if="isLockedCell()" ng-click="lockUnlockCell()"></div>
       <div class="cell-menu-item move-cell-down" ng-click="moveCellDown()" ng-class="moveCellDownDisabled() && 'disabled'" title="move cell down"></div>
       <div class="cell-menu-item move-cell-up" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() && 'disabled'" title="move cell up"></div>
-      <div class="cell-menu-item delete-cell" ng-if="!isLockedCell()" ng-click="deleteCell()" title="{{isSectionCell() ? 'Delete heading and keep contents' : 'Delete cell'}}"></div>
+      <div class="cell-menu-item delete-cell" ng-click="deleteCell()" title="{{isSectionCell() ? 'Delete heading and keep contents' : 'Delete cell'}}"></div>
       <div class="cell-menu-item expand-contract"
            ng-if="!isLockedCell() && collapseCellMenu[cellmodel.type]"
            ng-click="collapseCellMenu[cellmodel.type].click()"
@@ -38,8 +40,8 @@
         </div>
         <bk-code-cell-input-menu ng-show="cellmodel.evaluatorReader" ng-if="!hasFaultyEvaluator()"></bk-code-cell-input-menu>
       </div>
-      <div class="cell-menu-item evaluate" ng-if="!isLockedCell() && isMarkdownCell()" title="run cell"></div>
-      <div class="cell-menu-item evaluate" ng-if="!isLockedCell() && isCodeCell()"  ng-class="isCellRunning() && 'disabled'" ng-click="evaluate($event)" title="run cell"></div>
+      <div class="cell-menu-item evaluate" ng-if="isMarkdownCell()" title="run cell"></div>
+      <div class="cell-menu-item evaluate" ng-if="isCodeCell()"  ng-class="isCellRunning() && 'disabled'" ng-click="evaluate($event)" title="run cell"></div>
       <div class="cell-menu-item evaluate" ng-if="!isLockedCell() &&  cellmodel.type === 'section'" ng-click="evaluate($event)" title="run all cells in section"></div>
       <div class="cell-status-item loading-state advanced-hide" ng-if="!isLockedCell() && isCodeCell() && !cellmodel.evaluatorReader && !hasFaultyEvaluator()">Initializing {{cellmodel.evaluator}}
         <i class='fa fa-refresh fa-spin'></i>

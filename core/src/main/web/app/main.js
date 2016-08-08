@@ -28,7 +28,7 @@ requirejs.config({
     'base/js/security':             "../plugins/eval/ipythonPlugins/vendor/ipython4/security",
     'base/js/keyboard':             "../plugins/eval/ipythonPlugins/vendor/ipython4/keyboard",
     'base/js/dialog':               "../plugins/eval/ipythonPlugins/vendor/ipython4/dialog",
-    'kernel/comm':                  "../plugins/eval/ipythonPlugins/vendor/ipython4/comm",
+    'services/kernels/comm':                  "../plugins/eval/ipythonPlugins/vendor/ipython4/comm",
     'kernel/serialize':             "../plugins/eval/ipythonPlugins/vendor/ipython4/serialize",
     'services/kernels/kernel':      "../plugins/eval/ipythonPlugins/vendor/ipython4/kernel",
     'notebook/js/outputarea':       "../plugins/eval/ipythonPlugins/vendor/ipython4/outputarea",

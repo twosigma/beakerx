@@ -190,12 +190,29 @@ public class QueryExecutor {
       String begin = sql.substring(0, index);
       String end = sql.substring(index + 1, sql.length());
       if(value instanceof String){
-        ret = begin + "\'" + value + "\'" + end;
+        ret = begin + "'" + replaseString(((String) value), "'", "''", 0) + "'" + end;
       }else{
         ret = begin + value + end;
       }
     }else{
       ret = sql;
+    }
+    return ret;
+  }
+  
+  protected static String replaseString(String input, String oldValue, String newValue, int indexTobegin){
+    String ret = null;
+    if(input != null && oldValue != null){
+      int index = input.indexOf(oldValue, indexTobegin);
+      if(index > -1){
+        String begin = input.substring(0, index);
+        String end = input.substring(index + 1, input.length());
+        String tempString = newValue != null ? begin + newValue + end : begin + end;
+        int tempIndex = newValue != null ? index + newValue.length() : index;
+        ret = replaseString(tempString, oldValue, newValue, tempIndex);
+      }else{
+        ret = input;
+      }
     }
     return ret;
   }

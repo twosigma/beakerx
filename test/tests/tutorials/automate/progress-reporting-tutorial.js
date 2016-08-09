@@ -18,7 +18,7 @@
 var BeakerPageObject = require('../../beaker.po.js');
 var beakerPO;
 
-describe('Progress Reporting API', function (done) {
+describe('Progress Reporting API', function () {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();

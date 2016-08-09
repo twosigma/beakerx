@@ -46,7 +46,7 @@ var config = {
     'tests/tutorials/groovy_plotting/plot-features-tutorial2.js',
     'tests/tutorials/groovy_plotting/histogram-tutorial.js',
     'tests/tutorials/groovy_plotting/levelsOfDetail-tutorial.js',
-    // 'tests/tutorials/groovy_plotting/plotActions-tutorial.js',
+    'tests/tutorials/groovy_plotting/plotActions-tutorial.js',
     'tests/tutorials/language_demos/sql-tutorial.js',
     'tests/tutorials/language_demos/java-tutorial.js',
     'tests/tutorials/language_demos/groovy-tutorial.js',

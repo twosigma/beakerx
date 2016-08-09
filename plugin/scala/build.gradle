@@ -31,8 +31,8 @@ configurations {
 
 dependencies {
   provided project(':plugin:jvm')
-  provided group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.6'
-  provided group: 'org.scala-lang', name: 'scala-library', version: '2.11.6'
+  provided group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.8'
+  provided group: 'org.scala-lang', name: 'scala-library', version: '2.11.8'
   provided group: 'jline', name: 'jline', version: '2.12'
 }
 

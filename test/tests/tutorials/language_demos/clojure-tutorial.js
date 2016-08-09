@@ -19,12 +19,27 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Clojure Tutorial', function (done) {
+describe('Clojure Tutorial', function () {
 
-    beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fclojure-examples.bkr&readOnly=true")
-        .then(done)
-        .then(beakerPO.waitUntilLoadingCellOutput());
+    beforeAll(function(done){
+        beakerPO = new BeakerPageObject();
+        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fclojure-examples.bkr&readOnly=true").then(done);
+        beakerPO.waitUntilLoadingCellOutput();
+    });
+
+    afterAll(function(done){
+        beakerPO.createScreenshot('clojureTutorial');
+        done();
+    });
+
+    describe('Autocomplete', function(){
+        it('Should hint "declare" ', function() {
+            beakerPO.insertNewDefaultCell('Clojure');
+            browser.actions().sendKeys("de").perform();
+            beakerPO.checkAutocomplete('declare');
+            beakerPO.selectItem('declare');
+        });
+    });
 
     it('Clojure Examples', function () {
         var idCell = "codejnXAl6";

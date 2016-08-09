@@ -6,7 +6,7 @@
             "plugin": "HTML",
             "view": {
                 "cm": {
-                    "mode": "htmlmixed"
+                    "mode": "smartHTMLMode"
                 }
             }
         },
@@ -207,7 +207,7 @@
             "input": {
                 "body": [
                     "<p>",
-                    "  The usual text formatting tags work, like <em> for <em>emphasis</em>.",
+                    "  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.",
                     "</p>",
                     "<p>",
                     "  But you can also create interactive elements:<br/>",
@@ -221,6 +221,11 @@
                     "<p>",
                     "  Click the contracting arrows in the menu of buttons at the top-right of this cell to hide",
                     "  the HTML source text and only see the formatted results.",
+                    "</p>",
+                    "<p>",
+                    "  The template expansion that works for text cells also works for HTML.",
+                    "  Any text enclosed in double curly braces is evaluated as JavaScript, including references to the beaker object.",
+                    "  So {&#8203;{beaker.name}} appears as {{beaker.name}} and {&#8203;{beaker.e.toFixed(3)}} as {{beaker.e.toFixed(3)}}.",
                     "</p>"
                 ]
             },
@@ -228,15 +233,15 @@
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<p>\n  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.\n</p>\n<p>\n  But you can also create interactive elements:<br>\n  <button class=\"btn btn-default\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">\n  \tWhat is a beaker?\n  </button>\n</p>\n<p>\n  You can combine HTML and JavaScript cells to program interactive applications within Beaker.\n</p>\n<p>\n  Click the contracting arrows in the menu of buttons at the top-right of this cell to hide\n  the HTML source text and only see the formatted results.\n</p>"
+                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<p>\n  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.\n</p>\n<p>\n  But you can also create interactive elements:<br>\n  <button class=\"btn btn-default\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">\n    What is a beaker?\n  </button>\n</p>\n<p>\n  You can combine HTML and JavaScript cells to program interactive applications within Beaker.\n</p>\n<p>\n  Click the contracting arrows in the menu of buttons at the top-right of this cell to hide\n  the HTML source text and only see the formatted results.\n</p>\n<p>\n  The template expansion that works for text cells also works for HTML.\n  Any text enclosed in double curly braces is evaluated as JavaScript, including references to the beaker object.\n  So {​{beaker.name}} appears as Berzelius and {​{beaker.e.toFixed(3)}} as 2.718.\n</p>"
                 },
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 0,
+                "elapsedTime": 269,
                 "state": {},
-                "height": 181
+                "height": 226
             },
             "evaluatorReader": true,
-            "lineCount": 16
+            "lineCount": 21
         },
         {
             "id": "section2ybGYh",
@@ -504,9 +509,9 @@
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 8,
                 "state": {},
-                "height": 61
+                "height": 172
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 3
         }
     ],

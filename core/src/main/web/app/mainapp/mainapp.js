@@ -87,7 +87,7 @@
         $scope.totalCells = 0;
         $scope.completedCells = 0;
         $scope.evaluationCompleteNotificationMethods = [];
-        $scope.runnAllRuning = false;
+        $scope.runAllRunning = false;
         
         $scope.initAvailableNotificationMethods = function () {
           $scope.evaluationCompleteNotificationMethods = bkNotificationService.initAvailableNotificationMethods();
@@ -96,17 +96,23 @@
         $scope.notifyThatRunAllFinished = function () {
           _.filter($scope.evaluationCompleteNotificationMethods, 'selected').forEach(function (notificationMethod) {
             notificationMethod.action.call(notificationMethod,'Evaluation completed', 'Run all finished');
-            $scope.initAvailableNotificationMethods(); //clear boolean flags
           });
+        }
+                
+        $scope.isRunAllFinished  = function() {
+          return bkEvaluateJobManager.isAnyInProgress();
         }
         
         $scope.isShowProgressBar  = function() {
-          $scope.runnAllRuning = bkEvaluateJobManager.isAnyInProgress() && $scope.totalCells > 1;
-          return $scope.runnAllRuning;
+          return $scope.runAllRunning && $scope.totalCells > 1;
         }
 
-        $scope.$watch("runnAllRuning", function(newType, oldType) {
+        $scope.$watch("isRunAllFinished()", function(newType, oldType) {
           if(newType === false && oldType === true){ // there are some "false" , "false" events
+              $timeout(function(){
+                $scope.runAllRunning = false;
+              }, 2000); 
+            
             $scope.notifyThatRunAllFinished();
           }
         });
@@ -863,7 +869,7 @@
               }
               
               $scope.completedCells = 0;
-              $scope.runnAllRuning = false;
+              $scope.runAllRunning = true;
               $scope.initAvailableNotificationMethods();
               
               if (!_.isArray(toEval)) {

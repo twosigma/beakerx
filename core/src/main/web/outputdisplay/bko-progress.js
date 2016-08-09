@@ -18,8 +18,11 @@
  */
 (function() {
   'use strict';
-  beakerRegister.bkoDirective("Progress", ["$interval", "$compile", "$rootScope", "bkEvaluateJobManager", "bkUtils", "bkNotificationService", "bkOutputDisplayFactory", function(
-      $interval, $compile, $rootScope, bkEvaluateJobManager, bkUtils, bkNotificationService, bkOutputDisplayFactory) {
+  beakerRegister.bkoDirective("Progress", ["$interval", "$compile", "$rootScope", "bkEvaluateJobManager", "bkUtils",
+    "bkNotificationService", "bkOutputDisplayFactory", "bkSparkContextManager",
+    function(
+      $interval, $compile, $rootScope, bkEvaluateJobManager, bkUtils, bkNotificationService,
+      bkOutputDisplayFactory, bkSparkContextManager) {
     return {
       template: JST['mainapp/components/notebook/output-progress'],
       require: '^bkOutputDisplay',
@@ -97,6 +100,11 @@
         });
         scope.getOutputResult = function() {
           return scope.model.getCellModel().payload;
+        };
+        scope.usesSpark = function() {
+          return (scope.model.getEvaluatorId() === "Scala"
+            && bkSparkContextManager.isAvailable()
+            && bkSparkContextManager.isConnected());
         };
 
         scope.isShowMenu = function() { return false; };

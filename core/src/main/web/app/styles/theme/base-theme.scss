@@ -246,7 +246,7 @@
   }
 
   .code-cell-output.error > h6 {
-    color: $std-err-color;
+    color: $std-err-color !important;
   }
 
   bk-output-display pre {

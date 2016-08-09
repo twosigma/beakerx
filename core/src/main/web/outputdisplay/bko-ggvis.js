@@ -68,15 +68,23 @@
         });
 
         var debouncedOnResize = _.debounce(onResize, 100);
-        var iframeEl = element.find('iframe').on('resize', debouncedOnResize);
+        var iframeEl = element.find('iframe').on('load', onLoad);
+        
+        function onLoad(e) {
+          var iframeContentWindow = iframeEl[0].contentWindow;
+          iframeContentWindow.addEventListener('resize', debouncedOnResize);
+          iframeEl.off('load', onLoad);
+          iframeEl = null;
+        
+          scope.$on('$destroy', function() {
+            iframeContentWindow.removeEventListener('resize', debouncedOnResize);
+            iframeContentWindow = null;
+          });
+        }
 
         function onResize() {
           $rootScope.$emit('beaker.resize');
         }
-        
-        scope.$on('$destroy', function() {
-          iframeEl.off('resize', debouncedOnResize);
-        });
       }
     };
   }]);

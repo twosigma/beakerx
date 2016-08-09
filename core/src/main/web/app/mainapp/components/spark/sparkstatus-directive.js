@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 /**
- * This directive provides the spark progress bars indicating the tasks and stages.
+ * This directive provides the more detailed Spark status indicator.
  */
 
 (function() {
@@ -22,36 +22,45 @@
 
   var module = angular.module('bk.core');
 
-  module.directive('bkSparkProgress', 
+  module.directive('bkSparkStatus', 
     function($compile, $timeout, bkSparkContextManager, GLOBALS, bkUtils, bkSessionManager) {
       return {
         restrict: 'E',
-        template: JST["mainapp/components/spark/sparkprogress"](),
+        template: JST["mainapp/components/spark/sparkstatus"](),
         replace: true,
         controller: function($scope) {
         },
         link: function(scope, element, attrs) {
-          var cellId = scope.model.getCellId();
-          scope.jobs = [];
-          scope.retrieveJobs = function() {
-            return bkSparkContextManager.getJobsPerCell(cellId);
-          };
-          scope.$watch('retrieveJobs()', function(newValue, oldValue) {
-            if (newValue == null || newValue.length == 0)
-              return;
-            scope.jobs = newValue;
-          });
+          scope.isAvailable = function() {
+            return bkSparkContextManager.isAvailable();
+          }
 
           scope.isConnected = function() {
-            return bkSparkContextManager.isConnected();
+            return !bkSparkContextManager.isFailing() && bkSparkContextManager.isConnected() && !bkSparkContextManager.isDisconnecting() && !bkSparkContextManager.isConnecting();
           };
 
           scope.isConnecting = function() {
-            return bkSparkContextManager.isConnecting();
+            return !bkSparkContextManager.isFailing() && bkSparkContextManager.isConnecting();
+          };
+
+          scope.isFailing = function() {
+            return bkSparkContextManager.isFailing();
+          };
+
+          scope.error = function() {
+            return bkSparkContextManager.getError();
           };
 
           scope.isDisconnecting = function() {
-            return bkSparkContextManager.isDisconnecting();
+            return !bkSparkContextManager.isFailing() && bkSparkContextManager.isDisconnecting();
+          };
+
+          scope.isOffline = function() {
+            return !bkSparkContextManager.isFailing() && !scope.isConnected() && !scope.isConnecting() && !scope.isDisconnecting();
+          };
+
+          scope.running = function() {
+            return bkSparkContextManager.runningJobs();
           };
         }
       };

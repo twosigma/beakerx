@@ -66,8 +66,7 @@ describe('Progress Reporting API', function () {
         .then(checkProgressMessage.bind(this, idCell, 'begin'))
         .then(checkProgressBar.bind(this, idCell, '60 %'))
         .then(checkProgressMessage.bind(this, idCell, 'middle'))
-        .then(checkProgressBar.bind(this, idCell, '80 %'))
-        .then(checkProgressMessage.bind(this, idCell, 'about to finish'));
+        .then(checkProgressBar.bind(this, idCell, '80 %'));
         browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('pre', 'finished'))), 10000);
     });
 
@@ -100,8 +99,7 @@ describe('Progress Reporting API', function () {
         .then(checkProgressMessage.bind(this, idCell, 'begin'))
         .then(checkProgressBar.bind(this, idCell, '60 %'))
         .then(checkProgressMessage.bind(this, idCell, 'middle'))
-        .then(checkProgressBar.bind(this, idCell, '80 %'))
-        .then(checkProgressMessage.bind(this, idCell, 'about to finish'));
+        .then(checkProgressBar.bind(this, idCell, '80 %'));
     });
 
     it('Display progress on top Beaker bar', function () {

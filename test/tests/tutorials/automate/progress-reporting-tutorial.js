@@ -32,7 +32,7 @@ describe('Progress Reporting API', function () {
     });
 
     function checkProgressBar(idCell, label){
-        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div.progress-bar', label))), 10000).then(
+        return browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div.progress-bar', label))), 15000).then(
             function(result){return true;},
             function(error){
                 expect(error).toBe('progress bar should display ' + label);
@@ -40,7 +40,7 @@ describe('Progress Reporting API', function () {
     };
 
     function checkProgressMessage(idCell, label){
-        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div[ng-if="hasMessage()"]', label))), 10000).then(
+        return browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div[ng-if="hasMessage()"]', label))), 15000).then(
             function(result){return true;},
             function(error){
                 expect(error).toBe('progress message should display ' + label);
@@ -48,7 +48,7 @@ describe('Progress Reporting API', function () {
     };
 
     function checkProgressTopBar(idCell, label){
-        browser.wait(beakerPO.EC.presenceOf(element(by.cssContainingText('div.navbar-text', label))), 10000).then(
+        return browser.wait(beakerPO.EC.presenceOf(element(by.cssContainingText('div.navbar-text', label))), 15000).then(
             function(result){return true;},
             function(error){
                 expect(error).toBe('progress top Beaker bar should display ' + label);
@@ -59,15 +59,15 @@ describe('Progress Reporting API', function () {
         var idCell = "codeXnQmyX";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
-        checkProgressMessage(idCell, 'starting');
-        checkProgressBar(idCell, '20 %');
-        checkProgressMessage(idCell, 'started');
-        checkProgressBar(idCell, '40 %');
-        checkProgressMessage(idCell, 'begin');
-        checkProgressBar(idCell, '60 %');
-        checkProgressMessage(idCell, 'middle');
-        checkProgressBar(idCell, '80 %');
-        checkProgressMessage(idCell, 'about to finish');
+        checkProgressMessage(idCell, 'starting')
+        .then(checkProgressBar.bind(this, idCell, '20 %'))
+        .then(checkProgressMessage.bind(this, idCell, 'started'))
+        .then(checkProgressBar.bind(this, idCell, '40 %'))
+        .then(checkProgressMessage.bind(this, idCell, 'begin'))
+        .then(checkProgressBar.bind(this, idCell, '60 %'))
+        .then(checkProgressMessage.bind(this, idCell, 'middle'))
+        .then(checkProgressBar.bind(this, idCell, '80 %'))
+        .then(checkProgressMessage.bind(this, idCell, 'about to finish'));
         browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('pre', 'finished'))), 10000);
     });
 
@@ -93,15 +93,15 @@ describe('Progress Reporting API', function () {
         var idCell = "codefgkSlJ";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
-        checkProgressMessage(idCell, 'starting');
-        checkProgressBar(idCell, '20 %');
-        checkProgressMessage(idCell, 'started');
-        checkProgressBar(idCell, '40 %');
-        checkProgressMessage(idCell, 'begin');
-        checkProgressBar(idCell, '60 %');
-        checkProgressMessage(idCell, 'middle');
-        checkProgressBar(idCell, '80 %');
-        checkProgressMessage(idCell, 'about to finish');
+        checkProgressMessage(idCell, 'starting')
+        .then(checkProgressBar.bind(this, idCell, '20 %'))
+        .then(checkProgressMessage.bind(this, idCell, 'started'))
+        .then(checkProgressBar.bind(this, idCell, '40 %'))
+        .then(checkProgressMessage.bind(this, idCell, 'begin'))
+        .then(checkProgressBar.bind(this, idCell, '60 %'))
+        .then(checkProgressMessage.bind(this, idCell, 'middle'))
+        .then(checkProgressBar.bind(this, idCell, '80 %'))
+        .then(checkProgressMessage.bind(this, idCell, 'about to finish'));
     });
 
     it('Display progress on top Beaker bar', function () {

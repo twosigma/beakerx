@@ -1510,6 +1510,18 @@
       return deferred.promise;
     };
 
+    $scope.$watch('selected.path', function(newVal){
+      $scope.selected.path = newVal;
+      bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"), {path: $scope.selected.path})
+      .success(function(result) {
+        if (result.exist === true && result.isDirectory === true){
+          angular.element(document.getElementById('okButton'))[0].disabled = true;
+        }else{
+          angular.element(document.getElementById('okButton'))[0].disabled = false;
+        }
+      });
+    });
+
     $scope.getStrategy = function () {
       return strategy;
     };

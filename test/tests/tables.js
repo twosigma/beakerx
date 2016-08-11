@@ -94,7 +94,7 @@ describe('Beaker Tables', function () {
       });
     });
   });
-   /*
+
   describe('Table Menu', function () {
 
     function checkMenus(expectedItems, actualItems, done) {
@@ -466,5 +466,5 @@ describe('Beaker Tables', function () {
 
       });
     });
-  });   */
+  });
 });

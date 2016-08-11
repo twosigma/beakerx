@@ -18,7 +18,7 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('bkCodeCellOutputMenu', function(bkUtils) {
+  module.directive('bkCodeCellOutputMenu', function($uibModal, bkUtils, bkSparkContextManager) {
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/codecelloutputmenu"](),
@@ -60,6 +60,25 @@
             return parentItem.items();
           }
           return parentItem.items;
+        };
+        $scope.sparkJobs = function() {
+          if ($scope.$parent.evaluatorId !== "Scala")
+            return 0;
+          var jobs = bkSparkContextManager.getJobsPerCell($scope.$parent.cellId);
+          return jobs == null ? 0 : jobs.length;
+        };
+        $scope.showSparkJobs = function() {
+          var options = {
+            windowClass: 'beaker-sandbox',
+            backdropClass: 'beaker-sandbox',
+            backdrop: true,
+            keyboard: true,
+            backdropClick: true,
+            controller: 'sparkJobsCtrl',
+            template: JST['mainapp/components/spark/sparkjobs'](),
+            scope: $scope
+          };
+          $uibModal.open(options);
         };
       }
     };

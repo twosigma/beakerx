@@ -39,14 +39,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URI;
@@ -289,18 +282,15 @@ public class PluginServiceLocatorRest {
   private List<String> pythonBaseCommand(String pluginId, String command) {
     // Should pass pluginArgs too XXX?
     List<String> result = new ArrayList<String>();
-    result.add(getPluginsBasePath(pluginId) + "/" + command);
+    String base = this.pluginLocations.containsKey(pluginId) ?
+      this.pluginLocations.get(pluginId) : this.pluginDir;
+    result.add(base + "/" + command);
     
     if (windows()) {
-      String python = this.config.getInstallDirectory() + "\\python\\python";
-      result.add(0, python);
+	String python = this.config.getInstallDirectory() + "\\python\\python";
+	result.add(0, python);
     }
     return result;
-  }
-
-  private String getPluginsBasePath(String pluginId) {
-    return this.pluginLocations.containsKey(pluginId) ?
-        this.pluginLocations.get(pluginId) : this.pluginDir;
   }
 
   private boolean macosx() {
@@ -811,7 +801,8 @@ public class PluginServiceLocatorRest {
     proc = Runtime.getRuntime().exec(listToArray(cmd), buildEnv(pluginId, null));
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-version", null, null).start();
-    return br.readLine();
+    String line = br.readLine();
+    return line;
   }
 
   @GET

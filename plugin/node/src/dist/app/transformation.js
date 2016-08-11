@@ -417,6 +417,7 @@ function isCircularObject(node, parents) {
 // end of copy-pasted code
 
 exports.DataFrame = DataFrame;
+exports.ImageIcon = ImageIcon;
 exports.transform = transform;
 exports.transformBack = transformBack;
 exports.isCircularObject = isCircularObject;

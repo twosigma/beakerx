@@ -22,7 +22,7 @@ define(function(require, exports, module) {
   var PLUGIN_NAME = "HTML";
   var Html = {
     pluginName: PLUGIN_NAME,
-    cmMode: "htmlmixed",
+    cmMode:  "smartHTMLMode",
     bgColor: "#E3502B",
     fgColor: "#FFFFFF",
     borderColor: "",
@@ -41,13 +41,18 @@ define(function(require, exports, module) {
           var precode = "<script>\n"+
           "var beaker = bkHelper.getBeakerObject().beakerObj;\n"+
           "</script>\n";
-        
-          modelOutput.result = {
-            type: "BeakerDisplay",
-            innertype: "Html",
-            object: precode+code};
-          modelOutput.elapsedTime = new Date().getTime() - startTime;
-          deferred.resolve("");
+          
+          bkHelper.evaluateJSinHTML(code, bkHelper.evaluateCode)
+          .then(function (transformedHtml) {
+            modelOutput.result = {
+                type: "BeakerDisplay",
+                innertype: "Html",
+                object: precode+transformedHtml
+              };
+            modelOutput.elapsedTime = new Date().getTime() - startTime;
+            deferred.resolve("");   
+          });
+
         } catch (err) {
           modelOutput.result = {
               type: "BeakerDisplay",
@@ -69,6 +74,14 @@ define(function(require, exports, module) {
     if (!settings.view.cm) {
       settings.view.cm = {};
     }
+    
+    CodeMirror.defineMode("smartHTMLMode", function(config) {
+      return CodeMirror.multiplexingMode(
+        CodeMirror.getMode(config, "htmlmixed"),
+        {open: "{{", close: "}}",  mode: CodeMirror.getMode(config, "javascript"),  delimStyle: "delimit"}
+      );
+    });
+    
     settings.view.cm.mode = Html.cmMode;
     this.settings = settings;
   };

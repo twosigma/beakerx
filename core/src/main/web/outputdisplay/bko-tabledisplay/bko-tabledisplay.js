@@ -323,7 +323,7 @@
           $scope.model.resetShareMenuItems(newItems);
         });
 
-        $scope.exportTo = function(rows, format) {
+        $scope.exportTo = function(rows, format) {        
           var data = rows.data();
           var settings = $scope.table.settings()[0];
           var rowIndexes = rows[0];
@@ -399,28 +399,40 @@
           }
           return out;
         };
-
-        $scope.doCSVExport = function(all) {
+        
+        $scope.getCSV = function(selectedRows) {
           var data;
+          var filename;
           var isFiltered = function (index) {
             return $scope.table.settings()[0].aiDisplay.indexOf(index) > -1;
           };
-          if (!all) {
+          if (!selectedRows) {
             data = $scope.table.rows(isFiltered).data();
           } else {
             data = $scope.table.rows(function(index, data, node) {
               return $scope.selected[index] && isFiltered(index);
-            }).data();
+            });
           }
-          var out = $scope.exportTo(data, 'csv');
+          return $scope.exportTo(data, 'csv');
+        }
+        
+        $scope.doCSVDownload = function(selectedRows) {
+          var anchor = angular.element('<a/>');
+          anchor.attr({
+            href: 'data:attachment/csv;charset=utf-8,' + encodeURI($scope.getCSV(selectedRows)),
+            target: '_blank',
+            download: 'tableRows.csv'
+          })[0].click();  
+        };
 
+        $scope.doCSVExport = function(selectedRows) {
           bkHelper.showFileSaveDialog({
             extension: "csv",
             title: 'Select name for CSV file to save',
             saveButtonTitle : 'Save'
           }).then(function (ret) {
             if (ret.uri) {
-              return bkHelper.saveFile(ret.uri, out, true);
+              return bkHelper.saveFile(ret.uri, $scope.getCSV(selectedRows), true);
             }
           });
         };

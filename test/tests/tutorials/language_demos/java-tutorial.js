@@ -19,12 +19,27 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Java Tutorial', function (done) {
+describe('Java Tutorial', function () {
 
-    beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FjavaTutorial.bkr&readOnly=true").then(done);
-    beakerPO.waitUntilLoadingCellOutput();
+    beforeAll(function(done){
+        beakerPO = new BeakerPageObject();
+        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FjavaTutorial.bkr&readOnly=true").then(done);
+        beakerPO.waitUntilLoadingCellOutput();
+    });
 
+    afterAll(function(done){
+        beakerPO.createScreenshot('javaTutorial');
+        done();
+    });
+
+    describe('Autocomplete', function(){
+        it('Should hint "package"', function() {
+            beakerPO.insertNewDefaultCell('Java');
+            browser.actions().sendKeys("p").perform();
+            beakerPO.checkAutocomplete('package');
+            beakerPO.selectItem('package');
+        });
+    });
 
     describe('Java Examles', function () {
 

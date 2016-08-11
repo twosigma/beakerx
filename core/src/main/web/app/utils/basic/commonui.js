@@ -242,6 +242,9 @@
               }
             }
           }
+          if(item.separator){
+            result.push('menu-separator');
+          }
           result.push(item.id);
           return result.join(' ');
         };

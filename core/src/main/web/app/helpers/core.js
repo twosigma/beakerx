@@ -703,7 +703,7 @@
         CodeMirror.commands.save = function (){
 	        bkHelper.saveNotebook();
         };
-        
+
         var keys = {
             "Up" : goUpOrMoveFocusUp,
             "Down" : goDownOrMoveFocusDown,
@@ -980,9 +980,9 @@
           connectionName,
           connectionString,
           user,
-          okCB, 
+          okCB,
           cancelCB) {
-        
+
         var options = {
             windowClass: 'beaker-sandbox',
             backdropClass: 'beaker-sandbox',
@@ -1013,12 +1013,12 @@
             }
           });
         };
-        
+
         var removeSubmitListener = function() {
           $document.off('keydown.modal');
         };
         attachSubmitListener();
-        
+
         var dd = $uibModal.open(options);
         dd.result.then(function(result) {
           if (okCB && (result != -1)) {
@@ -1369,7 +1369,7 @@
     $scope.getStrategy = function () {
       return strategy;
     };
-    
+
     $scope.ownerEdit = false;
     $scope.groupEdit = false;
 
@@ -1391,7 +1391,7 @@
       OTHERS_READ: strategy.permissions.indexOf('OTHERS_READ') !== -1,
       OTHERS_WRITE: strategy.permissions.indexOf('OTHERS_WRITE') !== -1,
       OTHERS_EXECUTE: strategy.permissions.indexOf('OTHERS_EXECUTE') !== -1,
-      
+
       owner: strategy.owner,
       group: strategy.group,
 
@@ -1512,14 +1512,18 @@
 
     $scope.$watch('selected.path', function(newVal){
       $scope.selected.path = newVal;
-      bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"), {path: $scope.selected.path})
-      .success(function(result) {
-        if (result.exist === true && result.isDirectory === true){
-          angular.element(document.getElementById('okButton'))[0].disabled = true;
-        }else{
-          angular.element(document.getElementById('okButton'))[0].disabled = false;
-        }
-      });
+      var disabled = false;
+      if ($scope.selected.path){
+        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"), {path: $scope.selected.path})
+        .success(function(result) {
+          if (result.exist === true){
+            disabled = (result.isDirectory === true);
+          }else{
+            disabled = ($scope.getStrategy().type !== "SAVE");
+          }
+          angular.element(document.getElementById('okButton'))[0].disabled = disabled;
+        });
+      }
     });
 
     $scope.getStrategy = function () {
@@ -1822,24 +1826,24 @@
       }
     };
   });
-  
+
   module.controller('SQLLoginController', function($scope, $rootScope, $uibModalInstance, modalDialogOp, bkUtils, connectionName, connectionString, user) {
-    
+
     $scope.sqlConnectionData = {
       connectionName: connectionName,
       connectionString: connectionString,
       user: user,
       password: null
     }
-    
+
     $scope.cancelFunction = function() {
       $uibModalInstance.close(-1);
     };
-    
+
     $scope.okFunction = function() {
       $uibModalInstance.close($scope.sqlConnectionData);
     };
-    
+
     $scope.getStrategy = function() {
       return modalDialogOp.getStrategy();
     };
@@ -1864,7 +1868,7 @@
       }
     };
   });
-  
+
   module.factory('bkAnsiColorHelper', function () {
     function getChunks(text) {
       return text.split(/\033\[/);
@@ -1885,7 +1889,7 @@
       }
     };
   });
-  
+
   module.factory('bkDragAndDropHelper', function (bkUtils) {
     function wrapImageDataUrl(dataUrl) {
       return '<img src="' + dataUrl + '" />';
@@ -1968,7 +1972,7 @@
 
   module.factory('bkNotificationService', function (bkUtils) {
     var _notificationSound = null;
-    
+
     function checkPermissionsForNotification() {
       var deferred = bkUtils.newDeferred();
       if (Notification.permission === "granted") {
@@ -1980,14 +1984,14 @@
       }
       return deferred.promise;
     }
-    
+
     function playNotificationSound() {
       if(!_notificationSound) {
         _notificationSound = new Audio('app/sound/notification.wav');
       }
       _notificationSound.play();
     }
-    
+
     function sendEmailNotification(title, body) {
       var url = bkUtils.getEvaluationFinishedNotificationUrl();
       if (!!url) {
@@ -1997,7 +2001,7 @@
         });
       }
     }
-    
+
     function showNotification(title, body, tag) {
       checkPermissionsForNotification().then(function (granted) {
         if (granted) {
@@ -2020,9 +2024,9 @@
     }
 
     function initAvailableNotificationMethods() {
-      
+
       var evaluationCompleteNotificationMethods = [];
-      
+
       evaluationCompleteNotificationMethods = [{
         title: 'Notify when done',
         checkPermissions: function () {
@@ -2036,10 +2040,10 @@
           action: sendEmailNotification
         });
       }
-      
+
       return evaluationCompleteNotificationMethods;
     }
-    
+
     function getAvailableNotificationMethods() {
       return evaluationCompleteNotificationMethods;
     }
@@ -2055,11 +2059,11 @@
   function getImportNotebookFileTypePattern() {
     return "^((?!image\/((png)|(jpg)|(jpeg))).)*?$";
   }
-  
+
   function isImageFile(file) {
     return file && file.type && new RegExp(getImageFileTypePattern(), 'i').test(file.type);
   }
-  
+
   function getImageFileTypePattern() {
     return "image/((png)|(jpg)|(jpeg))";
   }

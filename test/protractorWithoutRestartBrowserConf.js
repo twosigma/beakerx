@@ -43,7 +43,6 @@ var config = {
     'tests/tutorials/groovy_plotting/plot-features-tutorial.js',
     'tests/tutorials/groovy_plotting/heatmap-tutorial.js',
     'tests/tutorials/groovy_plotting/treemap-tutorial.js',
-    'tests/tutorials/groovy_plotting/plot-features-tutorial2.js',
     'tests/tutorials/groovy_plotting/histogram-tutorial.js',
     'tests/tutorials/groovy_plotting/levelsOfDetail-tutorial.js',
     'tests/tutorials/groovy_plotting/plotActions-tutorial.js',

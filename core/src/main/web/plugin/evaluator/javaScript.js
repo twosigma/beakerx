@@ -270,13 +270,7 @@ define(function(require, exports, module) {
           // more info: http://stackoverflow.com/questions/19357978/indirect-eval-call-in-strict-mode
           var output = (0, eval)(code);
           beakerObj.beakerObjectToNotebook();
-          
-          if(!output){
-            bkHelper.receiveEvaluationUpdate(modelOutput, {status: "FINISHED", payload: "Undefined"}, PLUGIN_NAME);
-            beakerObj.clearOutput();
-            deferred.reject("Output undefined");
-          }else if ( typeof output === 'object' ) {
-
+          if ( typeof output === 'object' ) {
             if(typeof output.promise === 'object' && typeof output.promise.then === 'function') {
               output = output.promise;
             }
@@ -418,6 +412,7 @@ define(function(require, exports, module) {
 
       if (scriptsToLoad.length) {
         window.loadQueuePromise = window.loadQueuePromise.then(function() {
+          //noinspection JSUnresolvedVariable
           define = void 0;
           return bkHelper.newPromise();
         });
@@ -427,6 +422,7 @@ define(function(require, exports, module) {
           }).catch(function(e) {console.error(e.message + " - " + e.error);});
         });
         window.loadQueuePromise = window.loadQueuePromise.then(function() {
+          //noinspection JSUnresolvedVariable
           define = DEFINE_BACKUP;
           return bkHelper.newPromise();
         });

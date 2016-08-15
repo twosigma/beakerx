@@ -22,7 +22,7 @@
         <bk-dropdown-menu menu-items="cellview.menu.items" submenu-classes="drop-left"></bk-dropdown-menu>
       </div>
       
-      <div class="cell-menu-item fa fa-unlock" style="color: #a1a1a1; padding: 5px;" ng-if="isLockedCell()" ng-click="lockUnlockCell()"></div>
+      <div class="cell-menu-item fa fa-unlock hover-item" style="padding: 5px;" ng-if="isLockedCell()" ng-click="lockUnlockCell()" title="unlock cell"></div>
       <div class="cell-menu-item move-cell-down" ng-click="moveCellDown()" ng-class="moveCellDownDisabled() && 'disabled'" title="move cell down"></div>
       <div class="cell-menu-item move-cell-up" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() && 'disabled'" title="move cell up"></div>
       <div class="cell-menu-item delete-cell" ng-click="deleteCell()" title="{{isSectionCell() ? 'Delete heading and keep contents' : 'Delete cell'}}"></div>

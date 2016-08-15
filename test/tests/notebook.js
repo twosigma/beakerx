@@ -94,8 +94,8 @@ describe('notebook', function() {
     beforeEach(function() {
       beakerPO.newEmptyNotebook.click();
       beakerPO.insertCellButton.click();
-      browser.wait(beakerPO.EC.presenceOf(beakerPO.cellEvaluatorMenu), 10000);
-      beakerPO.cellEvaluatorMenu.click();
+      browser.wait(beakerPO.EC.presenceOf(beakerPO.getCellEvaluatorMenu()), 10000);
+      beakerPO.getCellEvaluatorMenu().click();
       beakerPO.cellEvaluatorMenuItem('JavaScript').click();
     });
 

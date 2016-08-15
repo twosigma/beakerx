@@ -207,8 +207,8 @@ var BeakerPageObject = function() {
   };
 
   this.insertCellOfType = function(language) {
-    browser.wait(this.EC.presenceOf(this.cellEvaluatorMenu), 10000);
-    this.cellEvaluatorMenu.click();
+    browser.wait(this.EC.presenceOf(this.getCellEvaluatorMenu()), 10000);
+    this.getCellEvaluatorMenu().click();
     this.cellEvaluatorMenuItem(language).click();
   }
 
@@ -235,7 +235,9 @@ var BeakerPageObject = function() {
   this.modalDialogNoButton = element(by.css('.modal .no'));
   this.modalDialogCancelButton = element(by.css('.modal .cancel'));
 
-  this.cellEvaluatorMenu = element.all(by.css('.code-cell-area .cell-evaluator-menu')).get(0);
+  this.getCellEvaluatorMenu = function(){
+    return element.all(by.css('.code-cell-area .cell-evaluator-menu')).get(0);
+  }
   this.cellEvaluatorMenuItem = function(language) {
     return element.all(by.css('.code-cell-area .' + language + '-menuitem')).get(0);
   };

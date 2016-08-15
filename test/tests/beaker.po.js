@@ -245,10 +245,6 @@ var BeakerPageObject = function() {
 
   //Functions for access to plot elements
 
-  this.getCodeCellOutputByIndex = function (index) {
-    return element.all(by.css('.code-cell-output')).get(index);
-  };
-
   this.getPlotLabelgByIdCell = function (idCell, containerIdx) {
     return this.getPlotSvgByIdCell(idCell, containerIdx).element(By.id('labelg'));
   };
@@ -306,10 +302,6 @@ var BeakerPageObject = function() {
   this.insertNewCell = function() {
     element(by.css('bk-new-cell-menu')).click();
     return this.insertCellButton.click();
-  };
-
-  this.openSection = function() {
-    return element(by.css('.bksectiontoggleplus')).click();
   };
 
   this.getCellOutput = function() {
@@ -475,22 +467,10 @@ var BeakerPageObject = function() {
     expect(this.getDtContainerByIdCell(idCell, containerIdx).isPresent()).toBe(true);
   }
 
-  this.getDtContainer = function(codeCellOutputIdx, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-    return this.getCodeCellOutputByIndex(codeCellOutputIdx).all(By.css('.dtcontainer')).get(containerIdx);
-  }
-
   this.getDtContainerByIdCell = function(idCell, containerIdx) {
     if (!containerIdx)
       containerIdx = 0;
     return this.getCodeCellOutputByIdCell(idCell).all(By.css('.dtcontainer')).get(containerIdx);
-  }
-
-  this.getDataTablesScrollHead = function(codeCellOutputIdx, containerIdx){
-    if (!containerIdx)
-      containerIdx = 0;
-    return this.getDtContainer(codeCellOutputIdx, containerIdx).element(By.css('.dataTables_scrollHead'));
   }
 
   this.getDataTablesScrollHeadByIdCell = function(idCell, containerIdx){
@@ -499,20 +479,10 @@ var BeakerPageObject = function() {
     return this.getDtContainerByIdCell(idCell, containerIdx).element(By.css('.dataTables_scrollHead'));
   }
 
-  this.getDataTablesScrollBody = function(codeCellOutputIdx, containerIdx){
-    if (!containerIdx)
-      containerIdx = 0;
-    return this.getDtContainer(codeCellOutputIdx, containerIdx).element(By.css('.dataTables_scrollBody'));
-  }
-
   this.getDataTablesScrollBodyByIdCell = function(idCell, containerIdx){
     if (!containerIdx)
       containerIdx = 0;
     return this.getDtContainerByIdCell(idCell, containerIdx).element(By.css('.dataTables_scrollBody'));
-  }
-
-  this.getDataTablesTBody = function(codeCellOutputIdx){
-    return this.getDataTablesScrollBody(codeCellOutputIdx).all(By.css('tbody > tr'));
   }
 
   this.getDataTablesTBodyByIdCell = function (idCell) {
@@ -543,16 +513,8 @@ var BeakerPageObject = function() {
     return this.getDTFCLeftContainer(cellId).all(by.css('thead > tr'));
   };
 
-  this.getDTFCRightHeader = function (cellId) {
-    return this.getDTFCRightContainer(cellId).all(by.css('thead > tr'));
-  };
-
   this.getDTFCLeftColumn = function (cellId, colInd) {
     return this.getDTFCLeftBody(cellId).all(by.css('td')).get(colInd);
-  };
-
-  this.getDTFCRightColumn = function (cellId, colInd) {
-    return this.getDTFCRightBody(cellId).all(by.css('td')).get(colInd);
   };
 
   this.getDTFCLeftColumnHeader = function (cellId, colInd) {
@@ -611,10 +573,6 @@ var BeakerPageObject = function() {
     });
   };
 
-  this.checkDataTableHead = function(codeCellOutputIdx, headLabels){
-    expect(this.getDataTablesScrollHead(codeCellOutputIdx).getText()).toBe(headLabels);
-  }
-
   this.getDataTablesTHeadByIdCell = function(idCell){
     return this.getDataTablesScrollHeadByIdCell(idCell).all(By.css('thead > tr'));
   }
@@ -629,12 +587,6 @@ var BeakerPageObject = function() {
 
   this.checkDataTableHeadByIdCell = function(idCell, headLabels){
     expect(this.getDataTablesScrollHeadByIdCell(idCell).getText()).toBe(headLabels);
-  }
-
-  this.checkDataTableBody = function(codeCellOutputIdx, rowsCount, firstRow){
-    var tBody = this.getDataTablesTBody(codeCellOutputIdx);
-    expect(tBody.count()).toBe(rowsCount);
-    expect(tBody.get(0).getText()).toBe(firstRow);
   }
 
   this.checkDataTableBodyByIdCell = function(idCell, rowsCount, firstRow){
@@ -654,10 +606,6 @@ var BeakerPageObject = function() {
   this.getDataTableSearchInput = function (cellId) {
     return this.getDataTableSearchField(cellId).element(by.css('.filter-input'));
   };
-
-  this.checkCellOutputText = function(codeCellOutputIdx, outputText){
-    expect(this.getCodeCellOutputByIndex(codeCellOutputIdx).element(By.css('pre')).getText()).toBe(outputText);
-  }
 
   this.checkCellOutputTextByIdCell = function(idCell, outputText){
     expect(this.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText()).toBe(outputText);

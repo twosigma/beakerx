@@ -318,28 +318,12 @@ var BeakerPageObject = function() {
     return element(by.css('.navbar-text > i'));
   };
 
-  this.waitForCellOutput = function(plugin) {
+  this.waitForCellOutput = function() {
     var self = this;
 
-    browser.wait(function() {
-      return self.getCellOutput().isPresent()
-      .then(function() {
-        return true;
-      })
-      .thenCatch(function() {
-        return false;
-      });
-    }, 10000);
-
-    return browser.wait(function() {
-      return self.getCellOutput().getText()
-      .then(function(txt) {
-        return txt.indexOf('Elapsed:') === -1;
-      })
-      .thenCatch(function() {
-        return false;
-      });
-    }, 10000);
+    this.waitUntilLoadingCellOutput().then(function(){
+      browser.wait(self.EC.not(self.EC.textToBePresentInElement($('bk-code-cell-output'), 'Elapsed:'), 10000));
+    });
   };
 
   this.waitForCellOutputByIdCell = function(idCell) {
@@ -363,7 +347,7 @@ var BeakerPageObject = function() {
   };
 
   this.waitUntilLoadingCellOutput = function() {
-    browser.wait(this.EC.presenceOf($('bk-code-cell-output')), 10000);
+    return browser.wait(this.EC.presenceOf($('bk-code-cell-output')), 10000);
   }
 
   this.hasClass =  function  (element, cls) {

@@ -362,7 +362,7 @@ class DataFrameEncoder(json.JSONEncoder):
             out['type'] = "Date"
             out['timestamp'] = time.mktime(obj.timetuple()) * 1000
             return out
-        if type(obj) == pandas.core.frame.DataFrame:
+        if type(obj) == pandas.core.frame.DataFrame or type(obj) == pandas.tslib.timedelta:
             out = {}
             out['type'] = "TableDisplay"
             out['subtype'] = "TableDisplay"

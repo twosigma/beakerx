@@ -119,6 +119,9 @@ bk-new-cell-menu {
   &.move-cell-down {
     background-image: url(../images/down_white@2x.png);
   }
+  
+  &.hover-item {
+  }
 
   &.expand-contract {
     background-image: url(../images/collapse_white@2x.png);
@@ -170,6 +173,10 @@ bk-new-cell-menu {
   background: url(../images/down@2x.png) no-repeat center;
   background-size: 8px;
 }
+
+.hover-item {
+  color: #a1a1a1;
+ }
 
 .expand-contract {
   background: url(../images/collapse@2x.png) no-repeat center {

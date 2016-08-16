@@ -362,7 +362,7 @@ class DataFrameEncoder(json.JSONEncoder):
             out['type'] = "Date"
             out['timestamp'] = time.mktime(obj.timetuple()) * 1000
             return out
-        if type(obj) == pandas.core.frame.DataFrame or type(obj) == pandas.tslib.timedelta:
+        if type(obj) == pandas.core.frame.DataFrame:
             out = {}
             out['type'] = "TableDisplay"
             out['subtype'] = "TableDisplay"
@@ -399,7 +399,6 @@ class DataFrameEncoder(json.JSONEncoder):
                 out['values'] = values
                 return out
             return obj.to_dict()
-        return json.JSONEncoder.default(self, obj)
 
 class MyJSONFormatter(IPython.core.formatters.BaseFormatter):
     format_type = Unicode('application/json')

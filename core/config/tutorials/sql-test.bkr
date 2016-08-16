@@ -111,7 +111,7 @@
                 "selectedType": "Table",
                 "pluginName": "SQL",
                 "shellId": "1dc4e979-1d5e-4862-b2f2-ecc37f1a56d2",
-                "elapsedTime": 41,
+                "elapsedTime": 130,
                 "result": {
                     "hasDoubleClickAction": false,
                     "doubleClickTag": null,
@@ -204,7 +204,7 @@
                         ],
                         [
                             1008,
-                            "Black and 'White'",
+                            "Black\u0000and\r\n'White'",
                             "#000000"
                         ]
                     ]
@@ -552,7 +552,7 @@
                     "  {name: 'Azure + char(39)', code: '#F0FFFF'},",
                     "  {name: '`Beige`', code: '#F5F5DC'},",
                     "  {name: 'Bisque', code: '#FFE4C4'},",
-                    "  {name: \"Black and 'White'\", code: '#000000'}];",
+                    "  {name: \"Black\\0and\\r\\n'White'\", code: '#000000'}];",
                     "beaker.idArray = [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008];"
                 ]
             },
@@ -560,7 +560,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 31,
+                "elapsedTime": 47,
                 "hidden": true,
                 "result": [
                     1001,
@@ -600,7 +600,7 @@
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
                 "shellId": "1dc4e979-1d5e-4862-b2f2-ecc37f1a56d2",
-                "elapsedTime": 654
+                "elapsedTime": 814
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -623,7 +623,7 @@
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
                 "shellId": "1dc4e979-1d5e-4862-b2f2-ecc37f1a56d2",
-                "elapsedTime": 36
+                "elapsedTime": 37
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -1113,7 +1113,7 @@
                     "#FFE4C4"
                 ],
                 [
-                    "Black and 'White'",
+                    "Black\u0000and\r\n'White'",
                     "#000000"
                 ]
             ],

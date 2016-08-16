@@ -110,8 +110,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "SQL",
-                "shellId": "ba7305dc-9f00-4b9f-9fd2-4549382257c7",
-                "elapsedTime": 33,
+                "shellId": "1dc4e979-1d5e-4862-b2f2-ecc37f1a56d2",
+                "elapsedTime": 41,
                 "result": {
                     "hasDoubleClickAction": false,
                     "doubleClickTag": null,
@@ -153,13 +153,28 @@
                             "code"
                         ],
                         [
+                            2,
+                            "o\\u201Cbrien",
+                            "code2"
+                        ],
+                        [
+                            3,
+                            "mc0xE2drive",
+                            "code3"
+                        ],
+                        [
+                            4,
+                            "ściepkę zdrowia",
+                            "code4"
+                        ],
+                        [
                             1001,
-                            "Alice'Blue'",
+                            "âAlice'Blue'",
                             "#F0F8FF"
                         ],
                         [
                             1002,
-                            "Antique\"White\"",
+                            "0xE2Antique\"White\"",
                             "#FAEBD7"
                         ],
                         [
@@ -179,7 +194,7 @@
                         ],
                         [
                             1006,
-                            "Beige",
+                            "`Beige`",
                             "#F5F5DC"
                         ],
                         [
@@ -189,12 +204,12 @@
                         ],
                         [
                             1008,
-                            "Black",
+                            "Black and 'White'",
                             "#000000"
                         ]
                     ]
                 },
-                "height": 318
+                "height": 399
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -530,14 +545,14 @@
             "input": {
                 "body": [
                     "beaker.colorsArray = [",
-                    "  {name: 'Alice\\'Blue\\'', code: '#F0F8FF'},",
-                    "  {name: 'Antique\"White\"', code: '#FAEBD7' },",
+                    "  {name: '\\u201CAlice\\'Blue\\'', code: '#F0F8FF'},",
+                    "  {name: '0xE2Antique\"White\"', code: '#FAEBD7' },",
                     "  {name: \"Aqua\", code: '#00FFFF'},",
                     "  {name: 'Aquama\\nrine', code: '#7FFFD4'},",
                     "  {name: 'Azure + char(39)', code: '#F0FFFF'},",
                     "  {name: '`Beige`', code: '#F5F5DC'},",
                     "  {name: 'Bisque', code: '#FFE4C4'},",
-                    "  {name: 'Black', code: '#000000'}];",
+                    "  {name: \"Black and 'White'\", code: '#000000'}];",
                     "beaker.idArray = [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008];"
                 ]
             },
@@ -545,7 +560,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 201,
+                "elapsedTime": 31,
                 "hidden": true,
                 "result": [
                     1001,
@@ -584,8 +599,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "ba7305dc-9f00-4b9f-9fd2-4549382257c7",
-                "elapsedTime": 1093
+                "shellId": "1dc4e979-1d5e-4862-b2f2-ecc37f1a56d2",
+                "elapsedTime": 654
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -597,18 +612,21 @@
             "evaluator": "SQL",
             "input": {
                 "body": [
-                    "INSERT INTO color VALUES (1, CONCAT(char(39), 'hello', char(39)), 'code');"
+                    "INSERT INTO color VALUES (1, CONCAT(char(39), 'hello', char(39)), 'code');",
+                    "INSERT INTO color VALUES (2, 'o\\u201Cbrien', 'code2');",
+                    "INSERT INTO color VALUES (3, 'mc0xE2drive', 'code3');",
+                    "INSERT INTO color VALUES (4, N'ściepkę zdrowia', 'code4');"
                 ]
             },
             "output": {
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "ba7305dc-9f00-4b9f-9fd2-4549382257c7",
+                "shellId": "1dc4e979-1d5e-4862-b2f2-ecc37f1a56d2",
                 "elapsedTime": 36
             },
             "evaluatorReader": true,
-            "lineCount": 1
+            "lineCount": 4
         },
         {
             "id": "codesr78kX",
@@ -698,7 +716,7 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 26,
+                "elapsedTime": 23,
                 "height": 183
             },
             "evaluatorReader": true,
@@ -726,8 +744,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "ba7305dc-9f00-4b9f-9fd2-4549382257c7",
-                "elapsedTime": 575
+                "shellId": "1dc4e979-1d5e-4862-b2f2-ecc37f1a56d2",
+                "elapsedTime": 594
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -821,7 +839,7 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 22,
+                "elapsedTime": 20,
                 "height": 183
             },
             "evaluatorReader": true,
@@ -849,8 +867,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "ba7305dc-9f00-4b9f-9fd2-4549382257c7",
-                "elapsedTime": 584,
+                "shellId": "1dc4e979-1d5e-4862-b2f2-ecc37f1a56d2",
+                "elapsedTime": 695,
                 "height": 0
             },
             "evaluatorReader": true,
@@ -1067,11 +1085,11 @@
             ],
             "values": [
                 [
-                    "Alice'Blue'",
+                    "“Alice'Blue'",
                     "#F0F8FF"
                 ],
                 [
-                    "Antique\"White\"",
+                    "0xE2Antique\"White\"",
                     "#FAEBD7"
                 ],
                 [
@@ -1095,7 +1113,7 @@
                     "#FFE4C4"
                 ],
                 [
-                    "Black",
+                    "Black and 'White'",
                     "#000000"
                 ]
             ],

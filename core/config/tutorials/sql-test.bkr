@@ -232,7 +232,7 @@
                 "elapsedTime": 32,
                 "height": 0
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 1
         },
         {
@@ -245,45 +245,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "Key",
-                            "Value"
-                        ],
-                        "actualtype": [
-                            0,
-                            0
-                        ],
-                        "actualalign": [
-                            "L",
-                            "L"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "getCellSho": [
-                            true,
-                            true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [],
-                        "tableFilter": "",
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": []
-                    }
-                },
+                "state": {},
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -312,7 +274,7 @@
                 "elapsedTime": 622,
                 "height": 0
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 1
         },
         {
@@ -339,7 +301,7 @@
                 "shellId": "4448247f-2fee-4647-aaca-97839d87df02",
                 "elapsedTime": 684
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 1
         },
         {
@@ -352,52 +314,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 25,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "ID",
-                            "NAME",
-                            "CODE"
-                        ],
-                        "actualtype": [
-                            0,
-                            0,
-                            0
-                        ],
-                        "actualalign": [
-                            "L",
-                            "L",
-                            "L"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "getCellSho": [
-                            true,
-                            true,
-                            true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [],
-                        "tableFilter": "",
-                        "showFilter": false,
-                        "columnSearchActive": false,
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": []
-                    }
-                },
+                "state": {},
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
                 "elapsedTime": 31,
@@ -460,7 +377,7 @@
                 },
                 "height": 0
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 1
         },
         {
@@ -490,45 +407,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "NAME",
-                            "BORN"
-                        ],
-                        "actualtype": [
-                            0,
-                            0
-                        ],
-                        "actualalign": [
-                            "L",
-                            "L"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "getCellSho": [
-                            true,
-                            true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [],
-                        "tableFilter": "",
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": []
-                    }
-                },
+                "state": {},
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -565,7 +444,7 @@
                 "elapsedTime": 447,
                 "height": 0
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 2
         },
         {
@@ -588,45 +467,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "NAME",
-                            "MOLARMASS"
-                        ],
-                        "actualtype": [
-                            0,
-                            0
-                        ],
-                        "actualalign": [
-                            "L",
-                            "L"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "getCellSho": [
-                            true,
-                            true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [],
-                        "tableFilter": "",
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": []
-                    }
-                },
+                "state": {},
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -663,7 +504,7 @@
                 "elapsedTime": 142,
                 "height": 0
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 2
         },
         {
@@ -694,7 +535,7 @@
                     "  {name: \"Aqua\", code: '#00FFFF'},",
                     "  {name: 'Aquama\\nrine', code: '#7FFFD4'},",
                     "  {name: 'Azure + char(39)', code: '#F0FFFF'},",
-                    "  {name: 'Beige', code: '#F5F5DC'},",
+                    "  {name: '`Beige`', code: '#F5F5DC'},",
                     "  {name: 'Bisque', code: '#FFE4C4'},",
                     "  {name: 'Black', code: '#000000'}];",
                     "beaker.idArray = [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008];"
@@ -704,7 +545,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 42,
+                "elapsedTime": 201,
                 "hidden": true,
                 "result": [
                     1001,
@@ -744,7 +585,7 @@
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
                 "shellId": "ba7305dc-9f00-4b9f-9fd2-4549382257c7",
-                "elapsedTime": 650
+                "elapsedTime": 1093
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -764,159 +605,7 @@
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
                 "shellId": "ba7305dc-9f00-4b9f-9fd2-4549382257c7",
-                "elapsedTime": 157
-            },
-            "evaluatorReader": true,
-            "lineCount": 1
-        },
-        {
-            "id": "code8CguG7",
-            "type": "code",
-            "evaluator": "SQL",
-            "input": {
-                "body": [
-                    "SELECT * FROM color;"
-                ]
-            },
-            "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 25,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "ID",
-                            "NAME",
-                            "CODE"
-                        ],
-                        "actualtype": [
-                            0,
-                            0,
-                            0
-                        ],
-                        "actualalign": [
-                            "L",
-                            "L",
-                            "L"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "getCellSho": [
-                            true,
-                            true,
-                            true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [],
-                        "tableFilter": "",
-                        "showFilter": false,
-                        "columnSearchActive": false,
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "formatForTimes": {},
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": [],
-                        "headerFontSize": null,
-                        "dataFontSize": null,
-                        "fontColor": [],
-                        "headersVertical": false
-                    }
-                },
-                "result": {
-                    "hasDoubleClickAction": false,
-                    "doubleClickTag": null,
-                    "contextMenuItems": [],
-                    "contextMenuTags": {},
-                    "type": "TableDisplay",
-                    "columnNames": [
-                        "ID",
-                        "NAME",
-                        "CODE"
-                    ],
-                    "types": [
-                        "java.lang.Integer",
-                        "java.lang.String",
-                        "java.lang.String"
-                    ],
-                    "subtype": "TableDisplay",
-                    "stringFormatForTimes": null,
-                    "stringFormatForType": {},
-                    "stringFormatForColumn": {},
-                    "rendererForType": {},
-                    "rendererForColumn": {},
-                    "alignmentForType": {},
-                    "alignmentForColumn": {},
-                    "columnsFrozen": {},
-                    "columnsFrozenRight": {},
-                    "columnsVisible": {},
-                    "columnOrder": [],
-                    "cellHighlighters": [],
-                    "tooltips": [],
-                    "dataFontSize": null,
-                    "headerFontSize": null,
-                    "fontColor": [],
-                    "headersVertical": false,
-                    "values": [
-                        [
-                            1,
-                            "'hello'",
-                            "code"
-                        ],
-                        [
-                            1001,
-                            "Alice'Blue'",
-                            "#F0F8FF"
-                        ],
-                        [
-                            1002,
-                            "Antique\"White\"",
-                            "#FAEBD7"
-                        ],
-                        [
-                            1003,
-                            "Aqua",
-                            "#00FFFF"
-                        ],
-                        [
-                            1004,
-                            "Aquama\nrine",
-                            "#7FFFD4"
-                        ],
-                        [
-                            1005,
-                            "Azure + char(39)",
-                            "#F0FFFF"
-                        ],
-                        [
-                            1006,
-                            "Beige",
-                            "#F5F5DC"
-                        ],
-                        [
-                            1007,
-                            "Bisque",
-                            "#FFE4C4"
-                        ],
-                        [
-                            1008,
-                            "Black",
-                            "#000000"
-                        ]
-                    ]
-                },
-                "selectedType": "Table",
-                "pluginName": "SQL",
-                "shellId": "ba7305dc-9f00-4b9f-9fd2-4549382257c7",
-                "elapsedTime": 150,
-                "height": 318
+                "elapsedTime": 36
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -1398,7 +1087,7 @@
                     "#F0FFFF"
                 ],
                 [
-                    "Beige",
+                    "`Beige`",
                     "#F5F5DC"
                 ],
                 [

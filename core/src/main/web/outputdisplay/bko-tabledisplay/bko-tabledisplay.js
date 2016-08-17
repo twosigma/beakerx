@@ -447,19 +447,40 @@
           $scope.init($scope.getCellModel(), true);
         };
 
-        $scope.getPreviewRows = function () {
+        var show = 25;
+        show += 2;
+        $scope.getPreviewHeader = function() {
           var model = $scope.getCellModel();
-          var data = model.values;
 
           $scope.tempColumns = [];
-          $scope.columnNames = model.columnNames;
-
-          if(!$scope.tempColumns) {
-            model.columnNames.forEach(function (title) {
-              $scope.tempColumns.push({sTitle: title});
-            });
+          for(var i = 0; i < show; i += 1){
+            $scope.tempColumns.push({sTitle: model.columnNames[i]});
           }
-          return !data ? [] : data.slice(0, Math.min(25, data.length));
+
+          var columnNames = model.columnNames.slice(0, Math.min(show, model.columnNames.length));//index takes one place
+          columnNames[columnNames.length-1] = '... ' + columnNames[columnNames.length-1] + ' ...';
+
+          return columnNames;
+        };
+
+        $scope.getPreviewRows = function() {
+          var model = $scope.getCellModel();
+
+          var data = model.values.slice(0, Math.min(25, model.values.length));
+
+          if (data){
+            var tempData = [];
+            var i = 0;
+            while(i < show - 2){
+              var row = data[i].slice(0, Math.min(show, data[i].length));
+              row[row.length -1] = '... ' + row[row.length-1] + ' ...';
+              tempData.push(row);
+              i++;
+            }
+            return tempData;
+          }
+
+          return [];
         };
 
         $scope.formatPreviewValue = function (value, rowIndex, columnIndex) {

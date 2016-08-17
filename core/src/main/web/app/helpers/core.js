@@ -1743,6 +1743,64 @@
       }
     };
 
+    var mouseDown = true;
+    $scope.filePathSelect = function() {
+      function reverse(s) {
+        var o = '';
+        for(var i = s.length - 1; i>=0; i--)
+          o += s[i];
+        return o;
+      }
+
+      mouseDown = true;
+      var input = document.getElementById('file-dlg-selected-path');
+      var inputLength = input.value.length;
+      var tickCounter = 0;
+      var selectionStart = inputLength;
+
+      if (((input.value.charAt(input.value.length - 1) !== '/' || input.value.charAt(input.value.length - 1) !== '\\')
+        && input.value.indexOf('.') != -1)){
+
+        var lastSlash;
+        if (bkUtils.isWindows){
+          lastSlash = reverse(input.value).indexOf('\\');
+        } else {
+          lastSlash = reverse(input.value).indexOf('/');
+        }
+        lastSlash = inputLength - lastSlash;
+
+        var interval = setInterval(function() {
+          if (tickCounter == 0){
+            if (input.selectionStart != inputLength){
+              clearInterval(interval);
+              return;
+            }
+          }
+          if (mouseDown){
+            if (selectionStart>input.selectionStart){
+              if (tickCounter<200 || input.selectionStart > lastSlash){
+                selectionStart = input.selectionStart;
+                input.selectionStart = lastSlash;
+              }else if(tickCounter < 1000){
+                input.selectionEnd = inputLength;
+              }
+            }
+            
+          } else {
+            clearInterval(interval);
+            return;
+          }
+          tickCounter++;
+        }, 10);
+
+      }
+
+    };
+
+    $scope.filePathSelectCancel = function() {
+      mouseDown = false;
+    };
+
     var ok = function () {
       if ($scope.getStrategy().type === "SAVE") {
         var filename = getFilename($scope.selected.path);

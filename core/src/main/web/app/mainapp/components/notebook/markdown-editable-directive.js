@@ -32,11 +32,17 @@
       link: function(scope, element, attrs) {
         var contentAttribute = scope.cellmodel.type === "section" ? 'title' : 'body';
 
+        var previewEnable = true;
+        
         var preview = function () {
           bkHelper.markupCellContent(scope.cellmodel[contentAttribute], bkHelper.evaluateCode)
               .then(function (transformedHtml) {
-                element.find('.markup').html(transformedHtml);
-                scope.mode = 'preview';
+                if(previewEnable){
+                  element.find('.markup').html(transformedHtml);
+                  scope.mode = 'preview';
+                }else{
+                  scope.mode = 'edit';
+                }
               });
         };
 
@@ -68,6 +74,14 @@
         scope.isShowInput = function() {
           //Markdown cell input is always visible
           return true;
+        };
+        
+        scope.disablePreview = function() {
+          previewEnable = false;
+        };
+        
+        scope.enablePreview = function() {
+          previewEnable = true;
         };
 
         scope.edit = function(event) {
@@ -145,6 +159,7 @@
         scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], codeMirrorOptions);
 
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
+        scope.bkNotebook.registerPreviewable(scope.cellmodel.id, scope);
         scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
 
         scope.cm.setValue(scope.cellmodel[contentAttribute]);
@@ -185,6 +200,7 @@
 
         scope.$on('$destroy', function() {
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
+          scope.bkNotebook.unregisterPreviewable(scope.cellmodel.id, scope);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id, scope.cm);
           CodeMirror.off('change', changeHandler);
           scope.cm.off();

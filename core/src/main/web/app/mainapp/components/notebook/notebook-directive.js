@@ -116,11 +116,22 @@
             delete this._focusables[cellId];
             this._focusables[cellId] = null;
           },
+          _previewable: {}, // map of prewieable 
+          registerPreviewable: function (cellId, previewable) {
+            this._previewable[cellId] = previewable;
+          },
+          unregisterPreviewable: function (cellId) {
+            delete this._previewable[cellId];
+            this._previewable[cellId] = null;
+          },
           getNotebookNewCellFactory: function () {
             return bkSessionManager.getNotebookNewCellFactory();
           },
           getFocusable: function (cellId) {
             return this._focusables[cellId];
+          },
+          getPreviewable: function (cellId) {
+            return this._previewable[cellId];
           },
           _codeMirrors: {},
           registerCM: function (cellId, cm) {

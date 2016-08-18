@@ -642,16 +642,15 @@
           }
 
           //var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
-/*          var focusable = scope.bkNotebook.getFocusable(scope.cellmodel.id);
-          if (focusable && focusable.isShowInput()) {
-            focusable.focus();
-          }*/
-          //bkUtils.refreshRootScope();
-          //cm.focus();
+
+          var previewable = scope.bkNotebook.getPreviewable(scope.cellmodel.id);
+          if(previewable) {
+            previewable.disablePreview();
+          }
 
           bkHelper.showSearchReplaceDialog(
               function(result) {
-                //'Find next'
+                //Find next
                 crateNewCursor = result.wrapSearch 
                   || result.caseSensitive != previousFilter.caseSensitive 
                   || result.find != previousFilter.find;
@@ -661,12 +660,11 @@
                   cursor = getSearchCursor(result, cursor, false);
                 }
                 if(searchFromCursor(result)){
-                  //console.log(JSON.stringify(cursor.from()) + ' ' + JSON.stringify(cursor.from()));
                   cm.setSelection(cursor.from(), cursor.to());
                 }
               },
               function(result) {
-                //'Replace'
+                //Replace
                 crateNewCursor = result.wrapSearch 
                   || result.caseSensitive != previousFilter.caseSensitive 
                   || result.find != previousFilter.find;
@@ -681,13 +679,18 @@
                 }
               },
               function(result) {
-                //'Replace all'
+                //Replace all
                   for (cursor = getSearchCursor(result, cursor, false); cursor.findNext();) {
                     cursor.replace(result.replace, result.find);
                     cm.addSelection(cursor.from(), cursor.to());
                   }
+              },
+              function(result) {
+                if(previewable) {
+                  previewable.enablePreview();
+                }
               }
-          )
+          );
         };
 
         var shiftTab = function(cm) {
@@ -1061,7 +1064,7 @@
         return dd;
       },
 
-      showSearchReplaceDialog: function(findNext, replace, replaceAll) {
+      showSearchReplaceDialog: function(findNext, replace, replaceAll, windowClosed) {
         var options = {
             windowClass: 'beaker-sandbox modal-bottom',
             backdropClass: 'beaker-sandbox',
@@ -1112,10 +1115,11 @@
           }
           //Trigger when modal is closed
           removeSubmitListener();
+          windowClosed();
         }, function(result) {
           //Trigger when modal is dismissed
           removeSubmitListener();
-          //cancelCB();
+          windowClosed();
         }).catch(function() {
           removeSubmitListener();
         });

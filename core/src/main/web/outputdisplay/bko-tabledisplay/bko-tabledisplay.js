@@ -447,18 +447,20 @@
           $scope.init($scope.getCellModel(), true);
         };
 
-        var show = 25;
+        var show = 30;
         show += 2;
         $scope.getPreviewHeader = function() {
           var model = $scope.getCellModel();
-
+          
           $scope.tempColumns = [];
           for(var i = 0; i < show; i += 1){
             $scope.tempColumns.push({sTitle: model.columnNames[i]});
           }
 
           var columnNames = model.columnNames.slice(0, Math.min(show, model.columnNames.length));//index takes one place
-          columnNames[columnNames.length-1] = '... ' + columnNames[columnNames.length-1] + ' ...';
+          if(model.columnNames.length -1 > show){
+            columnNames[columnNames.length-1] = '... ' + columnNames[columnNames.length-1] + ' ...';
+          }
 
           return columnNames;
         };
@@ -471,9 +473,11 @@
           if (data){
             var tempData = [];
             var i = 0;
-            while(i < show - 2){
+            while(i < Math.min(show, data.length-1)){
               var row = data[i].slice(0, Math.min(show, data[i].length));
-              row[row.length -1] = '... ' + row[row.length-1] + ' ...';
+              if(data[i].length -1 > show){
+                row[row.length - 1] = '... ' + row[row.length - 1] + ' ...';
+              }
               tempData.push(row);
               i++;
             }

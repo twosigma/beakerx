@@ -385,7 +385,6 @@ class DataFrameEncoder(json.JSONEncoder):
                 out['values'] = values
                 return out
             return obj.to_dict()
-        return json.JSONEncoder.default(self, obj)
 
 class MyJSONFormatter(IPython.core.formatters.BaseFormatter):
     format_type = Unicode('application/json')

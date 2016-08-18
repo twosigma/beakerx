@@ -609,9 +609,7 @@
         };
         
         var findReplace = function (cm) {
-          
-          //var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
-          
+
           var cursor = null;
           var previousFilter = {};
           var crateNewCursor = true;
@@ -621,7 +619,7 @@
             if(oldCursor != null && !clearPozition){
               from = oldCursor.to();
             }
-            return cm.getSearchCursor(filter.find, from, filter.caseSensitive);
+            return cm.getSearchCursor(filter.find, from, !filter.caseSensitive);
           }
           
           var searchFromCursor = function (filter) {
@@ -643,13 +641,13 @@
             return found;
           }
 
-      
+          //var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
 /*          var focusable = scope.bkNotebook.getFocusable(scope.cellmodel.id);
           if (focusable && focusable.isShowInput()) {
             focusable.focus();
-          }
+          }*/
           //bkUtils.refreshRootScope();
-          cm.focus();*/
+          //cm.focus();
 
           bkHelper.showSearchReplaceDialog(
               function(result) {

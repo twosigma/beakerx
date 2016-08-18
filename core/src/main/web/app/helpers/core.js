@@ -607,6 +607,90 @@
             start += 1;
           } while (start <= end)
         };
+        
+        var findReplace = function (cm) {
+          
+          //var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
+          
+          var cursor = null;
+          var previousFilter = {};
+          var crateNewCursor = true;
+
+          var getSearchCursor = function (filter, oldCursor, clearPozition) {
+            var from = {line: 0, ch: 0};
+            if(oldCursor != null && !clearPozition){
+              from = oldCursor.to();
+            }
+            return cm.getSearchCursor(filter.find, from, filter.caseSensitive);
+          }
+          
+          var searchFromCursor = function (filter) {
+            var found = false;
+            if(cursor != null){
+              if(cursor.findNext()){
+                found = true;
+              }else {
+                if(filter.wrapSearch){
+                  cursor = getSearchCursor(filter, cursor, true);
+                  if(cursor.findNext()){
+                    found = true;
+                  }
+                }else{
+                  cursor = null;
+                }
+              }
+            }
+            return found;
+          }
+
+      
+/*          var focusable = scope.bkNotebook.getFocusable(scope.cellmodel.id);
+          if (focusable && focusable.isShowInput()) {
+            focusable.focus();
+          }
+          //bkUtils.refreshRootScope();
+          cm.focus();*/
+
+          bkHelper.showSearchReplaceDialog(
+              function(result) {
+                //'Find next'
+                crateNewCursor = result.wrapSearch 
+                  || result.caseSensitive != previousFilter.caseSensitive 
+                  || result.find != previousFilter.find;
+                angular.copy(result, previousFilter);
+
+                if(crateNewCursor){
+                  cursor = getSearchCursor(result, cursor, false);
+                }
+                if(searchFromCursor(result)){
+                  //console.log(JSON.stringify(cursor.from()) + ' ' + JSON.stringify(cursor.from()));
+                  cm.setSelection(cursor.from(), cursor.to());
+                }
+              },
+              function(result) {
+                //'Replace'
+                crateNewCursor = result.wrapSearch 
+                  || result.caseSensitive != previousFilter.caseSensitive 
+                  || result.find != previousFilter.find;
+                angular.copy(result, previousFilter);
+  
+                if(crateNewCursor){
+                  cursor = getSearchCursor(result, cursor, false);
+                }
+                if(searchFromCursor(result)){
+                  cursor.replace(result.replace, result.find);
+                  cm.setSelection(cursor.from(), cursor.to());
+                }
+              },
+              function(result) {
+                //'Replace all'
+                  for (cursor = getSearchCursor(result, cursor, false); cursor.findNext();) {
+                    cursor.replace(result.replace, result.find);
+                    cm.addSelection(cursor.from(), cursor.to());
+                  }
+              }
+          )
+        };
 
         var shiftTab = function(cm) {
           if (autocompleteParametersService.isActive()) {
@@ -736,7 +820,9 @@
             'Left': goCharLeftOrMoveFocusDown,
             "Shift-Ctrl-F": reformat,
             "Shift-Cmd-F": reformat,
-            "Alt-F11": setFullScreen
+            "Alt-F11": setFullScreen,
+            "Ctrl-F": findReplace,
+            "Cmd-F": findReplace,
         };
 
         if(bkHelper.isMacOS){
@@ -976,6 +1062,68 @@
 
         return dd;
       },
+
+      showSearchReplaceDialog: function(findNext, replace, replaceAll) {
+        var options = {
+            windowClass: 'beaker-sandbox modal-bottom',
+            backdropClass: 'beaker-sandbox',
+            backdrop: true,
+            keyboard: true,
+            backdropClick: true,
+            controller: 'SearchReplaceController',
+            templateUrl: 'app/helpers/search-replace-template.jst.html',
+            resolve: {
+              findNext: function () {
+                return findNext;
+              },
+              replace : function () {
+                return replace;
+              },
+              replaceAll : function () {
+                return replaceAll;
+              }
+            }
+        };
+
+        var attachSubmitListener = function() {
+          $document.on('keydown.modal', function (e) {
+            if (e.which === 13) {
+              var modal_submit = $('.modal .modal-submit');
+              if (modal_submit.length > 0)
+                modal_submit[0].click();
+            }
+          });
+        };
+
+        var removeSubmitListener = function() {
+          $document.off('keydown.modal');
+        };
+        attachSubmitListener();
+
+        var dd = $uibModal.open(options);
+        dd.result.then(function(result) {
+     
+          if (result != -1) {
+            if('FIND_NEXT' == result.action){
+              findNext(result);
+            }else if('REPLACE' == result.action){
+              replace(result);
+            }if('REPLACE_ALL' == result.action){
+              replaceAll(result);
+            }
+          }
+          //Trigger when modal is closed
+          removeSubmitListener();
+        }, function(result) {
+          //Trigger when modal is dismissed
+          removeSubmitListener();
+          //cancelCB();
+        }).catch(function() {
+          removeSubmitListener();
+        });
+        return dd;
+      },
+
       showSQLLoginModalDialog: function(
           connectionName,
           connectionString,
@@ -1827,6 +1975,50 @@
     };
   });
 
+  
+  
+  module.controller('SearchReplaceController', function($scope, $rootScope, $uibModalInstance, modalDialogOp, bkUtils, findNext, replace, replaceAll) {
+
+    $scope.searchReplaceData = {
+      action: null,
+      find: '',
+      replace: null,
+      allNotebook: false,
+      caseSensitive: false,
+      wrapSearch: false
+    }
+   
+    $scope.doneFunction = function() {
+      $uibModalInstance.close(-1);
+    };
+    
+    $scope.findNextFunction = function() {
+      $scope.searchReplaceData.action = 'FIND_NEXT';
+      findNext($scope.searchReplaceData);
+    };
+
+    $scope.replaceFunction = function() {
+      $scope.searchReplaceData.action = 'REPLACE';
+      replace($scope.searchReplaceData);
+    };
+    
+    $scope.replaceAllFunction = function() {
+      $scope.searchReplaceData.action = 'REPLACE_ALL';
+      replaceAll($scope.searchReplaceData);
+    };
+
+    $scope.getStrategy = function() {
+      return modalDialogOp.getStrategy();
+    };
+    $scope.isWindows = function() {
+      return bkUtils.isWindows;
+    };
+    $rootScope.$on('modal.submit', function() {
+      $scope.close($scope.getStrategy().getResult());
+    });
+
+  });
+  
   module.controller('SQLLoginController', function($scope, $rootScope, $uibModalInstance, modalDialogOp, bkUtils, connectionName, connectionString, user) {
 
     $scope.sqlConnectionData = {
@@ -1855,6 +2047,7 @@
     });
 
   });
+
 
   /**
    * Directive to show a modal dialog that does filename input.

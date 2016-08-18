@@ -271,7 +271,7 @@ define(function(require, exports, module) {
           var output = (0, eval)(code);
           beakerObj.beakerObjectToNotebook();
           if(!output){
-            bkHelper.receiveEvaluationUpdate(modelOutput, {status: "FINISHED", payload: "Undefined"}, PLUGIN_NAME);
+            bkHelper.receiveEvaluationUpdate(modelOutput, {status: "FINISHED", payload: "null"}, PLUGIN_NAME);
             beakerObj.clearOutput();
             deferred.reject("Output undefined");
           }else if ( typeof output === 'object' ) {
@@ -416,7 +416,6 @@ define(function(require, exports, module) {
 
       if (scriptsToLoad.length) {
         window.loadQueuePromise = window.loadQueuePromise.then(function() {
-          //noinspection JSUnresolvedVariable
           define = void 0;
           return bkHelper.newPromise();
         });
@@ -426,7 +425,6 @@ define(function(require, exports, module) {
           }).catch(function(e) {console.error(e.message + " - " + e.error);});
         });
         window.loadQueuePromise = window.loadQueuePromise.then(function() {
-          //noinspection JSUnresolvedVariable
           define = DEFINE_BACKUP;
           return bkHelper.newPromise();
         });

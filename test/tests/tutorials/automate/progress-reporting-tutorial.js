@@ -23,6 +23,7 @@ describe('Progress Reporting API', function () {
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FprogressUpdate.bkr&readOnly=true").then(done);
+        beakerPO.waitUntilLoadingFinished();
         beakerPO.waitUntilLoadingCellOutput();
     });
 

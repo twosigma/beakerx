@@ -77,6 +77,7 @@ describe('Python Tutorial', function () {
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Html', 'pythonPlot');
             beakerPO.scrollToCodeCellOutputByIdCell(idCell);
+            browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(By.css('img'))), 10000);
             beakerPO.checkImageByIdCell(idCell);
         });
 

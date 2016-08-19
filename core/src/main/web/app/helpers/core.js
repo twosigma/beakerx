@@ -612,70 +612,112 @@
 
           var cursor = null;
           var previousFilter = {};
-          var crateNewCursor = true;
+          var createNewCursor = true;
+          var currentCm = cm;
+          var currentCellmodel = scope.cellmodel;
+          
+          if(scope.bkNotebook.getPreviewable(currentCellmodel.id)) {
+            scope.bkNotebook.getPreviewable(currentCellmodel.id).edit();
+            scope.bkNotebook.getPreviewable(currentCellmodel.id).disablePreview();
+          }
 
-          var getSearchCursor = function (filter, oldCursor, clearPozition) {
+          var getSearchCursor = function (filter, oldCursor, clearPozition, cmToUSe) {
             var from = {line: 0, ch: 0};
             if(oldCursor != null && !clearPozition){
               from = oldCursor.to();
             }
-            return cm.getSearchCursor(filter.find, from, !filter.caseSensitive);
+            return cmToUSe.getSearchCursor(filter.find, from, !filter.caseSensitive);
           }
-          
-          var searchFromCursor = function (filter) {
-            var found = false;
-            if(cursor != null){
-              if(cursor.findNext()){
-                found = true;
-              }else {
-                if(filter.wrapSearch){
-                  cursor = getSearchCursor(filter, cursor, true);
-                  if(cursor.findNext()){
-                    found = true;
+
+          var getNextCursor = function (filter, cmToUSe) {
+            var ret = null;
+            if(filter.allNotebook){
+              var index = notebookCellOp.getIndex(currentCellmodel.id);
+              var nextCell = notebookCellOp.getCellAtIndex(index + 1);
+              if (nextCell){
+                var nextCm = scope.bkNotebook.getCM(nextCell.id);
+                if (nextCm){
+                  if(scope.bkNotebook.getPreviewable(currentCellmodel.id)) {
+                    scope.bkNotebook.getPreviewable(currentCellmodel.id).enablePreview();
                   }
-                }else{
-                  cursor = null;
+                  currentCm = nextCm;
+                  currentCellmodel = nextCell;
+                  if(scope.bkNotebook.getPreviewable(currentCellmodel.id)) {
+                    scope.bkNotebook.getPreviewable(currentCellmodel.id).edit();
+                    scope.bkNotebook.getPreviewable(currentCellmodel.id).disablePreview();
+                  }
+                  ret = getSearchCursor(filter, null, true, nextCm);
                 }
               }
+              if(filter.wrapSearch){
+                if(ret == null){
+                  var firstCell = notebookCellOp.getCellAtIndex(0);
+                  if (firstCell){
+                    var firstCm = scope.bkNotebook.getCM(firstCell.id);
+                    if (firstCm){
+                      if(scope.bkNotebook.getPreviewable(currentCellmodel.id)) {
+                        scope.bkNotebook.getPreviewable(currentCellmodel.id).enablePreview();
+                      }
+                      currentCm = firstCm;
+                      currentCellmodel = firstCell;
+                      if(scope.bkNotebook.getPreviewable(currentCellmodel.id)) {
+                        scope.bkNotebook.getPreviewable(currentCellmodel.id).edit();
+                        scope.bkNotebook.getPreviewable(currentCellmodel.id).disablePreview();
+                      }
+                      ret = getSearchCursor(filter, null, true, firstCm);
+                    }
+                  }
+                }
+              }
+            }else{
+              if(filter.wrapSearch){
+                ret = getSearchCursor(filter, cursor, true, cmToUSe);
+              }
+              //else null
             }
-            return found;
+            return ret;
           }
 
-          //var nextCell = notebookCellOp.findNextCodeCell(scope.cellmodel.id);
-
-          var previewable = scope.bkNotebook.getPreviewable(scope.cellmodel.id);
-          if(previewable) {
-            previewable.disablePreview();
-          }
-
+          
           bkHelper.showSearchReplaceDialog(
               function(result) {
                 //Find next
-                crateNewCursor = result.wrapSearch 
-                  || result.caseSensitive != previousFilter.caseSensitive 
+                createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
                   || result.find != previousFilter.find;
                 angular.copy(result, previousFilter);
-
-                if(crateNewCursor){
-                  cursor = getSearchCursor(result, cursor, false);
+                
+                if(createNewCursor){
+                  cursor = getSearchCursor(result, cursor, false, currentCm);
                 }
-                if(searchFromCursor(result)){
-                  cm.setSelection(cursor.from(), cursor.to());
+
+                if(cursor != null && cursor.findNext()){
+                  currentCm.setSelection(cursor.from(), cursor.to());
+                }else {
+                  cursor = getNextCursor(result, currentCm);
+                  if(cursor != null && cursor.findNext()){
+                    currentCm.setSelection(cursor.from(), cursor.to());
+                  }
                 }
               },
               function(result) {
                 //Replace
-                crateNewCursor = result.wrapSearch 
-                  || result.caseSensitive != previousFilter.caseSensitive 
+                createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
                   || result.find != previousFilter.find;
                 angular.copy(result, previousFilter);
-  
-                if(crateNewCursor){
-                  cursor = getSearchCursor(result, cursor, false);
+                
+                if(createNewCursor){
+                  cursor = getSearchCursor(result, cursor, false, currentCm);
                 }
-                if(searchFromCursor(result)){
+  
+                if(cursor != null && cursor.findNext()){
                   cursor.replace(result.replace, result.find);
-                  cm.setSelection(cursor.from(), cursor.to());
+                  currentCm.setSelection(cursor.from(), cursor.to());
+                }else {
+                  cursor = getNextCursor(result, currentCm);
+                  if(cursor != null && cursor.findNext()){
+                    cursor.replace(result.replace, result.find);
+                    currentCm.setSelection(cursor.from(), cursor.to());
+                  }
                 }
               },
               function(result) {
@@ -686,8 +728,8 @@
                   }
               },
               function(result) {
-                if(previewable) {
-                  previewable.enablePreview();
+                if(scope.bkNotebook.getPreviewable(currentCellmodel.id)) {
+                  scope.bkNotebook.getPreviewable(currentCellmodel.id).enablePreview();
                 }
               }
           );

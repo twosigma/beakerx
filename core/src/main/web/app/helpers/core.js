@@ -1772,8 +1772,7 @@
         var interval = setInterval(function() {
           if (tickCounter == 0){
             if (input.selectionStart != inputLength){
-              clearInterval(interval);
-              return;
+              mouseDown = false;
             }
           }
           if (mouseDown){

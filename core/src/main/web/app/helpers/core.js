@@ -1758,8 +1758,8 @@
       var tickCounter = 0;
       var selectionStart = inputLength;
 
-      if (((input.value.charAt(input.value.length - 1) !== '/' || input.value.charAt(input.value.length - 1) !== '\\')
-        && input.value.indexOf('.') != -1)){
+      if ((input.value.charAt(inputLength - 1) !== '/' || input.value.charAt(inputLength - 1) !== '\\')
+        && input.value.indexOf('.') != -1){
 
         var lastSlash;
         if (bkUtils.isWindows){
@@ -1777,24 +1777,21 @@
             }
           }
           if (mouseDown){
-            if (selectionStart>input.selectionStart){
-              if (tickCounter<200 || input.selectionStart > lastSlash){
+            if (selectionStart>input.selectionStart && input.selectionStart>lastSlash){
+              if (tickCounter<200){
                 selectionStart = input.selectionStart;
                 input.selectionStart = lastSlash;
-              }else if(tickCounter < 1000){
-                input.selectionEnd = inputLength;
               }
+              input.selectionEnd = inputLength;
             }
-            
           } else {
+            input.selectionEnd = inputLength;
             clearInterval(interval);
             return;
           }
           tickCounter++;
         }, 10);
-
       }
-
     };
 
     $scope.filePathSelectCancel = function() {

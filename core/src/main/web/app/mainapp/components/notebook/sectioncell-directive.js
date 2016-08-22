@@ -38,6 +38,8 @@
 
         $scope.cellmodel.collapsed = $scope.cellmodel.collapsed || false;
 
+        bkCoreManager.getBkApp().getBkNotebookWidget().registerSectioncell($scope.cellmodel.id, $scope);
+        
         $scope.toggleShowChildren = function() {
           $scope.cellmodel.collapsed = !$scope.cellmodel.collapsed;
           $scope.$broadcast('beaker.section.toggled', $scope.cellmodel.collapsed);
@@ -286,7 +288,11 @@
         $scope.cellview.menu.addSeparator("Cut");
 
         $scope.cellview.menu.addSeparator("Run all");
-
+        
+        $scope.$on('$destroy', function() {
+          bkCoreManager.getBkApp().getBkNotebookWidget().unregisterSectioncell($scope.cellmodel.id);
+        });
+        
       }
     };
   });

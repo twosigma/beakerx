@@ -124,6 +124,14 @@
             delete this._previewable[cellId];
             this._previewable[cellId] = null;
           },
+          _sectioncells: {}, // map of section cells 
+          registerSectioncell: function (cellId, sectioncell) {
+            this._sectioncells[cellId] = sectioncell;
+          },
+          unregisterSectioncell: function (cellId) {
+            delete this._sectioncells[cellId];
+            this._sectioncells[cellId] = null;
+          },
           getNotebookNewCellFactory: function () {
             return bkSessionManager.getNotebookNewCellFactory();
           },

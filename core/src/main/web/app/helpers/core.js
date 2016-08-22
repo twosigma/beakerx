@@ -608,6 +608,7 @@
           } while (start <= end)
         };
         
+        
         var findReplace = function (cm) {
 
           var cursor = null;
@@ -615,12 +616,50 @@
           var createNewCursor = true;
           var currentCm = cm;
           var currentCellmodel = scope.cellmodel;
-          
-          if(scope.bkNotebook.getPreviewable(currentCellmodel.id)) {
-            scope.bkNotebook.getPreviewable(currentCellmodel.id).edit();
-            scope.bkNotebook.getPreviewable(currentCellmodel.id).disablePreview();
+
+          var prepareNotebookeForSearch = function () {
+            for ( var property in scope.bkNotebook._previewable) {
+              if (scope.bkNotebook._previewable.hasOwnProperty(property)) {
+                scope.bkNotebook._previewable[property].setPreviewMode();
+                scope.bkNotebook._previewable[property].disablePreview();
+              }
+            }
+            
+            for (var property in scope.bkNotebook._sectioncells) {
+              if (scope.bkNotebook._sectioncells.hasOwnProperty(property)) {
+                if(!scope.bkNotebook._sectioncells[property].isShowChildren()){
+                  scope.bkNotebook._sectioncells[property].toggleShowChildren();
+                }
+              }
+            }
+            currentCm.focus();
+           // console.log('type = ' + currentCellmodel.type); //'markdown' 'code' 'section'
           }
 
+          var doPostSearchNotebookActions = function () {
+            //some hack for codecell(part 1)
+            var from = {line: 0, ch: 0};
+            var to = {line: 0, ch: 0};
+            if(cursor != null ){
+              from = cursor.from();
+              to = cursor.to();
+            }
+          
+            for ( var property in scope.bkNotebook._previewable ) {
+              if (scope.bkNotebook._previewable.hasOwnProperty(property)) {
+                scope.bkNotebook._previewable[property].enablePreview();
+              }
+            }
+            currentCm.focus();
+            //some hack for codecell(part 2)
+            currentCm.setSelection(from, to);
+          }
+          
+          var doPostSearchCellActions = function (cmToUse) {
+            cmToUse.setSelection({line: 0, ch: 0}, {line: 0, ch: 0});
+            console.log('doPostSearchCellActions');
+          }
+          
           var getSearchCursor = function (filter, oldCursor, clearPozition, cmToUSe) {
             var from = {line: 0, ch: 0};
             if(oldCursor != null && !clearPozition){
@@ -637,15 +676,9 @@
               if (nextCell){
                 var nextCm = scope.bkNotebook.getCM(nextCell.id);
                 if (nextCm){
-                  if(scope.bkNotebook.getPreviewable(currentCellmodel.id)) {
-                    scope.bkNotebook.getPreviewable(currentCellmodel.id).enablePreview();
-                  }
+                  doPostSearchCellActions(currentCm);
                   currentCm = nextCm;
                   currentCellmodel = nextCell;
-                  if(scope.bkNotebook.getPreviewable(currentCellmodel.id)) {
-                    scope.bkNotebook.getPreviewable(currentCellmodel.id).edit();
-                    scope.bkNotebook.getPreviewable(currentCellmodel.id).disablePreview();
-                  }
                   ret = getSearchCursor(filter, null, true, nextCm);
                 }
               }
@@ -655,15 +688,9 @@
                   if (firstCell){
                     var firstCm = scope.bkNotebook.getCM(firstCell.id);
                     if (firstCm){
-                      if(scope.bkNotebook.getPreviewable(currentCellmodel.id)) {
-                        scope.bkNotebook.getPreviewable(currentCellmodel.id).enablePreview();
-                      }
+                      doPostSearchCellActions(currentCm);
                       currentCm = firstCm;
                       currentCellmodel = firstCell;
-                      if(scope.bkNotebook.getPreviewable(currentCellmodel.id)) {
-                        scope.bkNotebook.getPreviewable(currentCellmodel.id).edit();
-                        scope.bkNotebook.getPreviewable(currentCellmodel.id).disablePreview();
-                      }
                       ret = getSearchCursor(filter, null, true, firstCm);
                     }
                   }
@@ -678,6 +705,7 @@
             return ret;
           }
 
+          prepareNotebookeForSearch();
           
           bkHelper.showSearchReplaceDialog(
               function(result) {
@@ -692,10 +720,12 @@
 
                 if(cursor != null && cursor.findNext()){
                   currentCm.setSelection(cursor.from(), cursor.to());
+                  currentCm.focus();
                 }else {
                   cursor = getNextCursor(result, currentCm);
                   if(cursor != null && cursor.findNext()){
                     currentCm.setSelection(cursor.from(), cursor.to());
+                    currentCm.focus();
                   }
                 }
               },
@@ -728,9 +758,7 @@
                   }
               },
               function(result) {
-                if(scope.bkNotebook.getPreviewable(currentCellmodel.id)) {
-                  scope.bkNotebook.getPreviewable(currentCellmodel.id).enablePreview();
-                }
+                doPostSearchNotebookActions();
               }
           );
         };

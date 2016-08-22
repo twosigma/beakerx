@@ -76,6 +76,10 @@
           return true;
         };
         
+        scope.setPreviewMode = function() {
+          scope.mode = 'edit';
+        }
+        
         scope.disablePreview = function() {
           previewEnable = false;
         };

@@ -54,7 +54,7 @@ describe('Beaker Tables', function () {
       beakerPO.getCodeOutputCellIdBySectionTitle('Table with Index column').then(function (v) {
         beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
         beakerPO.checkClass(beakerPO.getDataTablesColumnByIdCell(v, 0), 'sorting_1');
-        beakerPO.checkDataTableBodyByIdCell(v, 5, '0 strange 95000000.0000');
+        beakerPO.checkDataTableBodyByIdCell(v, 5, '4 up 2300000.0000');
         done();
       });
     });

@@ -6,7 +6,7 @@
             "plugin": "HTML",
             "view": {
                 "cm": {
-                    "mode": "htmlmixed"
+                    "mode": "smartHTMLMode"
                 }
             }
         },
@@ -20,6 +20,16 @@
                 }
             },
             "languageVersion": "ES2015"
+        },
+        {
+            "name": "IPython",
+            "plugin": "IPython",
+            "setup": "%matplotlib inline\nimport numpy\nimport matplotlib\nfrom matplotlib import pylab, mlab, pyplot\nnp = numpy\nplt = pyplot\nfrom IPython.display import display\nfrom IPython.core.pylabtools import figsize, getfigs\nfrom pylab import *\nfrom numpy import *\n",
+            "view": {
+                "cm": {
+                    "mode": "python"
+                }
+            }
         }
     ],
     "cells": [
@@ -240,6 +250,121 @@
             "lineCount": 7
         },
         {
+            "id": "sectionlvB2wq",
+            "type": "section",
+            "title": "Table with timedelta column",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeKy8SdM",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "import pandas as pd",
+                    "import numpy as np",
+                    "df = pd.DataFrame(np.array([[2, 3, 4], [1, 1, 1], [4, 1, 0]]), columns=['A', 'B', 'C'])",
+                    "df.A = pd.to_timedelta(df.A)",
+                    "df"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "A",
+                            "B",
+                            "C"
+                        ],
+                        "actualtype": [
+                            8,
+                            2,
+                            2
+                        ],
+                        "actualalign": [
+                            "C",
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
+                    }
+                },
+                "result": {
+                    "columnNames": [
+                        "Index",
+                        "A",
+                        "B",
+                        "C"
+                    ],
+                    "subtype": "TableDisplay",
+                    "values": [
+                        [
+                            0,
+                            null,
+                            3,
+                            4
+                        ],
+                        [
+                            1,
+                            null,
+                            1,
+                            1
+                        ],
+                        [
+                            2,
+                            null,
+                            1,
+                            0
+                        ]
+                    ],
+                    "hasIndex": "true",
+                    "type": "TableDisplay",
+                    "types": [
+                        "integer",
+                        "datetime",
+                        "integer",
+                        "integer"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "IPython",
+                "shellId": "43C324EFD0EB417C8DA3AE9B206ED2B3",
+                "elapsedTime": 274,
+                "height": 156
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
             "id": "sectionPL7Kx2",
             "type": "section",
             "title": "Horizontal scroll",
@@ -329,7 +454,7 @@
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
                 "elapsedTime": 27,
-                "height": 117
+                "height": 102
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -485,47 +610,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 25,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "Key",
-                            "Value"
-                        ],
-                        "actualtype": [
-                            0,
-                            0
-                        ],
-                        "actualalign": [
-                            "L",
-                            "L"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "getCellSho": [
-                            true,
-                            true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [],
-                        "tableFilter": "",
-                        "showFilter": false,
-                        "columnSearchActive": false,
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": []
-                    }
-                },
+                "state": {},
                 "result": {
                     "type": "TableDisplay",
                     "values": [
@@ -739,9 +824,9 @@
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
                 "elapsedTime": 69,
-                "height": 776
+                "height": 813
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 5
         },
         {
@@ -766,53 +851,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 25,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "first",
-                            "second",
-                            "third"
-                        ],
-                        "actualtype": [
-                            0,
-                            0,
-                            0
-                        ],
-                        "actualalign": [
-                            "L",
-                            "L",
-                            "L"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "getCellSho": [
-                            true,
-                            true,
-                            true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [],
-                        "tableFilter": "",
-                        "showFilter": false,
-                        "columnSearchActive": false,
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "formatForTimes": {},
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": []
-                    }
-                },
+                "state": {},
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "ListOfMaps",
@@ -857,9 +896,9 @@
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
                 "elapsedTime": 146,
-                "height": 210
+                "height": 247
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 5
         },
         {
@@ -884,53 +923,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 25,
-                            "fixLeft": 0,
-                            "fixRight": 0
-                        },
-                        "columnNames": [
-                            "first",
-                            "second",
-                            "third"
-                        ],
-                        "actualtype": [
-                            0,
-                            0,
-                            0
-                        ],
-                        "actualalign": [
-                            "L",
-                            "L",
-                            "L"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "getCellSho": [
-                            true,
-                            true,
-                            true
-                        ],
-                        "barsOnColumn": {},
-                        "cellHighlightersData": [],
-                        "tableFilter": "",
-                        "showFilter": false,
-                        "columnSearchActive": false,
-                        "columnFilter": [],
-                        "columnWidth": [],
-                        "formatForTimes": {},
-                        "stringFormatForType": {},
-                        "stringFormatForColumn": {},
-                        "tooltips": []
-                    }
-                },
+                "state": {},
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "ListOfMaps",
@@ -975,9 +968,9 @@
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
                 "elapsedTime": 44,
-                "height": 210
+                "height": 247
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 5
         }
     ],

@@ -59,6 +59,21 @@ describe('Beaker Tables', function () {
       });
     });
 
+    it('should be timedelta column', function (done) {
+      beakerPO.getCodeOutputCellIdBySectionTitle('Table with timedelta column').then(function (v) {
+        beakerPO.clickCodeCellInputButtonByIdCell(v, 'Table');
+        var arrTd = beakerPO.getDataTablesTBodyByIdCell(v).get(0).all(by.css('td'));
+        expect(arrTd.count()).toBe(4);
+        beakerPO.checkSubString(arrTd.get(0), '0', 0, 1);
+        arrTd.get(1).getText().then(function(str){
+          expect(str).toMatch(/\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/);
+        });
+        beakerPO.checkSubString(arrTd.get(2), '3', 0, 1);
+        beakerPO.checkSubString(arrTd.get(3), '4', 0, 1);
+        done();
+      });
+    });
+
     it('should have 1st column fixed', function (done) {
       beakerPO.getCodeOutputCellIdBySectionTitle('Key Value Table').then(function (v) {
         beakerPO.waitCodeCellOutputTablePresentByIdCell(v);

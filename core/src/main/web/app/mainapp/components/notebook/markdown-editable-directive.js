@@ -204,7 +204,7 @@
 
         scope.$on('$destroy', function() {
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
-          scope.bkNotebook.unregisterPreviewable(scope.cellmodel.id, scope);
+          scope.bkNotebook.unregisterPreviewable(scope.cellmodel.id);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id, scope.cm);
           CodeMirror.off('change', changeHandler);
           scope.cm.off();

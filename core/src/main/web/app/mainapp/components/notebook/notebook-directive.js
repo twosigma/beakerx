@@ -50,7 +50,18 @@
           _viewModel: {
             _debugging: false,
             _showOutput: false,
+            _showSearchReplace: false,
             _editMode: 'default',
+            hideSearchReplace: function () {
+              this._showSearchReplace = false;
+            },
+            showSearchReplace: function () {
+              this._showSearchReplace = true;
+              this.hideOutput();
+            },
+            isShowingSearchReplace: function () {
+              return this._showSearchReplace;
+            },
             toggleShowOutput: function () {
               this._showOutput = !this._showOutput;
             },
@@ -185,7 +196,10 @@
         $scope.isShowingOutput = function () {
           return _impl._viewModel.isShowingOutput();
         };
-
+        $scope.isShowingSearchReplace = function () {
+          return _impl._viewModel.isShowingSearchReplace();
+        };
+        
         $scope.showDebugTree = false;
         $scope.getNotebookModel = function () {
           return bkSessionManager.getRawNotebookModel();

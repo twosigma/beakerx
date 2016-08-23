@@ -64,6 +64,7 @@ define(function(require, exports, module) {
       sortorder: 125,
       action: function () {
         bkHelper.showSearchReplaceDialog();
+        //bkHelper.getBkNotebookViewModel().showSearchReplace();        
       },
       tooltip: 'Find and Replace...',
       id: 'find-replace'

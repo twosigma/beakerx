@@ -611,6 +611,8 @@
         
         var findReplace = function (cm) {
 
+          // console.log('type = ' + currentCellmodel.type); //'markdown' 'code' 'section'
+          
           var cursor = null;
           var previousFilter = {};
           var createNewCursor = true;
@@ -620,44 +622,53 @@
           var prepareNotebookeForSearch = function () {
             for ( var property in scope.bkNotebook._previewable) {
               if (scope.bkNotebook._previewable.hasOwnProperty(property)) {
-                scope.bkNotebook._previewable[property].setPreviewMode();
-                scope.bkNotebook._previewable[property].disablePreview();
+                if(scope.bkNotebook._previewable[property]){
+                  scope.bkNotebook._previewable[property].setPreviewMode();
+                  scope.bkNotebook._previewable[property].disablePreview();
+                }
               }
             }
             
             for (var property in scope.bkNotebook._sectioncells) {
               if (scope.bkNotebook._sectioncells.hasOwnProperty(property)) {
-                if(!scope.bkNotebook._sectioncells[property].isShowChildren()){
-                  scope.bkNotebook._sectioncells[property].toggleShowChildren();
+                if(scope.bkNotebook._sectioncells[property]){
+                  if(!scope.bkNotebook._sectioncells[property].isShowChildren()){
+                    scope.bkNotebook._sectioncells[property].toggleShowChildren();
+                  }
                 }
               }
             }
-            currentCm.focus();
-           // console.log('type = ' + currentCellmodel.type); //'markdown' 'code' 'section'
           }
 
           var doPostSearchNotebookActions = function () {
+            for ( var property in scope.bkNotebook._previewable ) {
+              if (scope.bkNotebook._previewable.hasOwnProperty(property)) {
+                if(scope.bkNotebook._previewable[property]){
+                  scope.bkNotebook._previewable[property].enablePreview();
+                }
+              }
+            }
             //some hack for codecell(part 1)
             var from = {line: 0, ch: 0};
             var to = {line: 0, ch: 0};
             if(cursor != null ){
-              from = cursor.from();
-              to = cursor.to();
-            }
-          
-            for ( var property in scope.bkNotebook._previewable ) {
-              if (scope.bkNotebook._previewable.hasOwnProperty(property)) {
-                scope.bkNotebook._previewable[property].enablePreview();
+              if(cursor.from()){
+                from = cursor.from();
+              }
+              if(cursor.to()){
+                to = cursor.to();
               }
             }
-            currentCm.focus();
-            //some hack for codecell(part 2)
-            currentCm.setSelection(from, to);
+
+            if(currentCm){
+              currentCm.focus();
+              //some hack for codecell(part 2)
+              currentCm.setSelection(from, to);
+            }
           }
           
           var doPostSearchCellActions = function (cmToUse) {
             cmToUse.setSelection({line: 0, ch: 0}, {line: 0, ch: 0});
-            console.log('doPostSearchCellActions');
           }
           
           var getSearchCursor = function (filter, oldCursor, clearPozition, cmToUSe) {
@@ -752,10 +763,29 @@
               },
               function(result) {
                 //Replace all
-                  for (cursor = getSearchCursor(result, cursor, false); cursor.findNext();) {
+                if(result.allNotebook){
+                  for (var index = 0; true; index++) {
+                    var theCell = notebookCellOp.getCellAtIndex(index);
+                    if (theCell){
+                      var theCM = scope.bkNotebook.getCM(theCell.id);
+                      if (theCM){
+                        currentCm = theCM;
+                        currentCellmodel = theCell;
+                        for (cursor = getSearchCursor(result, cursor, false, currentCm); cursor.findNext();) {
+                          cursor.replace(result.replace, result.find);
+                          theCM.addSelection(cursor.from(), cursor.to());
+                        }
+                      }
+                    }else{
+                      break;
+                    }
+                  } 
+                }else{
+                  for (cursor = getSearchCursor(result, cursor, false, currentCm); cursor.findNext();) {
                     cursor.replace(result.replace, result.find);
-                    cm.addSelection(cursor.from(), cursor.to());
+                    currentCm.addSelection(cursor.from(), cursor.to());
                   }
+                }
               },
               function(result) {
                 doPostSearchNotebookActions();

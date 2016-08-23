@@ -1776,20 +1776,20 @@
             }
           }
           if (mouseDown){
-            if (selectionStart>input.selectionStart && input.selectionStart>lastSlash){
-              if (tickCounter<200){
+            if (inputLength > input.selectionStart && selectionStart>=input.selectionStart && input.selectionStart>lastSlash){
+              if (tickCounter<1000){
                 selectionStart = input.selectionStart;
                 input.selectionStart = lastSlash;
               }
-              input.selectionEnd = inputLength;
             }
+            input.selectionEnd = inputLength;
           } else {
             input.selectionEnd = inputLength;
             clearInterval(interval);
             return;
           }
           tickCounter++;
-        }, 10);
+        }, 2);
       }
     };
 

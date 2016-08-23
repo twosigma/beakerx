@@ -199,7 +199,7 @@ define(function(require, exports, module) {
           else
             bkHelper.refreshRootScope();       
           finalStuff = undefined;
-        }
+        };
 
         var execute_reply = function(msg) {
           if (_theCancelFunction === null)
@@ -249,7 +249,6 @@ define(function(require, exports, module) {
             }
             finalStuff = evaluation;
             var duration = new Date() - start;
-            console.log("duration" + duration);
             bkHelper.timeout(doFinish, duration/3);
           }
         };
@@ -620,7 +619,7 @@ define(function(require, exports, module) {
               } else {
                 setTimeout(waitForKernel, 50);
               }
-            }
+            };
             waitForKernel();
           };
           if (!settings.shellID) {
@@ -692,7 +691,7 @@ define(function(require, exports, module) {
         }).error(function() {
           console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
           shellReadyDeferred.reject("failed to locate plugin service");
-        });;
+        });
   };
   init();
 

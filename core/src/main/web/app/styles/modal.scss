@@ -218,6 +218,12 @@ html {
   opacity: 1;
 }
 
+#file-dlg-selected-path{
+  -webkit-user-select: text;  /* Chrome all / Safari all */
+  -moz-user-select: text;     /* Firefox all */
+  -ms-user-select: text;      /* IE 10+ */
+}
+
 // Fix for modal flash on open - https://github.com/angular-ui/bootstrap/issues/5183
 // If/when that issue is fixed, we can remove this
 body > [uib-modal-window]:not([modal-render]) {

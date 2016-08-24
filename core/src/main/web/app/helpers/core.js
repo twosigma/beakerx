@@ -1742,7 +1742,7 @@
         onKey(keyEvent);
       }
     };
-
+    
     var ok = function () {
       if ($scope.getStrategy().type === "SAVE") {
         var filename = getFilename($scope.selected.path);

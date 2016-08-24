@@ -63,8 +63,7 @@ define(function(require, exports, module) {
       shortcut: ["Alt-F", "Ctrl-F"],
       sortorder: 125,
       action: function () {
-        bkHelper.showSearchReplaceDialog();
-        //bkHelper.getBkNotebookViewModel().showSearchReplace();        
+        bkHelper.getBkNotebookViewModel().showSearchReplace();        
       },
       tooltip: 'Find and Replace...',
       id: 'find-replace'

@@ -22,16 +22,58 @@
       <a class="dropdown-toggle" data-toggle="dropdown"></a>
     </div>
   </div>
-  <div ng-show="isShowingSearchReplace()" class="outputlogbox"></div>
   <div ng-show="isShowingSearchReplace()" class="outputlogcontainer">
     <div class="outputloghandle"></div>
-    <div class="btn-toolbar">
-      <div class="btn-group alt-controls">
-hello
-      </div>
-      <div class="btn-group" data-toggle="buttons-checkbox">
-hello 2 2 
-      </div>
+    <div align="center">
+      <h3>Find and Replace</h3>
+        <div class="search-replace">
+          <form>
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td style="border-top:none">Find:</td>
+                  <td style="border-top:none">
+                    <input type="text" id="find_field" class="field" placeholder="Find" ng-model="searchReplaceData.find" ></input>
+                  </td>
+                  <td style="border-top:none">Replace:</td>
+                  <td style="border-top:none">
+                    <input type="text" id="replace_field" class="field" placeholder="Replace" ng-model="searchReplaceData.replace"></input>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td style="border-top:none">
+                    <input type="radio" ng-model="searchReplaceData.allNotebook" ng-value="true">
+                    Search entire notebook
+                  </td>
+                  <td style="border-top:none">
+                    <input type="checkbox" ng-model="searchReplaceData.caseSensitive">
+                    Case sensitive
+                  </td>
+                </tr>
+                <tr>
+                  <td style="border-top:none">
+                    <input type="radio" ng-model="searchReplaceData.allNotebook" ng-value="false">
+                    Search selected cell
+                  </td>
+                  <td style="border-top:none">
+                    <input type="checkbox" ng-model="searchReplaceData.wrapSearch">
+                    Wrap search
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div align="center">
+              <button class="cancel btn btn-default" ng-click="hideSearchReplace()">Done</button>
+              <button class="yes btn btn-default" ng-click="findNextFunction(searchReplaceData)">Find next</button>
+              <button class="yes btn btn-default" ng-click="replaceFunction(searchReplaceData)">Replace</button>
+              <button class="yes btn btn-default" ng-click="replaceAllFunction(searchReplaceData)">Replace all</button>
+            </div>
+          </form>
+        </div>
     </div>
   </div>
   

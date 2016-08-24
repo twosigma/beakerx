@@ -939,9 +939,6 @@
       showSQLLoginModalDialog: function(connectionName, connectionString, user, okCB, cancelCB) {
         return bkCoreManager.showSQLLoginModalDialog(connectionName, connectionString, user, okCB, cancelCB);
       },
-      showSearchReplaceDialog: function(findNext, replace, replaceAll, windowClosed) {
-        return bkCoreManager.showSearchReplaceDialog(findNext, replace, replaceAll, windowClosed);
-      },
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();
       },

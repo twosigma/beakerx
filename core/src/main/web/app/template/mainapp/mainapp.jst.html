@@ -15,10 +15,18 @@
 -->
 <header class="navbar-fixed-top" ng-class="{'electron-hide': getElectronMode()}">
   <div class="navbar navbar-inverse">
-    <bk-brand-logo reference="/beaker/#/control" on-click="gotoControlPanel(event)"></bk-brand-logo>
-    <div ng-switch="renamingAllowed()">
-      <a ng-switch-when="true" href="#" class="navbar-text path-name" ng-class="{full: !loading && !loadingmsg}" ng-click="renameNotebook()" eat-click>{{pathname()}}</a>
-      <p ng-switch-default class="navbar-text path-name" ng-class="{full: !loading && !loadingmsg}">{{pathname()}}</p>
+    <div style="max-width: 100px">
+      <bk-brand-logo reference="/beaker/#/control" on-click="gotoControlPanel(event)"></bk-brand-logo>
+    </div>
+    <div >
+      <div ng-switch="renamingAllowed()">
+        <div>
+          <span ng-switch-when="true" href="#" class="navbar-text path-name" ng-class="{full: !loading && !loadingmsg}"
+             ng-click="renameNotebook()" eat-click>{{pathname()}}</span>
+          <p ng-switch-default class="navbar-text path-name" ng-class="{full: !loading && !loadingmsg}">
+            {{pathname()}}</p>
+        </div>
+      </div>
     </div>
     <div class="navbar-text text-white loadingmsg" ng-if="isShowProgressBar()">
       <div class="fa fa-times-circle fa-lg cursor_hand bkr" style="color: #e48d71 !important;" ng-click="cancel()" title="cancel"></div>
@@ -48,7 +56,7 @@
       </a>
       {{loadingmsg}}
     </div>
-    
+
   </div>
   <div class="navbar navbar-default">
     <ul class="nav navbar-nav">

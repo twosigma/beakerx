@@ -20,7 +20,7 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.debug', 'bk.electron', 'bk.publication']);
+  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.debug', 'bk.electron', 'bk.publication', 'bk.katexhelper']);
   /**
    * bkHelper
    * - should be the only thing plugins depend on to interact with general beaker stuffs (other than
@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, $uibModal,  bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
+  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, $uibModal,  bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, bkKatexHelper, GLOBALS) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -539,7 +539,7 @@
       },        
       typeset: function(element) {
         try {
-          renderMathInElement(element[0], {
+          katexhelper.renderMathInElement(element[0], {
             delimiters: [
               {left: "$$", right: "$$", display: true},
               {left: "$", right:  "$", display: false},

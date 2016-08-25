@@ -86,6 +86,10 @@
         
         scope.enablePreview = function() {
           previewEnable = true;
+          preview();
+          if (scope.$root.$$phase != '$apply' && scope.$root.$$phase != '$digest') {
+            scope.$apply();
+          }
         };
 
         scope.edit = function(event) {

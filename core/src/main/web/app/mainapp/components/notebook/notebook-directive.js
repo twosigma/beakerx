@@ -44,7 +44,7 @@
         setBkNotebook: '&',
         isLoading: '='
       },
-      controller: function ($scope, $rootScope, bkEvaluatorManager, bkDragAndDropHelper, GLOBALS) {
+      controller: function ($scope, $rootScope, $window, bkEvaluatorManager, bkDragAndDropHelper, GLOBALS) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var _impl = {
           _viewModel: {
@@ -58,6 +58,9 @@
             showSearchReplace: function (cm, cellmodel) {
               this._showSearchReplace = true;
               this.hideOutput();
+              if ($scope.$root.$$phase != '$apply' && $scope.$root.$$phase != '$digest') {
+                $scope.$apply();
+              }
               $scope.prepareNotebookeForSearch(cm, cellmodel);
               if ($scope.$root.$$phase != '$apply' && $scope.$root.$$phase != '$digest') {
                 $scope.$apply();
@@ -207,58 +210,84 @@
         };
         $scope.hideSearchReplace = function () {
           doPostSearchNotebookActions();
-          return _impl._viewModel.hideSearchReplace();
+          _impl._viewModel.hideSearchReplace();
         };
 
         var cursor = null;
         var previousFilter = {};
-        var createNewCursor = true;
         var currentCm = null;
         var currentCellmodel = null;
+        var clearCursorPozition = true;
         
         $scope.searchReplaceData = {
-          action: null,
           replace: null,
-          allNotebook: false,
+          allNotebook: true,
           caseSensitive: false,
-          wrapSearch: false
+          wrapSearch: false,
+          reverseSearch: false
+        }
+        
+        $scope.findALLFunction = function (result){
+/*          if(result.allNotebook){
+            for (var index = 0; true; index++) {
+              var theCell = notebookCellOp.getCellAtIndex(index);
+              if (theCell){
+                var theCM = _impl.getCM(theCell.id);
+                if (theCM){
+                  currentCm = theCM;
+                  currentCellmodel = theCell;
+                  for (cursor = getSearchCursor(result, cursor, false, currentCm); cursor.findNext();) {
+                    theCM.addSelection(cursor.from(), cursor.to());
+                  }
+                }
+              }else{
+                break;
+              }
+            } 
+          }else{
+            for (cursor = getSearchCursor(result, cursor, false, currentCm); cursor.findNext();) {
+              currentCm.addSelection(cursor.from(), cursor.to());
+            }
+          }*/
         }
         
         $scope.findNextFunction = function (result) {
-          createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
+          var createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
             || result.find != previousFilter.find;
           angular.copy(result, previousFilter);
-          
+
           if(createNewCursor){
-            cursor = getSearchCursor(result, cursor, false, currentCm);
+            cursor = getSearchCursor(result, cursor, clearCursorPozition, currentCm);
+            clearCursorPozition = false;
           }
   
-          if(cursor != null && cursor.findNext()){
+          if(cursor != null && cursor.find(result.reverseSearch)){
             currentCm.setSelection(cursor.from(), cursor.to());
             currentCm.focus();
           }else {
             cursor = getNextCursor(result, currentCm);
-            if(cursor != null && cursor.findNext()){
+            if(cursor != null && cursor.find(result.reverseSearch)){
               currentCm.setSelection(cursor.from(), cursor.to());
               currentCm.focus();
             }
           }
         }
         $scope.replaceFunction = function (result) {
-          createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
+          var createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
             || result.find != previousFilter.find;
           angular.copy(result, previousFilter);
           
           if(createNewCursor){
-            cursor = getSearchCursor(result, cursor, false, currentCm);
+            cursor = getSearchCursor(result, cursor, clearCursorPozition, currentCm);
+            clearCursorPozition = false;
           }
   
-          if(cursor != null && cursor.findNext()){
+          if(cursor != null && cursor.find(result.reverseSearch)){
             cursor.replace(result.replace, result.find);
             currentCm.setSelection(cursor.from(), cursor.to());
           }else {
             cursor = getNextCursor(result, currentCm);
-            if(cursor != null && cursor.findNext()){
+            if(cursor != null && cursor.find(result.reverseSearch)){
               cursor.replace(result.replace, result.find);
               currentCm.setSelection(cursor.from(), cursor.to());
             }
@@ -273,7 +302,7 @@
                 if (theCM){
                   currentCm = theCM;
                   currentCellmodel = theCell;
-                  for (cursor = getSearchCursor(result, cursor, false, currentCm); cursor.findNext();) {
+                  for (cursor = getSearchCursor(result, cursor, true, currentCm); cursor.findNext();) {
                     cursor.replace(result.replace, result.find);
                     theCM.addSelection(cursor.from(), cursor.to());
                   }
@@ -283,18 +312,37 @@
               }
             } 
           }else{
-            for (cursor = getSearchCursor(result, cursor, false, currentCm); cursor.findNext();) {
+            for (cursor = getSearchCursor(result, cursor, true, currentCm); cursor.findNext();) {
               cursor.replace(result.replace, result.find);
               currentCm.addSelection(cursor.from(), cursor.to());
             }
           }
+          clearCursorPozition = true;
         }
         
         $scope.prepareNotebookeForSearch = function (cm, cellmodel) {
 
-          currentCm = cm;
-          currentCellmodel = cellmodel;
+          if(cm && cellmodel){
+            currentCm = cm;
+            currentCellmodel = cellmodel;
+          }else{
+            var theCell = notebookCellOp.getCellAtIndex(0);
+            if (theCell){
+              var theCM = _impl.getCM(theCell.id);
+              if (theCM){
+                currentCm = theCM;
+                currentCellmodel = theCell;
+              }
+            }
+          }
           
+          clearCursorPozition = true;
+
+          var element = $window.document.getElementById("find_field");
+          if(element){
+            element.focus();  
+          }
+
           for ( var property in _impl._previewable) {
             if (_impl._previewable.hasOwnProperty(property)) {
               if(_impl._previewable[property]){
@@ -323,23 +371,8 @@
               }
             }
           }
-          //some hack for codecell(part 1)
-          var from = {line: 0, ch: 0};
-          var to = {line: 0, ch: 0};
-          if(cursor != null ){
-            if(cursor.from()){
-              from = cursor.from();
-            }
-            if(cursor.to()){
-              to = cursor.to();
-            }
-          }
-
-          if(currentCm){
-            currentCm.focus();
-            //some hack for codecell(part 2)
-            currentCm.setSelection(from, to);
-          }
+          
+          previousFilter = {};
         }
         
         var doPostSearchCellActions = function (cmToUse) {

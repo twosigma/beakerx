@@ -50,7 +50,7 @@ describe('Beaker Tables', function () {
       });
     });
 
-    it('should be sorted by server', function (done) {
+    it('should be sorted by server (jscript)', function (done) {
       beakerPO.getCodeOutputCellIdBySectionTitle('Table with Index column').then(function (v) {
         beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
         beakerPO.checkDataTableBodyByIdCell(v, 5, '4 up 2300000.0000');
@@ -61,17 +61,17 @@ describe('Beaker Tables', function () {
       });
     });
 
-    it('should be timedelta column', function (done) {
+    it('A column should be timedelta, B column should be sorted (IPython)', function (done) {
       beakerPO.getCodeOutputCellIdBySectionTitle('Table with timedelta column').then(function (v) {
         beakerPO.clickCodeCellInputButtonByIdCell(v, 'Table');
-        var arrTd = beakerPO.getDataTablesTBodyByIdCell(v).get(0).all(by.css('td'));
-        expect(arrTd.count()).toBe(4);
-        beakerPO.checkSubString(arrTd.get(0), '0', 0, 1);
-        arrTd.get(1).getText().then(function(str){
+        var arrTd0 = beakerPO.getDataTablesTBodyByIdCell(v).get(0).all(by.css('td'));
+        expect(arrTd0.count()).toBe(4);
+        arrTd0.get(1).getText().then(function (str) {
           expect(str).toMatch(/\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/);
         });
-        beakerPO.checkSubString(arrTd.get(2), '3', 0, 1);
-        beakerPO.checkSubString(arrTd.get(3), '4', 0, 1);
+        beakerPO.checkSubString(arrTd0.get(2), '1', 0, 1);
+        beakerPO.checkSubString(beakerPO.getDataTablesTBodyByIdCell(v).get(1).all(by.css('td')).get(2), '3', 0, 1);
+        beakerPO.checkSubString(beakerPO.getDataTablesTBodyByIdCell(v).get(2).all(by.css('td')).get(2), '7', 0, 1);
         done();
       });
     });

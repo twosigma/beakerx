@@ -194,6 +194,7 @@
                         "columnSearchActive": false,
                         "columnFilter": [],
                         "columnWidth": [],
+                        "formatForTimes": {},
                         "stringFormatForType": {},
                         "stringFormatForColumn": {},
                         "tooltips": []
@@ -243,7 +244,7 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 56,
+                "elapsedTime": 67,
                 "height": 210
             },
             "evaluatorReader": true,
@@ -265,9 +266,10 @@
                 "body": [
                     "import pandas as pd",
                     "import numpy as np",
-                    "df = pd.DataFrame(np.array([[2, 3, 4], [1, 1, 1], [4, 1, 0]]), columns=['A', 'B', 'C'])",
+                    "df = pd.DataFrame(np.array([[2, 3, 9], [7, 7, 5], [4, 1, 8]]), columns=['A', 'B', 'C'])",
                     "df.A = pd.to_timedelta(df.A)",
-                    "df"
+                    "df",
+                    "df.sort_values('B')"
                 ]
             },
             "output": {
@@ -328,22 +330,22 @@
                     "subtype": "TableDisplay",
                     "values": [
                         [
-                            0,
-                            null,
-                            3,
-                            4
-                        ],
-                        [
-                            1,
-                            null,
-                            1,
-                            1
-                        ],
-                        [
                             2,
                             null,
                             1,
-                            0
+                            8
+                        ],
+                        [
+                            0,
+                            null,
+                            3,
+                            9
+                        ],
+                        [
+                            1,
+                            null,
+                            7,
+                            5
                         ]
                     ],
                     "hasIndex": "true",
@@ -357,12 +359,12 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "43C324EFD0EB417C8DA3AE9B206ED2B3",
-                "elapsedTime": 274,
+                "shellId": "AE8C391F58444560831004CC936B0DEB",
+                "elapsedTime": 409,
                 "height": 156
             },
             "evaluatorReader": true,
-            "lineCount": 5
+            "lineCount": 6
         },
         {
             "id": "sectionPL7Kx2",
@@ -610,7 +612,48 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "Key",
+                            "Value"
+                        ],
+                        "actualtype": [
+                            0,
+                            0
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "getCellSho": [
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
+                    }
+                },
                 "result": {
                     "type": "TableDisplay",
                     "values": [
@@ -824,9 +867,9 @@
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
                 "elapsedTime": 69,
-                "height": 813
+                "height": 776
             },
-            "evaluatorReader": false,
+            "evaluatorReader": true,
             "lineCount": 5
         },
         {
@@ -851,7 +894,53 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "first",
+                            "second",
+                            "third"
+                        ],
+                        "actualtype": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
+                    }
+                },
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "ListOfMaps",
@@ -896,9 +985,9 @@
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
                 "elapsedTime": 146,
-                "height": 247
+                "height": 210
             },
-            "evaluatorReader": false,
+            "evaluatorReader": true,
             "lineCount": 5
         },
         {
@@ -923,7 +1012,53 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "first",
+                            "second",
+                            "third"
+                        ],
+                        "actualtype": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
+                    }
+                },
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "ListOfMaps",
@@ -968,9 +1103,9 @@
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
                 "elapsedTime": 44,
-                "height": 247
+                "height": 210
             },
-            "evaluatorReader": false,
+            "evaluatorReader": true,
             "lineCount": 5
         }
     ],

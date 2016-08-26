@@ -35,7 +35,8 @@
       bkCoreManager,
       bkOutputLog,
       bkElectron,
-      bkMenuPluginManager) {
+      bkMenuPluginManager,
+      $timeout) {
     var CELL_TYPE = 'notebook';
     return {
       restrict: 'E',
@@ -228,47 +229,71 @@
         }
         
         $scope.findALLFunction = function (result){
-/*          if(result.allNotebook){
-            for (var index = 0; true; index++) {
-              var theCell = notebookCellOp.getCellAtIndex(index);
-              if (theCell){
-                var theCM = _impl.getCM(theCell.id);
-                if (theCM){
-                  currentCm = theCM;
-                  currentCellmodel = theCell;
-                  for (cursor = getSearchCursor(result, cursor, false, currentCm); cursor.findNext();) {
-                    theCM.addSelection(cursor.from(), cursor.to());
+          $timeout(function() {
+            if(result.find){
+              if(result.allNotebook){
+                for (var index = 0; notebookCellOp.getCellsSize() > index; index++) {
+                  var theCell = notebookCellOp.getCellAtIndex(index);
+                  if (theCell){
+                    var theCM = _impl.getCM(theCell.id);
+                    if (theCM){
+                      theCM.setSelection({line: 0, ch: 0}, {line: 0, ch: 0});
+                      for (cursor = getSearchCursor(result, cursor, true, theCM); cursor.findNext();) {
+                        theCM.addSelection(cursor.from(), cursor.to());
+                      }
+                    }
                   }
                 }
               }else{
-                break;
+                currentCm.setSelection({line: 0, ch: 0}, {line: 0, ch: 0});
+                for (cursor = getSearchCursor(result, cursor, false, currentCm); cursor.findNext();) {
+                  currentCm.addSelection(cursor.from(), cursor.to());
+                }
               }
-            } 
-          }else{
-            for (cursor = getSearchCursor(result, cursor, false, currentCm); cursor.findNext();) {
-              currentCm.addSelection(cursor.from(), cursor.to());
             }
-          }*/
+          }, 500);
+        }
+
+        $scope.findPreviousFunction = function (result) {
+          if(result.find){
+            var createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
+              || result.find != previousFilter.find;
+            angular.copy(result, previousFilter);
+    
+            if(createNewCursor){
+              cursor = getSearchCursor(result, cursor, clearCursorPozition, currentCm);
+              clearCursorPozition = false;
+            }
+    
+            if(cursor != null && cursor.find(true)){
+              currentCm.setSelection(cursor.from(), cursor.to());
+            }else {
+              cursor = getNextCursor(result, currentCm);
+              if(cursor != null && cursor.find(true)){
+                currentCm.setSelection(cursor.from(), cursor.to());
+              }
+            }
+          }
         }
         
         $scope.findNextFunction = function (result) {
-          var createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
-            || result.find != previousFilter.find;
-          angular.copy(result, previousFilter);
-
-          if(createNewCursor){
-            cursor = getSearchCursor(result, cursor, clearCursorPozition, currentCm);
-            clearCursorPozition = false;
-          }
+          if(result.find){
+            var createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
+              || result.find != previousFilter.find;
+            angular.copy(result, previousFilter);
   
-          if(cursor != null && cursor.find(result.reverseSearch)){
-            currentCm.setSelection(cursor.from(), cursor.to());
-            currentCm.focus();
-          }else {
-            cursor = getNextCursor(result, currentCm);
+            if(createNewCursor){
+              cursor = getSearchCursor(result, cursor, clearCursorPozition, currentCm);
+              clearCursorPozition = false;
+            }
+    
             if(cursor != null && cursor.find(result.reverseSearch)){
               currentCm.setSelection(cursor.from(), cursor.to());
-              currentCm.focus();
+            }else {
+              cursor = getNextCursor(result, currentCm);
+              if(cursor != null && cursor.find(result.reverseSearch)){
+                currentCm.setSelection(cursor.from(), cursor.to());
+              }
             }
           }
         }
@@ -387,6 +412,7 @@
           return cmToUSe.getSearchCursor(filter.find, from, !filter.caseSensitive);
         }
 
+        //_codeMirrors
         var getNextCursor = function (filter, cmToUSe) {
           var ret = null;
           if(filter.allNotebook){

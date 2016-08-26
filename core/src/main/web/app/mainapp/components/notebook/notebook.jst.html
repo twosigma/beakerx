@@ -27,17 +27,18 @@
     <div align="center">
       <br>
         <div class="search-replace">
-          <form>
             <table class="table">
               <tbody>
                 <tr>
                   <td style="border-top:none">Find:</td>
                   <td style="border-top:none">
-                    <input type="text" id="find_field" class="field" placeholder="Find" ng-model="searchReplaceData.find" ng-keypress="findALLFunction(searchReplaceData)"></input>
+                    <input type="text" id="find_field" class="field" placeholder="Find" ng-model="searchReplaceData.find" 
+                      ng-keyup="($event.charCode==13)?findNextFunction(searchReplaceData):findALLFunction(searchReplaceData)"></input>
                   </td>
                   <td style="border-top:none">Replace:</td>
                   <td style="border-top:none">
-                    <input type="text" id="replace_field" class="field" placeholder="Replace" ng-model="searchReplaceData.replace"></input>
+                    <input type="text" id="replace_field" class="field" placeholder="Replace" ng-model="searchReplaceData.replace"
+                      ng-keyup="($event.charCode==13)?replaceFunction(searchReplaceData):return"></input>
                   </td>
                 </tr>
               </tbody>
@@ -53,10 +54,10 @@
                     <input type="checkbox" ng-model="searchReplaceData.caseSensitive">
                     Case sensitive
                   </td>
-                  <td style="border-top:none">
+<!--                   <td style="border-top:none">
                     <input type="checkbox" ng-model="searchReplaceData.reverseSearch">
                     Reverse search
-                  </td>
+                  </td> -->
                 </tr>
                 <tr>
                   <td style="border-top:none">
@@ -67,18 +68,19 @@
                     <input type="checkbox" ng-model="searchReplaceData.wrapSearch">
                     Wrap search
                   </td>
-                  <td style="border-top:none">
-                  </td>
+<!--                   <td style="border-top:none">
+                  </td> -->
                 </tr>
               </tbody>
             </table>
-            <div align="center">
+            <div align="center">      
               <button class="cancel btn btn-default" ng-click="hideSearchReplace()">Done</button>
               <button class="yes btn btn-default" ng-click="findNextFunction(searchReplaceData)">Find next</button>
+              <button class="yes btn btn-default" ng-click="findPreviousFunction(searchReplaceData)">Find previous</button>
               <button class="yes btn btn-default" ng-click="replaceFunction(searchReplaceData)">Replace</button>
               <button class="yes btn btn-default" ng-click="replaceAllFunction(searchReplaceData)">Replace all</button>
             </div>
-          </form>
+          
         </div>
     </div>
   </div>

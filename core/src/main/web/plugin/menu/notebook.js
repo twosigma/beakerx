@@ -59,7 +59,7 @@ define(function(require, exports, module) {
       id: 'delete-all-menuitem'
     },
     {
-      name: 'Find > Replace...',
+      name: 'Find and replace',
       shortcut: ["Alt-F", "Ctrl-F"],
       sortorder: 125,
       action: function () {

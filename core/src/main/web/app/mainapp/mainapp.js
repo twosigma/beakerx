@@ -1265,7 +1265,13 @@
         }
 
         var keydownHandler = function(e) {
-          if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
+          if (e.which === 33) { // page up
+            window.scrollBy(0, -100);
+            return false;
+          } else if (e.which === 34) { // page down
+            window.scrollBy(0, 100);
+            return false;
+          } else if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
             e.preventDefault();
             _impl.saveNotebook();
             $scope.$apply();

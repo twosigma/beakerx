@@ -238,7 +238,7 @@
                     var theCM = _impl.getCM(theCell.id);
                     if (theCM){
                       theCM.setSelection({line: 0, ch: 0}, {line: 0, ch: 0});
-                      for (cursor = getSearchCursor(result, cursor, true, theCM); cursor.findNext();) {
+                      for (cursor = getSearchCursor(result, cursor, 'MIN', theCM); cursor.findNext();) {
                         theCM.addSelection(cursor.from(), cursor.to());
                       }
                     }
@@ -246,7 +246,7 @@
                 }
               }else{
                 currentCm.setSelection({line: 0, ch: 0}, {line: 0, ch: 0});
-                for (cursor = getSearchCursor(result, cursor, false, currentCm); cursor.findNext();) {
+                for (cursor = getSearchCursor(result, cursor, 'MIN', currentCm); cursor.findNext();) {
                   currentCm.addSelection(cursor.from(), cursor.to());
                 }
               }
@@ -261,14 +261,14 @@
             angular.copy(result, previousFilter);
     
             if(createNewCursor){
-              cursor = getSearchCursor(result, cursor, clearCursorPozition, currentCm);
+              cursor = getSearchCursor(result, cursor, clearCursorPozition ? 'MIN' : 'COPY', currentCm);
               clearCursorPozition = false;
             }
     
             if(cursor != null && cursor.find(true)){
               currentCm.setSelection(cursor.from(), cursor.to());
             }else {
-              cursor = getNextCursor(result, currentCm);
+              cursor = getNextCursor(result, currentCm, true);
               if(cursor != null && cursor.find(true)){
                 currentCm.setSelection(cursor.from(), cursor.to());
               }
@@ -283,14 +283,14 @@
             angular.copy(result, previousFilter);
   
             if(createNewCursor){
-              cursor = getSearchCursor(result, cursor, clearCursorPozition, currentCm);
+              cursor = getSearchCursor(result, cursor, clearCursorPozition ? 'MIN' : 'COPY', currentCm);
               clearCursorPozition = false;
             }
     
             if(cursor != null && cursor.find(result.reverseSearch)){
               currentCm.setSelection(cursor.from(), cursor.to());
             }else {
-              cursor = getNextCursor(result, currentCm);
+              cursor = getNextCursor(result, currentCm, result.reverseSearch);
               if(cursor != null && cursor.find(result.reverseSearch)){
                 currentCm.setSelection(cursor.from(), cursor.to());
               }
@@ -303,7 +303,7 @@
           angular.copy(result, previousFilter);
           
           if(createNewCursor){
-            cursor = getSearchCursor(result, cursor, clearCursorPozition, currentCm);
+            cursor = getSearchCursor(result, cursor, clearCursorPozition ? 'MIN' : 'COPY', currentCm);
             clearCursorPozition = false;
           }
   
@@ -311,7 +311,7 @@
             cursor.replace(result.replace, result.find);
             currentCm.setSelection(cursor.from(), cursor.to());
           }else {
-            cursor = getNextCursor(result, currentCm);
+            cursor = getNextCursor(result, currentCm, result.reverseSearch);
             if(cursor != null && cursor.find(result.reverseSearch)){
               cursor.replace(result.replace, result.find);
               currentCm.setSelection(cursor.from(), cursor.to());
@@ -327,7 +327,7 @@
                 if (theCM){
                   currentCm = theCM;
                   currentCellmodel = theCell;
-                  for (cursor = getSearchCursor(result, cursor, true, currentCm); cursor.findNext();) {
+                  for (cursor = getSearchCursor(result, cursor, 'MIN', currentCm); cursor.findNext();) {
                     cursor.replace(result.replace, result.find);
                     theCM.addSelection(cursor.from(), cursor.to());
                   }
@@ -337,7 +337,7 @@
               }
             } 
           }else{
-            for (cursor = getSearchCursor(result, cursor, true, currentCm); cursor.findNext();) {
+            for (cursor = getSearchCursor(result, cursor, 'MIN', currentCm); cursor.findNext();) {
               cursor.replace(result.replace, result.find);
               currentCm.addSelection(cursor.from(), cursor.to());
             }
@@ -404,46 +404,61 @@
           cmToUse.setSelection({line: 0, ch: 0}, {line: 0, ch: 0});
         }
         
-        var getSearchCursor = function (filter, oldCursor, clearPozition, cmToUSe) {
+        var getSearchCursor = function (filter, oldCursor, positionType, cmToUSe) {
           var from = {line: 0, ch: 0};
-          if(oldCursor != null && !clearPozition){
-            from = oldCursor.to();
+          if(positionType == 'COPY'){
+            if(oldCursor){
+              from = oldCursor.to();
+            }
+          }else if(positionType == 'MIN'){
+            from = {line: 0, ch: 0};
+          }else if(positionType == 'MAX'){
+            from = {line: cmToUSe.lineCount() - 1, ch: cmToUSe.getLine(cmToUSe.lastLine()).length};
           }
           return cmToUSe.getSearchCursor(filter.find, from, !filter.caseSensitive);
         }
 
-        //_codeMirrors
-        var getNextCursor = function (filter, cmToUSe) {
+        var getNextCursor = function (filter, cmToUSe, reversive) {
           var ret = null;
           if(filter.allNotebook){
             var index = notebookCellOp.getIndex(currentCellmodel.id);
-            var nextCell = notebookCellOp.getCellAtIndex(index + 1);
-            if (nextCell){
-              var nextCm = _impl.getCM(nextCell.id);
-              if (nextCm){
-                doPostSearchCellActions(currentCm);
-                currentCm = nextCm;
-                currentCellmodel = nextCell;
-                ret = getSearchCursor(filter, null, true, nextCm);
+            var nextIndex = index;
+            if(reversive){
+              nextIndex--;
+              if(filter.wrapSearch){
+                if(nextIndex < 0){
+                  nextIndex = notebookCellOp.getCellsSize() - 1;
+                }else{
+                  nextIndex = null;
+                }
               }
-            }
-            if(filter.wrapSearch){
-              if(ret == null){
-                var firstCell = notebookCellOp.getCellAtIndex(0);
-                if (firstCell){
-                  var firstCm = _impl.getCM(firstCell.id);
-                  if (firstCm){
-                    doPostSearchCellActions(currentCm);
-                    currentCm = firstCm;
-                    currentCellmodel = firstCell;
-                    ret = getSearchCursor(filter, null, true, firstCm);
-                  }
+            }else{
+              nextIndex++;
+              if(filter.wrapSearch){
+                if(nextIndex > notebookCellOp.getCellsSize()){
+                  nextIndex = 0;
+                }else{
+                  nextIndex = null;
                 }
               }
             }
+            
+            if(nextIndex != null){
+              var nextCell = notebookCellOp.getCellAtIndex(nextIndex);
+              if (nextCell){
+                var nextCm = _impl.getCM(nextCell.id);
+                if (nextCm){
+                  doPostSearchCellActions(currentCm);
+                  currentCm = nextCm;
+                  currentCellmodel = nextCell;
+                  ret = getSearchCursor(filter, null, reversive ? 'MAX' : 'MIN', nextCm);
+                }
+              }
+            }
+
           }else{
             if(filter.wrapSearch){
-              ret = getSearchCursor(filter, cursor, true, cmToUSe);
+              ret = getSearchCursor(filter, cursor, 'MIN', cmToUSe);
             }
             //else null
           }

@@ -61,6 +61,13 @@ describe('Beaker Tables', function () {
       });
     });
 
+    function checkColumn(idCell, columnIndx, values){
+      var i;
+      for(i = 0; i < values.length; i++){
+        beakerPO.checkSubString(beakerPO.getDataTablesTBodyByIdCell(idCell).get(i).all(by.css('td')).get(columnIndx), values[i], 0, 1);
+      }
+    }
+
     it('A column should be timedelta, B column should be sorted (IPython)', function (done) {
       beakerPO.getCodeOutputCellIdBySectionTitle('Table with timedelta column').then(function (v) {
         beakerPO.clickCodeCellInputButtonByIdCell(v, 'Table');
@@ -69,9 +76,13 @@ describe('Beaker Tables', function () {
         arrTd0.get(1).getText().then(function (str) {
           expect(str).toMatch(/\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/);
         });
-        beakerPO.checkSubString(arrTd0.get(2), '1', 0, 1);
-        beakerPO.checkSubString(beakerPO.getDataTablesTBodyByIdCell(v).get(1).all(by.css('td')).get(2), '3', 0, 1);
-        beakerPO.checkSubString(beakerPO.getDataTablesTBodyByIdCell(v).get(2).all(by.css('td')).get(2), '7', 0, 1);
+        checkColumn(v, 2, ['3', '7', '1']);
+
+        browser.actions().sendKeys("\ndf.sort_values").perform();
+        browser.actions().sendKeys(protractor.Key.chord(protractor.Key.SHIFT, '9')).perform();
+        browser.actions().sendKeys("'B')").perform();
+        beakerPO.clickCodeCellInputButtonByIdCell(v, 'Table');
+        checkColumn(v, 2, ['1', '3', '7']);
         done();
       });
     });

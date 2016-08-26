@@ -268,8 +268,7 @@
                     "import numpy as np",
                     "df = pd.DataFrame(np.array([[2, 3, 9], [7, 7, 5], [4, 1, 8]]), columns=['A', 'B', 'C'])",
                     "df.A = pd.to_timedelta(df.A)",
-                    "df",
-                    "df.sort_values('B')"
+                    "df"
                 ]
             },
             "output": {
@@ -330,12 +329,6 @@
                     "subtype": "TableDisplay",
                     "values": [
                         [
-                            2,
-                            null,
-                            1,
-                            8
-                        ],
-                        [
                             0,
                             null,
                             3,
@@ -346,6 +339,12 @@
                             null,
                             7,
                             5
+                        ],
+                        [
+                            2,
+                            null,
+                            1,
+                            8
                         ]
                     ],
                     "hasIndex": "true",
@@ -360,11 +359,11 @@
                 "selectedType": "Table",
                 "pluginName": "IPython",
                 "shellId": "AE8C391F58444560831004CC936B0DEB",
-                "elapsedTime": 409,
+                "elapsedTime": 489,
                 "height": 156
             },
             "evaluatorReader": true,
-            "lineCount": 6
+            "lineCount": 5
         },
         {
             "id": "sectionPL7Kx2",

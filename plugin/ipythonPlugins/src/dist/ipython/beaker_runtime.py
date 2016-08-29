@@ -208,9 +208,6 @@ def transform(obj):
     return transformNaN(obj)
 
 def transformNR(obj):
-    # this breaks unicode characters with non-ASCII symbols, default encoding is ASCII not utf8
-    # if type(obj) == unicode:
-    #     return str(obj)
     if type(obj) == dict:
         out = {}
         for k,v in obj.iteritems():

@@ -1265,11 +1265,12 @@
         }
 
         var keydownHandler = function(e) {
+          var windowHeight = $(window).height();
           if (e.which === 33) { // page up
-            window.scrollBy(0, -100);
+            window.scrollBy(0, -windowHeight);
             return false;
           } else if (e.which === 34) { // page down
-            window.scrollBy(0, 100);
+            window.scrollBy(0, windowHeight);
             return false;
           } else if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
             e.preventDefault();

@@ -73,6 +73,8 @@ def isPrimitiveType(typ):
         return True
     if typ.startswith("str"):
         return True
+    if typ.startswith("unicode"):
+        return True
     return False
 
 def isListOfMaps(data):
@@ -143,8 +145,6 @@ def fixNaNsBack(obj):
             obj[x] = float('-inf')
 
 def transform(obj):
-    if type(obj) == unicode:
-        return str(obj)
     if isListOfMaps(obj):
         out = {}
         out['type'] = "TableDisplay"
@@ -206,8 +206,6 @@ def transform(obj):
     return transformNaN(obj)
 
 def transformNR(obj):
-    if type(obj) == unicode:
-        return str(obj)
     if type(obj) == dict:
         out = {}
         for k,v in obj.iteritems():

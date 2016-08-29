@@ -88,7 +88,7 @@ describe('Beaker Tables', function () {
         done();
       });
     });
-   /*
+
     it('should have 1st column fixed', function (done) {
       beakerPO.getCodeOutputCellIdBySectionTitle('Key Value Table').then(function (v) {
         beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
@@ -495,6 +495,6 @@ describe('Beaker Tables', function () {
         });
 
       });
-    });       */
+    });
   });
 });

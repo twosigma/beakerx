@@ -359,11 +359,122 @@
                 "selectedType": "Table",
                 "pluginName": "IPython",
                 "shellId": "AE8C391F58444560831004CC936B0DEB",
-                "elapsedTime": 489,
+                "elapsedTime": 480,
                 "height": 156
             },
             "evaluatorReader": true,
             "lineCount": 5
+        },
+        {
+            "id": "sectionaydYXJ",
+            "type": "section",
+            "title": "Sort values",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codetSgbEL",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "df.sort_values('B')"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "A",
+                            "B",
+                            "C"
+                        ],
+                        "actualtype": [
+                            8,
+                            2,
+                            2
+                        ],
+                        "actualalign": [
+                            "C",
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
+                    }
+                },
+                "result": {
+                    "columnNames": [
+                        "Index",
+                        "A",
+                        "B",
+                        "C"
+                    ],
+                    "subtype": "TableDisplay",
+                    "values": [
+                        [
+                            2,
+                            null,
+                            1,
+                            8
+                        ],
+                        [
+                            0,
+                            null,
+                            3,
+                            9
+                        ],
+                        [
+                            1,
+                            null,
+                            7,
+                            5
+                        ]
+                    ],
+                    "hasIndex": "true",
+                    "type": "TableDisplay",
+                    "types": [
+                        "integer",
+                        "datetime",
+                        "integer",
+                        "integer"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "IPython",
+                "shellId": "AE8C391F58444560831004CC936B0DEB",
+                "elapsedTime": 519,
+                "height": 156
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "sectionPL7Kx2",

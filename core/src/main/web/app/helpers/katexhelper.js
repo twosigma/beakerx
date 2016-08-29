@@ -2,20 +2,20 @@
 /* global katex */
 (function() {
   'use strict';
-  angular.module('bk.katexhelper', []).factory(function() {
+  angular.module('bk.katexhelper', []).factory('katexhelper', function() {
     return {
       splitWithDelimiters: function(text, delimiters) {
         var data = [{type: "text", data: text}];
         for(var i = 0; i<delimiters.length; i++){
           var delimiter = delimiters[i];
-          data = splitAtDelimiters(
+          data = this.splitAtDelimiters(
             data, delimiter.left, delimiter.right,
             delimiter.display || false);
         }
         return data;
       },
       renderMathInText: function(text, delimiters) {
-        var data = splitWithDelimiters(text, delimiters);
+        var data = this.splitWithDelimiters(text, delimiters);
 
         var fragment = document.createDocumentFragment();
 
@@ -27,8 +27,7 @@
             var math = data[i].data;
             try {
               katex.render(math, span, {
-                displayMode: data[i].display,
-                throwOnError: false
+                throwOnError : false
               });
             } catch(e) {
               if (!(e instanceof katex.ParseError)){
@@ -53,7 +52,7 @@
           var childNode = elem.childNodes[i];
           if (childNode.nodeType === 3){
             // Text node
-            var frag = renderMathInText(childNode.textContent, delimiters);
+            var frag = this.renderMathInText(childNode.textContent, delimiters);
             i += frag.childNodes.length - 1;
             elem.replaceChild(frag, childNode);
           } else if (childNode.nodeType === 1){
@@ -62,7 +61,7 @@
                 childNode.nodeName.toLowerCase()) === -1;
 
             if (shouldRender){
-              renderElem(childNode, delimiters, ignoredTags);
+              this.renderElem(childNode, delimiters, ignoredTags);
             }
           }
           // Otherwise, it's something else, and ignore it.
@@ -157,7 +156,7 @@
 
                 currIndex = nextIndex;
               } else {
-                nextIndex = findEndOfMath(
+                nextIndex = this.findEndOfMath(
                   rightDelim,
                   text,
                   currIndex + leftDelim.length);

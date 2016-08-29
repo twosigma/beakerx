@@ -145,8 +145,6 @@ def fixNaNsBack(obj):
             obj[x] = float('-inf')
 
 def transform(obj):
-    if type(obj) == unicode:
-        return str(obj)
     if isListOfMaps(obj):
         out = {}
         out['type'] = "TableDisplay"

@@ -734,6 +734,43 @@
       isIPythonCookiesCleaned: function () {
         return this.iPythonCookiesCleaned;
       },
+      /**
+       * Get next or previous cellId by current cell
+       * @param cellId of current cell
+       * @param next - boolean - true for next cell, false for previous cell
+       * @returns {*|string} - id of cell
+       */
+      getCellIdByDirection: function(cellId, next) {
+        var cells = this.getCodeCells();
+        var length = cells.length;
+        for (var i = 0; i < length; ++i) {
+          if (cellId == cells[i].cellId) {
+            if (next) {
+              return (i == length - 1) ? cellId : cells[i + 1].cellId;
+            } else {
+              return (i == 0) ? cellId : cells[i - 1].cellId;
+            }
+          }
+        }
+        if (length > 0) {
+          return cells[0].cellId;
+        }
+      },
+      /**
+       * Go to next or previous cell
+       * @param next - boolean - true for next cell, false for previous cell
+       */
+      goToCellByDirection: function(next) {
+        var currentCellId = $(':focus').parents('bk-cell').attr('cellid');
+        if (currentCellId) {
+          var cellId = this.getCellIdByDirection(currentCellId, next);
+          if (!cellId) {
+            this.go2FirstCell();
+          }
+          this.go2Cell(cellId);
+          $('[cellid=' + cellId + ']').find('textarea').focus();
+        }
+      },
       go2FirstErrorCodeCell: function() {
         if (getCurrentApp() && getCurrentApp().go2FirstErrorCodeCell) {
           return getCurrentApp().go2FirstErrorCodeCell();

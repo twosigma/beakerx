@@ -6,6 +6,7 @@
     return {
       splitWithDelimiters: function(text, delimiters) {
         var data = [{type: "text", data: text}];
+        delimiters = delimiters.delimiters;
         for(var i = 0; i<delimiters.length; i++){
           var delimiter = delimiters[i];
           data = this.splitAtDelimiters(
@@ -26,20 +27,17 @@
             var span = document.createElement("span");
             var math = data[i].data;
             try {
-              katex.render(math, span, {
-                throwOnError : false
-              });
+              katex.render(math, span, null);
             } catch(e) {
               if (!(e instanceof katex.ParseError)){
                 throw e;
               }
               console.error(
                 "KaTeX auto-render: Failed to parse `" + data[i].data +
-                "` with ",
-                e
+                "` with ", e
               );
-              fragment.appendChild(document.createTextNode(data[i].rawData));
-              continue;
+              span.style.color = '#cc0000';
+              span.appendChild(document.createTextNode(data[i].rawData.toString()));
             }
             fragment.appendChild(span);
           }

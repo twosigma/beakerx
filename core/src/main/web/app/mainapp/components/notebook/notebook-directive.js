@@ -451,7 +451,18 @@
           if(element){
             element.focus();  
           }
+          
 
+          for ( var property in _impl._focusables) {
+            if (_impl._focusables.hasOwnProperty(property)) {
+              if(_impl._focusables[property]){
+                if(_impl._focusables[property].cellmodel.type == "code"){
+                  delete _impl._focusables[property].cellmodel.input.hidden;
+                }
+              }
+            }
+          }
+          
           for ( var property in _impl._previewable) {
             if (_impl._previewable.hasOwnProperty(property)) {
               if(_impl._previewable[property]){

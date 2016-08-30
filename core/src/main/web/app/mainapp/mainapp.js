@@ -1265,7 +1265,16 @@
         }
 
         var keydownHandler = function(e) {
-          if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
+          var windowHeight = $(window).height();
+          if (e.which === 33) { // page up
+            bkHelper.goToCellByDirection(false);
+            window.scrollBy(0, -windowHeight);
+            return false;
+          } else if (e.which === 34) { // page down
+            bkHelper.goToCellByDirection(true);
+            window.scrollBy(0, windowHeight);
+            return false;
+          } else if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
             e.preventDefault();
             _impl.saveNotebook();
             $scope.$apply();

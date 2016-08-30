@@ -158,12 +158,6 @@ define('notebook/js/keyboardmanager', [
             }
             return true;
         }
-        
-        if (this.mode === 'edit') {
-            return this.edit_shortcuts.call_handler(event);
-        } else if (this.mode === 'command') {
-            return this.command_shortcuts.call_handler(event);
-        }
         return true;
     };
 

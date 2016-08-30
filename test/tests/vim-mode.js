@@ -78,10 +78,12 @@ describe('Vim mode', function() {
     console.log('sendKeys - OK');
 
     beakerPO.getCellInput().then(function (result) {
+      console.log('getCellInput - OK');
       expect(result).toBe('session')
     });
 
     beakerPO.setNormalEditMode();
+    console.log('setNormalEditMode - OK');
   });
 
 
@@ -96,10 +98,12 @@ describe('Vim mode', function() {
     browser.actions().sendKeys('~~~~~~~').perform();
     console.log('sendKeys - OK');
     beakerPO.getCellInput().then(function (result) {
+      console.log('getCellInput - OK');
       expect(result).toBe('MEETING');
     });
 
     beakerPO.setNormalEditMode();
+    console.log('setNormalEditMode - OK');
   });
 
   it('$ and 0 commands go to the beginning and end of line', function() {
@@ -113,15 +117,18 @@ describe('Vim mode', function() {
     browser.actions().sendKeys('$').perform();
     console.log('sendKeys - OK');
     beakerPO.getCellInputCursor().then(function (pos) {
+      console.log('getCellInputCursor - OK');
       expect(pos.ch).toBe(6);
     });
 
     browser.actions().sendKeys('0').perform();
     beakerPO.getCellInputCursor().then(function (pos) {
+      console.log('getCellInputCursor - OK');
       expect(pos.ch).toBe(0);
     });
 
     beakerPO.setNormalEditMode();
+    console.log('setNormalEditMode - OK');
   });
 
 

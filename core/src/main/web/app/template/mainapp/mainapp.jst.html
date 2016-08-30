@@ -22,10 +22,10 @@
         <p ng-switch-default class="navbar-text path-name" ng-class="{full: !loading && !loadingmsg}">
           {{pathname()}}</p>
     </div>
-    <div class="navbar-text text-white loadingmsg" ng-if="isShowProgressBar()">
+    <div class="navbar-text text-white loadingmsg left-float" ng-if="isShowProgressBar()">
       <div class="fa fa-times-circle fa-lg cursor_hand bkr" style="color: #e48d71 !important;" ng-click="cancel()" title="cancel"></div>
     </div>
-    <div class="navbar-text text-white loadingmsg" ng-if="isShowProgressBar()">
+    <div class="navbar-text text-white loadingmsg left-float" ng-if="isShowProgressBar()">
       <div class="progress" style="width: 150px; margin-bottom: inherit; height: 16px; background-color:#505050">
         <div class="progress-bar" role="progressbar"
              aria-valuenow="{{getProgressBar()}}" aria-valuemin="0" aria-valuemax="100"
@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <div class="navbar-text text-white loadingmsg" ng-if="loading || !!loadingmsg">
+    <div class="navbar-text text-white loadingmsg left-float" ng-if="loading || !!loadingmsg">
       <a data-toggle="dropdown" class="loading-spin dtmenu" ng-if="isShowProgressBar()">
        <i class='fa fa-refresh fa-spin text-white'></i>
       </a>

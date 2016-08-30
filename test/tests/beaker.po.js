@@ -194,6 +194,7 @@ var BeakerPageObject = function() {
   this.activateLanguageInManager = function(language) {
     this.languageManagerButtonActive(language).isPresent()
     .then(function(isActive) {
+      console.log('languageManagerButtonActive: ' + isActive);
       if (!isActive) {
         return this.languageManagerButton(language).click();
       }

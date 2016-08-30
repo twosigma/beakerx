@@ -21,6 +21,7 @@ var beakerPO;
 describe('notebook', function() {
 
   function evalInLanguage(language, code, expected, done) {
+    console.log('evalInLanguage start ' + language + ' ' + new Date().getTime());
     beakerPO.activateLanguage(language);
     console.log('evalInLanguage.activateLanguage ' + language + ' - OK');
     beakerPO.insertCellOfType(language);

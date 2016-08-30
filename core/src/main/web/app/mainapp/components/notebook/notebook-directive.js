@@ -219,6 +219,7 @@
         var currentCm = null;
         var currentCellmodel = null;
         var clearCursorPozition = true;
+        var currentMarker = null;
         
         $scope.searchReplaceData = {
           replace: null,
@@ -227,27 +228,40 @@
           wrapSearch: false,
           reverseSearch: false
         }
+
+        var clearMarcs = function (theCM){
+          if(theCM){
+            var marks = theCM.findMarks({line: 0, ch: 0},{line: theCM.lineCount() - 1, ch: theCM.getLine(theCM.lastLine()).length});
+            if(marks){
+              for (var i = 0; i < marks.length; i++) {
+                marks[i].clear();
+              }
+            }
+          }
+        }
         
         $scope.findALLFunction = function (result){
           $timeout(function() {
-            if(result.find){
-              if(result.allNotebook){
-                for (var index = 0; notebookCellOp.getCellsSize() > index; index++) {
-                  var theCell = notebookCellOp.getCellAtIndex(index);
-                  if (theCell){
-                    var theCM = _impl.getCM(theCell.id);
-                    if (theCM){
-                      theCM.setSelection({line: 0, ch: 0}, {line: 0, ch: 0});
+            if(result.allNotebook){
+              for (var index = 0; notebookCellOp.getCellsSize() > index; index++) {
+                var theCell = notebookCellOp.getCellAtIndex(index);
+                if (theCell){
+                  var theCM = _impl.getCM(theCell.id);
+                  if (theCM){
+                    clearMarcs(theCM);
+                    if(result.find){
                       for (cursor = getSearchCursor(result, cursor, 'MIN', theCM); cursor.findNext();) {
-                        theCM.addSelection(cursor.from(), cursor.to());
+                        theCM.markText(cursor.from(), cursor.to(), {className: "yellow-background"});
                       }
                     }
                   }
                 }
-              }else{
-                currentCm.setSelection({line: 0, ch: 0}, {line: 0, ch: 0});
+              }
+            }else{
+              clearMarcs(currentCm);
+              if(result.find){
                 for (cursor = getSearchCursor(result, cursor, 'MIN', currentCm); cursor.findNext();) {
-                  currentCm.addSelection(cursor.from(), cursor.to());
+                  currentCm.markText(cursor.from(), cursor.to(), {className: "yellow-background"});
                 }
               }
             }
@@ -259,23 +273,45 @@
             var createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
               || result.find != previousFilter.find;
             angular.copy(result, previousFilter);
-    
+  
             if(createNewCursor){
               cursor = getSearchCursor(result, cursor, clearCursorPozition ? 'MIN' : 'COPY', currentCm);
               clearCursorPozition = false;
             }
-    
+  
+            var cellmodelId = currentCellmodel.id;
+
             if(cursor != null && cursor.find(true)){
-              currentCm.setSelection(cursor.from(), cursor.to());
-            }else {
-              cursor = getNextCursor(result, currentCm, true);
-              if(cursor != null && cursor.find(true)){
-                currentCm.setSelection(cursor.from(), cursor.to());
+              if(currentMarker){
+                currentMarker.clear();
               }
+              currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "selected-background"});
+            }else {
+              
+              var search = true;
+              do{
+                cursor = getNextCursor(result, currentCm, true);
+                var find = null;
+                if(cursor != null){
+                  find = cursor.find(true);
+                  search = !find && cellmodelId != currentCellmodel.id; 
+                }else{
+                  search = false;
+                }
+                
+                if(find){
+                  if(currentMarker){
+                    currentMarker.clear();
+                  }
+                  currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "selected-background"});
+                }
+                
+              }while(search);
+    
             }
           }
         }
-        
+
         $scope.findNextFunction = function (result) {
           if(result.find){
             var createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
@@ -286,38 +322,86 @@
               cursor = getSearchCursor(result, cursor, clearCursorPozition ? 'MIN' : 'COPY', currentCm);
               clearCursorPozition = false;
             }
-    
+  
+            var cellmodelId = currentCellmodel.id;
+
             if(cursor != null && cursor.find(result.reverseSearch)){
-              currentCm.setSelection(cursor.from(), cursor.to());
-            }else {
-              cursor = getNextCursor(result, currentCm, result.reverseSearch);
-              if(cursor != null && cursor.find(result.reverseSearch)){
-                currentCm.setSelection(cursor.from(), cursor.to());
+              if(currentMarker){
+                currentMarker.clear();
               }
+              currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "selected-background"});
+            }else {
+              
+              var search = true;
+              do{
+                cursor = getNextCursor(result, currentCm, result.reverseSearch);
+                var find = null;
+                if(cursor != null){
+                  find = cursor.find(result.reverseSearch);
+                  search = !find && cellmodelId != currentCellmodel.id; 
+                }else{
+                  search = false;
+                }
+                
+                if(find){
+                  if(currentMarker){
+                    currentMarker.clear();
+                  }
+                  currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "selected-background"});
+                }
+                
+              }while(search);
+    
             }
           }
         }
+
         $scope.replaceFunction = function (result) {
-          var createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
-            || result.find != previousFilter.find;
-          angular.copy(result, previousFilter);
-          
-          if(createNewCursor){
-            cursor = getSearchCursor(result, cursor, clearCursorPozition ? 'MIN' : 'COPY', currentCm);
-            clearCursorPozition = false;
-          }
+          if(result.find){
+            var createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
+              || result.find != previousFilter.find;
+            angular.copy(result, previousFilter);
   
-          if(cursor != null && cursor.find(result.reverseSearch)){
-            cursor.replace(result.replace, result.find);
-            currentCm.setSelection(cursor.from(), cursor.to());
-          }else {
-            cursor = getNextCursor(result, currentCm, result.reverseSearch);
+            if(createNewCursor){
+              cursor = getSearchCursor(result, cursor, clearCursorPozition ? 'MIN' : 'COPY', currentCm);
+              clearCursorPozition = false;
+            }
+  
+            var cellmodelId = currentCellmodel.id;
+
             if(cursor != null && cursor.find(result.reverseSearch)){
+              if(currentMarker){
+                currentMarker.clear();
+              }
               cursor.replace(result.replace, result.find);
               currentCm.setSelection(cursor.from(), cursor.to());
+            }else {
+              
+              var search = true;
+              do{
+                cursor = getNextCursor(result, currentCm, result.reverseSearch);
+                var find = null;
+                if(cursor != null){
+                  find = cursor.find(result.reverseSearch);
+                  search = !find && cellmodelId != currentCellmodel.id; 
+                }else{
+                  search = false;
+                }
+                
+                if(find){
+                  if(currentMarker){
+                    currentMarker.clear();
+                  }
+                  cursor.replace(result.replace, result.find);
+                  currentCm.setSelection(cursor.from(), cursor.to());
+                }
+                
+              }while(search);
+    
             }
           }
         }
+        
         $scope.replaceAllFunction = function (result) {
           if(result.allNotebook){
             for (var index = 0; true; index++) {
@@ -397,6 +481,16 @@
             }
           }
           
+          for (var index = 0; notebookCellOp.getCellsSize() > index; index++) {
+            var theCell = notebookCellOp.getCellAtIndex(index);
+            if (theCell){
+              var theCM = _impl.getCM(theCell.id);
+              if (theCM){
+                clearMarcs(theCM);
+              }
+            }
+          }
+          
           previousFilter = {};
         }
         
@@ -428,16 +522,20 @@
               if(filter.wrapSearch){
                 if(nextIndex < 0){
                   nextIndex = notebookCellOp.getCellsSize() - 1;
-                }else{
+                }
+              }else{
+                if(nextIndex < 0){
                   nextIndex = null;
                 }
               }
             }else{
               nextIndex++;
               if(filter.wrapSearch){
-                if(nextIndex > notebookCellOp.getCellsSize()){
+                if(nextIndex > notebookCellOp.getCellsSize() - 1){
                   nextIndex = 0;
-                }else{
+                }
+              }else{
+                if(nextIndex > notebookCellOp.getCellsSize() - 1){
                   nextIndex = null;
                 }
               }

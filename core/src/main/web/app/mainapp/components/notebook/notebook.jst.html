@@ -32,13 +32,13 @@
                 <tr>
                   <td style="border-top:none">Find:</td>
                   <td style="border-top:none">
-                    <input type="text" id="find_field" class="field" placeholder="Find" ng-model="searchReplaceData.find" 
-                      ng-keyup="($event.charCode==13)?findNextFunction(searchReplaceData):findALLFunction(searchReplaceData)"></input>
+                     <input type="text" id="find_field" class="field" placeholder="Find" ng-model="searchReplaceData.find" 
+                      ng-keyup="($event.which==13)?findNextFunction(searchReplaceData):findALLFunction(searchReplaceData)"></input>
                   </td>
                   <td style="border-top:none">Replace:</td>
                   <td style="border-top:none">
                     <input type="text" id="replace_field" class="field" placeholder="Replace" ng-model="searchReplaceData.replace"
-                      ng-keyup="($event.charCode==13)?replaceFunction(searchReplaceData):return"></input>
+                      ng-keyup="($event.which==13)?replaceFunction(searchReplaceData):return"></input>
                   </td>
                 </tr>
               </tbody>

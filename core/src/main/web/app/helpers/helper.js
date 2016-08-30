@@ -146,6 +146,13 @@
         return e.ctrlKey && !e.altKey && e.shiftKey &&
           ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
       },
+      isSearchReplace: function (e){
+        if (this.isMacOS){
+          return e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 70);// Cmd + f
+        }
+        return e.ctrlKey && !e.altKey && (e.which === 70);// Ctrl + f
+      },
+      
 
       //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
       // Firefox 1.0+

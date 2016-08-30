@@ -110,7 +110,14 @@ var BeakerPageObject = function() {
   };
 
   this.setVimEditMode = function () {
-    this.setEditMode().then(element(by.css('#vim-edit-mode-menuitem')).click);
+    this.setEditMode().then(function(){
+       console.log('setVimEditMode() - OK');
+       element(by.css('#vim-edit-mode-menuitem')).click();
+    },
+       function(error){
+         expect(error).toBe('setVimEditMode() - OK');
+       }
+    );
   };
 
   this.setSublimeEditMode = function() {
@@ -204,13 +211,13 @@ var BeakerPageObject = function() {
   this.activateLanguage = function(language) {
     this.activateLanguageInManager(language);
     this.waitForPlugin(language);
-    this.languageManagerCloseButton.click();
+    return this.languageManagerCloseButton.click();
   };
 
   this.insertCellOfType = function(language) {
     browser.wait(this.EC.presenceOf(this.getCellEvaluatorMenu()), 10000);
     this.getCellEvaluatorMenu().click();
-    this.cellEvaluatorMenuItem(language).click();
+    return this.cellEvaluatorMenuItem(language).click();
   }
 
   this.languageManager = element(by.className('plugin-manager'));
@@ -302,7 +309,12 @@ var BeakerPageObject = function() {
 
   this.insertNewCell = function() {
     element(by.css('bk-new-cell-menu')).click();
-    return this.insertCellButton.click();
+    this.insertCellButton.click().then(function(){
+      console.log('insertNewCell() - OK');
+    },
+    function(error){
+      expect(error).toBe('insertNewCell() - OK');
+    });
   };
 
   this.getCellOutput = function() {

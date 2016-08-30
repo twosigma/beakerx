@@ -21,20 +21,33 @@ var beakerPO;
 describe('notebook', function() {
 
   function evalInLanguage(language, code, expected, done) {
-    console.log('evalInLanguage start ' + language + ' ' + new Date().getTime());
-    beakerPO.activateLanguage(language);
-    console.log('evalInLanguage.activateLanguage ' + language + ' - OK');
-    beakerPO.insertCellOfType(language);
-    console.log('evalInLanguage.insertCellOfType ' + language + ' - OK');
-    beakerPO.setCellInput(code);
-    console.log('evalInLanguage.setCellInput ' + language + ' - OK');
-    beakerPO.evaluateCell();
-    console.log('evalInLanguage.evaluateCell ' + language + ' - OK');
+    beakerPO.activateLanguage(language).then(function(){
+      console.log('activateLanguage ' + language + ' - OK');
+    },
+    function(error){
+      expect(error).toBe('activateLanguage ' + language + ' - OK');
+    });
+    beakerPO.insertCellOfType(language).then(function(){
+          console.log('insertCellOfType ' + language + ' - OK');
+        },
+        function(error){
+          expect(error).toBe('insertCellOfType ' + language + ' - OK');
+        });
+    beakerPO.setCellInput(code).then(function(){
+          console.log('setCellInput ' + language + ' - OK');
+        },
+        function(error){
+          expect(error).toBe('setCellInput ' + language + ' - OK');
+        });
+    beakerPO.evaluateCell().then(function(){
+          console.log('evaluateCell ' + language + ' - OK');
+        },
+        function(error){
+          expect(error).toBe('evaluateCell ' + language + ' - OK');
+        });
     beakerPO.waitForCellOutput();
-    console.log('evalInLanguage.waitForCellOutput ' + language + ' - OK');
     return beakerPO.getCellOutput().getText()
     .then(function(output) {
-      console.log('evalInLanguage.getCellOutput.getText ' + language + ' - OK');
       expect(output).toEqual(expected);
       done();
     });

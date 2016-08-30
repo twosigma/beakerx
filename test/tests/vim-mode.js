@@ -65,40 +65,38 @@ describe('Vim mode', function() {
   });
 
   it('R command replaces characters', function() {
-    console.log('R command replaces characters start ' + new Date().getTime());
     beakerPO.setVimEditMode();
-    console.log('setVimEditMode - OK');
     beakerPO.insertNewCell();
-    console.log('insertNewCell - OK');
-    beakerPO.setCellInput("meeting");
-    console.log('setCellInput - OK');
+    beakerPO.setCellInput("meeting").then(function(){
+      console.log('setCellInput');
+    },
+    function(error){
+      expect(error).toBe('setCellInput');
+    });
     //click 'R' character - switch to overwrite mode
     browser.actions().sendKeys('R').perform();
     browser.actions().sendKeys('session').perform();
-    console.log('sendKeys - OK');
 
     beakerPO.getCellInput().then(function (result) {
-      console.log('getCellInput - OK');
       expect(result).toBe('session')
     });
 
     beakerPO.setNormalEditMode();
-    console.log('setNormalEditMode - OK');
   });
 
 
   it('~ command switches character case', function() {
-    console.log('~ command switches character case start ' + new Date().getTime());
     beakerPO.setVimEditMode();
-    console.log('setVimEditMode - OK');
     beakerPO.insertNewCell();
-    console.log('insertNewCell - OK');
-    beakerPO.setCellInput("meeting");
-    console.log('setCellInput - OK');
+    beakerPO.setCellInput("meeting").then(function(){
+          console.log('setCellInput');
+        },
+        function(error){
+          expect(error).toBe('setCellInput');
+        });
     browser.actions().sendKeys('~~~~~~~').perform();
-    console.log('sendKeys - OK');
+
     beakerPO.getCellInput().then(function (result) {
-      console.log('getCellInput - OK');
       expect(result).toBe('MEETING');
     });
 
@@ -107,28 +105,27 @@ describe('Vim mode', function() {
   });
 
   it('$ and 0 commands go to the beginning and end of line', function() {
-    console.log('$ and 0 commands go to the beginning and end of line start ' + new Date().getTime());
     beakerPO.setVimEditMode();
-    console.log('setVimEditMode - OK');
     beakerPO.insertNewCell();
-    console.log('insertNewCell - OK');
-    beakerPO.setCellInput("meeting");
-    console.log('setCellInput - OK');
+
+    beakerPO.setCellInput("meeting").then(function(){
+          console.log('setCellInput');
+        },
+        function(error){
+          expect(error).toBe('setCellInput');
+        });
+
     browser.actions().sendKeys('$').perform();
-    console.log('sendKeys - OK');
     beakerPO.getCellInputCursor().then(function (pos) {
-      console.log('getCellInputCursor - OK');
       expect(pos.ch).toBe(6);
     });
 
     browser.actions().sendKeys('0').perform();
     beakerPO.getCellInputCursor().then(function (pos) {
-      console.log('getCellInputCursor - OK');
       expect(pos.ch).toBe(0);
     });
 
     beakerPO.setNormalEditMode();
-    console.log('setNormalEditMode - OK');
   });
 
 

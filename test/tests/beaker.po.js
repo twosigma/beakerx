@@ -110,14 +110,15 @@ var BeakerPageObject = function() {
   };
 
   this.setVimEditMode = function () {
-    this.setEditMode().then(function(){
-       console.log('setVimEditMode() - OK');
-       element(by.css('#vim-edit-mode-menuitem')).click();
+    this.setEditMode();
+    browser.wait(this.EC.presenceOf(element(by.css('#vim-edit-mode-menuitem'))), 5000).then(function(){
+      console.log('vim-edit-mode-menuitem - is present');
+      element(by.css('#vim-edit-mode-menuitem')).click();
     },
-       function(error){
-         expect(error).toBe('setVimEditMode() - OK');
-       }
-    );
+    function(error){
+      expect(error).toBe('vim-edit-mode-menuitem - is present');
+      this.createScreenshot('setVimEditMode');
+    });
   };
 
   this.setSublimeEditMode = function() {
@@ -126,7 +127,15 @@ var BeakerPageObject = function() {
 
   this.setEditMode = function() {
     element(by.css('.notebook-menu')).click();
-    return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
+    return
+      browser.wait(this.EC.presenceOf(element(by.css('#edit-mode-menuitem'))), 5000).then(function(){
+        console.log('edit-mode-menuitem - is present');
+        browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
+      },
+      function(error){
+        expect(error).toBe('edit-mode-menuitem - is present');
+        this.createScreenshot('setEditMode');
+      });
   };
 
   this.isCellMenuOpen = function(opts) {

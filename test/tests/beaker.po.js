@@ -114,9 +114,14 @@ var BeakerPageObject = function() {
   this.setVimEditMode = function () {
     this.setEditMode();
     this.createScreenshot('editMode');
+    browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
     browser.wait(this.EC.presenceOf(element(by.css('#vim-edit-mode-menuitem'))), 5000).then(function(){
           console.log('vim-edit-mode-menuitem - is present');
-          element(by.css('#vim-edit-mode-menuitem')).click();
+          browser.actions().mouseMove(element(by.css('#vim-edit-mode-menuitem'))).perform()
+              .then(function(){
+                element(by.css('#vim-edit-mode-menuitem')).click();
+              }
+          );
         },
         function(error){
           expect(error).toBe('vim-edit-mode-menuitem - is present');

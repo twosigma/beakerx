@@ -26,26 +26,31 @@ describe('notebook', function() {
     },
     function(error){
       expect(error).toBe('activateLanguage ' + language + ' - OK');
+      beakerPO.createScreenshot('activateLanguage');
     });
     beakerPO.insertCellOfType(language).then(function(){
           console.log('insertCellOfType ' + language + ' - OK');
         },
         function(error){
           expect(error).toBe('insertCellOfType ' + language + ' - OK');
+          beakerPO.createScreenshot('insertCellOfType');
         });
     beakerPO.setCellInput(code).then(function(){
           console.log('setCellInput ' + language + ' - OK');
         },
         function(error){
           expect(error).toBe('setCellInput ' + language + ' - OK');
+          beakerPO.createScreenshot('setCellInput');
         });
     beakerPO.evaluateCell().then(function(){
           console.log('evaluateCell ' + language + ' - OK');
         },
         function(error){
           expect(error).toBe('evaluateCell ' + language + ' - OK');
+          beakerPO.createScreenshot('evaluateCell');
         });
     beakerPO.waitForCellOutput();
+    beakerPO.createScreenshot('waitForCellOutput');
     return beakerPO.getCellOutput().getText()
     .then(function(output) {
       expect(output).toEqual(expected);

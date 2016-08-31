@@ -113,6 +113,7 @@ var BeakerPageObject = function() {
 
   this.setVimEditMode = function () {
     this.setEditMode();
+    this.createScreenshot('editMode');
     browser.wait(this.EC.presenceOf(element(by.css('#vim-edit-mode-menuitem'))), 5000).then(function(){
           console.log('vim-edit-mode-menuitem - is present');
           element(by.css('#vim-edit-mode-menuitem')).click();

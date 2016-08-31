@@ -1,5 +1,4 @@
 /* eslint no-console:0 */
-/* global katex */
 
 /*
  The MIT License (MIT)
@@ -48,32 +47,22 @@
       },
       renderMathInText: function(text, delimiters) {
         var data = this.splitWithDelimiters(text, delimiters);
-
         var fragment = document.createDocumentFragment();
-
         for(var i = 0; i<data.length; i++){
           if (data[i].type === "text"){
             fragment.appendChild(document.createTextNode(data[i].data));
           } else {
-            var span = document.createElement("span");
+            var element = document.createElement("div");
+            element.style.float = "left";
+            fragment.appendChild(element);
             var math = data[i].data;
             try {
-              katex.render(math, span, null);
-            } catch(e) {
-              if (!(e instanceof katex.ParseError)){
-                throw e;
-              }
-              console.error(
-                "KaTeX auto-render: Failed to parse `" + data[i].data +
-                "` with ", e
-              );
-              span.style.color = '#cc0000';
-              span.appendChild(document.createTextNode(data[i].rawData.toString()));
+              katex.render(math, element, {throwOnError:false});
+            } catch(err) {
+              bkHelper.show1ButtonModal(err.message+'<br>See: <a target="_blank" href="http://khan.github.io/KaTeX/">KaTeX website</a> and its <a target="_blank" href="https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX">list of supported functions</a>.', "KaTex error");
             }
-            fragment.appendChild(span);
           }
         }
-
         return fragment;
       },
       renderElem: function(elem, delimiters, ignoredTags) {
@@ -86,8 +75,10 @@
             elem.replaceChild(frag, childNode);
           } else if (childNode.nodeType === 1){
             // Element node
-            var shouldRender = ignoredTags.indexOf(
-                childNode.nodeName.toLowerCase()) === -1;
+            if (ignoredTags || ignoredTags != undefined){
+              var shouldRender = ignoredTags.indexOf(
+                  childNode.nodeName.toLowerCase()) === -1;
+            }
 
             if (shouldRender){
               this.renderElem(childNode, delimiters, ignoredTags);
@@ -102,7 +93,7 @@
           {left: "\\[", right: "\\]", display: true},
           {left: "\\(", right: "\\)", display: false},
           // LaTeX uses this, but it ruins the display of normal `$` in text:
-          // {left: "$", right: "$", display: false},
+          {left: "$", right: "$", display: false},
         ],
 
         ignoredTags: [

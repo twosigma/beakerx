@@ -122,7 +122,7 @@
       },
       isResetEnvironmentShortcut: function (e) {
         if (this.isMacOS) {
-          return e.ctrlKey && (e.which === 82); // Alt + r
+          return e.ctrlKey && (e.which === 82); // ctrlKey + r
         }
         return e.altKey && (e.which === 82); // Alt + r
       },

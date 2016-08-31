@@ -30,12 +30,12 @@
             <table class="table">
               <tbody>
                 <tr>
-                  <td style="border-top:none">Find:</td>
+                  <td style="border-top:none"><label for="find_field">Find:</label></td>
                   <td style="border-top:none">
                      <input type="text" id="find_field" class="field" placeholder="Find" ng-model="searchReplaceData.find" 
                       ng-keyup="($event.which==13)?findNextFunction(searchReplaceData):findALLFunction(searchReplaceData)"></input>
                   </td>
-                  <td style="border-top:none">Replace:</td>
+                  <td style="border-top:none"><label for="replace_field">Replace:</label></td>
                   <td style="border-top:none">
                     <input type="text" id="replace_field" class="field" placeholder="Replace" ng-model="searchReplaceData.replace"
                       ng-keyup="($event.which==13)?replaceFunction(searchReplaceData):return"></input>
@@ -47,12 +47,12 @@
               <tbody>
                 <tr>
                   <td style="border-top:none">
-                    <input type="radio" ng-model="searchReplaceData.allNotebook" ng-value="true">
-                    Search entire notebook
+                    <input type="radio" id="all_notebook_true" ng-model="searchReplaceData.allNotebook" ng-value="true">
+                    <label for="all_notebook_true">Search entire notebook</label>
                   </td>
                   <td style="border-top:none">
-                    <input type="checkbox" ng-model="searchReplaceData.caseSensitive">
-                    Case sensitive
+                    <input type="checkbox" id="case_sensitive"  ng-model="searchReplaceData.caseSensitive">
+                    <label for="case_sensitive">Case sensitive</label>
                   </td>
 <!--                   <td style="border-top:none">
                     <input type="checkbox" ng-model="searchReplaceData.reverseSearch">
@@ -61,12 +61,12 @@
                 </tr>
                 <tr>
                   <td style="border-top:none">
-                    <input type="radio" ng-model="searchReplaceData.allNotebook" ng-value="false">
-                    Search selected cell
+                    <input type="radio" id="all_notebook_false" ng-model="searchReplaceData.allNotebook" ng-value="false">
+                    <label for="all_notebook_false">Search selected cell</label>
                   </td>
                   <td style="border-top:none">
-                    <input type="checkbox" ng-model="searchReplaceData.wrapSearch">
-                    Wrap search
+                    <input type="checkbox" id="wrap_search" ng-model="searchReplaceData.wrapSearch">
+                    <label for="wrap_search">Wrap search</label>
                   </td>
 <!--                   <td style="border-top:none">
                   </td> -->

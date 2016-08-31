@@ -251,7 +251,7 @@
                     clearMarcs(theCM);
                     if(result.find){
                       for (cursor = getSearchCursor(result, cursor, 'MIN', theCM); cursor.findNext();) {
-                        theCM.markText(cursor.from(), cursor.to(), {className: "yellow-background"});
+                        theCM.markText(cursor.from(), cursor.to(), {className: "search-find-all-selected-background"});
                       }
                     }
                   }
@@ -261,7 +261,7 @@
               clearMarcs(currentCm);
               if(result.find){
                 for (cursor = getSearchCursor(result, cursor, 'MIN', currentCm); cursor.findNext();) {
-                  currentCm.markText(cursor.from(), cursor.to(), {className: "yellow-background"});
+                  currentCm.markText(cursor.from(), cursor.to(), {className: "search-find-all-selected-background"});
                 }
               }
             }
@@ -285,7 +285,7 @@
               if(currentMarker){
                 currentMarker.clear();
               }
-              currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "selected-background"});
+              currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
             }else {
               
               var search = true;
@@ -303,7 +303,7 @@
                   if(currentMarker){
                     currentMarker.clear();
                   }
-                  currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "selected-background"});
+                  currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
                 }
                 
               }while(search);
@@ -329,7 +329,7 @@
               if(currentMarker){
                 currentMarker.clear();
               }
-              currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "selected-background"});
+              currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
             }else {
               
               var search = true;
@@ -347,58 +347,19 @@
                   if(currentMarker){
                     currentMarker.clear();
                   }
-                  currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "selected-background"});
+                  currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
                 }
-                
               }while(search);
-    
+              
             }
           }
         }
-
+        
         $scope.replaceFunction = function (result) {
-          if(result.find){
-            var createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
-              || result.find != previousFilter.find;
-            angular.copy(result, previousFilter);
-  
-            if(createNewCursor){
-              cursor = getSearchCursor(result, cursor, clearCursorPozition ? 'MIN' : 'COPY', currentCm);
-              clearCursorPozition = false;
-            }
-  
-            var cellmodelId = currentCellmodel.id;
-
-            if(cursor != null && cursor.find(result.reverseSearch)){
-              if(currentMarker){
-                currentMarker.clear();
-              }
-              cursor.replace(result.replace, result.find);
-              currentCm.setSelection(cursor.from(), cursor.to());
-            }else {
-              
-              var search = true;
-              do{
-                cursor = getNextCursor(result, currentCm, result.reverseSearch);
-                var find = null;
-                if(cursor != null){
-                  find = cursor.find(result.reverseSearch);
-                  search = !find && cellmodelId != currentCellmodel.id; 
-                }else{
-                  search = false;
-                }
-                
-                if(find){
-                  if(currentMarker){
-                    currentMarker.clear();
-                  }
-                  cursor.replace(result.replace, result.find);
-                  currentCm.setSelection(cursor.from(), cursor.to());
-                }
-                
-              }while(search);
-    
-            }
+          if(cursor && cursor.from() && cursor.to()){
+            cursor.replace(result.replace, result.find);
+            currentCm.setSelection(cursor.from(), cursor.to());
+            $scope.findNextFunction(result);
           }
         }
         

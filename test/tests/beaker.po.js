@@ -110,7 +110,17 @@ var BeakerPageObject = function() {
   };
 
   this.setVimEditMode = function () {
-    this.setEditMode().then(element(by.css('#vim-edit-mode-menuitem')).click);
+    var self = this;
+    this.setEditMode().then(function(){
+      browser.wait(self.EC.presenceOf(element(by.css('#vim-edit-mode-menuitem'))), 5000).then(function(){
+            browser.actions().mouseMove(element(by.css('#vim-edit-mode-menuitem'))).perform()
+                .then(element(by.css('#vim-edit-mode-menuitem')).click);
+          },
+          function(error){
+            self.createScreenshot('errorVimEditMode');
+            expect(error).toBe('vim-edit-mode-menuitem - is present');
+          });
+    });
   };
 
   this.setSublimeEditMode = function() {

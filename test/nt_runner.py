@@ -37,10 +37,11 @@ for line in iter(beaker.stdout.readline, ''):
     if line.startswith('Beaker listening on'):
         break
 
-result = os.system("./node_modules/protractor/bin/protractor protractorConf.js");
+os.chdir("../test/node_modules/protractor/bin")
+result = os.system("node protractor ../../../protractorConf.js");
 result2 = 1
 if not result:
-    result2 = os.system("./node_modules/protractor/bin/protractor protractorWithoutRestartBrowserConf.js");
+    result2 = os.system("node protractor ../../../protractorWithoutRestartBrowserConf.js")
 
 # Skipping memory tests because they hang on Jenkins
 #os.system("node ../../../memory-tests.js")

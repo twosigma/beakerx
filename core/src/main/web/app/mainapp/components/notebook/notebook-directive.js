@@ -223,10 +223,10 @@
 
         $scope.availableSearchCellOptions =
           [
-           {value: {allNotebook:true, codeCells:true, sectionCells:true, headingsCells:true}, name: 'entire notebook'},
-           {value: {allNotebook:false}, name: 'selected cell'},
-           {value: {allNotebook:true, codeCells:true, sectionCells:false, headingsCells:false}, name: 'all code cells'},
-           {value: {allNotebook:true, codeCells:false, sectionCells:true, headingsCells:true}, name: 'all text and cells and section headings'}
+           {value: {allNotebook:true, codeCells:true, sectionCells:true, markdownCells:true}, name: 'entire notebook'},
+           {value: {allNotebook:false, codeCells:false, sectionCells:false, markdownCells:false}, name: 'selected cell'},
+           {value: {allNotebook:true, codeCells:true, sectionCells:false, markdownCells:false}, name: 'all code cells'},
+           {value: {allNotebook:true, codeCells:false, sectionCells:true, markdownCells:true}, name: 'all text and cells and section headings'}
         ];
 
         $scope.searchReplaceData = {
@@ -235,6 +235,20 @@
           caseSensitive: false,
           wrapSearch: false,
           reverseSearch: false
+        }
+        
+        var isCellMatchSearchCellFilter = function (cellModelToUse, searchCellFilter){
+          var ret = false;
+          if(searchCellFilter.codeCells === true){
+            ret = ret || cellModelToUse.type === "code";
+          }
+          if(searchCellFilter.sectionCells === true){
+            ret = ret || cellModelToUse.type === "section";
+          }
+          if(searchCellFilter.markdownCells === true){
+            ret = ret || cellModelToUse.type === "markdown";
+          }
+          return ret;
         }
 
         var clearMarcs = function (theCM){
@@ -248,16 +262,44 @@
           }
         }
         
+        $scope.replaceAllFunction = function (result) {
+          for (var index = 0; notebookCellOp.getCellsSize() > index; index++) {
+            var theCell = notebookCellOp.getCellAtIndex(index);
+            if (theCell){
+              var theCM = _impl.getCM(theCell.id);
+              if (theCM){
+                clearMarcs(theCM);
+                if(result.find && result.searchCellFilter.allNotebook){
+                  if(isCellMatchSearchCellFilter(theCell, result.searchCellFilter)){
+                    for (cursor = getSearchCursor(result, cursor, 'MIN', theCM); cursor.findNext();) {
+                      cursor.replace(result.replace, result.find);
+                      theCM.addSelection(cursor.from(), cursor.to());
+                    }
+                  }
+                }
+              }
+            }
+          }
+          if(!result.searchCellFilter.allNotebook){
+            if(result.find){
+              for (cursor = getSearchCursor(result, cursor, 'MIN', currentCm); cursor.findNext();) {
+                cursor.replace(result.replace, result.find);
+                currentCm.addSelection(cursor.from(), cursor.to());
+              }
+            }
+          }
+        }
+        
         $scope.findALLFunction = function (result){
           $timeout(function() {
-            if(result.searchCellFilter.allNotebook){
-              for (var index = 0; notebookCellOp.getCellsSize() > index; index++) {
-                var theCell = notebookCellOp.getCellAtIndex(index);
-                if (theCell){
-                  var theCM = _impl.getCM(theCell.id);
-                  if (theCM){
-                    clearMarcs(theCM);
-                    if(result.find){
+            for (var index = 0; notebookCellOp.getCellsSize() > index; index++) {
+              var theCell = notebookCellOp.getCellAtIndex(index);
+              if (theCell){
+                var theCM = _impl.getCM(theCell.id);
+                if (theCM){
+                  clearMarcs(theCM);
+                  if(result.find && result.searchCellFilter.allNotebook){
+                    if(isCellMatchSearchCellFilter(theCell, result.searchCellFilter)){
                       for (cursor = getSearchCursor(result, cursor, 'MIN', theCM); cursor.findNext();) {
                         theCM.markText(cursor.from(), cursor.to(), {className: "search-find-all-selected-background"});
                       }
@@ -265,8 +307,8 @@
                   }
                 }
               }
-            }else{
-              clearMarcs(currentCm);
+            }
+            if(!result.searchCellFilter.allNotebook){
               if(result.find){
                 for (cursor = getSearchCursor(result, cursor, 'MIN', currentCm); cursor.findNext();) {
                   currentCm.markText(cursor.from(), cursor.to(), {className: "search-find-all-selected-background"});
@@ -298,7 +340,9 @@
               
               var search = true;
               do{
-                cursor = getNextCursor(result, currentCm, true);
+                do{
+                  cursor = getNextCursor(result, currentCm, true);
+                }while(cursor != null && !isCellMatchSearchCellFilter(currentCellmodel, result.searchCellFilter));
                 var find = null;
                 if(cursor != null){
                   find = cursor.find(true);
@@ -342,7 +386,11 @@
               
               var search = true;
               do{
-                cursor = getNextCursor(result, currentCm, result.reverseSearch);
+                
+                do{
+                  cursor = getNextCursor(result, currentCm, result.reverseSearch);
+                }while(cursor != null && !isCellMatchSearchCellFilter(currentCellmodel, result.searchCellFilter));
+
                 var find = null;
                 if(cursor != null){
                   find = cursor.find(result.reverseSearch);
@@ -369,33 +417,6 @@
             currentCm.setSelection(cursor.from(), cursor.to());
             $scope.findNextFunction(result);
           }
-        }
-        
-        $scope.replaceAllFunction = function (result) {
-          if(result.searchCellFilter.allNotebook){
-            for (var index = 0; true; index++) {
-              var theCell = notebookCellOp.getCellAtIndex(index);
-              if (theCell){
-                var theCM = _impl.getCM(theCell.id);
-                if (theCM){
-                  currentCm = theCM;
-                  currentCellmodel = theCell;
-                  for (cursor = getSearchCursor(result, cursor, 'MIN', currentCm); cursor.findNext();) {
-                    cursor.replace(result.replace, result.find);
-                    theCM.addSelection(cursor.from(), cursor.to());
-                  }
-                }
-              }else{
-                break;
-              }
-            } 
-          }else{
-            for (cursor = getSearchCursor(result, cursor, 'MIN', currentCm); cursor.findNext();) {
-              cursor.replace(result.replace, result.find);
-              currentCm.addSelection(cursor.from(), cursor.to());
-            }
-          }
-          clearCursorPozition = true;
         }
         
         $scope.prepareNotebookeForSearch = function (cm, cellmodel) {

@@ -47,11 +47,14 @@
               <tbody>
                 <tr>
                   <td style="border-top:none">
-                    <select ng-model="searchReplaceData.searchCellFilter" ng-options="option.value as option.name for option in availableSearchCellOptions">
+                    <select ng-model="searchReplaceData.searchCellFilter" 
+                      ng-change="findALLFunction(searchReplaceData)"
+                      ng-options="option.value as option.name for option in availableSearchCellOptions">
                     </select>
                   </td>
                   <td style="border-top:none">
-                    <input type="checkbox" id="case_sensitive"  ng-model="searchReplaceData.caseSensitive">
+                    <input type="checkbox" id="case_sensitive" ng-model="searchReplaceData.caseSensitive"
+                      ng-change="findALLFunction(searchReplaceData)">
                     <label for="case_sensitive">Case sensitive</label>
                   </td>
 <!--                   <td style="border-top:none">

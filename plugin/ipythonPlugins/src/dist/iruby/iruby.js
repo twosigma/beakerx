@@ -160,6 +160,7 @@ define(function(require, exports, module) {
       },
       evaluate: function(code, modelOutput, refreshObj) {
         var deferred = bkHelper.newDeferred();
+        var start = new Date();
 
         if (_theCancelFunction) {
           deferred.reject("An evaluation is already in progress");
@@ -167,7 +168,6 @@ define(function(require, exports, module) {
         }
 
         var self = this;
-        var startTime = new Date().getTime();
         var kernel = kernels[self.settings.shellID];
         var finalStuff = undefined;
         bkHelper.setupProgressOutput(modelOutput);
@@ -192,7 +192,7 @@ define(function(require, exports, module) {
           else
             bkHelper.refreshRootScope();       
           finalStuff = undefined;
-        }
+        };
 
         var execute_reply = function(msg) {
           if (_theCancelFunction === null)

@@ -305,7 +305,7 @@
           }
         }
 
-        $scope.findPreviousFunction = function (result) {
+        $scope.findFunction = function (result, reversive) {
           if(result.find){
             var createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
               || result.find != previousFilter.find;
@@ -318,7 +318,7 @@
   
             var cellmodelId = currentCellmodel.id;
 
-            if(cursor != null && cursor.find(true)){
+            if(cursor != null && cursor.find(reversive)){
               if(currentMarker){
                 currentMarker.clear();
               }
@@ -327,12 +327,14 @@
               
               var search = true;
               do{
+                
                 do{
-                  cursor = getNextCursor(result, currentCm, true);
+                  cursor = getNextCursor(result, currentCm, reversive);
                 }while(cursor != null && !isCellMatchSearchCellFilter(currentCellmodel, result.searchCellFilter));
+
                 var find = null;
                 if(cursor != null){
-                  find = cursor.find(true);
+                  find = cursor.find(reversive);
                   search = !find && cellmodelId != currentCellmodel.id; 
                 }else{
                   search = false;
@@ -344,58 +346,18 @@
                   }
                   currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
                 }
-                
               }while(search);
-    
+              
             }
           }
         }
-
+        
+        $scope.findPreviousFunction = function (result) {
+          $scope.findFunction(result, true);
+        }
+        
         $scope.findNextFunction = function (result) {
-          if(result.find){
-            var createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
-              || result.find != previousFilter.find;
-            angular.copy(result, previousFilter);
-  
-            if(createNewCursor){
-              cursor = getSearchCursor(result, cursor, clearCursorPozition ? 'MIN' : 'COPY', currentCm);
-              clearCursorPozition = false;
-            }
-  
-            var cellmodelId = currentCellmodel.id;
-
-            if(cursor != null && cursor.find(result.reverseSearch)){
-              if(currentMarker){
-                currentMarker.clear();
-              }
-              currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
-            }else {
-              
-              var search = true;
-              do{
-                
-                do{
-                  cursor = getNextCursor(result, currentCm, result.reverseSearch);
-                }while(cursor != null && !isCellMatchSearchCellFilter(currentCellmodel, result.searchCellFilter));
-
-                var find = null;
-                if(cursor != null){
-                  find = cursor.find(result.reverseSearch);
-                  search = !find && cellmodelId != currentCellmodel.id; 
-                }else{
-                  search = false;
-                }
-                
-                if(find){
-                  if(currentMarker){
-                    currentMarker.clear();
-                  }
-                  currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
-                }
-              }while(search);
-              
-            }
-          }
+          $scope.findFunction(result, result.reverseSearch);
         }
         
         $scope.replaceFunction = function (result) {

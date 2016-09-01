@@ -28,13 +28,7 @@ describe('notebook', function() {
       expect(error).toBe('activateLanguage ' + language + ' - OK');
       beakerPO.createScreenshot('activateLanguage');
     });
-    beakerPO.insertCellOfType(language).then(function(){
-          console.log('insertCellOfType ' + language + ' - OK');
-        },
-        function(error){
-          expect(error).toBe('insertCellOfType ' + language + ' - OK');
-          beakerPO.createScreenshot('insertCellOfType');
-        });
+    beakerPO.insertCellOfType(language);
     beakerPO.setCellInput(code).then(function(){
           console.log('setCellInput ' + language + ' - OK');
         },
@@ -63,81 +57,81 @@ describe('notebook', function() {
     browser.get(beakerPO.baseURL).then(done);
   });
 
-  describe('graphs', function() {
-    beforeEach(function() {
-      beakerPO.newEmptyNotebook.click();
-      beakerPO.insertCellButton.click();
-      beakerPO.notebookMenu.click();
-      beakerPO.languageManagerMenuItem.click();
-      beakerPO.activateLanguage('Groovy');
-      beakerPO.insertCellOfType('Groovy');
-      beakerPO.setCellInput('new Plot()')
-      beakerPO.evaluateCell();
-    });
-
-    afterEach(function(done) {
-      beakerPO.closeNotebook()
-      .then(done);
-    });
-
-    it('can output graphs', function(done) {
-      beakerPO.waitUntilGraphOutputPresent()
-      .then(function(present) {
-        expect(present).toEqual(true);
-      });
-      beakerPO.createScreenshot('notebookOutputGraphs');
-      done();
-    });
-
-    it('can output graphs when minimized', function(done) {
-      beakerPO.toggleOutputCellExpansion()
-      beakerPO.evaluateCell();
-      beakerPO.toggleOutputCellExpansion()
-      beakerPO.waitUntilGraphOutputPresent()
-      .then(function(present) {
-        expect(present).toEqual(true);
-      });
-      beakerPO.createScreenshot('notebookOutputGraphs');
-      done();
-    });
-  });
-
-  it('can load', function() {
-    beakerPO.newEmptyNotebook.click();
-    expect(browser.getTitle()).toEqual('New Notebook');
-    beakerPO.closeNotebook();
-  });
-
-  it('can add a cell', function() {
-    beakerPO.newEmptyNotebook.click();
-    beakerPO.insertCellButton.click();
-    expect(beakerPO.getEvaluateButton().isDisplayed()).toBe(true);
-    beakerPO.closeNotebook();
-  });
-
-  describe('evaluating JS', function() {
-    beforeEach(function() {
-      beakerPO.newEmptyNotebook.click();
-      beakerPO.insertCellButton.click();
-      browser.wait(beakerPO.EC.presenceOf(beakerPO.getCellEvaluatorMenu()), 10000);
-      beakerPO.getCellEvaluatorMenu().click();
-      beakerPO.cellEvaluatorMenuItem('JavaScript').click();
-    });
-
-    it('displays syntax errors correctly', function(done) {
-      beakerPO.setCellInput(',');
-      beakerPO.evaluateCell();
-      beakerPO.waitForCellOutput();
-      beakerPO.getCellOutput().getText().then(function(txt) {
-        expect(txt).toContain('Unexpected token (1:0)', txt);
-        done();
-      });
-    });
-
-    afterEach(function() {
-      beakerPO.closeNotebook();
-    });
-  });
+  //describe('graphs', function() {
+  //  beforeEach(function() {
+  //    beakerPO.newEmptyNotebook.click();
+  //    beakerPO.insertCellButton.click();
+  //    beakerPO.notebookMenu.click();
+  //    beakerPO.languageManagerMenuItem.click();
+  //    beakerPO.activateLanguage('Groovy');
+  //    beakerPO.insertCellOfType('Groovy');
+  //    beakerPO.setCellInput('new Plot()')
+  //    beakerPO.evaluateCell();
+  //  });
+  //
+  //  afterEach(function(done) {
+  //    beakerPO.closeNotebook()
+  //    .then(done);
+  //  });
+  //
+  //  it('can output graphs', function(done) {
+  //    beakerPO.waitUntilGraphOutputPresent()
+  //    .then(function(present) {
+  //      expect(present).toEqual(true);
+  //    });
+  //    beakerPO.createScreenshot('notebookOutputGraphs');
+  //    done();
+  //  });
+  //
+  //  it('can output graphs when minimized', function(done) {
+  //    beakerPO.toggleOutputCellExpansion()
+  //    beakerPO.evaluateCell();
+  //    beakerPO.toggleOutputCellExpansion()
+  //    beakerPO.waitUntilGraphOutputPresent()
+  //    .then(function(present) {
+  //      expect(present).toEqual(true);
+  //    });
+  //    beakerPO.createScreenshot('notebookOutputGraphs');
+  //    done();
+  //  });
+  //});
+  //
+  //it('can load', function() {
+  //  beakerPO.newEmptyNotebook.click();
+  //  expect(browser.getTitle()).toEqual('New Notebook');
+  //  beakerPO.closeNotebook();
+  //});
+  //
+  //it('can add a cell', function() {
+  //  beakerPO.newEmptyNotebook.click();
+  //  beakerPO.insertCellButton.click();
+  //  expect(beakerPO.getEvaluateButton().isDisplayed()).toBe(true);
+  //  beakerPO.closeNotebook();
+  //});
+  //
+  //describe('evaluating JS', function() {
+  //  beforeEach(function() {
+  //    beakerPO.newEmptyNotebook.click();
+  //    beakerPO.insertCellButton.click();
+  //    browser.wait(beakerPO.EC.presenceOf(beakerPO.getCellEvaluatorMenu()), 10000);
+  //    beakerPO.getCellEvaluatorMenu().click();
+  //    beakerPO.cellEvaluatorMenuItem('JavaScript').click();
+  //  });
+  //
+  //  it('displays syntax errors correctly', function(done) {
+  //    beakerPO.setCellInput(',');
+  //    beakerPO.evaluateCell();
+  //    beakerPO.waitForCellOutput();
+  //    beakerPO.getCellOutput().getText().then(function(txt) {
+  //      expect(txt).toContain('Unexpected token (1:0)', txt);
+  //      done();
+  //    });
+  //  });
+  //
+  //  afterEach(function() {
+  //    beakerPO.closeNotebook();
+  //  });
+  //});
 
   describe('evaluating languages', function() {
     beforeEach(function() {
@@ -161,12 +155,12 @@ describe('notebook', function() {
     });
     */
 
-    it('JavaScript', function(done) {
-      evalInLanguage('JavaScript', '1+1', '2', done);
-    });
-
-    it('Groovy', function(done) {
-      evalInLanguage('Groovy', '1+1', '2', done);
-    });
+    //it('JavaScript', function(done) {
+    //  evalInLanguage('JavaScript', '1+1', '2', done);
+    //});
+    //
+    //it('Groovy', function(done) {
+    //  evalInLanguage('Groovy', '1+1', '2', done);
+    //});
   });
 });

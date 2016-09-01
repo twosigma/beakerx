@@ -112,21 +112,17 @@ var BeakerPageObject = function() {
   };
 
   this.setVimEditMode = function () {
-    this.setEditMode();
-    this.createScreenshot('editMode');
-    browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
-    browser.wait(this.EC.presenceOf(element(by.css('#vim-edit-mode-menuitem'))), 5000).then(function(){
-          console.log('vim-edit-mode-menuitem - is present');
-          browser.actions().mouseMove(element(by.css('#vim-edit-mode-menuitem'))).perform()
-              .then(function(){
-                element(by.css('#vim-edit-mode-menuitem')).click();
-              }
-          );
-        },
-        function(error){
-          expect(error).toBe('vim-edit-mode-menuitem - is present');
-          this.createScreenshot('setVimEditMode');
-        });
+    var self = this;
+    this.setEditMode().then(function(){
+      browser.wait(self.EC.presenceOf(element(by.css('#vim-edit-mode-menuitem'))), 5000).then(function(){
+            browser.actions().mouseMove(element(by.css('#vim-edit-mode-menuitem'))).perform()
+                .then(element(by.css('#vim-edit-mode-menuitem')).click);
+          },
+          function(error){
+            self.createScreenshot('errorVimEditMode');
+            expect(error).toBe('vim-edit-mode-menuitem - is present');
+          });
+    });
   };
 
   this.setSublimeEditMode = function() {
@@ -135,14 +131,7 @@ var BeakerPageObject = function() {
 
   this.setEditMode = function() {
     element(by.css('.notebook-menu')).click();
-    browser.wait(this.EC.presenceOf(element(by.css('#edit-mode-menuitem'))), 5000).then(function(){
-      console.log('edit-mode-menuitem - is present');
-      browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
-    },
-    function(error){
-      expect(error).toBe('edit-mode-menuitem - is present');
-      this.createScreenshot('setEditMode');
-    });
+    return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
   };
 
   this.isCellMenuOpen = function(opts) {
@@ -231,9 +220,15 @@ var BeakerPageObject = function() {
   };
 
   this.insertCellOfType = function(language) {
-    browser.wait(this.EC.presenceOf(this.getCellEvaluatorMenu()), 10000);
-    this.getCellEvaluatorMenu().click();
-    return this.cellEvaluatorMenuItem(language).click();
+    var self = this;
+    browser.wait(this.EC.visibilityOf(this.getCellEvaluatorMenu()), 10000).then(function(){
+      console.log('CellEvaluatorMenu is visible');
+      browser.actions().mouseMove(self.getCellEvaluatorMenu()).perform();
+      self.getCellEvaluatorMenu().click().then(function(){
+        self.cellEvaluatorMenuItem(language).click();
+        console.log('insertCellOfType ' + language + ' - OK');
+      });
+    });
   }
 
   this.languageManager = element(by.className('plugin-manager'));

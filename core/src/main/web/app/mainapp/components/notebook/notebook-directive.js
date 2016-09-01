@@ -263,6 +263,23 @@
         }
         
         $scope.replaceAllFunction = function (result) {
+          $timeout($scope.findAllFunctionTemplate(
+              result,
+              function(cursor,theCM){
+                cursor.replace(result.replace, result.find);
+                theCM.addSelection(cursor.from(), cursor.to());
+              }), 500);
+        }
+        
+        $scope.findALLFunction = function (result) {
+          $scope.findAllFunctionTemplate(
+              result,
+              function(cursor,theCM){
+            theCM.markText(cursor.from(), cursor.to(), {className: "search-find-all-selected-background"});
+          });
+        }
+        
+        $scope.findAllFunctionTemplate = function (result, action) {
           for (var index = 0; notebookCellOp.getCellsSize() > index; index++) {
             var theCell = notebookCellOp.getCellAtIndex(index);
             if (theCell){
@@ -272,8 +289,7 @@
                 if(result.find && result.searchCellFilter.allNotebook){
                   if(isCellMatchSearchCellFilter(theCell, result.searchCellFilter)){
                     for (cursor = getSearchCursor(result, cursor, 'MIN', theCM); cursor.findNext();) {
-                      cursor.replace(result.replace, result.find);
-                      theCM.addSelection(cursor.from(), cursor.to());
+                      action(cursor, theCM);
                     }
                   }
                 }
@@ -283,39 +299,10 @@
           if(!result.searchCellFilter.allNotebook){
             if(result.find){
               for (cursor = getSearchCursor(result, cursor, 'MIN', currentCm); cursor.findNext();) {
-                cursor.replace(result.replace, result.find);
-                currentCm.addSelection(cursor.from(), cursor.to());
+                action(cursor, currentCm);
               }
             }
           }
-        }
-        
-        $scope.findALLFunction = function (result){
-          $timeout(function() {
-            for (var index = 0; notebookCellOp.getCellsSize() > index; index++) {
-              var theCell = notebookCellOp.getCellAtIndex(index);
-              if (theCell){
-                var theCM = _impl.getCM(theCell.id);
-                if (theCM){
-                  clearMarcs(theCM);
-                  if(result.find && result.searchCellFilter.allNotebook){
-                    if(isCellMatchSearchCellFilter(theCell, result.searchCellFilter)){
-                      for (cursor = getSearchCursor(result, cursor, 'MIN', theCM); cursor.findNext();) {
-                        theCM.markText(cursor.from(), cursor.to(), {className: "search-find-all-selected-background"});
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            if(!result.searchCellFilter.allNotebook){
-              if(result.find){
-                for (cursor = getSearchCursor(result, cursor, 'MIN', currentCm); cursor.findNext();) {
-                  currentCm.markText(cursor.from(), cursor.to(), {className: "search-find-all-selected-background"});
-                }
-              }
-            }
-          }, 500);
         }
 
         $scope.findPreviousFunction = function (result) {

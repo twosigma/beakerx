@@ -92,4 +92,27 @@
       </tr>
     </thead>
   </table>
+
+  <div ng-if="isPreviewMode()" class="previewTable dtcontainer">
+    <table class="dataTable display preview" ng-click="showRealTable()">
+      <thead ng-init="columnNames = getPreviewHeader()">
+      <tr>
+        <!--<th class="index"> index </th>-->
+        <th ng-repeat="value in columnNames track by $index" >
+          <span>{{value}}</span>
+        </th>
+      </tr>
+      </thead>
+      <tbody ng-init="rows = getPreviewRows()">
+      <tr ng-repeat="row in rows track by $index" ng-class="{'odd': $even, 'even': $odd}">
+        <td ng-class="{'index': $index === 0}" ng-repeat="value in row track by $index">
+          <span>
+            {{value}}
+          </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
 </div>

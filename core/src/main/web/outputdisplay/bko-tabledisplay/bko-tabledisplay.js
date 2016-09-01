@@ -436,11 +436,70 @@
             }
           });
         };
+
+        var previewMode = true;
+        $scope.isPreviewMode = function () {
+          return previewMode;
+        };
+
+        $scope.showRealTable = function () {
+          previewMode = false;
+          $scope.init($scope.getCellModel(), true);
+        };
+
+        var show = 30;
+        show += 2;
+        $scope.getPreviewHeader = function() {
+          var model = $scope.getCellModel();
+          
+          $scope.tempColumns = [];
+          for(var i = 0; i < show; i += 1){
+            $scope.tempColumns.push({sTitle: model.columnNames[i]});
+          }
+
+          var columnNames = model.columnNames.slice(0, Math.min(show, model.columnNames.length));//index takes one place
+          if(model.columnNames.length -1 > show){
+            columnNames[columnNames.length-1] = '... ' + columnNames[columnNames.length-1] + ' ...';
+          }
+
+          return columnNames;
+        };
+
+        $scope.getPreviewRows = function() {
+          var model = $scope.getCellModel();
+
+          var data = model.values.slice(0, Math.min(25, model.values.length));
+
+          if (data){
+            var tempData = [];
+            var i = 0;
+            while(i < Math.min(show, data.length-1)){
+              var row = data[i].slice(0, Math.min(show, data[i].length));
+              if(data[i].length -1 > show){
+                row[row.length - 1] = '... ' + row[row.length - 1] + ' ...';
+              }
+              tempData.push(row);
+              i++;
+            }
+            return tempData;
+          }
+
+          return [];
+        };
+
+        $scope.formatPreviewValue = function (value, rowIndex, columnIndex) {
+          var stringFormatForColumn = $scope.stringFormatForColumn[$scope.columnNames[columnIndex]];
+          var renderer = $scope.getRenderer(stringFormatForColumn, $scope.actualtype[columnIndex]);
+          return renderer(value, 'display', [], {col: renderer === $scope.valueFormatter ? columnIndex + 1 : columnIndex,
+            row: rowIndex, settings: {aoColumns: $scope.tempColumns}});
+        };
         
         // reset table state
         $scope.doResetAll = function () {
           $scope.table.state.clear();
-          $scope.init($scope.getCellModel(), false);
+          if (!$scope.isPreviewMode()) {
+            $scope.init($scope.getCellModel(), false);
+          }
         };
 
         // these are the menu actions
@@ -1353,9 +1412,11 @@
           }
 
           scope.doCreateData(model);
-          scope.doCreateTable(model);
-          $(document.body).off('click.bko-dt-container', scope.containerClickFunction);
-          $(document.body).on('click.bko-dt-container', scope.containerClickFunction);
+          if (!scope.isPreviewMode()) {
+            scope.doCreateTable(model);
+            $(document.body).off('click.bko-dt-container', scope.containerClickFunction);
+            $(document.body).on('click.bko-dt-container', scope.containerClickFunction);
+          }
         };
 
         scope.doCreateData = function(model) {
@@ -1869,6 +1930,18 @@
           }
         };
 
+        scope.getRenderer = function (stringFormatForColumn, type) {
+          var render;
+          if (stringFormatForColumn && stringFormatForColumn.type === 'value' && type === 0) {
+            render = scope.valueFormatter;
+          } else if (scope.isDoubleWithPrecision(type)) {
+            render = scope.doubleWithPrecisionConverters[scope.getDoublePrecision(type)];
+          } else if (scope.allConverters[type] !== undefined) {
+            render = scope.allConverters[type];
+          }
+          return render;
+        };
+
         scope.doCreateTable = function(model) {
           var cols = [];
           var i;
@@ -2207,13 +2280,7 @@
             }
 
             var stringFormatForColumn = scope.stringFormatForColumn[scope.columnNames[i]];
-            if (stringFormatForColumn && stringFormatForColumn.type === 'value' && type === 0){
-              col.render = scope.valueFormatter;
-            } else if (scope.isDoubleWithPrecision(type)) {
-              col.render = scope.doubleWithPrecisionConverters[scope.getDoublePrecision(type)];
-            } else if (scope.allConverters[type] !== undefined) {
-              col.render = scope.allConverters[type];
-            }
+            col.render = scope.getRenderer(stringFormatForColumn, type);
             if (scope.getCellSho) {
               col.visible = scope.getCellSho[i];
             }

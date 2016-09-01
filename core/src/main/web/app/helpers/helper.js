@@ -150,7 +150,7 @@
         if (this.isMacOS){
           return e.ctrlKey && (e.which === 70);// Ctrl + f
         }
-        return e.ctrlKey && (e.which === 70);// Ctrl + f
+        return e.altKey && (e.which === 70);// Alt + f
       },
       
 

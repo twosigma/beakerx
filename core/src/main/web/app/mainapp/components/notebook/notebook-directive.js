@@ -262,21 +262,24 @@
           }
         }
         
+        $scope.findALLFunction = function (result) {
+          $timeout(
+              $scope.findAllFunctionTemplate(
+              result,
+              function(cursor,theCM){
+                theCM.markText(cursor.from(), cursor.to(), {className: "search-find-all-selected-background"});
+              })
+              , 500);
+        }
+        
         $scope.replaceAllFunction = function (result) {
-          $timeout($scope.findAllFunctionTemplate(
+          $scope.findAllFunctionTemplate(
               result,
               function(cursor,theCM){
                 cursor.replace(result.replace, result.find);
                 theCM.addSelection(cursor.from(), cursor.to());
-              }), 500);
-        }
-        
-        $scope.findALLFunction = function (result) {
-          $scope.findAllFunctionTemplate(
-              result,
-              function(cursor,theCM){
-            theCM.markText(cursor.from(), cursor.to(), {className: "search-find-all-selected-background"});
-          });
+              }
+          );
         }
         
         $scope.findAllFunctionTemplate = function (result, action) {

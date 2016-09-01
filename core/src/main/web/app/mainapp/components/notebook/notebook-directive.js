@@ -220,10 +220,18 @@
         var currentCellmodel = null;
         var clearCursorPozition = true;
         var currentMarker = null;
-        
+
+        $scope.availableSearchCellOptions =
+          [
+           {value: {allNotebook:true, codeCells:true, sectionCells:true, headingsCells:true}, name: 'entire notebook'},
+           {value: {allNotebook:false}, name: 'selected cell'},
+           {value: {allNotebook:true, codeCells:true, sectionCells:false, headingsCells:false}, name: 'all code cells'},
+           {value: {allNotebook:true, codeCells:false, sectionCells:true, headingsCells:true}, name: 'all text and cells and section headings'}
+        ];
+
         $scope.searchReplaceData = {
           replace: null,
-          allNotebook: true,
+          searchCellFilter: $scope.availableSearchCellOptions[0].value,
           caseSensitive: false,
           wrapSearch: false,
           reverseSearch: false
@@ -242,7 +250,7 @@
         
         $scope.findALLFunction = function (result){
           $timeout(function() {
-            if(result.allNotebook){
+            if(result.searchCellFilter.allNotebook){
               for (var index = 0; notebookCellOp.getCellsSize() > index; index++) {
                 var theCell = notebookCellOp.getCellAtIndex(index);
                 if (theCell){
@@ -364,7 +372,7 @@
         }
         
         $scope.replaceAllFunction = function (result) {
-          if(result.allNotebook){
+          if(result.searchCellFilter.allNotebook){
             for (var index = 0; true; index++) {
               var theCell = notebookCellOp.getCellAtIndex(index);
               if (theCell){
@@ -486,7 +494,7 @@
 
         var getNextCursor = function (filter, cmToUSe, reversive) {
           var ret = null;
-          if(filter.allNotebook){
+          if(filter.searchCellFilter.allNotebook){
             var index = notebookCellOp.getIndex(currentCellmodel.id);
             var nextIndex = index;
             if(reversive){
@@ -528,7 +536,7 @@
 
           }else{
             if(filter.wrapSearch){
-              ret = getSearchCursor(filter, cursor, 'MIN', cmToUSe);
+              ret = getSearchCursor(filter, cursor, reversive ? 'MAX' : 'MIN', cmToUSe);
             }
             //else null
           }

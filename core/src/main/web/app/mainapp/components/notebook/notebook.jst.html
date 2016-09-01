@@ -47,8 +47,8 @@
               <tbody>
                 <tr>
                   <td style="border-top:none">
-                    <input type="radio" id="all_notebook_true" ng-model="searchReplaceData.allNotebook" ng-value="true">
-                    <label for="all_notebook_true">Search entire notebook</label>
+                    <select ng-model="searchReplaceData.searchCellFilter" ng-options="option.value as option.name for option in availableSearchCellOptions">
+                    </select>
                   </td>
                   <td style="border-top:none">
                     <input type="checkbox" id="case_sensitive"  ng-model="searchReplaceData.caseSensitive">
@@ -61,8 +61,6 @@
                 </tr>
                 <tr>
                   <td style="border-top:none">
-                    <input type="radio" id="all_notebook_false" ng-model="searchReplaceData.allNotebook" ng-value="false">
-                    <label for="all_notebook_false">Search selected cell</label>
                   </td>
                   <td style="border-top:none">
                     <input type="checkbox" id="wrap_search" ng-model="searchReplaceData.wrapSearch">

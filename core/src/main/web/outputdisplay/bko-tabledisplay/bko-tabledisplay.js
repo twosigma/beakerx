@@ -2181,7 +2181,8 @@
             var al = scope.actualalign[i];
             var col = {
               'title' : '<span class="header-text">' + scope.columnNames[i] +'</span>',
-              'header': { 'menu': headerMenuItems }
+              'header': { 'menu': headerMenuItems },
+              'visible': i<50,
             };
             col.createdCell = function (td, cellData, rowData, row, col) {
               if(!_.isEmpty(scope.tooltips)){

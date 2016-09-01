@@ -114,13 +114,14 @@ var BeakerPageObject = function() {
   this.setVimEditMode = function () {
     var self = this;
     this.setEditMode().then(function(){
-      browser.wait(self.EC.presenceOf(element(by.css('#vim-edit-mode-menuitem'))), 5000).then(function(){
+      browser.wait(self.EC.visibilityOf(element(by.css('#vim-edit-mode-menuitem'))), 10000).then(function(){
             browser.actions().mouseMove(element(by.css('#vim-edit-mode-menuitem'))).perform()
                 .then(element(by.css('#vim-edit-mode-menuitem')).click);
+            console.log('vim-edit-mode-menuitem - is visible');
           },
           function(error){
             self.createScreenshot('errorVimEditMode');
-            expect(error).toBe('vim-edit-mode-menuitem - is present');
+            expect(error).toBe('vim-edit-mode-menuitem - is visible');
           });
     });
   };
@@ -130,7 +131,12 @@ var BeakerPageObject = function() {
   };
 
   this.setEditMode = function() {
-    element(by.css('.notebook-menu')).click();
+    element(by.css('.notebook-menu')).click().then(function(){
+      console.log('notebook-menu click - OK');
+    },
+    function(error){
+      expect(error).toBe('notebook-menu click - OK');
+    });
     return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
   };
 
@@ -319,13 +325,17 @@ var BeakerPageObject = function() {
   };
 
   this.insertNewCell = function() {
+    var self = this;
     element(by.css('bk-new-cell-menu')).click();
-    this.insertCellButton.click().then(function(){
-      console.log('insertNewCell() - OK');
-    },
-    function(error){
-      expect(error).toBe('insertNewCell() - OK');
-    });
+    browser.wait(self.EC.visibilityOf(self.insertCellButton), 10000).then(function(){
+          browser.actions().mouseMove(self.insertCellButton).perform()
+              .then(self.insertCellButton.click);
+          console.log('insertNewCell() - OK');
+        },
+        function(error){
+          self.createScreenshot('errorInsertNewCell');
+          expect(error).toBe('insertNewCell() - OK');
+        });
   };
 
   this.getCellOutput = function() {

@@ -148,9 +148,9 @@
       },
       isSearchReplace: function (e){
         if (this.isMacOS){
-          return e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 70);// Cmd + f
+          return e.ctrlKey && (e.which === 70);// Ctrl + f
         }
-        return e.ctrlKey && !e.altKey && (e.which === 70);// Ctrl + f
+        return e.ctrlKey && (e.which === 70);// Ctrl + f
       },
       
 

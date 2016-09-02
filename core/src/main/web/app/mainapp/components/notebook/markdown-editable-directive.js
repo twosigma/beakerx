@@ -33,7 +33,7 @@
         var contentAttribute = scope.cellmodel.type === "section" ? 'title' : 'body';
 
         var preview = function () {
-          bkHelper.markupCellContent(scope.cellmodel[contentAttribute], bkHelper.evaluateCode)
+          bkHelper.markupCellContent(scope.cellmodel[contentAttribute], bkHelper.evaluateCode, scope.cellmodel['id'])
               .then(function (transformedHtml) {
                 element.find('.markup').html(transformedHtml);
                 scope.mode = 'preview';

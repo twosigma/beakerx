@@ -537,16 +537,16 @@
           return false;
         }
       },        
-      typeset: function(element) {
+      typeset: function(element, id) {
         try {
-          katexhelper.renderElem(element[0], {
+          katexhelper.renderElem(element, {
             delimiters: [
               {left: "$$", right: "$$", display: true},
               {left: "$", right:  "$", display: false},
               {left: "\\[", right: "\\]", display: true},
               {left: "\\(", right: "\\)", display: false}
             ]
-          });
+          }, null ,id);
         } catch(err) {
           bkHelper.show1ButtonModal(err.message + '<br>See: ' +
               '<a target="_blank" href="http://khan.github.io/KaTeX/">KaTeX website</a> and its ' +
@@ -555,14 +555,14 @@
               "KaTex error");
         }
       },
-      markupCellContent: function(cellContent, evaluateFn) {
+      markupCellContent: function(cellContent, evaluateFn, id) {
         var markupDeferred = bkHelper.newDeferred();
         if (!evaluateFn) {
           evaluateFn = this.evaluateCode;
         }
         var markIt = function(content) {
           var markdownFragment = $('<div>' + content + '</div>');
-          bkHelper.typeset(markdownFragment);
+          bkHelper.typeset(markdownFragment, id);
           var escapedHtmlContent = angular.copy(markdownFragment.html());
           markdownFragment.remove();
           var unescapedGtCharacter = escapedHtmlContent.replace(/&gt;/g, '>');

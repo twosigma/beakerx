@@ -52,32 +52,57 @@
         }
         return data;
       },
-      renderMathInText: function(text, delimiters) {
+      renderMathInText: function(element, text, delimiters, id) {
         var data = this.splitWithDelimiters(text, delimiters);
         var fragment = document.createDocumentFragment();
+        $("[cellid='"+id+"']").find('.katex_error').remove();
         for(var i = 0; i<data.length; i++){
           if (data[i].type === "text"){
             fragment.appendChild(document.createTextNode(data[i].data));
           } else {
             var element = document.createElement("div");
-            element.style.float = "left";
             fragment.appendChild(element);
+            element.style.float = "left";
             var math = data[i].data;
             try {
-              katex.render(math, element, {throwOnError:false});
+              katex.render(math, element, {throwOnError: false});
             } catch(err) {
-              bkHelper.show1ButtonModal(err.message+'<br>See: <a target="_blank" href="http://khan.github.io/KaTeX/">KaTeX website</a> and its <a target="_blank" href="https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX">list of supported functions</a>.', "KaTex error");
+              var errorDiv = document.createElement('div');
+              errorDiv.className = 'katex_error';
+              errorDiv.style.color = '#AF061B';
+              errorDiv.style.border = '1px solid #AF061B';
+              errorDiv.style.margin = '-1px';
+              errorDiv.style.minHeight = '17px';
+              errorDiv.style.padding = '0px 0 8px 20px';
+              errorDiv.style.fontFamily = '"Roboto Mono", monospace';
+
+              var errorMain = document.createElement('h6');
+              errorMain.appendChild(document.createTextNode('Error'));
+              errorMain.style.fontSize = '13px';
+              errorMain.style.fontWeight = 'bold';
+              errorMain.style.fontHeight = '1em';
+              errorMain.style.marginBottom = '0';
+
+              var errorSpan = document.createElement('span');
+              errorSpan.appendChild(document.createTextNode(err.message));
+
+              errorDiv.appendChild(errorMain);
+              errorDiv.appendChild(errorSpan);
+
+              $("[cellid='"+id+"']").find('.markdown-area').parent().append(errorDiv);
+              return fragment;
             }
           }
         }
         return fragment;
       },
-      renderElem: function(elem, delimiters, ignoredTags) {
+      renderElem: function(element, delimiters, ignoredTags, id) {
+        var elem = element[0];
         for(var i = 0; i<elem.childNodes.length; i++){
           var childNode = elem.childNodes[i];
           if (childNode.nodeType === 3){
             // Text node
-            var frag = this.renderMathInText(childNode.textContent, delimiters);
+            var frag = this.renderMathInText(element, childNode.textContent, delimiters, id);
             i += frag.childNodes.length - 1;
             elem.replaceChild(frag, childNode);
           } else if (childNode.nodeType === 1){

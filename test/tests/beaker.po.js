@@ -218,15 +218,10 @@ var BeakerPageObject = function() {
 
   this.insertCellOfType = function(language) {
     var self = this;
-    browser.wait(this.EC.visibilityOf(this.getCellEvaluatorMenu()), 10000).then(function(){
-      console.log('CellEvaluatorMenu is visible');
-      browser.actions().mouseMove(self.getCellEvaluatorMenu()).perform();
-      self.getCellEvaluatorMenu().click().then(function(){
-        self.cellEvaluatorMenuItem(language).click();
-        console.log('insertCellOfType ' + language + ' - OK');
-      });
-    });
-  }
+    browser.wait(this.EC.visibilityOf(this.getCellEvaluatorMenu()), 10000);
+    this.getCellEvaluatorMenu().click()
+        .then(function(){ self.cellEvaluatorMenuItem(language).click();});
+  };
 
   this.languageManager = element(by.className('plugin-manager'));
   this.languageManagerButtonKnown = function(language) {

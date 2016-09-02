@@ -112,8 +112,11 @@ var BeakerPageObject = function() {
   };
 
   this.setVimEditMode = function () {
+    var self = this;
     element(by.css('.notebook-menu')).click()
+        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#edit-mode-menuitem'))), 10000)})
         .then(function(){browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();})
+        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#vim-edit-mode-menuitem'))), 10000)})
         .then(function(){element(by.css('#vim-edit-mode-menuitem')).click();});
   };
 
@@ -218,8 +221,9 @@ var BeakerPageObject = function() {
 
   this.insertCellOfType = function(language) {
     var self = this;
-    browser.wait(this.EC.visibilityOf(this.getCellEvaluatorMenu()), 10000);
-    this.getCellEvaluatorMenu().click()
+    browser.wait(this.EC.visibilityOf(this.getCellEvaluatorMenu()), 10000)
+        .then(function(){ self.getCellEvaluatorMenu().click();})
+        .then(function(){ browser.wait(self.EC.visibilityOf(self.cellEvaluatorMenuItem(language)), 10000)})
         .then(function(){ self.cellEvaluatorMenuItem(language).click();});
   };
 

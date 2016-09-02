@@ -1280,7 +1280,13 @@
               bkCoreManager.newSession(true);
             });
             return false;
-          } else if (bkHelper.isAppendCodeCellShortcut(e)) {
+          } 
+          else if (bkHelper.isSearchReplace(e)) { // Ctrl + f
+            e.preventDefault();
+            bkHelper.getBkNotebookViewModel().showSearchReplace();
+            return false;
+          }
+          else if (bkHelper.isAppendCodeCellShortcut(e)) {
             bkUtils.fcall(function() {
               bkHelper.appendCodeCell()
             });

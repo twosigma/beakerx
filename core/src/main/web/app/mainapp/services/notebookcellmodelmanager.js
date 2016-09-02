@@ -619,6 +619,9 @@
                 }
                 return _.last(cells).id === id;
               },
+              getCellsSize: function(){
+                return cells.length;
+              },
               appendAfter: function(id, cell) {
                 if (this.isContainer(id) && !this.isEmpty(id)) {
                   // add to tail

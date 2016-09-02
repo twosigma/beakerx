@@ -607,6 +607,10 @@
             start += 1;
           } while (start <= end)
         };
+        
+        var findReplace = function (cm) {
+          bkHelper.getBkNotebookViewModel().showSearchReplace(cm, scope.cellmodel);
+        }
 
         var shiftTab = function(cm) {
           if (autocompleteParametersService.isActive()) {
@@ -736,7 +740,9 @@
             'Left': goCharLeftOrMoveFocusDown,
             "Shift-Ctrl-F": reformat,
             "Shift-Cmd-F": reformat,
-            "Alt-F11": setFullScreen
+            "Alt-F11": setFullScreen,
+            "Ctrl-F": findReplace,
+            "Cmd-F": findReplace,
         };
 
         if(bkHelper.isMacOS){
@@ -976,6 +982,7 @@
 
         return dd;
       },
+
       showSQLLoginModalDialog: function(
           connectionName,
           connectionString,
@@ -1826,7 +1833,7 @@
       }
     };
   });
-
+  
   module.controller('SQLLoginController', function($scope, $rootScope, $uibModalInstance, modalDialogOp, bkUtils, connectionName, connectionString, user) {
 
     $scope.sqlConnectionData = {
@@ -1855,6 +1862,7 @@
     });
 
   });
+
 
   /**
    * Directive to show a modal dialog that does filename input.

@@ -35,6 +35,17 @@
       cursor: $text-cursor;
     }
   }
+    
+  $cm-search-mark-all-color:	#2060f0;
+  $cm-search-mark-color: 		#F26D00;
+    
+  .search-find-all-selected-background{
+  	background-color: $cm-search-mark-all-color;
+  }
+  
+  .search-selected-background{
+    background-color: $cm-search-mark-color;
+  }
 
   header {
     .navbar-left {
@@ -786,5 +797,3 @@
   }
 
 }
-
-

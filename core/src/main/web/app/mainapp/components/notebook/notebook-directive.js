@@ -331,6 +331,12 @@
             }
           }
         }
+        
+        var scrollToChar = function (theCM, pozition){
+          var charPozition = currentCm.charCoords({line: pozition.line, ch: pozition.ch}, "local").top; 
+          var cmCozition = currentCm.getScrollerElement().offsetTop; 
+          window.scrollTo(0, cmCozition + charPozition);
+        }
 
         $scope.findFunction = function (result, reversive) {
           if(result.find){
@@ -350,6 +356,7 @@
                 currentMarker.clear();
               }
               currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
+              scrollToChar(currentCm, cursor.from());
             }else {
               
               var search = true;
@@ -372,6 +379,7 @@
                     currentMarker.clear();
                   }
                   currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
+                  scrollToChar(currentCm, cursor.from());
                 }
               }while(search);
               

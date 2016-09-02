@@ -262,14 +262,38 @@
           }
         }
         
+        $scope.cmArray = [];
+        $scope.markAllInterval = null;
+        
         $scope.findALLFunction = function (result) {
-          $timeout(
-              $scope.findAllFunctionTemplate(
+          
+          $scope.cmArray = [];
+          if($scope.markAllInterval){
+            clearInterval($scope.markAllInterval);
+          }
+          
+          $scope.findAllFunctionTemplate(
               result,
               function(cursor,theCM){
-                theCM.markText(cursor.from(), cursor.to(), {className: "search-find-all-selected-background"});
-              })
-              , 500);
+                //markText is too slow to put it directly in here.
+                $scope.cmArray.push({theCM : theCM, from: cursor.from(), to: cursor.to()});
+              }
+          );
+
+          if($scope.cmArray && $scope.cmArray.length > 0){
+            var index = 0;
+            $scope.markAllInterval = setInterval(function(){
+              if($scope.cmArray && $scope.cmArray[index]){
+                $scope.cmArray[index].theCM.markText($scope.cmArray[index].from, $scope.cmArray[index].to, {className: "search-find-all-selected-background"});
+                index++;
+              }else{
+                clearInterval($scope.markAllInterval);
+              }
+              if(index >= $scope.cmArray.length){
+                clearInterval($scope.markAllInterval);
+              }
+            },10);
+          }
         }
         
         $scope.replaceAllFunction = function (result) {
@@ -426,6 +450,11 @@
         }
         
         var doPostSearchNotebookActions = function () {
+          
+          if($scope.markAllInterval){
+            clearInterval($scope.markAllInterval);
+          }
+          
           for ( var property in _impl._previewable ) {
             if (_impl._previewable.hasOwnProperty(property)) {
               if(_impl._previewable[property]){

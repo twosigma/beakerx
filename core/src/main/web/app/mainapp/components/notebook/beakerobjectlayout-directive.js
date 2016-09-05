@@ -33,6 +33,9 @@
           return $scope.model.isShowOutput();
         };
 
+        $scope.isEmbedded = window.beakerRegister.isEmbedded ? true : false;
+        $scope.isPublication = window.beakerRegister.isPublication ? true : false;
+
         $scope.showoutput = $scope.model.isShowOutput();
         $scope.items = _.map($scope.model.getCellModel().items, function (it) {
           return {

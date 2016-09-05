@@ -104,12 +104,10 @@ var BeakerPageObject = function() {
   this.setNormalEditMode = function() {
     var self = this;
     element(by.css('.notebook-menu')).click()
-        .then(function(){self.activateEditModeMenuItem();})
-        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#edit-mode-menuitem'))), 10000);})
+        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#edit-mode-menuitem'))), 5000);})
         .then(function(){console.log('edit-mode-menuitem is visible'); self.createScreenshot('setVimEditMenu');})
         .then(function(){browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform(); browser.sleep(1000);})
-        .then(function(){self.activateNormalEditModeMenuItem(); browser.sleep(1000);})
-        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#normal-edit-mode-menuitem'))), 10000);})
+        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#normal-edit-mode-menuitem'))), 5000);})
         .then(function(){console.log('normal-edit-mode-menuitem is visible'); element(by.css('#normal-edit-mode-menuitem')).click();});
   };
 
@@ -121,43 +119,11 @@ var BeakerPageObject = function() {
   this.setVimEditMode = function () {
     var self = this;
     element(by.css('.notebook-menu')).click()
-        .then(function(){self.activateEditModeMenuItem();})
-        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#edit-mode-menuitem'))), 10000);})
+        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#edit-mode-menuitem'))), 5000);})
         .then(function(){console.log('edit-mode-menuitem is visible'); self.createScreenshot('setVimEditMenu');})
         .then(function(){browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform(); browser.sleep(1000);})
-        .then(function(){self.activateVimEditModeMenuItem(); browser.sleep(1000);})
-        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#vim-edit-mode-menuitem'))), 10000);})
+        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#vim-edit-mode-menuitem'))), 5000);})
         .then(function(){console.log('vim-edit-mode-menuitem is visible'); element(by.css('#vim-edit-mode-menuitem')).click();});
-  };
-
-  this.activateEditModeMenuItem = function() {
-    element(by.css('#edit-mode-menuitem')).isDisplayed()
-        .then(function(isVisible) {
-          console.log('EditModeMenuItem dislayed - ' + isVisible);
-          if (!isVisible) {
-            return element(by.css('.notebook-menu')).click();
-          }
-        }.bind(this));
-  };
-
-  this.activateVimEditModeMenuItem = function() {
-    element(by.css('#vim-edit-mode-menuitem')).isDisplayed()
-        .then(function(isVisible) {
-          console.log('VimEditModeMenuItem dislayed - ' + isVisible);
-          if (!isVisible) {
-            return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
-          }
-        }.bind(this));
-  };
-
-  this.activateNormalEditModeMenuItem = function() {
-    element(by.css('#normal-edit-mode-menuitem')).isDisplayed()
-        .then(function(isVisible) {
-          console.log('NormalEditModeMenuItem dislayed - ' + isVisible);
-          if (!isVisible) {
-            return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
-          }
-        }.bind(this));
   };
 
   this.setSublimeEditMode = function() {
@@ -261,23 +227,12 @@ var BeakerPageObject = function() {
 
   this.insertCellOfType = function(language) {
     var self = this;
-    browser.wait(this.EC.visibilityOf(this.getCellEvaluatorMenu()), 10000)
-        .then(function(){ self.getCellEvaluatorMenu().click();})
-        .then(function(){ self.activateCellEvaluatorMenu(language);  browser.sleep(1000);})
-        .then(function(){ browser.wait(self.EC.visibilityOf(self.cellEvaluatorMenuItem(language)), 10000)})
+    browser.wait(this.EC.visibilityOf(this.getCellEvaluatorMenu()), 5000)
+        .then(function(){ self.getCellEvaluatorMenu().click(); browser.sleep(1000);})
+        .then(function(){ browser.wait(self.EC.visibilityOf(self.cellEvaluatorMenuItem(language)), 5000)})
         .then(function(){ console.log('cellEvaluatorMenuItem is visible');
                           self.createScreenshot('cellEvaluatorMenuItem');
                           self.cellEvaluatorMenuItem(language).click();});
-  };
-
-  this.activateCellEvaluatorMenu = function(language) {
-    this.cellEvaluatorMenuItem(language).isDisplayed()
-        .then(function(isVisible) {
-          console.log('cellEvaluatorMenuItem dislayed - ' + isVisible);
-          if (!isVisible) {
-            return this.getCellEvaluatorMenu().click();
-          }
-        }.bind(this));
   };
 
   this.languageManager = element(by.className('plugin-manager'));

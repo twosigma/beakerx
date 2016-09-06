@@ -67,13 +67,15 @@ describe('Vim mode', function() {
   it('R command replaces characters', function() {
     beakerPO.setVimEditMode();
     beakerPO.insertNewCell();
-
-    beakerPO.setCellInput("meeting");
-
+    beakerPO.setCellInput("meeting").then(function(){
+      console.log('setCellInput');
+    },
+    function(error){
+      expect(error).toBe('setCellInput');
+    });
     //click 'R' character - switch to overwrite mode
     browser.actions().sendKeys('R').perform();
     browser.actions().sendKeys('session').perform();
-
 
     beakerPO.getCellInput().then(function (result) {
       expect(result).toBe('session')
@@ -86,9 +88,12 @@ describe('Vim mode', function() {
   it('~ command switches character case', function() {
     beakerPO.setVimEditMode();
     beakerPO.insertNewCell();
-
-    beakerPO.setCellInput("meeting");
-
+    beakerPO.setCellInput("meeting").then(function(){
+          console.log('setCellInput');
+        },
+        function(error){
+          expect(error).toBe('setCellInput');
+        });
     browser.actions().sendKeys('~~~~~~~').perform();
 
     beakerPO.getCellInput().then(function (result) {
@@ -96,13 +101,19 @@ describe('Vim mode', function() {
     });
 
     beakerPO.setNormalEditMode();
+    console.log('setNormalEditMode - OK');
   });
 
   it('$ and 0 commands go to the beginning and end of line', function() {
     beakerPO.setVimEditMode();
     beakerPO.insertNewCell();
 
-    beakerPO.setCellInput("meeting");
+    beakerPO.setCellInput("meeting").then(function(){
+          console.log('setCellInput');
+        },
+        function(error){
+          expect(error).toBe('setCellInput');
+        });
 
     browser.actions().sendKeys('$').perform();
     beakerPO.getCellInputCursor().then(function (pos) {

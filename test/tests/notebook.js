@@ -21,11 +21,30 @@ var beakerPO;
 describe('notebook', function() {
 
   function evalInLanguage(language, code, expected, done) {
-    beakerPO.activateLanguage(language);
+    beakerPO.activateLanguage(language).then(function(){
+      console.log('activateLanguage ' + language + ' - OK');
+    },
+    function(error){
+      expect(error).toBe('activateLanguage ' + language + ' - OK');
+      beakerPO.createScreenshot('activateLanguage');
+    });
     beakerPO.insertCellOfType(language);
-    beakerPO.setCellInput(code);
-    beakerPO.evaluateCell();
+    beakerPO.setCellInput(code).then(function(){
+          console.log('setCellInput ' + language + ' - OK');
+        },
+        function(error){
+          expect(error).toBe('setCellInput ' + language + ' - OK');
+          beakerPO.createScreenshot('setCellInput');
+        });
+    beakerPO.evaluateCell().then(function(){
+          console.log('evaluateCell ' + language + ' - OK');
+        },
+        function(error){
+          expect(error).toBe('evaluateCell ' + language + ' - OK');
+          beakerPO.createScreenshot('evaluateCell');
+        });
     beakerPO.waitForCellOutput();
+    beakerPO.createScreenshot('waitForCellOutput');
     return beakerPO.getCellOutput().getText()
     .then(function(output) {
       expect(output).toEqual(expected);

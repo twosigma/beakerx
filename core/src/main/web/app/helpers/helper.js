@@ -1272,7 +1272,11 @@
             };
           } else {
             // wrapper display with standard output and error
-            modelOutput.result = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : { type: "BeakerDisplay", innertype: "Error", object: evaluation.payload } };
+            modelOutput.result = {
+              type: "Results",
+              outputdata: modelOutput.result.object.outputdata,
+              payload: {type: "BeakerDisplay", innertype: "Error", object: evaluation.payload}
+            };
           }
         } else if (evaluation.status === "RUNNING") {
           if (evaluation.message === undefined)

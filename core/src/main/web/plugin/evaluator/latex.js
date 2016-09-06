@@ -32,10 +32,22 @@ define(function(require, exports, module) {
       var startTime = new Date().getTime();
       var deferred = bkHelper.newDeferred();
 
+      var progressObj = {
+        type: "BeakerDisplay",
+        innertype: "Progress",
+        object: {
+          message: "running...",
+          startTime: new Date().getTime(),
+          outputdata: []
+        }
+      };
+      modelOutput.result = progressObj;
+
       bkHelper.timeout(function() {
         try {
           var tempElement = document.createElement('span');
           katex.render(code, tempElement, {throwOnError: false});
+          deferred.resolve(code);
           return bkHelper.fcall(function() {
             modelOutput.result = {
               type: "BeakerDisplay",
@@ -44,40 +56,15 @@ define(function(require, exports, module) {
             };
             modelOutput.elapsedTime = new Date().getTime() - startTime;
           });
-        } catch(err) {
-          var beakerObj = bkHelper.getBeakerObject();
-          var progressObj = {
-            type: "BeakerDisplay",
-            innertype: "Progress",
-            object: {
-              message: "running...",
-              startTime: new Date().getTime(),
-              outputdata: []
-            }
-          };
-          modelOutput.result = progressObj;
-          if (refreshObj !== undefined)
-            refreshObj.outputRefreshed();
-          else
-            bkHelper.refreshRootScope();
-
-          beakerObj.setupBeakerObject(modelOutput);
-          beakerObj.notebookToBeakerObject();
-          window.beaker = beakerObj.beakerObj;
-
-
+        } catch (err) {
+          var r = err.message;
           bkHelper.receiveEvaluationUpdate(modelOutput,
-            {status: "ERROR", payload: err.message}, PLUGIN_NAME);
-          beakerObj.beakerObjectToNotebook();
-          var r;
-          if (beakerObj.isCircularObject(modelOutput.result))
-            r = "ERROR: circular objects are not supported";
-          else
-            r = beakerObj.transform(modelOutput.result);
+                                           {status: "ERROR", payload: r},
+                                           PLUGIN_NAME);
           deferred.reject(r);
-          beakerObj.clearOutput();
         }
-      }, 0)
+      }, 0);
+
       return deferred.promise;
     },
     spec: {

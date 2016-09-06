@@ -24,34 +24,10 @@
     return {
       link: function(scope, element, attrs) {
         scope.$watch('model.getCellModel()', function(newValue) {
-          var start = new Date().getTime();
-          var deferred = bkHelper.newDeferred();
-          var beakerObj = bkHelper.getBeakerObject();
-
           try {
             katex.render(newValue, element[0], {throwOnError : false});
           } catch(err) {
-            var modelOutput = {
-              result: {
-                status: 'ERROR',
-                object:{
-                  startTime: start,
-                  outputdata: '',
-                  payload: err.message
-                }
-              }
-            };
-
-            beakerObj.setupBeakerObject(modelOutput);
-            window.beaker = beakerObj.beakerObj;
-
-            bkHelper.receiveEvaluationUpdate(modelOutput,
-              {status: "ERROR", payload: err.message},
-              PLUGIN_NAME);
-            beakerObj.notebookToBeakerObject();
-            
-            beakerObj.clearOutput();
-            deferred.reject(err.message);
+            console.log(err.message);
             // bkHelper.show1ButtonModal(err.message+'<br>See: <a target="_blank" href="http://khan.github.io/KaTeX/">KaTeX website</a> and its <a target="_blank" href="https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX">list of supported functions</a>.', "KaTex error");
           }
         });

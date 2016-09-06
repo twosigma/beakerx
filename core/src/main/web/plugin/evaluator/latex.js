@@ -28,15 +28,57 @@ define(function(require, exports, module) {
     borderColor: "3D4444",
     shortName: "Tx",
     tooltip: "TeX is Donald Knuth's mathematical typesetting language.",
-    evaluate: function(code, modelOutput) {
+    evaluate: function(code, modelOutput, refreshObj) {
       var startTime = new Date().getTime();
-      return bkHelper.fcall(function() {
-        modelOutput.result = {
-          type: "BeakerDisplay",
-          innertype: "Latex",
-          object: code};
-        modelOutput.elapsedTime = new Date().getTime() - startTime;
-      });
+      var deferred = bkHelper.newDeferred();
+
+      bkHelper.timeout(function() {
+        try {
+          var tempElement = document.createElement('span');
+          katex.render(code, tempElement, {throwOnError: false});
+          return bkHelper.fcall(function() {
+            modelOutput.result = {
+              type: "BeakerDisplay",
+              innertype: "Latex",
+              object: code
+            };
+            modelOutput.elapsedTime = new Date().getTime() - startTime;
+          });
+        } catch(err) {
+          var beakerObj = bkHelper.getBeakerObject();
+          var progressObj = {
+            type: "BeakerDisplay",
+            innertype: "Progress",
+            object: {
+              message: "running...",
+              startTime: new Date().getTime(),
+              outputdata: []
+            }
+          };
+          modelOutput.result = progressObj;
+          if (refreshObj !== undefined)
+            refreshObj.outputRefreshed();
+          else
+            bkHelper.refreshRootScope();
+
+          beakerObj.setupBeakerObject(modelOutput);
+          beakerObj.notebookToBeakerObject();
+          window.beaker = beakerObj.beakerObj;
+
+
+          bkHelper.receiveEvaluationUpdate(modelOutput,
+            {status: "ERROR", payload: err.message}, PLUGIN_NAME);
+          beakerObj.beakerObjectToNotebook();
+          var r;
+          if (beakerObj.isCircularObject(modelOutput.result))
+            r = "ERROR: circular objects are not supported";
+          else
+            r = beakerObj.transform(modelOutput.result);
+          deferred.reject(r);
+          beakerObj.clearOutput();
+        }
+      }, 0)
+      return deferred.promise;
     },
     spec: {
     }

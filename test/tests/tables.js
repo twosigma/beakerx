@@ -50,11 +50,41 @@ describe('Beaker Tables', function () {
       });
     });
 
-    it('should be sorted by 1 column (asc)', function (done) {
+    it('should be sorted by server (jscript)', function (done) {
       beakerPO.getCodeOutputCellIdBySectionTitle('Table with Index column').then(function (v) {
         beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
-        beakerPO.checkClass(beakerPO.getDataTablesColumnByIdCell(v, 0), 'sorting_1');
+        beakerPO.checkDataTableBodyByIdCell(v, 5, '4 up 2300000.0000');
+        beakerPO.getDataTablesScrollHeadByIdCell(v).all(by.css('th')).get(0).click();
+        beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
         beakerPO.checkDataTableBodyByIdCell(v, 5, '0 strange 95000000.0000');
+        done();
+      });
+    });
+
+    function checkColumn(idCell, columnIndx, values){
+      var i;
+      for(i = 0; i < values.length; i++){
+        beakerPO.checkSubString(beakerPO.getDataTablesTBodyByIdCell(idCell).get(i).all(by.css('td')).get(columnIndx), values[i], 0, 1);
+      }
+    }
+
+    it("Column 'A' should be timedelta (IPython)", function (done) {
+      beakerPO.getCodeOutputCellIdBySectionTitle('Table with timedelta column').then(function (v) {
+        beakerPO.clickCodeCellInputButtonByIdCell(v, 'Table');
+        var arrTd0 = beakerPO.getDataTablesTBodyByIdCell(v).get(0).all(by.css('td'));
+        expect(arrTd0.count()).toBe(4);
+        arrTd0.get(1).getText().then(function (str) {
+          expect(str).toMatch(/\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/);
+        });
+        checkColumn(v, 2, ['3', '7', '1']);
+        done();
+      });
+    });
+
+    it("Column 'B' should be sorted (IPython)", function (done) {
+      beakerPO.getCodeOutputCellIdBySectionTitle('Sort values').then(function (v) {
+        beakerPO.clickCodeCellInputButtonByIdCell(v, 'Table');
+        checkColumn(v, 2, ['1', '3', '7']);
         done();
       });
     });
@@ -120,6 +150,8 @@ describe('Beaker Tables', function () {
         'Copy to Clipboard',
         'Save All as CSV',
         'Save Selected as CSV',
+        'Download All as CSV',
+        'Download Selected as CSV',
         'Show All Columns',
         'Show Column',
         'Hide All Columns',

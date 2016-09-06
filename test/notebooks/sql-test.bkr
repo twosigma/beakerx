@@ -1,0 +1,738 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            },
+            "languageVersion": "ES2015"
+        },
+        {
+            "name": "SQL",
+            "plugin": "SQL",
+            "imports": "",
+            "view": {
+                "cm": {
+                    "mode": "text/x-sql"
+                }
+            },
+            "classPath": "",
+            "datasorces": "",
+            "outdir": "123",
+            "defaultDatasource": "jdbc:h2:mem:db1",
+            "datasources": "chemistry=jdbc:h2:mem:chemistry"
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectionD3vV5U",
+            "type": "section",
+            "title": "SQL Tests",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "sectiongbsEYV",
+            "type": "section",
+            "title": "Basic Query",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codef4U7zn",
+            "type": "code",
+            "evaluator": "SQL",
+            "input": {
+                "body": [
+                    "SELECT * FROM color;"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "ID",
+                            "NAME",
+                            "CODE"
+                        ],
+                        "actualtype": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": [],
+                        "headerFontSize": null,
+                        "dataFontSize": null,
+                        "fontColor": [],
+                        "headersVertical": false
+                    }
+                },
+                "selectedType": "Table",
+                "pluginName": "SQL",
+                "shellId": "1dc4e979-1d5e-4862-b2f2-ecc37f1a56d2",
+                "elapsedTime": 130,
+                "result": {
+                    "hasDoubleClickAction": false,
+                    "doubleClickTag": null,
+                    "contextMenuItems": [],
+                    "contextMenuTags": {},
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "ID",
+                        "NAME",
+                        "CODE"
+                    ],
+                    "types": [
+                        "java.lang.Integer",
+                        "java.lang.String",
+                        "java.lang.String"
+                    ],
+                    "subtype": "TableDisplay",
+                    "stringFormatForTimes": null,
+                    "stringFormatForType": {},
+                    "stringFormatForColumn": {},
+                    "rendererForType": {},
+                    "rendererForColumn": {},
+                    "alignmentForType": {},
+                    "alignmentForColumn": {},
+                    "columnsFrozen": {},
+                    "columnsFrozenRight": {},
+                    "columnsVisible": {},
+                    "columnOrder": [],
+                    "cellHighlighters": [],
+                    "tooltips": [],
+                    "dataFontSize": null,
+                    "headerFontSize": null,
+                    "fontColor": [],
+                    "headersVertical": false,
+                    "values": [
+                        [
+                            1,
+                            "'hello'",
+                            "code"
+                        ],
+                        [
+                            2,
+                            "o\\u201Cbrien",
+                            "code2"
+                        ],
+                        [
+                            3,
+                            "mc0xE2drive",
+                            "code3"
+                        ],
+                        [
+                            4,
+                            "ściepkę zdrowia",
+                            "code4"
+                        ],
+                        [
+                            1001,
+                            "âAlice'Blue'",
+                            "#F0F8FF"
+                        ],
+                        [
+                            1002,
+                            "0xE2Antique\"White\"",
+                            "#FAEBD7"
+                        ],
+                        [
+                            1003,
+                            "Aqua",
+                            "#00FFFF"
+                        ],
+                        [
+                            1004,
+                            "Aquama\nrine",
+                            "#7FFFD4"
+                        ],
+                        [
+                            1005,
+                            "Azure + char(39)",
+                            "#F0FFFF"
+                        ],
+                        [
+                            1006,
+                            "`Beige`",
+                            "#F5F5DC"
+                        ],
+                        [
+                            1007,
+                            "Bisque",
+                            "#FFE4C4"
+                        ],
+                        [
+                            1008,
+                            "Black\u0000and\r\n'White'",
+                            "#000000"
+                        ]
+                    ]
+                },
+                "height": 399
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "section5arlN2",
+            "type": "section",
+            "title": "Initialize the Databases",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownLWlLbm",
+            "type": "markdown",
+            "body": [
+                "This section is run automatically when the notebook is opened.  It creates a test database and adds some test records and tables to it."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "code1XuTjx",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.colorsArray = [",
+                    "  {name: '\\u201CAlice\\'Blue\\'', code: '#F0F8FF'},",
+                    "  {name: '0xE2Antique\"White\"', code: '#FAEBD7' },",
+                    "  {name: \"Aqua\", code: '#00FFFF'},",
+                    "  {name: 'Aquama\\nrine', code: '#7FFFD4'},",
+                    "  {name: 'Azure + char(39)', code: '#F0FFFF'},",
+                    "  {name: '`Beige`', code: '#F5F5DC'},",
+                    "  {name: 'Bisque', code: '#FFE4C4'},",
+                    "  {name: \"Black\\0and\\r\\n'White'\", code: '#000000'}];",
+                    "beaker.idArray = [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008];"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 120,
+                "hidden": true,
+                "result": [
+                    1001,
+                    1002,
+                    1003,
+                    1004,
+                    1005,
+                    1006,
+                    1007,
+                    1008
+                ],
+                "height": 56
+            },
+            "evaluatorReader": true,
+            "lineCount": 10,
+            "initialization": true
+        },
+        {
+            "id": "codeKwTSKL",
+            "type": "code",
+            "evaluator": "SQL",
+            "input": {
+                "body": [
+                    "drop table if exists color;",
+                    "CREATE TABLE color (",
+                    "  id int(11) NOT NULL,",
+                    "  name varchar(45) NOT NULL,",
+                    "  code varchar(10),",
+                    "  PRIMARY KEY (id)",
+                    ");",
+                    "",
+                    "INSERT INTO color VALUES (${idArray[*]}, ${colorsArray[*].name}, ${colorsArray[*].code});"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Hidden",
+                "pluginName": "SQL",
+                "shellId": "665f5877-fc80-4338-9b70-0362c2babe7f",
+                "elapsedTime": 1438
+            },
+            "evaluatorReader": true,
+            "lineCount": 9,
+            "initialization": true
+        },
+        {
+            "id": "codeEo04cq",
+            "type": "code",
+            "evaluator": "SQL",
+            "input": {
+                "body": [
+                    "INSERT INTO color VALUES (1, CONCAT(char(39), 'hello', char(39)), 'code');",
+                    "INSERT INTO color VALUES (2, 'o\\u201Cbrien', 'code2');",
+                    "INSERT INTO color VALUES (3, 'mc0xE2drive', 'code3');",
+                    "INSERT INTO color VALUES (4, N'ściepkę zdrowia', 'code4');"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Hidden",
+                "pluginName": "SQL",
+                "shellId": "1dc4e979-1d5e-4862-b2f2-ecc37f1a56d2",
+                "elapsedTime": 37
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
+        }
+    ],
+    "namespace": {
+        "rtable": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    "zip",
+                    1036
+                ],
+                [
+                    "state",
+                    "MA"
+                ],
+                [
+                    "city",
+                    "Hampden"
+                ],
+                [
+                    "lat",
+                    42.064756
+                ],
+                [
+                    "lng",
+                    -72.431823
+                ]
+            ],
+            "subtype": "Dictionary",
+            "columnNames": [
+                "Key",
+                "Value"
+            ]
+        },
+        "rtable2": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    "zip",
+                    1036
+                ],
+                [
+                    "state",
+                    "MA"
+                ],
+                [
+                    "city",
+                    "Hampden"
+                ],
+                [
+                    "lat",
+                    42.064756
+                ],
+                [
+                    "lng",
+                    -72.431823
+                ]
+            ],
+            "subtype": "Dictionary",
+            "columnNames": [
+                "Key",
+                "Value"
+            ]
+        },
+        "bkt1": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "Key",
+                "Value"
+            ],
+            "values": [
+                [
+                    "zip",
+                    1036
+                ],
+                [
+                    "state",
+                    "MA"
+                ],
+                [
+                    "city",
+                    "Hampden"
+                ],
+                [
+                    "lat",
+                    42.064756
+                ],
+                [
+                    "lng",
+                    -72.431823
+                ]
+            ],
+            "subtype": "Dictionary"
+        },
+        "bkt2": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "zip",
+                "city"
+            ],
+            "values": [
+                [
+                    1068,
+                    "Oakham"
+                ],
+                [
+                    1069,
+                    "Palmer"
+                ],
+                [
+                    1070,
+                    "Plainfield"
+                ],
+                [
+                    1071,
+                    "Russell"
+                ],
+                [
+                    1072,
+                    "Shutesbury"
+                ],
+                [
+                    1073,
+                    "Southampton"
+                ],
+                [
+                    1075,
+                    "South Hadley"
+                ],
+                [
+                    1077,
+                    "Southwick"
+                ],
+                [
+                    1080,
+                    "Three Rivers"
+                ],
+                [
+                    1081,
+                    "Wales"
+                ]
+            ],
+            "types": [
+                "java.lang.Integer",
+                "java.lang.String"
+            ],
+            "subtype": "TableDisplay"
+        },
+        "ttt": 222,
+        "ttt1": 10009,
+        "cid": 111,
+        "cname": "NewYork",
+        "cdate": {
+            "type": "Date",
+            "timestamp": 1443377285008
+        },
+        "city": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    "cid",
+                    112
+                ],
+                [
+                    "cname",
+                    "New York"
+                ]
+            ],
+            "subtype": "Dictionary",
+            "columnNames": [
+                "Key",
+                "Value"
+            ]
+        },
+        "states": [
+            "VT",
+            "AL",
+            "NY",
+            "IN",
+            "IL"
+        ],
+        "cities": {
+            "type": "TableDisplay",
+            "subtype": "ListOfMaps",
+            "columnNames": [
+                "cid",
+                "cname"
+            ],
+            "values": [
+                [
+                    113,
+                    "York"
+                ],
+                [
+                    114,
+                    "Yorkville"
+                ]
+            ],
+            "types": [
+                "double",
+                "string"
+            ]
+        },
+        "colorsArray": {
+            "type": "TableDisplay",
+            "subtype": "ListOfMaps",
+            "columnNames": [
+                "name",
+                "code"
+            ],
+            "values": [
+                [
+                    "“Alice'Blue'",
+                    "#F0F8FF"
+                ],
+                [
+                    "0xE2Antique\"White\"",
+                    "#FAEBD7"
+                ],
+                [
+                    "Aqua",
+                    "#00FFFF"
+                ],
+                [
+                    "Aquama\nrine",
+                    "#7FFFD4"
+                ],
+                [
+                    "Azure + char(39)",
+                    "#F0FFFF"
+                ],
+                [
+                    "`Beige`",
+                    "#F5F5DC"
+                ],
+                [
+                    "Bisque",
+                    "#FFE4C4"
+                ],
+                [
+                    "Black\u0000and\r\n'White'",
+                    "#000000"
+                ]
+            ],
+            "types": [
+                "string",
+                "string"
+            ]
+        },
+        "idArray": [
+            1001,
+            1002,
+            1003,
+            1004,
+            1005,
+            1006,
+            1007,
+            1008
+        ],
+        "colorTable": {
+            "type": "TableDisplay",
+            "subtype": "TableDisplay",
+            "hasIndex": "false",
+            "values": [
+                [
+                    1001,
+                    "AliceBlue",
+                    "#F0F8FF"
+                ],
+                [
+                    1002,
+                    "AntiqueWhite",
+                    "#FAEBD7"
+                ],
+                [
+                    1003,
+                    "Aqua",
+                    "#00FFFF"
+                ],
+                [
+                    1004,
+                    "Aquamarine",
+                    "#7FFFD4"
+                ],
+                [
+                    1005,
+                    "Azure",
+                    "#F0FFFF"
+                ],
+                [
+                    1006,
+                    "Beige",
+                    "#F5F5DC"
+                ],
+                [
+                    1007,
+                    "Bisque",
+                    "#FFE4C4"
+                ],
+                [
+                    1008,
+                    "Black",
+                    "#000000"
+                ]
+            ],
+            "types": [
+                "java.lang.Integer",
+                "java.lang.String",
+                "java.lang.String"
+            ],
+            "columnNames": [
+                "ID",
+                "NAME",
+                "CODE"
+            ]
+        },
+        "mysqlds": "jdbc:mysql://localhost:3306/test?user=root&password=root",
+        "H2MemDB2": "jdbc:h2:mem:db1",
+        "size": [
+            145,
+            277
+        ],
+        "id": 1003,
+        "peopleArray": {
+            "type": "TableDisplay",
+            "subtype": "ListOfMaps",
+            "columnNames": [
+                "name",
+                "born"
+            ],
+            "values": [
+                [
+                    "Jacob Berzelius",
+                    1779
+                ],
+                [
+                    "Robert Boyle",
+                    1627
+                ],
+                [
+                    "John Dalton",
+                    1766
+                ],
+                [
+                    "Antoine Lavoisier",
+                    1743
+                ]
+            ],
+            "types": [
+                "string",
+                "double"
+            ]
+        },
+        "elementsArray": {
+            "type": "TableDisplay",
+            "subtype": "ListOfMaps",
+            "columnNames": [
+                "name",
+                "number"
+            ],
+            "values": [
+                [
+                    "Hydrogen",
+                    1
+                ],
+                [
+                    "Helium",
+                    2
+                ],
+                [
+                    "Lithium",
+                    3
+                ],
+                [
+                    "Beryllium",
+                    4
+                ]
+            ],
+            "types": [
+                "string",
+                "double"
+            ]
+        },
+        "moleculesArray": {
+            "type": "TableDisplay",
+            "subtype": "ListOfMaps",
+            "columnNames": [
+                "name",
+                "molarmass"
+            ],
+            "values": [
+                [
+                    "Water",
+                    18.01
+                ],
+                [
+                    "Methane",
+                    16.04
+                ],
+                [
+                    "Lithium nitride",
+                    34.83
+                ],
+                [
+                    "Ammonia",
+                    17.03
+                ]
+            ],
+            "types": [
+                "string",
+                "double"
+            ]
+        }
+    },
+    "metadata": {
+        "publication-id": "560b4a2f-546b-4929-acd7-0d47365b896e"
+    }
+}

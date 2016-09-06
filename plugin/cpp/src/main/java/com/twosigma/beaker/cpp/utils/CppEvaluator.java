@@ -56,8 +56,13 @@ import com.twosigma.beaker.cpp.utils.Extractor;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Lexer;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Parser;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Listener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CppEvaluator {
+
+  private static final Logger logger = LoggerFactory.getLogger(CppEvaluator.class.getName());
+
   protected final String shellId;
   protected final String sessionId;
   protected final String packageId;
@@ -312,12 +317,12 @@ public class CppEvaluator {
           ProcessBuilder pb;
 
           if(System.getenv("BEAKER_CPP_DEBUG") != null ) {
-            System.out.println("Compiling with:");
+            logger.info("Compiling with:");
             StringBuilder builder = new StringBuilder();
             for (String s : clangCommand){
               builder.append(s + " ");
             }
-            System.out.println(builder.toString());
+            logger.info(builder.toString());
           }
           
           // Compile
@@ -368,10 +373,10 @@ public class CppEvaluator {
                 ret = input.readObject();
                 theOutput.finished(ret);
               } catch (EOFException ex){
-                System.out.println("EOFException!");
+                logger.info("EOFException!");
                 theOutput.error("Failed to read serialized cell output");
               } catch(IOException ex){
-                System.out.println("IOException!");
+                logger.info("IOException!");
                 theOutput.error("Failed to read serialized cell output");
               }
             } else {

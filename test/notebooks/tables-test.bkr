@@ -6,7 +6,7 @@
             "plugin": "HTML",
             "view": {
                 "cm": {
-                    "mode": "htmlmixed"
+                    "mode": "smartHTMLMode"
                 }
             }
         },
@@ -20,6 +20,16 @@
                 }
             },
             "languageVersion": "ES2015"
+        },
+        {
+            "name": "IPython",
+            "plugin": "IPython",
+            "setup": "%matplotlib inline\nimport numpy\nimport matplotlib\nfrom matplotlib import pylab, mlab, pyplot\nnp = numpy\nplt = pyplot\nfrom IPython.display import display\nfrom IPython.core.pylabtools import figsize, getfigs\nfrom pylab import *\nfrom numpy import *\n",
+            "view": {
+                "cm": {
+                    "mode": "python"
+                }
+            }
         }
     ],
     "cells": [
@@ -184,6 +194,7 @@
                         "columnSearchActive": false,
                         "columnFilter": [],
                         "columnWidth": [],
+                        "formatForTimes": {},
                         "stringFormatForType": {},
                         "stringFormatForColumn": {},
                         "tooltips": []
@@ -233,11 +244,237 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 56,
+                "elapsedTime": 67,
                 "height": 210
             },
             "evaluatorReader": true,
             "lineCount": 7
+        },
+        {
+            "id": "sectionlvB2wq",
+            "type": "section",
+            "title": "Table with timedelta column",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeKy8SdM",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "import pandas as pd",
+                    "import numpy as np",
+                    "df = pd.DataFrame(np.array([[2, 3, 9], [7, 7, 5], [4, 1, 8]]), columns=['A', 'B', 'C'])",
+                    "df.A = pd.to_timedelta(df.A)",
+                    "df"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "A",
+                            "B",
+                            "C"
+                        ],
+                        "actualtype": [
+                            8,
+                            2,
+                            2
+                        ],
+                        "actualalign": [
+                            "C",
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
+                    }
+                },
+                "result": {
+                    "columnNames": [
+                        "Index",
+                        "A",
+                        "B",
+                        "C"
+                    ],
+                    "subtype": "TableDisplay",
+                    "values": [
+                        [
+                            0,
+                            null,
+                            3,
+                            9
+                        ],
+                        [
+                            1,
+                            null,
+                            7,
+                            5
+                        ],
+                        [
+                            2,
+                            null,
+                            1,
+                            8
+                        ]
+                    ],
+                    "hasIndex": "true",
+                    "type": "TableDisplay",
+                    "types": [
+                        "integer",
+                        "datetime",
+                        "integer",
+                        "integer"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "IPython",
+                "shellId": "AE8C391F58444560831004CC936B0DEB",
+                "elapsedTime": 480,
+                "height": 156
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "sectionaydYXJ",
+            "type": "section",
+            "title": "Sort values",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codetSgbEL",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "df.sort_values('B')"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "A",
+                            "B",
+                            "C"
+                        ],
+                        "actualtype": [
+                            8,
+                            2,
+                            2
+                        ],
+                        "actualalign": [
+                            "C",
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
+                    }
+                },
+                "result": {
+                    "columnNames": [
+                        "Index",
+                        "A",
+                        "B",
+                        "C"
+                    ],
+                    "subtype": "TableDisplay",
+                    "values": [
+                        [
+                            2,
+                            null,
+                            1,
+                            8
+                        ],
+                        [
+                            0,
+                            null,
+                            3,
+                            9
+                        ],
+                        [
+                            1,
+                            null,
+                            7,
+                            5
+                        ]
+                    ],
+                    "hasIndex": "true",
+                    "type": "TableDisplay",
+                    "types": [
+                        "integer",
+                        "datetime",
+                        "integer",
+                        "integer"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "IPython",
+                "shellId": "AE8C391F58444560831004CC936B0DEB",
+                "elapsedTime": 519,
+                "height": 156
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "sectionPL7Kx2",
@@ -329,7 +566,7 @@
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
                 "elapsedTime": 27,
-                "height": 117
+                "height": 102
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -521,6 +758,7 @@
                         "columnSearchActive": false,
                         "columnFilter": [],
                         "columnWidth": [],
+                        "formatForTimes": {},
                         "stringFormatForType": {},
                         "stringFormatForColumn": {},
                         "tooltips": []

@@ -399,6 +399,8 @@ class DataFrameEncoder(json.JSONEncoder):
                 out['values'] = values
                 return out
             return obj.to_dict()
+        if type(obj).__name__ == 'Timedelta' or type(obj).__name__ == 'TimedeltaIndex':
+            return
         return json.JSONEncoder.default(self, obj)
 
 class MyJSONFormatter(IPython.core.formatters.BaseFormatter):

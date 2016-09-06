@@ -23,8 +23,13 @@ import java.io.ObjectOutputStream;
 
 import com.twosigma.beaker.NamespaceClient;
 import org.apache.http.client.ClientProtocolException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CppKernel {
+
+  private static final Logger logger = LoggerFactory.getLogger(CppKernel.class.getName());
+
   public native void cInit(NamespaceClient nc);
   public native boolean cLoad(String fileName);
   public native Object cLoadAndRun(String fileName, String type);
@@ -44,9 +49,9 @@ public class CppKernel {
     try {
       ret = nc.get(name);
     } catch (ClientProtocolException ex){
-      System.out.println("Client Protocol Exception");
+      logger.warn("Client Protocol Exception");
     } catch (IOException ex){
-      System.out.println("IOException!");
+      logger.warn("IOException!");
     }
     return ret;
   }
@@ -55,10 +60,10 @@ public class CppKernel {
     try {
       nc.set(name, value);
     } catch (ClientProtocolException ex){
-      System.out.println("Client Protocol Exception");
+      logger.warn("Client Protocol Exception");
       return 0;
     } catch (IOException ex){
-      System.out.println("IOException!");
+      logger.warn("IOException!");
       return 0;
     }
     return 1;
@@ -80,7 +85,7 @@ public class CppKernel {
       output.writeObject(ret);
       output.close();
     } catch(IOException ex){
-      System.out.println("Could not load file");
+      logger.warn("Could not load file");
       return 1;
     }
 

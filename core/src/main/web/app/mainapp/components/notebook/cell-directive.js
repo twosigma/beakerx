@@ -69,6 +69,22 @@
             addItem: function(menuItem) {
               this.items.push(menuItem);
             },
+            changeSortOrder: function(opts) {
+              var item = _.findWhere(this.items,
+                {name: opts.name}
+              );
+              if(item){
+                item.sortorder = opts.sortorder;
+              }
+            },
+            addSeparator: function(itemName) {
+              var item = _.findWhere(this.items,
+                {name: itemName}
+              );
+              if(item){
+                item.separator = true;
+              }
+            },
             addItemToHead: function(menuItem) {
               this.items.splice(0, 0, menuItem);
             },
@@ -212,32 +228,28 @@
         $scope.isLockedCell = function() {
           return $scope.cellmodel.locked;
         };
-
-        $scope.cellview.menu.addItem({
-          name: 'Delete cell',
-          shortcut: ['Ctrl-Alt-D', 'Alt-Cmd-Backspace'],
-          action: $scope.deleteCell,
-          locked: function () {
-            return $scope.isLockedCell();
+        
+        $scope.lockUnlockCell = function() {
+          bkSessionManager.setNotebookModelEdited(true);
+          if ($scope.isLockedCell()) {
+            $scope.cellmodel.locked = undefined;
+          } else {
+            $scope.cellmodel.locked = true;
           }
-        });
+        };
 
         $scope.cellview.menu.addItem({
-          name: 'Move up',
-          shortcut: ['Ctrl-Alt-Up', 'Alt-Cmd-Up'],
-          action: $scope.moveCellUp,
-          disabled: $scope.moveCellUpDisabled
-        });
-
-        $scope.cellview.menu.addItem({
-          name: 'Move down',
-          shortcut: ['Ctrl-Alt-Down', 'Alt-Cmd-Down'],
-          action: $scope.moveCellDown,
-          disabled: $scope.moveCellDownDisabled
+          name: 'Lock Cell',
+          sortorder: 110,
+          isChecked: function() {
+            return $scope.isLockedCell();
+          },
+          action: $scope.lockUnlockCell
         });
 
         $scope.cellview.menu.addItem({
           name: 'Cut',
+          sortorder: 150,
           action: function() {
             notebookCellOp.cut($scope.cellmodel.id);
           },
@@ -247,27 +259,39 @@
         });
 
         $scope.cellview.menu.addItem({
-          name: 'Lock Cell',
-          isChecked: function() {
-            return $scope.isLockedCell();
-          },
-          action: function() {
-            bkSessionManager.setNotebookModelEdited(true);
-            if ($scope.isLockedCell()) {
-              $scope.cellmodel.locked = undefined;
-            } else {
-              $scope.cellmodel.locked = true;
-            }
-          }
-        });
-
-        $scope.cellview.menu.addItem({
           name: 'Paste (append after)',
+          sortorder: 160,
           disabled: function() {
             return !notebookCellOp.clipboard;
           },
           action: function() {
             notebookCellOp.paste($scope.cellmodel.id);
+          }
+        });
+
+        $scope.cellview.menu.addItem({
+          name: 'Move up',
+          sortorder: 210,
+          shortcut: ['Ctrl-Alt-Up', 'Alt-Cmd-Up'],
+          action: $scope.moveCellUp,
+          disabled: $scope.moveCellUpDisabled
+        });
+
+        $scope.cellview.menu.addItem({
+          name: 'Move down',
+          sortorder: 220,
+          shortcut: ['Ctrl-Alt-Down', 'Alt-Cmd-Down'],
+          action: $scope.moveCellDown,
+          disabled: $scope.moveCellDownDisabled
+        });
+
+        $scope.cellview.menu.addItem({
+          name: 'Delete cell',
+          sortorder: 230,
+          shortcut: ['Ctrl-Alt-D', 'Alt-Cmd-Backspace'],
+          action: $scope.deleteCell,
+          locked: function () {
+            return $scope.isLockedCell();
           }
         });
 

@@ -29,8 +29,6 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -38,6 +36,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of recent file manager that offers a RESTful API
@@ -47,6 +47,8 @@ import org.apache.commons.lang3.StringUtils;
 @Singleton
 @SuppressWarnings("unchecked")
 public class RecentMenuRest {
+
+  private final static Logger logger = LoggerFactory.getLogger(RecentMenuRest.class.getName());
 
   private final java.nio.file.Path recentDocumentsFile;
   private final Deque<String> recentDocuments;
@@ -64,8 +66,7 @@ public class RecentMenuRest {
       try {
         lines = Files.readAllLines(recentDocumentsFile, StandardCharsets.UTF_8);
       } catch (IOException ex) {
-        Logger.getLogger(RecentMenuRest.class.getName()).log(Level.WARNING,
-            "Failed to get recent documents", ex);
+        logger.warn("Failed to get recent documents", ex);
       }
     }
     for (String line: lines) {
@@ -94,8 +95,7 @@ public class RecentMenuRest {
     try {
       utils.setPermissions(this.recentDocumentsFile, PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
     } catch (IOException e) {
-      Logger.getLogger(RecentMenuRest.class.getName()).log(Level.WARNING,
-        "Unable to set permissions to recent document", e);
+      logger.warn("Unable to set permissions to recent document", e);
     }
   }
 

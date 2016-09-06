@@ -15,9 +15,6 @@
  */
 package com.twosigma.beaker.sqlsh.rest;
 
-import com.google.inject.Singleton;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
@@ -31,6 +28,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
+import com.google.inject.Singleton;
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.sqlsh.utils.ConnectionStringBean;
 
 @Path("sqlsh")
 @Produces(MediaType.APPLICATION_JSON)
@@ -147,6 +148,29 @@ public class SQLShellRest {
             return;
         }
         this.shells.get(shellId).setShellOptions(classPath, defaultDatasource, datasorces);
+    }
+    
+    @POST
+    @Path("getListOfConnectiononWhoNeedDialog")
+    public List<ConnectionStringBean> getListOfConnectiononWhoNeedDialog(
+        @FormParam("shellId") String shellId){
+      if (!this.shells.containsKey(shellId)) {
+        return null;
+      }
+      return this.shells.get(shellId).getListOfConnectiononWhoNeedDialog();
+    }
+    
+    @POST
+    @Path("setShellUserPassword")
+    public void setShellUserPassword(
+        @FormParam("shellId") String shellId,
+        @FormParam("namedConnection") String namedConnection,
+        @FormParam("user") String user,
+        @FormParam("password") String password){
+      if (!this.shells.containsKey(shellId)) {
+        return;
+      }
+      this.shells.get(shellId).setShellUserPassword(namedConnection, user, password);
     }
 
 }

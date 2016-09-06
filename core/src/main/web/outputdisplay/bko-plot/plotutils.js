@@ -157,6 +157,12 @@
       getDefaultFocus : function(model) {
         var ret = this.getDataRange(model.data);
         var range = ret.datarange, margin = model.margin;
+        if(ret.visibleItem === 0) { // for empty plot, focus needs to be adjusted
+          range.xl = model.xAxis.getPercent(range.xl);
+          range.xr = model.xAxis.getPercent(range.xr);
+          range.yl = model.yAxis.getPercent(range.yl);
+          range.yr = model.yAxis.getPercent(range.yr);
+        }
         var focus = {
           xl : model.userFocus.xl,
           xr : model.userFocus.xr,

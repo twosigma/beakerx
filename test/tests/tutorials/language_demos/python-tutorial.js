@@ -81,4 +81,14 @@ describe('Python Tutorial', function () {
         });
 
     });
+
+    describe('Autocomplete', function(){
+        it('Should hint "infty" ', function() {
+            browser.executeScript("window.scrollTo(0, 0);");
+            beakerPO.insertNewDefaultCell('IPython');
+            browser.actions().sendKeys("in").perform();
+            beakerPO.checkAutocomplete('infty');
+            beakerPO.selectItem('infty');
+        });
+    });
 });

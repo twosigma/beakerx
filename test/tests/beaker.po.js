@@ -102,15 +102,60 @@ var BeakerPageObject = function() {
   };
 
   this.setNormalEditMode = function() {
-    this.setEditMode().then(element(by.css('#normal-edit-mode-menuitem')).click);
+    var self = this;
+    element(by.css('.notebook-menu')).click()
+        .then(function(){self.activateEditModeMenuItem();})
+        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#edit-mode-menuitem'))), 5000);})
+        .then(function(){browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform(); browser.sleep(1000);})
+        .then(function(){self.activateNormalEditModeMenuItem(); browser.sleep(1000);})
+        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#normal-edit-mode-menuitem'))), 5000);})
+        .then(function(){console.log('normal-edit-mode-menuitem is visible'); element(by.css('#normal-edit-mode-menuitem')).click();});
   };
 
   this.setEmacsEditMode = function() {
-    this.setEditMode().then(element(by.css('#emacs-edit-mode-menuitem')).click);
+    this.setEditMode();
+    element(by.css('#emacs-edit-mode-menuitem')).click();
   };
 
   this.setVimEditMode = function () {
-    this.setEditMode().then(element(by.css('#vim-edit-mode-menuitem')).click);
+    var self = this;
+    element(by.css('.notebook-menu')).click()
+        .then(function(){self.activateEditModeMenuItem();})
+        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#edit-mode-menuitem'))), 5000);})
+        .then(function(){browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform(); browser.sleep(1000);})
+        .then(function(){self.activateVimEditModeMenuItem(); browser.sleep(1000);})
+        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#vim-edit-mode-menuitem'))), 5000);})
+        .then(function(){console.log('vim-edit-mode-menuitem is visible'); element(by.css('#vim-edit-mode-menuitem')).click();});
+  };
+
+  this.activateEditModeMenuItem = function() {
+    element(by.css('#edit-mode-menuitem')).isDisplayed()
+        .then(function(isVisible) {
+          console.log('EditModeMenuItem dislayed - ' + isVisible);
+          if (!isVisible) {
+            return element(by.css('.notebook-menu')).click();
+          }
+        }.bind(this));
+  };
+
+  this.activateVimEditModeMenuItem = function() {
+    element(by.css('#vim-edit-mode-menuitem')).isDisplayed()
+        .then(function(isVisible) {
+          console.log('VimEditModeMenuItem dislayed - ' + isVisible);
+          if (!isVisible) {
+            return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
+          }
+        }.bind(this));
+  };
+
+  this.activateNormalEditModeMenuItem = function() {
+    element(by.css('#normal-edit-mode-menuitem')).isDisplayed()
+        .then(function(isVisible) {
+          console.log('NormalEditModeMenuItem dislayed - ' + isVisible);
+          if (!isVisible) {
+            return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
+          }
+        }.bind(this));
   };
 
   this.setSublimeEditMode = function() {
@@ -200,6 +245,32 @@ var BeakerPageObject = function() {
     }.bind(this));
   };
 
+  this.activateLanguage = function(language) {
+    this.activateLanguageInManager(language);
+    this.waitForPlugin(language);
+    this.languageManagerCloseButton.click();
+  };
+
+  this.insertCellOfType = function(language) {
+    var self = this;
+    browser.wait(this.EC.visibilityOf(this.getCellEvaluatorMenu()), 5000)
+        .then(function(){ self.getCellEvaluatorMenu().click();})
+        .then(function(){ self.activateCellEvaluatorMenu(language);  browser.sleep(1000);})
+        .then(function(){ browser.wait(self.EC.visibilityOf(self.cellEvaluatorMenuItem(language)), 5000)})
+        .then(function(){ console.log('cellEvaluatorMenuItem is visible');
+          self.cellEvaluatorMenuItem(language).click();});
+  };
+
+  this.activateCellEvaluatorMenu = function(language) {
+    this.cellEvaluatorMenuItem(language).isDisplayed()
+        .then(function(isVisible) {
+          console.log('cellEvaluatorMenuItem dislayed - ' + isVisible);
+          if (!isVisible) {
+            return this.getCellEvaluatorMenu().click();
+          }
+        }.bind(this));
+  };
+
   this.languageManager = element(by.className('plugin-manager'));
   this.languageManagerButtonKnown = function(language) {
     return element(by.css('.plugin-manager .' + language + ' .plugin-known'));
@@ -216,24 +287,22 @@ var BeakerPageObject = function() {
   };
 
   this.languageManagerCloseButton = element(by.className('language-manager-close-button'));
-  this.insertCellButton = element(by.className('insert-cell'));
+  this.insertCellButton = element.all(by.className('insert-cell')).get(0);
   this.deleteCellButton = element(by.className('delete-cell'));
   this.evaluateButton = this.getEvaluateButton();
   this.modalDialogYesButton = element(by.css('.modal .yes'));
   this.modalDialogNoButton = element(by.css('.modal .no'));
   this.modalDialogCancelButton = element(by.css('.modal .cancel'));
 
-  this.cellEvaluatorMenu = element(by.css('.code-cell-area .cell-evaluator-menu'));
+  this.getCellEvaluatorMenu = function(){
+    return element.all(by.css('.code-cell-area .cell-evaluator-menu')).get(0);
+  }
   this.cellEvaluatorMenuItem = function(language) {
-    return element(by.css('.code-cell-area .' + language + '-menuitem'));
+    return element.all(by.css('.code-cell-area .' + language + '-menuitem')).get(0);
   };
   this.cellEvaluatorDisplay = element(by.css('.code-cell-area .cell-evaluator-menu b'));
 
   //Functions for access to plot elements
-
-  this.getCodeCellOutputByIndex = function (index) {
-    return element.all(by.css('.code-cell-output')).get(index);
-  };
 
   this.getPlotLabelgByIdCell = function (idCell, containerIdx) {
     return this.getPlotSvgByIdCell(idCell, containerIdx).element(By.id('labelg'));
@@ -294,10 +363,6 @@ var BeakerPageObject = function() {
     return this.insertCellButton.click();
   };
 
-  this.openSection = function() {
-    return element(by.css('.bksectiontoggleplus')).click();
-  };
-
   this.getCellOutput = function() {
     return element(by.css('bk-output-display > div'));
   };
@@ -306,28 +371,12 @@ var BeakerPageObject = function() {
     return element(by.css('.navbar-text > i'));
   };
 
-  this.waitForCellOutput = function(plugin) {
+  this.waitForCellOutput = function() {
     var self = this;
 
-    browser.wait(function() {
-      return self.getCellOutput().isPresent()
-      .then(function() {
-        return true;
-      })
-      .thenCatch(function() {
-        return false;
-      });
-    }, 10000);
-
-    return browser.wait(function() {
-      return self.getCellOutput().getText()
-      .then(function(txt) {
-        return txt.indexOf('Elapsed:') === -1;
-      })
-      .thenCatch(function() {
-        return false;
-      });
-    }, 10000);
+    this.waitUntilLoadingCellOutput().then(function(){
+      browser.wait(self.EC.not(self.EC.textToBePresentInElement($('bk-code-cell-output'), 'Elapsed:'), 10000));
+    });
   };
 
   this.waitForCellOutputByIdCell = function(idCell) {
@@ -351,7 +400,7 @@ var BeakerPageObject = function() {
   };
 
   this.waitUntilLoadingCellOutput = function() {
-    browser.wait(this.EC.presenceOf($('bk-code-cell-output')), 10000);
+    return browser.wait(this.EC.presenceOf($('bk-code-cell-output')), 10000);
   }
 
   this.hasClass =  function  (element, cls) {
@@ -477,22 +526,10 @@ var BeakerPageObject = function() {
     expect(this.getDtContainerByIdCell(idCell, containerIdx).isPresent()).toBe(true);
   }
 
-  this.getDtContainer = function(codeCellOutputIdx, containerIdx) {
-    if (!containerIdx)
-      containerIdx = 0;
-    return this.getCodeCellOutputByIndex(codeCellOutputIdx).all(By.css('.dtcontainer')).get(containerIdx);
-  }
-
   this.getDtContainerByIdCell = function(idCell, containerIdx) {
     if (!containerIdx)
       containerIdx = 0;
     return this.getCodeCellOutputByIdCell(idCell).all(By.css('.dtcontainer')).get(containerIdx);
-  }
-
-  this.getDataTablesScrollHead = function(codeCellOutputIdx, containerIdx){
-    if (!containerIdx)
-      containerIdx = 0;
-    return this.getDtContainer(codeCellOutputIdx, containerIdx).element(By.css('.dataTables_scrollHead'));
   }
 
   this.getDataTablesScrollHeadByIdCell = function(idCell, containerIdx){
@@ -501,20 +538,10 @@ var BeakerPageObject = function() {
     return this.getDtContainerByIdCell(idCell, containerIdx).element(By.css('.dataTables_scrollHead'));
   }
 
-  this.getDataTablesScrollBody = function(codeCellOutputIdx, containerIdx){
-    if (!containerIdx)
-      containerIdx = 0;
-    return this.getDtContainer(codeCellOutputIdx, containerIdx).element(By.css('.dataTables_scrollBody'));
-  }
-
   this.getDataTablesScrollBodyByIdCell = function(idCell, containerIdx){
     if (!containerIdx)
       containerIdx = 0;
     return this.getDtContainerByIdCell(idCell, containerIdx).element(By.css('.dataTables_scrollBody'));
-  }
-
-  this.getDataTablesTBody = function(codeCellOutputIdx){
-    return this.getDataTablesScrollBody(codeCellOutputIdx).all(By.css('tbody > tr'));
   }
 
   this.getDataTablesTBodyByIdCell = function (idCell) {
@@ -545,16 +572,8 @@ var BeakerPageObject = function() {
     return this.getDTFCLeftContainer(cellId).all(by.css('thead > tr'));
   };
 
-  this.getDTFCRightHeader = function (cellId) {
-    return this.getDTFCRightContainer(cellId).all(by.css('thead > tr'));
-  };
-
   this.getDTFCLeftColumn = function (cellId, colInd) {
     return this.getDTFCLeftBody(cellId).all(by.css('td')).get(colInd);
-  };
-
-  this.getDTFCRightColumn = function (cellId, colInd) {
-    return this.getDTFCRightBody(cellId).all(by.css('td')).get(colInd);
   };
 
   this.getDTFCLeftColumnHeader = function (cellId, colInd) {
@@ -613,10 +632,6 @@ var BeakerPageObject = function() {
     });
   };
 
-  this.checkDataTableHead = function(codeCellOutputIdx, headLabels){
-    expect(this.getDataTablesScrollHead(codeCellOutputIdx).getText()).toBe(headLabels);
-  }
-
   this.getDataTablesTHeadByIdCell = function(idCell){
     return this.getDataTablesScrollHeadByIdCell(idCell).all(By.css('thead > tr'));
   }
@@ -631,12 +646,6 @@ var BeakerPageObject = function() {
 
   this.checkDataTableHeadByIdCell = function(idCell, headLabels){
     expect(this.getDataTablesScrollHeadByIdCell(idCell).getText()).toBe(headLabels);
-  }
-
-  this.checkDataTableBody = function(codeCellOutputIdx, rowsCount, firstRow){
-    var tBody = this.getDataTablesTBody(codeCellOutputIdx);
-    expect(tBody.count()).toBe(rowsCount);
-    expect(tBody.get(0).getText()).toBe(firstRow);
   }
 
   this.checkDataTableBodyByIdCell = function(idCell, rowsCount, firstRow){
@@ -656,10 +665,6 @@ var BeakerPageObject = function() {
   this.getDataTableSearchInput = function (cellId) {
     return this.getDataTableSearchField(cellId).element(by.css('.filter-input'));
   };
-
-  this.checkCellOutputText = function(codeCellOutputIdx, outputText){
-    expect(this.getCodeCellOutputByIndex(codeCellOutputIdx).element(By.css('pre')).getText()).toBe(outputText);
-  }
 
   this.checkCellOutputTextByIdCell = function(idCell, outputText){
     expect(this.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText()).toBe(outputText);
@@ -852,18 +857,7 @@ var BeakerPageObject = function() {
   }
 
   this.checkSaveAsSvgPngByIdCell = function(idCell, filename){
-    var dir = path.join(__dirname, '../' ,"tmp");
-    if(!fs.existsSync(dir)){
-      fs.mkdirSync(dir);
-    }
-    var list = fs.readdirSync(dir);
-    list.forEach(function(file) {
-      file = path.join(dir, file);
-      var stat = fs.statSync(file)
-      if (stat && stat.isFile()){
-        fs.unlinkSync(file);
-      }
-    });
+    var dir = this.clearTmpDir();
 
     this.clickCellMenuSavePlotAs(idCell, 'SVG');
     var filenameSvg = path.join(dir, (filename + ".svg"));
@@ -891,6 +885,61 @@ var BeakerPageObject = function() {
     subMenu.click();
   }
 
+  this.checkSaveAsCsvByIdCell = function(idCell, filename){
+    var self = this;
+    var dir = this.clearTmpDir();
+    // Save All as csv
+    this.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="menuToggle()"]')).click()
+        .then(self.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="doCSVExport(false)"]')).click);
+    this.checkSaveTableAsCsv(self, dir, filename + "All.csv");
+    // Save Selected as csv
+    this.getDataTablesTBodyByIdCell(idCell).get(0).all(by.css('td')).get(0).click();
+    this.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="menuToggle()"]')).click()
+        .then(self.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="doCSVExport(true)"]')).click);
+    this.checkSaveTableAsCsv(self, dir, filename + "Selected.csv");
+  }
+
+  this.checkSaveTableAsCsv = function(self, dir, filename){
+    browser.wait(this.EC.presenceOf(element(by.css('input#file-dlg-selected-path'))), 10000).then(function(){
+      browser.wait(self.EC.not(self.EC.presenceOf(element(by.css('div.elfinder-notify-open')))), 20000).then(function(){
+        self.createScreenshot(filename);
+        var arrPath = dir.split(path.sep);
+        arrPath.forEach(function(item, i, arrPath) {
+          element(by.cssContainingText('span', item)).isPresent().then(function(present){
+            self.hasClass(element(by.cssContainingText('span', item)), 'elfinder-navbar-expanded').then(function(expand){
+              if(present && !expand){
+                element(by.cssContainingText('span', item)).click();
+              }
+            })
+          })
+        });
+        element(by.id('file-dlg-selected-path')).sendKeys(filename);
+        element(by.cssContainingText('button', 'Save')).click();
+        var filenameCsv = path.join(dir, (filename));
+        browser.wait(fs.existsSync.bind(this, filenameCsv), 10000).then(function(){
+          expect(fs.statSync(filenameCsv).isFile() && fs.existsSync(filenameCsv)).toBe(true);
+          browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+        });
+      });
+    });
+  }
+
+  this.clearTmpDir = function(){
+    var dir = path.join(__dirname, '../' ,"tmp");
+    if(!fs.existsSync(dir)){
+      fs.mkdirSync(dir);
+    }
+    var list = fs.readdirSync(dir);
+    list.forEach(function(file) {
+      file = path.join(dir, file);
+      var stat = fs.statSync(file)
+      if (stat && stat.isFile()){
+        fs.unlinkSync(file);
+      }
+    });
+    return dir;
+  }
+
   this.runBkCellDefaultButtonByIdCell = function(idCell){
     this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
   }
@@ -910,6 +959,26 @@ var BeakerPageObject = function() {
 
   this.getLiOutputcontainerByIdCell = function(idCell) {
     return this.getCodeCellOutputByIdCell(idCell).all(by.css('li.outputcontainer-li'));
+  }
+
+  this.checkAutocomplete = function(nameHint) {
+    browser.actions().sendKeys(protractor.Key.chord(protractor.Key.CONTROL, protractor.Key.SPACE)).perform().then(function(){
+      expect(element(by.cssContainingText('li.CodeMirror-hint', nameHint)).isPresent()).toBe(true);
+    });
+  };
+
+  this.insertNewDefaultCell = function(language){
+    element.all(by.css('button[ng-click="newDefaultCodeCell()"]')).get(0).click();
+    this.insertCellOfType(language);
+    var bkcell = element.all(by.css('bk-cell')).get(0);
+    bkcell.element(by.css('div.CodeMirror-code')).click();
+    return bkcell;
+  }
+
+  this.selectItem = function(itemName){
+    var item = element(by.cssContainingText('li.CodeMirror-hint', itemName));
+    item.click();
+    browser.actions().doubleClick(item).perform();
   }
 };
 module.exports = BeakerPageObject;

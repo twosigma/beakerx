@@ -45,6 +45,11 @@ describe('Table Display (Groovy API)', function (done) {
             beakerPO.checkDataTableHeadByIdCell(idCell, 'm3\ny30\ny1\nm6\ny2\ny10\ny3\ntime\ny5\ny7');
             beakerPO.checkDataTableBodyByIdCell(idCell, 25, '0 8 8.258571 7.920952 7.956190 8.085238 8.206667 :) 1990-01-31 8.119524 8.196190');
         });
+        it('Save as csv', function () {
+            var idCell = "codeaWwWKg";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.checkSaveAsCsvByIdCell(idCell, 'tableGroovy');
+        });
         it('Cell renderer', function () {
             var idCell = "codeROe5NG";
             beakerPO.scrollToBkCellByIdCell(idCell);

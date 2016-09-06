@@ -25,11 +25,21 @@ describe('JavaScript Tutorial', function () {
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fjs-examples.bkr&readOnly=true").then(done);
         beakerPO.waitUntilLoadingCellOutput();
+        browser.driver.manage().window().maximize();
     });
 
     afterAll(function(done){
         beakerPO.createScreenshot('javaScriptTutorial');
         done();
+    });
+
+    describe('Autocomplete', function(){
+        it('Should hint "toUpperCase" ', function() {
+            beakerPO.insertNewDefaultCell('JavaScript');
+            browser.actions().sendKeys("\'test\'.").perform();
+            beakerPO.checkAutocomplete('toUpperCase');
+            beakerPO.selectItem('toUpperCase');
+        });
     });
 
     describe('JavaScript Examples', function () {
@@ -68,6 +78,11 @@ describe('JavaScript Tutorial', function () {
                 beakerPO.scrollToBkCellByIdCell(idCell);
                 beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
                 beakerPO.checkTablesRowsByIdCell(idCell, 5);
+            });
+            it('Save as csv', function () {
+                var idCell = "codeq2N3Fu";
+                beakerPO.scrollToBkCellByIdCell(idCell);
+                beakerPO.checkSaveAsCsvByIdCell(idCell, 'tableJs');
             });
             it('should add row', function(){
                 var idCell = "codebUXwTB";

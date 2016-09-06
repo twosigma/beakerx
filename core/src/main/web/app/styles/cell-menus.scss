@@ -52,6 +52,7 @@ bk-new-cell-menu {
 
 .locked .toggle-menu {
   display: none;
+  z-index: 1;
 }
 
 .locked-cell-menu {
@@ -71,7 +72,6 @@ bk-new-cell-menu {
   padding-right: $grid-gutter-width;
   &.wide {
     width: 100%;
-    overflow: hidden;
     background: none;
   }
   .mini-cell-stats {
@@ -118,6 +118,9 @@ bk-new-cell-menu {
 
   &.move-cell-down {
     background-image: url(../images/down_white@2x.png);
+  }
+  
+  &.hover-item {
   }
 
   &.expand-contract {
@@ -170,6 +173,10 @@ bk-new-cell-menu {
   background: url(../images/down@2x.png) no-repeat center;
   background-size: 8px;
 }
+
+.hover-item {
+  color: #a1a1a1;
+ }
 
 .expand-contract {
   background: url(../images/collapse@2x.png) no-repeat center {

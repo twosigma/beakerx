@@ -86,4 +86,6 @@ $ui-icons: url('../images/ambiance/ui-icons_ambiance_256x240.png');
 
 @import "base-theme";
 
-.beaker-theme-ambiance { @extend .base-theme; }
+.beaker-theme-ambiance {
+  @extend .base-theme;
+}

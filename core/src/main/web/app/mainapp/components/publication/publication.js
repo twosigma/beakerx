@@ -57,11 +57,31 @@
         return bkPublicationAuth.currentUser();
       };
 
-      function defaultName() {
-        var section = _.find(notebook.cells, function(cell) {
-          return cell.type === 'section';
+
+      function getNotebookCell(type){
+        return _.find(notebook.cells, function(cell) {
+          return cell.type === type;
         });
-        return section && section.title;
+      }
+
+      function defaultName() {
+        var note = getNotebookCell('section');
+
+        if(!note || !note.title){
+          note = getNotebookCell('markdown');
+          if(note && !note.title){
+            note.title = note.body.substring(0, Math.min(30, note.body.length));
+          }
+        }
+
+        if(!note || !note.title){
+          note = getNotebookCell('code');
+          if(note && !note.title){
+            note.title = note.input.body.substring(0, Math.min(30, note.input.body.length));
+          }
+        }
+
+        return note && note.title;
       }
 
       function initNodes(categories) {

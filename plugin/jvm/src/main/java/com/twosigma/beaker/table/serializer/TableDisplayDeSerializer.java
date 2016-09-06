@@ -23,17 +23,17 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class TableDisplayDeSerializer implements ObjectDeserializer {
-  private final static Logger logger = Logger.getLogger(TableDisplayDeSerializer.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(TableDisplayDeSerializer.class.getName());
   private final BeakerObjectConverter parent;
 
   public TableDisplayDeSerializer(BeakerObjectConverter p) {
@@ -142,7 +142,7 @@ public class TableDisplayDeSerializer implements ObjectDeserializer {
         }
       }
     } catch (Exception e) {
-      logger.log(Level.SEVERE, "exception deserializing TableDisplay ", e);
+      logger.error("exception deserializing TableDisplay ", e);
     }
     return new ImmutablePair<String, Object>(subtype, o);
   }

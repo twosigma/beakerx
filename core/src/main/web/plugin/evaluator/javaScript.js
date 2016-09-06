@@ -270,7 +270,11 @@ define(function(require, exports, module) {
           // more info: http://stackoverflow.com/questions/19357978/indirect-eval-call-in-strict-mode
           var output = (0, eval)(code);
           beakerObj.beakerObjectToNotebook();
-          if ( typeof output === 'object' ) {
+          if(output === null){
+            bkHelper.receiveEvaluationUpdate(modelOutput, {status: "FINISHED", payload: "null"}, PLUGIN_NAME);
+            beakerObj.clearOutput();
+            deferred.reject();
+          }else if ( typeof output === 'object' ) {
             if(typeof output.promise === 'object' && typeof output.promise.then === 'function') {
               output = output.promise;
             }

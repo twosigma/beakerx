@@ -178,12 +178,15 @@
             $event.stopPropagation();
           }
 
+          var deferred = bkUtils.newDeferred();
           $scope.cellmodel.output.state = {};
-          bkCoreManager.getBkApp().evaluateRoot($scope.cellmodel).
-              catch(function(data) {
-                console.log('Evaluation failed');
-              });
+          bkCoreManager.getBkApp().evaluateRoot($scope.cellmodel).then(deferred.resolve, function (error) {
+            console.log('Evaluation failed');
+            deferred.reject(error);
+          });
+          return deferred.promise;
         };
+
         $scope.isCellRunning = function () {
           return bkCoreManager.getBkApp().isRunning($scope.cellmodel.id);
         };
@@ -271,43 +274,8 @@
         };
 
         $scope.cellmenu.addItem({
-          name: 'Show input cell',
-          isChecked: function() {
-            return !$scope.cellmodel.input.hidden;
-          },
-          action: function() {
-            if ($scope.cellmodel.input.hidden) {
-              delete $scope.cellmodel.input.hidden;
-            } else {
-              $scope.cellmodel.input.hidden = true;
-            }
-          },
-          locked: function () {
-            return $scope.isLockedCell();
-          }
-        });
-        $scope.cellmenu.addItem({
-          name: 'Show output cell (if available)',
-          isChecked: function() {
-            return !$scope.cellmodel.output.hidden;
-          },
-          action: function() {
-            if ($scope.cellmodel.output.hidden) {
-              delete $scope.cellmodel.output.hidden;
-            } else {
-              $scope.cellmodel.output.hidden = true;
-            }
-          }
-        });
-
-        $scope.isInitializationCell = function() {
-          return $scope.cellmodel.initialization;
-        };
-
-
-
-        $scope.cellmenu.addItem({
           name: 'Initialization Cell',
+          sortorder: 100,
           isChecked: function() {
             return $scope.isInitializationCell();
           },
@@ -324,14 +292,9 @@
           }
         });
 
-
-
-        $scope.isWordWrap = function () {
-          return !$scope.cellmodel.wordWrapDisabled;
-        };
-
         $scope.cellmenu.addItem({
           name: 'Word wrap',
+          sortorder: 130,
           isChecked: function () {
             return $scope.isWordWrap();
           },
@@ -349,6 +312,7 @@
 
         $scope.cellmenu.addItem({
           name: 'Options...',
+          sortorder: 140,
           action: function() {
             bkCoreManager.showFullModalDialog(function cb(r) { } ,
                 'app/mainapp/dialogs/codecelloptions.jst.html', 'CodeCellOptionsController', $scope.cellmodel);
@@ -358,11 +322,61 @@
           }
         });
 
+        $scope.cellmenu.addItem({
+          name: 'Run',
+          sortorder: 180,
+          action: function() {
+            $scope.evaluate();
+          }
+        });
+
+        $scope.cellmenu.addItem({
+          name: 'Show input cell',
+          sortorder: 190,
+          isChecked: function() {
+            return !$scope.cellmodel.input.hidden;
+          },
+          action: function() {
+            if ($scope.cellmodel.input.hidden) {
+              delete $scope.cellmodel.input.hidden;
+            } else {
+              $scope.cellmodel.input.hidden = true;
+            }
+          },
+          locked: function () {
+            return $scope.isLockedCell();
+          }
+        });
+
+        $scope.cellmenu.addItem({
+          name: 'Show output cell (if available)',
+          sortorder: 200,
+          isChecked: function() {
+            return !$scope.cellmodel.output.hidden;
+          },
+          action: function() {
+            if ($scope.cellmodel.output.hidden) {
+              delete $scope.cellmodel.output.hidden;
+            } else {
+              $scope.cellmodel.output.hidden = true;
+            }
+          }
+        });
+
+        $scope.isInitializationCell = function() {
+          return $scope.cellmodel.initialization;
+        };
+
+        $scope.isWordWrap = function () {
+          return !$scope.cellmodel.wordWrapDisabled;
+        };
+
         $scope.power = {
           menu: {
             items: [
               {
                 name: 'Disable initialization',
+                sortorder: 100,
                 action: function() {
                   if ($scope.isInitializationCell()) {
                     $scope.cellmodel.initialization = undefined;
@@ -377,6 +391,16 @@
         };
 
         bkPublicationHelper.helper(CELL_TYPE, $scope);
+
+        $scope.cellmenu.changeSortOrder({
+          name: "Publish...",
+          sortorder: 170
+        });
+        
+        $scope.cellmenu.addSeparator("Cut");
+
+        $scope.cellmenu.addSeparator("Run");
+        
       },
       link: function(scope, element) {
         scope.showDebug = false;

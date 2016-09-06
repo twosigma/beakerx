@@ -343,6 +343,14 @@
         jobQueue.tick();
         return bkUtils.all(promises);
       },
+      evaluateRootAllPomises: function(cells, parent) {
+        var self = this;
+        var promises = _.map(cells, function(cell) {
+          return self.evaluateRoot(cell, true);
+        });
+        jobQueue.tick();
+        return promises;
+      },
       isCancellable: function() {
         var currentJob = jobQueue.getCurrentJob();
         return !!(currentJob && currentJob.evaluator && currentJob.evaluator.cancelExecution);

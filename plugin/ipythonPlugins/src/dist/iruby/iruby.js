@@ -32,6 +32,9 @@ define(function(require, exports, module) {
   var now = function() {
     return new Date().getTime();
   };
+  function isIpythonVersion3OrAbove() {
+    return ipyVersion == '3' || ipyVersion == '4' || ipyVersion == '5';
+  }
   var IRubyProto = {
       pluginName: PLUGIN_NAME,
       cmMode: "ruby",
@@ -212,7 +215,7 @@ define(function(require, exports, module) {
           var result = _(msg.payload).map(function(payload) {
             // XXX can other mime types appear here?
             var text = "";
-            if (ipyVersion == '3' || ipyVersion == '4') {
+            if (isIpythonVersion3OrAbove()) {
               text = payload.data ? payload.data["text/plain"] : "";
             } else {
               text = payload.text;
@@ -258,7 +261,7 @@ define(function(require, exports, module) {
           var evaluation = { };
           evaluation.status = "RUNNING";
 
-          if ((ipyVersion == '3' || ipyVersion == '4') ? (type === "error") : (type === "pyerr")) {
+          if (isIpythonVersion3OrAbove() ? (type === "error") : (type === "pyerr")) {
             gotError = true;
             var trace = _.reduce(content.traceback, function(memo, line) {
               return  memo + "<br>" + myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(line));
@@ -273,7 +276,7 @@ define(function(require, exports, module) {
             evaluation.outputdata = [];
             if (finalStuff !== undefined && finalStuff.outputdata !== undefined)
               evaluation.outputdata = finalStuff.outputdata;
-            var text = (ipyVersion == '3' || ipyVersion == '4') ? content.text : content.data;
+            var text = isIpythonVersion3OrAbove() ? content.text : content.data;
             evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
                 value: text});
           } else {
@@ -316,7 +319,7 @@ define(function(require, exports, module) {
               }
               evaluation.jsonres = jsonres;
               var elem = $(document.createElement("div"));
-              var oa = (ipyVersion == '3' || ipyVersion == '4') ?
+              var oa = isIpythonVersion3OrAbove() ?
                   (new myPython.OutputArea({events: {trigger: function(){}},
                     keyboard_manager: {register_events: function(){}}})) :
                       (new myPython.OutputArea(elem));
@@ -409,7 +412,7 @@ define(function(require, exports, module) {
         bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
         kernel.restart(function () {
           var waitForKernel = function() {
-            if ((ipyVersion == '3' || ipyVersion == '4') ?
+            if (isIpythonVersion3OrAbove() ?
                 (kernel.ws.readyState == 1) :
                   (kernel.shell_channel.readyState == 1 &&
                       kernel.stdin_channel.readyState == 1 &&
@@ -454,6 +457,7 @@ define(function(require, exports, module) {
         require('services/kernels/kernel');
         require('base/js/utils');
         require('notebook/js/outputarea');
+        require('jupyter-js-widgets');
       }
       myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : ((ipyVersion == '3') ? IPython3 : IPython));
       bkHelper.locatePluginService(PLUGIN_NAME, {
@@ -488,7 +492,7 @@ define(function(require, exports, module) {
             };
             var kernel = kernels[shellID];
             var waitForKernel = function () {
-              if ((ipyVersion == '3' || ipyVersion == '4') ?
+              if (isIpythonVersion3OrAbove() ?
                   (kernel.ws.readyState == 1) :
                     (kernel.shell_channel.readyState == 1 &&
                         kernel.stdin_channel.readyState == 1 &&
@@ -562,6 +566,7 @@ define(function(require, exports, module) {
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/events.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/serialize.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/session.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/jupyter-js-widgets.js"),
                                ], onSuccess, onFail);
           }
         }).error(function() {

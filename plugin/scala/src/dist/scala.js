@@ -126,7 +126,7 @@ define(function(require, exports, module) {
           url: bkHelper.serverUrl(serviceBase + "/rest/scalash/autocomplete"),
           data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
         }).done(function(x) {
-          cb(x, undefined, false);
+          cb(x, undefined, true);
         });
       },
       exit: function(cb) {

@@ -623,6 +623,41 @@
 
         return markupDeferred.promise;
       },
+      evaluateJSinHTML: function(code, evaluateFn) {
+        var markupDeferred = bkHelper.newDeferred();
+        if (!evaluateFn) {
+          evaluateFn = this.evaluateCode;
+        }
+
+        var results = [], re = /{{([^}]+)}}/g, text;
+
+        while (text = re.exec(code)) {
+          if (results.indexOf(text) === -1)
+            results.push(text);
+        }
+        
+        var evaluateCode = function (index) {
+          if (index === results.length) {
+            markupDeferred.resolve(code);
+          } else {
+            evaluateFn("JavaScript", results[index][1]).then(
+                function (r) {
+                  code = code.replace(results[index][0], r);
+                },
+                function (r) {
+                  code = code.replace(results[index][0], "<font color='red'>" + "Error: **" + r.object[0] + "**" + "</font>");
+                }
+            ).finally(function () {
+                  evaluateCode(index + 1);
+                }
+            );
+          }
+        };
+
+        evaluateCode(0);
+
+        return markupDeferred.promise;
+      },
       getEvaluatorMenuItems: function() {
         if (getCurrentApp() && getCurrentApp().getEvaluatorMenuItems) {
           return getCurrentApp().getEvaluatorMenuItems();
@@ -901,6 +936,9 @@
       showFileSaveDialog: function(data) {
         return bkCoreManager.showFileSaveDialog(data);
       },
+      showSQLLoginModalDialog: function(connectionName, connectionString, user, okCB, cancelCB) {
+        return bkCoreManager.showSQLLoginModalDialog(connectionName, connectionString, user, okCB, cancelCB);
+      },
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();
       },
@@ -1156,7 +1194,14 @@
           };
         modelOutput.result = progressObj;
       },
-
+      printCanceledAnswer: function(modelOutput) {
+        var progressObj = {
+          type: "BeakerDisplay",
+          innertype: "Error",
+          object: "No password provided."
+        };
+        modelOutput.result = progressObj;
+      },
       setupCancellingOutput: function(modelOutput) {
         if (modelOutput.result.type !== "BeakerDisplay" || modelOutput.result.innertype !== "Progress")
           setupProgressOutput(modelOutput);
@@ -1401,6 +1446,12 @@
 
       elfinder: function($elfinder, elfinderOptions){
         var elfinder;
+
+        elFinder.prototype.i18.en.messages['cmdeditpermissions'] = 'Edit Permissions';
+        elFinder.prototype._options.commands.push('editpermissions');
+        elFinder.prototype._options.contextmenu.files.push('copypath');
+        elFinder.prototype._options.contextmenu.cwd.push('editpermissions');
+
         elFinder.prototype._options.commands.push('copypath');
         elFinder.prototype._options.contextmenu.files.push('copypath');
         elFinder.prototype._options.contextmenu.cwd.push('copypath');
@@ -1499,9 +1550,43 @@
       },
 
       elfinderOptions: function (getFileCallback, selectCallback, openCallback, mime, showHiddenFiles) {
+        
+        function getNavbarMenuItems() {
+          var items = ['copy', 'cut', 'paste', 'duplicate', '|', 'rm'];
+          if(!bkUtils.serverOS.isWindows()) {
+            items.push('|', 'editpermissions');
+          }
+          return items;
+        }
+        
+        function getToolbarItems() {
+          var toolbar = [
+            ['back', 'forward'],
+            ['mkdir'],
+            ['copy', 'cut', 'paste'],
+            ['rm'],
+            ['duplicate', 'rename'],
+            ['view', 'sort']
+          ];
+          if(!bkUtils.serverOS.isWindows()) {
+            toolbar.push(['editpermissions']);
+          }
+          return toolbar;
+        }
+        
+        function getFileContextMenuItems() {
+          var items = [
+            'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
+            'rm'
+          ];
+          if(!bkUtils.serverOS.isWindows()) {
+            items.push('|', 'editpermissions');
+          }
+          return items;
+        }
 
         return {
-          url: '../beaker/connector',
+          url: bkHelper.serverUrl('beaker/connector'),
           useBrowserHistory: false,
           resizable: false,
           onlyMimes: mime,
@@ -1524,27 +1609,17 @@
           defaultView: 'icons',
           contextmenu: {
             // navbarfolder menu
-            navbar: ['copy', 'cut', 'paste', 'duplicate', '|', 'rm'],
+            navbar: getNavbarMenuItems(),
 
             // current directory menu
             cwd: ['reload', 'back', '|', 'mkdir', 'paste'],
 
             // current directory file menu
-            files: [
-              'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
-              'rm'
-            ]
+            files: getFileContextMenuItems()
           },
           uiOptions: {
             // toolbar configuration
-            toolbar: [
-              ['back', 'forward'],
-              ['mkdir'],
-              ['copy', 'cut', 'paste'],
-              ['rm'],
-              ['duplicate', 'rename'],
-              ['view', 'sort']
-            ],
+            toolbar: getToolbarItems(),
 
             // navbar options
             navbar: {

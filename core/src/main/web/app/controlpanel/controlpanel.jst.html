@@ -34,9 +34,17 @@
       <div ng-if='isSessionsListEmpty()' class="empty-session-prompt">
         <br/>
         <h1>Beaker <small>The data scientist's laboratory</small></h1>
-        <p><br/>
-          Beginners should start with <strong>Help &#8594; Tutorial</strong>.
-	    </p>
+        <p>
+          <br/>
+          Click below to learn to use Beaker, or use the <strong>Help &#8594; Tutorial</strong> menu item.
+	</p>
+        <div class="new-notebook">
+          <div class="row bkr">
+            <div class="col-xs-3 bkr">
+              <a class="btn btn-default text-center btn-block bkr" ng-click="openTutorial()">Examples and Demos</a>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div ng-hide='isSessionsListEmpty()'>

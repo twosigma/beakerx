@@ -104,8 +104,9 @@ var BeakerPageObject = function() {
   this.setNormalEditMode = function() {
     var self = this;
     element(by.css('.notebook-menu')).click();
-    browser.sleep(1000);
+    browser.sleep(500);
     browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
+    browser.sleep(500);
     element(by.css('#normal-edit-mode-menuitem')).click();
   };
 
@@ -116,8 +117,9 @@ var BeakerPageObject = function() {
 
   this.setVimEditMode = function () {
     element(by.css('.notebook-menu')).click();
-    browser.sleep(1000);
+    browser.sleep(500);
     browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
+    browser.sleep(500);
     element(by.css('#vim-edit-mode-menuitem')).click();
   };
 

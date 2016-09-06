@@ -1978,6 +1978,11 @@
               var order = scope.table.order();
               var colIdx = container.data('columnIndex');
 
+              // server ordering
+              if (0 === order.length) {
+                return false;
+              }
+
               if (_.includes(['asc', 'desc'], direction)) {
                 return (order[0][0] == colIdx && order[0][1] == direction);
               } else {

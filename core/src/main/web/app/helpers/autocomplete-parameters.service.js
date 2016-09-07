@@ -128,14 +128,30 @@
     }
 
     function endCompletion() {
+      removeOptionalParams();
       cm.off('cursorActivity', endCompletionIfCursorOutOfRange);
       hideParameterDocumentation();
-      clearMarks()
+      clearMarks();
       cm = void 0;
       currentParam = void 0;
       scope = void 0;
       params = [];
       args = [];
+    }
+
+    function removeOptionalParams() {
+      // last param
+      if (currentParam == args.length - 1) {
+        return;
+      }
+      try {
+        var curArg = args[currentParam].find();
+        var lastArg = _.last(args).find();
+        cm.doc.setSelection(curArg.to, lastArg.to);
+        cm.doc.replaceSelection('');
+      } catch(e) {
+        console.log('unable to get selection');
+      }
     }
 
     function endCompletionAndMoveCursor() {

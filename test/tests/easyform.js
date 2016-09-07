@@ -31,8 +31,13 @@ describe('EasyForm', function () {
   }
 
   function evaluate(code) {
+    var self = this;
     beakerPO.setCellInput(code)
-        .then(function(){ beakerPO.evaluateCell(); console.log('evaluateCell'); })
+        .then(function(){
+          self.createScreenshot('evaluateCell');
+          beakerPO.evaluateCell();
+          console.log('evaluateCell');
+        })
         .then(function(){ beakerPO.waitForCellOutput(); console.log('waitForCellOutput'); });
   }
 

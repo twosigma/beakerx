@@ -234,7 +234,9 @@
               for (var i = 0; i < scope.models.length; i++) {
                 scope.models[i].state = { };
               }
-              scope.model.setDumpState(scope.dumpState());
+              if (scope.model.setDumpState !== undefined) {
+                scope.model.setDumpState(scope.dumpState());
+              }
             }
           }
         };
@@ -253,7 +255,9 @@
               for (var i = 0; i < scope.models.length; i++) {
                 scope.models[i].state = { };
               }
-              scope.model.setDumpState(scope.dumpState());
+              if (scope.model.setDumpState !== undefined) {
+                scope.model.setDumpState(scope.dumpState());
+              }
             }
           });
         }

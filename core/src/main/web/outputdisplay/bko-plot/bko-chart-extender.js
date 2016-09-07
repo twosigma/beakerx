@@ -75,7 +75,9 @@
 					if (savedstate !== undefined && savedstate.plotSize !== undefined) {
 						scope.loadState(savedstate);
 					} else {
+					  if (scope.setDumpState !== undefined) {
 						scope.setDumpState(scope.dumpState());
+					  }
 					}
 
 					// create layout elements

@@ -511,6 +511,10 @@
           }
         };
 
+        $scope.isEmbedded = window.beakerRegister.isEmbedded ? true : false;
+        $scope.isPublication = window.beakerRegister.isPublication ? true : false;
+        $scope.isIFrame = (window.location != window.parent.location) ? true : false;
+
         $scope.getCellIdx      =  [];
         $scope.getCellNam      =  [];
         $scope.getCellSho      =  [];
@@ -2709,7 +2713,9 @@
               state.headersVertical = scope.headersVertical;
             }
 
-            scope.model.setDumpState({datatablestate: state});
+            if (scope.model.setDumpState !== undefined) {
+              scope.model.setDumpState({datatablestate: state});
+            }
           }
         });
 

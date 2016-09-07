@@ -32,8 +32,8 @@ describe('EasyForm', function () {
 
   function evaluate(code) {
     beakerPO.setCellInput(code)
-        .then(function(){ beakerPO.evaluateCell(); })
-        .then(function(){ beakerPO.waitForCellOutput(); });
+        .then(function(){ beakerPO.evaluateCell(); console.log('evaluateCell'); })
+        .then(function(){ beakerPO.waitForCellOutput(); console.log('waitForCellOutput'); });
   }
 
   function testUndoRedo(code, selector) {

@@ -2,6 +2,7 @@ $border-color: #D4D0D0;
 
 .dtcontainer {
   position: relative;
+  width: 96%;
   .dropdown-menu {
     margin-top: 1px;
   }
@@ -268,3 +269,23 @@ $fix-col-separator-width: 3px;
   text-align: left;
 }
 
+.table_modal {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  -webkit-overflow-scrolling: touch;
+  outline: 0;
+  animation: 1s fadeIn;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    visibility: visible;
+    opacity: 1;
+  }
+}

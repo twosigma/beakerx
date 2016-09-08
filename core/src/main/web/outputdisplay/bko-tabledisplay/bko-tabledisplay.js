@@ -2613,6 +2613,19 @@
           }
         };
 
+        scope.showAllColumns = function(){
+          var id = scope.id;
+          $('#'+id).DataTable().columns().visible(true);
+          $('#'+id).css('pointer-events', 'all');
+          id += '_modal_dialog';
+          $('#'+id).hide()
+        };
+
+        scope.hideModal = function(){
+          var id = scope.id + '_modal_dialog';
+          $('#'+id).hide()
+        };
+
         scope.getDumpState = function() {
           return scope.model.getDumpState();
         };
